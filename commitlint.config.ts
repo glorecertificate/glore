@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs'
 
 import { RuleConfigSeverity, type UserConfig } from '@commitlint/types'
 
-const SCOPES = ['deps', 'deps-dev']
+const SCOPES = ['deps', 'deps-dev', 'security']
 
 const packages = readdirSync('./packages', { withFileTypes: true })
   .filter(dir => dir.isDirectory())

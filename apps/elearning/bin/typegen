@@ -4,14 +4,17 @@ R="\033[0;31m"
 SUPABASE_SCHEMAS=auth,public
 SUPABASE_TYPES_PATH=supabase/types.ts
 
-. .env
+if [ -f .env ]; then
+  . .env
+fi
 
-if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
-  echo "${R}Error: NEXT_PUBLIC_SUPABASE_URL must be set"
+if [ -z "$SUPABASE_URL" ] && [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
+  echo "${R}Error: SUPABASE_URL must be set"
   exit 1
 fi
 
-supabase_project_id=$(echo "$NEXT_PUBLIC_SUPABASE_URL" | sed -E 's/https:\/\/([^.]+).*/\1/')
+supabase_url=${SUPABASE_URL:-$NEXT_PUBLIC_SUPABASE_URL}
+supabase_project_id=$(echo "$supabase_url" | sed -E 's/https:\/\/([^.]+).*/\1/')
 
 pnpm dlx supabase gen types typescript --project-id="$supabase_project_id" --schema="$SUPABASE_SCHEMAS" > "$SUPABASE_TYPES_PATH"
 echo "Finished types generation."

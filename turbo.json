@@ -20,11 +20,16 @@
     "start": {
       "dependsOn": ["^start"]
     },
-    "test": {
-      "dependsOn": ["^test"]
+    "typegen": {
+      "dependsOn": ["^typegen"],
+      "outputs": ["supabase/**"],
+      "env": ["SUPABASE_URL"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]
+    },
+    "test": {
+      "dependsOn": ["^test"]
     },
     "lint": {
       "dependsOn": ["^lint"]

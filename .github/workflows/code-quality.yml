@@ -15,15 +15,32 @@ jobs:
       TURBO_TELEMETRY_DISABLED: true
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - run: corepack install
-      - name: Run pnpm install
+      - name: Install corepack
         run: |
-          pnpm install --recursive
-          echo ./node_modules/.bin >> $GITHUB_PATH
+          npm install -g corepack@latest
+          corepack enable
+          corepack install
+      - run: pnpm install --ignore-scripts
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase init
+      - run: supabase db start
+      - name: Verify generated types
+        run: |
+          mkdir -p $SUPABASE_DIR
+          supabase gen types typescript --local > $SUPABASE_DIR/$SUPABASE_TYPES
+          if ! git diff --ignore-space-at-eol --exit-code --quiet $SUPABASE_DIR/$SUPABASE_TYPES; then
+            echo "Detected uncommitted changes after build. See status below:"
+            git diff
+            exit 1
+          fi
+        env:
+          SUPABASE_DIR: ${{ vars.SUPABASE_DIR }}
+          SUPABASE_TYPES: ${{ vars.SUPABASE_TYPES }}
       - run: pnpm build
       - name: Run commitlint on push
         if: github.event_name == 'push'

@@ -18,15 +18,27 @@
     "userRequired": "Inserisci una email o username"
   },
   "Navigation": {
-    "dashboard": "Pannello di controllo",
+    "dashboard": "Dashboard",
     "modules": "Moduli",
     "modulesCompleted": "Completati",
     "modulesInProgress": "In corso",
-    "modulesIntro": "Introduzione",
     "modulesNotStarted": "Non iniziati",
-    "modulesSkills": "Skills",
     "certificates": "Certificazioni",
     "inbox": "Inbox",
-    "logout": "Esci"
+    "logout": "Esci",
+    "certificatesMy": "I miei certificati",
+    "certificatesNew": "Richiedi nuovo",
+    "certificatesUnderReview": "In revisione",
+    "documentation": "Documentazione",
+    "documentationChangelog": "Changelog",
+    "documentationGetStarted": "Inizia da qui",
+    "documentationIntro": "Introduzione",
+    "documentationTutorials": "Tutorial",
+    "modulesAll": "Tutti i moduli"
+  },
+  "Common": {
+    "collapse": "Chiudi",
+    "expand": "Espandi",
+    "toggle": "Cambia"
   }
 }

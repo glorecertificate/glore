@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-supabase init --force --with-intellij-settings=false --with-vscode-settings=false
+pnpm dlx supabase init --force --with-intellij-settings=false --with-vscode-settings=false
 pnpm typegen

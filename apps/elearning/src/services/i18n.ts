@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 
-import { getMessages, getRequestConfig, getTranslations } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
 import config, { type locales } from 'config/i18n.json'
@@ -24,4 +24,4 @@ export const setLocale = async (locale: Locale) => {
   cookieStore.set(Cookie.Locale, locale)
 }
 
-export { getMessages, getRequestConfig, getTranslations }
+export { getMessages, getTranslations }

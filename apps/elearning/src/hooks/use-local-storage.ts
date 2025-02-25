@@ -5,13 +5,13 @@ import { useCallback, useMemo, type Dispatch } from 'react'
 import { isServer } from '@joint-it/utils'
 
 import { type LocalStorageItem } from '@/lib/storage'
-import { slug } from 'config/app.json'
+import config from 'config/app.json'
 
 export const useLocalStorage = <T>(
   item: LocalStorageItem,
   initialValue?: T,
   options = {
-    prefix: slug,
+    prefix: config.slug,
   },
 ): [T | undefined, Dispatch<T>, () => void] => {
   const key = useMemo(() => (options?.prefix ? `${options.prefix}:${item}` : item), [item, options?.prefix])

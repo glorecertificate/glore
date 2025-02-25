@@ -42,8 +42,8 @@
   "prettier.ignorePath": "",
   "search.useIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [
-    ["[\"'`]([^\"'`]*).*?[\"'`]", "cva\\(((?:[^()]|\\([^()]*\\))*)\\)"],
-    ["(?:'|\"|`)([^']*)(?:'|\"|`)", "(?:cn|cx)\\(((?:[^()]|\\([^()]*\\))*)\\)"]
+    ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["(?:cn|cx)\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "tailwindCSS.experimental.configFile": "./apps/elearning/src/app/globals.css",
   "tailwindCSS.lint.cssConflict": "error",

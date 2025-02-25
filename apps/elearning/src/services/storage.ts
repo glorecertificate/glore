@@ -1,13 +1,13 @@
 import { cookies } from 'next/headers'
 
 import { type Cookie } from '@/lib/storage'
-import { slug } from 'config/app.json'
+import config from 'config/app.json'
 
 export const getCookie = async <T>(
   cookie: Cookie,
   initialValue?: T,
   options = {
-    prefix: slug,
+    prefix: config.slug,
   },
 ) => {
   const key = options.prefix ? `${options.prefix}:${cookie}` : cookie
@@ -23,7 +23,7 @@ export const setCookie = async <T>(
   cookie: Cookie,
   value: T,
   options = {
-    prefix: slug,
+    prefix: config.slug,
   },
 ) => {
   const key = options.prefix ? `${options.prefix}:${cookie}` : cookie

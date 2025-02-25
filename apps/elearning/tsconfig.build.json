@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src", ".next/types/**/*.ts"]
+  "include": ["src", ".next/types/**/*.ts"],
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  }
 }

@@ -6,11 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/u
 import { useLocale } from '@/hooks/use-locale'
 import { type Locale } from '@/services/i18n'
 import { cn } from '@/theme/utils'
-import { locales } from 'config/i18n.json'
+import config from 'config/i18n.json'
 
 interface LocaleSwitcherProps {}
 
-const items = Object.entries(locales).map(([value, { flag, name }]) => ({
+const items = Object.entries(config.locales).map(([value, { flag, name }]) => ({
   label: name,
   value,
   icon: flag,

@@ -32,7 +32,9 @@ jobs:
           corepack enable
           corepack install
       - name: Install dependencies
-        run: pnpm install --ignore-scripts
+        run: |
+          pnpm install --ignore-scripts
+          echo ./node_modules/.bin >> $GITHUB_PATH
       - uses: supabase/setup-cli@v1
         with:
           version: latest
@@ -40,7 +42,7 @@ jobs:
         run: |
           cd $APP_PATH
           supabase login --token $SUPABASE_CLI_TOKEN
-          supabase init
+          supabase init --with-intellij-settings=false --with-vscode-settings=false
           supabase gen types typescript --project-id=$SUPABASE_PROJECT_ID --schema=$SUPABASE_SCHEMAS > supabase/$SUPABASE_TYPES
         env:
           SUPABASE_CLI_TOKEN: ${{ secrets.SUPABASE_CLI_TOKEN }}

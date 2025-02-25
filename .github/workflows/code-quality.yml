@@ -11,19 +11,42 @@ jobs:
   code-quality:
     runs-on: ubuntu-latest
     env:
+      APP_PATH: ${{ vars.APP_PATH }}
+      NEXT_TELEMETRY_DISABLED: true
       SHELLCHECKJS_LOGGER_LEVEL: warn
       TURBO_TELEMETRY_DISABLED: true
     steps:
       - uses: actions/checkout@v4
-      - run: corepack enable
+      - uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/$APP_PATH/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - run: corepack install
-      - name: Run pnpm install
+      - name: Install corepack
         run: |
-          pnpm install --recursive
-          echo ./node_modules/.bin >> $GITHUB_PATH
+          npm install -g corepack@latest
+          corepack enable
+          corepack install
+      - name: Install dependencies
+        run: pnpm install --ignore-scripts
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Generate types
+        run: |
+          cd $APP_PATH
+          supabase login --token $SUPABASE_CLI_TOKEN
+          supabase init
+          supabase gen types typescript --project-id=$SUPABASE_PROJECT_ID --schema=$SUPABASE_SCHEMAS > supabase/$SUPABASE_TYPES
+        env:
+          SUPABASE_CLI_TOKEN: ${{ secrets.SUPABASE_CLI_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+          SUPABASE_SCHEMAS: ${{ vars.SUPABASE_SCHEMAS }}
+          SUPABASE_TYPES: ${{ vars.SUPABASE_TYPES }}
       - run: pnpm build
       - name: Run commitlint on push
         if: github.event_name == 'push'

@@ -1,6 +1,6 @@
 {
   "extends": "@joint-it/tsconfig/nextjs",
-  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "baseUrl": ".",

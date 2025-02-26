@@ -1,15 +1,16 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/static/glore.png" alt="" width="90" />
-  <h1>GloRe eLearning</h1>
+  <h1>GloRe Certificate</h1>
+  <img src="https://deploy-badge.vercel.app/vercel/glorecertificate" />
   <a href="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml">
     <img src="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml/badge.svg" />
   </a>
 </div>
 <br>
 
-[GloRe](https://glorecertificate.net) is an official certificate that verifies volunteering activities.
+GloRe is an official certificate that verifies volunteering activities.
 
-Visit the website to find out how to sign up to the e-learning platform and get the certificate recognizing your soft skills.
+Visit [the website](https://glorecertificate.net) to find out how to sign up to the [e-learning platform](https://elearning.glorecertificate.net) and get the certificate recognizing your soft skills.
 
 ## About
 

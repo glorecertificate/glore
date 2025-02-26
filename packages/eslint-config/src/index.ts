@@ -94,7 +94,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
   const jsxFiles = userFiles ?? jsxFileOptions({ ignoreJs, ignoreTs, includeDotfiles, includeRoot })
   const configFiles = configFileOptions({ ignoreJs, ignoreTs })
   const prettierFiles = prettierIncludes ?? files
-  const hasNextJs = typeof react === 'string' && react.toLowerCase() === 'next.js'
+  const hasNextJs = typeof react === 'string' && react === 'nextjs'
 
   return (
     [

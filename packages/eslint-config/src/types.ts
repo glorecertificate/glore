@@ -68,7 +68,7 @@ export interface FileOptions {
    *
    * @default false
    */
-  react?: boolean | 'next.js' | 'Next.js'
+  react?: boolean | 'nextjs'
 }
 
 export interface NoRestrictedImportOptions {

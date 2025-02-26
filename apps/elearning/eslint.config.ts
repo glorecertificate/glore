@@ -13,7 +13,7 @@ export default eslintConfig({
   internalImports: ['config', 'supabase'],
   maxLines: -1,
   namedImports: ['react'],
-  react: 'next.js',
+  react: 'nextjs',
   sortArrayValues: ['src/**/*.ts?(x)'],
   sortObjectKeys: ['*.ts'],
   tailwindCss: true,

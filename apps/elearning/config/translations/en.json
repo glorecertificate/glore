@@ -20,7 +20,9 @@
   "Common": {
     "collapse": "Collapse",
     "expand": "Expand",
-    "toggle": "Toggle"
+    "toggle": "Toggle",
+    "show": "Show",
+    "hide": "Hide"
   },
   "Navigation": {
     "dashboard": "Dashboard",

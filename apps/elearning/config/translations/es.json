@@ -39,6 +39,8 @@
   "Common": {
     "collapse": "Colapsar",
     "expand": "Expandir",
-    "toggle": "Palanca"
+    "toggle": "Palanca",
+    "hide": "Esconder",
+    "show": "Mostrar"
   }
 }

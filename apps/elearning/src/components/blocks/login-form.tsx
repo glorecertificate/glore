@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
 
 export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) => {
@@ -95,7 +96,7 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
                   </a>
                 </div>
                 <FormControl>
-                  <Input type="password" {...field} />
+                  <PasswordInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

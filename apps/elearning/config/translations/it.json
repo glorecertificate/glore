@@ -39,6 +39,8 @@
   "Common": {
     "collapse": "Chiudi",
     "expand": "Espandi",
-    "toggle": "Cambia"
+    "toggle": "Cambia",
+    "hide": "Nascondi",
+    "show": "Mostra"
   }
 }

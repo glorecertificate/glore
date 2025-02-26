@@ -35,6 +35,8 @@
     "@repo/utils": "workspace:^",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
+    "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.476.0",
     "million": "^3.1.11",
@@ -50,8 +52,8 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^15.1.7",
-    "@repo/prettier-config": "workspace:^",
     "@repo/eslint-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@tailwindcss/postcss": "^4.0.9",
     "@types/react": "^19.0.10",

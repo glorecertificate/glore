@@ -1,5 +1,18 @@
 # Changelog
 
+## <small>0.0.2 (2025-02-26)</small>
+
+* build: upgrade `pnpm` to 10.5.0 ([d5b6ffa](https://github.com/joint-it/glore/commit/d5b6ffa))
+* build(deps): upgrade dependencies ([ec21681](https://github.com/joint-it/glore/commit/ec21681))
+* build(infra): install vercel analytics and speed insights ([fe6a947](https://github.com/joint-it/glore/commit/fe6a947))
+* chore: refactoring ([a7dbdaa](https://github.com/joint-it/glore/commit/a7dbdaa))
+* chore: rename `config` folder to `static` ([b3eda4b](https://github.com/joint-it/glore/commit/b3eda4b))
+* chore: use `@repo` prefix for internal packages ([59edb39](https://github.com/joint-it/glore/commit/59edb39))
+* ci: run `code-quality` on pull requests targeting main ([eeef5cf](https://github.com/joint-it/glore/commit/eeef5cf))
+* ci: setup vercel deployments ([097e531](https://github.com/joint-it/glore/commit/097e531))
+* feat: add password input component ([0a6999b](https://github.com/joint-it/glore/commit/0a6999b))
+* fix: fix `typegen` script ([8f6b993](https://github.com/joint-it/glore/commit/8f6b993))
+
 ## <small>0.0.1 (2025-02-25)</small>
 
 * ci: add `security` scope to commitlint ([5a37190](https://github.com/joint-it/glore/commit/5a37190))

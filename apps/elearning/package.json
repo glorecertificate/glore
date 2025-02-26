@@ -1,6 +1,6 @@
 {
   "name": "elearning",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "prettier": "@repo/prettier-config/tailwindcss",
   "postcss": {

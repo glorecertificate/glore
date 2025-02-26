@@ -3,10 +3,10 @@
 import { cookies } from 'next/headers'
 
 import { getMessages, getTranslations } from 'next-intl/server'
+import config, { type locales } from 'static/i18n.json'
+import type en from 'static/translations/en.json'
 
 import { Cookie } from '@/lib/storage'
-import config, { type locales } from 'config/i18n.json'
-import type en from 'config/translations/en.json'
 
 declare global {
   type IntlMessages = typeof en

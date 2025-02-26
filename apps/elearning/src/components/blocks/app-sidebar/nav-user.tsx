@@ -25,7 +25,7 @@ interface NavUserProps {
 }
 
 export const NavUser = ({ auth, profile }: NavUserProps) => {
-  const t = useTranslations('Navigation')
+  const t = useTranslations()
   const { isMobile } = useSidebar()
 
   const initials = useMemo(() => {
@@ -106,7 +106,7 @@ export const NavUser = ({ auth, profile }: NavUserProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logOutUser}>
               <LogOutIcon />
-              {t('logout')}
+              {t('Common.logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

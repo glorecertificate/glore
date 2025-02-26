@@ -1,12 +1,11 @@
 #!/usr/bin/env sh
 
 R="\033[0;31m"
+
 SUPABASE_SCHEMAS=auth,public
 SUPABASE_TYPES_PATH=supabase/types.ts
 
-if [ -f .env ]; then
-  . .env
-fi
+[ -f .env ] && . .env
 
 if [ -z "$SUPABASE_URL" ] && [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
   echo "${R}Error: SUPABASE_URL must be set"

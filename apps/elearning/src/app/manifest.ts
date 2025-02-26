@@ -1,6 +1,6 @@
 import { type MetadataRoute } from 'next'
 
-import config from 'config/app.json'
+import config from 'static/app.json'
 
 export default () =>
   ({

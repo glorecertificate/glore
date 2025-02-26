@@ -2,19 +2,24 @@
 
 import { useCallback, useMemo, type Dispatch } from 'react'
 
+import config from 'static/app.json'
+
 import { isServer } from '@repo/utils'
 
 import { type LocalStorageItem } from '@/lib/storage'
-import config from 'config/app.json'
 
 export const useLocalStorage = <T>(
   item: LocalStorageItem,
   initialValue?: T,
   options = {
     prefix: config.slug,
+    separator: '/',
   },
 ): [T | undefined, Dispatch<T>, () => void] => {
-  const key = useMemo(() => (options?.prefix ? `${options.prefix}:${item}` : item), [item, options?.prefix])
+  const key = useMemo(
+    () => (options?.prefix ? `${options.prefix}${options.separator}${item}` : item),
+    [item, options?.prefix, options?.separator],
+  )
 
   const storedValue = useMemo(() => {
     if (isServer()) return initialValue

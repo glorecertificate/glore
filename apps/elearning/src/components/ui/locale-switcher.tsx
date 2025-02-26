@@ -2,11 +2,12 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
+import config from 'static/i18n.json'
+
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { useLocale } from '@/hooks/use-locale'
 import { cn } from '@/lib/utils'
 import { type Locale } from '@/services/i18n'
-import config from 'config/i18n.json'
 
 interface LocaleSwitcherProps {}
 

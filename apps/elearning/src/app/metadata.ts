@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 
-import config from 'config/app.json'
+import config from 'static/app.json'
 
 export const metadata: Metadata = {
   appleWebApp: {

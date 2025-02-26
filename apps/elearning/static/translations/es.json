@@ -6,41 +6,40 @@
   "Auth": {
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "login": "Acceso",
-    "loginTitle": "Inicie sesión en su cuenta de GloRe",
     "loginSubtitle": "Ingrese un email o username para acceder a su cuenta",
-    "rememberMe": "Acuérdate de mí",
-    "passwordLabel": "Password",
+    "loginTitle": "Inicie sesión en su cuenta de GloRe",
     "passwordInvalid": "Password no válida",
+    "passwordLabel": "Password",
     "passwordRequired": "Inserte su password",
-    "userLabel": "Email o username",
+    "rememberMe": "Acuérdate de mí",
     "userInvalid": "Email o username no válido",
+    "userLabel": "Email o username",
     "userNotFound": "Usuario no encontrado",
     "userRequired": "Se requiere un email o username"
   },
-  "Navigation": {
-    "dashboard": "Panel",
-    "modules": "Módulos",
-    "modulesCompleted": "Terminado",
-    "modulesInProgress": "En curso",
-    "modulesNotStarted": "No comenzó",
-    "certificates": "Certificados",
-    "inbox": "Inbox",
+  "Common": {
+    "hide": "Esconder",
     "logout": "Cerrar sesión",
+    "show": "Mostrar",
+    "toggle": "Palanca"
+  },
+  "Navigation": {
+    "certificates": "Certificados",
     "certificatesMy": "Mis certificados",
     "certificatesNew": "Solicitar nuevo",
     "certificatesUnderReview": "Bajo revisión",
+    "collapseSidebar": "Colapsar barra lateral",
+    "dashboard": "Panel",
     "documentation": "Documentación",
     "documentationChangelog": "Colegio de cambios",
     "documentationGetStarted": "Empezar",
     "documentationIntro": "Introducción",
     "documentationTutorials": "Tutoriales",
-    "modulesAll": "Todos los módulos"
-  },
-  "Common": {
-    "collapse": "Colapsar",
-    "expand": "Expandir",
-    "toggle": "Palanca",
-    "hide": "Esconder",
-    "show": "Mostrar"
+    "expandSidebar": "Expandir barra lateral",
+    "modules": "Módulos",
+    "modulesAll": "Todos los módulos",
+    "modulesCompleted": "Terminado",
+    "modulesInProgress": "En curso",
+    "modulesNotStarted": "No comenzó"
   }
 }

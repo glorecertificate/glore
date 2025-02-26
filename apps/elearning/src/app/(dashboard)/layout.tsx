@@ -1,14 +1,19 @@
+import { cookies } from 'next/headers'
+
 import { AppHeader } from '@/components/blocks/app-header'
 import { AppSidebar } from '@/components/blocks/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { Cookie } from '@/lib/storage'
 import { getDB } from '@/services/db'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const { auth } = await getDB()
   const { data } = await auth.getUser()
+  const { get } = await cookies()
+  const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={sidebarOpen}>
       <AppSidebar user={data.user} />
       <SidebarInset>
         <AppHeader />

@@ -6,41 +6,40 @@
   "Auth": {
     "forgotPassword": "Password dimenticata?",
     "login": "Accedi",
-    "loginTitle": "Accedi al tuo account GloRe",
     "loginSubtitle": "Inserisci il tuo username o la tua mail per accedere all'account",
-    "rememberMe": "Ricordami",
-    "passwordLabel": "Password",
+    "loginTitle": "Accedi al tuo account GloRe",
     "passwordInvalid": "Password non valida",
+    "passwordLabel": "Password",
     "passwordRequired": "Inserisci una password",
-    "userLabel": "Email o username",
+    "rememberMe": "Ricordami",
     "userInvalid": "Email o username non validi",
+    "userLabel": "Email o username",
     "userNotFound": "Utente non trovato",
     "userRequired": "Inserisci una email o username"
   },
-  "Navigation": {
-    "dashboard": "Dashboard",
-    "modules": "Moduli",
-    "modulesCompleted": "Completati",
-    "modulesInProgress": "In corso",
-    "modulesNotStarted": "Non iniziati",
-    "certificates": "Certificazioni",
-    "inbox": "Inbox",
+  "Common": {
+    "hide": "Nascondi",
     "logout": "Esci",
+    "show": "Mostra",
+    "toggle": "Cambia"
+  },
+  "Navigation": {
+    "certificates": "Certificazioni",
     "certificatesMy": "I miei certificati",
     "certificatesNew": "Richiedi nuovo",
     "certificatesUnderReview": "In revisione",
+    "collapseSidebar": "Chiudi menu",
+    "dashboard": "Dashboard",
     "documentation": "Documentazione",
     "documentationChangelog": "Changelog",
     "documentationGetStarted": "Inizia da qui",
     "documentationIntro": "Introduzione",
     "documentationTutorials": "Tutorial",
-    "modulesAll": "Tutti i moduli"
-  },
-  "Common": {
-    "collapse": "Chiudi",
-    "expand": "Espandi",
-    "toggle": "Cambia",
-    "hide": "Nascondi",
-    "show": "Mostra"
+    "expandSidebar": "Espandi menu",
+    "modules": "Moduli",
+    "modulesAll": "Tutti i moduli",
+    "modulesCompleted": "Completati",
+    "modulesInProgress": "In corso",
+    "modulesNotStarted": "Non iniziati"
   }
 }

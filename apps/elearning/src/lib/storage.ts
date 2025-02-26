@@ -3,7 +3,7 @@ import { type Locale } from '@/services/i18n'
 
 export enum Cookie {
   Locale = 'NEXT_LOCALE',
-  SidebarOpen = 'SIDEBAR_OPEN',
+  SidebarOpen = 'NEXT_SIDEBAR_OPEN',
 }
 
 export interface Cookies {

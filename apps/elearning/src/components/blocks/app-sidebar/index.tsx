@@ -14,10 +14,11 @@ import { NavLearn } from './nav-learn'
 import { NavUser } from './nav-user'
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  defaultOpen?: boolean
   user: User | null
 }
 
-export const AppSidebar = ({ user, ...props }: AppSidebarProps) => {
+export const AppSidebar = ({ defaultOpen, user, ...props }: AppSidebarProps) => {
   const { pages } = useNavigation()
   const db = useDB()
 

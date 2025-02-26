@@ -1,9 +1,10 @@
 'use client'
 
+import config from 'static/app.json'
+
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
 import { LocaleSwitcher } from '@/components/ui/locale-switcher'
-import config from 'config/app.json'
 
 export default ({ children }: React.PropsWithChildren) => (
   <div className="grid min-h-svh lg:grid-cols-2">

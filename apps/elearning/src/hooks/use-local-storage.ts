@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, type Dispatch } from 'react'
 
-import { isServer } from '@joint-it/utils'
+import { isServer } from '@repo/utils'
 
 import { type LocalStorageItem } from '@/lib/storage'
 import config from 'config/app.json'

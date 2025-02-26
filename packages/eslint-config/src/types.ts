@@ -126,7 +126,7 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
   newlineAfterImport?: boolean
 }
 
-export interface JointConfigOptions extends FileOptions, ImportOptions {
+export interface EslintConfigOptions extends FileOptions, ImportOptions {
   /**
    * Whether to add a newline after the return statement.
    *

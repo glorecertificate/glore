@@ -1,6 +1,6 @@
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
 
-import { cn } from '@/theme/utils'
+import { cn } from '@/lib/utils'
 
 interface LinkProps extends React.PropsWithChildren<NextLinkProps> {
   className?: string

@@ -1,5 +1,5 @@
 {
-  "name": "@joint-it/tsconfig",
+  "name": "@repo/tsconfig",
   "version": "0.0.0",
   "main": "base.json",
   "exports": {
@@ -8,20 +8,18 @@
   },
   "files": [
     "base.json",
-    "dom.json",
     "nextjs.json",
-    "node.json",
     "react.json",
     "tsup.json"
   ],
-  "prettier": "@joint-it/prettier-config",
+  "prettier": "@repo/prettier-config",
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
     "check": "pnpm lint"
   },
   "devDependencies": {
-    "@joint-it/prettier-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
     "prettier": "catalog:"
   }
 }

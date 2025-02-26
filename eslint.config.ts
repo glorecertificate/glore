@@ -1,5 +1,5 @@
-import jointConfig from '@joint-it/eslint-config'
+import eslintConfig from '@repo/eslint-config'
 
-export default jointConfig({
+export default eslintConfig({
   ignores: ['apps', 'packages'],
 })

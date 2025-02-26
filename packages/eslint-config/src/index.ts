@@ -9,6 +9,7 @@ import stylisticPlugin from '@stylistic/eslint-plugin'
 import stylisticTsPlugin from '@stylistic/eslint-plugin-ts'
 import gitignoreConfig from 'eslint-config-flat-gitignore'
 import prettierConfig from 'eslint-config-prettier'
+import turboConfig from 'eslint-config-turbo/flat'
 // @ts-expect-error - Missing type definitions
 import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
@@ -25,10 +26,10 @@ import sortDestructureKeysPlugin from 'eslint-plugin-sort-destructure-keys'
 import importsPlugin from 'eslint-plugin-unused-imports'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
-import { RuleSeverity, type JointConfigOptions } from './types'
+import { RuleSeverity, type EslintConfigOptions } from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
-const DEFAULT_OPTIONS: JointConfigOptions = {
+const DEFAULT_OPTIONS: EslintConfigOptions = {
   allowRelativeImports: 'siblings',
   emptyLineAfterReturn: true,
   ignoreJs: false,
@@ -54,9 +55,9 @@ const DEFAULT_OPTIONS: JointConfigOptions = {
 }
 
 /**
- * Joint ESLint configuration function.
+ * ESLint configuration function.
  */
-const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
+const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
   const {
     allowRelativeImports,
     emptyLineAfterReturn,
@@ -99,8 +100,9 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
     [
       gitignoreConfig(),
       eslint.configs.recommended,
+      ...turboConfig,
       {
-        name: '@joint-it/base',
+        name: '@repo/base',
         files,
         plugins: {
           '@stylistic': stylisticPlugin,
@@ -282,7 +284,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
             typeCheck === true ? typescriptConfigs.recommendedTypeChecked : {},
             typeCheck === 'strict' ? typescriptConfigs.strictTypeChecked : {},
             {
-              name: '@joint-it/ts',
+              name: '@repo/ts',
               languageOptions: {
                 parserOptions: {
                   ecmaFeatures: {
@@ -376,7 +378,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
               : {},
             {
               files: ['**/*.d.ts', '**/types.ts'],
-              name: '@joint-it/dts',
+              name: '@repo/dts',
               rules: {
                 'max-lines': RuleSeverity.Off,
               },
@@ -384,7 +386,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
           )),
       react
         ? {
-            name: '@joint-it/react',
+            name: '@repo/react',
             files: jsxFiles,
             plugins: {
               plugins: {
@@ -421,7 +423,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
           }
         : {},
       {
-        name: '@joint-it/configs',
+        name: '@repo/configs',
         files: configFiles,
         rules: {
           'no-restricted-imports': RuleSeverity.Off,
@@ -434,7 +436,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
       pandaCss
         ? {
             files: ['panda.config.[jt]s', ...files],
-            name: '@joint-it/pandacss',
+            name: '@repo/pandacss',
             plugins: {
               '@pandacss': pandaCssPlugin,
             },
@@ -457,7 +459,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
         ? [
             {
               files: prettierFiles,
-              name: '@joint-it/prettier',
+              name: '@repo/prettier',
               plugins: {
                 prettier: prettierPlugin,
               },
@@ -474,7 +476,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
         : []),
       tailwindCss
         ? {
-            name: '@joint-it/tailwindcss',
+            name: '@repo/tailwindcss',
             files,
             languageOptions: react
               ? {
@@ -490,7 +492,7 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
           }
         : {},
       {
-        name: '@joint-it/overrides',
+        name: '@repo/overrides',
         files,
         rules: {
           'arrow-body-style': [RuleSeverity.Error, 'as-needed'],
@@ -507,6 +509,6 @@ const jointConfig = (options: JointConfigOptions = {}): Linter.Config[] => {
     })
 }
 
-export default jointConfig
-export type { JointConfigOptions }
+export default eslintConfig
+export type { EslintConfigOptions }
 export type * from './types'

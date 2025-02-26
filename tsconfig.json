@@ -1,5 +1,5 @@
 {
-  "extends": "@joint-it/tsconfig",
+  "extends": "@repo/tsconfig",
   "include": ["*.ts"],
   "exclude": ["apps", "node_modules", "packages"],
   "compilerOptions": {

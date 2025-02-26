@@ -1,12 +1,12 @@
-import jointConfig from '@joint-it/eslint-config'
+import eslintConfig from '@repo/eslint-config'
 
-export default jointConfig({
+export default eslintConfig({
   importGroups: [
     ['side-effect', 'side-effect-style'],
     'builtin',
     ['react', 'next', '@next'],
     ['external'],
-    '@joint-it',
+    '@repo',
     'internal',
     ['parent', 'index', 'sibling'],
   ],

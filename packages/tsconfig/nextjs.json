@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@joint-it/nextjs",
+  "display": "@repo/nextjs",
   "extends": "./react.json",
   "compilerOptions": {
     "plugins": [

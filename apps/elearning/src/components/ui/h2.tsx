@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import { cn } from '@/theme/utils'
+import { cn } from '@/lib/utils'
 
 interface H2Props extends React.HTMLAttributes<HTMLHeadingElement> {}
 

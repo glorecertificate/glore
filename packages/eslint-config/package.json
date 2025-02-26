@@ -1,5 +1,5 @@
 {
-  "name": "@joint-it/eslint-config",
+  "name": "@repo/eslint-config",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -10,7 +10,7 @@
       "default": "./build/index.js"
     }
   },
-  "prettier": "@joint-it/prettier-config",
+  "prettier": "@repo/prettier-config",
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
@@ -27,6 +27,7 @@
     "@stylistic/eslint-plugin-ts": "^4.0.1",
     "eslint-config-flat-gitignore": "^2.1.0",
     "eslint-config-prettier": "^10.0.1",
+    "eslint-config-turbo": "^2.4.4",
     "eslint-import-resolver-typescript": "^3.8.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-perfectionist": "^4.9.0",
@@ -40,9 +41,9 @@
     "typescript-eslint": "^8.25.0"
   },
   "devDependencies": {
-    "@joint-it/prettier-config": "workspace:^",
-    "@joint-it/tsconfig": "workspace:^",
-    "@joint-it/tsup-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
+    "@repo/tsconfig": "workspace:^",
+    "@repo/tsup-config": "workspace:^",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/node": "catalog:",
     "eslint": "catalog:",

@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { type Theme } from '@/theme/enums'
+import { type Theme } from '@/lib/theme'
 
 export const useTheme = () => {
   const { resolvedTheme, setTheme: setNextTheme } = useNextTheme()

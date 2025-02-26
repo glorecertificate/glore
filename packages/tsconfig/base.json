@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@joint-it/base",
+  "display": "@repo/base",
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,

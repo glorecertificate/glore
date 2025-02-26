@@ -1,5 +1,5 @@
 {
-  "name": "@joint-it/utils",
+  "name": "@repo/utils",
   "version": "0.0.0",
   "type": "module",
   "exports": {
@@ -10,7 +10,7 @@
       "default": "./build/index.js"
     }
   },
-  "prettier": "@joint-it/prettier-config",
+  "prettier": "@repo/prettier-config",
   "scripts": {
     "build": "tsup",
     "build:watch": "tsup --watch",
@@ -20,9 +20,9 @@
     "check": "pnpm typecheck && pnpm lint"
   },
   "devDependencies": {
-    "@joint-it/prettier-config": "workspace:^",
-    "@joint-it/tsconfig": "workspace:^",
-    "@joint-it/tsup-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
+    "@repo/tsconfig": "workspace:^",
+    "@repo/tsup-config": "workspace:^",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

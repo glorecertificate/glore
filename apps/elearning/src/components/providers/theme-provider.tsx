@@ -1,6 +1,6 @@
 import { ThemeProvider as NextThemeProvider, type ThemeProviderProps } from 'next-themes'
 
-import { Theme } from '@/theme/enums'
+import { Theme } from '@/lib/theme'
 
 const ThemeProvider = (props: ThemeProviderProps) => (
   <NextThemeProvider attribute="class" defaultTheme={Theme.Auto} themes={Object.values(Theme)} {...props} />

@@ -6,13 +6,10 @@
     "type": "git",
     "url": "git+https://github.com/joint-it/glore.git"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "type": "module",
-  "packageManager": "pnpm@10.5.0+sha512.11106a5916c7406fe4b8cb8e3067974b8728f47308a4f5ac5e850304afa6f57e2847d7950dfe78877d8d36bfb401d381c4215db3a4c3547ffa63c14333a6fa51",
-  "prettier": "@joint-it/prettier-config",
+  "packageManager": "pnpm@10.5.0",
+  "private": true,
+  "prettier": "@repo/prettier-config",
   "scripts": {
     "prepare": "husky",
     "dev": "turbo dev",
@@ -36,11 +33,11 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@commitlint/types": "^19.5.0",
-    "@joint-it/eslint-config": "workspace:^",
-    "@joint-it/prettier-config": "workspace:^",
-    "@joint-it/tsconfig": "workspace:^",
     "@release-it/bumper": "^7.0.1",
     "@release-it/conventional-changelog": "^10.0.0",
+    "@repo/eslint-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
+    "@repo/tsconfig": "workspace:^",
     "@types/node": "catalog:",
     "dotenv-cli": "^8.0.0",
     "eslint": "catalog:",

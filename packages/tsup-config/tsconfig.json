@@ -1,5 +1,5 @@
 {
-  "extends": "@joint-it/tsconfig/tsup",
+  "extends": "@repo/tsconfig/tsup",
   "include": ["src"],
   "exclude": ["build", "node_modules"]
 }

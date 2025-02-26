@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@joint-it/react",
+  "display": "@repo/react",
   "extends": "./base.json",
   "compilerOptions": {
     "incremental": true,

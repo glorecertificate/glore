@@ -1,7 +1,8 @@
 import { forwardRef, useMemo } from 'react'
 
-import { type VariantProps } from '@/theme/types'
-import { cn, cva } from '@/theme/utils'
+import { cva, type VariantProps } from 'class-variance-authority'
+
+import { cn } from '@/lib/utils'
 
 interface PProps extends Omit<React.HTMLAttributes<HTMLParagraphElement>, 'color'>, VariantProps<typeof p> {}
 

@@ -1,5 +1,5 @@
 {
-  "extends": "@joint-it/tsconfig/nextjs",
+  "extends": "@repo/tsconfig/nextjs",
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {

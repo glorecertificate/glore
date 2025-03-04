@@ -7,7 +7,7 @@ updates:
     schedule:
       interval: monthly
     labels:
-      - dependencies
+      - build
     groups:
       deps:
         applies-to: version-updates

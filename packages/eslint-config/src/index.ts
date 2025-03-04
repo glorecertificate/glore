@@ -17,7 +17,6 @@ import preferArrowFunctionsPlugin from 'eslint-plugin-prefer-arrow-functions'
 import prettierPlugin from 'eslint-plugin-prettier'
 import prettierPluginRecommended from 'eslint-plugin-prettier/recommended'
 import reactPlugin from 'eslint-plugin-react'
-// @ts-expect-error - Missing type definitions
 import reactHooksPlugin from 'eslint-plugin-react-hooks'
 // @ts-expect-error - Missing type definitions
 import sortArrayValuesPlugin from 'eslint-plugin-sort-array-values'

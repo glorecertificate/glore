@@ -1,13 +1,10 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/static/glore.png" alt="" width="90" />
+  <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/static/glore.png" alt="" width="90">
   <h1>GloRe Certificate</h1>
-  <img src="https://deploy-badge.vercel.app/vercel/glorecertificate" />
-  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml">
-    <img src="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml/badge.svg" />
-  </a>
-  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql">
-    <img src="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql/badge.svg" />
-  </a>
+  <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
+  <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
+  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml/badge.svg"></a>
+  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
 </div>
 <br>
 
@@ -22,8 +19,6 @@ The GloRe eLearning platform is a monorepository including a <a href="https://ne
 The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href="https://ui.shadcn.com">shadcn/ui</a> components for building a responsive and accessible user interface.
 
 ## Development
-
-To run the project locally, follow the instructions below to set up your development environment.
 
 ### Prerequisites
 
@@ -57,9 +52,9 @@ cd apps/elearning
 cp .env.example .env
 ```
 
-Fill in the required environment variables to gain access to all the services in use.
+Fill in the required environment variables to gain access to all the services used by the application.
 
-### Running the Development Server
+### Running a Development Server
 
 Run a development server with:
 

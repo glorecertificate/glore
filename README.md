@@ -5,6 +5,9 @@
   <a href="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml">
     <img src="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml/badge.svg" />
   </a>
+  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql">
+    <img src="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql/badge.svg" />
+  </a>
 </div>
 <br>
 
@@ -20,7 +23,7 @@ The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href=
 
 ## Development
 
-If you want to run the project locally, follow the instructions below to set up a development environment.
+To run the project locally, follow the instructions below to set up your development environment.
 
 ### Prerequisites
 
@@ -54,11 +57,11 @@ cd apps/elearning
 cp .env.example .env
 ```
 
-Fill in the required environment variables to gain access to all the services.
+Fill in the required environment variables to gain access to all the services in use.
 
 ### Running the Development Server
 
-Run the development server with:
+Run a development server with:
 
 ```bash
 pnpm dev

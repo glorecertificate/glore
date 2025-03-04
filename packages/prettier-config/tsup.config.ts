@@ -5,7 +5,7 @@ export default defineConfig({
   cjsInterop: true,
   dts: true,
   entry: ['src/*.ts'],
-  format: ['esm', 'cjs'],
+  format: ['cjs', 'esm'],
   minify: true,
   outDir: 'build',
   splitting: false,

@@ -50,8 +50,7 @@
   },
   "release-it": {
     "hooks": {
-      "after:init": "pnpm build && pnpm check",
-      "after:release": "echo Successfully released ${name}@${version}."
+      "after:init": "pnpm build && pnpm check"
     },
     "git": {
       "push": true,

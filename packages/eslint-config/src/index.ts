@@ -23,7 +23,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks'
 import sortArrayValuesPlugin from 'eslint-plugin-sort-array-values'
 // @ts-expect-error - Missing type definitions
 import sortDestructureKeysPlugin from 'eslint-plugin-sort-destructure-keys'
-import importsPlugin from 'eslint-plugin-unused-imports'
+import unusedImportsPlugin from 'eslint-plugin-unused-imports'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
 import { RuleSeverity, type EslintConfigOptions } from './types'
@@ -111,7 +111,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
           'prefer-arrow-functions': preferArrowFunctionsPlugin,
           'sort-array-values': sortArrayValuesPlugin,
           'sort-destructure-keys': sortDestructureKeysPlugin,
-          'unused-imports': importsPlugin,
+          'unused-imports': unusedImportsPlugin,
         },
         rules: {
           'comma-dangle': [RuleSeverity.Error, 'always-multiline'],

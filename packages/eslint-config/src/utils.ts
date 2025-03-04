@@ -132,7 +132,7 @@ export const sortImportsOptions = (options: SortImportsOptions = {}) => {
     (groups, group) => {
       if (DEFAULT_IMPORT_GROUPS.includes(group)) return groups
 
-      const regexName = group.replace('*', '.*')
+      const regexName = group.replace(/\*/g, '.*')
       const patterns = [`^${regexName}$`, `^${regexName}/.+`]
 
       return {

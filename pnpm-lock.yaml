@@ -78,7 +78,7 @@ importers:
         specifier: ^2.4.4
         version: 2.4.4
       typescript:
-        specifier: 'catalog:'
+        specifier: ^5.8.2
         version: 5.8.2
 
   apps/elearning:

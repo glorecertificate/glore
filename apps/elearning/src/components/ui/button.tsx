@@ -4,26 +4,48 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { LoaderIcon } from 'lucide-react'
 
+import { Link } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
 
 interface ButtonProps extends React.ComponentProps<'button'>, VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  href?: string
   loading?: boolean
+  loadingText?: string
+  target?: string
 }
 
-const ButtonBase = ({ asChild = false, className, size, variant, ...props }: ButtonProps) => {
+const ButtonRoot = ({ asChild = false, className, size, variant, ...props }: ButtonProps) => {
   const Component = useMemo(() => (asChild ? Slot : 'button'), [asChild])
-
   return <Component className={cn(buttonVariants({ variant, size, className }))} data-slot="button" {...props} />
 }
 
-const Button = ({ children, disabled, loading, ...props }: ButtonProps) => {
+export const Button = ({ asChild, children, disabled, href, loading, loadingText, target, ...props }: ButtonProps) => {
   const isDisabled = useMemo(() => disabled || loading, [disabled, loading])
+  const isLink = useMemo(() => !!href, [href])
+  const isChild = useMemo(() => isLink || !!asChild, [asChild, isLink])
+
+  const ButtonContent = useMemo(
+    () => () =>
+      loading ? (
+        <>
+          <LoaderIcon className="animate-spin" />
+          {loadingText && <span>{loadingText}</span>}
+        </>
+      ) : isLink ? (
+        <Link className="hover:no-underline" href={href || ''}>
+          {children}
+        </Link>
+      ) : (
+        children
+      ),
+    [children, href, isLink, loading, loadingText],
+  )
 
   return (
-    <ButtonBase disabled={isDisabled} {...props}>
-      {loading ? <LoaderIcon className="animate-spin" /> : children}
-    </ButtonBase>
+    <ButtonRoot asChild={isChild} disabled={isDisabled} {...props}>
+      <ButtonContent />
+    </ButtonRoot>
   )
 }
 
@@ -53,5 +75,3 @@ const buttonVariants = cva(
     },
   },
 )
-
-export { Button, buttonVariants }

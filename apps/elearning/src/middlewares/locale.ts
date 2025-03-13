@@ -1,6 +1,5 @@
-import { getRequestConfig } from 'next-intl/server'
-
 import { type AnyObject } from '@repo/utils'
+import { getRequestConfig } from 'next-intl/server'
 
 import { getLocale } from '@/services/i18n'
 

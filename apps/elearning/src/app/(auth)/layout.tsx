@@ -1,10 +1,9 @@
 'use client'
 
-import config from 'static/app.json'
-
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
-import { LocaleSwitcher } from '@/components/ui/locale-switcher'
+import { LanguageSelect } from '@/components/ui/language-select'
+import config from 'static/app.json'
 
 export default ({ children }: React.PropsWithChildren) => (
   <div className="grid min-h-svh lg:grid-cols-2">
@@ -14,7 +13,7 @@ export default ({ children }: React.PropsWithChildren) => (
           <Image src="/logo.svg" width={25} />
           {config.title}
         </Link>
-        <LocaleSwitcher />
+        <LanguageSelect />
       </div>
       <div className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-xs">{children}</div>

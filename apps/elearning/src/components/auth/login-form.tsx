@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
+import { Route } from '@/lib/routes'
 
 export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) => {
   const db = useDB()
@@ -42,8 +43,11 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
     },
   })
 
-  const onSubmit = async ({ password, user }: z.infer<typeof formSchema>) => {
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     setIsSubmitting(true)
+
+    const user = schema.user.trim()
+    const password = schema.password.trim()
 
     const { data: profile } = await db.from('profiles').select().or(`email.eq.${user},username.eq.${user}`).single()
 
@@ -64,7 +68,7 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
       return
     }
 
-    redirect('/')
+    redirect(Route.Dashboard)
   }
 
   return (

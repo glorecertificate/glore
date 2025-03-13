@@ -2,11 +2,10 @@
 
 import { useCallback, useMemo, type Dispatch } from 'react'
 
-import config from 'static/app.json'
-
 import { isServer } from '@repo/utils'
 
 import { type LocalStorageItem } from '@/lib/storage'
+import config from 'static/app.json'
 
 export const useLocalStorage = <T>(
   item: LocalStorageItem,

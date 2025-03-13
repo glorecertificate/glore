@@ -119,6 +119,12 @@ export interface SortImportsOptions {
 
 export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOptions {
   /**
+   * Whether to force placing exports at the end of the file.
+   *
+   * @default false
+   */
+  exportsLast?: boolean
+  /**
    * Whether to add a newline after the import block.
    *
    * @default false

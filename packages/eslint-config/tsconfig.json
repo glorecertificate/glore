@@ -3,6 +3,7 @@
   "include": ["**/*.ts"],
   "exclude": ["build", "node_modules"],
   "compilerOptions": {
+    "removeComments": false,
     "types": ["node"]
   }
 }

@@ -1,11 +1,12 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
+import { Route } from '@/lib/routes'
 import { getDB } from '@/services/db'
 
 export enum AuthPage {
-  Login = '/login',
-  Signup = '/signup',
-  ResetPassword = '/reset-password',
+  Login = Route.Login,
+  Signup = Route.Signup,
+  ResetPassword = Route.ResetPassword,
 }
 
 export const updateSession = async (request: NextRequest) => {
@@ -25,10 +26,10 @@ export const updateSession = async (request: NextRequest) => {
     const isAuthPage = Object.values(AuthPage).includes(request.nextUrl.pathname as AuthPage)
 
     if (error) {
-      return isAuthPage ? response : NextResponse.redirect(new URL('/login', request.url))
+      return isAuthPage ? response : NextResponse.redirect(new URL(Route.Login, request.url))
     }
 
-    return isAuthPage ? NextResponse.redirect(new URL('/', request.url)) : response
+    return isAuthPage ? NextResponse.redirect(new URL(Route.Dashboard, request.url)) : response
   } catch {
     return NextResponse.next({
       request: {

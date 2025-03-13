@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { AudioWaveformIcon, CommandIcon, GalleryVerticalEndIcon } from 'lucide-react'
 
-import { OrgSwitcher } from '@/components/blocks/app-sidebar/org-switcher'
+import { OrgSwitcher } from '@/components/app-sidebar/org-switcher'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar'
 import { useDB } from '@/hooks/use-db'
 import { useNavigation } from '@/hooks/use-navigation'
@@ -48,7 +48,7 @@ export const AppSidebar = ({ defaultOpen, user, ...props }: AppSidebarProps) => 
   const setUserProfile = useCallback(async () => {
     if (!user?.id) return
 
-    const { data, error, status } = await db.from('profiles').select().eq('id', user.id).single()
+    const { data, error, status } = await db.from('profiles').select().eq('uuid', user.id).single()
 
     if (error && status !== 406) {
       console.error(error)
@@ -68,7 +68,7 @@ export const AppSidebar = ({ defaultOpen, user, ...props }: AppSidebarProps) => 
   }, [setUserProfile])
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <OrgSwitcher orgs={orgs} />
       </SidebarHeader>

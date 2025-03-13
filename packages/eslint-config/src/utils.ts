@@ -143,10 +143,12 @@ export const sortImportsOptions = (options: SortImportsOptions = {}) => {
     { type: {}, value: {} } as SortImportGroup,
   )
 
+  const internalPattern = internalImports.map(pattern => `^${pattern.replace(/\*/g, '.*')}/?.*`)
+
   return {
     customGroups: Object.keys(customGroups).length ? customGroups : undefined,
     groups: importGroups,
-    internalPattern: internalImports,
+    internalPattern,
     newlinesBetween: newlinesBetweenGroups,
     tsconfigRootDir,
   }

@@ -57,7 +57,7 @@ const SidebarProvider = ({
   onOpenChange?: (open: boolean) => void
 }) => {
   const isMobile = useIsMobile()
-  const t = useTranslations('Navigation')
+  const t = useTranslations()
 
   const [openMobile, setOpenMobile] = useState(false)
   const [_open, _setOpen] = useState(defaultOpen)
@@ -83,7 +83,7 @@ const SidebarProvider = ({
     [isMobile, setOpen, setOpenMobile],
   )
 
-  const label = useMemo(() => (open ? t('collapseSidebar') : t('expandSidebar')), [open, t])
+  const label = useMemo(() => (open ? t('Common.collapseSidebar') : t('Common.expandSidebar')), [open, t])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -231,7 +231,7 @@ const SidebarTrigger = ({ className, onClick, ...props }: React.ComponentProps<t
 
   return (
     <Button
-      className={cn('h-7 w-7', className)}
+      className={cn('h-10 w-10', className)}
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       onClick={event => {
@@ -242,7 +242,7 @@ const SidebarTrigger = ({ className, onClick, ...props }: React.ComponentProps<t
       variant="ghost"
       {...props}
     >
-      <PanelLeftIcon />
+      <PanelLeftIcon className="size-5" />
       <span className="sr-only">{label}</span>
     </Button>
   )

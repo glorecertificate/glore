@@ -27,15 +27,16 @@ const BreadcrumbLink = ({
   asChild?: boolean
 }) => {
   const Comp = asChild ? Slot : 'a'
-
-  return <Comp className={cn('transition-colors hover:text-foreground', className)} data-slot="breadcrumb-link" {...props} />
+  return (
+    <Comp className={cn('text-base transition-colors hover:text-foreground', className)} data-slot="breadcrumb-link" {...props} />
+  )
 }
 
 const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     aria-current="page"
     aria-disabled="true"
-    className={cn('font-normal text-foreground', className)}
+    className={cn('text-base font-normal text-foreground', className)}
     data-slot="breadcrumb-page"
     role="link"
     {...props}

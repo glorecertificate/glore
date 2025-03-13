@@ -1,4 +1,4 @@
-import { LoginForm } from '@/components/blocks/login-form'
+import { LoginForm } from '@/components/auth/login-form'
 import { getTranslations } from '@/services/i18n'
 
 export default async () => {

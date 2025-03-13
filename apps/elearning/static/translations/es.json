@@ -18,28 +18,45 @@
     "userRequired": "Se requiere un email o username"
   },
   "Common": {
+    "collapseSidebar": "Colapsar barra lateral",
+    "expandSidebar": "Expandir barra lateral",
     "hide": "Esconder",
     "logout": "Cerrar sesión",
     "show": "Mostrar",
-    "toggle": "Palanca"
+    "toggle": "Palanca",
+    "help": "Ayuda",
+    "language": "Idioma",
+    "preferences": "Preferencias",
+    "settings": "Ajustes",
+    "theme": "Tema",
+    "system": "Sistema",
+    "dark": "Oscuro",
+    "light": "Claro",
+    "useSystemTheme": "Usar tema del sistema",
+    "useLightTheme": "Usar tema claro",
+    "useDarkTheme": "Usar tema oscuro",
+    "useTheme": "Usar el tema {theme}"
   },
   "Navigation": {
+    "learn": "Formación",
+    "dashboard": "Dashboard",
+    "modules": "Módulos",
+    "modulesInProgress": "En curso",
+    "modulesNotStarted": "No comenzó",
+    "modulesCompleted": "Terminado",
+    "modulesAll": "Todos los módulos",
     "certificates": "Certificados",
     "certificatesMy": "Mis certificados",
-    "certificatesNew": "Solicitar nuevo",
     "certificatesUnderReview": "Bajo revisión",
-    "collapseSidebar": "Colapsar barra lateral",
-    "dashboard": "Panel",
+    "certificatesNew": "Solicitar nuevo",
     "documentation": "Documentación",
-    "documentationChangelog": "Colegio de cambios",
     "documentationGetStarted": "Empezar",
     "documentationIntro": "Introducción",
+    "documentationChangelog": "Colegio de cambios",
     "documentationTutorials": "Tutoriales",
-    "expandSidebar": "Expandir barra lateral",
-    "modules": "Módulos",
-    "modulesAll": "Todos los módulos",
-    "modulesCompleted": "Terminado",
-    "modulesInProgress": "En curso",
-    "modulesNotStarted": "No comenzó"
+    "tutor": "Tutor"
+  },
+  "Settings": {
+    "title": "Ajustes"
   }
 }

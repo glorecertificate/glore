@@ -18,28 +18,45 @@
     "userRequired": "Email or username is required"
   },
   "Common": {
+    "collapseSidebar": "Collapse",
+    "expandSidebar": "Expand",
+    "help": "Help",
     "hide": "Hide",
+    "language": "Language",
     "logout": "Log out",
+    "preferences": "Preferences",
+    "settings": "Settings",
     "show": "Show",
-    "toggle": "Toggle"
+    "theme": "Theme",
+    "toggle": "Toggle",
+    "system": "System",
+    "dark": "Dark",
+    "light": "Light",
+    "useSystemTheme": "Use system theme",
+    "useLightTheme": "Use light theme",
+    "useDarkTheme": "Use dark theme",
+    "selectLanguage": "Select language"
   },
   "Navigation": {
+    "learn": "Learn",
+    "dashboard": "Dashboard",
+    "modules": "Modules",
+    "modulesInProgress": "In progress",
+    "modulesNotStarted": "Not started",
+    "modulesCompleted": "Completed",
+    "modulesAll": "All modules",
     "certificates": "Certificates",
     "certificatesMy": "My certificates",
-    "certificatesNew": "Request new",
     "certificatesUnderReview": "Under review",
-    "collapseSidebar": "Collapse",
-    "dashboard": "Dashboard",
+    "certificatesNew": "Request new",
     "documentation": "Documentation",
     "documentationChangelog": "Changelog",
     "documentationGetStarted": "Get started",
     "documentationIntro": "Introduction",
     "documentationTutorials": "Tutorials",
-    "expandSidebar": "Expand",
-    "modules": "Modules",
-    "modulesAll": "All modules",
-    "modulesCompleted": "Completed",
-    "modulesInProgress": "In progress",
-    "modulesNotStarted": "Not started"
+    "tutor": "Tutor"
+  },
+  "Settings": {
+    "title": "Settings"
   }
 }

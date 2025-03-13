@@ -1,4 +1,4 @@
-import { defineConfig, type Options } from 'tsup'
+import { type defineConfig, type Options } from 'tsup'
 
 const tsupConfigBase: Options = {
   clean: true,
@@ -11,11 +11,11 @@ const tsupConfigBase: Options = {
 
 type Config = ReturnType<typeof defineConfig>
 
-const tsupConfigJoint = (options?: Options) =>
+const tsupConfig = (options?: Options) =>
   ({
     ...tsupConfigBase,
     ...(options ?? {}),
   }) as Config
 
-export default tsupConfigJoint
+export default tsupConfig
 export type { Config, Options }

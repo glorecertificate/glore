@@ -2,14 +2,13 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
-import config from 'static/i18n.json'
+import { useTranslations } from 'next-intl'
 
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerProps } from '@/components/ui/select'
 import { useLocale } from '@/hooks/use-locale'
 import { cn } from '@/lib/utils'
 import { type Locale } from '@/services/i18n'
-
-interface LocaleSwitcherProps {}
+import config from 'static/i18n.json'
 
 const items = Object.entries(config.locales).map(([value, { flag, name }]) => ({
   label: name,
@@ -17,9 +16,10 @@ const items = Object.entries(config.locales).map(([value, { flag, name }]) => ({
   icon: flag,
 }))
 
-const LocaleSwitcher = (props: LocaleSwitcherProps) => {
+export const LanguageSelect = (props: SelectTriggerProps) => {
   const [locale, setLocale] = useLocale()
   const [isPending, startTransition] = useTransition()
+  const t = useTranslations('Common')
 
   const activeItem = useMemo(() => items.find(item => item.value === locale), [locale])
 
@@ -33,8 +33,8 @@ const LocaleSwitcher = (props: LocaleSwitcherProps) => {
   )
 
   return (
-    <Select defaultValue={locale} onValueChange={onChange} {...props}>
-      <SelectTrigger className={cn('w-md', isPending && 'pointer-events-none opacity-60')}>
+    <Select defaultValue={locale} onValueChange={onChange}>
+      <SelectTrigger className={cn(isPending && 'pointer-events-none opacity-60')} title={t('selectLanguage')} {...props}>
         <span>
           {activeItem?.label} {activeItem?.icon}
         </span>
@@ -46,12 +46,12 @@ const LocaleSwitcher = (props: LocaleSwitcherProps) => {
             key={item.value}
             value={item.value}
           >
-            <span>{item.label}</span>
+            <span>
+              {item.label} {item?.icon}
+            </span>
           </SelectItem>
         ))}
       </SelectContent>
     </Select>
   )
 }
-
-export { LocaleSwitcher, type LocaleSwitcherProps }

@@ -31,6 +31,7 @@ import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOpti
 const DEFAULT_OPTIONS: EslintConfigOptions = {
   allowRelativeImports: 'siblings',
   emptyLineAfterReturn: true,
+  exportsLast: true,
   ignoreJs: false,
   ignoreTs: false,
   importGroups: [['side-effect', 'side-effect-style'], 'builtin', 'external', 'internal', ['parent', 'index', 'sibling']],
@@ -60,6 +61,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
   const {
     allowRelativeImports,
     emptyLineAfterReturn,
+    exportsLast,
     files: userFiles,
     ignoreJs,
     ignoreTs,
@@ -194,7 +196,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
             },
           ],
           '@stylistic/template-curly-spacing': [RuleSeverity.Error, 'never'],
-          'import/exports-last': RuleSeverity.Error,
+          'import/exports-last': exportsLast ? RuleSeverity.Error : RuleSeverity.Off,
           'import/first': RuleSeverity.Error,
           ...(!newlineAfterImport
             ? {

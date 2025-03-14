@@ -2,47 +2,87 @@
 
 import { useMemo } from 'react'
 
+import { useTranslations } from 'next-intl'
+
+import { DashboardLink } from '@/components/dashboard/dashboard-link'
 import {
   Breadcrumb,
+  BreadcrumbButton,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import { SidebarTrigger } from '@/components/ui/sidebar'
+import { Logo } from '@/components/ui/logo'
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useIsMobile } from '@/hooks/use-is-mobile'
 import { useNavigation } from '@/hooks/use-navigation'
+import { Route } from '@/lib/routes'
+import { cn } from '@/lib/utils'
 
-export const AppHeader = () => {
+export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
+  const { open } = useSidebar()
+  const isMobile = useIsMobile()
   const { page, subPage } = useNavigation()
+  const t = useTranslations('Common')
 
-  const pageUrl = useMemo(() => (subPage ? page?.path : undefined), [page, subPage])
+  const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
+  const sidebarAction = useMemo(() => `${open ? t('close') : t('open')} ${t('sidebar').toLocaleLowerCase()}`, [open, t])
+  const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator className="mr-2 h-4" orientation="vertical" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
-              {subPage ? (
-                <BreadcrumbLink href={pageUrl}>{page?.title}</BreadcrumbLink>
-              ) : (
-                <BreadcrumbPage>{page?.title}</BreadcrumbPage>
+    <header
+      className={cn(
+        'ml-[1px] flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+        className,
+      )}
+      {...props}
+    >
+      <div className="flex w-full items-center justify-between gap-2 px-4">
+        <div className="flex grow items-center gap-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <SidebarTrigger className="-ml-1 [&_svg:not([class*=text-])]:text-foreground/80" />
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p className="text-xs font-medium">{sidebarAction}</p>
+              <p className="text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + Shift + ${t('space')}`}</p>
+            </TooltipContent>
+          </Tooltip>
+          <Breadcrumb className="ml-1">
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                {subPage ? (
+                  <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
+                    {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                    {page?.title}
+                  </BreadcrumbButton>
+                ) : (
+                  <BreadcrumbPage>
+                    {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                    {page?.title}
+                  </BreadcrumbPage>
+                )}
+              </BreadcrumbItem>
+              {subPage && (
+                <>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{subPage.title}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
               )}
-            </BreadcrumbItem>
-            {subPage ? (
-              <>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{subPage.title}</BreadcrumbPage>
-                </BreadcrumbItem>
-              </>
-            ) : null}
-          </BreadcrumbList>
-        </Breadcrumb>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <DashboardLink
+          className={cn(page?.path === Route.Dashboard && 'pointer-events-none')}
+          loader={false}
+          to={Route.Dashboard}
+        >
+          <Logo className="mr-2" full height={logoSize} />
+        </DashboardLink>
       </div>
     </header>
   )

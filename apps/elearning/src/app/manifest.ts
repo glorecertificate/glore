@@ -1,11 +1,16 @@
 import { type MetadataRoute } from 'next'
 
-import config from 'static/app.json'
+import app from 'static/app.json'
 
 export default () =>
   ({
-    background_color: config.themeColor,
-    description: config.description,
+    name: app.title,
+    short_name: app.title,
+    description: app.description,
+    start_url: '/',
+    lang: app.locale,
+    background_color: app.themeColor,
+    theme_color: app.themeColor,
     display: 'standalone',
     icons: [
       {
@@ -21,8 +26,4 @@ export default () =>
         type: 'image/png',
       },
     ],
-    name: config.title,
-    short_name: config.title,
-    start_url: '/',
-    theme_color: config.themeColor,
   }) satisfies MetadataRoute.Manifest

@@ -1,16 +1,24 @@
 import './globals.css'
 
-import { type Metadata } from 'next'
-
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { AppProvider } from '@/components/app-provider'
-import { getLocale } from '@/services/i18n'
-import config from 'static/app.json'
+import { metadata } from '@/lib/metadata'
+import { getLocale, getTranslations } from '@/services/i18n'
+import app from 'static/app.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const [locale] = await getLocale()
+  const t = await getTranslations()
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Page',
+    name: app.name,
+    description: t('App.description'),
+    image: app.image,
+  }
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -20,55 +28,12 @@ export default async ({ children }: React.PropsWithChildren) => {
           <Analytics />
           <SpeedInsights />
         </AppProvider>
+        <script dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} type="application/ld+json" />
       </body>
     </html>
   )
 }
 
-export const metadata: Metadata = {
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: config.title,
-  },
-  applicationName: config.title,
-  authors: config.author,
-  category: 'Education',
-  creator: config.author.name,
-  icons: [
-    {
-      sizes: '96x96',
-      type: 'image/png',
-      url: '/favicon-96x96.png',
-    },
-    {
-      type: 'image/svg+xml',
-      url: '/logo.svg',
-    },
-    {
-      rel: 'shortcut icon',
-      url: '/favicon.ico',
-    },
-    {
-      rel: 'apple-touch-icon',
-      sizes: '180x180',
-      url: '/apple-touch-icon.png',
-    },
-  ],
-  manifest: '/site.webmanifest',
-  openGraph: {
-    alternateLocale: 'en_US',
-    countryName: 'Italy',
-    description: config.description,
-    emails: config.email,
-    images: config.image,
-    locale: 'it_IT',
-    phoneNumbers: config.phone,
-    siteName: config.title,
-    title: `${config.title} - ${config.slogan}`,
-    ttl: 60,
-    url: config.url,
-  },
-  robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
-  title: `${config.title} - ${config.slogan}`,
-}
+export const generateMetadata = metadata({
+  description: 'App.description',
+})

@@ -7,7 +7,7 @@
     "url": "git+https://github.com/joint-it/glore.git"
   },
   "type": "module",
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6",
   "private": true,
   "prettier": "@repo/prettier-config",
   "scripts": {
@@ -15,7 +15,7 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "build:packages": "turbo build --filter=./packages/*",
-    "build:watch": "turbo build:watch",
+    "build:watch": "turbo build:watch --filter=./packages/*",
     "start": "turbo start",
     "typegen": "turbo typegen",
     "typecheck": "pnpm root#typecheck && turbo typecheck",
@@ -23,10 +23,12 @@
     "lint": "pnpm root#lint && turbo lint",
     "lint:fix": "pnpm root#lint:fix && turbo lint:fix",
     "check": "pnpm root#check && turbo check",
+    "check:fix": "pnpm root#check:fix && turbo check:fix",
     "root#typecheck": "tsc --noEmit",
     "root#lint": "eslint . && prettier --check . && shellcheck .husky/commit-msg .husky/pre-push",
     "root#lint:fix": "eslint --fix . && prettier --write .",
     "root#check": "pnpm root#typecheck && pnpm root#lint",
+    "root#check:fix": "pnpm root#typecheck && pnpm root#lint:fix",
     "release": "dotenv release-it --"
   },
   "devDependencies": {

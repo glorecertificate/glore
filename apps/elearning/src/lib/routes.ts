@@ -1,3 +1,6 @@
+/**
+ * Application routes.
+ */
 export enum Route {
   Dashboard = '/',
   Login = '/login',
@@ -5,22 +8,17 @@ export enum Route {
   Signup = '/signup',
   ResetPassword = '/reset-password',
   Modules = '/modules',
-  ModulesInProgress = '/modules/in-progress',
-  ModulesNotStarted = '/modules/new',
-  ModulesCompleted = '/modules/completed',
-  ModulesAll = '/modules/all',
+  ModulesIntro = '/modules/intro',
+  ModulesSkills = '/modules/skills',
   Certificates = '/certificates',
-  CertificatesMy = '/certificates/my',
+  certificatesIssued = '/certificates/issued',
   CertificatesUnderReview = '/certificates/under-review',
   CertificatesNew = '/certificates/new',
-  CertificatesAll = '/certificates/all',
-  Documentation = '/docs',
-  DocumentationIntro = '/docs/intro',
-  DocumentationGetStarted = '/docs/get-started',
-  DocumentationTutorials = '/docs/tutorials',
-  DocumentationChangelog = '/docs/changelog',
-  // Projects = '/projects',
+  Docs = '/docs',
+  DocsIntro = '/docs/intro',
+  DocsTutorials = '/docs/tutorials',
+  DocsFaq = '/docs/faq',
+  Admin = '/admin',
   Settings = '/settings',
-  Profile = '/profile',
   Help = '/help',
 }

@@ -57,7 +57,8 @@ export const getProfile = async (): Promise<Profile> => {
 
   if (!data) {
     const { redirect } = await import('next/navigation')
-    redirect(Route.Profile)
+    await db.auth.signOut()
+    redirect(Route.Login)
   }
   if (error && status !== 406) {
     console.error(error)

@@ -1,15 +1,16 @@
 'use client'
 
 import { Image } from '@/components/ui/image'
-import { Link } from '@/components/ui/link'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { Link } from '@/components/ui/link'
+import { Route } from '@/lib/routes'
 import config from 'static/app.json'
 
 export default ({ children }: React.PropsWithChildren) => (
   <div className="grid min-h-svh lg:grid-cols-2">
     <div className="flex flex-col gap-4 p-6 md:p-10">
       <div className="flex justify-center gap-2 md:justify-between">
-        <Link className="flex items-center gap-2 font-medium" href="/">
+        <Link className="flex items-center gap-2 font-medium" href={Route.Dashboard}>
           <Image src="/logo.svg" width={25} />
           {config.title}
         </Link>

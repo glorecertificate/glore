@@ -14,9 +14,13 @@ export type NullToUndefined<T> = {
   [K in keyof T]: null extends T[K] ? NonNullable<T[K]> | undefined : T[K]
 }
 
+export type Nullable<T> = T | null
+
 export interface Recursive<T> {
   [key: string]: Recursive<T> | T
 }
+
+export type Without<T, K> = Pick<T, Exclude<keyof T, K>>
 
 export type StringOrNumber = string | number
 

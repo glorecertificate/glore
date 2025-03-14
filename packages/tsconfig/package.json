@@ -16,7 +16,8 @@
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "check": "pnpm lint"
+    "check": "pnpm lint",
+    "check:fix": "pnpm lint:fix"
   },
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",

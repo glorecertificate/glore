@@ -5,7 +5,7 @@ import { type OnLoadingComplete, type PlaceholderValue, type StaticImport } from
 import NextImage from 'next/image'
 import { useMemo } from 'react'
 
-interface ImageProps
+export interface ImageProps
   extends Omit<
     React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
     'alt' | 'height' | 'loading' | 'ref' | 'src' | 'srcSet' | 'width'
@@ -31,7 +31,7 @@ interface ImageProps
   width?: number | `${number}`
 }
 
-const Image = (props: ImageProps) => {
+export const Image = (props: ImageProps) => {
   const { alt = '', height, sizes = '100vw', style, width, ...rest } = props
 
   const styles = useMemo(
@@ -45,5 +45,3 @@ const Image = (props: ImageProps) => {
 
   return <NextImage alt={alt} height={0} sizes={sizes} style={styles} width={0} {...rest} />
 }
-
-export { Image, type ImageProps }

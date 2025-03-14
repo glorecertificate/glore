@@ -53,6 +53,9 @@
     },
     "check": {
       "dependsOn": ["^check"]
+    },
+    "check:fix": {
+      "dependsOn": ["^check:fix"]
     }
   }
 }

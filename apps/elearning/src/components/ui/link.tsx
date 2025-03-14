@@ -1,31 +1,22 @@
+'use client'
+
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
+import { useMemo } from 'react'
 
-import { cn } from '@/lib/utils'
+import { type Route } from '@/lib/routes'
+import { cn, tw } from '@/lib/utils'
 
-interface LinkProps extends React.PropsWithChildren<NextLinkProps> {
+export interface LinkProps extends React.PropsWithChildren<NextLinkProps> {
   className?: string
+  href: Route | `http${string}`
+  target?: string
 }
 
-interface ExternalLinkProps extends React.PropsWithChildren<React.AnchorHTMLAttributes<HTMLAnchorElement>> {}
+export const Link = ({ className, href, ...props }: LinkProps) => {
+  const external = useMemo(() => !href.startsWith('/'), [href])
 
-const Link = (props: LinkProps) => {
-  const { className, ...rest } = props
-  return (
-    <NextLink
-      className={cn('text-sm underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none', className)}
-      {...rest}
-    />
-  )
+  if (external) return <a className={cn(link, className)} href={href} {...props} />
+  return <NextLink className={cn(link, className)} href={href} {...props} />
 }
 
-const ExternalLink = (props: ExternalLinkProps) => {
-  const { className, ...rest } = props
-  return (
-    <a
-      className={cn('text-sm underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none', className)}
-      {...rest}
-    />
-  )
-}
-
-export { Link, ExternalLink, type LinkProps, type ExternalLinkProps }
+export const link = tw`text-sm underline-offset-4 hover:underline focus-visible:underline focus-visible:outline-none`

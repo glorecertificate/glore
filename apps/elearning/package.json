@@ -10,7 +10,7 @@
   },
   "scripts": {
     "prepare": "sh bin/prepare",
-    "dev": "next dev --turbopack",
+    "dev": "rm -rf .next && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "typegen": "sh bin/typegen",
@@ -18,6 +18,7 @@
     "lint": "eslint . && prettier --check . && shellcheck bin/*",
     "lint:fix": "eslint --fix . && prettier --write .",
     "check": "pnpm typecheck && pnpm lint",
+    "check:fix": "pnpm typecheck && pnpm lint:fix",
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
@@ -38,11 +39,11 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
-    "lucide-react": "^0.477.0",
+    "lucide-react": "^0.479.0",
     "million": "^3.1.11",
-    "next": "^15.2.1",
-    "next-intl": "^3.26.5",
-    "next-themes": "^0.4.4",
+    "next": "^15.2.2",
+    "next-intl": "^4.0.2",
+    "next-themes": "^0.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
@@ -51,20 +52,21 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.2.1",
+    "@next/bundle-analyzer": "^15.2.2",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
-    "@tailwindcss/postcss": "^4.0.9",
+    "@tailwindcss/postcss": "^4.0.14",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "eslint": "catalog:",
     "postcss": "^8.5.3",
     "prettier": "catalog:",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "shadcn": "2.4.0-canary.11",
+    "shadcn": "2.4.0-canary.14",
     "shellcheck": "catalog:",
-    "tailwindcss": "^4.0.9",
+    "tailwind-scrollbar": "^4.0.1",
+    "tailwindcss": "^4.0.14",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "catalog:"
   }

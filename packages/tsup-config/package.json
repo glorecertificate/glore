@@ -17,7 +17,8 @@
     "typecheck": "tsc --noEmit && tsup --silent",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "check": "pnpm typecheck && pnpm lint"
+    "check": "pnpm typecheck && pnpm lint",
+    "check:fix": "pnpm typecheck && pnpm lint:fix"
   },
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",

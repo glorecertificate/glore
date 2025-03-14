@@ -1,10 +1,20 @@
 #!/usr/bin/env sh
 
-# Run commitlint on new commits
+commit="$(cat "$(git rev-parse --show-toplevel)"/.git/COMMIT_EDITMSG)"
+
+if [ -n "$(git status -s)" ]; then 
+  echo "There are uncommitted changes. Please commit or stash them before pushing."
+  exit 1
+fi
+
 commitlint --from origin/main --to HEAD --verbose
 
-# Build the project and run checks
 pnpm typegen
 pnpm build
-pnpm check
+pnpm check:fix
+
+if [ -n "$(git status -s)" ]; then 
+  git add .
+  git commit -m "$commit"
+fi
 

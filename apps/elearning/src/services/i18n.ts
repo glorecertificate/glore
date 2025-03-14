@@ -2,21 +2,26 @@
 
 import { cookies } from 'next/headers'
 
+import { type Locale } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
-import config, { type locales } from 'static/i18n.json'
-import type en from 'static/translations/en.json'
+import app from 'static/app.json'
+import type i18n from 'static/i18n.json'
+import type messages from 'static/translations/en.json'
 
-declare global {
-  type IntlMessages = typeof en
+declare module 'next-intl' {
+  interface AppConfig {
+    Locale: keyof typeof i18n.locales
+    Messages: typeof messages
+  }
 }
 
-export type Locale = keyof typeof locales
+export type { Locale }
 
 export const getLocale = async () => {
   const store = await cookies()
-  return (store.get(Cookie.Locale)?.value || config.defaultLocale) as Locale
+  return (store.get(Cookie.Locale)?.value || app.locale) as Locale
 }
 
 export const setLocale = async (locale: Locale) => {

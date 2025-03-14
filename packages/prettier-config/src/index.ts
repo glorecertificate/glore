@@ -43,5 +43,13 @@ export default {
         printWidth: 200,
       },
     },
+    {
+      files: ['*.xml'],
+      options: {
+        printWidth: 100,
+        singleQuote: false,
+        trailingComma: 'none',
+      },
+    },
   ],
 } satisfies Config

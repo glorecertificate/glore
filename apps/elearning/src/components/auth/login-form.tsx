@@ -96,7 +96,7 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
                 <div className="flex items-center">
                   <FormLabel>{t('passwordLabel')}</FormLabel>
                   <a className="ml-auto text-sm underline-offset-4 hover:underline" href="#">
-                    {'Forgot your password?'}
+                    {t('forgotPassword')}
                   </a>
                 </div>
                 <FormControl>
@@ -107,14 +107,17 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
             )}
           />
           <Button className="w-full" loading={isSubmitting} type="submit">
-            {'Login'}
+            {t('login')}
           </Button>
         </div>
         <div className="text-center text-sm">
-          {'Don'}&apos;{'t have an account?'}{' '}
-          <a className="underline underline-offset-4" href="#">
-            {'Sign up'}
-          </a>
+          {t.rich('signupMessage', {
+            link: content => (
+              <a className="underline underline-offset-4" href="#">
+                {content}
+              </a>
+            ),
+          })}
         </div>
       </form>
     </Form>

@@ -28,4 +28,5 @@ export enum Asset {
   GloreDark = '/glore-dark.png',
   Favicon = '/favicon.ico',
   Manifest = '/site.webmanifest',
+  NotFound = '/404.svg',
 }

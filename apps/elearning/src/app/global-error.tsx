@@ -7,7 +7,7 @@ export default ({ reset }: { reset: () => void }) => {
 
   return (
     <html>
-      <body className="flex h-screen w-screen items-center justify-center">
+      <body>
         <h1>{t('errorTitle')}</h1>
         <p>{t('errorMessage')}</p>
         <button

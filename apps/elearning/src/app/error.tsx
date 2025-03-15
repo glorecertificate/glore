@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 
 import { useTranslations } from 'next-intl'
 
+import app from 'static/app.json'
+
 export interface ErrorProps {
   error: { digest?: string } & Error
   reset: () => void
@@ -18,7 +20,15 @@ export default ({ error, reset }: ErrorProps) => {
 
   return (
     <div>
-      <h2>{t('errorMessage')}</h2>
+      <h2>
+        {t.rich('errorMessage', {
+          contactUs: content => (
+            <a className="text-primary underline" href={`mailto:${app.email}`}>
+              {content}
+            </a>
+          ),
+        })}
+      </h2>
       <button
         onClick={() => {
           reset()

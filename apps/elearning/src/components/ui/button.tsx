@@ -49,6 +49,7 @@ const button = cva(
     },
     variants: {
       variant: {
+        default: 'bg-accent text-accent-foreground shadow-xs hover:bg-accent-foreground hover:text-accent',
         outline: 'border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',

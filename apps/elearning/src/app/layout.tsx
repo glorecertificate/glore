@@ -6,10 +6,10 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AppProvider } from '@/components/app-provider'
 import { metadata } from '@/lib/metadata'
 import { getLocale, getTranslations } from '@/services/i18n'
-import app from 'static/app.json'
+import app from 'config/app.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const [locale] = await getLocale()
+  const locale = await getLocale()
   const t = await getTranslations()
 
   const jsonLd = {

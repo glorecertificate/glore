@@ -10,7 +10,7 @@ export default eslintConfig({
     ['internal'],
     ['parent', 'index', 'sibling'],
   ],
-  internalImports: ['supabase', 'static'],
+  internalImports: ['config', 'supabase'],
   maxLines: -1,
   namedImports: ['react'],
   react: 'nextjs',

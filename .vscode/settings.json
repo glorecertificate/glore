@@ -38,7 +38,7 @@
   },
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./apps/elearning/static/translations"],
+  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
   "prettier.ignorePath": "",
   "search.useIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [

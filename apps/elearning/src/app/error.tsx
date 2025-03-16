@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import app from 'static/app.json'
+import app from 'config/app.json'
 
 export interface ErrorProps {
   error: { digest?: string } & Error

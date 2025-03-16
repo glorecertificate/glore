@@ -4,7 +4,7 @@ import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import { Route } from '@/lib/routes'
-import config from 'static/app.json'
+import app from 'config/app.json'
 
 export default ({ children }: React.PropsWithChildren) => (
   <div className="grid min-h-svh lg:grid-cols-2">
@@ -12,7 +12,7 @@ export default ({ children }: React.PropsWithChildren) => (
       <div className="flex justify-center gap-2 md:justify-between">
         <Link className="flex items-center gap-2 font-medium" href={Route.Dashboard}>
           <Image src="/logo.svg" width={25} />
-          {config.title}
+          {app.title}
         </Link>
         <LanguageSelect />
       </div>

@@ -5,13 +5,13 @@ import { useCallback, useMemo, type Dispatch } from 'react'
 import { isServer } from '@repo/utils'
 
 import { type LocalStorageItem } from '@/lib/storage'
-import config from 'static/app.json'
+import app from 'config/app.json'
 
 export const useLocalStorage = <T>(
   item: LocalStorageItem,
   initialValue?: T,
   options = {
-    prefix: config.slug,
+    prefix: app.slug,
     separator: '/',
   },
 ): [T | undefined, Dispatch<T>, () => void] => {

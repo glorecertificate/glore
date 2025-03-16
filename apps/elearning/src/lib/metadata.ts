@@ -4,7 +4,7 @@ import { type Messages, type NestedKeyOf } from 'next-intl'
 
 import { asset, Asset } from '@/lib/storage'
 import { getLocale, getTranslations } from '@/services/i18n'
-import app from 'static/app.json'
+import app from 'config/app.json'
 
 const metadataBase: Metadata = {
   title: app.title,

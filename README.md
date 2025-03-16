@@ -62,9 +62,9 @@ Run a development server with:
 pnpm dev
 ```
 
-Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real-time.
+Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real time.
 
-## Contributing
+### Contributing
 
 To develop new features, create a branch starting from `main`:
 
@@ -74,11 +74,21 @@ git checkout -b feature/my-feature-name
 
 Once you are done with your changes, push the branch to the repository and create a pull request.
 
-## Releases
+## Deployment
 
-To release new versions of the project, you must soecify a `GITHUB_TOKEN` environment variable at the root of the project. This token must have access to the repository and workflow scopes.
+The project is deployed using [Vercel](https://vercel.com).
 
-Then, run the following command to create a new interactive release:
+To deploy any version of the project, you must set up a Vercel account and link it to your GitHub repository.
+
+Once you have done that, you can deploy by pushing changes to any branch. Vercel will automatically build and deploy a preview for you.
+
+Production deployments are triggered by new releases, as described in the next section.
+
+### Production release
+
+To release a new version of the project, you must specify a `GITHUB_TOKEN` environment variable at the root of the project. This token needs access to the `repository` and `workflow` scopes.
+
+Then, run the following command to create a new interactive release and deploy it to production:
 
 ```sh
 pnpm release

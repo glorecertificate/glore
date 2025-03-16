@@ -1,5 +1,9 @@
 # Changelog
 
+## <small>0.1.1 (2025-03-16)</small>
+
+* ci: generate notes in github releases ([f0c8bc6](https://github.com/joint-it/glore/commit/f0c8bc6))
+
 ## 0.1.0 (2025-03-16)
 
 * ci: add permissions to `code-quality` workflow ([b6fc9e5](https://github.com/joint-it/glore/commit/b6fc9e5))

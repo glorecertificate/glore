@@ -30,9 +30,9 @@
     --primary-accent: hsl(75 48% 58%);
     --primary-foreground: var(--background);
     --secondary: hsl(192 40% 49%);
-    --secondary-accent: hsl(192, 48%, 55%);
+    --secondary-accent: hsl(192 48% 55%);
     --secondary-foreground: var(--background);
-    --tertiary: hsl(217, 53%, 35%);
+    --tertiary: hsl(217 53% 35%);
     --tertiary-accent: hsl(216 36% 33%);
     --tertiary-foreground: var(--background);
 
@@ -63,7 +63,7 @@
     --muted-foreground: hsl(214 24% 70%);
     --accent: var(--card);
     --accent-foreground: var(--foreground);
-    --destructive: hsl(0, 61%, 30%);
+    --destructive: hsl(0 61% 30%);
     --destructive-foreground: hsl(0 62.8% 30.6%);
 
     --primary: hsl(75 48% 58%);
@@ -72,7 +72,7 @@
     --secondary: hsl(192 57% 59%);
     --secondary-accent: hsl(192 40% 49%);
     --secondary-foreground: var(--background);
-    --tertiary: hsl(216, 35%, 44%);
+    --tertiary: hsl(216 35% 44%);
     --tertiary-accent: hsl(217 36% 21%);
     --tertiary-foreground: var(--background);
 

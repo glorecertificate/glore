@@ -1,9 +1,7 @@
 import { type Metadata, type ResolvingMetadata } from 'next'
 
-import { type Messages, type NestedKeyOf } from 'next-intl'
-
 import { asset, Asset } from '@/lib/storage'
-import { getLocale, getTranslations } from '@/services/i18n'
+import { getLocale, getTranslations, type MessageKey } from '@/services/i18n'
 import app from 'config/app.json'
 
 const metadataBase: Metadata = {
@@ -53,9 +51,9 @@ const metadataBase: Metadata = {
 }
 
 export interface PageMetadata {
-  description?: Exclude<NestedKeyOf<Messages>, keyof Messages>
+  description?: MessageKey
   separator?: string
-  title?: Exclude<NestedKeyOf<Messages>, keyof Messages>
+  title?: MessageKey
 }
 
 export const metadata =

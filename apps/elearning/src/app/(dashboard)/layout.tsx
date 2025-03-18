@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
-import { AppHeader } from '@/components/app-header'
-import { AppSidebar } from '@/components/app-sidebar'
+import { DashboardHeader } from '@/components/dashboard/header'
+import { DashboardSidebar } from '@/components/dashboard/sidebar'
 import ProgressBar, { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Cookie } from '@/lib/storage'
@@ -18,9 +18,9 @@ export default async ({ children }: React.PropsWithChildren) => {
     <ProgressBarProvider>
       <ProgressBar />
       <SidebarProvider defaultOpen={sidebarOpen}>
-        <AppSidebar user={data.user} />
+        <DashboardSidebar user={data.user} />
         <SidebarInset>
-          <AppHeader className="sticky top-0 z-5" />
+          <DashboardHeader className="sticky top-0 z-5" />
           <main className="flex h-[calc(100vh-4rem)] flex-col">
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
               <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">{children}</div>

@@ -1,22 +1,31 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import { useTranslations } from 'next-intl'
 
-export default ({ reset }: { reset: () => void }) => {
+import AppError, { type ErrorProps } from '@/components/app-error'
+import app from 'config/app.json'
+
+export default ({ reset }: ErrorProps) => {
   const t = useTranslations('Common')
+
+  const message = useMemo(
+    () =>
+      t.rich('errorMessage', {
+        contactUs: content => (
+          <a className="text-primary underline" href={`mailto:${app.email}`}>
+            {content}
+          </a>
+        ),
+      }),
+    [t],
+  )
 
   return (
     <html>
       <body>
-        <h1>{t('errorTitle')}</h1>
-        <p>{t('errorMessage')}</p>
-        <button
-          onClick={() => {
-            reset()
-          }}
-        >
-          {t('tryAgain')}
-        </button>
+        <AppError action={reset} actionLabel={t('tryAgain')} message={message} title={t('errorTitle')} />
       </body>
     </html>
   )

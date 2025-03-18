@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { DashboardLink } from '@/components/dashboard/dashboard-link'
+import { DashboardLink } from '@/components/dashboard/link'
 import {
   Breadcrumb,
   BreadcrumbButton,
@@ -21,15 +21,16 @@ import { useNavigation } from '@/hooks/use-navigation'
 import { Route } from '@/lib/routes'
 import { cn } from '@/lib/utils'
 
-export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
-  const { open } = useSidebar()
+export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const isMobile = useIsMobile()
   const { page, subPage } = useNavigation()
+  const { open } = useSidebar()
   const t = useTranslations('Common')
 
+  const isHomePage = useMemo(() => page?.path === Route.Dashboard, [page])
+  const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
   const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
   const sidebarAction = useMemo(() => `${open ? t('close') : t('open')} ${t('sidebar').toLocaleLowerCase()}`, [open, t])
-  const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
 
   return (
     <header
@@ -50,31 +51,33 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
               <p className="text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + Shift + ${t('space')}`}</p>
             </TooltipContent>
           </Tooltip>
-          <Breadcrumb className="ml-1">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                {subPage ? (
-                  <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
-                    {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
-                    {page?.title}
-                  </BreadcrumbButton>
-                ) : (
-                  <BreadcrumbPage>
-                    {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
-                    {page?.title}
-                  </BreadcrumbPage>
+          {!isHomePage && (
+            <Breadcrumb className="ml-1">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  {subPage ? (
+                    <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
+                      {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                      {page?.title}
+                    </BreadcrumbButton>
+                  ) : (
+                    <BreadcrumbPage>
+                      {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                      {page?.title}
+                    </BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+                {subPage && (
+                  <>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                      <BreadcrumbPage>{subPage.title}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                  </>
                 )}
-              </BreadcrumbItem>
-              {subPage && (
-                <>
-                  <BreadcrumbSeparator />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>{subPage.title}</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
+              </BreadcrumbList>
+            </Breadcrumb>
+          )}
         </div>
         <DashboardLink
           className={cn(page?.path === Route.Dashboard && 'pointer-events-none')}

@@ -23,6 +23,7 @@ export interface LocalStorage {
 export const asset = (path: string) => `${Env.SUPABASE_URL}/storage/v1/object/public/${path}`
 
 export enum Asset {
+  Error = '/error.svg',
   Logo = '/logo.svg',
   Glore = '/glore.png',
   GloreDark = '/glore-dark.png',

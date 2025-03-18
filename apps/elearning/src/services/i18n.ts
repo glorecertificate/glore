@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 
-import { type Locale } from 'next-intl'
+import { type Locale, type Messages, type NestedKeyOf } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
@@ -17,7 +17,9 @@ declare module 'next-intl' {
   }
 }
 
-export type { Locale }
+type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
+
+export type { Locale, Messages, MessageKey }
 
 export const getLocale = async () => {
   const store = await cookies()

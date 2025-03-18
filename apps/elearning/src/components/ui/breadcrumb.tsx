@@ -1,7 +1,7 @@
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 
-import { DashboardButton } from '@/components/dashboard/dashboard-button'
-import { type DashboardLinkProps } from '@/components/dashboard/dashboard-link'
+import { DashboardButton } from '@/components/dashboard/button'
+import { type DashboardLinkProps } from '@/components/dashboard/link'
 import { type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 

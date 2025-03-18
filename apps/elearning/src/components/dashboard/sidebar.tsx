@@ -16,8 +16,8 @@ import {
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { DashboardButton } from '@/components/dashboard/dashboard-button'
-import { DashboardLink } from '@/components/dashboard/dashboard-link'
+import { DashboardButton } from '@/components/dashboard/button'
+import { DashboardLink } from '@/components/dashboard/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { type ButtonProps } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -345,7 +345,7 @@ const NavUser = ({ auth, profile }: { auth: AuthClient; profile?: Profile }) => 
   )
 }
 
-export const AppSidebar = ({
+export const DashboardSidebar = ({
   defaultOpen,
   user,
   ...props

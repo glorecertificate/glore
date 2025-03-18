@@ -8,7 +8,5 @@ import { Asset } from '@/lib/storage'
 export default () => {
   const t = useTranslations('Common')
 
-  return (
-    <AppError actionLabel={t('notFoundAction')} asset={Asset.NotFound} message={t('notFoundMessage')} title={t('notFound')} />
-  )
+  return <AppError asset={Asset.NotFound} assetWidth={400} message={t('notFoundMessage')} title={t('notFound')} />
 }

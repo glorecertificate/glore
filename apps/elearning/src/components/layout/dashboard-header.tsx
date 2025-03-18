@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { DashboardLink } from '@/components/dashboard/link'
+import { DashboardLink } from '@/components/layout/dashboard-link'
 import {
   Breadcrumb,
   BreadcrumbButton,
@@ -84,7 +84,7 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
           loader={false}
           to={Route.Dashboard}
         >
-          <Logo className="mr-2" full height={logoSize} />
+          <Logo className="mr-2" height={logoSize} />
         </DashboardLink>
       </div>
     </header>

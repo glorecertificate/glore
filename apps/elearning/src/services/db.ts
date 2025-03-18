@@ -1,22 +1,16 @@
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 import { createServerClient } from '@supabase/ssr'
-import type { User } from '@supabase/supabase-js'
 import type { SupabaseAuthClient } from '@supabase/supabase-js/dist/module/lib/SupabaseAuthClient'
 
 import { Env } from '@/lib/env'
 import { Route } from '@/lib/routes'
-import type { Database, Tables } from 'supabase/types'
+import { Cookie } from '@/lib/storage'
+import type { Database } from 'supabase/types'
 
-export type { SupabaseAuthClient as AuthClient, Database, User }
-
-export enum Table {
-  Profiles = 'profiles',
-}
-
-export interface Profile extends Tables<Table.Profiles> {
-  name?: string
-}
+export type Auth = SupabaseAuthClient
+export type User = Awaited<ReturnType<typeof getUser>>
 
 export const getDB = async (
   callback = () => {
@@ -38,36 +32,51 @@ export const getDB = async (
   })
 }
 
-export const getProfile = async (): Promise<Profile> => {
+export const getUser = async () => {
   const db = await getDB()
 
-  const { data: userData, error: userError } = await db.auth.getUser()
+  const { get } = await cookies()
+  const currentOrg = Number(get(Cookie.CurrentOrg)?.value) || null
 
-  if (!userData) {
-    const { redirect } = await import('next/navigation')
+  const {
+    data: { user },
+  } = await db.auth.getUser()
+
+  if (!user) redirect(Route.Login)
+
+  const { data, error, status } = await db.from('profiles').select(
+    `
+      *,
+      user_organizations (
+        role,
+        organizations (
+          id,
+          name,
+          avatar_url,
+          country
+        )
+      )
+    `,
+  )
+
+  if ((error && status !== 406) || !data?.at(0)) {
+    if (error) console.error(error)
     redirect(Route.Login)
   }
-  if (userError) {
-    console.error(userError)
-    throw userError
-  }
-  const user = userData.user
 
-  const { data, error, status } = await db.from(Table.Profiles).select().eq('uuid', user.id).single()
+  const { avatar_url, user_organizations, ...userData } = data[0]
 
-  if (!data) {
-    const { redirect } = await import('next/navigation')
-    await db.auth.signOut()
-    redirect(Route.Login)
-  }
-  if (error && status !== 406) {
-    console.error(error)
-    throw error
-  }
-  const userProfile = data as Profile
+  const orgs = user_organizations.map(({ organizations, role }) => ({
+    ...organizations,
+    role,
+    isActive: organizations.id === currentOrg,
+  }))
 
   return {
-    ...userProfile,
-    name: `${userProfile.first_name} ${userProfile.last_name}`,
+    ...userData,
+    avatar_url: avatar_url || undefined,
+    name: `${userData.first_name} ${userData.last_name}`,
+    orgs,
+    currentOrg: orgs.find(({ id }) => id === currentOrg) || orgs[0],
   }
 }

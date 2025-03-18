@@ -3,6 +3,7 @@
 import Link from 'next/link'
 
 import { motion, type AnimationProps, type Variants } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Image } from '@/components/ui/image'
@@ -24,9 +25,9 @@ const variants: Variants = {
 
 export interface AppErrorProps {
   action?: () => void
-  actionLabel: React.ReactNode
-  actionUrl?: Route
+  actionLabel?: React.ReactNode
   asset?: Asset
+  assetWidth?: number
   message?: React.ReactNode
   title: React.ReactNode
 }
@@ -36,26 +37,31 @@ export interface ErrorProps {
   reset: () => void
 }
 
-export default ({ action, actionLabel, actionUrl = Route.Dashboard, asset = Asset.Error, message, title }: AppErrorProps) => (
-  <div className="flex min-h-screen flex-col items-center justify-start bg-background px-4 py-12">
-    <Link href={Route.Dashboard}>
-      <Logo className="h-10" full />
-    </Link>
-    <div className="relative flex w-full max-w-md grow flex-col justify-center gap-12 px-4">
-      <Image src={asset} />
-      <motion.div animate="animate" className="max-w-md text-center" initial="initial" variants={variants}>
-        <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">{title}</h1>
-        {message && <p className="mb-8 text-lg text-muted-foreground">{message}</p>}
-        {action ? (
-          <Button asChild onClick={action} size="lg" variant="outline">
-            {actionLabel}
-          </Button>
-        ) : (
-          <Button asChild size="lg" variant="outline">
-            <Link href={actionUrl}>{actionLabel}</Link>
-          </Button>
-        )}
-      </motion.div>
+export default ({ action, actionLabel, asset = Asset.Error, assetWidth, message, title }: AppErrorProps) => {
+  const t = useTranslations('Common')
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-start bg-background px-4 py-12">
+      <Link href={Route.Dashboard}>
+        <Logo className="h-10" />
+      </Link>
+      <div className="relative flex w-full grow flex-col items-center justify-center gap-12">
+        <Image priority={false} src={asset} width={assetWidth} />
+        <motion.div animate="animate" className="text-center" initial="initial" variants={variants}>
+          <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">{title}</h1>
+          {message && <p className="mb-8 text-lg text-foreground/75">{message}</p>}
+          <div className="flex justify-center gap-4">
+            {action && (
+              <Button onClick={action} size="lg" variant="outline">
+                {actionLabel}
+              </Button>
+            )}
+            <Button asChild size="lg" variant="outline">
+              <Link href={Route.Dashboard}>{t('backToDashboard')}</Link>
+            </Button>
+          </div>
+        </motion.div>
+      </div>
     </div>
-  </div>
-)
+  )
+}

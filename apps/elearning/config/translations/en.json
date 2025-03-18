@@ -3,6 +3,7 @@
     "description": "GloRe is an open network that aims to enlarge its audience both of volunteers and NGOs all over the world to make certificates available to everybody."
   },
   "Common": {
+    "backToDashboard": "Back to the dashboard",
     "close": "Close",
     "dark": "Dark",
     "displaySidebar": "Display sidebar",
@@ -15,7 +16,6 @@
     "logout": "Log out",
     "notFound": "Not found",
     "notFoundMessage": "The page you are looking for does not exist",
-    "notFoundAction": "Back to the dashboard",
     "open": "Open",
     "preferences": "Preferences",
     "selectLanguage": "Select language",
@@ -48,7 +48,8 @@
     "passwordRequired": "Insert your password to continue"
   },
   "Navigation": {
-    "main": "Learn",
+    "organizations": "Organizations",
+    "addOrganization": "Add organization",
     "dashboard": "Dashboard",
     "modules": "Modules",
     "modulesIntro": "Introduction",

@@ -1,16 +1,7 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 
-import {
-  BookCheckIcon,
-  BookOpenIcon,
-  CogIcon,
-  HelpCircleIcon,
-  SettingsIcon,
-  ShieldCheckIcon,
-  type LucideIcon,
-  type LucideProps,
-} from 'lucide-react'
+import { AwardIcon, BookOpenIcon, CogIcon, HelpCircleIcon, SettingsIcon, type LucideIcon, type LucideProps } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Icon } from '@/components/ui/icon'
@@ -64,7 +55,7 @@ export const useNavigation = () => {
           {
             title: t('modules'),
             path: Route.Modules,
-            Icon: BookCheckIcon,
+            Icon: BookOpenIcon,
             color: SemanticColor.Primary,
             subPages: [
               {
@@ -80,7 +71,7 @@ export const useNavigation = () => {
           {
             title: t('certificates'),
             path: Route.Certificates,
-            Icon: ShieldCheckIcon,
+            Icon: AwardIcon,
             color: SemanticColor.Secondary,
             subPages: [
               {

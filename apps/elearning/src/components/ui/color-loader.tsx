@@ -1,8 +1,10 @@
 import { type LucideProps } from 'lucide-react'
 
-export const ColorLoader = ({ size = 32, ...props }: LucideProps) => (
+import { cn } from '@/lib/utils'
+
+export const ColorLoader = ({ className, size = 32, ...props }: LucideProps) => (
   <svg
-    className="lucide lucide-loader animate-spin"
+    className={cn('lucide lucide-loader animate-spin', className)}
     height={size}
     stroke="currentColor"
     strokeLinecap="round"

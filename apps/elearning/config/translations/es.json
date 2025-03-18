@@ -3,6 +3,7 @@
     "description": "GloRe es una red abierta que tiene como objetivo ampliar su audiencia tanto de voluntarios como de ONGs de todo el mundo para hacer que los certificados estén disponibles para todos."
   },
   "Common": {
+    "backToDashboard": "Volver al dashboard",
     "close": "Cerrar",
     "dark": "Oscuro",
     "displaySidebar": "Muestra la barra lateral",
@@ -15,7 +16,6 @@
     "logout": "Cerrar sesión",
     "notFound": "No encontrado",
     "notFoundMessage": "La página que estás buscando no existe",
-    "notFoundAction": "Volver al dashboard",
     "open": "Abrir",
     "preferences": "Preferencias",
     "selectLanguage": "Seleccionar idioma",
@@ -49,7 +49,8 @@
   },
 
   "Navigation": {
-    "learn": "Formación",
+    "organizations": "Organizaciones",
+    "addOrganization": "Agregar organización",
     "dashboard": "Dashboard",
     "modules": "Módulos",
     "modulesIntro": "Introducción",

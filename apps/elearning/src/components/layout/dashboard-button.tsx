@@ -1,4 +1,4 @@
-import { DashboardLink, type DashboardLinkProps } from '@/components/dashboard/link'
+import { DashboardLink, type DashboardLinkProps } from '@/components/layout/dashboard-link'
 import { Button, type ButtonProps } from '@/components/ui/button'
 
 export const DashboardButton = ({ children, color, disabled, iconSize, to, ...props }: DashboardLinkProps & ButtonProps) => (

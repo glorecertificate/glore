@@ -1,32 +1,32 @@
 import { Env } from '@/lib/env'
-import { type Profile } from '@/services/db'
+import { type User } from '@/services/db'
 import { type Locale } from '@/services/i18n'
 
 export enum Cookie {
   Locale = 'NEXT_LOCALE',
-  SidebarOpen = 'NEXT_SIDEBAR_OPEN',
+  SidebarOpen = 'GLORE_SIDEBAR_OPEN',
+  CurrentOrg = 'GLORE_CURRENT_ORG',
 }
 
 export interface Cookies {
+  [Cookie.CurrentOrg]: number
   [Cookie.Locale]: Locale
   [Cookie.SidebarOpen]: boolean
 }
 
 export enum LocalStorageItem {
-  Profile = 'profile',
+  User = 'user',
 }
 
 export interface LocalStorage {
-  [LocalStorageItem.Profile]: Profile
+  [LocalStorageItem.User]: User
 }
 
 export const asset = (path: string) => `${Env.SUPABASE_URL}/storage/v1/object/public/${path}`
 
 export enum Asset {
-  Error = '/error.svg',
+  Error = '/500.svg',
   Logo = '/logo.svg',
-  Glore = '/glore.png',
-  GloreDark = '/glore-dark.png',
   Favicon = '/favicon.ico',
   Manifest = '/site.webmanifest',
   NotFound = '/404.svg',

@@ -14,6 +14,14 @@ const I18N_PATH = './src/middlewares/locale.ts'
 const tsconfigPath = Env.isProduction ? 'tsconfig.build.json' : 'tsconfig.json'
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: new URL(Env.SUPABASE_URL).hostname,
+        protocol: 'https',
+      },
+    ],
+  },
   reactStrictMode: true,
   typescript: {
     tsconfigPath,

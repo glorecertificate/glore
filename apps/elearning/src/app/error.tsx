@@ -26,5 +26,5 @@ export default ({ error, reset }: ErrorProps) => {
     console.error(error)
   }, [error])
 
-  return <AppError action={reset} actionLabel={t('tryAgain')} message={message} title={t('errorTitle')} />
+  return <AppError action={reset} actionLabel={t('tryAgain')} assetWidth={250} message={message} title={t('errorTitle')} />
 }

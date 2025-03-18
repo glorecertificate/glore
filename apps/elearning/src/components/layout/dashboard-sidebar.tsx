@@ -3,21 +3,12 @@
 import { redirect } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import {
-  AudioWaveformIcon,
-  ChevronRightIcon,
-  ChevronsUpDownIcon,
-  CommandIcon,
-  GalleryVerticalEndIcon,
-  HelpCircleIcon,
-  LogOutIcon,
-  PlusIcon,
-  SettingsIcon,
-} from 'lucide-react'
+import { titleize } from '@repo/utils'
+import { ChevronRightIcon, ChevronsUpDownIcon, HelpCircleIcon, LogOutIcon, PlusIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { DashboardButton } from '@/components/dashboard/button'
-import { DashboardLink } from '@/components/dashboard/link'
+import { DashboardButton } from '@/components/layout/dashboard-button'
+import { DashboardLink } from '@/components/layout/dashboard-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { type ButtonProps } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -28,7 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
@@ -52,20 +42,20 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useDB } from '@/hooks/use-db'
 import { useNavigation, type Page, type Section } from '@/hooks/use-navigation'
 import { Route } from '@/lib/routes'
+import { Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
-import { type AuthClient, type Profile, type User } from '@/services/db'
+import { type Auth, type User } from '@/services/db'
 
-export const OrgSwitch = ({
-  items,
-}: {
-  items: {
-    logo: React.ElementType
-    name: string
-    role: string
-  }[]
-}) => {
+export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
   const { isMobile, open } = useSidebar()
-  const [activeOrg, setActiveOrg] = useState(items[0])
+  const t = useTranslations('Navigation')
+
+  const [activeOrg, setActiveOrg] = useState(items.find(org => org.isActive) || items[0])
+
+  const onOrgSelect = useCallback((org: User['orgs'][number]) => {
+    setActiveOrg(org)
+    document.cookie = `${Cookie.CurrentOrg}=${org.id}; path=/; max-age=31536000`
+  }, [])
 
   return (
     <SidebarMenu>
@@ -76,14 +66,14 @@ export const OrgSwitch = ({
               className="justify-center data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeOrg.logo className="size-4" />
-              </div>
+              {activeOrg.avatar_url && (
+                <Image className="aspect-square size-2 rounded-lg border" src={activeOrg.avatar_url} width={40} />
+              )}
               {open && (
                 <>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">{activeOrg.name}</span>
-                    <span className="truncate text-xs">{activeOrg.role}</span>
+                    <span className="truncate text-xs font-normal text-muted-foreground">{titleize(activeOrg.role)}</span>
                   </div>
                   <ChevronsUpDownIcon className="ml-auto" />
                 </>
@@ -96,17 +86,14 @@ export const OrgSwitch = ({
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">{'Teams'}</DropdownMenuLabel>
-            {items.map((org, index) => (
-              <DropdownMenuItem className="gap-2 p-2" key={org.name} onClick={() => setActiveOrg(org)}>
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <org.logo className="size-4 shrink-0" />
+            <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
+            {items.map(org => (
+              <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
+                {org.avatar_url && <Image className="aspect-square size-2 rounded-lg border" src={org.avatar_url} width={40} />}
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">{org.name}</span>
+                  <span className="truncate text-xs font-normal text-muted-foreground">{titleize(org.role)}</span>
                 </div>
-                {org.name}
-                <DropdownMenuShortcut>
-                  {'⌘'}
-                  {index + 1}
-                </DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
@@ -114,7 +101,7 @@ export const OrgSwitch = ({
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <PlusIcon className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">{'Add org'}</div>
+              <div className="font-medium text-muted-foreground">{t('addOrganization')}</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -240,18 +227,16 @@ const NavSection = ({ pages }: Section) => (
   </SidebarGroup>
 )
 
-const NavUser = ({ auth, profile }: { auth: AuthClient; profile?: Profile }) => {
+const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
   const t = useTranslations('Common')
 
   const initials = useMemo(() => {
-    if (!profile?.name) return ''
-    return profile.name
+    if (!user.name) return ''
+    return user.name
       .split(' ')
       .map(name => name[0])
       .join('')
-  }, [profile])
-
-  const avatarUrl = useMemo(() => profile?.avatar_url || undefined, [profile?.avatar_url])
+  }, [user])
 
   const logOutUser = useCallback(async () => {
     await auth.signOut()
@@ -267,13 +252,23 @@ const NavUser = ({ auth, profile }: { auth: AuthClient; profile?: Profile }) => 
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage alt={profile?.name} src={avatarUrl} />
+              <Avatar className="relative h-8 w-8 overflow-visible">
+                <AvatarImage alt={user.name} className="rounded-lg" src={user.avatar_url} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                {user.currentOrg.avatar_url && (
+                  <Image
+                    alt="logo"
+                    className="absolute -right-1 -bottom-1 rounded-full"
+                    height={14}
+                    objectFit="cover"
+                    src={user.currentOrg.avatar_url}
+                    width={14}
+                  />
+                )}
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{profile?.name}</span>
-                <span className="truncate text-xs">{'Volunteer @ Joint 🌍'}</span>
+                <span className="truncate font-semibold">{user.name}</span>
+                <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
               </div>
               <ChevronsUpDownIcon className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -284,22 +279,29 @@ const NavUser = ({ auth, profile }: { auth: AuthClient; profile?: Profile }) => 
             side="top"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-1 font-normal">
+            {/* <DropdownMenuLabel className="p-1 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg transition-opacity hover:cursor-pointer hover:opacity-80">
-                  <AvatarImage alt={profile?.name} src={avatarUrl} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage alt={user.name} src={user.avatar_url} />
+                  <AvatarFallback>{initials}</AvatarFallback>
                   <div className="absolute right-0 bottom-0 h-3 w-3 rounded-full bg-background ring-2 ring-background">
-                    <Image alt="logo" className="rounded-full" height={13} objectFit="cover" src="/logo.svg" width={13} />
+                    <Image
+                      alt="logo"
+                      className="rounded-full"
+                      height={13}
+                      objectFit="cover"
+                      src={user.currentOrg.avatar_url}
+                      width={13}
+                    />
                   </div>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{profile?.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">{profile?.email}</span>
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
               <DashboardLink to={Route.Settings}>
                 <DropdownMenuItem>
@@ -351,66 +353,21 @@ export const DashboardSidebar = ({
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   defaultOpen?: boolean
-  user: User | null
+  user: User
 }) => {
+  const { auth } = useDB()
   const { routes } = useNavigation()
-  const db = useDB()
-
-  const [profile, setProfile] = useState<Profile | undefined>(undefined)
-
-  const orgs = useMemo(
-    () => [
-      {
-        name: 'Acme Inc',
-        logo: GalleryVerticalEndIcon,
-        role: 'Learner',
-      },
-      {
-        name: 'Acme Corp.',
-        logo: AudioWaveformIcon,
-        role: 'Tutor',
-      },
-      {
-        name: 'Evil Corp.',
-        logo: CommandIcon,
-        role: 'Admin',
-      },
-    ],
-    [],
-  )
-
-  const setUserProfile = useCallback(async () => {
-    if (!user?.id) return
-
-    const { data, error, status } = await db.from('profiles').select().eq('uuid', user.id).single()
-
-    if (error && status !== 406) {
-      console.error(error)
-      throw error
-    }
-
-    if (data) {
-      setProfile({
-        ...data,
-        name: `${data.first_name} ${data.last_name}`,
-      })
-    }
-  }, [db, user?.id])
-
-  useEffect(() => {
-    void setUserProfile()
-  }, [setUserProfile])
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <OrgSwitch items={orgs} />
+        <OrgSwitch items={user.orgs} />
       </SidebarHeader>
       <SidebarContent>
         <NavSection pages={routes.dashboard} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser auth={db.auth} profile={profile} />
+        <NavUser auth={auth} user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

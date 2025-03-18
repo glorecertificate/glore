@@ -1,15 +1,14 @@
 import { cookies } from 'next/headers'
 
-import { DashboardHeader } from '@/components/dashboard/header'
-import { DashboardSidebar } from '@/components/dashboard/sidebar'
+import { DashboardHeader } from '@/components/dashboard/dashboard-header'
+import { DashboardSidebar } from '@/components/dashboard/dashboard-sidebar'
 import ProgressBar, { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Cookie } from '@/lib/storage'
-import { getDB } from '@/services/db'
+import { getUser } from '@/services/db'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const { auth } = await getDB()
-  const { data } = await auth.getUser()
+  const user = await getUser()
 
   const { get } = await cookies()
   const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'
@@ -18,7 +17,7 @@ export default async ({ children }: React.PropsWithChildren) => {
     <ProgressBarProvider>
       <ProgressBar />
       <SidebarProvider defaultOpen={sidebarOpen}>
-        <DashboardSidebar user={data.user} />
+        <DashboardSidebar user={user} />
         <SidebarInset>
           <DashboardHeader className="sticky top-0 z-5" />
           <main className="flex h-[calc(100vh-4rem)] flex-col">

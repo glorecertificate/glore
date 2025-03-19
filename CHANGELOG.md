@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 (2025-03-19)
+
+* feat: add modules and certificates pages ([6ee2ce8](https://github.com/joint-it/glore/commit/6ee2ce8))
+* feat: improve sidebar ([d19e000](https://github.com/joint-it/glore/commit/d19e000))
+* feat: style error pages ([fa360f8](https://github.com/joint-it/glore/commit/fa360f8))
+* docs: add deployment instructions to readme ([74f3222](https://github.com/joint-it/glore/commit/74f3222))
+
 ## <small>0.1.1 (2025-03-16)</small>
 
 * ci: generate notes in github releases ([f0c8bc6](https://github.com/joint-it/glore/commit/f0c8bc6))

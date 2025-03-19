@@ -28,6 +28,7 @@ export enum Asset {
   Error = '/500.svg',
   Logo = '/logo.svg',
   Favicon = '/favicon.ico',
-  Manifest = '/site.webmanifest',
+  Manifest = '/manifest.webmanifest',
   NotFound = '/404.svg',
+  Placeholder = '/placeholder.svg',
 }

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { getDB } from '@/services/db'
 
 export enum AuthPage {
@@ -29,7 +29,7 @@ export const updateSession = async (request: NextRequest) => {
       return isAuthPage ? response : NextResponse.redirect(new URL(Route.Login, request.url))
     }
 
-    return isAuthPage ? NextResponse.redirect(new URL(Route.Dashboard, request.url)) : response
+    return isAuthPage ? NextResponse.redirect(new URL(Route.Home, request.url)) : response
   } catch {
     return NextResponse.next({
       request: {

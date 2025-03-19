@@ -1,11 +1,20 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 
-import { AwardIcon, BookOpenIcon, CogIcon, HelpCircleIcon, SettingsIcon, type LucideIcon, type LucideProps } from 'lucide-react'
+import {
+  AwardIcon,
+  BookOpenIcon,
+  CogIcon,
+  HelpCircleIcon,
+  MessageCircleQuestionIcon,
+  SettingsIcon,
+  type LucideIcon,
+  type LucideProps,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Icon } from '@/components/ui/icon'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { SemanticColor } from '@/lib/theme'
 
 export interface Section {
@@ -49,7 +58,7 @@ export const useNavigation = () => {
         [
           {
             title: t('dashboard'),
-            path: Route.Dashboard,
+            path: Route.Home,
             Icon: () => <Icon name="dashboard" />,
           },
           {
@@ -57,42 +66,17 @@ export const useNavigation = () => {
             path: Route.Modules,
             Icon: BookOpenIcon,
             color: SemanticColor.Primary,
-            subPages: [
-              {
-                title: t('modulesIntro'),
-                path: Route.ModulesIntro,
-              },
-              {
-                title: t('modulesSkills'),
-                path: Route.ModulesSkills,
-              },
-            ],
           },
           {
             title: t('certificates'),
             path: Route.Certificates,
             Icon: AwardIcon,
             color: SemanticColor.Secondary,
-            subPages: [
-              {
-                title: t('certificatesIssued'),
-                path: Route.certificatesIssued,
-              },
-              {
-                title: t('certificatesUnderReview'),
-                path: Route.CertificatesUnderReview,
-              },
-              {
-                title: t('certificatesNew'),
-                path: Route.CertificatesNew,
-                type: 'button',
-              },
-            ],
           },
           {
             title: t('docs'),
             path: Route.Docs,
-            Icon: BookOpenIcon,
+            Icon: MessageCircleQuestionIcon,
             color: SemanticColor.Tertiary,
             subPages: [
               {

@@ -1,7 +1,8 @@
-import { metadata } from '@/lib/metadata'
+import { ModulesView } from '@/components/modules/modules-view'
+import { metadataFn } from '@/lib/metadata'
 
-export default () => <h1>{'Modules'}</h1>
+export default () => <ModulesView />
 
-export const generateMetadata = metadata({
+export const generateMetadata = metadataFn({
   title: 'Navigation.modules',
 })

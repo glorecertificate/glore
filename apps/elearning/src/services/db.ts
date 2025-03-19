@@ -5,7 +5,7 @@ import { createServerClient } from '@supabase/ssr'
 import type { SupabaseAuthClient } from '@supabase/supabase-js/dist/module/lib/SupabaseAuthClient'
 
 import { Env } from '@/lib/env'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 import type { Database } from 'supabase/types'
 

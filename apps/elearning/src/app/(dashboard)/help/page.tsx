@@ -1,7 +1,7 @@
-import { metadata } from '@/lib/metadata'
+import { metadataFn } from '@/lib/metadata'
 
 export default () => <h1>{'Help'}</h1>
 
-export const generateMetadata = metadata({
+export const generateMetadata = metadataFn({
   title: 'Navigation.help',
 })

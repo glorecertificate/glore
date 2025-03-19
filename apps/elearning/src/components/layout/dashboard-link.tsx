@@ -6,16 +6,17 @@ import { startTransition, useCallback, useMemo, useState } from 'react'
 import { LoaderIcon } from 'lucide-react'
 
 import { Link, type LinkProps } from '@/components/ui/link'
+import { ProgressBarState } from '@/components/ui/progress-bar'
 import { type Page } from '@/hooks/use-navigation'
 import { useProgressBar } from '@/hooks/use-progress-bar'
-import { type Route } from '@/lib/routes'
+import { type Route } from '@/lib/navigation'
 import { type SemanticColor } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
 export interface DashboardLinkProps extends Omit<LinkProps, 'href'>, Partial<Page> {
   color?: SemanticColor
+  hasLoader?: boolean
   iconSize?: number
-  loader?: boolean
   to: Route
 }
 
@@ -23,8 +24,8 @@ export const DashboardLink = ({
   children,
   className,
   color,
+  hasLoader,
   iconSize,
-  loader,
   onClick,
   subPages,
   to,
@@ -34,11 +35,15 @@ export const DashboardLink = ({
   const progressBar = useProgressBar()
 
   const [loading, setLoading] = useState(false)
-  const showLoader = useMemo(() => loader && loading, [loader, loading])
+  const showLoader = useMemo(() => hasLoader && loading, [hasLoader, loading])
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
+
+      if (progressBar.state === ProgressBarState.InProgress) {
+        return
+      }
 
       setLoading(true)
       progressBar.colorize(color)

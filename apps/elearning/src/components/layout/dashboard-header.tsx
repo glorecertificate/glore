@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -14,28 +14,49 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { Logo } from '@/components/ui/logo'
-import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { SIDEBAR_KEYBOARD_SHORTCUT, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/hooks/use-is-mobile'
 import { useNavigation } from '@/hooks/use-navigation'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const isMobile = useIsMobile()
   const { page, subPage } = useNavigation()
   const { open } = useSidebar()
-  const t = useTranslations('Common')
+  const t = useTranslations()
 
-  const isHomePage = useMemo(() => page?.path === Route.Dashboard, [page])
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  const onScroll = useCallback(() => {
+    const scroll =
+      window.pageYOffset !== undefined
+        ? window.pageYOffset
+        : (document.documentElement || document.body.parentNode || document.body).scrollTop
+    setIsScrolled(scroll > 0)
+  }, [])
+
+  const isHomePage = useMemo(() => page?.path === Route.Home, [page])
   const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
   const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
-  const sidebarAction = useMemo(() => `${open ? t('close') : t('open')} ${t('sidebar').toLocaleLowerCase()}`, [open, t])
+  const sidebarAction = useMemo(
+    () => `${open ? t('Common.close') : t('Common.open')} ${t('Common.sidebar').toLocaleLowerCase()}`,
+    [open, t],
+  )
+
+  useEffect(() => {
+    window.addEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [onScroll])
 
   return (
     <header
       className={cn(
         'ml-[1px] flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+        isScrolled && 'border-b shadow',
         className,
       )}
       {...props}
@@ -48,7 +69,7 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
             </TooltipTrigger>
             <TooltipContent side="right">
               <p className="text-xs font-medium">{sidebarAction}</p>
-              <p className="text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + Shift + ${t('space')}`}</p>
+              <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
           {!isHomePage && (
@@ -80,9 +101,9 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
           )}
         </div>
         <DashboardLink
-          className={cn(page?.path === Route.Dashboard && 'pointer-events-none')}
-          loader={false}
-          to={Route.Dashboard}
+          className={cn(page?.path === Route.Home && 'pointer-events-none')}
+          title={t('Navigation.goToDashboard')}
+          to={Route.Home}
         >
           <Logo className="mr-2" height={logoSize} />
         </DashboardLink>

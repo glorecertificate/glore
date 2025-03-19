@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { AppProvider } from '@/components/app-provider'
-import { metadata } from '@/lib/metadata'
+import { metadataFn } from '@/lib/metadata'
 import { getLocale, getTranslations } from '@/services/i18n'
 import app from 'config/app.json'
 
@@ -34,6 +34,6 @@ export default async ({ children }: React.PropsWithChildren) => {
   )
 }
 
-export const generateMetadata = metadata({
+export const generateMetadata = metadataFn({
   description: 'App.description',
 })

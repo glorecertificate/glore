@@ -2,11 +2,24 @@
 
 import { useTranslations } from 'next-intl'
 
-import AppError from '@/components/app-error'
-import { Asset } from '@/lib/storage'
+import { ErrorView } from '@/components/error-view'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/components/ui/link'
+import { Route } from '@/lib/navigation'
 
 export default () => {
   const t = useTranslations('Common')
 
-  return <AppError asset={Asset.NotFound} assetWidth={400} message={t('notFoundMessage')} title={t('notFound')} />
+  return (
+    <ErrorView
+      Actions={
+        <Link href={Route.Home}>
+          <Button size="lg" variant="outline">
+            {t('backToHome')}
+          </Button>
+        </Link>
+      }
+      type="not-found"
+    />
+  )
 }

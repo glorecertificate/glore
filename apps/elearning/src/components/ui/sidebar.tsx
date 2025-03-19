@@ -17,12 +17,12 @@ import { useIsMobile } from '@/hooks/use-is-mobile'
 import { Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const SIDEBAR_COOKIE_NAME = Cookie.SidebarOpen
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = '18rem'
-const SIDEBAR_WIDTH_MOBILE = '18rem'
-const SIDEBAR_WIDTH_ICON = '3rem'
-const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
+export const SIDEBAR_COOKIE_NAME = Cookie.SidebarOpen
+export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+export const SIDEBAR_WIDTH = '16rem'
+export const SIDEBAR_WIDTH_MOBILE = '18rem'
+export const SIDEBAR_WIDTH_ICON = '3rem'
+export const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
 
 interface SidebarContext {
   isMobile: boolean

@@ -3,19 +3,18 @@
     "description": "GloRe es una red abierta que tiene como objetivo ampliar su audiencia tanto de voluntarios como de ONGs de todo el mundo para hacer que los certificados estén disponibles para todos."
   },
   "Common": {
-    "backToDashboard": "Volver al dashboard",
+    "backToHome": "Volver a la página de inicio",
     "close": "Cerrar",
     "dark": "Oscuro",
     "displaySidebar": "Muestra la barra lateral",
     "errorTitle": "Ooops! Algo salió mal",
-    "errorMessage": "Por favor, inténtalo de nuevo o <contactUs>contáctanos</contactUs> si el problema persiste.",
+    "errorMessage": "Por favor, inténtalo de nuevo o <contactUs>contáctanos</contactUs> si el problema persiste",
     "help": "Ayuda",
     "hide": "Esconder",
     "language": "Idioma",
     "light": "Claro",
-    "logout": "Cerrar sesión",
     "notFound": "No encontrado",
-    "notFoundMessage": "La página que estás buscando no existe",
+    "notFoundMessage": "La página que estás buscando no existe o ha sido movida",
     "open": "Abrir",
     "preferences": "Preferencias",
     "selectLanguage": "Seleccionar idioma",
@@ -47,11 +46,11 @@
     "passwordInvalid": "Password no válida",
     "passwordRequired": "Inserte su password"
   },
-
   "Navigation": {
     "organizations": "Organizaciones",
     "addOrganization": "Agregar organización",
     "dashboard": "Dashboard",
+    "goToDashboard": "Ir al dashboard",
     "modules": "Módulos",
     "modulesIntro": "Introducción",
     "modulesSkills": "Soft Skills",
@@ -65,7 +64,23 @@
     "docsFaq": "FAQs",
     "admin": "Admin",
     "settings": "Ajustes",
-    "help": "Ayuda"
+    "help": "Ayuda",
+    "about": "Acerca de GloRe",
+    "logout": "Cerrar sesión"
+  },
+  "Modules": {
+    "title": "Módulos de aprendizaje",
+    "description": "Los módulos de aprendizaje son cursos en línea que te ayudarán a adquirir nuevas habilidades y conocimientos.",
+    "notFound": "Modulo no encontrado",
+    "notFoundMessage": "El módulo que estás buscando no existe o ha sido movido",
+    "backTo": "Volver a los módulos"
+  },
+  "Certificates": {
+    "title": "Certificados",
+    "description": "Los certificados son una forma de demostrar tus habilidades y conocimientos adquiridos a través de los módulos de aprendizaje.",
+    "notFound": "Certificado no encontrado",
+    "notFoundMessage": "El certificado que estás buscando no existe o ha sido movido",
+    "backTo": "Volver a los certificados"
   },
   "Settings": {
     "title": "Ajustes"

@@ -3,13 +3,14 @@
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
 import { useMemo } from 'react'
 
-import { type Route } from '@/lib/routes'
+import { type Route } from '@/lib/navigation'
 import { cn, tw } from '@/lib/utils'
 
 export interface LinkProps extends React.PropsWithChildren<NextLinkProps> {
   className?: string
-  href: Route | `http${string}`
+  href: Route | `${Route}/${string}` | `http${string}`
   target?: string
+  title?: string
 }
 
 export const Link = ({ className, href, ...props }: LinkProps) => {

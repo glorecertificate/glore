@@ -50,14 +50,41 @@ const metadataBase: Metadata = {
   },
 }
 
-export interface PageMetadata {
+export interface MetadataProps {
+  description?: string
+  image?: string
+  separator?: string
+  title?: string
+}
+
+export interface MetadataFnProps {
   description?: MessageKey
+  image?: string
   separator?: string
   title?: MessageKey
 }
 
-export const metadata =
-  ({ description, separator = ' - ', title }: PageMetadata) =>
+export const metadata = async (props?: MetadataProps) => {
+  const { description, image, separator = ' - ', title } = props ?? {}
+
+  const locale = await getLocale()
+  const pageTitle = title ? `${title} ${separator} ${metadataBase.title as string}` : metadataBase.title
+
+  return {
+    ...metadataBase,
+    title: pageTitle,
+    ...(description ? { description } : {}),
+    openGraph: {
+      ...metadataBase.openGraph,
+      ...(description ? { description } : {}),
+      ...(image ? { images: image } : {}),
+      locale: locale ?? metadataBase.openGraph?.locale,
+    },
+  } as Metadata
+}
+
+export const metadataFn =
+  ({ description, image, separator = ' - ', title }: MetadataFnProps) =>
   async (_: object, parent: ResolvingMetadata): Promise<Metadata> => {
     const t = await getTranslations()
     const locale = await getLocale()
@@ -73,6 +100,7 @@ export const metadata =
       openGraph: {
         ...metadataBase.openGraph,
         ...(description ? { description: t(description) } : {}),
+        ...(image ? { images: image } : {}),
         locale: locale ?? metadataBase.openGraph?.locale,
       },
     } as Metadata

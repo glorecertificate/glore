@@ -3,19 +3,18 @@
     "description": "GloRe è una rete aperta che mira ad allargare il suo pubblico sia di volontari che di ONG di tutto il mondo per rendere i certificati disponibili a tutti."
   },
   "Common": {
-    "backToDashboard": "Torna alla dashboard",
+    "backToHome": "Torna alla homepage",
     "close": "Chiudi",
     "dark": "Scuro",
     "displaySidebar": "Mostra la barra laterale",
     "errorTitle": "Ooops! Qualcosa è andato storto",
-    "errorMessage": "Per favore riprova o <contactUs>contattaci</contactUs> se il problema persiste.",
+    "errorMessage": "Per favore riprova o <contactUs>contattaci</contactUs> se il problema persiste",
     "help": "Aiuto",
     "hide": "Nascondi",
     "language": "Lingua",
     "light": "Chiaro",
-    "logout": "Esci",
     "notFound": "Non trovato",
-    "notFoundMessage": "La pagina che stai cercando non esiste",
+    "notFoundMessage": "La pagina che stai cercando non esiste o è stata spostata",
     "open": "Apri",
     "preferences": "Preferenze",
     "selectLanguage": "Seleziona lingua",
@@ -47,11 +46,11 @@
     "passwordLabel": "Password",
     "passwordRequired": "Inserisci una password"
   },
-
   "Navigation": {
     "organizations": "Organizzazioni",
     "addOrganization": "Aggiungi organizzazione",
     "dashboard": "Dashboard",
+    "goToDashboard": "Vai alla dashboard",
     "modules": "Moduli",
     "modulesIntro": "Introduzione",
     "modulesSkills": "Soft Skills",
@@ -65,7 +64,23 @@
     "docsFaq": "FAQs",
     "admin": "Admin",
     "settings": "Impostazioni",
-    "help": "Aiuto"
+    "help": "Aiuto",
+    "about": "Informazioni su GloRe",
+    "logout": "Esci"
+  },
+  "Modules": {
+    "title": "Moduli di apprendimento",
+    "description": "I moduli di apprendimento sono corsi online che ti aiutano a sviluppare le tue competenze e ad ottenere certificati riconosciuti a livello internazionale. Dopo aver completato almeno 3 moduli, potrai richiedere un certificato di competenza.",
+    "notFound": "Modulo non trovato",
+    "notFoundMessage": "Il modulo che stai cercando non esiste o è stato spostato",
+    "backTo": "Torna ai moduli"
+  },
+  "Certificates": {
+    "title": "Certificati",
+    "description": "I certificati sono riconoscimenti ufficiali delle tue competenze e conoscenze. Puoi richiedere un certificato dopo aver completato almeno 3 moduli di apprendimento.",
+    "notFound": "Certificato non trovato",
+    "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
+    "backTo": "Torna ai certificati"
   },
   "Settings": {
     "title": "Impostazioni"

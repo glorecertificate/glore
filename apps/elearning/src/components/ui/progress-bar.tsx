@@ -3,11 +3,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { useNavigation } from '@/hooks/use-navigation'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { type SemanticColor } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
-enum ProgressBarState {
+export enum ProgressBarState {
   Initial = 'initial',
   InProgress = 'in-progress',
   Complete = 'complete',
@@ -107,7 +107,7 @@ export const ProgressBar = ({ children }: React.PropsWithChildren) => {
   const { pathname } = useNavigation()
   const { color, state, value = 10 } = useProgressBar()
 
-  const isGradient = useMemo(() => !color && pathname === Route.Dashboard, [color, pathname])
+  const isGradient = useMemo(() => !color && pathname === Route.Home, [color, pathname])
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { Link } from '@/components/ui/link'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 
 export default () => (
   <main lang="en">

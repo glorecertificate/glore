@@ -19,7 +19,6 @@ export interface ImageProps
   lazyRoot?: string
   loader?: ImageLoader
   loading?: 'eager' | 'lazy' | undefined
-  objectFit?: string
   objectPosition?: string
   onLoadingComplete?: OnLoadingComplete
   overrideSrc?: string
@@ -32,16 +31,19 @@ export interface ImageProps
 }
 
 export const Image = (props: ImageProps) => {
-  const { alt = '', height, sizes = '100vw', style, width, ...rest } = props
+  const { alt = '', fill, height, sizes = '100vw', style, width, ...rest } = props
 
   const styles = useMemo(
-    () => ({
-      width: width ? (typeof width === 'string' ? width : `${width}px`) : 'auto',
-      height: height ? (typeof height === 'string' ? height : `${height}px`) : 'auto',
-      ...style,
-    }),
-    [height, style, width],
+    () =>
+      fill
+        ? {}
+        : {
+            width: width ? (typeof width === 'string' ? width : `${width}px`) : 'auto',
+            height: height ? (typeof height === 'string' ? height : `${height}px`) : 'auto',
+            ...style,
+          },
+    [fill, height, style, width],
   )
 
-  return <NextImage alt={alt} height={0} sizes={sizes} style={styles} width={0} {...rest} />
+  return <NextImage alt={alt} fill={fill} height={0} sizes={sizes} style={styles} width={0} {...rest} />
 }

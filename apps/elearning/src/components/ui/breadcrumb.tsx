@@ -1,7 +1,7 @@
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 
-import { DashboardButton } from '@/components/dashboard/dashboard-button'
-import { type DashboardLinkProps } from '@/components/dashboard/dashboard-link'
+import { DashboardButton } from '@/components/layout/dashboard-button'
+import { type DashboardLinkProps } from '@/components/layout/dashboard-link'
 import { type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -26,7 +26,6 @@ const BreadcrumbButton = ({ className, to, ...props }: DashboardLinkProps & Butt
     className={cn('text-base text-foreground/75 hover:text-foreground', className)}
     data-slot="breadcrumb-link"
     iconSize={18}
-    loader={false}
     to={to}
     variant="ghost"
     {...props}

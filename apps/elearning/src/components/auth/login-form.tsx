@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 
 export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) => {
   const db = useDB()
@@ -68,7 +68,7 @@ export const LoginForm = ({ className, ...props }: React.ComponentPropsWithoutRe
       return
     }
 
-    redirect(Route.Dashboard)
+    redirect(Route.Home)
   }
 
   return (

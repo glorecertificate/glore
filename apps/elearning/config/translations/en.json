@@ -3,19 +3,18 @@
     "description": "GloRe is an open network that aims to enlarge its audience both of volunteers and NGOs all over the world to make certificates available to everybody."
   },
   "Common": {
-    "backToDashboard": "Back to the dashboard",
+    "backToHome": "Back to the homepage",
     "close": "Close",
     "dark": "Dark",
     "displaySidebar": "Display sidebar",
     "errorTitle": "Ooops! Something went wrong",
-    "errorMessage": "Please try again or <contactUs>contact us</contactUs> if the problem persists.",
+    "errorMessage": "Please try again or <contactUs>contact us</contactUs> if the problem persists",
     "help": "Help",
     "hide": "Hide",
     "language": "Language",
     "light": "Light",
-    "logout": "Log out",
     "notFound": "Not found",
-    "notFoundMessage": "The page you are looking for does not exist",
+    "notFoundMessage": "The page you are looking for does not exist or has been moved",
     "open": "Open",
     "preferences": "Preferences",
     "selectLanguage": "Select language",
@@ -51,6 +50,7 @@
     "organizations": "Organizations",
     "addOrganization": "Add organization",
     "dashboard": "Dashboard",
+    "goToDashboard": "Go to the dashboard",
     "modules": "Modules",
     "modulesIntro": "Introduction",
     "modulesSkills": "Soft Skills",
@@ -64,7 +64,23 @@
     "docsFaq": "FAQs",
     "admin": "Admin",
     "settings": "Settings",
-    "help": "Help"
+    "help": "Help",
+    "about": "About GloRe",
+    "logout": "Log out"
+  },
+  "Modules": {
+    "title": "Learning modules",
+    "description": "GloRe offers a wide range of learning modules to help you develop your soft skills and knowledge. Each module is designed to be interactive and engaging, providing you with the tools you need to succeed in your personal and professional life. After completing at least 3 modules, you will be able to request a certificate of completion.",
+    "notFound": "Module not found",
+    "notFoundMessage": "The module you are looking for does not exist or has been moved",
+    "backTo": "Back to all modules"
+  },
+  "Certificates": {
+    "title": "Certificates",
+    "description": "GloRe offers a wide range of learning modules to help you develop your soft skills and knowledge. Each module is designed to be interactive and engaging, providing you with the tools you need to succeed in your personal and professional life. After completing at least 3 modules, you will be able to request a certificate of completion.",
+    "notFound": "Certificate not found",
+    "notFoundMessage": "The certificate you are looking for does not exist or has been moved",
+    "backTo": "Back to all certificates"
   },
   "Settings": {
     "title": "Settings"

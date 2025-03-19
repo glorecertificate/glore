@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { titleize } from '@repo/utils'
-import { ChevronRightIcon, ChevronsUpDownIcon, HelpCircleIcon, LogOutIcon, PlusIcon, SettingsIcon } from 'lucide-react'
+import { ChevronRightIcon, ChevronsUpDownIcon, HelpCircleIcon, InfoIcon, LogOutIcon, PlusIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { DashboardButton } from '@/components/layout/dashboard-button'
@@ -41,7 +41,7 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useDB } from '@/hooks/use-db'
 import { useNavigation, type Page, type Section } from '@/hooks/use-navigation'
-import { Route } from '@/lib/routes'
+import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 import { type Auth, type User } from '@/services/db'
@@ -145,7 +145,7 @@ const NavButton = ({
 
   return (
     <SidebarMenuButton asChild isActive={isHighlighted} isActivePage={isActivePage} onClick={onClick} tooltip={title} {...props}>
-      <DashboardLink color={color} to={path}>
+      <DashboardLink color={color} hasLoader to={path}>
         {Icon && <Icon className={cn(color && `text-${color}`)} />}
         <span>{title}</span>
       </DashboardLink>
@@ -186,7 +186,6 @@ const NavCollapsible = ({
                       <DashboardButton
                         className={cn(subPage.isActive && 'pointer-events-none cursor-default', 'mt-1 w-full text-sm')}
                         color={page.color}
-                        loader={false}
                         size="sm"
                         to={subPage.path}
                         variant={(page.color ? page.color : 'outline') as ButtonProps['variant']}
@@ -228,7 +227,7 @@ const NavSection = ({ pages }: Section) => (
 )
 
 const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
-  const t = useTranslations('Common')
+  const t = useTranslations()
 
   const initials = useMemo(() => {
     if (!user.name) return ''
@@ -258,9 +257,8 @@ const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
                 {user.currentOrg.avatar_url && (
                   <Image
                     alt="logo"
-                    className="absolute -right-1 -bottom-1 rounded-full"
+                    className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
-                    objectFit="cover"
                     src={user.currentOrg.avatar_url}
                     width={14}
                   />
@@ -279,62 +277,45 @@ const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
             side="top"
             sideOffset={4}
           >
-            {/* <DropdownMenuLabel className="p-1 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage alt={user.name} src={user.avatar_url} />
-                  <AvatarFallback>{initials}</AvatarFallback>
-                  <div className="absolute right-0 bottom-0 h-3 w-3 rounded-full bg-background ring-2 ring-background">
-                    <Image
-                      alt="logo"
-                      className="rounded-full"
-                      height={13}
-                      objectFit="cover"
-                      src={user.currentOrg.avatar_url}
-                      width={13}
-                    />
-                  </div>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator /> */}
             <DropdownMenuGroup>
               <DashboardLink to={Route.Settings}>
                 <DropdownMenuItem>
                   <SettingsIcon />
-                  {t('settings')}
+                  {t('Navigation.settings')}
                 </DropdownMenuItem>
               </DashboardLink>
               <DashboardLink to={Route.Help}>
                 <DropdownMenuItem>
                   <HelpCircleIcon />
-                  {t('help')}
+                  {t('Navigation.help')}
+                </DropdownMenuItem>
+              </DashboardLink>
+              <DashboardLink to={Route.About}>
+                <DropdownMenuItem>
+                  <InfoIcon />
+                  {t('Navigation.about')}
                 </DropdownMenuItem>
               </DashboardLink>
               <DropdownMenuItem onClick={logOutUser}>
                 <LogOutIcon />
-                {t('logout')}
+                {t('Navigation.logout')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">
               <div className="flex items-center px-1.5 py-1">
-                <span className="text-[13px] leading-[16px] font-medium text-muted-foreground">{t('preferences')}</span>
+                <span className="text-[13px] leading-[16px] font-medium text-muted-foreground">{t('Common.preferences')}</span>
               </div>
             </DropdownMenuGroup>
             <DropdownMenuGroup className="p-1 pt-0">
               <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="text-sm font-normal text-foreground">{t('theme')}</span>
+                <span className="text-sm font-normal text-foreground">{t('Common.theme')}</span>
                 <div data-orientation="horizontal" dir="ltr">
                   <ThemeSwitch />
                 </div>
               </div>
               <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="text-sm font-normal text-foreground">{t('language')}</span>
+                <span className="text-sm font-normal text-foreground">{t('Common.language')}</span>
                 <div data-orientation="horizontal" dir="ltr">
                   <LanguageSelect className="h-8 px-2" />
                 </div>

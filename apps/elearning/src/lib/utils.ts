@@ -8,6 +8,6 @@ import { twMerge } from 'tailwind-merge'
 export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
 
 /**
- * Utility function to apply tailwind classes.
+ * Utility function to statically apply tailwind classes.
  */
 export const tw = (raw: TemplateStringsArray, ...values: string[]) => cn(String.raw({ raw }, ...values))

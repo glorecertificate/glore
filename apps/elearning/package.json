@@ -58,21 +58,21 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.2.2",
+    "@next/bundle-analyzer": "^15.2.4",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
-    "@tailwindcss/postcss": "^4.0.14",
+    "@tailwindcss/postcss": "^4.0.17",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "eslint": "catalog:",
     "postcss": "^8.5.3",
     "prettier": "catalog:",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "shadcn": "^2.4.0-canary.14",
+    "shadcn": "^2.4.0-canary.17",
     "shellcheck": "catalog:",
-    "tailwind-scrollbar": "^4.0.1",
-    "tailwindcss": "^4.0.14",
+    "tailwind-scrollbar": "^4.0.2",
+    "tailwindcss": "^4.0.17",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "catalog:"
   }

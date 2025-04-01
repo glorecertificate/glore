@@ -33,10 +33,10 @@
     "root#check:fix": "pnpm root#typecheck && pnpm root#lint:fix"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.7.1",
-    "@commitlint/config-conventional": "^19.7.1",
-    "@commitlint/types": "^19.5.0",
-    "@release-it/bumper": "^7.0.1",
+    "@commitlint/cli": "^19.8.0",
+    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/types": "^19.8.0",
+    "@release-it/bumper": "^7.0.2",
     "@release-it/conventional-changelog": "^10.0.0",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",

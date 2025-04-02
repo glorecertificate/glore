@@ -1,16 +1,5 @@
 import { type Config } from 'release-it'
 
-interface Context {
-  changelog?: string
-  version: string
-}
-
-interface ReleaseItConfig extends Config {
-  github?: Config['github'] & {
-    releaseNotes?: (context: Context) => string | undefined
-  }
-}
-
 export default {
   git: {
     commitMessage: 'chore: release v${version}',
@@ -20,9 +9,9 @@ export default {
     tagName: 'v${version}',
   },
   github: {
+    autoGenerate: true,
     release: true,
     releaseName: 'v${version}',
-    releaseNotes: (context: Context) => context.changelog?.split('\n').slice(1).join('\n'),
   },
   hooks: {
     'after:init': 'pnpm build && pnpm check',
@@ -42,4 +31,4 @@ export default {
       },
     },
   },
-} satisfies ReleaseItConfig
+} satisfies Config

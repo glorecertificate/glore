@@ -38,7 +38,7 @@ jobs:
           corepack install
       - name: Install and build dependencies
         run: |
-          pnpm install --frozen-lockfile
+          pnpm install
           pnpm build:packages
       - name: Deploy to Vercel
         id: vercel

@@ -41,7 +41,7 @@ jobs:
           corepack install
       - name: Install and build dependencies
         run: |
-          pnpm install
+          pnpm install --no-frozen-lockfile
           pnpm build:packages
       - name: Run commitlint on push
         if: github.event_name == 'push'

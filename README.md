@@ -43,8 +43,6 @@ cp .env.example .env
 
 Fill in the required environment variables to gain access to the services used by the application.
 
-Repeat the same step with the public variables found in the `apps/elearning` directory.
-
 ### Running the application
 
 Navigate to the project directory, activate pnpm using Corepack and install the project dependencies:
@@ -66,13 +64,15 @@ Open [localhost:3000](http://localhost:3000) in your browser to see the result. 
 
 ### Contributing
 
-To develop new features, create a branch starting from `main`:
+To develop new features or fix bugs, create a new branch from the `main` branch. Use a descriptive name for the branch that indicates the purpose of your changes:
 
 ```sh
 git checkout -b feature/my-feature-name
+# or
+git checkout -b fix/my-fix-name
 ```
 
-Once you are done with your changes, push the branch to the repository and create a pull request.
+Once you are done, push the branch to the repository and create a pull request.
 
 ## Deployment
 

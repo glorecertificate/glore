@@ -74,17 +74,21 @@ git checkout -b fix/my-fix-name
 
 Once you are done, push the branch to the repository and create a pull request.
 
-## Deployment
+## Deployments
 
 The project is deployed using [Vercel](https://vercel.com).
 
-To deploy any version of the project, you must set up a Vercel account and link it to your GitHub repository.
+To deploy the project, you must set up a Vercel account and link it to the GitHub repository.
 
 Once you have done that, you can deploy by pushing changes to any branch. Vercel will automatically build and deploy a preview for you.
 
-Production deployments are triggered by new releases, as described in the next section.
+Alternatively, you can create a preview deployment by running:
 
-### Production release
+```sh
+pnpm deploy:elearning
+```
+
+### Production deployments and releases
 
 To release a new version of the project, you must specify a `GITHUB_TOKEN` environment variable at the root of the project. This token needs access to the `repository` and `workflow` scopes.
 
@@ -92,6 +96,12 @@ Then, run the following command to create a new interactive release and deploy i
 
 ```sh
 pnpm release
+```
+
+To manually trigger a production deployment without creating a release, use the command:
+
+```sh
+pnpm deploy:elearning:prod
 ```
 
 ## License

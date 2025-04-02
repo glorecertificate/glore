@@ -25,6 +25,8 @@
     "lint:fix": "pnpm root#lint:fix && turbo lint:fix",
     "check": "pnpm root#check && turbo check",
     "check:fix": "pnpm root#check:fix && turbo check:fix",
+    "deploy:elearning": "pnpm check && vercel build && vercel --prebuilt",
+    "deploy:elearning:prod": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
     "release": "dotenv release-it --",
     "latest": "pnpm upgrade --latest --recursive",
     "root#typecheck": "tsc --noEmit",

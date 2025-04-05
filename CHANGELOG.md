@@ -1,5 +1,17 @@
 # Changelog
 
+## <small>0.2.1 (2025-04-05)</small>
+
+* ci: auto generate github release notes ([b1399fb](https://github.com/joint-it/glore/commit/b1399fb))
+* ci: create patch, minor and major releases with `pnpm release` ([ae5b1d6](https://github.com/joint-it/glore/commit/ae5b1d6))
+* ci: install packages with `--no-frozen-lockfile` to allow dependencies updates ([b61cf79](https://github.com/joint-it/glore/commit/b61cf79))
+* build: add manual deployments ([55e48de](https://github.com/joint-it/glore/commit/55e48de))
+* build: upgrade pnpm to 10.7.1 ([663e069](https://github.com/joint-it/glore/commit/663e069))
+* build(deps): upgrade all to latest ([0efa9bc](https://github.com/joint-it/glore/commit/0efa9bc))
+* fix: remove server flag from db files ([ea04a13](https://github.com/joint-it/glore/commit/ea04a13))
+* feat: add password reset ([1570f81](https://github.com/joint-it/glore/commit/1570f81))
+* docs: update readme ([06f54d3](https://github.com/joint-it/glore/commit/06f54d3))
+
 ## 0.2.0 (2025-03-19)
 
 * feat: add modules and certificates pages ([6ee2ce8](https://github.com/joint-it/glore/commit/6ee2ce8))

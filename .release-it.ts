@@ -23,12 +23,5 @@ export default {
     '@release-it/bumper': {
       out: ['apps/*/package.json'],
     },
-    '@release-it/conventional-changelog': {
-      header: '# Changelog',
-      infile: 'CHANGELOG.md',
-      preset: {
-        name: 'conventionalcommits',
-      },
-    },
   },
 } satisfies Config

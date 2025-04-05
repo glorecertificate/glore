@@ -40,10 +40,7 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
   const isHomePage = useMemo(() => page?.path === Route.Home, [page])
   const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
   const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
-  const sidebarAction = useMemo(
-    () => `${open ? t('Common.close') : t('Common.open')} ${t('Common.sidebar').toLocaleLowerCase()}`,
-    [open, t],
-  )
+  const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
 
   useEffect(() => {
     window.addEventListener('scroll', onScroll)
@@ -72,6 +69,7 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
               <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
+
           {!isHomePage && (
             <Breadcrumb className="ml-1">
               <BreadcrumbList>

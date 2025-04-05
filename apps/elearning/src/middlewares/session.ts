@@ -5,8 +5,7 @@ import { getDB } from '@/services/db'
 
 export enum AuthPage {
   Login = Route.Login,
-  Signup = Route.Signup,
-  ResetPassword = Route.ResetPassword,
+  PasswordReset = Route.PasswordReset,
 }
 
 export const updateSession = async (request: NextRequest) => {

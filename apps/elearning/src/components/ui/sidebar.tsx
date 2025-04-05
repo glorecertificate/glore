@@ -164,7 +164,7 @@ const Sidebar = ({
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetHeader className="sr-only">
           <SheetTitle>{t('Common.sidebar')}</SheetTitle>
-          <SheetDescription>{t('Common.displaySidebar')}</SheetDescription>
+          <SheetDescription>{t('Common.sidebarOpen')}</SheetDescription>
         </SheetHeader>
         <SheetContent
           className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
@@ -377,36 +377,6 @@ const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>) =>
   <li className={cn('group/menu-item relative', className)} data-sidebar="menu-item" data-slot="sidebar-menu-item" {...props} />
 )
 
-const sidebarMenuButton = cva(
-  [
-    'flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding]',
-    'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2',
-    'active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
-    'disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50',
-    'data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground',
-    '[&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
-    'peer/menu-button group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!',
-  ],
-  {
-    variants: {
-      variant: {
-        default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-        outline:
-          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
-      },
-      size: {
-        default: 'h-8 text-sm',
-        sm: 'h-7 text-xs',
-        lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  },
-)
-
 const SidebarMenuButton = ({
   asChild = false,
   className,
@@ -453,6 +423,36 @@ const SidebarMenuButton = ({
     </Tooltip>
   )
 }
+
+const sidebarMenuButton = cva(
+  [
+    'flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md px-3 py-2 text-left text-sm ring-sidebar-ring outline-hidden transition-[width,height,padding]',
+    'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2',
+    'active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
+    'disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50',
+    'data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground',
+    '[&>span:last-child]:truncate [&>svg]:shrink-0',
+    'peer/menu-button group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!',
+  ],
+  {
+    variants: {
+      variant: {
+        default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        outline:
+          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+      },
+      size: {
+        default: 'py-2 text-sm',
+        sm: 'py-1 text-xs',
+        lg: 'py-3 text-sm group-data-[collapsible=icon]:p-0!',
+      },
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
+  },
+)
 
 const SidebarMenuAction = ({
   asChild = false,

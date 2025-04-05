@@ -9,7 +9,6 @@ export default () =>
     short_name: app.title,
     description: app.description,
     start_url: '/',
-    lang: app.locale,
     background_color: app.themeColor,
     theme_color: app.themeColor,
     display: 'standalone',

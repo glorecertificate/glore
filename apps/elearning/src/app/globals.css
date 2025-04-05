@@ -63,8 +63,8 @@
     --muted-foreground: hsl(214 24% 70%);
     --accent: var(--card);
     --accent-foreground: var(--foreground);
-    --destructive: hsl(0 61% 30%);
-    --destructive-foreground: hsl(0 62.8% 30.6%);
+    --destructive: hsl(0 84.2% 50%);
+    --destructive-foreground: hsl(0 84.2% 50%);
 
     --primary: hsl(75 48% 58%);
     --primary-accent: hsl(76 32% 45%);
@@ -128,7 +128,7 @@
 
 @layer base {
   ::selection {
-    @apply bg-foreground/15;
+    @apply bg-foreground/25;
   }
   * {
     @apply border-border outline-ring/50;

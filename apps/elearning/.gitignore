@@ -21,3 +21,6 @@ next-env.d.ts
 
 # Supabase
 /supabase/
+
+# Vercel
+/.vercel/

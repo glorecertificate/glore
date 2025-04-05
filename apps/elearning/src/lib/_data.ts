@@ -1,4 +1,4 @@
-import type { Module } from './types'
+import type { Module } from './_types'
 
 const modules: Module[] = [
   {

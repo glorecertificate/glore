@@ -51,7 +51,7 @@
     "prettier": "catalog:",
     "release-it": "^18.1.2",
     "shellcheck": "catalog:",
-    "turbo": "^2.4.4",
+    "turbo": "^2.5.0",
     "typescript": "catalog:",
     "vercel": "^41.4.1"
   }

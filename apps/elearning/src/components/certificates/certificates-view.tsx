@@ -7,7 +7,7 @@ import { PlusCircle } from 'lucide-react'
 import { CertificateCard } from '@/components/certificates/certificate-card'
 import { RequestCertificateDialog } from '@/components/certificates/request-certificate-dialog'
 import { Button } from '@/components/ui/button'
-import type { Certificate } from '@/lib/types'
+import type { Certificate } from '@/lib/_types'
 
 const certificates: Certificate[] = [
   {

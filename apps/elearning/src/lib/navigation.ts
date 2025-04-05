@@ -1,3 +1,5 @@
+import { type AnyObject } from '@repo/utils'
+
 /**
  * Application static routes.
  */
@@ -5,8 +7,7 @@ export enum Route {
   Home = '/',
   Login = '/login',
   Logout = '/logout',
-  Signup = '/signup',
-  ResetPassword = '/reset-password',
+  PasswordReset = '/password-reset',
   Modules = '/modules',
   Certificates = '/certificates',
   CertificatesNew = '/certificates/new',
@@ -24,3 +25,11 @@ export enum Route {
  * Generates a dynamic URL using the provided route and parameter.
  */
 export const dynamicRoute = (route: Route, param: number | string) => `${route}/${param}` as `${Route}/${string}`
+
+/**
+ * Properties of a page component.
+ */
+export interface PageProps<T extends AnyObject = AnyObject, K extends AnyObject = AnyObject> {
+  params: Promise<T>
+  searchParams?: Promise<K>
+}

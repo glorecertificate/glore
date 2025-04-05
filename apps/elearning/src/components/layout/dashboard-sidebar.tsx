@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { ProgressBarState } from '@/components/ui/progress-bar'
 import {
   Sidebar,
   SidebarContent,
@@ -39,14 +40,16 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { useDashboard } from '@/hooks/use-dashboard'
 import { useDB } from '@/hooks/use-db'
-import { useNavigation, type Page, type Section } from '@/hooks/use-navigation'
+import { useNavigation, type Page } from '@/hooks/use-navigation'
+import { useProgressBar } from '@/hooks/use-progress-bar'
 import { Route } from '@/lib/navigation'
-import { Cookie } from '@/lib/storage'
+import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
-import { type Auth, type User } from '@/services/db'
+import { type User } from '@/services/db'
 
-export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
+export const NavOrgs = ({ items }: { items: User['orgs'] }) => {
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
@@ -54,7 +57,7 @@ export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
 
   const onOrgSelect = useCallback((org: User['orgs'][number]) => {
     setActiveOrg(org)
-    document.cookie = `${Cookie.CurrentOrg}=${org.id}; path=/; max-age=31536000`
+    setCookie(Cookie.CurrentOrg, org.id)
   }, [])
 
   return (
@@ -63,7 +66,7 @@ export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="justify-center data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="justify-center py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
               {activeOrg.avatar_url && (
@@ -71,11 +74,11 @@ export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
               )}
               {open && (
                 <>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                  <div className="grid flex-1 text-left leading-tight">
                     <span className="truncate font-semibold">{activeOrg.name}</span>
                     <span className="truncate text-xs font-normal text-muted-foreground">{titleize(activeOrg.role)}</span>
                   </div>
-                  <ChevronsUpDownIcon className="ml-auto" />
+                  <ChevronsUpDownIcon className="ml-auto size-4" />
                 </>
               )}
             </SidebarMenuButton>
@@ -112,6 +115,7 @@ export const OrgSwitch = ({ items }: { items: User['orgs'] }) => {
 
 const NavButton = ({
   Icon,
+  className,
   color,
   isActive,
   isActivePage,
@@ -119,17 +123,18 @@ const NavButton = ({
   title,
   ...props
 }: React.ComponentProps<typeof SidebarMenuButton> & Page) => {
-  const { openMobile, setOpenMobile } = useSidebar()
-  const [active, setActive] = useState(false)
+  const { state } = useProgressBar()
+  const { isMobile, openMobile, setOpenMobile } = useSidebar()
+  const [isNewPage, setIsNewPage] = useState(false)
 
   useEffect(() => {
-    if (!isActive) {
-      setActive(false)
+    if (state !== ProgressBarState.InProgress) {
+      setIsNewPage(false)
     }
-  }, [isActive])
+  }, [state])
 
   const onClick = useCallback(() => {
-    setActive(true)
+    setIsNewPage(true)
 
     if (openMobile) {
       setOpenMobile(false)
@@ -137,16 +142,24 @@ const NavButton = ({
   }, [openMobile, setOpenMobile])
 
   const isHighlighted = useMemo(() => {
-    if (isActivePage) return true
-    if (isActive) return true
-    if (active) return true
-    return false
-  }, [active, isActive, isActivePage])
+    if (state === ProgressBarState.InProgress) {
+      return isNewPage
+    }
+    return isActivePage || isActive
+  }, [isActive, isActivePage, isNewPage, state])
 
   return (
-    <SidebarMenuButton asChild isActive={isHighlighted} isActivePage={isActivePage} onClick={onClick} tooltip={title} {...props}>
-      <DashboardLink color={color} hasLoader to={path}>
-        {Icon && <Icon className={cn(color && `text-${color}`)} />}
+    <SidebarMenuButton
+      asChild
+      className={cn('text-sm', className)}
+      isActive={isHighlighted}
+      isActivePage={isActivePage}
+      onClick={onClick}
+      tooltip={title}
+      {...props}
+    >
+      <DashboardLink color={color} hasLoader={!isMobile} to={path}>
+        {Icon && <Icon className={cn('size-4', color && `text-${color}`)} />}
         <span>{title}</span>
       </DashboardLink>
     </SidebarMenuButton>
@@ -171,7 +184,7 @@ const NavCollapsible = ({
         {page.subPages?.length ? (
           <>
             <CollapsibleTrigger asChild>
-              <NavButton className="font-medium" onClick={toggleCollapsible} {...page} />
+              <NavButton onClick={toggleCollapsible} {...page} />
             </CollapsibleTrigger>
             <CollapsibleTrigger asChild>
               <SidebarMenuAction className="cursor-pointer data-[state=open]:rotate-90">
@@ -209,24 +222,30 @@ const NavCollapsible = ({
             </CollapsibleContent>
           </>
         ) : (
-          <NavButton className="font-medium" {...page} />
+          <NavButton {...page} />
         )}
       </SidebarMenuItem>
     </Collapsible>
   )
 }
 
-const NavSection = ({ pages }: Section) => (
-  <SidebarGroup>
-    <SidebarMenu className="mt-4">
-      {pages.map(page => (
-        <NavCollapsible key={page.title} {...page} />
-      ))}
-    </SidebarMenu>
-  </SidebarGroup>
-)
+const NavSection = () => {
+  const { routes } = useNavigation()
 
-const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
+  return (
+    <SidebarGroup>
+      <SidebarMenu className="mt-4">
+        {routes.dashboard.map(page => (
+          <NavCollapsible key={page.title} {...page} />
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+}
+
+const NavUser = ({ user }: { user: User }) => {
+  const { auth } = useDB()
+  const { open } = useSidebar()
   const t = useTranslations()
 
   const initials = useMemo(() => {
@@ -236,6 +255,8 @@ const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
       .map(name => name[0])
       .join('')
   }, [user])
+
+  const currentOrg = useMemo(() => user.orgs.find(org => org.isActive), [user])
 
   const logOutUser = useCallback(async () => {
     await auth.signOut()
@@ -248,32 +269,36 @@ const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
-              <Avatar className="relative h-8 w-8 overflow-visible">
-                <AvatarImage alt={user.name} className="rounded-lg" src={user.avatar_url} />
+              <Avatar className="relative size-8 overflow-visible">
+                <AvatarImage alt={user.name} className="overflow-visible rounded-lg" src={user.avatar_url} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                {user.currentOrg.avatar_url && (
+                {currentOrg?.avatar_url && (
                   <Image
-                    alt="logo"
+                    alt={currentOrg.name}
                     className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
-                    src={user.currentOrg.avatar_url}
+                    src={currentOrg.avatar_url}
                     width={14}
                   />
                 )}
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
-              </div>
-              <ChevronsUpDownIcon className="ml-auto size-4" />
+              {open && (
+                <>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{user.name}</span>
+                    <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
+                  </div>
+                  <ChevronsUpDownIcon className="ml-auto size-4" />
+                </>
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-68 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-68 rounded-lg pt-2"
             side="top"
             sideOffset={4}
           >
@@ -330,25 +355,22 @@ const NavUser = ({ auth, user }: { auth: Auth; user: User }) => {
 
 export const DashboardSidebar = ({
   defaultOpen,
-  user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   defaultOpen?: boolean
-  user: User
 }) => {
-  const { auth } = useDB()
-  const { routes } = useNavigation()
+  const { user } = useDashboard()
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <OrgSwitch items={user.orgs} />
+        <NavOrgs items={user.orgs} />
       </SidebarHeader>
       <SidebarContent>
-        <NavSection pages={routes.dashboard} />
+        <NavSection />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser auth={auth} user={user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

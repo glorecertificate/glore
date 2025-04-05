@@ -11,10 +11,7 @@ const Tabs = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 
 const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) => (
   <TabsPrimitive.List
-    className={cn(
-      'inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted p-[3px] text-muted-foreground',
-      className,
-    )}
+    className={cn('inline-flex w-fit items-center justify-center rounded-lg bg-muted text-muted-foreground', className)}
     data-slot="tabs-list"
     {...props}
   />
@@ -30,7 +27,7 @@ const TabsTrigger = ({
 
 const tabsTrigger = cva(
   [
-    'inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground transition-shadow',
+    'inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-transparent text-sm font-medium whitespace-nowrap text-foreground transition-shadow',
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:outline-1',
     'disabled:pointer-events-none disabled:opacity-50',
     'data-[state=active]:pointer-events-none data-[state=active]:shadow-sm',
@@ -39,9 +36,15 @@ const tabsTrigger = cva(
   ],
   {
     defaultVariants: {
+      size: 'default',
       variant: 'default',
     },
     variants: {
+      size: {
+        default: 'px-2 py-2',
+        sm: 'px-4 text-sm',
+        lg: 'px-6 py-3 text-lg',
+      },
       variant: {
         default: [
           'focus-visible:ring-ring/50 focus-visible:outline-ring',

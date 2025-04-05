@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { metadata } from '@/lib/metadata'
-import { type PageProps } from '@/lib/types'
+import { type PageProps } from '@/lib/navigation'
 
 interface CertificatePageProps extends PageProps<{ uuid: string }> {}
 

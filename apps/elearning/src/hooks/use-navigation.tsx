@@ -9,11 +9,10 @@ import {
   MessageCircleQuestionIcon,
   SettingsIcon,
   type LucideIcon,
-  type LucideProps,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { Icon } from '@/components/ui/icon'
+import { DashboardIcon, type CustomIcon } from '@/components/ui/icon'
 import { Route } from '@/lib/navigation'
 import { SemanticColor } from '@/lib/theme'
 
@@ -24,7 +23,7 @@ export interface Section {
 
 export interface Page {
   color?: SemanticColor
-  Icon?: LucideIcon | ((props: LucideProps) => React.JSX.Element)
+  Icon?: LucideIcon | CustomIcon
   isActive?: boolean
   isActivePage?: boolean
   path: Route
@@ -40,7 +39,7 @@ export interface Page {
 const setActivePages = (pages: Page[], pathname: Route): Page[] =>
   pages.flatMap(page => ({
     ...page,
-    isActive: pathname === page.path || page.subPages?.some(subPage => pathname === subPage.path),
+    isActive: pathname === page.path || pathname.split('/').at(1) === page.path.split('/').at(1),
     isActivePage: pathname === page.path,
     subPages: page.subPages?.map(subPage => ({
       ...subPage,
@@ -59,7 +58,7 @@ export const useNavigation = () => {
           {
             title: t('dashboard'),
             path: Route.Home,
-            Icon: () => <Icon name="dashboard" />,
+            Icon: DashboardIcon,
           },
           {
             title: t('modules'),
@@ -134,7 +133,6 @@ export const useNavigation = () => {
 
   return {
     page,
-    pages,
     pathname,
     routes,
     subPage,

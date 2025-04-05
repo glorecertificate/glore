@@ -14,7 +14,6 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
   const [showPassword, setShowPassword] = useState(false)
 
   const inputType = useMemo(() => (showPassword ? 'text' : 'password'), [showPassword])
-  const isDisabled = useMemo(() => value === '' || value === undefined || disabled, [disabled, value])
   const srText = useMemo(() => `${showPassword ? t('hide') : t('show')} password`, [showPassword, t])
 
   const togglePassword = useCallback(() => {
@@ -26,13 +25,13 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
       <Input className={cn('hide-password-toggle pr-10', className)} type={inputType} {...props} />
       <Button
         className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
-        disabled={isDisabled}
+        disabled={disabled}
         onClick={togglePassword}
         size="sm"
         type="button"
         variant="ghost"
       >
-        {showPassword && !isDisabled ? (
+        {showPassword && !disabled ? (
           <EyeIcon aria-hidden="true" className="h-4 w-4" />
         ) : (
           <EyeOffIcon aria-hidden="true" className="h-4 w-4" />

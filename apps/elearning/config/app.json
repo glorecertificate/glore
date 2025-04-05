@@ -3,7 +3,6 @@
   "title": "GloRe Certificate",
   "description": "GloRe Certificate is a platform for learning and issuing certificates.",
   "slug": "glore",
-  "version": "0.1.0",
   "url": "https://elearning.glorecertificate.net",
   "keywords": ["glore", "certificate"],
   "image": "https://elearning.glorecertificate.net/opengraph.png",

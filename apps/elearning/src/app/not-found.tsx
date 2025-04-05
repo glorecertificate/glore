@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-import { ErrorView } from '@/components/error-view'
+import { ErrorView } from '@/components/common/error-view'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { Route } from '@/lib/navigation'

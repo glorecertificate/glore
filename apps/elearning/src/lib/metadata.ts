@@ -3,6 +3,7 @@ import { type Metadata, type ResolvingMetadata } from 'next'
 import { asset, Asset } from '@/lib/storage'
 import { getLocale, getTranslations, type MessageKey } from '@/services/i18n'
 import app from 'config/app.json'
+import i18n from 'config/i18n.json'
 
 const metadataBase: Metadata = {
   title: app.title,
@@ -13,7 +14,7 @@ const metadataBase: Metadata = {
   manifest: Asset.Manifest,
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   openGraph: {
-    alternateLocale: app.locale,
+    alternateLocale: i18n.defaultLocale,
     countryName: app.country,
     emails: app.email,
     images: app.image,

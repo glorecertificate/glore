@@ -15,6 +15,7 @@ export default eslintConfig({
   namedImports: ['react'],
   react: 'nextjs',
   sortArrayValues: ['src/**/*.ts?(x)'],
+  sortInterfaces: false,
   sortObjectKeys: ['*.ts'],
   tailwindCss: true,
   tsconfigRootDir: import.meta.dirname,

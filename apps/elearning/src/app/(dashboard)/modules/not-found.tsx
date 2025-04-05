@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-import { ErrorView } from '@/components/error-view'
+import { ErrorView } from '@/components/common/error-view'
 import { DashboardButton } from '@/components/layout/dashboard-button'
 import { Route } from '@/lib/navigation'
 import { SemanticColor } from '@/lib/theme'

@@ -1,6 +1,7 @@
 import eslintConfig from '@repo/eslint-config'
 
 export default eslintConfig({
+  disabled: ['@next/next/no-assign-module-variable'],
   exportsLast: false,
   importGroups: [
     ['side-effect', 'side-effect-style'],

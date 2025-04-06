@@ -21,7 +21,7 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
   const router = useRouter()
   const t = useTranslations('Modules')
 
-  const { module } = useMemo(() => ({ module: localize(props.module, locale) }), [locale, props.module])
+  const module = useMemo(() => localize(props.module, locale), [locale, props.module])
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())

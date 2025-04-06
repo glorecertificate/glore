@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownAZIcon, ArrowUpAZIcon, HistoryIcon, SlidersHorizontalIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { type LocalizedModule, type Module } from '@/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,7 +19,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useLocale } from '@/hooks/use-locale'
-import { type LocalizedModule, type Module } from '@/services/db'
 
 import { ModuleCard } from './module-card'
 
@@ -141,18 +141,18 @@ export const ModulesList = () => {
       </header>
       <main className="container flex-1 py-6">
         <Tabs defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
-          <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row">
-            <TabsList className="border">
-              <TabsTrigger value="all" variant="primary">
+          <div className="mb-6 flex h-auto flex-col justify-between gap-4 sm:flex-row">
+            <TabsList className="flex w-full border md:w-auto">
+              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value="all">
                 {t('modulesAll')}
               </TabsTrigger>
-              <TabsTrigger value={ModuleStatus.NotStarted} variant="primary">
+              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.NotStarted}>
                 {t('modulesNotStarted')}
               </TabsTrigger>
-              <TabsTrigger value={ModuleStatus.InProgress} variant="primary">
+              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.InProgress}>
                 {t('modulesInProgress')}
               </TabsTrigger>
-              <TabsTrigger value={ModuleStatus.Completed} variant="primary">
+              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.Completed}>
                 {t('modulesCompleted')}
               </TabsTrigger>
             </TabsList>
@@ -162,35 +162,35 @@ export const ModulesList = () => {
                   <Button className="h-9" size="sm" variant="outline">
                     {nameSort ? (
                       nameSort === ModuleSort.Asc ? (
-                        <ArrowDownAZIcon className="mr-2 h-4 w-4" />
+                        <ArrowDownAZIcon className="mr-1 h-4 w-4" />
                       ) : (
-                        <ArrowUpAZIcon className="mr-2 h-4 w-4" />
+                        <ArrowUpAZIcon className="mr-1 h-4 w-4" />
                       )
                     ) : (
-                      <SlidersHorizontalIcon className="mr-2 h-4 w-4" />
+                      <SlidersHorizontalIcon className="mr-1 h-4 w-4" />
                     )}
                     {t('filterName')}
                     {nameSort && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t('filterSortByName')}</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('sortByName')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => setNameSort(ModuleSort.Asc)}>
-                    <ArrowDownAZIcon className="mr-2 h-4 w-4" />
-                    {t('filterSortAtoZ')}
+                    <ArrowDownAZIcon className="mr-1 h-4 w-4" />
+                    {t('sortAtoZ')}
                     {nameSort === ModuleSort.Asc && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setNameSort(ModuleSort.Desc)}>
-                    <ArrowUpAZIcon className="mr-2 h-4 w-4" />
-                    {t('filterSortZtoA')}
+                    <ArrowUpAZIcon className="mr-1 h-4 w-4" />
+                    {t('sortZtoA')}
                     {nameSort === ModuleSort.Desc && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                   </DropdownMenuItem>
                   {nameSort && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setNameSort(null)}>
-                        <XIcon className="mr-2 h-4 w-4" />
+                        <XIcon className="mr-1 h-4 w-4" />
                         {t('clearFilter')}
                       </DropdownMenuItem>
                     </>
@@ -202,19 +202,19 @@ export const ModulesList = () => {
                   <DropdownMenuTrigger asChild>
                     <Button className="h-9" size="sm" variant="outline">
                       <PercentIcon className="mr-2 h-4 w-4" />
-                      {t('filterCompletion')}
+                      {t('completion')}
                       {progressSort && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>{t('filterSortByCompletion')}</DropdownMenuLabel>
+                    <DropdownMenuLabel>{t('sortByCompletion')}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setProgressSort('asc')}>
-                      {t('filterSortLowestFirst')}
+                      {t('sortLowestFirst')}
                       {progressSort === 'asc' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setProgressSort('desc')}>
-                      {t('filterSortHighestFirst')}
+                      {t('sortHighestFirst')}
                       {progressSort === 'desc' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                     </DropdownMenuItem>
                     {progressSort && (
@@ -232,27 +232,27 @@ export const ModulesList = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="h-9" size="sm" variant="outline">
-                    <HistoryIcon className="mr-2 h-4 w-4" />
-                    {t('filterDate')}
+                    <HistoryIcon className="mr-1 h-4 w-4" />
+                    {t('date')}
                     {dateSort && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t('filterSortByDate')}</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('sortByDate')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => setDateSort(ModuleDateSort.Newest)}>
-                    {t('filterSortNewestFirst')}
+                    {t('sortNewestFirst')}
                     {dateSort === ModuleDateSort.Newest && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setDateSort(ModuleDateSort.Oldest)}>
-                    {t('filterSortOldestFirst')}
+                    {t('sortOldestFirst')}
                     {dateSort === ModuleDateSort.Oldest && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                   </DropdownMenuItem>
                   {dateSort && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setDateSort(null)}>
-                        <XIcon className="mr-2 h-4 w-4" />
+                        <XIcon className="mr-1 h-4 w-4" />
                         {t('clearFilter')}
                       </DropdownMenuItem>
                     </>
@@ -276,21 +276,21 @@ export const ModulesList = () => {
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger>
                         <TagsIcon className="mr-2 h-4 w-4" />
-                        {t('filterStatus')}
+                        {t('status')}
                         {statusFilter && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                       </DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
                         <DropdownMenuSubContent>
                           <DropdownMenuItem onClick={() => setStatusFilter('not-started')}>
-                            {t('filterStatusNotStarted')}
+                            {t('statusNotStarted')}
                             {statusFilter === 'not-started' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => setStatusFilter('in-progress')}>
-                            {t('filterStatusInProgress')}
+                            {t('statusInProgress')}
                             {statusFilter === 'in-progress' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => setStatusFilter('completed')}>
-                            {t('filterStatusCompleted')}
+                            {t('statusCompleted')}
                             {statusFilter === 'completed' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                           </DropdownMenuItem>
                           {statusFilter && (
@@ -309,23 +309,23 @@ export const ModulesList = () => {
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
                       <StarIcon className="mr-2 h-4 w-4" />
-                      {t('filterDifficulty')}
+                      {t('difficulty')}
                       {difficultyFilter && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                       <DropdownMenuSubContent>
                         <DropdownMenuItem onClick={() => setDifficultyFilter('beginner')}>
-                          {t('filterDifficultyBeginner')}
+                          {t('difficultyBeginner')}
                           {difficultyFilter === 'beginner' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setDifficultyFilter('intermediate')}>
-                          {t('filterDifficultyIntermediate')}
+                          {t('difficultyIntermediate')}
                           {difficultyFilter === 'intermediate' && (
                             <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>
                           )}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setDifficultyFilter('advanced')}>
-                          {t('filterDifficultyAdvanced')}
+                          {t('difficultyAdvanced')}
                           {difficultyFilter === 'advanced' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                         </DropdownMenuItem>
                         {difficultyFilter && (
@@ -343,21 +343,21 @@ export const ModulesList = () => {
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
                       <ClockIcon className="mr-2 h-4 w-4" />
-                      {t('filterDuration')}
+                      {t('duration')}
                       {durationFilter && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                     </DropdownMenuSubTrigger>
                     <DropdownMenuPortal>
                       <DropdownMenuSubContent>
                         <DropdownMenuItem onClick={() => setDurationFilter('short')}>
-                          {t('filterDurationShort')}
+                          {t('durationShort')}
                           {durationFilter === 'short' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setDurationFilter('medium')}>
-                          {t('filterDurationMedium')}
+                          {t('durationMedium')}
                           {durationFilter === 'medium' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setDurationFilter('long')}>
-                          {t('filterDurationLong')}
+                          {t('durationLong')}
                           {durationFilter === 'long' && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
                         </DropdownMenuItem>
                         {durationFilter && (
@@ -385,7 +385,7 @@ export const ModulesList = () => {
               </DropdownMenu> */}
               {hasActiveFilters && (
                 <Button className="h-9" onClick={clearAllFilters} size="sm" variant="ghost">
-                  <XIcon className="mr-2 h-4 w-4" />
+                  <XIcon className="mr-1 h-4 w-4" />
                   {t('clearAllFilters')}
                 </Button>
               )}
@@ -394,10 +394,10 @@ export const ModulesList = () => {
           {hasActiveFilters && (
             <div className="mb-4 flex flex-wrap gap-2">
               {nameSort && (
-                <Badge className="flex items-center gap-1" variant="secondary">
+                <Badge className="flex items-center gap-1" color="secondary">
                   {t('filterName')}
                   {': '}
-                  {nameSort === ModuleSort.Asc ? t('filterSortAtoZ') : t('filterSortZtoA')}
+                  {nameSort === ModuleSort.Asc ? t('sortAtoZ') : t('sortZtoA')}
                   <Button className="h-3 w-3" onClick={() => setNameSort(null)} size="icon" variant="link">
                     <XIcon className="ml-1 size-5 text-zinc-950" />
                   </Button>
@@ -405,31 +405,31 @@ export const ModulesList = () => {
               )}
               {/* {progressSort && (
                 <Badge className="flex items-center gap-1" variant="secondary">
-                  {t('filterCompletion')}
+                  {t('completion')}
                   {': '}
                   {progressSort === 'asc' ? 'Lowest First' : 'Highest First'}
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setProgressSort(null)} />
                 </Badge>
               )} */}
               {dateSort && (
-                <Badge className="flex items-center gap-1" variant="secondary">
-                  {t('filterDate')}
+                <Badge className="flex items-center gap-1" color="secondary">
+                  {t('date')}
                   {': '}
                   {dateSort === ModuleDateSort.Newest ? 'Newest First' : 'Oldest First'}
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setDateSort(null)} />
                 </Badge>
               )}
               {difficultyFilter && (
-                <Badge className="flex items-center gap-1" variant="secondary">
-                  {t('filterDifficulty')}
+                <Badge className="flex items-center gap-1" color="secondary">
+                  {t('difficulty')}
                   {': '}
                   {difficultyFilter.charAt(0).toUpperCase() + difficultyFilter.slice(1)}
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setDifficultyFilter(null)} />
                 </Badge>
               )}
               {durationFilter && (
-                <Badge className="flex items-center gap-1" variant="secondary">
-                  {t('filterDuration')}
+                <Badge className="flex items-center gap-1" color="secondary">
+                  {t('duration')}
                   {': '}
                   {durationFilter === 'short' ? 'Short' : durationFilter === 'medium' ? 'Medium' : 'Long'}
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setDurationFilter(null)} />
@@ -437,7 +437,7 @@ export const ModulesList = () => {
               )}
               {/* {statusFilter && (
                 <Badge className="flex items-center gap-1" variant="secondary">
-                  {t('filterStatus')}
+                  {t('status')}
                   {': '}
                   {statusFilter === 'not-started' ? 'Not Started' : statusFilter === 'in-progress' ? 'In Progress' : 'Completed'}
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setStatusFilter(null)} />
@@ -464,7 +464,7 @@ export const ModulesList = () => {
                 )}
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredModules.map(module => (
                   <ModuleCard key={module.id} module={module} />
                 ))}

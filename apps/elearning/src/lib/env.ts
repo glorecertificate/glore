@@ -2,6 +2,7 @@
  * Application environment.
  */
 export const Env = {
+  STORAGE_URL: process.env.NEXT_PUBLIC_STORAGE_URL!,
   SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
   isAnalyze: process.env.ANALYZE === 'true',

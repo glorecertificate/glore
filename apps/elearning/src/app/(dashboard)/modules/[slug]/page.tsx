@@ -1,32 +1,35 @@
 import { notFound } from 'next/navigation'
 
-import { metadata } from '@/lib/metadata'
+import api from '@/api'
+import { ModuleFlow } from '@/components/modules/module-flow'
+import { appMetadata } from '@/lib/metadata'
 import { type PageProps } from '@/lib/navigation'
-import { fetchModule } from '@/services/db'
 import { getLocale } from '@/services/i18n'
 
 export default async ({ params }: PageProps<{ slug: string }>) => {
   const { slug } = await params
   if (!slug) notFound()
 
-  const pageModule = await fetchModule(slug)
+  const pageModule = await api.modules.fetchOne(slug)
   if (!pageModule) notFound()
 
-  return pageModule.title.en
+  console.log('pageModule', pageModule)
+
+  return <ModuleFlow />
 
   // return <ModuleFlow module={pageModule} />
 }
 
 export const generateMetadata = async ({ params }: PageProps<{ slug: string }>) => {
   const { slug } = (await params) ?? {}
-  if (!slug) return await metadata()
+  if (!slug) return await appMetadata()
 
-  const pageModule = await fetchModule(slug)
-  if (!pageModule) return await metadata()
+  const pageModule = await api.modules.fetchOne(slug)
+  if (!pageModule) return await appMetadata()
 
   const locale = await getLocale()
 
-  return metadata({
+  return appMetadata({
     title: pageModule.title[locale],
     description: pageModule.description?.[locale],
   })

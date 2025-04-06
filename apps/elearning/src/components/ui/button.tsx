@@ -6,15 +6,15 @@ import { LoaderIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-export interface ButtonProps extends React.ComponentProps<'button'>, VariantProps<typeof button> {
+export interface ButtonProps extends Omit<React.ComponentProps<'button'>, 'color'>, VariantProps<typeof button> {
   asChild?: boolean
   loading?: boolean
   loadingText?: string
 }
 
-const ButtonRoot = ({ asChild = false, className, size, variant, ...props }: ButtonProps) => {
+const ButtonRoot = ({ asChild = false, className, color, size, variant, ...props }: ButtonProps) => {
   const Component = useMemo(() => (asChild ? Slot : 'button'), [asChild])
-  return <Component className={cn(button({ variant, size, className }))} data-slot="button" {...props} />
+  return <Component className={cn(button({ variant, size, color, className }))} data-slot="button" {...props} />
 }
 
 export const Button = ({ children, disabled, loading, loadingText, ...props }: ButtonProps) => {
@@ -44,26 +44,31 @@ const button = cva(
   ],
   {
     defaultVariants: {
-      variant: 'ghost',
-      size: 'md',
+      color: 'default',
+      variant: 'default',
+      size: 'base',
     },
     variants: {
-      size: {
-        sm: 'h-8 rounded-md px-3 has-[>svg]:px-2.5',
-        md: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-      },
-      variant: {
-        default: 'bg-accent text-accent-foreground shadow-xs hover:bg-accent-foreground hover:text-accent',
-        outline: 'border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'p-0 font-normal underline-offset-4 hover:underline',
+      color: {
+        default: 'bg-accent text-accent-foreground hover:bg-accent-foreground hover:text-accent',
         primary: 'bg-primary text-primary-foreground shadow-xs hover:bg-primary-accent',
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary-accent',
         tertiary: 'bg-tertiary text-tertiary-foreground shadow-xs hover:bg-tertiary-accent',
         destructive:
           'bg-destructive text-white shadow-xs hover:bg-destructive-foreground focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+        muted: 'bg-muted text-muted-foreground shadow-xs hover:bg-muted-foreground hover:text-muted',
+      },
+      variant: {
+        default: '',
+        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        ghost: 'bg-transparent hover:bg-accent hover:text-accent-foreground',
+        link: '!h-auto border-none bg-transparent !p-0 font-normal hover:bg-transparent hover:text-accent-foreground',
+      },
+      size: {
+        sm: 'h-7 px-2 text-sm has-[>svg]:px-2',
+        base: 'h-8 px-3 has-[>svg]:px-2.5',
+        lg: 'h-9 px-4 has-[>svg]:px-3',
+        icon: 'size-9',
       },
     },
   },

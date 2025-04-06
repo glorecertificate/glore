@@ -32,9 +32,9 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
         variant="ghost"
       >
         {showPassword && !disabled ? (
-          <EyeIcon aria-hidden="true" className="h-4 w-4" />
+          <EyeIcon aria-hidden="true" className="h-4.5 w-4.5" />
         ) : (
-          <EyeOffIcon aria-hidden="true" className="h-4 w-4" />
+          <EyeOffIcon aria-hidden="true" className="h-4.5 w-4.5" />
         )}
         <span className="sr-only">{srText}</span>
       </Button>

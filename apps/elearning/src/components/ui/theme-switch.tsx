@@ -2,20 +2,21 @@ import { MonitorSmartphoneIcon, MoonStarIcon, SunIcon, type LucideIcon } from 'l
 import { useTranslations } from 'next-intl'
 import { useTheme } from 'next-themes'
 
-import { Button } from '@/components/ui/button'
+import { Button, type ButtonProps } from '@/components/ui/button'
 import { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
-interface ThemeSwitchButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+interface ThemeSwitchButtonProps extends ButtonProps {
   active: boolean
   Icon: LucideIcon
 }
 
-const ThemeSwitchButton = ({ Icon, active, children, ...props }: ThemeSwitchButtonProps) => (
+const ThemeSwitchButton = ({ Icon, active, children, className, ...props }: ThemeSwitchButtonProps) => (
   <Button
     className={cn(
       'inline-flex h-6 items-center justify-center gap-1.5 px-2 text-sm font-medium whitespace-nowrap transition-all',
       active && 'cursor-default bg-accent',
+      className,
     )}
     data-orientation="horizontal"
     role="tab"

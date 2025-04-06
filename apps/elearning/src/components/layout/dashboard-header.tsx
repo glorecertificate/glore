@@ -42,6 +42,12 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
   const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
   const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
 
+  const pageIconClass = useMemo(() => {
+    if (!page?.color) return ''
+    if (page.color === 'muted') return 'text-muted-foreground'
+    return `text-${page.color}`
+  }, [page?.color])
+
   useEffect(() => {
     window.addEventListener('scroll', onScroll)
     return () => {
@@ -52,17 +58,17 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
   return (
     <header
       className={cn(
-        'ml-[1px] flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12',
+        'ml-[1px] flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-14',
         isScrolled && 'border-b shadow',
         className,
       )}
       {...props}
     >
       <div className="flex w-full items-center justify-between gap-2 px-4">
-        <div className="flex grow items-center gap-2">
+        <div className="flex h-10 grow items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <SidebarTrigger className="-ml-1 [&_svg:not([class*=text-])]:text-foreground/80" />
+              <SidebarTrigger className="-ml-1 [&_svg]:stroke-foreground/64 [&_svg]:text-foreground/64" />
             </TooltipTrigger>
             <TooltipContent side="right">
               <p className="text-xs font-medium">{sidebarAction}</p>
@@ -71,17 +77,17 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
           </Tooltip>
 
           {!isHomePage && (
-            <Breadcrumb className="ml-1">
+            <Breadcrumb className="ml-1 flex h-full items-center">
               <BreadcrumbList>
                 <BreadcrumbItem>
                   {subPage ? (
                     <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
-                      {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                      {page?.Icon && <page.Icon className={pageIconClass} size={20} />}
                       {page?.title}
                     </BreadcrumbButton>
                   ) : (
                     <BreadcrumbPage>
-                      {page?.Icon && <page.Icon className={cn(page?.color && `text-${page.color}`)} size={20} />}
+                      {page?.Icon && <page.Icon className={pageIconClass} size={20} />}
                       {page?.title}
                     </BreadcrumbPage>
                   )}

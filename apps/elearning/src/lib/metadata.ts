@@ -5,7 +5,27 @@ import { getLocale, getTranslations, type MessageKey } from '@/services/i18n'
 import app from 'config/app.json'
 import i18n from 'config/i18n.json'
 
-const metadataBase: Metadata = {
+/**
+ * Generic page metadata.
+ */
+export interface AppMetadata {
+  description?: string
+  image?: string
+  separator?: string
+  title?: string
+}
+
+/**
+ * Localized page metadata.
+ */
+export interface LocalizedAppMetadata {
+  description?: MessageKey
+  image?: string
+  separator?: string
+  title?: MessageKey
+}
+
+const defaults: Metadata = {
   title: app.title,
   applicationName: app.title,
   category: app.category,
@@ -51,58 +71,50 @@ const metadataBase: Metadata = {
   },
 }
 
-export interface MetadataProps {
-  description?: string
-  image?: string
-  separator?: string
-  title?: string
-}
-
-export interface MetadataFnProps {
-  description?: MessageKey
-  image?: string
-  separator?: string
-  title?: MessageKey
-}
-
-export const metadata = async (props?: MetadataProps) => {
+/**
+ * Merges the default metadata with the provided page metadata.
+ */
+export const appMetadata = async (props?: AppMetadata) => {
   const { description, image, separator = ' - ', title } = props ?? {}
 
   const locale = await getLocale()
-  const pageTitle = title ? `${title} ${separator} ${metadataBase.title as string}` : metadataBase.title
+  const pageTitle = title ? `${title} ${separator} ${defaults.title as string}` : defaults.title
 
   return {
-    ...metadataBase,
+    ...defaults,
     title: pageTitle,
     ...(description ? { description } : {}),
     openGraph: {
-      ...metadataBase.openGraph,
+      ...defaults.openGraph,
       ...(description ? { description } : {}),
       ...(image ? { images: image } : {}),
-      locale: locale ?? metadataBase.openGraph?.locale,
+      locale: locale ?? defaults.openGraph?.locale,
     },
   } as Metadata
 }
 
-export const metadataFn =
-  ({ description, image, separator = ' - ', title }: MetadataFnProps) =>
+/**
+ * Merges the default metadata with the provided page metadata and translates it.
+ */
+export const generateAppMetadata =
+  ({ description, image, separator = ' - ', title }: LocalizedAppMetadata) =>
   async (_: object, parent: ResolvingMetadata): Promise<Metadata> => {
     const t = await getTranslations()
     const locale = await getLocale()
     const previous = await parent
 
-    const pageTitle = title ? `${t(title)} ${separator} ${metadataBase.title as string}` : metadataBase.title
+    const pageTitle = title ? `${t(title)} ${separator} ${defaults.title as string}` : defaults.title
 
     return {
-      ...metadataBase,
+      ...defaults,
       ...previous,
       title: pageTitle,
       ...(description ? { description: t(description) } : {}),
       openGraph: {
-        ...metadataBase.openGraph,
+        ...defaults.openGraph,
         ...(description ? { description: t(description) } : {}),
         ...(image ? { images: image } : {}),
-        locale: locale ?? metadataBase.openGraph?.locale,
+        locale: locale ?? defaults.openGraph?.locale,
       },
     } as Metadata
   }

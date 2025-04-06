@@ -15,10 +15,10 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Image } from '@/components/ui/image'
 import { Input } from '@/components/ui/input'
-import { Link } from '@/components/ui/link'
+import { ExternalLink, Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
-import { Route } from '@/lib/navigation'
+import { externalRoute, Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 
 const LoginFormFooter = () => {
@@ -26,11 +26,11 @@ const LoginFormFooter = () => {
 
   return (
     <Dialog>
-      <div className="text-center text-sm">
+      <div className="text-center text-[13px]">
         {t.rich('Auth.signupMessage', {
           link: content => (
             <DialogTrigger asChild>
-              <Button className="underline underline-offset-4" variant="link">
+              <Button className="text-[13px] font-medium" variant="link">
                 {content}
               </Button>
             </DialogTrigger>
@@ -49,9 +49,9 @@ const LoginFormFooter = () => {
             b: content => <b>{content}</b>,
             p: content => <p className="text-sm text-muted-foreground">{content}</p>,
             link: content => (
-              <a className="underline underline-offset-4" href="#">
+              <ExternalLink className="underline underline-offset-4" href={externalRoute('Website')}>
                 {content}
-              </a>
+              </ExternalLink>
             ),
           })}
         </div>
@@ -129,11 +129,13 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
 
   return (
     <AuthForm
+      className="mt-8"
       footer={<LoginFormFooter />}
       form={form}
       loading={submitting}
       onSubmit={form.handleSubmit(onSubmit)}
       submitLabel={t('login')}
+      submitLoadingLabel={t('loggingIn')}
       subtitle={t('loginSubtitle')}
       title={t('loginTitle')}
       {...props}
@@ -158,7 +160,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
           <FormItem>
             <div className="flex items-center justify-between">
               <FormLabel>{t('passwordLabel')}</FormLabel>
-              <Link className="text-sm underline-offset-4 hover:underline" href={Route.PasswordReset}>
+              <Link className="text-[13px]" href={Route.PasswordReset}>
                 {t('forgotPassword')}
               </Link>
             </div>

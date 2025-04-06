@@ -12,18 +12,24 @@ import {
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { DashboardIcon, type CustomIcon } from '@/components/ui/icon'
+import { DashboardIcon, type Icon } from '@/components/ui/icons'
 import { Route } from '@/lib/navigation'
-import { SemanticColor } from '@/lib/theme'
+import { type ColorVariant } from '@/lib/theme'
 
+/**
+ * Section of the sidebar
+ */
 export interface Section {
   name?: string
   pages: Page[]
 }
 
+/**
+ * Navigation item
+ */
 export interface Page {
-  color?: SemanticColor
-  Icon?: LucideIcon | CustomIcon
+  color?: ColorVariant
+  Icon?: LucideIcon | Icon
   isActive?: boolean
   isActivePage?: boolean
   path: Route
@@ -47,6 +53,9 @@ const setActivePages = (pages: Page[], pathname: Route): Page[] =>
     })),
   }))
 
+/**
+ * Hook returning information about the website navigation.
+ */
 export const useNavigation = () => {
   const t = useTranslations('Navigation')
   const pathname = usePathname() as Route
@@ -64,19 +73,19 @@ export const useNavigation = () => {
             title: t('modules'),
             path: Route.Modules,
             Icon: BookOpenIcon,
-            color: SemanticColor.Primary,
+            color: 'muted',
           },
           {
             title: t('certificates'),
             path: Route.Certificates,
             Icon: AwardIcon,
-            color: SemanticColor.Secondary,
+            color: 'muted',
           },
           {
             title: t('docs'),
             path: Route.Docs,
             Icon: MessageCircleQuestionIcon,
-            color: SemanticColor.Tertiary,
+            color: 'muted',
             subPages: [
               {
                 title: t('docsIntro'),
@@ -96,6 +105,7 @@ export const useNavigation = () => {
             title: t('admin'),
             path: Route.Admin,
             Icon: CogIcon,
+            color: 'muted',
           },
         ],
         pathname,

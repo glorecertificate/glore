@@ -32,7 +32,7 @@ export const TrueFalseStepView = ({ onAnswer, step, userAnswer }: TrueFalseStepV
             className={`flex-1 ${isAnswered && step.correctAnswer === true ? 'bg-green-600' : ''} ${isAnswered && userAnswer === true && !isCorrect ? 'bg-red-600' : ''}`}
             disabled={isAnswered}
             onClick={() => !isAnswered && onAnswer(true)}
-            variant={userAnswer === true ? 'default' : 'outline'}
+            variant={userAnswer === true ? undefined : 'outline'}
           >
             {'True'}
             {isAnswered && step.correctAnswer === true && <CheckCircle className="ml-2 h-4 w-4" />}
@@ -42,7 +42,7 @@ export const TrueFalseStepView = ({ onAnswer, step, userAnswer }: TrueFalseStepV
             className={`flex-1 ${isAnswered && step.correctAnswer === false ? 'bg-green-600' : ''} ${isAnswered && userAnswer === false && !isCorrect ? 'bg-red-600' : ''}`}
             disabled={isAnswered}
             onClick={() => !isAnswered && onAnswer(false)}
-            variant={userAnswer === false ? 'default' : 'outline'}
+            variant={userAnswer === false ? undefined : 'outline'}
           >
             {'False'}
             {isAnswered && step.correctAnswer === false && <CheckCircle className="ml-2 h-4 w-4" />}

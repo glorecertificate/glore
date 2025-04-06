@@ -128,7 +128,7 @@
 
 @layer base {
   ::selection {
-    @apply bg-foreground/25;
+    @apply bg-foreground/10;
   }
   * {
     @apply border-border outline-ring/50;
@@ -136,9 +136,18 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .dark {
+    ::selection {
+      @apply bg-foreground/25;
+    }
+  }
 }
 
 @layer utilities {
+  .text-muted {
+    @apply text-muted;
+  }
   .text-primary {
     @apply text-primary;
   }

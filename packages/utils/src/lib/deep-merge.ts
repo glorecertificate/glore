@@ -29,3 +29,5 @@ export const deepMerge = <P extends AnyObject>(target: P, ...sources: P[]): P =>
 
   return target
 }
+
+export default deepMerge

@@ -1,4 +1,6 @@
-import { type AnyObject } from '@repo/utils'
+import { type AnyObject, type HTTPUrl } from '@repo/utils'
+
+import app from 'config/app.json'
 
 /**
  * Application static routes.
@@ -22,9 +24,30 @@ export enum Route {
 }
 
 /**
+ * Application route with a dynamic segment.
+ */
+export type DynamicRoute = `${Route}/${string}`
+
+/**
+ * Application external routes.
+ */
+export const ExternalRoute = Object.freeze({
+  App: app.url,
+  Website: app.website,
+})
+
+/**
  * Generates a dynamic URL using the provided route and parameter.
  */
-export const dynamicRoute = (route: Route, param: number | string) => `${route}/${param}` as `${Route}/${string}`
+export const route = (route: Route, path?: number | string) => (path ? (`${route}/${path}` as DynamicRoute) : route)
+
+/**
+ * Generates an external URL using the provided route and optional path.
+ */
+export const externalRoute = (route: keyof typeof ExternalRoute, path?: string) => {
+  const url = ExternalRoute[route]
+  return (path ? `${url}/${path}` : url) as HTTPUrl
+}
 
 /**
  * Properties of a page component.

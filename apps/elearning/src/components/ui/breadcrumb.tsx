@@ -6,7 +6,7 @@ import { type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
-  <nav aria-label="breadcrumb" className="ml-0" data-slot="breadcrumb" {...props} />
+  <nav aria-label="breadcrumb" className="ml-0 h-full" data-slot="breadcrumb" {...props} />
 )
 
 const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
@@ -25,7 +25,6 @@ const BreadcrumbButton = ({ className, to, ...props }: DashboardLinkProps & Butt
   <DashboardButton
     className={cn('text-base text-foreground/75 hover:text-foreground', className)}
     data-slot="breadcrumb-link"
-    iconSize={18}
     to={to}
     variant="ghost"
     {...props}

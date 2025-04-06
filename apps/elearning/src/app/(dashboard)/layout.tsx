@@ -1,16 +1,16 @@
 import { cookies } from 'next/headers'
 
+import api from '@/api'
 import { DashboardHeader } from '@/components/layout/dashboard-header'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { DashboardProvider } from '@/components/providers/dashboard-provider'
-import ProgressBar, { ProgressBarProvider } from '@/components/ui/progress-bar'
+import { ProgressBar, ProgressBarProvider } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Cookie } from '@/lib/storage'
-import { fetchAllModules, fetchUser } from '@/services/db'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const user = await fetchUser()
-  const modules = await fetchAllModules()
+  const user = await api.users.fetchCurrent()
+  const modules = await api.modules.fetchAll()
 
   const { get } = await cookies()
   const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'

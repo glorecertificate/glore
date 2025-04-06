@@ -72,7 +72,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
     <AuthForm
       header={
         <div className="flex flex-col gap-2">
-          <Image className="mb-4" src={Asset.EmailSent} width={250} />
+          <Image className="mb-4" src={Asset.EmailSent} width={220} />
           <h1 className="text-2xl font-bold">{t('passwordResetSent')}</h1>
           <p className="mb-2 text-left text-sm text-balance text-muted-foreground">{t('passwordResetMessage')}</p>
           <Button asChild variant="outline">
@@ -87,17 +87,18 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
   ) : (
     <>
       <AuthForm
+        className="mt-2"
         footer={
           <div className="flex w-full justify-end">
-            <Link href={Route.Login}>
-              <Button className="text-center text-sm">{t('backToLogin')}</Button>
+            <Link className="mt-1 text-[13px] font-medium" href={Route.Login}>
+              {t('backToLogin')}
             </Link>
           </div>
         }
         form={form}
         header={
           <div className="flex flex-col gap-2">
-            <Image className="mb-4" src={Asset.PasswordForgot} width={250} />
+            <Image className="mb-2" src={Asset.PasswordForgot} width={260} />
             <h1 className="text-2xl font-bold">{t('passwordResetTitle')}</h1>
             <p className="mb-2 text-left text-sm text-balance text-muted-foreground">{t('passwordResetSubtitle')}</p>
           </div>

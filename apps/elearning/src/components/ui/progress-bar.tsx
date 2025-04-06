@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 
 import { useNavigation } from '@/hooks/use-navigation'
 import { Route } from '@/lib/navigation'
-import { type SemanticColor } from '@/lib/theme'
+import { type ColorVariant } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
 export enum ProgressBarState {
@@ -14,8 +14,8 @@ export enum ProgressBarState {
 }
 
 interface ProgressBarContext {
-  color?: SemanticColor
-  colorize: (color?: SemanticColor) => void
+  color?: ColorVariant
+  colorize: (color?: ColorVariant | null) => void
   done: () => void
   reset: () => void
   start: () => void
@@ -32,7 +32,7 @@ export const useProgressBar = () => {
 }
 
 export const ProgressBarProvider = (props: React.PropsWithChildren) => {
-  const [color, setColor] = useState<SemanticColor | undefined>(undefined)
+  const [color, setColor] = useState<ColorVariant | undefined>(undefined)
   const [state, setState] = useState<ProgressBarState>(ProgressBarState.Initial)
   const [value, setValue] = useState(0)
 
@@ -71,8 +71,8 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
     setState(ProgressBarState.Initial)
   }, [])
 
-  const colorize = useCallback((color?: SemanticColor) => {
-    setColor(color)
+  const colorize = useCallback((color?: ColorVariant | null) => {
+    if (color) setColor(color)
   }, [])
 
   useEffect(() => {
@@ -125,4 +125,3 @@ export const ProgressBar = ({ children }: React.PropsWithChildren) => {
     </>
   )
 }
-export default ProgressBar

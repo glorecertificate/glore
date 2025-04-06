@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 
-import { metadata } from '@/lib/metadata'
+import { appMetadata } from '@/lib/metadata'
 import { type PageProps } from '@/lib/navigation'
 
 interface CertificatePageProps extends PageProps<{ uuid: string }> {}
@@ -14,9 +14,9 @@ export default async ({ params }: CertificatePageProps) => {
 
 export const generateMetadata = async ({ params }: CertificatePageProps) => {
   const { uuid } = (await params) ?? {}
-  if (!uuid) return await metadata()
+  if (!uuid) return await appMetadata()
 
-  return metadata({
+  return appMetadata({
     title: `Certificate ${uuid}`,
     description: `Certificate ${uuid} description`,
   })

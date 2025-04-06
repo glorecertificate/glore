@@ -1,8 +1,8 @@
 import { ModulesList } from '@/components/modules/modules-list'
-import { metadataFn } from '@/lib/metadata'
+import { generateAppMetadata } from '@/lib/metadata'
 
 export default () => <ModulesList />
 
-export const generateMetadata = metadataFn({
+export const generateMetadata = generateAppMetadata({
   title: 'Navigation.modules',
 })

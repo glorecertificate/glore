@@ -2,60 +2,126 @@
 
 import { useMemo } from 'react'
 
-import { ArrowRightIcon, CalendarIcon, ClockIcon } from 'lucide-react'
+import { CalendarIcon, ClockIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
+import { titleize } from '@repo/utils'
+
+import { type LocalizedModule } from '@/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
-import { dynamicRoute, Route } from '@/lib/navigation'
-import { type LocalizedModule } from '@/services/db'
+import { useLocale } from '@/hooks/use-locale'
+import { route, Route } from '@/lib/navigation'
+import { Asset } from '@/lib/storage'
 
 interface ModuleCardProps {
   module: LocalizedModule
 }
 
 export const ModuleCard = ({ module }: ModuleCardProps) => {
-  const moduleDate = useMemo(() => new Date(module.created_at).toLocaleDateString(), [module.created_at])
+  const [locale] = useLocale()
+  const t = useTranslations()
+
+  const moduleUrl = useMemo(() => route(Route.Modules, module.skill.slug), [module.skill.slug])
+
+  const moduleDate = useMemo(() => {
+    const date = new Date(module.updated_at)
+    const now = new Date()
+    const diff = Math.abs(now.getTime() - date.getTime())
+    const diffInDays = Math.floor(diff / (1000 * 3600 * 24))
+    const diffInMonths = Math.floor(diffInDays / 30)
+    const diffInYears = Math.floor(diffInDays / 365)
+
+    if (diffInYears > 0) return t('Common.updatedYearsAgo', { count: diffInYears })
+    if (diffInMonths > 0) return t('Common.updatedMonthsAgo', { count: diffInMonths })
+    if (diffInDays > 1) return t('Common.updatedDaysAgo', { count: diffInDays })
+    if (diffInDays === 1) return t('Common.updatedYesterday')
+    return t('Common.updatedToday')
+  }, [module.updated_at, t])
+
+  const moduleDifficulty = useMemo(() => {
+    switch (module.difficulty) {
+      case 'beginner':
+        return t('Modules.difficultyBeginner')
+      case 'intermediate':
+        return t('Modules.difficultyIntermediate')
+      case 'advanced':
+        return t('Modules.difficultyAdvanced')
+      default:
+        return module.difficulty
+    }
+  }, [module.difficulty, t])
+
+  const moduleDuration = useMemo(() => {
+    switch (module.duration) {
+      case 'short':
+        return t('Modules.durationShort')
+      case 'medium':
+        return t('Modules.durationMedium')
+      case 'long':
+        return t('Modules.durationLong')
+      default:
+        return module.duration
+    }
+  }, [module.duration, t])
 
   return (
-    <Card className="flex h-full flex-col overflow-hidden">
-      <div className="relative h-48 w-full">
-        <Image alt={module.title} className="object-cover" fill src={module.image_url || '/placeholder.svg'} />
-        {/* {module.status === 'completed' && (
-          <div className="absolute top-2 right-2 rounded-full bg-green-500 p-1 text-white">
-            <CheckCircleIcon className="h-5 w-5" />
+    <Card className="flex h-full flex-col justify-between overflow-hidden pt-0">
+      <div>
+        <div className="relative h-48 w-full">
+          <Link href={moduleUrl} title={t('Modules.startModule')}>
+            <Image alt={module.title} className="object-cover" fill src={module.image_url || Asset.Placeholder} />
+          </Link>
+        </div>
+        <CardHeader className="pt-6 pb-4">
+          <Link href={moduleUrl}>
+            <h3 className="text-lg font-semibold">{module.title}</h3>
+          </Link>
+          <p className="text-sm text-muted-foreground">{module.description}</p>
+        </CardHeader>
+        <CardContent className="flex-1">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Badge className="text-xs" color="primary">
+              {module.skill.icon_url && (
+                <Image
+                  alt={module.skill.slug}
+                  className="mr-1 h-3 w-3 rounded-full"
+                  height={16}
+                  src={module.skill.icon_url}
+                  width={16}
+                />
+              )}
+              {module.skill.name[locale]}
+            </Badge>
+            {module.skill.subskills.slice(0, 3).map(subskill => (
+              <Badge className="flex items-center text-[10px]" color="secondary.accent" key={subskill.id}>
+                {titleize(subskill.name[locale])}
+              </Badge>
+            ))}
           </div>
-        )} */}
-      </div>
-      <CardHeader className="pb-2">
-        <div className="flex items-start justify-between">
-          <h3 className="text-lg font-semibold">{module.title}</h3>
-        </div>
-      </CardHeader>
-      <CardContent className="flex-1">
-        <p className="mb-4 text-sm text-muted-foreground">{module.description}</p>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {module.difficulty && (
-            <Badge className="text-xs" variant="outline">
-              {module.difficulty.charAt(0).toUpperCase() + module.difficulty.slice(1)}
-            </Badge>
-          )}
-          {module.duration && (
-            <Badge className="flex items-center text-xs" variant="outline">
-              <ClockIcon className="mr-1 h-3 w-3" />
-              {module.duration}
-            </Badge>
-          )}
-          {module.created_at && (
-            <Badge className="flex items-center text-xs" variant="outline">
-              <CalendarIcon className="mr-1 h-3 w-3" />
-              {moduleDate}
-            </Badge>
-          )}
-        </div>
-        {/* <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-2">
+            {moduleDifficulty && (
+              <Badge className="text-xs" color="muted" variant="outline">
+                {moduleDifficulty}
+              </Badge>
+            )}
+            {moduleDuration && (
+              <Badge className="flex items-center text-xs" color="muted" variant="outline">
+                <ClockIcon className="mr-1 h-3 w-3" />
+                {moduleDuration}
+              </Badge>
+            )}
+            {module.created_at && (
+              <Badge className="flex items-center text-xs" color="muted" variant="outline">
+                <CalendarIcon className="mr-1 h-3 w-3" />
+                {moduleDate}
+              </Badge>
+            )}
+          </div>
+          {/* <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
           <span className="flex items-center">
             {module.status === 'not-started' ? <PlayIcon className="mr-1 h-4 w-4" /> : <ClockIcon className="mr-1 h-4 w-4" />}
             {module.completedLessons}
@@ -68,17 +134,14 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
           </span>
         </div>
         <Progress className="h-2" value={module.progress} /> */}
-      </CardContent>
+        </CardContent>
+      </div>
       <CardFooter>
-        <Button asChild className="w-full">
-          <Link href={dynamicRoute(Route.Modules, module.skill.slug)}>
-            {}
-            {/* {module.status === 'not-started' && 'Start Module'}
-            {module.status === 'in-progress' && 'Continue Learning'}
-            {module.status === 'completed' && 'Review Module'} */}
-            <ArrowRightIcon className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+        <Link className="w-full" href={moduleUrl}>
+          <Button className="w-full" variant="outline">
+            {t('Modules.startModule')}
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   )

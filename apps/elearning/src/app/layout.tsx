@@ -5,7 +5,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { NextIntlProvider } from '@/components/providers/next-intl-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { metadataFn } from '@/lib/metadata'
+import { generateAppMetadata } from '@/lib/metadata'
 import { getLocale, getTranslations } from '@/services/i18n'
 import app from 'config/app.json'
 
@@ -23,7 +23,7 @@ export default async ({ children }: React.PropsWithChildren) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <NextIntlProvider>
           <ThemeProvider>
             {children}
@@ -37,6 +37,6 @@ export default async ({ children }: React.PropsWithChildren) => {
   )
 }
 
-export const generateMetadata = metadataFn({
+export const generateMetadata = generateAppMetadata({
   description: 'App.description',
 })

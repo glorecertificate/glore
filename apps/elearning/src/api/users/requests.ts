@@ -3,12 +3,11 @@ import { redirect } from 'next/navigation'
 
 import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
-import { mapModule } from '@/services/db/utils'
+import { getDB } from '@/services/db'
 
-import { getDB } from './client'
 import type { User } from './types'
 
-export const fetchUser = async (): Promise<User> => {
+export const fetchCurrent = async (): Promise<User> => {
   const db = await getDB()
 
   const { get } = await cookies()
@@ -62,56 +61,4 @@ export const fetchUser = async (): Promise<User> => {
     name: `${userData.first_name} ${userData.last_name}`,
     orgs,
   }
-}
-
-export const fetchAllModules = async () => {
-  const db = await getDB()
-
-  const { data, error } = await db.from('modules').select(
-    `
-      *,
-      skills (
-        *,
-        subskills (
-          *
-        )
-      ),
-      module_steps(count)
-    `,
-  )
-
-  if (error || !data) {
-    if (error) console.error(error)
-    return []
-  }
-
-  return data.map(module => mapModule(module))
-}
-
-export const fetchModule = async (slug: string) => {
-  const db = await getDB()
-
-  const { data, error } = await db
-    .from('modules')
-    .select(
-      `
-        *,
-        skills!inner (
-          *,
-          subskills (
-            *
-          )
-        ),
-        module_steps(count)
-      `,
-    )
-    .eq('skills.slug', slug)
-    .single()
-
-  if (!data) {
-    if (error) console.error(error)
-    return null
-  }
-
-  return mapModule(data)
 }

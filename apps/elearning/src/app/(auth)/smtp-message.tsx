@@ -1,4 +1,4 @@
-import { Link } from '@/components/ui/link'
+import { ExternalLink } from '@/components/ui/link'
 
 export default () => (
   <div>
@@ -8,9 +8,9 @@ export default () => (
         {'increase the rate limit.'}
       </small>
       <div>
-        <Link href="https://supabase.com/docs/guides/auth/auth-smtp" target="_blank">
+        <ExternalLink href="https://supabase.com/docs/guides/auth/auth-smtp" target="_blank">
           {'Learn more '}
-        </Link>
+        </ExternalLink>
       </div>
     </div>
   </div>

@@ -11,7 +11,7 @@ const Tabs = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 
 const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) => (
   <TabsPrimitive.List
-    className={cn('inline-flex w-fit items-center justify-center rounded-lg bg-muted text-muted-foreground', className)}
+    className={cn('inline-flex h-8 w-fit items-center justify-center rounded-lg bg-muted text-muted-foreground', className)}
     data-slot="tabs-list"
     {...props}
   />
@@ -19,36 +19,32 @@ const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimi
 
 const TabsTrigger = ({
   className,
-  variant,
+  color,
+  size,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger> & VariantProps<typeof tabsTrigger>) => (
-  <TabsPrimitive.Trigger className={cn(tabsTrigger({ className, variant }))} data-slot="tabs-trigger" {...props} />
+  <TabsPrimitive.Trigger className={cn(tabsTrigger({ className, color, size }))} data-slot="tabs-trigger" {...props} />
 )
 
 const tabsTrigger = cva(
   [
-    'inline-flex h-[calc(100%-1px)] flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-md border border-transparent text-sm font-medium whitespace-nowrap text-foreground transition-shadow',
+    'inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent text-sm font-medium whitespace-nowrap text-foreground',
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:outline-1',
     'disabled:pointer-events-none disabled:opacity-50',
-    'data-[state=active]:pointer-events-none data-[state=active]:shadow-sm',
+    'data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow',
     '[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4',
     'dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:text-foreground',
   ],
   {
     defaultVariants: {
+      color: 'default',
       size: 'default',
-      variant: 'default',
     },
     variants: {
-      size: {
-        default: 'px-2 py-2',
-        sm: 'px-4 text-sm',
-        lg: 'px-6 py-3 text-lg',
-      },
-      variant: {
+      color: {
         default: [
-          'focus-visible:ring-ring/50 focus-visible:outline-ring',
-          'data-[state=active]:bg-background dark:data-[state=active]:bg-input/30',
+          'text-muted-foreground focus-visible:ring-ring/50 focus-visible:outline-ring',
+          'data-[state=active]:bg-background dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground',
         ],
         primary: [
           'focus-visible:ring-primary/50 focus-visible:outline-primary',
@@ -63,6 +59,11 @@ const tabsTrigger = cva(
           'focus-visible:ring-tertiary/50 focus-visible:outline-tertiary',
           'data-[state=active]:bg-tertiary dark:data-[state=active]:bg-tertiary-accent',
         ],
+      },
+      size: {
+        default: 'px-2 text-[11.5px] md:px-4 md:text-sm',
+        sm: 'px-4 text-sm',
+        lg: 'px-6 py-3 text-lg',
       },
     },
   },

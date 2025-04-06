@@ -7,6 +7,7 @@ export default eslintConfig({
     ['builtin'],
     ['react', 'next', '@next'],
     ['external'],
+    ['@repo'],
     ['internal'],
     ['parent', 'index', 'sibling'],
   ],

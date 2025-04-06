@@ -3,11 +3,11 @@ import type { ClassValue } from 'class-variance-authority/types'
 import { twMerge } from 'tailwind-merge'
 
 /**
- * Utility function to merge and apply conditional class names.
+ * Merges and applies class name values conditionally.
  */
 export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
 
 /**
- * Utility function to statically apply tailwind classes.
+ * Statically applies and verifies Tailwind class names.
  */
 export const tw = (raw: TemplateStringsArray, ...values: string[]) => cn(String.raw({ raw }, ...values))

@@ -32,11 +32,9 @@ export const CertificateCard = ({ certificate }: CertificateCardProps) => {
       <CardContent className="flex-1 pt-4">
         <div className="mb-4 flex items-center justify-between">
           {certificate.status === 'issued' ? (
-            <Badge className="bg-green-600" variant="default">
-              {'Issued'}
-            </Badge>
+            <Badge className="bg-green-600">{'Issued'}</Badge>
           ) : (
-            <Badge className="bg-amber-500" variant="secondary">
+            <Badge className="bg-amber-500" color="secondary">
               {'Under Review'}
             </Badge>
           )}

@@ -380,6 +380,7 @@ const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'li'>) =>
 const SidebarMenuButton = ({
   asChild = false,
   className,
+  color,
   isActive = false,
   isActivePage = false,
   size,
@@ -399,6 +400,7 @@ const SidebarMenuButton = ({
   const Base = (
     <Component
       className={cn(sidebarMenuButton({ variant, size }), isActivePage && 'pointer-events-none cursor-default', className)}
+      color={color || undefined}
       data-active={isActive}
       data-sidebar="menu-button"
       data-size={size}
@@ -431,25 +433,25 @@ const sidebarMenuButton = cva(
     'active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
     'disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50',
     'data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground',
-    '[&>span:last-child]:truncate [&>svg]:shrink-0',
+    '[&>span:last-child]:truncate [&>svg]:shrink-0 [&>svg]:grow-0',
     'peer/menu-button group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!',
   ],
   {
     variants: {
-      variant: {
-        default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-        outline:
-          'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+      defaultVariants: {
+        variant: 'default',
+        size: 'base',
       },
       size: {
-        default: 'py-2 text-sm',
+        base: 'py-2 text-sm',
         sm: 'py-1 text-xs',
         lg: 'py-3 text-sm group-data-[collapsible=icon]:p-0!',
       },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: {
+        default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+        outline:
+          'shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+      },
     },
   },
 )

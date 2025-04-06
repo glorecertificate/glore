@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownAZIcon, ArrowUpAZIcon, HistoryIcon, SlidersHorizontalIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type LocalizedModule, type Module } from '@/api'
+import { type Module } from '@/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useLocale } from '@/hooks/use-locale'
+import { localize } from '@/lib/utils'
 
 import { ModuleCard } from './module-card'
 
@@ -39,9 +40,12 @@ enum ModuleDateSort {
 }
 
 export const ModulesList = () => {
-  const { modules } = useDashboard()
+  const dashboard = useDashboard()
   const [locale] = useLocale()
   const t = useTranslations('Modules')
+
+  const modules = useMemo(() => localize(dashboard.modules, locale), [dashboard.modules, locale])
+
   const [activeTab, setActiveTab] = useState<'all' | ModuleStatus>('all')
   const [nameSort, setNameSort] = useState<ModuleSort | null>(null)
   // const [progressSort, setProgressSort] = useState<ModuleSort | null>(null)
@@ -49,16 +53,6 @@ export const ModulesList = () => {
   const [durationFilter, setDurationFilter] = useState<Module['duration']>(null)
   const [difficultyFilter, setDifficultyFilter] = useState<Module['difficulty']>(null)
   // const [statusFilter, setStatusFilter] = useState<ModuleStatus | null>(null)
-
-  const localizedModules = useMemo(
-    () =>
-      modules.map(module => ({
-        ...module,
-        title: module.title[locale],
-        description: module.description?.[locale],
-      })) as LocalizedModule[],
-    [locale, modules],
-  )
 
   const hasActiveFilters = useMemo(
     // nameSort || progressSort || dateSort || durationFilter || difficultyFilter || statusFilter,
@@ -68,7 +62,7 @@ export const ModulesList = () => {
 
   const filteredModules = useMemo(
     () =>
-      localizedModules
+      modules
         .filter(module => {
           // if (activeTab === 'not-started' && module.status !== 'not-started') return false
           // if (activeTab === 'in-progress' && module.status !== 'in-progress') return false
@@ -108,7 +102,7 @@ export const ModulesList = () => {
           }
           return a.title.localeCompare(b.title)
         }),
-    [nameSort, dateSort, durationFilter, difficultyFilter, localizedModules],
+    [dateSort, difficultyFilter, durationFilter, nameSort, modules],
   )
 
   const handleTabChange = useCallback((value: string) => {

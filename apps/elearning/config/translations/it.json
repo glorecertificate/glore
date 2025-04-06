@@ -122,7 +122,8 @@
     "statusCompleted": "Completato",
     "statusInProgress": "In corso",
     "statusNotStarted": "Non è iniziato",
-    "startModule": "Inizia il modulo"
+    "startModule": "Inizia il modulo",
+    "stepCount": "Step {count} di {total}"
   },
   "Certificates": {
     "title": "Certificati",

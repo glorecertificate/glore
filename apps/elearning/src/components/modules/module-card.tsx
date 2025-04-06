@@ -7,22 +7,21 @@ import { useTranslations } from 'next-intl'
 
 import { titleize } from '@repo/utils'
 
-import { type LocalizedModule } from '@/api'
+import { type BaseModule } from '@/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
-import { useLocale } from '@/hooks/use-locale'
 import { route, Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
+import { type Localized } from '@/services/i18n'
 
 interface ModuleCardProps {
-  module: LocalizedModule
+  module: Localized<BaseModule>
 }
 
 export const ModuleCard = ({ module }: ModuleCardProps) => {
-  const [locale] = useLocale()
   const t = useTranslations()
 
   const moduleUrl = useMemo(() => route(Route.Modules, module.skill.slug), [module.skill.slug])
@@ -94,11 +93,11 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
                   width={16}
                 />
               )}
-              {module.skill.name[locale]}
+              {module.skill.name}
             </Badge>
             {module.skill.subskills.slice(0, 3).map(subskill => (
               <Badge className="flex items-center text-[10px]" color="secondary.accent" key={subskill.id}>
-                {titleize(subskill.name[locale])}
+                {titleize(subskill.name)}
               </Badge>
             ))}
           </div>

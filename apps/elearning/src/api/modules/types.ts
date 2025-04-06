@@ -1,4 +1,5 @@
-import { type Database, type LocalizedJson, type Tables } from '@/services/db'
+import { type Database, type Tables } from '@/services/db'
+import { type WithLocale } from '@/services/i18n'
 
 export enum ModuleStatus {
   NotStarted = 'not-started',
@@ -6,55 +7,33 @@ export enum ModuleStatus {
   Completed = 'completed',
 }
 
-export interface Module extends Omit<Tables<'modules'>, 'title' | 'description'> {
-  title: LocalizedJson
-  description?: LocalizedJson
+export interface Module extends WithLocale<Tables<'modules'>> {
   skill: Skill
-  steps?: ModuleStep[]
+  steps: ModuleStep[]
 }
 
-export interface BaseModule extends Omit<Module, 'steps'> {
+export interface BaseModule extends WithLocale<Tables<'modules'>> {
+  skill: Skill
   stepsCount: number
-}
-
-export type LocalizedModule = Module & {
-  title: string
-  description?: string
 }
 
 export type ModuleStepType = Database['public']['Enums']['module_step_type']
 
-export interface ModuleStep extends Omit<Tables<'module_steps'>, 'title' | 'description' | 'content'> {
-  title: LocalizedJson
-  description?: LocalizedJson
-  content: LocalizedJson
+export interface ModuleStep extends WithLocale<Tables<'module_steps'>> {
   type: ModuleStepType
   questions?: ModuleQuestion[]
   subskillEvaluations?: ModuleSubskillEvaluation[]
   skillEvaluation?: ModuleSkillEvaluation
 }
 
-export interface ModuleQuestion extends Omit<Tables<'module_questions'>, 'description' | 'true_answer' | 'false_answer'> {
-  description?: LocalizedJson
-  trueAnswer: LocalizedJson
-  falseAnswer: LocalizedJson
-}
+export interface ModuleQuestion extends WithLocale<Tables<'module_questions'>> {}
 
-export interface ModuleSkillEvaluation extends Omit<Tables<'module_skill_evaluations'>, 'description'> {
-  description?: LocalizedJson
-}
+export interface ModuleSkillEvaluation extends WithLocale<Tables<'module_skill_evaluations'>> {}
 
-export interface ModuleSubskillEvaluation extends Omit<Tables<'module_subskill_evaluations'>, 'description'> {
-  description?: LocalizedJson
-}
+export interface ModuleSubskillEvaluation extends WithLocale<Tables<'module_subskill_evaluations'>> {}
 
-export interface Skill extends Omit<Tables<'skills'>, 'name' | 'description'> {
-  name: LocalizedJson
-  description?: LocalizedJson
+export interface Skill extends WithLocale<Tables<'skills'>> {
   subskills: Subskill[]
 }
 
-export interface Subskill extends Omit<Tables<'subskills'>, 'name' | 'description'> {
-  name: LocalizedJson
-  description?: LocalizedJson
-}
+export interface Subskill extends WithLocale<Tables<'subskills'>> {}

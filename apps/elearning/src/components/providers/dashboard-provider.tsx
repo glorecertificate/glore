@@ -2,10 +2,10 @@
 
 import { createContext } from 'react'
 
-import { type Module, type User } from '@/api'
+import { type BaseModule, type User } from '@/api'
 
 interface DashboardContext {
-  modules: Module[]
+  modules: BaseModule[]
   user: User
 }
 

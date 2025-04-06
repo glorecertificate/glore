@@ -119,6 +119,7 @@
     "clearFilter": "Clear",
     "clearAllFilters": "Clear all filters",
     "startModule": "Start module",
+    "stepCount": "Step {count} of {total}",
     "noModulesFound": "No modules found",
     "notFound": "Module not found",
     "notFoundMessage": "The module you are looking for does not exist or has been moved",

@@ -118,11 +118,12 @@
     "statusNotStarted": "No comenzó",
     "clearFilter": "Borrar",
     "clearAllFilters": "Borrar filtros",
+    "startModule": "Iniciar módulo",
+    "stepCount": "Paso {count} de {total}",
     "noModulesFound": "No se encontraron módulos",
     "notFound": "Modulo no encontrado",
     "notFoundMessage": "El módulo que estás buscando no existe o ha sido movido",
-    "backTo": "Volver a todos los módulos",
-    "startModule": "Módulo de inicio"
+    "backTo": "Volver a todos los módulos"
   },
   "Certificates": {
     "title": "Certificados",

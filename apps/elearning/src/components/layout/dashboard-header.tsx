@@ -105,11 +105,11 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
           )}
         </div>
         <DashboardLink
-          className={cn(page?.path === Route.Home && 'pointer-events-none')}
+          className={cn('mr-2', page?.path === Route.Home && 'pointer-events-none')}
           title={t('Navigation.goToDashboard')}
           to={Route.Home}
         >
-          <Logo className="mr-2" height={logoSize} />
+          <Logo height={logoSize} />
         </DashboardLink>
       </div>
     </header>

@@ -13,11 +13,7 @@ export default async ({ params }: PageProps<{ slug: string }>) => {
   const pageModule = await api.modules.fetchOne(slug)
   if (!pageModule) notFound()
 
-  console.log('pageModule', pageModule)
-
-  return <ModuleFlow />
-
-  // return <ModuleFlow module={pageModule} />
+  return <ModuleFlow module={pageModule} />
 }
 
 export const generateMetadata = async ({ params }: PageProps<{ slug: string }>) => {

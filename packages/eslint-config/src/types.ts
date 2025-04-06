@@ -134,6 +134,10 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
 
 export interface EslintConfigOptions extends FileOptions, ImportOptions {
   /**
+   * List of rule names to disable.
+   */
+  disabled?: string[]
+  /**
    * Whether to add a newline after the return statement.
    *
    * @default true

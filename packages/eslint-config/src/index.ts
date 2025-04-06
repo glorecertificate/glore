@@ -60,6 +60,7 @@ const DEFAULT_OPTIONS: EslintConfigOptions = {
 const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
   const {
     allowRelativeImports,
+    disabled,
     emptyLineAfterReturn,
     exportsLast,
     files: userFiles,
@@ -248,33 +249,27 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
           'unused-imports/no-unused-imports': RuleSeverity.Error,
         },
       },
-      Array.isArray(sortArrayValues)
-        ? {
-            files: sortArrayValues,
-            plugins: {
-              'sort-array-values': sortArrayValuesPlugin,
-            },
-            rules: {
-              'sort-array-values/sort-array-values': RuleSeverity.Error,
-            },
-          }
-        : {},
-      Array.isArray(sortDestructuredKeys)
-        ? {
-            files: sortDestructuredKeys,
-            rules: {
-              'sort-destructure-keys/sort-destructure-keys': RuleSeverity.Error,
-            },
-          }
-        : {},
-      Array.isArray(sortObjectKeys)
-        ? {
-            files: sortObjectKeys,
-            rules: {
-              'perfectionist/sort-objects': RuleSeverity.Error,
-            },
-          }
-        : {},
+      Array.isArray(sortArrayValues) && {
+        files: sortArrayValues,
+        plugins: {
+          'sort-array-values': sortArrayValuesPlugin,
+        },
+        rules: {
+          'sort-array-values/sort-array-values': RuleSeverity.Error,
+        },
+      },
+      Array.isArray(sortDestructuredKeys) && {
+        files: sortDestructuredKeys,
+        rules: {
+          'sort-destructure-keys/sort-destructure-keys': RuleSeverity.Error,
+        },
+      },
+      Array.isArray(sortObjectKeys) && {
+        files: sortObjectKeys,
+        rules: {
+          'perfectionist/sort-objects': RuleSeverity.Error,
+        },
+      },
       ...(ignoreTs
         ? []
         : typescriptConfig(
@@ -385,44 +380,42 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
               },
             },
           )),
-      react
-        ? {
-            name: '@repo/react',
-            files: jsxFiles,
-            plugins: {
-              plugins: {
-                react: reactPlugin,
-                'react-hooks': reactHooksPlugin,
-                ...(hasNextJs
-                  ? {
-                      '@next/next': nextPlugin,
-                    }
-                  : {}),
-              },
+      react && {
+        name: '@repo/react',
+        files: jsxFiles,
+        plugins: {
+          plugins: {
+            react: reactPlugin,
+            'react-hooks': reactHooksPlugin,
+            ...(hasNextJs
+              ? {
+                  '@next/next': nextPlugin,
+                }
+              : {}),
+          },
+        },
+        rules: {
+          ...reactPlugin.configs['jsx-runtime'].rules,
+          ...reactHooksPlugin.configs.recommended.rules,
+          ...(hasNextJs
+            ? {
+                ...nextPlugin.configs.recommended.rules,
+                ...nextPlugin.configs['core-web-vitals'].rules,
+              }
+            : {}),
+          '@stylistic/jsx-curly-brace-presence': [
+            RuleSeverity.Error,
+            {
+              children: 'always',
+              propElementValues: 'always',
+              props: 'never',
             },
-            rules: {
-              ...reactPlugin.configs['jsx-runtime'].rules,
-              ...reactHooksPlugin.configs.recommended.rules,
-              ...(hasNextJs
-                ? {
-                    ...nextPlugin.configs.recommended.rules,
-                    ...nextPlugin.configs['core-web-vitals'].rules,
-                  }
-                : {}),
-              '@stylistic/jsx-curly-brace-presence': [
-                RuleSeverity.Error,
-                {
-                  children: 'always',
-                  propElementValues: 'always',
-                  props: 'never',
-                },
-              ],
-              'perfectionist/sort-jsx-props': sortProps === true ? RuleSeverity.Error : RuleSeverity.Off,
-              'react/jsx-uses-react': RuleSeverity.Off,
-              'react/react-in-jsx-scope': RuleSeverity.Off,
-            },
-          }
-        : {},
+          ],
+          'perfectionist/sort-jsx-props': sortProps === true ? RuleSeverity.Error : RuleSeverity.Off,
+          'react/jsx-uses-react': RuleSeverity.Off,
+          'react/react-in-jsx-scope': RuleSeverity.Off,
+        },
+      },
       {
         name: '@repo/configs',
         files: configFiles,
@@ -435,28 +428,26 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
           '@typescript-eslint/no-unsafe-return': RuleSeverity.Off,
         },
       },
-      pandaCss
-        ? {
-            files: ['panda.config.[jt]s', ...files],
-            name: '@repo/pandacss',
-            plugins: {
-              '@pandacss': pandaCssPlugin,
-            },
-            rules: {
-              ...Object.keys(pandaCssPlugin.configs.all.rules).reduce(
-                (rules, name) => ({ ...rules, [name]: RuleSeverity.Error }),
-                {},
-              ),
-              '@pandacss/no-margin-properties': RuleSeverity.Off,
-              '@pandacss/no-physical-properties': RuleSeverity.Off,
-              '@pandacss/prefer-atomic-properties': RuleSeverity.Off,
-              '@pandacss/prefer-composite-properties': RuleSeverity.Off,
-              '@pandacss/prefer-longhand-properties': RuleSeverity.Off,
-              '@pandacss/prefer-shorthand-properties': RuleSeverity.Off,
-              '@pandacss/prefer-unified-property-style': RuleSeverity.Off,
-            },
-          }
-        : {},
+      pandaCss && {
+        files: ['panda.config.[jt]s', ...files],
+        name: '@repo/pandacss',
+        plugins: {
+          '@pandacss': pandaCssPlugin,
+        },
+        rules: {
+          ...Object.keys(pandaCssPlugin.configs.all.rules).reduce(
+            (rules, name) => ({ ...rules, [name]: RuleSeverity.Error }),
+            {},
+          ),
+          '@pandacss/no-margin-properties': RuleSeverity.Off,
+          '@pandacss/no-physical-properties': RuleSeverity.Off,
+          '@pandacss/prefer-atomic-properties': RuleSeverity.Off,
+          '@pandacss/prefer-composite-properties': RuleSeverity.Off,
+          '@pandacss/prefer-longhand-properties': RuleSeverity.Off,
+          '@pandacss/prefer-shorthand-properties': RuleSeverity.Off,
+          '@pandacss/prefer-unified-property-style': RuleSeverity.Off,
+        },
+      },
       ...(prettier
         ? [
             {
@@ -476,29 +467,32 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
             prettierPluginRecommended,
           ]
         : []),
-      tailwindCss
-        ? {
-            name: '@repo/tailwindcss',
-            files,
-            languageOptions: react
-              ? {
-                  parserOptions: {
-                    ecmaFeatures: {
-                      jsx: true,
-                    },
-                  },
-                }
-              : {},
-            plugins: {},
-            rules: {},
-          }
-        : {},
+      tailwindCss && {
+        name: '@repo/tailwindcss',
+        files,
+        languageOptions: react
+          ? {
+              parserOptions: {
+                ecmaFeatures: {
+                  jsx: true,
+                },
+              },
+            }
+          : {},
+        plugins: {},
+        rules: {},
+      },
       {
         name: '@repo/overrides',
         files,
         rules: {
           'arrow-body-style': [RuleSeverity.Error, 'as-needed'],
         },
+      },
+      disabled?.length && {
+        name: '@repo/disabled',
+        files,
+        rules: Object.fromEntries(disabled.map(rule => [rule, RuleSeverity.Off])),
       },
       ...(overrides ?? []),
     ] as Linter.Config[]

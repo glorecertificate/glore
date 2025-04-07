@@ -9,7 +9,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
-import type { Certificate } from '@/lib/_types'
+
+import type { Certificate } from './_types'
 
 interface CertificateCardProps {
   certificate: Certificate

@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { type HTTPUrl } from '@repo/utils'
 
-import { type DynamicRoute, type Route } from '@/lib/navigation'
+import { type Route } from '@/lib/navigation'
 
 export interface LinkBaseProps extends React.PropsWithChildren<NextLinkProps>, VariantProps<typeof link> {
   className?: string
@@ -16,7 +16,7 @@ export interface LinkBaseProps extends React.PropsWithChildren<NextLinkProps>, V
 }
 
 export interface LinkProps extends Omit<LinkBaseProps, 'href'> {
-  href: Route | DynamicRoute
+  href: Route
   title?: string
 }
 

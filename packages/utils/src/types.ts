@@ -28,15 +28,13 @@ export type AnyKey = string | number | symbol
  */
 export type KeysOf<T> = T extends object
   ? {
-      [K in keyof T & string]: 
-        | K 
-        | (T[K] extends object ? `${K}.${KeysOf<T[K]>}` : K);
+      [K in keyof T & string]: K | (T[K] extends object ? `${K}.${KeysOf<T[K]>}` : K)
     }[keyof T & string]
-  : never;
+  : never
 
 /**
  * Record of parameters extracted from segments of a string path.
- * 
+ *
  * @example
  * ```ts
  * type Params = PathParams<'/users/:id/posts/:postId'>

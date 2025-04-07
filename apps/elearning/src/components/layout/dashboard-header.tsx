@@ -23,11 +23,24 @@ import { cn } from '@/lib/utils'
 
 export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const isMobile = useIsMobile()
-  const { page, subPage } = useNavigation()
+  const { sections } = useNavigation()
   const { open } = useSidebar()
   const t = useTranslations()
 
   const [isScrolled, setIsScrolled] = useState(false)
+
+  const pages = useMemo(() => sections.flatMap(section => section.pages), [sections])
+  const page = useMemo(() => pages.find(page => page.isActiveSection), [pages])
+  const subPage = useMemo(() => pages.flatMap(page => page.subPages).find(subPage => subPage.isActive), [pages])
+  const isHomePage = useMemo(() => page?.path === Route.Home, [page])
+  const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
+  const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
+  const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
+  const pageIconClass = useMemo(() => {
+    if (!page?.color) return ''
+    if (page.color === 'muted') return 'text-muted-foreground'
+    return `text-${page.color}`
+  }, [page?.color])
 
   const onWindowScroll = useCallback(() => {
     const scroll =
@@ -36,17 +49,6 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
         : (document.documentElement || document.body.parentNode || document.body).scrollTop
     setIsScrolled(scroll > 0)
   }, [])
-
-  const isHomePage = useMemo(() => page?.path === Route.Home, [page])
-  const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
-  const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
-  const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
-
-  const pageIconClass = useMemo(() => {
-    if (!page?.color) return ''
-    if (page.color === 'muted') return 'text-muted-foreground'
-    return `text-${page.color}`
-  }, [page?.color])
 
   useEffect(() => {
     window.addEventListener('scroll', onWindowScroll)

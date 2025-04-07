@@ -5,7 +5,8 @@ import Markdown from 'react-markdown'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import type { TrueFalseStep } from '@/lib/_types'
+
+import type { TrueFalseStep } from './_types'
 
 interface TrueFalseStepViewProps {
   onAnswer: (answer: boolean) => void

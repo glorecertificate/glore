@@ -1,10 +1,11 @@
 'use client'
 
-import type { EvaluationStep } from '@/lib/_types'
 import Markdown from 'react-markdown'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+import type { EvaluationStep } from './_types'
 
 interface EvaluationStepViewProps {
   onAnswer: (questionId: string, rating: number) => void

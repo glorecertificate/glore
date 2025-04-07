@@ -40,7 +40,7 @@ export const route = <R extends Route>(route: R, params?: PathParams<R>) => {
   return route.replace(/:([a-zA-Z0-9_]+)/g, (_, key) => {
     const url = params[key as keyof PathParams<R>]
     return url as string
-  })
+  }) as Route
 }
 
 export const ExternalRoute = Object.freeze({
@@ -86,7 +86,7 @@ export interface PageBase extends Omit<Page, 'title' | 'subPages'> {
   })[]
 }
 
-export interface PageProps<T extends AnyObject, K extends AnyObject> {
+export interface PageProps<T extends AnyObject, K extends AnyObject = AnyObject> {
   params?: Promise<T>
   searchParams?: Promise<K>
 }

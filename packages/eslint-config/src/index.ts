@@ -497,7 +497,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
       ...(overrides ?? []),
     ] as Linter.Config[]
   )
-    .filter(config => Object.keys(config).length > 0)
+    .filter(config => typeof config === 'object' && Object.keys(config).length > 0)
     .map(config => {
       const configIgnores = [...(ignores ?? []), ...((config as Linter.Config).ignores ?? [])]
       if (configIgnores.length) return { ...config, ignores: configIgnores }

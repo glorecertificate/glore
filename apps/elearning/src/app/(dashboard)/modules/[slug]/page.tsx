@@ -7,7 +7,7 @@ import { type PageProps } from '@/lib/navigation'
 import { getLocale } from '@/services/i18n'
 
 export default async ({ params }: PageProps<{ slug: string }>) => {
-  const { slug } = await params
+  const { slug } = (await params) ?? {}
   if (!slug) notFound()
 
   const pageModule = await api.modules.fetchOne(slug)

@@ -7,9 +7,9 @@ import { LoaderIcon } from 'lucide-react'
 
 import { Link, type LinkProps } from '@/components/ui/link'
 import { ProgressBarState } from '@/components/ui/progress-bar'
-import { type Page } from '@/hooks/use-navigation'
 import { useProgressBar } from '@/hooks/use-progress-bar'
-import { type Route } from '@/lib/navigation'
+import { type Route, type SubPage } from '@/lib/navigation'
+import { type ColorVariant } from '@/lib/theme'
 
 export interface DashboardLinkProps {
   hasLoader?: boolean
@@ -26,7 +26,11 @@ export const DashboardLink = ({
   subPages,
   to,
   ...props
-}: DashboardLinkProps & Omit<LinkProps, 'href'> & Partial<Page>) => {
+}: DashboardLinkProps &
+  Omit<LinkProps, 'href'> & {
+    color?: ColorVariant
+    subPages?: SubPage[]
+  }) => {
   const router = useRouter()
   const progressBar = useProgressBar()
   const [loading, setLoading] = useState(false)

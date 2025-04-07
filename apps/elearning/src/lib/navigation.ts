@@ -1,16 +1,27 @@
-import { type AnyObject, type HTTPUrl } from '@repo/utils'
+import {
+  AwardIcon,
+  BookOpenIcon,
+  CogIcon,
+  HelpCircleIcon,
+  MessageCircleQuestionIcon,
+  SettingsIcon,
+  type LucideIcon,
+} from 'lucide-react'
 
+import { type AnyObject, type HTTPUrl, type PathParams } from '@repo/utils'
+
+import { DashboardIcon, type CustomIcon } from '@/components/ui/icons'
+import { type ColorVariant } from '@/lib/theme'
+import { type MessageKey } from '@/services/i18n'
 import app from 'config/app.json'
 
-/**
- * Application static routes.
- */
 export enum Route {
   Home = '/',
   Login = '/login',
   Logout = '/logout',
   PasswordReset = '/password-reset',
   Modules = '/modules',
+  Module = '/modules/:slug',
   Certificates = '/certificates',
   CertificatesNew = '/certificates/new',
   Docs = '/docs',
@@ -23,36 +34,145 @@ export enum Route {
   About = '/about',
 }
 
-/**
- * Application route with a dynamic segment.
- */
-export type DynamicRoute = `${Route}/${string}`
+export const route = <R extends Route>(route: R, params?: PathParams<R>) => {
+  if (!params) return route
 
-/**
- * Application external routes.
- */
+  return route.replace(/:([a-zA-Z0-9_]+)/g, (_, key) => {
+    const url = params[key as keyof PathParams<R>]
+    return url as string
+  })
+}
+
 export const ExternalRoute = Object.freeze({
   App: app.url,
   Website: app.website,
 })
 
-/**
- * Generates a dynamic URL using the provided route and parameter.
- */
-export const route = (route: Route, path?: number | string) => (path ? (`${route}/${path}` as DynamicRoute) : route)
-
-/**
- * Generates an external URL using the provided route and optional path.
- */
-export const externalRoute = (route: keyof typeof ExternalRoute, path?: string) => {
+export const externalRoute = (
+  route: keyof typeof ExternalRoute,
+  options: {
+    path?: string
+    params?: URLSearchParams
+  } = {},
+) => {
   const url = ExternalRoute[route]
-  return (path ? `${url}/${path}` : url) as HTTPUrl
+  const pathPath = options.path ? `/${options.path}` : ''
+  const searchParams = options.params ? `?${options.params.toString()}` : ''
+  return `${url}${pathPath}${searchParams}` as HTTPUrl
 }
 
-/**
- * Properties of a page component.
- */
-export interface PageProps<T extends AnyObject = AnyObject, K extends AnyObject = AnyObject> {
-  params: Promise<T>
+export type Pathname = Route | `${Route}/${string}`
+
+export interface SubPage {
+  title?: string
+  path: Route
+  isActive?: boolean
+}
+
+export interface Page {
+  title: string
+  path: Route
+  isActive?: boolean
+  isActiveSection?: boolean
+  subPages?: SubPage[]
+  color?: ColorVariant
+  icon?: LucideIcon | CustomIcon
+}
+
+export interface PageBase extends Omit<Page, 'title' | 'subPages'> {
+  title: MessageKey
+  subPages?: (Omit<SubPage, 'title'> & {
+    title?: MessageKey
+  })[]
+}
+
+export interface PageProps<T extends AnyObject, K extends AnyObject> {
+  params?: Promise<T>
   searchParams?: Promise<K>
 }
+
+export interface Section {
+  name?: string
+  pages: Page[]
+  sidebar?: boolean
+  breadcrumbs?: boolean
+}
+
+export interface SectionUntranslated extends Omit<Section, 'name' | 'pages'> {
+  name?: MessageKey
+  pages: PageBase[]
+}
+
+export const sections: SectionUntranslated[] = [
+  {
+    name: 'Navigation.mainSection',
+    sidebar: true,
+    breadcrumbs: true,
+    pages: [
+      {
+        title: 'Navigation.dashboard',
+        path: Route.Home,
+        icon: DashboardIcon,
+      },
+      {
+        title: 'Navigation.modules',
+        path: Route.Modules,
+        icon: BookOpenIcon,
+        color: 'muted',
+        subPages: [
+          {
+            path: Route.Module,
+          },
+        ],
+      },
+      {
+        title: 'Navigation.certificates',
+        path: Route.Certificates,
+        icon: AwardIcon,
+        color: 'muted',
+      },
+      {
+        title: 'Navigation.docs',
+        path: Route.Docs,
+        icon: MessageCircleQuestionIcon,
+        color: 'muted',
+        subPages: [
+          {
+            title: 'Navigation.docsIntro',
+            path: Route.DocsIntro,
+          },
+          {
+            title: 'Navigation.docsTutorials',
+            path: Route.DocsTutorials,
+          },
+          {
+            title: 'Navigation.docs',
+            path: Route.DocsFaq,
+          },
+        ],
+      },
+      {
+        title: 'Navigation.admin',
+        path: Route.Admin,
+        icon: CogIcon,
+        color: 'muted',
+      },
+    ],
+  },
+  {
+    name: 'Navigation.secondarySection',
+    breadcrumbs: true,
+    pages: [
+      {
+        title: 'Navigation.settings',
+        path: Route.Settings,
+        icon: SettingsIcon,
+      },
+      {
+        title: 'Navigation.help',
+        path: Route.Help,
+        icon: HelpCircleIcon,
+      },
+    ],
+  },
+]

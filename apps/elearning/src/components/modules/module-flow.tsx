@@ -23,12 +23,11 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
   const router = useRouter()
   const t = useTranslations()
 
-  const module = useMemo(() => localize(props.module, locale), [locale, props.module])
-
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
+  // const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
   const [userAnswers] = useState<Record<string, Record<string, number>>>({})
 
+  const module = useMemo(() => localize(props.module, locale), [locale, props.module])
   const currentStep = useMemo(() => module.steps[currentStepIndex], [module.steps, currentStepIndex])
   const isFirstStep = useMemo(() => currentStepIndex === 0, [currentStepIndex])
   const isLastStep = useMemo(() => currentStepIndex === module.steps.length - 1, [currentStepIndex, module.steps.length])
@@ -36,13 +35,10 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
     () => Math.round((currentStepIndex / module.steps.length) * 100),
     [currentStepIndex, module.steps.length],
   )
-  const stepperHeight = useMemo(
-    () => `calc(${Math.min(currentStepIndex, module.steps.length - 1) * 100}% / ${module.steps.length || 1})`,
-    [currentStepIndex, module.steps.length],
-  )
 
   const isCurrentStep = useCallback((index: number) => index === currentStepIndex, [currentStepIndex])
-
+  const isPastStep = useCallback((index: number) => index < currentStepIndex, [currentStepIndex])
+  const isFutureStep = useCallback((index: number) => index > currentStepIndex, [currentStepIndex])
   const formatStepType = useCallback(
     (type: ModuleStepType) =>
       t('Modules.stepType', {
@@ -51,29 +47,36 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
     [t],
   )
 
+  const onStepClick = useCallback(
+    (index: number) => {
+      if (isPastStep(index)) setCurrentStepIndex(index)
+    },
+    [isPastStep],
+  )
+
   const onModuleCompletion = useCallback(() => {
     alert("Congratulations! You've completed this module.")
     router.push('/modules')
   }, [router])
 
-  const markAsCompleted = useCallback((stepId: string) => {
-    setCompletedSteps(prev => {
-      const updated = new Set(prev)
-      updated.add(stepId)
-      return updated
-    })
-  }, [])
+  // const markAsCompleted = useCallback((stepId: string) => {
+  //   setCompletedSteps(prev => {
+  //     const updated = new Set(prev)
+  //     updated.add(stepId)
+  //     return updated
+  //   })
+  // }, [])
 
   const handleNext = useCallback(() => {
-    if (currentStep.type === 'descriptive') {
-      markAsCompleted(String(currentStep.id))
-    }
+    // if (currentStep.type === 'descriptive') {
+    //   markAsCompleted(String(currentStep.id))
+    // }
     if (isLastStep) {
       onModuleCompletion()
       return
     }
     setCurrentStepIndex(currentStepIndex + 1)
-  }, [currentStep, currentStepIndex, onModuleCompletion, isLastStep, markAsCompleted])
+  }, [currentStepIndex, onModuleCompletion, isLastStep])
 
   const handlePrevious = useCallback(() => {
     if (!isFirstStep) {
@@ -124,25 +127,6 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
     }
   }, [currentStep, userAnswers])
 
-  // const renderStepContent = useMemo(() => {
-  //   switch (currentStep.type) {
-  //     case 'descriptive':
-  //       return <DescriptiveStepView step={currentStep} />
-  //     case 'true-false':
-  //       return <TrueFalseStepView onAnswer={handleTrueFalseAnswer} step={currentStep} userAnswer={userAnswers[currentStep.id]} />
-  //     case 'evaluation':
-  //       return (
-  //         <EvaluationStepView
-  //           onAnswer={handleEvaluationAnswer}
-  //           step={currentStep}
-  //           userAnswers={userAnswers[currentStep.id] || {}}
-  //         />
-  //       )
-  //     default:
-  //       return <div>{'Unknown step type'}</div>
-  //   }
-  // }, [currentStep])
-
   return (
     <div className="flex flex-col">
       <header className="border-b">
@@ -176,22 +160,23 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
               <div className="relative">
                 <div className="absolute top-[60px] left-[23px] w-0.5 bg-muted" />
                 <div
-                  className="absolute top-8 left-[23px] w-0.5 bg-secondary transition-all duration-300"
-                  style={{ height: stepperHeight }}
+                  className="absolute top-[50px] left-[23px] w-0.5 bg-secondary transition-all duration-300"
+                  style={{ height: `${progress}%` }}
                 />
                 {module.steps.map((step, index) => (
                   <div
                     className={cn(
                       'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12',
-                      isCurrentStep(index) && 'bg-accent',
+                      isCurrentStep(index) && 'pointer-events-none bg-accent/50',
+                      isFutureStep(index) && 'cursor-not-allowed text-muted-foreground',
                     )}
                     key={step.id}
-                    onClick={() => setCurrentStepIndex(index)}
+                    onClick={onStepClick.bind(null, index)}
                   >
                     <div
                       className={cn(
                         'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
-                        index <= currentStepIndex
+                        isCurrentStep(index) || isPastStep(index)
                           ? 'border-secondary-accent bg-secondary text-secondary-foreground'
                           : 'border-border bg-background',
                       )}

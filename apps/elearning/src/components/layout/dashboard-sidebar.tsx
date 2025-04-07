@@ -9,7 +9,6 @@ import { useTranslations } from 'next-intl'
 import { titleize } from '@repo/utils'
 
 import { type User, type UserOrg } from '@/api'
-import { DashboardButton } from '@/components/layout/dashboard-button'
 import { DashboardLink } from '@/components/layout/dashboard-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -43,9 +42,9 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useDB } from '@/hooks/use-db'
-import { useNavigation, type Page } from '@/hooks/use-navigation'
+import { useNavigation } from '@/hooks/use-navigation'
 import { useProgressBar } from '@/hooks/use-progress-bar'
-import { Route } from '@/lib/navigation'
+import { Route, type Page } from '@/lib/navigation'
 import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
@@ -100,7 +99,6 @@ export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
                 key={org.id}
                 onClick={onOrgSelect.bind(null, org)}
               >
-                {/* {org.avatar_url && <Image className="aspect-square size-2 rounded-lg border" src={org.avatar_url} width={40} />} */}
                 <Avatar className="aspect-square size-10 rounded-lg border">
                   {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
                   <AvatarFallback className="text-muted-foreground">{orgInitial(org)}</AvatarFallback>
@@ -126,11 +124,10 @@ export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
 }
 
 const DashboardSidebarButton = ({
-  Icon,
   className,
   color,
+  icon: Icon,
   isActive,
-  isActivePage,
   path,
   title,
   ...props
@@ -147,18 +144,15 @@ const DashboardSidebarButton = ({
 
   const onClick = useCallback(() => {
     setIsNewPage(true)
-
     if (openMobile) {
       setOpenMobile(false)
     }
   }, [openMobile, setOpenMobile])
 
-  const isHighlighted = useMemo(() => {
-    if (state === ProgressBarState.InProgress) {
-      return isNewPage
-    }
-    return isActivePage || isActive
-  }, [isActive, isActivePage, isNewPage, state])
+  const isHighlighted = useMemo(
+    () => (state === ProgressBarState.InProgress ? isNewPage : isActive),
+    [isActive, isNewPage, state],
+  )
 
   const iconClass = useMemo(() => {
     if (!color) return ''
@@ -171,7 +165,6 @@ const DashboardSidebarButton = ({
       asChild
       className={cn('text-sm', className)}
       isActive={isHighlighted}
-      isActivePage={isActivePage}
       onClick={onClick}
       tooltip={title}
       variant="default"
@@ -186,28 +179,34 @@ const DashboardSidebarButton = ({
 }
 
 const DashboardSidebarCollapsible = ({
-  color,
-  defaultOpen,
-  isActive,
-  subPages,
-  title,
-  ...page
-}: Partial<Page> & {
-  defaultOpen?: boolean
+  page,
+  ...props
+}: React.ComponentProps<typeof DashboardSidebarButton> & {
+  page: Partial<Page>
 }) => {
-  const [open, setOpen] = useState(isActive || defaultOpen)
+  const [open, setOpen] = useState(page.isActiveSection)
 
   const toggleCollapsible = useCallback(() => {
     setOpen(prev => !prev)
   }, [])
 
+  const menuSubPages = useMemo(() => page.subPages?.filter(subPage => !subPage.path.includes(':')), [page.subPages])
+
   return (
-    <Collapsible asChild className="group/collapsible" defaultOpen={isActive} key={title} open={open}>
+    <Collapsible asChild className="group/collapsible" defaultOpen={page.isActiveSection} open={open}>
       <SidebarMenuItem>
-        {subPages?.length ? (
+        {menuSubPages?.length ? (
           <>
             <CollapsibleTrigger asChild>
-              <DashboardSidebarButton color={color} onClick={toggleCollapsible} title={title} {...page} />
+              <DashboardSidebarButton
+                color={page.color}
+                icon={page.icon}
+                isActive={page.isActiveSection}
+                onClick={toggleCollapsible}
+                path={page.path}
+                title={page.title}
+                {...props}
+              />
             </CollapsibleTrigger>
             <CollapsibleTrigger asChild>
               <SidebarMenuAction className="cursor-pointer data-[state=open]:rotate-90">
@@ -216,53 +215,36 @@ const DashboardSidebarCollapsible = ({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {subPages.map(subPage => (
-                  <SidebarMenuSubItem key={subPage.title}>
-                    {subPage.type === 'button' ? (
-                      <DashboardButton
-                        className={cn(subPage.isActive && 'pointer-events-none cursor-default', 'mt-1 w-full text-sm')}
-                        color={color}
-                        size="sm"
-                        to={subPage.path}
-                      >
-                        {subPage.title}
-                      </DashboardButton>
-                    ) : (
-                      <DashboardSidebarButton
-                        className={cn(
-                          'border-l-2 border-transparent text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
-                          color && `data-[active=true]:border-${color}`,
-                        )}
-                        color={color}
-                        {...subPage}
-                        isActivePage={subPage.isActive}
-                        title={subPage.title}
-                      />
-                    )}
+                {menuSubPages.map(subPage => (
+                  <SidebarMenuSubItem key={subPage.path}>
+                    <DashboardSidebarButton
+                      className={cn(
+                        'border-l-2 border-transparent text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
+                        page.color && `data-[active=true]:border-${page.color}`,
+                      )}
+                      color={page.color}
+                      isActive={subPage.isActive}
+                      path={subPage.path}
+                      title={subPage.title}
+                      {...props}
+                    />
                   </SidebarMenuSubItem>
                 ))}
               </SidebarMenuSub>
             </CollapsibleContent>
           </>
         ) : (
-          <DashboardSidebarButton color={color} title={title} {...page} isActivePage={isActive} />
+          <DashboardSidebarButton
+            color={page.color}
+            icon={page.icon}
+            isActive={page.isActive}
+            path={page.path}
+            title={page.title}
+            {...props}
+          />
         )}
       </SidebarMenuItem>
     </Collapsible>
-  )
-}
-
-const DashboardSidebarSection = () => {
-  const { routes } = useNavigation()
-
-  return (
-    <SidebarGroup>
-      <SidebarMenu className="mt-4">
-        {routes.dashboard.map(page => (
-          <DashboardSidebarCollapsible key={page.title} {...page} />
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
   )
 }
 
@@ -391,6 +373,9 @@ export const DashboardSidebar = ({
   defaultOpen?: boolean
 }) => {
   const { user } = useDashboard()
+  const { sections } = useNavigation()
+
+  const sidebarSections = useMemo(() => sections.filter(section => section.sidebar), [sections])
 
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
@@ -398,7 +383,15 @@ export const DashboardSidebar = ({
         <DashboardSidebarOrgs items={user.orgs} />
       </SidebarHeader>
       <SidebarContent>
-        <DashboardSidebarSection />
+        {sidebarSections.map(section => (
+          <SidebarGroup key={section.name}>
+            <SidebarMenu className="mt-4">
+              {section.pages.map(page => (
+                <DashboardSidebarCollapsible key={page.title} page={page} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarFooter>
         <DashboardSidebarUser user={user} />

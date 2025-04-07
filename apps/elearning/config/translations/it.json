@@ -64,6 +64,8 @@
     "loggingIn": "Accesso in corso"
   },
   "Navigation": {
+    "mainSection": "Piattaforma",
+    "secondarySection": "Impostazioni",
     "organizations": "Organizzazioni",
     "addOrganization": "Aggiungi organizzazione",
     "dashboard": "Dashboard",

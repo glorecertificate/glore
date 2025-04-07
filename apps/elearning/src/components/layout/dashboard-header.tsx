@@ -29,7 +29,7 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
 
   const [isScrolled, setIsScrolled] = useState(false)
 
-  const onScroll = useCallback(() => {
+  const onWindowScroll = useCallback(() => {
     const scroll =
       window.pageYOffset !== undefined
         ? window.pageYOffset
@@ -49,11 +49,11 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
   }, [page?.color])
 
   useEffect(() => {
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onWindowScroll)
     return () => {
-      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('scroll', onWindowScroll)
     }
-  }, [onScroll])
+  }, [onWindowScroll])
 
   return (
     <header
@@ -82,12 +82,12 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
                 <BreadcrumbItem>
                   {subPage ? (
                     <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
-                      {page?.Icon && <page.Icon className={pageIconClass} size={20} />}
+                      {page?.icon && <page.icon className={pageIconClass} size={20} />}
                       {page?.title}
                     </BreadcrumbButton>
                   ) : (
                     <BreadcrumbPage>
-                      {page?.Icon && <page.Icon className={pageIconClass} size={20} />}
+                      {page?.icon && <page.icon className={pageIconClass} size={20} />}
                       {page?.title}
                     </BreadcrumbPage>
                   )}

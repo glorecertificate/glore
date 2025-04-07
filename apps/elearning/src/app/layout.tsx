@@ -3,7 +3,7 @@ import './globals.css'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-import { NextIntlProvider } from '@/components/providers/next-intl-provider'
+import { I18nProvider } from '@/components/providers/i18n-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { generateAppMetadata } from '@/lib/metadata'
 import { getLocale, getTranslations } from '@/services/i18n'
@@ -24,13 +24,13 @@ export default async ({ children }: React.PropsWithChildren) => {
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <NextIntlProvider>
+        <I18nProvider>
           <ThemeProvider>
             {children}
             <Analytics />
             <SpeedInsights />
           </ThemeProvider>
-        </NextIntlProvider>
+        </I18nProvider>
         <script dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} type="application/ld+json" />
       </body>
     </html>

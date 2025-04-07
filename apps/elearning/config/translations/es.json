@@ -64,6 +64,8 @@
     "loggingIn": "Iniciando sesión"
   },
   "Navigation": {
+    "mainSection": "Plataforma",
+    "secondarySection": "Ajustes",
     "organizations": "Organizaciones",
     "addOrganization": "Agregar organización",
     "dashboard": "Dashboard",

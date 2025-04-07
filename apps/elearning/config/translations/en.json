@@ -64,6 +64,8 @@
     "userRequired": "Email or username is required"
   },
   "Navigation": {
+    "mainSection": "Platform",
+    "secondarySection": "Settings",
     "organizations": "Organizations",
     "addOrganization": "Add organization",
     "dashboard": "Dashboard",

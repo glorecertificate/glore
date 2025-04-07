@@ -24,7 +24,13 @@ interface ModuleCardProps {
 export const ModuleCard = ({ module }: ModuleCardProps) => {
   const t = useTranslations()
 
-  const moduleUrl = useMemo(() => route(Route.Modules, module.skill.slug), [module.skill.slug])
+  const moduleUrl = useMemo(
+    () =>
+      route(Route.Module, {
+        slug: module.skill.slug,
+      }),
+    [module.skill.slug],
+  )
 
   const moduleDate = useMemo(() => {
     const date = new Date(module.updated_at)

@@ -15,6 +15,7 @@ export default {
   },
   hooks: {
     'after:init': '[ -z "$(git log @{u}..)" ] && pnpm build && pnpm check',
+    'after:release': 'echo "Version ${version} released and scheduled for deployment"',
   },
   npm: {
     publish: false,

@@ -50,7 +50,7 @@ const button = cva(
     },
     variants: {
       color: {
-        default: 'bg-accent text-accent-foreground hover:bg-accent-foreground hover:text-accent',
+        default: 'text-accent-foreground hover:bg-accent',
         primary: 'bg-primary text-primary-foreground shadow-xs hover:bg-primary-accent',
         secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary-accent',
         tertiary: 'bg-tertiary text-tertiary-foreground shadow-xs hover:bg-tertiary-accent',
@@ -60,7 +60,7 @@ const button = cva(
       },
       variant: {
         default: '',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+        outline: 'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
         ghost: 'bg-transparent hover:bg-accent hover:text-accent-foreground',
         link: '!h-auto border-none bg-transparent !p-0 font-normal hover:bg-transparent hover:text-accent-foreground',
       },

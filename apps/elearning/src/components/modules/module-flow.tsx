@@ -3,11 +3,13 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
-import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type Module } from '@/api'
+import { type Module, type ModuleStepType } from '@/api'
 import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Markdown } from '@/components/ui/markdown'
 import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
 import { cn, localize } from '@/lib/utils'
@@ -19,7 +21,7 @@ interface ModuleFlowProps {
 export const ModuleFlow = (props: ModuleFlowProps) => {
   const [locale] = useLocale()
   const router = useRouter()
-  const t = useTranslations('Modules')
+  const t = useTranslations()
 
   const module = useMemo(() => localize(props.module, locale), [locale, props.module])
 
@@ -31,16 +33,30 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
   const isFirstStep = useMemo(() => currentStepIndex === 0, [currentStepIndex])
   const isLastStep = useMemo(() => currentStepIndex === module.steps.length - 1, [currentStepIndex, module.steps.length])
   const progress = useMemo(
-    () => Math.round((completedSteps.size / module.steps.length) * 100),
-    [completedSteps.size, module.steps.length],
+    () => Math.round((currentStepIndex / module.steps.length) * 100),
+    [currentStepIndex, module.steps.length],
+  )
+  const stepperHeight = useMemo(
+    () => `calc(${Math.min(currentStepIndex, module.steps.length - 1) * 100}% / ${module.steps.length || 1})`,
+    [currentStepIndex, module.steps.length],
   )
 
-  const handleModuleCompletion = useCallback(() => {
+  const isCurrentStep = useCallback((index: number) => index === currentStepIndex, [currentStepIndex])
+
+  const formatStepType = useCallback(
+    (type: ModuleStepType) =>
+      t('Modules.stepType', {
+        type,
+      }),
+    [t],
+  )
+
+  const onModuleCompletion = useCallback(() => {
     alert("Congratulations! You've completed this module.")
     router.push('/modules')
   }, [router])
 
-  const markStepAsCompleted = useCallback((stepId: string) => {
+  const markAsCompleted = useCallback((stepId: string) => {
     setCompletedSteps(prev => {
       const updated = new Set(prev)
       updated.add(stepId)
@@ -50,27 +66,27 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
 
   const handleNext = useCallback(() => {
     if (currentStep.type === 'descriptive') {
-      markStepAsCompleted(String(currentStep.id))
+      markAsCompleted(String(currentStep.id))
     }
     if (isLastStep) {
-      handleModuleCompletion()
+      onModuleCompletion()
       return
     }
     setCurrentStepIndex(currentStepIndex + 1)
-  }, [currentStep, currentStepIndex, handleModuleCompletion, isLastStep, markStepAsCompleted])
+  }, [currentStep, currentStepIndex, onModuleCompletion, isLastStep, markAsCompleted])
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (!isFirstStep) {
       setCurrentStepIndex(currentStepIndex - 1)
     }
-  }
+  }, [currentStepIndex, isFirstStep])
 
   // const handleTrueFalseAnswer = (answer: boolean) => {
   //   setUserAnswers(prev => ({
   //     ...prev,
   //     [currentStep.id]: answer,
   //   }))
-  //   markStepAsCompleted(currentStep.id)
+  //   markAsCompleted(currentStep.id)
   // }
 
   // const handleEvaluationAnswer = useCallback(
@@ -87,7 +103,7 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
   //       return userAnswer !== undefined && userAnswer > 0
   //     })
   //     if (allQuestionsAnswered) {
-  //       markStepAsCompleted(currentStep.id)
+  //       markAsCompleted(currentStep.id)
   //     }
   //   },
   //   [currentStep.id],
@@ -108,42 +124,45 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
     }
   }, [currentStep, userAnswers])
 
-  const renderStepContent = useMemo(() => {
-    switch (currentStep.type) {
-      case 'descriptive':
-        // return <DescriptiveStepView step={currentStep} />
-        return
-      // case 'true-false':
-      //   return <TrueFalseStepView onAnswer={handleTrueFalseAnswer} step={currentStep} userAnswer={userAnswers[currentStep.id]} />
-      // case 'evaluation':
-      //   return (
-      //     <EvaluationStepView
-      //       onAnswer={handleEvaluationAnswer}
-      //       step={currentStep}
-      //       userAnswers={userAnswers[currentStep.id] || {}}
-      //     />
-      //   )
-      default:
-        return <div>{'Unknown step type'}</div>
-    }
-  }, [currentStep])
+  // const renderStepContent = useMemo(() => {
+  //   switch (currentStep.type) {
+  //     case 'descriptive':
+  //       return <DescriptiveStepView step={currentStep} />
+  //     case 'true-false':
+  //       return <TrueFalseStepView onAnswer={handleTrueFalseAnswer} step={currentStep} userAnswer={userAnswers[currentStep.id]} />
+  //     case 'evaluation':
+  //       return (
+  //         <EvaluationStepView
+  //           onAnswer={handleEvaluationAnswer}
+  //           step={currentStep}
+  //           userAnswers={userAnswers[currentStep.id] || {}}
+  //         />
+  //       )
+  //     default:
+  //       return <div>{'Unknown step type'}</div>
+  //   }
+  // }, [currentStep])
 
   return (
     <div className="flex flex-col">
       <header className="border-b">
-        <div className="container py-4">
+        <div className="container pt-2 pb-4">
           <h1 className="text-3xl font-bold">{module.title}</h1>
           <div className="mt-4 flex items-center justify-between">
             <div className="fl_ex items-center gap-2">
               <span className="text-sm text-muted-foreground">
-                {t('stepCount', {
+                {t('Modules.stepCount', {
                   count: currentStepIndex + 1,
                   total: module.steps.length,
                 })}
               </span>
             </div>
-            <div className="w-1/2">
-              <Progress className="h-2" value={progress} />
+            <div className="flex w-1/2 items-center gap-2">
+              <span className="text-sm">
+                {progress}
+                {'%'}
+              </span>
+              <Progress className="h-2" color="primary" value={progress} />
             </div>
           </div>
         </div>
@@ -151,51 +170,90 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
 
       <main className="container flex-1 py-6">
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-3">
-            <div className="sticky top-6 space-y-2">
-              <h3 className="mb-4 font-medium">{'Module Steps'}</h3>
-              {module.steps.map((step, index) => (
+          {/* Steps sidebar */}
+          <div className="col-span-3 hidden md:block">
+            <div className="sticky top-[60px] space-y-2">
+              <div className="relative">
+                <div className="absolute top-[60px] left-[23px] w-0.5 bg-muted" />
                 <div
-                  className={cn(
-                    `flex cursor-pointer items-center rounded-md p-3`,
-                    // index === currentStepIndex
-                    //   ? 'bg-primary text-primary-foreground'
-                    //   : isStepCompleted(step.id)
-                    //     ? 'bg-muted'
-                    //     : 'hover:bg-muted',
-                  )}
-                  key={step.id}
-                  onClick={() => setCurrentStepIndex(index)}
-                >
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{step.title}</p>
-                    <p className="text-xs opacity-80">
-                      {step.type === 'descriptive' && 'Reading'}
-                      {/* {step.type === 'true-false' && 'True/False Question'}
-                      {step.type === 'evaluation' && 'Self-Assessment'} */}
-                    </p>
+                  className="absolute top-8 left-[23px] w-0.5 bg-secondary transition-all duration-300"
+                  style={{ height: stepperHeight }}
+                />
+                {module.steps.map((step, index) => (
+                  <div
+                    className={cn(
+                      'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12',
+                      isCurrentStep(index) && 'bg-accent',
+                    )}
+                    key={step.id}
+                    onClick={() => setCurrentStepIndex(index)}
+                  >
+                    <div
+                      className={cn(
+                        'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
+                        index <= currentStepIndex
+                          ? 'border-secondary-accent bg-secondary text-secondary-foreground'
+                          : 'border-border bg-background',
+                      )}
+                    >
+                      <span className="text-xs">{index + 1}</span>
+                    </div>
+                    <div className={cn('flex-1 opacity-85', isCurrentStep(index) && 'opacity-100')}>
+                      <p className="text-sm font-medium">{step.title}</p>
+                      <p className="text-xs opacity-80">{formatStepType(step.type)}</p>
+                    </div>
                   </div>
-                  {/* {isStepCompleted(step.id) && <CheckCircleIcon className="ml-2 h-4 w-4 text-green-500" />} */}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="col-span-9">
-            <div className="rounded-lg border bg-card p-6">
-              <h2 className="mb-6 text-2xl font-bold">{currentStep.title}</h2>
-              {renderStepContent}
+          {/* Mobile dropdown */}
+          <div className="col-span-12 block md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="w-full justify-between py-6" variant="outline">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">{currentStep.title}</span>
+                    <span className="text-xs text-muted-foreground">{formatStepType(currentStep.type)}</span>
+                  </div>
+                  <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {module.steps.map((step, index) => (
+                  <DropdownMenuItem
+                    className="flex justify-between py-2"
+                    key={step.id}
+                    onClick={() => setCurrentStepIndex(index)}
+                  >
+                    <div className="flex flex-col">
+                      <span className={cn(isCurrentStep(index) && 'font-semibold')}>{step.title}</span>
+                      <span className="text-xs text-muted-foreground">{formatStepType(step.type)}</span>
+                    </div>
+                    {/* {isStepCompleted(step.id) && <CheckCircle className="ml-2 h-4 w-4 text-green-500" />} */}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <div className="col-span-12 md:col-span-9">
+            <div className="rounded-lg border bg-card p-8">
+              <Markdown>{currentStep.content}</Markdown>
             </div>
 
-            <div className="mt-6 flex justify-between">
-              <Button disabled={isFirstStep} onClick={handlePrevious} variant="outline">
-                <ArrowLeftIcon className="mr-2 h-4 w-4" />
-                {'Previous'}
-              </Button>
+            <div className={cn('mt-6 flex', isFirstStep ? 'justify-end' : 'justify-between')}>
+              {!isFirstStep && (
+                <Button className="gap-1" disabled={isFirstStep} onClick={handlePrevious} variant="outline">
+                  <ArrowLeftIcon className="h-4 w-4" />
+                  {t('Common.previous')}
+                </Button>
+              )}
 
-              <Button disabled={!canProceed} onClick={handleNext}>
-                {isLastStep ? 'Complete Module' : 'Next'}
-                {!isLastStep && <ArrowRightIcon className="ml-2 h-4 w-4" />}
+              <Button className="gap-1" disabled={!canProceed} onClick={handleNext} variant="outline">
+                {isLastStep ? t('Modules.completeModule') : t('Common.next')}
+                {!isLastStep && <ArrowRightIcon className="h-4 w-4" />}
               </Button>
             </div>
           </div>

@@ -9,23 +9,19 @@
     --radius: 0.5rem;
     --background: hsl(0 0% 100%);
     --foreground: hsl(213 13% 14%);
-
     --card: var(--background);
     --card-foreground: var(--foreground);
     --popover: var(--card);
     --popover-foreground: var(--card-foreground);
-
     --border: hsl(206 21% 85%);
     --input: hsl(206 21% 85%);
     --ring: hsl(215.4 16.3% 46.9%);
-
     --muted: hsl(206 19% 93%);
     --muted-foreground: hsl(215.4 16.3% 46.9%);
     --accent: hsl(210 29% 97%);
     --accent-foreground: hsl(222.2 47.4% 11.2%);
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 84.2% 60.2%);
-
     --primary: hsl(76 32% 45%);
     --primary-accent: hsl(75 48% 58%);
     --primary-foreground: var(--background);
@@ -35,7 +31,6 @@
     --tertiary: hsl(217 53% 35%);
     --tertiary-accent: hsl(216 36% 33%);
     --tertiary-foreground: var(--background);
-
     --sidebar-background: var(--accent);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: hsl(240 5.9% 10%);
@@ -49,23 +44,19 @@
   .dark {
     --background: hsl(225 67% 2%);
     --foreground: hsl(210 67% 96%);
-
     --card: hsl(213 26% 7%);
     --card-foreground: var(--foreground);
     --popover: hsl(210 14% 11%);
     --popover-foreground: var(--card-foreground);
-
     --border: hsl(214 13% 21%);
     --input: hsl(213 13% 27%);
     --ring: hsl(214 24% 70%);
-
     --muted: var(--card);
     --muted-foreground: hsl(214 24% 70%);
     --accent: var(--card);
     --accent-foreground: var(--foreground);
     --destructive: hsl(0 84.2% 50%);
     --destructive-foreground: hsl(0 84.2% 50%);
-
     --primary: hsl(75 48% 58%);
     --primary-accent: hsl(76 32% 45%);
     --primary-foreground: var(--background);
@@ -75,7 +66,6 @@
     --tertiary: hsl(216 35% 44%);
     --tertiary-accent: hsl(217 36% 21%);
     --tertiary-foreground: var(--background);
-
     --sidebar-background: var(--card);
     --sidebar-foreground: var(--foreground);
     --sidebar-primary: hsl(214 13% 21%);
@@ -144,55 +134,185 @@
   }
 }
 
-@layer utilities {
-  .text-muted {
-    @apply text-muted;
-  }
-  .text-primary {
-    @apply text-primary;
-  }
-  .text-primary-accent {
-    @apply text-primary-accent;
-  }
-  .text-primary-foreground {
-    @apply text-primary-foreground;
-  }
-  .border-primary,
-  .data-\[active\=true\]\:border-primary[data-active="true"] {
-    @apply border-primary;
-  }
-  .text-secondary {
-    @apply text-secondary;
-  }
-  .text-secondary-accent {
-    @apply text-secondary-accent;
-  }
-  .text-secondary-foreground {
-    @apply text-secondary-foreground;
-  }
-  .border-secondary,
-  .data-\[active\=true\]\:border-secondary[data-active="true"] {
-    @apply border-secondary;
-  }
-  .text-tertiary {
-    @apply text-tertiary;
-  }
-  .text-tertiary-accent {
-    @apply text-tertiary-accent;
-  }
-  .text-tertiary-foreground {
-    @apply text-tertiary-foreground;
-  }
-  .border-tertiary,
-  .data-\[active\=true\]\:border-tertiary[data-active="true"] {
-    @apply border-tertiary;
-  }
-}
-
 @layer components {
-  .hide-password-toggle::-ms-reveal .hide-password-toggle::-ms-clear {
-    visibility: hidden;
-    pointer-events: none;
-    display: none;
+  .markdown {
+    @apply text-base leading-6 wrap-break-word;
+
+    & > *:first-child {
+      @apply mt-0!;
+    }
+    & > *:last-child {
+      @apply mb-0!;
+    }
+    a:not([href]) {
+      @apply text-inherit no-underline;
+    }
+    p,
+    blockquote,
+    ul,
+    ol,
+    dl,
+    table,
+    pre,
+    details {
+      @apply mt-0 mb-4;
+    }
+    hr {
+      @apply mx-0 my-6 h-1 border-0 bg-border p-0;
+    }
+    blockquote {
+      @apply border-l-4 border-border px-4 text-muted-foreground;
+    }
+    blockquote > :first-child {
+      @apply mt-0;
+    }
+    blockquote > :last-child {
+      @apply mb-0;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply mt-6 mb-4 leading-tight font-semibold;
+    }
+    h1 tt,
+    h1 code,
+    h2 tt,
+    h2 code,
+    h3 tt,
+    h3 code,
+    h4 tt,
+    h4 code,
+    h5 tt,
+    h5 code,
+    h6 tt,
+    h6 code {
+      @apply px-1 text-inherit;
+    }
+    h1 {
+      @apply text-3xl;
+    }
+    h2 {
+      @apply border-b border-border pb-2 text-2xl;
+    }
+    h3 {
+      @apply text-xl;
+    }
+    h4 {
+      @apply text-lg;
+    }
+    h5 {
+      @apply text-base;
+    }
+    h6 {
+      @apply text-sm;
+    }
+    summary h1,
+    summary h2,
+    summary h3,
+    summary h4,
+    summary h5,
+    summary h6 {
+      @apply inline-block;
+    }
+    summary h1,
+    summary h2 {
+      @apply border-b-0 pb-0;
+    }
+    ul,
+    ol {
+      @apply pl-6;
+
+      ::marker {
+        @apply text-muted-foreground;
+      }
+    }
+    ul {
+      @apply list-disc;
+    }
+    div > ol:not([type]) {
+      @apply list-decimal;
+    }
+    ul ul,
+    ul ol,
+    ol ol,
+    ol ul {
+      @apply my-0;
+    }
+    li > p {
+      @apply mt-4;
+    }
+    li + li {
+      @apply mt-1;
+    }
+    dl {
+      @apply p-0;
+    }
+    dl dt {
+      @apply mt-4 p-0 text-base font-semibold italic;
+    }
+    dl dd {
+      @apply mb-4 px-4;
+    }
+    table {
+      @apply block w-max max-w-full overflow-auto tabular-nums;
+    }
+    table th {
+      @apply font-semibold;
+    }
+    table th,
+    table td {
+      @apply border border-border px-3 py-1.5;
+    }
+    table td > :last-child {
+      @apply mb-0;
+    }
+    table tr {
+      @apply border-t border-t-muted-foreground;
+    }
+    table tr:nth-child(2n) {
+      @apply bg-muted;
+    }
+    table img {
+      @apply bg-black;
+    }
+    img {
+      @apply box-content max-w-full;
+    }
+    img {
+      @apply pl-5;
+    }
+    code,
+    tt {
+      @apply m-0 rounded bg-muted px-1.5 py-1 text-[85%] whitespace-break-spaces;
+    }
+    code br,
+    tt br {
+      @apply hidden;
+    }
+    del code {
+      @apply decoration-inherit;
+    }
+    samp {
+      @apply text-[85%];
+    }
+    pre {
+      @apply wrap-normal;
+    }
+    pre code {
+      @apply text-[100%];
+    }
+    pre > code {
+      @apply m-0 border-0 bg-accent p-0 break-normal whitespace-pre;
+    }
+    pre {
+      @apply overflow-auto rounded bg-muted p-4 text-[85%] leading-1.5 text-foreground;
+    }
+    pre code,
+    pre tt {
+      @apply m-0 inline max-w-full overflow-visible border-0 bg-accent p-0 wrap-normal;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { type Tables } from '@/services/db'
 
-import type { BaseModule, Module, ModuleStep, Skill } from './types'
+import type { BaseModule, Module, Skill } from './types'
 
 interface BaseModuleRecord extends Tables<'modules'> {
   skills: Tables<'skills'> & {
@@ -26,5 +26,5 @@ export const mapModule = ({ module_steps, skills, ...module }: ModuleRecord) =>
   ({
     ...module,
     skill: skills as Skill,
-    steps: module_steps as ModuleStep[],
+    steps: module_steps.sort((a, b) => a.sort_order - b.sort_order),
   }) as Module

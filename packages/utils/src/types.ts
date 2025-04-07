@@ -24,6 +24,17 @@ export type AnyArray = any[] | any[][]
 export type AnyKey = string | number | symbol
 
 /**
+ * Record keys with dot notation.
+ */
+export type KeysOf<T> = T extends object
+  ? {
+      [K in keyof T & string]: 
+        | K 
+        | (T[K] extends object ? `${K}.${KeysOf<T[K]>}` : K);
+    }[keyof T & string]
+  : never;
+
+/**
  * Record of parameters extracted from segments of a string path.
  * 
  * @example

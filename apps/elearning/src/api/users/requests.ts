@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { Route } from '@/lib/navigation'
+import { Path } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 import { getDB } from '@/services/db'
 
@@ -17,7 +17,7 @@ export const fetchCurrent = async (): Promise<User> => {
     data: { user },
   } = await db.auth.getUser()
 
-  if (!user) redirect(Route.Login)
+  if (!user) redirect(Path.Login)
 
   const { data, error, status } = await db
     .from('profiles')
@@ -43,7 +43,7 @@ export const fetchCurrent = async (): Promise<User> => {
 
   if ((error && status !== 406) || !data) {
     if (error) console.error(error)
-    redirect(Route.Login)
+    redirect(Path.Login)
   }
 
   const { avatar_url, user_modules, user_organizations, ...userData } = data

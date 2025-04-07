@@ -2,8 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { useNavigation } from '@/hooks/use-navigation'
-import { Route } from '@/lib/navigation'
+import { usePathname } from '@/hooks/use-pathname'
+import { Path } from '@/lib/navigation'
 import { type ColorVariant } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
@@ -104,10 +104,10 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
 }
 
 export const ProgressBar = ({ children }: React.PropsWithChildren) => {
-  const { pathname } = useNavigation()
+  const pathname = usePathname()
   const { color, state, value = 10 } = useProgressBar()
 
-  const isGradient = useMemo(() => !color && pathname === Route.Home, [color, pathname])
+  const isGradient = useMemo(() => !color && pathname === Path.Home, [color, pathname])
 
   return (
     <>

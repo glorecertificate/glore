@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogTitle } from '@radix-ui/react-dialog'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { AuthForm } from '@/components/auth/auth-form'
@@ -18,15 +19,16 @@ import { Input } from '@/components/ui/input'
 import { ExternalLink, Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
-import { externalRoute, Route } from '@/lib/navigation'
+import { externalPath, Path } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
+import { DatabaseError, DatabaseErrorCode } from '@/services/db'
 
 const LoginFormFooter = () => {
   const t = useTranslations()
 
   return (
     <Dialog>
-      <div className="text-center text-[13px]">
+      <div className="mt-1 text-center text-[13px]">
         {t.rich('Auth.signupMessage', {
           link: content => (
             <DialogTrigger asChild>
@@ -46,10 +48,10 @@ const LoginFormFooter = () => {
         </DialogHeader>
         <div className="flex flex-col gap-4">
           {t.rich('Auth.signupDialogMessage', {
-            b: content => <b>{content}</b>,
+            b: content => <span className="font-semibold">{content}</span>,
             p: content => <p className="text-sm text-muted-foreground">{content}</p>,
             link: content => (
-              <ExternalLink className="underline underline-offset-4" href={externalRoute('Website')}>
+              <ExternalLink className="underline underline-offset-4" href={externalPath('Website')}>
                 {content}
               </ExternalLink>
             ),
@@ -93,6 +95,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       user: '',
+      password: '',
     },
   })
 
@@ -100,29 +103,42 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
     async (schema: z.infer<typeof formSchema>) => {
       setSubmitting(true)
 
+      let profile
       const user = schema.user.trim()
       const password = schema.password.trim()
 
-      const { data: profile } = await db.from('profiles').select().or(`email.eq.${user},username.eq.${user}`).single()
-
-      if (!profile) {
-        form.setError('user', { message: t('userNotFound') })
+      try {
+        const { data, error } = await db.from('profiles').select().or(`email.eq.${user},username.eq.${user}`).single()
+        if (error) throw error
+        if (!data) throw new DatabaseError(DatabaseErrorCode.NO_RESULTS)
+        profile = data
+      } catch (e) {
         setSubmitting(false)
-        return
+        const error = e as DatabaseError
+        console.error(e)
+        if (error.code === DatabaseErrorCode.NO_RESULTS) {
+          return form.setError('user', { message: t('userNotFound') })
+        }
+        return toast.error(t('networkError'))
       }
 
-      const { error } = await db.auth.signInWithPassword({
-        email: profile.email,
-        password,
-      })
-
-      if (error) {
-        form.setError('password', { message: t('passwordInvalid') })
+      try {
+        const { error } = await db.auth.signInWithPassword({
+          email: profile?.email || '',
+          password,
+        })
+        if (error) throw error
+      } catch (e) {
         setSubmitting(false)
-        return
+        const error = e as DatabaseError
+        console.error(e)
+        if (error.code === DatabaseErrorCode.INVALID_CREDENTIALS) {
+          return form.setError('password', { message: t('passwordInvalid') })
+        }
+        return toast.error(t('networkError'))
       }
 
-      redirect(Route.Home)
+      redirect(Path.Home)
     },
     [db, form, t],
   )
@@ -160,7 +176,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
           <FormItem>
             <div className="flex items-center justify-between">
               <FormLabel>{t('passwordLabel')}</FormLabel>
-              <Link className="text-[13px]" href={Route.PasswordReset}>
+              <Link className="text-[13px]" href={Path.PasswordReset}>
                 {t('forgotPassword')}
               </Link>
             </div>

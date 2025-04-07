@@ -46,6 +46,7 @@
     "loginSubtitle": "Enter an email or username to login to your account",
     "loginTitle": "Login to your GloRe account",
     "loggingIn": "Logging in",
+    "networkError": "A network error occurred, please try again",
     "passwordInvalid": "Invalid password",
     "passwordLabel": "Password",
     "passwordRequired": "Insert your password to continue",

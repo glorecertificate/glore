@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
 import { Logo } from '@/components/ui/logo'
-import { Route } from '@/lib/navigation'
+import { Path } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 import app from 'config/app.json'
@@ -77,7 +77,7 @@ export const ErrorView = ({ Actions, hasHeader, image, message, title, type = 'e
       )}
     >
       {hasHeader && (
-        <Link href={Route.Home} title={t('backToHome')}>
+        <Link href={Path.Home} title={t('backToHome')}>
           <Logo className="h-10" />
         </Link>
       )}

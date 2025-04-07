@@ -7,7 +7,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { type HTTPUrl } from '@repo/utils'
 
-import { type Route } from '@/lib/navigation'
+import { type Path, type Pathname } from '@/lib/navigation'
 
 export interface LinkBaseProps extends React.PropsWithChildren<NextLinkProps>, VariantProps<typeof link> {
   className?: string
@@ -16,7 +16,7 @@ export interface LinkBaseProps extends React.PropsWithChildren<NextLinkProps>, V
 }
 
 export interface LinkProps extends Omit<LinkBaseProps, 'href'> {
-  href: Route
+  href: Pathname
   title?: string
 }
 
@@ -30,7 +30,7 @@ export const Link = ({ className, color, href, variant, ...props }: LinkProps) =
 }
 
 export const ExternalLink = ({ href, target = '_blank', ...props }: LinkBaseProps) => (
-  <Link href={href as Route} target={target} {...props} />
+  <Link href={href as Path} target={target} {...props} />
 )
 
 export const link = cva(`text-sm no-underline transition-all`, {
@@ -39,7 +39,7 @@ export const link = cva(`text-sm no-underline transition-all`, {
   },
   variants: {
     color: {
-      default: 'text-foreground',
+      default: 'text-current',
       primary: 'text-primary hover:text-primary-accent',
       secondary: 'text-secondary hover:text-secondary-accent',
       tertiary: 'text-tertiary hover:text-tertiary-accent',

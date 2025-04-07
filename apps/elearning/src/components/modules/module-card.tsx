@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
-import { route, Route } from '@/lib/navigation'
+import { buildPath, Path } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { type Localized } from '@/services/i18n'
 
@@ -26,7 +26,7 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
 
   const moduleUrl = useMemo(
     () =>
-      route(Route.Module, {
+      buildPath(Path.Module, {
         slug: module.skill.slug,
       }),
     [module.skill.slug],

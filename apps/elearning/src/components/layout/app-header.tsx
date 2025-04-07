@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { DashboardLink } from '@/components/layout/dashboard-link'
+import { AppLink } from '@/components/layout/app-link'
 import {
   Breadcrumb,
   BreadcrumbButton,
@@ -18,29 +18,41 @@ import { SIDEBAR_KEYBOARD_SHORTCUT, SidebarTrigger, useSidebar } from '@/compone
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIsMobile } from '@/hooks/use-is-mobile'
 import { useNavigation } from '@/hooks/use-navigation'
-import { Route } from '@/lib/navigation'
+import { Path } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
-export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
+export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const isMobile = useIsMobile()
-  const { sections } = useNavigation()
+  const { route, routes } = useNavigation()
   const { open } = useSidebar()
   const t = useTranslations()
 
-  const [isScrolled, setIsScrolled] = useState(false)
-
-  const pages = useMemo(() => sections.flatMap(section => section.pages), [sections])
-  const page = useMemo(() => pages.find(page => page.isActiveSection), [pages])
-  const subPage = useMemo(() => pages.flatMap(page => page.subPages).find(subPage => subPage.isActive), [pages])
-  const isHomePage = useMemo(() => page?.path === Route.Home, [page])
+  const hasBreadcrumb = useMemo(() => route.breadcrumb !== false, [route.breadcrumb])
+  const parentRoute = useMemo(
+    () =>
+      routes.find(({ path }) => {
+        if (path === route.path) return false
+        if (path.slice(1).split('/').length > 1) return false
+        return route.path.startsWith(path)
+      }),
+    [route.path, routes],
+  )
+  const currentRoute = useMemo(
+    () => ({
+      ...route,
+      title: route.title || document.title.match(/^([\w\s]+) \W/)?.[1] || parentRoute?.title,
+    }),
+    [parentRoute?.title, route],
+  )
   const logoSize = useMemo(() => (!open || isMobile ? 20 : 24), [isMobile, open])
-  const pageUrl = useMemo(() => (subPage ? page?.path : undefined) as Route, [page, subPage])
   const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
-  const pageIconClass = useMemo(() => {
-    if (!page?.color) return ''
-    if (page.color === 'muted') return 'text-muted-foreground'
-    return `text-${page.color}`
-  }, [page?.color])
+  // const pageIconClass = useMemo(() => {
+  //   if (!route.color) return ''
+  //   if (route.color === 'muted') return 'text-muted-foreground'
+  //   return `text-${route.color}`
+  // }, [route?.color])
+
+  const [isScrolled, setIsScrolled] = useState(false)
 
   const onWindowScroll = useCallback(() => {
     const scroll =
@@ -78,41 +90,40 @@ export const DashboardHeader = ({ className, ...props }: React.ComponentPropsWit
             </TooltipContent>
           </Tooltip>
 
-          {!isHomePage && (
+          {hasBreadcrumb && (
             <Breadcrumb className="ml-1 flex h-full items-center">
               <BreadcrumbList>
-                <BreadcrumbItem>
-                  {subPage ? (
-                    <BreadcrumbButton className={cn(page?.color && `hover:text-${page.color}`)} to={pageUrl}>
-                      {page?.icon && <page.icon className={pageIconClass} size={20} />}
-                      {page?.title}
-                    </BreadcrumbButton>
-                  ) : (
-                    <BreadcrumbPage>
-                      {page?.icon && <page.icon className={pageIconClass} size={20} />}
-                      {page?.title}
-                    </BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-                {subPage && (
+                {parentRoute && (
                   <>
-                    <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{subPage.title}</BreadcrumbPage>
+                      <BreadcrumbButton
+                        className={cn(parentRoute?.color && `hover:text-${parentRoute.color}`)}
+                        to={parentRoute.path}
+                      >
+                        {/* {parentRoute?.icon && <parentRoute.icon className={pageIconClass} size={20} />} */}
+                        {parentRoute?.title}
+                      </BreadcrumbButton>
                     </BreadcrumbItem>
+                    <BreadcrumbSeparator />
                   </>
                 )}
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    {/* {currentRoute.icon && <currentRoute.icon className={pageIconClass} size={20} />} */}
+                    {currentRoute?.title}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           )}
         </div>
-        <DashboardLink
-          className={cn('mr-2', page?.path === Route.Home && 'pointer-events-none')}
+        <AppLink
+          className={cn('mr-2', currentRoute?.path === Path.Home && 'pointer-events-none')}
           title={t('Navigation.goToDashboard')}
-          to={Route.Home}
+          to={Path.Home}
         >
           <Logo height={logoSize} />
-        </DashboardLink>
+        </AppLink>
       </div>
     </header>
   )

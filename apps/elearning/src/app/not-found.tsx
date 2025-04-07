@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { ErrorView } from '@/components/common/error-view'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { Route } from '@/lib/navigation'
+import { Path } from '@/lib/navigation'
 
 export default () => {
   const t = useTranslations('Common')
@@ -13,7 +13,7 @@ export default () => {
   return (
     <ErrorView
       Actions={
-        <Link href={Route.Home}>
+        <Link href={Path.Home}>
           <Button size="lg" variant="outline">
             {t('backToHome')}
           </Button>

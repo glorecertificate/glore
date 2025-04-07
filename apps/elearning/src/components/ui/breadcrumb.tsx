@@ -1,15 +1,13 @@
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 
-import { DashboardButton } from '@/components/layout/dashboard-button'
-import { type DashboardLinkProps } from '@/components/layout/dashboard-link'
-import { type ButtonProps } from '@/components/ui/button'
+import { AppButton, type AppButtonProps } from '@/components/layout/app-button'
 import { cn } from '@/lib/utils'
 
-const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
+export const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
   <nav aria-label="breadcrumb" className="ml-0 h-full" data-slot="breadcrumb" {...props} />
 )
 
-const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
+export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
   <ul
     className={cn('flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground sm:gap-2.5', className)}
     data-slot="breadcrumb-list"
@@ -17,12 +15,12 @@ const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => 
   />
 )
 
-const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li'>) => (
+export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li'>) => (
   <li className={cn('inline-flex items-center gap-1.5', className)} data-slot="breadcrumb-item" {...props} />
 )
 
-const BreadcrumbButton = ({ className, to, ...props }: DashboardLinkProps & ButtonProps) => (
-  <DashboardButton
+export const BreadcrumbButton = ({ className, to, ...props }: AppButtonProps) => (
+  <AppButton
     className={cn('text-base text-foreground/75 hover:text-foreground', className)}
     data-slot="breadcrumb-link"
     to={to}
@@ -31,7 +29,7 @@ const BreadcrumbButton = ({ className, to, ...props }: DashboardLinkProps & Butt
   />
 )
 
-const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'span'>) => (
+export const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     aria-current="page"
     aria-disabled="true"
@@ -45,7 +43,7 @@ const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'span'>) =
   />
 )
 
-const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentProps<'li'>) => (
+export const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentProps<'li'>) => (
   <li
     aria-hidden="true"
     className={cn('[&>svg]:size-3.5', className)}
@@ -57,7 +55,7 @@ const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentP
   </li>
 )
 
-const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
+export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     aria-hidden="true"
     className={cn('flex size-9 items-center justify-center', className)}
@@ -68,5 +66,3 @@ const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps<'span'
     <MoreHorizontalIcon className="size-4" />
   </span>
 )
-
-export { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbButton, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis }

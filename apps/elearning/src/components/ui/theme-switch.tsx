@@ -1,8 +1,8 @@
 import { MonitorSmartphoneIcon, MoonStarIcon, SunIcon, type LucideIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useTheme } from 'next-themes'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
+import { useTheme } from '@/hooks/use-theme'
 import { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 

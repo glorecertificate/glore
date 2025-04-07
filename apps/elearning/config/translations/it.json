@@ -45,6 +45,8 @@
     "login": "Accedi",
     "loginSubtitle": "Inserisci il tuo username o la tua mail per accedere all'account",
     "loginTitle": "Accedi al tuo account GloRe",
+    "loggingIn": "Accesso in corso",
+    "networkError": "Si è verificato un errore di connessione, per favore riprova",
     "passwordInvalid": "Password non valida",
     "passwordLabel": "Password",
     "passwordRequired": "Inserisci una password",
@@ -60,8 +62,7 @@
     "userInvalid": "Email o username non validi",
     "userLabel": "Email o username",
     "userNotFound": "Utente non trovato",
-    "userRequired": "Inserisci una email o username",
-    "loggingIn": "Accesso in corso"
+    "userRequired": "Inserisci una email o username"
   },
   "Navigation": {
     "mainSection": "Piattaforma",

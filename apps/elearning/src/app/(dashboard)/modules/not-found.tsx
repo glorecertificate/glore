@@ -3,8 +3,8 @@
 import { useTranslations } from 'next-intl'
 
 import { ErrorView } from '@/components/common/error-view'
-import { DashboardButton } from '@/components/layout/dashboard-button'
-import { Route } from '@/lib/navigation'
+import { AppButton } from '@/components/layout/app-button'
+import { Path } from '@/lib/navigation'
 
 export default () => {
   const t = useTranslations('Modules')
@@ -12,9 +12,9 @@ export default () => {
   return (
     <ErrorView
       Actions={
-        <DashboardButton color="primary" size="lg" to={Route.Modules} variant="outline">
+        <AppButton color="primary" size="lg" to={Path.Modules} variant="outline">
           {t('backTo')}
-        </DashboardButton>
+        </AppButton>
       }
       message={t('notFoundMessage')}
       title={t('notFound')}

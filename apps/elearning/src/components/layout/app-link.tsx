@@ -1,40 +1,26 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback, useMemo, useState } from 'react'
-
-import { LoaderIcon } from 'lucide-react'
+import { startTransition, useCallback } from 'react'
 
 import { Link, type LinkProps } from '@/components/ui/link'
 import { ProgressBarState } from '@/components/ui/progress-bar'
 import { useProgressBar } from '@/hooks/use-progress-bar'
-import { type Route, type SubPage } from '@/lib/navigation'
+import { type Path } from '@/lib/navigation'
 import { type ColorVariant } from '@/lib/theme'
 
-export interface DashboardLinkProps {
-  hasLoader?: boolean
-  iconSize?: number
-  to: Route
-}
-
-export const DashboardLink = ({
+export const AppLink = ({
   children,
   color,
-  hasLoader,
-  iconSize,
   onClick,
-  subPages,
   to,
   ...props
-}: DashboardLinkProps &
-  Omit<LinkProps, 'href'> & {
-    color?: ColorVariant
-    subPages?: SubPage[]
-  }) => {
+}: Omit<LinkProps, 'href'> & {
+  color?: ColorVariant
+  to: Path
+}) => {
   const router = useRouter()
   const progressBar = useProgressBar()
-  const [loading, setLoading] = useState(false)
-  const showLoader = useMemo(() => hasLoader && loading, [hasLoader, loading])
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -44,14 +30,12 @@ export const DashboardLink = ({
         return
       }
 
-      setLoading(true)
       progressBar.colorize(color)
       progressBar.start()
 
       startTransition(() => {
-        router.push(to as string)
+        router.push(to)
         progressBar.done()
-        setLoading(false)
       })
 
       if (onClick) onClick(e)
@@ -62,7 +46,6 @@ export const DashboardLink = ({
   return (
     <Link href={to} onClick={handleClick} {...props}>
       {children}
-      {showLoader && <LoaderIcon className="animate-spin text-foreground/35" size={`${iconSize}px`} />}
     </Link>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ChevronRightIcon, ChevronsUpDownIcon, HelpCircleIcon, InfoIcon, LogOutIcon, PlusIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -9,7 +9,7 @@ import { useTranslations } from 'next-intl'
 import { titleize } from '@repo/utils'
 
 import { type User, type UserOrg } from '@/api'
-import { DashboardLink } from '@/components/layout/dashboard-link'
+import { AppLink } from '@/components/layout/app-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
-import { ProgressBarState } from '@/components/ui/progress-bar'
 import {
   Sidebar,
   SidebarContent,
@@ -38,23 +37,23 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
+  type SidebarMenuButtonProps,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useDB } from '@/hooks/use-db'
 import { useNavigation } from '@/hooks/use-navigation'
-import { useProgressBar } from '@/hooks/use-progress-bar'
-import { Route, type Page } from '@/lib/navigation'
+import { Path, type Route } from '@/lib/navigation'
 import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const orgInitial = (org: UserOrg) => org.name.charAt(0).toUpperCase()
-
-export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
+export const SidebarOrgs = ({ items }: { items: User['orgs'] }) => {
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
   const [activeOrg, setActiveOrg] = useState(items.find(org => org.isActive) || items[0])
+
+  const getOrgInitials = useCallback((org: UserOrg) => org.name.charAt(0).toUpperCase(), [])
 
   const onOrgSelect = useCallback((org: User['orgs'][number]) => {
     setActiveOrg(org)
@@ -77,7 +76,7 @@ export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
                 )}
               >
                 {activeOrg.avatar_url && <AvatarImage alt={activeOrg.avatar_url} src={activeOrg.avatar_url} />}
-                <AvatarFallback className="text-muted-foreground">{orgInitial(activeOrg)}</AvatarFallback>
+                <AvatarFallback className="text-muted-foreground">{getOrgInitials(activeOrg)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-semibold">{activeOrg.name}</span>
@@ -101,7 +100,7 @@ export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
               >
                 <Avatar className="aspect-square size-10 rounded-lg border">
                   {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
-                  <AvatarFallback className="text-muted-foreground">{orgInitial(org)}</AvatarFallback>
+                  <AvatarFallback className="text-muted-foreground">{getOrgInitials(org)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{org.name}</span>
@@ -123,88 +122,81 @@ export const DashboardSidebarOrgs = ({ items }: { items: User['orgs'] }) => {
   )
 }
 
-const DashboardSidebarButton = ({
-  className,
+const SidebarNavigationButton = ({
   color,
   icon: Icon,
   isActive,
   path,
   title,
   ...props
-}: React.ComponentProps<typeof SidebarMenuButton> & Partial<Page>) => {
-  const { state } = useProgressBar()
+}: SidebarMenuButtonProps & Pick<Route, 'color' | 'icon' | 'path' | 'title'>) => {
   const { openMobile, setOpenMobile } = useSidebar()
-  const [isNewPage, setIsNewPage] = useState(false)
-
-  useEffect(() => {
-    if (state !== ProgressBarState.InProgress) {
-      setIsNewPage(false)
-    }
-  }, [state])
 
   const onClick = useCallback(() => {
-    setIsNewPage(true)
     if (openMobile) {
       setOpenMobile(false)
     }
   }, [openMobile, setOpenMobile])
 
-  const isHighlighted = useMemo(
-    () => (state === ProgressBarState.InProgress ? isNewPage : isActive),
-    [isActive, isNewPage, state],
-  )
-
-  const iconClass = useMemo(() => {
-    if (!color) return ''
-    if (color === 'muted') return 'text-muted-foreground'
-    return `text-${color}`
-  }, [color])
+  // const iconClass = useMemo(() => {
+  //   if (!color) return ''
+  //   if (color === 'muted') return 'text-muted-foreground'
+  //   return `text-${color}`
+  // }, [color])
 
   return (
     <SidebarMenuButton
       asChild
-      className={cn('text-sm', className)}
-      isActive={isHighlighted}
+      className="text-sm"
+      isActive={isActive}
       onClick={onClick}
       tooltip={title}
       variant="default"
       {...props}
     >
-      <DashboardLink color={color} iconSize={14} to={path as Route}>
-        {Icon && <Icon className={cn('size-4', iconClass)} />}
+      <AppLink color={color} to={path}>
+        {/* {Icon && <Icon className={cn('size-4', iconClass)} />} */}
         <span>{title}</span>
-      </DashboardLink>
+      </AppLink>
     </SidebarMenuButton>
   )
 }
 
-const DashboardSidebarCollapsible = ({
-  page,
+const SidebarNavigationItem = ({
+  currentRoute,
+  route,
   ...props
-}: React.ComponentProps<typeof DashboardSidebarButton> & {
-  page: Partial<Page>
+}: {
+  currentRoute: Route
+  route: Route & {
+    subRoutes: Route[]
+  }
 }) => {
-  const [open, setOpen] = useState(page.isActiveSection)
+  const isActiveSection = useMemo(() => {
+    if (route.path === currentRoute.path) return true
+    if (route.subRoutes?.some(subRoute => currentRoute.path.startsWith(subRoute.path))) return true
+    return false
+  }, [currentRoute.path, route.path, route.subRoutes])
 
-  const toggleCollapsible = useCallback(() => {
-    setOpen(prev => !prev)
-  }, [])
+  const [open, setOpen] = useState(isActiveSection)
 
-  const menuSubPages = useMemo(() => page.subPages?.filter(subPage => !subPage.path.includes(':')), [page.subPages])
+  const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
+
+  const isActivePath = useCallback((path: Path) => path === currentRoute.path, [currentRoute.path])
 
   return (
-    <Collapsible asChild className="group/collapsible" defaultOpen={page.isActiveSection} open={open}>
+    <Collapsible asChild className="group/collapsible" defaultOpen={isActiveSection} open={open}>
       <SidebarMenuItem>
-        {menuSubPages?.length ? (
+        {route.subRoutes?.length ? (
           <>
             <CollapsibleTrigger asChild>
-              <DashboardSidebarButton
-                color={page.color}
-                icon={page.icon}
-                isActive={page.isActiveSection}
+              <SidebarNavigationButton
+                color={route.color}
+                icon={route.icon}
+                isActive={isActiveSection}
                 onClick={toggleCollapsible}
-                path={page.path}
-                title={page.title}
+                path={route.path}
+                title={route.title}
                 {...props}
               />
             </CollapsibleTrigger>
@@ -215,17 +207,17 @@ const DashboardSidebarCollapsible = ({
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {menuSubPages.map(subPage => (
-                  <SidebarMenuSubItem key={subPage.path}>
-                    <DashboardSidebarButton
+                {route.subRoutes.map(subRoute => (
+                  <SidebarMenuSubItem key={subRoute.path}>
+                    <SidebarNavigationButton
                       className={cn(
                         'border-l-2 border-transparent text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
-                        page.color && `data-[active=true]:border-${page.color}`,
+                        route.color && `data-[active=true]:border-${route.color}`,
                       )}
-                      color={page.color}
-                      isActive={subPage.isActive}
-                      path={subPage.path}
-                      title={subPage.title}
+                      color={route.color}
+                      isActive={isActivePath(subRoute.path)}
+                      path={subRoute.path}
+                      title={subRoute.title}
                       {...props}
                     />
                   </SidebarMenuSubItem>
@@ -234,12 +226,12 @@ const DashboardSidebarCollapsible = ({
             </CollapsibleContent>
           </>
         ) : (
-          <DashboardSidebarButton
-            color={page.color}
-            icon={page.icon}
-            isActive={page.isActive}
-            path={page.path}
-            title={page.title}
+          <SidebarNavigationButton
+            color={route.color}
+            icon={route.icon}
+            isActive={isActiveSection}
+            path={route.path}
+            title={route.title}
             {...props}
           />
         )}
@@ -248,7 +240,44 @@ const DashboardSidebarCollapsible = ({
   )
 }
 
-const DashboardSidebarUser = ({ user }: { user: User }) => {
+const SidebarNavigation = () => {
+  const { route: currentRoute, routes } = useNavigation()
+
+  const menuRoutes = useMemo(
+    () =>
+      routes.reduce<
+        (Route & {
+          subRoutes: Route[]
+        })[]
+      >((acc, route) => {
+        if (route.sidebar === false) return acc
+
+        const parts = route.path.slice(1).split('/')
+        if (parts.length > 1) return acc
+
+        return [
+          ...acc,
+          {
+            ...route,
+            subRoutes: routes.filter(subRoute => subRoute.path.startsWith(`${route.path}/`)),
+          },
+        ]
+      }, []),
+    [routes],
+  )
+
+  return (
+    <SidebarGroup>
+      <SidebarMenu className="mt-4">
+        {menuRoutes.map(route => (
+          <SidebarNavigationItem currentRoute={currentRoute} key={route.path} route={route} />
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+}
+
+const SidebarUser = ({ user }: { user: User }) => {
   const { auth } = useDB()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
@@ -272,7 +301,7 @@ const DashboardSidebarUser = ({ user }: { user: User }) => {
   const logOutUser = useCallback(async () => {
     onLinkClick()
     await auth.signOut()
-    redirect(Route.Login)
+    redirect(Path.Login)
   }, [auth, onLinkClick])
 
   return (
@@ -316,24 +345,24 @@ const DashboardSidebarUser = ({ user }: { user: User }) => {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DashboardLink onClick={onLinkClick} to={Route.Settings}>
+              <AppLink onClick={onLinkClick} to={Path.Settings}>
                 <DropdownMenuItem>
                   <SettingsIcon />
                   {t('Navigation.settings')}
                 </DropdownMenuItem>
-              </DashboardLink>
-              <DashboardLink onClick={onLinkClick} to={Route.Help}>
+              </AppLink>
+              <AppLink onClick={onLinkClick} to={Path.Help}>
                 <DropdownMenuItem>
                   <HelpCircleIcon />
                   {t('Navigation.help')}
                 </DropdownMenuItem>
-              </DashboardLink>
-              <DashboardLink onClick={onLinkClick} to={Route.About}>
+              </AppLink>
+              <AppLink onClick={onLinkClick} to={Path.About}>
                 <DropdownMenuItem>
                   <InfoIcon />
                   {t('Navigation.about')}
                 </DropdownMenuItem>
-              </DashboardLink>
+              </AppLink>
               <DropdownMenuItem onClick={logOutUser}>
                 <LogOutIcon />
                 {t('Navigation.logout')}
@@ -366,35 +395,24 @@ const DashboardSidebarUser = ({ user }: { user: User }) => {
   )
 }
 
-export const DashboardSidebar = ({
+export const AppSidebar = ({
   defaultOpen,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
   defaultOpen?: boolean
 }) => {
   const { user } = useDashboard()
-  const { sections } = useNavigation()
-
-  const sidebarSections = useMemo(() => sections.filter(section => section.sidebar), [sections])
 
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
       <SidebarHeader>
-        <DashboardSidebarOrgs items={user.orgs} />
+        <SidebarOrgs items={user.orgs} />
       </SidebarHeader>
       <SidebarContent>
-        {sidebarSections.map(section => (
-          <SidebarGroup key={section.name}>
-            <SidebarMenu className="mt-4">
-              {section.pages.map(page => (
-                <DashboardSidebarCollapsible key={page.title} page={page} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-        ))}
+        <SidebarNavigation />
       </SidebarContent>
       <SidebarFooter>
-        <DashboardSidebarUser user={user} />
+        <SidebarUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

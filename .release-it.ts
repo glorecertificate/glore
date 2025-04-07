@@ -14,7 +14,7 @@ export default {
     releaseName: 'v${version}',
   },
   hooks: {
-    'after:init': 'pnpm build && pnpm check',
+    'after:init': '[ -z "$(git log @{u}..)" ] && pnpm build && pnpm check',
   },
   npm: {
     publish: false,

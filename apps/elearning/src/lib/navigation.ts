@@ -1,5 +1,6 @@
 import { type AnyObject, type HTTPUrl, type PathParams } from '@repo/utils'
 
+import { type IconName } from '@/components/ui/icon'
 import { type ColorVariant } from '@/lib/theme'
 import { getTranslations } from '@/services/i18n'
 import app from 'config/app.json'
@@ -35,7 +36,7 @@ export interface Route {
   path: Path
   title?: string
   color?: ColorVariant
-  icon?: string
+  icon?: IconName
   breadcrumb?: boolean
   sidebar?: boolean
 }
@@ -52,13 +53,13 @@ export const getRoutes = async (): Promise<Route[]> => {
     {
       title: t('dashboard'),
       path: Path.Home,
-      icon: 'DashboardIcon',
+      icon: 'dashboard',
       color: 'primary',
     },
     {
       title: t('modules'),
       path: Path.Modules,
-      icon: 'BookOpenIcon',
+      icon: 'book-open',
       color: 'muted',
     },
     {
@@ -68,13 +69,13 @@ export const getRoutes = async (): Promise<Route[]> => {
     {
       title: t('certificates'),
       path: Path.Certificates,
-      icon: 'AwardIcon',
+      icon: 'award',
       color: 'muted',
     },
     {
       title: t('docs'),
       path: Path.Docs,
-      icon: 'MessageCircleQuestionIcon',
+      icon: 'message-circle-question',
       color: 'muted',
     },
     {
@@ -92,19 +93,19 @@ export const getRoutes = async (): Promise<Route[]> => {
     {
       title: t('admin'),
       path: Path.Admin,
-      icon: 'CogIcon',
+      icon: 'cog',
       color: 'muted',
     },
     {
       title: t('settings'),
       path: Path.Settings,
-      icon: 'SettingsIcon',
+      icon: 'settings',
       sidebar: false,
     },
     {
       title: t('help'),
       path: Path.Help,
-      icon: 'HelpCircleIcon',
+      icon: 'help-circle',
       sidebar: false,
     },
   ]

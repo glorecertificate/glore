@@ -1,10 +1,6 @@
 import { type LucideProps } from 'lucide-react'
 
-export interface CustomIconProps extends LucideProps {}
-
-export type CustomIcon = (props: CustomIconProps) => React.JSX.Element
-
-export const DashboardIcon: CustomIcon = props => (
+export const DashboardIcon = (props: LucideProps) => (
   <svg fill="none" height="39" viewBox="0 0 32 39" width="32" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       className="fill-primary"

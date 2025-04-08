@@ -409,7 +409,7 @@ export const SidebarMenuButton = ({
 
   const Base = (
     <Component
-      className={cn(sidebarMenuButton({ variant, size }), isActivePage && 'pointer-events-none cursor-default', className)}
+      className={cn(sidebarMenuButton({ className, size, variant }), isActivePage && 'pointer-events-none cursor-default')}
       color={color || undefined}
       data-active={isActive}
       data-sidebar="menu-button"
@@ -480,7 +480,7 @@ export const SidebarMenuAction = ({
   return (
     <Comp
       className={cn(
-        'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        'absolute top-2 right-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden transition-transform peer-hover/menu-button:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'after:absolute after:-inset-2 md:after:hidden',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
@@ -547,7 +547,7 @@ export const SidebarMenuSkeleton = ({
 export const SidebarMenuSub = ({ className, ...props }: React.ComponentProps<'ul'>) => (
   <ul
     className={cn(
-      'ms-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border py-0.5 ps-2.5',
+      'ms-[18px] flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border py-0.5 ps-2.5',
       'group-data-[collapsible=icon]:hidden',
       className,
     )}

@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { AppRouteIcon } from '@/components/ui/icon'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import {
@@ -123,8 +124,10 @@ export const SidebarOrgs = ({ items }: { items: User['orgs'] }) => {
 }
 
 const SidebarNavigationButton = ({
+  className,
   color,
-  icon: Icon,
+  disabled,
+  icon,
   isActive,
   path,
   title,
@@ -138,16 +141,10 @@ const SidebarNavigationButton = ({
     }
   }, [openMobile, setOpenMobile])
 
-  // const iconClass = useMemo(() => {
-  //   if (!color) return ''
-  //   if (color === 'muted') return 'text-muted-foreground'
-  //   return `text-${color}`
-  // }, [color])
-
   return (
     <SidebarMenuButton
       asChild
-      className="text-sm"
+      className={cn('text-sm', className)}
       isActive={isActive}
       onClick={onClick}
       tooltip={title}
@@ -155,7 +152,7 @@ const SidebarNavigationButton = ({
       {...props}
     >
       <AppLink color={color} to={path}>
-        {/* {Icon && <Icon className={cn('size-4', iconClass)} />} */}
+        {icon && <AppRouteIcon className="size-4" color={color} name={icon} />}
         <span>{title}</span>
       </AppLink>
     </SidebarMenuButton>
@@ -165,71 +162,109 @@ const SidebarNavigationButton = ({
 const SidebarNavigationItem = ({
   currentRoute,
   route,
+  setCurrentRoute,
   ...props
 }: {
   currentRoute: Route
   route: Route & {
     subRoutes: Route[]
   }
+  setCurrentRoute: (route: Route) => void
 }) => {
+  const isActiveRoute = useMemo(() => route.path === currentRoute.path, [currentRoute.path, route.path])
+
   const isActiveSection = useMemo(() => {
-    if (route.path === currentRoute.path) return true
+    if (isActiveRoute) return true
     if (route.subRoutes?.some(subRoute => currentRoute.path.startsWith(subRoute.path))) return true
     return false
-  }, [currentRoute.path, route.path, route.subRoutes])
+  }, [currentRoute.path, isActiveRoute, route.subRoutes])
 
   const [open, setOpen] = useState(isActiveSection)
 
+  const onItemClick = useCallback(
+    (route: Route) => () => {
+      setCurrentRoute(route)
+    },
+    [setCurrentRoute],
+  )
+
   const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
 
-  const isActivePath = useCallback((path: Path) => path === currentRoute.path, [currentRoute.path])
+  const onCollapsibleClick = useCallback(
+    (e: React.MouseEvent) => {
+      setCurrentRoute(route)
+      if (!isActiveSection && open) {
+        e.stopPropagation()
+        e.preventDefault()
+        return
+      }
+      toggleCollapsible()
+    },
+    [isActiveSection, route, open, setCurrentRoute, toggleCollapsible],
+  )
+
+  const isActiveSubRoute = useCallback((path: Path) => path === currentRoute.path, [currentRoute.path])
 
   return (
-    <Collapsible asChild className="group/collapsible" defaultOpen={isActiveSection} open={open}>
+    <Collapsible asChild className="group/collapsible" open={open}>
       <SidebarMenuItem>
         {route.subRoutes?.length ? (
           <>
             <CollapsibleTrigger asChild>
               <SidebarNavigationButton
                 color={route.color}
+                disabled={isActiveRoute}
                 icon={route.icon}
                 isActive={isActiveSection}
-                onClick={toggleCollapsible}
+                onClick={onCollapsibleClick}
                 path={route.path}
                 title={route.title}
                 {...props}
               />
             </CollapsibleTrigger>
             <CollapsibleTrigger asChild>
-              <SidebarMenuAction className="cursor-pointer data-[state=open]:rotate-90">
+              <SidebarMenuAction
+                className={cn('cursor-pointer data-[state=open]:rotate-90', isActiveSection && 'hover:border')}
+                onClick={toggleCollapsible}
+              >
                 <ChevronRightIcon className="stroke-foreground/64" />
               </SidebarMenuAction>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {route.subRoutes.map(subRoute => (
-                  <SidebarMenuSubItem key={subRoute.path}>
-                    <SidebarNavigationButton
-                      className={cn(
-                        'border-l-2 border-transparent text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
-                        route.color && `data-[active=true]:border-${route.color}`,
-                      )}
-                      color={route.color}
-                      isActive={isActivePath(subRoute.path)}
-                      path={subRoute.path}
-                      title={subRoute.title}
-                      {...props}
-                    />
-                  </SidebarMenuSubItem>
-                ))}
+                {route.subRoutes.map(subRoute => {
+                  const isActivePath = isActiveSubRoute(subRoute.path)
+
+                  return (
+                    <SidebarMenuSubItem key={subRoute.path}>
+                      <SidebarNavigationButton
+                        className={cn(
+                          'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground',
+                          isActivePath &&
+                            'rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
+                          isActivePath && route.color && `border-${route.color}`,
+                        )}
+                        color={route.color}
+                        disabled={isActivePath}
+                        isActive={isActivePath}
+                        onClick={onItemClick(subRoute)}
+                        path={subRoute.path}
+                        title={subRoute.title}
+                        {...props}
+                      />
+                    </SidebarMenuSubItem>
+                  )
+                })}
               </SidebarMenuSub>
             </CollapsibleContent>
           </>
         ) : (
           <SidebarNavigationButton
             color={route.color}
+            disabled={isActiveRoute}
             icon={route.icon}
             isActive={isActiveSection}
+            onClick={onItemClick(route)}
             path={route.path}
             title={route.title}
             {...props}
@@ -241,7 +276,9 @@ const SidebarNavigationItem = ({
 }
 
 const SidebarNavigation = () => {
-  const { route: currentRoute, routes } = useNavigation()
+  const { route: navigationRoute, routes } = useNavigation()
+
+  const [currentRoute, setCurrentRoute] = useState<Route>(navigationRoute)
 
   const menuRoutes = useMemo(
     () =>
@@ -259,7 +296,7 @@ const SidebarNavigation = () => {
           ...acc,
           {
             ...route,
-            subRoutes: routes.filter(subRoute => subRoute.path.startsWith(`${route.path}/`)),
+            subRoutes: routes.filter(subRoute => !subRoute.path.includes(':') && subRoute.path.startsWith(`${route.path}/`)),
           },
         ]
       }, []),
@@ -270,7 +307,7 @@ const SidebarNavigation = () => {
     <SidebarGroup>
       <SidebarMenu className="mt-4">
         {menuRoutes.map(route => (
-          <SidebarNavigationItem currentRoute={currentRoute} key={route.path} route={route} />
+          <SidebarNavigationItem currentRoute={currentRoute} key={route.path} route={route} setCurrentRoute={setCurrentRoute} />
         ))}
       </SidebarMenu>
     </SidebarGroup>

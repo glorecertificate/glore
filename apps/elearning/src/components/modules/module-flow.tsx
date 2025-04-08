@@ -133,7 +133,7 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
         <div className="container pt-2 pb-4">
           <h1 className="text-3xl font-bold">{module.title}</h1>
           <div className="mt-4 flex items-center justify-between">
-            <div className="fl_ex items-center gap-2">
+            <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">
                 {t('Modules.stepCount', {
                   count: currentStepIndex + 1,

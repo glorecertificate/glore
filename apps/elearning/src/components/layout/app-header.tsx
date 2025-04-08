@@ -31,7 +31,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
   const parentRoute = useMemo(
     () =>
       routes.find(({ path }) => {
-        if (path === route.path) return false
+        if (path === Path.Home || path === route.path) return false
         if (path.slice(1).split('/').length > 1) return false
         return route.path.startsWith(path)
       }),

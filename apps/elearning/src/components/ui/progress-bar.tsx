@@ -2,10 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { usePathname } from '@/hooks/use-pathname'
-import { Path } from '@/lib/navigation'
 import { type ColorVariant } from '@/lib/theme'
-import { cn } from '@/lib/utils'
 
 export enum ProgressBarState {
   Initial = 'initial',
@@ -104,20 +101,13 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
 }
 
 export const ProgressBar = ({ children }: React.PropsWithChildren) => {
-  const pathname = usePathname()
-  const { color, state, value = 10 } = useProgressBar()
-
-  const isGradient = useMemo(() => !color && pathname === Path.Home, [color, pathname])
+  const { state, value = 10 } = useProgressBar()
 
   return (
     <>
       {state !== ProgressBarState.Initial && (
         <div
-          className={cn(
-            'fixed z-50 h-1 transition-all duration-300 ease-in-out',
-            color ? `bg-${color}` : 'bg-foreground/30',
-            isGradient && 'bg-gradient-to-tr from-primary via-secondary to-tertiary',
-          )}
+          className="fixed z-50 h-1 bg-gradient-to-tr from-primary via-secondary to-tertiary transition-all duration-300 ease-in-out"
           style={{ width: `${value}%` }}
         />
       )}

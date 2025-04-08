@@ -277,7 +277,7 @@ export const SidebarRail = ({ className, ...props }: React.ComponentProps<'butto
 export const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'relative flex min-h-svh flex-1 flex-col bg-background scrollbar-thumb-accent scrollbar-track-transparent',
+      'relative flex min-h-svh flex-1 flex-col bg-background',
       'peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
       className,
     )}
@@ -386,18 +386,16 @@ export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'l
 )
 
 export interface SidebarMenuButtonProps extends Omit<ButtonProps, 'size' | 'variant'>, VariantProps<typeof sidebarMenuButton> {
+  active?: boolean
   asChild?: boolean
-  isActive?: boolean
-  isActivePage?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 }
 
 export const SidebarMenuButton = ({
+  active = false,
   asChild = false,
   className,
   color,
-  isActive = false,
-  isActivePage = false,
   size,
   tooltip,
   variant,
@@ -409,9 +407,9 @@ export const SidebarMenuButton = ({
 
   const Base = (
     <Component
-      className={cn(sidebarMenuButton({ className, size, variant }), isActivePage && 'pointer-events-none cursor-default')}
+      className={cn(sidebarMenuButton({ className, size, variant }), active && 'pointer-events-none cursor-default')}
       color={color || undefined}
-      data-active={isActive}
+      data-active={active}
       data-sidebar="menu-button"
       data-size={size}
       data-slot="sidebar-menu-button"

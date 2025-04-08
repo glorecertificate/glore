@@ -15,7 +15,7 @@ import { Image } from '@/components/ui/image'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { useDB } from '@/hooks/use-db'
-import { Path } from '@/lib/navigation'
+import { Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { DatabaseError, DatabaseErrorCode } from '@/services/db'
 
@@ -89,7 +89,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
           <h1 className="text-2xl font-bold">{t('passwordResetSent')}</h1>
           <p className="mb-2 text-left text-sm text-balance text-muted-foreground">{t('passwordResetMessage')}</p>
           <Button asChild variant="outline">
-            <Link className="hover:no-underline" href={Path.Login}>
+            <Link className="hover:no-underline" href={Route.Login}>
               {t('backToLogin')}
             </Link>
           </Button>
@@ -103,7 +103,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         className="mt-2"
         footer={
           <div className="flex w-full justify-end">
-            <Link className="mt-1 text-[13px]" href={Path.Login}>
+            <Link className="mt-1 text-[13px]" href={Route.Login}>
               {t('backToLogin')}
             </Link>
           </div>

@@ -3,10 +3,10 @@ import { notFound } from 'next/navigation'
 import api from '@/api'
 import { ModuleFlow } from '@/components/modules/module-flow'
 import { appMetadata } from '@/lib/metadata'
-import { type PageProps, type Path } from '@/lib/navigation'
+import { type PageProps, type Route } from '@/lib/navigation'
 import { getLocale } from '@/services/i18n'
 
-export default async ({ params }: PageProps<Path.Module>) => {
+export default async ({ params }: PageProps<Route.Module>) => {
   const { slug } = (await params) ?? {}
   if (!slug) notFound()
 
@@ -16,7 +16,7 @@ export default async ({ params }: PageProps<Path.Module>) => {
   return <ModuleFlow module={pageModule} />
 }
 
-export const generateMetadata = async ({ params }: PageProps<Path.Module>) => {
+export const generateMetadata = async ({ params }: PageProps<Route.Module>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return await appMetadata()
 

@@ -6,7 +6,7 @@ import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import { useIsMobile } from '@/hooks/use-is-mobile'
-import { Path } from '@/lib/navigation'
+import { Route } from '@/lib/navigation'
 import app from 'config/app.json'
 
 export default ({ children }: React.PropsWithChildren) => {
@@ -17,7 +17,7 @@ export default ({ children }: React.PropsWithChildren) => {
     <div className="grid min-h-svh lg:grid-cols-5">
       <div className="col-span-2 flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-between gap-2">
-          <Link className="flex items-center gap-1.5" href={Path.Home}>
+          <Link className="flex items-center gap-1.5" href={Route.Home}>
             <Image src="/logo.svg" width={logoSize} />
             <span className="text-sm font-medium sm:text-[15px]">{app.title}</span>
           </Link>

@@ -1,6 +1,7 @@
 {
   "name": "GloRe",
   "title": "GloRe Certificate",
+  "titleSeparator": "-",
   "description": "GloRe Certificate is a platform for learning and issuing certificates.",
   "slug": "glore",
   "url": "https://elearning.glorecertificate.net",

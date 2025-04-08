@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { CalendarIcon, ClockIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { titleize } from '@repo/utils'
+import { capitalize } from '@repo/utils'
 
 import { type BaseModule } from '@/api'
 import { Badge } from '@/components/ui/badge'
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
-import { buildPath, Path } from '@/lib/navigation'
+import { dynamicRoute, Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { type Localized } from '@/services/i18n'
 
@@ -24,9 +24,9 @@ interface ModuleCardProps {
 export const ModuleCard = ({ module }: ModuleCardProps) => {
   const t = useTranslations()
 
-  const moduleUrl = useMemo(
+  const modulePath = useMemo(
     () =>
-      buildPath(Path.Module, {
+      dynamicRoute(Route.Module, {
         slug: module.skill.slug,
       }),
     [module.skill.slug],
@@ -77,12 +77,12 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
     <Card className="flex h-full flex-col justify-between overflow-hidden pt-0">
       <div>
         <div className="relative h-48 w-full">
-          <Link href={moduleUrl} title={t('Modules.startModule')}>
+          <Link href={modulePath} title={t('Modules.startModule')}>
             <Image alt={module.title} className="object-cover" fill src={module.image_url || Asset.Placeholder} />
           </Link>
         </div>
         <CardHeader className="pt-6 pb-4">
-          <Link href={moduleUrl}>
+          <Link href={modulePath}>
             <h3 className="text-lg font-semibold">{module.title}</h3>
           </Link>
           <p className="text-sm text-muted-foreground">{module.description}</p>
@@ -103,7 +103,7 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
             </Badge>
             {module.skill.subskills.slice(0, 3).map(subskill => (
               <Badge className="flex items-center text-[10px]" color="secondary.accent" key={subskill.id}>
-                {titleize(subskill.name)}
+                {capitalize(subskill.name)}
               </Badge>
             ))}
           </div>
@@ -142,7 +142,7 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
         </CardContent>
       </div>
       <CardFooter>
-        <Link className="w-full" href={moduleUrl}>
+        <Link className="w-full" href={modulePath}>
           <Button className="w-full" variant="outline">
             {t('Modules.startModule')}
           </Button>

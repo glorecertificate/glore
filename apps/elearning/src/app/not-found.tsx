@@ -2,10 +2,10 @@
 
 import { useTranslations } from 'next-intl'
 
-import { ErrorView } from '@/components/common/error-view'
+import { ErrorView } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { Path } from '@/lib/navigation'
+import { Route } from '@/lib/navigation'
 
 export default () => {
   const t = useTranslations('Common')
@@ -13,11 +13,9 @@ export default () => {
   return (
     <ErrorView
       Actions={
-        <Link href={Path.Home}>
-          <Button size="lg" variant="outline">
-            {t('backToHome')}
-          </Button>
-        </Link>
+        <Button asChild size="lg" variant="outline">
+          <Link href={Route.Home}>{t('backToHome')}</Link>
+        </Button>
       }
       type="not-found"
     />

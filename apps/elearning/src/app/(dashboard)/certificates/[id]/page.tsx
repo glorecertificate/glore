@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
 
 import { appMetadata } from '@/lib/metadata'
-import { type PageProps, type Path } from '@/lib/navigation'
+import { type PageProps, type Route } from '@/lib/navigation'
 
-interface CertificatePageProps extends PageProps<Path.Certificate> {}
+interface CertificatePageProps extends PageProps<Route.Certificate> {}
 
 export default async ({ params }: CertificatePageProps) => {
   const { id } = (await params) ?? {}

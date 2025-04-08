@@ -2,7 +2,7 @@
 
 import { useContext } from 'react'
 
-import { ProgressBarContext } from '@/components/ui/progress-bar'
+import { ProgressBarContext } from '@/components/providers/progress-bar-provider'
 
 export const useProgressBar = () => {
   const context = useContext(ProgressBarContext)

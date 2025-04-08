@@ -3,13 +3,23 @@
 import { redirect } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
-import { ChevronRightIcon, ChevronsUpDownIcon, HelpCircleIcon, InfoIcon, LogOutIcon, PlusIcon, SettingsIcon } from 'lucide-react'
+import {
+  AwardIcon,
+  BookOpenIcon,
+  ChevronRightIcon,
+  ChevronsUpDownIcon,
+  HelpCircleIcon,
+  InfoIcon,
+  LogOutIcon,
+  MessageCircleQuestionIcon,
+  PlusIcon,
+  SettingsIcon,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { titleize } from '@repo/utils'
 
 import { type User, type UserOrg } from '@/api'
-import { AppLink } from '@/components/layout/app-link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -21,9 +31,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { AppRouteIcon } from '@/components/ui/icon'
+import { DashboardIcon } from '@/components/ui/icons/dashboard-icon'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { Link } from '@/components/ui/link'
 import {
   Sidebar,
   SidebarContent,
@@ -38,13 +49,12 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-  type SidebarMenuButtonProps,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useDB } from '@/hooks/use-db'
-import { useNavigation } from '@/hooks/use-navigation'
-import { Path, type Route } from '@/lib/navigation'
+import { usePathname } from '@/hooks/use-pathname'
+import { Route, type Pathname } from '@/lib/navigation'
 import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
@@ -123,192 +133,167 @@ export const SidebarOrgs = ({ items }: { items: User['orgs'] }) => {
   )
 }
 
-const SidebarNavigationButton = ({
-  className,
-  color,
-  disabled,
-  icon,
-  isActive,
-  path,
-  title,
-  ...props
-}: SidebarMenuButtonProps & Pick<Route, 'color' | 'icon' | 'path' | 'title'>) => {
-  const { openMobile, setOpenMobile } = useSidebar()
+const SidebarNavigation = () => {
+  const pathname = usePathname()
+  const t = useTranslations('Navigation')
 
-  const onClick = useCallback(() => {
-    if (openMobile) {
-      setOpenMobile(false)
-    }
-  }, [openMobile, setOpenMobile])
+  const [currentPath, setCurrentPath] = useState<Pathname>(pathname)
+  const [docsCollapsibleOpen, setDocsCollapsibleOpen] = useState(currentPath.startsWith(Route.Docs))
 
-  return (
-    <SidebarMenuButton
-      asChild
-      className={cn('text-sm', className)}
-      isActive={isActive}
-      onClick={onClick}
-      tooltip={title}
-      variant="default"
-      {...props}
-    >
-      <AppLink color={color} to={path}>
-        {icon && <AppRouteIcon className="size-4" color={color} name={icon} />}
-        <span>{title}</span>
-      </AppLink>
-    </SidebarMenuButton>
-  )
-}
-
-const SidebarNavigationItem = ({
-  currentRoute,
-  route,
-  setCurrentRoute,
-  ...props
-}: {
-  currentRoute: Route
-  route: Route & {
-    subRoutes: Route[]
-  }
-  setCurrentRoute: (route: Route) => void
-}) => {
-  const isActiveRoute = useMemo(() => route.path === currentRoute.path, [currentRoute.path, route.path])
-
-  const isActiveSection = useMemo(() => {
-    if (isActiveRoute) return true
-    if (route.subRoutes?.some(subRoute => currentRoute.path.startsWith(subRoute.path))) return true
-    return false
-  }, [currentRoute.path, isActiveRoute, route.subRoutes])
-
-  const [open, setOpen] = useState(isActiveSection)
-
-  const onItemClick = useCallback(
-    (route: Route) => () => {
-      setCurrentRoute(route)
+  const onButtonClick = useCallback(
+    (path: Pathname) => () => {
+      setCurrentPath(path)
     },
-    [setCurrentRoute],
+    [],
   )
 
-  const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
+  const isActivePath = useCallback(
+    (path: Pathname) => {
+      if (path === currentPath) return true
+      if (path === Route.Home) return pathname === Route.Home
+      return currentPath.startsWith(path)
+    },
+    [currentPath, pathname],
+  )
 
-  const onCollapsibleClick = useCallback(
+  const toggleDocsCollapsible = useCallback(() => setDocsCollapsibleOpen(open => !open), [])
+
+  const onDocsClick = useCallback(
     (e: React.MouseEvent) => {
-      setCurrentRoute(route)
-      if (!isActiveSection && open) {
+      setCurrentPath(Route.Docs)
+      if (!isActivePath(Route.Docs) && docsCollapsibleOpen) {
         e.stopPropagation()
         e.preventDefault()
         return
       }
-      toggleCollapsible()
+      toggleDocsCollapsible()
     },
-    [isActiveSection, route, open, setCurrentRoute, toggleCollapsible],
+    [docsCollapsibleOpen, isActivePath, toggleDocsCollapsible],
   )
 
-  const isActiveSubRoute = useCallback((path: Path) => path === currentRoute.path, [currentRoute.path])
+  const getSubItemClass = useCallback(
+    (path: Pathname) => {
+      const isActive = isActivePath(path)
+      return cn(
+        'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground',
+        isActive &&
+          'rounded-tl-none border-muted-foreground data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
+      )
+    },
+    [isActivePath],
+  )
 
   return (
-    <Collapsible asChild className="group/collapsible" open={open}>
-      <SidebarMenuItem>
-        {route.subRoutes?.length ? (
-          <>
+    <SidebarGroup>
+      <SidebarMenu className="mt-4">
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            active={isActivePath(Route.Home)}
+            asChild
+            onClick={onButtonClick(Route.Home)}
+            title={t('dashboard')}
+            tooltip={t('dashboard')}
+          >
+            <Link href={Route.Home}>
+              <DashboardIcon className="size-4" />
+              <span>{t('dashboard')}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            active={isActivePath(Route.Modules)}
+            asChild
+            onClick={onButtonClick(Route.Modules)}
+            title={t('modules')}
+            tooltip={t('modules')}
+          >
+            <Link href={Route.Modules}>
+              <BookOpenIcon className="size-4" />
+              <span>{t('modules')}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            active={isActivePath(Route.Certificates)}
+            asChild
+            onClick={onButtonClick(Route.Certificates)}
+            title={t('certificates')}
+            tooltip={t('certificates')}
+          >
+            <Link href={Route.Certificates}>
+              <AwardIcon className="size-4" />
+              <span>{t('certificates')}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <Collapsible asChild className="group/collapsible" open={docsCollapsibleOpen}>
+          <SidebarMenuItem>
             <CollapsibleTrigger asChild>
-              <SidebarNavigationButton
-                color={route.color}
-                disabled={isActiveRoute}
-                icon={route.icon}
-                isActive={isActiveSection}
-                onClick={onCollapsibleClick}
-                path={route.path}
-                title={route.title}
-                {...props}
-              />
+              <SidebarMenuButton
+                active={isActivePath(Route.Docs)}
+                asChild
+                onClick={onDocsClick}
+                title={t('docs')}
+                tooltip={t('docs')}
+              >
+                <Link href={Route.Docs}>
+                  <MessageCircleQuestionIcon className="size-4" />
+                  <span>{t('docs')}</span>
+                </Link>
+              </SidebarMenuButton>
             </CollapsibleTrigger>
             <CollapsibleTrigger asChild>
               <SidebarMenuAction
-                className={cn('cursor-pointer data-[state=open]:rotate-90', isActiveSection && 'hover:border')}
-                onClick={toggleCollapsible}
+                className={cn('cursor-pointer data-[state=open]:rotate-90', isActivePath(Route.Docs) && 'hover:border')}
+                onClick={toggleDocsCollapsible}
               >
                 <ChevronRightIcon className="stroke-foreground/64" />
               </SidebarMenuAction>
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                {route.subRoutes.map(subRoute => {
-                  const isActivePath = isActiveSubRoute(subRoute.path)
-
-                  return (
-                    <SidebarMenuSubItem key={subRoute.path}>
-                      <SidebarNavigationButton
-                        className={cn(
-                          'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground',
-                          isActivePath &&
-                            'rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
-                          isActivePath && route.color && `border-${route.color}`,
-                        )}
-                        color={route.color}
-                        disabled={isActivePath}
-                        isActive={isActivePath}
-                        onClick={onItemClick(subRoute)}
-                        path={subRoute.path}
-                        title={subRoute.title}
-                        {...props}
-                      />
-                    </SidebarMenuSubItem>
-                  )
-                })}
+                <SidebarMenuSubItem>
+                  <SidebarMenuButton
+                    active={isActivePath(Route.DocsIntro)}
+                    asChild
+                    className={getSubItemClass(Route.DocsIntro)}
+                    onClick={onButtonClick(Route.DocsIntro)}
+                    title={t('docsIntro')}
+                    tooltip={t('docsIntro')}
+                  >
+                    <Link href={Route.DocsIntro}>{t('docsIntro')}</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuSubItem>
+                <SidebarMenuSubItem>
+                  <SidebarMenuButton
+                    active={isActivePath(Route.DocsTutorials)}
+                    asChild
+                    className={getSubItemClass(Route.DocsTutorials)}
+                    onClick={onButtonClick(Route.DocsTutorials)}
+                    title={t('docsTutorials')}
+                    tooltip={t('docsTutorials')}
+                  >
+                    <Link href={Route.DocsTutorials}>{t('docsTutorials')}</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuSubItem>
+                <SidebarMenuSubItem>
+                  <SidebarMenuButton
+                    active={isActivePath(Route.DocsFaq)}
+                    asChild
+                    className={getSubItemClass(Route.DocsFaq)}
+                    onClick={onButtonClick(Route.DocsFaq)}
+                    title={t('docsFaq')}
+                    tooltip={t('docsFaq')}
+                  >
+                    <Link href={Route.DocsFaq}>{t('docsFaq')}</Link>
+                  </SidebarMenuButton>
+                </SidebarMenuSubItem>
               </SidebarMenuSub>
             </CollapsibleContent>
-          </>
-        ) : (
-          <SidebarNavigationButton
-            color={route.color}
-            disabled={isActiveRoute}
-            icon={route.icon}
-            isActive={isActiveSection}
-            onClick={onItemClick(route)}
-            path={route.path}
-            title={route.title}
-            {...props}
-          />
-        )}
-      </SidebarMenuItem>
-    </Collapsible>
-  )
-}
-
-const SidebarNavigation = () => {
-  const { route: navigationRoute, routes } = useNavigation()
-
-  const [currentRoute, setCurrentRoute] = useState<Route>(navigationRoute)
-
-  const menuRoutes = useMemo(
-    () =>
-      routes.reduce<
-        (Route & {
-          subRoutes: Route[]
-        })[]
-      >((acc, route) => {
-        if (route.sidebar === false) return acc
-
-        const parts = route.path.slice(1).split('/')
-        if (parts.length > 1) return acc
-
-        return [
-          ...acc,
-          {
-            ...route,
-            subRoutes: routes.filter(subRoute => !subRoute.path.includes(':') && subRoute.path.startsWith(`${route.path}/`)),
-          },
-        ]
-      }, []),
-    [routes],
-  )
-
-  return (
-    <SidebarGroup>
-      <SidebarMenu className="mt-4">
-        {menuRoutes.map(route => (
-          <SidebarNavigationItem currentRoute={currentRoute} key={route.path} route={route} setCurrentRoute={setCurrentRoute} />
-        ))}
+          </SidebarMenuItem>
+        </Collapsible>
       </SidebarMenu>
     </SidebarGroup>
   )
@@ -338,7 +323,7 @@ const SidebarUser = ({ user }: { user: User }) => {
   const logOutUser = useCallback(async () => {
     onLinkClick()
     await auth.signOut()
-    redirect(Path.Login)
+    redirect(Route.Login)
   }, [auth, onLinkClick])
 
   return (
@@ -382,24 +367,24 @@ const SidebarUser = ({ user }: { user: User }) => {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <AppLink onClick={onLinkClick} to={Path.Settings}>
+              <Link href={Route.Settings} onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <SettingsIcon />
                   {t('Navigation.settings')}
                 </DropdownMenuItem>
-              </AppLink>
-              <AppLink onClick={onLinkClick} to={Path.Help}>
+              </Link>
+              <Link href={Route.Help} onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <HelpCircleIcon />
                   {t('Navigation.help')}
                 </DropdownMenuItem>
-              </AppLink>
-              <AppLink onClick={onLinkClick} to={Path.About}>
+              </Link>
+              <Link href={Route.About} onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <InfoIcon />
                   {t('Navigation.about')}
                 </DropdownMenuItem>
-              </AppLink>
+              </Link>
               <DropdownMenuItem onClick={logOutUser}>
                 <LogOutIcon />
                 {t('Navigation.logout')}

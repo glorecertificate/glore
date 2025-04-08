@@ -2,7 +2,6 @@ import { forwardRef } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { P } from '@/components/ui/p'
 
 interface FieldProps extends React.ComponentProps<typeof Input> {
   id: string
@@ -18,7 +17,7 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(({ className, color, id, 
       </Label>
     )}
     <Input color={color} id={id} ref={ref} {...rest} />
-    {message && <P>{message}</P>}
+    {message && <p>{message}</p>}
   </div>
 ))
 

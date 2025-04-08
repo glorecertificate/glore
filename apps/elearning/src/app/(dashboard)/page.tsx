@@ -1,5 +1,5 @@
 export default () => (
-  <main lang="en">
-    <h1>{'Welcomeeee!'}</h1>
+  <main>
+    <h1>{'Welcome to GloRe!'}</h1>
   </main>
 )

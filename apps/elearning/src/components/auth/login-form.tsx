@@ -16,10 +16,10 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Image } from '@/components/ui/image'
 import { Input } from '@/components/ui/input'
-import { ExternalLink, Link } from '@/components/ui/link'
+import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useDB } from '@/hooks/use-db'
-import { externalPath, Path } from '@/lib/navigation'
+import { externalUrl, Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { DatabaseError, DatabaseErrorCode } from '@/services/db'
 
@@ -51,9 +51,9 @@ const LoginFormFooter = () => {
             b: content => <span className="font-semibold">{content}</span>,
             p: content => <p className="text-sm text-muted-foreground">{content}</p>,
             link: content => (
-              <ExternalLink className="underline underline-offset-4" href={externalPath('Website')}>
+              <Link className="underline underline-offset-4" external href={externalUrl('Website')} target="_blank">
                 {content}
-              </ExternalLink>
+              </Link>
             ),
           })}
         </div>
@@ -138,7 +138,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         return toast.error(t('networkError'))
       }
 
-      redirect(Path.Home)
+      redirect(Route.Home)
     },
     [db, form, t],
   )
@@ -176,7 +176,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
           <FormItem>
             <div className="flex items-center justify-between">
               <FormLabel>{t('passwordLabel')}</FormLabel>
-              <Link className="text-[13px]" href={Path.PasswordReset}>
+              <Link className="text-[13px]" href={Route.PasswordReset}>
                 {t('forgotPassword')}
               </Link>
             </div>

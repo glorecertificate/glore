@@ -1,16 +1,15 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-
 import { useTranslations } from 'next-intl'
 
-import { ErrorView, type ErrorProps } from '@/components/common/error-view'
+import { ErrorView, type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { Path } from '@/lib/navigation'
+import { usePathname } from '@/hooks/use-pathname'
+import { Route } from '@/lib/navigation'
 
 export default ({ reset }: ErrorProps) => {
-  const pathname = usePathname() as Path
+  const pathname = usePathname()
   const t = useTranslations('Common')
 
   return (
@@ -22,12 +21,10 @@ export default ({ reset }: ErrorProps) => {
               <Button onClick={reset} size="lg" variant="outline">
                 {t('tryAgain')}
               </Button>
-              {pathname !== Path.Home && (
-                <Link href={Path.Home} passHref>
-                  <Button size="lg" variant="outline">
-                    {t('backToHome')}
-                  </Button>
-                </Link>
+              {pathname !== Route.Home && (
+                <Button asChild size="lg" variant="outline">
+                  <Link href={Route.Home}>{t('backToHome')}</Link>
+                </Button>
               )}
             </>
           }

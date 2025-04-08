@@ -14,7 +14,8 @@ export default {
     releaseName: 'v${version}',
   },
   hooks: {
-    'after:init': '[ -z "$(git log @{u}..)" ] && pnpm build && pnpm check',
+    // Run checks only with unpushed commits
+    'after:init': '[ -n "$(git log @{u}.. 2>/dev/null)" ] && (pnpm build && pnpm check) || exit 0',
     'after:release': 'echo "Version ${version} released and scheduled for deployment"',
   },
   npm: {

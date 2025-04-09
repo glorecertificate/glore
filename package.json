@@ -55,6 +55,6 @@
     "shellcheck": "catalog:",
     "turbo": "^2.5.0",
     "typescript": "catalog:",
-    "vercel": "^41.4.1"
+    "vercel": "^41.5.0"
   }
 }

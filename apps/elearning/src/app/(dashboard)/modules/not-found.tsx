@@ -13,7 +13,7 @@ export default () => {
   return (
     <ErrorView
       Actions={
-        <Button asChild color="primary" size="lg" variant="outline">
+        <Button asChild size="lg" variant="outline">
           <Link href={Route.Modules}>{t('backTo')}</Link>
         </Button>
       }

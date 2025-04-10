@@ -46,7 +46,7 @@ const button = cva(
     defaultVariants: {
       color: 'default',
       variant: 'default',
-      size: 'base',
+      size: 'default',
     },
     variants: {
       color: {
@@ -65,8 +65,8 @@ const button = cva(
         link: '!h-auto border-none bg-transparent !p-0 font-normal hover:bg-transparent hover:text-accent-foreground',
       },
       size: {
+        default: 'h-8 px-3 has-[>svg]:px-2.5',
         sm: 'h-7 px-2 text-sm has-[>svg]:px-2',
-        base: 'h-8 px-3 has-[>svg]:px-2.5',
         lg: 'h-9 px-4 has-[>svg]:px-3',
         icon: 'size-9',
       },

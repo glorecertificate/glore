@@ -1,12 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type Module, type ModuleStepType } from '@/api'
+import { useBreadcrumb } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Markdown } from '@/components/ui/markdown'
@@ -19,6 +20,7 @@ interface ModuleFlowProps {
 }
 
 export const ModuleFlow = (props: ModuleFlowProps) => {
+  const { setBreadcrumb } = useBreadcrumb()
   const [locale] = useLocale()
   const router = useRouter()
   const t = useTranslations()
@@ -36,6 +38,10 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
     () => (hasSteps ? Math.round((currentStepIndex / module.steps.length) * 100) : 0),
     [currentStepIndex, hasSteps, module.steps.length],
   )
+
+  useEffect(() => {
+    setBreadcrumb(<h1>{module.title}</h1>)
+  }, [module.title, setBreadcrumb])
 
   const isCurrentStep = useCallback((index: number) => index === currentStepIndex, [currentStepIndex])
   const isPastStep = useCallback((index: number) => index < currentStepIndex, [currentStepIndex])

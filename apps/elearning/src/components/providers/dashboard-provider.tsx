@@ -9,10 +9,10 @@ interface DashboardContext {
   user: User
 }
 
+export const DashboardContext = createContext<DashboardContext | null>(null)
+
 interface DashboardProviderProps extends React.PropsWithChildren {
   value: DashboardContext
 }
-
-export const DashboardContext = createContext<DashboardContext | null>(null)
 
 export const DashboardProvider = (props: DashboardProviderProps) => <DashboardContext.Provider {...props} />

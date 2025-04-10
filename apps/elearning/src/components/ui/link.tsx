@@ -8,7 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { type HTTPUrl } from '@repo/utils'
 
-import { useProgressBar } from '@/hooks/use-progress-bar'
+import { useProgressBar } from '@/components/ui/progress-bar'
 import { type Pathname } from '@/lib/navigation'
 
 export interface LinkProps<T extends boolean = false> extends React.PropsWithChildren<NextLinkProps>, VariantProps<typeof link> {

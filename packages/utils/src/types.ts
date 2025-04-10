@@ -24,6 +24,11 @@ export type AnyArray = any[] | any[][]
 export type AnyKey = string | number | symbol
 
 /**
+ * Boolean value expressed as a string.
+ */
+export type BooleanString = 'true' | 'false'
+
+/**
  * Record keys with dot notation.
  */
 export type KeysOf<T> = T extends object

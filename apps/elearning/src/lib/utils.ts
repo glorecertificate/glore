@@ -2,9 +2,9 @@ import { cx } from 'class-variance-authority'
 import type { ClassValue } from 'class-variance-authority/types'
 import { twMerge } from 'tailwind-merge'
 
-import { type AnyObject, type Primitive } from '@repo/utils'
+import { type AnyRecord, type Primitive } from '@repo/utils'
 
-import { LOCALES, type Locale, type LocaleJson, type Localized } from '@/services/i18n'
+import { LOCALES, type IntlRecord, type Locale, type Localized } from '@/services/i18n'
 
 /**
  * Merges and applies class name values conditionally.
@@ -19,7 +19,7 @@ export const tw = (raw: TemplateStringsArray, ...values: string[]) => cn(String.
 /**
  * Localizes a given object based on the provided locale.
  */
-export const localize = <T extends AnyObject>(data: T, locale: Locale): Localized<T> =>
+export const localize = <T extends AnyRecord>(data: T, locale: Locale): Localized<T> =>
   Array.isArray(data)
     ? (data.map(item => localize(item, locale)) as Localized<T>)
     : LOCALES.some(locale => !!data[locale])
@@ -27,6 +27,6 @@ export const localize = <T extends AnyObject>(data: T, locale: Locale): Localize
       : Object.entries(data).reduce((obj, [key, value]) => {
           if (typeof value !== 'object' || value === null) return { ...obj, [key]: value as Primitive }
           if (Array.isArray(value)) return { ...obj, [key]: value.map(item => localize(item, locale)) }
-          if (LOCALES.some(locale => !!(value as LocaleJson)[locale])) return { ...obj, [key]: (value as LocaleJson)?.[locale] }
+          if (LOCALES.some(locale => !!(value as IntlRecord)[locale])) return { ...obj, [key]: (value as IntlRecord)?.[locale] }
           return { ...obj, [key]: localize(value, locale) }
         }, {} as Localized<T>)

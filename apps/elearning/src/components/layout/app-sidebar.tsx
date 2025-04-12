@@ -155,6 +155,7 @@ const SidebarNavigation = () => {
     },
     [currentPath, pathname],
   )
+  const isClickable = useCallback((path: Pathname) => path !== currentPath, [currentPath])
 
   const toggleDocsCollapsible = useCallback(() => setDocsCollapsibleOpen(open => !open), [])
 
@@ -190,6 +191,7 @@ const SidebarNavigation = () => {
           <SidebarMenuButton
             active={isActivePath(Route.Home)}
             asChild
+            clickable={isClickable(Route.Home)}
             onClick={onButtonClick(Route.Home)}
             title={t('dashboard')}
             tooltip={t('dashboard')}
@@ -204,6 +206,7 @@ const SidebarNavigation = () => {
           <SidebarMenuButton
             active={isActivePath(Route.Modules)}
             asChild
+            clickable={isClickable(Route.Modules)}
             onClick={onButtonClick(Route.Modules)}
             title={t('modules')}
             tooltip={t('modules')}
@@ -218,6 +221,7 @@ const SidebarNavigation = () => {
           <SidebarMenuButton
             active={isActivePath(Route.Certificates)}
             asChild
+            clickable={isClickable(Route.Certificates)}
             onClick={onButtonClick(Route.Certificates)}
             title={t('certificates')}
             tooltip={t('certificates')}
@@ -234,6 +238,7 @@ const SidebarNavigation = () => {
               <SidebarMenuButton
                 active={isActivePath(Route.Docs)}
                 asChild
+                clickable={isClickable(Route.Docs)}
                 onClick={onDocsClick}
                 title={t('docs')}
                 tooltip={t('docs')}
@@ -247,6 +252,7 @@ const SidebarNavigation = () => {
             <CollapsibleTrigger asChild>
               <SidebarMenuAction
                 className={cn('cursor-pointer data-[state=open]:rotate-90', isActivePath(Route.Docs) && 'hover:border')}
+                clickable={isClickable(Route.Docs)}
                 onClick={toggleDocsCollapsible}
               >
                 <ChevronRightIcon className="stroke-foreground/64" />
@@ -259,6 +265,7 @@ const SidebarNavigation = () => {
                     active={isActivePath(Route.DocsIntro)}
                     asChild
                     className={getSubItemClass(Route.DocsIntro)}
+                    clickable={isClickable(Route.DocsIntro)}
                     onClick={onButtonClick(Route.DocsIntro)}
                     title={t('docsIntro')}
                     tooltip={t('docsIntro')}
@@ -271,6 +278,7 @@ const SidebarNavigation = () => {
                     active={isActivePath(Route.DocsTutorials)}
                     asChild
                     className={getSubItemClass(Route.DocsTutorials)}
+                    clickable={isClickable(Route.DocsTutorials)}
                     onClick={onButtonClick(Route.DocsTutorials)}
                     title={t('docsTutorials')}
                     tooltip={t('docsTutorials')}
@@ -283,6 +291,7 @@ const SidebarNavigation = () => {
                     active={isActivePath(Route.DocsFaq)}
                     asChild
                     className={getSubItemClass(Route.DocsFaq)}
+                    clickable={isClickable(Route.DocsFaq)}
                     onClick={onButtonClick(Route.DocsFaq)}
                     title={t('docsFaq')}
                     tooltip={t('docsFaq')}

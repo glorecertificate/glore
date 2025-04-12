@@ -41,6 +41,7 @@
   "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
   "prettier.ignorePath": "",
   "search.useIgnoreFiles": true,
+  "search.useGlobalIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [
     [
       "(tw`(?:(?:(?:[^`]*\\$\\{[^]*?\\})[^`]*)+|[^`]*`))",

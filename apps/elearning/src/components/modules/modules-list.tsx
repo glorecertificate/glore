@@ -120,14 +120,14 @@ export const ModulesList = () => {
   }, [])
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="border-b">
-        <div className="container py-4">
+    <div className="flex min-h-screen flex-col px-8">
+      <div className="border-b">
+        <div className="container pb-4">
           <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">{t('description')}</p>
         </div>
-      </header>
-      <main className="container flex-1 py-6">
+      </div>
+      <div className="container py-6">
         <Tabs defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
           <div className="mb-6 flex h-auto flex-col justify-between gap-4 sm:flex-row">
             <TabsList className="flex w-full border md:w-auto">
@@ -460,7 +460,7 @@ export const ModulesList = () => {
             )}
           </TabsContent>
         </Tabs>
-      </main>
+      </div>
     </div>
   )
 }

@@ -11,7 +11,7 @@ export type AnyFunction = (...args: any) => any
 /**
  * Any object type with string keys.
  */
-export type AnyObject = Record<string, any>
+export type AnyRecord = Record<string, any>
 
 /**
  * Any array type, including nested arrays.
@@ -27,6 +27,16 @@ export type AnyKey = string | number | symbol
  * Boolean value expressed as a string.
  */
 export type BooleanString = 'true' | 'false'
+
+/**
+ * JSON value type.
+ */
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+/**
+ * JSON record type.
+ */
+export type JsonRecord = Record<string, Json>
 
 /**
  * Record keys with dot notation.
@@ -50,7 +60,7 @@ export type PathParams<S extends string> = S extends `${infer _}:${infer Param}/
   ? { [K in Param | keyof PathParams<Rest>]: string }
   : S extends `${infer _}:${infer Param}`
     ? Record<Param, string>
-    : AnyObject
+    : AnyRecord
 
 /**
  * Partial record with non-nullable values.

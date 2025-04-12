@@ -1,6 +1,6 @@
 import { getRequestConfig } from 'next-intl/server'
 
-import { type AnyObject } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils'
 
 import { getLocale } from '@/services/i18n'
 
@@ -9,7 +9,7 @@ export default getRequestConfig(async () => {
 
   const messages = (
     (await import(`config/translations/${locale}.json`)) as {
-      default: AnyObject
+      default: AnyRecord
     }
   ).default
 

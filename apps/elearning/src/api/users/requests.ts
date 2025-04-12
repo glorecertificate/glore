@@ -1,3 +1,5 @@
+'use server'
+
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -6,6 +8,27 @@ import { Cookie } from '@/lib/storage'
 import { getDB } from '@/services/db'
 
 import type { User } from './types'
+
+export const fetchCurrentUserId = async (): Promise<number> => {
+  const db = await getDB()
+
+  const {
+    data: { user },
+  } = await db.auth.getUser()
+
+  if (!user) redirect(Route.Login)
+
+  const { data, error, status } = await db.from('profiles').select('id').eq('uuid', user.id).single()
+
+  if ((error && status !== 406) || !data) {
+    if (error) console.error(error)
+    redirect(Route.Login)
+  }
+
+  const { id } = data
+  if (!id) redirect(Route.Login)
+  return id
+}
 
 export const fetchCurrentUser = async (): Promise<User> => {
   const db = await getDB()

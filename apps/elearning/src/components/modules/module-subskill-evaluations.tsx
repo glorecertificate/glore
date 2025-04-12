@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { type Localized } from '@/services/i18n'
 
-export const ModuleSubskillEvaluations = ({ evaluations }: { evaluations: Localized<ModuleSubskillEvaluation[]> }) => {
+export const ModuleSubskillEvaluations = ({ evaluations }: { evaluations: Localized<ModuleSubskillEvaluation>[] }) => {
   const t = useTranslations('Modules')
 
   return (
@@ -34,7 +34,7 @@ export const ModuleSubskillEvaluations = ({ evaluations }: { evaluations: Locali
                 <div className="flex flex-col items-center gap-2" key={rating}>
                   <RadioGroupItem className="peer sr-only" id={`${evaluation.id}-${rating}`} value={rating.toString()} />
                   <Label
-                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border peer-data-[state=checked]:bg-muted hover:bg-muted"
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-primary hover:bg-muted dark:hover:bg-neutral-900"
                     htmlFor={`${evaluation.id}-${rating}`}
                   >
                     {rating}

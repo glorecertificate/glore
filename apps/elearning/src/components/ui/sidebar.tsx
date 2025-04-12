@@ -388,6 +388,7 @@ export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'l
 export interface SidebarMenuButtonProps extends Omit<ButtonProps, 'size' | 'variant'>, VariantProps<typeof sidebarMenuButton> {
   active?: boolean
   asChild?: boolean
+  clickable?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 }
 
@@ -395,6 +396,7 @@ export const SidebarMenuButton = ({
   active = false,
   asChild = false,
   className,
+  clickable = true,
   color,
   size,
   tooltip,
@@ -405,16 +407,19 @@ export const SidebarMenuButton = ({
 
   const Component = useMemo(() => (asChild ? Slot : Button), [asChild])
 
-  const Base = (
-    <Component
-      className={cn(sidebarMenuButton({ className, size, variant }), active && 'pointer-events-none cursor-default')}
-      color={color || undefined}
-      data-active={active}
-      data-sidebar="menu-button"
-      data-size={size}
-      data-slot="sidebar-menu-button"
-      {...props}
-    />
+  const Base = useMemo(
+    () => (
+      <Component
+        className={cn(sidebarMenuButton({ className, size, variant }), !clickable && 'pointer-events-none')}
+        color={color || undefined}
+        data-active={active}
+        data-sidebar="menu-button"
+        data-size={size}
+        data-slot="sidebar-menu-button"
+        {...props}
+      />
+    ),
+    [className, size, variant, clickable, active, color, props, Component],
   )
 
   if (isMobile || !tooltip) {
@@ -467,10 +472,12 @@ export const sidebarMenuButton = cva(
 export const SidebarMenuAction = ({
   asChild = false,
   className,
+  clickable = true,
   showOnHover = false,
   ...props
 }: React.ComponentProps<'button'> & {
   asChild?: boolean
+  clickable?: boolean
   showOnHover?: boolean
 }) => {
   const Comp = asChild ? Slot : 'button'
@@ -486,6 +493,7 @@ export const SidebarMenuAction = ({
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
           'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground data-[state=open]:opacity-100 md:opacity-0',
+        !clickable && 'pointer-events-none',
         className,
       )}
       data-sidebar="menu-action"

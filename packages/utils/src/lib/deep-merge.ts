@@ -1,9 +1,9 @@
-import type { AnyObject } from '@/types'
+import type { AnyRecord } from '@/types'
 
 /**
  * Deep merges a target object with one or more source objects.
  */
-export const deepMerge = <P extends AnyObject>(target: P, ...sources: P[]): P => {
+export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P => {
   if (!sources.length) return target
 
   for (const [key, value] of Object.entries(sources.shift() ?? [])) {

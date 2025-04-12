@@ -1,3 +1,4 @@
+import { type UserModule } from '@/api/modules'
 import { type Tables } from '@/services/db'
 
 export interface User extends Omit<Tables<'profiles'>, 'avatar_url'> {
@@ -11,5 +12,3 @@ export interface UserOrg extends Pick<Tables<'organizations'>, 'id' | 'name' | '
   isActive: boolean
   role: Tables<'user_organizations'>['role']
 }
-
-export interface UserModule extends Tables<'user_modules'> {}

@@ -1,41 +1,40 @@
-import { type Tables } from '@/services/db'
+import { type Tables, type UserModulesTable } from '@/services/db'
+import { type IntlRecord } from '@/services/i18n'
 
-import type { BaseModule, Module, Skill } from './types'
+import { ModuleStatus, type ModuleSkillEvaluation } from './types'
 
-interface BaseModuleRecord extends Tables<'modules'> {
-  skills: Tables<'skills'> & {
-    subskills: Tables<'subskills'>[]
-  }
+export const parseModuleStatus = ({
+  module_steps,
+  user_modules,
+}: {
   module_steps?: {
     count: number
   }[]
-}
-
-interface ModuleRecord extends Omit<BaseModuleRecord, 'module_steps'> {
-  module_steps: (Tables<'module_steps'> & {
-    module_questions: Tables<'module_questions'>[]
-    module_subskill_evaluations: Tables<'module_subskill_evaluations'>[]
-    module_skill_evaluations: Tables<'module_skill_evaluations'>[]
+  user_modules?: (UserModulesTable & {
+    user_module_steps?: {
+      count: number
+    }[]
   })[]
+}) => {
+  if (!user_modules?.length) return ModuleStatus.NotStarted
+  if (module_steps?.at(0)?.count === user_modules.at(0)?.user_module_steps?.at(0)?.count || 0) return ModuleStatus.Completed
+  return ModuleStatus.InProgress
 }
 
-export const mapBaseModule = ({ module_steps, skills, ...module }: BaseModuleRecord) =>
-  ({
-    ...module,
-    skill: skills as Skill,
-    steps_count: module_steps?.at(0)?.count || 0,
-  }) as BaseModule
+export const parseSkillEvaluations = (
+  skillEvaluations: (Tables<'module_skill_evaluations'> & {
+    user_skill_evaluations?: Tables<'user_skill_evaluations'>[]
+  })[],
+): Omit<ModuleSkillEvaluation, 'skill'> | undefined => {
+  const skillEvaluation = skillEvaluations?.at(0)
+  if (!skillEvaluation) return undefined
 
-export const mapModule = ({ module_steps, skills, ...module }: ModuleRecord) =>
-  ({
-    ...module,
-    skill: skills as Skill,
-    steps: module_steps
-      .map(({ module_questions, module_skill_evaluations, module_subskill_evaluations, ...step }) => ({
-        ...step,
-        questions: module_questions,
-        subskill_evaluations: module_subskill_evaluations,
-        skill_evaluation: module_skill_evaluations.at(0),
-      }))
-      .sort((a, b) => a.sort_order - b.sort_order),
-  }) as Module
+  const { description, user_skill_evaluations, ...evaluation } = skillEvaluation
+  const userEvaluation = user_skill_evaluations?.at(0)?.value
+
+  return {
+    ...evaluation,
+    description: description as IntlRecord,
+    user_evaluation: userEvaluation,
+  }
+}

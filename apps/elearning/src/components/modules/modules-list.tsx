@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownAZIcon, ArrowUpAZIcon, HistoryIcon, SlidersHorizontalIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type Module } from '@/api'
+import { ModuleStatus, type Module } from '@/api/modules'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,12 +22,6 @@ import { useLocale } from '@/hooks/use-locale'
 import { localize } from '@/lib/utils'
 
 import { ModuleCard } from './module-card'
-
-enum ModuleStatus {
-  NotStarted = 'not-started',
-  InProgress = 'in-progress',
-  Completed = 'completed',
-}
 
 enum ModuleSort {
   Asc = 'asc',

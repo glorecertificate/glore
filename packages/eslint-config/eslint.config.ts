@@ -12,5 +12,6 @@ export default jointConfig({
   maxLines: -1,
   newlineAfterImport: true,
   sortObjectKeys: false,
+  tsconfigRootDir: __dirname,
   typeCheck: false,
 })

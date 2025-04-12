@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { capitalize } from '@repo/utils'
 
-import { type BaseModule } from '@/api'
+import { type BaseModule } from '@/api/modules'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'

@@ -19,7 +19,7 @@ import { useTranslations } from 'next-intl'
 
 import { titleize } from '@repo/utils'
 
-import { type User, type UserOrg } from '@/api'
+import { type User, type UserOrg } from '@/api/users'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -58,7 +58,7 @@ import { Route, type Pathname } from '@/lib/navigation'
 import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-export const SidebarOrgs = ({ items }: { items: User['orgs'] }) => {
+export const SidebarOrgs = ({ items }: { items: UserOrg[] }) => {
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
@@ -66,7 +66,7 @@ export const SidebarOrgs = ({ items }: { items: User['orgs'] }) => {
 
   const getOrgInitials = useCallback((org: UserOrg) => org.name.charAt(0).toUpperCase(), [])
 
-  const onOrgSelect = useCallback((org: User['orgs'][number]) => {
+  const onOrgSelect = useCallback((org: UserOrg) => {
     setActiveOrg(org)
     setCookie(Cookie.CurrentOrg, org.id)
   }, [])

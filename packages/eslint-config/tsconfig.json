@@ -3,7 +3,9 @@
   "include": ["**/*.ts"],
   "exclude": ["build", "node_modules"],
   "compilerOptions": {
-    "removeComments": false,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "types": ["node"]
   }
 }

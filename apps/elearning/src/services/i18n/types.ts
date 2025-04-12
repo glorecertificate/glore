@@ -29,10 +29,14 @@ export type WithLocale<O extends AnyObject> = {
         : Record<keyof typeof i18n.locales, string>
 }
 
+export type LocalizedRecord = Record<keyof typeof i18n.locales, string>
+
 export type Localized<O extends AnyObject> = {
-  [K in keyof O]: O[K] extends Record<keyof typeof i18n.locales, string>
+  [K in keyof O]: O[K] extends LocalizedRecord
     ? string
-    : O[K] extends AnyObject
-      ? Localized<O[K]>
-      : O[K]
+    : O[K] extends Primitive
+      ? O[K]
+      : O[K] extends (infer T extends AnyObject)[]
+        ? Localized<T>[]
+        : Localized<O[K]>
 }

@@ -19,6 +19,8 @@
     --muted-foreground: hsl(215.4 16.3% 46.9%);
     --accent: hsl(210 29% 97%);
     --accent-foreground: hsl(222.2 47.4% 11.2%);
+    --success: hsl(142 100% 33%);
+    --success-foreground: hsl(142 100% 33%);
     --destructive: hsl(0 84.2% 60.2%);
     --destructive-foreground: hsl(0 84.2% 60.2%);
     --primary: hsl(76 32% 45%);
@@ -54,6 +56,8 @@
     --muted-foreground: hsl(214 24% 70%);
     --accent: var(--card);
     --accent-foreground: var(--foreground);
+    --success: hsl(142 100% 33%);
+    --success-foreground: hsl(142 100% 33%);
     --destructive: hsl(0 84.2% 50%);
     --destructive-foreground: hsl(0 84.2% 50%);
     --primary: hsl(75 48% 58%);
@@ -94,6 +98,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-primary: var(--primary);
@@ -174,7 +180,7 @@
     h4,
     h5,
     h6 {
-      @apply mt-6 mb-4 leading-tight font-semibold;
+      @apply mt-4 mb-4 leading-tight font-semibold;
     }
     h1 tt,
     h1 code,
@@ -191,19 +197,19 @@
       @apply px-1 text-inherit;
     }
     h1 {
-      @apply text-3xl;
+      @apply text-2xl;
     }
     h2 {
-      @apply border-b border-border pb-2 text-2xl;
-    }
-    h3 {
       @apply text-xl;
     }
-    h4 {
+    h3 {
       @apply text-lg;
     }
-    h5 {
+    h4 {
       @apply text-base;
+    }
+    h5 {
+      @apply text-sm;
     }
     h6 {
       @apply text-sm;
@@ -223,10 +229,6 @@
     ul,
     ol {
       @apply pl-6;
-
-      ::marker {
-        @apply text-muted-foreground;
-      }
     }
     ul {
       @apply list-disc;

@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 
-import api from '@/api'
+import { fetchAllModules } from '@/api/modules'
+import { fetchCurrentUser } from '@/api/users'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteChangeListener } from '@/components/layout/route-change-listener'
@@ -11,8 +12,8 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Cookie } from '@/lib/storage'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const user = await api.users.fetchCurrent()
-  const modules = await api.modules.fetchAll()
+  const user = await fetchCurrentUser()
+  const modules = await fetchAllModules()
 
   const { get } = await cookies()
   const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'

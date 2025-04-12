@@ -2,7 +2,7 @@ import { getDB } from '@/services/db'
 
 import { mapBaseModule, mapModule } from './utils'
 
-export const fetchAll = async () => {
+export const fetchAllModules = async () => {
   const db = await getDB()
 
   const { data, error } = await db.from('modules').select(
@@ -26,7 +26,7 @@ export const fetchAll = async () => {
   return data.map(module => mapBaseModule(module))
 }
 
-export const fetchOne = async (slug: string) => {
+export const fetchModule = async (slug: string) => {
   const db = await getDB()
 
   const { data, error } = await db
@@ -41,7 +41,22 @@ export const fetchOne = async (slug: string) => {
           )
         ),
         module_steps(
-          *
+          *,
+          module_questions (
+            *
+          ),
+          module_subskill_evaluations (
+            *,
+            subskill:subskill_id (
+              *
+            )
+          ),
+          module_skill_evaluations (
+            *,
+            skill:skill_id (
+              *
+            )
+          )
         )
       `,
     )

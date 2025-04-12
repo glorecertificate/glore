@@ -8,6 +8,8 @@ export enum RuleSeverity {
   Error = 2,
 }
 
+export type ConfigFiles = (string | string[])[] | undefined
+
 export type RestrictedImportGroup =
   | {
       group: string[]
@@ -32,7 +34,7 @@ export interface FileOptions {
   /**
    * Patterns of files to exclude.
    */
-  files?: string[]
+  files?: ConfigFiles
   /**
    * Whether to ignore JavaScript files.
    *
@@ -132,7 +134,7 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
   newlineAfterImport?: boolean
 }
 
-export interface EslintConfigOptions extends FileOptions, ImportOptions {
+export interface ConfigOptions extends FileOptions, ImportOptions {
   /**
    * List of rule names to disable.
    */

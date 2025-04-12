@@ -3,6 +3,7 @@
   "display": "@repo/tsup",
   "extends": "./base.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "removeComments": false
   }
 }

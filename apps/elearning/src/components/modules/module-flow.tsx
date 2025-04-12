@@ -6,7 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type Module, type ModuleStepType } from '@/api'
+import { type Module, type ModuleStepType } from '@/api/modules'
+import { ModuleQuestions } from '@/components/modules/module-questions'
+import { ModuleSkillEvaluation } from '@/components/modules/module-skill-evaluation'
+import { ModuleSubskillEvaluations } from '@/components/modules/module-subskill-evaluations'
 import { useBreadcrumb } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -15,11 +18,7 @@ import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
 import { cn, localize } from '@/lib/utils'
 
-interface ModuleFlowProps {
-  module: Module
-}
-
-export const ModuleFlow = (props: ModuleFlowProps) => {
+export const ModuleFlow = (props: { module: Module }) => {
   const { setBreadcrumb } = useBreadcrumb()
   const [locale] = useLocale()
   const router = useRouter()
@@ -53,10 +52,18 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
       }),
     [t],
   )
+  const stepItemTitle = useCallback(
+    (index: number) => {
+      if (!isFutureStep(index)) return undefined
+      return t('Modules.completeToProceed')
+    },
+    [isFutureStep, t],
+  )
 
   const onStepClick = useCallback(
     (index: number) => {
-      if (isPastStep(index)) setCurrentStepIndex(index)
+      if (!isPastStep(index)) return
+      setCurrentStepIndex(index)
     },
     [isPastStep],
   )
@@ -126,9 +133,11 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
       case 'descriptive':
         return true
       case 'questions':
-        return userAnswers[currentStep.id] !== undefined
-      // case 'skill_evaluation':
-      //   return currentStep.questions.every(q => userAnswers[currentStep.id]?.[q.id] !== undefined)
+        return userAnswers[currentStep.id] !== undefined || true
+      case 'subskill_evaluations':
+        return true
+      case 'skill_evaluation':
+        return true
       default:
         return false
     }
@@ -182,6 +191,7 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
                       )}
                       key={step.id}
                       onClick={onStepClick.bind(null, index)}
+                      title={stepItemTitle(index)}
                     >
                       <div
                         className={cn(
@@ -251,7 +261,18 @@ export const ModuleFlow = (props: ModuleFlowProps) => {
 
           <div className="col-span-12 md:col-span-9">
             <div className="rounded-lg border bg-card p-8">
-              {hasSteps ? <Markdown>{currentStep.content}</Markdown> : <p>{'Create the first step'}</p>}
+              {hasSteps ? (
+                <>
+                  <Markdown>{currentStep.content}</Markdown>
+                  {currentStep.type === 'questions' && <ModuleQuestions questions={currentStep.questions} />}
+                  {currentStep.type === 'subskill_evaluations' && (
+                    <ModuleSubskillEvaluations evaluations={currentStep.subskill_evaluations} />
+                  )}
+                  {currentStep.type === 'skill_evaluation' && <ModuleSkillEvaluation evaluation={currentStep.skill_evaluation} />}
+                </>
+              ) : (
+                <p>{'Create the first step'}</p>
+              )}
             </div>
 
             {hasSteps && (

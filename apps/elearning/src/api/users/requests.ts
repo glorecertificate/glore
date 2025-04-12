@@ -7,7 +7,7 @@ import { getDB } from '@/services/db'
 
 import type { User } from './types'
 
-export const fetchCurrent = async (): Promise<User> => {
+export const fetchCurrentUser = async (): Promise<User> => {
   const db = await getDB()
 
   const { get } = await cookies()

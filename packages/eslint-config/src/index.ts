@@ -25,10 +25,10 @@ import sortDestructureKeysPlugin from 'eslint-plugin-sort-destructure-keys'
 import unusedImportsPlugin from 'eslint-plugin-unused-imports'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
-import { RuleSeverity, type EslintConfigOptions } from './types'
+import { RuleSeverity, type ConfigOptions } from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
-const DEFAULT_OPTIONS: EslintConfigOptions = {
+const DEFAULT_OPTIONS: ConfigOptions = {
   allowRelativeImports: 'siblings',
   emptyLineAfterReturn: true,
   exportsLast: true,
@@ -57,7 +57,7 @@ const DEFAULT_OPTIONS: EslintConfigOptions = {
 /**
  * ESLint configuration function.
  */
-const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
+const eslintConfig = (options: ConfigOptions = {}): Linter.Config[] => {
   const {
     allowRelativeImports,
     disabled,
@@ -412,6 +412,7 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
             },
           ],
           'perfectionist/sort-jsx-props': sortProps === true ? RuleSeverity.Error : RuleSeverity.Off,
+          'react/jsx-key': RuleSeverity.Error,
           'react/jsx-uses-react': RuleSeverity.Off,
           'react/react-in-jsx-scope': RuleSeverity.Off,
         },
@@ -506,5 +507,5 @@ const eslintConfig = (options: EslintConfigOptions = {}): Linter.Config[] => {
 }
 
 export default eslintConfig
-export type { EslintConfigOptions }
+export type { ConfigOptions }
 export type * from './types'

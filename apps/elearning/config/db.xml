@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- https://sql.toad.cz -->
+<!-- SQL XML created by WWW SQL Designer, https://github.com/ondras/wwwsqldesigner/ -->
+<!-- Active URL: https://sql.toad.cz/ -->
 <sql>
   <datatypes db="postgres">
     <group label="Numeric" color="rgb(238,238,170)">
@@ -253,7 +254,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1514" y="448" name="modules">
+  <table x="1482" y="419" name="modules">
     <row name="skill_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -295,7 +296,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1764" y="343.5" name="skills">
+  <table x="1789" y="458.5" name="skills">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -316,7 +317,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1174" y="490.5" name="user_modules">
+  <table x="1139" y="523.5" name="user_modules">
     <row name="module_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -331,23 +332,19 @@
       <default>NULL</default>
       <relation table="users" row="id" />
     </row>
-    <row name="progress?" null="1" autoincrement="0">
-      <datatype>DOUBLE</datatype>
-      <default>NULL</default>
-    </row>
     <key type="PRIMARY" name="">
       <part>id</part>
     </key>
   </table>
-  <table x="1790.5" y="529" name="module_steps">
-    <row name="id" null="1" autoincrement="1">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-    </row>
+  <table x="1785.5" y="591" name="module_steps">
     <row name="module_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
       <relation table="modules" row="id" />
+    </row>
+    <row name="id" null="1" autoincrement="1">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
     </row>
     <row name="title (json)" null="1" autoincrement="0">
       <datatype>MEDIUMTEXT</datatype>
@@ -373,7 +370,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1924" y="153" name="subskills">
+  <table x="1770" y="188" name="subskills">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -399,7 +396,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="2353" y="877" name="module_questions">
+  <table x="2277" y="537" name="module_questions">
     <row name="module_step_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -425,7 +422,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="2353" y="406" name="module_subskill_evaluation">
+  <table x="2226" y="204" name="module_subskill_evaluation">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -452,36 +449,9 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1666" y="901" name="user_answers">
+  <table x="1532" y="817" name="user_answers">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
-      <default>NULL</default>
-    </row>
-    <row name="question_id" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-      <relation table="module_questions" row="id" />
-    </row>
-    <row name="user_module_id" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-      <relation table="user_modules" row="id" />
-    </row>
-    <row name="is_correct" null="1" autoincrement="0">
-      <datatype>BINARY</datatype>
-      <default>NULL</default>
-    </row>
-    <key type="PRIMARY" name="">
-      <part>id</part>
-    </key>
-  </table>
-  <table x="1370" y="167" name="user_evalutation">
-    <row name="id" null="1" autoincrement="1">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-    </row>
-    <row name="type (skill/subskill)" null="1" autoincrement="0">
-      <datatype>ENUM</datatype>
       <default>NULL</default>
     </row>
     <row name="user_id" null="1" autoincrement="0">
@@ -489,15 +459,33 @@
       <default>NULL</default>
       <relation table="users" row="id" />
     </row>
-    <row name="subskill_id" null="1" autoincrement="0">
+    <row name="question_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
-      <relation table="subskills" row="id" />
+      <relation table="module_questions" row="id" />
     </row>
-    <row name="skill_id" null="1" autoincrement="0">
+    <row name="answer" null="1" autoincrement="0">
+      <datatype>ENUM</datatype>
+      <default>NULL</default>
+    </row>
+    <key type="PRIMARY" name="">
+      <part>id</part>
+    </key>
+  </table>
+  <table x="1419" y="14" name="user_subskill_evalutation">
+    <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
-      <relation table="skills" row="id" />
+    </row>
+    <row name="user_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="users" row="id" />
+    </row>
+    <row name="subskill_evaluation_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="module_subskill_evaluation" row="id" />
     </row>
     <row name="value" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
@@ -507,7 +495,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="2380" y="657" name="module_skill_evaluation">
+  <table x="2235" y="394" name="module_skill_evaluation">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -603,6 +591,48 @@
     </row>
     <row name="description (json)" null="1" autoincrement="0">
       <datatype>MEDIUMTEXT</datatype>
+      <default>NULL</default>
+    </row>
+    <key type="PRIMARY" name="">
+      <part>id</part>
+    </key>
+  </table>
+  <table x="1495" y="667.5" name="user_module_steps">
+    <row name="id" null="1" autoincrement="1">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+    </row>
+    <row name="user_module_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="user_modules" row="id" />
+    </row>
+    <row name="module_step_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="module_steps" row="id" />
+    </row>
+    <key type="PRIMARY" name="">
+      <part>id</part>
+    </key>
+  </table>
+  <table x="1458" y="242" name="user_skill_evaluation">
+    <row name="id" null="1" autoincrement="1">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+    </row>
+    <row name="user_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="users" row="id" />
+    </row>
+    <row name="skill_evaluation_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="module_skill_evaluation" row="id" />
+    </row>
+    <row name="value" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
     <key type="PRIMARY" name="">

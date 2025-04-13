@@ -88,12 +88,12 @@ Once you have done that, you can deploy by pushing changes to any branch. Vercel
 Alternatively, you can create a preview deployment by running:
 
 ```sh
-pnpm deploy:elearning
+pnpm deploy
 ```
 
 ### Production deployments and releases
 
-To release a new version of the project, you must specify a `GITHUB_TOKEN` environment variable at the root of the project. This token needs access to the `repository` and `workflow` scopes.
+To release a new version of the project, you must specify a `GITHUB_TOKEN` or `GH_TOKEN` environment variable at the root of the project. The token needs access to the `repository` and `workflow` scopes.
 
 Then, run the following command to create a new interactive release and deploy it to production:
 
@@ -104,7 +104,7 @@ pnpm release
 To manually trigger a production deployment without creating a release, use the command:
 
 ```sh
-pnpm deploy:elearning:prod
+pnpm deploy:production
 ```
 
 ## License

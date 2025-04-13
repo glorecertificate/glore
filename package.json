@@ -4,7 +4,7 @@
   "homepage": "https://elearning.glorecertificate.net",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/joint-it/glore.git"
+    "url": "git+https://github.com/gabrielecanepa/glore.git"
   },
   "type": "module",
   "private": true,
@@ -25,13 +25,13 @@
     "lint:fix": "pnpm root#lint:fix && turbo lint:fix",
     "check": "pnpm root#check && turbo check",
     "check:fix": "pnpm root#check:fix && turbo check:fix",
-    "deploy:elearning": "pnpm check && vercel build && vercel --prebuilt",
-    "deploy:elearning:prod": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
+    "deploy": "pnpm check && vercel build && vercel --prebuilt",
+    "deploy:production": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
     "release": "sh bin/release",
     "release:patch": "pnpm release --increment patch",
     "release:minor": "pnpm release --increment minor",
     "release:major": "pnpm release --increment major",
-    "latest": "pnpm upgrade --latest --recursive",
+    "bump": "pnpm upgrade --latest --recursive",
     "root#typecheck": "tsc --noEmit",
     "root#lint": "eslint . && prettier --check . && shellcheck $(find .husky -maxdepth 1 -type f)",
     "root#lint:fix": "eslint --fix . && prettier --write .",

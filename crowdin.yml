@@ -1,0 +1,3 @@
+files:
+  - source: /apps/elearning/config/translations/*.json
+    translation: /.crowdin/translations/%two_letters_code%.json

@@ -1,4 +1,27 @@
-import { type Config } from 'release-it'
+import { type Config as ReleaseItConfig } from 'release-it'
+
+export interface Context {
+  branchName: string
+  changelog: string
+  latestVersion: string
+  name: string
+  releaseUrl: string
+  repo: {
+    remote: string
+    protocol: string
+    host: string
+    owner: string
+    repository: string
+    project: string
+  }
+  version: string
+}
+
+export interface Config extends ReleaseItConfig {
+  github: ReleaseItConfig['github'] & {
+    releaseNotes?: (context: Context) => string
+  }
+}
 
 export default {
   git: {
@@ -10,14 +33,19 @@ export default {
     tagName: 'v${version}',
   },
   github: {
-    autoGenerate: true,
     release: true,
     releaseName: 'v${version}',
+    releaseNotes: context =>
+      [
+        ...context.changelog.split('\n').slice(1),
+        `\n\n**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
+      ].join('\n'),
   },
   hooks: {
-    // Run checks only with unpushed commits
+    // Run checks only if there are unpushed commits
     'after:init': '[ -n "$(git log @{u}.. 2>/dev/null)" ] && (pnpm build && pnpm check) || exit 0',
-    'after:release': 'echo Version ${version} released and scheduled for deployment {repo}/deployments/Production',
+    'after:release':
+      'echo v${version} released and scheduled for deployment: https://github.com/${repo.repository}/deployments/Production',
   },
   npm: {
     publish: false,
@@ -33,32 +61,32 @@ export default {
         name: 'conventionalcommits',
         types: [
           {
-            section: 'Features',
+            section: '🚀 Features',
             type: 'feat',
           },
           {
-            section: 'Bug Fixes',
+            section: '🔧 Fixes',
             type: 'fix',
           },
           {
-            section: 'Build System',
+            section: '🏗️ Build',
             type: 'build',
           },
           {
-            section: 'Tests',
-            type: 'test',
-          },
-          {
-            section: 'Continuous Integration',
+            section: '⚙️ CI',
             type: 'ci',
           },
           {
-            section: 'Documentation',
+            section: '📑 Docs',
             type: 'docs',
           },
           {
             section: 'Other',
             type: 'chore',
+          },
+          {
+            section: 'Other',
+            type: 'test',
           },
           {
             section: 'Other',

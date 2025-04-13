@@ -26,13 +26,6 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath,
   },
-  webpack: config => ({
-    ...config,
-    watchOptions: {
-      aggregateTimeout: 500,
-      poll: 1000,
-    },
-  }),
 }
 
 const bundleAnalyzerConfig: BundleAnalyzerConfig = {

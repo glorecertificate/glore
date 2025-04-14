@@ -1,46 +1,55 @@
 'use client'
 
+import { useCallback } from 'react'
+
 import { useTranslations } from 'next-intl'
 import Markdown from 'react-markdown'
 
 import { type ModuleSkillEvaluation as SkillEvaluation } from '@/api/modules'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RatingGroup } from '@/components/ui/rating-group'
 import { type Localized } from '@/services/i18n'
 
-export const ModuleSkillEvaluation = ({ evaluation }: { evaluation: Localized<SkillEvaluation> }) => {
+export const ModuleSkillEvaluation = ({
+  completed,
+  evaluation,
+  onAnswer,
+  title,
+}: {
+  completed: boolean
+  evaluation: Localized<SkillEvaluation>
+  onAnswer: (rating: number) => void
+  title?: string
+}) => {
   const t = useTranslations('Modules')
+
+  const onValueChange = useCallback(
+    (value: string) => {
+      if (completed) return
+      onAnswer(Number(value))
+    },
+    [completed, onAnswer],
+  )
 
   return (
     <div className="mt-8 border-t-2 pt-6">
-      {/* <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('skillEvaluationTitle')}</h3> */}
-      <p className="mb-4 font-medium">{t('skillEvaluationSubtitle')}</p>
+      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
+      <p className="mb-4 font-medium">
+        {t('subskillEvaluationsSubtitle', {
+          count: 1,
+        })}
+      </p>
 
       <div className="space-y-8">
-        <Markdown>{evaluation.description}</Markdown>
         <div className="space-y-4" key={evaluation.id}>
-          <RadioGroup
-            className="flex justify-between"
-            // onValueChange={value => onAnswer(question.id, Number.parseInt(value))}
-            // value={userAnswers[question.id]?.toString()}
-          >
-            {[1, 2, 3, 4, 5].map(rating => (
-              <div className="flex flex-col items-center gap-2" key={rating}>
-                <RadioGroupItem className="peer sr-only" id={`${evaluation.id}-${rating}`} value={rating.toString()} />
-                <Label
-                  className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border peer-data-[state=checked]:bg-muted hover:bg-muted"
-                  htmlFor={`${evaluation.id}-${rating}`}
-                >
-                  {rating}
-                </Label>
-                <span className="text-xs text-muted-foreground">
-                  {t('selfAssestmentRating', {
-                    rating: String(rating),
-                  })}
-                </span>
-              </div>
-            ))}
-          </RadioGroup>
+          <Markdown>{evaluation.description}</Markdown>
+          <RatingGroup
+            color="secondary"
+            disabled={completed}
+            disabledToast={t('ratingDisabled')}
+            id={evaluation.id}
+            onValueChange={onValueChange}
+            value={evaluation.user_evaluation}
+          />
         </div>
       </div>
     </div>

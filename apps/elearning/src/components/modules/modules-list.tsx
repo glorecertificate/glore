@@ -440,9 +440,9 @@ export const ModulesList = () => {
                 <h3 className="text-xl font-medium">{t('noModulesFound')}</h3>
                 <p className="mt-2 text-muted-foreground">
                   {activeTab === ModuleStatus.NotStarted && "You've started all available modules!"}
-                  {activeTab === ModuleStatus.InProgress && "You don't have any modules in progress."}
-                  {activeTab === ModuleStatus.Completed && "You haven't completed any modules yet."}
-                  {activeTab === 'all' && 'There are no modules available with the current filters.'}
+                  {activeTab === ModuleStatus.InProgress && "You don't have any modules in progress"}
+                  {activeTab === ModuleStatus.Completed && "You haven't completed any modules yet"}
+                  {activeTab === 'all' && 'There are no modules available with the current filters'}
                 </p>
                 {hasActiveFilters && (
                   <Button className="mt-4 border" onClick={clearAllFilters} size="sm" variant="outline">

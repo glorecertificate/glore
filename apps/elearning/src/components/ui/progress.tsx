@@ -26,10 +26,11 @@ export const progress = cva(
     },
     variants: {
       color: {
-        default: 'bg-foreground/20 [&>div]:bg-foreground',
-        primary: 'bg-primary/20 [&>div]:bg-primary',
+        default: 'bg-muted-foreground/20 [&>div]:bg-muted-foreground',
+        primary: 'bg-primary-accent/20 [&>div]:bg-primary-accent',
         secondary: 'bg-secondary/20 [&>div]:bg-secondary',
         tertiary: 'bg-tertiary/20 [&>div]:bg-tertiary',
+        success: 'bg-success/20 [&>div]:bg-success',
       },
     },
   },

@@ -73,6 +73,7 @@ export const link = cva(`text-sm no-underline transition-all`, {
       secondary: 'text-secondary hover:text-secondary-accent',
       tertiary: 'text-tertiary hover:text-tertiary-accent',
       destructive: 'hover:text-destructive-accent text-destructive',
+      success: 'hover:text-success-accent text-success',
       transparent: 'text-transparent hover:text-foreground',
       muted: 'text-muted hover:text-muted-foreground',
     },

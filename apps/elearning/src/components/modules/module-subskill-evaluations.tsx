@@ -1,19 +1,40 @@
 'use client'
 
+import { useCallback } from 'react'
+
 import { useTranslations } from 'next-intl'
 import Markdown from 'react-markdown'
 
 import { type ModuleSubskillEvaluation } from '@/api/modules'
-import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RatingGroup } from '@/components/ui/rating-group'
 import { type Localized } from '@/services/i18n'
 
-export const ModuleSubskillEvaluations = ({ evaluations }: { evaluations: Localized<ModuleSubskillEvaluation>[] }) => {
+export const ModuleSubskillEvaluations = ({
+  completed,
+  evaluations,
+  onAnswer,
+  title,
+}: {
+  completed: boolean
+  evaluations: Localized<ModuleSubskillEvaluation>[]
+  onAnswer: (evaluationId: number, rating: number) => void
+  title?: string
+}) => {
   const t = useTranslations('Modules')
+
+  const onValueChange = useCallback(
+    (evaluationId: number) => {
+      if (completed) return
+      return (value: string) => {
+        onAnswer(evaluationId, Number(value))
+      }
+    },
+    [completed, onAnswer],
+  )
 
   return (
     <div className="mt-8 border-t-2 pt-6">
-      {/* <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('subskillEvaluationsTitle')}</h3> */}
+      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {
           count: evaluations.length,
@@ -24,29 +45,14 @@ export const ModuleSubskillEvaluations = ({ evaluations }: { evaluations: Locali
         {evaluations.map(evaluation => (
           <div className="space-y-4" key={evaluation.id}>
             <Markdown>{evaluation.description}</Markdown>
-
-            <RadioGroup
-              className="flex justify-between"
-              // onValueChange={value => onAnswer(question.id, Number.parseInt(value))}
-              // value={userAnswers[question.id]?.toString()}
-            >
-              {[1, 2, 3, 4, 5].map(rating => (
-                <div className="flex flex-col items-center gap-2" key={rating}>
-                  <RadioGroupItem className="peer sr-only" id={`${evaluation.id}-${rating}`} value={rating.toString()} />
-                  <Label
-                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border peer-data-[state=checked]:border-2 peer-data-[state=checked]:border-primary hover:bg-muted dark:hover:bg-neutral-900"
-                    htmlFor={`${evaluation.id}-${rating}`}
-                  >
-                    {rating}
-                  </Label>
-                  <span className="text-xs text-muted-foreground">
-                    {t('selfAssestmentRating', {
-                      rating: String(rating),
-                    })}
-                  </span>
-                </div>
-              ))}
-            </RadioGroup>
+            <RatingGroup
+              color="secondary"
+              disabled={completed}
+              disabledToast={t('ratingDisabled')}
+              id={evaluation.id}
+              onValueChange={onValueChange(evaluation.id)}
+              value={evaluation.user_evaluation}
+            />
           </div>
         ))}
       </div>

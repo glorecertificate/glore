@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 import { type BooleanString } from '@repo/utils'
 
@@ -12,51 +13,66 @@ import { Markdown } from '@/components/ui/markdown'
 import { cn } from '@/lib/utils'
 import { type Localized } from '@/services/i18n'
 
-const ModuleQuestion = ({ question }: { question: Localized<ModuleQuestion> }) => {
+const ModuleQuestion = ({
+  completed,
+  onAnswer,
+  question,
+}: {
+  completed?: boolean
+  onAnswer: (questionId: number, value: BooleanString) => void
+  question: Localized<ModuleQuestion>
+  title?: string
+}) => {
   const t = useTranslations('Modules')
 
-  const [userAnswer, setUserAnswer] = useState<BooleanString | undefined>(undefined)
+  const isAnswered = useMemo(() => question.user_answer, [question.user_answer])
 
-  const isAnswered = useMemo(() => userAnswer !== undefined, [userAnswer])
-
+  const isUserAnswer = useCallback((answer: BooleanString) => question.user_answer === answer, [question.user_answer])
   const isCorrectAnswer = useCallback(
     (answer: BooleanString) => isAnswered && answer === question.correct_answer,
     [isAnswered, question.correct_answer],
   )
+  const isCorrectUserAnswer = useMemo(
+    () => isAnswered && question.user_answer === question.correct_answer,
+    [isAnswered, question.correct_answer, question.user_answer],
+  )
+
+  const onOptionClick = useCallback(
+    (value: BooleanString) => () => {
+      if (isAnswered && !completed) return
+      if (!isAnswered) return onAnswer(question.id, value)
+      if (isUserAnswer(value)) return
+
+      toast.info(t('answerDisabled'), {
+        duration: 1200,
+      })
+    },
+    [onAnswer, question, t, isAnswered, completed, isUserAnswer],
+  )
+
   const buttonClassName = useCallback(
     (answer: BooleanString) =>
       cn(
         'flex-1',
-        isAnswered && 'pointer-events-none',
-        isAnswered && answer === userAnswer && 'border-foreground/60 bg-muted/20',
+        isAnswered && 'cursor-default',
+        isUserAnswer(answer) && 'border-foreground/60 bg-accent',
+        !isUserAnswer(answer) && 'text-muted-foreground',
+        // isCorrectAnswer(answer) && 'border-foreground/60',
       ),
-    [isAnswered, userAnswer],
+    [isAnswered, isUserAnswer],
   )
-  const isCorrectUserAnswer = useMemo(
-    () => isAnswered && userAnswer === question.correct_answer,
-    [isAnswered, question.correct_answer, userAnswer],
-  )
-
-  const onTrueClick = useCallback(() => {
-    if (isAnswered) return
-    setUserAnswer('true')
-  }, [isAnswered])
-  const onFalseClick = useCallback(() => {
-    if (isAnswered) return
-    setUserAnswer('false')
-  }, [isAnswered])
 
   return (
     <>
-      <Markdown className="mb-3">{question.description}</Markdown>
+      <Markdown className="mb-4">{question.description}</Markdown>
 
       <div className="flex gap-4">
-        <Button className={buttonClassName('true')} onClick={onTrueClick} variant="outline">
+        <Button className={buttonClassName('true')} hover={!isAnswered} onClick={onOptionClick('true')} variant="outline">
           {t('trueAnswer')}
           {isCorrectAnswer('true') && <CheckCircleIcon className="size-4 text-success" />}
         </Button>
 
-        <Button className={buttonClassName('false')} onClick={onFalseClick} variant="outline">
+        <Button className={buttonClassName('false')} hover={!isAnswered} onClick={onOptionClick('false')} variant="outline">
           {t('falseAnswer')}
           {isCorrectAnswer('false') && <CheckCircleIcon className="size-4 text-success" />}
         </Button>
@@ -89,22 +105,34 @@ const ModuleQuestion = ({ question }: { question: Localized<ModuleQuestion> }) =
   )
 }
 
-export const ModuleQuestions = ({ questions }: { questions: Localized<ModuleQuestion[]> }) => {
+export const ModuleQuestions = ({
+  completed,
+  onAnswer,
+  questions,
+  title = false,
+}: {
+  completed?: boolean
+  onAnswer: (questionId: number, value: BooleanString) => void
+  questions: Localized<ModuleQuestion>[]
+  title?: boolean
+}) => {
   const t = useTranslations('Modules')
 
   return (
     <div className="mt-8 border-t-2 pt-6">
-      {/* <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('questionsTitle')}</h3> */}
-      <p className="mb-3 font-medium">
+      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('questionsTitle')}</h3>}
+      <p className="mb-4 font-medium">
         {t('questionsSubtitle', {
           count: questions.length,
         })}
       </p>
 
       {questions.length ? (
-        questions.map(question => <ModuleQuestion key={question.id} question={question} />)
+        questions.map(question => (
+          <ModuleQuestion completed={completed} key={question.id} onAnswer={onAnswer} question={question} />
+        ))
       ) : (
-        <p className="text-muted-foreground">{'no questions'}</p>
+        <p className="text-muted-foreground">{'Admin.noQuestions'}</p>
       )}
     </div>
   )

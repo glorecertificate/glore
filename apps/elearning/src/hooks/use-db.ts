@@ -6,3 +6,5 @@ import { Env } from '@/lib/env'
 import type { Database } from 'supabase/types'
 
 export const useDB = () => createBrowserClient<Database>(Env.SUPABASE_URL, Env.SUPABASE_ANON_KEY)
+
+export type DatabaseClient = ReturnType<typeof useDB>

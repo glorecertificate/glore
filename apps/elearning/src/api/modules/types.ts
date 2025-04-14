@@ -8,29 +8,13 @@ import type {
   ModuleSubskillEvaluationsTable,
   SkillsTable,
   SubskillsTable,
+  UserAnswersTable,
   UserModulesTable,
+  UserModuleStepsTable,
+  UserSkillEvaluationsTable,
+  UserSubskillEvaluationsTable,
 } from '@/services/db'
 import type { Enums } from 'supabase/types'
-
-export type Skill = SkillsTable & {
-  subskills: Subskill[]
-}
-
-export type Subskill = SubskillsTable
-
-export type BaseModule = ModulesTable & {
-  skill: Skill
-  steps_count: number
-  status: ModuleStatus
-  completed_steps: number
-  progress?: number
-}
-
-export type Module = ModulesTable & {
-  skill: Skill
-  steps: ModuleStep[]
-  status: ModuleStatus
-}
 
 export enum ModuleStatus {
   NotStarted = 'not-started',
@@ -38,7 +22,27 @@ export enum ModuleStatus {
   Completed = 'completed',
 }
 
-export type ModuleStep = ModuleStepsTable & {
+export interface Skill extends SkillsTable {
+  subskills: Subskill[]
+}
+
+export interface Subskill extends SubskillsTable {}
+
+export interface BaseModule extends ModulesTable {
+  skill: Skill
+  steps_count: number
+  status: ModuleStatus
+  completed_steps: number
+  progress?: number
+}
+// module_steps, skills, user_modules } = data
+export interface Module extends Omit<ModulesTable, 'skill_id'> {
+  skill: Skill
+  steps: ModuleStep[]
+  status: ModuleStatus
+}
+
+export interface ModuleStep extends ModuleStepsTable {
   type: Enums<'module_step_type'>
   questions: ModuleQuestion[]
   subskill_evaluations: ModuleSubskillEvaluation[]
@@ -46,20 +50,28 @@ export type ModuleStep = ModuleStepsTable & {
   completed: boolean
 }
 
-export type ModuleQuestion = ModuleQuestionsTable & {
+export interface ModuleQuestion extends ModuleQuestionsTable {
   user_answer?: BooleanString
 }
 
-export type ModuleSubskillEvaluation = Omit<ModuleSubskillEvaluationsTable, 'subskill_id'> & {
+export interface ModuleSubskillEvaluation extends Omit<ModuleSubskillEvaluationsTable, 'subskill_id'> {
   subskill?: Subskill
   user_evaluation?: number
 }
 
-export type ModuleSkillEvaluation = Omit<ModuleSkillEvaluationsTable, 'skill_id'> & {
+export interface ModuleSkillEvaluation extends Omit<ModuleSkillEvaluationsTable, 'skill_id'> {
   skill: Skill
   user_evaluation?: number
 }
 
-export type UserModule = UserModulesTable
+export interface ModuleEvaluation extends ModuleSkillEvaluation, ModuleSubskillEvaluation {}
 
-export type UserModuleStep = UserModulesTable
+export interface UserModule extends UserModulesTable {}
+
+export interface UserModuleStep extends UserModuleStepsTable {}
+
+export interface UserAnswer extends UserAnswersTable {}
+
+export interface UserSubskillEvalutation extends UserSubskillEvaluationsTable {}
+
+export interface UserSkillEvaluation extends UserSkillEvaluationsTable {}

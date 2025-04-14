@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 
-import { fetchModule } from '@/api/modules'
+import { createUserModule, fetchModule, ModuleStatus } from '@/api/modules'
+import { fetchCurrentUserId } from '@/api/users'
 import { ModuleFlow } from '@/components/modules/module-flow'
 import { appMetadata } from '@/lib/metadata'
 import { type PageProps, type Route } from '@/lib/navigation'
@@ -10,17 +11,23 @@ export default async ({ params }: PageProps<Route.Module>) => {
   const { slug } = (await params) ?? {}
   if (!slug) notFound()
 
-  const pageModule = await fetchModule(slug)
-  if (!pageModule) notFound()
+  const module = await fetchModule({ slug })
+  if (!module) notFound()
 
-  return <ModuleFlow module={pageModule} />
+  if (module.status === ModuleStatus.NotStarted) {
+    const userId = await fetchCurrentUserId()
+    await createUserModule({ userId, moduleId: module.id })
+    module.status = ModuleStatus.InProgress
+  }
+
+  return <ModuleFlow module={module} />
 }
 
 export const generateMetadata = async ({ params }: PageProps<Route.Module>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return await appMetadata()
 
-  const pageModule = await fetchModule(slug)
+  const pageModule = await fetchModule({ slug })
   if (!pageModule) return await appMetadata()
 
   const locale = await getLocale()

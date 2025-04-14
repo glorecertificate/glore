@@ -6,20 +6,14 @@ import { useEffect } from 'react'
 import { useHeader } from '@/hooks/use-header'
 
 export const RouteListener = () => {
-  const { setBreadcrumb, setHasShadow, setSubHeader } = useHeader()
+  const { setBreadcrumb, setHeaderShadow, setSubHeader } = useHeader()
   const pathname = usePathname()
 
   useEffect(() => {
     setBreadcrumb(undefined)
-  }, [pathname, setBreadcrumb])
-
-  useEffect(() => {
     setSubHeader(undefined)
-  }, [pathname, setSubHeader])
-
-  useEffect(() => {
-    setHasShadow(false)
-  }, [pathname, setHasShadow])
+    setHeaderShadow(true)
+  }, [pathname, setSubHeader, setBreadcrumb, setHeaderShadow])
 
   return <></>
 }

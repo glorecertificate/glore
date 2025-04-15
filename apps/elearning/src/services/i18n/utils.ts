@@ -1,10 +1,10 @@
 import { type AnyRecord, type Primitive } from '@repo/utils'
 
-import i18n from 'config/i18n.json'
+import app from 'config/app.json'
 
 import type { IntlRecord, Locale, Localized } from './types'
 
-export const LOCALES = Object.keys(i18n.locales) as Locale[]
+export const LOCALES = Object.keys(app.locales) as Locale[]
 
 export const localize = <T extends AnyRecord>(data: T, locale: Locale): Localized<T> =>
   Object.entries(data).reduce((obj, [key, value]) => {

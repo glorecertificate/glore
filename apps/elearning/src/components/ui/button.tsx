@@ -106,7 +106,7 @@ const button = cva(
         color: 'default',
         hover: true,
         disabled: false,
-        className: 'hover:bg-accent',
+        className: 'hover:bg-accent dark:hover:bg-background/50',
       },
       {
         color: 'primary',

@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem, type RadioGroupProps } from '@/components/ui/radio-group'
+import { cn } from '@/lib/utils'
 
 export interface RatingGroupProps
   extends Omit<RadioGroupProps, 'color' | 'disabled' | 'id' | 'value'>,
@@ -15,7 +16,7 @@ export interface RatingGroupProps
   value?: string | number
 }
 
-export const RatingGroup = ({ color, disabled, disabledToast, id, value, ...props }: RatingGroupProps) => {
+export const RatingGroup = ({ className, color, disabled, disabledToast, id, value, ...props }: RatingGroupProps) => {
   const t = useTranslations('Common')
 
   const labelStyles = useMemo(() => ratingGroup({ color, disabled }), [color, disabled])
@@ -31,7 +32,7 @@ export const RatingGroup = ({ color, disabled, disabledToast, id, value, ...prop
   )
 
   return (
-    <RadioGroup className="flex justify-between" value={String(value)} {...props}>
+    <RadioGroup className={cn('flex justify-between', className)} value={String(value)} {...props}>
       {[1, 2, 3, 4, 5].map(rating => (
         <div className="flex flex-col items-center gap-2" key={rating}>
           <RadioGroupItem className="peer sr-only" id={`${id}-${rating}`} value={rating.toString()} />
@@ -58,9 +59,9 @@ export const ratingGroup = cva('flex h-10 w-10 cursor-pointer items-center justi
     color: {
       default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
       primary:
-        'peer-data-[state=checked]:border-primary-accent peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground',
+        'peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground',
       secondary:
-        'peer-data-[state=checked]:border-secondary-accent peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground',
+        'peer-data-[state=checked]:border-secondary peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground',
     },
     disabled: {
       true: 'cursor-default opacity-100',

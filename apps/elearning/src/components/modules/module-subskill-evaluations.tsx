@@ -12,12 +12,12 @@ import { type Localized } from '@/services/i18n'
 export const ModuleSubskillEvaluations = ({
   completed,
   evaluations,
-  onAnswer,
+  onEvaluation,
   title,
 }: {
   completed: boolean
   evaluations: Localized<ModuleSubskillEvaluation>[]
-  onAnswer: (evaluationId: number, rating: number) => void
+  onEvaluation: (evaluationId: number, rating: number) => void
   title?: string
 }) => {
   const t = useTranslations('Modules')
@@ -26,10 +26,10 @@ export const ModuleSubskillEvaluations = ({
     (evaluationId: number) => {
       if (completed) return
       return (value: string) => {
-        onAnswer(evaluationId, Number(value))
+        onEvaluation(evaluationId, Number(value))
       }
     },
-    [completed, onAnswer],
+    [completed, onEvaluation],
   )
 
   return (

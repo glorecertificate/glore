@@ -85,7 +85,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
                     {t('Common.syncError')}
                     {' ⚠️'}
                   </p>
-                  <p className="text-[10px] text-gray-400">{t('Common.syncErrorMessage')}</p>
+                  <p className="text-[10px] text-gray-400">{t('Common.syncErrorSubtitle')}</p>
                 </TooltipContent>
               </Tooltip>
             )}

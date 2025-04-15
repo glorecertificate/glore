@@ -63,7 +63,8 @@
     "submit": "Enviar",
     "syncChanges": "Sincronizando",
     "syncError": "Ocurrió un error",
-    "syncErrorMessage": "Haga clic para actualizar la página",
+    "syncErrorSubtitle": "Haga clic para actualizar la página",
+    "syncErrorMessage": "Ocurrió un error de sincronización, por favor atualiza la página",
     "system": "Sistema",
     "theme": "Tema",
     "toggle": "Palanca",
@@ -76,7 +77,8 @@
     "updatedYesterday": "Actualizado ayer",
     "useDarkTheme": "Tema oscuro",
     "useLightTheme": "Tema claro",
-    "useSystemTheme": "Tema del sistema"
+    "useSystemTheme": "Tema del sistema",
+    "refreshPage": "Actualizar"
   },
   "Modules": {
     "answerDisabled": "No puedes modificar tu respuesta",
@@ -143,7 +145,15 @@
     "wrongAnswerTitle": "Incorrecto",
     "noLessonsCompleted": "No hay lecciones completadas",
     "reviewModeMessage": "En modo revisión, puede reembolsar en todos los pasos del módulo, pero los resultados no se pueden cambiar",
-    "reviewMode": "Modo Revisión"
+    "reviewMode": "Modo Revisión",
+    "completedTitle": "¡Felicidades, has completado {count, plural, =1 {tu primer} =2 {tu segundo} =3 {tu tercer} other {otro}} módulo!",
+    "completedTitleAll": "¡Felicidades, has completado todos los módulos!",
+    "completedVerifiedSkills": "Has verificado las siguientes habilidades:",
+    "completedMessage": "Revisa los pasos o vuelve a todos los módulos para continuar tu aprendizaje.",
+    "completedRequestCertificate": "¡Puedes perguntar un certificado para verificar tus habilidades!",
+    "completeIncludeInCertificate": "¡Ahora puedes incluir este módulo en tu certificado!",
+    "requestCertificate": "Requerir certificado",
+    "goToCertificates": "Ir a certificados"
   },
   "Navigation": {
     "about": "Acerca de GloRe",

@@ -12,7 +12,7 @@ import { useIsMobile } from '@/hooks/use-is-mobile'
 import { Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { cn } from '@/lib/utils'
-import app from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 const variants: Variants = {
   initial: { opacity: 0, y: 20 },
@@ -62,7 +62,7 @@ export const ErrorView = ({ Actions, hasHeader, image, message, title, type = 'e
         ? t('notFoundMessage')
         : t.rich('errorMessage', {
             contactUs: content => (
-              <a className="text-primary underline" href={`mailto:${app.email}`}>
+              <a className="text-primary underline" href={`mailto:${metadata.email}`}>
                 {content}
               </a>
             ),

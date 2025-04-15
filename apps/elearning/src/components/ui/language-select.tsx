@@ -9,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerPro
 import { useLocale } from '@/hooks/use-locale'
 import { cn } from '@/lib/utils'
 import { type Locale } from '@/services/i18n'
-import i18n from 'config/i18n.json'
+import app from 'config/app.json'
 
-const items = Object.entries(i18n.locales).map(([value, { flag, name }]) => ({
+const items = Object.entries(app.locales).map(([value, { flag, name }]) => ({
   label: name,
   value,
   icon: flag,

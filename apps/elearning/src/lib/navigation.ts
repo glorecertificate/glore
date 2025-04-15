@@ -1,6 +1,6 @@
 import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 
-import app from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
   params?: Promise<RouteSegments<R>>
@@ -36,8 +36,8 @@ export type RouteSegments<S extends string> = S extends `${infer _}:${infer Para
     : AnyRecord
 
 export const ExternalUrl = {
-  App: app.url,
-  Website: app.website,
+  App: metadata.url,
+  Website: metadata.website,
 }
 
 /**

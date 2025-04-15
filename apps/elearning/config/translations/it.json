@@ -62,7 +62,8 @@
     "space": "Spazio",
     "syncChanges": "Sincronizzazione in corso",
     "syncError": "Errore di sincronizzazione",
-    "syncErrorMessage": "Clicca per aggiornare la pagina",
+    "syncErrorSubtitle": "Clicca per aggiornare la pagina",
+    "syncErrorMessage": "Si è verificato un errore di sincronizzazione, per favore ricarica la pagina",
     "submit": "Invia",
     "system": "Sistema",
     "theme": "Tema",
@@ -76,7 +77,8 @@
     "updatedYesterday": "Aggiornato ieri",
     "useDarkTheme": "Tema scuro",
     "useLightTheme": "Tema chiaro",
-    "useSystemTheme": "Tema di sistema"
+    "useSystemTheme": "Tema di sistema",
+    "refreshPage": "Ricarica pagina"
   },
   "Modules": {
     "answerDisabled": "Non puoi modificare la tua risposta",
@@ -117,7 +119,7 @@
     "questionsTitle": "Quiz",
     "ratingDisabled": "Non puoi modificare questa valutazione",
     "replyToProceed": "Completa {type, select, questions {il quiz} skill_evaluation {l'autovalutazione} subskill_evaluations {tutte le autovalutazioni} other {}} per procedere",
-    "reviewModule": "Rivedi il modulo",
+    "reviewModule": "Rivedi modulo",
     "skillEvaluationSubtitle": "Come valuteresti le tue competenze generali in quest'area?",
     "skillEvaluationTitle": "Valutazione del modulo",
     "sortAtoZ": "Dalla A alla Z",
@@ -143,7 +145,15 @@
     "wrongAnswerMessage": "Ma non ti preoccupare, puoi sempre rivedere il materiale del modulo.",
     "wrongAnswerTitle": "Sbagliato",
     "reviewModeMessage": "In modalità revisione puoi rivedere tutti i passaggi del modulo, \nma i risultati non sono modificabili",
-    "reviewMode": "Modalità Revisione"
+    "reviewMode": "Modalità Revisione",
+    "completedTitle": "Congratulazioni, hai completato {count, plural, =1 {il tuo primo} =2 {il tuo secondo} =3 {il tuo terzo} other {un altro}} modulo!",
+    "completedTitleAll": "Congratulazioni, hai completato tutti i moduli!",
+    "completedVerifiedSkills": "Hai verificato le seguenti soft skills:",
+    "completedMessage": "Rivedi i passaggi o torna a tutti i moduli e continua il tuo apprendimento.",
+    "completedRequestCertificate": "Puoi richiedere un certificato per verificare le tue competenze!",
+    "completeIncludeInCertificate": "Puoi ora includere questo modulo nel tuo certificato!",
+    "requestCertificate": "Richiedi certificato",
+    "goToCertificates": "Vai ai certificati"
   },
   "Navigation": {
     "about": "Informazioni su GloRe",

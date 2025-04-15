@@ -6,16 +6,24 @@ import { type Locale } from 'next-intl'
 import { getMessages, getRequestConfig, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
-import i18n from 'config/i18n.json'
+import app from 'config/app.json'
+
+import { type MessageKey } from './types'
 
 export const getLocale = async () => {
   const store = await cookies()
-  return (store.get(Cookie.Locale)?.value || i18n.defaultLocale) as Locale
+  return (store.get(Cookie.Locale)?.value || app.defaultLocale) as Locale
 }
 
 export const setLocale = async (locale: Locale) => {
   const cookieStore = await cookies()
   cookieStore.set(Cookie.Locale, locale)
+}
+
+export const getFlatTranslations = async () => {
+  const translations = await getTranslations()
+  // @ts-expect-error - Allow getting translations without arguments
+  return <Key extends MessageKey>(namespace: Key) => translations(namespace, {})
 }
 
 export { getMessages, getRequestConfig, getTranslations }

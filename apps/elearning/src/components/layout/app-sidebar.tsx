@@ -31,7 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { DashboardIcon } from '@/components/ui/icons/dashboard-icon'
+import { DashboardIcon } from '@/components/ui/icons'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'

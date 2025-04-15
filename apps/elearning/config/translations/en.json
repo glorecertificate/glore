@@ -63,7 +63,8 @@
     "submit": "Submit",
     "syncChanges": "Syncing the changes",
     "syncError": "Synchronization error",
-    "syncErrorMessage": "Click to refresh the page",
+    "syncErrorSubtitle": "Click to refresh the page",
+    "syncErrorMessage": "A synchronization error occurred, please refresh the page",
     "system": "System",
     "theme": "Theme",
     "toggle": "Toggle",
@@ -76,7 +77,8 @@
     "updatedYesterday": "Updated yesterday",
     "useDarkTheme": "Dark theme",
     "useLightTheme": "Light theme",
-    "useSystemTheme": "System theme"
+    "useSystemTheme": "System theme",
+    "refreshPage": "Refresh page"
   },
   "Modules": {
     "answerDisabled": "You can't modify your answer",
@@ -142,7 +144,15 @@
     "wrongAnswerMessage": "Don't worry, you can always review the material again.",
     "wrongAnswerTitle": "Incorrect",
     "reviewModeMessage": "In review mode you can interact with all the steps of the module, but your replies can't be changed",
-    "reviewMode": "Review Mode"
+    "reviewMode": "Review Mode",
+    "completedTitle": "Congratulations, you've completed {count, plural, =1 {your first} =2 {your second} =3 {your third} other {another}} module!",
+    "completedTitleAll": "Congratulations, you've completed all the modules!",
+    "completedVerifiedSkills": "You verified the following skills:",
+    "completedMessage": "Review the steps or go back to all modules to continue your learning.",
+    "completedRequestCertificate": "You can now request a certificate to verify your skills!",
+    "completeIncludeInCertificate": "You can now include this module in your certificate!",
+    "requestCertificate": "Request certificate",
+    "goToCertificates": "Go to certificates"
   },
   "Navigation": {
     "about": "About GloRe",

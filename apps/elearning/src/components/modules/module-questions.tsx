@@ -19,7 +19,7 @@ const ModuleQuestion = ({
   question,
 }: {
   completed?: boolean
-  onAnswer: (questionId: number, value: BooleanString) => void
+  onAnswer: (question: Localized<ModuleQuestion>, value: BooleanString) => void
   question: Localized<ModuleQuestion>
   title?: string
 }) => {
@@ -40,14 +40,14 @@ const ModuleQuestion = ({
   const onOptionClick = useCallback(
     (value: BooleanString) => () => {
       if (isAnswered && !completed) return
-      if (!isAnswered) return onAnswer(question.id, value)
-      if (isUserAnswer(value)) return
+      if (!isAnswered) return onAnswer(question, value)
+      if (isUserAnswer(value) || !isCorrectAnswer(value)) return
 
       toast.info(t('answerDisabled'), {
         duration: 1200,
       })
     },
-    [onAnswer, question, t, isAnswered, completed, isUserAnswer],
+    [onAnswer, question, t, isAnswered, completed, isUserAnswer, isCorrectAnswer],
   )
 
   const buttonClassName = useCallback(
@@ -56,8 +56,7 @@ const ModuleQuestion = ({
         'flex-1',
         isAnswered && 'cursor-default',
         isUserAnswer(answer) && 'border-foreground/60 bg-accent',
-        !isUserAnswer(answer) && 'text-muted-foreground',
-        // isCorrectAnswer(answer) && 'border-foreground/60',
+        isAnswered && !isUserAnswer(answer) && 'text-muted-foreground',
       ),
     [isAnswered, isUserAnswer],
   )
@@ -112,7 +111,7 @@ export const ModuleQuestions = ({
   title = false,
 }: {
   completed?: boolean
-  onAnswer: (questionId: number, value: BooleanString) => void
+  onAnswer: (question: Localized<ModuleQuestion>, value: BooleanString) => void
   questions: Localized<ModuleQuestion>[]
   title?: boolean
 }) => {

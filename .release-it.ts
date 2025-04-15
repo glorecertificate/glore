@@ -1,3 +1,5 @@
 import releaseItConfig from '@repo/release-it-config'
 
-export default releaseItConfig
+export default releaseItConfig({
+  bumpFiles: ['apps/*/config/metadata.json', 'apps/*/package.json'],
+})

@@ -90,7 +90,7 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
       startVelocity: 30,
       spread: 360,
       ticks: 60,
-      zIndex: 0,
+      zIndex: 1,
     }
 
     const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min
@@ -103,17 +103,19 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
       /* eslint-disable @typescript-eslint/no-floating-promises */
       confetti({
         ...defaults,
+        ...options,
         particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
       })
       confetti({
         ...defaults,
+        ...options,
         particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       })
       /* eslint-enable @typescript-eslint/no-floating-promises */
     }, 250)
-  }, [])
+  }, [options])
 
   const triggerConfetti = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {

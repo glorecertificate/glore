@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { capitalize } from '@repo/utils'
 
-import { ModuleStatus, type BaseModule } from '@/api/modules'
+import { ModuleStatus, type Module } from '@/api/modules'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -18,11 +18,7 @@ import { dynamicRoute, Route } from '@/lib/navigation'
 import { Asset } from '@/lib/storage'
 import { type Localized } from '@/services/i18n'
 
-interface ModuleCardProps {
-  module: Localized<BaseModule>
-}
-
-export const ModuleCard = ({ module }: ModuleCardProps) => {
+export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
   const t = useTranslations()
 
   const modulePath = useMemo(
@@ -33,7 +29,7 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
     [module.skill.slug],
   )
 
-  const moduleDifficulty = useMemo(() => {
+  const difficulty = useMemo(() => {
     switch (module.difficulty) {
       case 'beginner':
         return t('Modules.difficultyBeginner')
@@ -46,20 +42,7 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
     }
   }, [module.difficulty, t])
 
-  const progressColor = useMemo(() => (module.status === ModuleStatus.Completed ? 'success' : 'default'), [module.status])
-  const buttonColor = useMemo(() => {
-    switch (module.status) {
-      case ModuleStatus.NotStarted:
-        return 'default'
-      case ModuleStatus.InProgress:
-        return 'secondary'
-      case ModuleStatus.Completed:
-        return 'primary'
-    }
-  }, [module.status])
-  const buttonVariant = useMemo(() => (module.status === ModuleStatus.NotStarted ? 'outline' : 'default'), [module.status])
-
-  const moduleDuration = useMemo(() => {
+  const duration = useMemo(() => {
     switch (module.duration) {
       case 'short':
         return t('Modules.durationShort')
@@ -82,6 +65,15 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
         return t('Modules.reviewModule')
     }
   }, [module.status, t])
+
+  const stepsCount = useMemo(() => module.steps.length, [module.steps])
+  const completedSteps = useMemo(() => module.steps.filter(({ completed }) => completed).length, [module.steps])
+  const progress = useMemo(
+    () => (stepsCount > 0 && completedSteps > 0 ? Math.round((completedSteps / module.steps.length) * 100) : 0),
+    [completedSteps, stepsCount, module.steps.length],
+  )
+
+  const progressColor = useMemo(() => (module.status === ModuleStatus.Completed ? 'success' : 'default'), [module.status])
 
   return (
     <Card className="flex h-full flex-col justify-between gap-0 overflow-hidden pt-0">
@@ -111,15 +103,15 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
             </>
           )}
           <div className="flex flex-wrap gap-2">
-            {moduleDifficulty && (
-              <Badge className="text-xs" color="muted" variant="outline">
-                {moduleDifficulty}
+            {difficulty && (
+              <Badge className="text-xs font-normal" color="muted" variant="outline">
+                {difficulty}
               </Badge>
             )}
-            {moduleDuration && (
-              <Badge className="flex items-center text-xs" color="muted" variant="outline">
+            {duration && (
+              <Badge className="flex items-center text-xs font-normal" color="muted" variant="outline">
                 <ClockIcon className="mr-1 h-3 w-3" />
-                {moduleDuration}
+                {duration}
               </Badge>
             )}
           </div>
@@ -130,24 +122,24 @@ export const ModuleCard = ({ module }: ModuleCardProps) => {
           <div className="w-full">
             <div className="mt-6 mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">
-                {module.completed_steps}
+                {completedSteps}
                 {' / '}
-                {module.steps_count}{' '}
+                {stepsCount}{' '}
                 {t('Common.lessons', {
-                  count: module.steps_count,
+                  count: stepsCount,
                 })}
               </span>
               <span>
-                {module.progress}
+                {progress}
                 {'% '}
                 {t('Common.completed')}
               </span>
             </div>
-            <Progress className="h-1.5" color={progressColor} value={module.progress} />
+            <Progress className="h-1.5" color={progressColor} value={progress} />
           </div>
         )}
         <Link className="w-full" href={modulePath}>
-          <Button className="w-full" color={buttonColor} variant={buttonVariant}>
+          <Button className="w-full" variant="outline">
             {actionLabel}
           </Button>
         </Link>

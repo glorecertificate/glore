@@ -9,7 +9,7 @@ import { getDB } from '@/services/db'
 
 import type { User } from './types'
 
-export const fetchCurrentUserId = async (): Promise<number> => {
+export const getCurrentUserId = async (): Promise<number> => {
   const db = await getDB()
 
   const {

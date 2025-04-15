@@ -1,21 +1,18 @@
 {
-  "name": "GloRe",
-  "title": "GloRe Certificate",
-  "titleSeparator": "-",
-  "description": "GloRe Certificate is a platform for learning and issuing certificates.",
-  "slug": "glore",
-  "url": "https://elearning.glorecertificate.net",
-  "website": "https://glorecertificate.net",
-  "keywords": ["glore", "certificate"],
-  "image": "https://elearning.glorecertificate.net/opengraph.png",
-  "email": "info@glorecertificate.net",
-  "phone": "+390256568779",
-  "category": "elearning",
-  "country": "IT",
-  "locale": "en",
-  "themeColor": "#5cbad2",
-  "author": {
-    "name": "Gabriele Canepa",
-    "url": "https://gabrielecanepa.com"
-  }
+  "defaultLocale": "en",
+  "locales": {
+    "en": {
+      "name": "English",
+      "flag": "🇺🇸"
+    },
+    "es": {
+      "name": "Español",
+      "flag": "🇪🇸"
+    },
+    "it": {
+      "name": "Italiano",
+      "flag": "🇮🇹"
+    }
+  },
+  "minModules": 3
 }

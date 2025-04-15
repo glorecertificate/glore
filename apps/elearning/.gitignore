@@ -19,6 +19,9 @@
 /out/
 next-env.d.ts
 
+# NextIntl
+/config/translations/*.d.json.ts
+
 # Supabase
 /supabase/
 

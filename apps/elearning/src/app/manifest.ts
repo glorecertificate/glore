@@ -1,16 +1,16 @@
 import { type MetadataRoute } from 'next'
 
 import { asset } from '@/lib/storage'
-import app from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 export default () =>
   ({
-    name: app.title,
-    short_name: app.title,
-    description: app.description,
+    name: metadata.title,
+    short_name: metadata.title,
+    description: metadata.description,
     start_url: '/',
-    background_color: app.themeColor,
-    theme_color: app.themeColor,
+    background_color: metadata.themeColor,
+    theme_color: metadata.themeColor,
     display: 'standalone',
     icons: [
       {

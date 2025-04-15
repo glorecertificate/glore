@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 
-import { fetchAllModules } from '@/api/modules'
+import { getModules } from '@/api/modules'
 import { fetchCurrentUser } from '@/api/users'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar } from '@/components/layout/app-sidebar'
@@ -14,14 +14,14 @@ import { Cookie } from '@/lib/storage'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const user = await fetchCurrentUser()
-  const modules = await fetchAllModules({ userId: user.id })
+  const modules = await getModules({ userId: user.id })
 
   const { get } = await cookies()
   const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'
 
   return (
     <SyncStatusProvider>
-      <DashboardProvider value={{ modules, user }}>
+      <DashboardProvider modules={modules} user={user}>
         <SidebarProvider defaultOpen={sidebarOpen}>
           <HeaderProvider>
             <RouteListener />

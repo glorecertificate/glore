@@ -12,12 +12,12 @@ import { type Localized } from '@/services/i18n'
 export const ModuleSkillEvaluation = ({
   completed,
   evaluation,
-  onAnswer,
+  onEvaluation,
   title,
 }: {
   completed: boolean
   evaluation: Localized<SkillEvaluation>
-  onAnswer: (rating: number) => void
+  onEvaluation: (rating: number) => void
   title?: string
 }) => {
   const t = useTranslations('Modules')
@@ -25,9 +25,9 @@ export const ModuleSkillEvaluation = ({
   const onValueChange = useCallback(
     (value: string) => {
       if (completed) return
-      onAnswer(Number(value))
+      onEvaluation(Number(value))
     },
-    [completed, onAnswer],
+    [completed, onEvaluation],
   )
 
   return (

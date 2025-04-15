@@ -7,7 +7,7 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import { useIsMobile } from '@/hooks/use-is-mobile'
 import { Route } from '@/lib/navigation'
-import app from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 export default ({ children }: React.PropsWithChildren) => {
   const isMobile = useIsMobile()
@@ -19,7 +19,7 @@ export default ({ children }: React.PropsWithChildren) => {
         <div className="flex justify-between gap-2">
           <Link className="flex items-center gap-1.5" href={Route.Home}>
             <Image src="/logo.svg" width={logoSize} />
-            <span className="text-sm font-medium sm:text-[15px]">{app.title}</span>
+            <span className="text-sm font-medium sm:text-[15px]">{metadata.title}</span>
           </Link>
           <LanguageSelect className="text-sm" />
         </div>

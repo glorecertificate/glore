@@ -1,9 +1,9 @@
 import { type Metadata, type ResolvingMetadata } from 'next'
 
 import { asset, Asset } from '@/lib/storage'
-import { getLocale, getTranslations, type MessageKey } from '@/services/i18n'
+import { getFlatTranslations, getLocale, type MessageKey } from '@/services/i18n'
 import app from 'config/app.json'
-import i18n from 'config/i18n.json'
+import metadata from 'config/metadata.json'
 
 /**
  * Generic page metadata.
@@ -26,23 +26,23 @@ export interface LocalizedAppMetadata {
 }
 
 const defaults: Metadata = {
-  title: app.title,
-  applicationName: app.title,
-  category: app.category,
-  creator: app.author.name,
-  authors: app.author,
+  title: metadata.title,
+  applicationName: metadata.title,
+  category: metadata.category,
+  creator: metadata.author.name,
+  authors: metadata.author,
   manifest: Asset.Manifest,
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   openGraph: {
-    alternateLocale: i18n.defaultLocale,
-    countryName: app.country,
-    emails: app.email,
-    images: app.image,
-    phoneNumbers: app.phone,
-    siteName: app.title,
-    title: app.title,
+    alternateLocale: app.defaultLocale,
+    countryName: metadata.country,
+    emails: metadata.email,
+    images: metadata.image,
+    phoneNumbers: metadata.phone,
+    siteName: metadata.title,
+    title: metadata.title,
     ttl: 60,
-    url: app.url,
+    url: metadata.url,
   },
   icons: [
     {
@@ -67,7 +67,7 @@ const defaults: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: app.title,
+    title: metadata.title,
   },
 }
 
@@ -75,7 +75,7 @@ const defaults: Metadata = {
  * Merges the default metadata with the provided page metadata.
  */
 export const appMetadata = async (props?: AppMetadata) => {
-  const { description, image, separator = app.titleSeparator, title } = props ?? {}
+  const { description, image, separator = metadata.titleSeparator, title } = props ?? {}
 
   const locale = await getLocale()
   const pageTitle = title ? `${title} ${separator} ${defaults.title as string}` : defaults.title
@@ -97,9 +97,9 @@ export const appMetadata = async (props?: AppMetadata) => {
  * Merges the default metadata with the provided page metadata and translates it.
  */
 export const generateAppMetadata =
-  ({ description, image, separator = app.titleSeparator, title }: LocalizedAppMetadata) =>
+  ({ description, image, separator = metadata.titleSeparator, title }: LocalizedAppMetadata) =>
   async (_: object, parent: ResolvingMetadata): Promise<Metadata> => {
-    const t = await getTranslations()
+    const t = await getFlatTranslations()
     const locale = await getLocale()
     const previous = await parent
 

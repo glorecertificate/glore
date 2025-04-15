@@ -9,7 +9,7 @@ import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { generateAppMetadata } from '@/lib/metadata'
 import { getLocale, getTranslations } from '@/services/i18n'
-import app from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
@@ -18,9 +18,9 @@ export default async ({ children }: React.PropsWithChildren) => {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: app.name,
+    name: metadata.name,
     description: t('App.description'),
-    image: app.image,
+    image: metadata.image,
   }
 
   return (

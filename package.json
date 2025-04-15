@@ -27,7 +27,7 @@
     "check:fix": "pnpm root#check:fix && turbo check:fix",
     "deploy": "pnpm check && vercel build && vercel --prebuilt",
     "deploy:production": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
-    "release": "dotenv release-it",
+    "release": "dotenv release-it --",
     "release:patch": "pnpm release --increment patch",
     "release:minor": "pnpm release --increment minor",
     "release:major": "pnpm release --increment major",

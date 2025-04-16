@@ -24,11 +24,15 @@ export interface Config extends ConfigBase {
 }
 
 export interface ReleaseItConfig {
+  /** @default true */
+  autoReleaseNotes?: boolean
   bumpFiles?: string[]
+  /** @default true */
+  changelog?: boolean
 }
 
 export default (config: ReleaseItConfig = {}): Config => {
-  const { bumpFiles } = config
+  const { autoReleaseNotes = true, bumpFiles = [], changelog = true } = config
 
   return {
     git: {
@@ -40,13 +44,17 @@ export default (config: ReleaseItConfig = {}): Config => {
       tagName: 'v${version}',
     },
     github: {
+      autoGenerate: !autoReleaseNotes,
       release: true,
       releaseName: 'v${version}',
-      releaseNotes: context =>
-        [
-          ...context.changelog.split('\n').slice(1),
-          `\n\n**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
-        ].join('\n'),
+      releaseNotes: autoReleaseNotes
+        ? context =>
+            [
+              ...context.changelog.split('\n').slice(1),
+              `\n\n**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
+            ].join('\n')
+        : undefined,
+      web: !autoReleaseNotes,
     },
     hooks: {
       // Run checks only if there are unpushed commits
@@ -59,61 +67,65 @@ export default (config: ReleaseItConfig = {}): Config => {
     },
     plugins: {
       '@release-it/bumper': {
-        ...(bumpFiles ? { out: bumpFiles } : {}),
+        out: bumpFiles,
       },
-      '@release-it/conventional-changelog': {
-        header: '# Changelog',
-        infile: 'CHANGELOG.md',
-        preset: {
-          name: 'conventionalcommits',
-          types: [
-            {
-              section: '🚀 Features',
-              type: 'feat',
+      ...(changelog
+        ? {
+            '@release-it/conventional-changelog': {
+              header: '# Changelog',
+              infile: 'CHANGELOG.md',
+              preset: {
+                name: 'conventionalcommits',
+                types: [
+                  {
+                    section: '🚀 Features',
+                    type: 'feat',
+                  },
+                  {
+                    section: '🔧 Fixes',
+                    type: 'fix',
+                  },
+                  {
+                    section: '🏗️ Build',
+                    type: 'build',
+                  },
+                  {
+                    section: '⚙️ CI',
+                    type: 'ci',
+                  },
+                  {
+                    section: '📑 Docs',
+                    type: 'docs',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'chore',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'test',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'style',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'refactor',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'perf',
+                  },
+                  {
+                    section: 'Other',
+                    type: 'revert',
+                  },
+                ],
+              },
             },
-            {
-              section: '🔧 Fixes',
-              type: 'fix',
-            },
-            {
-              section: '🏗️ Build',
-              type: 'build',
-            },
-            {
-              section: '⚙️ CI',
-              type: 'ci',
-            },
-            {
-              section: '📑 Docs',
-              type: 'docs',
-            },
-            {
-              section: 'Other',
-              type: 'chore',
-            },
-            {
-              section: 'Other',
-              type: 'test',
-            },
-            {
-              section: 'Other',
-              type: 'style',
-            },
-            {
-              section: 'Other',
-              type: 'refactor',
-            },
-            {
-              section: 'Other',
-              type: 'perf',
-            },
-            {
-              section: 'Other',
-              type: 'revert',
-            },
-          ],
-        },
-      },
+          }
+        : {}),
     },
   }
 }

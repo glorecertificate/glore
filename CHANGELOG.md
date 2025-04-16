@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/gabrielecanepa/glore/compare/v0.3.10...v0.4.0) (2025-04-16)
+
+
+### 🔧 Fixes
+
+* fix module flow steps ([23f70fc](https://github.com/gabrielecanepa/glore/commit/23f70fc5a308e67be3a62e0b0f4dd34d0b4143ff))
+
+
+### ⚙️ CI
+
+* don't generate automatic notes in github releases ([9c41bac](https://github.com/gabrielecanepa/glore/commit/9c41baca51509dc0d231bb09611736a2739feaff))
+
+
+### Other
+
+* remove unused crowdin config ([47af8cd](https://github.com/gabrielecanepa/glore/commit/47af8cd6c15f9f901700ea5942130196c11bbab4))
+
 ## [0.3.10](https://github.com/gabrielecanepa/glore/compare/v0.3.9...v0.3.10) (2025-04-15)
 
 

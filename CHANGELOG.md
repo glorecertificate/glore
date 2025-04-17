@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.1](https://github.com/gabrielecanepa/glore/compare/v0.4.0...v0.4.1) (2025-04-17)
+
+
+### 🚀 Features
+
+* improve modules list ([819fc46](https://github.com/gabrielecanepa/glore/commit/819fc46836d7f0516a2dc552568f82109e24db7d))
+
+
+### ⚙️ CI
+
+* **release-it-config:** add `afterInit`, `afterBump` and `afterRelease`  options ([b5574a1](https://github.com/gabrielecanepa/glore/commit/b5574a1e7cf9b44d9e5532813c94f4ed80f05e1e))
+
 ## [0.4.0](https://github.com/gabrielecanepa/glore/compare/v0.3.10...v0.4.0) (2025-04-16)
 
 

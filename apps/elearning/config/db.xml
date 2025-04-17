@@ -38,7 +38,7 @@
       <type label="Bit" length="0" sql="bit" quote="" />
     </group>
   </datatypes>
-  <table x="0" y="283" name="profiles">
+  <table x="283" y="346" name="profiles">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -133,15 +133,15 @@
       <datatype>CHAR</datatype>
       <default>NULL</default>
     </row>
-    <row name="rating" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-    </row>
-    <row name="address" null="1" autoincrement="0">
+    <row name="email" null="1" autoincrement="0">
       <datatype>CHAR</datatype>
       <default>NULL</default>
     </row>
-    <row name="country" null="1" autoincrement="0">
+    <row name="phone" null="1" autoincrement="0">
+      <datatype>CHAR</datatype>
+      <default>NULL</default>
+    </row>
+    <row name="address" null="1" autoincrement="0">
       <datatype>CHAR</datatype>
       <default>NULL</default>
     </row>
@@ -149,15 +149,23 @@
       <datatype>CHAR</datatype>
       <default>NULL</default>
     </row>
+    <row name="region" null="1" autoincrement="0">
+      <datatype>CHAR</datatype>
+      <default>NULL</default>
+    </row>
     <row name="postcode" null="1" autoincrement="0">
+      <datatype>CHAR</datatype>
+      <default>NULL</default>
+    </row>
+    <row name="country" null="1" autoincrement="0">
+      <datatype>CHAR</datatype>
+      <default>NULL</default>
+    </row>
+    <row name="rating" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
-    <row name="phone" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-    </row>
-    <row name="logo_url" null="1" autoincrement="0">
+    <row name="avatar_url" null="1" autoincrement="0">
       <datatype>BLOB</datatype>
       <default>NULL</default>
     </row>
@@ -165,7 +173,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="850" y="811" name="user_organizations">
+  <table x="808" y="828" name="user_organizations">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -193,11 +201,6 @@
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
-    <row name="coordinator_id" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-      <relation table="users" row="id" />
-    </row>
     <row name="name (json)" null="1" autoincrement="0">
       <datatype>CHAR</datatype>
       <default>NULL</default>
@@ -205,6 +208,11 @@
     <row name="icon" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
+    </row>
+    <row name="coordinator_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="users" row="id" />
     </row>
     <key type="PRIMARY" name="">
       <part>id</part>
@@ -449,7 +457,7 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1532" y="817" name="user_answers">
+  <table x="1606" y="872" name="user_answers">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
@@ -518,12 +526,17 @@
       <part>id</part>
     </key>
   </table>
-  <table x="1541" y="1034" name="certifications">
+  <table x="1489" y="1029" name="certificates">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
     <row name="user_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="users" row="id" />
+    </row>
+    <row name="reviewer_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
       <relation table="users" row="id" />
@@ -545,15 +558,15 @@
       <datatype>MEDIUMTEXT</datatype>
       <default>NULL</default>
     </row>
-    <row name="activity_start" null="1" autoincrement="0">
+    <row name="activity_start_date" null="1" autoincrement="0">
       <datatype>DATE</datatype>
       <default>NULL</default>
     </row>
-    <row name="activity_end" null="1" autoincrement="0">
+    <row name="activity_end_date" null="1" autoincrement="0">
       <datatype>DATE</datatype>
       <default>NULL</default>
     </row>
-    <row name="activity_hours" null="1" autoincrement="0">
+    <row name="activity_duration" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
@@ -561,51 +574,42 @@
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
-    <key type="PRIMARY" name="">
-      <part>id</part>
-    </key>
-  </table>
-  <table x="2177" y="1181" name="certification_modules">
-    <row name="id" null="1" autoincrement="1">
-      <datatype>INTEGER</datatype>
+    <row name="is_reviewed" null="1" autoincrement="0">
+      <datatype>CHAR</datatype>
       <default>NULL</default>
     </row>
     <key type="PRIMARY" name="">
       <part>id</part>
     </key>
   </table>
-  <table x="1910" y="1342" name="certificate_versions">
+  <table x="2237" y="934" name="certificate_modules">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
+    </row>
+    <row name="module_id" null="1" autoincrement="0">
+      <datatype>INTEGER</datatype>
+      <default>NULL</default>
+      <relation table="modules" row="id" />
     </row>
     <row name="certification_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
-      <relation table="certifications" row="id" />
-    </row>
-    <row name="reviewer_id" null="1" autoincrement="0">
-      <datatype>INTEGER</datatype>
-      <default>NULL</default>
-      <relation table="users" row="id" />
-    </row>
-    <row name="description (json)" null="1" autoincrement="0">
-      <datatype>MEDIUMTEXT</datatype>
-      <default>NULL</default>
+      <relation table="certificates" row="id" />
     </row>
     <key type="PRIMARY" name="">
       <part>id</part>
     </key>
   </table>
-  <table x="1495" y="667.5" name="user_module_steps">
+  <table x="1494" y="698.5" name="user_module_steps">
     <row name="id" null="1" autoincrement="1">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
     </row>
-    <row name="user_module_id" null="1" autoincrement="0">
+    <row name="user_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>
       <default>NULL</default>
-      <relation table="user_modules" row="id" />
+      <relation table="users" row="id" />
     </row>
     <row name="module_step_id" null="1" autoincrement="0">
       <datatype>INTEGER</datatype>

@@ -4,8 +4,6 @@ export enum DatabaseErrorCode {
   'NO_RESULTS' = 'PGRST116',
 }
 
-const NETWORK_MESSAGE = 'TypeError: Failed to fetch'
-
 /**
  * Database error format.
  *
@@ -19,7 +17,7 @@ export class DatabaseError extends Error {
     this.name = 'DatabaseError'
 
     switch (message) {
-      case NETWORK_MESSAGE:
+      case 'TypeError: Failed to fetch':
         this.code = DatabaseErrorCode.NETWORK_ERROR
         break
       default:

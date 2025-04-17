@@ -1,7 +1,5 @@
 import { getDB } from '@/services/db'
 
-export type ModuleRecord = NonNullable<Awaited<ReturnType<typeof selectModule>>['data']>[0]
-
 export const selectModuleQuery = `
   *,
   skills!inner (

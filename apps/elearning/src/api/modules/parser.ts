@@ -1,6 +1,6 @@
-import type { ModuleRecord } from '@/api/modules/queries'
 import type { IntlRecord } from '@/services/i18n'
 
+import type { selectModule } from './queries'
 import {
   ModuleStatus,
   type Module,
@@ -10,6 +10,8 @@ import {
   type ModuleSubskillEvaluation,
   type Skill,
 } from './types'
+
+type ModuleRecord = NonNullable<Awaited<ReturnType<typeof selectModule>>['data']>[0]
 
 export const parseModule = ({ description, module_steps, skills, title, user_modules, ...module }: ModuleRecord): Module => {
   const intlTitle = title as IntlRecord

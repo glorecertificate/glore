@@ -1,3 +1,3 @@
-import { type AuthClient } from '@/services/db'
+import type { SupabaseAuthClient } from '@supabase/supabase-js/dist/module/lib/SupabaseAuthClient'
 
-export interface Auth extends AuthClient {}
+export interface Auth extends SupabaseAuthClient {}

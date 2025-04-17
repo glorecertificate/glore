@@ -1,19 +1,6 @@
 import type { BooleanString } from '@repo/utils'
 
-import type {
-  ModuleQuestionsTable,
-  ModuleSkillEvaluationsTable,
-  ModulesTable,
-  ModuleStepsTable,
-  ModuleSubskillEvaluationsTable,
-  SkillsTable,
-  SubskillsTable,
-  UserAnswersTable,
-  UserModulesTable,
-  UserModuleStepsTable,
-  UserSkillEvaluationsTable,
-  UserSubskillEvaluationsTable,
-} from '@/services/db'
+import { type IntlTables } from '@/services/db'
 import type { Enums } from 'supabase/types'
 
 export enum ModuleStatus {
@@ -22,21 +9,13 @@ export enum ModuleStatus {
   Completed = 'completed',
 }
 
-export interface Skill extends SkillsTable {
+export interface Skill extends IntlTables<'skills'> {
   subskills: Subskill[]
 }
 
-export interface Subskill extends SubskillsTable {}
+export interface Subskill extends IntlTables<'subskills'> {}
 
-export interface BaseModule extends ModulesTable {
-  skill: Skill
-  steps_count: number
-  status: ModuleStatus
-  completed_steps: number
-  progress?: number
-}
-// module_steps, skills, user_modules } = data
-export interface Module extends Omit<ModulesTable, 'skill_id'> {
+export interface Module extends Omit<IntlTables<'modules'>, 'skill_id'> {
   type: 'introduction' | 'module'
   skill: Skill
   steps: ModuleStep[]
@@ -46,7 +25,7 @@ export interface Module extends Omit<ModulesTable, 'skill_id'> {
   status: ModuleStatus
 }
 
-export interface ModuleStep extends ModuleStepsTable {
+export interface ModuleStep extends Omit<IntlTables<'module_steps'>, 'module_id' | 'skill_id'> {
   type: Enums<'module_step_type'>
   questions: ModuleQuestion[]
   subskill_evaluations: ModuleSubskillEvaluation[]
@@ -54,28 +33,26 @@ export interface ModuleStep extends ModuleStepsTable {
   completed: boolean
 }
 
-export interface ModuleQuestion extends ModuleQuestionsTable {
+export interface ModuleQuestion extends IntlTables<'module_questions'> {
   user_answer?: BooleanString
 }
 
-export interface ModuleSubskillEvaluation extends Omit<ModuleSubskillEvaluationsTable, 'subskill_id'> {
+export interface ModuleSubskillEvaluation extends Omit<IntlTables<'module_subskill_evaluations'>, 'subskill_id'> {
   subskill?: Subskill
   user_evaluation?: number
 }
 
-export interface ModuleSkillEvaluation extends Omit<ModuleSkillEvaluationsTable, 'skill_id'> {
+export interface ModuleSkillEvaluation extends Omit<IntlTables<'module_skill_evaluations'>, 'skill_id'> {
   skill: Skill
   user_evaluation?: number
 }
 
-export interface ModuleEvaluation extends ModuleSkillEvaluation, ModuleSubskillEvaluation {}
+export interface UserModule extends IntlTables<'user_modules'> {}
 
-export interface UserModule extends UserModulesTable {}
+export interface UserModuleStep extends IntlTables<'user_module_steps'> {}
 
-export interface UserModuleStep extends UserModuleStepsTable {}
+export interface UserAnswer extends IntlTables<'user_answers'> {}
 
-export interface UserAnswer extends UserAnswersTable {}
+export interface UserSubskillEvalutation extends IntlTables<'user_subskill_evaluations'> {}
 
-export interface UserSubskillEvalutation extends UserSubskillEvaluationsTable {}
-
-export interface UserSkillEvaluation extends UserSkillEvaluationsTable {}
+export interface UserSkillEvaluation extends IntlTables<'user_skill_evaluations'> {}

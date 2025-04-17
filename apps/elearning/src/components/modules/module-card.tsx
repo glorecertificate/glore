@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { BookOpenIcon, CheckCircleIcon, ClockIcon } from 'lucide-react'
+import { BookOpenIcon, ClockIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { capitalize } from '@repo/utils'
@@ -76,13 +76,12 @@ export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
           <Link href={modulePath}>
             <Image alt={module.title} className="object-cover" fill src={module.image_url || Asset.Placeholder} />
           </Link>
-          {module.status === ModuleStatus.Completed && (
-            <CheckCircleIcon className="absolute top-4 right-4 h-6 w-6 text-success" />
-          )}
         </div>
         <CardHeader className="py-4">
           <Link href={modulePath}>
-            <h3 className="text-lg font-semibold">{module.title}</h3>
+            <h3 className="text-lg font-semibold">
+              {module.title} {module.status === ModuleStatus.Completed && <span className="ml-0.5 text-success">{'✔︎'}</span>}
+            </h3>
           </Link>
           <p className="text-sm text-muted-foreground">{module.description}</p>
         </CardHeader>

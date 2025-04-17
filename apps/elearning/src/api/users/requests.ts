@@ -3,13 +3,12 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
+import { selectUserQuery } from '@/api/users/queries'
 import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 import { getDB } from '@/services/db'
 
-import type { User } from './types'
-
-export const getCurrentUserId = async (): Promise<number> => {
+export const getCurrentUserId = async () => {
   const db = await getDB()
 
   const {
@@ -30,11 +29,8 @@ export const getCurrentUserId = async (): Promise<number> => {
   return id
 }
 
-export const fetchCurrentUser = async (): Promise<User> => {
+export const getCurrentUser = async () => {
   const db = await getDB()
-
-  const { get } = await cookies()
-  const currentOrg = Number(get(Cookie.CurrentOrg)?.value) || null
 
   const {
     data: { user },
@@ -42,46 +38,26 @@ export const fetchCurrentUser = async (): Promise<User> => {
 
   if (!user) redirect(Route.Login)
 
-  const { data, error, status } = await db
-    .from('profiles')
-    .select(
-      `
-        *,
-        user_organizations (
-          role,
-          organizations (
-            id,
-            name,
-            avatar_url,
-            country
-          )
-        ),
-        user_modules (
-          *
-        )
-      `,
-    )
-    .eq('uuid', user.id)
-    .single()
+  const { data, error, status } = await db.from('profiles').select(selectUserQuery).eq('uuid', user.id).single()
 
   if ((error && status !== 406) || !data) {
     if (error) console.error(error)
     redirect(Route.Login)
   }
 
-  const { avatar_url, user_modules, user_organizations, ...userData } = data
+  const { get } = await cookies()
+  const currentOrgId = Number(get(Cookie.CurrentOrg)?.value) || null
 
-  const orgs = user_organizations.map(({ organizations, role }) => ({
-    ...organizations,
-    role,
-    isActive: organizations.id === currentOrg,
-  }))
+  const { avatar_url, user_organizations, ...userData } = data
+
+  const orgs = user_organizations.map(({ organizations, role }) => ({ ...organizations, role }))
+  const current_org = orgs.find(org => org.id === currentOrgId) || orgs[0]
 
   return {
     ...userData,
-    avatar_url: avatar_url || undefined,
-    modules: user_modules,
     name: `${userData.first_name} ${userData.last_name}`,
+    avatar_url: avatar_url || undefined,
     orgs,
+    current_org,
   }
 }

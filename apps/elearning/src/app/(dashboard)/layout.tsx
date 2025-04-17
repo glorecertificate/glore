@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
 import { getModules } from '@/api/modules'
-import { fetchCurrentUser } from '@/api/users'
+import { getCurrentUser } from '@/api/users'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
@@ -13,7 +13,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Cookie } from '@/lib/storage'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const user = await fetchCurrentUser()
+  const user = await getCurrentUser()
   const modules = await getModules({ userId: user.id })
 
   const { get } = await cookies()

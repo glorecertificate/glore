@@ -58,18 +58,27 @@ import { Route, type Pathname } from '@/lib/navigation'
 import { Cookie, setCookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-export const SidebarOrgs = ({ items }: { items: UserOrg[] }) => {
+export const SidebarOrgs = ({
+  currentOrg,
+  orgs,
+  setOrg,
+}: {
+  currentOrg: UserOrg
+  orgs: UserOrg[]
+  setOrg: (org: UserOrg) => void
+}) => {
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
-  const [activeOrg, setActiveOrg] = useState(items.find(org => org.isActive) || items[0])
-
   const getOrgInitials = useCallback((org: UserOrg) => org.name.charAt(0).toUpperCase(), [])
 
-  const onOrgSelect = useCallback((org: UserOrg) => {
-    setActiveOrg(org)
-    setCookie(Cookie.CurrentOrg, org.id)
-  }, [])
+  const onOrgSelect = useCallback(
+    (org: UserOrg) => {
+      setOrg(org)
+      setCookie(Cookie.CurrentOrg, org.id)
+    },
+    [setOrg],
+  )
 
   return (
     <SidebarMenu>
@@ -86,12 +95,12 @@ export const SidebarOrgs = ({ items }: { items: UserOrg[] }) => {
                   !open && 'ml-8',
                 )}
               >
-                {activeOrg.avatar_url && <AvatarImage alt={activeOrg.avatar_url} src={activeOrg.avatar_url} />}
-                <AvatarFallback className="text-muted-foreground">{getOrgInitials(activeOrg)}</AvatarFallback>
+                {currentOrg.avatar_url && <AvatarImage alt={currentOrg.avatar_url} src={currentOrg.avatar_url} />}
+                <AvatarFallback className="text-muted-foreground">{getOrgInitials(currentOrg)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate font-semibold">{activeOrg.name}</span>
-                <span className="truncate text-xs font-normal text-muted-foreground">{titleize(activeOrg.role)}</span>
+                <span className="truncate font-semibold">{currentOrg.name}</span>
+                <span className="truncate text-xs font-normal text-muted-foreground">{titleize(currentOrg.role)}</span>
               </div>
               <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
             </SidebarMenuButton>
@@ -103,9 +112,9 @@ export const SidebarOrgs = ({ items }: { items: UserOrg[] }) => {
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
-            {items.map(org => (
+            {orgs.map(org => (
               <DropdownMenuItem
-                className={cn('gap-2 p-2', org.isActive && 'bg-accent/50')}
+                className={cn('gap-2 p-2', org.id === currentOrg.id && 'bg-accent/50')}
                 key={org.id}
                 onClick={onOrgSelect.bind(null, org)}
               >
@@ -193,7 +202,6 @@ const SidebarNavigation = () => {
             asChild
             clickable={isClickable(Route.Home)}
             onClick={onButtonClick(Route.Home)}
-            title={t('dashboard')}
             tooltip={t('dashboard')}
           >
             <Link href={Route.Home}>
@@ -208,7 +216,6 @@ const SidebarNavigation = () => {
             asChild
             clickable={isClickable(Route.Modules)}
             onClick={onButtonClick(Route.Modules)}
-            title={t('modules')}
             tooltip={t('modules')}
           >
             <Link href={Route.Modules}>
@@ -223,7 +230,6 @@ const SidebarNavigation = () => {
             asChild
             clickable={isClickable(Route.Certificates)}
             onClick={onButtonClick(Route.Certificates)}
-            title={t('certificates')}
             tooltip={t('certificates')}
           >
             <Link href={Route.Certificates}>
@@ -240,7 +246,6 @@ const SidebarNavigation = () => {
                 asChild
                 clickable={isClickable(Route.Docs)}
                 onClick={onDocsClick}
-                title={t('docs')}
                 tooltip={t('docs')}
               >
                 <Link href={Route.Docs}>
@@ -267,7 +272,6 @@ const SidebarNavigation = () => {
                     className={getSubItemClass(Route.DocsIntro)}
                     clickable={isClickable(Route.DocsIntro)}
                     onClick={onButtonClick(Route.DocsIntro)}
-                    title={t('docsIntro')}
                     tooltip={t('docsIntro')}
                   >
                     <Link href={Route.DocsIntro}>{t('docsIntro')}</Link>
@@ -280,8 +284,6 @@ const SidebarNavigation = () => {
                     className={getSubItemClass(Route.DocsTutorials)}
                     clickable={isClickable(Route.DocsTutorials)}
                     onClick={onButtonClick(Route.DocsTutorials)}
-                    title={t('docsTutorials')}
-                    tooltip={t('docsTutorials')}
                   >
                     <Link href={Route.DocsTutorials}>{t('docsTutorials')}</Link>
                   </SidebarMenuButton>
@@ -293,7 +295,6 @@ const SidebarNavigation = () => {
                     className={getSubItemClass(Route.DocsFaq)}
                     clickable={isClickable(Route.DocsFaq)}
                     onClick={onButtonClick(Route.DocsFaq)}
-                    title={t('docsFaq')}
                     tooltip={t('docsFaq')}
                   >
                     <Link href={Route.DocsFaq}>{t('docsFaq')}</Link>
@@ -313,7 +314,6 @@ const SidebarUser = ({ user }: { user: User }) => {
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
-  const currentOrg = useMemo(() => user.orgs.find(org => org.isActive), [user])
   const initials = useMemo(
     () =>
       user.name
@@ -352,12 +352,11 @@ const SidebarUser = ({ user }: { user: User }) => {
                   <AvatarImage alt={user.name} src={user.avatar_url} />
                   <AvatarFallback className="text-muted-foreground">{initials}</AvatarFallback>
                 </Avatar>
-                {currentOrg?.avatar_url && (
+                {user.current_org?.avatar_url && (
                   <Image
-                    alt={currentOrg.name}
                     className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
-                    src={currentOrg.avatar_url}
+                    src={user.current_org.avatar_url}
                     width={14}
                   />
                 )}
@@ -432,12 +431,22 @@ export const AppSidebar = ({
 }: React.ComponentProps<typeof Sidebar> & {
   defaultOpen?: boolean
 }) => {
-  const { user } = useDashboard()
+  const { setUser, user } = useDashboard()
+
+  const setCurrentOrg = useCallback(
+    (org: UserOrg) => {
+      setUser(prev => ({
+        ...prev,
+        current_org: org,
+      }))
+    },
+    [setUser],
+  )
 
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarOrgs items={user.orgs} />
+        <SidebarOrgs currentOrg={user.current_org} orgs={user.orgs} setOrg={setCurrentOrg} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarNavigation />

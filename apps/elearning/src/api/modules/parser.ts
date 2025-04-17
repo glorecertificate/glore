@@ -76,13 +76,22 @@ export const parseModule = ({ description, module_steps, skills, title, user_mod
     )
     .sort((a, b) => a.sort_order - b.sort_order)
 
-  const completedSteps = steps.filter(({ completed }) => completed).length
-  const status =
-    completedSteps === steps.length
-      ? ModuleStatus.Completed
-      : user_modules.length
-        ? ModuleStatus.InProgress
-        : ModuleStatus.NotStarted
+  const type = skill ? 'introduction' : 'module'
+  const steps_count = steps.length
+  const completed_steps_count = steps.filter(({ completed }) => completed).length
+  const progress = steps_count > 0 && completed_steps_count > 0 ? Math.round((completed_steps_count / steps_count) * 100) : 0
+  const status = progress === 100 ? ModuleStatus.Completed : progress > 0 ? ModuleStatus.InProgress : ModuleStatus.NotStarted
 
-  return { ...module, title: intlTitle, description: intlDescription, skill, steps, status }
+  return {
+    ...module,
+    title: intlTitle,
+    description: intlDescription,
+    type,
+    skill,
+    steps,
+    steps_count,
+    completed_steps_count,
+    progress,
+    status,
+  }
 }

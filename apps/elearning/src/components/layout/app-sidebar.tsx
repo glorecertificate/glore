@@ -197,7 +197,7 @@ const SidebarNavigation = () => {
             tooltip={t('dashboard')}
           >
             <Link href={Route.Home}>
-              <DashboardIcon className="size-4" />
+              <DashboardIcon className="size-4" colored />
               <span>{t('dashboard')}</span>
             </Link>
           </SidebarMenuButton>

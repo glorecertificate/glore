@@ -91,6 +91,12 @@ const button = cva(
     },
     compoundVariants: [
       {
+        color: 'default',
+        hover: true,
+        disabled: false,
+        className: 'hover:bg-accent',
+      },
+      {
         variant: ['outline', 'ghost'],
         hover: true,
         disabled: false,
@@ -101,12 +107,6 @@ const button = cva(
         hover: true,
         disabled: false,
         className: 'hover:bg-transparent hover:text-accent-foreground',
-      },
-      {
-        color: 'default',
-        hover: true,
-        disabled: false,
-        className: 'hover:bg-accent dark:hover:bg-background/50',
       },
       {
         color: 'primary',

@@ -37,8 +37,12 @@ export interface BaseModule extends ModulesTable {
 }
 // module_steps, skills, user_modules } = data
 export interface Module extends Omit<ModulesTable, 'skill_id'> {
+  type: 'introduction' | 'module'
   skill: Skill
   steps: ModuleStep[]
+  steps_count: number
+  completed_steps_count: number
+  progress: number
   status: ModuleStatus
 }
 

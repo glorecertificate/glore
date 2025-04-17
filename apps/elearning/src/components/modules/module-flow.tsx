@@ -92,7 +92,6 @@ export const ModuleFlow = ({ moduleId }: { moduleId: number }) => {
   const hasSteps = useMemo(() => module.steps.length > 0, [module.steps])
   const isFirstStep = useMemo(() => currentStepIndex === 0, [currentStepIndex])
   const isLastStep = useMemo(() => currentStepIndex === module.steps.length - 1, [currentStepIndex, module.steps.length])
-  const completedSteps = useMemo(() => module.steps.filter(step => step.completed), [module.steps])
   const canProceed = useMemo(() => {
     if (currentStep.type === 'descriptive' || currentStep.completed) return true
     if (currentStep.type === 'questions') {
@@ -112,11 +111,7 @@ export const ModuleFlow = ({ moduleId }: { moduleId: number }) => {
     currentStep.subskill_evaluations,
     currentStep.skill_evaluation,
   ])
-  const moduleProgress = useMemo(
-    () => (hasSteps ? Math.round((completedSteps.length / module.steps.length) * 100) : 0),
-    [completedSteps.length, hasSteps, module.steps.length],
-  )
-  const moduleProgressColor = useMemo(() => (moduleProgress === 100 ? 'success' : 'default'), [moduleProgress])
+  const moduleProgressColor = useMemo(() => (module.progress === 100 ? 'success' : 'default'), [module.progress])
   const stepsProgress = useMemo(
     () => (hasSteps ? Math.round((currentStepIndex / module.steps.length) * 100) : 0),
     [currentStepIndex, hasSteps, module.steps.length],
@@ -413,10 +408,10 @@ export const ModuleFlow = ({ moduleId }: { moduleId: number }) => {
           {module.status !== ModuleStatus.Completed && (
             <div className="flex items-center justify-end gap-2 bg-background md:top-[72px]">
               <span className="text-sm">
-                {moduleProgress}
+                {module.progress}
                 {'%'}
               </span>
-              <Progress className="md:max-w-sm" color={moduleProgressColor} value={moduleProgress} />
+              <Progress className="md:max-w-sm" color={moduleProgressColor} value={module.progress} />
             </div>
           )}
         </div>
@@ -444,10 +439,10 @@ export const ModuleFlow = ({ moduleId }: { moduleId: number }) => {
             </Tooltip>
           )}
           <span className="text-sm">
-            {moduleProgress}
+            {module.progress}
             {'%'}
           </span>
-          <Progress className="md:max-w-sm" color={moduleProgressColor} value={moduleProgress} />
+          <Progress className="md:max-w-sm" color={moduleProgressColor} value={module.progress} />
         </div>
 
         {/* Content */}

@@ -54,7 +54,7 @@
     --ring: hsl(214 24% 70%);
     --muted: var(--card);
     --muted-foreground: hsl(214 24% 70%);
-    --accent: var(--card);
+    --accent: hsl(240, 3%, 19%);
     --accent-foreground: var(--foreground);
     --success: hsl(144, 100%, 40%);
     --success-accent: hsl(140, 100%, 34%);

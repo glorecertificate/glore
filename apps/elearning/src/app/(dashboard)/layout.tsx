@@ -29,7 +29,7 @@ export default async ({ children }: React.PropsWithChildren) => {
             <AppSidebar />
             <SidebarInset>
               <AppHeader className="sticky top-0 z-5" />
-              <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+              <main className="min-h-[calc(100vh-72px)]">{children}</main>
             </SidebarInset>
           </HeaderProvider>
         </SidebarProvider>

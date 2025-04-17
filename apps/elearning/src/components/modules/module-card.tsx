@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { ClockIcon } from 'lucide-react'
+import { BookOpenIcon, CheckCircleIcon, ClockIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { capitalize } from '@repo/utils'
@@ -11,6 +11,7 @@ import { ModuleStatus, type Module } from '@/api/modules'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { DashboardIcon } from '@/components/ui/icons'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
@@ -66,13 +67,6 @@ export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
     }
   }, [module.status, t])
 
-  const stepsCount = useMemo(() => module.steps.length, [module.steps])
-  const completedSteps = useMemo(() => module.steps.filter(({ completed }) => completed).length, [module.steps])
-  const progress = useMemo(
-    () => (stepsCount > 0 && completedSteps > 0 ? Math.round((completedSteps / module.steps.length) * 100) : 0),
-    [completedSteps, stepsCount, module.steps.length],
-  )
-
   const progressColor = useMemo(() => (module.status === ModuleStatus.Completed ? 'success' : 'default'), [module.status])
 
   return (
@@ -82,6 +76,9 @@ export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
           <Link href={modulePath}>
             <Image alt={module.title} className="object-cover" fill src={module.image_url || Asset.Placeholder} />
           </Link>
+          {module.status === ModuleStatus.Completed && (
+            <CheckCircleIcon className="absolute top-4 right-4 h-6 w-6 text-success" />
+          )}
         </div>
         <CardHeader className="py-4">
           <Link href={modulePath}>
@@ -90,6 +87,27 @@ export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
           <p className="text-sm text-muted-foreground">{module.description}</p>
         </CardHeader>
         <CardContent className="flex-1">
+          <div className="mb-4 flex flex-wrap gap-2">
+            <Badge className="text-xs font-normal" color="muted" variant="outline">
+              <BookOpenIcon className="h-3 w-3" />
+              {module.steps_count}{' '}
+              {t('Common.lessons', {
+                count: module.steps_count,
+              })}
+            </Badge>
+            {difficulty && (
+              <Badge className="text-xs font-normal" color="muted" variant="outline">
+                <DashboardIcon className="h-3 w-3 fill-muted-foreground" />
+                {difficulty}
+              </Badge>
+            )}
+            {duration && (
+              <Badge className="flex items-center text-xs font-normal" color="muted" variant="outline">
+                <ClockIcon className="h-3 w-3" />
+                {duration}
+              </Badge>
+            )}
+          </div>
           {module.skill.subskills.length && (
             <>
               <p className="mb-1.5 text-[10px] font-semibold text-muted-foreground uppercase">{t('Common.topics')}</p>
@@ -102,44 +120,31 @@ export const ModuleCard = ({ module }: { module: Localized<Module> }) => {
               </div>
             </>
           )}
-          <div className="flex flex-wrap gap-2">
-            {difficulty && (
-              <Badge className="text-xs font-normal" color="muted" variant="outline">
-                {difficulty}
-              </Badge>
-            )}
-            {duration && (
-              <Badge className="flex items-center text-xs font-normal" color="muted" variant="outline">
-                <ClockIcon className="mr-1 h-3 w-3" />
-                {duration}
-              </Badge>
-            )}
-          </div>
         </CardContent>
       </div>
-      <CardFooter className="flex-col gap-4">
+      <CardFooter className="mt-4 flex-col gap-4">
         {module.status !== ModuleStatus.NotStarted && (
           <div className="w-full">
-            <div className="mt-6 mb-1 flex items-center justify-between text-sm text-muted-foreground">
+            <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">
-                {completedSteps}
+                {module.completed_steps_count}
                 {' / '}
-                {stepsCount}{' '}
+                {module.steps_count}{' '}
                 {t('Common.lessons', {
-                  count: stepsCount,
+                  count: module.steps_count,
                 })}
               </span>
               <span>
-                {progress}
+                {module.progress}
                 {'% '}
                 {t('Common.completed')}
               </span>
             </div>
-            <Progress className="h-1.5" color={progressColor} value={progress} />
+            <Progress className="h-1.5" color={progressColor} value={module.progress} />
           </div>
         )}
         <Link className="w-full" href={modulePath}>
-          <Button className="w-full" variant="outline">
+          <Button className="w-full dark:hover:bg-background/50" variant="outline">
             {actionLabel}
           </Button>
         </Link>

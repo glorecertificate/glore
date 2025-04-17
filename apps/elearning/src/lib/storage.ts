@@ -10,6 +10,7 @@ export enum Asset {
   Logo = '/logo.svg',
   Favicon = '/favicon.ico',
   Manifest = '/manifest.webmanifest',
+  NoResults = '/no-results.svg',
   NotFound = '/404.svg',
   PasswordForgot = '/password-forgot.svg',
   Placeholder = '/placeholder.svg',

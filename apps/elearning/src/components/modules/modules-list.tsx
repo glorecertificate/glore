@@ -2,10 +2,11 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
-import { ArrowDownAZIcon, ArrowUpAZIcon, HistoryIcon, SlidersHorizontalIcon, XIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { ModuleStatus, type Module } from '@/api/modules'
+import { ModuleStatus } from '@/api/modules'
+import { ModuleCard } from '@/components/modules/module-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,22 +17,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Image } from '@/components/ui/image'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useDashboard } from '@/hooks/use-dashboard'
 import { useLocale } from '@/hooks/use-locale'
-import { localize } from '@/lib/utils'
+import { Asset } from '@/lib/storage'
+import { cn, localize } from '@/lib/utils'
+import { type Enums } from 'supabase/types'
 
-import { ModuleCard } from './module-card'
-
-enum ModuleSort {
-  Asc = 'asc',
-  Desc = 'desc',
-}
-
-enum ModuleDateSort {
-  Newest = 'newest',
-  Oldest = 'oldest',
-}
+const difficultySortOrder: Enums<'module_difficulty'>[] = ['beginner', 'intermediate', 'advanced']
+const durationSortOrder: Enums<'module_duration'>[] = ['short', 'medium', 'long']
 
 export const ModulesList = () => {
   const dashboard = useDashboard()
@@ -39,28 +34,45 @@ export const ModulesList = () => {
   const t = useTranslations('Modules')
 
   const modules = useMemo(() => localize(dashboard.modules, locale), [dashboard.modules, locale])
+  const sortOptions = useMemo(
+    () => ({
+      name: t('sortByName'),
+      progress: t('sortByProgress'),
+      type: t('sortByType'),
+      difficulty: t('sortByDifficulty'),
+      duration: t('sortByDuration'),
+    }),
+    [t],
+  )
 
   const [activeTab, setActiveTab] = useState<'all' | ModuleStatus>('all')
-  const [nameSort, setNameSort] = useState<ModuleSort | null>(null)
-  // const [progressSort, setProgressSort] = useState<ModuleSort | null>(null)
-  const [dateSort, setDateSort] = useState<ModuleDateSort | null>(null)
-  const [durationFilter, setDurationFilter] = useState<Module['duration']>(null)
-  const [difficultyFilter, setDifficultyFilter] = useState<Module['difficulty']>(null)
-  // const [statusFilter, setStatusFilter] = useState<ModuleStatus | null>(null)
+  const [activeSort, setActiveSort] = useState<keyof typeof sortOptions | null>(null)
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null)
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
+  const [difficultyFilter, setDifficultyFilter] = useState<Enums<'module_difficulty'> | null>(null)
+  const [durationFilter, setDurationFilter] = useState<Enums<'module_duration'> | null>(null)
+  const [statusFilter, setStatusFilter] = useState<ModuleStatus | null>(null)
+  const [typeFilter, setTypeFilter] = useState<'introductory' | 'skills' | null>(null)
 
   const hasActiveFilters = useMemo(
-    // nameSort || progressSort || dateSort || durationFilter || difficultyFilter || statusFilter,
-    () => nameSort || dateSort || durationFilter || difficultyFilter,
-    [nameSort, dateSort, durationFilter, difficultyFilter],
+    () => !!(durationFilter || difficultyFilter || statusFilter || typeFilter),
+    [durationFilter, difficultyFilter, statusFilter, typeFilter],
   )
 
   const filteredModules = useMemo(
     () =>
       modules
         .filter(module => {
-          // if (activeTab === 'not-started' && module.status !== 'not-started') return false
-          // if (activeTab === 'in-progress' && module.status !== 'in-progress') return false
-          // if (activeTab === 'completed' && module.status !== 'completed') return false
+          switch (activeTab) {
+            case ModuleStatus.NotStarted:
+              if (module.status !== ModuleStatus.NotStarted) return false
+              break
+            case ModuleStatus.InProgress:
+              if (module.status !== ModuleStatus.InProgress) return false
+              break
+            case ModuleStatus.Completed:
+              if (module.status !== ModuleStatus.Completed) return false
+          }
 
           // if (statusFilter && module.status !== statusFilter) return false
           if (difficultyFilter && module.difficulty !== difficultyFilter) return false
@@ -74,34 +86,29 @@ export const ModulesList = () => {
           return true
         })
         .sort((a, b) => {
-          if (nameSort === ModuleSort.Asc) {
-            return a.title.localeCompare(b.title)
-          }
-          if (nameSort === ModuleSort.Desc) {
-            return b.title.localeCompare(a.title)
-          }
-          // if (progressSort === 'asc') {
-          //   return a.progress - b.progress
-          // }
-          // if (progressSort === 'desc') {
-          //   return b.progress - a.progress
-          // }
-          if (dateSort === ModuleDateSort.Newest) {
-            if (!a.created_at || !b.created_at) return 0
-            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          }
-          if (dateSort === ModuleDateSort.Oldest) {
-            if (!a.created_at || !b.created_at) return 0
-            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          }
-          return a.title.localeCompare(b.title)
+          if (activeSort === 'name')
+            return sortDirection === 'asc' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)
+          if (activeSort === 'progress') return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
+          if (activeSort === 'type') return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
+          if (activeSort === 'difficulty')
+            return a.difficulty && b.difficulty
+              ? sortDirection === 'asc'
+                ? difficultySortOrder.indexOf(a.difficulty) - difficultySortOrder.indexOf(b.difficulty)
+                : difficultySortOrder.indexOf(b.difficulty) - difficultySortOrder.indexOf(a.difficulty)
+              : 0
+          if (activeSort === 'duration')
+            return a.duration && b.duration
+              ? sortDirection === 'asc'
+                ? durationSortOrder.indexOf(a.duration) - durationSortOrder.indexOf(b.duration)
+                : durationSortOrder.indexOf(b.duration) - durationSortOrder.indexOf(a.duration)
+              : 0
+          return 0
         }),
-    [dateSort, difficultyFilter, durationFilter, nameSort, modules],
+    [activeTab, activeSort, difficultyFilter, durationFilter, modules, sortDirection],
   )
 
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value as ModuleStatus | 'all')
-
     // if (value === 'not-started' || value === 'completed') {
     //   setProgressSort(null)
     // }
@@ -110,42 +117,137 @@ export const ModulesList = () => {
     // }
   }, [])
 
-  const clearAllFilters = useCallback(() => {
-    setNameSort(null)
-    // setProgressSort(null)
-    setDateSort(null)
-    setDurationFilter(null)
-    setDifficultyFilter(null)
-    // setStatusFilter(null)
+  const handleSortChange = (sort: keyof typeof sortOptions) => () => {
+    if (sort === activeSort) setSortDirection(oppositeSortDirection)
+    if (!activeSort || activeSort !== sort) {
+      setActiveSort(sort)
+      setSortDirection('asc')
+    }
+    setSortDropdownOpen(true)
+  }
+
+  const handleSortDirectionChange = useCallback(
+    (direction: 'asc' | 'desc') => (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setSortDirection(direction)
+      setSortDropdownOpen(true)
+    },
+    [],
+  )
+
+  const handleSortItemSelect = useCallback((e: Event) => {
+    e.preventDefault()
   }, [])
 
+  const clearSort = useCallback(() => {
+    setActiveSort(null)
+    setSortDirection(null)
+  }, [])
+
+  const clearAllFilters = useCallback(() => {
+    clearSort()
+    setDifficultyFilter(null)
+    setDurationFilter(null)
+    setStatusFilter(null)
+    setTypeFilter(null)
+  }, [clearSort])
+
+  const sortButtonContent = useMemo(
+    () => (
+      <>
+        <span className="mr-1.5">{t('sortBy')}</span>
+        {activeSort && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{sortOptions[activeSort]}</span>}
+        {activeSort ? (
+          sortDirection === 'asc' ? (
+            <ArrowUpIcon className="h-3 w-3 text-muted-foreground" />
+          ) : (
+            <ArrowDownIcon className="h-3 w-3 text-muted-foreground" />
+          )
+        ) : (
+          <ArrowUpDownIcon className="h-3 w-3" />
+        )}
+      </>
+    ),
+    [activeSort, sortDirection, t, sortOptions],
+  )
+
+  const oppositeSortDirection = useMemo(() => (sortDirection === 'asc' ? 'desc' : 'asc'), [sortDirection])
+
   return (
-    <div className="flex min-h-screen flex-col px-8">
+    <div className="flex h-full flex-col px-8">
       <div className="border-b">
         <div className="container pb-4">
           <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground">{t('description')}</p>
         </div>
       </div>
-      <div className="container py-6">
+      <div className="container grow py-6">
         <Tabs defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
           <div className="mb-6 flex h-auto flex-col justify-between gap-4 sm:flex-row">
-            <TabsList className="flex w-full border md:w-auto">
-              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value="all">
-                {t('modulesAll')}
-              </TabsTrigger>
-              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.NotStarted}>
-                {t('modulesNotStarted')}
-              </TabsTrigger>
-              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.InProgress}>
-                {t('modulesInProgress')}
-              </TabsTrigger>
-              <TabsTrigger className="text-[12.5px] font-normal md:text-sm" value={ModuleStatus.Completed}>
-                {t('modulesCompleted')}
-              </TabsTrigger>
+            <TabsList className="h-9 p-0.5">
+              <TabsTrigger value="all">{t('modulesAll')}</TabsTrigger>
+              <TabsTrigger value={ModuleStatus.NotStarted}>{t('modulesNotStarted')}</TabsTrigger>
+              <TabsTrigger value={ModuleStatus.InProgress}>{t('modulesInProgress')}</TabsTrigger>
+              <TabsTrigger value={ModuleStatus.Completed}>{t('modulesCompleted')}</TabsTrigger>
             </TabsList>
             <div className="flex flex-wrap gap-2">
-              <DropdownMenu>
+              <DropdownMenu onOpenChange={setSortDropdownOpen} open={sortDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <Button className="h-9 gap-0 hover:bg-card has-[>svg]:px-3" size="sm" variant="outline">
+                    {sortButtonContent}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel>{t('sortModuleBy')}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {Object.entries(sortOptions).map(([key, label]) => {
+                    const option = key as keyof typeof sortOptions
+
+                    return (
+                      (option !== 'progress' ||
+                        (activeTab !== ModuleStatus.NotStarted && activeTab !== ModuleStatus.Completed)) && (
+                        <DropdownMenuItem
+                          className={cn(
+                            'group flex h-9 cursor-pointer items-center justify-between',
+                            activeSort === option && 'bg-accent dark:bg-background/40',
+                          )}
+                          key={key}
+                          onClick={handleSortChange(option)}
+                          onSelect={handleSortItemSelect}
+                        >
+                          <span className={cn('text-foreground/90', activeSort === option && 'text-foreground')}>{label}</span>
+                          {activeSort === option && sortDirection && (
+                            <div className="flex items-center gap-1">
+                              <Button
+                                className="h-6 w-6 transition-none group-hover:border hover:bg-card"
+                                hover={false}
+                                onClick={handleSortDirectionChange(oppositeSortDirection)}
+                                size="icon"
+                              >
+                                {sortDirection === 'asc' ? (
+                                  <ArrowUpIcon className="h-3 w-3" />
+                                ) : (
+                                  <ArrowDownIcon className="h-3 w-3" />
+                                )}
+                              </Button>
+                            </div>
+                          )}
+                        </DropdownMenuItem>
+                      )
+                    )
+                  })}
+                  {activeSort && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={clearSort}>
+                        <XIcon className="mr-2 h-4 w-4" />
+                        {t('clearSort')}
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="h-9" size="sm" variant="outline">
                     {nameSort ? (
@@ -184,7 +286,7 @@ export const ModulesList = () => {
                     </>
                   )}
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
               {/* {activeTab !== 'not-started' && activeTab !== 'completed' && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -217,36 +319,6 @@ export const ModulesList = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )} */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="h-9" size="sm" variant="outline">
-                    <HistoryIcon className="mr-1 h-4 w-4" />
-                    {t('date')}
-                    {dateSort && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>{t('sortByDate')}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setDateSort(ModuleDateSort.Newest)}>
-                    {t('sortNewestFirst')}
-                    {dateSort === ModuleDateSort.Newest && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDateSort(ModuleDateSort.Oldest)}>
-                    {t('sortOldestFirst')}
-                    {dateSort === ModuleDateSort.Oldest && <span className="ml-auto h-2 w-2 rounded-full bg-primary"></span>}
-                  </DropdownMenuItem>
-                  {dateSort && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => setDateSort(null)}>
-                        <XIcon className="mr-1 h-4 w-4" />
-                        {t('clearFilter')}
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
               {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="h-9" size="sm" variant="outline">
@@ -381,7 +453,7 @@ export const ModulesList = () => {
           </div>
           {hasActiveFilters && (
             <div className="mb-4 flex flex-wrap gap-2">
-              {nameSort && (
+              {/* {nameSort && (
                 <Badge className="flex items-center gap-1" color="secondary">
                   {t('filterName')}
                   {': '}
@@ -390,7 +462,7 @@ export const ModulesList = () => {
                     <XIcon className="ml-1 size-5 text-zinc-950" />
                   </Button>
                 </Badge>
-              )}
+              )} */}
               {/* {progressSort && (
                 <Badge className="flex items-center gap-1" variant="secondary">
                   {t('completion')}
@@ -399,14 +471,6 @@ export const ModulesList = () => {
                   <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setProgressSort(null)} />
                 </Badge>
               )} */}
-              {dateSort && (
-                <Badge className="flex items-center gap-1" color="secondary">
-                  {t('date')}
-                  {': '}
-                  {dateSort === ModuleDateSort.Newest ? 'Newest First' : 'Oldest First'}
-                  <XIcon className="ml-1 h-3 w-3 cursor-pointer" onClick={() => setDateSort(null)} />
-                </Badge>
-              )}
               {difficultyFilter && (
                 <Badge className="flex items-center gap-1" color="secondary">
                   {t('difficulty')}
@@ -434,15 +498,16 @@ export const ModulesList = () => {
             </div>
           )}
 
-          <TabsContent className="space-y-4" value={activeTab}>
+          <TabsContent className="space-y-4 pb-2" value={activeTab}>
             {filteredModules.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="flex h-full flex-col items-center pt-10 text-center">
+                <Image className="mb-8" src={Asset.NoResults} width={300} />
                 <h3 className="text-xl font-medium">{t('noModulesFound')}</h3>
-                <p className="mt-2 text-muted-foreground">
-                  {activeTab === ModuleStatus.NotStarted && "You've started all available modules!"}
-                  {activeTab === ModuleStatus.InProgress && "You don't have any modules in progress"}
-                  {activeTab === ModuleStatus.Completed && "You haven't completed any modules yet"}
-                  {activeTab === 'all' && 'There are no modules available with the current filters'}
+                <p className="mt-1 text-muted-foreground">
+                  {activeTab === ModuleStatus.NotStarted && t('emptyListNotStarted')}
+                  {activeTab === ModuleStatus.InProgress && t('emptyListInProgress')}
+                  {activeTab === ModuleStatus.Completed && t('emptyListCompleted')}
+                  {activeTab === 'all' && t('emptyListAll')}
                 </p>
                 {hasActiveFilters && (
                   <Button className="mt-4 border" onClick={clearAllFilters} size="sm" variant="outline">

@@ -24,6 +24,9 @@ export interface Config extends ConfigBase {
 }
 
 export interface ReleaseItConfig {
+  afterInit?: string | string[]
+  afterBump?: string | string[]
+  afterRelease?: string | string[]
   /** @default true */
   autoReleaseNotes?: boolean
   bumpFiles?: string[]
@@ -32,7 +35,7 @@ export interface ReleaseItConfig {
 }
 
 export default (config: ReleaseItConfig = {}): Config => {
-  const { autoReleaseNotes = true, bumpFiles = [], changelog = true } = config
+  const { afterBump, afterInit, afterRelease, autoReleaseNotes = true, bumpFiles = [], changelog = true } = config
 
   return {
     git: {
@@ -57,10 +60,9 @@ export default (config: ReleaseItConfig = {}): Config => {
       web: !autoReleaseNotes,
     },
     hooks: {
-      // Run checks only if there are unpushed commits
-      'after:init': '[ -n "$(git log @{u}.. 2>/dev/null)" ] && (pnpm build && pnpm check) || exit 0',
-      'after:release':
-        'echo v${version} released and scheduled for deployment: https://github.com/${repo.repository}/deployments/Production',
+      'after:init': afterInit,
+      'after:bump': afterBump,
+      'after:release': afterRelease,
     },
     npm: {
       publish: false,

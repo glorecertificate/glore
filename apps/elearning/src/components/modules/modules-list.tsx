@@ -54,6 +54,8 @@ export const ModulesList = () => {
   const [statusFilter, setStatusFilter] = useState<ModuleStatus | null>(null)
   const [typeFilter, setTypeFilter] = useState<'introductory' | 'skills' | null>(null)
 
+  const oppositeSortDirection = useMemo(() => (sortDirection === 'asc' ? 'desc' : 'asc'), [sortDirection])
+
   const hasActiveFilters = useMemo(
     () => !!(durationFilter || difficultyFilter || statusFilter || typeFilter),
     [durationFilter, difficultyFilter, statusFilter, typeFilter],
@@ -127,12 +129,12 @@ export const ModulesList = () => {
   }
 
   const handleSortDirectionChange = useCallback(
-    (direction: 'asc' | 'desc') => (e: React.MouseEvent) => {
+    () => (e: React.MouseEvent) => {
       e.stopPropagation()
-      setSortDirection(direction)
-      setSortDropdownOpen(true)
+      setSortDirection(oppositeSortDirection)
+      setSortDropdownOpen(false)
     },
-    [],
+    [oppositeSortDirection],
   )
 
   const handleSortItemSelect = useCallback((e: Event) => {
@@ -168,10 +170,8 @@ export const ModulesList = () => {
         )}
       </>
     ),
-    [activeSort, sortDirection, t, sortOptions],
+    [activeSort, sortDirection, sortOptions, t],
   )
-
-  const oppositeSortDirection = useMemo(() => (sortDirection === 'asc' ? 'desc' : 'asc'), [sortDirection])
 
   return (
     <div className="flex h-full flex-col px-8">
@@ -193,7 +193,7 @@ export const ModulesList = () => {
             <div className="flex flex-wrap gap-2">
               <DropdownMenu onOpenChange={setSortDropdownOpen} open={sortDropdownOpen}>
                 <DropdownMenuTrigger asChild>
-                  <Button className="h-9 gap-0 hover:bg-card has-[>svg]:px-3" size="sm" variant="outline">
+                  <Button className="group h-9 gap-0 hover:bg-card has-[>svg]:px-3" size="sm" variant="outline">
                     {sortButtonContent}
                   </Button>
                 </DropdownMenuTrigger>
@@ -221,7 +221,7 @@ export const ModulesList = () => {
                               <Button
                                 className="h-6 w-6 transition-none group-hover:border hover:bg-card"
                                 hover={false}
-                                onClick={handleSortDirectionChange(oppositeSortDirection)}
+                                onClick={handleSortDirectionChange}
                                 size="icon"
                               >
                                 {sortDirection === 'asc' ? (

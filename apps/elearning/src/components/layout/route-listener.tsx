@@ -1,13 +1,13 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { useHeader } from '@/hooks/use-header'
+import { usePathname } from '@/hooks/use-pathname'
 
 export const RouteListener = () => {
   const { setBreadcrumb, setHeaderShadow, setSubHeader } = useHeader()
-  const pathname = usePathname()
+  const { pathname } = usePathname()
 
   useEffect(() => {
     setBreadcrumb(undefined)

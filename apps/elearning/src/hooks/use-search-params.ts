@@ -4,7 +4,7 @@ import { usePathname } from '@/hooks/use-pathname'
 
 export const useSearchParams = () => {
   const searchParams = useNextSearchParams()
-  const pathname = usePathname()
+  const { pathname } = usePathname()
   const { replace } = useRouter()
 
   const set = (key: string, value: string) => {

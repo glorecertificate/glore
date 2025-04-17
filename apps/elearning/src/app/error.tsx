@@ -11,7 +11,7 @@ import { usePathname } from '@/hooks/use-pathname'
 import { Route } from '@/lib/navigation'
 
 export default ({ error, reset }: ErrorProps) => {
-  const pathname = usePathname()
+  const { pathname } = usePathname()
   const t = useTranslations('Common')
 
   useEffect(() => {

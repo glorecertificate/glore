@@ -9,6 +9,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { type HTTPUrl } from '@repo/utils'
 
 import { useProgressBar } from '@/components/ui/progress-bar'
+import { usePathname } from '@/hooks/use-pathname'
 import { type Pathname } from '@/lib/navigation'
 
 export interface LinkProps<T extends boolean = false> extends React.PropsWithChildren<NextLinkProps>, VariantProps<typeof link> {
@@ -31,8 +32,9 @@ export const Link = <T extends boolean = false>({
   variant,
   ...props
 }: LinkProps<T>) => {
-  const router = useRouter()
   const progressBar = useProgressBar()
+  const { setPathname } = usePathname()
+  const router = useRouter()
 
   const styles = useMemo(() => link({ className, color, variant }), [className, color, variant])
   const hasProgress = useMemo(() => !external && !hideProgress, [external, hideProgress])
@@ -47,13 +49,14 @@ export const Link = <T extends boolean = false>({
 
         startTransition(() => {
           router.push(href)
+          setPathname(href as Pathname)
           progressBar.done()
         })
       }
 
       if (onClick) onClick(e)
     },
-    [color, hasProgress, href, onClick, progressBar, router],
+    [color, hasProgress, href, onClick, progressBar, router, setPathname],
   )
 
   if (external) return <a className={styles} href={href} onClick={onClick} target={target} {...props} />

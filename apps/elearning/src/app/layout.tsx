@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { I18nProvider } from '@/components/providers/i18n-provider'
+import { PathnameProvider } from '@/components/providers/pathname-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
@@ -28,12 +29,14 @@ export default async ({ children }: React.PropsWithChildren) => {
       <body suppressHydrationWarning>
         <I18nProvider>
           <ThemeProvider>
-            <ProgressBarProvider>
-              {children}
-              <Toaster />
-              <Analytics />
-              <SpeedInsights />
-            </ProgressBarProvider>
+            <PathnameProvider>
+              <ProgressBarProvider>
+                {children}
+                <Toaster />
+                <Analytics />
+                <SpeedInsights />
+              </ProgressBarProvider>
+            </PathnameProvider>
           </ThemeProvider>
         </I18nProvider>
         <script dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} type="application/ld+json" />

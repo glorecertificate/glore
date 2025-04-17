@@ -1,5 +1,9 @@
-import { usePathname as useNextPathname } from 'next/navigation'
+import { useContext } from 'react'
 
-import { type Pathname } from '@/lib/navigation'
+import { PathnameContext } from '@/components/providers/pathname-provider'
 
-export const usePathname = useNextPathname as () => Pathname
+export const usePathname = () => {
+  const context = useContext(PathnameContext)
+  if (!context) throw new Error('usePathname must be used within a PathnameProvider')
+  return context
+}

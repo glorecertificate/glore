@@ -9,7 +9,7 @@ import { usePathname } from '@/hooks/use-pathname'
 import { Route } from '@/lib/navigation'
 
 export default ({ reset }: ErrorProps) => {
-  const pathname = usePathname()
+  const { pathname } = usePathname()
   const t = useTranslations('Common')
 
   return (

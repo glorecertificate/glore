@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
 import {
@@ -67,17 +67,21 @@ export const SidebarOrgs = ({
   orgs: UserOrg[]
   setOrg: (org: UserOrg) => void
 }) => {
+  const { setPathname } = usePathname()
+  const router = useRouter()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
-  const getOrgInitials = useCallback((org: UserOrg) => org.name.charAt(0).toUpperCase(), [])
+  const getOrgInitials = useCallback((org: UserOrg) => org.name.slice(0, 2).toUpperCase(), [])
 
   const onOrgSelect = useCallback(
     (org: UserOrg) => {
       setOrg(org)
       setCookie(Cookie.CurrentOrg, org.id)
+      router.push(Route.Home)
+      setPathname(Route.Home)
     },
-    [setOrg],
+    [router, setOrg, setPathname],
   )
 
   return (
@@ -86,17 +90,22 @@ export const SidebarOrgs = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="justify-center py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="justify-center overflow-visible rounded-lg py-7 peer-data-[state=collapsed]:border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
               <Avatar
                 className={cn(
-                  'aspect-square size-10 overflow-hidden rounded-lg border transition-all duration-150',
-                  !open && 'ml-8',
+                  'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
+                  !open && 'ml-8 size-8 text-xs',
+                  !currentOrg.avatar_url && 'border',
                 )}
               >
-                {currentOrg.avatar_url && <AvatarImage alt={currentOrg.avatar_url} src={currentOrg.avatar_url} />}
-                <AvatarFallback className="text-muted-foreground">{getOrgInitials(currentOrg)}</AvatarFallback>
+                {currentOrg.avatar_url ? (
+                  <AvatarImage alt={currentOrg.avatar_url} src={currentOrg.avatar_url} />
+                ) : (
+                  <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
+                )}
+                {/* <AvatarFallback className="text-muted-foreground">{getOrgInitials(currentOrg)}</AvatarFallback> */}
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-semibold">{currentOrg.name}</span>
@@ -113,17 +122,19 @@ export const SidebarOrgs = ({
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
             {orgs.map(org => (
-              <DropdownMenuItem
-                className={cn('gap-2 p-2', org.id === currentOrg.id && 'bg-accent/50')}
-                key={org.id}
-                onClick={onOrgSelect.bind(null, org)}
-              >
+              <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
                   {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
                   <AvatarFallback className="text-muted-foreground">{getOrgInitials(org)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{org.name}</span>
+                  <span className="flex items-center truncate font-semibold">
+                    {org.name}
+                    {/* Add a dot indicator */}
+                    {org.id === currentOrg.id && (
+                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary"></span>
+                    )}
+                  </span>
                   <span className="truncate text-xs font-normal text-muted-foreground">{titleize(org.role)}</span>
                 </div>
               </DropdownMenuItem>
@@ -143,34 +154,33 @@ export const SidebarOrgs = ({
 }
 
 const SidebarNavigation = () => {
-  const pathname = usePathname()
+  const { pathname, setPathname } = usePathname()
   const t = useTranslations('Navigation')
 
-  const [currentPath, setCurrentPath] = useState<Pathname>(pathname)
-  const [docsCollapsibleOpen, setDocsCollapsibleOpen] = useState(currentPath.startsWith(Route.Docs))
+  const [docsCollapsibleOpen, setDocsCollapsibleOpen] = useState(pathname.startsWith(Route.Docs))
 
   const onButtonClick = useCallback(
     (path: Pathname) => () => {
-      setCurrentPath(path)
+      setPathname(path)
     },
-    [],
+    [setPathname],
   )
 
   const isActivePath = useCallback(
     (path: Pathname) => {
-      if (path === currentPath) return true
+      if (path === pathname) return true
       if (path === Route.Home) return pathname === Route.Home
-      return currentPath.startsWith(path)
+      return pathname.startsWith(path)
     },
-    [currentPath, pathname],
+    [pathname],
   )
-  const isClickable = useCallback((path: Pathname) => path !== currentPath, [currentPath])
+  const isClickable = useCallback((path: Pathname) => path !== pathname, [pathname])
 
   const toggleDocsCollapsible = useCallback(() => setDocsCollapsibleOpen(open => !open), [])
 
   const onDocsClick = useCallback(
     (e: React.MouseEvent) => {
-      setCurrentPath(Route.Docs)
+      setPathname(Route.Docs)
       if (!isActivePath(Route.Docs) && docsCollapsibleOpen) {
         e.stopPropagation()
         e.preventDefault()
@@ -178,7 +188,7 @@ const SidebarNavigation = () => {
       }
       toggleDocsCollapsible()
     },
-    [docsCollapsibleOpen, isActivePath, toggleDocsCollapsible],
+    [docsCollapsibleOpen, isActivePath, setPathname, toggleDocsCollapsible],
   )
 
   const getSubItemClass = useCallback(
@@ -219,7 +229,7 @@ const SidebarNavigation = () => {
             tooltip={t('modules')}
           >
             <Link href={Route.Modules}>
-              <BookOpenIcon className="size-4" />
+              <BookOpenIcon className="size-4 text-muted-foreground" />
               <span>{t('modules')}</span>
             </Link>
           </SidebarMenuButton>
@@ -233,7 +243,7 @@ const SidebarNavigation = () => {
             tooltip={t('certificates')}
           >
             <Link href={Route.Certificates}>
-              <AwardIcon className="size-4" />
+              <AwardIcon className="size-4 text-muted-foreground" />
               <span>{t('certificates')}</span>
             </Link>
           </SidebarMenuButton>
@@ -249,7 +259,7 @@ const SidebarNavigation = () => {
                 tooltip={t('docs')}
               >
                 <Link href={Route.Docs}>
-                  <MessageCircleQuestionIcon className="size-4" />
+                  <MessageCircleQuestionIcon className="size-4 text-muted-foreground" />
                   <span>{t('docs')}</span>
                 </Link>
               </SidebarMenuButton>
@@ -342,13 +352,15 @@ const SidebarUser = ({ user }: { user: User }) => {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground',
+                'rounded-lg py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground',
                 open ? 'overflow-hidden' : 'overflow-visible',
               )}
               size="lg"
             >
               <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
-                <Avatar className="aspect-square size-8 rounded-lg border">
+                <Avatar
+                  className={cn('aspect-square size-8 rounded-lg border', !open && 'text-xs', !user.avatar_url && 'border')}
+                >
                   <AvatarImage alt={user.name} src={user.avatar_url} />
                   <AvatarFallback className="text-muted-foreground">{initials}</AvatarFallback>
                 </Avatar>

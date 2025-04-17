@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils'
 
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const { breadcrumb, headerShadow, subHeader } = useHeader()
-  const pathname = usePathname()
+  const { pathname } = usePathname()
   const { isScrolled } = useScroll()
   const { open } = useSidebar()
   const { syncStatus } = useSyncStatus()

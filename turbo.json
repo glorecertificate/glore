@@ -4,18 +4,9 @@
   "globalDependencies": ["tsconfig.json"],
   "globalEnv": ["ANALYZE", "GITHUB_TOKEN", "GH_TOKEN", "NODE_ENV"],
   "tasks": {
-    "dev": {
-      "cache": false,
-      "interactive": true,
-      "persistent": true
-    },
-    "typegen": {
-      "dependsOn": ["^typegen"],
-      "outputs": ["supabase/**/*.ts"]
-    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".vercel/output/**", "build/**"],
+      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
       "env": [
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
@@ -32,37 +23,33 @@
         "SUPABASE_URL"
       ]
     },
-    "elearning#build": {
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
-    },
-    "build:watch": {
-      "cache": false,
-      "interactive": true,
-      "outputs": ["build/**"],
-      "persistent": true
+    "typegen": {
+      "dependsOn": ["^typegen"],
+      "outputs": ["supabase/**/*.ts"]
     },
     "start": {
       "dependsOn": ["^start"]
+    },
+    "dev": {
+      "cache": false,
+      "interactive": true,
+      "persistent": true
     },
     "test": {
       "dependsOn": ["^test"],
       "outputs": ["coverage/**"]
     },
-    "typecheck": {
-      "dependsOn": ["^typecheck"]
+    "type-check": {
+      "dependsOn": ["^type-check"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+    "format": {
+      "dependsOn": ["^format"]
     },
     "check": {
       "dependsOn": ["^check"]
-    },
-    "check:fix": {
-      "dependsOn": ["^check:fix"]
     }
   }
 }

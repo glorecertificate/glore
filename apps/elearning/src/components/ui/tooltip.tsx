@@ -8,7 +8,7 @@ const TooltipProvider = ({ delayDuration = 0, ...props }: React.ComponentProps<t
   <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
 )
 
-const Tooltip = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
+const Tooltip = (props: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
   <TooltipProvider>
     <TooltipPrimitive.Root data-slot="tooltip" {...props} />
   </TooltipProvider>
@@ -30,7 +30,14 @@ const TooltipContent = ({
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       className={cn(
-        'z-50 max-w-sm rounded-md bg-foreground px-3 py-1.5 text-xs text-background animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
+        `
+          z-50 max-w-sm rounded-md bg-foreground px-3 py-1.5 text-xs text-background animate-in fade-in-0 zoom-in-95
+          data-[side=bottom]:slide-in-from-top-2
+          data-[side=left]:slide-in-from-right-2
+          data-[side=right]:slide-in-from-left-2
+          data-[side=top]:slide-in-from-bottom-2
+          data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
+        `,
         className,
       )}
       data-slot="tooltip-content"

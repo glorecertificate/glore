@@ -103,7 +103,7 @@ export const ProgressBar = ({ children }: React.PropsWithChildren) => {
     <>
       {state !== 'initial' && (
         <div
-          className="fixed z-50 h-1 bg-gradient-to-tr from-primary via-secondary to-tertiary transition-all duration-300 ease-in-out"
+          className="fixed z-50 h-1 bg-gradient-to-tr from-foreground/10 to-foreground/30 transition-all duration-300 ease-in-out"
           style={{ width: `${value}%` }}
         />
       )}

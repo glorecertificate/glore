@@ -1,0 +1,59 @@
+'use client'
+
+import { useCallback, useMemo } from 'react'
+
+import Markdown from 'react-markdown'
+
+import { type Assessment } from '@/api/modules/courses/types'
+import { RatingGroup } from '@/components/ui/rating-group'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
+
+export const CourseAssessment = ({
+  assessment,
+  completed,
+  onValueChange,
+  title,
+}: {
+  completed: boolean
+  assessment: Assessment
+  onValueChange: (rating: number) => void
+  title?: string
+}) => {
+  const { localize } = useLocale()
+  const t = useTranslations('Courses')
+
+  const description = useMemo(() => localize(assessment.description), [assessment.description, localize])
+
+  const onChange = useCallback(
+    (value: string) => {
+      if (completed) return
+      onValueChange(Number(value))
+    },
+    [completed, onValueChange],
+  )
+
+  return (
+    <div className="mt-8 border-t-2 pt-6">
+      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
+      <p className="mb-4 font-medium">
+        {t('subskillEvaluationsSubtitle', {
+          count: 1,
+        })}
+      </p>
+      <div className="space-y-8">
+        <div className="space-y-4">
+          <Markdown>{description}</Markdown>
+          <RatingGroup
+            color="secondary"
+            disabled={completed}
+            disabledToast={t('ratingDisabled')}
+            id={assessment.id}
+            onValueChange={onChange}
+            value={assessment.userRating}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}

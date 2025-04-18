@@ -1,0 +1,20 @@
+export const organizationQuery = `
+  id,
+  handle,
+  name,
+  email,
+  description,
+  website,
+  phone,
+  country,
+  region,
+  postcode,
+  city,
+  address,
+  rating,
+  avatarUrl:avatar_url,
+  approvedAt:approved_at,
+  createdAt:created_at,
+  updatedAt:updated_at,
+  deletedAt:deleted_at
+`

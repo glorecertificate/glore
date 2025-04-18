@@ -1,6 +1,15 @@
 'use client'
 
-import { createContext, forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, type ReactNode } from 'react'
+import {
+  createContext,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  type ReactNode,
+} from 'react'
 
 import confetti, { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
 

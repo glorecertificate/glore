@@ -3,14 +3,14 @@
 import { useMemo } from 'react'
 
 import { motion, type AnimationProps, type Variants } from 'framer-motion'
-import { useTranslations } from 'next-intl'
 
-import { Image } from '@/components/ui/image'
+import { NotFoundGraphic } from '@/components/ui/graphics/not-found'
+import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
+import { Logo } from '@/components/ui/icons/logo'
 import { Link } from '@/components/ui/link'
-import { Logo } from '@/components/ui/logo'
-import { useIsMobile } from '@/hooks/use-is-mobile'
+import { useDevice } from '@/hooks/use-device'
+import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
-import { Asset } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 import metadata from 'config/metadata.json'
 
@@ -32,28 +32,25 @@ export interface ErrorProps {
 }
 
 export interface ErrorViewProps {
-  Actions?: React.ReactNode
+  actions?: React.ReactNode
   hasHeader?: boolean
-  image?: Asset
   message?: string
   title?: string
   type?: 'error' | 'not-found'
 }
 
-export const ErrorView = ({ Actions, hasHeader, image, message, title, type = 'error' }: ErrorViewProps) => {
+export const ErrorView = ({ actions, hasHeader, message, title, type = 'error' }: ErrorViewProps) => {
   const t = useTranslations('Common')
-  const isMobile = useIsMobile()
+  const { isMobile } = useDevice()
 
   const ErrorImage = useMemo(
     () =>
-      image ? (
-        <Image src={image} width={300} />
-      ) : type === 'not-found' ? (
-        <Image priority src={Asset.NotFound} width={isMobile ? 320 : 360} />
+      type === 'not-found' ? (
+        <NotFoundGraphic className="mb-8" width={isMobile ? 320 : 360} />
       ) : (
-        <Image priority src={Asset.Error} width={isMobile ? 200 : 220} />
+        <ServerErrorGraphic width={isMobile ? 200 : 220} />
       ),
-    [image, isMobile, type],
+    [isMobile, type],
   )
   const errorMessage = useMemo(
     () =>
@@ -94,7 +91,7 @@ export const ErrorView = ({ Actions, hasHeader, image, message, title, type = 'e
           <div className="text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">{errorTitle}</h2>
             <p className="mb-8 text-base text-foreground/75">{errorMessage}</p>
-            <div className="flex justify-center gap-4">{Actions}</div>
+            <div className="flex justify-center gap-4">{actions}</div>
           </div>
         </div>
       </motion.div>

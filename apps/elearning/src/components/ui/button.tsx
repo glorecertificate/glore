@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { LoaderIcon } from 'lucide-react'
 
+import { Loader } from '@/components/ui/icons/loader'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps extends Omit<React.ComponentProps<'button'>, 'color'>, VariantProps<typeof button> {
@@ -33,7 +33,7 @@ export const Button = ({ children, disabled, loading, loadingText, ...props }: B
     <ButtonRoot disabled={isDisabled} {...props}>
       {loading ? (
         <>
-          <LoaderIcon className="animate-spin" />
+          <Loader />
           {loadingText && <span>{loadingText}</span>}
           {children}
         </>
@@ -60,14 +60,15 @@ const button = cva(
     },
     variants: {
       variant: {
-        default: '',
+        default: 'text-accent-foreground',
         outline: 'border border-input bg-transparent',
         ghost: 'bg-transparent',
         link: '!h-auto border-none bg-transparent !p-0 font-normal',
       },
       color: {
         default: 'text-accent-foreground focus-visible:ring-accent/20 dark:focus-visible:ring-accent/40',
-        primary: 'bg-primary text-primary-foreground shadow-xs focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
+        primary:
+          'bg-primary text-primary-foreground shadow-xs focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
         secondary:
           'bg-secondary text-secondary-foreground shadow-xs focus-visible:ring-secondary/20 dark:focus-visible:ring-secondary/40',
         tertiary:
@@ -80,9 +81,9 @@ const button = cva(
         true: '',
       },
       size: {
-        default: 'h-8 px-3 has-[>svg]:px-2.5',
-        sm: 'h-7 px-2 text-sm has-[>svg]:px-2',
-        lg: 'h-9 px-4 has-[>svg]:px-3',
+        default: 'h-9 px-3 has-[>svg]:px-2.5',
+        sm: 'h-8 px-2 text-sm has-[>svg]:px-2',
+        lg: 'h-10 px-4 has-[>svg]:px-3',
         icon: 'size-9',
       },
       disabled: {
@@ -90,12 +91,6 @@ const button = cva(
       },
     },
     compoundVariants: [
-      {
-        color: 'default',
-        hover: true,
-        disabled: false,
-        className: 'hover:bg-accent',
-      },
       {
         variant: ['outline', 'ghost'],
         hover: true,

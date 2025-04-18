@@ -1,13 +1,16 @@
 name: Deploy
+
 on:
   workflow_dispatch:
   repository_dispatch:
     types: [deploy]
+
 permissions:
   contents: read
   checks: write
   deployments: write
   statuses: write
+
 env:
   NEXT_TELEMETRY_DISABLED: true
   TURBO_TELEMETRY_DISABLED: true
@@ -46,7 +49,7 @@ jobs:
       - name: Install and build dependencies
         run: |
           pnpm install --no-frozen-lockfile
-          pnpm build:packages
+          pnpm build --filter="./packages/**"
       - name: Deploy to Vercel
         id: vercel
         run: |

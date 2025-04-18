@@ -11,7 +11,10 @@ const Tabs = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive
 
 const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) => (
   <TabsPrimitive.List
-    className={cn('inline-flex w-fit items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground', className)}
+    className={cn(
+      'inline-flex w-fit items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground',
+      className,
+    )}
     data-slot="tabs-list"
     {...props}
   />
@@ -48,7 +51,10 @@ const tabsTrigger = cva(
         ],
         primary: [
           'focus-visible:ring-primary/50 focus-visible:outline-primary',
-          'data-[state=active]:border-primary-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary-accent',
+          `
+            data-[state=active]:border-primary-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
+            dark:data-[state=active]:bg-primary-accent
+          `,
         ],
         secondary: [
           'focus-visible:text-secondary-foreground focus-visible:ring-secondary/50 focus-visible:outline-secondary',

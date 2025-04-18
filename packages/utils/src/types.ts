@@ -57,7 +57,7 @@ export type KeysOf<T> = T extends object
  * ```
  */
 export type PathParams<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
-  ? { [K in Param | keyof PathParams<Rest>]: string }
+  ? Record<Param | keyof PathParams<Rest>, string>
   : S extends `${infer _}:${infer Param}`
     ? Record<Param, string>
     : AnyRecord
@@ -92,6 +92,13 @@ export type Primitive = string | number | bigint | boolean | null | undefined
 export interface Recursive<T> {
   [key: string]: Recursive<T> | T
 }
+
+/**
+ * Record with keys converted from `snake_case` to `camelCase`.
+ */
+export type SnakeToCamelCase<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
+  : S
 
 /**
  * String or number type.

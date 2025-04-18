@@ -15,11 +15,11 @@ import {
   PlusIcon,
   SettingsIcon,
 } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
 import { titleize } from '@repo/utils'
 
-import { type User, type UserOrg } from '@/api/users'
+import { type UserOrganization } from '@/api/modules/organizations/types'
+import { type User } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -31,7 +31,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { DashboardIcon } from '@/components/ui/icons'
+import { DashboardIcon } from '@/components/ui/icons/dashboard'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
@@ -51,11 +51,13 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
-import { useDashboard } from '@/hooks/use-dashboard'
-import { useDB } from '@/hooks/use-db'
+import { useCookies } from '@/hooks/use-cookies'
 import { usePathname } from '@/hooks/use-pathname'
+import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
+import { db } from '@/lib/db/client'
 import { Route, type Pathname } from '@/lib/navigation'
-import { Cookie, setCookie } from '@/lib/storage'
+import { Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 export const SidebarOrgs = ({
@@ -63,25 +65,28 @@ export const SidebarOrgs = ({
   orgs,
   setOrg,
 }: {
-  currentOrg: UserOrg
-  orgs: UserOrg[]
-  setOrg: (org: UserOrg) => void
+  currentOrg: UserOrganization
+  orgs: UserOrganization[]
+  setOrg: (org: UserOrganization) => void
 }) => {
   const { setPathname } = usePathname()
   const router = useRouter()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
+  const { setCookie } = useCookies()
 
-  const getOrgInitials = useCallback((org: UserOrg) => org.name.slice(0, 2).toUpperCase(), [])
+  const getOrgInitials = useCallback((org: UserOrganization) => org.name.slice(0, 2).toUpperCase(), [])
 
   const onOrgSelect = useCallback(
-    (org: UserOrg) => {
-      setOrg(org)
-      setCookie(Cookie.CurrentOrg, org.id)
+    (org: UserOrganization) => {
+      setCookie(Cookie.Org, org.id)
       router.push(Route.Home)
       setPathname(Route.Home)
+      setTimeout(() => {
+        setOrg(org)
+      }, 200)
     },
-    [router, setOrg, setPathname],
+    [router, setCookie, setOrg, setPathname],
   )
 
   return (
@@ -90,22 +95,25 @@ export const SidebarOrgs = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              className="justify-center overflow-visible rounded-lg py-7 peer-data-[state=collapsed]:border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={`
+                justify-center overflow-visible rounded-lg py-7
+                peer-data-[state=collapsed]:border
+                data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground
+              `}
               size="lg"
             >
               <Avatar
                 className={cn(
                   'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
                   !open && 'ml-8 size-8 text-xs',
-                  !currentOrg.avatar_url && 'border',
+                  !currentOrg.avatarUrl && 'border',
                 )}
               >
-                {currentOrg.avatar_url ? (
-                  <AvatarImage alt={currentOrg.avatar_url} src={currentOrg.avatar_url} />
+                {currentOrg.avatarUrl ? (
+                  <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
                 ) : (
                   <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
                 )}
-                {/* <AvatarFallback className="text-muted-foreground">{getOrgInitials(currentOrg)}</AvatarFallback> */}
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-semibold">{currentOrg.name}</span>
@@ -124,15 +132,14 @@ export const SidebarOrgs = ({
             {orgs.map(org => (
               <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
-                  {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
+                  {org.avatarUrl && <AvatarImage alt={org.avatarUrl} src={org.avatarUrl} />}
                   <AvatarFallback className="text-muted-foreground">{getOrgInitials(org)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="flex items-center truncate font-semibold">
                     {org.name}
-                    {/* Add a dot indicator */}
                     {org.id === currentOrg.id && (
-                      <span className="ml-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary"></span>
+                      <span className="mt-[1.5px] ml-1.5 inline-block size-[7px] rounded-full bg-green-500"></span>
                     )}
                   </span>
                   <span className="truncate text-xs font-normal text-muted-foreground">{titleize(org.role)}</span>
@@ -222,15 +229,15 @@ const SidebarNavigation = () => {
         </SidebarMenuItem>
         <SidebarMenuItem>
           <SidebarMenuButton
-            active={isActivePath(Route.Modules)}
+            active={isActivePath(Route.Courses)}
             asChild
-            clickable={isClickable(Route.Modules)}
-            onClick={onButtonClick(Route.Modules)}
-            tooltip={t('modules')}
+            clickable={isClickable(Route.Courses)}
+            onClick={onButtonClick(Route.Courses)}
+            tooltip={t('courses')}
           >
-            <Link href={Route.Modules}>
+            <Link href={Route.Courses}>
               <BookOpenIcon className="size-4 text-muted-foreground" />
-              <span>{t('modules')}</span>
+              <span>{t('courses')}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -240,11 +247,11 @@ const SidebarNavigation = () => {
             asChild
             clickable={isClickable(Route.Certificates)}
             onClick={onButtonClick(Route.Certificates)}
-            tooltip={t('certificates')}
+            tooltip={t('certificate')}
           >
             <Link href={Route.Certificates}>
               <AwardIcon className="size-4 text-muted-foreground" />
-              <span>{t('certificates')}</span>
+              <span>{t('certificate')}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -319,14 +326,14 @@ const SidebarNavigation = () => {
   )
 }
 
-const SidebarUser = ({ user }: { user: User }) => {
-  const { auth } = useDB()
+const SidebarUser = ({ organization, user }: { organization?: UserOrganization; user: User }) => {
+  const { auth } = db
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
   const initials = useMemo(
     () =>
-      user.name
+      `${user.firstName} ${user.lastName}`
         .split(' ')
         .map(name => name[0])
         .join('') || '',
@@ -359,25 +366,31 @@ const SidebarUser = ({ user }: { user: User }) => {
             >
               <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
                 <Avatar
-                  className={cn('aspect-square size-8 rounded-lg border', !open && 'text-xs', !user.avatar_url && 'border')}
+                  className={cn(
+                    'aspect-square size-8 rounded-lg border',
+                    !open && 'text-xs',
+                    !user.avatarUrl && 'border',
+                  )}
                 >
-                  <AvatarImage alt={user.name} src={user.avatar_url} />
+                  <AvatarImage src={user.avatarUrl!} />
                   <AvatarFallback className="text-muted-foreground">{initials}</AvatarFallback>
                 </Avatar>
-                {user.current_org?.avatar_url && (
+                {organization?.avatarUrl && (
                   <Image
                     className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
-                    src={user.current_org.avatar_url}
+                    src={organization.avatarUrl}
                     width={14}
                   />
                 )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
+                <span className="truncate font-semibold">{user.firstName}</span>
                 <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
               </div>
-              <ChevronsUpDownIcon className={cn('ml-auto size-4 stroke-foreground/64 leading-tight', !open && 'invisible')} />
+              <ChevronsUpDownIcon
+                className={cn('ml-auto size-4 stroke-foreground/64 leading-tight', !open && 'invisible')}
+              />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -413,7 +426,9 @@ const SidebarUser = ({ user }: { user: User }) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">
               <div className="flex items-center px-1.5 py-1">
-                <span className="text-[13px] leading-[16px] font-medium text-muted-foreground">{t('Common.preferences')}</span>
+                <span className="text-[13px] leading-[16px] font-medium text-muted-foreground">
+                  {t('Common.preferences')}
+                </span>
               </div>
             </DropdownMenuGroup>
             <DropdownMenuGroup className="p-1 pt-0">
@@ -443,10 +458,10 @@ export const AppSidebar = ({
 }: React.ComponentProps<typeof Sidebar> & {
   defaultOpen?: boolean
 }) => {
-  const { setUser, user } = useDashboard()
+  const { organization, setUser, user } = useSession()
 
   const setCurrentOrg = useCallback(
-    (org: UserOrg) => {
+    (org: UserOrganization) => {
       setUser(prev => ({
         ...prev,
         current_org: org,
@@ -458,13 +473,13 @@ export const AppSidebar = ({
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarOrgs currentOrg={user.current_org} orgs={user.orgs} setOrg={setCurrentOrg} />
+        {organization && <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />}
       </SidebarHeader>
       <SidebarContent>
         <SidebarNavigation />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarUser user={user} />
+        <SidebarUser organization={organization} user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

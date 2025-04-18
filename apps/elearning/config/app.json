@@ -14,5 +14,6 @@
       "flag": "🇮🇹"
     }
   },
-  "minModules": 3
+  "minSkills": 3,
+  "minSkillRating": 3
 }

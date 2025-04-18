@@ -33,17 +33,15 @@ export interface ImageProps
 export const Image = (props: ImageProps) => {
   const { alt = '', fill, height, sizes = '100vw', style, width, ...rest } = props
 
-  const styles = useMemo(
-    () =>
-      fill
-        ? {}
-        : {
-            width: width ? (typeof width === 'string' ? width : `${width}px`) : 'auto',
-            height: height ? (typeof height === 'string' ? height : `${height}px`) : 'auto',
-            ...style,
-          },
-    [fill, height, style, width],
-  )
+  const styles = useMemo(() => {
+    if (fill) return style
+
+    return {
+      width: width ? `${width}px` : 'fit-content',
+      height: height ? `${height}px` : 'fit-content',
+      ...style,
+    }
+  }, [fill, height, style, width])
 
   return <NextImage alt={alt} fill={fill} height={0} sizes={sizes} style={styles} width={0} {...rest} />
 }

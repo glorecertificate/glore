@@ -1,3 +1,5 @@
+'use client'
+
 import { useContext } from 'react'
 
 import { HeaderContext } from '@/components/providers/header-provider'

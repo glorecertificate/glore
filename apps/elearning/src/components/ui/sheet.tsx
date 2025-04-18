@@ -2,8 +2,8 @@
 
 import * as SheetPrimitive from '@radix-ui/react-dialog'
 import { XIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
+import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 const Sheet = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) => (
@@ -48,7 +48,11 @@ const SheetContent = ({
       <SheetOverlay />
       <SheetPrimitive.Content
         className={cn(
-          'fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=closed]:animate-out data-[state=open]:duration-500 data-[state=open]:animate-in',
+          `
+            fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out
+            data-[state=closed]:duration-300 data-[state=closed]:animate-out
+            data-[state=open]:duration-500 data-[state=open]:animate-in
+          `,
           side === 'right' &&
             'inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm',
           side === 'left' &&
@@ -63,7 +67,15 @@ const SheetContent = ({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-secondary">
+        <SheetPrimitive.Close
+          className={`
+            absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity
+            hover:opacity-100
+            focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden
+            disabled:pointer-events-none
+            data-[state=open]:bg-secondary
+          `}
+        >
           <XIcon className="size-4" />
           <span className="sr-only">{t('close')}</span>
         </SheetPrimitive.Close>

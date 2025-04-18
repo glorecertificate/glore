@@ -1,0 +1,34 @@
+{
+  "name": "@repo/prettier-config",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs",
+      "default": "./build/index.cjs"
+    },
+    "./tailwind": {
+      "types": "./build/tailwind.d.ts",
+      "import": "./build/tailwind.js",
+      "require": "./build/tailwind.cjs",
+      "default": "./build/tailwind.cjs"
+    }
+  },
+  "prettier": "./build/index.cjs",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit && tsup --silent",
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "check": "pnpm type-check && pnpm lint"
+  },
+  "devDependencies": {
+    "prettier": "catalog:",
+    "prettier-plugin-tailwindcss": "^0.6.12",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
+  }
+}

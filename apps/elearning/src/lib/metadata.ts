@@ -1,37 +1,30 @@
 import { type Metadata, type ResolvingMetadata } from 'next'
 
-import { asset, Asset } from '@/lib/storage'
-import { getFlatTranslations, getLocale, type MessageKey } from '@/services/i18n'
+import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
+import { type MessageKey } from '@/lib/i18n/types'
+import { asset, Public } from '@/lib/storage'
 import app from 'config/app.json'
 import metadata from 'config/metadata.json'
 
-/**
- * Generic page metadata.
- */
-export interface AppMetadata {
+export interface PageMetadata {
   description?: string
   image?: string
   separator?: string
   title?: string
 }
 
-/**
- * Localized page metadata.
- */
-export interface LocalizedAppMetadata {
+export interface LocalizedMetadata extends PageMetadata {
   description?: MessageKey
-  image?: string
-  separator?: string
   title?: MessageKey
 }
 
-const defaults: Metadata = {
+const METADATA: Metadata = {
   title: metadata.title,
   applicationName: metadata.title,
   category: metadata.category,
   creator: metadata.author.name,
   authors: metadata.author,
-  manifest: Asset.Manifest,
+  manifest: Public.Manifest,
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   openGraph: {
     alternateLocale: app.defaultLocale,
@@ -48,20 +41,20 @@ const defaults: Metadata = {
     {
       sizes: '96x96',
       type: 'image/png',
-      url: asset('favicon-96x96.png'),
+      url: asset('meta/favicon-96x96.png'),
     },
     {
       type: 'image/svg+xml',
-      url: Asset.Logo,
+      url: asset('logo.png'),
     },
     {
       rel: 'shortcut icon',
-      url: Asset.Favicon,
+      url: Public.Favicon,
     },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: asset('apple-touch-icon.png'),
+      url: asset('meta/apple-touch-icon.png'),
     },
   ],
   appleWebApp: {
@@ -72,49 +65,49 @@ const defaults: Metadata = {
 }
 
 /**
- * Merges the default metadata with the provided page metadata.
+ * Merges the provided metadata with global metadata.
  */
-export const appMetadata = async (props?: AppMetadata) => {
-  const { description, image, separator = metadata.titleSeparator, title } = props ?? {}
+export const generatePageMetadata = async (options?: PageMetadata): Promise<Metadata> => {
+  const { description, image, separator = metadata.titleSeparator, title } = options ?? {}
 
   const locale = await getLocale()
-  const pageTitle = title ? `${title} ${separator} ${defaults.title as string}` : defaults.title
+  const pageTitle = title ? `${title} ${separator} ${METADATA.title as string}` : METADATA.title
 
   return {
-    ...defaults,
+    ...METADATA,
     title: pageTitle,
     ...(description ? { description } : {}),
     openGraph: {
-      ...defaults.openGraph,
+      ...METADATA.openGraph,
       ...(description ? { description } : {}),
       ...(image ? { images: image } : {}),
-      locale: locale ?? defaults.openGraph?.locale,
+      locale: locale ?? METADATA.openGraph?.locale,
     },
-  } as Metadata
+  }
 }
 
 /**
- * Merges the default metadata with the provided page metadata and translates it.
+ * Localizes and merges the provided metadata with global metadata.
  */
-export const generateAppMetadata =
-  ({ description, image, separator = metadata.titleSeparator, title }: LocalizedAppMetadata) =>
+export const generateLocalizedMetadata =
+  ({ description, image, separator = metadata.titleSeparator, title }: LocalizedMetadata) =>
   async (_: object, parent: ResolvingMetadata): Promise<Metadata> => {
     const t = await getFlatTranslations()
     const locale = await getLocale()
     const previous = await parent
 
-    const pageTitle = title ? `${t(title)} ${separator} ${defaults.title as string}` : defaults.title
+    const pageTitle = title ? `${t(title)} ${separator} ${METADATA.title as string}` : METADATA.title
 
     return {
-      ...defaults,
+      ...METADATA,
       ...previous,
       title: pageTitle,
       ...(description ? { description: t(description) } : {}),
       openGraph: {
-        ...defaults.openGraph,
+        ...METADATA.openGraph,
         ...(description ? { description: t(description) } : {}),
         ...(image ? { images: image } : {}),
-        locale: locale ?? defaults.openGraph?.locale,
+        locale: locale ?? METADATA.openGraph?.locale,
       },
     } as Metadata
   }

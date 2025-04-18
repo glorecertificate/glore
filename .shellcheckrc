@@ -1,2 +1,3 @@
-shell=sh
-disable=SC1091,SC2028
+# https://shellcheck.net
+external-sources=true
+disable=SC1091

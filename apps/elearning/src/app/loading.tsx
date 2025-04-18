@@ -1,7 +1,7 @@
-import { ColorLoader } from '@/components/ui/color-loader'
+import { Loader } from '@/components/ui/icons/loader'
 
 export default () => (
   <div className="flex h-full min-h-svh items-center justify-center">
-    <ColorLoader className="w-16 md:w-20" />
+    <Loader className="w-6 md:w-8" colored />
   </div>
 )

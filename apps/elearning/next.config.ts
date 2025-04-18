@@ -1,20 +1,16 @@
+import { resolve } from 'node:path'
+
 import bundleAnalyzer from '@next/bundle-analyzer'
 import { type NextConfig } from 'next'
 
-import { next } from 'million/compiler'
-import nextIntl from 'next-intl/plugin'
+import createNextIntlPlugin from 'next-intl/plugin'
 import type { PluginConfig as NextIntlConfig } from 'node_modules/next-intl/dist/types/plugin/types'
 
 import { Env } from '@/lib/env'
 import app from 'config/app.json'
 
-type BundleAnalyzerConfig = Parameters<typeof bundleAnalyzer>[0]
-type MillionConfig = Parameters<typeof next>[1]
-type NextConfigMillion = Parameters<typeof next>[0]
-
-const I18N_PATH = './src/middlewares/locale.ts'
-const MESSAGES_PATH = `./config/translations/${app.defaultLocale}.json`
-const tsconfigPath = Env.isProduction ? 'tsconfig.build.json' : 'tsconfig.json'
+const I18N_CONFIG = './src/middlewares/i18n.ts'
+const MESSAGES_DECLARATION = resolve(`config/translations/${app.defaultLocale}.json`)
 
 const nextConfig: NextConfig = {
   images: {
@@ -26,30 +22,17 @@ const nextConfig: NextConfig = {
     ],
   },
   reactStrictMode: true,
-  typescript: {
-    tsconfigPath,
-  },
-}
-
-const bundleAnalyzerConfig: BundleAnalyzerConfig = {
-  enabled: Env.isAnalyze,
 }
 
 const nextIntlConfig: NextIntlConfig = {
   experimental: {
-    createMessagesDeclaration: MESSAGES_PATH,
+    createMessagesDeclaration: MESSAGES_DECLARATION,
   },
-  requestConfig: I18N_PATH,
+  requestConfig: I18N_CONFIG,
 }
 
-const millionConfig: MillionConfig = {
-  auto: true,
-  log: false,
-  rsc: true,
-  telemetry: false,
-}
-
-const withBundleAnalyzer = bundleAnalyzer(bundleAnalyzerConfig)(nextConfig)
-const withNextIntl = nextIntl(nextIntlConfig)(withBundleAnalyzer)
-
-export default next(withNextIntl as NextConfigMillion, millionConfig)
+export default createNextIntlPlugin(nextIntlConfig)(
+  bundleAnalyzer({
+    enabled: Env.ANALYZE,
+  })(nextConfig),
+)

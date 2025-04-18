@@ -1,25 +1,17 @@
 import eslintConfig from '@repo/eslint-config'
 
 export default eslintConfig({
-  disabled: ['@next/next/no-assign-module-variable'],
-  exportsLast: false,
-  importGroups: [
-    ['side-effect', 'side-effect-style'],
-    ['builtin'],
-    ['react', 'next', '@next'],
-    ['external'],
-    ['@repo'],
-    ['internal'],
-    ['parent', 'index', 'sibling'],
-  ],
+  customExternalImports: ['react', 'next', '@next'],
+  customInternalImports: ['@repo'],
   internalImports: ['config', 'supabase'],
   maxLines: -1,
   namedImports: ['react'],
   react: 'nextjs',
-  sortArrayValues: ['src/**/*.ts?(x)'],
+  sortArrays: ['src/**/*.ts?(x)'],
   sortInterfaces: false,
   sortObjectKeys: ['*.ts'],
-  tailwindCss: true,
-  tsconfigRootDir: import.meta.dirname,
-  useNodePrefix: 'ignore',
+  tailwind: {
+    allowedClasses: ['lucide', 'lucide-*', 'markdown'],
+    entryPoint: 'src/app/globals.css',
+  },
 })

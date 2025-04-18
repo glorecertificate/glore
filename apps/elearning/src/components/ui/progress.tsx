@@ -11,7 +11,10 @@ export interface ProgressProps
 
 export const Progress = ({ className, color, value, ...props }: ProgressProps) => (
   <ProgressPrimitive.Root className={cn(progress({ className, color }), className)} data-slot="progress" {...props}>
-    <ProgressPrimitive.Indicator data-slot="progress-indicator" style={{ transform: `translateX(-${100 - (value || 0)}%)` }} />
+    <ProgressPrimitive.Indicator
+      data-slot="progress-indicator"
+      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+    />
   </ProgressPrimitive.Root>
 )
 

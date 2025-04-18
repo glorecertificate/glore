@@ -13,17 +13,17 @@
   "prettier": "@repo/prettier-config",
   "scripts": {
     "build": "tsup",
-    "build:watch": "tsup --watch",
-    "typecheck": "tsc --noEmit && tsup --silent",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit && tsup --silent",
     "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "check": "pnpm typecheck && pnpm lint",
-    "check:fix": "pnpm typecheck && pnpm lint:fix"
+    "format": "eslint --fix . && prettier --write .",
+    "check": "pnpm type-check && pnpm lint"
   },
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@repo/tsup-config": "workspace:^",
+    "@types/node": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

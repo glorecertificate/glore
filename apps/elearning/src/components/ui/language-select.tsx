@@ -2,13 +2,12 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
-import { LoaderIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
-
+import { Loader } from '@/components/ui/icons/loader'
 import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerProps } from '@/components/ui/select'
 import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
+import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
-import { type Locale } from '@/services/i18n'
 import app from 'config/app.json'
 
 const items = Object.entries(app.locales).map(([value, { flag, name }]) => ({
@@ -18,7 +17,7 @@ const items = Object.entries(app.locales).map(([value, { flag, name }]) => ({
 }))
 
 export const LanguageSelect = (props: SelectTriggerProps) => {
-  const [locale, setLocale] = useLocale()
+  const { locale, setLocale } = useLocale()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
@@ -35,11 +34,15 @@ export const LanguageSelect = (props: SelectTriggerProps) => {
 
   return (
     <Select defaultValue={locale} onValueChange={onChange}>
-      <SelectTrigger className={cn('hover:bg-accent', isPending && 'pointer-events-none')} title={t('selectLanguage')} {...props}>
+      <SelectTrigger
+        className={cn('hover:bg-accent', isPending && 'pointer-events-none')}
+        title={t('selectLanguage')}
+        {...props}
+      >
         <span className="relative">
           {isPending && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <LoaderIcon className="size-4 animate-spin" />
+              <Loader className="size-4" />
             </div>
           )}
           <span className={cn(isPending && 'cursor-default opacity-30')}>

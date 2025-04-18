@@ -1,13 +1,9 @@
-import eslintConfig from '@repo/eslint-config'
+import eslintConfig, { RuleSeverity } from '@repo/eslint-config'
 
 export default eslintConfig({
   ignores: ['apps', 'packages'],
   sortObjectKeys: false,
-  overrides: [
-    {
-      rules: {
-        'no-template-curly-in-string': 0,
-      },
-    },
-  ],
+  rules: {
+    'no-template-curly-in-string': RuleSeverity.Off,
+  },
 })

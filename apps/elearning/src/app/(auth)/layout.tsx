@@ -1,38 +1,35 @@
 'use client'
 
-import { useMemo } from 'react'
-
-import { Image } from '@/components/ui/image'
+import { Logo } from '@/components/ui/icons/logo'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
-import { useIsMobile } from '@/hooks/use-is-mobile'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { Video } from '@/components/ui/video'
 import { Route } from '@/lib/navigation'
-import metadata from 'config/metadata.json'
+import { asset } from '@/lib/storage'
 
-export default ({ children }: React.PropsWithChildren) => {
-  const isMobile = useIsMobile()
-  const logoSize = useMemo(() => (isMobile ? 20 : 28), [isMobile])
-
-  return (
-    <div className="grid min-h-svh lg:grid-cols-5">
-      <div className="col-span-2 flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-between gap-2">
-          <Link className="flex items-center gap-1.5" href={Route.Home}>
-            <Image src="/logo.svg" width={logoSize} />
-            <span className="text-sm font-medium sm:text-[15px]">{metadata.title}</span>
-          </Link>
-          <LanguageSelect className="text-sm" />
-        </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-[20rem]">{children}</div>
+export default ({ children }: React.PropsWithChildren) => (
+  <div className="grid min-h-svh lg:grid-cols-12">
+    <div className="col-span-5 flex flex-col gap-4 p-6 md:p-10">
+      <div className="flex justify-between gap-2">
+        <Link className="flex h-fit items-center gap-1.5" href={Route.Login}>
+          <Logo className="w-20" />
+        </Link>
+        <div className="flex flex-col items-center gap-2">
+          <LanguageSelect className="border" />
         </div>
       </div>
-      <div className="relative col-span-3 hidden bg-muted lg:block">
-        <Image
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-          src="/placeholder.svg"
-        />
+      <div className="flex flex-1 items-center justify-center">
+        <div className="w-full max-w-md">{children}</div>
+      </div>
+      <div className="flex justify-end">
+        <ThemeSwitch className="text-sm" />
       </div>
     </div>
-  )
-}
+    <div className="relative col-span-7 hidden bg-muted lg:block">
+      <div className="absolute inset-0 z-1 bg-gradient-to-br from-black/40 to-black/20 dark:from-black/20 dark:to-black/10" />
+      <Video autoPlay className="absolute inset-0 h-full" controls={false} loop muted src={asset('trailer.mp4')} />
+      {/* <Placeholder className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" /> */}
+    </div>
+  </div>
+)

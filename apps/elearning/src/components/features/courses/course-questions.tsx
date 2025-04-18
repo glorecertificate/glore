@@ -1,0 +1,131 @@
+import { useCallback, useMemo } from 'react'
+
+import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { type Question, type QuestionOption } from '@/api/modules/courses/types'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Markdown } from '@/components/ui/markdown'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
+
+const CourseQuestion = ({
+  completed,
+  onComplete,
+  question,
+}: {
+  completed?: boolean
+  onComplete: (question: Question, option: QuestionOption) => void
+  question: Question
+  title?: string
+}) => {
+  const { localize } = useLocale()
+  const t = useTranslations('Courses')
+
+  const isCorrectUserAnswer = useMemo(
+    () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
+    [question],
+  )
+
+  const onOptionClick = useCallback(
+    (option: QuestionOption) => () => {
+      if (question.answered && !completed) return
+      if (!question.answered) return onComplete(question, option)
+      if (option.isUserAnswer || !option.isCorrect) return
+
+      toast.info(t('answerDisabled'), {
+        duration: 1200,
+      })
+    },
+    [onComplete, question, completed, t],
+  )
+
+  const optionClassName = useCallback(
+    (option: QuestionOption) =>
+      cn(
+        'flex-1',
+        question.answered && 'cursor-default',
+        option.isUserAnswer && 'border-foreground/60 bg-accent',
+        question.answered && !option.isUserAnswer && 'text-muted-foreground',
+      ),
+    [question.answered],
+  )
+
+  return (
+    <>
+      <Markdown className="mb-4">{localize(question.description)}</Markdown>
+
+      <div className="flex gap-4">
+        {question.options.map(option => (
+          <Button
+            className={optionClassName(option)}
+            hover={!question.answered}
+            key={option.id}
+            onClick={onOptionClick(option)}
+            variant="outline"
+          >
+            {t('trueAnswer')}
+            {option.isCorrect && <CheckCircleIcon className="size-4 text-success" />}
+          </Button>
+        ))}
+      </div>
+
+      {question.answered && (
+        <Card
+          className={cn('mt-4 border-[1.5px] shadow-none', isCorrectUserAnswer ? 'border-green-500' : 'border-red-500')}
+        >
+          <CardContent>
+            <div className="flex items-start gap-2">
+              <div className="flex items-start pt-[2px]">
+                {isCorrectUserAnswer ? (
+                  <CheckCircleIcon className="size-5 text-green-500" />
+                ) : (
+                  <XCircleIcon className="size-5 text-red-500" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium">{isCorrectUserAnswer ? t('correctAnswerTitle') : t('wrongAnswerTitle')}</p>
+                <p className="mt-1 text-[15px] text-foreground/80">{localize(question.explanation)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </>
+  )
+}
+
+export const CourseQuestions = ({
+  completed,
+  onComplete,
+  questions,
+  title = false,
+}: {
+  completed?: boolean
+  onComplete: (question: Question, option: QuestionOption) => void
+  questions: Question[]
+  title?: boolean
+}) => {
+  const t = useTranslations('Courses')
+
+  return (
+    <div className="mt-8 border-t-2 pt-6">
+      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('questionsTitle')}</h3>}
+      <p className="mb-4 font-medium">
+        {t('questionsSubtitle', {
+          count: questions.length,
+        })}
+      </p>
+
+      {questions.length ? (
+        questions.map(question => (
+          <CourseQuestion completed={completed} key={question.id} onComplete={onComplete} question={question} />
+        ))
+      ) : (
+        <p className="text-muted-foreground">{'Admin.noQuestions'}</p>
+      )}
+    </div>
+  )
+}

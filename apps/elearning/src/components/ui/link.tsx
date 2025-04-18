@@ -11,8 +11,11 @@ import { type HTTPUrl } from '@repo/utils'
 import { useProgressBar } from '@/components/ui/progress-bar'
 import { usePathname } from '@/hooks/use-pathname'
 import { type Pathname } from '@/lib/navigation'
+import { cn } from '@/lib/utils'
 
-export interface LinkProps<T extends boolean = false> extends React.PropsWithChildren<NextLinkProps>, VariantProps<typeof link> {
+export interface LinkProps<T extends boolean = false>
+  extends React.PropsWithChildren<NextLinkProps>,
+    VariantProps<typeof link> {
   className?: string
   external?: T
   hideProgress?: T extends true ? never : boolean
@@ -36,7 +39,7 @@ export const Link = <T extends boolean = false>({
   const { setPathname } = usePathname()
   const router = useRouter()
 
-  const styles = useMemo(() => link({ className, color, variant }), [className, color, variant])
+  const styles = useMemo(() => cn(link({ color, variant }), className), [className, color, variant])
   const hasProgress = useMemo(() => !external && !hideProgress, [external, hideProgress])
 
   const handleInternalClick = useCallback(
@@ -64,7 +67,7 @@ export const Link = <T extends boolean = false>({
   return <NextLink className={styles} href={href} onClick={handleInternalClick} {...props} />
 }
 
-export const link = cva(`text-sm no-underline transition-all`, {
+export const link = cva('text-sm no-underline transition-all', {
   defaultVariants: {
     color: 'default',
     variant: null,
@@ -75,8 +78,8 @@ export const link = cva(`text-sm no-underline transition-all`, {
       primary: 'text-primary hover:text-primary-accent',
       secondary: 'text-secondary hover:text-secondary-accent',
       tertiary: 'text-tertiary hover:text-tertiary-accent',
-      destructive: 'hover:text-destructive-accent text-destructive',
-      success: 'hover:text-success-accent text-success',
+      destructive: 'text-destructive hover:text-destructive',
+      success: 'text-success hover:text-success',
       transparent: 'text-transparent hover:text-foreground',
       muted: 'text-muted hover:text-muted-foreground',
     },

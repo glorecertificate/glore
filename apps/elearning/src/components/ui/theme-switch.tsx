@@ -1,70 +1,112 @@
+import { useMemo } from 'react'
+
 import { MonitorSmartphoneIcon, MoonStarIcon, SunIcon, type LucideIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTheme } from '@/hooks/use-theme'
+import { useTranslations } from '@/hooks/use-translations'
+import { type MessageKey } from '@/lib/i18n/types'
 import { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
-interface ThemeSwitchButtonProps extends ButtonProps {
+const themes: Array<{
+  name: Theme
+  icon: LucideIcon
+  titleKey: MessageKey
+}> = [
+  {
+    name: Theme.System,
+    icon: MonitorSmartphoneIcon,
+    titleKey: 'Common.useSystemTheme',
+  },
+  {
+    name: Theme.Light,
+    icon: SunIcon,
+    titleKey: 'Common.useLightTheme',
+  },
+  {
+    name: Theme.Dark,
+    icon: MoonStarIcon,
+    titleKey: 'Common.useDarkTheme',
+  },
+]
+
+const ThemeSwitchButton = ({
+  active,
+  children,
+  className,
+  icon: Icon,
+  tooltip,
+  ...props
+}: ButtonProps & {
   active: boolean
-  Icon: LucideIcon
+  icon: LucideIcon
+  tooltip?: string
+}) => {
+  const BaseButton = useMemo(
+    () => (
+      <Button
+        className={cn(
+          'inline-flex h-6 items-center justify-center gap-1.5 px-2 text-sm font-medium whitespace-nowrap transition-all',
+          active && 'cursor-default bg-accent',
+          className,
+        )}
+        data-orientation="horizontal"
+        role="tab"
+        variant="ghost"
+        {...props}
+      >
+        <div className="relative z-10 flex items-center gap-1.5">
+          <Icon height={16} width={16} />
+          <span className="sr-only">{children}</span>
+        </div>
+      </Button>
+    ),
+    [active, children, className, Icon, props],
+  )
+
+  return tooltip ? (
+    <Tooltip>
+      <TooltipTrigger asChild>{BaseButton}</TooltipTrigger>
+      <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    BaseButton
+  )
 }
 
-const ThemeSwitchButton = ({ Icon, active, children, className, ...props }: ThemeSwitchButtonProps) => (
-  <Button
-    className={cn(
-      'inline-flex h-6 items-center justify-center gap-1.5 px-2 text-sm font-medium whitespace-nowrap transition-all',
-      active && 'cursor-default bg-accent',
-      className,
-    )}
-    data-orientation="horizontal"
-    role="tab"
-    variant="ghost"
-    {...props}
-  >
-    <div className="relative z-10 flex items-center gap-1.5">
-      <Icon height={16} width={16} />
-      <span className="sr-only">{children}</span>
-    </div>
-  </Button>
-)
-
-export const ThemeSwitch = ({ ...props }: React.HTMLAttributes<HTMLDivElement>) => {
+export const ThemeSwitch = ({
+  className,
+  tooltips,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
+  tooltips?: boolean
+}) => {
+  const t = useTranslations()
   const { setTheme, theme } = useTheme()
-  const t = useTranslations('Common')
 
   return (
     <div
-      className="flex h-fit items-center gap-0.5 overflow-hidden rounded-full border p-0 outline-0"
+      className={cn('flex h-fit items-center gap-0.5 overflow-hidden rounded-full border p-0 outline-0', className)}
       role="tablist"
       tabIndex={0}
       {...props}
     >
-      <ThemeSwitchButton
-        active={theme === Theme.System}
-        Icon={MonitorSmartphoneIcon}
-        onClick={() => setTheme(Theme.System)}
-        title={t('useSystemTheme')}
-      >
-        {t('system')}
-      </ThemeSwitchButton>
-      <ThemeSwitchButton
-        active={theme === Theme.Light}
-        Icon={SunIcon}
-        onClick={() => setTheme(Theme.Light)}
-        title={t('useLightTheme')}
-      >
-        {t('light')}
-      </ThemeSwitchButton>
-      <ThemeSwitchButton
-        active={theme === Theme.Dark}
-        Icon={MoonStarIcon}
-        onClick={() => setTheme(Theme.Dark)}
-        title={t('useDarkTheme')}
-      >
-        {t('dark')}
-      </ThemeSwitchButton>
+      {themes.map(({ icon, name, titleKey }) => (
+        <ThemeSwitchButton
+          active={theme === name}
+          icon={icon}
+          key={name}
+          onClick={() => setTheme(name)}
+          title={tooltips ? undefined : t(titleKey)}
+          tooltip={tooltips ? t(titleKey) : undefined}
+        >
+          {name.toLowerCase()}
+        </ThemeSwitchButton>
+      ))}
     </div>
   )
 }

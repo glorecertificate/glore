@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react'
 
 import { cva, type VariantProps } from 'class-variance-authority'
-import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem, type RadioGroupProps } from '@/components/ui/radio-group'
+import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 export interface RatingGroupProps
@@ -50,39 +50,42 @@ export const RatingGroup = ({ className, color, disabled, disabledToast, id, val
   )
 }
 
-export const ratingGroup = cva('flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]', {
-  defaultVariants: {
-    color: 'default',
-    disabled: false,
-  },
-  variants: {
-    color: {
-      default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
-      primary:
-        'peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground',
-      secondary:
-        'peer-data-[state=checked]:border-secondary peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground',
-    },
-    disabled: {
-      true: 'cursor-default opacity-100',
-      false: 'hover:cursor-pointer',
-    },
-  },
-  compoundVariants: [
-    {
-      disabled: false,
+export const ratingGroup = cva(
+  'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]',
+  {
+    defaultVariants: {
       color: 'default',
-      className: 'hover:bg-muted',
-    },
-    {
       disabled: false,
-      color: 'primary',
-      className: 'hover:border-primary-accent',
     },
-    {
-      disabled: false,
-      color: 'secondary',
-      className: 'hover:border-secondary',
+    variants: {
+      color: {
+        default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
+        primary:
+          'peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground',
+        secondary:
+          'peer-data-[state=checked]:border-secondary peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground',
+      },
+      disabled: {
+        true: 'cursor-default opacity-100',
+        false: 'hover:cursor-pointer',
+      },
     },
-  ],
-})
+    compoundVariants: [
+      {
+        disabled: false,
+        color: 'default',
+        className: 'hover:bg-muted',
+      },
+      {
+        disabled: false,
+        color: 'primary',
+        className: 'hover:border-primary-accent',
+      },
+      {
+        disabled: false,
+        color: 'secondary',
+        className: 'hover:border-secondary',
+      },
+    ],
+  },
+)

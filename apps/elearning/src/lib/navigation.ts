@@ -7,16 +7,24 @@ export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
   searchParams?: Promise<K>
 }
 
+export type Pathname = Route | `${Route}/${string}`
+
+export type RouteSegments<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
+  ? Record<Param | keyof RouteSegments<Rest>, string>
+  : S extends `${infer _}:${infer Param}`
+    ? Record<Param, string>
+    : AnyRecord
+
 export enum Route {
   Home = '/',
   Login = '/login',
   Logout = '/logout',
   PasswordReset = '/password-reset',
-  Modules = '/modules',
-  Module = '/modules/:slug',
+  Courses = '/courses',
+  Course = '/courses/:slug',
   Certificates = '/certificates',
-  Certificate = '/certificates/:id',
-  CertificatesNew = '/certificates/new',
+  Certificate = '/certificates/:n',
+  NewCertificate = '/certificates/new',
   Docs = '/docs',
   DocsIntro = '/docs/intro',
   DocsTutorials = '/docs/tutorials',
@@ -27,21 +35,13 @@ export enum Route {
   About = '/about',
 }
 
-export type Pathname = Route | `${Route}/${string}`
-
-export type RouteSegments<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
-  ? Record<Param | keyof RouteSegments<Rest>, string>
-  : S extends `${infer _}:${infer Param}`
-    ? Record<Param, string>
-    : AnyRecord
-
 export const ExternalUrl = {
   App: metadata.url,
   Website: metadata.website,
 }
 
 /**
- * Generates a URL path from a route appending optional search parameters.
+ * Generates a URL path from a route.
  */
 export const route = <R extends Route>(route: R, params?: Record<string, string>) => {
   const searchParams = new URLSearchParams(params)
@@ -50,15 +50,19 @@ export const route = <R extends Route>(route: R, params?: Record<string, string>
 }
 
 /**
- * Generates a URL path from a dynamic route by replacing the dynamic segments with the provided values and appending optional search parameters.
+ * Generates a URL path from a dynamic route.
  */
-export const dynamicRoute = <R extends Route>(dynamicRoute: R, segments: RouteSegments<R>, params?: Record<string, string>) => {
+export const dynamicRoute = <R extends Route>(
+  dynamicRoute: R,
+  segments: RouteSegments<R>,
+  params?: Record<string, string>,
+) => {
   const path = dynamicRoute.replace(/:([\w-]+)/g, (_, key) => segments[key as keyof RouteSegments<R>] as string)
   return route(path as Route, params)
 }
 
 /**
- * Generates a URL path from an external URL with optional path and search parameters.
+ * Generates a URL path from an external URL.
  */
 export const externalUrl = (
   key: keyof typeof ExternalUrl,

@@ -3,10 +3,10 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
+import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 export const PasswordInput = ({ className, disabled, value, ...props }: InputProps) => {
@@ -22,9 +22,9 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
 
   return (
     <div className="relative">
-      <Input className={cn('hide-password-toggle pr-10', className)} type={inputType} {...props} />
+      <Input className={cn('pr-10', className)} type={inputType} {...props} />
       <Button
-        className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
+        className="absolute top-0 right-0 h-full py-2 hover:bg-transparent has-[>svg]:px-3"
         disabled={disabled}
         onClick={togglePassword}
         size="sm"

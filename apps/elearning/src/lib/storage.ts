@@ -1,79 +1,37 @@
-import { type User } from '@/api/users'
 import { Env } from '@/lib/env'
 
+const DEFAULT_BUCKET = 'assets'
+
 /**
- * Local public assets.
+ * Available remote assets.
+ * Assets are retrieved from the `assets` bucket unless a path is specified.
  */
 export enum Asset {
-  EmailSent = '/email-sent.svg',
-  Error = '/500.svg',
-  Logo = '/logo.svg',
+  AppleIcon = 'meta/apple-touch-icon.png',
+  Favicon96 = 'meta/favicon-96x96.png',
+  OpenGraph = 'meta/open-graph.png',
+  WebManifest192 = 'meta/web-app-manifest-192x192.png',
+  WebManifest512 = 'meta/web-app-manifest-512x512.png',
+  Logo = 'logo.png',
+  Trailer = 'trailer.mp4',
+}
+
+export const asset = (asset: Asset | `${Asset}`) =>
+  `${Env.STORAGE_URL}/${asset.split('/').length === 1 ? `${DEFAULT_BUCKET}/` : '/'}${asset}`
+
+/**
+ * Available public assets.
+ */
+export enum Public {
   Favicon = '/favicon.ico',
   Manifest = '/manifest.webmanifest',
-  NoResults = '/no-results.svg',
-  NotFound = '/404.svg',
-  PasswordForgot = '/password-forgot.svg',
-  Placeholder = '/placeholder.svg',
 }
 
 /**
- * Returns the URL of a remote public asset.
- */
-export const asset = (path: string) => `${Env.STORAGE_URL}/${path}`
-
-/**
- * Application cookie names.
+ * Available application cookies.
  */
 export enum Cookie {
   Locale = 'NEXT_LOCALE',
+  Org = 'GLORE_ORG',
   SidebarOpen = 'GLORE_SIDEBAR_OPEN',
-  CurrentOrg = 'GLORE_CURRENT_ORG',
-}
-
-/**
- * Sets a cookie with the given name, value and options.
- */
-export const setCookie = (
-  cookie: Cookie,
-  value: string | number | boolean,
-  options = {
-    path: '/',
-    maxAge: 60 * 60 * 24 * 30,
-  },
-) => {
-  document.cookie = `${cookie}=${value}; path=${options.path}; max-age=${options.maxAge}`
-}
-
-/**
- * Gets the value of the cookie with the given name.
- */
-export const getCookie = (cookie: Cookie) => {
-  const name = `${cookie}=`
-  const decodedCookie = decodeURIComponent(document.cookie)
-  const cookieArray = decodedCookie.split(';')
-
-  for (const cookie of cookieArray) {
-    let c = cookie
-    while (c.startsWith(' ')) {
-      c = c.substring(1)
-    }
-    if (c.startsWith(name)) {
-      return c.substring(name.length, c.length)
-    }
-  }
-  return ''
-}
-
-/**
- * Application local storage keys.
- */
-export enum LocalStorageItem {
-  User = 'user',
-}
-
-/**
- * Application local storage.
- */
-export interface LocalStorage {
-  [LocalStorageItem.User]: User
 }

@@ -1,10 +1,11 @@
 #!/bin/sh
 
 R="\033[0;31m"
-root=$(git rev-parse --show-toplevel)
 
-SUPABASE_SCHEMAS=auth,public
-SUPABASE_TYPES=supabase/types.ts
+SCHEMA=auth,public
+TYPES=supabase/types.ts
+
+root=$(git rev-parse --show-toplevel)
 
 [ -f "$root/.env" ] && . "$root/.env"
 [ -f .env ] && . .env
@@ -14,6 +15,6 @@ if [ -z "$SUPABASE_PROJECT_ID" ]; then
   exit 1
 fi
 
-if pnpm dlx supabase gen types typescript --project-id="$SUPABASE_PROJECT_ID" --schema=$SUPABASE_SCHEMAS > $SUPABASE_TYPES; then
+if ./node_modules/.bin/supabase gen types typescript --project-id="$SUPABASE_PROJECT_ID" --schema=$SCHEMA > $TYPES; then
   echo "Finished types generation."
 fi

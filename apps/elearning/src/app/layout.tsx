@@ -8,8 +8,8 @@ import { PathnameProvider } from '@/components/providers/pathname-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
-import { generateAppMetadata } from '@/lib/metadata'
-import { getLocale, getTranslations } from '@/services/i18n'
+import { getLocale, getTranslations } from '@/lib/i18n/server'
+import { generateLocalizedMetadata } from '@/lib/metadata'
 import metadata from 'config/metadata.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
@@ -45,6 +45,6 @@ export default async ({ children }: React.PropsWithChildren) => {
   )
 }
 
-export const generateMetadata = generateAppMetadata({
+export const generateMetadata = generateLocalizedMetadata({
   description: 'App.description',
 })

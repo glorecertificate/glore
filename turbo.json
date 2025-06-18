@@ -2,12 +2,13 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalDependencies": ["tsconfig.json"],
-  "globalEnv": ["ANALYZE", "GITHUB_TOKEN", "GH_TOKEN", "NODE_ENV"],
+  "globalEnv": ["GITHUB_TOKEN", "GH_TOKEN", "NODE_ENV"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
       "env": [
+        "ANALYZE",
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
         "POSTGRES_PASSWORD",

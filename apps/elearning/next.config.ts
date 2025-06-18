@@ -9,8 +9,8 @@ import type { PluginConfig as NextIntlConfig } from 'node_modules/next-intl/dist
 import { Env } from '@/lib/env'
 import app from 'config/app.json'
 
-const I18N_CONFIG = './src/middlewares/i18n.ts'
-const MESSAGES_DECLARATION = resolve(`config/translations/${app.defaultLocale}.json`)
+const I18N_MIDDLEWARE = './src/middlewares/i18n.ts'
+const MESSAGE_DECLARATIONS = resolve(`config/translations/${app.defaultLocale}.json`)
 
 const nextConfig: NextConfig = {
   images: {
@@ -26,9 +26,9 @@ const nextConfig: NextConfig = {
 
 const nextIntlConfig: NextIntlConfig = {
   experimental: {
-    createMessagesDeclaration: MESSAGES_DECLARATION,
+    createMessagesDeclaration: MESSAGE_DECLARATIONS,
   },
-  requestConfig: I18N_CONFIG,
+  requestConfig: I18N_MIDDLEWARE,
 }
 
 export default createNextIntlPlugin(nextIntlConfig)(

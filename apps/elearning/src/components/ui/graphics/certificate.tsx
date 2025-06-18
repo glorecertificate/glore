@@ -10,7 +10,7 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
       opacity=".7"
     />
     <g stroke-miterlimit="10">
-      <g opacity=".2" stroke="#000" stroke-linejoin="round">
+      <g opacity=".2" stroke="#000" strokeLinejoin="round">
         <path d="m466.536 31.1094h-190.76l-6.765 16.235h197.525z" />
         <path d="m466.536 47.3442h-190.76l-6.765 16.235h197.525z" />
         <path d="m466.536 63.5791h-190.76l-6.765 16.235h197.525z" />
@@ -29,7 +29,7 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
         <path d="m466.536 274.632h-190.76l-6.765 16.235h197.525z" />
         <path d="m470.594 25.6982h-203.612v270.5808h203.612z" />
       </g>
-      <g opacity=".2" stroke="#000" stroke-linejoin="round">
+      <g opacity=".2" stroke="#000" strokeLinejoin="round">
         <path d="m94.7031 393.871h-68.417v36.106h68.417z" />
         <path d="m66.0492 407.699h-11.11v5.378h11.11z" />
         <path d="m98.2111 346.941h-75.434v92.392h75.434z" />
@@ -39,7 +39,7 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
         <path d="m55.7193 322.966h-4.678v18.128h4.678z" />
         <path d="m77.9401 280.863h-50.29v42.103h50.29z" />
       </g>
-      <g opacity=".2" stroke="#000" stroke-linejoin="round">
+      <g opacity=".2" stroke="#000" strokeLinejoin="round">
         <path d="m377.899 395.591v-46.044-31.16c0-6.134-4.964-11.098-11.098-11.098h-100.569-.854v88.302.77" />
         <path d="m266.232 307.289h-.854-102.461c-6.124 0-11.089 4.964-11.089 11.098v32.904 44.299" />
         <path d="m387.921 402.968v25.963h-122.496v-33.34h115.119c4.074 0 7.377 3.304 7.377 7.377z" />
@@ -119,15 +119,15 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
         d="m119.016 214.114 9.388 24.361 4.54-11.012 11.023 4.489-10.774-22.883z"
         fill="#305271"
         stroke="#305271"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="m115.673 208.814-11.35 23.511 11.139-4.22 4.265 11.112 9.323-23.512z"
         fill="#305271"
         stroke="#305271"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="m143.943 202.886c0-.89 1.927-1.906 1.805-2.763-.125-.878-2.262-1.313-2.506-2.146-.249-.848 1.313-2.367.95-3.159-.366-.801-2.538-.613-3.011-1.348-.476-.739.593-2.638.02-3.299-.575-.662-2.606.127-3.269-.447-.661-.573-.167-2.697-.906-3.172-.734-.473-2.462.855-3.262.489-.792-.362-.917-2.539-1.764-2.787-.833-.244-2.113 1.518-2.991 1.393-.856-.122-1.59-2.175-2.48-2.175s-1.624 2.053-2.481 2.175c-.878.125-2.158-1.638-2.991-1.393-.848.249-.972 2.425-1.764 2.788-.801.366-2.528-.962-3.262-.489-.739.476-.244 2.599-.906 3.172-.662.574-2.694-.215-3.268.447-.573.661.496 2.56.02 3.299-.473.734-2.645.547-3.011 1.348-.362.792 1.199 2.311.951 3.158-.244.833-2.381 1.268-2.506 2.146-.122.856 1.805 1.872 1.805 2.762s-1.927 1.907-1.805 2.763c.125.878 2.262 1.313 2.506 2.146.249.848-1.313 2.367-.95 3.159.366.801 2.538.613 3.011 1.347.476.739-.593 2.638-.02 3.299.575.662 2.606-.127 3.269.447.661.573.167 2.697.906 3.172.734.473 2.462-.855 3.262-.489.792.362.917 2.539 1.764 2.787.833.244 2.113-1.518 2.991-1.393.856.122 1.59 2.175 2.48 2.175s1.624-2.053 2.481-2.175c.878-.125 2.158 1.637 2.991 1.393.848-.248.973-2.425 1.765-2.788.801-.366 2.528.962 3.262.489.739-.476.244-2.599.906-3.172.662-.574 2.694.215 3.269-.447.573-.661-.496-2.56-.02-3.299.473-.734 2.645-.547 3.011-1.348.362-.792-1.199-2.311-.951-3.159.244-.833 2.381-1.268 2.506-2.146.12-.853-1.807-1.87-1.807-2.76z"
@@ -138,8 +138,8 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
         d="m126.53 214.95c6.663 0 12.064-5.401 12.064-12.064s-5.401-12.064-12.064-12.064-12.064 5.401-12.064 12.064 5.401 12.064 12.064 12.064z"
         fill="#305271"
         stroke="#305271"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </g>
     <path
@@ -161,16 +161,16 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
       d="m260.166 270.336c-.018 7.622-4.077 13.791-9.066 13.779s-9.018-6.2-9-13.822 4.077-13.791 9.066-13.779c4.988.012 9.018 6.2 9 13.822z"
       fill="#fff"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m262.493 235.794s-4.871 2.783-9.51-.232-1.392-4.407-.464-6.263c.928-1.855-1.392-2.319-1.855-4.871-.464-2.551 1.16-4.639 2.087-4.871.928-.232.696-2.783.696-5.335 0-2.551 3.015-4.871 4.407-4.871s2.319-1.856 3.247-4.175 2.783-4.407 6.031-3.015c3.247 1.392 4.871 1.392 6.494-.928 1.624-2.319 5.567-2.783 6.958-1.624 1.392 1.16 2.088 3.479 4.871 1.16s6.262-1.855 7.886-.232c1.624 1.624 1.392 3.479 3.943 2.551s6.726.464 7.654 3.247 6.031 5.799 7.886 5.103c1.856-.696 5.103 0 3.479 3.479s.232 5.799 1.624 5.799 4.407.928 2.783 3.943-2.783 5.335-.928 6.263 4.871 1.16 2.551 5.103-4.175 3.711-3.479 6.031c.696 2.319 2.087 3.015 0 4.639s-4.639 2.32-4.639 3.711c0 1.392 2.783 2.087-.464 3.247s-5.799 1.392-5.799 1.392-4.639-12.525-17.86-16.7-20.875-3.711-23.89-2.087c-3.013 1.624-3.709-.464-3.709-.464z"
       fill="#305271"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
@@ -199,29 +199,29 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
       d="m307.69 261.642s-.398-13.924-5.569-21.88c-5.172-7.956-16.072-12.836-28.245-10.741-15.094 2.598-21.88 13.923-24.267 23.471s.398 23.471.398 33.018 11.139 26.653 14.321 29.438 8.095 3.712 13.705.867c5.15-2.612 13.616-11.529 18.788-16.7 5.172-5.172 8.25-20.542 9.046-24.122s1.823-13.351 1.823-13.351z"
       fill="#db9c7f"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m265.509 288.678s-.464 3.015 6.494 2.551"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m263.421 296.564s8.118 5.567 16.236.232"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m279.657 278.009s2.087-3.479 8.118-.464"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
       strokeWidth="2"
     />
@@ -232,23 +232,23 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
     <path
       d="m255.999 266.411s2.087-4.639 9.046-2.319"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m276.642 265.947s6.495-3.479 13.685 1.856"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
       d="m273.876 229.021c-15.094 2.598-21.88 13.923-24.267 23.471-.497 1.987-.76 4.17-.881 6.458.785-2.434 4.833-13.094 16.316-15.965 12.989-3.247 24.354.928 28.297 6.495s3.015 12.757 4.407 16.236c.882 2.206 5.306 5.529 8.427 7.667.729-4.27 1.515-11.74 1.515-11.74s-.398-13.923-5.569-21.88c-5.172-7.957-16.072-12.837-28.245-10.742z"
       fill="#305271"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path
@@ -261,8 +261,8 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
       d="m313.128 276.149c-1.4 7.492-6.51 12.823-11.414 11.907s-7.745-7.733-6.345-15.225 6.51-12.823 11.414-11.907 7.744 7.732 6.345 15.225z"
       fill="#fff"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       stroke-miterlimit="10"
     />
     <path

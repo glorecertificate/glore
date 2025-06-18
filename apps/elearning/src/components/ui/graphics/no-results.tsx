@@ -27,8 +27,8 @@ export const NoResults = (props: React.SVGProps<SVGSVGElement>) => (
     <path
       d="m608.3 429.2c-9.27 8.72-22.14 19.85-25.61 22-4.77 2.93-52.55-13.25-80.41-23.9-14.36-3.77-26.36-10.94-17.93-19.35s15.06-2.41 24.65 5.05c-.5.25 54.92 14.18 61 12.17 3.26-2.22 16.82-18 16.82-18"
       stroke="#305271"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       strokeWidth="3"
     />
     <path
@@ -59,8 +59,8 @@ export const NoResults = (props: React.SVGProps<SVGSVGElement>) => (
       d="m513.54 516.73s31.24 9 53.14 8.92 41.47-5.2 62.78-11.62c1-16.34 1.88-106.27-1.66-138.46-.85-7.71-10.17-11.58-17.51-14.11s-16.38-5.14-22.38-5.1c-6.38 7.4-20 7.73-24.14 7.73s-13.62-1.35-17.72-6.72c-6.385 1.582-12.67 3.545-18.82 5.88-6.4 2.5-5.72 35.27-8.2 41.83.44 20.53-5.49 111.65-5.49 111.65z"
       fill="#adc964"
     />
-    <path d="m551.35 298.78-5.41-.66" stroke="#305271" stroke-linecap="round" stroke-linejoin="round" strokeWidth="3" />
-    <path d="m551.48 303.18-5.41-.66" stroke="#305271" stroke-linecap="round" stroke-linejoin="round" strokeWidth="3" />
+    <path d="m551.35 298.78-5.41-.66" stroke="#305271" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+    <path d="m551.48 303.18-5.41-.66" stroke="#305271" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
     <path
       d="m506.35 368c-2.92-9.23-9.76-38.36-8.58-43.85s25.36-22 62.81-34.87c13.8-5.5 27.71-6.86 25.93 4.91s-12.31 11.7-22.89 10.58c.26-.5-35.57 22.4-38.31 28.18-.65 3.89 7.86 13 8.3 16.33"
       fill="#ffbe9d"

@@ -6,7 +6,7 @@ import { type Course } from '@/api/modules/courses/types'
 import { type UserOrganization } from '@/api/modules/organizations/types'
 import { type CurrentUser } from '@/api/modules/users/types'
 
-interface SessionContext {
+export interface SessionContext {
   courses: Course[]
   user: CurrentUser
   organization?: UserOrganization

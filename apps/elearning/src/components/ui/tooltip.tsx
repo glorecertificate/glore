@@ -18,15 +18,11 @@ const TooltipTrigger = ({ ...props }: React.ComponentProps<typeof TooltipPrimiti
   <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 )
 
-const TooltipContent = ({
-  arrow = true,
-  children,
-  className,
-  sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Content> & {
+export interface TooltipContentProps extends React.ComponentProps<typeof TooltipPrimitive.Content> {
   arrow?: boolean
-}) => (
+}
+
+const TooltipContent = ({ arrow = true, children, className, sideOffset = 4, ...props }: TooltipContentProps) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       className={cn(

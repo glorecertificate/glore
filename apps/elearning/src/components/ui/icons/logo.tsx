@@ -6,7 +6,7 @@ export const Logo = ({ className, height, width, ...props }: React.SVGProps<SVGS
 
   return (
     <svg
-      className={cn('fill-foreground', className)}
+      className={cn('h-auto fill-foreground', className)}
       fill="none"
       height={inlineHeight}
       viewBox="0 0 1176 372"

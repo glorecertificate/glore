@@ -23,13 +23,12 @@ export default ({ children }: React.PropsWithChildren) => (
         <div className="w-full max-w-md">{children}</div>
       </div>
       <div className="flex justify-end">
-        <ThemeSwitch className="text-sm" />
+        <ThemeSwitch className="text-sm" tooltip={{ arrow: false, side: 'top' }} />
       </div>
     </div>
     <div className="relative col-span-7 hidden bg-muted lg:block">
       <div className="absolute inset-0 z-1 bg-gradient-to-br from-black/40 to-black/20 dark:from-black/20 dark:to-black/10" />
       <Video autoPlay className="absolute inset-0 h-full" controls={false} loop muted src={asset('trailer.mp4')} />
-      {/* <Placeholder className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" /> */}
     </div>
   </div>
 )

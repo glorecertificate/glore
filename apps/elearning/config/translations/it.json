@@ -63,7 +63,7 @@
     "forgotPassword": "Password dimenticata?",
     "loggingIn": "Accesso in corso",
     "login": "Accedi",
-    "loginSubtitle": "Inserisci il tuo username o la tua mail per accedere all'account",
+    "loginSubtitle": "Inserisci il tuo username o la tua mail per accedere",
     "loginTitle": "Accedi al tuo account GloRe",
     "networkError": "Si è verificato un errore di connessione, per favore riprova",
     "passwordInvalid": "Password non valida",

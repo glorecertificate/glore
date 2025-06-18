@@ -1,9 +1,11 @@
+'use client'
+
 import { useMemo } from 'react'
 
 import { MonitorSmartphoneIcon, MoonStarIcon, SunIcon, type LucideIcon } from 'lucide-react'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
 import { useTheme } from '@/hooks/use-theme'
 import { useTranslations } from '@/hooks/use-translations'
 import { type MessageKey } from '@/lib/i18n/types'
@@ -37,12 +39,13 @@ const ThemeSwitchButton = ({
   children,
   className,
   icon: Icon,
+  title,
   tooltip,
   ...props
 }: ButtonProps & {
   active: boolean
   icon: LucideIcon
-  tooltip?: string
+  tooltip?: boolean | TooltipContentProps
 }) => {
   const BaseButton = useMemo(
     () => (
@@ -54,6 +57,7 @@ const ThemeSwitchButton = ({
         )}
         data-orientation="horizontal"
         role="tab"
+        title={title}
         variant="ghost"
         {...props}
       >
@@ -63,15 +67,15 @@ const ThemeSwitchButton = ({
         </div>
       </Button>
     ),
-    [active, children, className, Icon, props],
+    [active, children, className, Icon, props, title],
   )
+
+  const contentProps = useMemo(() => (typeof tooltip === 'object' ? tooltip : {}), [tooltip])
 
   return tooltip ? (
     <Tooltip>
       <TooltipTrigger asChild>{BaseButton}</TooltipTrigger>
-      <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
-        {tooltip}
-      </TooltipContent>
+      <TooltipContent {...contentProps}>{title}</TooltipContent>
     </Tooltip>
   ) : (
     BaseButton
@@ -80,10 +84,10 @@ const ThemeSwitchButton = ({
 
 export const ThemeSwitch = ({
   className,
-  tooltips,
+  tooltip,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  tooltips?: boolean
+  tooltip?: boolean | TooltipContentProps
 }) => {
   const t = useTranslations()
   const { setTheme, theme } = useTheme()
@@ -101,8 +105,8 @@ export const ThemeSwitch = ({
           icon={icon}
           key={name}
           onClick={() => setTheme(name)}
-          title={tooltips ? undefined : t(titleKey)}
-          tooltip={tooltips ? t(titleKey) : undefined}
+          title={t(titleKey)}
+          tooltip={tooltip}
         >
           {name.toLowerCase()}
         </ThemeSwitchButton>

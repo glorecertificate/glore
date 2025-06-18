@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 import { api } from '@/api/client'
 import { AppHeader } from '@/components/layout/app-header'
@@ -10,25 +10,27 @@ import { SessionProvider } from '@/components/providers/session-provider'
 import { SyncStateProvider } from '@/components/providers/sync-state-provider'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const { get } = await cookies()
-  const organizationCookie = get(Cookie.Org)?.value
-  const sidebarOpenCookie = get(Cookie.SidebarOpen)?.value
 
   const user = await api.users.getCurrent()
-  const courses = await api.courses.list()
-  if (!user) notFound()
+  if (!user) redirect(Route.Login)
 
-  const sidebarOpen = sidebarOpenCookie === 'true'
+  const courses = await api.courses.list()
+
+  const organizationCookie = get(Cookie.Org)?.value
   const organization = organizationCookie
     ? user.organizations.find(({ handle }) => handle === organizationCookie)
     : user.organizations[0]
 
+  const sidebarOpen = get(Cookie.SidebarOpen)?.value === 'true'
+
   return (
-    <SyncStateProvider>
-      <SessionProvider courses={courses} organization={organization} user={user}>
+    <SessionProvider courses={courses} organization={organization} user={user}>
+      <SyncStateProvider>
         <SidebarProvider defaultOpen={sidebarOpen}>
           <HeaderProvider>
             <RouteListener />
@@ -40,7 +42,7 @@ export default async ({ children }: React.PropsWithChildren) => {
             </SidebarInset>
           </HeaderProvider>
         </SidebarProvider>
-      </SessionProvider>
-    </SyncStateProvider>
+      </SyncStateProvider>
+    </SessionProvider>
   )
 }

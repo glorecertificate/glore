@@ -50,6 +50,10 @@
     },
     "check": {
       "dependsOn": ["^check"]
+    },
+    "analyze": {
+      "dependsOn": ["^analyze"],
+      "env": ["ANALYZE"]
     }
   }
 }

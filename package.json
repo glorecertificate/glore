@@ -23,6 +23,7 @@
     "check": "pnpm root#check && turbo run check",
     "deploy": "pnpm check && vercel build && vercel --prebuilt",
     "deploy:prod": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
+    "analyze": "turbo run analyze",
     "bump": "pnpm upgrade --latest --recursive",
     "release": "dotenv release-it -- --config release-it.config.ts",
     "root#type-check": "tsc --noEmit",

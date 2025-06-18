@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { motion, type AnimationProps, type Variants } from 'framer-motion'
+import { motion, type MotionNodeAnimationOptions, type Variants } from 'framer-motion'
 
 import { NotFoundGraphic } from '@/components/ui/graphics/not-found'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
@@ -24,7 +24,7 @@ const variants: Variants = {
       duration: 0.5,
     },
   },
-} satisfies AnimationProps
+} satisfies MotionNodeAnimationOptions
 
 export interface ErrorProps {
   error: { digest?: string } & Error

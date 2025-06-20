@@ -28,7 +28,14 @@ export default ({ children }: React.PropsWithChildren) => (
     </div>
     <div className="relative col-span-7 hidden bg-muted lg:block">
       <div className="absolute inset-0 z-1 bg-gradient-to-br from-black/40 to-black/20 dark:from-black/20 dark:to-black/10" />
-      <Video autoPlay className="absolute inset-0 h-full" controls={false} loop muted src={asset('trailer.mp4')} />
+      <Video
+        autoPlay
+        className="absolute inset-0 h-full"
+        controls={false}
+        loop
+        muted
+        src={asset('assets/trailer.mp4')}
+      />
     </div>
   </div>
 )

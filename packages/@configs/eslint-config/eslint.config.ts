@@ -6,8 +6,5 @@ export default eslintConfig({
   maxLines: -1,
   newlineAfterImport: true,
   sortObjectKeys: false,
-  tsconfig: {
-    rootDir: __dirname,
-  },
   typecheck: false,
 })

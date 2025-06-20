@@ -1,6 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 commitlint --from origin/main --to HEAD --verbose
-pnpm run typegen
 pnpm run build
 pnpm run check

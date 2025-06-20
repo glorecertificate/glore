@@ -39,7 +39,7 @@ import { useSyncState } from '@/hooks/use-sync-state'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import app from 'config/app.json'
+import config from 'static/config.json'
 
 export const CourseFlow = ({ courseId }: { courseId: number }) => {
   const { setBreadcrumb, setHeaderShadow } = useHeader()
@@ -295,7 +295,7 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
     () =>
       completedCoursesCount < 3
         ? t('Courses.completedMessage')
-        : completedCoursesCount === app.minSkills
+        : completedCoursesCount === config.minSkills
           ? t('Courses.completedRequestCertificate')
           : t('Courses.completeIncludeInCertificate'),
     [completedCoursesCount, t],
@@ -523,12 +523,12 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
                               <Link href={Route.Courses}>{t('Courses.backTo')}</Link>
                             </Button>
                           )}
-                          {completedCoursesCount === app.minSkills && (
+                          {completedCoursesCount === config.minSkills && (
                             <Button asChild color="primary">
                               <Link href={Route.NewCertificate}>{t('Courses.requestCertificate')}</Link>
                             </Button>
                           )}
-                          {completedCoursesCount > app.minSkills && (
+                          {completedCoursesCount > config.minSkills && (
                             <Button asChild variant="outline">
                               <Link href={Route.Certificates}>{t('Courses.goToCertificate')}</Link>
                             </Button>

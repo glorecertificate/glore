@@ -1,6 +1,6 @@
 import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 
-import metadata from 'config/metadata.json'
+import metadata from 'static/metadata.json'
 
 export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
   params?: Promise<RouteSegments<R>>
@@ -33,6 +33,11 @@ export enum Route {
   Settings = '/settings',
   Help = '/help',
   About = '/about',
+}
+
+export enum AuthPage {
+  Login = Route.Login,
+  PasswordReset = Route.PasswordReset,
 }
 
 export const ExternalUrl = {

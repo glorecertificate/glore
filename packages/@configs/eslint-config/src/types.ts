@@ -140,14 +140,11 @@ export interface SortImportsOptions {
    */
   newlinesBetweenGroups?: 'always' | 'never' | 'ignore'
   /**
-   * Specifies the directory of the root `tsconfig.json` file.
+   * Specifies the path to the TypeScript configuration file.
    *
-   * @default { rootDir: ".", filename: "tsconfig.json" }
+   * @default "./tsconfig.json"
    */
-  tsconfig?: {
-    rootDir: string
-    filename?: string
-  }
+  tsconfig?: string
 }
 
 export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOptions {

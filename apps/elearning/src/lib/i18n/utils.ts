@@ -1,10 +1,10 @@
 import { type AnyRecord, type Json, type Primitive } from '@repo/utils'
 
-import app from 'config/app.json'
+import config from 'static/config.json'
 
 import { type IntlJson, type Locale, type Localized } from './types'
 
-export const LOCALES = Object.keys(app.locales) as Locale[]
+export const LOCALES = Object.keys(config.locales) as Locale[]
 
 export const localizeJson = <T extends Json>(data: T, locale: Locale): string => {
   if (typeof data !== 'object' || data === null) return String(data)

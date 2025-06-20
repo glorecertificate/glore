@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge'
 import { type Json } from '@repo/utils'
 
 import { type Locale } from '@/lib/i18n/types'
-import app from 'config/app.json'
+import config from 'static/config.json'
 
 /**
  * Merges and applies class values conditionally.
@@ -24,5 +24,5 @@ export const localizeJson = (value: Json, locale: Locale): string => {
   if (typeof value === 'string') return value
   // eslint-disable-next-line @typescript-eslint/no-base-to-string
   if (typeof value !== 'object' || value === null || Array.isArray(value)) return String(value)
-  return typeof value[locale] === 'string' ? value[locale] : (value[app.defaultLocale] as string) || ''
+  return typeof value[locale] === 'string' ? value[locale] : (value[config.defaultLocale] as string) || ''
 }

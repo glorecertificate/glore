@@ -32,7 +32,7 @@
   },
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
+  "i18n-ally.localesPaths": ["./apps/elearning/static/translations"],
   "prettier.ignorePath": "",
   "search.useIgnoreFiles": true,
   "search.useGlobalIgnoreFiles": true,

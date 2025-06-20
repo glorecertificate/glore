@@ -50,7 +50,7 @@ const LoginFormFooter = () => {
         <DialogHeader>
           <DialogTitle className="mb-2 flex items-center gap-2 font-medium">
             {t('Auth.signupDialogTitle')}
-            <Image src={asset('logo.png')} width={24} />
+            <Image src={asset('assets/logo.png')} width={24} />
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">

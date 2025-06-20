@@ -1,12 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 import { createDatabaseClient } from '@/lib/db/server'
-import { Route } from '@/lib/navigation'
-
-export enum AuthPage {
-  Login = Route.Login,
-  PasswordReset = Route.PasswordReset,
-}
+import { AuthPage, Route } from '@/lib/navigation'
 
 export const updateSession = async (request: NextRequest) => {
   try {

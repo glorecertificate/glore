@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "prepare": "sh bin/prepare",
-    "build": "next build",
+    "build": "sh bin/typegen && next build",
     "start": "next start",
     "dev": "next dev --turbo",
     "typegen": "sh bin/typegen",

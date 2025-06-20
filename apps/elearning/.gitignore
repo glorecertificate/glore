@@ -1,8 +1,9 @@
 /.next/
-/.vercel/
-/config/translations/*.d.json.ts
+/static/translations/*.d.json.ts
 /node_modules/
-/supabase/
+/supabase/.branches/
+/supabase/.temp/
+/supabase/types.ts
 /*.d.ts
 .env*
 !.env.example

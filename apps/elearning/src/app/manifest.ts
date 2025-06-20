@@ -1,7 +1,7 @@
 import { type MetadataRoute } from 'next'
 
 import { asset } from '@/lib/storage'
-import metadata from 'config/metadata.json'
+import metadata from 'static/metadata.json'
 
 export default () =>
   ({
@@ -16,13 +16,13 @@ export default () =>
       {
         purpose: 'maskable',
         sizes: '192x192',
-        src: asset('meta/web-app-manifest-192x192.png'),
+        src: asset('metadata/web-app-manifest-192x192.png'),
         type: 'image/png',
       },
       {
         purpose: 'maskable',
         sizes: '512x512',
-        src: asset('meta/web-app-manifest-512x512.png'),
+        src: asset('metadata/web-app-manifest-512x512.png'),
         type: 'image/png',
       },
     ],

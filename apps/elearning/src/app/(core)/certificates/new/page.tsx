@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
-import app from 'config/app.json'
+import config from 'static/config.json'
 
 export default () => {
   const t = useTranslations('Certificates')
@@ -18,18 +18,21 @@ export default () => {
     () => user.certificates?.find(certificate => certificate.organization.id === organization?.id),
     [user.certificates, organization?.id],
   )
-  const hasEnoughCourses = useMemo(() => courses.filter(course => course.completed).length >= app.minSkills, [courses])
+  const hasEnoughCourses = useMemo(
+    () => courses.filter(course => course.completed).length >= config.minSkills,
+    [courses],
+  )
   const validCourses = useMemo(
     () =>
       courses.filter(course =>
         course.lessons?.find(
-          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= app.minSkillRating,
+          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.minSkillRating,
         ),
       ),
     [courses],
   )
   const canRequestCertificate = useMemo(
-    () => hasEnoughCourses && validCourses.length >= app.minSkills,
+    () => hasEnoughCourses && validCourses.length >= config.minSkills,
     [hasEnoughCourses, validCourses],
   )
 

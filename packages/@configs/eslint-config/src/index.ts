@@ -97,10 +97,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
     sortObjectKeys = true,
     sortProps = true,
     tailwind,
-    tsconfig = {
-      rootDir: '.',
-      filename: 'tsconfig.json',
-    },
+    tsconfig = './tsconfig.json',
     turbo = true,
     typecheck = true,
   } = options || {}
@@ -112,6 +109,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
   const hasNextJs = typeof react === 'string' && react === 'nextjs'
   const { allowedClasses, ...tailwindConfig } = tailwind || {}
   const allowedTailwindClasses = [...(allowedClasses ?? []), '^group(?:\\/(\\S*))?$', '^peer(?:\\/(\\S*))?$']
+  const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
 
   if (preferArrow) plugins['prefer-arrow-functions'] = (await import('eslint-plugin-prefer-arrow-functions')).default
   if (prettier) plugins.prettier = (await import('eslint-plugin-prettier')).default
@@ -345,7 +343,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                     jsx: !!react,
                   },
                   projectService: true,
-                  tsconfigRootDir: '.',
+                  tsconfigRootDir: tsconfigDir,
                 },
               },
               settings: {

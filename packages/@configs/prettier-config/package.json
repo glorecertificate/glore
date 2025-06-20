@@ -19,7 +19,7 @@
   "prettier": "./build/index.cjs",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "watch": "tsup --watch",
     "type-check": "tsc --noEmit && tsup --silent",
     "lint": "prettier --check .",
     "format": "prettier --write .",

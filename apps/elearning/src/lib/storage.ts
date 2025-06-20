@@ -1,26 +1,23 @@
 import { Env } from '@/lib/env'
 
-const DEFAULT_BUCKET = 'assets'
-
 /**
- * Available remote assets.
- * Assets are retrieved from the `assets` bucket unless a path is specified.
+ * Application cookie names.
  */
-export enum Asset {
-  AppleIcon = 'meta/apple-touch-icon.png',
-  Favicon96 = 'meta/favicon-96x96.png',
-  OpenGraph = 'meta/open-graph.png',
-  WebManifest192 = 'meta/web-app-manifest-192x192.png',
-  WebManifest512 = 'meta/web-app-manifest-512x512.png',
-  Logo = 'logo.png',
-  Trailer = 'trailer.mp4',
+export enum Cookie {
+  Locale = 'NEXT_LOCALE',
+  Org = 'glore.current-org',
+  SidebarOpen = 'glore.sidebar-state',
 }
 
-export const asset = (asset: Asset | `${Asset}`) =>
-  `${Env.STORAGE_URL}/${asset.split('/').length === 1 ? `${DEFAULT_BUCKET}/` : '/'}${asset}`
+/**
+ * Application local storage keys.
+ */
+export enum LocalStorage {
+  DevWidgetPosition = 'glore.dev-widget',
+}
 
 /**
- * Available public assets.
+ * Public assets used in the application.
  */
 export enum Public {
   Favicon = '/favicon.ico',
@@ -28,10 +25,19 @@ export enum Public {
 }
 
 /**
- * Available application cookies.
+ * Paths to remote assets relative to the main storage URL.
  */
-export enum Cookie {
-  Locale = 'NEXT_LOCALE',
-  Org = 'GLORE_ORG',
-  SidebarOpen = 'GLORE_SIDEBAR_OPEN',
+export enum Asset {
+  Logo = 'assets/logo.png',
+  Trailer = 'assets/trailer.mp4',
+  AppleIcon = 'metadata/apple-touch-icon.png',
+  Favicon96 = 'metadata/favicon-96x96.png',
+  OpenGraph = 'metadata/open-graph.png',
+  WebManifest192 = 'metadata/web-app-manifest-192x192.png',
+  WebManifest512 = 'metadata/web-app-manifest-512x512.png',
 }
+
+/**
+ * Generates a URL for an asset based on the environment's storage.
+ */
+export const asset = (asset: Asset | `${Asset}`) => `${Env.STORAGE_URL}/${asset}`

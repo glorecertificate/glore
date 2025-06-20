@@ -12,7 +12,7 @@ import { useDevice } from '@/hooks/use-device'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import metadata from 'config/metadata.json'
+import metadata from 'static/metadata.json'
 
 const variants: Variants = {
   initial: { opacity: 0, y: 20 },

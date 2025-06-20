@@ -1,4 +1,5 @@
 import { builtinModules } from 'node:module'
+import { basename } from 'node:path'
 
 import type {
   FileOptions,
@@ -141,7 +142,7 @@ export const sortImportsOptions = (options: SortImportsOptions = {}) => {
     importGroups: groups = [],
     internalImports = [],
     newlinesBetweenGroups: newlinesBetween = 'always',
-    tsconfig,
+    tsconfig = './tsconfig.json',
   } = options
 
   const customGroups =
@@ -167,12 +168,18 @@ export const sortImportsOptions = (options: SortImportsOptions = {}) => {
 
   const internalPattern = internalImports.map(pattern => `^${pattern.replace(/\*/g, '.*')}/?.*`)
 
+  const rootDir = tsconfig.split('/').slice(0, -1).join('/')
+  const filename = basename(tsconfig)
+
   return {
     customGroups,
     groups,
     internalPattern,
     newlinesBetween,
-    tsconfig,
+    tsconfig: {
+      rootDir,
+      filename,
+    },
   }
 }
 

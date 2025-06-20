@@ -10,7 +10,7 @@ import { Link } from '@/components/ui/link'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
-import app from 'config/app.json'
+import config from 'static/config.json'
 
 export const CertificateView = () => {
   const t = useTranslations('Certificates')
@@ -21,18 +21,21 @@ export const CertificateView = () => {
     [user.certificates, organization?.id],
   )
 
-  const hasEnoughCourses = useMemo(() => courses.filter(course => course.completed).length >= app.minSkills, [courses])
+  const hasEnoughCourses = useMemo(
+    () => courses.filter(course => course.completed).length >= config.minSkills,
+    [courses],
+  )
   const validCourses = useMemo(
     () =>
       courses.filter(course =>
         course.lessons?.find(
-          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= app.minSkillRating,
+          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.minSkillRating,
         ),
       ),
     [courses],
   )
   const canRequestCertificate = useMemo(
-    () => hasEnoughCourses && validCourses.length >= app.minSkills,
+    () => hasEnoughCourses && validCourses.length >= config.minSkills,
     [hasEnoughCourses, validCourses],
   )
 
@@ -59,8 +62,8 @@ export const CertificateView = () => {
       canRequestCertificate
         ? t('requestCertificateMessage')
         : hasEnoughCourses
-          ? t('invalidCoursesMessage', { rating: String(app.minSkillRating) })
-          : t('missingCoursesMessage', { count: String(app.minSkills) }),
+          ? t('invalidCoursesMessage', { rating: String(config.minSkillRating) })
+          : t('missingCoursesMessage', { count: String(config.minSkills) }),
     [canRequestCertificate, hasEnoughCourses, t],
   )
   const noCertificateLabel = useMemo(

@@ -3,8 +3,8 @@ import { type Metadata, type ResolvingMetadata } from 'next'
 import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
 import { asset, Public } from '@/lib/storage'
-import app from 'config/app.json'
-import metadata from 'config/metadata.json'
+import config from 'static/config.json'
+import metadata from 'static/metadata.json'
 
 export interface PageMetadata {
   description?: string
@@ -27,7 +27,7 @@ const METADATA: Metadata = {
   manifest: Public.Manifest,
   robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
   openGraph: {
-    alternateLocale: app.defaultLocale,
+    alternateLocale: config.defaultLocale,
     countryName: metadata.country,
     emails: metadata.email,
     images: metadata.image,
@@ -41,20 +41,20 @@ const METADATA: Metadata = {
     {
       sizes: '96x96',
       type: 'image/png',
-      url: asset('meta/favicon-96x96.png'),
+      url: asset('metadata/favicon-96x96.png'),
     },
     {
       type: 'image/svg+xml',
-      url: asset('logo.png'),
+      url: asset('assets/logo.png'),
     },
     {
       rel: 'shortcut icon',
       url: Public.Favicon,
     },
     {
-      rel: 'apple-touch-icon',
+      rel: 'configle-touch-icon',
       sizes: '180x180',
-      url: asset('meta/apple-touch-icon.png'),
+      url: asset('metadata/apple-touch-icon.png'),
     },
   ],
   appleWebApp: {

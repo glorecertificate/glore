@@ -1,4 +1,9 @@
 /**
+ * Utility to use the any type and avoid linter warnings.
+ */
+export type Any = any
+
+/**
  * Type or array of type.
  */
 export type OrArray<T> = T | T[]

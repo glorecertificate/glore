@@ -13,7 +13,7 @@
   "prettier": "@repo/prettier-config",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "watch": "tsup --watch",
     "type-check": "tsc --noEmit && tsup --silent",
     "lint": "prettier --check .",
     "format": "prettier --write .",

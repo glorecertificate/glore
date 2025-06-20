@@ -13,7 +13,7 @@ export enum Cookie {
  * Application local storage keys.
  */
 export enum LocalStorage {
-  DevWidgetPosition = 'glore.dev-widget',
+  SupabaseWidgetPosition = 'glore.supabase-widget',
 }
 
 /**

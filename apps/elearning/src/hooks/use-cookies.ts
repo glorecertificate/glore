@@ -17,7 +17,7 @@ export const useCookies = () => {
     [],
   )
 
-  const readCookie = useCallback((cookie: Cookie) => {
+  const readCookie = useCallback((cookie: Cookie | `${Cookie}`) => {
     const name = `${cookie}=`
     const decodedCookie = decodeURIComponent(document.cookie)
     const cookieArray = decodedCookie.split(';')

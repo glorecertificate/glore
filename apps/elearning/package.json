@@ -6,7 +6,7 @@
     "prepare": "sh bin/prepare",
     "build": "sh bin/typegen && next build",
     "start": "next start",
-    "dev": "next dev --turbo",
+    "dev": "sh bin/dev",
     "typegen": "sh bin/typegen",
     "type-check": "tsc --noEmit",
     "lint": "eslint . && prettier --check . && shellcheck bin/*",

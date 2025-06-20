@@ -13,21 +13,19 @@ import { usePathname } from '@/hooks/use-pathname'
 import { type Pathname } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
-export interface LinkProps<T extends boolean = false>
+export interface LinkProps<T extends Pathname | HTTPUrl = Pathname>
   extends React.PropsWithChildren<NextLinkProps>,
     VariantProps<typeof link> {
   className?: string
-  external?: T
-  hideProgress?: T extends true ? never : boolean
-  href: T extends true ? HTTPUrl : Pathname
-  target?: T extends true ? React.HTMLAttributeAnchorTarget : undefined
+  hideProgress?: T extends Pathname ? boolean : never
+  href: T
+  target?: T extends Pathname ? undefined : React.HTMLAttributeAnchorTarget
   title?: string
 }
 
-export const Link = <T extends boolean = false>({
+export const Link = <T extends Pathname | HTTPUrl>({
   className,
   color,
-  external,
   hideProgress,
   href,
   onClick,
@@ -40,6 +38,7 @@ export const Link = <T extends boolean = false>({
   const router = useRouter()
 
   const styles = useMemo(() => cn(link({ color, variant }), className), [className, color, variant])
+  const external = useMemo(() => !href.startsWith('/') && !href.startsWith('#'), [href])
   const hasProgress = useMemo(() => !external && !hideProgress, [external, hideProgress])
 
   const handleInternalClick = useCallback(

@@ -57,6 +57,7 @@ const ThemeSwitchButton = ({
         )}
         data-orientation="horizontal"
         role="tab"
+        suppressHydrationWarning
         title={title}
         variant="ghost"
         {...props}

@@ -40,7 +40,7 @@ export interface ErrorViewProps {
 }
 
 export const ErrorView = ({ actions, hasHeader, message, title, type = 'error' }: ErrorViewProps) => {
-  const t = useTranslations('Common')
+  const t = useTranslations()
   const { isMobile } = useDevice()
 
   const ErrorImage = useMemo(
@@ -56,8 +56,8 @@ export const ErrorView = ({ actions, hasHeader, message, title, type = 'error' }
     () =>
       message ||
       (type === 'not-found'
-        ? t('notFoundMessage')
-        : t.rich('errorMessage', {
+        ? t('Common.notFoundMessage')
+        : t.rich('Common.errorMessage', {
             contactUs: content => (
               <a className="text-primary underline" href={`mailto:${metadata.email}`}>
                 {content}
@@ -66,13 +66,16 @@ export const ErrorView = ({ actions, hasHeader, message, title, type = 'error' }
           })),
     [message, t, type],
   )
-  const errorTitle = useMemo(() => title || (type === 'not-found' ? t('notFound') : t('errorTitle')), [t, title, type])
+  const errorTitle = useMemo(
+    () => title || (type === 'not-found' ? t('Common.notFound') : t('Common.errorTitle')),
+    [t, title, type],
+  )
 
   return (
     <>
       {hasHeader && (
         <header className="flex h-16 w-full items-center justify-center px-4">
-          <Link href={Route.Home} title={t('backToHome')}>
+          <Link href={Route.Home} title={t('Common.backToHome')}>
             <Logo className="mt-8 h-10" />
           </Link>
         </header>

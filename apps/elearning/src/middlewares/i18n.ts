@@ -8,7 +8,7 @@ export default getRequestConfig(async () => {
   const locale = await getLocale()
 
   const messages = (
-    (await import(`../../config/translations/${locale}.json`)) as {
+    (await import(`../../static/translations/${locale}.json`)) as {
       default: AnyRecord
     }
   ).default

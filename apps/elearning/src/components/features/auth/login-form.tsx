@@ -27,7 +27,7 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { useTranslations } from '@/hooks/use-translations'
 import { db } from '@/lib/db/client'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
-import { externalUrl, Route } from '@/lib/navigation'
+import { externalRoute, Route } from '@/lib/navigation'
 import { asset } from '@/lib/storage'
 
 const LoginFormFooter = () => {
@@ -60,8 +60,7 @@ const LoginFormFooter = () => {
             link: content => (
               <Link
                 className="text-base text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                external
-                href={externalUrl('Website')}
+                href={externalRoute('Website')}
                 target="_blank"
               >
                 {content}

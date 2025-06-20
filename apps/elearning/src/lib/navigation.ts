@@ -1,5 +1,6 @@
 import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 
+import config from 'static/config.json'
 import metadata from 'static/metadata.json'
 
 export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
@@ -40,9 +41,10 @@ export enum AuthPage {
   PasswordReset = Route.PasswordReset,
 }
 
-export const ExternalUrl = {
+export const ExternalRoute = {
   App: metadata.url,
   Website: metadata.website,
+  SupabaseStudio: config.supabaseStudioUrl,
 }
 
 /**
@@ -69,14 +71,14 @@ export const dynamicRoute = <R extends Route>(
 /**
  * Generates a URL path from an external URL.
  */
-export const externalUrl = (
-  key: keyof typeof ExternalUrl,
+export const externalRoute = (
+  key: keyof typeof ExternalRoute,
   options: {
     path?: string
     params?: URLSearchParams
   } = {},
 ) => {
-  const url = ExternalUrl[key]
+  const url = ExternalRoute[key]
   const pathPath = options.path ? `/${options.path}` : ''
   const searchParams = options.params ? `?${options.params.toString()}` : ''
   return `${url}${pathPath}${searchParams}` as HTTPUrl

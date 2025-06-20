@@ -1,20 +1,6 @@
-#!/bin/sh
-
-R="\033[0;31m"
+#!/usr/bin/env sh
 
 SCHEMA=auth,public
 TYPES=supabase/types.ts
 
-root=$(git rev-parse --show-toplevel)
-
-[ -f "$root/.env" ] && . "$root/.env"
-[ -f .env ] && . .env
-
-if [ -z "$SUPABASE_PROJECT_ID" ]; then
-  echo "${R}Error: SUPABASE_PROJECT_ID must be set"
-  exit 1
-fi
-
-if ./node_modules/.bin/supabase gen types typescript --project-id="$SUPABASE_PROJECT_ID" --schema=$SCHEMA > $TYPES; then
-  echo "Finished types generation."
-fi
+./node_modules/.bin/supabase gen types typescript --schema=$SCHEMA --local > $TYPES

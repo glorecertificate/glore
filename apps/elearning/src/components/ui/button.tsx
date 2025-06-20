@@ -84,6 +84,7 @@ const button = cva(
         default: 'h-9 px-3 has-[>svg]:px-2.5',
         sm: 'h-8 px-2 text-sm has-[>svg]:px-2',
         lg: 'h-10 px-4 has-[>svg]:px-3',
+        xl: 'h-11 px-5 text-base has-[>svg]:px-4',
         icon: 'size-9',
       },
       disabled: {
@@ -131,7 +132,7 @@ const button = cva(
         color: 'muted',
         hover: true,
         disabled: false,
-        className: 'hover:bg-muted-foreground hover:text-muted',
+        className: 'hover:bg-muted hover:text-muted-foreground',
       },
     ],
   },

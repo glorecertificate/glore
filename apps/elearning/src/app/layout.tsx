@@ -3,16 +3,17 @@ import './globals.css'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
+import { ReactScan } from '@/components/internal/react-scan'
+import { SupabaseWidget } from '@/components/internal/supabase-widget'
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { PathnameProvider } from '@/components/providers/pathname-provider'
-import { ReactScan } from '@/components/providers/react-scan'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { Env } from '@/lib/env'
 import { getLocale, getTranslations } from '@/lib/i18n/server'
 import { generateLocalizedMetadata } from '@/lib/metadata'
-import metadata from 'config/metadata.json'
+import metadata from 'static/metadata.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
@@ -37,7 +38,12 @@ export default async ({ children }: React.PropsWithChildren) => {
                 <Toaster />
                 <Analytics />
                 <SpeedInsights />
-                {Env.DEV && <ReactScan />}
+                {Env.DEV && (
+                  <>
+                    <ReactScan />
+                    <SupabaseWidget />
+                  </>
+                )}
               </ProgressBarProvider>
             </PathnameProvider>
           </ThemeProvider>

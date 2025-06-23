@@ -6,7 +6,7 @@
   </h1>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
-  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/code-quality.yml/badge.svg"></a>
   <a href="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
 </div>
 <br>

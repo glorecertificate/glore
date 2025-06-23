@@ -1,6 +1,7 @@
 /.next/
-/static/translations/*.d.json.ts
+/.vercel/
 /node_modules/
+/static/translations/*.d.json.ts
 /supabase/.branches/
 /supabase/.temp/
 /supabase/types.ts

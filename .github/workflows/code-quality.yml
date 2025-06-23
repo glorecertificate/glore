@@ -1,4 +1,4 @@
-name: CI
+name: Code Quality
 
 on:
   push:
@@ -28,12 +28,13 @@ env:
   SHELLCHECKJS_LOGGER_LEVEL: warn
   SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
   SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+  SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
-  ci:
-    name: CI
+  code-quality:
+    name: Code Quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

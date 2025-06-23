@@ -61,9 +61,8 @@ jobs:
       - name: Run commitlint
         uses: wagoid/commitlint-github-action@v6
       - run: pnpm check
-      - name: Push new migrations
+      - run: supabase db push
         working-directory: apps/elearning
-        run: supabase db push
       - name: Trigger production deployment
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         run: gh workflow run deploy.yml

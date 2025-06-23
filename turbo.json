@@ -1,7 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["tsconfig.json"],
-  "globalEnv": ["GITHUB_TOKEN", "GH_TOKEN", "NODE_ENV"],
+  "globalEnv": [
+    "GITHUB_TOKEN",
+    "GH_TOKEN",
+    "NODE_ENV",
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_PROJECT_ID",
+    "SUPABASE_PASSWORD"
+  ],
   "ui": "tui",
   "tasks": {
     "dev": {
@@ -16,6 +23,7 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
       "env": [
+        "ENABLE_EXPERIMENTAL_COREPACK",
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
         "POSTGRES_PASSWORD",
@@ -23,10 +31,9 @@
         "POSTGRES_URL",
         "POSTGRES_URL_NON_POOLING",
         "POSTGRES_USER",
-        "SUPABASE_ACCESS_TOKEN",
         "SUPABASE_ANON_KEY",
+        "SUPABASE_DB_PASSWORD",
         "SUPABASE_JWT_SECRET",
-        "SUPABASE_PROJECT_ID",
         "SUPABASE_SERVICE_ROLE_KEY",
         "SUPABASE_URL"
       ]

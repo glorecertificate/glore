@@ -4,7 +4,7 @@ import { basename } from 'node:path'
 import type {
   FileOptions,
   NoRestrictedImportOptions,
-  RestrictedImportGroup,
+  RestrictedImport,
   SortImportGroup,
   SortImportsOptions,
 } from './types'
@@ -87,7 +87,7 @@ export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = 
       message: 'Use named imports instead.',
       name,
     })),
-    patterns: [] as RestrictedImportGroup[],
+    patterns: [] as RestrictedImport[],
   }
 
   if (allowRelativeImports === 'never')

@@ -314,3 +314,10 @@
     }
   }
 }
+
+@utility text-stroke-* {
+  /* prettier-ignore */
+  -webkit-text-stroke-width: --value(number)px;
+  /* prettier-ignore */
+  -webkit-text-stroke-color: --value(--color-*);
+}

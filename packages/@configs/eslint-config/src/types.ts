@@ -8,20 +8,25 @@ export enum RuleSeverity {
 
 export type ConfigFiles = Array<string | string[]> | undefined
 
-export type RestrictedImportGroup =
-  | {
-      group: string[]
-      message?: string
-    }
-  | {
-      regex: string
-      message?: string
-    }
-  | {
-      name: string
-      importNames: string[]
-      message?: string
-    }
+export type RestrictedImport =
+  | string
+  | ({
+      files?: string[]
+    } & (
+      | {
+          group: string[]
+          message?: string
+        }
+      | {
+          regex: string
+          message?: string
+        }
+      | {
+          group: string[]
+          importNames: string[]
+          message?: string
+        }
+    ))
 
 export interface SortImportGroup {
   type: Record<string, Array<string | RegExp>>
@@ -95,7 +100,7 @@ export interface NoRestrictedImportOptions {
   /**
    * Groups of modules that are restricted from being imported.
    */
-  restrictedImports?: string[] | RestrictedImportGroup[]
+  restrictedImports?: RestrictedImport[]
 }
 
 export interface SortImportsOptions {

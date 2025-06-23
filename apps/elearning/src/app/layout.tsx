@@ -38,7 +38,7 @@ export default async ({ children }: React.PropsWithChildren) => {
                 <Toaster />
                 <Analytics />
                 <SpeedInsights />
-                {Env.DEV && (
+                {Env.DEV_MODE && (
                   <>
                     <ReactScan />
                     <SupabaseWidget />

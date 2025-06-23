@@ -10,15 +10,10 @@ export default () => {
   const t = useTranslations('Certificates')
 
   return (
-    <ErrorView
-      actions={
-        <Button asChild size="lg" variant="outline">
-          <Link href={Route.Certificates}>{t('backTo')}</Link>
-        </Button>
-      }
-      message={t('notFoundMessage')}
-      title={t('notFound')}
-      type="not-found"
-    />
+    <ErrorView message={t('notFoundMessage')} title={t('notFound')} type="not-found">
+      <Button asChild size="lg" variant="outline">
+        <Link href={Route.Certificates}>{t('backTo')}</Link>
+      </Button>
+    </ErrorView>
   )
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-SCHEMA=auth,public
+SCHEMA=auth,public,storage
 TYPES=supabase/types.ts
 
 ./node_modules/.bin/supabase gen types typescript --schema=$SCHEMA --local > $TYPES

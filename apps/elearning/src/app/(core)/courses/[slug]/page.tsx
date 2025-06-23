@@ -18,7 +18,7 @@ export default async ({ params }: PageProps<Route.Course>) => {
     await api.courses.enrollUser(course.id)
   }
 
-  return <CourseFlow courseId={course.id} />
+  return <CourseFlow course={course} />
 }
 
 export const generateMetadata = async ({ params }: PageProps<Route.Course>) => {

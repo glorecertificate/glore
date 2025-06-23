@@ -8,7 +8,7 @@ import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
-import { RuleSeverity, type ConfigOptions } from './types'
+import { RuleSeverity, type ConfigOptions, type RestrictedImport } from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
 const BASE_PLUGINS = {
@@ -89,7 +89,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
     prettierIncludes,
     react = false,
     removeUnusedImports = true,
-    restrictedImports,
+    restrictedImports = [],
     rules,
     sortArrays = true,
     sortDestructuredKeys = true,
@@ -106,10 +106,24 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
   const jsxFiles = userFiles ?? jsxFileOptions({ ignoreJs, ignoreTs, includeDotfiles, includeRoot })
   const configFiles = configFileOptions({ ignoreJs, ignoreTs })
   const prettierFiles = prettierIncludes ?? files
+
+  const globalRestrictedImports: RestrictedImport[] = []
+  const scopedRestrictedImports: Array<Exclude<RestrictedImport, string>> = []
+
+  for (const restrictedImport of restrictedImports) {
+    if (typeof restrictedImport === 'string' || !restrictedImport.files) {
+      globalRestrictedImports.push(restrictedImport)
+      continue
+    }
+    scopedRestrictedImports.push(restrictedImport)
+  }
+
   const hasNextJs = typeof react === 'string' && react === 'nextjs'
+
+  const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
+
   const { allowedClasses, ...tailwindConfig } = tailwind || {}
   const allowedTailwindClasses = [...(allowedClasses ?? []), '^group(?:\\/(\\S*))?$', '^peer(?:\\/(\\S*))?$']
-  const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
 
   if (preferArrow) plugins['prefer-arrow-functions'] = (await import('eslint-plugin-prefer-arrow-functions')).default
   if (prettier) plugins.prettier = (await import('eslint-plugin-prettier')).default
@@ -164,7 +178,12 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           'no-duplicate-imports': [RuleSeverity.Error, { includeExports: true }],
           'no-restricted-imports': [
             RuleSeverity.Error,
-            noRestrictedImportsOptions({ allowRelativeImports, namedImports, restrictedImports, nodePrefix }),
+            noRestrictedImportsOptions({
+              allowRelativeImports,
+              namedImports,
+              restrictedImports: globalRestrictedImports,
+              nodePrefix,
+            }),
           ],
           'no-template-curly-in-string': RuleSeverity.Error,
           'no-useless-concat': RuleSeverity.Error,
@@ -282,6 +301,22 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           ],
         },
       },
+      ...(scopedRestrictedImports.length > 0
+        ? scopedRestrictedImports.map(({ files, ...restrictedImport }) => ({
+            files,
+            rules: {
+              'no-restricted-imports': [
+                RuleSeverity.Error,
+                noRestrictedImportsOptions({
+                  allowRelativeImports,
+                  namedImports,
+                  restrictedImports: [restrictedImport],
+                  nodePrefix,
+                }),
+              ],
+            },
+          }))
+        : []),
       preferArrow && {
         name: '@repo/prefer-arrow',
         files,

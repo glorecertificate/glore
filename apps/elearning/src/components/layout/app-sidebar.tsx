@@ -12,8 +12,10 @@ import {
   InfoIcon,
   LogOutIcon,
   MessageCircleQuestionIcon,
+  PencilIcon,
   PlusIcon,
   SettingsIcon,
+  ShieldUserIcon,
 } from 'lucide-react'
 
 import { titleize } from '@repo/utils'
@@ -51,6 +53,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
 import { usePathname } from '@/hooks/use-pathname'
 import { useSession } from '@/hooks/use-session'
@@ -385,7 +388,29 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                 )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.firstName}</span>
+                <span className="flex items-center gap-1 truncate font-semibold">
+                  {user.firstName}
+                  {user.isAdmin && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <ShieldUserIcon size={14} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <span className="text-xs">{t('Navigation.adminUser')}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {user.isEditor && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <PencilIcon size={14} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <span className="text-xs">{t('Navigation.editorUser')}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </span>
                 <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
               </div>
               <ChevronsUpDownIcon

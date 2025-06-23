@@ -71,7 +71,7 @@ export const CertificateView = () => {
     [canRequestCertificate, t],
   )
   const noCertificateLink = useMemo(
-    () => (canRequestCertificate ? Route.NewCertificate : Route.Courses),
+    () => (canRequestCertificate ? Route.CertificateNew : Route.Courses),
     [canRequestCertificate],
   )
   // const canUpdateCertificate = useMemo(

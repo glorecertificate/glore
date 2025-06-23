@@ -1,11 +1,20 @@
 import { cx } from 'class-variance-authority'
 import type { ClassValue } from 'class-variance-authority/types'
-import { twMerge } from 'tailwind-merge'
+import { extendTailwindMerge } from 'tailwind-merge'
 
 import { type Json } from '@repo/utils'
 
 import { type Locale } from '@/lib/i18n/types'
 import config from 'static/config.json'
+
+const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
+  extend: {
+    classGroups: {
+      'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
+      'text-stroke-color': [{ 'text-stroke': [(n: string) => !Number(n)] }],
+    },
+  },
+})
 
 /**
  * Merges and applies class values conditionally.
@@ -13,7 +22,7 @@ import config from 'static/config.json'
 export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
 
 /**
- * Statically applies and verifies Tailwind class names.
+ * Statically merges, applies and verifies Tailwind class names.
  */
 export const tw = (raw: TemplateStringsArray, ...values: string[]) => cn(String.raw({ raw }, ...values))
 

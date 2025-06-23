@@ -1,4 +1,4 @@
-import { CoursesList } from '@/components/features/courses/course-list'
+import { CoursesList } from '@/components/features/courses/courses-list'
 import { generateLocalizedMetadata } from '@/lib/metadata'
 
 export default () => <CoursesList />

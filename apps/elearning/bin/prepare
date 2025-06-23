@@ -1,13 +1,12 @@
 #!/usr/bin/env sh
 
 R="\033[0;31m"
-
 root=$(git rev-parse --show-toplevel)
 
 [ -f "$root/.env" ] && . "$root/.env"
 [ -f .env ] && . .env
 
-if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ]; then
+if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_PROJECT_ID" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
   echo "${R}Error: wrong or missing environment variables."
   exit 1
 fi

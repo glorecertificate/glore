@@ -14,7 +14,7 @@ export const useScroll = () => {
   )
 
   const [scroll, setScroll] = useState(getCurrentScroll())
-  const isScrolled = useMemo(() => scroll > 0, [scroll])
+  const scrolled = useMemo(() => scroll > 0, [scroll])
 
   const onWindowScroll = useCallback(() => {
     const scroll = getCurrentScroll()
@@ -31,6 +31,6 @@ export const useScroll = () => {
 
   return {
     scroll,
-    isScrolled,
+    scrolled,
   }
 }

@@ -1,13 +1,13 @@
 'use server'
 
-import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'next-intl'
+import type { NamespaceKeys, NestedKeyOf } from 'next-intl'
 
-import { type AnyArray, type AnyRecord } from '@repo/utils'
+import type { AnyArray, AnyRecord } from '@repo/utils'
 
 import type app from 'static/config.json'
 import type messages from 'static/translations/en.json'
 
-import { type formats } from './config'
+import type { formats } from './config'
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -27,18 +27,6 @@ export type Locale = keyof typeof app.locales
  */
 export type Localized<T extends AnyRecord, R extends keyof T = never> = {
   [K in keyof T]: K extends R ? string : T[K] extends AnyRecord ? Localized<T[K], R> : T[K]
-}
-
-/**
- *
- * Wrapper around the `createTranslator` function from `next-intl`
- * that makes the second parameter of the function optional.
- */
-export interface Translator extends Omit<ReturnType<typeof createTranslator>, 't'> {
-  (
-    key: Parameters<ReturnType<typeof createTranslator>>[0],
-    values?: Parameters<ReturnType<typeof createTranslator>>[1],
-  ): string
 }
 
 /**

@@ -14,12 +14,7 @@ const MESSAGE_DECLARATIONS = resolve(`static/translations/${config.defaultLocale
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        hostname: new URL(Env.SUPABASE_URL).hostname,
-        protocol: 'https',
-      },
-    ],
+    remotePatterns: [new URL(Env.SUPABASE_URL)],
   },
   reactStrictMode: true,
 }

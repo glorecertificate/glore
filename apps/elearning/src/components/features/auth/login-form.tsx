@@ -129,8 +129,8 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
-        console.error(e)
         if (error.code === PostgRESTCode.NO_RESULTS) return form.setError('user', { message: t('userNotFound') })
+        console.error(e)
         return toast.error(t('networkError'))
       }
 

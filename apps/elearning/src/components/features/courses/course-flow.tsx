@@ -1,6 +1,5 @@
 'use client'
 
-import { notFound } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowLeftIcon, ChevronDownIcon, EyeIcon } from 'lucide-react'
@@ -41,20 +40,16 @@ import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import config from 'static/config.json'
 
-export const CourseFlow = ({ courseId }: { courseId: number }) => {
+export const CourseFlow = ({ course }: { course: Course }) => {
   const { setBreadcrumb, setHeaderShadow } = useHeader()
-  const { isScrolled } = useScroll()
-  const { setSyncState } = useSyncState()
-
   const { localize } = useLocale()
-  const t = useTranslations()
+  const { scrolled } = useScroll()
   const { courses, setCourses } = useSession()
-
-  const course = useMemo(() => courses.find(({ id }) => id === courseId) ?? notFound(), [courses, courseId])
+  const { setSyncState } = useSyncState()
+  const t = useTranslations()
 
   const [syncedCourse, setSyncedCourse] = useState(course)
-
-  const title = useMemo(() => localize(course.title), [course.title, localize])
+  const title = useMemo(() => localize(course.title), [course, localize])
 
   useEffect(() => {
     setHeaderShadow(false)
@@ -72,11 +67,11 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
   }, [setBreadcrumb, setHeaderShadow, title, t])
 
   const initialLessonIndex = useMemo(() => {
-    if (course.status === 'completed') return 0
+    if (!course || course.status === 'completed') return 0
     const incompletedIndex = course.lessons?.findIndex(lesson => !lesson.completed)
     if (incompletedIndex !== -1) return incompletedIndex || 0
     return (course.lessons?.length || 0) - 1
-  }, [course.lessons, course.status])
+  }, [course])
 
   const [currentLessonIndex, setCurrentLessonIndex] = useState(initialLessonIndex)
 
@@ -303,7 +298,7 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
 
   return (
     <div className="container mx-auto flex flex-1 px-8 pb-8">
-      {/* Lessons sidebar */}
+      {/* Sidebar */}
       <div className="mr-2 hidden max-w-lg min-w-52 flex-1/4 shrink-0 md:block md:max-lg:flex-1/3">
         <div className="sticky top-[72px] flex items-center gap-2">
           <span className="pt-1 text-sm text-muted-foreground">
@@ -362,7 +357,7 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
       <div>
         {/* Mobile header */}
         <div
-          className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', isScrolled && 'border-b')}
+          className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -421,7 +416,7 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
         <div
           className={cn(
             'sticky top-36 hidden items-center justify-end gap-2 bg-background pb-6 md:top-[72px] md:flex',
-            isScrolled && 'border-b',
+            scrolled && 'border-b',
           )}
         >
           {course.status === 'completed' && (
@@ -525,7 +520,7 @@ export const CourseFlow = ({ courseId }: { courseId: number }) => {
                           )}
                           {completedCoursesCount === config.minSkills && (
                             <Button asChild color="primary">
-                              <Link href={Route.NewCertificate}>{t('Courses.requestCertificate')}</Link>
+                              <Link href={Route.CertificateNew}>{t('Courses.requestCertificate')}</Link>
                             </Button>
                           )}
                           {completedCoursesCount > config.minSkills && (

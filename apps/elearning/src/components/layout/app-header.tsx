@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
   const { breadcrumb, headerShadow, subHeader } = useHeader()
   const { pathname } = usePathname()
-  const { isScrolled } = useScroll()
+  const { scrolled } = useScroll()
   const { open } = useSidebar()
   // const { syncState } = useSyncState()
   const t = useTranslations()
@@ -33,7 +33,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
       <header
         className={cn(
           'ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
-          isScrolled && headerShadow && 'border-b',
+          scrolled && headerShadow && 'border-b',
           className,
         )}
         {...props}

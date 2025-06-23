@@ -6,6 +6,7 @@ import { type SlotProps } from '@radix-ui/react-slot'
 import { MoveIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import useLocalStorage from '@/hooks/use-local-storage'
 import { LocalStorage } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
@@ -19,7 +20,6 @@ export interface DevWidgetWidgetProps extends SlotProps {
     x: number
     y: number
   }
-  onRelease?: (position: { x: number; y: number }) => void
   storageKey?: LocalStorage | `${LocalStorage}`
 }
 
@@ -27,7 +27,7 @@ export const DevWidget = ({
   children,
   className,
   defaultPosition,
-  onRelease,
+
   storageKey,
   ...props
 }: DevWidgetWidgetProps) => {
@@ -35,30 +35,25 @@ export const DevWidget = ({
   const ref = useRef<HTMLDivElement>(null)
   const dragStart = useRef({ x: 0, y: 0 })
   const isDraggingRef = useRef(false)
+  const [storedPosition, setStoredPosition] = useLocalStorage<{ x: number; y: number }>(storageKey, DEFAULT_POSITION)
 
-  const initialPosition = useMemo(() => {
-    if (defaultPosition) return defaultPosition
-    if (!storageKey) return DEFAULT_POSITION
-    const savedPosition = localStorage.getItem(storageKey)
-    return savedPosition ? (JSON.parse(savedPosition) as { x: number; y: number }) : DEFAULT_POSITION
-  }, [defaultPosition, storageKey])
+  const initialPosition = useMemo(() => defaultPosition ?? storedPosition, [defaultPosition, storedPosition])
 
   const [position, setPosition] = useState(initialPosition)
 
   const onMouseUp = useCallback(() => {
     setIsDragging(false)
     isDraggingRef.current = false
-    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(position))
-    if (onRelease && ref.current) onRelease(position)
-  }, [onRelease, position, storageKey])
+    if (storageKey) setStoredPosition(position)
+  }, [position, storageKey, setStoredPosition])
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       setIsDragging(true)
       isDraggingRef.current = true
       dragStart.current = {
-        x: e.clientX - position.x,
-        y: e.clientY - position.y,
+        x: e.clientX - (position?.x ?? 0),
+        y: e.clientY - (position?.y ?? 0),
       }
       e.preventDefault()
     },
@@ -81,8 +76,8 @@ export const DevWidget = ({
       setIsDragging(true)
       isDraggingRef.current = true
       dragStart.current = {
-        x: touch.clientX - position.x,
-        y: touch.clientY - position.y,
+        x: touch.clientX - (position?.x ?? 0),
+        y: touch.clientY - (position?.y ?? 0),
       }
       e.preventDefault()
     },
@@ -140,8 +135,8 @@ export const DevWidget = ({
       )}
       ref={ref}
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
+        left: `${position?.x ?? 0}px`,
+        top: `${position?.y ?? 0}px`,
       }}
       {...props}
     >

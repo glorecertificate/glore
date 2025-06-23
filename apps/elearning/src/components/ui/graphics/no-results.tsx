@@ -1,5 +1,5 @@
 export const NoResults = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg fill="none" height="850" viewBox="0 0 738 850" width="738" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg fill="none" viewBox="0 0 738 850" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="m639.65 311.64c-71.06-86-220.28-309.16003-411.61-219.95-191.3301 89.21-405.33 620.54 13.62 621.15 157.39.23 384.06 20.78 450.47-39.34 110.37-99.92-8.13-308.16-52.48-361.86z"
       fill="#5cbad2"

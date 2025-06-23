@@ -56,7 +56,8 @@
     "duration": "Duración",
     "skills": "Habilidades",
     "preview": "Avance",
-    "share": "Compartir"
+    "share": "Compartir",
+    "backToPrevious": "Volver a la página anterior"
   },
   "Auth": {
     "backToLogin": "Volver a iniciar sesión",
@@ -106,11 +107,13 @@
     "coursesSkills": "Soft Skills",
     "organizations": "Organizaciones",
     "secondarySection": "Ajustes",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "adminUser": "Usuario admin",
+    "editorUser": "Editor"
   },
   "Courses": {
     "answerDisabled": "No puedes modificar tu respuesta",
-    "backTo": "Volver a todos los módulos",
+    "backTo": "Mirar todos los módulos",
     "clearSort": "Borrar orden",
     "clearAllFilters": "Borrar filtros",
     "clearFilter": "Borrar",
@@ -140,7 +143,7 @@
     "coursesNotStarted": "No iniciados",
     "noCoursesCompleted": "No se han completado módulos",
     "noCoursesFound": "No se encontraron módulos",
-    "notFound": "Modulo no encontrado",
+    "notFound": "Corso no encontrado",
     "notFoundMessage": "El módulo que estás buscando no existe o ha sido movido",
     "proceedToNextLesson": "Proceder al siguiente paso",
     "questionsSubtitle": "Responde {count, plural, =1 {a la siguiente afirmación} other {a las siguientes afirmaciones}} y prueba tus conocimientos.",
@@ -184,13 +187,24 @@
     "completeIncludeInCertificate": "¡Ahora puedes incluir este módulo en tu certificado!",
     "requestCertificate": "Requerir certificado",
     "goToCertificate": "Ir a certificados",
-    "emptyListAll": "No hay módulos que coincidan con los filtros actuales",
+    "emptyListAll": "No hay cursos disponibles en este momento.",
     "emptyListCompleted": "Aún no has completado ningún módulo",
     "emptyListInProgress": "No tienes módulos en progreso",
-    "emptyListNotStarted": "Has comenzado todos los módulos disponibles 👏"
+    "emptyListNotStarted": "Has comenzado todos los módulos disponibles 👏",
+    "descriptionAdmin": "Como administrador, puede administrar los cursos disponibles en la plataforma. \nYou can create and publish new courses, edit existing ones, and archive courses that are no longer relevant.",
+    "descriptionEditor": "Como editor, puede crear, editar y traducir cursos en toda la plataforma.",
+    "coursesActive": "Activos",
+    "coursesDraft": "Draft",
+    "coursesArchived": "Archivados",
+    "newCourse": "Curso nuevo",
+    "emptyListActive": "No hay cursos activos en este momento",
+    "emptyListDraft": "No hay draft disponibles",
+    "emptyListArchived": "El archivo está vacío",
+    "info": "Información",
+    "newLesson": "Nueva lección"
   },
   "Certificates": {
-    "backTo": "Volver a la sección de certificados",
+    "backTo": "Volver a todos los certificados",
     "description": "Los certificados de GloRe son un reconocimiento oficial de su experiencia de voluntariado y las habilidades blandas adquiridas. Son emitidos por GloRe y se pueden compartir en sus perfiles de redes sociales o agregar a su CV. Puede solicitar un certificado después de completar al menos 3 módulos con una evaluación final de al menos 3 de 5.",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que estás buscando no existe o ha sido movido",

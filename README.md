@@ -27,6 +27,8 @@ The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href=
 
 You must download and activate the Node.js version specified [here](https://github.com/gabrielecanepa/glore/blob/main/.node-version).
 
+[Docker](https://docker.com) is required to run the Supabase local development environment.
+
 ### Setup
 
 Download the project using the GitHub client or Git:
@@ -37,14 +39,14 @@ gh repo clone gabrielecanepa/glore
 git clone https://github.com/gabrielecanepa/glore.git
 ```
 
-Switch to the project directory and copy the the example environment file to `.env`:
+Switch to the project directory and copy the example env files:
 
 ```sh
-cd apps/elearning
 cp .env.example .env
+cp apps/elearning/.env.example apps/elearning/.env
 ```
 
-Fill in the required environment variables to gain access to the services used by the application.
+Open the new files and fill in the required values to gain access to the services used throughout the project.
 
 ### Running the application
 
@@ -63,27 +65,31 @@ Run a development server with:
 pnpm dev
 ```
 
+This command will start the Next.js application and (if not already running) the Docker instance of Supabase.
+
 Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real time.
+
+Supabase Studio, an interface for managing the local Supabase project, will be available at [localhost:54321](http://localhost:54321) while the Docker container is running.
 
 ### Contributing
 
-To develop new features or fix bugs, create a new branch from the `main` branch. Use a descriptive name for the branch that indicates the purpose of your changes:
+To develop new features or bug fixes, create a new branch starting from `main` using a descriptive name that indicates the purpose of your changes:
 
 ```sh
-git checkout -b feature/my-feature-name
+git checkout -b feat/awesome-feature
 # or
-git checkout -b fix/my-fix-name
+git checkout -b fix/bug-in-awesome-feature
 ```
 
-Once you are done, push the branch to the repository and create a pull request.
+Once you are done, push the branch, make sure that all checks are passing and create a new pull request.
 
-## Deployments
+## Deployment
 
-The project is deployed using [Vercel](https://vercel.com).
+The project is deployed on [Vercel](https://vercel.com).
 
 To deploy the project, you must set up a Vercel account and link it to the GitHub repository.
 
-Once you have done that, you can deploy by pushing changes to any branch. Vercel will automatically build and deploy a preview for you.
+Once you have done that, you can deploy by pushing changes to any branch, and Vercel will automatically build and deploy a preview for you.
 
 Alternatively, you can create a preview deployment by running:
 
@@ -91,7 +97,7 @@ Alternatively, you can create a preview deployment by running:
 pnpm deploy
 ```
 
-### Production deployments and releases
+### Production and releases
 
 To release a new version of the project, you must specify a `GITHUB_TOKEN` or `GH_TOKEN` environment variable at the root of the project. The token needs access to the `repository` and `workflow` scopes.
 
@@ -104,9 +110,9 @@ pnpm release
 To manually trigger a production deployment without creating a release, use the command:
 
 ```sh
-pnpm deploy:production
+pnpm deploy:prod
 ```
 
 ## License
 
-[MIT](LICENSE) © [Associazione Joint](https://associazionejoint.org)
+Copyright (c) 2025-present Associazione Joint <info@associazionejoint.org>

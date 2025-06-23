@@ -13,11 +13,13 @@ catalog:
 
 dangerouslyAllowAllBuilds: false
 
-onlyBuiltDependencies:
+ignoredBuiltDependencies:
   - '@tailwindcss/oxide'
   - '@vercel/speed-insights'
   - esbuild
   - msw
   - sharp
-  - supabase
   - unrs-resolver
+
+onlyBuiltDependencies:
+  - supabase

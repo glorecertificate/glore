@@ -3,7 +3,6 @@ import { type Linter } from 'eslint'
 
 import stylisticPlugin from '@stylistic/eslint-plugin'
 import gitignoreConfig from 'eslint-config-flat-gitignore'
-// @ts-expect-error - Missing type definitions
 import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'

@@ -5,7 +5,7 @@ packages:
 catalog:
   '@types/node': ^24.0.3
   eslint: ^9.29.0
-  prettier: ^3.5.3
+  prettier: ^3.6.0
   release-it: ^19.0.3
   shellcheck: ^3.1.0
   tsup: ^8.5.0
@@ -13,8 +13,11 @@ catalog:
 
 dangerouslyAllowAllBuilds: false
 
-ignoredBuiltDependencies:
-  - msw
-
 onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - '@vercel/speed-insights'
+  - esbuild
+  - msw
+  - sharp
   - supabase
+  - unrs-resolver

@@ -27,11 +27,13 @@ export interface JointConfig {
   afterInit?: string | string[]
   afterBump?: string | string[]
   afterRelease?: string | string[]
+  bumpFiles?: string[]
   /** @default true */
   autoReleaseNotes?: boolean
-  bumpFiles?: string[]
   /** @default true */
   changelog?: boolean
   /** @default false */
-  deployments?: boolean
+  deployment?: boolean
+  /** @default false */
+  format?: boolean
 }

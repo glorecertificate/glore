@@ -1,20 +1,20 @@
 import type { Config, JointConfig } from './types'
 
 const DEPLOYMENT_MESSAGE =
-  'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production'
+  'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployment/Production'
 
 export default (config: JointConfig = {}): Config => {
   const {
-    afterBump = 'pnpm run format && git add .',
+    afterBump = '',
     afterInit = '[ -n "$(git log @{u}.. 2>/dev/null)" ] && (pnpm build && pnpm check) || exit 0',
     afterRelease: userAfterRelease = [],
     bumpFiles,
     changelog = true,
-    deployments = false,
+    deployment = false,
   } = config
   let { autoReleaseNotes = true } = config
 
-  const afterRelease = deployments
+  const afterRelease = deployment
     ? Array.isArray(userAfterRelease)
       ? [...userAfterRelease, DEPLOYMENT_MESSAGE]
       : [userAfterRelease, DEPLOYMENT_MESSAGE]

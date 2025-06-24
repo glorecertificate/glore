@@ -20,25 +20,11 @@ CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
 
 
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-
-
-
-
-
-
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
 
 CREATE EXTENSION IF NOT EXISTS "moddatetime" WITH SCHEMA "extensions";
-
-
-
-
-
-
-CREATE EXTENSION IF NOT EXISTS "pg_graphql" WITH SCHEMA "graphql";
 
 
 
@@ -1496,22 +1482,10 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 
-
-
-
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2044,16 +2018,3 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 
 
 RESET ALL;
-
---
--- Dumped schema changes for auth and storage
---
-
-CREATE OR REPLACE TRIGGER "insert_user_into_public_trigger" AFTER INSERT ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."insert_user_into_public"();
-
-
-
-CREATE OR REPLACE TRIGGER "update_public_user_trigger" AFTER UPDATE ON "auth"."users" FOR EACH ROW EXECUTE FUNCTION "public"."update_public_user"();
-
-
-

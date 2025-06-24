@@ -13,7 +13,6 @@
     "dev": "turbo run dev",
     "watch": "turbo run watch",
     "build": "turbo run build",
-    "build:pkgs": "turbo run build --filter @repo/*",
     "start": "turbo run start",
     "test": "turbo run test",
     "type-check": "pnpm root#type-check && turbo run type-check",

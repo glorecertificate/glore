@@ -50,11 +50,11 @@ jobs:
       - name: Install and build dependencies
         run: |
           pnpm install --no-frozen-lockfile
-          pnpm build --filter=@repo/*
+          pnpm build --filter @repo/*
       - name: Deploy to Vercel
         id: vercel
         run: |
-          vercel pull --yes --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-          vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          vercel pull --yes --prod --token ${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
           echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

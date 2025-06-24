@@ -1,27 +1,5 @@
 # Changelog
 
-## <small>0.4.2 (2025-06-24)</small>
-
-* ci: add analyze command ([5ca8fa0](https://github.com/gabrielecanepa/glore/commit/5ca8fa0))
-* ci: fix typegen in ci environments ([24d84db](https://github.com/gabrielecanepa/glore/commit/24d84db))
-* ci: run remote migrations on successful code check ([97f6e3b](https://github.com/gabrielecanepa/glore/commit/97f6e3b))
-* ci: update action workflows ([fe7e9ac](https://github.com/gabrielecanepa/glore/commit/fe7e9ac))
-* ci: update release-it config ([1e76200](https://github.com/gabrielecanepa/glore/commit/1e76200))
-* build: ignore all build dependencies except supabase ([216af0f](https://github.com/gabrielecanepa/glore/commit/216af0f))
-* build(deps): bump dependencies ([ebfbb6c](https://github.com/gabrielecanepa/glore/commit/ebfbb6c))
-* build(deps): bump packages ([7a96cf3](https://github.com/gabrielecanepa/glore/commit/7a96cf3))
-* build(deps): update lockfile to latest versions ([7f136bf](https://github.com/gabrielecanepa/glore/commit/7f136bf))
-* docs: update README ([2ecae4c](https://github.com/gabrielecanepa/glore/commit/2ecae4c))
-* chore: improve layout ([3b2bef6](https://github.com/gabrielecanepa/glore/commit/3b2bef6))
-* chore: improve sidebar style ([f13894d](https://github.com/gabrielecanepa/glore/commit/f13894d))
-* chore: refactor course components ([74de17f](https://github.com/gabrielecanepa/glore/commit/74de17f))
-* chore: update certificates tables; fetch certificates in main user request ([733c2c2](https://github.com/gabrielecanepa/glore/commit/733c2c2))
-* chore: use react-scan in development to optimize components ([6da61f9](https://github.com/gabrielecanepa/glore/commit/6da61f9))
-* chore(dev): add local Supabase environment ([e1b4263](https://github.com/gabrielecanepa/glore/commit/e1b4263))
-* chore(dev): refactor, rename and add internal utilities ([1d013ac](https://github.com/gabrielecanepa/glore/commit/1d013ac))
-* chore!: update database schema and refactor codebase ([aa7e31a](https://github.com/gabrielecanepa/glore/commit/aa7e31a))
-* refactor: improve modules list sorting logic ([812a2a7](https://github.com/gabrielecanepa/glore/commit/812a2a7))
-
 ## [0.4.1](https://github.com/gabrielecanepa/glore/compare/v0.4.0...v0.4.1) (2025-04-17)
 
 

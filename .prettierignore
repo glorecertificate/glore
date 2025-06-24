@@ -1,7 +1,7 @@
-# Apps and packages linted separately
+# Linted separately
 /apps/
 /packages/
 
 # Build artifacts
-CHANGELOG.md
-pnpm-lock.yaml
+/CHANGELOG.md
+/pnpm-lock.yaml

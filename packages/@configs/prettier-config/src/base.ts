@@ -1,6 +1,6 @@
 import { type Config } from 'prettier'
 
-export default {
+const prettierConfig: Config = {
   arrowParens: 'avoid',
   printWidth: 120,
   quoteProps: 'as-needed',
@@ -51,4 +51,6 @@ export default {
       },
     },
   ],
-} satisfies Config
+}
+
+export default prettierConfig

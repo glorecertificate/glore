@@ -4,19 +4,18 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./build/index.d.ts",
-      "import": "./build/index.js",
-      "require": "./build/index.cjs",
-      "default": "./build/index.cjs"
+      "types": "./build/base.d.ts",
+      "import": "./build/base.js",
+      "require": "./build/base.cjs",
+      "default": "./build/base.cjs"
     },
-    "./tailwind": {
-      "types": "./build/tailwind.d.ts",
-      "import": "./build/tailwind.js",
-      "require": "./build/tailwind.cjs",
-      "default": "./build/tailwind.cjs"
+    "./*": {
+      "types": "./build/*.d.ts",
+      "import": "./build/*.js",
+      "require": "./build/*.cjs",
+      "default": "./build/*.cjs"
     }
   },
-  "prettier": "./build/index.cjs",
   "scripts": {
     "build": "tsup",
     "watch": "tsup --watch",
@@ -27,8 +26,10 @@
   },
   "devDependencies": {
     "prettier": "catalog:",
+    "prettier-plugin-sql": "catalog:",
     "prettier-plugin-tailwindcss": "^0.6.13",
     "tsup": "catalog:",
     "typescript": "catalog:"
-  }
+  },
+  "prettier": "./build/base.cjs"
 }

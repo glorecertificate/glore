@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { AuthForm } from '@/components/features/auth/auth-form'
+import { AuthForm } from '@/components/features/auth-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

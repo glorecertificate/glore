@@ -1,4 +1,4 @@
-import { CertificateView } from '@/components/features/certificates/certificate-view'
+import { CertificateView } from '@/components/features/certificate-view'
 import { generateLocalizedMetadata } from '@/lib/metadata'
 
 export default () => <CertificateView />

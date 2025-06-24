@@ -1,4 +1,4 @@
-import { AdminDashboard } from '@/components/features/admin/admin-dashboard'
+import { AdminDashboard } from '@/components/features/admin-dashboard'
 import { generateLocalizedMetadata } from '@/lib/metadata'
 
 export default () => <AdminDashboard />

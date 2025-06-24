@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { api } from '@/api/client'
-import { CourseFlow } from '@/components/features/courses/course-flow'
+import { CourseFlow } from '@/components/features/course-flow'
 import { getLocale } from '@/lib/i18n/server'
 import { localizeJson } from '@/lib/i18n/utils'
 import { generatePageMetadata } from '@/lib/metadata'

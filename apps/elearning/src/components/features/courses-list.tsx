@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, XIcon } from 'lucide-react'
 
 import { type Course } from '@/api/modules/courses/types'
-import { CourseCard } from '@/components/features/courses/course-card'
+import { CourseCard } from '@/components/features/course-card'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

@@ -1,3 +1,3 @@
-import { LoginForm } from '@/components/features/auth/login-form'
+import { LoginForm } from '@/components/features/login-form'
 
 export default () => <LoginForm />

@@ -2,14 +2,13 @@
 
 import { useState } from 'react'
 
+import { AdminHeader } from '@/components/features/admin-header'
+import { AdminStats } from '@/components/features/admin-stats'
+import { CertificationsManagement } from '@/components/features/certificates-management'
+import { OrganizationsManagement } from '@/components/features/orgs-management'
+import { RegionsManagement } from '@/components/features/regions-management'
+import { UsersManagement } from '@/components/features/users-management'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-
-import { AdminHeader } from './admin-header'
-import { AdminStats } from './admin-stats'
-import { CertificationsManagement } from './certificates-management'
-import { OrganizationsManagement } from './orgs-management'
-import { RegionsManagement } from './regions-management'
-import { UsersManagement } from './users-management'
 
 export const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview')

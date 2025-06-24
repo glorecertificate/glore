@@ -3,8 +3,8 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { type Course, type Lesson } from '@/api/modules/courses/types'
-import { CourseHeaderMobile } from '@/components/features/courses/course-header-mobile'
-import { CourseSidebar } from '@/components/features/courses/course-sidebar'
+import { CourseHeaderMobile } from '@/components/features/course-header-mobile'
+import { CourseSidebar } from '@/components/features/course-sidebar'
 
 export const CourseEditor = ({ course: initial }: { course?: Course }) => {
   const [course, _setCourse] = useState<Course | Partial<Course>>(initial || {})

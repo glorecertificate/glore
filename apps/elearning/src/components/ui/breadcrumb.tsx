@@ -1,8 +1,9 @@
 'use client'
 
-import { Slot } from '@radix-ui/react-slot'
 import { ChevronRight, MoreHorizontal } from 'lucide-react'
 
+import { Button } from '@/components/ui/button'
+import { Link, type LinkProps } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
 
 export const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
@@ -12,7 +13,7 @@ export const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
   <ol
     className={cn(
-      'flex flex-wrap items-center gap-1.5 text-sm break-words text-muted-foreground sm:gap-2.5',
+      'flex flex-wrap items-center gap-0.5 text-sm break-words text-muted-foreground sm:gap-2.5',
       className,
     )}
     data-slot="breadcrumb-list"
@@ -24,22 +25,13 @@ export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li
   <li className={cn('inline-flex items-center gap-1.5', className)} data-slot="breadcrumb-item" {...props} />
 )
 
-export const BreadcrumbLink = ({
-  asChild,
-  className,
-  ...props
-}: React.ComponentProps<'a'> & {
-  asChild?: boolean
-}) => {
-  const Comp = asChild ? Slot : 'a'
-  return (
-    <Comp
-      className={cn('cursor-pointer transition-colors hover:text-foreground', className)}
-      data-slot="breadcrumb-link"
-      {...props}
-    />
-  )
-}
+export const BreadcrumbLink = ({ className, ...props }: LinkProps) => (
+  <BreadcrumbItem>
+    <Button asChild variant="ghost">
+      <Link className={cn('h-8 px-2', className)} {...props} />
+    </Button>
+  </BreadcrumbItem>
+)
 
 export const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
@@ -55,7 +47,7 @@ export const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'sp
 export const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentProps<'li'>) => (
   <li
     aria-hidden="true"
-    className={cn('[&>svg]:size-3.5', className)}
+    className={cn('mr-2 [&>svg]:size-3.5', className)}
     data-slot="breadcrumb-separator"
     role="presentation"
     {...props}

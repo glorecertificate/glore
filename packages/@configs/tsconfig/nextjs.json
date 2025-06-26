@@ -3,6 +3,7 @@
   "display": "@repo/nextjs",
   "extends": "./react.json",
   "compilerOptions": {
+    "allowArbitraryExtensions": true,
     "plugins": [
       {
         "name": "next"

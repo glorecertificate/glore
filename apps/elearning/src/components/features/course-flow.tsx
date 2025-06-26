@@ -13,7 +13,7 @@ import { CourseAssessment } from '@/components/features/course-assessment'
 import { CourseEvaluations } from '@/components/features/course-evaluations'
 import { CourseQuestions } from '@/components/features/course-questions'
 import { Badge } from '@/components/ui/badge'
-import { BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import {
@@ -38,7 +38,7 @@ import { useSyncState } from '@/hooks/use-sync-state'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 export const CourseFlow = ({ course }: { course: Course }) => {
   const { setBreadcrumb, setHeaderShadow } = useHeader()
@@ -46,7 +46,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
   const { scrolled } = useScroll()
   const { courses, setCourses } = useSession()
   const { setSyncState } = useSyncState()
-  const t = useTranslations()
+  const t = useTranslations('Courses')
 
   const [syncedCourse, setSyncedCourse] = useState(course)
   const title = useMemo(() => localize(course.title), [course, localize])
@@ -55,12 +55,8 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     setHeaderShadow(false)
     setBreadcrumb(
       <BreadcrumbList className="sm:gap-1">
-        <BreadcrumbItem>
-          <Button asChild variant="ghost">
-            <Link href={Route.Courses}>{t('Navigation.courses')}</Link>
-          </Button>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator className="mr-3" />
+        <BreadcrumbLink href={Route.Courses}>{t('title')}</BreadcrumbLink>
+        <BreadcrumbSeparator />
         <BreadcrumbItem className="text-foreground">{title}</BreadcrumbItem>
       </BreadcrumbList>,
     )
@@ -256,14 +252,14 @@ export const CourseFlow = ({ course }: { course: Course }) => {
 
   const formatLessonType = useCallback(
     (type: string) =>
-      t('Courses.lessonType', {
+      t('lessonType', {
         type,
       }),
     [t],
   )
   const formatLessonTitle = useCallback(
     (index: number) => {
-      if (!isReachableLesson(index)) return t('Courses.completeLessonsToProceed')
+      if (!isReachableLesson(index)) return t('completeLessonsToProceed')
     },
     [isReachableLesson, t],
   )
@@ -271,7 +267,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     if (!currentLesson) return undefined
 
     if (!canProceed)
-      return t('Courses.replyToProceed', {
+      return t('replyToProceed', {
         type: currentLesson.type,
       })
   }, [canProceed, currentLesson, t])
@@ -280,8 +276,8 @@ export const CourseFlow = ({ course }: { course: Course }) => {
   const completedTitle = useMemo(
     () =>
       completedCoursesCount === courses.length
-        ? t('Courses.completedTitleAll')
-        : t('Courses.completedTitle', {
+        ? t('completedTitleAll')
+        : t('completedTitle', {
             count: completedCoursesCount,
           }),
     [completedCoursesCount, courses.length, t],
@@ -289,10 +285,10 @@ export const CourseFlow = ({ course }: { course: Course }) => {
   const completedMessage = useMemo(
     () =>
       completedCoursesCount < 3
-        ? t('Courses.completedMessage')
+        ? t('completedMessage')
         : completedCoursesCount === config.minSkills
-          ? t('Courses.completedRequestCertificate')
-          : t('Courses.completeIncludeInCertificate'),
+          ? t('completedRequestCertificate')
+          : t('completeIncludeInCertificate'),
     [completedCoursesCount, t],
   )
 
@@ -303,7 +299,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
         <div className="sticky top-[72px] flex items-center gap-2">
           <span className="pt-1 text-sm text-muted-foreground">
             {hasLessons
-              ? t('Courses.lessonCount', {
+              ? t('lessonCount', {
                   count: String(currentLessonIndex + 1),
                   total: String(course.lessons?.length || 0),
                 })
@@ -430,7 +426,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                 </Badge>
               </TooltipTrigger>
               <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
-                {t('Courses.reviewModeMessage')}
+                {t('reviewModeMessage')}
               </TooltipContent>
             </Tooltip>
           )}
@@ -497,7 +493,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                             options={{ zIndex: 100 }}
                             variant="outline"
                           >
-                            {t('Courses.completeCourse')}
+                            {t('completeCourse')}
                           </ConfettiButton>
                         )}
                       </DialogTrigger>
@@ -511,21 +507,21 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                         <p className="mt-2 mb-1.5 text-[15px] text-foreground/80">{completedMessage}</p>
                         <DialogFooter>
                           <DialogClose asChild>
-                            <Button variant="outline">{t('Courses.reviewCourse')}</Button>
+                            <Button variant="outline">{t('reviewCourse')}</Button>
                           </DialogClose>
                           {completedCoursesCount < 3 && (
                             <Button asChild variant="outline">
-                              <Link href={Route.Courses}>{t('Courses.backTo')}</Link>
+                              <Link href={Route.Courses}>{t('backTo')}</Link>
                             </Button>
                           )}
                           {completedCoursesCount === config.minSkills && (
                             <Button asChild color="primary">
-                              <Link href={Route.CertificateNew}>{t('Courses.requestCertificate')}</Link>
+                              <Link href={Route.CertificateNew}>{t('requestCertificate')}</Link>
                             </Button>
                           )}
                           {completedCoursesCount > config.minSkills && (
                             <Button asChild variant="outline">
-                              <Link href={Route.Certificates}>{t('Courses.goToCertificate')}</Link>
+                              <Link href={Route.Certificates}>{t('goToCertificate')}</Link>
                             </Button>
                           )}
                         </DialogFooter>
@@ -535,7 +531,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button className="cursor-not-allowed gap-1" disabled variant="outline">
-                          {t('Courses.completeCourse')}
+                          {t('completeCourse')}
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent arrow={false}>{nextTooltip}</TooltipContent>
@@ -545,7 +541,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                   <Button
                     className="gap-1"
                     onClick={() => handleNext()}
-                    title={t('Courses.proceedToNextLesson')}
+                    title={t('proceedToNextLesson')}
                     variant="outline"
                   >
                     {t('Common.next')}

@@ -1,34 +1,32 @@
 'use client'
 
 import { notFound } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { type Course } from '@/api/modules/courses/types'
 import { CourseEditor } from '@/components/features/course-editor'
 import { CourseFlow } from '@/components/features/course-flow'
-import { BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { Button } from '@/components/ui/button'
-import { Link } from '@/components/ui/link'
+import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { useHeader } from '@/hooks/use-header'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 
-export const CourseView = ({ course, type }: { course?: Course; type: 'editor' | 'flow' }) => {
+export const CourseView = ({ course, type }: { course?: Course; type?: 'editor' | 'flow' }) => {
   const { setBreadcrumb, setHeaderShadow } = useHeader()
   const { localize } = useLocale()
   const t = useTranslations('Courses')
+
+  const courseType = useMemo(() => type || (course ? 'flow' : 'editor'), [course, type])
 
   useEffect(() => {
     setHeaderShadow(false)
     setBreadcrumb(
       <BreadcrumbList className="sm:gap-1">
-        <BreadcrumbItem title={t('backTo')}>
-          <Button asChild variant="ghost">
-            <Link href={Route.Courses}>{t('coursesAll')}</Link>
-          </Button>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator className="mr-3" />
+        <BreadcrumbLink href={Route.Courses} title={t('coursesAll')}>
+          {t('title')}
+        </BreadcrumbLink>
+        <BreadcrumbSeparator />
         <BreadcrumbItem className="text-foreground">
           {course?.title ? localize(course.title) : t('newCourse')}
         </BreadcrumbItem>
@@ -36,7 +34,7 @@ export const CourseView = ({ course, type }: { course?: Course; type: 'editor' |
     )
   }, [course?.title, localize, setBreadcrumb, setHeaderShadow, t])
 
-  if (type === 'editor') return <CourseEditor course={course} />
+  if (courseType === 'editor') return <CourseEditor course={course} />
   if (course) return <CourseFlow course={course} />
   return notFound()
 }

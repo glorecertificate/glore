@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { BookOpenIcon, ClockIcon } from 'lucide-react'
+import { BookOpenIcon } from 'lucide-react'
 
 import { type Course } from '@/api/modules/courses/types'
 import { Badge } from '@/components/ui/badge'
@@ -26,19 +26,6 @@ export const CourseCard = ({ course }: { course: Course }) => {
       }),
     [course.slug],
   )
-
-  const duration = useMemo(() => {
-    switch (course.duration) {
-      case 'short':
-        return t('Courses.durationShort')
-      case 'medium':
-        return t('Courses.durationMedium')
-      case 'long':
-        return t('Courses.durationLong')
-      default:
-        return course.duration
-    }
-  }, [course.duration, t])
 
   const actionLabel = useMemo(() => {
     if (!course.enrolled) return t('Courses.startCourse')
@@ -77,12 +64,6 @@ export const CourseCard = ({ course }: { course: Course }) => {
                 count: course.lessons?.length || 0,
               })}
             </Badge>
-            {duration && (
-              <Badge className="flex items-center text-xs font-normal" color="muted" variant="outline">
-                <ClockIcon className="h-3 w-3" />
-                {duration}
-              </Badge>
-            )}
           </div>
           {course.skill && (
             <Badge className="flex items-center text-[11px]" color="secondary">

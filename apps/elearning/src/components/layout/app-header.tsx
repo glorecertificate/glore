@@ -39,8 +39,8 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
         {...props}
       >
         <div className="flex w-full items-center justify-between gap-2 px-4 py-4">
-          <div className="flex h-10 grow items-center gap-2">
-            <Tooltip>
+          <div className="flex h-10 grow items-center gap-1">
+            <Tooltip disableHoverableContent>
               <TooltipTrigger asChild>
                 <SidebarTrigger
                   className={cn(
@@ -54,7 +54,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
                 <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
               </TooltipContent>
             </Tooltip>
-            {breadcrumb && <Breadcrumb className="ml-1 flex h-full items-center">{breadcrumb}</Breadcrumb>}
+            {breadcrumb && <Breadcrumb className="flex h-full items-center">{breadcrumb}</Breadcrumb>}
           </div>
           {/* {syncState === 'syncing' && (
             <Tooltip>

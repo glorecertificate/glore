@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 export default () => {
   const t = useTranslations('Certificates')

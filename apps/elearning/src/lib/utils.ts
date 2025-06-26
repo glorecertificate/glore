@@ -5,7 +5,7 @@ import { extendTailwindMerge } from 'tailwind-merge'
 import { type Json } from '@repo/utils'
 
 import { type Locale } from '@/lib/i18n/types'
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
   extend: {

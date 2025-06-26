@@ -1,7 +1,7 @@
 import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 
-import config from 'static/config.json'
-import metadata from 'static/metadata.json'
+import configLocal from 'config/development.json'
+import metadata from 'config/metadata.json'
 
 export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
   params?: Promise<RouteSegments<R>>
@@ -45,7 +45,7 @@ export enum AuthPage {
 export const ExternalRoute = {
   App: metadata.url,
   Website: metadata.website,
-  SupabaseStudio: config.supabaseStudioUrl,
+  SupabaseStudio: configLocal.supabaseStudioUrl,
 }
 
 /**

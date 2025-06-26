@@ -4,8 +4,8 @@ import type { NamespaceKeys, NestedKeyOf } from 'next-intl'
 
 import type { AnyArray, AnyRecord } from '@repo/utils'
 
-import type app from 'static/config.json'
-import type messages from 'static/translations/en.json'
+import type app from 'config/app.json'
+import type messages from 'config/translations/en.json'
 
 import type { formats } from './config'
 

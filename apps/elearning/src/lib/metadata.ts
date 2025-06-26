@@ -3,8 +3,8 @@ import { type Metadata, type ResolvingMetadata } from 'next'
 import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
 import { asset, Public } from '@/lib/storage'
-import config from 'static/config.json'
-import metadata from 'static/metadata.json'
+import config from 'config/app.json'
+import metadata from 'config/metadata.json'
 
 export interface PageMetadata {
   description?: string

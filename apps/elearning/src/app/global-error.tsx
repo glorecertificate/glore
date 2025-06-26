@@ -11,9 +11,9 @@ import { usePathname } from '@/hooks/use-pathname'
 import { type Locale } from '@/lib/i18n/types'
 import { LOCALES } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import en from 'static/translations/en.json'
-import es from 'static/translations/es.json'
-import it from 'static/translations/it.json'
+import en from 'config/translations/en.json'
+import es from 'config/translations/es.json'
+import it from 'config/translations/it.json'
 
 export default ({ error }: ErrorProps) => {
   const { readCookie } = useCookies()

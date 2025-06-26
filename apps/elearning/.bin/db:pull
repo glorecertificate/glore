@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+SCHEMA=auth,storage
+
+./node_modules/.bin/supabase db pull
+./node_modules/.bin/supabase db pull --schema $SCHEMA
+exit 0

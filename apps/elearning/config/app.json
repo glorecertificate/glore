@@ -15,6 +15,5 @@
     }
   },
   "minSkills": 3,
-  "minSkillRating": 3,
-  "supabaseStudioUrl": " http://127.0.0.1:54323"
+  "minSkillRating": 3
 }

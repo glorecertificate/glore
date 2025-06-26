@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-R="\033[0;31m"
-
 SCHEMA=auth,public,storage
 TYPES=supabase/types.ts
 arg="--local"
@@ -9,7 +7,7 @@ arg="--local"
 [ -f .env ] && . ./.env
 
 if [ -z "$SUPABASE_PROJECT_ID" ]; then
-  echo "${R}Error: SUPABASE_PROJECT_ID is not set"
+  echo "SUPABASE_PROJECT_ID is not set."
   exit 1
 fi
 

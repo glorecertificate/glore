@@ -7,7 +7,7 @@ import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
 import { useDevice } from '@/hooks/use-device'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import metadata from 'static/metadata.json'
+import metadata from 'config/metadata.json'
 
 export interface ErrorProps {
   error: { digest?: string } & Error

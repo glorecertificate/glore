@@ -13,7 +13,7 @@ import { Toaster } from '@/components/ui/toaster'
 import { Env } from '@/lib/env'
 import { getLocale, getTranslations } from '@/lib/i18n/server'
 import { generateLocalizedMetadata } from '@/lib/metadata'
-import metadata from 'static/metadata.json'
+import metadata from 'config/metadata.json'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()

@@ -3,7 +3,7 @@ import eslintConfig from '@repo/eslint-config'
 export default eslintConfig({
   customExternalImports: ['react', 'next', '@next'],
   customInternalImports: ['@repo'],
-  internalImports: ['static', 'supabase'],
+  internalImports: ['config', 'supabase'],
   maxLines: -1,
   namedImports: ['react'],
   react: 'nextjs',

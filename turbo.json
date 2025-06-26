@@ -11,14 +11,6 @@
   ],
   "ui": "tui",
   "tasks": {
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "watch": {
-      "cache": false,
-      "persistent": true
-    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
@@ -41,9 +33,21 @@
     "start": {
       "dependsOn": ["^start"]
     },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "watch": {
+      "cache": false,
+      "persistent": true
+    },
     "test": {
       "dependsOn": ["^test"],
       "outputs": ["coverage/**"]
+    },
+    "typegen": {
+      "dependsOn": ["^typegen"],
+      "outputs": ["**/*.d.ts"]
     },
     "type-check": {
       "dependsOn": ["^type-check"]
@@ -60,6 +64,43 @@
     "analyze": {
       "dependsOn": ["^analyze"],
       "env": ["ANALYZE"]
+    },
+    "db:start": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:stop": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:dump": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:pull": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:push": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:seed": {
+      "cache": false,
+      "persistent": true,
+      "env": ["SUPABASE_DB_URL", "OPENAI_API_KEY", "AI_MODEL_NAME", "AI_INPUT", "AI_INSTRUCTION"]
+    },
+    "db:sync": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:reset": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

@@ -8,7 +8,7 @@ import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 const items = Object.entries(config.locales).map(([value, { flag, name }]) => ({
   label: name,

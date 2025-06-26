@@ -1,8 +1,11 @@
 /.next/
+/.snaplet/
 /.vercel/
 /node_modules/
-/static/translations/*.d.json.ts
+/config/translations/*.d.json.ts
 /supabase/.branches/
+/supabase/.snaplet/dataExamples.json
+/supabase/.snaplet/dataModel.json
 /supabase/.temp/
 /supabase/types.ts
 /*.d.ts

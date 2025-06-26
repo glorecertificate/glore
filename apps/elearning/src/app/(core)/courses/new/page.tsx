@@ -7,10 +7,9 @@ import { generateLocalizedMetadata } from '@/lib/metadata'
 export default async () => {
   const user = await api.users.getCurrent()
   if (!user || (!user.isAdmin && !user.isEditor)) return notFound()
-  return <CourseView type="editor" />
+  return <CourseView />
 }
 
 export const generateMetadata = generateLocalizedMetadata({
   title: 'Courses.newCourse',
-  description: undefined,
 })

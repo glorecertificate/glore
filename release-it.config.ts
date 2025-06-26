@@ -1,7 +1,7 @@
 import releaseItConfig from '@repo/release-it-config'
 
 export default releaseItConfig({
-  autoReleaseNotes: false,
+  afterBump: ['pnpm run format'],
   bumpFiles: ['apps/*/package.json', 'apps/**/metadata.json'],
   deployment: true,
 })

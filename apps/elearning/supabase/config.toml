@@ -32,8 +32,8 @@ enabled = true
 schema_paths = ["./migrations"]
 
 [db.seed]
-enabled = true
-sql_paths = ["./seeds/*.sql"]
+enabled = false
+# sql_paths = ["./seeds/*.sql"]
 
 [realtime]
 enabled = false

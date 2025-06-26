@@ -1,6 +1,6 @@
 import { type MiddlewareConfig, type NextMiddleware } from 'next/server'
 
-import { updateSession } from '@/middlewares/db'
+import { updateSession } from '@/lib/db/middleware'
 
 export const middleware: NextMiddleware = async request => await updateSession(request)
 

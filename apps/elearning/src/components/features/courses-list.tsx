@@ -23,9 +23,6 @@ import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import { type Enums } from 'supabase/types'
-
-const durationSortOrder: Array<Enums<'course_duration'>> = ['short', 'medium', 'long']
 
 export const CoursesList = () => {
   const { localize } = useLocale()
@@ -38,7 +35,6 @@ export const CoursesList = () => {
       progress: t('sortByProgress'),
       type: t('sortByType'),
       difficulty: t('sortByDifficulty'),
-      duration: t('sortByDuration'),
     }),
     [t],
   )
@@ -61,12 +57,6 @@ export const CoursesList = () => {
           return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
         if (activeSort === 'type')
           return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
-        if (activeSort === 'duration')
-          return a.duration && b.duration
-            ? sortDirection === 'asc'
-              ? durationSortOrder.indexOf(a.duration) - durationSortOrder.indexOf(b.duration)
-              : durationSortOrder.indexOf(b.duration) - durationSortOrder.indexOf(a.duration)
-            : 0
         return 0
       }),
     [activeSort, sortDirection, courses, localize],

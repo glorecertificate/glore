@@ -1,0 +1,196 @@
+{
+  "supabaseStudioUrl": " http://127.0.0.1:54323",
+  "seeds": {
+    "users": [
+      {
+        "username": "admin",
+        "is_admin": true,
+        "first_name": "Admin",
+        "last_name": "User"
+      },
+      {
+        "username": "editor",
+        "is_editor": true,
+        "first_name": "Editor",
+        "last_name": "User"
+      },
+      {
+        "username": "representative",
+        "first_name": "Representative",
+        "last_name": "User"
+      }
+    ],
+    "skill_areas": [
+      {
+        "name": {
+          "en": "Collaboration",
+          "es": "Colaboración",
+          "it": "Collaborazione"
+        },
+        "description": {
+          "en": "The ability to work effectively with others to achieve a common goal.",
+          "es": "La capacidad de trabajar eficazmente con otros para lograr un objetivo común.",
+          "it": "La capacità di lavorare efficacemente con gli altri per raggiungere un obiettivo comune."
+        },
+        "skills": [
+          {
+            "name": {
+              "en": "Team Collaboration",
+              "es": "Colaboración en Equipo",
+              "it": "Collaborazione di Squadra"
+            },
+            "description": {
+              "en": "The ability to work effectively with team members, share ideas, and contribute to collective goals.",
+              "es": "La capacidad de trabajar eficazmente con los miembros del equipo, compartir ideas y contribuir a los objetivos colectivos.",
+              "it": "La capacità di lavorare efficacemente con i membri del team, condividere idee e contribuire agli obiettivi collettivi."
+            },
+            "icon_url": "https://cdn-icons-png.flaticon.com/512/809/809522.png",
+            "course": {
+              "image_url": "https://t4.ftcdn.net/jpg/02/11/39/51/360_F_211395193_ILTeSLFdGh1LIVxYwCcjGLcUCDBxiwTr.jpg",
+              "lessons": [
+                {
+                  "type": "descriptive",
+                  "title": {
+                    "en": "Introduction to Team Collaboration",
+                    "es": "Introducción a la Colaboración en Equipo",
+                    "it": "Introduzione alla Collaborazione di Squadra"
+                  },
+                  "content": {
+                    "en": "Team collaboration is the foundation of successful organizations and projects. It involves individuals working together effectively, combining their unique skills, perspectives, and expertise to achieve shared goals.\n\n## What is Team Collaboration?\n\nTeam collaboration is more than just working alongside others. It's about:\n\n- **Shared Purpose**: Aligning everyone toward common objectives\n- **Open Communication**: Fostering transparent and honest dialogue\n- **Mutual Support**: Helping teammates succeed and overcome challenges\n- **Collective Problem-Solving**: Leveraging diverse perspectives to find solutions\n\n## Why is Team Collaboration Important?\n\n### Enhanced Creativity and Innovation\nWhen team members share different backgrounds and expertise, they bring unique perspectives that spark creative solutions and innovative approaches.\n\n### Improved Problem-Solving\nComplex challenges often require multiple viewpoints. Collaborative teams can identify problems faster and develop more comprehensive solutions.\n\n### Increased Productivity\nEffective collaboration reduces duplication of effort, streamlines processes, and allows team members to focus on their strengths.\n\n### Better Decision-Making\nTeams that collaborate well consider multiple options, weigh pros and cons collectively, and make more informed decisions.\n\n## Key Elements of Successful Team Collaboration\n\n1. **Clear Communication**\n   - Active listening\n   - Respectful dialogue\n   - Regular check-ins\n\n2. **Defined Roles and Responsibilities**\n   - Understanding individual contributions\n   - Avoiding overlap and confusion\n   - Accountability for deliverables\n\n3. **Trust and Psychological Safety**\n   - Feeling safe to share ideas\n   - Admitting mistakes without fear\n   - Supporting each other's growth\n\n4. **Shared Tools and Processes**\n   - Common platforms for communication\n   - Standardized workflows\n   - Accessible documentation\n\n## Common Collaboration Challenges\n\n- **Communication Barriers**: Language differences, unclear messaging, or lack of regular updates\n- **Conflicting Priorities**: When individual goals don't align with team objectives\n- **Remote Work Difficulties**: Managing collaboration across different time zones and locations\n- **Personality Conflicts**: Navigating different work styles and communication preferences\n\n## Building Your Collaboration Skills\n\nDeveloping strong collaboration skills is an ongoing process that includes:\n\n- Practicing active listening\n- Learning to give and receive constructive feedback\n- Developing empathy and emotional intelligence\n- Improving conflict resolution abilities\n- Mastering collaboration tools and technologies\n\n## Getting Started\n\nAs you begin this course, remember that collaboration is both an art and a science. It requires practice, patience, and a willingness to learn from both successes and failures. The skills you'll develop here will serve you throughout your career and personal life.\n\nLet's embark on this journey together to become more effective collaborators and team members!",
+                    "es": "La colaboración en equipo es la base de las organizaciones y proyectos exitosos. Implica que las personas trabajen juntas de manera efectiva, combinando sus habilidades únicas, perspectivas y experiencia para lograr objetivos compartidos.\n\n## ¿Qué es la Colaboración en Equipo?\n\nLa colaboración en equipo es más que solo trabajar junto a otros. Se trata de:\n\n- **Propósito Compartido**: Alinear a todos hacia objetivos comunes\n- **Comunicación Abierta**: Fomentar el diálogo transparente y honesto\n- **Apoyo Mutuo**: Ayudar a los compañeros de equipo a tener éxito y superar desafíos\n- **Resolución Colectiva de Problemas**: Aprovechar perspectivas diversas para encontrar soluciones\n\n## ¿Por qué es Importante la Colaboración en Equipo?\n\n### Mayor Creatividad e Innovación\nCuando los miembros del equipo comparten diferentes antecedentes y experiencia, aportan perspectivas únicas que generan soluciones creativas y enfoques innovadores.\n\n### Mejor Resolución de Problemas\nLos desafíos complejos a menudo requieren múltiples puntos de vista. Los equipos colaborativos pueden identificar problemas más rápido y desarrollar soluciones más integrales.\n\n### Mayor Productividad\nLa colaboración efectiva reduce la duplicación de esfuerzos, agiliza los procesos y permite que los miembros del equipo se enfoquen en sus fortalezas.\n\n### Mejor Toma de Decisiones\nLos equipos que colaboran bien consideran múltiples opciones, evalúan pros y contras colectivamente y toman decisiones más informadas.\n\n## Elementos Clave de la Colaboración Exitosa en Equipo\n\n1. **Comunicación Clara**\n   - Escucha activa\n   - Diálogo respetuoso\n   - Revisiones regulares\n\n2. **Roles y Responsabilidades Definidos**\n   - Entender las contribuciones individuales\n   - Evitar superposiciones y confusión\n   - Responsabilidad por los entregables\n\n3. **Confianza y Seguridad Psicológica**\n   - Sentirse seguro para compartir ideas\n   - Admitir errores sin temor\n   - Apoyar el crecimiento mutuo\n\n4. **Herramientas y Procesos Compartidos**\n   - Plataformas comunes para la comunicación\n   - Flujos de trabajo estandarizados\n   - Documentación accesible\n\n## Desafíos Comunes de Colaboración\n\n- **Barreras de Comunicación**: Diferencias de idioma, mensajes poco claros o falta de actualizaciones regulares\n- **Prioridades Conflictivas**: Cuando los objetivos individuales no se alinean con los objetivos del equipo\n- **Dificultades del Trabajo Remoto**: Gestionar la colaboración a través de diferentes zonas horarias y ubicaciones\n- **Conflictos de Personalidad**: Navegar diferentes estilos de trabajo y preferencias de comunicación\n\n## Desarrollando tus Habilidades de Colaboración\n\nDesarrollar habilidades sólidas de colaboración es un proceso continuo que incluye:\n\n- Practicar la escucha activa\n- Aprender a dar y recibir retroalimentación constructiva\n- Desarrollar empatía e inteligencia emocional\n- Mejorar las habilidades de resolución de conflictos\n- Dominar herramientas y tecnologías de colaboración\n\n## Comenzando\n\nAl comenzar este curso, recuerda que la colaboración es tanto un arte como una ciencia. Requiere práctica, paciencia y disposición para aprender tanto de los éxitos como de los fracasos. Las habilidades que desarrollarás aquí te servirán a lo largo de tu carrera y vida personal.\n\n¡Emprendamos juntos este viaje para convertirnos en colaboradores y miembros de equipo más efectivos!",
+                    "it": "La collaborazione di squadra è il fondamento delle organizzazioni e dei progetti di successo. Coinvolge individui che lavorano insieme efficacemente, combinando le loro competenze uniche, prospettive ed esperienza per raggiungere obiettivi condivisi.\n\n## Cos'è la Collaborazione di Squadra?\n\nLa collaborazione di squadra è più che semplicemente lavorare accanto ad altri. Riguarda:\n\n- **Scopo Condiviso**: Allineare tutti verso obiettivi comuni\n- **Comunicazione Aperta**: Favorire il dialogo trasparente e onesto\n- **Supporto Reciproco**: Aiutare i compagni di squadra a riuscire e superare le sfide\n- **Risoluzione Collettiva dei Problemi**: Sfruttare prospettive diverse per trovare soluzioni\n\n## Perché è Importante la Collaborazione di Squadra?\n\n### Maggiore Creatività e Innovazione\nQuando i membri del team condividono background ed esperienza diversi, portano prospettive uniche che innescano soluzioni creative e approcci innovativi.\n\n### Migliore Risoluzione dei Problemi\nLe sfide complesse spesso richiedono punti di vista multipli. I team collaborativi possono identificare i problemi più velocemente e sviluppare soluzioni più complete.\n\n### Maggiore Produttività\nLa collaborazione efficace riduce la duplicazione degli sforzi, snellisce i processi e consente ai membri del team di concentrarsi sui loro punti di forza.\n\n### Migliore Processo Decisionale\nI team che collaborano bene considerano multiple opzioni, valutano pro e contro collettivamente e prendono decisioni più informate.\n\n## Elementi Chiave della Collaborazione di Squadra di Successo\n\n1. **Comunicazione Chiara**\n   - Ascolto attivo\n   - Dialogo rispettoso\n   - Check-in regolari\n\n2. **Ruoli e Responsabilità Definiti**\n   - Comprendere i contributi individuali\n   - Evitare sovrapposizioni e confusione\n   - Responsabilità per i risultati\n\n3. **Fiducia e Sicurezza Psicologica**\n   - Sentirsi sicuri nel condividere idee\n   - Ammettere errori senza paura\n   - Supportare la crescita reciproca\n\n4. **Strumenti e Processi Condivisi**\n   - Piattaforme comuni per la comunicazione\n   - Flussi di lavoro standardizzati\n   - Documentazione accessibile\n\n## Sfide Comuni della Collaborazione\n\n- **Barriere di Comunicazione**: Differenze linguistiche, messaggi poco chiari o mancanza di aggiornamenti regolari\n- **Priorità Conflittuali**: Quando gli obiettivi individuali non si allineano con quelli del team\n- **Difficoltà del Lavoro Remoto**: Gestire la collaborazione attraverso fusi orari e località diverse\n- **Conflitti di Personalità**: Navigare stili di lavoro e preferenze di comunicazione diverse\n\n## Sviluppare le tue Competenze di Collaborazione\n\nSviluppare solide competenze di collaborazione è un processo continuo che include:\n\n- Praticare l'ascolto attivo\n- Imparare a dare e ricevere feedback costruttivo\n- Sviluppare empatia e intelligenza emotiva\n- Migliorare le capacità di risoluzione dei conflitti\n- Padroneggiare strumenti e tecnologie di collaborazione\n\n## Iniziare\n\nMentre inizi questo corso, ricorda che la collaborazione è sia un'arte che una scienza. Richiede pratica, pazienza e volontà di imparare sia dai successi che dai fallimenti. Le competenze che svilupperai qui ti serviranno per tutta la carriera e la vita personale.\n\nIntraprendiamo insieme questo viaggio per diventare collaboratori e membri di squadra più efficaci!"
+                  }
+                },
+                {
+                  "type": "evaluations",
+                  "title": {
+                    "en": "Team Collaboration Evaluations",
+                    "es": "Evaluaciónes de la Colaboración en Equipo",
+                    "it": "Valutazioni della Collaborazione di Squadra"
+                  },
+                  "content": {
+                    "en": "In these evaluations, you will be assessed on your understanding of the key concepts of team collaboration. This includes your ability to:\n\n- Identify the principles of effective team collaboration\n- Recognize common challenges and solutions in team settings\n- Apply best practices for enhancing team collaboration\n\nPlease answer the following questions to the best of your ability. Your responses will help gauge your understanding and readiness to apply these concepts in real-world scenarios.",
+                    "es": "En estas evaluaciónes, se evaluará tu comprensión de los conceptos clave de la colaboración en equipo. Esto incluye tu capacidad para:\n\n- Identificar los principios de la colaboración efectiva en equipo\n- Reconocer desafíos comunes y soluciones en entornos de equipo\n- Aplicar mejores prácticas para mejorar la colaboración en equipo\n\nPor favor, responde las siguientes preguntas lo mejor que puedas. Tus respuestas ayudarán a medir tu comprensión y preparación para aplicar estos conceptos en escenarios del mundo real.",
+                    "it": "In queste valutazioni, sarai valutato sulla tua comprensione dei concetti chiave della collaborazione di squadra. Ciò include la tua capacità di:\n\n- Identificare i principi della collaborazione efficace di squadra\n- Riconoscere sfide comuni e soluzioni negli ambienti di squadra\n- Applicare le migliori pratiche per migliorare la collaborazione di squadra\n\nSi prega di rispondere alle seguenti domande nel miglior modo possibile. Le tue risposte aiuteranno a valutare la tua comprensione e prontezza ad applicare questi concetti in scenari del mondo reale."
+                  },
+                  "evaluations": [
+                    {
+                      "description": {
+                        "en": "I have a clear understanding of the principles of team collaboration.",
+                        "es": "Tengo una comprensión clara de los principios de la colaboración en equipo.",
+                        "it": "Ho una chiara comprensione dei principi della collaborazione di squadra."
+                      }
+                    },
+                    {
+                      "description": {
+                        "en": "I can identify common challenges faced by teams and propose effective solutions.",
+                        "es": "Puedo identificar los desafíos comunes que enfrentan los equipos y proponer soluciones efectivas.",
+                        "it": "Posso identificare le sfide comuni affrontate dai team e proporre soluzioni efficaci."
+                      }
+                    },
+                    {
+                      "description": {
+                        "en": "I apply best practices for enhancing team collaboration in my work.",
+                        "es": "Aplico las mejores prácticas para mejorar la colaboración en equipo en mi trabajo.",
+                        "it": "Applico le migliori pratiche per migliorare la collaborazione di squadra nel mio lavoro."
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "assessment",
+                  "title": {
+                    "en": "Skill Assessment",
+                    "es": "Evaluación de Habilidades",
+                    "it": "Valutazione delle Competenze"
+                  },
+                  "content": {
+                    "en": "This assessment will evaluate your understanding of team collaboration principles, common challenges, and best practices. Please answer the following questions based on the content covered in this course.",
+                    "es": "Esta evaluación evaluará tu comprensión de los principios de colaboración en equipo, los desafíos comunes y las mejores prácticas. Por favor, responde las siguientes preguntas basadas en el contenido cubierto en este curso.",
+                    "it": "Questa valutazione valuterà la tua comprensione dei principi di collaborazione di squadra, delle sfide comuni e delle migliori pratiche. Si prega di rispondere alle seguenti domande basate sul contenuto trattato in questo corso."
+                  },
+                  "assessments": [
+                    {
+                      "description": {
+                        "en": "How would you rate your general understanding of the principles of team collaboration?",
+                        "es": "¿Cómo calificarías tu comprensión general de los principios de la colaboración en equipo?",
+                        "it": "Come valuteresti la tua comprensione generale dei principi della collaborazione di squadra?"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "intro_courses": [
+      {
+        "type": "questions",
+        "title": {
+          "en": "Aspects of Team Collaboration",
+          "es": "Aspectos de la Colaboración en Equipo",
+          "it": "Aspetti della Collaborazione di Squadra"
+        },
+        "content": {
+          "en": "Now that you've learned about the fundamentals of team collaboration, it's time to test your understanding of the key concepts we've covered. This section will present you with a series of questions designed to evaluate your knowledge on:\n\n- Team collaboration principles\n- Common challenges and solutions\n- Best practices for effective collaboration\n\nTake your time to think through each question carefully, as this will help reinforce your learning and identify areas where you might want to review the material again.",
+          "es": "Ahora que has aprendido sobre los fundamentos de la colaboración en equipo, es hora de poner a prueba tu comprensión de los conceptos clave que hemos cubierto. Esta sección te presentará una serie de preguntas diseñadas para evaluar tu conocimiento sobre:\n\n- Principios de colaboración en equipo\n- Desafíos comunes y soluciones\n- Mejores prácticas para una colaboración efectiva\n\nTómate tu tiempo para reflexionar sobre cada pregunta cuidadosamente, ya que esto ayudará a reforzar tu aprendizaje e identificar áreas donde podrías querer revisar el material nuevamente.",
+          "it": "nOra che hai appreso i fondamenti della collaborazione di squadra, è il momento di mettere alla prova la tua comprensione dei concetti chiave che abbiamo trattato. Questa sezione ti presenterà una serie di domande progettate per valutare la tua conoscenza su:\n\n- Principi di collaborazione di squadra\n- Sfide comuni e soluzioni\n- Migliori pratiche per una collaborazione efficace\n\nPrenditi il tuo tempo per riflettere su ogni domanda con attenzione, poiché questo aiuterà a rafforzare il tuo apprendimento e identificare aree in cui potresti voler rivedere il materiale di nuovo."
+        },
+        "questions": [
+          {
+            "description": {
+              "en": "The primary goal of team collaboration is to work together to achieve a common goal.",
+              "es": "El objetivo principal de la colaboración en equipo es trabajar juntos para lograr un objetivo común.",
+              "it": "L'obiettivo principale della collaborazione di squadra è lavorare insieme per raggiungere un obiettivo comune."
+            },
+            "question_options": [
+              {
+                "content": {
+                  "en": "True",
+                  "es": "Verdadero",
+                  "it": "Vero"
+                },
+                "is_correct": true
+              },
+              {
+                "content": {
+                  "en": "False",
+                  "es": "Falso",
+                  "it": "Falso"
+                },
+                "is_correct": false
+              }
+            ]
+          },
+          {
+            "description": {
+              "en": "Effective team collaboration requires open communication and mutual support.",
+              "es": "La colaboración efectiva en equipo requiere comunicación abierta y apoyo mutuo.",
+              "it": "La collaborazione efficace di squadra richiede comunicazione aperta e supporto reciproco."
+            },
+            "question_options": [
+              {
+                "content": {
+                  "en": "True",
+                  "es": "Verdadero",
+                  "it": "Vero"
+                },
+                "is_correct": true
+              },
+              {
+                "content": {
+                  "en": "False",
+                  "es": "Falso",
+                  "it": "Falso"
+                },
+                "is_correct": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

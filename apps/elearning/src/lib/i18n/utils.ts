@@ -1,6 +1,6 @@
 import { type AnyRecord, type Json, type Primitive } from '@repo/utils'
 
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 import { type IntlJson, type Locale, type Localized } from './types'
 
@@ -43,3 +43,15 @@ export const localDate = (date: Date | string | number, locale: Locale): string 
  */
 export const localShortDate = (date: Date | number, locale: Locale): string =>
   new Intl.DateTimeFormat(locale).format(date)
+
+/**
+ *  Converts a string to a JSON object with all locales.
+ */
+export const withLocale = (value: string) =>
+  LOCALES.reduce(
+    (json, locale) => ({
+      ...json,
+      [locale]: value,
+    }),
+    {},
+  )

@@ -5,7 +5,7 @@ import { cookies } from 'next/headers'
 import { getMessages, getRequestConfig, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
-import config from 'static/config.json'
+import config from 'config/app.json'
 
 import type { Locale, MessageKey } from './types'
 

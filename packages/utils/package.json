@@ -8,12 +8,6 @@
       "import": "./build/index.js",
       "require": "./build/index.cjs",
       "default": "./build/index.js"
-    },
-    "./*": {
-      "types": "./build/*.d.ts",
-      "import": "./build/*.js",
-      "require": "./build/*.cjs",
-      "default": "./build/*.js"
     }
   },
   "prettier": "@repo/prettier-config",

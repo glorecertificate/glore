@@ -1,5 +1,12 @@
 # Changelog
 
+## <small>0.4.3 (2025-06-26)</small>
+
+* chore: format sql files with prettier ([a4c545e](https://github.com/gabrielecanepa/glore/commit/a4c545e))
+* chore: group scoped components in a single `features` folder ([082a1b9](https://github.com/gabrielecanepa/glore/commit/082a1b9))
+* chore(dev): set up seeds ([914ddd6](https://github.com/gabrielecanepa/glore/commit/914ddd6))
+* ci: add pnpm scripts to manage the database ([308879f](https://github.com/gabrielecanepa/glore/commit/308879f))
+
 ## <small>0.4.2 (2025-06-24)</small>
 
 * chore: improve layout ([3b2bef6](https://github.com/gabrielecanepa/glore/commit/3b2bef6))

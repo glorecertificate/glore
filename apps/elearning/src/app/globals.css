@@ -96,8 +96,10 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-success: var(--success);
+  --color-success-accent: var(--success-accent);
   --color-success-foreground: var(--success-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-accent: var(--destructive-accent);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-primary: var(--primary);
   --color-primary-accent: var(--primary-accent);
@@ -116,6 +118,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@utility text-stroke-* {
+  /* prettier-ignore */
+  -webkit-text-stroke-width: --value(number)px;
+  -webkit-text-stroke-color: --value(--color-*);
 }
 
 @layer base {
@@ -313,11 +321,4 @@
       @apply m-0 inline max-w-full overflow-visible border-0 bg-accent p-0 wrap-normal;
     }
   }
-}
-
-@utility text-stroke-* {
-  /* prettier-ignore */
-  -webkit-text-stroke-width: --value(number)px;
-  /* prettier-ignore */
-  -webkit-text-stroke-color: --value(--color-*);
 }

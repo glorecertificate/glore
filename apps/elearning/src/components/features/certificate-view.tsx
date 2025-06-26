@@ -44,7 +44,7 @@ export const CertificateView = () => {
       canRequestCertificate ? (
         <CertificateGraphic className="mx-auto mb-6" width={300} />
       ) : (
-        <NoAccessGraphic className="mx-auto mb-4" width={200} />
+        <NoAccessGraphic className="mx-auto mb-0" width={220} />
       ),
     [canRequestCertificate],
   )
@@ -74,15 +74,9 @@ export const CertificateView = () => {
     () => (canRequestCertificate ? Route.CertificateNew : Route.Courses),
     [canRequestCertificate],
   )
-  // const canUpdateCertificate = useMemo(
-  //   () =>
-  //     !!certificate &&
-  //     courses.filter(course => course.status === CourseStatus.Completed).length < (user.certificate?.courses_count || 0),
-  //   [certificate, courses, user.certificate],
-  // )
 
   return (
-    <div className="flex h-full flex-col px-8">
+    <>
       <div className="border-b">
         <div className="container pb-4">
           <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
@@ -94,16 +88,16 @@ export const CertificateView = () => {
         {certificate ? (
           <CertificateDocument certificate={certificate} />
         ) : (
-          <div className="mx-auto max-w-xl py-16 text-center">
+          <div className="mx-auto max-w-xl py-12 text-center">
             {NoCertificateImage}
             <h2 className="mb-2 text-lg font-bold">{noCertificateTitle}</h2>
             <p className="mb-5 text-muted-foreground">{noCertificateMessage}</p>
-            <Button asChild size="lg">
+            <Button asChild color="secondary" size="lg">
               <Link href={noCertificateLink}>{noCertificateLabel}</Link>
             </Button>
           </div>
         )}
       </div>
-    </div>
+    </>
   )
 }

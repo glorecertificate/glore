@@ -82,7 +82,7 @@ const certifications = [
   },
 ]
 
-export const CertificationsManagement = () => {
+export const AdminCertificates = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedOrganization, setSelectedOrganization] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()

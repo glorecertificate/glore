@@ -29,7 +29,7 @@ export default async ({ children }: React.PropsWithChildren) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body>
         <I18nProvider>
           <ThemeProvider>
             <PathnameProvider>

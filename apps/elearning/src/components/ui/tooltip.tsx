@@ -14,7 +14,7 @@ const Tooltip = (props: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
   </TooltipProvider>
 )
 
-const TooltipTrigger = ({ ...props }: React.ComponentProps<typeof TooltipPrimitive.Trigger>) => (
+const TooltipTrigger = (props: React.ComponentProps<typeof TooltipPrimitive.Trigger>) => (
   <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 )
 

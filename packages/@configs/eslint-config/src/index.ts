@@ -117,6 +117,18 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
     scopedRestrictedImports.push(restrictedImport)
   }
 
+  const globalAllowRelativeImports =
+    typeof allowRelativeImports === 'string' ? allowRelativeImports : allowRelativeImports[0]
+  const scopedAllowRelativeImports = [] as Array<{ files: string[]; option: 'always' | 'never' | 'siblings' }>
+  if (Array.isArray(allowRelativeImports) && allowRelativeImports[1]) {
+    for (const [option, files] of Object.entries(allowRelativeImports[1])) {
+      scopedAllowRelativeImports.push({
+        files,
+        option: option as 'always' | 'never' | 'siblings',
+      })
+    }
+  }
+
   const hasNextJs = typeof react === 'string' && react === 'nextjs'
 
   const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
@@ -178,7 +190,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           'no-restricted-imports': [
             RuleSeverity.Error,
             noRestrictedImportsOptions({
-              allowRelativeImports,
+              allowRelativeImports: globalAllowRelativeImports,
               namedImports,
               restrictedImports: globalRestrictedImports,
               nodePrefix,
@@ -310,6 +322,21 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                   allowRelativeImports,
                   namedImports,
                   restrictedImports: [restrictedImport],
+                  nodePrefix,
+                }),
+              ],
+            },
+          }))
+        : []),
+      ...(scopedAllowRelativeImports.length > 0
+        ? scopedAllowRelativeImports.map(scopedImports => ({
+            files: scopedImports.files,
+            rules: {
+              'no-restricted-imports': [
+                RuleSeverity.Error,
+                noRestrictedImportsOptions({
+                  allowRelativeImports: scopedImports.option,
+                  namedImports,
                   nodePrefix,
                 }),
               ],

@@ -90,7 +90,7 @@ const organizations = [
   },
 ]
 
-export const OrganizationsManagement = () => {
+export const AdminOrganizations = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()

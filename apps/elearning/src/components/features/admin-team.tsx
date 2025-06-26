@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Download, Filter, MoreHorizontal, Search, UserPlus } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -25,16 +26,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-const users = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'Volunteer',
-    status: 'Active',
-    region: 'North America',
-    joined: '2023-05-12',
-  },
+const staticUsers = [
   {
     id: '2',
     name: 'Jane Smith',
@@ -42,7 +34,7 @@ const users = [
     role: 'Organization Admin',
     status: 'Active',
     region: 'Europe',
-    joined: '2023-06-18',
+    joined: '2025-06-18',
   },
   {
     id: '3',
@@ -51,7 +43,7 @@ const users = [
     role: 'Volunteer',
     status: 'Inactive',
     region: 'Asia',
-    joined: '2023-04-22',
+    joined: '2025-04-22',
   },
   {
     id: '4',
@@ -60,7 +52,7 @@ const users = [
     role: 'Admin',
     status: 'Active',
     region: 'North America',
-    joined: '2023-07-30',
+    joined: '2025-07-30',
   },
   {
     id: '5',
@@ -69,7 +61,7 @@ const users = [
     role: 'Volunteer',
     status: 'Active',
     region: 'South America',
-    joined: '2023-08-05',
+    joined: '2025-08-05',
   },
   {
     id: '6',
@@ -78,7 +70,7 @@ const users = [
     role: 'Organization Admin',
     status: 'Active',
     region: 'Europe',
-    joined: '2023-09-14',
+    joined: '2025-09-14',
   },
   {
     id: '7',
@@ -87,7 +79,7 @@ const users = [
     role: 'Volunteer',
     status: 'Pending',
     region: 'Africa',
-    joined: '2023-10-02',
+    joined: '2025-10-02',
   },
   {
     id: '8',
@@ -96,16 +88,36 @@ const users = [
     role: 'Volunteer',
     status: 'Active',
     region: 'Oceania',
-    joined: '2023-11-19',
+    joined: '2025-11-19',
   },
-]
+  {
+    id: '9',
+    name: 'John Doe',
+    email: 'john@example.com',
+    role: 'Volunteer',
+    status: 'Active',
+    region: 'North America',
+    joined: '2025-05-12',
+  },
+].reverse()
 
-export const UsersManagement = () => {
+const newUser = {
+  id: '10',
+  name: 'Editor User',
+  email: 'editor@glorecertificate.net',
+  role: 'Editor',
+  status: 'Active',
+  region: '',
+  joined: '2025-06-26',
+}
+
+export const AdminTeam = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>()
+  const [users, setUsers] = useState(staticUsers)
 
   const filteredUsers = users.filter(user => {
     const matchesSearch =
@@ -134,6 +146,12 @@ export const UsersManagement = () => {
     }).format(date)
   }
 
+  const _onAddUser = () => {
+    setUsers(prev => [newUser, ...prev])
+    setIsAddUserOpen(false)
+    toast.success('User added successfully!')
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -143,7 +161,7 @@ export const UsersManagement = () => {
             <Download className="mr-2 h-4 w-4" />
             {'Export'}
           </Button>
-          <Button onClick={() => setIsAddUserOpen(true)}>
+          <Button color="secondary" onClick={() => setIsAddUserOpen(true)}>
             <UserPlus className="mr-2 h-4 w-4" />
             {'Add User'}
           </Button>
@@ -175,10 +193,7 @@ export const UsersManagement = () => {
               <DropdownMenuLabel>{'Filter by Role'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedRole('Admin')}>{'Admin'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRole('Volunteer')}>{'Volunteer'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRole('Organization Admin')}>
-                {'Organization Admin'}
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRole('Editor')}>{'Editor'}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -331,25 +346,8 @@ export const UsersManagement = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="admin">{'Admin'}</SelectItem>
-                  <SelectItem value="volunteer">{'Volunteer'}</SelectItem>
+                  <SelectItem value="volunteer">{'Editor'}</SelectItem>
                   <SelectItem value="organization-admin">{'Organization Admin'}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="region">{'Region'}</Label>
-              <Select>
-                <SelectTrigger id="region">
-                  <SelectValue placeholder="Select a region" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="north-america">{'North America'}</SelectItem>
-                  <SelectItem value="europe">{'Europe'}</SelectItem>
-                  <SelectItem value="asia">{'Asia'}</SelectItem>
-                  <SelectItem value="south-america">{'South America'}</SelectItem>
-                  <SelectItem value="africa">{'Africa'}</SelectItem>
-                  <SelectItem value="oceania">{'Oceania'}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -364,7 +362,9 @@ export const UsersManagement = () => {
             <Button onClick={() => setIsAddUserOpen(false)} variant="outline">
               {'Cancel'}
             </Button>
-            <Button type="submit">{'Create User'}</Button>
+            <Button color="secondary" onClick={_onAddUser} type="submit">
+              {'Create User'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

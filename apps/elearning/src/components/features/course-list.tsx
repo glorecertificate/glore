@@ -24,7 +24,7 @@ import { useTranslations } from '@/hooks/use-translations'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
-export const CoursesList = () => {
+export const CourseList = () => {
   const { localize } = useLocale()
   const { courses, user } = useSession()
   const t = useTranslations('Courses')
@@ -34,7 +34,6 @@ export const CoursesList = () => {
       name: t('sortByName'),
       progress: t('sortByProgress'),
       type: t('sortByType'),
-      difficulty: t('sortByDifficulty'),
     }),
     [t],
   )
@@ -48,18 +47,42 @@ export const CoursesList = () => {
 
   const filteredCourses = useMemo(
     () =>
-      courses.sort((a, b) => {
-        if (activeSort === 'name')
-          return sortDirection === 'asc'
-            ? localize(a.title).localeCompare(localize(b.title))
-            : localize(b.title).localeCompare(localize(a.title))
-        if (activeSort === 'progress')
-          return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
-        if (activeSort === 'type')
-          return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
-        return 0
-      }),
-    [activeSort, sortDirection, courses, localize],
+      courses
+        .filter(course => {
+          switch (activeTab) {
+            case 'all':
+              return course.publicationStatus === 'active' || course.publicationStatus === 'draft'
+            case 'active':
+              return course.publicationStatus === 'active'
+            case 'draft':
+              return course.publicationStatus === 'draft'
+            case 'archived':
+              return course.publicationStatus === 'archived'
+            case 'not_started':
+              return course.status === 'not_started'
+            case 'in_progress':
+              return course.status === 'in_progress'
+            case 'completed':
+              return course.status === 'completed'
+            default:
+              return true
+          }
+        })
+        .sort((a, b) => {
+          switch (activeSort) {
+            case 'name':
+              return sortDirection === 'asc'
+                ? localize(a.title).localeCompare(localize(b.title))
+                : localize(b.title).localeCompare(localize(a.title))
+            case 'progress':
+              return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
+            case 'type':
+              return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
+            default:
+              return 0
+          }
+        }),
+    [courses, activeTab, activeSort, sortDirection, localize],
   )
 
   const handleTabChange = useCallback((value: string) => {
@@ -120,7 +143,7 @@ export const CoursesList = () => {
   )
 
   return (
-    <div className="flex h-full flex-col px-8">
+    <>
       <div className="border-b">
         <div className="container pb-4">
           <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
@@ -236,6 +259,6 @@ export const CoursesList = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+    </>
   )
 }

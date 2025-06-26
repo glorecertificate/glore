@@ -3,25 +3,17 @@
 import { createContext, useState } from 'react'
 
 interface HeaderContext {
-  breadcrumb?: React.JSX.Element
-  setBreadcrumb: (breadcrumb?: React.JSX.Element) => void
-  subHeader?: React.JSX.Element
-  setSubHeader: (subHeader?: React.JSX.Element) => void
-  headerShadow?: boolean
-  setHeaderShadow: (value: boolean) => void
+  header?: React.JSX.Element
+  setHeader: (breadcrumb?: React.JSX.Element) => void
+  shadow?: boolean
+  setShadow: (value: boolean) => void
 }
 
 export const HeaderContext = createContext<HeaderContext | null>(null)
 
 export const HeaderProvider = (props: React.PropsWithChildren) => {
-  const [breadcrumb, setBreadcrumb] = useState<React.JSX.Element | undefined>(undefined)
-  const [subHeader, setSubHeader] = useState<React.JSX.Element | undefined>(undefined)
-  const [headerShadow, setHeaderShadow] = useState<boolean>(true)
+  const [header, setHeader] = useState<React.JSX.Element | undefined>(undefined)
+  const [shadow, setShadow] = useState<boolean>(false)
 
-  return (
-    <HeaderContext.Provider
-      value={{ breadcrumb, setBreadcrumb, subHeader, setSubHeader, headerShadow, setHeaderShadow }}
-      {...props}
-    />
-  )
+  return <HeaderContext.Provider value={{ header, setHeader, shadow, setShadow }} {...props} />
 }

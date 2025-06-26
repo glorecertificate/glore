@@ -90,6 +90,11 @@ export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = 
     patterns: [] as RestrictedImport[],
   }
 
+  const group = []
+
+  if (allowRelativeImports === 'never') group.push('./**/*', '../**/*')
+  if (allowRelativeImports === 'siblings') group.push('../**/*')
+
   if (allowRelativeImports === 'never')
     rule.patterns.push({
       group: ['./**/*', '../**/*'],

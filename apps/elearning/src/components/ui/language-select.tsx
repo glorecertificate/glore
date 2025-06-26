@@ -10,30 +10,52 @@ import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 import config from 'config/app.json'
 
-const items = Object.entries(config.locales).map(([value, { flag, name }]) => ({
+const languages = Object.entries(config.locales).map(([value, { flag, name }]) => ({
   label: name,
   value,
   icon: flag,
 }))
 
-export const LanguageSelect = (props: SelectTriggerProps) => {
+export const LanguageSelect = ({
+  controlled = false,
+  onChange,
+  value,
+  values = Object.keys(config.locales) as Locale[],
+  ...props
+}: SelectTriggerProps & {
+  controlled?: boolean
+  onChange?: (locale: Locale) => void
+  value?: Locale
+  values?: Locale[]
+}) => {
   const { locale, setLocale } = useLocale()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
-  const activeItem = useMemo(() => items.find(item => item.value === locale), [locale])
+  const items = useMemo(() => languages.filter(item => values.includes(item.value as Locale)), [values])
 
-  const onChange = useCallback(
+  const activeItem = useMemo(
+    () =>
+      items.find(item => {
+        if (controlled) return item.value === value
+        return item.value === locale
+      }),
+    [items, controlled, locale, value],
+  )
+
+  const onValueChange = useCallback(
     (locale: Locale) => {
-      startTransition(async () => {
-        await setLocale(locale)
-      })
+      if (!controlled)
+        startTransition(async () => {
+          await setLocale(locale)
+        })
+      if (onChange) onChange(locale)
     },
-    [setLocale],
+    [controlled, onChange, setLocale],
   )
 
   return (
-    <Select defaultValue={locale} onValueChange={onChange}>
+    <Select defaultValue={locale} onValueChange={onValueChange}>
       <SelectTrigger
         className={cn('hover:bg-accent', isPending && 'pointer-events-none')}
         title={t('selectLanguage')}

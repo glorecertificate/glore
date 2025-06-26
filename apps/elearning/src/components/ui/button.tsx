@@ -61,21 +61,21 @@ const button = cva(
     variants: {
       variant: {
         default: 'text-accent-foreground',
-        outline: 'border border-input bg-transparent',
+        outline: 'border bg-transparent',
         ghost: 'bg-transparent',
         link: '!h-auto border-none bg-transparent !p-0 font-normal',
       },
       color: {
         default: 'text-accent-foreground focus-visible:ring-accent/20 dark:focus-visible:ring-accent/40',
-        primary:
-          'bg-primary text-primary-foreground shadow-xs focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
+        primary: 'text-primary-foreground shadow-xs focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-xs focus-visible:ring-secondary/20 dark:focus-visible:ring-secondary/40',
+          'text-secondary-foreground shadow-xs focus-visible:ring-secondary/20 dark:focus-visible:ring-secondary/40',
         tertiary:
-          'bg-tertiary text-tertiary-foreground shadow-xs focus-visible:ring-tertiary/20 dark:focus-visible:ring-tertiary/40',
+          'text-tertiary-foreground shadow-xs focus-visible:ring-tertiary/20 dark:focus-visible:ring-tertiary/40',
         destructive:
-          'bg-destructive text-destructive-foreground shadow-xs focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
-        muted: 'bg-muted text-muted-foreground shadow-xs',
+          'text-destructive-foreground shadow-xs focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+        success: 'text-success-foreground shadow-xs focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        muted: 'text-muted-foreground shadow-xs',
       },
       hover: {
         true: '',
@@ -93,16 +93,51 @@ const button = cva(
     },
     compoundVariants: [
       {
+        variant: 'default',
+        color: 'primary',
+        className: 'bg-primary',
+      },
+      {
+        variant: 'default',
+        color: 'secondary',
+        className: 'bg-secondary',
+      },
+      {
+        variant: 'default',
+        color: 'tertiary',
+        className: 'bg-tertiary',
+      },
+      {
+        variant: 'default',
+        color: 'destructive',
+        className: 'bg-destructive',
+      },
+      {
+        variant: 'default',
+        color: 'success',
+        className: 'bg-success',
+      },
+      {
+        variant: 'default',
+        color: 'muted',
+        className: 'bg-muted text-muted-foreground',
+      },
+      {
         variant: ['outline', 'ghost'],
         hover: true,
         disabled: false,
         className: 'hover:bg-accent hover:text-accent-foreground',
       },
       {
-        variant: ['link'],
+        variant: 'link',
         hover: true,
         disabled: false,
         className: 'hover:bg-transparent hover:text-accent-foreground',
+      },
+      {
+        variant: 'outline',
+        color: 'default',
+        className: 'border-input',
       },
       {
         color: 'primary',
@@ -126,7 +161,18 @@ const button = cva(
         color: 'destructive',
         hover: true,
         disabled: false,
-        className: 'hover:bg-destructive',
+        className: 'hover:bg-destructive-accent',
+      },
+      {
+        color: 'success',
+        hover: true,
+        disabled: false,
+        className: 'hover:bg-success-accent',
+      },
+      {
+        color: 'success',
+        variant: 'outline',
+        className: 'border-success text-success',
       },
       {
         color: 'muted',

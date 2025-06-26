@@ -9,8 +9,8 @@ import { log as baseLog, noop } from '@repo/utils'
 
 import { seeds } from 'config/development.json'
 
-import { seedSkills } from './seeds/skills'
-import { seedUsers } from './seeds/users'
+import { seedSkills } from './seeds/skill'
+import { seedUsers } from './seeds/user'
 
 const CACHE_FILE = './supabase/.temp/output.json'
 
@@ -111,15 +111,13 @@ void (async () => {
       log.success('Database reset')
     }
 
-    if (included('users')) {
-      const users = await seedUsers(data.users)
-      if (users.length === 0) log.error('No users created')
-      if (users.length < data.users.length) log.warn(`Created ${users.length} users out of ${data.users.length}`)
-      else log.success(`Created ${users.length} users`)
-    }
+    const users = await seedUsers(data.users)
+    if (users.length === 0) log.error('No users created')
+    if (users.length < data.users.length) log.warn(`Created ${users.length} users out of ${data.users.length}`)
+    else log.success(`Created ${users.length} users`)
 
     if (included('courses')) {
-      const store = await seedSkills(seed, data.skill_areas)
+      const store = await seedSkills(seed, data.skill_areas, users)
       log.success(`Created ${store.skills.length} courses and skills grouped in ${store.skill_areas.length} areas`)
     }
   } catch (error) {

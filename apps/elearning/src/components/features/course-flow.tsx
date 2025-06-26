@@ -1,8 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-import { ArrowLeftIcon, ChevronDownIcon, EyeIcon } from 'lucide-react'
+import { ArrowLeftIcon, ChevronDownIcon, EyeIcon, PencilIcon, RocketIcon } from 'lucide-react'
+import { ArcherContainer, ArcherElement } from 'react-archer'
+import { type RelationType } from 'react-archer/lib/types'
 import { toast } from 'sonner'
 
 import { pick } from '@repo/utils'
@@ -26,9 +28,11 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import { Markdown } from '@/components/ui/markdown'
 import { Progress } from '@/components/ui/progress'
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useHeader } from '@/hooks/use-header'
 import { useLocale } from '@/hooks/use-locale'
@@ -40,27 +44,38 @@ import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import config from 'config/app.json'
 
-export const CourseFlow = ({ course }: { course: Course }) => {
-  const { setBreadcrumb, setHeaderShadow } = useHeader()
+export const CourseFlow = (props: { course?: Course }) => {
   const { localize } = useLocale()
   const { scrolled } = useScroll()
-  const { courses, setCourses } = useSession()
+  const { courses, setCourses, user } = useSession()
   const { setSyncState } = useSyncState()
   const t = useTranslations('Courses')
 
+  const [course, _setCourse] = useState<Course | Partial<Course>>(props.course ?? {})
   const [syncedCourse, setSyncedCourse] = useState(course)
-  const title = useMemo(() => localize(course.title), [course, localize])
+  const [preview, _setPreview] = useState(false)
 
-  useEffect(() => {
-    setHeaderShadow(false)
-    setBreadcrumb(
-      <BreadcrumbList className="sm:gap-1">
-        <BreadcrumbLink href={Route.Courses}>{t('title')}</BreadcrumbLink>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem className="text-foreground">{title}</BreadcrumbItem>
-      </BreadcrumbList>,
-    )
-  }, [setBreadcrumb, setHeaderShadow, title, t])
+  const title = useMemo(() => (course.title ? localize(course.title) : t('newCourse')), [course, localize, t])
+
+  useHeader(
+    <BreadcrumbList className="sm:gap-1">
+      <BreadcrumbLink href={Route.Courses}>{t('title')}</BreadcrumbLink>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem className={cn(course.title ? 'text-foreground' : 'text-muted')}>
+        {title}
+        {user.canEdit && course.publicationStatus === 'draft' && (
+          <Badge className="ml-1" color="muted" size="xs">
+            {t('draft')}
+          </Badge>
+        )}
+        {user.canEdit && course.publicationStatus === 'archived' && (
+          <Badge className="ml-1" color="muted" size="xs">
+            {t('archived')}
+          </Badge>
+        )}
+      </BreadcrumbItem>
+    </BreadcrumbList>,
+  )
 
   const initialLessonIndex = useMemo(() => {
     if (!course || course.status === 'completed') return 0
@@ -79,7 +94,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
   const hasLessons = useMemo(() => course.lessons && course.lessons.length > 0, [course.lessons])
   const isFirstLesson = useMemo(() => currentLessonIndex === 0, [currentLessonIndex])
   const isLastLesson = useMemo(
-    () => currentLessonIndex === course.lessonsCount - 1,
+    () => currentLessonIndex === (course.lessonsCount ?? 0) - 1,
     [currentLessonIndex, course.lessonsCount],
   )
   const canProceed = useMemo(() => {
@@ -92,6 +107,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     return false
   }, [currentLesson])
   const courseProgressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
+  const isPreview = useMemo(() => !user.canEdit || preview, [user.canEdit, preview])
 
   const isCurrentLesson = useCallback((index: number) => index === currentLessonIndex, [currentLessonIndex])
   const isPastLesson = useCallback((index: number) => index < currentLessonIndex, [currentLessonIndex])
@@ -107,7 +123,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     [isCurrentLesson, isPastLesson, isFutureLesson, isCompletedLesson],
   )
 
-  const setCourse = useCallback(
+  const updateCourse = useCallback(
     (updater: (course: Course) => Course) => {
       setCourses(courses => courses.map(m => (m.id === course.id ? updater(m) : m)))
     },
@@ -116,7 +132,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
 
   const onQuestionAnswer = useCallback(
     async (question: Question, option: QuestionOption) => {
-      setCourse(({ lessons, ...course }) => ({
+      updateCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map((lesson, i) =>
           i === currentLessonIndex
@@ -144,11 +160,11 @@ export const CourseFlow = ({ course }: { course: Course }) => {
         console.error(e)
       }
     },
-    [currentLessonIndex, setCourse, setSyncState],
+    [currentLessonIndex, updateCourse, setSyncState],
   )
   const onEvaluation = useCallback(
     (id: number, rating: number) => {
-      setCourse(({ lessons, ...course }) => ({
+      updateCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map(({ evaluations, ...lesson }, i) =>
           i === currentLessonIndex
@@ -160,12 +176,12 @@ export const CourseFlow = ({ course }: { course: Course }) => {
         ),
       }))
     },
-    [currentLessonIndex, setCourse],
+    [currentLessonIndex, updateCourse],
   )
 
   const onAssessment = useCallback(
     (rating: number) => {
-      setCourse(({ lessons, ...course }) => ({
+      updateCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map((lesson, i) =>
           i === currentLessonIndex && lesson.assessment
@@ -174,7 +190,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
         ),
       }))
     },
-    [currentLessonIndex, setCourse],
+    [currentLessonIndex, updateCourse],
   )
 
   const handlePrevious = useCallback(() => {
@@ -189,7 +205,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
       if (!isLastLesson) setCurrentLessonIndex(i => i + 1)
       if (currentSyncedLesson?.completed) return
 
-      setCourse(course => ({
+      updateCourse(course => ({
         ...course,
         lessons: course.lessons?.map((s, i) => (i === lessonIndex ? { ...s, completed: true } : s)),
         status: isLastLesson ? 'completed' : course.status,
@@ -223,7 +239,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
       setSyncedCourse(course)
       setSyncState('complete')
     } catch (e) {
-      toast.error(t('Common.syncErrorMessage'), {
+      toast.error(t('syncErrorMessage'), {
         dismissible: false,
         position: 'bottom-right',
       })
@@ -235,7 +251,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     currentLessonIndex,
     isLastLesson,
     course,
-    setCourse,
+    updateCourse,
     setSyncState,
     t,
     currentSyncedLesson?.completed,
@@ -250,6 +266,16 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     [currentLesson?.completed, currentLessonIndex, handleNext],
   )
 
+  const updateLessonContent = useCallback(
+    (content: string) => {
+      updateCourse(({ lessons, ...course }) => ({
+        ...course,
+        lessons: lessons?.map((lesson, i) => (i === currentLessonIndex ? { ...lesson, content } : lesson)),
+      }))
+    },
+    [currentLessonIndex, updateCourse],
+  )
+
   const formatLessonType = useCallback(
     (type: string) =>
       t('lessonType', {
@@ -257,12 +283,33 @@ export const CourseFlow = ({ course }: { course: Course }) => {
       }),
     [t],
   )
+
   const formatLessonTitle = useCallback(
     (index: number) => {
       if (!isReachableLesson(index)) return t('completeLessonsToProceed')
     },
     [isReachableLesson, t],
   )
+
+  const calculateArcherRelations = useCallback(
+    (index: number): RelationType[] => {
+      if (index >= currentLessonIndex) return []
+
+      return [
+        {
+          sourceAnchor: 'bottom',
+          targetAnchor: 'top',
+          style: {
+            strokeColor: 'var(--secondary)',
+            endMarker: false,
+          },
+          targetId: `${course.id}-${index + 1}`,
+        },
+      ]
+    },
+    [course.id, currentLessonIndex],
+  )
+
   const nextTooltip = useMemo(() => {
     if (!currentLesson) return undefined
 
@@ -272,7 +319,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
       })
   }, [canProceed, currentLesson, t])
 
-  const completedCoursesCount = useMemo(() => courses.filter(m => m.status === 'completed').length, [courses])
+  const completedCoursesCount = useMemo(() => courses.filter(m => m.completed).length, [courses])
   const completedTitle = useMemo(
     () =>
       completedCoursesCount === courses.length
@@ -292,10 +339,12 @@ export const CourseFlow = ({ course }: { course: Course }) => {
     [completedCoursesCount, t],
   )
 
+  const taskClassName = useMemo(() => cn('pt-4', isPreview && 'mt-8 border-t-2 pt-6'), [isPreview])
+
   return (
-    <div className="container mx-auto flex flex-1 px-8 pb-8">
+    <div className="container mx-auto flex flex-1 gap-2 pb-8">
       {/* Sidebar */}
-      <div className="mr-2 hidden max-w-lg min-w-52 flex-1/4 shrink-0 md:block md:max-lg:flex-1/3">
+      <div className="hidden max-w-lg min-w-52 flex-1/4 shrink-0 md:block md:max-lg:flex-1/3">
         <div className="sticky top-[72px] flex items-center gap-2">
           <span className="pt-1 text-sm text-muted-foreground">
             {hasLessons
@@ -308,49 +357,54 @@ export const CourseFlow = ({ course }: { course: Course }) => {
         </div>
         <div className="sticky top-[120px] space-y-2 pr-2">
           {hasLessons && (
-            <div className="relative">
-              <div className="absolute top-[60px] left-[23px] w-0.5 bg-muted" />
-              <div
-                className="absolute top-[50px] left-[23px] w-0.5 bg-secondary transition-all duration-300"
-                style={{ height: `${course.progress}%` }}
-              />
-              {course.lessons?.map((lesson, index) => (
-                <div
-                  className={cn(
-                    'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12 dark:bg-transparent',
-                    isCurrentLesson(index) && 'pointer-events-none bg-accent/50',
-                    isReachableLesson(index) && 'hover:bg-accent/50',
-                    !isReachableLesson(index) && 'cursor-not-allowed text-muted-foreground',
-                  )}
-                  key={lesson.id}
-                  onClick={onLessonButtonClick.bind(null, index)}
-                  title={formatLessonTitle(index)}
-                >
+            <ArcherContainer>
+              <div className="relative">
+                {course.lessons?.map((lesson, index) => (
                   <div
                     className={cn(
-                      'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
-                      isCurrentLesson(index) || isPastLesson(index)
-                        ? 'border-secondary-accent bg-secondary text-secondary-foreground'
-                        : 'border-border bg-background',
+                      'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12 dark:bg-transparent',
+                      isCurrentLesson(index) && 'pointer-events-none bg-accent/50',
+                      isReachableLesson(index) && 'hover:bg-accent/50',
+                      !isReachableLesson(index) && 'cursor-not-allowed text-muted-foreground',
                     )}
+                    key={lesson.id}
+                    onClick={onLessonButtonClick.bind(null, index)}
+                    title={formatLessonTitle(index)}
                   >
-                    <span className="text-xs">{index + 1}</span>
+                    <div
+                      className={cn(
+                        'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
+                        isCurrentLesson(index) || isPastLesson(index)
+                          ? 'border-secondary-accent bg-secondary text-secondary-foreground'
+                          : 'border-border bg-background',
+                      )}
+                    >
+                      <ArcherElement
+                        id={`${course.id}-${index}`}
+                        key={lesson.id}
+                        relations={calculateArcherRelations(index)}
+                      >
+                        <span className="text-xs">{index + 1}</span>
+                      </ArcherElement>
+                    </div>
+                    <div className={cn('flex-1 opacity-85', isCurrentLesson(index) && 'opacity-100')}>
+                      <span className="inline-block text-sm font-medium">
+                        {localize(lesson.title)}{' '}
+                        {user.isLearner && isCompletedLesson(index) && (
+                          <span className="ml-1 text-xs text-success">{'✔︎'}</span>
+                        )}
+                      </span>
+                      <p className="text-xs opacity-80">{formatLessonType(lesson.type)}</p>
+                    </div>
                   </div>
-                  <div className={cn('flex-1 opacity-85', isCurrentLesson(index) && 'opacity-100')}>
-                    <span className="inline-block text-sm font-medium">
-                      {localize(lesson.title)}{' '}
-                      {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
-                    </span>
-                    <p className="text-xs opacity-80">{formatLessonType(lesson.type)}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ArcherContainer>
           )}
         </div>
       </div>
 
-      <div>
+      <div className="flex w-full flex-col gap-4 md:gap-6">
         {/* Mobile header */}
         <div
           className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}
@@ -408,44 +462,107 @@ export const CourseFlow = ({ course }: { course: Course }) => {
           )}
         </div>
 
-        {/* Progress bar */}
+        {/* Header */}
         <div
           className={cn(
-            'sticky top-36 hidden items-center justify-end gap-2 bg-background pb-6 md:top-[72px] md:flex',
+            'sticky top-36 hidden items-center justify-end gap-2 bg-background md:top-[72px] md:flex',
             scrolled && 'border-b',
           )}
         >
-          {course.status === 'completed' && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge
-                  className="mr-2 cursor-help rounded-full border-muted-foreground/60 p-1.5 text-muted-foreground/90"
-                  variant="outline"
-                >
-                  <EyeIcon className="h-4 w-4 text-muted-foreground" />
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
-                {t('reviewModeMessage')}
-              </TooltipContent>
-            </Tooltip>
+          {user.isLearner && (
+            <>
+              {course.status === 'completed' && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge
+                      className="mr-2 cursor-help rounded-full border-muted-foreground/60 p-1.5 text-muted-foreground/90"
+                      variant="outline"
+                    >
+                      <EyeIcon className="h-4 w-4 text-muted-foreground" />
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
+                    {t('reviewModeMessage')}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              <span className="text-sm">
+                {course.progress}
+                {'%'}
+              </span>
+              <Progress className="md:max-w-sm" color={courseProgressColor} value={course.progress} />
+            </>
           )}
-          <span className="text-sm">
-            {course.progress}
-            {'%'}
-          </span>
-          <Progress className="md:max-w-sm" color={courseProgressColor} value={course.progress} />
+          {user.canEdit && (
+            <div className="flex items-center gap-2">
+              <LanguageSelect controlled value="en" />
+              {isPreview ? (
+                <Button className="gap-1" onClick={() => _setPreview(false)} variant="outline">
+                  <PencilIcon className="h-4 w-4" />
+                  {t('edit')}
+                </Button>
+              ) : (
+                <Button className="gap-1" onClick={() => _setPreview(true)} variant="outline">
+                  <EyeIcon className="h-4 w-4" />
+                  {t('preview')}
+                </Button>
+              )}
+              {course.publicationStatus === 'draft' && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button className="gap-1" color="success">
+                      <RocketIcon className="h-4 w-4" />
+                      {t('publish')}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
+                    {t('publishCourseMessage')}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {course.publicationStatus === 'active' && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button className="gap-1" color="destructive">
+                      <RocketIcon className="h-4 w-4" />
+                      {t('unpublish')}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
+                    {t('unpublishCourseMessage')}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Content */}
         {currentLesson && (
           <div className="col-span-12 md:col-span-9">
-            <div className="rounded-lg border bg-card p-8">
+            <div className={cn(isPreview && 'rounded-lg border bg-card p-8')}>
               {hasLessons ? (
                 <>
-                  <Markdown>{localize(currentLesson.content)}</Markdown>
+                  {isPreview ? (
+                    <Markdown>{localize(currentLesson.content)}</Markdown>
+                  ) : (
+                    <RichTextEditor
+                      className="mb-6 rounded-lg bg-card"
+                      editorContentClassName="p-6"
+                      onChange={content => {
+                        updateCourse(({ lessons, ...course }) => ({
+                          ...course,
+                          lessons: lessons?.map((lesson, i) =>
+                            i === currentLessonIndex ? { ...lesson, content } : lesson,
+                          ),
+                        }))
+                      }}
+                      value={localize(currentLesson.content) || ''}
+                    />
+                  )}
                   {currentLesson.type === 'questions' && currentLesson.questions && (
                     <CourseQuestions
+                      className={taskClassName}
                       completed={currentLesson.completed}
                       onComplete={onQuestionAnswer}
                       questions={currentLesson.questions}
@@ -453,6 +570,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                   )}
                   {currentLesson.type === 'evaluations' && currentLesson.evaluations && (
                     <CourseEvaluations
+                      className={taskClassName}
                       completed={currentLesson.completed}
                       evaluations={currentLesson.evaluations}
                       onEvaluation={onEvaluation}
@@ -461,6 +579,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                   {currentLesson.type === 'assessment' && currentLesson.assessment && (
                     <CourseAssessment
                       assessment={currentLesson.assessment}
+                      className={taskClassName}
                       completed={currentLesson.completed}
                       onValueChange={onAssessment}
                     />
@@ -476,7 +595,7 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                 {!isFirstLesson && (
                   <Button className="gap-1" disabled={isFirstLesson} onClick={handlePrevious} variant="outline">
                     <ArrowLeftIcon className="h-4 w-4" />
-                    {t('Common.previous')}
+                    {t('previous')}
                   </Button>
                 )}
 
@@ -544,13 +663,13 @@ export const CourseFlow = ({ course }: { course: Course }) => {
                     title={t('proceedToNextLesson')}
                     variant="outline"
                   >
-                    {t('Common.next')}
+                    {t('next')}
                   </Button>
                 ) : (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button className="cursor-not-allowed gap-1" disabled variant="outline">
-                        {t('Common.next')}
+                        {t('next')}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent arrow={false}>{nextTooltip}</TooltipContent>

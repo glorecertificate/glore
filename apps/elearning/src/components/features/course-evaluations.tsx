@@ -14,7 +14,8 @@ export const CourseEvaluations = ({
   evaluations,
   onEvaluation,
   title,
-}: {
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
   completed: boolean
   evaluations: Evaluation[]
   onEvaluation: (id: number, rating: number) => void
@@ -34,7 +35,7 @@ export const CourseEvaluations = ({
   )
 
   return (
-    <div className="mt-8 border-t-2 pt-6">
+    <div {...props}>
       {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {

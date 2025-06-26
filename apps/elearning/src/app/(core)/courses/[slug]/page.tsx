@@ -14,7 +14,9 @@ export default async ({ params }: PageProps<Route.Course>) => {
   const course = await api.courses.get(slug)
   if (!course) return notFound()
 
-  if (!course.enrolled) {
+  const user = await api.users.getCurrent()
+
+  if (user.isLearner && !course.enrolled) {
     await api.courses.enrollUser(course.id)
   }
 

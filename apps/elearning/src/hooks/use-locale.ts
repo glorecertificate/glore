@@ -11,10 +11,13 @@ import { type Locale } from '@/lib/i18n/types'
 import { localizeJson } from '@/lib/utils'
 
 export const useLocale = () => {
-  const locale = useNextIntlLocale()
-  const localize = useCallback((value: Json): string => localizeJson(value, locale), [locale])
+  const nextLocale = useNextIntlLocale()
+  const localize = useCallback(
+    (value: Json, locale?: Locale): string => localizeJson(value, locale ?? nextLocale),
+    [nextLocale],
+  )
 
-  return { locale, localize, setLocale } as {
+  return { locale: nextLocale, localize, setLocale } as {
     locale: Locale
     localize: (value: Json) => string
     setLocale: (locale: Locale) => Promise<void>

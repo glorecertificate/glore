@@ -11,10 +11,12 @@ import { useTranslations } from '@/hooks/use-translations'
 
 export const CourseAssessment = ({
   assessment,
+  className,
   completed,
   onValueChange,
   title,
-}: {
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
   completed: boolean
   assessment: Assessment
   onValueChange: (rating: number) => void
@@ -34,7 +36,7 @@ export const CourseAssessment = ({
   )
 
   return (
-    <div className="mt-8 border-t-2 pt-6">
+    <div {...props}>
       {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {

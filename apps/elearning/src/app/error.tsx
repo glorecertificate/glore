@@ -45,17 +45,17 @@ export default ({ error }: ErrorProps) => {
       }
     >
       {canGoBack ? (
-        <Button onClick={onBackClick} size="xl" variant="outline">
+        <Button onClick={onBackClick} size="lg" variant="outline">
           {t('backToPrevious')}
         </Button>
       ) : (
         pathname !== Route.Home && (
-          <Button asChild size="xl" variant="outline">
+          <Button asChild size="lg" variant="outline">
             {t('backToHome')}
           </Button>
         )
       )}
-      <Button onClick={reload} size="xl" variant="outline">
+      <Button onClick={reload} size="lg" variant="outline">
         {t('refreshPage')}
       </Button>
     </ErrorView>

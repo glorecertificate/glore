@@ -12,26 +12,23 @@ import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
+import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { dynamicRoute, Route } from '@/lib/navigation'
 
 export const CourseCard = ({ course }: { course: Course }) => {
   const { localize } = useLocale()
+  const { user } = useSession()
   const t = useTranslations()
 
-  const coursePath = useMemo(
-    () =>
-      dynamicRoute(Route.Course, {
-        slug: course.slug,
-      }),
-    [course.slug],
-  )
+  const coursePath = useMemo(() => dynamicRoute(Route.Course, { slug: course.slug }), [course.slug])
 
   const actionLabel = useMemo(() => {
+    if (user.canEdit) return t('Courses.editCourse')
     if (!course.enrolled) return t('Courses.startCourse')
     if (course.completed) return t('Courses.reviewCourse')
     return t('Courses.continueCourse')
-  }, [course.enrolled, course.completed, t])
+  }, [course.enrolled, course.completed, t, user.canEdit])
 
   const progressColor = useMemo(() => (course.completed ? 'success' : 'default'), [course.completed])
 
@@ -48,16 +45,22 @@ export const CourseCard = ({ course }: { course: Course }) => {
           </Link>
         </div>
         <CardHeader className="py-4">
-          <Link href={coursePath}>
-            <h3 className="text-lg font-semibold">
-              {localize(course.title)} {course.completed && <span className="ml-0.5 text-success">{'✔︎'}</span>}
-            </h3>
-          </Link>
+          <h3 className="flex items-center font-semibold">
+            <Link className="text-lg" href={coursePath}>
+              {localize(course.title)}
+            </Link>
+            {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
+            {user.canEdit && course.publicationStatus === 'draft' && (
+              <Badge className="ml-1.5" color="muted" size="xs">
+                {t('Courses.draft')}
+              </Badge>
+            )}
+          </h3>
           <p className="text-sm text-muted-foreground">{localize(course.description)}</p>
         </CardHeader>
         <CardContent className="flex-1">
           <div className="mb-4 flex flex-wrap gap-2">
-            <Badge className="text-xs font-normal" color="muted" variant="outline">
+            <Badge className="cursor-default text-xs font-normal" color="muted" size="sm" variant="outline">
               <BookOpenIcon className="h-3 w-3" />
               {course.lessons?.length}{' '}
               {t('Common.lessons', {
@@ -73,7 +76,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
         </CardContent>
       </div>
       <CardFooter className="mt-4 flex-col gap-4">
-        {!course.enrolled && (
+        {!user.canEdit && course.enrolled && (
           <div className="w-full">
             <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">

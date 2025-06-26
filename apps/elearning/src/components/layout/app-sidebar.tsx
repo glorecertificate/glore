@@ -8,6 +8,7 @@ import {
   BookOpenIcon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
+  CogIcon,
   HelpCircleIcon,
   InfoIcon,
   LogOutIcon,
@@ -165,6 +166,7 @@ export const SidebarOrgs = ({
 
 const SidebarNavigation = () => {
   const { pathname, setPathname } = usePathname()
+  const { user } = useSession()
   const t = useTranslations('Navigation')
 
   const [docsCollapsibleOpen, setDocsCollapsibleOpen] = useState(pathname.startsWith(Route.Docs))
@@ -324,6 +326,22 @@ const SidebarNavigation = () => {
             </CollapsibleContent>
           </SidebarMenuItem>
         </Collapsible>
+        {user.isAdmin && (
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              active={isActivePath(Route.Admin)}
+              asChild
+              clickable={isClickable(Route.Admin)}
+              onClick={onButtonClick(Route.Admin)}
+              tooltip={t('admin')}
+            >
+              <Link href={Route.Admin}>
+                <CogIcon className="size-4 text-muted-foreground" />
+                <span>{t('admin')}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   )

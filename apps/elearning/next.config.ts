@@ -15,6 +15,7 @@ const tsconfigPath = Env.DEV ? './tsconfig.json' : './tsconfig.build.json'
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [new URL(Env.SUPABASE_URL)],
+    unoptimized: Env.DEV,
   },
   reactStrictMode: true,
   typescript: { tsconfigPath },

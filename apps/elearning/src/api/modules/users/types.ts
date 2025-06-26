@@ -6,6 +6,8 @@ export interface BaseUser extends Exclude<Entity<'users'>, 'phone'> {}
 
 export interface User extends Entity<'users', 'created_at' | 'updated_at' | 'deleted_at'> {
   phone: Entity<'users'>['phone']
+  canEdit: boolean
+  isLearner: boolean
   organizations: UserOrganization[]
 }
 

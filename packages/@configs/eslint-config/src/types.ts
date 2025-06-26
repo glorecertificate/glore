@@ -82,11 +82,45 @@ export interface FileOptions {
 
 export interface NoRestrictedImportOptions {
   /**
-   * Whether to allow relative imports.
+   * Controls when relative imports are allowed.
+   *
+   * - `always`: Allow all relative imports
+   * - `never`: Disallow all relative imports
+   * - `siblings`: Only allow relative imports between sibling files
+   *
+   * When using an array, the first element sets the default behavior
+   * and the second element specifies file-specific overrides.
    *
    * @default "siblings"
+   *
+   * @example
+   * Allow relative imports between sibling files, but disallow all others:
+   * ```
+   * allowRelativeImports: ['siblings', {
+   *   always: ['src/components/**'],
+   *   never: ['src/utils/**'],
+   * }]
+   * ```
+   * Disallow all relative imports:
+   * ```
+   * allowRelativeImports: 'never'
+   * ```
    */
-  allowRelativeImports?: 'always' | 'never' | 'siblings'
+  allowRelativeImports?:
+    | 'always'
+    | 'never'
+    | 'siblings'
+    | [
+        'always' | 'never' | 'siblings',
+        (
+          | {
+              always?: string[]
+              never?: string[]
+              siblings?: string[]
+            }
+          | undefined
+        ),
+      ]
   /**
    * Modules that don't allow default imports.
    */

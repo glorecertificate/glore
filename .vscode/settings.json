@@ -46,7 +46,8 @@
     ],
     ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-    ["fill=['\"]([^'\"]*)"]
+    ["fill=['\"]([^'\"]*)"],
+    ["stroke=['\"]([^'\"]*)"]
   ],
   "tailwindCSS.experimental.configFile": "./apps/elearning/src/app/globals.css",
   "tailwindCSS.includeLanguages": {

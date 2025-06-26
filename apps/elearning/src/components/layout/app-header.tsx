@@ -15,7 +15,7 @@ import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
-  const { breadcrumb, headerShadow, subHeader } = useHeader()
+  const { header, shadow } = useHeader()
   const { pathname } = usePathname()
   const { scrolled } = useScroll()
   const { open } = useSidebar()
@@ -33,7 +33,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
       <header
         className={cn(
           'ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
-          scrolled && headerShadow && 'border-b',
+          scrolled && shadow && 'border-b',
           className,
         )}
         {...props}
@@ -54,7 +54,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
                 <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
               </TooltipContent>
             </Tooltip>
-            {breadcrumb && <Breadcrumb className="flex h-full items-center">{breadcrumb}</Breadcrumb>}
+            {header && <Breadcrumb className="flex h-full items-center">{header}</Breadcrumb>}
           </div>
           {/* {syncState === 'syncing' && (
             <Tooltip>
@@ -92,7 +92,6 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
             <Logo className="mr-2 transition-[width,height]" height={24} />
           </Link>
         </div>
-        {subHeader && <div className="container mx-auto bg-background px-8 pt-1 pb-5">{subHeader}</div>}
       </header>
     </>
   )

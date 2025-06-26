@@ -1,4 +1,4 @@
-import { type AnyRecord } from '@repo/utils'
+import { serialize, type AnyRecord } from '@repo/utils'
 
 import { createDatabaseClient } from '@/lib/db/server'
 import { type TableName } from '@/lib/db/types'
@@ -9,7 +9,7 @@ import { type TableName } from '@/lib/db/types'
 export const createParser =
   <T extends TableName, Q extends string, O extends AnyRecord>(parser: (r: SelectData<T, Q>) => O) =>
   (record: SelectData<T, Q>) =>
-    parser(record)
+    serialize(parser(record))
 
 const _select =
   <T extends TableName, Q extends string>(table: T, query: Q) =>

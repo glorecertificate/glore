@@ -14,6 +14,6 @@ export interface SessionContext {
 
 export const SessionContext = createContext<SessionContext | null>(null)
 
-export const SessionProvider = (props: React.PropsWithChildren<SessionContext>) => (
-  <SessionContext.Provider value={props} {...props} />
+export const SessionProvider = ({ courses, organization, user, ...props }: React.PropsWithChildren<SessionContext>) => (
+  <SessionContext.Provider value={{ courses, organization, user }} {...props} />
 )

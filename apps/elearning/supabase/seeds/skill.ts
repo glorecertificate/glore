@@ -1,11 +1,12 @@
 import { type SeedClient } from '@snaplet/seed'
+import { type User } from '@supabase/supabase-js'
 
 import { handleize, pickRandom } from '@repo/utils'
 
 import { seeds } from 'config/development.json'
 import { type Enums } from 'supabase/types'
 
-export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_areas) =>
+export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_areas, users: Array<User | null>) =>
   await seed.skill_areas(
     skillAreas.map(({ skills, ...area }, i) => ({
       ...area,
@@ -24,7 +25,7 @@ export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_area
               sort_order: k + 1,
               deleted_at: null,
             })),
-            creator_id: pickRandom(seed.$store.auth_users)?.id ?? null,
+            creator_id: pickRandom(users)!.id ?? null,
             sort_order: i * skillAreas[0].skills.length + j + 1,
             deleted_at: null,
           },

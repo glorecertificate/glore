@@ -9,17 +9,17 @@ export default eslintConfig({
   react: 'nextjs',
   restrictedImports: [
     {
-      files: ['src/app/**/*.ts?(x)', 'src/components/features/**/*.ts?(x)'],
+      files: ['src/app/**', 'src/components/features/**'],
       group: ['@radix-ui'],
       message: 'Import or create an internal component instead.',
     },
     {
-      files: ['src/app/**/*.ts?(x)'],
+      files: ['src/app/**'],
       group: ['next-intl'],
       message: 'Import from internal modules instead.',
     },
     {
-      files: ['src/app/**/*.ts?(x)'],
+      files: ['src/app/**'],
       group: ['next/navigation'],
       importNames: ['usePathname'],
       message: 'Import the internal hook instead.',
@@ -29,7 +29,7 @@ export default eslintConfig({
   sortInterfaces: false,
   sortObjectKeys: ['*.ts'],
   tailwind: {
-    allowedClasses: ['lucide', 'lucide-*', 'markdown'],
+    allowedClasses: ['lucide', 'lucide-*', 'markdown', 'rich-text-editor', 'toaster'],
     entryPoint: 'src/app/globals.css',
   },
 })

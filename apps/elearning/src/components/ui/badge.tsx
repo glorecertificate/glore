@@ -1,25 +1,25 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-export const Badge = ({
-  asChild = false,
-  className,
-  color,
-  variant,
-  ...props
-}: React.ComponentProps<'span'> & VariantProps<typeof badge> & { asChild?: boolean }) => {
-  const Comp = asChild ? Slot : 'span'
-  return <Comp className={cn(badge({ color, variant }), className)} data-slot="badge" {...props} />
+export interface BadgeProps extends Omit<React.ComponentProps<'span'>, 'color'>, VariantProps<typeof badge> {
+  asChild?: boolean
+}
+
+export const Badge = ({ asChild = false, className, color, size, variant, ...props }: BadgeProps) => {
+  const Component = useMemo(() => (asChild ? Slot : 'span'), [asChild])
+  return <Component className={cn(badge({ color, size, variant }), className)} data-slot="badge" {...props} />
 }
 
 export const badge = cva(
   `
-    inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-md border border-transparent px-2 py-0.5 text-xs font-medium
-    whitespace-nowrap transition-[color,box-shadow]
+    inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md border border-transparent font-medium whitespace-nowrap
+    transition-[color]
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
     dark:aria-invalid:ring-destructive/40
@@ -28,6 +28,7 @@ export const badge = cva(
   {
     defaultVariants: {
       color: 'default',
+      size: 'md',
       variant: 'default',
     },
     variants: {
@@ -45,7 +46,19 @@ export const badge = cva(
           dark:bg-destructive/70 dark:focus-visible:ring-destructive/40
           [a&]:hover:bg-destructive/90
         `,
+        success: `
+          border-success bg-success text-success-foreground
+          focus-visible:ring-success/20
+          dark:bg-success/70 dark:focus-visible:ring-success/40
+          [a&]:hover:bg-success/90
+        `,
         muted: 'bg-muted text-muted-foreground [a&]:hover:bg-muted/90',
+      },
+      size: {
+        xs: 'gap-0.5 px-1 py-[1px] text-[10px]',
+        sm: 'gap-1 px-2 py-0.5 text-xs',
+        md: 'gap-1.5 px-2.5 py-1 text-sm',
+        lg: 'gap-2 px-3 py-1.5 text-base',
       },
       variant: {
         default: '',

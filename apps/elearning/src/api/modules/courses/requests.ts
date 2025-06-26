@@ -1,3 +1,5 @@
+import { serialize } from '@repo/utils'
+
 import { getSession } from '@/api/modules/auth/requests'
 import { db } from '@/lib/db/client'
 import { createDatabaseClient } from '@/lib/db/server'
@@ -41,7 +43,7 @@ export const enrollUser = async (courseId: number): Promise<UserCourse> => {
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-  return data[0]
+  return serialize(data[0])
 }
 
 export const completeLesson = async (id: number): Promise<UserLesson> => {
@@ -55,7 +57,7 @@ export const completeLesson = async (id: number): Promise<UserLesson> => {
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-  return data[0]
+  return serialize(data[0])
 }
 
 export const submitAnswers = async (answers: Array<{ id: number }>): Promise<UserAnswer[]> => {
@@ -69,7 +71,7 @@ export const submitAnswers = async (answers: Array<{ id: number }>): Promise<Use
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-  return data
+  return serialize(data)
 }
 
 export const submitEvaluations = async (
@@ -85,7 +87,7 @@ export const submitEvaluations = async (
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-  return data
+  return serialize(data)
 }
 
 export const submitAssessment = async (id: number, value: number): Promise<UserAssessment> => {
@@ -104,5 +106,5 @@ export const submitAssessment = async (id: number, value: number): Promise<UserA
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-  return data
+  return serialize(data)
 }

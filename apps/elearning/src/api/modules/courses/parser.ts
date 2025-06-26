@@ -11,7 +11,7 @@ export const parseCourse = createParser<'courses', typeof courseQuery, Course>(c
   const enrolled = user_courses.length > 0
   const lessonsCount = lessons.length
   const lessonsCompleted = lessons.filter(lesson => lesson.completed).length
-  const progress = Math.round((lessonsCompleted / lessonsCount) * 100)
+  const progress = Math.round((lessonsCompleted / lessonsCount) * 100) || 0
   const completed = progress === 100
   const status = progress === 0 ? 'not_started' : completed ? 'completed' : 'in_progress'
   const creator = parseUser(courseCreator)

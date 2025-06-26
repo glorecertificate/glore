@@ -2,7 +2,7 @@ import { ArrowDownRight, ArrowUpRight, Award, Building2, Globe, Users } from 'lu
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const AdminStats = () => (
+export const AdminOverview = () => (
   <div className="space-y-6">
     <h2 className="text-3xl font-bold tracking-tight">{'Dashboard Overview'}</h2>
 

@@ -144,7 +144,7 @@ export const DevWidget = ({
         <Button
           className={cn(
             'absolute top-0 -right-3 h-auto cursor-move p-0 opacity-0 group-hover:opacity-100',
-            isDragging && 'scale-100',
+            isDragging && 'scale-100 cursor-grabbing',
           )}
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}

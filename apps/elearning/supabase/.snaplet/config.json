@@ -1,4 +1,4 @@
 {
   "adapter": "pg",
-  "projectDescription": "This project is about managing online courses and assessments for users, including tracking their progress, certifications, contributions, and evaluations."
+  "projectDescription": "This project is about managing online courses and soft skills assessments for users, including tracking their progress, certifications, contributions, and evaluations."
 }

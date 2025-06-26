@@ -102,7 +102,8 @@ export const CourseQuestions = ({
   onComplete,
   questions,
   title = false,
-}: {
+  ...props
+}: Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> & {
   completed?: boolean
   onComplete: (question: Question, option: QuestionOption) => void
   questions: Question[]
@@ -111,7 +112,7 @@ export const CourseQuestions = ({
   const t = useTranslations('Courses')
 
   return (
-    <div className="mt-8 border-t-2 pt-6">
+    <div {...props}>
       {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{t('questionsTitle')}</h3>}
       <p className="mb-4 font-medium">
         {t('questionsSubtitle', {

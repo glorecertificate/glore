@@ -61,17 +61,17 @@ export default ({ error }: ErrorProps) => {
               <p className="mb-8 font-mono text-lg text-foreground/75">{t.Common.errorMessage}</p>
               <div className="flex justify-center gap-4">
                 {canGoBack ? (
-                  <Button onClick={onBackClick} size="xl" variant="outline">
+                  <Button onClick={onBackClick} size="lg" variant="outline">
                     {t.Common.backToPrevious}
                   </Button>
                 ) : (
                   pathname !== Route.Home && (
-                    <Button asChild size="xl" variant="outline">
+                    <Button asChild size="lg" variant="outline">
                       {t.Common.backToHome}
                     </Button>
                   )
                 )}
-                <Button onClick={reload} size="xl" variant="outline">
+                <Button onClick={reload} size="lg" variant="outline">
                   {t.Common.refreshPage}
                 </Button>
               </div>

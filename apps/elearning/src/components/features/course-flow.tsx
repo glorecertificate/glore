@@ -266,15 +266,15 @@ export const CourseFlow = (props: { course?: Course }) => {
     [currentLesson?.completed, currentLessonIndex, handleNext],
   )
 
-  const updateLessonContent = useCallback(
-    (content: string) => {
-      updateCourse(({ lessons, ...course }) => ({
-        ...course,
-        lessons: lessons?.map((lesson, i) => (i === currentLessonIndex ? { ...lesson, content } : lesson)),
-      }))
-    },
-    [currentLessonIndex, updateCourse],
-  )
+  // const updateLessonContent = useCallback(
+  //   (content: string) => {
+  //     updateCourse(({ lessons, ...course }) => ({
+  //       ...course,
+  //       lessons: lessons?.map((lesson, i) => (i === currentLessonIndex ? { ...lesson, content } : lesson)),
+  //     }))
+  //   },
+  //   [currentLessonIndex, updateCourse],
+  // )
 
   const formatLessonType = useCallback(
     (type: string) =>

@@ -1,23 +1,21 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
 import { useCookies } from '@/hooks/use-cookies'
-import { usePathname } from '@/hooks/use-pathname'
 import { type Locale } from '@/lib/i18n/types'
 import { LOCALES } from '@/lib/i18n/utils'
-import { Route } from '@/lib/navigation'
 import en from 'config/translations/en.json'
 import es from 'config/translations/es.json'
 import it from 'config/translations/it.json'
 
 export default ({ error }: ErrorProps) => {
   const { readCookie } = useCookies()
-  const { pathname } = usePathname()
+  const pathname = usePathname()
   const router = useRouter()
 
   const locale = useMemo(() => {
@@ -65,7 +63,7 @@ export default ({ error }: ErrorProps) => {
                     {t.Common.backToPrevious}
                   </Button>
                 ) : (
-                  pathname !== Route.Home && (
+                  pathname !== '/' && (
                     <Button asChild size="lg" variant="outline">
                       {t.Common.backToHome}
                     </Button>

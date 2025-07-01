@@ -7,7 +7,7 @@ import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
-import { RuleSeverity, type ConfigOptions, type RestrictedImport } from './types'
+import { RuleSeverity, type ConfigOptions, type RestrictedImport, type ScopedRestrictedImport } from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
 const BASE_PLUGINS = {
@@ -107,14 +107,27 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
   const prettierFiles = prettierIncludes ?? files
 
   const globalRestrictedImports: RestrictedImport[] = []
-  const scopedRestrictedImports: Array<Exclude<RestrictedImport, string>> = []
+  const scopedRestrictedImports: ScopedRestrictedImport[] = []
 
   for (const restrictedImport of restrictedImports) {
     if (typeof restrictedImport === 'string' || !restrictedImport.files) {
       globalRestrictedImports.push(restrictedImport)
       continue
     }
-    scopedRestrictedImports.push(restrictedImport)
+
+    const { files, ...rest } = restrictedImport
+    const config: ScopedRestrictedImport = rest
+
+    for (const file of files) {
+      if (file.startsWith('!')) {
+        const ignoreFile = file.slice(1)
+        config.ignores = config.ignores ? [...config.ignores, ignoreFile] : [ignoreFile]
+        continue
+      }
+      config.files = config.files ? [...config.files, file] : [file]
+    }
+
+    scopedRestrictedImports.push(config)
   }
 
   const globalAllowRelativeImports =
@@ -313,8 +326,9 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
         },
       },
       ...(scopedRestrictedImports.length > 0
-        ? scopedRestrictedImports.map(({ files, ...restrictedImport }) => ({
+        ? scopedRestrictedImports.map(({ files, ignores = [], ...restrictedImport }) => ({
             files,
+            ignores,
             rules: {
               'no-restricted-imports': [
                 RuleSeverity.Error,
@@ -413,6 +427,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                 },
               },
               plugins: {
+                '@stylistic': plugins['@stylistic'],
                 perfectionist: plugins.perfectionist,
                 ...(react
                   ? {

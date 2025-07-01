@@ -15,18 +15,18 @@ export type RestrictedImport =
     } & (
       | {
           group: string[]
+          importNames?: string[]
           message?: string
         }
       | {
           regex: string
           message?: string
         }
-      | {
-          group: string[]
-          importNames: string[]
-          message?: string
-        }
     ))
+
+export type ScopedRestrictedImport = Exclude<RestrictedImport, string> & {
+  ignores?: string[]
+}
 
 export interface SortImportGroup {
   type: Record<string, Array<string | RegExp>>

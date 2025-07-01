@@ -9,20 +9,21 @@ export default eslintConfig({
   react: 'nextjs',
   restrictedImports: [
     {
-      files: ['src/app/**', 'src/components/features/**'],
+      files: ['**/*.ts?(x)', '!src/components/ui/**'],
       group: ['@radix-ui'],
       message: 'Import or create an internal component instead.',
     },
     {
-      files: ['src/app/**'],
-      group: ['next-intl'],
+      files: [
+        '**/*.ts?(x)',
+        '!src/app/global-error.tsx',
+        '!src/components/providers/**',
+        '!src/hooks/**',
+        '!src/lib/**',
+      ],
+      group: ['next/navigation', 'next-intl', 'next-intl/*'],
+      importNames: ['usePathname', 'useTranslations'],
       message: 'Import from internal modules instead.',
-    },
-    {
-      files: ['src/app/**'],
-      group: ['next/navigation'],
-      importNames: ['usePathname'],
-      message: 'Import the internal hook instead.',
     },
   ],
   sortArrays: ['src/**/*.ts?(x)'],

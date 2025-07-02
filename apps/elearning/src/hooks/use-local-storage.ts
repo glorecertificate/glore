@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { type LocalStorage } from '@/lib/storage'
 
-export default function useLocalStorage<T>(key?: LocalStorage | `${LocalStorage}`, defaultValue?: T) {
+/**
+ * Hook to manage local storage values.
+ * It initializes the value from local storage and updates it when the value changes.
+ */
+export const useLocalStorage = <T>(key?: LocalStorage | `${LocalStorage}`, defaultValue?: T) => {
   const [value, setValue] = useState<T | undefined>(defaultValue)
   const [isInitialized, setIsInitialized] = useState(false)
 

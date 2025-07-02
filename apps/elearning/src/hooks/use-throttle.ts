@@ -2,6 +2,10 @@ import { useCallback, useRef } from 'react'
 
 import { type Any } from '@repo/utils'
 
+/**
+ * Hook to create a throttled version of a callback function.
+ * The throttled function will only execute at most once every `delay` milliseconds.
+ */
 export const useThrottle = <T extends (...args: Any[]) => void>(
   callback: T,
   delay: number,

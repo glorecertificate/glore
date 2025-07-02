@@ -125,9 +125,9 @@ export const CourseFlow = (props: { course?: Course }) => {
 
   const updateCourse = useCallback(
     (updater: (course: Course) => Course) => {
-      setCourses(courses => courses.map(m => (m.id === course.id ? updater(m) : m)))
+      setCourses(courses.map(m => (m.id === course.id ? updater(m) : m)))
     },
-    [setCourses, course],
+    [course.id, setCourses, courses],
   )
 
   const onQuestionAnswer = useCallback(

@@ -1,5 +1,3 @@
-import { resolve } from 'node:path'
-
 import bundleAnalyzer from '@next/bundle-analyzer'
 import { type NextConfig } from 'next'
 
@@ -9,7 +7,7 @@ import { Env } from '@/lib/env'
 import config from 'config/app.json'
 
 const I18N_MIDDLEWARE = './src/lib/i18n/middleware.ts'
-const MESSAGE_DECLARATIONS = resolve(`./config/translations/${config.defaultLocale}.json`)
+const MESSAGE_DECLARATIONS = `./config/translations/${config.defaultLocale}.json`
 const tsconfigPath = Env.DEV ? './tsconfig.json' : './tsconfig.build.json'
 
 const nextConfig: NextConfig = {

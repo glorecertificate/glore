@@ -4,6 +4,9 @@ import { useContext, useEffect } from 'react'
 
 import { HeaderContext } from '@/components/providers/header-provider'
 
+/**
+ * Hook to manage the application header content.
+ */
 export const useHeader = (header?: React.JSX.Element) => {
   const context = useContext(HeaderContext)
   if (!context) throw new Error('useHeader must be used within a HeaderProvider')

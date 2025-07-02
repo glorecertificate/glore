@@ -6,7 +6,7 @@ import { type SlotProps } from '@radix-ui/react-slot'
 import { MoveIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import useLocalStorage from '@/hooks/use-local-storage'
+import { useLocalStorage } from '@/hooks/use-local-storage'
 import { LocalStorage } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
@@ -23,14 +23,7 @@ export interface DevWidgetWidgetProps extends SlotProps {
   storageKey?: LocalStorage | `${LocalStorage}`
 }
 
-export const DevWidget = ({
-  children,
-  className,
-  defaultPosition,
-
-  storageKey,
-  ...props
-}: DevWidgetWidgetProps) => {
+export const DevWidget = ({ children, className, defaultPosition, storageKey, ...props }: DevWidgetWidgetProps) => {
   const [isDragging, setIsDragging] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const dragStart = useRef({ x: 0, y: 0 })

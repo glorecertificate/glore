@@ -2,6 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isServer } from '@repo/utils'
 
+/**
+ * Hook to track the current scroll position of the window.
+ * It provides the current scroll position and a boolean indicating if the page is scrolled.
+ */
 export const useScroll = () => {
   const getCurrentScroll = useCallback(
     () =>

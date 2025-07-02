@@ -82,7 +82,7 @@ export const CourseList = () => {
               return 0
           }
         }),
-    [courses, activeTab, activeSort, sortDirection, localize],
+    [activeTab, activeSort, courses, localize, sortDirection],
   )
 
   const handleTabChange = useCallback((value: string) => {
@@ -99,7 +99,7 @@ export const CourseList = () => {
   }
 
   const handleSortDirectionChange = useCallback(
-    () => (e: React.MouseEvent) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation()
       setSortDirection(oppositeSortDirection)
       setSortDropdownOpen(false)
@@ -200,7 +200,7 @@ export const CourseList = () => {
                           <span className={cn('text-foreground/90', activeSort === option && 'text-foreground')}>
                             {label}
                           </span>
-                          {activeSort === option && sortDirection && (
+                          {activeSort === option && !!sortDirection && (
                             <div className="flex items-center gap-1">
                               <Button
                                 className="h-6 w-6 transition-none group-hover:border hover:bg-card"

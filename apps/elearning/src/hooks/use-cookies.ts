@@ -2,6 +2,10 @@ import { useCallback } from 'react'
 
 import { type Cookie } from '@/lib/storage'
 
+/**
+ * Hook to manage browser cookies.
+ * Provides methods to set and read cookies.
+ */
 export const useCookies = () => {
   const setCookie = useCallback(
     (

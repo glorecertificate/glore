@@ -1,5 +1,17 @@
 # Changelog
 
+## <small>0.4.4 (2025-07-02)</small>
+
+* chore: refactor hooks and improve code organization ([de4ed8c](https://github.com/gabrielecanepa/glore/commit/de4ed8c))
+* chore: refactor imports and remove unused code ([21b439e](https://github.com/gabrielecanepa/glore/commit/21b439e))
+* build: bump pnpm to 10.12.4 ([c0f36f1](https://github.com/gabrielecanepa/glore/commit/c0f36f1))
+* build(deps): bump packages to latest version ([f0d0949](https://github.com/gabrielecanepa/glore/commit/f0d0949))
+* fix: add reference to global stylesheet in component stylesheets ([f389873](https://github.com/gabrielecanepa/glore/commit/f389873))
+* fix: use external imports in global error for hooks depending on providers ([8429712](https://github.com/gabrielecanepa/glore/commit/8429712))
+* feat: add rich text editor with image and link support ([4644c7f](https://github.com/gabrielecanepa/glore/commit/4644c7f))
+* feat(eslint-config): add support for negation patterns in restricted import file configuration ([d988cc8](https://github.com/gabrielecanepa/glore/commit/d988cc8))
+* ci: improve commitlint package scope detection using pnpm command ([e6d2e82](https://github.com/gabrielecanepa/glore/commit/e6d2e82))
+
 ## <small>0.4.3 (2025-06-26)</small>
 
 * chore: format sql files with prettier ([a4c545e](https://github.com/gabrielecanepa/glore/commit/a4c545e))

@@ -1,7 +1,7 @@
 import type { Config, JointConfig } from './types'
 
 const DEPLOYMENT_MESSAGE =
-  'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployment/Production'
+  'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production'
 
 export default (config: JointConfig = {}): Config => {
   const {

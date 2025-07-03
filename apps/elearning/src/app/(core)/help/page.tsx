@@ -1,7 +1,7 @@
-import { generateLocalizedMetadata } from '@/lib/metadata'
+import { generatePageMetadata } from '@/lib/metadata'
 
-export default () => <h1>{'Help'}</h1>
-
-export const generateMetadata = generateLocalizedMetadata({
+export const generateMetadata = generatePageMetadata({
   title: 'Navigation.help',
 })
+
+export default () => <h1>{'Help'}</h1>

@@ -1,22 +1,26 @@
 {
   "name": "GloRe",
+  "version": "0.4.5",
   "title": "GloRe Certificate",
   "titleSeparator": "-",
-  "version": "0.4.4",
-  "description": "GloRe Certificate is a platform for learning and issuing an official certificate validating soft skills.",
-  "slug": "glore",
+  "description": {
+    "en": "GloRe Certificate is a platform for learning and issuing an official certificate validating soft skills.",
+    "es": "GloRe Certificate es una plataforma para aprender y emitir un certificado oficial que valida las habilidades blandas.",
+    "it": "GloRe Certificate è una piattaforma per apprendere e rilasciare un certificato ufficiale che convalida le soft skills."
+  },
+  "pwaDescription": "Install GloRe on your device to access courses, receive notifications and manage your certificates offline.",
+  "keywords": ["glore", "certificate", "elearning", "soft skills"],
   "url": "https://elearning.glorecertificate.net",
   "website": "https://glorecertificate.net",
-  "keywords": ["glore", "certificate"],
-  "image": "https://elearning.glorecertificate.net/opengraph.png",
   "email": "info@glorecertificate.net",
   "phone": "+390256568779",
-  "category": "elearning",
-  "country": "IT",
-  "locale": "en",
-  "themeColor": "#5cbad2",
-  "author": {
-    "name": "Gabriele Canepa",
-    "url": "https://gabrielecanepa.com"
-  }
+  "category": "E-Learning",
+  "themeColor": "#fefefe",
+  "publisher": "Vercel",
+  "authors": [
+    {
+      "name": "Gabriele Canepa",
+      "url": "https://gabrielecanepa.com"
+    }
+  ]
 }

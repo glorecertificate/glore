@@ -10,8 +10,8 @@ import { useCookies } from '@/hooks/use-cookies'
 import { type Locale } from '@/lib/i18n/types'
 import { LOCALES, localizeJson } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { defaultLocale } from 'config/app.json'
-import { backToHome, backToPrevious, message, refreshPage, title } from 'config/translations/static/errors.json'
+import config from 'config/app.json'
+import errors from 'config/translations/static/errors.json'
 
 export default ({ error }: ErrorProps) => {
   const { readCookie } = useCookies()
@@ -20,7 +20,7 @@ export default ({ error }: ErrorProps) => {
 
   const locale = useMemo(() => {
     const cookieLocale = readCookie('NEXT_LOCALE') as Locale
-    if (!cookieLocale || !LOCALES.includes(cookieLocale)) return defaultLocale as Locale
+    if (!cookieLocale || !LOCALES.includes(cookieLocale)) return config.defaultLocale as Locale
     return cookieLocale
   }, [readCookie])
 
@@ -53,23 +53,23 @@ export default ({ error }: ErrorProps) => {
             <ServerErrorGraphic width={240} />
             <div className="text-center">
               <h2 className="mb-4 font-mono text-3xl font-bold tracking-tight text-foreground">
-                {localizeJson(title, locale)}
+                {localizeJson(errors.title, locale)}
               </h2>
-              <p className="mb-8 font-mono text-lg text-foreground/75">{localizeJson(message, locale)}</p>
+              <p className="mb-8 font-mono text-lg text-foreground/75">{localizeJson(errors.message, locale)}</p>
               <div className="flex justify-center gap-4">
                 {canGoBack ? (
                   <Button onClick={onBackClick} size="lg" variant="outline">
-                    {localizeJson(backToPrevious, locale)}
+                    {localizeJson(errors.backToPrevious, locale)}
                   </Button>
                 ) : (
                   pathname !== '/' && (
                     <Button onClick={goToHome} size="lg" variant="outline">
-                      {localizeJson(backToHome, locale)}
+                      {localizeJson(errors.backToHome, locale)}
                     </Button>
                   )
                 )}
                 <Button onClick={reloadPage} size="lg" variant="outline">
-                  {localizeJson(refreshPage, locale)}
+                  {localizeJson(errors.refreshPage, locale)}
                 </Button>
               </div>
             </div>

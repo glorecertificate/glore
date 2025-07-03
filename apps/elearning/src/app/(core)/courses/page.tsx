@@ -1,8 +1,8 @@
 import { CourseList } from '@/components/features/course-list'
-import { generateLocalizedMetadata } from '@/lib/metadata'
+import { generatePageMetadata } from '@/lib/metadata'
 
-export default () => <CourseList />
-
-export const generateMetadata = generateLocalizedMetadata({
+export const generateMetadata = generatePageMetadata({
   title: 'Navigation.courses',
 })
+
+export default () => <CourseList />

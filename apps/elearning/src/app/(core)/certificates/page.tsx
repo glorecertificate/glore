@@ -1,8 +1,8 @@
 import { CertificateView } from '@/components/features/certificate-view'
-import { generateLocalizedMetadata } from '@/lib/metadata'
+import { generatePageMetadata } from '@/lib/metadata'
 
-export default () => <CertificateView />
-
-export const generateMetadata = generateLocalizedMetadata({
+export const generateMetadata = generatePageMetadata({
   title: 'Navigation.certificate',
 })
+
+export default () => <CertificateView />

@@ -4,7 +4,7 @@ import { api } from '@/api/client'
 import { CourseFlow } from '@/components/features/course-flow'
 import { getLocale } from '@/lib/i18n/server'
 import { localizeJson } from '@/lib/i18n/utils'
-import { generatePageMetadata } from '@/lib/metadata'
+import { generateAsyncMetadata, generatePageMetadata } from '@/lib/metadata'
 import { type PageProps, type Route } from '@/lib/navigation'
 
 export default async ({ params }: PageProps<Route.Course>) => {
@@ -25,15 +25,16 @@ export default async ({ params }: PageProps<Route.Course>) => {
 
 export const generateMetadata = async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
-  if (!slug) return await generatePageMetadata()
+  if (!slug) return generatePageMetadata()
 
   const course = await api.courses.get(slug)
-  if (!course) return await generatePageMetadata()
+  if (!course) return generatePageMetadata()
 
   const locale = await getLocale()
 
-  return generatePageMetadata({
+  return generateAsyncMetadata({
     title: localizeJson(course.title, locale),
     description: localizeJson(course.description, locale),
+    translate: false,
   })
 }

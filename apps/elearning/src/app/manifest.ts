@@ -1,29 +1,44 @@
 import { type MetadataRoute } from 'next'
 
-import { asset } from '@/lib/storage'
+import { asset, Asset } from '@/lib/storage'
 import metadata from 'config/metadata.json'
 
-export default () =>
-  ({
-    name: metadata.title,
-    short_name: metadata.title,
-    description: metadata.description,
-    start_url: '/',
-    background_color: metadata.themeColor,
-    theme_color: metadata.themeColor,
-    display: 'standalone',
-    icons: [
-      {
-        purpose: 'maskable',
-        sizes: '192x192',
-        src: asset('metadata/web-app-manifest-192x192.png'),
-        type: 'image/png',
-      },
-      {
-        purpose: 'maskable',
-        sizes: '512x512',
-        src: asset('metadata/web-app-manifest-512x512.png'),
-        type: 'image/png',
-      },
-    ],
-  }) satisfies MetadataRoute.Manifest
+export default (): MetadataRoute.Manifest => ({
+  name: metadata.title,
+  short_name: metadata.name,
+  description: metadata.pwaDescription,
+  start_url: '/',
+  background_color: metadata.themeColor,
+  theme_color: metadata.themeColor,
+  display: 'standalone',
+  icons: [
+    {
+      purpose: 'any',
+      sizes: '192x192',
+      src: asset(Asset.WebAppIcon192),
+      type: 'image/png',
+    },
+    {
+      purpose: 'any',
+      sizes: '512x512',
+      src: asset(Asset.WebAppIcon512),
+      type: 'image/png',
+    },
+  ],
+  screenshots: [
+    {
+      form_factor: 'wide',
+      src: asset(Asset.WebAppScreenshotWide),
+      sizes: '1280x720',
+      type: 'image/png',
+      label: metadata.name,
+    },
+    {
+      form_factor: 'narrow',
+      src: asset(Asset.WebAppScreenshotNarrow),
+      sizes: '720x1280',
+      type: 'image/png',
+      label: metadata.name,
+    },
+  ],
+})

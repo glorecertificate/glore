@@ -7,7 +7,7 @@ import OpenAI from 'openai'
 
 import { log as baseLog, noop } from '@repo/utils'
 
-import { seeds } from 'config/development.json'
+import { seeds } from 'config/local.json'
 
 import { seedSkills } from './seeds/skill'
 import { seedUsers } from './seeds/user'

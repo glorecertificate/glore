@@ -1,5 +1,7 @@
 import './globals.css'
 
+import Script from 'next/script'
+
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -12,8 +14,13 @@ import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { Env } from '@/lib/env'
 import { getLocale, getTranslations } from '@/lib/i18n/server'
-import { generateLocalizedMetadata } from '@/lib/metadata'
-import metadata from 'config/metadata.json'
+import { generatePageMetadata } from '@/lib/metadata'
+import { asset, Asset } from '@/lib/storage'
+import meta from 'config/metadata.json'
+
+export const generateMetadata = generatePageMetadata({
+  description: 'App.description',
+})
 
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
@@ -22,9 +29,9 @@ export default async ({ children }: React.PropsWithChildren) => {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: metadata.name,
+    name: meta.name,
     description: t('App.description'),
-    image: metadata.image,
+    image: asset(Asset.OpenGraph),
   }
 
   return (
@@ -48,12 +55,10 @@ export default async ({ children }: React.PropsWithChildren) => {
             </PathnameProvider>
           </ThemeProvider>
         </I18nProvider>
-        <script dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} type="application/ld+json" />
+        <Script id="jsonLd" type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </Script>
       </body>
     </html>
   )
 }
-
-export const generateMetadata = generateLocalizedMetadata({
-  description: 'App.description',
-})

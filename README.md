@@ -85,7 +85,7 @@ Once you are done, push the branch, make sure that all checks are passing and cr
 
 ## Deployment
 
-The project is deployed on [Vercel](https://vercel.com). 
+The project is deployed on [Vercel](https://vercel.com).
 
 To deploy the project, you must set up a Vercel account and link it to the GitHub repository. Once the repository is linked, you can deploy by pushing changes to any branch, and Vercel will automatically build and deploy a preview for you.
 
@@ -95,7 +95,7 @@ Alternatively, you can create a preview deployment by running:
 pnpm deploy
 ```
 
-### Production deployments and releases
+### Production and releases
 
 To release a new version of the project, you must specify a `GITHUB_TOKEN` or `GH_TOKEN` environment variable at the root of the project. The token needs access to the `repository` and `workflow` scopes.
 

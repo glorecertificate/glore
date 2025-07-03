@@ -1,8 +1,8 @@
 import { AdminDashboard } from '@/components/features/admin-dashboard'
-import { generateLocalizedMetadata } from '@/lib/metadata'
+import { generatePageMetadata } from '@/lib/metadata'
 
-export default () => <AdminDashboard />
-
-export const generateMetadata = generateLocalizedMetadata({
+export const generateMetadata = generatePageMetadata({
   title: 'Navigation.admin',
 })
+
+export default () => <AdminDashboard />

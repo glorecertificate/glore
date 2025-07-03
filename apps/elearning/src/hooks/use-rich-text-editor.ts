@@ -8,7 +8,7 @@ import { useEditor, type Content, type Editor, type UseEditorOptions } from '@ti
 import { StarterKit } from '@tiptap/starter-kit'
 import { toast } from 'sonner'
 
-import { noop } from '@repo/utils'
+import { isServer, noop } from '@repo/utils'
 
 import {
   CodeBlockLowlight,
@@ -201,6 +201,7 @@ export const useRichTextEditor = ({
         class: cn('focus:outline-none', editorClassName),
       },
     },
+    immediatelyRender: !isServer(),
     onUpdate: ({ editor }) => handleUpdate(editor),
     onCreate: ({ editor }) => handleCreate(editor),
     onBlur: ({ editor }) => handleBlur(editor),

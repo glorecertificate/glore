@@ -1,6 +1,6 @@
 {
   "name": "elearning",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "scripts": {
     "prepare": "sh bin/prepare",
@@ -115,10 +115,10 @@
   "@snaplet/seed": {
     "config": "supabase/seed.config.ts"
   },
-  "prettier": "@repo/prettier-config/sql",
   "postcss": {
     "plugins": {
       "@tailwindcss/postcss": {}
     }
-  }
+  },
+  "prettier": "@repo/prettier-config/sql"
 }

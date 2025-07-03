@@ -33,8 +33,10 @@ export enum Asset {
   AppleIcon = 'metadata/apple-touch-icon.png',
   Favicon96 = 'metadata/favicon-96x96.png',
   OpenGraph = 'metadata/open-graph.png',
-  WebManifest192 = 'metadata/web-app-manifest-192x192.png',
-  WebManifest512 = 'metadata/web-app-manifest-512x512.png',
+  WebAppIcon192 = 'metadata/web-app-icon-192x192.png',
+  WebAppIcon512 = 'metadata/web-app-icon-512x512.png',
+  WebAppScreenshotWide = 'metadata/web-app-screenshot-wide.png',
+  WebAppScreenshotNarrow = 'metadata/web-app-screenshot-narrow.png',
 }
 
 /**

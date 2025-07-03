@@ -8,7 +8,7 @@ import config from 'config/app.json'
 
 const I18N_MIDDLEWARE = './src/lib/i18n/middleware.ts'
 const MESSAGE_DECLARATIONS = `./config/translations/${config.defaultLocale}.json`
-const tsconfigPath = Env.DEV ? './tsconfig.json' : './tsconfig.build.json'
+const tsconfigPath = Env.DEV ? 'tsconfig.json' : 'tsconfig.build.json'
 
 const nextConfig: NextConfig = {
   experimental: {

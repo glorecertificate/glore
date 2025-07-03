@@ -1,7 +1,7 @@
 import { copycat } from '@snaplet/copycat'
 import { createClient } from '@supabase/supabase-js'
 
-import { seeds } from 'config/local.json'
+import { seeds } from 'config/database.json'
 import metadata from 'config/metadata.json'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL

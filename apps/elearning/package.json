@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "prepare": "sh bin/prepare",
-    "build": "sh bin/typegen && next build",
+    "build": "sh bin/build",
     "start": "next start",
     "dev": "sh bin/dev",
     "db:start": "supabase db start",

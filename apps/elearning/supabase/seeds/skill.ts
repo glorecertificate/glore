@@ -3,7 +3,7 @@ import { type User } from '@supabase/supabase-js'
 
 import { handleize, pickRandom } from '@repo/utils'
 
-import { seedImageUrl, seeds } from 'config/local.json'
+import { seedImageUrl, seeds } from 'config/database.json'
 import { type Enums } from 'supabase/types'
 
 export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_areas, users: Array<User | null>) =>

@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/assets/glore.png" alt="" width="90">
   <h1>
     GloRe Certificate<br>
-    <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?color=%23afc861&labelColor=%2324292e"></a>
+    <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2"></a>
   </h1>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
@@ -25,9 +25,9 @@ The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href=
 
 ### Prerequisites
 
-You must download and activate the Node.js version specified [here](https://github.com/gabrielecanepa/glore/blob/main/.node-version).
+You must download and activate the Node.js version specified [here](.node-version).
 
-[Docker](https://docker.com) is required to run the Supabase local development environment.
+[Docker Desktop](https://docs.docker.com/desktop) is a prerequisite for local development. It is recommended to adjust Docker's resource allocation in `Settings > Resources > Advanced` to optimize performance, as Docker can consume significant system resources by default.
 
 ### Setup
 
@@ -42,8 +42,8 @@ git clone https://github.com/gabrielecanepa/glore.git
 Switch to the project directory and copy the example env files:
 
 ```sh
-cp .env.example .env
-cp apps/elearning/.env.example apps/elearning/.env
+cp ./.env.example ./.env
+cp ./apps/elearning/.env.example ./apps/elearning/.env
 ```
 
 Open the new files and fill in the required values to gain access to the services used throughout the project.
@@ -65,11 +65,11 @@ Run a development server with:
 pnpm dev
 ```
 
-This command will start the Next.js application and (if not already running) the Docker instance of Supabase.
+This command will start the Next.js application and the Docker instance of Supabase.
 
 Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real time.
 
-Supabase Studio, an interface for managing the local Supabase project, will be available at [localhost:54321](http://localhost:54321) while the Docker container is running.
+Supabase Studio, an interface for managing the local database, will be available at [localhost:54321](http://localhost:54321) while the Docker container is running.
 
 ### Contributing
 
@@ -85,11 +85,9 @@ Once you are done, push the branch, make sure that all checks are passing and cr
 
 ## Deployment
 
-The project is deployed on [Vercel](https://vercel.com).
+The project is deployed on [Vercel](https://vercel.com). 
 
-To deploy the project, you must set up a Vercel account and link it to the GitHub repository.
-
-Once you have done that, you can deploy by pushing changes to any branch, and Vercel will automatically build and deploy a preview for you.
+To deploy the project, you must set up a Vercel account and link it to the GitHub repository. Once the repository is linked, you can deploy by pushing changes to any branch, and Vercel will automatically build and deploy a preview for you.
 
 Alternatively, you can create a preview deployment by running:
 
@@ -97,7 +95,7 @@ Alternatively, you can create a preview deployment by running:
 pnpm deploy
 ```
 
-### Production and releases
+### Production deployments and releases
 
 To release a new version of the project, you must specify a `GITHUB_TOKEN` or `GH_TOKEN` environment variable at the root of the project. The token needs access to the `repository` and `workflow` scopes.
 
@@ -115,4 +113,4 @@ pnpm deploy:prod
 
 ## License
 
-Copyright (c) 2025-present Associazione Joint <info@associazionejoint.org>
+Copyright © 2025-present Associazione Joint <info@associazionejoint.org>

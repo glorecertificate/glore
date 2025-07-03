@@ -118,8 +118,11 @@ void (async () => {
 
     if (included('courses')) {
       const store = await seedSkills(seed, data.skill_areas, users)
-      log.success(`Created ${store.skills.length} courses and skills grouped in ${store.skill_areas.length} areas`)
+      log.success(`Created ${store.skills.length} skills grouped in ${store.skill_areas.length} areas`)
+      log.success(`Created ${store.courses.length} courses with ${store.lessons.length} lessons`)
     }
+
+    process.exit(0)
   } catch (error) {
     throw error as Error
   }

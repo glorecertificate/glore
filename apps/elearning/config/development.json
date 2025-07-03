@@ -1,5 +1,6 @@
 {
   "supabaseStudioUrl": " http://127.0.0.1:54323",
+  "seedImageUrl": "https://picsum.photos/600/400",
   "seeds": {
     "users": [
       {

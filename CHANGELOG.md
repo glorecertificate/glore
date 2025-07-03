@@ -1,5 +1,19 @@
 # Changelog
 
+## <small>0.4.6 (2025-07-03)</small>
+
+* refactor: extract database configuration and optimize build process ([932d088](https://github.com/gabrielecanepa/glore/commit/932d088))
+* refactor: improve config structure and metadata handling ([8322823](https://github.com/gabrielecanepa/glore/commit/8322823))
+* refactor: improve i18n utilities and error handling ([fa0d396](https://github.com/gabrielecanepa/glore/commit/fa0d396))
+* refactor: move scripts from .bin to bin directory ([cf4061a](https://github.com/gabrielecanepa/glore/commit/cf4061a))
+* build(deps): bump dependencies to latest version ([4ae3d3f](https://github.com/gabrielecanepa/glore/commit/4ae3d3f))
+* chore: enable experimental Next.js features ([86b0d06](https://github.com/gabrielecanepa/glore/commit/86b0d06))
+* chore(dev): add seed image URL configuration and improve seeder ([6c1212f](https://github.com/gabrielecanepa/glore/commit/6c1212f))
+* docs: improve README clarity and visual consistency ([5d9676b](https://github.com/gabrielecanepa/glore/commit/5d9676b))
+* ci: refactor `ci` workflow and replace external commitlint action with conditional CLI commands ([0c906b9](https://github.com/gabrielecanepa/glore/commit/0c906b9))
+* ci: replace manual Corepack installation in CI/CD workflows with a dedicated pnpm action ([2c9ac11](https://github.com/gabrielecanepa/glore/commit/2c9ac11))
+* fix(release-it-config): correct deployment path in release config ([0246f4d](https://github.com/gabrielecanepa/glore/commit/0246f4d))
+
 ## <small>0.4.4 (2025-07-02)</small>
 
 * chore: refactor hooks and improve code organization ([de4ed8c](https://github.com/gabrielecanepa/glore/commit/de4ed8c))

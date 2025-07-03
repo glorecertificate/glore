@@ -50,7 +50,6 @@
     "@release-it/conventional-changelog": "10.0.1",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
-    "@repo/release-it-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@types/node": "catalog:",
     "dotenv-cli": "^8.0.0",

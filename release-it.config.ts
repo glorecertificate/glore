@@ -17,7 +17,7 @@ interface Context {
   version: string
 }
 
-interface ReleaseItConfig extends Config {
+interface UserConfig extends Config {
   github: Config['github'] & {
     releaseNotes?: (context: Context) => string
   }
@@ -29,16 +29,16 @@ interface ReleaseItConfig extends Config {
       infile?: string
       /** @default "# Changelog" */
       header?: string
-      /** @default false */
-      ignoreRecommendedBump?: boolean
-      /** @default false */
-      strictSemver?: boolean
       preset: {
         name: string
         types?: Array<{
           section: string
           type: string
         }>
+      }
+      writerOpts?: {
+        groupBy?: string
+        commitsSort?: string[]
       }
     }
   }
@@ -47,6 +47,7 @@ interface ReleaseItConfig extends Config {
 export default {
   git: {
     commitMessage: 'chore: release v${version}',
+    push: true,
     pushArgs: ['--follow-tags', '--no-verify'],
     requireBranch: 'main',
     tagName: 'v${version}',
@@ -54,9 +55,15 @@ export default {
   github: {
     release: true,
     releaseName: 'v${version}',
+    releaseNotes: context =>
+      [
+        ...context.changelog.split('\n').slice(1),
+        '',
+        `**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
+      ].join('\n'),
   },
   hooks: {
-    'after:init': '[ -n "$(git log @{u}.. 2>/dev/null)" ] && pnpm build && pnpm check',
+    'after:init': '[ -n "$(git log @{u}..)" ] && pnpm build && pnpm run check || exit 0',
     'after:bump': 'pnpm run format',
     'after:release':
       'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production',
@@ -66,62 +73,59 @@ export default {
   },
   plugins: {
     '@release-it/bumper': {
-      out: ['apps/*/package.json', 'apps/**/metadata.json'],
+      out: ['apps/*/package.json', 'apps/*/config/metadata.json'],
     },
     '@release-it/conventional-changelog': {
-      header: '# Changelog',
       infile: 'CHANGELOG.md',
-      ignoreRecommendedBump: true,
-      strictSemver: true,
       preset: {
         name: 'conventionalcommits',
         types: [
           {
-            section: 'Features',
             type: 'feat',
+            section: 'Features',
           },
           {
-            section: 'Fixes',
             type: 'fix',
+            section: 'Fixes',
           },
           {
-            section: 'Build',
             type: 'build',
+            section: 'Build',
           },
           {
-            section: 'CI',
             type: 'ci',
+            section: 'CI',
           },
           {
-            section: 'Docs',
             type: 'docs',
+            section: 'Docs',
           },
           {
-            section: 'Other',
             type: 'chore',
+            section: 'Other',
           },
           {
-            section: 'Other',
             type: 'test',
+            section: 'Other',
           },
           {
-            section: 'Other',
             type: 'style',
+            section: 'Other',
           },
           {
-            section: 'Other',
             type: 'refactor',
+            section: 'Other',
           },
           {
-            section: 'Other',
             type: 'perf',
+            section: 'Other',
           },
           {
-            section: 'Other',
             type: 'revert',
+            section: 'Other',
           },
         ],
       },
     },
   },
-} satisfies ReleaseItConfig
+} satisfies UserConfig

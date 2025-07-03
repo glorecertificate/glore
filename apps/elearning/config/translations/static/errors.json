@@ -1,0 +1,27 @@
+{
+  "title": {
+    "en": "Something went wrong",
+    "es": "Algo salió mal",
+    "it": "Si è verificato un errore"
+  },
+  "message": {
+    "en": "We're sorry, but something unexpected happened. Please try again or contact support if the problem persists.",
+    "es": "Lo sentimos, pero algo inesperado ocurrió. Por favor, inténtalo de nuevo o contacta con soporte si el problema persiste.",
+    "it": "Ci dispiace, ma si è verificato un errore imprevisto. Riprova o contatta il supporto se il problema persiste."
+  },
+  "backToPrevious": {
+    "en": "Go back",
+    "es": "Volver",
+    "it": "Torna indietro"
+  },
+  "backToHome": {
+    "en": "Go to homepage",
+    "es": "Ir al inicio",
+    "it": "Vai alla homepage"
+  },
+  "refreshPage": {
+    "en": "Refresh page",
+    "es": "Actualizar página",
+    "it": "Aggiorna pagina"
+  }
+}

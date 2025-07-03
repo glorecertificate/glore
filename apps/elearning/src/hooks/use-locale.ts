@@ -8,7 +8,7 @@ import { type Json } from '@repo/utils'
 
 import { setLocale } from '@/lib/i18n/server'
 import { type Locale } from '@/lib/i18n/types'
-import { localizeJson } from '@/lib/utils'
+import { localizeJson } from '@/lib/i18n/utils'
 
 /**
  * Extends the hook from `next-intl` to support localization of JSON values.

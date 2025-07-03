@@ -52,13 +52,13 @@ importers:
         version: 10.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.0)(release-it@19.0.3(@types/node@24.0.10))
       '@repo/eslint-config':
         specifier: workspace:^
-        version: link:packages/@configs/eslint-config
+        version: link:packages/eslint-config
       '@repo/prettier-config':
         specifier: workspace:^
-        version: link:packages/@configs/prettier-config
+        version: link:packages/prettier-config
       '@repo/tsconfig':
         specifier: workspace:^
-        version: link:packages/@configs/tsconfig
+        version: link:packages/tsconfig
       '@types/node':
         specifier: 'catalog:'
         version: 24.0.10
@@ -266,13 +266,13 @@ importers:
         version: 15.3.4
       '@repo/eslint-config':
         specifier: workspace:^
-        version: link:../../packages/@configs/eslint-config
+        version: link:../../packages/eslint-config
       '@repo/prettier-config':
         specifier: workspace:^
-        version: link:../../packages/@configs/prettier-config
+        version: link:../../packages/prettier-config
       '@repo/tsconfig':
         specifier: workspace:^
-        version: link:../../packages/@configs/tsconfig
+        version: link:../../packages/tsconfig
       '@snaplet/copycat':
         specifier: ^6.0.0
         version: 6.0.0
@@ -349,7 +349,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
-  packages/@configs/eslint-config:
+  packages/eslint-config:
     dependencies:
       '@eslint/js':
         specifier: ^9.30.1
@@ -437,7 +437,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
-  packages/@configs/prettier-config:
+  packages/prettier-config:
     devDependencies:
       prettier:
         specifier: 'catalog:'
@@ -455,7 +455,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.3
 
-  packages/@configs/tsconfig:
+  packages/tsconfig:
     devDependencies:
       '@repo/prettier-config':
         specifier: workspace:^
@@ -464,7 +464,7 @@ importers:
         specifier: 'catalog:'
         version: 3.6.2
 
-  packages/@configs/tsup-config:
+  packages/tsup-config:
     devDependencies:
       '@repo/prettier-config':
         specifier: workspace:^
@@ -486,13 +486,13 @@ importers:
     devDependencies:
       '@repo/prettier-config':
         specifier: workspace:^
-        version: link:../@configs/prettier-config
+        version: link:../prettier-config
       '@repo/tsconfig':
         specifier: workspace:^
-        version: link:../@configs/tsconfig
+        version: link:../tsconfig
       '@repo/tsup-config':
         specifier: workspace:^
-        version: link:../@configs/tsup-config
+        version: link:../tsup-config
       '@types/node':
         specifier: 'catalog:'
         version: 24.0.10

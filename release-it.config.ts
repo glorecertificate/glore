@@ -17,7 +17,7 @@ interface Context {
   version: string
 }
 
-interface ReleaseItConfig extends Config {
+interface UserConfig extends Config {
   github: Config['github'] & {
     releaseNotes?: (context: Context) => string
   }
@@ -29,16 +29,16 @@ interface ReleaseItConfig extends Config {
       infile?: string
       /** @default "# Changelog" */
       header?: string
-      /** @default false */
-      ignoreRecommendedBump?: boolean
-      /** @default false */
-      strictSemver?: boolean
       preset: {
         name: string
         types?: Array<{
-          section: string
+          header: string
           type: string
         }>
+      }
+      writerOpts?: {
+        groupBy?: string
+        commitsSort?: string[]
       }
     }
   }
@@ -47,16 +47,18 @@ interface ReleaseItConfig extends Config {
 export default {
   git: {
     commitMessage: 'chore: release v${version}',
+    push: true,
     pushArgs: ['--follow-tags', '--no-verify'],
     requireBranch: 'main',
     tagName: 'v${version}',
   },
   github: {
+    autoGenerate: false,
     release: true,
     releaseName: 'v${version}',
   },
   hooks: {
-    'after:init': '[ -n "$(git log @{u}.. 2>/dev/null)" ] && pnpm build && pnpm check',
+    'after:init': '[ -n "$(git log @{u}..)" ] && pnpm build && pnpm run check || exit 0',
     'after:bump': 'pnpm run format',
     'after:release':
       'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production',
@@ -69,59 +71,60 @@ export default {
       out: ['apps/*/package.json', 'apps/**/metadata.json'],
     },
     '@release-it/conventional-changelog': {
-      header: '# Changelog',
       infile: 'CHANGELOG.md',
-      ignoreRecommendedBump: true,
-      strictSemver: true,
       preset: {
         name: 'conventionalcommits',
         types: [
           {
-            section: 'Features',
             type: 'feat',
+            header: 'Features',
           },
           {
-            section: 'Fixes',
             type: 'fix',
+            header: 'Fixes',
           },
           {
-            section: 'Build',
             type: 'build',
+            header: 'Build',
           },
           {
-            section: 'CI',
             type: 'ci',
+            header: 'CI',
           },
           {
-            section: 'Docs',
             type: 'docs',
+            header: 'Docs',
           },
           {
-            section: 'Other',
             type: 'chore',
+            header: 'Other',
           },
           {
-            section: 'Other',
             type: 'test',
+            header: 'Other',
           },
           {
-            section: 'Other',
             type: 'style',
+            header: 'Other',
           },
           {
-            section: 'Other',
             type: 'refactor',
+            header: 'Other',
           },
           {
-            section: 'Other',
             type: 'perf',
+            header: 'Other',
           },
           {
-            section: 'Other',
             type: 'revert',
+            header: 'Other',
           },
         ],
       },
+      writerOpts: {
+        groupBy: 'header',
+        commitsSort: ['type', 'header'],
+      },
     },
   },
-} satisfies ReleaseItConfig
+} satisfies UserConfig

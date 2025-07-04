@@ -1,0 +1,54 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - v*
+      - v*.*
+      - v*.*.*
+
+env:
+  NEXT_TELEMETRY_DISABLED: true
+  SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+  SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_TELEMETRY_DISABLED: true
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: Production
+      url: ${{ steps.vercel.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install and build dependencies
+        run: |
+          pnpm install --frozen-lockfile --strict-peer-dependencies
+          pnpm build --filter @repo/*
+          echo ./node_modules/.bin >> $GITHUB_PATH
+      - name: Deploy to Vercel
+        id: vercel
+        run: |
+          vercel pull --yes --prod --token ${{ secrets.VERCEL_TOKEN }}
+          vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --token ${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

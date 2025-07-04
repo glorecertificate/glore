@@ -4,7 +4,7 @@ SCHEMA=auth,public,storage
 TYPES=supabase/types.ts
 arg="--local"
 
-[ -f ./.env ] && . ./.env
+[ -f .env ] && . .env
 
 if [ -z "$SUPABASE_DB_URL" ]; then
   echo "Error: SUPABASE_DB_URL is not set"

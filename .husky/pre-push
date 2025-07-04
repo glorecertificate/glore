@@ -1,14 +1,5 @@
 #!/usr/bin/env sh
 
-commit=$(cat "$1")
-
-# Skip CI
-case "$commit" in
-  *"[skip ci]"*)
-    exit 0
-    ;;
-esac
-
 commitlint --from origin/main --to HEAD --verbose
 pnpm run build
 pnpm run check

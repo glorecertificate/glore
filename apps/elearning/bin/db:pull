@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-SCHEMA=auth,storage
+PROTECTED_SCHEMAS=auth,storage
 
 ./node_modules/.bin/supabase db pull
-./node_modules/.bin/supabase db pull --schema $SCHEMA
+./node_modules/.bin/supabase db pull --schema $PROTECTED_SCHEMAS
 exit 0

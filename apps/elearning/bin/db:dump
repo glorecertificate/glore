@@ -1,15 +1,17 @@
 #!/usr/bin/env sh
 
-SCHEMA=auth,public,storage
-MIGRATIONS=supabase/migrations
+SCHEMAS=auth,public,storage
+MIGRATIONS_PATH=./supabase/migrations
+
 file=$1
 
 if [ -z "$file" ]; then
   echo "You must provide a migration name."
+  echo "Usage: $0 <migration_name>"
   exit 1
 fi
 
-./node_modules/.bin/supabase db diff --schema $SCHEMA --file "$file"
-./node_modules/.bin/prettier --write $MIGRATIONS/*.sql
+./node_modules/.bin/supabase db diff --schema $SCHEMAS --file "$file"
+./node_modules/.bin/prettier --write $MIGRATIONS_PATH/*.sql
 ./node_modules/.bin/snaplet-seed sync
 sh ./.bin/typegen 

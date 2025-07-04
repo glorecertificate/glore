@@ -12,7 +12,7 @@ import { seeds } from 'config/database.json'
 import { seedSkills } from './seeds/skill'
 import { seedUsers } from './seeds/user'
 
-const CACHE_FILE = './supabase/.temp/output.json'
+const CACHE_FILE = './.temp/output.json'
 
 const args = process.argv.slice(2)
 const reset = !args.includes('--no-reset')
@@ -61,11 +61,11 @@ const AI_INPUT =
 const RETRY_MESSAGE =
   'Generate the output of this prompt again making sure that only valid JSON is returned in the format requested.'
 
-export const openAI = new OpenAI({
+const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-export const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
+const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
   try {
     const { output_text } = await openAI.responses.create({
       model: AI_MODEL_NAME,

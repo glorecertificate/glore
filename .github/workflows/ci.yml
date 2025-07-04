@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
-      - v*.*
-      - v*.*.*
   pull_request:
     branches:
       - main
@@ -20,12 +16,12 @@ on:
       - checks_requested
 
 env:
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TELEMETRY_DISABLED: true
   NEXT_TELEMETRY_DISABLED: true
   SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
   SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_TELEMETRY_DISABLED: true
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
   code-checks:
@@ -33,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref_type == 'branch'
     permissions:
-      actions: write
       checks: write
       contents: read
       pull-requests: read
@@ -74,17 +69,21 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
     needs: code-checks
+    if: github.event_name == 'push'
     permissions:
       contents: write
-      issues: write
       pull-requests: write
+      issues: write
+      checks: write
       id-token: write
+    outputs:
+      released: ${{ steps.release.outputs.success }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
@@ -95,15 +94,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
       - run: pnpm release
+        id: release
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    if: github.ref_type == 'tag'
+    needs: release
+    if: needs.release.outputs.released == 'true'
     permissions:
       contents: read
+      pull-requests: write
+      checks: write
+      id-token: write
+      deployments: write
     environment:
       name: Production
       url: ${{ steps.vercel.outputs.deployment-url }}

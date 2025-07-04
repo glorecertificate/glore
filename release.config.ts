@@ -16,6 +16,7 @@ const DEFAULT_COMMIT_TYPES = Object.freeze([
 ])
 
 export default {
+  branches: ['+([0-9])?(.{+([0-9]),x}).x', 'main', 'next'],
   plugins: [
     [
       '@semantic-release/commit-analyzer',
@@ -27,12 +28,9 @@ export default {
       },
     ],
     [
-      '@semantic-release/release-notes-generator',
+      '@semantic-release/exec',
       {
-        preset: 'conventionalcommits',
-        writerOpts: {
-          commitsSort: ['subject', 'scope'],
-        },
+        analyzeCommitsCmd: 'sh ./.husky/pre-release',
       },
     ],
     [
@@ -60,7 +58,6 @@ export default {
       '@semantic-release/git',
       {
         assets: ['CHANGELOG.md', 'package.json', 'apps/*/package.json', 'apps/*/config/metadata.json'],
-        message: 'chore(release): ${nextRelease.version}\n\n${nextRelease.notes}',
       },
     ],
     '@semantic-release/github',

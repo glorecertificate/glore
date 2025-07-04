@@ -92,7 +92,7 @@ To deploy the project, you must set up a Vercel account and link it to the GitHu
 Alternatively, you can create a preview deployment by running:
 
 ```sh
-pnpm deploy
+pnpm run deploy
 ```
 
 ### Production and releases

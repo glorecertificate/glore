@@ -11,7 +11,10 @@ if [ -z "$file" ]; then
   exit 1
 fi
 
-./node_modules/.bin/supabase db diff --schema $SCHEMAS --file "$file"
-./node_modules/.bin/prettier --write $MIGRATIONS_PATH/*.sql
-./node_modules/.bin/snaplet-seed sync
-sh ./.bin/typegen 
+if (
+  ./node_modules/.bin/supabase db diff --schema $SCHEMAS --file "$file" && 
+  ./node_modules/.bin/prettier --write $MIGRATIONS_PATH/*_"$file".sql >/dev/null 2>&1
+); then
+  ./node_modules/.bin/snaplet-seed sync >/dev/null 2>&1
+  sh ./bin/typegen
+fi

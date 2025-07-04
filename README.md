@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/gabrielecanepa/glore/refs/heads/main/.github/assets/glore.png" alt="" width="90">
   <h1>
-    GloRe Certificate<br>
-    <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2"></a>
+    <img src="logo.svg" alt="" width="180">
+    <br>
+    <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2&style=flat-square"></a>
   </h1>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>

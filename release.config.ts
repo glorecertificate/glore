@@ -36,15 +36,24 @@ export default {
       },
     ],
     [
-      'semantic-release-mirror-version',
+      '@semantic-release/release-notes-generator',
       {
-        fileGlob: ['apps/*/package.json', 'apps/*/config/metadata.json'],
+        preset: 'conventionalcommits',
+        writerOpts: {
+          commitsSort: ['subject', 'scope'],
+        },
       },
     ],
     [
       '@semantic-release/changelog',
       {
         changelogTitle: 'Changelog',
+      },
+    ],
+    [
+      '@semantic-release/npm',
+      {
+        npmPublish: false,
       },
     ],
     [
@@ -55,5 +64,12 @@ export default {
       },
     ],
     '@semantic-release/github',
+    [
+      'semantic-release-plugin-update-version-in-files',
+      {
+        files: ['apps/*/package.json', 'apps/*/config/metadata.json'],
+        placeholder: '{{VERSION}}',
+      },
+    ],
   ],
 } satisfies Partial<GlobalConfig>

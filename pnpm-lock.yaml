@@ -77,6 +77,9 @@ importers:
       semantic-release-mirror-version:
         specifier: ^1.1.2
         version: 1.1.2
+      semantic-release-plugin-update-version-in-files:
+        specifier: ^2.0.0
+        version: 2.0.0
       shellcheck:
         specifier: 'catalog:'
         version: 3.1.0
@@ -6862,6 +6865,10 @@ packages:
 
   semantic-release-mirror-version@1.1.2:
     resolution: {integrity: sha512-lt4GkwNiaKMzktqjf1mCU/54zWRVKykQvRD7GSs7sXa+EYlukmaMXN0mZDg+EcioEywTklZ5ug9Yc6qQLSzZbA==}
+
+  semantic-release-plugin-update-version-in-files@2.0.0:
+    resolution: {integrity: sha512-ovpBKjkygkbiTH0CG+vJb62O+eGFoI7PM5KCVuuy2I5Xaj5t9JzmwMtAAls3Ie+R06IQu556P4gIKjJ9FIDJZQ==}
+    engines: {node: '>=18'}
 
   semantic-release@24.2.6:
     resolution: {integrity: sha512-D0cwjlO5RZzHHxAcsoF1HxiRLfC3ehw+ay+zntzFs6PNX6aV0JzKNG15mpxPipBYa/l4fHly88dHvgDyqwb1Ww==}
@@ -14688,6 +14695,13 @@ snapshots:
   semantic-release-mirror-version@1.1.2:
     dependencies:
       glob: 8.1.0
+
+  semantic-release-plugin-update-version-in-files@2.0.0:
+    dependencies:
+      debug: 4.4.1
+      glob: 10.4.5
+    transitivePeerDependencies:
+      - supports-color
 
   semantic-release@24.2.6(typescript@5.8.3):
     dependencies:

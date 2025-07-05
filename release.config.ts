@@ -120,7 +120,7 @@ export default {
     releaseNotes: context =>
       [
         ...context.changelog.split('\n').slice(1),
-        '<h1></h1>',
+        '\n<h1></h1>\n',
         `**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
       ].join('\n\n'),
   },
@@ -129,8 +129,8 @@ export default {
   },
   plugins,
   hooks: {
-    'after:init': '[ -n "$(git log @{u}..)" ] && pnpm build && pnpm run check || exit 0',
-    'after:@release-it/conventional-changelog:release': 'pnpm run format && pnpm add .',
+    'after:init': '[ -n "$(git log @{u}..)" ] && [ "$SKIP_CI" != 1 ] && pnpm build && pnpm run check || exit 0',
+    'before:release': 'pnpm run format && git add .',
     'after:release':
       'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production',
   },

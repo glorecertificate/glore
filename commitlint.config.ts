@@ -11,7 +11,7 @@ interface Package {
 
 const NAMESPACE = '@repo'
 const LIST_CMD = 'pnpm m ls --depth -1 --json'
-const BASE_SCOPES = ['deps', 'deps-dev', 'dev', 'infra', 'security']
+const BASE_SCOPES = ['deps', 'deps-dev', 'dev', 'infra', 'release', 'security']
 
 const packages = JSON.parse(execSync(LIST_CMD, { encoding: 'utf8' })) as Package[]
 const packageNames = packages
@@ -24,5 +24,6 @@ export default {
   rules: {
     'body-max-line-length': [RuleConfigSeverity.Disabled],
     'scope-enum': [RuleConfigSeverity.Error, 'always', [...packageNames, ...BASE_SCOPES]],
+    'subject-case': [RuleConfigSeverity.Error, 'always', 'sentence-case'],
   },
 } satisfies UserConfig

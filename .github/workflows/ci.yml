@@ -27,7 +27,7 @@ jobs:
   code-checks:
     name: Code checks
     runs-on: ubuntu-latest
-    if: github.ref_type == 'branch'
+    if: ${{ !startsWith(github.event.commits.message, 'chore(release)') }}
     permissions:
       checks: write
       contents: read

@@ -1,6 +1,7 @@
 import 'dotenv/config'
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 import { createSeedClient } from '@snaplet/seed'
 import OpenAI from 'openai'
@@ -11,24 +12,6 @@ import { seeds } from 'config/database.json'
 
 import { seedSkills } from './seeds/skill'
 import { seedUsers } from './seeds/user'
-
-const CACHE_FILE = './.temp/output.json'
-
-const args = process.argv.slice(2)
-const reset = !args.includes('--no-reset')
-const cache = !args.includes('--no-cache')
-const ai = !args.includes('--no-ai')
-const dryRun = args.includes('--dry-run')
-
-const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
-const log = dryRun
-  ? Object.assign(noop, {
-      error: noop,
-      warn: noop,
-      success: noop,
-      info: noop,
-    })
-  : baseLog
 
 const AI_MODEL_NAME = process.env.AI_MODEL_NAME ?? 'gpt-4o'
 
@@ -61,6 +44,25 @@ const AI_INPUT =
 const RETRY_MESSAGE =
   'Generate the output of this prompt again making sure that only valid JSON is returned in the format requested.'
 
+const CACHE = resolve('.temp/output.json')
+
+const args = process.argv.slice(2)
+const reset = !args.includes('--no-reset')
+const cache = !args.includes('--no-cache')
+const ai = !args.includes('--no-ai')
+const dryRun = args.includes('--dry-run')
+
+const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
+
+const log = dryRun
+  ? Object.assign(noop, {
+      error: noop,
+      warn: noop,
+      success: noop,
+      info: noop,
+    })
+  : baseLog
+
 const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
@@ -83,9 +85,9 @@ const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
 }
 
 const generateData = async () => {
-  if (cache && existsSync(CACHE_FILE)) {
+  if (cache && existsSync(CACHE)) {
     log.info('Using cached seed data')
-    return JSON.parse(readFileSync(CACHE_FILE, 'utf-8')) as typeof seeds
+    return JSON.parse(readFileSync(CACHE, 'utf-8')) as typeof seeds
   }
   if (!ai) {
     log('Using static seed data')
@@ -93,9 +95,9 @@ const generateData = async () => {
   }
   log('Generating seed data...')
   const data = await jsonChat(AI_INPUT)
-  const [dir] = CACHE_FILE.split('/').slice(-2)
+  const [dir] = CACHE.split('/').slice(-2)
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-  writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2))
+  writeFileSync(CACHE, JSON.stringify(data, null, 2))
   log.success('Seed data generated')
   return data
 }

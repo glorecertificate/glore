@@ -11,12 +11,10 @@ const MESSAGE_DECLARATIONS = `./config/translations/${config.defaultLocale}.json
 const tsconfigPath = Env.DEV ? 'tsconfig.json' : 'tsconfig.build.json'
 
 const nextConfig: NextConfig = {
-  experimental: Env.DEV
-    ? {
-        typedEnv: true,
-        useCache: true,
-      }
-    : {},
+  experimental: {
+    typedEnv: Env.DEV,
+    useCache: true,
+  },
   images: {
     remotePatterns: [new URL(Env.SUPABASE_URL)],
     unoptimized: Env.DEV,

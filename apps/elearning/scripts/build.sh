@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-if ! sh bin/typegen >/dev/null 2>&1; then
+if ! sh ./scripts/typegen.sh >/dev/null 2>&1; then
   echo "Error: Type generation failed"
   exit 1
 fi

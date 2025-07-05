@@ -16,5 +16,5 @@ if (
   ./node_modules/.bin/prettier --write $MIGRATIONS_PATH/*_"$file".sql >/dev/null 2>&1
 ); then
   ./node_modules/.bin/snaplet-seed sync >/dev/null 2>&1
-  sh ./bin/typegen
+  sh ./scripts/typegen.sh
 fi

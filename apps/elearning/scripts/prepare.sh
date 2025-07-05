@@ -12,7 +12,7 @@ SUPABASE_DB_PASSWORD=$(echo "$SUPABASE_DB_URL" | sed -E 's|postgresql://postgres
 
 ./node_modules/.bin/supabase login --token "$SUPABASE_ACCESS_TOKEN" >/dev/null
 ./node_modules/.bin/supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD" >/dev/null 2>&1
-sh ./bin/typegen
+sh ./scripts/typegen.sh
 exit=$?
 
 if [ "$ENV" = "production" ] || [ "$NODE_ENV" = "production" ] || [ "$GITHUB_ACTIONS" = "true" ] || [ "$CI" = "true" ] || [ "$CI" = 1 ]; then

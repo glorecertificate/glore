@@ -1,6 +1,6 @@
 {
   "name": "GloRe",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "title": "GloRe Certificate",
   "titleSeparator": "-",
   "description": {
@@ -9,7 +9,12 @@
     "it": "GloRe Certificate è una piattaforma per apprendere e rilasciare un certificato ufficiale che convalida le soft skills."
   },
   "pwaDescription": "Install GloRe on your device to access courses, receive notifications and manage your certificates offline.",
-  "keywords": ["glore", "certificate", "elearning", "soft skills"],
+  "keywords": [
+    "glore",
+    "certificate",
+    "elearning",
+    "soft skills"
+  ],
   "url": "https://elearning.glorecertificate.net",
   "website": "https://glorecertificate.net",
   "email": "info@glorecertificate.net",

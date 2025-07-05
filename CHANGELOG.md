@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.8](https://github.com/gabrielecanepa/glore/compare/v0.4.7...v0.4.8) (2025-07-05)
+
+### CI 🤖
+
+* Add skip CI option to release config ([dc9ed0e](https://github.com/gabrielecanepa/glore/commit/dc9ed0e0cbbcd8306f7f83b93d7c47c3aa40dbf7))
+
+### Other
+
+* Add conditional experimental config based on environment ([493b449](https://github.com/gabrielecanepa/glore/commit/493b44926e00a9f8d519093da1de0e5a632df2f7))
+* Improve changelog formatting and CI workflow ([a5320f3](https://github.com/gabrielecanepa/glore/commit/a5320f32769e01fa2e14eb5b06285fd3866f7c10))
+* Move scripts from bin to scripts directory ([4d4a276](https://github.com/gabrielecanepa/glore/commit/4d4a2766acce4cf5f66fedcc03880e697c37c46c))
+
 ## [0.4.7](https://github.com/gabrielecanepa/glore/compare/v0.4.6...v0.4.7) (2025-07-05)
 
 ### Fixes 🔧

@@ -1,6 +1,6 @@
 {
   "name": "elearning",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "type": "module",
   "scripts": {
     "prepare": "sh scripts/prepare.sh",

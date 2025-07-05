@@ -20,7 +20,7 @@ export default ({ children }: React.PropsWithChildren) => (
         </div>
       </div>
       <div className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-md">{children}</div>
+        <div className="w-full max-w-sm">{children}</div>
       </div>
       <div className="flex justify-end">
         <ThemeSwitch className="text-sm" tooltip={{ arrow: false, side: 'top' }} />

@@ -175,7 +175,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
           <FormItem>
             <FormLabel>{t('userLabel')}</FormLabel>
             <FormControl>
-              <Input placeholder="me@example.com" variant="primary" {...field} />
+              <Input autoFocus placeholder="me@example.com" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -193,7 +193,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
               </Link>
             </div>
             <FormControl>
-              <PasswordInput variant="primary" {...field} />
+              <PasswordInput {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

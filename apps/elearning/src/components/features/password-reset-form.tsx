@@ -133,7 +133,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
             <FormItem>
               <FormLabel>{t('userLabel')}</FormLabel>
               <FormControl>
-                <Input placeholder="me@example.com" {...field} />
+                <Input autoFocus placeholder="me@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

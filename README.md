@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="logo.svg" alt="" width="180">
+    <img src="logo.svg" alt="" width="200">
     <br>
     <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2&style=flat-square"></a>
   </h1>

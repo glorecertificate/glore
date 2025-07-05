@@ -13,10 +13,12 @@ import { seeds } from 'config/database.json'
 import { seedSkills } from './seeds/skill'
 import { seedUsers } from './seeds/user'
 
-const AI_MODEL_NAME = process.env.AI_MODEL_NAME ?? 'gpt-4o'
+const CACHE = '.temp/output.json' as const
+
+const AI_MODEL_NAME = process.env.AI_MODEL_NAME || 'gpt-4o'
 
 const AI_INSTRUCTION =
-  process.env.AI_INSTRUCTION ??
+  process.env.AI_INSTRUCTION ||
   `
     You are generating seeds for a Supabase database.
     The output_text must always be a valid plain JSON object, without extra characters, unuseful spacing or markdown indicators (eg: '\`\`\`json').
@@ -25,7 +27,7 @@ const AI_INSTRUCTION =
   `
 
 const AI_INPUT =
-  process.env.AI_INPUT ??
+  process.env.AI_INPUT ||
   `
     Return an object using:
     - The same users
@@ -42,17 +44,15 @@ const AI_INPUT =
   `
 
 const RETRY_MESSAGE =
-  'Generate the output of this prompt again making sure that only valid JSON is returned in the format requested.'
-
-const CACHE = resolve('.temp/output.json')
+  'Generate the output of this prompt again making sure that only valid JSON is returned in the format requested.' as const
 
 const args = process.argv.slice(2)
 const reset = !args.includes('--no-reset')
-const cache = !args.includes('--no-cache')
+const hasCache = !args.includes('--no-cache')
 const ai = !args.includes('--no-ai')
 const dryRun = args.includes('--dry-run')
 
-const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
+const cache = resolve(import.meta.dirname, CACHE)
 
 const log = dryRun
   ? Object.assign(noop, {
@@ -62,6 +62,8 @@ const log = dryRun
       info: noop,
     })
   : baseLog
+
+const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
 
 const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -75,29 +77,31 @@ const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
       input,
     })
     return JSON.parse(output_text.replace(/```(json)?/g, '')) as typeof seeds
-  } catch {
+  } catch (error) {
     if (retry < 3) {
       log.warn(`Failed to parse JSON output, retrying (${retry + 1}/3)`)
       return jsonChat([RETRY_MESSAGE, input.replace(RETRY_MESSAGE, '')].join(' '), retry + 1)
     }
-    throw new Error('Failed to parse JSON output after 3 retries')
+    log.error('Failed to parse JSON output after 3 retries')
+    throw error
   }
 }
 
 const generateData = async () => {
-  if (cache && existsSync(CACHE)) {
+  if (hasCache && existsSync(cache)) {
     log.info('Using cached seed data')
-    return JSON.parse(readFileSync(CACHE, 'utf-8')) as typeof seeds
+    return JSON.parse(readFileSync(cache, 'utf-8')) as typeof seeds
   }
   if (!ai) {
     log('Using static seed data')
     return seeds
   }
   log('Generating seed data...')
+
   const data = await jsonChat(AI_INPUT)
-  const [dir] = CACHE.split('/').slice(-2)
+  const [dir] = cache.split('/').slice(-2)
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-  writeFileSync(CACHE, JSON.stringify(data, null, 2))
+  writeFileSync(cache, JSON.stringify(data, null, 2))
   log.success('Seed data generated')
   return data
 }

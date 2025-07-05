@@ -117,12 +117,12 @@ export default {
   github: {
     release: true,
     releaseName: 'v${version}',
-    releaseNotes: context =>
-      [
-        ...context.changelog.split('\n').slice(1),
-        '\n<h1></h1>\n',
-        `**Full Changelog:** [\`v${context.latestVersion}...v${context.version}\`](https://github.com/gabrielecanepa/glore/compare/v${context.latestVersion}...v${context.version})`,
-      ].join('\n\n'),
+    releaseNotes: context => {
+      const changelog = context.changelog.split('\n').slice(1).join('\n').trim()
+      const range = `v${context.latestVersion}...v${context.version}`
+      const footer = `**Full Changelog:** [\`${range}\`](https://github.com/${context.repo.repository}/compare/${range})`
+      return [changelog, '<br>', footer].join('\n\n')
+    },
   },
   npm: {
     publish: false,
@@ -131,7 +131,5 @@ export default {
   hooks: {
     'after:init': '[ -n "$(git log @{u}..)" ] && [ "$SKIP_CI" != 1 ] && pnpm build && pnpm run check || exit 0',
     'before:release': 'pnpm run format && git add .',
-    'after:release':
-      'echo v${version} scheduled for deployment ▷ https://github.com/${repo.repository}/deployments/Production',
   },
 } satisfies ReleaseConfig

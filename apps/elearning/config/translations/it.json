@@ -205,7 +205,8 @@
     "publishCourseMessage": "Il corso diventerà visibile nelle lingue selezionate",
     "archived": "Archiviato",
     "unpublish": "Sospendi pubblicazione",
-    "unpublishCourseMessage": "Il corso non sarà visibile sulla piattaforma"
+    "unpublishCourseMessage": "Il corso non sarà visibile sulla piattaforma",
+    "publish": "Pubblica"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",

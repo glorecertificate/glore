@@ -1,7 +1,10 @@
 'use client'
 
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 
+import { type Course } from '@/api/modules/courses/types'
+import { type UserOrganization } from '@/api/modules/organizations/types'
+import { type CurrentUser } from '@/api/modules/users/types'
 import { SessionContext } from '@/components/providers/session-provider'
 
 /**
@@ -11,5 +14,17 @@ import { SessionContext } from '@/components/providers/session-provider'
 export const useSession = () => {
   const context = useContext(SessionContext)
   if (!context) throw new Error('useSession must be used within a SessionProvider')
-  return context
+
+  const [courses, setCourses] = useState<Course[]>(context.courses)
+  const [user, setUser] = useState<CurrentUser>(context.user)
+  const [organization, setOrganization] = useState<UserOrganization | undefined>(context.organization)
+
+  return {
+    courses,
+    setCourses,
+    user,
+    setUser,
+    organization,
+    setOrganization,
+  }
 }

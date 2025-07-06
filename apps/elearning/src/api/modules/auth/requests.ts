@@ -1,14 +1,9 @@
-import { createDatabaseClient } from '@/lib/db/server'
+import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
 
 import { type Session } from './types'
 
-/**
- * Retrieves the current session from the database.
- */
-export const getSession = async () => {
-  const db = await createDatabaseClient()
-
+export const getSession = async (db: DatabaseClient) => {
   const { data, error } = await db.auth.getSession()
 
   if (error) throw error

@@ -8,13 +8,8 @@
     "es": "GloRe Certificate es una plataforma para aprender y emitir un certificado oficial que valida las habilidades blandas.",
     "it": "GloRe Certificate è una piattaforma per apprendere e rilasciare un certificato ufficiale che convalida le soft skills."
   },
-  "pwaDescription": "Install GloRe on your device to access courses, receive notifications and manage your certificates offline.",
-  "keywords": [
-    "glore",
-    "certificate",
-    "elearning",
-    "soft skills"
-  ],
+  "pwaDescription": "Install GloRe on your device to access courses, receive notifications, and manage your certificates offline!",
+  "keywords": ["glore", "certificate", "elearning", "soft skills"],
   "url": "https://elearning.glorecertificate.net",
   "website": "https://glorecertificate.net",
   "email": "info@glorecertificate.net",

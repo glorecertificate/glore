@@ -3,6 +3,8 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { hasHistory } from '@repo/utils'
+
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
@@ -28,11 +30,6 @@ export default ({ error }: ErrorProps) => {
     console.error(error)
   }, [error])
 
-  const canGoBack = useMemo(() => {
-    const previousUrl = document.referrer
-    return previousUrl && previousUrl.startsWith(window.location.origin) && previousUrl !== window.location.href
-  }, [])
-
   const onBackClick = useCallback(() => {
     router.back()
   }, [router])
@@ -57,7 +54,7 @@ export default ({ error }: ErrorProps) => {
               </h2>
               <p className="mb-8 font-mono text-lg text-foreground/75">{localizeJson(errors.message, locale)}</p>
               <div className="flex justify-center gap-4">
-                {canGoBack ? (
+                {hasHistory() ? (
                   <Button onClick={onBackClick} size="lg" variant="outline">
                     {localizeJson(errors.backToPrevious, locale)}
                   </Button>

@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server'
 
-import { createDatabaseClient } from '@/lib/db/server'
+import { getDatabase } from '@/lib/db/server'
 
 export const GET = async (request: Request) => {
   const { origin, searchParams } = new URL(request.url)
@@ -10,7 +10,7 @@ export const GET = async (request: Request) => {
   const redirectTo = searchParams.get('redirect_to')?.toString()
 
   if (code) {
-    const { auth } = await createDatabaseClient()
+    const { auth } = await getDatabase()
     await auth.exchangeCodeForSession(code)
   }
 

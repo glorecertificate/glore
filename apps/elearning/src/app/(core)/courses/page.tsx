@@ -1,8 +1,25 @@
+'use client'
+
+import { useCallback, useEffect } from 'react'
+
 import { CourseList } from '@/components/features/course-list'
-import { generatePageMetadata } from '@/lib/metadata'
+import { useSession } from '@/hooks/use-session'
 
-export const generateMetadata = generatePageMetadata({
-  title: 'Navigation.courses',
-})
+// export const generateMetadata = generateAsyncMetadata({
+//   title: 'Navigation.courses',
+// })
 
-export default () => <CourseList />
+export default () => {
+  const { setCourses } = useSession()
+
+  const updateCourses = useCallback(async () => {
+    // const courses = await api.courses.list()
+    // setCourses(courses)
+  }, [setCourses])
+
+  useEffect(() => {
+    void updateCourses()
+  }, [updateCourses])
+
+  return <CourseList />
+}

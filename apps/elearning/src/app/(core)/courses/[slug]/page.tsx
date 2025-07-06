@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 
-import { api } from '@/api/client'
+import { getApi } from '@/api/client'
 import { CourseFlow } from '@/components/features/course-flow'
 import { getLocale } from '@/lib/i18n/server'
 import { localizeJson } from '@/lib/i18n/utils'
@@ -10,6 +10,8 @@ import { type PageProps, type Route } from '@/lib/navigation'
 export default async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return notFound()
+
+  const api = await getApi()
 
   const course = await api.courses.get(slug)
   if (!course) return notFound()
@@ -26,6 +28,8 @@ export default async ({ params }: PageProps<Route.Course>) => {
 export const generateMetadata = async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return generatePageMetadata()
+
+  const api = await getApi()
 
   const course = await api.courses.get(slug)
   if (!course) return generatePageMetadata()

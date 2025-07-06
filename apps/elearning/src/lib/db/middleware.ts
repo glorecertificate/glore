@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
-import { createDatabaseClient } from '@/lib/db/server'
+import { getDatabase } from '@/lib/db/server'
 import { AuthPage, Route } from '@/lib/navigation'
 
 export const updateSession = async (request: NextRequest) => {
@@ -11,7 +11,7 @@ export const updateSession = async (request: NextRequest) => {
       },
     })
 
-    const db = await createDatabaseClient(() => {
+    const db = await getDatabase(() => {
       response = NextResponse.next({ request })
     })
 

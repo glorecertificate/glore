@@ -1,13 +1,33 @@
-import * as auth from '@/api/modules/auth/requests'
-import * as certificates from '@/api/modules/certificates/requests'
-import * as courses from '@/api/modules/courses/requests'
-import * as organizations from '@/api/modules/organizations/requests'
-import * as users from '@/api/modules/users/requests'
+import { createApi } from '@/api/utils'
+import { db } from '@/lib/db/client'
+import { getDatabase } from '@/lib/db/server'
 
-export const api = {
+import * as auth from './modules/auth/requests'
+import * as certificates from './modules/certificates/requests'
+import * as courses from './modules/courses/requests'
+import * as organizations from './modules/organizations/requests'
+import * as users from './modules/users/requests'
+
+/**
+ * API modules.
+ */
+export const API = {
   auth,
   certificates,
   courses,
   organizations,
   users,
+}
+
+/**
+ * API client for browser usage.
+ */
+export const api = createApi(API, db)
+
+/**
+ * Creates a server-side API client.
+ */
+export const getApi = async () => {
+  const db = await getDatabase()
+  return createApi(API, db)
 }

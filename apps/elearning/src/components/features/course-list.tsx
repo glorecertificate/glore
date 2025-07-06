@@ -1,9 +1,12 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, XIcon } from 'lucide-react'
 
+import { hasHistory } from '@repo/utils'
+
+import { api } from '@/api/client'
 import { type Course } from '@/api/modules/courses/types'
 import { CourseCard } from '@/components/features/course-card'
 import { Button } from '@/components/ui/button'
@@ -26,7 +29,7 @@ import { cn } from '@/lib/utils'
 
 export const CourseList = () => {
   const { localize } = useLocale()
-  const { courses, user } = useSession()
+  const { courses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
   const sortOptions = useMemo(
@@ -43,7 +46,29 @@ export const CourseList = () => {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
 
   const canEdit = useMemo(() => user.isAdmin || user.isEditor, [user])
+
   const oppositeSortDirection = useMemo(() => (sortDirection === 'asc' ? 'desc' : 'asc'), [sortDirection])
+
+  const sortButtonContent = useMemo(
+    () => (
+      <>
+        <span className="mr-1.5">{t('sortBy')}</span>
+        {activeSort && (
+          <span className="mr-0.5 text-xs font-medium text-muted-foreground">{sortOptions[activeSort]}</span>
+        )}
+        {activeSort ? (
+          sortDirection === 'asc' ? (
+            <ArrowUpIcon className="h-3 w-3 text-muted-foreground" />
+          ) : (
+            <ArrowDownIcon className="h-3 w-3 text-muted-foreground" />
+          )
+        ) : (
+          <ArrowUpDownIcon className="h-3 w-3" />
+        )}
+      </>
+    ),
+    [activeSort, sortDirection, sortOptions, t],
+  )
 
   const filteredCourses = useMemo(
     () =>
@@ -85,6 +110,17 @@ export const CourseList = () => {
     [activeTab, activeSort, courses, localize, sortDirection],
   )
 
+  const courseDescription = useMemo(
+    () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
+    [t, user.isAdmin, user.isEditor],
+  )
+
+  const fetchCourses = useCallback(async () => {
+    if (!hasHistory()) return
+    const courses = await api.courses.list()
+    setCourses(courses)
+  }, [setCourses])
+
   const handleTabChange = useCallback((value: string) => {
     setActiveTab(value as 'all' | Course['status'])
   }, [])
@@ -116,31 +152,9 @@ export const CourseList = () => {
     setSortDirection(null)
   }, [])
 
-  const sortButtonContent = useMemo(
-    () => (
-      <>
-        <span className="mr-1.5">{t('sortBy')}</span>
-        {activeSort && (
-          <span className="mr-0.5 text-xs font-medium text-muted-foreground">{sortOptions[activeSort]}</span>
-        )}
-        {activeSort ? (
-          sortDirection === 'asc' ? (
-            <ArrowUpIcon className="h-3 w-3 text-muted-foreground" />
-          ) : (
-            <ArrowDownIcon className="h-3 w-3 text-muted-foreground" />
-          )
-        ) : (
-          <ArrowUpDownIcon className="h-3 w-3" />
-        )}
-      </>
-    ),
-    [activeSort, sortDirection, sortOptions, t],
-  )
-
-  const courseDescription = useMemo(
-    () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
-    [t, user.isAdmin, user.isEditor],
-  )
+  useEffect(() => {
+    void fetchCourses()
+  }, [fetchCourses])
 
   return (
     <>

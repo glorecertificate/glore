@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { api } from '@/api/client'
+import { getApi } from '@/api/client'
 import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
@@ -15,6 +15,7 @@ import { Cookie } from '@/lib/storage'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const { get } = await cookies()
+  const api = await getApi()
 
   const user = await api.users.getCurrent()
   if (!user) redirect(Route.Login)

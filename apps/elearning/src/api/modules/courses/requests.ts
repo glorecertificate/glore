@@ -1,17 +1,14 @@
 import { serialize } from '@repo/utils'
 
 import { getSession } from '@/api/modules/auth/requests'
-import { db } from '@/lib/db/client'
-import { createDatabaseClient } from '@/lib/db/server'
+import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
 
 import { parseCourse } from './parser'
 import { courseQuery } from './queries'
 import type { Course, UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from './types'
 
-export const list = async (): Promise<Course[]> => {
-  const db = await createDatabaseClient()
-
+export const list = async (db: DatabaseClient): Promise<Course[]> => {
   const { data, error } = await db.from('courses').select(courseQuery)
 
   if (error) throw error
@@ -20,9 +17,7 @@ export const list = async (): Promise<Course[]> => {
   return data.map(course => parseCourse(course))
 }
 
-export const get = async (slug: string): Promise<Course> => {
-  const db = await createDatabaseClient()
-
+export const get = async (db: DatabaseClient, slug: string): Promise<Course> => {
   const { data, error } = await db.from('courses').select(courseQuery).eq('slug', slug).single()
 
   if (error) throw error
@@ -31,9 +26,8 @@ export const get = async (slug: string): Promise<Course> => {
   return parseCourse(data)
 }
 
-export const enrollUser = async (courseId: number): Promise<UserCourse> => {
-  const db = await createDatabaseClient()
-  const session = await getSession()
+export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<UserCourse> => {
+  const session = await getSession(db)
 
   const { data, error } = await db
     .from('user_courses')
@@ -46,8 +40,8 @@ export const enrollUser = async (courseId: number): Promise<UserCourse> => {
   return serialize(data[0])
 }
 
-export const completeLesson = async (id: number): Promise<UserLesson> => {
-  const session = await getSession()
+export const completeLesson = async (db: DatabaseClient, id: number): Promise<UserLesson> => {
+  const session = await getSession(db)
 
   const { data, error } = await db
     .from('user_lessons')
@@ -60,8 +54,8 @@ export const completeLesson = async (id: number): Promise<UserLesson> => {
   return serialize(data[0])
 }
 
-export const submitAnswers = async (answers: Array<{ id: number }>): Promise<UserAnswer[]> => {
-  const session = await getSession()
+export const submitAnswers = async (db: DatabaseClient, answers: Array<{ id: number }>): Promise<UserAnswer[]> => {
+  const session = await getSession(db)
 
   const { data, error } = await db
     .from('user_answers')
@@ -75,9 +69,10 @@ export const submitAnswers = async (answers: Array<{ id: number }>): Promise<Use
 }
 
 export const submitEvaluations = async (
+  db: DatabaseClient,
   evaluations: Array<{ id: number; value: number }>,
 ): Promise<UserEvaluation[]> => {
-  const session = await getSession()
+  const session = await getSession(db)
 
   const { data, error } = await db
     .from('user_evaluations')
@@ -90,8 +85,8 @@ export const submitEvaluations = async (
   return serialize(data)
 }
 
-export const submitAssessment = async (id: number, value: number): Promise<UserAssessment> => {
-  const session = await getSession()
+export const submitAssessment = async (db: DatabaseClient, id: number, value: number): Promise<UserAssessment> => {
+  const session = await getSession(db)
 
   const { data, error } = await db
     .from('user_assessments')

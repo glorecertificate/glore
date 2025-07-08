@@ -89,20 +89,20 @@ const DEFAULT_METADATA: Metadata = {
 export const generatePageMetadata =
   <R extends Route, K extends AnyRecord = AnyRecord, T extends boolean = true>(options: MetadataOptions<T> = {}) =>
   async (_: PageProps<R, K>, parent: ResolvingMetadata) =>
-    generateAsyncMetadata<T>({ ...options, parent: (await parent) as Metadata })
+    pageMetadata<T>({ ...options, parent: (await parent) as Metadata })
 
 /**
  * Localizes the provided values and returns a complete metadata object.
  * Localization is skipped when the `static` flag is set to true.
  */
-export const generateAsyncMetadata = async <T extends boolean = true>({
+export const pageMetadata = async <T extends boolean = true>({
   description: userDescription,
   image,
   parent = {},
   separator = metadata.titleSeparator,
   title: userTitle,
   translate = true as T,
-}: MetadataOptions<T> = {}) => {
+}: MetadataOptions<T>) => {
   const t = await getFlatTranslations()
   const locale = await getLocale()
   const alternateLocale = LOCALES[LOCALES.indexOf(locale) + 1] ?? LOCALES[0]

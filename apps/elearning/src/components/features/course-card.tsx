@@ -35,11 +35,16 @@ export const CourseCard = ({ course }: { course: Course }) => {
   return (
     <Card className="flex h-full flex-col justify-between gap-0 overflow-hidden pt-0">
       <div>
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden">
           <Link href={coursePath}>
             <div className="absolute inset-0">
               {course.imageUrl && (
-                <Image alt={localize(course.title)} className="object-cover" fill src={course.imageUrl} />
+                <Image
+                  alt={localize(course.title)}
+                  className="object-cover transition-all duration-200 hover:scale-110"
+                  fill
+                  src={course.imageUrl}
+                />
               )}
             </div>
           </Link>

@@ -24,7 +24,10 @@
       ]
     },
     "start": {
-      "dependsOn": ["^start"]
+      "dependsOn": ["build"],
+      "cache": false,
+      "persistent": true,
+      "env": ["SUPABASE_ANON_KEY", "SUPABASE_URL"]
     },
     "dev": {
       "cache": false,
@@ -35,65 +38,16 @@
       "persistent": true
     },
     "test": {
-      "dependsOn": ["^test"],
-      "outputs": ["coverage/**"]
+      "outputs": ["**/coverage/**"]
     },
     "typegen": {
-      "dependsOn": ["^typegen"],
       "outputs": ["**/*.d.ts"]
     },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "outputs": ["**/tsconfig.tsbuildinfo"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "format": {
-      "dependsOn": ["^format"]
-    },
-    "check": {
-      "dependsOn": ["^check"]
-    },
-    "analyze": {
-      "dependsOn": ["^analyze"],
-      "env": ["ANALYZE"]
-    },
-    "db:start": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:stop": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:dump": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:pull": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:push": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:migrate": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:seed": {
-      "cache": false,
-      "persistent": true,
-      "env": ["OPENAI_API_KEY", "AI_MODEL_NAME", "AI_INPUT", "AI_INSTRUCTION"]
-    },
-    "db:sync": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:reset": {
-      "cache": false,
-      "persistent": true
-    }
+    "lint": {},
+    "format": {},
+    "check": {}
   }
 }

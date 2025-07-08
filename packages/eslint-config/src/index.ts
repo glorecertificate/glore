@@ -632,7 +632,6 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
         },
       },
       {
-        name: '@repo/overrides',
         files,
         rules: {
           'arrow-body-style': [RuleSeverity.Error, 'as-needed'],

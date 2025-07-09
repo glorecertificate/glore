@@ -1,6 +1,6 @@
 import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 
-import config from 'config/local.json'
+import { Env } from '@/lib/env'
 import metadata from 'config/metadata.json'
 
 export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
@@ -45,7 +45,7 @@ export enum AuthPage {
 export const ExternalRoute = {
   App: metadata.url,
   Website: metadata.website,
-  SupabaseStudio: config.supabaseStudioUrl,
+  SupabaseStudio: Env.SUPABASE_STUDIO_URL,
 }
 
 /**

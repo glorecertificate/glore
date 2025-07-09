@@ -31,7 +31,6 @@ const alternateLanguages = LOCALES.reduce(
 const DEFAULT_METADATA: Metadata = {
   applicationName: metadata.name,
   category: metadata.category,
-  publisher: metadata.publisher,
   authors: metadata.authors,
   creator: metadata.authors[0].name,
   keywords: metadata.keywords,

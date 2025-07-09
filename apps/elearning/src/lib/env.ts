@@ -8,6 +8,8 @@ if (!STORAGE_URL || !SUPABASE_ANON_KEY || !SUPABASE_URL) {
   throw new Error('Wrong environment variables. Check your .env file or environment configuration.')
 }
 
+const SUPABASE_STUDIO_URL = env('NEXT_PUBLIC_SUPABASE_STUDIO_URL', 'http://127.0.0.1:54323')
+
 const NODE_ENV = env('NODE_ENV', 'development')
 const DEV = NODE_ENV === 'development'
 const DEV_MODE = DEV && (process.env.NEXT_PUBLIC_DEV_MODE === 'true' || process.env.NEXT_PUBLIC_DEV_MODE === '1')
@@ -18,12 +20,13 @@ const ANALYZE = env('ANALYZE', 'false') === 'true' || env('ANALYZE', 'false') ==
  * Application environment.
  */
 export const Env = Object.freeze({
+  ANALYZE,
+  DEV_MODE,
+  DEV,
+  NODE_ENV,
+  PROD,
   STORAGE_URL,
   SUPABASE_ANON_KEY,
+  SUPABASE_STUDIO_URL,
   SUPABASE_URL,
-  NODE_ENV,
-  DEV,
-  DEV_MODE,
-  PROD,
-  ANALYZE,
 })

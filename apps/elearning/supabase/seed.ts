@@ -8,12 +8,12 @@ import OpenAI from 'openai'
 
 import { log as baseLog, noop } from '@repo/utils'
 
-import { seeds } from 'config/database.json'
-
+import { dynamicSeeds, staticSeeds } from './.snaplet/data.json'
+import { seedOrganizations } from './seeds/organization'
 import { seedSkills } from './seeds/skill'
 import { seedUsers } from './seeds/user'
 
-const CACHE = '.temp/output.json' as const
+const CACHE = '.temp/output.json'
 
 const AI_MODEL_NAME = process.env.AI_MODEL_NAME || 'gpt-4o'
 
@@ -22,15 +22,14 @@ const AI_INSTRUCTION =
   `
     You are generating seeds for a Supabase database.
     The output_text must always be a valid plain JSON object, without extra characters, unuseful spacing or markdown indicators (eg: '\`\`\`json').
-    Use the JSON provided below as a schema, and return an object with the format requested and the eventual different translations.
-    Example JSON: ${JSON.stringify(seeds)}
+    Use the JSON provided below as a schema, and return an object with the format requested including the different translations.
+    Example JSON: ${JSON.stringify(dynamicSeeds)}
   `
 
 const AI_INPUT =
   process.env.AI_INPUT ||
   `
-    Return an object using:
-    - The same users
+    Return an object with equal structure and:
     - 4 different unique skill areas
     - 8 unique skills per area
     - 1 course per skill where the type is always 'assessment'
@@ -44,17 +43,18 @@ const AI_INPUT =
   `
 
 const RETRY_MESSAGE =
-  'Generate the output of this prompt again making sure that only valid JSON is returned in the format requested.' as const
+  'The previous output was wrong, regenerate it making sure that only valid JSON is returned in the requested format.'
 
 const args = process.argv.slice(2)
-const reset = !args.includes('--no-reset')
-const hasCache = !args.includes('--no-cache')
 const ai = !args.includes('--no-ai')
 const dryRun = args.includes('--dry-run')
+const hasCache = !args.includes('--no-cache')
+const reset = !args.includes('--no-reset')
+const silent = args.includes('--silent')
 
 const cache = resolve(import.meta.dirname, CACHE)
 
-const log = dryRun
+const log = silent
   ? Object.assign(noop, {
       error: noop,
       warn: noop,
@@ -69,14 +69,14 @@ const openAI = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
+const jsonChat = async (input: string, retry = 0): Promise<typeof dynamicSeeds> => {
   try {
     const { output_text } = await openAI.responses.create({
       model: AI_MODEL_NAME,
       instructions: AI_INSTRUCTION,
       input,
     })
-    return JSON.parse(output_text.replace(/```(json)?/g, '')) as typeof seeds
+    return JSON.parse(output_text.replace(/```(json)?/g, '')) as typeof dynamicSeeds
   } catch (error) {
     if (retry < 3) {
       log.warn(`Failed to parse JSON output, retrying (${retry + 1}/3)`)
@@ -90,11 +90,11 @@ const jsonChat = async (input: string, retry = 0): Promise<typeof seeds> => {
 const generateData = async () => {
   if (hasCache && existsSync(cache)) {
     log.info('Using cached seed data')
-    return JSON.parse(readFileSync(cache, 'utf-8')) as typeof seeds
+    return JSON.parse(readFileSync(cache, 'utf-8')) as typeof dynamicSeeds
   }
   if (!ai) {
     log('Using static seed data')
-    return seeds
+    return dynamicSeeds
   }
   log('Generating seed data...')
 
@@ -108,7 +108,7 @@ const generateData = async () => {
 
 void (async () => {
   try {
-    const data = await generateData()
+    const { skill_areas } = await generateData()
     const seed = await createSeedClient({ dryRun })
 
     if (reset) {
@@ -117,13 +117,19 @@ void (async () => {
       log.success('Database reset')
     }
 
-    const users = await seedUsers(data.users)
+    const users = await seedUsers()
     if (users.length === 0) log.error('No users created')
-    if (users.length < data.users.length) log.warn(`Created ${users.length} users out of ${data.users.length}`)
+    if (users.length < staticSeeds.users.length)
+      log.warn(`Created ${users.length} users out of ${staticSeeds.users.length}`)
     else log.success(`Created ${users.length} users`)
 
+    if (included('orgs') || included('organizations')) {
+      const store = await seedOrganizations(seed, users)
+      log.success(`Created ${store.regions.length} regions with ${store.organizations.length} organization`)
+    }
+
     if (included('courses')) {
-      const store = await seedSkills(seed, data.skill_areas, users)
+      const store = await seedSkills(seed, skill_areas, users)
       log.success(`Created ${store.skills.length} skills grouped in ${store.skill_areas.length} areas`)
       log.success(`Created ${store.courses.length} courses with ${store.lessons.length} lessons`)
     }

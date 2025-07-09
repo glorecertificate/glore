@@ -3,10 +3,10 @@ import { type User } from '@supabase/supabase-js'
 
 import { handleize, pickRandom } from '@repo/utils'
 
-import { seedImageUrl, seeds } from 'config/database.json'
+import { dynamicSeeds, placeholderImageUrl } from 'supabase/.snaplet/data.json'
 import { type Enums } from 'supabase/types'
 
-export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_areas, users: Array<User | null>) =>
+export const seedSkills = async (seed: SeedClient, skillAreas = dynamicSeeds.skill_areas, users: Array<User | null>) =>
   await seed.skill_areas(
     skillAreas.map(({ skills, ...area }, i) => ({
       ...area,
@@ -19,7 +19,7 @@ export const seedSkills = async (seed: SeedClient, skillAreas = seeds.skill_area
             title: skill.name,
             description: skill.description,
             type: 'assessment',
-            image_url: `${seedImageUrl}?random=${j}`,
+            image_url: `${placeholderImageUrl}?random=${j}`,
             lessons: course.lessons.map(({ type, ...lesson }, k) => ({
               ...lesson,
               type: type as Enums<'lesson_type'>,

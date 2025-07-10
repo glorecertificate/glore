@@ -131,11 +131,13 @@ case $cmd in
     init_db
     ;;
   push)
-    printf "Are you sure you want to push the local migrations and update the remote schema? [y/N] "
-    read -r response
-    if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-      echo "Push cancelled."
-      exit 0
+    if ! is_ci; then
+      printf "Are you sure you want to push the local migrations and update the remote schema? [y/N] "
+      read -r response
+      if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+        echo "Push cancelled."
+        exit 0
+      fi
     fi
     supabase db push --yes
     ;;

@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - v*
-      - v*.*
-      - v*.*.*
 
 env:
   NEXT_TELEMETRY_DISABLED: true

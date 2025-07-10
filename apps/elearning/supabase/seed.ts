@@ -46,7 +46,7 @@ const RETRY_MESSAGE =
   'The previous output was wrong, regenerate it making sure that only valid JSON is returned in the requested format.'
 
 const args = process.argv.slice(2)
-const ai = !args.includes('--no-ai')
+const ai = !(args.includes('--no-ai') || !process.env.OPENAI_API_KEY)
 const dryRun = args.includes('--dry-run')
 const hasCache = !args.includes('--no-cache')
 const reset = !args.includes('--no-reset')
@@ -65,11 +65,11 @@ const log = silent
 
 const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
 
-const openAI = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
 const jsonChat = async (input: string, retry = 0): Promise<typeof dynamicSeeds> => {
+  const openAI = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  })
+
   try {
     const { output_text } = await openAI.responses.create({
       model: AI_MODEL_NAME,

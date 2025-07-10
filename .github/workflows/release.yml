@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  publish-to-notion:
+    name: Publish to Notion
+    runs-on: ubuntu-latest
+    outputs:
+      date: ${{ steps.parse-release.outputs.date }}
+      version: ${{ steps.parse-release.outputs.version }}
+    steps:
+      - name: Parse release data
+        id: parse-release
+        run: |
+          echo "date=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+          echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+      - uses: utisam/github-release-notion@v1
+        with:
+          notion_integration_secret: ${{ secrets.NOTION_INTEGRATION_SECRET }}
+          parent_database_id: ${{ vars.NOTION_DATABASE_ID }}
+          properties: |
+            Name:
+              title:
+                - text:
+                    content: "${{ github.ref_name }}"
+            Version:
+              rich_text:
+                - text:
+                    content: "${{ steps.parse-release.outputs.version }}"
+            Date:
+              date:
+                start: "${{ steps.parse-release.outputs.date }}"
+            Project:
+              relation:
+                - id:
+                    content: "${{ vars.NOTION_PROJECT_ID }}"

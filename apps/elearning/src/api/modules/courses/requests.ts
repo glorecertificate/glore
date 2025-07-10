@@ -3,6 +3,7 @@ import { serialize } from '@repo/utils'
 import { getSession } from '@/api/modules/auth/requests'
 import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
+import { getLocale } from '@/lib/i18n/server'
 
 import { parseCourse } from './parser'
 import { courseQuery } from './queries'
@@ -28,10 +29,11 @@ export const get = async (db: DatabaseClient, slug: string): Promise<Course> => 
 
 export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<UserCourse> => {
   const session = await getSession(db)
+  const locale = await getLocale()
 
   const { data, error } = await db
     .from('user_courses')
-    .insert({ user_id: session.user.id, course_id: courseId })
+    .insert({ user_id: session.user.id, course_id: courseId, locale })
     .select()
 
   if (error) throw error

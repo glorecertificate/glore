@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
-import { ArrowLeftIcon, ChevronDownIcon, EyeIcon, PencilIcon, RocketIcon } from 'lucide-react'
+import { ArrowLeftIcon, ChevronDownIcon, EyeIcon, PencilIcon } from 'lucide-react'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 import { toast } from 'sonner'
@@ -63,7 +63,7 @@ export const CourseFlow = (props: { course?: Course }) => {
       <BreadcrumbSeparator />
       <BreadcrumbItem className={cn(course.title ? 'text-foreground' : 'text-muted')}>
         {title}
-        {user.canEdit && course.publicationStatus === 'draft' && (
+        {/* {user.canEdit && course.publicationStatus === 'draft' && (
           <Badge className="ml-1" color="muted" size="xs">
             {t('draft')}
           </Badge>
@@ -72,7 +72,7 @@ export const CourseFlow = (props: { course?: Course }) => {
           <Badge className="ml-1" color="muted" size="xs">
             {t('archived')}
           </Badge>
-        )}
+        )} */}
       </BreadcrumbItem>
     </BreadcrumbList>,
   )
@@ -507,7 +507,7 @@ export const CourseFlow = (props: { course?: Course }) => {
                   {t('preview')}
                 </Button>
               )}
-              {course.publicationStatus === 'draft' && (
+              {/* {course.publicationStatus === 'draft' && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button className="gap-1" color="success">
@@ -519,8 +519,8 @@ export const CourseFlow = (props: { course?: Course }) => {
                     {t('publishCourseMessage')}
                   </TooltipContent>
                 </Tooltip>
-              )}
-              {course.publicationStatus === 'active' && (
+              )} */}
+              {/* {course.publicationStatus === 'active' && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button className="gap-1" color="destructive">
@@ -532,7 +532,7 @@ export const CourseFlow = (props: { course?: Course }) => {
                     {t('unpublishCourseMessage')}
                   </TooltipContent>
                 </Tooltip>
-              )}
+              )} */}
             </div>
           )}
         </div>

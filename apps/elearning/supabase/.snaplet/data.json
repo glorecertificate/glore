@@ -1,39 +1,8 @@
 {
-  "emailDomain": "glorecertificate.net",
+  "emailDomain": "glore.net",
   "placeholderImageUrl": "https://picsum.photos/600/400",
   "staticSeeds": {
-    "users": [
-      {
-        "first_name": "Admin",
-        "last_name": "User",
-        "is_admin": true
-      },
-      {
-        "first_name": "Editor",
-        "last_name": "User",
-        "is_editor": true
-      },
-      {
-        "first_name": "Coordinator",
-        "last_name": "User"
-      },
-      {
-        "first_name": "Representative",
-        "last_name": "User"
-      },
-      {
-        "first_name": "Tutor",
-        "last_name": "User"
-      },
-      {
-        "first_name": "Volunteer",
-        "last_name": "User"
-      },
-      {
-        "first_name": "Learner",
-        "last_name": "User"
-      }
-    ],
+    "users": ["admin", "editor", "coordinator", "representative", "tutor", "volunteer", "learner"],
     "regions": [
       {
         "name": {
@@ -51,7 +20,7 @@
               "es": "Joint es una organización sin fines de lucro centrada en promover la inclusión social y el desarrollo comunitario a través de diversas iniciativas y proyectos.",
               "it": "Joint è un'organizzazione senza scopo di lucro focalizzata sulla promozione dell'inclusione sociale e dello sviluppo della comunità attraverso varie iniziative e progetti."
             },
-            "website": "https://associazionejoint.org",
+            "url": "https://associazionejoint.org",
             "phone": "+39021234567",
             "country": "Italy",
             "region": "MI",

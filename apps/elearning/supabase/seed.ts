@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 import { createSeedClient } from '@snaplet/seed'
+import { type User } from '@supabase/supabase-js'
 import OpenAI from 'openai'
 
 import { log as baseLog, noop } from '@repo/utils'
@@ -47,9 +48,9 @@ const RETRY_MESSAGE =
 
 const args = process.argv.slice(2)
 const ai = !(args.includes('--no-ai') || !process.env.OPENAI_API_KEY)
-const dryRun = args.includes('--dry-run')
 const hasCache = !args.includes('--no-cache')
-const reset = !args.includes('--no-reset')
+const dryRun = args.includes('--dry-run')
+const reset = !args.includes('--skip-reset')
 const silent = args.includes('--silent')
 
 const cache = resolve(import.meta.dirname, CACHE)
@@ -63,7 +64,7 @@ const log = silent
     })
   : baseLog
 
-const included = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
+const includes = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
 
 const jsonChat = async (input: string, retry = 0): Promise<typeof dynamicSeeds> => {
   const openAI = new OpenAI({
@@ -106,6 +107,12 @@ const generateData = async () => {
   return data
 }
 
+const logUsers = (users: User[]) => {
+  if (users.length === 0) return log.error('No users created')
+  if (users.length === staticSeeds.users.length) return log.success(`Created ${users.length} users`)
+  log.warn(`Created ${users.length} users out of ${staticSeeds.users.length}`)
+}
+
 void (async () => {
   try {
     const { skill_areas } = await generateData()
@@ -118,17 +125,14 @@ void (async () => {
     }
 
     const users = await seedUsers()
-    if (users.length === 0) log.error('No users created')
-    if (users.length < staticSeeds.users.length)
-      log.warn(`Created ${users.length} users out of ${staticSeeds.users.length}`)
-    else log.success(`Created ${users.length} users`)
+    logUsers(users)
 
-    if (included('orgs') || included('organizations')) {
+    if (includes('org') || includes('organization')) {
       const store = await seedOrganizations(seed, users)
       log.success(`Created ${store.regions.length} regions with ${store.organizations.length} organization`)
     }
 
-    if (included('courses')) {
+    if (includes('course')) {
       const store = await seedSkills(seed, skill_areas, users)
       log.success(`Created ${store.skills.length} skills grouped in ${store.skill_areas.length} areas`)
       log.success(`Created ${store.courses.length} courses with ${store.lessons.length} lessons`)

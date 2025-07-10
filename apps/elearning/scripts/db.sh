@@ -28,6 +28,7 @@ CMDS="
   reset                Reset local database and run seeds
   seed                 Run database seed scripts
   start                Start the Supabase local development environment
+  status               Show the status of the local Supabase environment
   stop                 Stop the Supabase local development environment
   sync                 Sync types, schema and seeds files
   typegen              Generate TypeScript types from database schema
@@ -96,7 +97,8 @@ run_seeds() {
 dump_db() {
   ! supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA --file "$1" && return 1
   format_sql $MIGRATIONS_PATH/*_"$1".sql
-  sync_db --local
+  sync_types
+  sync_seeds
 }
 
 pull_db() {
@@ -149,6 +151,9 @@ case $cmd in
     ;;
   start)
     supabase start
+    ;;
+  status)
+    supabase status
     ;;
   stop)
     supabase stop

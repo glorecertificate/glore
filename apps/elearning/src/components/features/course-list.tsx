@@ -40,7 +40,8 @@ export const CourseList = () => {
     }),
     [t],
   )
-  const [activeTab, setActiveTab] = useState<'all' | Course['status'] | Course['publicationStatus']>('all')
+  // const [activeTab, setActiveTab] = useState<'all' | Course['status'] | Course['publicationStatus']>('all')
+  const [activeTab, setActiveTab] = useState<'all' | Course['status']>('all')
   const [activeSort, setActiveSort] = useState<keyof typeof sortOptions | null>(null)
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(null)
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false)
@@ -75,14 +76,14 @@ export const CourseList = () => {
       courses
         .filter(course => {
           switch (activeTab) {
-            case 'all':
-              return course.publicationStatus === 'active' || course.publicationStatus === 'draft'
-            case 'active':
-              return course.publicationStatus === 'active'
-            case 'draft':
-              return course.publicationStatus === 'draft'
-            case 'archived':
-              return course.publicationStatus === 'archived'
+            // case 'all':
+            //   return course.publicationStatus === 'active' || course.publicationStatus === 'draft'
+            // case 'active':
+            //   return course.publicationStatus === 'active'
+            // case 'draft':
+            //   return course.publicationStatus === 'draft'
+            // case 'archived':
+            //   return course.publicationStatus === 'archived'
             case 'not_started':
               return course.status === 'not_started'
             case 'in_progress':
@@ -258,9 +259,9 @@ export const CourseList = () => {
                   {activeTab === 'not_started' && t('emptyListNotStarted')}
                   {activeTab === 'in_progress' && t('emptyListInProgress')}
                   {activeTab === 'completed' && t('emptyListCompleted')}
-                  {activeTab === 'active' && t('emptyListActive')}
+                  {/* {activeTab === 'active' && t('emptyListActive')}
                   {activeTab === 'draft' && t('emptyListDraft')}
-                  {activeTab === 'archived' && t('emptyListArchived')}
+                  {activeTab === 'archived' && t('emptyListArchived')} */}
                 </p>
               </div>
             ) : (

@@ -63,10 +63,12 @@ export const courseQuery = `
   description,
   type,
   imageUrl:image_url,
-  publicationStatus:publication_status,
+  publishedLocales:published_locales,
+  draftLocales:draft_locales,
   sortOrder:sort_order,
   createdAt:created_at,
   updatedAt:updated_at,
+  archivedAt:archived_at,
   user_courses(count),
   skill:skills (
     ${skillQuery}

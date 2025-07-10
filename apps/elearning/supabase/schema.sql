@@ -87,43 +87,32 @@ ALTER TYPE "public"."organization_role" owner TO "postgres";
 
 comment ON type "public"."organization_role" IS 'Role of an user in the organization';
 
-CREATE TYPE "public"."publication_status" AS ENUM('active', 'inactive', 'draft', 'archived');
-
-ALTER TYPE "public"."publication_status" owner TO "postgres";
-
-comment ON type "public"."publication_status" IS 'Publishing status of a resource';
-
 CREATE TYPE "public"."sex" AS ENUM('female', 'male', 'non-binary', 'unspecified');
 
 ALTER TYPE "public"."sex" owner TO "postgres";
 
 comment ON type "public"."sex" IS 'Sex of an user';
 
-CREATE OR REPLACE FUNCTION "public"."insert_public_user" () returns "trigger" language "plpgsql"
+CREATE OR REPLACE FUNCTION "public"."insert_public_user" () returns "trigger" language "plpgsql" security definer
 SET
   "search_path" TO '' AS $$
-BEGIN
-    IF pg_typeof(NEW.raw_user_meta_data) = 'text'::regtype THEN
-        NEW.raw_user_meta_data := NEW.raw_user_meta_data::json;
-    END IF;
-
-    INSERT INTO public.users (id, email, phone, first_name, last_name, is_admin, is_editor)
-    VALUES (
-        NEW.id,
-        NEW.email,
-        NEW.phone,
-        (NEW.raw_user_meta_data::json ->> 'first_name'),
-        (NEW.raw_user_meta_data::json ->> 'last_name'),
-        COALESCE((NEW.raw_user_meta_data::json ->> 'is_admin')::boolean, FALSE),
-        COALESCE((NEW.raw_user_meta_data::json ->> 'is_editor')::boolean, FALSE)
-    );
-
-    RETURN NEW;
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE NOTICE 'Error inserting into public.users: %', SQLERRM;
-        RETURN NULL;
-END;
+begin
+  insert into public.users (
+    id,
+    email,
+    phone,
+    first_name,
+    last_name
+  )
+  values (
+    new.id,
+    new.email,
+    new.phone,
+    new.raw_user_meta_data ->> 'first_name',
+    new.raw_user_meta_data ->> 'last_name'
+  );
+  return new;
+end;
 $$;
 
 ALTER FUNCTION "public"."insert_public_user" () owner TO "postgres";
@@ -360,13 +349,15 @@ CREATE TABLE IF NOT EXISTS "public"."courses" (
   "title" "jsonb" NOT NULL,
   "description" "jsonb",
   "image_url" "text",
-  "publication_status" "public"."publication_status" NOT NULL,
   "sort_order" SMALLINT NOT NULL,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
   "deleted_at" TIMESTAMP WITH TIME ZONE,
   "type" "public"."course_type" NOT NULL,
-  "slug" "text" NOT NULL
+  "slug" "text" NOT NULL,
+  "published_locales" "public"."locale" [],
+  "draft_locales" "public"."locale" [],
+  "archived_at" TIMESTAMP WITH TIME ZONE
 );
 
 ALTER TABLE "public"."courses" owner TO "postgres";
@@ -657,8 +648,8 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
   "city" "text",
   "avatar_url" "text",
   "bio" "jsonb",
-  "is_admin" BOOLEAN DEFAULT FALSE NOT NULL,
-  "is_editor" BOOLEAN DEFAULT FALSE NOT NULL,
+  "is_admin" BOOLEAN DEFAULT FALSE,
+  "is_editor" BOOLEAN DEFAULT FALSE,
   "email" "text" NOT NULL,
   "phone" "text"
 );
@@ -1001,15 +992,117 @@ ADD CONSTRAINT "user_lessons_user_id_fkey" FOREIGN key ("user_id") REFERENCES "p
 ALTER TABLE ONLY "public"."users"
 ADD CONSTRAINT "users_id_fkey" FOREIGN key ("id") REFERENCES "auth"."users" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
+CREATE POLICY "Admins, service roles, and users with is_admin can delete membe" ON "public"."memberships" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        ("auth"."role" () = 'service_role'::"text")
+    )
+  )
+);
+
+CREATE POLICY "Admins, service roles, and users with is_admin can insert membe" ON "public"."memberships" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          ("auth"."role" () = 'service_role'::"text")
+      )
+    )
+  );
+
+CREATE POLICY "Admins, service roles, and users with is_admin can select membe" ON "public"."memberships" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          ("auth"."role" () = 'service_role'::"text")
+      )
+    )
+  );
+
+CREATE POLICY "Admins, service roles, and users with is_admin can update membe" ON "public"."memberships"
+FOR UPDATE
+  TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          ("auth"."role" () = 'service_role'::"text")
+      )
+    )
+  );
+
 CREATE POLICY "Anyone can read public users" ON "public"."users" FOR
 SELECT
-  TO "authenticated",
-  "anon",
-  "service_role" USING (TRUE);
-
-CREATE POLICY "Service roles can create users" ON "public"."users" FOR insert TO "service_role"
-WITH
-  CHECK (TRUE);
+  TO "anon" USING (TRUE);
 
 CREATE POLICY "Service roles can delete users" ON "public"."users" FOR delete TO "service_role" USING (TRUE);
 
@@ -1082,6 +1175,10 @@ WITH
       )
     )
   );
+
+CREATE POLICY "Users can see their own memberships" ON "public"."memberships" FOR
+SELECT
+  TO "authenticated" USING (("user_id" = "auth"."uid" ()));
 
 CREATE POLICY "Users can update their own lessons" ON "public"."user_lessons"
 FOR UPDATE

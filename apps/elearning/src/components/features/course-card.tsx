@@ -55,11 +55,11 @@ export const CourseCard = ({ course }: { course: Course }) => {
               {localize(course.title)}
             </Link>
             {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
-            {user.canEdit && course.publicationStatus === 'draft' && (
+            {/* {user.canEdit && course.publicationStatus === 'draft' && (
               <Badge className="ml-1.5" color="muted" size="xs">
                 {t('Courses.draft')}
               </Badge>
-            )}
+            )} */}
           </h3>
           <p className="text-sm text-muted-foreground">{localize(course.description)}</p>
         </CardHeader>

@@ -13,6 +13,7 @@ export const seedOrganizations = async (seed: SeedClient, users: Array<User | nu
           organizations: {
             ...organizations[0],
             rating: Math.random() * 5,
+            approved_at: new Date().toISOString(),
             memberships: organizations[0].memberships.map(membershipRole => {
               const user = users.find(user => user?.email?.split('@')[0] === membershipRole)
 

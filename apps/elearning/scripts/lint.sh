@@ -11,13 +11,13 @@ fi
 
 case "$1" in
   --fix)
-    ./node_modules/.bin/eslint --fix $ESLINT_GLOBS
-    ./node_modules/.bin/prettier --write $PRETTIER_GLOBS
+    eslint --fix $ESLINT_GLOBS
+    prettier --write $PRETTIER_GLOBS
     ;;
   "")
-    ./node_modules/.bin/eslint $ESLINT_GLOBS
-    ./node_modules/.bin/prettier --check $PRETTIER_GLOBS
-    ./node_modules/.bin/shellcheck $SHELLCHECK_GLOBS
+    eslint $ESLINT_GLOBS
+    prettier --check $PRETTIER_GLOBS
+    shellcheck $SHELLCHECK_GLOBS
     ;;
   *)
     exit 1

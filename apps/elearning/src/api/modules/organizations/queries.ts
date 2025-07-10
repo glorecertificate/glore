@@ -4,7 +4,7 @@ export const organizationQuery = `
   name,
   email,
   description,
-  website,
+  url,
   phone,
   country,
   region,

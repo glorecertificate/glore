@@ -27,7 +27,11 @@ The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href=
 
 You must download and activate the Node.js version specified [here](.node-version).
 
-[Docker Desktop](https://docs.docker.com/desktop) is a prerequisite for local development. It is recommended to adjust Docker's resource allocation in `Settings > Resources > Advanced` to optimize performance, as Docker can consume significant system resources by default.
+A container tool that offers Docker compatible APIs is a prerequisite for local development.
+
+If using [Docker Desktop](https://docs.docker.com/desktop), it is recommended to adjust Docker's resource allocation in `Settings > Resources > Advanced` to optimize performance, as the default values can lead to consume significant system resources.
+
+Alternatively, a tool like [colima](https://github.com/abiosoft/colima) can be used to run containers without a GUI.
 
 ### Setup
 
@@ -70,6 +74,8 @@ This command will start the Next.js application and the Docker instance of Supab
 Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real time.
 
 Supabase Studio, an interface for managing the local database, will be available at [localhost:54321](http://localhost:54321) while the Docker container is running.
+
+<!-- TODO: working with the local database -->
 
 ### Contributing
 

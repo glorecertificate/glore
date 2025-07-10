@@ -811,7 +811,11 @@ ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 ALTER TABLE ONLY "public"."users"
 ADD CONSTRAINT "users_username_key" UNIQUE ("username");
 
-CREATE OR REPLACE TRIGGER "before_insert_user_assessment" before insert ON "public"."user_assessments" FOR each ROW
+CREATE OR REPLACE TRIGGER "create_username"
+AFTER insert ON "public"."users" FOR each ROW
+EXECUTE function "public"."set_username" ();
+
+CREATE OR REPLACE TRIGGER "set_assessment_skill" before insert ON "public"."user_assessments" FOR each ROW
 EXECUTE function "public"."set_skill_id" ();
 
 CREATE OR REPLACE TRIGGER "set_updated_at" before

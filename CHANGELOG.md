@@ -1,5 +1,45 @@
 # Changelog
 
+## [0.5.0](https://github.com/gabrielecanepa/glore/compare/v0.4.5...v0.5.0) (2025-07-11)
+
+
+### Features ✨
+
+* Improve auth forms UX and component styling ([b7375c0](https://github.com/gabrielecanepa/glore/commit/b7375c042f22ecc673003cf11808006a1e2154ee))
+
+
+### Fixes 🔧
+
+* Fix database user triggers ([2731ee0](https://github.com/gabrielecanepa/glore/commit/2731ee01a2eecb142b313e1034bdea8561a994dd))
+
+
+### CI 🤖
+
+* Add automated database migration workflow ([b42b936](https://github.com/gabrielecanepa/glore/commit/b42b93643b0fbc1ce400115814725f56bb66ab98))
+* Add configurable issue tracking support to release config ([f2f83e1](https://github.com/gabrielecanepa/glore/commit/f2f83e16c086bb50e622ad7407914030e34df741))
+* Add GitHub workflow for automated Notion releases ([409119f](https://github.com/gabrielecanepa/glore/commit/409119f5988462e72d4735d284ac79e4a11195c1))
+* Add migration revert functionality and improve environment configuration ([e555c79](https://github.com/gabrielecanepa/glore/commit/e555c79416ba243123074ce01ec3f5a5089bb2a8))
+
+
+### Build 📦
+
+* **deps:** Bump dependencies ([cd39342](https://github.com/gabrielecanepa/glore/commit/cd39342dabda16c77e78444061de8b836f0e3ddd))
+
+
+### Other
+
+* Add database and seed type generation to development script ([55be64b](https://github.com/gabrielecanepa/glore/commit/55be64becb8dfe29050957f2ab31a7ef28fce673))
+* Add username trigger and rename assessment trigger ([e1b1c95](https://github.com/gabrielecanepa/glore/commit/e1b1c95860f0a919f3eab6f04f2ae4b311a3823e))
+* Clean up environment variables and deployment configuration ([17edb17](https://github.com/gabrielecanepa/glore/commit/17edb174332863b3c25294a3bc19d7c0af2ee9c1))
+* Consolidate environment configuration ([91fa716](https://github.com/gabrielecanepa/glore/commit/91fa716f092da2f8096e3d42c6be5d2105dbee09))
+* Improve API client architecture for better modularity ([e09a71e](https://github.com/gabrielecanepa/glore/commit/e09a71e7a6b4f134f47e7daae113ac8cbf1c382b))
+* Improve seed cache handling ([290f069](https://github.com/gabrielecanepa/glore/commit/290f06940eee4332706fd5ee025a2084d0f6fa91))
+* Migrate seed data to Snaplet configuration ([856c13c](https://github.com/gabrielecanepa/glore/commit/856c13c88e79e94cfba64975c6e9072f97743136))
+* Remove unnecessary turbo variables ([df3e3e8](https://github.com/gabrielecanepa/glore/commit/df3e3e8efcfcb1456296c829de8bf8b052982897))
+* Simplify configuration and improve metadata handling ([b984359](https://github.com/gabrielecanepa/glore/commit/b984359458ef6e2755750c6e11344682792d8f68))
+* Update database scripts and update docs ([fcf48f6](https://github.com/gabrielecanepa/glore/commit/fcf48f638faf8b58665c171bf4899d6b9b06e351))
+* Update Next.js experimental configuration ([0640930](https://github.com/gabrielecanepa/glore/commit/0640930bb1b0573ada69281b018e52fd9616fc56))
+
 ## [0.4.8](https://github.com/gabrielecanepa/glore/compare/v0.4.7...v0.4.8) (2025-07-05)
 
 ### CI 🤖

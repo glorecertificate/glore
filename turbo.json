@@ -1,14 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["tsconfig.json"],
-  "globalEnv": [
-    "GITHUB_TOKEN",
-    "GH_TOKEN",
-    "NODE_ENV",
-    "SUPABASE_ACCESS_TOKEN",
-    "SUPABASE_DB_URL",
-    "SUPABASE_PROJECT_ID"
-  ],
+  "globalEnv": ["GITHUB_TOKEN", "GH_TOKEN", "NODE_ENV", "SUPABASE_ACCESS_TOKEN", "SUPABASE_DB_URL"],
   "ui": "tui",
   "tasks": {
     "build": {
@@ -24,7 +17,6 @@
         "POSTGRES_URL_NON_POOLING",
         "POSTGRES_USER",
         "SUPABASE_ANON_KEY",
-        "SUPABASE_DB_PASSWORD",
         "SUPABASE_JWT_SECRET",
         "SUPABASE_SERVICE_ROLE_KEY",
         "SUPABASE_URL"

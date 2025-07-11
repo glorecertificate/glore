@@ -9,6 +9,8 @@ jobs:
   publish-to-notion:
     name: Publish to Notion
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Parse release data
         id: parse-release

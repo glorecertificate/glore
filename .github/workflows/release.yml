@@ -35,5 +35,4 @@ jobs:
                 start: "${{ steps.parse-release.outputs.date }}"
             Project:
               relation:
-                - id:
-                    content: "${{ vars.NOTION_PROJECT_ID }}"
+                - id: "${{ vars.NOTION_PROJECT_ID }}"

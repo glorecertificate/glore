@@ -142,7 +142,7 @@ case $cmd in
       fi
     fi
     supabase config push --yes
-    supabase db push --yes
+    supabase db push --password "$SUPABASE_DB_PASSWORD" --include-all --yes
     ;;
   reset)
     reset_db

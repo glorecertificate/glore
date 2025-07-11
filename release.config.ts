@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 import { type Config } from 'release-it'
 
 interface Context {
@@ -46,14 +48,22 @@ interface ReleaseConfig extends Config {
   }
 }
 
+const { ISSUE_PREFIX, ISSUE_URL } = process.env
+
 const plugins = {
   '@release-it/bumper': {
     out: ['apps/*/package.json', 'apps/*/config/metadata.json'],
   },
+  'release-it-pnpm': {
+    publishCommand: '',
+  },
   '@release-it/conventional-changelog': {
     infile: 'CHANGELOG.md',
+    header: '# Changelog',
     preset: {
       name: 'conventionalcommits',
+      issuePrefixes: ISSUE_PREFIX ? [ISSUE_PREFIX] : [],
+      issueUrlFormat: ISSUE_URL,
       types: [
         {
           type: 'feat',
@@ -80,11 +90,7 @@ const plugins = {
           section: 'Other',
         },
         {
-          type: 'test',
-          section: 'Other',
-        },
-        {
-          type: 'style',
+          type: 'perf',
           section: 'Other',
         },
         {
@@ -92,11 +98,15 @@ const plugins = {
           section: 'Other',
         },
         {
-          type: 'perf',
+          type: 'revert',
           section: 'Other',
         },
         {
-          type: 'revert',
+          type: 'style',
+          section: 'Other',
+        },
+        {
+          type: 'test',
           section: 'Other',
         },
       ],
@@ -105,6 +115,7 @@ const plugins = {
 } satisfies Config['plugins']
 
 export default {
+  plugins,
   git: {
     addUntrackedFiles: true,
     commitMessage: 'chore(release): v${version}',
@@ -127,7 +138,6 @@ export default {
   npm: {
     publish: false,
   },
-  plugins,
   hooks: {
     'after:init': '[ -n "$(git log @{u}..)" ] && [ "$SKIP_CI" != 1 ] && pnpm build && pnpm run check || exit 0',
     'before:release': 'pnpm run format && git add .',

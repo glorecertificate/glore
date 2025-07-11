@@ -9,9 +9,6 @@ jobs:
   publish-to-notion:
     name: Publish to Notion
     runs-on: ubuntu-latest
-    outputs:
-      date: ${{ steps.parse-release.outputs.date }}
-      version: ${{ steps.parse-release.outputs.version }}
     steps:
       - name: Parse release data
         id: parse-release

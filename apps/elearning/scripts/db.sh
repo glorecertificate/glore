@@ -26,14 +26,14 @@ CMDS="
   pull <migrations>    Pull schema changes from the remote database into a migration file
   push                 Push local migrations to the remote database
   reset                Reset local database and run seeds
+  revert <n>           Resets applied migrations up to the last n versions (default: 1)
   seed                 Run database seed scripts
   start                Start the Supabase local development environment
   status               Show the status of the local Supabase environment
   stop                 Stop the Supabase local development environment
   sync                 Sync types, schema and seeds files
   typegen              Generate TypeScript types from database schema
-  help, -h, --help     Show this help message
-"
+  help, -h, --help     Show this help message"
 
 cmd=$1
 
@@ -134,17 +134,25 @@ case $cmd in
     ;;
   push)
     if ! is_ci; then
-      printf "Are you sure you want to push the local migrations and update the remote schema? [y/N] "
+      printf "Are you sure you want to push the local config and update the remote schema? [y/N] "
       read -r response
       if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
         echo "Push cancelled."
         exit 0
       fi
     fi
+    supabase config push --yes
     supabase db push --yes
     ;;
   reset)
     reset_db
+    ;;
+  revert)
+    last=1
+    location=local
+    [ -n "$2" ] && last=$2
+    is_ci && location="linked"
+    supabase migration down --$location --last "$last" --yes
     ;;
   seed)
     run_seeds
@@ -165,14 +173,18 @@ case $cmd in
     sync_types
     ;;
   *)
-    if [ "$cmd" != help ] && [ "$cmd" != -h ] && [ "$cmd" != --help ]; then
+    if [ -n "$cmd" ] && [ "$cmd" != help ] && [ "$cmd" != -h ] && [ "$cmd" != --help ]; then
       print_error "Unknown command: $cmd"
       echo
+      exit=1
     fi
     echo "Usage:"
     echo "  pnpm db [command]"
     echo
     echo "Commands: $CMDS"
-    exit 1
+    if [ "$exit" = 1 ]; then
+      echo
+      exit 1
+    fi
     ;;
 esac

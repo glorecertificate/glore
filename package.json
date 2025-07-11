@@ -24,7 +24,7 @@
     "deploy": "pnpm check && vercel build && vercel --prebuilt",
     "deploy:prod": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
     "analyze": "turbo run analyze",
-    "bump": "pnpm upgrade --latest --recursive",
+    "bump": "corepack use pnpm@latest && pnpm upgrade --latest --recursive",
     "release": "dotenv release-it -- --config release.config.ts",
     "release:patch": "pnpm release --increment patch",
     "release:minor": "pnpm release --increment minor",

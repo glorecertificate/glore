@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.5.0](https://github.com/gabrielecanepa/glore/compare/v0.4.5...v0.5.0) (2025-07-11)
+## [0.4.9](https://github.com/gabrielecanepa/glore/compare/v0.4.8...v0.4.9) (2025-07-11)
 
 
 ### Features ✨

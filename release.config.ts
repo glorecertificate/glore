@@ -29,7 +29,10 @@ interface ReleaseConfig extends Config {
       | string[]
       | ((context: Context) => string | string[])
   }
-  plugins: Config['plugins'] & {
+  plugins: {
+    'release-it-pnpm': {
+      publishCommand: string
+    }
     '@release-it/bumper': {
       out: string[]
     }
@@ -37,11 +40,16 @@ interface ReleaseConfig extends Config {
       /** @default "# Changelog" */
       header?: string
       infile?: string
+      ignoreRecommendedBump?: boolean
       preset: {
-        name: string
+        name: 'conventionalcommits'
+        issuePrefixes?: string[]
+        issueUrlFormat?: string
         types?: Array<{
           section: string
           type: string
+          scope?: string
+          hidden?: boolean
         }>
       }
     }
@@ -50,16 +58,17 @@ interface ReleaseConfig extends Config {
 
 const { ISSUE_PREFIX, ISSUE_URL } = process.env
 
-const plugins = {
-  '@release-it/bumper': {
-    out: ['apps/*/package.json', 'apps/*/config/metadata.json'],
-  },
+const plugins: ReleaseConfig['plugins'] = {
   'release-it-pnpm': {
     publishCommand: '',
+  },
+  '@release-it/bumper': {
+    out: ['apps/*/package.json', 'apps/*/config/metadata.json'],
   },
   '@release-it/conventional-changelog': {
     infile: 'CHANGELOG.md',
     header: '# Changelog',
+    ignoreRecommendedBump: true,
     preset: {
       name: 'conventionalcommits',
       issuePrefixes: ISSUE_PREFIX ? [ISSUE_PREFIX] : [],
@@ -76,6 +85,7 @@ const plugins = {
         {
           type: 'ci',
           section: 'CI 🤖',
+          hidden: false,
         },
         {
           type: 'build',
@@ -109,10 +119,13 @@ const plugins = {
           type: 'test',
           section: 'Other',
         },
-      ],
+      ].map(type => ({
+        ...type,
+        hidden: type.hidden ?? false,
+      })),
     },
   },
-} satisfies Config['plugins']
+}
 
 export default {
   plugins,
@@ -128,12 +141,6 @@ export default {
   github: {
     release: true,
     releaseName: 'v${version}',
-    releaseNotes: context => {
-      const changelog = context.changelog.split('\n').slice(1).join('\n').trim()
-      const range = `v${context.latestVersion}...v${context.version}`
-      const footer = `**Full Changelog:** [\`${range}\`](https://github.com/${context.repo.repository}/compare/${range})`
-      return [changelog, '<br>', footer].join('\n\n')
-    },
   },
   npm: {
     publish: false,

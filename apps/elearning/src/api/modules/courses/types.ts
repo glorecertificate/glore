@@ -41,13 +41,3 @@ export interface Evaluation extends Entity<'evaluations'> {
 export interface Assessment extends Entity<'assessments'> {
   userRating?: number
 }
-
-export interface UserCourse extends Entity<'user_courses'> {}
-
-export interface UserLesson extends Entity<'user_lessons'> {}
-
-export interface UserAnswer extends Entity<'user_answers'> {}
-
-export interface UserEvaluation extends Entity<'user_evaluations'> {}
-
-export interface UserAssessment extends Entity<'user_assessments'> {}

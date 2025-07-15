@@ -4,17 +4,18 @@ import { Env } from '@/lib/env'
  * Application cookie names.
  */
 export enum Cookie {
+  CourseLocales = 'glore.course-locales',
+  CourseSection = 'glore.course-section',
   Locale = 'NEXT_LOCALE',
   Org = 'glore.current-org',
   SidebarOpen = 'glore.sidebar-state',
+  SupabaseWidgetPosition = 'glore.supabase-widget',
 }
 
 /**
  * Application local storage keys.
  */
-export enum LocalStorage {
-  SupabaseWidgetPosition = 'glore.supabase-widget',
-}
+export enum LocalStorage {}
 
 /**
  * Public assets used in the application.

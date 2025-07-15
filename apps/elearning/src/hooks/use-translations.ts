@@ -2,22 +2,22 @@
 
 import {
   useTranslations as useNextIntlTranslations,
-  type createTranslator,
+  type MessageKeys,
+  type Messages,
   type NamespaceKeys,
   type NestedKeyOf,
 } from 'next-intl'
 
-import { type Messages } from '@/lib/i18n/types'
+import { type Translator } from '@/lib/i18n/types'
 
 /**
- * Extends the hook from `next-intl` to support optional function arguments.
+ * Extends the `next-intl` hook to include a flat translation function.
  */
-export const useTranslations = useNextIntlTranslations as <
-  K extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never,
->(
-  namespace?: K,
-) => ReturnType<typeof createTranslator> &
-  ((
-    key?: Parameters<ReturnType<typeof createTranslator>>[0],
-    values?: Parameters<ReturnType<typeof createTranslator>>[1],
-  ) => string)
+export const useTranslations = <NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never>(
+  namespace?: NestedKey,
+) => {
+  const translations = useNextIntlTranslations(namespace) as Translator<NestedKey>
+  // @ts-expect-error - Allow passing no arguments to the translations.
+  translations.flat = (key: string) => translations(key as MessageKeys<Messages, NestedKeyOf<Messages>>)
+  return translations
+}

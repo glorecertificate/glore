@@ -1,13 +1,14 @@
 import { serialize } from '@repo/utils'
 
 import { getSession } from '@/api/modules/auth/requests'
+import type { UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from '@/api/modules/users/types'
 import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
 import { getLocale } from '@/lib/i18n/server'
 
 import { parseCourse } from './parser'
 import { courseQuery } from './queries'
-import type { Course, UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from './types'
+import type { Course } from './types'
 
 export const list = async (db: DatabaseClient): Promise<Course[]> => {
   const { data, error } = await db.from('courses').select(courseQuery)

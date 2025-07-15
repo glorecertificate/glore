@@ -33,13 +33,12 @@ export const badge = cva(
     },
     variants: {
       color: {
-        default: 'border-foreground text-foreground',
+        default: 'bg-default text-default-foreground',
+        inverted: 'bg-inverted text-inverted-foreground',
         primary: 'border-primary bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
-        'primary.accent':
-          'border-primary-accent bg-primary-accent text-primary-foreground [a&]:hover:bg-primary-accent/90',
-        secondary: 'border-secondary bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
-        'secondary.accent':
-          'border-secondary-accent bg-secondary-accent text-secondary-foreground [a&]:hover:bg-secondary-accent/90',
+        'primary.accent': 'border-primary-accent bg-primary-accent text-primary-foreground',
+        secondary: 'border-secondary bg-secondary text-secondary-foreground',
+        'secondary.accent': 'border-secondary-accent bg-secondary-accent text-secondary-foreground',
         destructive: `
           border-destructive bg-destructive text-white
           focus-visible:ring-destructive/20
@@ -52,7 +51,7 @@ export const badge = cva(
           dark:bg-success/70 dark:focus-visible:ring-success/40
           [a&]:hover:bg-success/90
         `,
-        muted: 'bg-muted text-muted-foreground [a&]:hover:bg-muted/90',
+        muted: 'bg-muted text-muted-foreground dark:bg-accent',
       },
       size: {
         xs: 'gap-0.5 px-1 py-[1px] text-[10px]',
@@ -63,7 +62,7 @@ export const badge = cva(
       variant: {
         default: '',
         outline: 'border !bg-transparent',
-        ghost: 'bg-transparent text-foreground [a&]:hover:bg-muted/90',
+        ghost: 'bg-transparent text-foreground',
       },
     },
     compoundVariants: [

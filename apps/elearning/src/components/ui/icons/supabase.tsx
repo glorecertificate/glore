@@ -1,4 +1,6 @@
-export const Supabase = (props: React.SVGProps<SVGSVGElement>) => (
+import { type IconProps } from '@/components/ui/icons/types'
+
+export const Supabase = (props: IconProps) => (
   <svg
     fill="none"
     height="113"
@@ -31,5 +33,4 @@ export const Supabase = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
-
 export const SupabaseIcon = Supabase

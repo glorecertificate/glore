@@ -19,6 +19,11 @@ export type AnyFunction = (...args: any) => any
 export type AnyRecord = Record<string, any>
 
 /**
+ * Object with no properties.
+ */
+export type EmptyRecord = Record<string, never>
+
+/**
  * Any array type, including nested arrays.
  */
 export type AnyArray = any[] | any[][]
@@ -129,3 +134,13 @@ export type Without<T, K> = Pick<T, Exclude<keyof T, K>>
  * URL type.
  */
 export type HTTPUrl = `http${string}`
+
+/**
+ * Mail URL type.
+ */
+export type MailToUrl = `mailto:${string}`
+
+/**
+ * Telephone URL type.
+ */
+export type TelUrl = `tel:${string}`

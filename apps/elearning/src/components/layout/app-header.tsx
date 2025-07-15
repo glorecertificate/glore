@@ -15,32 +15,27 @@ import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
-  const { header, shadow } = useHeader()
+  const { header } = useHeader()
   const { pathname } = usePathname()
   const { scrolled } = useScroll()
   const { open } = useSidebar()
-  // const { syncState } = useSyncState()
   const t = useTranslations()
 
   const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
-
-  // const onRefreshClick = useCallback(() => {
-  //   window.location.reload()
-  // }, [])
 
   return (
     <>
       <header
         className={cn(
           'ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
-          scrolled && shadow && 'border-b',
+          scrolled && 'border-b',
           className,
         )}
         {...props}
       >
         <div className="flex w-full items-center justify-between gap-2 px-4 py-4">
           <div className="flex h-10 grow items-center gap-1">
-            <Tooltip disableHoverableContent>
+            <Tooltip delayDuration={600} disableHoverableContent>
               <TooltipTrigger asChild>
                 <SidebarTrigger
                   className={cn(
@@ -56,34 +51,6 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
             </Tooltip>
             {header && <Breadcrumb className="flex h-full items-center">{header}</Breadcrumb>}
           </div>
-          {/* {syncState === 'syncing' && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="mr-3 cursor-default">
-                  <RefreshCwIcon className="size-4 animate-spin text-muted-foreground duration-700" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent arrow={false} side="bottom">
-                <p>{t('Common.syncChanges')}</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-          {syncState === 'error' && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="mr-3" onClick={onRefreshClick}>
-                  <RefreshCwOffIcon className="size-4 text-destructive" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent arrow={false} className="text-center" side="bottom">
-                <p>
-                  {t('Common.syncError')}
-                  {' ⚠️'}
-                </p>
-                <p className="text-[10px] text-gray-400">{t('Common.syncErrorSubtitle')}</p>
-              </TooltipContent>
-            </Tooltip>
-          )} */}
           <Link
             className={cn(pathname === Route.Home && 'pointer-events-none')}
             href={Route.Home}

@@ -1,13 +1,14 @@
-'use server'
+import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'next-intl'
 
-import type { NamespaceKeys, NestedKeyOf } from 'next-intl'
-
-import type { AnyArray, AnyRecord } from '@repo/utils'
-
-import type app from 'config/app.json'
+import { type localeItems } from '@/lib/i18n/utils'
+import { type locales } from 'config/app.json'
 import type messages from 'config/translations/en.json'
 
-import type { formats } from './config'
+import { type formats } from './config'
+
+type Locale = keyof typeof locales
+type Messages = typeof messages
+type Formats = typeof formats
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -18,51 +19,27 @@ declare module 'next-intl' {
 }
 
 /**
- * Application locale keys.
+ * Extends the `Translator` type to include the `flat` function.
  */
-export type Locale = keyof typeof app.locales
-
-/**
- * Record localized to the current locale.
- */
-export type Localized<T extends AnyRecord, R extends keyof T = never> = {
-  [K in keyof T]: K extends R ? string : T[K] extends AnyRecord ? Localized<T[K], R> : T[K]
+export type Translator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never> = ReturnType<
+  typeof createTranslator<Messages, NestedKey>
+> & {
+  /**
+   * Flat translation function that allows passing a string key directly.
+   *
+   * **Use with caution**: this bypasses type safety and should be used only when necessary.
+   */
+  flat: (key: string) => string
 }
 
 /**
- * JSON object with locale keys holding a string value.
- */
-export type IntlJson = Record<Locale, string>
-
-/**
- * Record with internationalized JSON fields.
- */
-export type Intl<T extends AnyRecord, K> = {
-  [P in keyof T]: T[P] extends AnyArray
-    ? Array<Localized<T[P][number]>>
-    : P extends K
-      ? IntlJson
-      : T[P] extends AnyRecord
-        ? Intl<T[P], K>
-        : T[P]
-}
-
-/**
- * Application static messages.
- */
-export type Messages = typeof messages
-
-/**
- * Keys of the application's static messages.
+ * Key of the application static messages.
  */
 export type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
 
 /**
- * Namespace keys of the application's static messages.
+ * Locale item used in the application.
  */
-export type NestedKey = NamespaceKeys<Messages, NestedKeyOf<Messages>>
-
-/**
- * Formats available in the application.
- */
-export type Formats = typeof formats
+export type LocaleItem = (typeof localeItems)[number] & {
+  active: boolean
+}

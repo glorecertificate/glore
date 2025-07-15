@@ -1,6 +1,13 @@
+import { type IconProps } from '@/components/ui/icons/types'
 import { cn } from '@/lib/utils'
 
-export const Loader = ({ className, colored, ...props }: React.SVGProps<SVGSVGElement> & { colored?: boolean }) => (
+export const Loader = ({
+  className,
+  colored,
+  ...props
+}: IconProps & {
+  colored?: boolean
+}) => (
   <svg
     className={cn('animate-spin stroke-current stroke-2', className)}
     strokeLinecap="round"
@@ -19,5 +26,4 @@ export const Loader = ({ className, colored, ...props }: React.SVGProps<SVGSVGEl
     <path className={cn(colored && 'text-secondary')} d="m4.9 4.9 2.9 2.9" />
   </svg>
 )
-
 export const LoaderIcon = Loader

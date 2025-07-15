@@ -53,7 +53,7 @@ export const CourseFlow = (props: { course?: Course }) => {
 
   const [course, _setCourse] = useState<Course | Partial<Course>>(props.course ?? {})
   const [syncedCourse, setSyncedCourse] = useState(course)
-  const [preview, _setPreview] = useState(false)
+  const [preview, setPreviewState] = useState(false)
 
   const title = useMemo(() => (course.title ? localize(course.title) : t('newCourse')), [course, localize, t])
 
@@ -497,12 +497,12 @@ export const CourseFlow = (props: { course?: Course }) => {
             <div className="flex items-center gap-2">
               <LanguageSelect controlled value="en" />
               {isPreview ? (
-                <Button className="gap-1" onClick={() => _setPreview(false)} variant="outline">
+                <Button className="gap-1" onClick={() => setPreviewState(false)} variant="outline">
                   <PencilIcon className="h-4 w-4" />
                   {t('edit')}
                 </Button>
               ) : (
-                <Button className="gap-1" onClick={() => _setPreview(true)} variant="outline">
+                <Button className="gap-1" onClick={() => setPreviewState(true)} variant="outline">
                   <EyeIcon className="h-4 w-4" />
                   {t('preview')}
                 </Button>
@@ -510,7 +510,7 @@ export const CourseFlow = (props: { course?: Course }) => {
               {/* {course.publicationStatus === 'draft' && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button className="gap-1" color="success">
+                    <Button className="gap-1" variant="success">
                       <RocketIcon className="h-4 w-4" />
                       {t('publish')}
                     </Button>
@@ -523,7 +523,7 @@ export const CourseFlow = (props: { course?: Course }) => {
               {/* {course.publicationStatus === 'active' && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button className="gap-1" color="destructive">
+                    <Button className="gap-1" variant="destructive">
                       <RocketIcon className="h-4 w-4" />
                       {t('unpublish')}
                     </Button>
@@ -634,7 +634,7 @@ export const CourseFlow = (props: { course?: Course }) => {
                             </Button>
                           )}
                           {completedCoursesCount === config.minSkills && (
-                            <Button asChild color="primary">
+                            <Button asChild variant="primary">
                               <Link href={Route.CertificateNew}>{t('requestCertificate')}</Link>
                             </Button>
                           )}

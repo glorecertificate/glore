@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
   typescript: { tsconfigPath },
 }
 
-const generatePageMetadata = nextIntl({
+const withNextIntl = nextIntl({
   experimental: {
     createMessagesDeclaration: MESSAGE_DECLARATIONS,
   },
@@ -32,4 +32,4 @@ const generatePageMetadata = nextIntl({
 
 const withBundleAnalyzer = bundleAnalyzer({ enabled: Env.ANALYZE })
 
-export default generatePageMetadata(withBundleAnalyzer(nextConfig))
+export default withNextIntl(withBundleAnalyzer(nextConfig))

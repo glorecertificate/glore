@@ -12,14 +12,14 @@ export const useLocalStorage = <T>(key?: LocalStorage | `${LocalStorage}`, defau
 
   useEffect(() => {
     if (!key) return
-    const localstorageValue = localStorage.getItem(key)
+    const localstorageValue = localStorage.getItem(key as string)
     if (localstorageValue !== null) setValue(JSON.parse(localstorageValue) as T)
     setIsInitialized(true)
   }, [key])
 
   useEffect(() => {
     if (!isInitialized || !key) return
-    localStorage.setItem(key, JSON.stringify(value))
+    localStorage.setItem(key as string, JSON.stringify(value))
   }, [isInitialized, key, value])
 
   return [value, setValue] as const

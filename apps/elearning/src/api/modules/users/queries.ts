@@ -14,6 +14,7 @@ export const baseUserQuery = `
   nationality,
   country,
   city,
+  languages,
   avatarUrl:avatar_url,
   isAdmin:is_admin,
   isEditor:is_editor,
@@ -31,9 +32,11 @@ export const userQuery = `
     organization:organizations (
       ${organizationQuery}
     )
+  ),
+  regions (
+    id,
+    name,
+    emoji,
+    iconUrl:icon_url
   )
-`
-
-export const currentUserQuery = `
-  ${userQuery}
 `

@@ -161,7 +161,7 @@ export const AdminTeam = () => {
             <Download className="mr-2 h-4 w-4" />
             {'Export'}
           </Button>
-          <Button color="secondary" onClick={() => setIsAddUserOpen(true)}>
+          <Button onClick={() => setIsAddUserOpen(true)} variant="secondary">
             <UserPlus className="mr-2 h-4 w-4" />
             {'Add User'}
           </Button>
@@ -362,7 +362,7 @@ export const AdminTeam = () => {
             <Button onClick={() => setIsAddUserOpen(false)} variant="outline">
               {'Cancel'}
             </Button>
-            <Button color="secondary" onClick={_onAddUser} type="submit">
+            <Button onClick={_onAddUser} type="submit" variant="secondary">
               {'Create User'}
             </Button>
           </DialogFooter>

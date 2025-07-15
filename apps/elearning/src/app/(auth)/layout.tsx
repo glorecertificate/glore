@@ -1,5 +1,3 @@
-'use client'
-
 import { Logo } from '@/components/ui/icons/logo'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'

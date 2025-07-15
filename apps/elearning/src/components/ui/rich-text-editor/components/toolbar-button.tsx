@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 
-import type { TooltipContentProps } from '@radix-ui/react-tooltip'
-
 import { Toggle } from '@/components/ui/toggle'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 export interface ToolbarButtonProps extends React.ComponentPropsWithoutRef<typeof Toggle> {

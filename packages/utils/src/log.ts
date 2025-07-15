@@ -1,7 +1,8 @@
+/* eslint-disable no-console */
+
 /**
  * Simple logging utility supporting error and warn methods.
  */
-/* eslint-disable no-console */
 export const log = Object.assign(
   (...data: any[]) => {
     console.log(...data)

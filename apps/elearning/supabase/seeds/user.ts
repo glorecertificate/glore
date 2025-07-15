@@ -1,9 +1,10 @@
 import { copycat } from '@snaplet/copycat'
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type User } from '@supabase/supabase-js'
 
-import { log } from '@repo/utils'
+import { log, randomItem, randomRange, uuid } from '@repo/utils'
 
-import { emailDomain, staticSeeds } from 'supabase/.snaplet/data.json'
+import { emailDomain, placeholderAvatarUrl, staticSeeds } from 'supabase/.snaplet/data.json'
+import { type Database } from 'supabase/types'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SUPABASE_SERVICE_ROLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY
@@ -12,36 +13,59 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error('SUPABASE_URL and SERVICE_ROLE_KEY must be set')
 }
 
-const { auth } = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+const client = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: {
     autoRefreshToken: false,
     persistSession: false,
   },
 })
 
+const LANGUAGES = ['en', 'it', 'fr', 'es', 'de', 'pt', 'zh', 'ja', 'ru', 'ar']
+const PHONE_PREFIXES = ['+1', '+33', '+39', '+44', '+49']
+
 export const seedUsers = async (roles = staticSeeds.users) =>
   (
     await Promise.all(
       roles.map(async role => {
-        const { data, error } = await auth.admin.createUser({
+        const { data: authData, error: authError } = await client.auth.admin.createUser({
           email: `${role}@${emailDomain}`,
           password: 'password',
           email_confirm: true,
           phone_confirm: true,
           role: 'authenticated',
-          phone: copycat.phoneNumber(role),
+          phone: copycat.phoneNumber(role, { prefixes: PHONE_PREFIXES }),
           user_metadata: {
-            first_name: copycat.firstName(role),
-            last_name: copycat.lastName(role),
+            first_name: copycat.firstName(uuid()),
+            last_name: copycat.lastName(uuid()),
             is_admin: role === 'admin',
             is_editor: role === 'editor',
           },
         })
-        if (error) {
+        if (!authData.user) {
           log.error('Error creating users')
-          throw error
+          if (authError) throw authError
+          return null
         }
-        return data.user
-      }),
+
+        const { error } = await client
+          .from('users')
+          .update({
+            avatar_url: `${placeholderAvatarUrl}?u=${role}`,
+            languages: randomRange(LANGUAGES, 1, 3),
+            birthday: copycat.dateString(role, { min: '1970-01-01', max: '2000-12-31' }),
+            sex: randomItem(['female', 'male', 'non-binary', null]),
+            pronouns: randomItem(['she/her', 'he/him', 'they/them', null]),
+            nationality: copycat.country(randomItem([role, uuid()])),
+            country: copycat.country(role),
+            city: copycat.city(role),
+            bio: copycat.paragraph(role, { min: 1, max: 3 }),
+          })
+          .eq('id', authData.user.id)
+        if (error) {
+          log.warn(`Error updating ${role} public user: ${error.message.toLowerCase()}`)
+        }
+
+        return authData.user
+      }) as Array<Promise<User>>,
     )
   ).filter(Boolean)

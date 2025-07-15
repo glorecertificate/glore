@@ -2,12 +2,13 @@
 
 import { cookies } from 'next/headers'
 
+import { type Locale } from 'next-intl'
 import { getMessages, getRequestConfig, getTranslations } from 'next-intl/server'
 
 import { Cookie } from '@/lib/storage'
 import config from 'config/app.json'
 
-import type { Locale, MessageKey } from './types'
+import { type MessageKey } from './types'
 
 export const getLocale = async () => {
   const store = await cookies()

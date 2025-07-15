@@ -59,13 +59,7 @@ const CourseQuestion = ({
 
       <div className="flex gap-4">
         {question.options.map(option => (
-          <Button
-            className={optionClassName(option)}
-            hover={!question.answered}
-            key={option.id}
-            onClick={onOptionClick(option)}
-            variant="outline"
-          >
+          <Button className={optionClassName(option)} key={option.id} onClick={onOptionClick(option)} variant="outline">
             {t('trueAnswer')}
             {option.isCorrect && <CheckCircleIcon className="size-4 text-success" />}
           </Button>

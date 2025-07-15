@@ -8,9 +8,6 @@ SET
   idle_in_transaction_session_timeout = 0;
 
 SET
-  transaction_timeout = 0;
-
-SET
   client_encoding = 'UTF8';
 
 SET
@@ -102,14 +99,18 @@ begin
     email,
     phone,
     first_name,
-    last_name
+    last_name,
+    is_admin,
+    is_editor
   )
   values (
     new.id,
     new.email,
     new.phone,
     new.raw_user_meta_data ->> 'first_name',
-    new.raw_user_meta_data ->> 'last_name'
+    new.raw_user_meta_data ->> 'last_name',
+    COALESCE(new.raw_user_meta_data ->> 'is_admin', 'false')::boolean,
+    COALESCE(new.raw_user_meta_data ->> 'is_editor', 'false')::boolean
   );
   return new;
 end;
@@ -355,8 +356,8 @@ CREATE TABLE IF NOT EXISTS "public"."courses" (
   "deleted_at" TIMESTAMP WITH TIME ZONE,
   "type" "public"."course_type" NOT NULL,
   "slug" "text" NOT NULL,
-  "published_locales" "public"."locale" [],
   "draft_locales" "public"."locale" [],
+  "published_locales" "public"."locale" [],
   "archived_at" TIMESTAMP WITH TIME ZONE
 );
 
@@ -445,7 +446,6 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
   "name" "text" NOT NULL,
   "email" "text" NOT NULL,
   "description" "jsonb",
-  "url" "text",
   "phone" "text",
   "country" "text",
   "region" "text",
@@ -453,11 +453,12 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
   "city" "text",
   "address" "text",
   "avatar_url" "text",
-  "rating" SMALLINT,
+  "rating" REAL,
   "approved_at" TIMESTAMP WITH TIME ZONE,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
-  "deleted_at" TIMESTAMP WITH TIME ZONE
+  "deleted_at" TIMESTAMP WITH TIME ZONE,
+  "url" "text"
 );
 
 ALTER TABLE "public"."organizations" owner TO "postgres";
@@ -478,7 +479,9 @@ CREATE TABLE IF NOT EXISTS "public"."regions" (
   "coordinator_id" "uuid",
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
-  "deleted_at" TIMESTAMP WITH TIME ZONE
+  "deleted_at" TIMESTAMP WITH TIME ZONE,
+  "emoji" "text" DEFAULT 'NULL'::"text",
+  "icon_url" "text" DEFAULT 'NULL'::"text"
 );
 
 ALTER TABLE "public"."regions" owner TO "postgres";
@@ -596,7 +599,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_courses" (
   "course_id" BIGINT NOT NULL,
   "created_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
   "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT "now" () NOT NULL,
-  "deleted_at" TIMESTAMP WITH TIME ZONE
+  "deleted_at" TIMESTAMP WITH TIME ZONE,
+  "locale" "public"."locale" NOT NULL
 );
 
 ALTER TABLE "public"."user_courses" owner TO "postgres";
@@ -647,11 +651,12 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
   "country" "text",
   "city" "text",
   "avatar_url" "text",
-  "bio" "jsonb",
+  "bio" "text",
   "is_admin" BOOLEAN DEFAULT FALSE,
   "is_editor" BOOLEAN DEFAULT FALSE,
   "email" "text" NOT NULL,
-  "phone" "text"
+  "phone" "text",
+  "languages" "text" []
 );
 
 ALTER TABLE "public"."users" owner TO "postgres";
@@ -802,8 +807,7 @@ ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 ALTER TABLE ONLY "public"."users"
 ADD CONSTRAINT "users_username_key" UNIQUE ("username");
 
-CREATE OR REPLACE TRIGGER "create_username"
-AFTER insert ON "public"."users" FOR each ROW
+CREATE OR REPLACE TRIGGER "create_username" before insert ON "public"."users" FOR each ROW
 EXECUTE function "public"."set_username" ();
 
 CREATE OR REPLACE TRIGGER "set_assessment_skill" before insert ON "public"."user_assessments" FOR each ROW
@@ -992,7 +996,673 @@ ADD CONSTRAINT "user_lessons_user_id_fkey" FOREIGN key ("user_id") REFERENCES "p
 ALTER TABLE ONLY "public"."users"
 ADD CONSTRAINT "users_id_fkey" FOREIGN key ("id") REFERENCES "auth"."users" ("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
-CREATE POLICY "Admins, service roles, and users with is_admin can delete membe" ON "public"."memberships" FOR delete TO "authenticated" USING (
+CREATE POLICY "Admins and editors can delete assessments" ON "public"."assessments" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can delete courses" ON "public"."courses" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can delete evaluations" ON "public"."evaluations" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can delete lessons" ON "public"."lessons" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can delete question_options" ON "public"."question_options" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can delete questions" ON "public"."questions" FOR delete TO "authenticated" USING (
+  (
+    (
+      SELECT
+        "users"."is_admin"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    ) OR
+    (
+      SELECT
+        "users"."is_editor"
+      FROM
+        "public"."users"
+      WHERE
+        ("users"."id" = "auth"."uid" ())
+    )
+  )
+);
+
+CREATE POLICY "Admins and editors can insert assessments" ON "public"."assessments" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can insert courses" ON "public"."courses" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can insert evaluations" ON "public"."evaluations" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can insert lessons" ON "public"."lessons" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can insert question_options" ON "public"."question_options" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can insert questions" ON "public"."questions" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can select assessments" ON "public"."assessments" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can select evaluations" ON "public"."evaluations" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can select lessons" ON "public"."lessons" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can select question_options" ON "public"."question_options" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can select questions" ON "public"."questions" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update assessments" ON "public"."assessments"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update courses" ON "public"."courses"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update evaluations" ON "public"."evaluations"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update lessons" ON "public"."lessons"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update question_options" ON "public"."question_options"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can update questions" ON "public"."questions"
+FOR UPDATE
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  )
+WITH
+  CHECK (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and editors can view courses" ON "public"."courses" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      (
+        SELECT
+          "users"."is_admin"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      ) OR
+      (
+        SELECT
+          "users"."is_editor"
+        FROM
+          "public"."users"
+        WHERE
+          ("users"."id" = "auth"."uid" ())
+      )
+    )
+  );
+
+CREATE POLICY "Admins and service roles can delete memberships" ON "public"."memberships" TO "authenticated" USING (
   (
     (
       SELECT
@@ -1017,7 +1687,7 @@ CREATE POLICY "Admins, service roles, and users with is_admin can delete membe" 
   )
 );
 
-CREATE POLICY "Admins, service roles, and users with is_admin can insert membe" ON "public"."memberships" FOR insert TO "authenticated"
+CREATE POLICY "Admins and service roles can insert memberships" ON "public"."memberships" TO "authenticated"
 WITH
   CHECK (
     (
@@ -1044,36 +1714,7 @@ WITH
     )
   );
 
-CREATE POLICY "Admins, service roles, and users with is_admin can select membe" ON "public"."memberships" FOR
-SELECT
-  TO "authenticated" USING (
-    (
-      (
-        SELECT
-          "users"."is_admin"
-        FROM
-          "public"."users"
-        WHERE
-          ("users"."id" = "auth"."uid" ())
-      ) OR
-      (
-        SELECT
-          "users"."is_admin"
-        FROM
-          "public"."users"
-        WHERE
-          ("users"."id" = "auth"."uid" ())
-      ) OR
-      (
-        SELECT
-          ("auth"."role" () = 'service_role'::"text")
-      )
-    )
-  );
-
-CREATE POLICY "Admins, service roles, and users with is_admin can update membe" ON "public"."memberships"
-FOR UPDATE
-  TO "authenticated"
+CREATE POLICY "Admins and service roles can update memberships" ON "public"."memberships" TO "authenticated"
 WITH
   CHECK (
     (
@@ -1104,11 +1745,36 @@ CREATE POLICY "Anyone can read public users" ON "public"."users" FOR
 SELECT
   TO "anon" USING (TRUE);
 
+CREATE POLICY "Authenticated users can select memberships" ON "public"."memberships" FOR
+SELECT
+  TO "authenticated" USING (TRUE);
+
+CREATE POLICY "Authenticated users can view all organizations" ON "public"."organizations" FOR
+SELECT
+  TO "authenticated" USING (TRUE);
+
+CREATE POLICY "Authenticated users can view all users" ON "public"."users" FOR
+SELECT
+  TO "authenticated" USING (TRUE);
+
+CREATE POLICY "Authenticated users can view courses with published locales" ON "public"."courses" FOR
+SELECT
+  TO "authenticated" USING (
+    (
+      ("published_locales" IS NOT NULL) AND
+      ("array_length" ("published_locales", 1) > 0)
+    )
+  );
+
 CREATE POLICY "Service roles can delete users" ON "public"."users" FOR delete TO "service_role" USING (TRUE);
 
 CREATE POLICY "Service roles can insert users" ON "public"."users" FOR insert TO "service_role"
 WITH
   CHECK (TRUE);
+
+CREATE POLICY "Service roles can select users" ON "public"."users" FOR
+SELECT
+  TO "service_role" USING (TRUE);
 
 CREATE POLICY "Service roles can update users" ON "public"."users"
 FOR UPDATE
@@ -1175,10 +1841,6 @@ WITH
       )
     )
   );
-
-CREATE POLICY "Users can see their own memberships" ON "public"."memberships" FOR
-SELECT
-  TO "authenticated" USING (("user_id" = "auth"."uid" ()));
 
 CREATE POLICY "Users can update their own lessons" ON "public"."user_lessons"
 FOR UPDATE
@@ -1284,6 +1946,10 @@ SELECT
       )
     )
   );
+
+CREATE POLICY "Users can view their own records" ON "public"."users" FOR
+SELECT
+  TO "authenticated" USING (("id" = "auth"."uid" ()));
 
 CREATE POLICY "Users, admins and representative can update a public record" ON "public"."users"
 FOR UPDATE

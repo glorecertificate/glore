@@ -1,6 +1,7 @@
+import { type IconProps } from '@/components/ui/icons/types'
 import { cn } from '@/lib/utils'
 
-export const Logo = ({ className, height, width, ...props }: React.SVGProps<SVGSVGElement>) => {
+export const Logo = ({ className, height, width, ...props }: IconProps) => {
   const inlineHeight = height ?? (width ? Number(width) * (372 / 1176) : 372)
   const inlineWidth = width ?? (height ? Number(height) * (1176 / 372) : 1176)
 
@@ -30,3 +31,4 @@ export const Logo = ({ className, height, width, ...props }: React.SVGProps<SVGS
     </svg>
   )
 }
+export const LogoIcon = Logo

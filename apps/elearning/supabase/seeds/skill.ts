@@ -1,13 +1,13 @@
 import { type SeedClient } from '@snaplet/seed'
 import { type User } from '@supabase/supabase-js'
 
-import { handleize, pickRandom, pickRandomRange, random } from '@repo/utils'
+import { handleize, randomItem, randomRange } from '@repo/utils'
 
 import { LOCALES } from '@/lib/i18n/utils'
 import { dynamicSeeds, placeholderImageUrl } from 'supabase/.snaplet/data.json'
 import { type Enums } from 'supabase/types'
 
-const randomLocales = () => pickRandomRange(LOCALES, random(0, LOCALES.length))
+const randomLocales = () => randomRange(LOCALES)
 
 export const seedSkills = async (seed: SeedClient, skillAreas = dynamicSeeds.skill_areas, users: User[]) =>
   await seed.skill_areas(
@@ -22,7 +22,7 @@ export const seedSkills = async (seed: SeedClient, skillAreas = dynamicSeeds.ski
           courses: [
             {
               ...course,
-              creator_id: pickRandom(users).id ?? null,
+              creator_id: randomItem(users).id ?? null,
               slug: handleize(skill.name.en),
               title: skill.name,
               description: skill.description,

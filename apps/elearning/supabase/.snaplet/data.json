@@ -1,6 +1,7 @@
 {
   "emailDomain": "glore.net",
   "placeholderImageUrl": "https://picsum.photos/600/400",
+  "placeholderAvatarUrl": "https://i.pravatar.cc/300",
   "staticSeeds": {
     "users": ["admin", "editor", "coordinator", "representative", "tutor", "volunteer", "learner"],
     "regions": [
@@ -10,6 +11,7 @@
           "es": "Italia",
           "it": "Italia"
         },
+        "emoji": "🇮🇹",
         "organizations": [
           {
             "name": "Joint",

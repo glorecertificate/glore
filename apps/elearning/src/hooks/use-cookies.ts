@@ -22,6 +22,8 @@ export const useCookies = () => {
   )
 
   const readCookie = useCallback((cookie: Cookie | `${Cookie}`) => {
+    if (typeof window === 'undefined') return undefined
+
     const name = `${cookie}=`
     const decodedCookie = decodeURIComponent(document.cookie)
     const cookieArray = decodedCookie.split(';')

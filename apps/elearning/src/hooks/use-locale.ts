@@ -1,14 +1,14 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { useLocale as useNextIntlLocale } from 'next-intl'
+import { useLocale as useNextIntlLocale, type Locale } from 'next-intl'
 
 import { type Json } from '@repo/utils'
 
+import { useTranslations } from '@/hooks/use-translations'
 import { setLocale } from '@/lib/i18n/server'
-import { type Locale } from '@/lib/i18n/types'
-import { localizeJson } from '@/lib/i18n/utils'
+import { localeItems, localizeJson } from '@/lib/i18n/utils'
 
 /**
  * Extends the hook from `next-intl` to support localization of JSON values.
@@ -17,13 +17,24 @@ import { localizeJson } from '@/lib/i18n/utils'
  */
 export const useLocale = () => {
   const nextLocale = useNextIntlLocale()
+  const t = useTranslations('Languages')
 
   const localize = useCallback(
     (value: Json, locale?: Locale): string => localizeJson(value, locale ?? nextLocale),
     [nextLocale],
   )
 
-  return { locale: nextLocale, localize, setLocale } as {
+  const items = useMemo(
+    () =>
+      localeItems.map(item => ({
+        ...item,
+        label: t.flat(item.value),
+      })),
+    [t],
+  )
+
+  return { items, locale: nextLocale, localize, setLocale } as {
+    items: typeof items
     locale: Locale
     localize: (value: Json) => string
     setLocale: (locale: Locale) => Promise<void>

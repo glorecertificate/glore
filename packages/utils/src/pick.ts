@@ -1,5 +1,9 @@
 import { type AnyRecord } from '@/types'
 
+/**
+ * Picks specific keys from an array of objects.
+ * Returns an array of objects with only the specified keys.
+ */
 export const pick = <T extends AnyRecord, K extends keyof T>(records: T[], ...keys: K[]): Array<Pick<T, K>> =>
   records.map(record =>
     keys.reduce(

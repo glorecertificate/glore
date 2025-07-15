@@ -82,7 +82,7 @@ export const Confetti = forwardRef<ConfettiContext | null, ConfettiProps>((props
   )
 })
 
-export interface ConfettiButtonProps extends ButtonProps {
+export interface ConfettiButtonProps extends Omit<ButtonProps, 'effect'> {
   children?: React.ReactNode
   options?: Options &
     GlobalOptions & {

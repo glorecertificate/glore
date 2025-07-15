@@ -2,19 +2,15 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
+import { type Locale } from 'next-intl'
+
 import { Loader } from '@/components/ui/icons/loader'
 import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerProps } from '@/components/ui/select'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Locale } from '@/lib/i18n/types'
+import { localeItems } from '@/lib/i18n/utils'
 import { cn } from '@/lib/utils'
 import config from 'config/app.json'
-
-const languages = Object.entries(config.locales).map(([value, { flag, name }]) => ({
-  label: name,
-  value,
-  icon: flag,
-}))
 
 export const LanguageSelect = ({
   controlled = false,
@@ -32,7 +28,7 @@ export const LanguageSelect = ({
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
-  const items = useMemo(() => languages.filter(item => values.includes(item.value as Locale)), [values])
+  const items = useMemo(() => localeItems.filter(item => values.includes(item.value as Locale)), [values])
 
   const activeItem = useMemo(
     () =>

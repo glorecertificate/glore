@@ -18,7 +18,7 @@ export const CourseView = ({ course, type }: { course?: Course; type?: 'editor' 
 
   const { setShadow } = useHeader(
     <BreadcrumbList className="sm:gap-1">
-      <BreadcrumbLink href={Route.Courses} title={t('coursesAll')}>
+      <BreadcrumbLink href={Route.Courses} title={t('all')}>
         {t('title')}
       </BreadcrumbLink>
       <BreadcrumbSeparator />

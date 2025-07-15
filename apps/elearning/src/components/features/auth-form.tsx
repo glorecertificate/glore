@@ -60,10 +60,10 @@ export const AuthForm = <T extends FieldValues>({
             <div className="grid gap-4">{children}</div>
             <Button
               className="w-full [&_svg]:size-4"
-              color="secondary"
               disabled={submitDisabled}
               loading={loading}
               type="submit"
+              variant="secondary"
             >
               {buttonLabel}
             </Button>

@@ -5,8 +5,8 @@ import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-import { ReactScan } from '@/components/internal/react-scan'
-import { SupabaseWidget } from '@/components/internal/supabase-widget'
+import { ReactScan } from '@/components/dev/react-scan'
+import { SupabaseWidget } from '@/components/dev/supabase-widget'
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { PathnameProvider } from '@/components/providers/pathname-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
@@ -36,7 +36,7 @@ export default async ({ children }: React.PropsWithChildren) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <I18nProvider>
           <ThemeProvider>
             <PathnameProvider>

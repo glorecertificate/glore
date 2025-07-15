@@ -1,44 +1,50 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { type SlotProps } from '@radix-ui/react-slot'
 import { MoveIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { useLocalStorage } from '@/hooks/use-local-storage'
-import { LocalStorage } from '@/lib/storage'
+import { useCookies } from '@/hooks/use-cookies'
+import { type Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const DEFAULT_POSITION = { x: 100, y: 100 }
-
-export interface DevWidgetWidgetProps extends SlotProps {
+export interface LocalWidgetProps extends SlotProps {
   /** @default true */
   asChild?: boolean
+  /** Key for storing the widget position */
+  cookie?: Cookie
   /** @default { x: 100, y: 100 } */
   defaultPosition?: {
     x: number
     y: number
   }
-  storageKey?: LocalStorage | `${LocalStorage}`
 }
 
-export const DevWidget = ({ children, className, defaultPosition, storageKey, ...props }: DevWidgetWidgetProps) => {
+export const LocalWidget = ({
+  children,
+  className,
+  cookie,
+  defaultPosition = {
+    x: 100,
+    y: 100,
+  },
+  ...props
+}: LocalWidgetProps) => {
+  const { setCookie } = useCookies()
+
+  const [position, setPosition] = useState(defaultPosition)
   const [isDragging, setIsDragging] = useState(false)
+
   const ref = useRef<HTMLDivElement>(null)
   const dragStart = useRef({ x: 0, y: 0 })
   const isDraggingRef = useRef(false)
-  const [storedPosition, setStoredPosition] = useLocalStorage<{ x: number; y: number }>(storageKey, DEFAULT_POSITION)
-
-  const initialPosition = useMemo(() => defaultPosition ?? storedPosition, [defaultPosition, storedPosition])
-
-  const [position, setPosition] = useState(initialPosition)
 
   const onMouseUp = useCallback(() => {
     setIsDragging(false)
     isDraggingRef.current = false
-    if (storageKey) setStoredPosition(position)
-  }, [position, storageKey, setStoredPosition])
+  }, [])
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -111,13 +117,10 @@ export const DevWidget = ({ children, className, defaultPosition, storageKey, ..
   }, [isDragging, onMouseMove, onMouseUp, onTouchMove, onTouchEnd])
 
   useEffect(() => {
-    const savedPosition = localStorage.getItem(LocalStorage.SupabaseWidgetPosition)
-    if (savedPosition) setPosition(JSON.parse(savedPosition) as { x: number; y: number })
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem(LocalStorage.SupabaseWidgetPosition, JSON.stringify(position))
-  }, [position])
+    if (cookie) {
+      setCookie(cookie, JSON.stringify(position))
+    }
+  }, [cookie, position, setCookie])
 
   return (
     <div
@@ -141,6 +144,7 @@ export const DevWidget = ({ children, className, defaultPosition, storageKey, ..
           )}
           onMouseDown={onMouseDown}
           onTouchStart={onTouchStart}
+          variant="transparent"
         >
           <MoveIcon size={16} />
         </Button>

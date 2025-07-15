@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect, useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import {
   AwardIcon,
@@ -21,8 +21,7 @@ import {
 
 import { titleize } from '@repo/utils'
 
-import { type UserOrganization } from '@/api/modules/organizations/types'
-import { type User } from '@/api/modules/users/types'
+import { type User, type UserOrganization } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -352,15 +351,6 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
-  const initials = useMemo(
-    () =>
-      `${user.firstName} ${user.lastName}`
-        .split(' ')
-        .map(name => name[0])
-        .join('') || '',
-    [user],
-  )
-
   const onLinkClick = useCallback(() => {
     if (openMobile) {
       setOpenMobile(false)
@@ -380,7 +370,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'rounded-lg py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground',
+                'rounded-lg bg-background/80 py-7 hover:bg-background/20 data-[state=open]:bg-background/20 data-[state=open]:text-sidebar-accent-foreground',
                 open ? 'overflow-hidden' : 'overflow-visible',
               )}
               size="lg"
@@ -394,7 +384,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                   )}
                 >
                   <AvatarImage src={user.avatarUrl!} />
-                  <AvatarFallback className="text-muted-foreground">{initials}</AvatarFallback>
+                  <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                 </Avatar>
                 {organization?.avatarUrl && (
                   <Image
@@ -505,10 +495,7 @@ export const AppSidebar = ({
 
   const setCurrentOrg = useCallback(
     (org: UserOrganization) => {
-      setUser(prev => ({
-        ...prev,
-        current_org: org,
-      }))
+      setUser(prev => ({ ...prev, current_org: org }))
     },
     [setUser],
   )
@@ -524,7 +511,7 @@ export const AppSidebar = ({
       <SidebarFooter>
         <SidebarUser organization={organization} user={user} />
       </SidebarFooter>
-      <SidebarRail />
+      <SidebarRail tabIndex={-1} />
     </Sidebar>
   )
 }

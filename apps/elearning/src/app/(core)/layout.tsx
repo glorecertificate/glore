@@ -17,6 +17,9 @@ export default async ({ children }: React.PropsWithChildren) => {
   const { get } = await cookies()
   const api = await getApi()
 
+  const session = await api.auth.getSession()
+  if (!session.user) redirect(Route.Login)
+
   const user = await api.users.getCurrent()
   if (!user) redirect(Route.Login)
 

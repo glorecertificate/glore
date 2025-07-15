@@ -1,14 +1,12 @@
-import type { AnyRecord } from '@/types'
+import { type AnyRecord } from '@/types'
 
 /**
  * Deep merges a target object with one or more source objects.
  */
 export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P => {
   if (!sources.length) return target
-
   for (const [key, value] of Object.entries(sources.shift() ?? [])) {
     if (!value) continue
-
     if (!target[key]) {
       Object.assign(target, { [key]: {} })
       continue
@@ -25,10 +23,8 @@ export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P =>
       })
       continue
     }
-
     Object.assign(target, { [key]: value })
   }
-
   return target
 }
 

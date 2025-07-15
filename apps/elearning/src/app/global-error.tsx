@@ -3,13 +3,14 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { type Locale } from 'next-intl'
+
 import { hasHistory } from '@repo/utils'
 
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
 import { useCookies } from '@/hooks/use-cookies'
-import { type Locale } from '@/lib/i18n/types'
 import { LOCALES, localizeJson } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
 import config from 'config/app.json'

@@ -16,7 +16,7 @@ export interface ImageActionsProps {
   onCopyLink?: () => void
 }
 
-export interface ActionButtonProps extends ButtonProps {
+export interface ActionButtonProps extends Omit<ButtonProps, 'icon'> {
   icon: React.ReactNode
   tooltip: string
 }

@@ -527,17 +527,17 @@ export const sidebarMenuButton = cva(
       size: 'base',
     },
     variants: {
-      size: {
-        base: 'py-2 text-sm',
-        sm: 'py-1 text-xs',
-        lg: 'py-3 text-sm group-data-[collapsible=icon]:p-0!',
-      },
       variant: {
         default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
         outline: `
           shadow-[0_0_0_1px_hsl(var(--sidebar-border))]
           hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]
         `,
+      },
+      size: {
+        base: 'py-2 text-sm',
+        sm: 'py-1 text-xs',
+        lg: 'py-3 text-sm group-data-[collapsible=icon]:p-0!',
       },
     },
   },
@@ -554,10 +554,10 @@ export const SidebarMenuAction = ({
   clickable?: boolean
   showOnHover?: boolean
 }) => {
-  const Comp = asChild ? Slot : 'button'
+  const Component = useMemo(() => (asChild ? Slot : 'button'), [asChild])
 
   return (
-    <Comp
+    <Component
       className={cn(
         `
           absolute top-2 right-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground ring-sidebar-ring outline-hidden

@@ -10,14 +10,14 @@ import { Env } from '@/lib/env'
 import type { Database } from 'supabase/types'
 
 export const getDatabase = async (callback = noop) => {
-  const cookieStore = await cookies()
+  const { getAll, set } = await cookies()
 
   return createServerClient<Database>(Env.SUPABASE_URL, Env.SUPABASE_ANON_KEY, {
     cookies: {
-      getAll: () => cookieStore.getAll(),
+      getAll,
       setAll: cookies => {
         for (const { name, options, value } of cookies) {
-          cookieStore.set(name, value, options)
+          set(name, value, options)
         }
         callback()
       },

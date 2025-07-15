@@ -39,7 +39,7 @@ const LoginFormFooter = () => {
         {t.rich('Auth.signupMessage', {
           link: content => (
             <DialogTrigger asChild>
-              <Button className="font-medium text-muted-foreground" variant="link">
+              <Button className="font-medium text-muted-foreground" effect="hoverUnderline" size="text" variant="link">
                 {content}
               </Button>
             </DialogTrigger>
@@ -50,7 +50,7 @@ const LoginFormFooter = () => {
         <DialogHeader>
           <DialogTitle className="mb-2 flex items-center gap-2 font-medium">
             {t('Auth.signupDialogTitle')}
-            <Image src={asset('assets/logo.png')} width={24} />
+            <Image height={18} priority src={asset('assets/logo.png')} />
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-4">
@@ -188,9 +188,15 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
           <FormItem>
             <div className="flex items-center justify-between">
               <FormLabel>{t('passwordLabel')}</FormLabel>
-              <Link className="text-sm text-muted-foreground hover:text-foreground" href={Route.PasswordReset}>
-                {t('forgotPassword')}
-              </Link>
+              <Button
+                asChild
+                className="text-[13px] font-medium text-muted-foreground"
+                effect="hoverUnderline"
+                size="text"
+                variant="link"
+              >
+                <Link href={Route.PasswordReset}>{t('forgotPassword')}</Link>
+              </Button>
             </div>
             <FormControl>
               <PasswordInput {...field} />

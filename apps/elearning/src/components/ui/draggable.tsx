@@ -39,7 +39,7 @@ export const Draggable = ({
   const initialPosition = useMemo(() => {
     if (defaultPosition) return defaultPosition
     if (storageKey) {
-      const savedPosition = localStorage.getItem(storageKey)
+      const savedPosition = localStorage.getItem(storageKey as string)
       if (savedPosition) return JSON.parse(savedPosition) as { x: number; y: number }
     }
     return { x: 100, y: 100 }
@@ -50,7 +50,7 @@ export const Draggable = ({
   const onMouseUp = useCallback(() => {
     setIsDragging(false)
     isDraggingRef.current = false
-    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(position))
+    if (storageKey) localStorage.setItem(storageKey as string, JSON.stringify(position))
     if (onRelease && ref.current) onRelease(position)
   }, [onRelease, position, storageKey])
 

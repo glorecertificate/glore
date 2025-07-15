@@ -1,9 +1,11 @@
 import { type Metadata, type ResolvingMetadata } from 'next'
 
+import { type Locale } from 'next-intl'
+
 import { type AnyRecord } from '@repo/utils'
 
 import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
-import { type Locale, type MessageKey } from '@/lib/i18n/types'
+import { type MessageKey } from '@/lib/i18n/types'
 import { LOCALES } from '@/lib/i18n/utils'
 import { type PageProps, type Route } from '@/lib/navigation'
 import { asset, Asset, Public } from '@/lib/storage'

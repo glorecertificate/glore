@@ -3,8 +3,7 @@
 import { useContext, useState } from 'react'
 
 import { type Course } from '@/api/modules/courses/types'
-import { type UserOrganization } from '@/api/modules/organizations/types'
-import { type CurrentUser } from '@/api/modules/users/types'
+import { type CurrentUser, type UserOrganization } from '@/api/modules/users/types'
 import { SessionContext } from '@/components/providers/session-provider'
 
 /**

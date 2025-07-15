@@ -44,8 +44,9 @@ export enum AuthPage {
 
 export const ExternalRoute = {
   App: metadata.url,
-  Website: metadata.website,
+  GoogleMaps: 'https://google.com/maps',
   SupabaseStudio: Env.SUPABASE_STUDIO_URL,
+  Website: metadata.website,
 }
 
 /**
@@ -83,4 +84,12 @@ export const externalRoute = (
   const pathPath = options.path ? `/${options.path}` : ''
   const searchParams = options.params ? `?${options.params.toString()}` : ''
   return `${url}${pathPath}${searchParams}` as HTTPUrl
+}
+
+/**
+ * Generates a Google Maps URL for a given query.
+ */
+export const googleMapsUrl = (query: string) => {
+  const searchQuery = query.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
+  return `${ExternalRoute.GoogleMaps}/search/${searchQuery}` as `http${string}`
 }

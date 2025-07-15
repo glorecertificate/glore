@@ -1,10 +1,16 @@
+import { type Locale } from 'next-intl'
+
 import { type Json } from '@repo/utils'
 
 import config from 'config/app.json'
 
-import { type Locale } from './types'
-
 export const LOCALES = Object.keys(config.locales) as Locale[]
+
+export const localeItems = Object.entries(config.locales).map(([value, { flag, name }]) => ({
+  label: name,
+  value,
+  icon: flag,
+}))
 
 /**
  * Localizes a JSON object based on the provided locale.
@@ -33,3 +39,12 @@ export const localizeDate = (
     day: 'numeric',
   })
 }
+
+/**
+ * Localizes an array of items based on the provided locale.
+ */
+export const localizeItems = (locale: Locale, items = localeItems) =>
+  items.map(item => ({
+    ...item,
+    label: localizeJson(item.label, locale),
+  }))

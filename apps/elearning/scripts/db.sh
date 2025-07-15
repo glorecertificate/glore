@@ -20,20 +20,21 @@ SUPABASE_PROJECT_ID=$(echo "$SUPABASE_DB_URL" | sed -E 's|.*@db\.([^.]+)\.supaba
 SUPABASE_DB_PASSWORD=$(echo "$SUPABASE_DB_URL" | sed -E 's|postgresql://postgres:(.*)@db\..*|\1|')
 
 CMDS="
-  dump <migration>     Generate a migration file from local schema changes
-  migrate              Apply pending migrations to the database
-  prepare              Prepare the local database for development
-  pull <migrations>    Pull schema changes from the remote database into a migration file
-  push                 Push local migrations to the remote database
-  reset                Reset local database and run seeds
-  revert <n>           Resets applied migrations up to the last n versions (default: 1)
-  seed                 Run database seed scripts
-  start                Start the Supabase local development environment
-  status               Show the status of the local Supabase environment
-  stop                 Stop the Supabase local development environment
-  sync                 Sync types, schema and seeds files
-  typegen              Generate TypeScript types from database schema
-  help, -h, --help     Show this help message"
+  dump <file> [--dry-run]   Generate a migration file from local schema changes
+  migrate                   Apply pending migrations to the database
+  prepare                   Prepare the local database for development
+  pull <file>               Pull schema changes from the remote database into a migration file
+  push                      Push local migrations to the remote database
+  reset                     Reset local database and run seeds
+  restart                   Restart the Supabase local development environment
+  revert <n>                Resets applied migrations up to the last n versions (default: 1)
+  seed                      Run database seed scripts
+  start                     Start the Supabase local development environment
+  status                    Show the status of the local Supabase environment
+  stop                      Stop the Supabase local development environment
+  sync                      Sync types, schema and seeds files
+  typegen                   Generate TypeScript types from database schema
+  help, -h, --help          Show this help message"
 
 cmd=$1
 
@@ -56,11 +57,12 @@ is_ci() {
 init_db() {
   supabase login --token "$SUPABASE_ACCESS_TOKEN" >/dev/null
   supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD" >/dev/null 2>&1
-  sync_types
   if ! is_ci; then
+    echo "Starting database..."
     snaplet-seed init supabase >/dev/null 2>&1 && echo "Finished seed generation."
     supabase start >/dev/null 2>&1 && echo "Finished database start."
   fi
+  sync_types
 }
 
 sync_schema() {
@@ -95,7 +97,11 @@ run_seeds() {
 }
 
 dump_db() {
-  ! supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA --file "$1" && return 1
+  if [ "$1" = --dry-run ]; then
+    supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA
+    return $?
+  fi
+  supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA --file "$1"
   format_sql $MIGRATIONS_PATH/*_"$1".sql
   sync_types
   sync_seeds
@@ -146,6 +152,10 @@ case $cmd in
     ;;
   reset)
     reset_db
+    ;;
+  restart)
+    supabase stop
+    init_db
     ;;
   revert)
     last=1

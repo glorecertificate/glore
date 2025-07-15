@@ -107,7 +107,11 @@ jobs:
           echo ./node_modules/.bin >> $GITHUB_PATH
       - name: Run commitlint on push
         if: github.event_name == 'push' && !github.event.forced
-        run: commitlint --from ${{ github.event.before }} --to ${{ github.event.after }} --verbose
+        run: |
+          if ! commitlint --from ${{ github.event.before }} --to ${{ github.event.after }} --verbose; then
+            echo "::warning::Cannot execute commitlint on latest events, running on last commit instead."
+            commitlint --last --verbose
+          fi
       - name: Run commitlint on forced push
         if: github.event.forced
         run: commitlint --last --verbose

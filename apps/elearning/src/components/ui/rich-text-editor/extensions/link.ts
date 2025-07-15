@@ -1,7 +1,15 @@
 import TiptapLink from '@tiptap/extension-link'
 import { Plugin, TextSelection } from '@tiptap/pm/state'
 import type { EditorView } from '@tiptap/pm/view'
-import { getMarkRange, mergeAttributes } from '@tiptap/react'
+import { getMarkRange, mergeAttributes, type Editor } from '@tiptap/react'
+
+interface ExtensionContext {
+  parent?: () => Plugin[] | Record<string, unknown>
+  options: {
+    HTMLAttributes: Record<string, string>
+  }
+  editor: Editor
+}
 
 export const Link = TiptapLink.extend({
   /*
@@ -20,13 +28,16 @@ export const Link = TiptapLink.extend({
     },
   ],
 
-  renderHTML({ HTMLAttributes }) {
-    return ['a', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+  renderHTML({ HTMLAttributes }: { HTMLAttributes: Record<string, string> }) {
+    const context = this as unknown as ExtensionContext
+    return ['a', mergeAttributes(context.options.HTMLAttributes, HTMLAttributes), 0]
   },
 
-  addOptions() {
+  addOptions(): Record<string, unknown> {
+    const context = this as unknown as ExtensionContext
+    const parentOptions = context.parent?.() ?? {}
     return {
-      ...this.parent?.(),
+      ...parentOptions,
       openOnClick: false,
       HTMLAttributes: {
         class: 'link',
@@ -34,11 +45,14 @@ export const Link = TiptapLink.extend({
     }
   },
 
-  addProseMirrorPlugins() {
-    const { editor } = this
+  addProseMirrorPlugins(): Plugin[] {
+    const context = this as unknown as ExtensionContext
+    const { editor } = context
+    const parentResult = context.parent?.()
+    const parentPlugins = Array.isArray(parentResult) ? parentResult : []
 
     return [
-      ...(this.parent?.() || []),
+      ...parentPlugins,
       new Plugin({
         props: {
           handleKeyDown: (_: EditorView, event: KeyboardEvent) => {

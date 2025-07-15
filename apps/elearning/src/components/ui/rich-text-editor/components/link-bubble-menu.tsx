@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 
-import { BubbleMenu, type Editor } from '@tiptap/react'
+import { type Editor } from '@tiptap/react'
+import { BubbleMenu } from '@tiptap/react/menus'
 
 import { LinkEditBlock } from '@/components/ui/rich-text-editor/components/link-edit-block'
 import { LinkPopoverBlock } from '@/components/ui/rich-text-editor/components/link-popover-block'
@@ -89,11 +90,11 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
   return (
     <BubbleMenu
       editor={editor}
-      shouldShow={shouldShow}
-      tippyOptions={{
+      options={{
         placement: 'bottom-start',
-        onHidden: () => setShowEdit(false),
+        onHide: () => setShowEdit(false),
       }}
+      shouldShow={shouldShow}
     >
       {showEdit ? (
         <LinkEditBlock

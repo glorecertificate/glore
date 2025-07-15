@@ -540,7 +540,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
         rules: {
           ...plugins.react!.configs['jsx-runtime'].rules,
           ...plugins['react-hooks']!.configs.recommended.rules,
-          ...(hasNextJs
+          ...(hasNextJs && plugins['@next/next']
             ? {
                 ...plugins['@next/next'].configs.recommended.rules,
                 ...plugins['@next/next'].configs['core-web-vitals'].rules,

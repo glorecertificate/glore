@@ -146,7 +146,7 @@ export const Image = TiptapImage.extend<CustomImageOptions>({
 
   addOptions() {
     return {
-      ...this.parent?.(),
+      ...(this.parent?.() as ImageOptions),
       allowedMimeTypes: [],
       maxFileSize: 0,
       uploadFn: undefined,

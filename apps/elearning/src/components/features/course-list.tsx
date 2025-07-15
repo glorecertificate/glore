@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { CaretSortIcon } from '@radix-ui/react-icons'
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, XIcon } from 'lucide-react'
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { hasHistory } from '@repo/utils'
 
@@ -158,7 +158,7 @@ export const CourseList = ({
   defaultTab?: CourseTab
 }) => {
   const { setCookie } = useCookies()
-  const { items, localize } = useLocale()
+  const { localeItems, localize } = useLocale()
   const { courses: allCourses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
@@ -328,7 +328,7 @@ export const CourseList = ({
                   message: t('selectAtLeastOneLanguage'),
                 }}
                 onChange={setLocales as (selected: string[]) => void}
-                options={items}
+                options={localeItems}
                 placeholder={t('selectLanguages')}
                 search={false}
                 value={locales}

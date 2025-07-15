@@ -1,6 +1,6 @@
 import { type Metadata, type ResolvingMetadata } from 'next'
 
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { type AnyRecord } from '@repo/utils'
 

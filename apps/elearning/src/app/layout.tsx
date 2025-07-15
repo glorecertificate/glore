@@ -13,7 +13,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { Env } from '@/lib/env'
-import { getLocale, getTranslations } from '@/lib/i18n/server'
+import { getLocale, getMessages, getTranslations } from '@/lib/i18n/server'
 import { generatePageMetadata } from '@/lib/metadata'
 import { asset, Asset } from '@/lib/storage'
 import meta from 'config/metadata.json'
@@ -24,7 +24,8 @@ export const generateMetadata = generatePageMetadata({
 
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
-  const t = await getTranslations()
+  const messages = await getMessages(locale)
+  const t = await getTranslations({ locale, messages })
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -37,7 +38,7 @@ export default async ({ children }: React.PropsWithChildren) => {
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <I18nProvider>
+        <I18nProvider locale={locale} messages={messages}>
           <ThemeProvider>
             <PathnameProvider>
               <ProgressBarProvider>

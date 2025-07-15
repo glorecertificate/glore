@@ -2,21 +2,21 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { useLocale as useNextIntlLocale, type Locale } from 'next-intl'
+import { useLocale as useIntl, type Locale } from 'use-intl'
 
 import { type Json } from '@repo/utils'
 
 import { useTranslations } from '@/hooks/use-translations'
 import { setLocale } from '@/lib/i18n/server'
-import { localeItems, localizeJson } from '@/lib/i18n/utils'
+import { localeItems as items, localizeJson } from '@/lib/i18n/utils'
 
 /**
- * Extends the hook from `next-intl` to support localization of JSON values.
+ * Extends the hook from `use-intl` to support localization of JSON values.
  * It provides a `localize` function that takes a JSON value and an optional locale,
  * returning a localized string representation of the value.
  */
 export const useLocale = () => {
-  const nextLocale = useNextIntlLocale()
+  const nextLocale = useIntl()
   const t = useTranslations('Languages')
 
   const localize = useCallback(
@@ -24,19 +24,19 @@ export const useLocale = () => {
     [nextLocale],
   )
 
-  const items = useMemo(
+  const localeItems = useMemo(
     () =>
-      localeItems.map(item => ({
+      items.map(item => ({
         ...item,
-        label: t.flat(item.value),
+        label: t(item.value),
       })),
     [t],
   )
 
-  return { items, locale: nextLocale, localize, setLocale } as {
-    items: typeof items
+  return { locale: nextLocale, setLocale, localize, localeItems } as {
     locale: Locale
-    localize: (value: Json) => string
     setLocale: (locale: Locale) => Promise<void>
+    localize: (value: Json) => string
+    localeItems: typeof localeItems
   }
 }

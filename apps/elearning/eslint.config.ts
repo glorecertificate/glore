@@ -22,7 +22,7 @@ export default eslintConfig(
           '!src/hooks/**',
           '!src/lib/**',
         ],
-        group: ['next/navigation', 'next-intl', 'next-intl/*'],
+        group: ['next/navigation', 'use-intl'],
         importNames: ['usePathname', 'useLocale', 'useTranslations'],
         message: 'Import the internal hook instead.',
       },

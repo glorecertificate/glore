@@ -1,4 +1,4 @@
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { type Skill } from '@/api/modules/courses/types'
 import { type Organization } from '@/api/modules/organizations/types'

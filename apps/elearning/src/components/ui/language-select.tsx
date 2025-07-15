@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { Loader } from '@/components/ui/icons/loader'
 import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerProps } from '@/components/ui/select'
@@ -28,7 +28,7 @@ export const LanguageSelect = ({
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
-  const items = useMemo(() => localeItems.filter(item => values.includes(item.value as Locale)), [values])
+  const items = useMemo(() => localeItems.filter(item => values.includes(item.value)), [values])
 
   const activeItem = useMemo(
     () =>

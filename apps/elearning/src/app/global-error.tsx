@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { hasHistory } from '@repo/utils'
 

@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 
 import { Avatar } from '@radix-ui/react-avatar'
 import { BookOpenIcon, LanguagesIcon, UserPenIcon } from 'lucide-react'
-import { type Locale } from 'next-intl'
 
 import { type Course } from '@/api/modules/courses/types'
 import { UserCard } from '@/components/features/user-card'
@@ -20,8 +19,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } fro
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type LocaleItem } from '@/lib/i18n/types'
-import { localeItems } from '@/lib/i18n/utils'
+import { type Locale, type LocaleItem } from '@/lib/i18n/types'
 import { dynamicRoute, Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -31,12 +29,13 @@ const CourseCardFlag = ({
   showTooltip,
   value,
 }: LocaleItem & {
+  active: boolean
   showTooltip?: boolean
 }) => {
   const { locale } = useLocale()
   const t = useTranslations()
 
-  const language = useMemo(() => t.flat(`Languages.${value}`), [t, value])
+  const language = useMemo(() => t(`Languages.${value}`), [t, value])
   const trigger = useMemo(
     () => <span className={cn('cursor-default leading-none text-shadow-2xs', !active && 'opacity-40')}>{icon}</span>,
     [icon, active],
@@ -68,7 +67,7 @@ export const CourseCard = ({
   course: Course
   showTooltips?: boolean
 }) => {
-  const { localize } = useLocale()
+  const { localeItems, localize } = useLocale()
   const { user } = useSession()
   const t = useTranslations()
 
@@ -77,15 +76,18 @@ export const CourseCard = ({
   const publishedLocales = useMemo(() => course.publishedLocales ?? [], [course.publishedLocales])
   const draftLocales = useMemo(() => course.draftLocales ?? [], [course.draftLocales])
 
-  const languages = useMemo<LocaleItem[]>(
+  const languages = useMemo(
     () =>
-      activeLocales.reduce((items, locale) => {
-        const item = localeItems.find(({ value }) => value === locale)!
-        if (publishedLocales.includes(locale)) return [...items, { ...item, active: true }]
-        if (draftLocales.includes(locale)) return [...items, { ...item, active: false }]
-        return items
-      }, [] as LocaleItem[]),
-    [activeLocales, publishedLocales, draftLocales],
+      activeLocales.reduce(
+        (items, locale) => {
+          const item = localeItems.find(({ value }) => value === locale)!
+          if (publishedLocales.includes(locale)) return [...items, { ...item, active: true }]
+          if (draftLocales.includes(locale)) return [...items, { ...item, active: false }]
+          return items
+        },
+        [] as Array<LocaleItem & { active: boolean }>,
+      ),
+    [activeLocales, localeItems, publishedLocales, draftLocales],
   )
 
   const creator = useMemo(() => {

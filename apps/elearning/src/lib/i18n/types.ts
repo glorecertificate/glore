@@ -1,16 +1,15 @@
-import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'next-intl'
+import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'use-intl'
 
-import { type localeItems } from '@/lib/i18n/utils'
 import { type locales } from 'config/app.json'
 import type messages from 'config/translations/en.json'
 
 import { type formats } from './config'
 
-type Locale = keyof typeof locales
+export type Locale = keyof typeof locales
 type Messages = typeof messages
 type Formats = typeof formats
 
-declare module 'next-intl' {
+declare module 'use-intl' {
   interface AppConfig {
     Locale: Locale
     Messages: Messages
@@ -25,9 +24,9 @@ export type Translator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Mes
   typeof createTranslator<Messages, NestedKey>
 > & {
   /**
-   * Flat translation function that allows passing a string key directly.
+   * Flat translation function that allows passing any string as a key.
    *
-   * **Use with caution**: this bypasses type safety and should be used only when necessary.
+   * **⚠️ Use with caution!** This method bypasses type safety and should be called only when using known dynamic keys.
    */
   flat: (key: string) => string
 }
@@ -40,6 +39,8 @@ export type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
 /**
  * Locale item used in the application.
  */
-export type LocaleItem = (typeof localeItems)[number] & {
-  active: boolean
+export interface LocaleItem {
+  label: string
+  value: Locale
+  icon: string
 }

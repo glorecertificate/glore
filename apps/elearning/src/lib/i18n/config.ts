@@ -1,4 +1,4 @@
-import { type Formats } from 'next-intl'
+import { type Formats } from 'use-intl'
 
 export const formats: Formats = {
   dateTime: {

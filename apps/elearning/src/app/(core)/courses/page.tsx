@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 
-import { type Locale } from 'next-intl'
+import { type Locale } from 'use-intl'
 
 import { CourseList, type CourseTab } from '@/components/features/course-list'
 import { generatePageMetadata } from '@/lib/metadata'

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { LanguagesIcon, MailIcon, MapPin, ShieldUserIcon } from 'lucide-react'
-import { useFormatter } from 'next-intl'
+import { useFormatter } from 'use-intl'
 
 import { type User } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'

@@ -1,6 +1,14 @@
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
+'use client'
 
-export const I18nProvider = async ({ children }: React.PropsWithChildren) => (
-  <NextIntlClientProvider messages={await getMessages()}>{children}</NextIntlClientProvider>
-)
+import { type Locale } from 'use-intl'
+import { IntlProvider } from 'use-intl/react'
+
+import type translations from 'config/translations/en.json'
+
+export const I18nProvider = ({
+  children,
+  ...props
+}: React.PropsWithChildren<{
+  locale: Locale
+  messages: typeof translations
+}>) => <IntlProvider {...props}>{children}</IntlProvider>

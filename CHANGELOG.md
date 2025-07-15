@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.4.10](https://github.com/gabrielecanepa/glore/compare/v0.4.9...v0.4.10) (2025-07-15)
+
+
+### Features ✨
+
+* Add multi-language course filtering and improved UI components ([efe0edb](https://github.com/gabrielecanepa/glore/commit/efe0edb20076b0eedc26ea9adf55e9811951a78a))
+
+
+### CI 🤖
+
+* Add commitlint fallback on failure ([a0b40aa](https://github.com/gabrielecanepa/glore/commit/a0b40aa23d6f5c9329a89ce2d5aeeb4a70b0616f))
+
+
+### Build 📦
+
+* **deps:** Update pnpm and dependencies to latest versions ([5369192](https://github.com/gabrielecanepa/glore/commit/536919276276ed57058856e32dd91a79269eee34))
+
+
+### Docs 📑
+
+* Fix version number in changelog ([49f80db](https://github.com/gabrielecanepa/glore/commit/49f80db7b839c7b45cc39081fa879f981357f381))
+
+
+### Other
+
+* Replace next-intl with use-intl library ([8767627](https://github.com/gabrielecanepa/glore/commit/8767627dad4cdb644fd5bf7e0fe209c60d5967c6))
+
 ## [0.4.9](https://github.com/gabrielecanepa/glore/compare/v0.4.8...v0.4.9) (2025-07-11)
 
 

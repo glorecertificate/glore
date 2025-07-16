@@ -1,24 +1,15 @@
-import { cookies } from 'next/headers'
-
-import { LocalWidget } from '@/components/dev/local-widget'
+import { DevWidget } from '@/components/dev/dev-widget'
 import { Button } from '@/components/ui/button'
 import { SupabaseIcon } from '@/components/ui/icons/supabase'
 import { Link } from '@/components/ui/link'
 import { externalRoute } from '@/lib/navigation'
-import { Cookie } from '@/lib/storage'
+import { getCookie } from '@/lib/server'
 
 export const SupabaseWidget = async () => {
-  const { get } = await cookies()
-  const positionCookie = get(Cookie.SupabaseWidgetPosition)?.value
-  const position = positionCookie
-    ? (JSON.parse(positionCookie) as {
-        x: number
-        y: number
-      })
-    : undefined
+  const position = await getCookie('supabase-widget-position')
 
   return (
-    <LocalWidget cookie={Cookie.SupabaseWidgetPosition} defaultPosition={position}>
+    <DevWidget cookie="supabase-widget-position" defaultPosition={position}>
       <Button
         asChild
         className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border bg-background shadow-lg select-none hover:shadow-xl"
@@ -28,6 +19,6 @@ export const SupabaseWidget = async () => {
           <SupabaseIcon />
         </Link>
       </Button>
-    </LocalWidget>
+    </DevWidget>
   )
 }

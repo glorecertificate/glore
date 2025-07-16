@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { api } from '@/api/client'
+import { type User } from '@/api/modules/users/types'
 import { AuthForm } from '@/components/features/auth-form'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,8 +27,7 @@ import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useTranslations } from '@/hooks/use-translations'
-import { db } from '@/lib/db/client'
-import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
+import { PostgRESTCode, type DatabaseError } from '@/lib/db/utils'
 import { externalRoute, Route } from '@/lib/navigation'
 import { asset } from '@/lib/storage'
 
@@ -113,19 +114,12 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
     async (schema: z.infer<typeof formSchema>) => {
       setSubmitting(true)
 
-      let user
+      let user: User
       const username = schema.user.trim()
       const password = schema.password.trim()
 
       try {
-        const { data, error } = await db
-          .from('users')
-          .select('email, username')
-          .or(`email.eq.${username},username.eq.${username}`)
-          .single()
-        if (error) throw error
-        if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
-        user = data
+        user = await api.users.findByUsername(username)
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
@@ -135,11 +129,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       }
 
       try {
-        const { error } = await db.auth.signInWithPassword({
-          email: user.email || '',
-          password,
-        })
-        if (error) throw error
+        await api.auth.login({ ...user, password })
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError

@@ -170,7 +170,7 @@ export const buttonVariants = cva(
         `,
         hoverUnderline: `
           relative !no-underline
-          after:absolute after:bottom-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-current after:transition-transform
+          after:absolute after:bottom-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-current/80 after:transition-transform
           after:duration-200 after:ease-in-out
           hover:after:origin-bottom-left hover:after:scale-x-100
         `,

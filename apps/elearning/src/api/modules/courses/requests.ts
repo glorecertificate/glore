@@ -1,6 +1,6 @@
 import { serialize } from '@repo/utils'
 
-import { getSession } from '@/api/modules/auth/requests'
+import * as users from '@/api/modules/users/requests'
 import type { UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from '@/api/modules/users/types'
 import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
@@ -19,7 +19,7 @@ export const list = async (db: DatabaseClient): Promise<Course[]> => {
   return data.map(course => parseCourse(course))
 }
 
-export const get = async (db: DatabaseClient, slug: string): Promise<Course> => {
+export const find = async (db: DatabaseClient, slug: string): Promise<Course> => {
   const { data, error } = await db.from('courses').select(courseQuery).eq('slug', slug).single()
 
   if (error) throw error
@@ -29,12 +29,12 @@ export const get = async (db: DatabaseClient, slug: string): Promise<Course> => 
 }
 
 export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<UserCourse> => {
-  const session = await getSession(db)
+  const user = users.current()
   const locale = await getLocale()
 
   const { data, error } = await db
     .from('user_courses')
-    .insert({ user_id: session.user.id, course_id: courseId, locale })
+    .insert({ user_id: user.id, course_id: courseId, locale })
     .select()
 
   if (error) throw error
@@ -44,11 +44,11 @@ export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<
 }
 
 export const completeLesson = async (db: DatabaseClient, id: number): Promise<UserLesson> => {
-  const session = await getSession(db)
+  const user = users.current()
 
   const { data, error } = await db
     .from('user_lessons')
-    .upsert([{ user_id: session.user.id, lesson_id: id }])
+    .upsert([{ user_id: user.id, lesson_id: id }])
     .select('id')
 
   if (error) throw error
@@ -58,11 +58,11 @@ export const completeLesson = async (db: DatabaseClient, id: number): Promise<Us
 }
 
 export const submitAnswers = async (db: DatabaseClient, answers: Array<{ id: number }>): Promise<UserAnswer[]> => {
-  const session = await getSession(db)
+  const user = users.current()
 
   const { data, error } = await db
     .from('user_answers')
-    .insert(answers.map(({ id }) => ({ user_id: session.user.id, option_id: id })))
+    .insert(answers.map(({ id }) => ({ user_id: user.id, option_id: id })))
     .select('id')
 
   if (error) throw error
@@ -75,11 +75,11 @@ export const submitEvaluations = async (
   db: DatabaseClient,
   evaluations: Array<{ id: number; value: number }>,
 ): Promise<UserEvaluation[]> => {
-  const session = await getSession(db)
+  const user = users.current()
 
   const { data, error } = await db
     .from('user_evaluations')
-    .insert(evaluations.map(({ id, value }) => ({ user_id: session.user.id, evaluation_id: id, value })))
+    .insert(evaluations.map(({ id, value }) => ({ user_id: user.id, evaluation_id: id, value })))
     .select('id, value')
 
   if (error) throw error
@@ -89,12 +89,12 @@ export const submitEvaluations = async (
 }
 
 export const submitAssessment = async (db: DatabaseClient, id: number, value: number): Promise<UserAssessment> => {
-  const session = await getSession(db)
+  const user = users.current()
 
   const { data, error } = await db
     .from('user_assessments')
     .insert({
-      user_id: session.user.id,
+      user_id: user.id,
       assessment_id: id,
       value,
     })

@@ -57,13 +57,12 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
 import { usePathname } from '@/hooks/use-pathname'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { db } from '@/lib/db/client'
 import { Route } from '@/lib/navigation'
-import { Cookie } from '@/lib/storage'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps<I extends Icon = Icon>
@@ -90,20 +89,19 @@ const SidebarOrgs = ({
   const router = useRouter()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
-  const { setCookie } = useCookies()
 
   const getOrgInitials = useCallback((org: UserOrganization) => org.name.slice(0, 2).toUpperCase(), [])
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
-      setCookie(Cookie.Org, org.id)
+      cookies.set('active-org', org.id)
       router.push(Route.Home)
       setPathname(Route.Home)
       setTimeout(() => {
         setOrg(org)
       }, 200)
     },
-    [router, setCookie, setOrg, setPathname],
+    [router, setOrg, setPathname],
   )
 
   return (

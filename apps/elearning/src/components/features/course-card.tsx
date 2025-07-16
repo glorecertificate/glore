@@ -20,6 +20,7 @@ import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Locale, type LocaleItem } from '@/lib/i18n/types'
+import { LOCALE_ITEMS } from '@/lib/i18n/utils'
 import { dynamicRoute, Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -67,7 +68,7 @@ export const CourseCard = ({
   course: Course
   showTooltips?: boolean
 }) => {
-  const { localeItems, localize } = useLocale()
+  const { localize } = useLocale()
   const { user } = useSession()
   const t = useTranslations()
 
@@ -80,14 +81,14 @@ export const CourseCard = ({
     () =>
       activeLocales.reduce(
         (items, locale) => {
-          const item = localeItems.find(({ value }) => value === locale)!
+          const item = LOCALE_ITEMS.find(({ value }) => value === locale)!
           if (publishedLocales.includes(locale)) return [...items, { ...item, active: true }]
           if (draftLocales.includes(locale)) return [...items, { ...item, active: false }]
           return items
         },
         [] as Array<LocaleItem & { active: boolean }>,
       ),
-    [activeLocales, localeItems, publishedLocales, draftLocales],
+    [activeLocales, publishedLocales, draftLocales],
   )
 
   const creator = useMemo(() => {

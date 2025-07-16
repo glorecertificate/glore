@@ -96,14 +96,16 @@ export const generatePageMetadata =
  * Localizes the provided values and returns a complete metadata object.
  * Localization is skipped when the `static` flag is set to true.
  */
-export const pageMetadata = async <T extends boolean = true>({
-  description: userDescription,
-  image,
-  parent = {},
-  separator = metadata.titleSeparator,
-  title: userTitle,
-  translate = true as T,
-}: MetadataOptions<T>) => {
+export const pageMetadata = async <T extends boolean = true>(options: MetadataOptions<T> = {}) => {
+  const {
+    description: userDescription,
+    image,
+    parent = {},
+    separator = metadata.titleSeparator,
+    title: userTitle,
+    translate = true as T,
+  } = options
+
   const t = await getFlatTranslations()
   const locale = await getLocale()
   const alternateLocale = LOCALES[LOCALES.indexOf(locale) + 1] ?? LOCALES[0]

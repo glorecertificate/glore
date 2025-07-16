@@ -4,7 +4,7 @@ import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
 
 import { certificateQuery } from './queries'
 
-export const get = async (db: DatabaseClient, id: number) => {
+export const find = async (db: DatabaseClient, id: number) => {
   const { data, error } = await db.from('certificates').select(certificateQuery).eq('id', id).single()
 
   if (error) throw error

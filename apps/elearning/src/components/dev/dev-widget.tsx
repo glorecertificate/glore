@@ -5,35 +5,31 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { type SlotProps } from '@radix-ui/react-slot'
 import { MoveIcon } from 'lucide-react'
 
+import { type Position } from '@repo/utils'
+
 import { Button } from '@/components/ui/button'
-import { useCookies } from '@/hooks/use-cookies'
-import { type Cookie } from '@/lib/storage'
+import { cookies, type Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-export interface LocalWidgetProps extends SlotProps {
+export interface DevWidgetProps extends SlotProps {
   /** @default true */
   asChild?: boolean
   /** Key for storing the widget position */
   cookie?: Cookie
-  /** @default { x: 100, y: 100 } */
-  defaultPosition?: {
-    x: number
-    y: number
-  }
+  /** @default { x: 20, y: 20 } */
+  defaultPosition?: Position
 }
 
-export const LocalWidget = ({
+export const DevWidget = ({
   children,
   className,
   cookie,
   defaultPosition = {
-    x: 100,
-    y: 100,
+    x: 20,
+    y: 20,
   },
   ...props
-}: LocalWidgetProps) => {
-  const { setCookie } = useCookies()
-
+}: DevWidgetProps) => {
   const [position, setPosition] = useState(defaultPosition)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -44,7 +40,9 @@ export const LocalWidget = ({
   const onMouseUp = useCallback(() => {
     setIsDragging(false)
     isDraggingRef.current = false
-  }, [])
+    if (!cookie) return
+    cookies.set(cookie, position)
+  }, [cookie, position])
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -115,12 +113,6 @@ export const LocalWidget = ({
       }
     }
   }, [isDragging, onMouseMove, onMouseUp, onTouchMove, onTouchEnd])
-
-  useEffect(() => {
-    if (cookie) {
-      setCookie(cookie, JSON.stringify(position))
-    }
-  }, [cookie, position, setCookie])
 
   return (
     <div

@@ -58,10 +58,8 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
-    "date-fns": "^4.1.0",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.525.0",
-    "motion": "^12.23.5",
     "next": "^15.4.1",
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
@@ -73,7 +71,6 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "use-intl": "^4.3.4",
-    "vaul": "^1.1.2",
     "zod": "^4.0.5"
   },
   "devDependencies": {
@@ -83,9 +80,7 @@
     "@repo/tsconfig": "workspace:^",
     "@snaplet/copycat": "^6.0.0",
     "@snaplet/seed": "0.98.0",
-    "@supabase/postgrest-js": "^1.21.0",
     "@tailwindcss/postcss": "^4.1.11",
-    "@tailwindcss/typography": "^0.5.16",
     "@types/node": "catalog:",
     "@types/pg": "^8.15.4",
     "@types/react": "^19.1.8",

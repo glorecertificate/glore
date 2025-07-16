@@ -14,10 +14,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
 import { useTranslations } from '@/hooks/use-translations'
-import { Cookie } from '@/lib/storage'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-export const SIDEBAR_COOKIE_NAME = Cookie.SidebarOpen
 export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 export const SIDEBAR_WIDTH = '16rem'
 export const SIDEBAR_WIDTH_MOBILE = '18rem'
@@ -73,7 +72,7 @@ export const SidebarProvider = ({
       } else {
         _setOpen(openState)
       }
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      cookies.set('sidebar-open', openState, { maxAge: SIDEBAR_COOKIE_MAX_AGE })
     },
     [setOpenProp, open],
   )

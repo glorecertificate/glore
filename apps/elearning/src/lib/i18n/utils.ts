@@ -11,9 +11,9 @@ import config from 'config/app.json'
 export const LOCALES = Object.keys(config.locales) as Locale[]
 
 /**
- * Locale items used in the application.
+ * Items used to display the available locales across the application.
  */
-export const localeItems = Object.entries(config.locales).map(
+export const LOCALE_ITEMS = Object.entries(config.locales).map(
   ([value, { flag, name }]) =>
     ({
       label: name,
@@ -25,10 +25,18 @@ export const localeItems = Object.entries(config.locales).map(
 /**
  * Localizes a JSON object based on the provided locale.
  */
-export const localizeJson = <T extends Json>(data: T, locale: Locale): string => {
+export const localizeJson = <T extends Json>(data: T, locale?: Locale, fallback?: Locale): string | undefined => {
   if (typeof data !== 'object' || data === null) return String(data)
-  if (Array.isArray(data)) return data.map(item => localizeJson(item, locale)).join(', ')
-  return data[locale] as string
+  if (Array.isArray(data))
+    return data
+      .map(item => localizeJson(item, locale, fallback))
+      .filter(Boolean)
+      .join(', ')
+  const locales = Object.keys(data)
+  if (!locale || !locales.length) return data[locales[0]] as string | undefined
+  if (locales.includes(locale)) return data[locale] as string | undefined
+  const fallbackLocale = fallback || locales[0] || config.defaultLocale
+  return data[fallbackLocale] as string
 }
 
 /**
@@ -47,7 +55,7 @@ export const localizeDate = (
 /**
  * Localizes an array of items based on the provided locale.
  */
-export const localizeItems = (locale: Locale, items = localeItems) =>
+export const localizeItems = (locale: Locale, items = LOCALE_ITEMS) =>
   items.map(item => ({
     ...item,
     label: localizeJson(item.label, locale),

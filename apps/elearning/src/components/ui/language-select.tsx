@@ -8,7 +8,7 @@ import { Loader } from '@/components/ui/icons/loader'
 import { Select, SelectContent, SelectItem, SelectTrigger, type SelectTriggerProps } from '@/components/ui/select'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { localeItems } from '@/lib/i18n/utils'
+import { LOCALE_ITEMS } from '@/lib/i18n/utils'
 import { cn } from '@/lib/utils'
 import config from 'config/app.json'
 
@@ -28,7 +28,7 @@ export const LanguageSelect = ({
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
-  const items = useMemo(() => localeItems.filter(item => values.includes(item.value)), [values])
+  const items = useMemo(() => LOCALE_ITEMS.filter(item => values.includes(item.value)), [values])
 
   const activeItem = useMemo(
     () =>

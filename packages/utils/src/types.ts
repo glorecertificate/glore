@@ -144,3 +144,19 @@ export type MailToUrl = `mailto:${string}`
  * Telephone URL type.
  */
 export type TelUrl = `tel:${string}`
+
+/**
+ * Dimension record with height and width.
+ */
+export interface Dimension {
+  height: number
+  width: number
+}
+
+/**
+ * Position record with x and y coordinates.
+ */
+export interface Position {
+  x: number
+  y: number
+}

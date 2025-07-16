@@ -57,22 +57,28 @@ export const CourseFlow = (props: { course?: Course }) => {
 
   const title = useMemo(() => (course.title ? localize(course.title) : t('newCourse')), [course, localize, t])
 
+  // const draftLocales = useMemo(() => course?.draftLocales ?? [], [course.draftLocales])
+  const publishedLocales = useMemo(() => course?.publishedLocales ?? [], [course.publishedLocales])
+
+  const isArchived = useMemo(() => !!course.archivedAt, [course.archivedAt])
+  const isDraft = useMemo(() => !isArchived && publishedLocales.length === 0, [isArchived, publishedLocales.length])
+
   useHeader(
     <BreadcrumbList className="sm:gap-1">
       <BreadcrumbLink href={Route.Courses}>{t('title')}</BreadcrumbLink>
       <BreadcrumbSeparator />
       <BreadcrumbItem className={cn(course.title ? 'text-foreground' : 'text-muted')}>
         {title}
-        {/* {user.canEdit && course.publicationStatus === 'draft' && (
+        {user.canEdit && isDraft && (
           <Badge className="ml-1" color="muted" size="xs">
             {t('draft')}
           </Badge>
         )}
-        {user.canEdit && course.publicationStatus === 'archived' && (
+        {user.canEdit && isArchived && (
           <Badge className="ml-1" color="muted" size="xs">
             {t('archived')}
           </Badge>
-        )} */}
+        )}
       </BreadcrumbItem>
     </BreadcrumbList>,
   )

@@ -24,13 +24,12 @@ import { NoResultsGraphic } from '@/components/ui/graphics/no-results'
 import { Link } from '@/components/ui/link'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCookies } from '@/hooks/use-cookies'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { LOCALES } from '@/lib/i18n/utils'
+import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { Cookie } from '@/lib/storage'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 const EDITOR_TABS = ['all', 'active', 'partial', 'draft', 'archived'] as const
@@ -157,8 +156,7 @@ export const CourseList = ({
   defaultLocales?: Locale[]
   defaultTab?: CourseTab
 }) => {
-  const { setCookie } = useCookies()
-  const { localeItems, localize } = useLocale()
+  const { localize } = useLocale()
   const { courses: allCourses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
@@ -215,20 +213,22 @@ export const CourseList = ({
   const setLocales = useCallback(
     (selected: Locale[]) => {
       setLocaleState(selected)
-      setCookie(Cookie.CourseLocales, JSON.stringify(selected))
+      cookies.set('course-locales', selected)
       if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
     },
-    [setCookie, activeTab, courses.partial.length],
+    [activeTab, courses.partial.length],
   )
 
   const displayedCourses = useMemo(
     () =>
       courses[activeTab].sort((a, b) => {
         switch (activeSort) {
-          case 'name':
-            return sortDirection === 'asc'
-              ? localize(a.title).localeCompare(localize(b.title))
-              : localize(b.title).localeCompare(localize(a.title))
+          case 'name': {
+            const titleA = localize(a.title)
+            const titleB = localize(b.title)
+            if (!titleA || !titleB) return 0
+            return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
+          }
           case 'progress':
             return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
           case 'type':
@@ -285,15 +285,18 @@ export const CourseList = ({
     setCourses(courses)
   }, [setCourses])
 
-  const handleTabChange = useCallback(
-    (value: string) => {
-      setActiveTab(value as CourseTab)
-      setCookie(Cookie.CourseSection, value as CourseTab)
-    },
-    [setCookie],
-  )
+  const handleTabChange = useCallback((value: string) => {
+    const tab = value as CourseTab
+    setActiveTab(tab)
+    cookies.set('course-tab', tab)
+  }, [])
 
   useEffect(() => {
+    const localeCookie = cookies.get('course-locales')
+    if (!localeCookie || localeCookie.length === 0) {
+      setLocaleState(LOCALES)
+      cookies.set('course-locales', LOCALES)
+    }
     void fetchCourses()
   }, [fetchCourses])
 
@@ -328,7 +331,7 @@ export const CourseList = ({
                   message: t('selectAtLeastOneLanguage'),
                 }}
                 onChange={setLocales as (selected: string[]) => void}
-                options={localeItems}
+                options={LOCALE_ITEMS}
                 placeholder={t('selectLanguages')}
                 search={false}
                 value={locales}

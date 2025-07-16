@@ -8,18 +8,21 @@ import { CourseSidebar } from '@/components/features/course-sidebar'
 
 export const CourseEditor = ({ course: initial }: { course?: Course }) => {
   const [course, _setCourse] = useState<Course | Partial<Course>>(initial || {})
-  const [infoVisible, _setInfoVisible] = useState(true)
-  const [step, _setStep] = useState<number | undefined>(undefined)
+  const [infoVisible, setInfoVisible] = useState(true)
+  const [step, setStepState] = useState<number | undefined>(undefined)
 
-  const setStep = useCallback((step: number) => {
-    _setInfoVisible(false)
-    _setStep(step)
-  }, [])
+  const setStep = useCallback(
+    (step: number) => {
+      setInfoVisible(false)
+      setStepState(step)
+    },
+    [setInfoVisible, setStepState],
+  )
 
   const showInfo = useCallback(() => {
-    _setInfoVisible(true)
-    _setStep(undefined)
-  }, [])
+    setInfoVisible(true)
+    setStepState(undefined)
+  }, [setInfoVisible, setStepState])
 
   const lesson = useMemo<Lesson | Partial<Lesson> | undefined>(
     () => (course.lessons?.length === 0 || step === undefined ? ({} as Partial<Lesson>) : course.lessons?.[step]),

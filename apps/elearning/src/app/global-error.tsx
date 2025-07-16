@@ -10,22 +10,21 @@ import { hasHistory } from '@repo/utils'
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
-import { useCookies } from '@/hooks/use-cookies'
 import { LOCALES, localizeJson } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
+import { cookies } from '@/lib/storage'
 import config from 'config/app.json'
 import errors from 'config/translations/static/errors.json'
 
 export default ({ error }: ErrorProps) => {
-  const { readCookie } = useCookies()
   const pathname = usePathname()
   const router = useRouter()
 
   const locale = useMemo(() => {
-    const cookieLocale = readCookie('NEXT_LOCALE') as Locale
+    const cookieLocale = cookies.get('locale')
     if (!cookieLocale || !LOCALES.includes(cookieLocale)) return config.defaultLocale as Locale
     return cookieLocale
-  }, [readCookie])
+  }, [])
 
   useEffect(() => {
     console.error(error)

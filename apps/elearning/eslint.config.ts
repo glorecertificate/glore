@@ -37,7 +37,7 @@ export default eslintConfig(
     sortInterfaces: false,
     sortObjectKeys: ['*.ts'],
     tailwind: {
-      allowedClasses: ['lucide', 'lucide-*', 'markdown', 'rich-text-editor', 'toaster'],
+      allowedClasses: ['lucide', 'lucide-*', 'markdown', 'toaster'],
       entryPoint: './src/app/globals.css',
     },
   },

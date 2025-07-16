@@ -32,7 +32,6 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import { Markdown } from '@/components/ui/markdown'
 import { Progress } from '@/components/ui/progress'
-import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useHeader } from '@/hooks/use-header'
 import { useLocale } from '@/hooks/use-locale'
@@ -549,23 +548,7 @@ export const CourseFlow = (props: { course?: Course }) => {
             <div className={cn(isPreview && 'rounded-lg border bg-card p-8')}>
               {hasLessons ? (
                 <>
-                  {isPreview ? (
-                    <Markdown>{localize(currentLesson.content)}</Markdown>
-                  ) : (
-                    <RichTextEditor
-                      className="mb-6 rounded-lg bg-card"
-                      editorContentClassName="p-6"
-                      onChange={content => {
-                        updateCourse(({ lessons, ...course }) => ({
-                          ...course,
-                          lessons: lessons?.map((lesson, i) =>
-                            i === currentLessonIndex ? { ...lesson, content } : lesson,
-                          ),
-                        }))
-                      }}
-                      value={localize(currentLesson.content) || ''}
-                    />
-                  )}
+                  <Markdown>{localize(currentLesson.content)}</Markdown>
                   {currentLesson.type === 'questions' && currentLesson.questions && (
                     <CourseQuestions
                       className={taskClassName}

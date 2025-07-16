@@ -15,7 +15,7 @@
 
 ### Build 📦
 
-* **deps:** Update pnpm and dependencies to latest versions ([5369192](https://github.com/gabrielecanepa/glore/commit/536919276276ed57058856e32dd91a79269eee34))
+* Update pnpm and dependencies to latest versions ([5369192](https://github.com/gabrielecanepa/glore/commit/536919276276ed57058856e32dd91a79269eee34))
 
 
 ### Docs 📑
@@ -50,7 +50,7 @@
 
 ### Build 📦
 
-* **deps:** Bump dependencies ([cd39342](https://github.com/gabrielecanepa/glore/commit/cd39342dabda16c77e78444061de8b836f0e3ddd))
+* Bump dependencies ([cd39342](https://github.com/gabrielecanepa/glore/commit/cd39342dabda16c77e78444061de8b836f0e3ddd))
 
 
 ### Other

@@ -58,7 +58,7 @@ interface ReleaseConfig extends Config {
 
 const { ISSUE_PREFIX, ISSUE_URL } = process.env
 
-const plugins: ReleaseConfig['plugins'] = {
+const plugins = {
   'release-it-pnpm': {
     publishCommand: '',
   },
@@ -90,6 +90,7 @@ const plugins: ReleaseConfig['plugins'] = {
         {
           type: 'build',
           section: 'Build 📦',
+          scopes: ['deps', 'dev-deps'],
         },
         {
           type: 'docs',
@@ -125,7 +126,7 @@ const plugins: ReleaseConfig['plugins'] = {
       })),
     },
   },
-}
+} satisfies ReleaseConfig['plugins']
 
 export default {
   plugins,

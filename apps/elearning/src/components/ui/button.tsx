@@ -104,38 +104,22 @@ export const buttonVariants = cva(
           bg-destructive text-destructive-foreground shadow-xs
           hover:bg-destructive-accent
           focus-visible:ring-destructive/20
-          dark:bg-destructive/60 dark:focus-visible:ring-destructive/40
+          dark:focus-visible:ring-destructive/40
         `,
-        warning: `
-          bg-warning text-warning-foreground shadow-xs
-          hover:bg-warning-accent
-          focus-visible:ring-warning/20
-          dark:bg-warning/60 dark:focus-visible:ring-warning/40
-        `,
-        success: `
-          bg-success text-success-foreground shadow-xs
-          hover:bg-success-accent
-          focus-visible:ring-success/20
-          dark:bg-success/60 dark:focus-visible:ring-success/40
-        `,
-        primary: `
-          bg-primary text-primary-foreground shadow-xs
-          hover:bg-primary-accent
-          focus-visible:ring-primary/20
-          dark:bg-primary/60 dark:focus-visible:ring-primary/40
-        `,
+        warning:
+          'bg-warning text-warning-foreground shadow-xs hover:bg-warning-accent focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+        success:
+          'bg-success text-success-foreground shadow-xs hover:bg-success-accent focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+        primary:
+          'bg-primary text-primary-foreground shadow-xs hover:bg-primary-accent focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
         secondary: `
           bg-secondary text-secondary-foreground shadow-xs
           hover:bg-secondary-accent
           focus-visible:ring-secondary/20
-          dark:bg-secondary/60 dark:focus-visible:ring-secondary/40
+          dark:focus-visible:ring-secondary/40
         `,
-        tertiary: `
-          bg-tertiary text-tertiary-foreground shadow-xs
-          hover:bg-tertiary-accent
-          focus-visible:ring-tertiary/20
-          dark:bg-tertiary/60 dark:focus-visible:ring-tertiary/40
-        `,
+        tertiary:
+          'bg-tertiary text-tertiary-foreground shadow-xs hover:bg-tertiary-accent focus-visible:ring-tertiary/20 dark:focus-visible:ring-tertiary/40',
         outline:
           'border border-input bg-background shadow-xs hover:bg-accent/80 hover:text-accent-foreground dark:bg-input/30 dark:hover:bg-input/50',
         ghost: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-accent/50',

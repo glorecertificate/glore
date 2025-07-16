@@ -11,4 +11,11 @@ export const I18nProvider = ({
 }: React.PropsWithChildren<{
   locale: Locale
   messages: typeof translations
-}>) => <IntlProvider {...props}>{children}</IntlProvider>
+}>) => {
+  const defaultTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return (
+    <IntlProvider timeZone={defaultTimeZone} {...props}>
+      {children}
+    </IntlProvider>
+  )
+}

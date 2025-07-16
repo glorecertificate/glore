@@ -115,7 +115,6 @@
     "addOrganization": "Add organization",
     "admin": "Admin",
     "adminUser": "Admin user",
-    "certificate": "Certificate",
     "certificateNew": "Request certificate",
     "dashboard": "Dashboard",
     "docs": "Documentation",
@@ -132,7 +131,8 @@
     "organizations": "Organizations",
     "secondarySection": "Settings",
     "settings": "Settings",
-    "editorUser": "Editor"
+    "editorUser": "Editor",
+    "certificates": "Certificates"
   },
   "Courses": {
     "answerDisabled": "You can't modify your answer",

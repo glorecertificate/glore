@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect, useRouter } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
   AwardIcon,
@@ -23,6 +23,7 @@ import { titleize } from '@repo/utils'
 
 import { type User, type UserOrganization } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   DropdownMenu,
@@ -34,6 +35,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { DashboardIcon } from '@/components/ui/icons/dashboard'
+import { type Icon } from '@/components/ui/icons/types'
 import { Image } from '@/components/ui/image'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
@@ -51,6 +53,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
+  type SidebarMenuButtonProps,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -59,11 +62,22 @@ import { usePathname } from '@/hooks/use-pathname'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { db } from '@/lib/db/client'
-import { Route, type Pathname } from '@/lib/navigation'
+import { Route } from '@/lib/navigation'
 import { Cookie } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-export const SidebarOrgs = ({
+interface SidebarItemProps<I extends Icon = Icon>
+  extends Omit<SidebarMenuButtonProps, 'icon'>,
+    React.PropsWithChildren<{
+      className?: string
+      icon?: I
+      iconProps?: React.ComponentProps<I>
+      label: string
+      route: Route
+      subItem?: boolean
+    }> {}
+
+const SidebarOrgs = ({
   currentOrg,
   orgs,
   setOrg,
@@ -98,6 +112,7 @@ export const SidebarOrgs = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
+              asChild
               className={`
                 justify-center overflow-visible rounded-lg py-7
                 peer-data-[state=collapsed]:border
@@ -105,24 +120,28 @@ export const SidebarOrgs = ({
               `}
               size="lg"
             >
-              <Avatar
-                className={cn(
-                  'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
-                  !open && 'ml-8 size-8 text-xs',
-                  !currentOrg.avatarUrl && 'border',
-                )}
-              >
-                {currentOrg.avatarUrl ? (
-                  <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
-                ) : (
-                  <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
-                )}
-              </Avatar>
-              <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate font-semibold">{currentOrg.name}</span>
-                <span className="truncate text-xs font-normal text-muted-foreground">{titleize(currentOrg.role)}</span>
-              </div>
-              <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
+              <>
+                <Avatar
+                  className={cn(
+                    'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
+                    !open && 'ml-8 size-8 text-xs',
+                    !currentOrg.avatarUrl && 'border',
+                  )}
+                >
+                  {currentOrg.avatarUrl ? (
+                    <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
+                  ) : (
+                    <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
+                  )}
+                </Avatar>
+                <div className="grid flex-1 text-left leading-tight">
+                  <span className="truncate font-semibold">{currentOrg.name}</span>
+                  <span className="truncate text-xs font-normal text-muted-foreground">
+                    {titleize(currentOrg.role)}
+                  </span>
+                </div>
+                <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
+              </>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -163,184 +182,138 @@ export const SidebarOrgs = ({
   )
 }
 
-const SidebarNavigation = () => {
+const SidebarNavItem = <I extends Icon = Icon>({
+  asChild = false,
+  className,
+  icon,
+  iconProps,
+  label,
+  onClick,
+  route,
+  subItem,
+}: SidebarItemProps<I>) => {
   const { pathname, setPathname } = usePathname()
+
+  const Wrapper = useMemo(() => {
+    if (asChild) return Fragment
+    return subItem ? SidebarMenuSubItem : SidebarMenuItem
+  }, [asChild, subItem])
+
+  const isActivePath = useMemo(() => route === pathname, [pathname, route])
+
+  const isActiveRoute = useMemo(
+    () => isActivePath || (route === Route.Home ? pathname === Route.Home : pathname.startsWith(route)),
+    [pathname, route, isActivePath],
+  )
+
+  const active = useMemo(() => (subItem ? isActivePath : isActiveRoute), [isActivePath, isActiveRoute, subItem])
+
+  const buttonClassName = useMemo(() => {
+    if (!subItem) return className
+    return cn(
+      `
+        border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70
+        hover:text-sidebar-foreground
+        data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border
+      `,
+      className,
+    )
+  }, [className, subItem])
+
+  const content = useMemo(() => {
+    const Icon = icon as Icon
+    const { className: iconClassName, ...iconRest } = iconProps || {}
+    const inner = (
+      <>
+        {Icon && <Icon className={cn('size-4 text-muted-foreground', iconClassName)} {...iconRest} />}
+        <span>{label}</span>
+      </>
+    )
+    return isActivePath ? <span>{inner}</span> : <Link href={route}>{inner}</Link>
+  }, [iconProps, icon, isActivePath, label, route])
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e)
+      if (isActivePath) return
+      setPathname(route)
+    },
+    [isActivePath, onClick, route, setPathname],
+  )
+
+  return (
+    <Wrapper>
+      <SidebarMenuButton
+        active={active}
+        asChild
+        className={cn(buttonClassName, isActivePath && 'cursor-default')}
+        onClick={handleClick}
+        tooltip={label}
+      >
+        {content}
+      </SidebarMenuButton>
+    </Wrapper>
+  )
+}
+
+const SidebarNavCollapsible = ({ children, icon, label, route }: SidebarItemProps) => {
+  const { pathname } = usePathname()
+  const [open, setOpen] = useState(pathname.startsWith(route))
+
+  const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
+
+  const handleClick = useCallback(() => {
+    if (!open) setOpen(true)
+  }, [open])
+
+  return (
+    <Collapsible asChild open={open}>
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarNavItem asChild icon={icon} label={label} onClick={handleClick} route={route} />
+        </CollapsibleTrigger>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuAction className={cn('cursor-pointer data-[state=open]:rotate-90')} onClick={toggleCollapsible}>
+            <ChevronRightIcon className="stroke-foreground/64" />
+          </SidebarMenuAction>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>{children}</SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  )
+}
+
+const SidebarNav = () => {
   const { user } = useSession()
   const t = useTranslations('Navigation')
 
-  const [docsCollapsibleOpen, setDocsCollapsibleOpen] = useState(pathname.startsWith(Route.Docs))
-
-  const onButtonClick = useCallback(
-    (path: Pathname) => () => {
-      setPathname(path)
-    },
-    [setPathname],
-  )
-
-  const isActivePath = useCallback(
-    (path: Pathname) => {
-      if (path === pathname) return true
-      if (path === Route.Home) return pathname === Route.Home
-      return pathname.startsWith(path)
-    },
-    [pathname],
-  )
-  const isClickable = useCallback((path: Pathname) => path !== pathname, [pathname])
-
-  const toggleDocsCollapsible = useCallback(() => setDocsCollapsibleOpen(open => !open), [])
-
-  const onDocsClick = useCallback(
-    (e: React.MouseEvent) => {
-      setPathname(Route.Docs)
-      if (!isActivePath(Route.Docs) && docsCollapsibleOpen) {
-        e.stopPropagation()
-        e.preventDefault()
-        return
-      }
-      toggleDocsCollapsible()
-    },
-    [docsCollapsibleOpen, isActivePath, setPathname, toggleDocsCollapsible],
-  )
-
-  const getSubItemClass = useCallback(
-    (path: Pathname) => {
-      const isActive = isActivePath(path)
-      return cn(
-        'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground',
-        isActive &&
-          'rounded-tl-none border-muted-foreground data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border',
-      )
-    },
-    [isActivePath],
-  )
+  // const onDocsClick = useCallback(
+  //   (e: React.MouseEvent) => {
+  //     setPathname(Route.Docs)
+  //     if (!isActivePath(Route.Docs) && docsCollapsibleOpen) {
+  //       e.stopPropagation()
+  //       e.preventDefault()
+  //       return
+  //     }
+  //     toggleDocsCollapsible()
+  //   },
+  //   [docsCollapsibleOpen, isActivePath, setPathname, toggleDocsCollapsible],
+  // )
 
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4">
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            active={isActivePath(Route.Home)}
-            asChild
-            clickable={isClickable(Route.Home)}
-            onClick={onButtonClick(Route.Home)}
-            tooltip={t('dashboard')}
-          >
-            <Link href={Route.Home}>
-              <DashboardIcon className="size-4" colored />
-              <span>{t('dashboard')}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            active={isActivePath(Route.Courses)}
-            asChild
-            clickable={isClickable(Route.Courses)}
-            onClick={onButtonClick(Route.Courses)}
-            tooltip={t('courses')}
-          >
-            <Link href={Route.Courses}>
-              <BookOpenIcon className="size-4 text-muted-foreground" />
-              <span>{t('courses')}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            active={isActivePath(Route.Certificates)}
-            asChild
-            clickable={isClickable(Route.Certificates)}
-            onClick={onButtonClick(Route.Certificates)}
-            tooltip={t('certificate')}
-          >
-            <Link href={Route.Certificates}>
-              <AwardIcon className="size-4 text-muted-foreground" />
-              <span>{t('certificate')}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        <Collapsible asChild className="group/collapsible" open={docsCollapsibleOpen}>
-          <SidebarMenuItem>
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton
-                active={isActivePath(Route.Docs)}
-                asChild
-                clickable={isClickable(Route.Docs)}
-                onClick={onDocsClick}
-                tooltip={t('docs')}
-              >
-                <Link href={Route.Docs}>
-                  <MessageCircleQuestionIcon className="size-4 text-muted-foreground" />
-                  <span>{t('docs')}</span>
-                </Link>
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleTrigger asChild>
-              <SidebarMenuAction
-                className={cn('cursor-pointer data-[state=open]:rotate-90', isActivePath(Route.Docs) && 'hover:border')}
-                clickable={isClickable(Route.Docs)}
-                onClick={toggleDocsCollapsible}
-              >
-                <ChevronRightIcon className="stroke-foreground/64" />
-              </SidebarMenuAction>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarMenuSub>
-                <SidebarMenuSubItem>
-                  <SidebarMenuButton
-                    active={isActivePath(Route.DocsIntro)}
-                    asChild
-                    className={getSubItemClass(Route.DocsIntro)}
-                    clickable={isClickable(Route.DocsIntro)}
-                    onClick={onButtonClick(Route.DocsIntro)}
-                    tooltip={t('docsIntro')}
-                  >
-                    <Link href={Route.DocsIntro}>{t('docsIntro')}</Link>
-                  </SidebarMenuButton>
-                </SidebarMenuSubItem>
-                <SidebarMenuSubItem>
-                  <SidebarMenuButton
-                    active={isActivePath(Route.DocsTutorials)}
-                    asChild
-                    className={getSubItemClass(Route.DocsTutorials)}
-                    clickable={isClickable(Route.DocsTutorials)}
-                    onClick={onButtonClick(Route.DocsTutorials)}
-                  >
-                    <Link href={Route.DocsTutorials}>{t('docsTutorials')}</Link>
-                  </SidebarMenuButton>
-                </SidebarMenuSubItem>
-                <SidebarMenuSubItem>
-                  <SidebarMenuButton
-                    active={isActivePath(Route.DocsFaq)}
-                    asChild
-                    className={getSubItemClass(Route.DocsFaq)}
-                    clickable={isClickable(Route.DocsFaq)}
-                    onClick={onButtonClick(Route.DocsFaq)}
-                    tooltip={t('docsFaq')}
-                  >
-                    <Link href={Route.DocsFaq}>{t('docsFaq')}</Link>
-                  </SidebarMenuButton>
-                </SidebarMenuSubItem>
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          </SidebarMenuItem>
-        </Collapsible>
-        {user.isAdmin && (
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              active={isActivePath(Route.Admin)}
-              asChild
-              clickable={isClickable(Route.Admin)}
-              onClick={onButtonClick(Route.Admin)}
-              tooltip={t('admin')}
-            >
-              <Link href={Route.Admin}>
-                <CogIcon className="size-4 text-muted-foreground" />
-                <span>{t('admin')}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        )}
+        <SidebarNavItem icon={DashboardIcon} iconProps={{ colored: true }} label={t('dashboard')} route={Route.Home} />
+        <SidebarNavItem icon={BookOpenIcon} label={t('courses')} route={Route.Courses} />
+        <SidebarNavItem icon={AwardIcon} label={t('certificates')} route={Route.Certificates} />
+        <SidebarNavCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route={Route.Docs}>
+          <SidebarNavItem label={t('docsIntro')} route={Route.DocsIntro} subItem />
+          <SidebarNavItem label={t('docsTutorials')} route={Route.DocsTutorials} subItem />
+          <SidebarNavItem label={t('docsFaq')} route={Route.DocsFaq} subItem />
+        </SidebarNavCollapsible>
+        {user.isAdmin && <SidebarNavItem icon={CogIcon} label={t('admin')} route={Route.Admin} />}
       </SidebarMenu>
     </SidebarGroup>
   )
@@ -375,55 +348,66 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
               )}
               size="lg"
             >
-              <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
-                <Avatar
+              <>
+                <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
+                  <Avatar
+                    className={cn(
+                      'aspect-square size-8 rounded-lg border',
+                      !open && 'text-xs',
+                      !user.avatarUrl && 'border',
+                    )}
+                  >
+                    <AvatarImage src={user.avatarUrl!} />
+                    <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
+                  </Avatar>
+                  {organization?.avatarUrl && (
+                    <Image
+                      className="absolute -right-1 -bottom-1 rounded-full object-cover"
+                      height={14}
+                      src={organization.avatarUrl}
+                      width={14}
+                    />
+                  )}
+                </div>
+                <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'invisible')}>
+                  <span className="flex items-center gap-1 font-semibold">
+                    {user.firstName}
+                    {user.isAdmin && (
+                      <Tooltip>
+                        <TooltipTrigger asChild pointerEvents>
+                          <ShieldUserIcon size={14} />
+                        </TooltipTrigger>
+                        <TooltipContent sideOffset={3}>
+                          <span className="text-xs">{t('Navigation.adminUser')}</span>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                    {user.isEditor && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <PencilIcon size={14} />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <span className="text-xs">{t('Navigation.editorUser')}</span>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </span>
+                  <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
+                </div>
+                <Button
+                  asChild
                   className={cn(
-                    'aspect-square size-8 rounded-lg border',
-                    !open && 'text-xs',
-                    !user.avatarUrl && 'border',
+                    'ml-auto flex size-6 items-center justify-center border border-transparent hover:border-border',
+                    !open && 'invisible',
                   )}
+                  variant="ghost"
                 >
-                  <AvatarImage src={user.avatarUrl!} />
-                  <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
-                </Avatar>
-                {organization?.avatarUrl && (
-                  <Image
-                    className="absolute -right-1 -bottom-1 rounded-full object-cover"
-                    height={14}
-                    src={organization.avatarUrl}
-                    width={14}
-                  />
-                )}
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="flex items-center gap-1 truncate font-semibold">
-                  {user.firstName}
-                  {user.isAdmin && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <ShieldUserIcon size={14} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <span className="text-xs">{t('Navigation.adminUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                  {user.isEditor && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <PencilIcon size={14} />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <span className="text-xs">{t('Navigation.editorUser')}</span>
-                      </TooltipContent>
-                    </Tooltip>
-                  )}
-                </span>
-                <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
-              </div>
-              <ChevronsUpDownIcon
-                className={cn('ml-auto size-4 stroke-foreground/64 leading-tight', !open && 'invisible')}
-              />
+                  <span>
+                    <ChevronsUpDownIcon className="size-4 stroke-foreground/64" />
+                  </span>
+                </Button>
+              </>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -502,11 +486,13 @@ export const AppSidebar = ({
 
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
-      <SidebarHeader>
-        {organization && <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />}
-      </SidebarHeader>
+      {organization && (
+        <SidebarHeader>
+          <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />
+        </SidebarHeader>
+      )}
       <SidebarContent>
-        <SidebarNavigation />
+        <SidebarNav />
       </SidebarContent>
       <SidebarFooter>
         <SidebarUser organization={organization} user={user} />

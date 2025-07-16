@@ -458,7 +458,6 @@ export interface SidebarMenuButtonProps
     VariantProps<typeof sidebarMenuButton> {
   active?: boolean
   asChild?: boolean
-  clickable?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 }
 
@@ -466,21 +465,22 @@ export const SidebarMenuButton = ({
   active = false,
   asChild = false,
   className,
-  clickable = true,
   color,
+  onClick,
   size,
   tooltip,
   variant,
   ...props
 }: SidebarMenuButtonProps) => {
   const { isMobile, state } = useSidebar()
+  const [hideTooltip, setHideTooltip] = useState(false)
 
   const Component = useMemo(() => (asChild ? Slot : Button), [asChild])
 
-  const Base = useMemo(
+  const content = useMemo(
     () => (
       <Component
-        className={cn(sidebarMenuButton({ size, variant }), !clickable && 'pointer-events-none', className)}
+        className={cn(sidebarMenuButton({ size, variant }), className)}
         color={color ?? undefined}
         data-active={active}
         data-sidebar="menu-button"
@@ -489,19 +489,32 @@ export const SidebarMenuButton = ({
         {...props}
       />
     ),
-    [className, size, variant, clickable, active, color, props, Component],
+    [Component, size, variant, className, color, active, props],
   )
 
-  if (isMobile || !tooltip) return Base
-  if (typeof tooltip === 'string')
-    tooltip = {
-      children: tooltip,
-    }
+  const hiddenTooltip = useMemo(() => state !== 'collapsed' || isMobile, [state, isMobile])
+
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(event)
+      if (isMobile) return
+      setHideTooltip(true)
+      setTimeout(() => {
+        setHideTooltip(false)
+      }, 200)
+    },
+    [onClick, isMobile],
+  )
+
+  if (isMobile || !tooltip || hideTooltip) return content
+  if (typeof tooltip === 'string') tooltip = { children: tooltip }
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>{Base}</TooltipTrigger>
-      <TooltipContent align="center" hidden={state !== 'collapsed' || isMobile} side="right" {...tooltip} />
+      <TooltipTrigger asChild onClick={handleClick}>
+        {content}
+      </TooltipTrigger>
+      <TooltipContent align="center" hidden={hiddenTooltip} side="right" {...tooltip} />
     </Tooltip>
   )
 }
@@ -546,7 +559,6 @@ export const sidebarMenuButton = cva(
 export const SidebarMenuAction = ({
   asChild = false,
   className,
-  clickable = true,
   showOnHover = false,
   ...props
 }: React.ComponentProps<'button'> & {
@@ -581,7 +593,6 @@ export const SidebarMenuAction = ({
             data-[state=open]:opacity-100
             md:opacity-0
           `,
-        !clickable && 'pointer-events-none',
         className,
       )}
       data-sidebar="menu-action"

@@ -299,11 +299,11 @@ export const CourseList = ({
 
   return (
     <>
-      <div className="container pb-2">
+      <div className="pb-2">
         <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
         <p className="text-muted-foreground">{pageDescription}</p>
       </div>
-      <div className="container grow py-6">
+      <div className="w-full grow py-6">
         <Tabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
           <div className="mb-6 flex h-auto flex-col justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2">
@@ -360,7 +360,7 @@ export const CourseList = ({
                 </div>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 {displayedCourses.map(course => (
                   <CourseCard activeLocales={locales} course={course} key={course.id} showTooltips={showCardTooltips} />
                 ))}

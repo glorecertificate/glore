@@ -20,5 +20,5 @@ export default () => {
     void fireConfetti()
   })
 
-  return <></>
+  return <>{'Welcome!'}</>
 }

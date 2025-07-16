@@ -5,21 +5,30 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-export const TooltipProvider = ({
-  delayDuration = 0,
-  ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) => (
+export interface TooltipProviderProps extends React.ComponentProps<typeof TooltipPrimitive.Provider> {}
+
+export const TooltipProvider = ({ delayDuration = 0, ...props }: TooltipProviderProps) => (
   <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
 )
 
-export const Tooltip = (props: React.ComponentProps<typeof TooltipPrimitive.Root>) => (
+export interface TooltipProps extends React.ComponentProps<typeof TooltipPrimitive.Root> {}
+
+export const Tooltip = (props: TooltipProps) => (
   <TooltipProvider>
     <TooltipPrimitive.Root data-slot="tooltip" {...props} />
   </TooltipProvider>
 )
 
-export const TooltipTrigger = (props: React.ComponentProps<typeof TooltipPrimitive.Trigger>) => (
-  <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+export interface TooltipTriggerProps extends React.ComponentProps<typeof TooltipPrimitive.Trigger> {
+  pointerEvents?: boolean
+}
+
+export const TooltipTrigger = ({ className, pointerEvents = false, ...props }: TooltipTriggerProps) => (
+  <TooltipPrimitive.Trigger
+    className={cn(pointerEvents && 'pointer-events-auto!', className)}
+    data-slot="tooltip-trigger"
+    {...props}
+  />
 )
 
 export interface TooltipContentProps
@@ -49,7 +58,7 @@ export const TooltipContent = ({
   </TooltipPrimitive.Portal>
 )
 
-const tooltipContentVariants = cva(
+export const tooltipContentVariants = cva(
   `
     z-50 max-w-sm rounded-md bg-foreground px-3 py-1.5 text-xs text-background animate-in fade-in-0 zoom-in-95
     data-[side=bottom]:slide-in-from-top-2

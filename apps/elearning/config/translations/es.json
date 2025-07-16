@@ -102,7 +102,6 @@
     "about": "Acerca de GloRe",
     "addOrganization": "Agregar organización",
     "admin": "Admin",
-    "certificate": "Certificado",
     "certificateNew": "Solicitar certificado",
     "dashboard": "Dashboard",
     "docs": "Documentación",
@@ -120,7 +119,8 @@
     "secondarySection": "Ajustes",
     "settings": "Ajustes",
     "adminUser": "Usuario admin",
-    "editorUser": "Editor"
+    "editorUser": "Editor",
+    "certificates": "Certificados"
   },
   "Courses": {
     "answerDisabled": "No puedes modificar tu respuesta",

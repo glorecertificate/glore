@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.11](https://github.com/gabrielecanepa/glore/compare/v0.4.10...v0.4.11) (2025-07-17)
+
+
+### Other
+
+* Improve i18n system and course management ([258d596](https://github.com/gabrielecanepa/glore/commit/258d5962612711e65b20eb648f2da464a945d08a))
+* Improve sidebar navigation and update translations ([a4022fe](https://github.com/gabrielecanepa/glore/commit/a4022fef2c3c692bbf4b959547e4874cc5c3170f))
+* Remove Minimal Tiptap components and extensions ([f1dad16](https://github.com/gabrielecanepa/glore/commit/f1dad165523484dee77fed0192fee9715d210c21))
+* Reorganize storage module and improve cookie handling ([45f7f96](https://github.com/gabrielecanepa/glore/commit/45f7f965f37f672edcf7abd68d35472c7ead8d0b))
+* Standardize changelog format and update release configuration ([fcad2ce](https://github.com/gabrielecanepa/glore/commit/fcad2ce105133971693641dbd31451b4c830dba0))
+
 ## [0.4.10](https://github.com/gabrielecanepa/glore/compare/v0.4.9...v0.4.10) (2025-07-15)
 
 

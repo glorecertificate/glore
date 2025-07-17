@@ -1,4 +1,5 @@
 export * from '@/capitalize'
+export * from '@/debounce'
 export * from '@/decode'
 export * from '@/deep-merge'
 export * from '@/encode'

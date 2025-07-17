@@ -7,7 +7,13 @@ import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
-import { RuleSeverity, type ConfigOptions, type RestrictedImport, type ScopedRestrictedImport } from './types'
+import {
+  RuleSeverity,
+  type ConfigOptions,
+  type RelativeImportsValue,
+  type RestrictedImport,
+  type ScopedRestrictedImport,
+} from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
 const BASE_PLUGINS = {
@@ -115,10 +121,10 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
       continue
     }
 
-    const { files, ...rest } = restrictedImport
+    const { files: restrictedFiles, ...rest } = restrictedImport
     const config: ScopedRestrictedImport = rest
 
-    for (const file of files) {
+    for (const file of restrictedFiles) {
       if (file.startsWith('!')) {
         const ignoreFile = file.slice(1)
         config.ignores = config.ignores ? [...config.ignores, ignoreFile] : [ignoreFile]
@@ -130,15 +136,12 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
     scopedRestrictedImports.push(config)
   }
 
-  const globalAllowRelativeImports =
-    typeof allowRelativeImports === 'string' ? allowRelativeImports : allowRelativeImports[0]
-  const scopedAllowRelativeImports = [] as Array<{ files: string[]; option: 'always' | 'never' | 'siblings' }>
-  if (Array.isArray(allowRelativeImports) && allowRelativeImports[1]) {
-    for (const [option, files] of Object.entries(allowRelativeImports[1])) {
-      scopedAllowRelativeImports.push({
-        files,
-        option: option as 'always' | 'never' | 'siblings',
-      })
+  const [relativeImportsValue, relativeImportOptions] =
+    typeof allowRelativeImports === 'string' ? [allowRelativeImports] : allowRelativeImports
+  const scopedRelativeImports = [] as Array<{ files: string[]; value: RelativeImportsValue }>
+  if (relativeImportOptions) {
+    for (const [value, files] of Object.entries(relativeImportOptions)) {
+      scopedRelativeImports.push({ files, value: value as RelativeImportsValue })
     }
   }
 
@@ -203,7 +206,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           'no-restricted-imports': [
             RuleSeverity.Error,
             noRestrictedImportsOptions({
-              allowRelativeImports: globalAllowRelativeImports,
+              allowRelativeImports: relativeImportsValue,
               namedImports,
               restrictedImports: globalRestrictedImports,
               nodePrefix,
@@ -342,14 +345,14 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
             },
           }))
         : []),
-      ...(scopedAllowRelativeImports.length > 0
-        ? scopedAllowRelativeImports.map(scopedImports => ({
+      ...(scopedRelativeImports.length > 0
+        ? scopedRelativeImports.map(scopedImports => ({
             files: scopedImports.files,
             rules: {
               'no-restricted-imports': [
                 RuleSeverity.Error,
                 noRestrictedImportsOptions({
-                  allowRelativeImports: scopedImports.option,
+                  allowRelativeImports: scopedImports.value,
                   namedImports,
                   nodePrefix,
                 }),

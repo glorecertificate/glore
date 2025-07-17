@@ -33,6 +33,8 @@ export interface SortImportGroup {
   value: Record<string, Array<string | RegExp>>
 }
 
+export type RelativeImportsValue = 'always' | 'never' | 'siblings'
+
 export interface FileOptions {
   /**
    * Patterns of files to lint.
@@ -106,21 +108,7 @@ export interface NoRestrictedImportOptions {
    * allowRelativeImports: 'never'
    * ```
    */
-  allowRelativeImports?:
-    | 'always'
-    | 'never'
-    | 'siblings'
-    | [
-        'always' | 'never' | 'siblings',
-        (
-          | {
-              always?: string[]
-              never?: string[]
-              siblings?: string[]
-            }
-          | undefined
-        ),
-      ]
+  allowRelativeImports?: RelativeImportsValue | [RelativeImportsValue, Partial<Record<RelativeImportsValue, string[]>>]
   /**
    * Modules that don't allow default imports.
    */

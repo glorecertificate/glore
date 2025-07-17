@@ -1,22 +1,24 @@
-import { redirect } from 'next/navigation'
-
 import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
-import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
+import { getEncodedCookie } from '@/lib/storage/server'
 
 import { parseUser } from './parser'
 import { userQuery } from './queries'
 
 export const current = () => {
-  const user = cookies.get('user')
-  if (!user) return redirect(Route.Login)
+  const user = cookies.getEncoded('user')
+  if (!user) throw new DatabaseError(PostgRESTCode.NO_RESULTS, 'User not found')
   return user
 }
 
-export const getCurrent = async (db: DatabaseClient) => {
-  const { id } = current()
+export const getCurrent = async () => {
+  const user = await getEncodedCookie('user')
+  if (!user) throw new DatabaseError(PostgRESTCode.NO_RESULTS, 'User not found')
+  return user
+}
 
+export const find = async (db: DatabaseClient, id: string) => {
   const { data, error } = await db.from('users').select(userQuery).eq('id', id).single()
 
   if (error) throw error

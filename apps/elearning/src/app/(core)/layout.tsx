@@ -10,13 +10,18 @@ import { SyncStateProvider } from '@/components/providers/sync-state-provider'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Route } from '@/lib/navigation'
-import { getCookie } from '@/lib/server'
+import { getCookie, hasCookie } from '@/lib/storage/server'
 
 export default async ({ children }: React.PropsWithChildren) => {
   const api = await getApi()
-  const user = api.users.current()
+  const user = await api.users.getCurrent()
 
-  if (!user) redirect(Route.Login)
+  if (!user) {
+    if (await hasCookie('user')) {
+      throw new Error('User not found, but cookie exists. This might indicate a session issue.')
+    }
+    redirect(Route.Login)
+  }
 
   const courses = await api.courses.list()
 

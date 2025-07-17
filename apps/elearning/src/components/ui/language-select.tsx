@@ -42,10 +42,10 @@ export const LanguageSelect = ({
   const onValueChange = useCallback(
     (locale: Locale) => {
       if (!controlled)
-        startTransition(async () => {
-          await setLocale(locale)
+        startTransition(() => {
+          setLocale(locale)
         })
-      if (onChange) onChange(locale)
+      onChange?.(locale)
     },
     [controlled, onChange, setLocale],
   )

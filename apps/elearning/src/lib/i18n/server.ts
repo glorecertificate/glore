@@ -2,7 +2,7 @@
 
 import { createTranslator, type Locale, type Messages, type NamespaceKeys, type NestedKeyOf } from 'use-intl'
 
-import { getCookie, setCookie } from '@/lib/server'
+import { getCookie, setCookie } from '@/lib/storage/server'
 import config from 'config/app.json'
 
 import { type MessageKey } from './types'
@@ -13,7 +13,7 @@ export const getLocale = async () => {
 }
 
 export const setLocale = async (locale: Locale) => {
-  await setCookie('locale', locale)
+  await setCookie('NEXT_LOCALE', locale)
 }
 
 export const getMessages = async (locale?: Locale) => {

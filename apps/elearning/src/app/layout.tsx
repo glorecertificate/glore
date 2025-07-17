@@ -15,7 +15,8 @@ import { Toaster } from '@/components/ui/toaster'
 import { Env } from '@/lib/env'
 import { getLocale, getMessages, getTranslations } from '@/lib/i18n/server'
 import { generatePageMetadata } from '@/lib/metadata'
-import { asset, Asset } from '@/lib/storage'
+import { Asset } from '@/lib/storage/types'
+import { asset } from '@/lib/storage/utils'
 import meta from 'config/metadata.json'
 
 export const generateMetadata = generatePageMetadata({
@@ -25,7 +26,7 @@ export const generateMetadata = generatePageMetadata({
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
   const messages = await getMessages(locale)
-  const t = await getTranslations({ locale, messages })
+  const t = await getTranslations()
 
   const jsonLd = {
     '@context': 'https://schema.org',

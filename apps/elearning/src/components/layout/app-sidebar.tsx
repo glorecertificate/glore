@@ -62,7 +62,7 @@ import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { db } from '@/lib/db/client'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps<I extends Icon = Icon>

@@ -1,7 +1,7 @@
 import { type User } from '@/api/modules/users/types'
 import { type DatabaseClient } from '@/api/types'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
 
 export const login = async (
   db: DatabaseClient,
@@ -16,7 +16,7 @@ export const login = async (
   if (error) throw error
   if (!data) throw new DatabaseError(PostgRESTCode.INVALID_CREDENTIALS)
 
-  cookies.set('user', user)
+  cookies.setEncoded('user', user)
 
   return data
 }

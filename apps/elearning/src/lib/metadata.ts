@@ -8,7 +8,8 @@ import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
 import { LOCALES } from '@/lib/i18n/utils'
 import { type PageProps, type Route } from '@/lib/navigation'
-import { asset, Asset, Public } from '@/lib/storage'
+import { Asset, Public } from '@/lib/storage/types'
+import { asset } from '@/lib/storage/utils'
 import metadata from 'config/metadata.json'
 
 export interface MetadataOptions<T extends boolean> {

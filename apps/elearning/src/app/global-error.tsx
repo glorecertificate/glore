@@ -5,14 +5,14 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { type Locale } from 'use-intl'
 
-import { hasHistory } from '@repo/utils'
+import { hasHistory, log } from '@repo/utils'
 
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
 import { LOCALES, localizeJson } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
 import config from 'config/app.json'
 import errors from 'config/translations/static/errors.json'
 
@@ -21,13 +21,13 @@ export default ({ error }: ErrorProps) => {
   const router = useRouter()
 
   const locale = useMemo(() => {
-    const cookieLocale = cookies.get('locale')
+    const cookieLocale = cookies.get('NEXT_LOCALE')
     if (!cookieLocale || !LOCALES.includes(cookieLocale)) return config.defaultLocale as Locale
     return cookieLocale
   }, [])
 
   useEffect(() => {
-    console.error(error)
+    log.error(error)
   }, [error])
 
   const onBackClick = useCallback(() => {

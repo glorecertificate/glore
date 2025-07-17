@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Slot, type SlotProps } from '@radix-ui/react-slot'
 
-import { type LocalStorage } from '@/lib/storage'
+import { type LocalStorage } from '@/lib/storage/types'
 import { cn } from '@/lib/utils'
 
 export interface DraggableProps extends SlotProps {

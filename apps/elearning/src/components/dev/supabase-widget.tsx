@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { SupabaseIcon } from '@/components/ui/icons/supabase'
 import { Link } from '@/components/ui/link'
 import { externalRoute } from '@/lib/navigation'
-import { getCookie } from '@/lib/server'
+import { getCookie } from '@/lib/storage/server'
 
 export const SupabaseWidget = async () => {
   const position = await getCookie('supabase-widget-position')

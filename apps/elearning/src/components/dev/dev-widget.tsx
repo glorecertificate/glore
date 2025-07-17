@@ -8,7 +8,8 @@ import { MoveIcon } from 'lucide-react'
 import { type Position } from '@repo/utils'
 
 import { Button } from '@/components/ui/button'
-import { cookies, type Cookie } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
+import { type Cookie } from '@/lib/storage/types'
 import { cn } from '@/lib/utils'
 
 export interface DevWidgetProps extends SlotProps {

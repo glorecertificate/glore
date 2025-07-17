@@ -364,7 +364,12 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           'prefer-arrow-functions': plugins['prefer-arrow-functions'],
         },
         rules: {
-          'prefer-arrow-functions/prefer-arrow-functions': RuleSeverity.Error,
+          'prefer-arrow-functions/prefer-arrow-functions': [
+            RuleSeverity.Error,
+            {
+              allowObjectProperties: true,
+            },
+          ],
         },
       },
       removeUnusedImports && {

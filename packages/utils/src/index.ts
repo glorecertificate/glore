@@ -1,5 +1,7 @@
 export * from '@/capitalize'
+export * from '@/decode'
 export * from '@/deep-merge'
+export * from '@/encode'
 export * from '@/env'
 export * from '@/handleize'
 export * from '@/has-history'

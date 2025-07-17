@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { CaretSortIcon } from '@radix-ui/react-icons'
-import { ArrowDownIcon, ArrowUpIcon, PlusIcon, XIcon } from 'lucide-react'
+import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
 import { type Locale } from 'use-intl'
 
 import { hasHistory } from '@repo/utils'
@@ -29,7 +28,7 @@ import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
 import { cn } from '@/lib/utils'
 
 const EDITOR_TABS = ['all', 'active', 'partial', 'draft', 'archived'] as const
@@ -71,7 +70,7 @@ const SortDropdown = ({
   }, [t, user.canEdit])
 
   const icon = useMemo(() => {
-    if (!value) return <CaretSortIcon className="size-3.5" />
+    if (!value) return <ChevronsUpDown className="size-3.5" />
     const Icon = direction === 'asc' ? ArrowUpIcon : ArrowDownIcon
     return <Icon className="size-3 text-muted-foreground" />
   }, [direction, value])

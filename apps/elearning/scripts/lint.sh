@@ -11,13 +11,10 @@ fi
 
 case "$1" in
   --fix)
-    eslint --fix $ESLINT_GLOBS
-    prettier --write $PRETTIER_GLOBS
+    eslint --fix $ESLINT_GLOBS && prettier --write $PRETTIER_GLOBS
     ;;
   "")
-    eslint $ESLINT_GLOBS
-    prettier --check $PRETTIER_GLOBS
-    shellcheck $SHELLCHECK_GLOBS
+    eslint $ESLINT_GLOBS && prettier --check $PRETTIER_GLOBS && shellcheck $SHELLCHECK_GLOBS
     ;;
   *)
     exit 1

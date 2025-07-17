@@ -8,7 +8,7 @@ import { IntlProvider } from 'use-intl/react'
 import { timezone, type Json } from '@repo/utils'
 
 import { localizeJson } from '@/lib/i18n/utils'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/client'
 import app from 'config/app.json'
 
 export interface I18nProviderProps

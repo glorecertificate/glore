@@ -1,6 +1,7 @@
 import { type MetadataRoute } from 'next'
 
-import { asset, Asset } from '@/lib/storage'
+import { Asset } from '@/lib/storage/types'
+import { asset } from '@/lib/storage/utils'
 import metadata from 'config/metadata.json'
 
 export default (): MetadataRoute.Manifest => ({

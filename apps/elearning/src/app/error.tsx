@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { log } from '@repo/utils'
+
 import { ErrorView, type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/ui/icons/logo'
@@ -17,7 +19,7 @@ export default ({ error }: ErrorProps) => {
   const t = useTranslations('Common')
 
   useEffect(() => {
-    console.error(error)
+    log.error(error)
   }, [error])
 
   const canGoBack = useMemo(() => {

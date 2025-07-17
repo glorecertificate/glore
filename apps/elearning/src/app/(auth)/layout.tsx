@@ -4,7 +4,7 @@ import { Link } from '@/components/ui/link'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Video } from '@/components/ui/video'
 import { Route } from '@/lib/navigation'
-import { asset } from '@/lib/storage'
+import { asset } from '@/lib/storage/utils'
 
 export default ({ children }: React.PropsWithChildren) => (
   <div className="grid min-h-svh lg:grid-cols-12">

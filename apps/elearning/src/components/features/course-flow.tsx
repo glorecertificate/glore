@@ -7,7 +7,7 @@ import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 import { toast } from 'sonner'
 
-import { pick } from '@repo/utils'
+import { log, pick } from '@repo/utils'
 
 import { api } from '@/api/client'
 import { type Course, type Question, type QuestionOption } from '@/api/modules/courses/types'
@@ -162,7 +162,7 @@ export const CourseFlow = (props: { course?: Course }) => {
         setSyncState('complete')
       } catch (e) {
         setSyncState('error')
-        console.error(e)
+        log.error(e)
       }
     },
     [currentLessonIndex, updateCourse, setSyncState],
@@ -249,7 +249,7 @@ export const CourseFlow = (props: { course?: Course }) => {
         position: 'bottom-right',
       })
       setSyncState('error')
-      console.error(e)
+      log.error(e)
     }
   }, [
     currentLesson,

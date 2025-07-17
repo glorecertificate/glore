@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { log } from '@repo/utils'
+
 import { api } from '@/api/client'
 import { type User } from '@/api/modules/users/types'
 import { AuthForm } from '@/components/features/auth-form'
@@ -29,7 +31,7 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { useTranslations } from '@/hooks/use-translations'
 import { PostgRESTCode, type DatabaseError } from '@/lib/db/utils'
 import { externalRoute, Route } from '@/lib/navigation'
-import { asset } from '@/lib/storage'
+import { asset } from '@/lib/storage/utils'
 
 const LoginFormFooter = () => {
   const t = useTranslations()
@@ -124,7 +126,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         setSubmitting(false)
         const error = e as DatabaseError
         if (error.code === PostgRESTCode.NO_RESULTS) return form.setError('user', { message: t('userNotFound') })
-        console.error(e)
+        log.error(e)
         return toast.error(t('networkError'))
       }
 
@@ -133,7 +135,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
-        console.error(e)
+        log.error(e)
         if (error.code === PostgRESTCode.INVALID_CREDENTIALS) {
           return form.setError('password', { message: t('passwordInvalid') })
         }

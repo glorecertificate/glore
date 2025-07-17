@@ -51,7 +51,7 @@ export const badge = cva(
           dark:bg-success/70 dark:focus-visible:ring-success/40
           [a&]:hover:bg-success/90
         `,
-        muted: 'bg-muted text-muted-foreground dark:bg-accent',
+        muted: 'bg-muted text-muted-foreground',
       },
       size: {
         xs: 'gap-0.5 px-1 py-[1px] text-[10px]',

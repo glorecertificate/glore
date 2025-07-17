@@ -80,7 +80,6 @@ const MultiSelectBadge = ({
         size="xs"
         tabIndex={0}
         title={title}
-        variant="default"
         {...props}
       >
         <div className="flex items-center justify-between gap-1">

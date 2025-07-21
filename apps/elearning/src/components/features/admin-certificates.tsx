@@ -144,7 +144,7 @@ export const AdminCertificates = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 {'Organization'}
-                {selectedOrganization && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
+                {selectedOrganization && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -163,7 +163,7 @@ export const AdminCertificates = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
+                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">

@@ -16,24 +16,27 @@ export const CourseView = ({ course, type }: { course?: Course; type?: 'editor' 
   const { localize } = useLocale()
   const t = useTranslations('Courses')
 
-  const { setShadow } = useHeader(
-    <BreadcrumbList className="sm:gap-1">
-      <BreadcrumbLink href={Route.Courses} title={t('all')}>
-        {t('title')}
-      </BreadcrumbLink>
-      <BreadcrumbSeparator />
+  const { showShadow } = useHeader({
+    shadow: false,
+    header: (
+      <BreadcrumbList className="sm:gap-1">
+        <BreadcrumbLink href={Route.Courses} title={t('all')}>
+          {t('title')}
+        </BreadcrumbLink>
+        <BreadcrumbSeparator />
 
-      <BreadcrumbItem className="text-foreground">
-        {course?.title ? localize(course.title) : t('newCourse')}
-      </BreadcrumbItem>
-    </BreadcrumbList>,
-  )
+        <BreadcrumbItem className="text-foreground">
+          {course?.title ? localize(course.title) : t('newCourse')}
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    ),
+  })
 
   const courseType = useMemo(() => type || (course ? 'flow' : 'editor'), [course, type])
 
   useEffect(() => {
-    setShadow(false)
-  }, [setShadow])
+    showShadow(false)
+  }, [showShadow])
 
   if (courseType === 'editor') return <CourseEditor course={course} />
   if (course) return <CourseFlow course={course} />

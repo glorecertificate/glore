@@ -36,7 +36,7 @@ export const CourseEvaluations = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 text-2xl font-semibold text-secondary-accent">{title}</h3>}
+      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {
           count: evaluations.length,
@@ -48,7 +48,7 @@ export const CourseEvaluations = ({
           <div className="space-y-4" key={evaluation.id}>
             <Markdown>{localize(evaluation.description)}</Markdown>
             <RatingGroup
-              color="secondary"
+              color="brand"
               disabled={completed}
               disabledToast={t('ratingDisabled')}
               id={evaluation.id}

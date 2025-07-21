@@ -3,6 +3,13 @@ import type { AnyArray, SnakeToCamelCase } from '@repo/utils'
 import { getDatabase } from '@/lib/db/server'
 import { type TableName, type Tables } from '@/lib/db/types'
 
+import { type api } from './client'
+
+/**
+ * API client type.
+ */
+export type Api = typeof api
+
 /**
  * Entity from the database with keys transformed to camel case and optional foreign keys or timestamps.
  */

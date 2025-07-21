@@ -33,12 +33,15 @@ export const badge = cva(
     },
     variants: {
       color: {
-        default: 'bg-default text-default-foreground',
-        inverted: 'bg-inverted text-inverted-foreground',
-        primary: 'border-primary bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
-        'primary.accent': 'border-primary-accent bg-primary-accent text-primary-foreground',
-        secondary: 'border-secondary bg-secondary text-secondary-foreground',
-        'secondary.accent': 'border-secondary-accent bg-secondary-accent text-secondary-foreground',
+        default: 'bg-muted text-muted-foreground',
+        primary: 'bg-primary text-primary-foreground',
+        secondary: 'bg-secondary text-secondary-foreground',
+        brand: 'border-brand bg-brand text-brand-foreground',
+        'brand.accent': 'border-brand-accent bg-brand-accent text-brand-foreground',
+        'brand-secondary':
+          'border-brand-secondary bg-brand-secondary text-brand-secondary-foreground [a&]:hover:bg-brand-secondary/90',
+        'brand-secondary.accent':
+          'border-brand-secondary-accent bg-brand-secondary-accent text-brand-secondary-foreground',
         destructive: `
           border-destructive bg-destructive text-white
           focus-visible:ring-destructive/20
@@ -51,7 +54,6 @@ export const badge = cva(
           dark:bg-success/70 dark:focus-visible:ring-success/40
           [a&]:hover:bg-success/90
         `,
-        muted: 'bg-muted text-muted-foreground',
       },
       size: {
         xs: 'gap-0.5 px-1 py-[1px] text-[10px]',
@@ -69,17 +71,22 @@ export const badge = cva(
       {
         color: 'default',
         variant: 'outline',
-        className: 'border-foreground/50 bg-transparent text-foreground/80',
+        className: 'border-muted-foreground/50 bg-transparent text-muted-foreground/80',
       },
       {
         color: 'primary',
         variant: 'outline',
-        className: 'border-primary/80 bg-transparent text-primary',
+        className: 'border-foreground/50 bg-transparent text-foreground/80',
       },
       {
-        color: 'secondary',
+        color: 'brand',
         variant: 'outline',
-        className: 'border-secondary/80 bg-transparent text-secondary',
+        className: 'border-brand/80 bg-transparent text-brand',
+      },
+      {
+        color: 'brand-secondary',
+        variant: 'outline',
+        className: 'border-brand-secondary/80 bg-transparent text-brand-secondary',
       },
       {
         color: 'destructive',
@@ -87,19 +94,14 @@ export const badge = cva(
         className: 'border-destructive/50 bg-transparent text-destructive/80',
       },
       {
-        color: 'muted',
+        color: 'brand.accent',
         variant: 'outline',
-        className: 'border-muted-foreground/50 bg-transparent text-muted-foreground/80',
+        className: 'border-brand-accent/80 bg-transparent text-brand-accent',
       },
       {
-        color: 'primary.accent',
+        color: 'brand-secondary.accent',
         variant: 'outline',
-        className: 'border-primary-accent/80 bg-transparent text-primary-accent',
-      },
-      {
-        color: 'secondary.accent',
-        variant: 'outline',
-        className: 'border-secondary-accent/80 bg-transparent text-secondary-accent',
+        className: 'border-brand-secondary-accent/80 bg-transparent text-brand-secondary-accent',
       },
     ],
   },

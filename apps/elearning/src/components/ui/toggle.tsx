@@ -5,7 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-const toggleVariants = cva(
+export const Toggle = ({
+  className,
+  size,
+  variant,
+  ...props
+}: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) => (
+  <TogglePrimitive.Root className={cn(toggleVariants({ variant, size, className }))} data-slot="toggle" {...props} />
+)
+
+export const toggleVariants = cva(
   `
     inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none
     hover:bg-muted hover:text-muted-foreground
@@ -35,14 +44,3 @@ const toggleVariants = cva(
     },
   },
 )
-
-const Toggle = ({
-  className,
-  size,
-  variant,
-  ...props
-}: React.ComponentProps<typeof TogglePrimitive.Root> & VariantProps<typeof toggleVariants>) => (
-  <TogglePrimitive.Root className={cn(toggleVariants({ variant, size, className }))} data-slot="toggle" {...props} />
-)
-
-export { Toggle, toggleVariants }

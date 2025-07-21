@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Check, ChevronsUpDown, X } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Badge, type BadgeProps } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
@@ -37,6 +38,7 @@ export interface MultiSelectProps extends PopoverProps {
   }>
   placeholder?: string
   search?: boolean
+  toasterTimeout?: number
   triggerProps?: PopoverTriggerProps
   value: string[]
 }
@@ -62,6 +64,7 @@ const MultiSelectBadge = ({
   const t = useTranslations()
 
   const option = useMemo(() => options.find(({ value }) => value === item), [item, options])
+
   const title = useMemo(
     () =>
       disabled ? undefined : `${t('Common.remove')} ${locale === 'en' ? option?.label : option?.label?.toLowerCase()}`,
@@ -73,7 +76,6 @@ const MultiSelectBadge = ({
       <Badge
         asChild
         className={cn('group px-1.5 py-0', disabled ? 'cursor-not-allowed' : 'cursor-pointer', className)}
-        color="muted"
         key={item}
         onClick={onSelect.bind(null, item)}
         onKeyDown={e => e.key === 'Enter' && onSelect(item)}
@@ -121,12 +123,14 @@ export const MultiSelect = ({
   onChange,
   options,
   search = true,
+  toasterTimeout = 2_000,
   triggerProps,
   value,
   ...props
 }: MultiSelectProps) => {
   const t = useTranslations('Common')
   const [open, setOpen] = useState(false)
+  const [selectTime, setSelectTime] = useState<number | null>(null)
 
   const placeholder = useMemo(() => props.placeholder ?? t('selectItems'), [props.placeholder, t])
   const { className: contentClassName, ...contentRest } = contentProps || {}
@@ -142,26 +146,29 @@ export const MultiSelect = ({
     setOpen(prev => !prev)
   }, [])
 
-  const handleUnselect = useCallback(
+  const onUnselect = useCallback(
     (item: string) => {
-      if (!canUnselect) return
-      onChange(value.filter(i => i !== item))
+      if (canUnselect) return onChange(value.filter(i => i !== item))
+      if (selectTime && Date.now() - selectTime < toasterTimeout) return
+
+      toast.info(message, { duration: 2_000 })
+      setSelectTime(Date.now())
     },
-    [canUnselect, onChange, value],
+    [canUnselect, message, onChange, selectTime, toasterTimeout, value],
   )
 
-  const handleSelect = useCallback(
+  const onSelect = useCallback(
     (item: string) => () => {
       if (value.includes(item)) {
-        handleUnselect(item)
+        onUnselect(item)
         return
       }
       onChange([...value, item])
     },
-    [handleUnselect, onChange, value],
+    [onUnselect, onChange, value],
   )
 
-  const handleButtonClick = useCallback((e: React.MouseEvent) => {
+  const onButtonClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
   }, [])
@@ -179,7 +186,7 @@ export const MultiSelect = ({
             className,
           )}
           disabled={disabled}
-          onClick={handleButtonClick}
+          onClick={onButtonClick}
           {...triggerRest}
         >
           <div className="flex flex-1 justify-between overflow-hidden">
@@ -199,7 +206,7 @@ export const MultiSelect = ({
                     disabledMessage={message}
                     item={item}
                     key={item}
-                    onSelect={handleSelect(item)}
+                    onSelect={onSelect(item)}
                     options={options}
                     tooltipDelay={delay}
                   />
@@ -247,7 +254,7 @@ export const MultiSelect = ({
                       isSelected(option.value) && !canUnselect ? 'cursor-default' : 'cursor-pointer',
                     )}
                     key={option.value}
-                    onSelect={handleSelect(option.value)}
+                    onSelect={onSelect(option.value)}
                     value={option.value}
                   >
                     <Check

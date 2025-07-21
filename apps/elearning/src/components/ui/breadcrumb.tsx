@@ -22,13 +22,17 @@ export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol
 )
 
 export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li'>) => (
-  <li className={cn('inline-flex items-center gap-1.5', className)} data-slot="breadcrumb-item" {...props} />
+  <li
+    className={cn('inline-flex items-center gap-1.5 font-medium', className)}
+    data-slot="breadcrumb-item"
+    {...props}
+  />
 )
 
 export const BreadcrumbLink = ({ className, ...props }: LinkProps) => (
   <BreadcrumbItem>
-    <Button asChild variant="ghost">
-      <Link className={cn('h-8 px-2', className)} {...props} />
+    <Button asChild className={cn('h-8 px-3 font-normal', className)} variant="ghost">
+      <Link {...props} />
     </Button>
   </BreadcrumbItem>
 )

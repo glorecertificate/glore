@@ -341,7 +341,12 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'rounded-lg bg-background/80 py-7 hover:bg-background/20 data-[state=open]:bg-background/20 data-[state=open]:text-sidebar-accent-foreground',
+                `
+                  rounded-lg bg-background/80 py-7 shadow-xl transition-all duration-150
+                  hover:bg-background/80
+                  active:bg-background/40 active:shadow-inner
+                  data-[state=open]:bg-background/20 data-[state=open]:text-sidebar-accent-foreground
+                `,
                 open ? 'overflow-hidden' : 'overflow-visible',
               )}
               size="lg"

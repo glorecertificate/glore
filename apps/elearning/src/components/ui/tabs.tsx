@@ -83,22 +83,21 @@ export const tabsTrigger = cva(
           data-[state=active]:bg-background
           dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
         `,
-        primary: `
-          focus-visible:ring-primary/50 focus-visible:outline-primary
-          data-[state=active]:border-primary-accent data-[state=active]:bg-primary data-[state=active]:text-primary-foreground
-          dark:data-[state=active]:bg-primary-accent
+        brand: `
+          focus-visible:text-brand-foreground focus-visible:ring-brand/50 focus-visible:outline-brand
+          data-[state=active]:bg-brand
+          dark:data-[state=active]:bg-brand-accent
         `,
-
-        secondary: `
-          focus-visible:text-secondary-foreground focus-visible:ring-secondary/50 focus-visible:outline-secondary
-          data-[state=active]:bg-secondary
-          dark:data-[state=active]:bg-secondary-accent
+        'brand-secondary': `
+          focus-visible:ring-brand-secondary/50 focus-visible:outline-brand-secondary
+          data-[state=active]:border-brand-secondary-accent data-[state=active]:bg-brand-secondary data-[state=active]:text-brand-secondary-foreground
+          dark:data-[state=active]:bg-brand-secondary-accent
         `,
-        tertiary: `
-          text-tertiary-foreground
-          focus-visible:ring-tertiary/50 focus-visible:outline-tertiary
-          data-[state=active]:bg-tertiary
-          dark:data-[state=active]:bg-tertiary-accent
+        'brand-tertiary': `
+          text-brand-tertiary-foreground
+          focus-visible:ring-brand-tertiary/50 focus-visible:outline-brand-tertiary
+          data-[state=active]:bg-brand-tertiary
+          dark:data-[state=active]:bg-brand-tertiary-accent
         `,
       },
       size: {
@@ -113,25 +112,27 @@ export const tabsTrigger = cva(
 export const tabsTriggerBadge = cva(
   'flex items-center justify-center rounded-full text-stroke-0 group-data-[state=active]/tabs-trigger:font-semibold',
   {
+    defaultVariants: {
+      color: 'default',
+      size: 'md',
+    },
     variants: {
       color: {
         default: `
           bg-muted-foreground/15 text-muted-foreground/75
           group-data-[state=active]/tabs-trigger:bg-muted-foreground/80 group-data-[state=active]/tabs-trigger:text-accent
+          dark:group-data-[state=active]/tabs-trigger:bg-muted-foreground/35 dark:group-data-[state=active]/tabs-trigger:text-foreground
+          dark:group-data-[state=active]/tabs-trigger:text-shadow-lg
         `,
-        primary: 'bg-primary text-primary-foreground',
-        secondary: 'bg-secondary text-secondary-foreground',
-        tertiary: 'bg-tertiary text-tertiary-foreground',
+        brand: 'bg-brand text-brand-foreground',
+        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground',
+        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground',
       },
       size: {
         sm: 'text-[9px]',
         md: 'min-w-[15px] text-[10.5px]',
         lg: 'text-sm',
       },
-    },
-    defaultVariants: {
-      color: 'default',
-      size: 'md',
     },
   },
 )

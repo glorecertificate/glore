@@ -150,6 +150,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
   return (
     <AuthForm
       className="mt-8"
+      disabledTitle={t('insertCredentials')}
       footer={<LoginFormFooter />}
       form={form}
       loading={submitting}
@@ -182,7 +183,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
               <FormLabel>{t('passwordLabel')}</FormLabel>
               <Button
                 asChild
-                className="text-[13px] font-medium text-muted-foreground"
+                className="text-[13px] text-muted-foreground"
                 effect="hoverUnderline"
                 size="text"
                 variant="link"

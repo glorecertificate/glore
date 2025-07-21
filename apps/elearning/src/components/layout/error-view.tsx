@@ -54,7 +54,7 @@ export const ErrorView = ({
         ? t('Common.notFoundMessage')
         : t.rich('Common.errorMessage', {
             contactUs: content => (
-              <a className="text-secondary underline" href={`mailto:${metadata.email}`}>
+              <a className="text-brand underline" href={`mailto:${metadata.email}`}>
                 {content}
               </a>
             ),

@@ -17,10 +17,10 @@ export const useTheme = () => {
     themes: nextThemes,
   } = useNextTheme()
 
-  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Theme>>
+  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Theme | `${Theme}`>>
   const resolvedTheme = resolvedNextTheme as Omit<Theme, 'system'>
-  const theme = nextTheme as Theme
-  const themes = nextThemes as Theme[]
+  const theme = nextTheme as Theme | `${Theme}`
+  const themes = nextThemes as Array<Theme | `${Theme}`>
   const isLightMode = useMemo(() => resolvedTheme === 'light', [resolvedTheme])
   const isDarkMode = useMemo(() => resolvedTheme === 'dark', [resolvedTheme])
 

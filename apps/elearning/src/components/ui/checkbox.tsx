@@ -5,7 +5,7 @@ import { CheckIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) => (
+export const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>) => (
   <CheckboxPrimitive.Root
     className={cn(
       `
@@ -13,7 +13,7 @@ const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxP
         focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
         disabled:cursor-not-allowed disabled:opacity-50
         aria-invalid:border-destructive aria-invalid:ring-destructive/20
-        data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground
+        data-[state=checked]:border-brand-secondary data-[state=checked]:bg-brand-secondary data-[state=checked]:text-brand-secondary-foreground
         dark:aria-invalid:ring-destructive/40
       `,
       className,
@@ -29,5 +29,3 @@ const Checkbox = ({ className, ...props }: React.ComponentProps<typeof CheckboxP
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 )
-
-export { Checkbox }

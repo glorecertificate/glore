@@ -5,9 +5,9 @@
     "it": "Si è verificato un errore"
   },
   "message": {
-    "en": "We're sorry, but something unexpected happened. Please try again or contact support if the problem persists.",
-    "es": "Lo sentimos, pero algo inesperado ocurrió. Por favor, inténtalo de nuevo o contacta con soporte si el problema persiste.",
-    "it": "Ci dispiace, ma si è verificato un errore imprevisto. Riprova o contatta il supporto se il problema persiste."
+    "en": "An unexpected error occurred. Try again or contact us if the problem persists.",
+    "es": "Se ha producido un error inesperado. Inténtalo de nuevo o contáctanos si el problema persiste.",
+    "it": "Si è verificato un errore imprevisto. Riprova o contattaci se il problema persiste."
   },
   "backToPrevious": {
     "en": "Go back",
@@ -15,7 +15,7 @@
     "it": "Torna indietro"
   },
   "backToHome": {
-    "en": "Go to homepage",
+    "en": "Go to the homepage",
     "es": "Ir al inicio",
     "it": "Vai alla homepage"
   },

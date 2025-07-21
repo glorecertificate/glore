@@ -13,7 +13,7 @@ const ToggleGroupContext = createContext<VariantProps<typeof toggleVariants>>({
   variant: 'default',
 })
 
-const ToggleGroup = ({
+export const ToggleGroup = ({
   children,
   className,
   size,
@@ -31,7 +31,7 @@ const ToggleGroup = ({
   </ToggleGroupPrimitive.Root>
 )
 
-const ToggleGroupItem = ({
+export const ToggleGroupItem = ({
   children,
   className,
   size,
@@ -66,5 +66,3 @@ const ToggleGroupItem = ({
     </ToggleGroupPrimitive.Item>
   )
 }
-
-export { ToggleGroup, ToggleGroupItem }

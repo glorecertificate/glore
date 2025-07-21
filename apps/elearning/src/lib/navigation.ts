@@ -3,7 +3,7 @@ import { type AnyRecord, type HTTPUrl } from '@repo/utils'
 import { Env } from '@/lib/env'
 import metadata from 'config/metadata.json'
 
-export interface PageProps<R extends Route, K extends AnyRecord = AnyRecord> {
+export interface PageProps<R extends Route | `${Route}`, K extends AnyRecord = AnyRecord> {
   params?: Promise<RouteSegments<R>>
   searchParams?: Promise<K>
 }

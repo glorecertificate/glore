@@ -78,9 +78,9 @@ export const link = cva('transition-all', {
   variants: {
     color: {
       default: 'text-current',
-      primary: 'text-primary hover:text-primary-accent',
-      secondary: 'text-secondary hover:text-secondary-accent',
-      tertiary: 'text-tertiary hover:text-tertiary-accent',
+      brand: 'text-brand hover:text-brand-accent',
+      'brand-secondary': 'text-brand-secondary hover:text-brand-secondary-accent',
+      'brand-tertiary': 'text-brand-tertiary hover:text-brand-tertiary-accent',
       destructive: 'text-destructive hover:text-destructive',
       success: 'text-success hover:text-success',
       transparent: 'text-transparent hover:text-foreground',

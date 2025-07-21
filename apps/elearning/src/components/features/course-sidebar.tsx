@@ -90,7 +90,7 @@ export const CourseSidebar = ({
           <div className="relative">
             <div className="absolute top-[60px] left-[23px] w-0.5 bg-muted" />
             <div
-              className="absolute top-[50px] left-[23px] w-0.5 bg-secondary transition-all duration-300"
+              className="absolute top-[50px] left-[23px] w-0.5 bg-brand transition-all duration-300"
               style={{ height: `${course.progress}%` }}
             />
             {course.lessons?.map((lesson, index) => (
@@ -109,7 +109,7 @@ export const CourseSidebar = ({
                   className={cn(
                     'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
                     isCurrent(index) || isPast(index)
-                      ? 'border-secondary-accent bg-secondary text-secondary-foreground'
+                      ? 'border-brand-accent bg-brand text-brand-foreground'
                       : 'border-border bg-background',
                   )}
                 >

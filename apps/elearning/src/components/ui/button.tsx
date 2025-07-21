@@ -1,4 +1,6 @@
-import { useMemo } from 'react'
+'use client'
+
+import { useCallback, useMemo } from 'react'
 
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
@@ -7,10 +9,12 @@ import { Loader } from '@/components/ui/icons/loader'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>,
     React.RefAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  disabledCursor?: boolean
+  disabledTitle?: string
   icon?: React.ElementType
   iconPlacement?: 'left' | 'right'
   loading?: boolean
@@ -22,12 +26,16 @@ export const Button = ({
   children,
   className,
   disabled,
+  disabledCursor = false,
+  disabledTitle,
   effect,
   icon: Icon,
   iconPlacement,
   loading = false,
   loadingText,
+  onClick,
   size,
+  title,
   variant,
   ...props
 }: ButtonProps) => {
@@ -35,9 +43,28 @@ export const Button = ({
   const hasLeftIcon = useMemo(() => !loading && iconPlacement === 'left', [loading, iconPlacement])
   const hasRightIcon = useMemo(() => !loading && iconPlacement === 'right', [loading, iconPlacement])
   const isDisabled = useMemo(() => disabled || loading, [disabled, loading])
+  const buttonTitle = useMemo(() => (isDisabled ? (disabledTitle ?? title) : title), [isDisabled, disabledTitle, title])
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (isDisabled) return
+      return onClick?.(e)
+    },
+    [isDisabled, onClick],
+  )
 
   return (
-    <Component className={cn(buttonVariants({ variant, size, effect, className }))} disabled={isDisabled} {...props}>
+    <Component
+      className={cn(
+        buttonVariants({ variant, disabled: isDisabled, size, effect }),
+        disabledCursor && isDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        className,
+      )}
+      disabled={isDisabled}
+      onClick={handleClick}
+      title={buttonTitle}
+      {...props}
+    >
       {Icon &&
         hasLeftIcon &&
         (effect === 'expandIcon' ? (
@@ -83,9 +110,8 @@ export const Button = ({
 
 export const buttonVariants = cva(
   `
-    inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none
+    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
-    disabled:pointer-events-none disabled:opacity-50
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
     dark:aria-invalid:ring-destructive/40
     [&_svg]:pointer-events-none [&_svg]:shrink-0
@@ -93,38 +119,26 @@ export const buttonVariants = cva(
   `,
   {
     defaultVariants: {
-      variant: 'outline',
+      variant: 'primary',
       size: 'md',
       effect: null,
     },
     variants: {
+      disabled: {
+        true: 'opacity-50',
+      },
       variant: {
-        default: 'bg-default text-default-foreground shadow-xs hover:bg-default/90',
-        inverted: 'bg-inverted text-inverted-foreground shadow-xs hover:bg-inverted/80',
-        destructive: `
-          bg-destructive text-destructive-foreground shadow-xs
-          hover:bg-destructive-accent
-          focus-visible:ring-destructive/20
-          dark:focus-visible:ring-destructive/40
-        `,
-        warning:
-          'bg-warning text-warning-foreground shadow-xs hover:bg-warning-accent focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
-        success:
-          'bg-success text-success-foreground shadow-xs hover:bg-success-accent focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
-        primary:
-          'bg-primary text-primary-foreground shadow-xs hover:bg-primary-accent focus-visible:ring-primary/20 dark:focus-visible:ring-primary/40',
-        secondary: `
-          bg-secondary text-secondary-foreground shadow-xs
-          hover:bg-secondary-accent
-          focus-visible:ring-secondary/20
-          dark:focus-visible:ring-secondary/40
-        `,
-        tertiary:
-          'bg-tertiary text-tertiary-foreground shadow-xs hover:bg-tertiary-accent focus-visible:ring-tertiary/20 dark:focus-visible:ring-tertiary/40',
-        outline:
-          'border border-input bg-background shadow-xs hover:bg-accent/80 hover:text-accent-foreground dark:bg-input/30 dark:hover:bg-input/50',
-        ghost: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'text-primary underline-offset-4 hover:underline',
+        primary: 'bg-primary text-primary-foreground shadow-xs',
+        secondary: 'bg-secondary text-secondary-foreground shadow-xs',
+        destructive: 'bg-destructive text-destructive-foreground shadow-xs',
+        warning: 'bg-warning text-warning-foreground shadow-xs',
+        success: 'bg-success text-success-foreground shadow-xs',
+        brand: 'bg-brand text-brand-foreground shadow-xs',
+        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground shadow-xs',
+        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground shadow-xs',
+        outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
+        ghost: '',
+        link: 'underline-offset-4 hover:underline',
         transparent: 'bg-transparent text-current',
       },
       size: {
@@ -137,7 +151,7 @@ export const buttonVariants = cva(
       },
       effect: {
         expandIcon: 'group relative gap-0',
-        ringHover: 'transition-all duration-300 hover:ring-2 hover:ring-primary/90 hover:ring-offset-2',
+        ringHover: 'transition-all duration-300 hover:ring-2 hover:ring-brand-secondary/90 hover:ring-offset-2',
         shine: `
           relative overflow-hidden transition-[background-position_0s_ease]
           before:absolute before:inset-0 before:animate-shine before:rounded-[inherit]
@@ -165,14 +179,14 @@ export const buttonVariants = cva(
         `,
         underline: `
           relative !no-underline
-          after:absolute after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-primary after:transition-transform
+          after:absolute after:bottom-2 after:h-[1px] after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-brand-secondary after:transition-transform
           after:duration-300 after:ease-in-out
           hover:after:origin-bottom-right hover:after:scale-x-0
         `,
         hoverUnderline: `
           relative !no-underline
-          after:absolute after:bottom-0 after:h-[1px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-current/80 after:transition-transform
-          after:duration-200 after:ease-in-out
+          after:absolute after:bottom-0 after:h-[1px] after:w-[calc(100%_-_4px)] after:origin-bottom-right after:scale-x-0 after:bg-current/60
+          after:transition-transform after:duration-150 after:ease-in-out
           hover:after:origin-bottom-left hover:after:scale-x-100
         `,
         gradientSlideShow: `
@@ -181,5 +195,60 @@ export const buttonVariants = cva(
         `,
       },
     },
+    compoundVariants: [
+      {
+        variant: 'primary',
+        disabled: false,
+        className: 'hover:bg-primary/90',
+      },
+      {
+        variant: 'secondary',
+        disabled: false,
+        className: 'hover:bg-secondary/80',
+      },
+      {
+        variant: 'destructive',
+        disabled: false,
+        className:
+          'hover:bg-destructive-accent focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+      },
+      {
+        variant: 'warning',
+        disabled: false,
+        className: 'hover:bg-warning-accent focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
+      },
+      {
+        variant: 'success',
+        disabled: false,
+        className: 'hover:bg-success-accent focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
+      },
+      {
+        variant: 'brand',
+        disabled: false,
+        className: 'hover:bg-brand-accent focus-visible:ring-brand/20 dark:focus-visible:ring-brand/40',
+      },
+      {
+        variant: 'brand-secondary',
+        disabled: false,
+        className:
+          'hover:bg-brand-secondary-accent focus-visible:ring-brand-secondary/20 dark:focus-visible:ring-brand-secondary/40',
+      },
+      {
+        variant: 'brand-tertiary',
+        disabled: false,
+        className:
+          'hover:bg-brand-tertiary-accent focus-visible:ring-brand-tertiary/20 dark:focus-visible:ring-brand-tertiary/40',
+      },
+      {
+        variant: 'outline',
+        disabled: false,
+        className: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-input/50',
+      },
+      {
+        variant: 'ghost',
+        disabled: false,
+        className: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-accent/50',
+      },
+    ],
   },
 )

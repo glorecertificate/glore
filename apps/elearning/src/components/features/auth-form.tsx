@@ -10,6 +10,7 @@ import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 export type AuthFormProps<T extends FieldValues> = React.ComponentProps<'form'> & {
+  disabledTitle?: string
   footer?: React.ReactNode
   form?: UseFormReturn<T>
   header?: React.ReactNode
@@ -27,6 +28,7 @@ export const AuthForm = <T extends FieldValues>({
   className,
   footer,
   form,
+  disabledTitle,
   header,
   loading,
   onSubmit,
@@ -61,9 +63,11 @@ export const AuthForm = <T extends FieldValues>({
             <Button
               className="w-full [&_svg]:size-4"
               disabled={submitDisabled}
+              disabledCursor
+              disabledTitle={disabledTitle}
               loading={loading}
               type="submit"
-              variant="secondary"
+              variant="brand"
             >
               {buttonLabel}
             </Button>

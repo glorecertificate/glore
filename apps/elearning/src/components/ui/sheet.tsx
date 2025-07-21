@@ -6,23 +6,23 @@ import { XIcon } from 'lucide-react'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
-const Sheet = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) => (
+export const Sheet = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) => (
   <SheetPrimitive.Root data-slot="sheet" {...props} />
 )
 
-const SheetTrigger = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Trigger>) => (
+export const SheetTrigger = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Trigger>) => (
   <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 )
 
-const SheetClose = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Close>) => (
+export const SheetClose = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Close>) => (
   <SheetPrimitive.Close data-slot="sheet-close" {...props} />
 )
 
-const SheetPortal = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>) => (
+export const SheetPortal = ({ ...props }: React.ComponentProps<typeof SheetPrimitive.Portal>) => (
   <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />
 )
 
-const SheetOverlay = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Overlay>) => (
+export const SheetOverlay = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Overlay>) => (
   <SheetPrimitive.Overlay
     className={cn(
       'fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
@@ -33,7 +33,7 @@ const SheetOverlay = ({ className, ...props }: React.ComponentProps<typeof Sheet
   />
 )
 
-const SheetContent = ({
+export const SheetContent = ({
   children,
   className,
   side = 'right',
@@ -73,7 +73,7 @@ const SheetContent = ({
             hover:opacity-100
             focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden
             disabled:pointer-events-none
-            data-[state=open]:bg-secondary
+            data-[state=open]:bg-brand
           `}
         >
           <XIcon className="size-4" />
@@ -84,24 +84,22 @@ const SheetContent = ({
   )
 }
 
-const SheetHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const SheetHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('flex flex-col gap-1.5 p-4', className)} data-slot="sheet-header" {...props} />
 )
 
-const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('mt-auto flex flex-col gap-2 p-4', className)} data-slot="sheet-footer" {...props} />
 )
 
-const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>) => (
+export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>) => (
   <SheetPrimitive.Title className={cn('font-semibold text-foreground', className)} data-slot="sheet-title" {...props} />
 )
 
-const SheetDescription = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Description>) => (
+export const SheetDescription = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Description>) => (
   <SheetPrimitive.Description
     className={cn('text-sm text-muted-foreground', className)}
     data-slot="sheet-description"
     {...props}
   />
 )
-
-export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription }

@@ -134,7 +134,7 @@ export const CourseCard = ({
               </Link>
               {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
               {user.canEdit && publishedLocales.length === 0 && (
-                <Badge className="ml-1.5" color="muted" size="xs">
+                <Badge className="ml-1.5" size="xs">
                   {t('Courses.draft')}
                 </Badge>
               )}
@@ -167,7 +167,7 @@ export const CourseCard = ({
               <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
                 <UserPenIcon className="size-3.5 text-foreground" />
                 <div className="flex items-center gap-2">
-                  <span>{'Created by'}</span>
+                  <span>{t('Courses.createdBy')}</span>
                   <HoverCard closeDelay={50} openDelay={300}>
                     <HoverCardTrigger asChild>
                       <Button

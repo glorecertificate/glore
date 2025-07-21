@@ -7,7 +7,7 @@ import { Route } from '@/lib/navigation'
 import { asset } from '@/lib/storage/utils'
 
 export default ({ children }: React.PropsWithChildren) => (
-  <div className="grid min-h-svh lg:grid-cols-12">
+  <div className="grid min-h-svh overflow-x-hidden lg:grid-cols-12">
     <div className="col-span-5 flex flex-col gap-4 p-6 md:p-10">
       <div className="flex justify-between gap-2">
         <Link className="flex h-fit items-center gap-1.5" href={Route.Login}>

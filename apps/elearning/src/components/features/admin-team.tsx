@@ -161,7 +161,7 @@ export const AdminTeam = () => {
             <Download className="mr-2 h-4 w-4" />
             {'Export'}
           </Button>
-          <Button onClick={() => setIsAddUserOpen(true)} variant="secondary">
+          <Button onClick={() => setIsAddUserOpen(true)} variant="brand">
             <UserPlus className="mr-2 h-4 w-4" />
             {'Add User'}
           </Button>
@@ -186,7 +186,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 {'Role'}
-                {selectedRole && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
+                {selectedRole && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -202,7 +202,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
+                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -219,7 +219,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 {'Region'}
-                {selectedRegion && <span className="ml-1 h-2 w-2 rounded-full bg-primary"></span>}
+                {selectedRegion && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -362,7 +362,7 @@ export const AdminTeam = () => {
             <Button onClick={() => setIsAddUserOpen(false)} variant="outline">
               {'Cancel'}
             </Button>
-            <Button onClick={_onAddUser} type="submit" variant="secondary">
+            <Button onClick={_onAddUser} type="submit" variant="brand">
               {'Create User'}
             </Button>
           </DialogFooter>

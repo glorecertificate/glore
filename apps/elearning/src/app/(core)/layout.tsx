@@ -30,7 +30,7 @@ export default async ({ children }: React.PropsWithChildren) => {
     ? user.organizations.find(({ id }) => id === organizationCookie)
     : user.organizations?.[0]
 
-  const sidebarOpen = await getCookie('sidebar-open')
+  const sidebarOpen = (await getCookie('sidebar-open')) ?? true
 
   return (
     <SessionProvider courses={courses} organization={organization} user={user}>

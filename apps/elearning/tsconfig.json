@@ -6,6 +6,9 @@
     "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
+      "#rte/*": ["./src/components/ui/rich-text-editor/*"],
+      "config/*": ["./config/*"],
+      "supabase/*": ["./supabase/*"],
       "@/*": ["./src/*"]
     },
     "noEmit": true,

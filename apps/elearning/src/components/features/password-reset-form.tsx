@@ -85,6 +85,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
 
   return showSuccess ? (
     <AuthForm
+      disabledTitle={t('insertEmail')}
       header={
         <div className="flex flex-col gap-2">
           <EmailSentGraphic className="mb-4" width={220} />
@@ -102,14 +103,23 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
   ) : (
     <>
       <AuthForm
-        className="mt-2"
+        className="mt-2 gap-4"
         footer={
           <div className="flex w-full justify-end">
-            <Link className="mt-1 text-[13px]" href={Route.Login}>
-              <Button className="font-normal text-muted-foreground hover:text-foreground" size="sm" variant="ghost">
+            {/* <Link className="mt-1 text-[13px]" href={Route.Login}>
+              <Button className="font-normal" size="sm" variant="link">
                 {t('backToLogin')}
               </Button>
-            </Link>
+            </Link> */}
+            <Button
+              asChild
+              className="text-[13px] text-muted-foreground"
+              effect="hoverUnderline"
+              size="text"
+              variant="link"
+            >
+              <Link href={Route.Login}>{t('forgotPassword')}</Link>
+            </Button>
           </div>
         }
         form={form}

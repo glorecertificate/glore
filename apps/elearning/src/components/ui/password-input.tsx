@@ -33,9 +33,9 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
           variant="ghost"
         >
           {showPassword && !disabled ? (
-            <EyeIcon aria-hidden="true" className="h-4.5 w-4.5 fill-secondary/10 stroke-muted-foreground" />
+            <EyeIcon aria-hidden="true" className="h-4.5 w-4.5 fill-brand/10 stroke-muted-foreground" />
           ) : (
-            <EyeOffIcon aria-hidden="true" className="h-4.5 w-4.5 fill-secondary/10 stroke-muted-foreground" />
+            <EyeOffIcon aria-hidden="true" className="h-4.5 w-4.5 fill-brand/10 stroke-muted-foreground" />
           )}
           <span className="sr-only">{srText}</span>
         </Button>

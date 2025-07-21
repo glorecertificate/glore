@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { isServer } from '@repo/utils'
+
 const MOBILE_BREAKPOINT = 768
 
 /**
@@ -9,31 +11,35 @@ const MOBILE_BREAKPOINT = 768
  * Returns the device type and booleans for simplified checks.
  */
 export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {
-  const detectType = useCallback(
-    () => (typeof window === 'undefined' ? undefined : window.innerWidth < breakpoint ? 'mobile' : 'desktop'),
-    [breakpoint],
-  )
+  const detectSize = useCallback(() => {
+    if (isServer()) return undefined
+    return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
+  }, [breakpoint])
 
-  const [type, setType] = useState<'mobile' | 'desktop' | undefined>(detectType())
+  const [size, setSize] = useState<'mobile' | 'desktop' | undefined>(detectSize())
+  const [isTouch, setIsTouch] = useState(false)
 
-  const isMobile = useMemo(() => type === 'mobile', [type])
-  const isDesktop = useMemo(() => type === 'desktop', [type])
+  const isMobile = useMemo(() => size === 'mobile', [size])
+  const isDesktop = useMemo(() => size === 'desktop', [size])
 
-  const onWindowChange = useCallback(() => {
-    setType(detectType())
-  }, [detectType])
+  const onResize = useCallback(() => {
+    setSize(detectSize())
+    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0)
+  }, [detectSize])
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    onWindowChange()
-
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    mql.addEventListener('change', onWindowChange)
+
+    onResize()
+
+    mql.addEventListener('change', onResize)
+    mql.addEventListener('resize', onResize)
 
     return () => {
-      mql.removeEventListener('change', onWindowChange)
+      mql.removeEventListener('change', onResize)
+      mql.removeEventListener('resize', onResize)
     }
-  }, [onWindowChange])
+  }, [onResize])
 
-  return { type, isMobile, isDesktop }
+  return { size, isMobile, isDesktop, isTouch }
 }

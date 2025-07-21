@@ -14,7 +14,7 @@ import { LOCALES, localizeJson } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
 import config from 'config/app.json'
-import errors from 'config/translations/static/errors.json'
+import errors from 'config/translations/global/errors.json'
 
 export default ({ error }: ErrorProps) => {
   const pathname = usePathname()
@@ -49,10 +49,10 @@ export default ({ error }: ErrorProps) => {
           <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
             <ServerErrorGraphic width={240} />
             <div className="text-center">
-              <h2 className="mb-4 font-mono text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="mb-4 font-mono text-2xl font-bold tracking-tight text-foreground">
                 {localizeJson(errors.title, locale)}
               </h2>
-              <p className="mb-8 font-mono text-lg text-foreground/75">{localizeJson(errors.message, locale)}</p>
+              <p className="mb-8 font-mono text-foreground/75">{localizeJson(errors.message, locale)}</p>
               <div className="flex justify-center gap-4">
                 {hasHistory() ? (
                   <Button onClick={onBackClick} size="lg" variant="outline">

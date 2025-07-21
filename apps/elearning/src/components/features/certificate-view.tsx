@@ -92,7 +92,7 @@ export const CertificateView = () => {
             {NoCertificateImage}
             <h2 className="mb-2 text-lg font-bold">{noCertificateTitle}</h2>
             <p className="mb-5 text-muted-foreground">{noCertificateMessage}</p>
-            <Button asChild size="lg" variant="secondary">
+            <Button asChild size="lg" variant="brand">
               <Link href={noCertificateLink}>{noCertificateLabel}</Link>
             </Button>
           </div>

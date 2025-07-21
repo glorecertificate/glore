@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn('flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-xs', className)}
     data-slot="card"
@@ -8,7 +8,7 @@ const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
   />
 )
 
-const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
       `
@@ -23,15 +23,15 @@ const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   />
 )
 
-const CardTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('leading-none font-semibold', className)} data-slot="card-title" {...props} />
 )
 
-const CardDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('text-sm text-muted-foreground', className)} data-slot="card-description" {...props} />
 )
 
-const CardAction = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardAction = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)}
     data-slot="card-action"
@@ -39,12 +39,10 @@ const CardAction = ({ className, ...props }: React.ComponentProps<'div'>) => (
   />
 )
 
-const CardContent = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardContent = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('px-6', className)} data-slot="card-content" {...props} />
 )
 
-const CardFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
+export const CardFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div className={cn('flex items-center px-6 [.border-t]:pt-6', className)} data-slot="card-footer" {...props} />
 )
-
-export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent }

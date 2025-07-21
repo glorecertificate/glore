@@ -7,17 +7,30 @@ import { HeaderContext } from '@/components/providers/header-provider'
 /**
  * Hook to manage the application header content.
  */
-export const useHeader = (header?: React.JSX.Element) => {
+export const useHeader = (options?: {
+  header?: React.JSX.Element
+  /** @default true */
+  shadow?: boolean
+}) => {
   const context = useContext(HeaderContext)
   if (!context) throw new Error('useHeader must be used within a HeaderProvider')
 
-  const { setHeader } = context
+  const { setShadow, shadow, ...props } = context
 
   useEffect(() => {
-    if (header) setHeader(header)
-    return () => setHeader(undefined)
+    if (options?.header) props.setHeader(options.header)
+    if (options?.shadow !== undefined) setShadow(options.shadow)
+
+    return () => {
+      props.setHeader(undefined)
+      setShadow(true)
+    }
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [])
 
-  return context
+  return {
+    ...props,
+    hasShadow: shadow,
+    showShadow: setShadow,
+  }
 }

@@ -24,8 +24,8 @@ export const input = cva(
   {
     variants: {
       variant: {
-        primary: 'focus-visible:border-primary focus-visible:ring-primary/50',
-        secondary: 'focus-visible:border-secondary focus-visible:ring-secondary/50',
+        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
+        'brand-secondary': 'focus-visible:border-brand-secondary focus-visible:ring-brand-secondary/50',
       },
     },
   },

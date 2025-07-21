@@ -5,6 +5,7 @@ import { type Position } from '@repo/utils'
 import { type User } from '@/api/modules/users/types'
 import { type CourseTab } from '@/components/features/course-list'
 import { type Locale } from '@/lib/i18n/types'
+import { type Theme } from '@/lib/theme'
 
 /**
  * Application cookies values.
@@ -43,9 +44,21 @@ export interface CookieKeyOptions {
 export interface CookieOptions extends Partial<ResponseCookie>, CookieKeyOptions {}
 
 /**
- * Application local storage keys.
+ * Application local storage.
  */
-export enum LocalStorage {}
+export interface LocalStorage {
+  theme: `${Theme}`
+}
+
+/**
+ * Local storage keys used in the application.
+ */
+export type LocalStorageKey = keyof LocalStorage
+
+/**
+ * Local storage values based on the `LocalStorage` interface.
+ */
+export type LocalStorageValue<T extends LocalStorageKey> = LocalStorage[T]
 
 /**
  * Public assets used across the application.

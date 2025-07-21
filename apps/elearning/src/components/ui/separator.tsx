@@ -4,7 +4,7 @@ import * as SeparatorPrimitive from '@radix-ui/react-separator'
 
 import { cn } from '@/lib/utils'
 
-const Separator = ({
+export const Separator = ({
   className,
   decorative = true,
   orientation = 'horizontal',
@@ -25,5 +25,3 @@ const Separator = ({
     {...props}
   />
 )
-
-export { Separator }

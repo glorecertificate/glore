@@ -17,7 +17,7 @@ export interface DraggableProps extends SlotProps {
   }
   handle: React.ReactNode
   onRelease?: (position: { x: number; y: number }) => void
-  storageKey?: LocalStorage | `${LocalStorage}`
+  storageKey?: LocalStorage | string
 }
 
 export const Draggable = ({

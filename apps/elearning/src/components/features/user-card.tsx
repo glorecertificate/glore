@@ -53,13 +53,13 @@ export const UserCard = ({ hide = [], user }: { hide?: Array<keyof User>; user: 
             {isVisible('pronouns') && <small className="text-xs text-muted-foreground">{user.pronouns}</small>}
           </div>
           {isVisible('isAdmin') && (
-            <Badge color="inverted" size="xs">
+            <Badge color="secondary" size="xs">
               <ShieldUserIcon />
               {t('Common.admin')}
             </Badge>
           )}
           {isVisible('isEditor') && (
-            <Badge color="muted" size="xs">
+            <Badge size="xs">
               <ShieldUserIcon />
               {t('Common.editor')}
             </Badge>

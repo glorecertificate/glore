@@ -315,7 +315,7 @@ export const CourseList = ({
                 ))}
               </TabsList>
               {user.canEdit && (
-                <Button asChild effect="expandIcon" icon={PlusIcon} iconPlacement="right" variant="secondary">
+                <Button asChild effect="expandIcon" icon={PlusIcon} iconPlacement="right" variant="brand">
                   <Link href={Route.CourseNew}>{t('newCourse')}</Link>
                 </Button>
               )}

@@ -1,38 +1,34 @@
 import { notFound } from 'next/navigation'
 
 import { getApi } from '@/api/client'
-import { type Course } from '@/api/modules/courses/types'
-import { type User } from '@/api/modules/users/types'
 import { CourseFlow } from '@/components/features/course-flow'
 import { getLocale } from '@/lib/i18n/server'
 import { localizeJson } from '@/lib/i18n/utils'
 import { pageMetadata } from '@/lib/metadata'
 import { type PageProps, type Route } from '@/lib/navigation'
 
-const getCourse = async ({ params }: PageProps<Route.Course>) => {
+const getPageData = async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
-  if (!slug) return notFound()
+  if (!slug) return {}
 
   const api = await getApi()
-
   const course = await api.courses.find(slug)
-  if (!course) return notFound()
+  if (!course) return {}
 
-  return course
-}
+  const user = await api.users.getCurrent()
+  if (!user) return {}
 
-const canAccessCourse = (course: Course, user: User) => {
   const publishedLocales = course.publishedLocales ?? []
-  return !user.isEditor && (!!course.archivedAt || publishedLocales.length === 0)
+  if (!user.isEditor && (!!course.archivedAt || publishedLocales.length === 0)) return {}
+
+  return { course, user }
 }
 
-export const generateMetadata = async ({ params }: PageProps<Route.Course>) => {
-  const api = await getApi()
-  const course = await getCourse({ params })
-  const locale = await getLocale()
-  const user = api.users.current()
+export const generateMetadata = async (props: PageProps<Route.Course>) => {
+  const { course, user } = await getPageData(props)
+  if (!course || !user) return pageMetadata()
 
-  if (!canAccessCourse(course, user)) return pageMetadata()
+  const locale = await getLocale()
 
   return pageMetadata({
     title: localizeJson(course.title, locale),
@@ -41,12 +37,11 @@ export const generateMetadata = async ({ params }: PageProps<Route.Course>) => {
   })
 }
 
-export default async ({ params }: PageProps<Route.Course>) => {
-  const api = await getApi()
-  const course = await getCourse({ params })
-  const user = api.users.current()
+export default async (props: PageProps<Route.Course>) => {
+  const { course, user } = await getPageData(props)
+  if (!course || !user) return notFound()
 
-  if (!canAccessCourse(course, user)) return notFound()
+  const api = await getApi()
 
   if (user.isLearner && !course.enrolled) {
     await api.courses.enrollUser(course.id)

@@ -86,13 +86,13 @@ export const AdminOverview = () => (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].map(i => (
               <div className="flex items-center gap-4 border-b pb-4 last:border-0 last:pb-0" key={i}>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-secondary/10">
                   {i % 3 === 0 ? (
-                    <Users className="h-4 w-4 text-primary" />
+                    <Users className="h-4 w-4 text-brand-secondary" />
                   ) : i % 3 === 1 ? (
-                    <Award className="h-4 w-4 text-primary" />
+                    <Award className="h-4 w-4 text-brand-secondary" />
                   ) : (
-                    <Building2 className="h-4 w-4 text-primary" />
+                    <Building2 className="h-4 w-4 text-brand-secondary" />
                   )}
                 </div>
                 <div className="flex-1">

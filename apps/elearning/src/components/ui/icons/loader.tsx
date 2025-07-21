@@ -16,14 +16,14 @@ export const Loader = ({
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path className={cn(colored && 'text-primary')} d="M12 2v4" />
-    <path className={cn(colored && 'text-secondary')} d="m16.2 7.8 2.9-2.9" />
-    <path className={cn(colored && 'text-tertiary')} d="M18 12h4" />
-    <path className={cn(colored && 'text-primary')} d="m16.2 16.2 2.9 2.9" />
-    <path className={cn(colored && 'text-secondary')} d="M12 18v4" />
-    <path className={cn(colored && 'text-tertiary')} d="m4.9 19.1 2.9-2.9" />
-    <path className={cn(colored && 'text-primary')} d="M2 12h4" />
-    <path className={cn(colored && 'text-secondary')} d="m4.9 4.9 2.9 2.9" />
+    <path className={cn(colored && 'text-brand-secondary')} d="M12 2v4" />
+    <path className={cn(colored && 'text-brand')} d="m16.2 7.8 2.9-2.9" />
+    <path className={cn(colored && 'text-brand-tertiary')} d="M18 12h4" />
+    <path className={cn(colored && 'text-brand-secondary')} d="m16.2 16.2 2.9 2.9" />
+    <path className={cn(colored && 'text-brand')} d="M12 18v4" />
+    <path className={cn(colored && 'text-brand-tertiary')} d="m4.9 19.1 2.9-2.9" />
+    <path className={cn(colored && 'text-brand-secondary')} d="M2 12h4" />
+    <path className={cn(colored && 'text-brand')} d="m4.9 4.9 2.9 2.9" />
   </svg>
 )
 export const LoaderIcon = Loader

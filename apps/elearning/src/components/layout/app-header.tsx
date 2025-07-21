@@ -15,7 +15,7 @@ import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
-  const { header } = useHeader()
+  const { hasShadow, header } = useHeader()
   const { pathname } = usePathname()
   const { scrolled } = useScroll()
   const { open } = useSidebar()
@@ -28,7 +28,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
       <header
         className={cn(
           'ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
-          scrolled && 'border-b',
+          hasShadow && scrolled && 'border-b',
           className,
         )}
         {...props}

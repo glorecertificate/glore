@@ -1,23 +1,28 @@
 'use client'
 
-import { Toaster as Sonner, type ToasterProps } from 'sonner'
+import { Toaster as Sonner, type ToasterProps as SonnerProps } from 'sonner'
 
 import { useTheme } from '@/hooks/use-theme'
-import { Theme } from '@/lib/theme'
-import { cn, tw } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+
+export interface ToasterProps extends Omit<SonnerProps, 'closeButton'> {
+  closeButton?: boolean | 'hover'
+}
 
 export const Toaster = ({
   className,
+  closeButton = 'hover',
   duration = 3_000,
   position = 'top-center',
   richColors = true,
   ...props
 }: ToasterProps) => {
-  const { theme = Theme.System } = useTheme()
+  const { theme = 'system' } = useTheme()
 
   return (
     <Sonner
       className={cn('group', className)}
+      closeButton={!!closeButton}
       duration={duration}
       position={position}
       richColors={richColors}
@@ -31,11 +36,13 @@ export const Toaster = ({
       theme={theme}
       toastOptions={{
         classNames: {
-          toast: tw`group toast !w-max group-[.toaster]:border-border group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:shadow-lg`,
-          title: tw`!font-normal`,
-          description: tw`group-[.toast]:text-muted-foreground group-[.toast]:text-base`,
-          actionButton: tw`group-[.toast]:bg-primary group-[.toast]:text-primary-foreground`,
-          cancelButton: tw`group-[.toast]:bg-muted group-[.toast]:text-muted-foreground`,
+          toast:
+            'group toast w-max! shadow-md! shadow-muted group-[.toaster]:border-border group-[.toaster]:bg-background group-[.toaster]:text-foreground',
+          title: 'font-normal!',
+          description: 'group-[.toast]:text-muted-foreground group-[.toast]:text-base',
+          actionButton: 'group-[.toast]:bg-brand-secondary group-[.toast]:text-brand-secondary-foreground',
+          cancelButton: 'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+          closeButton: cn(closeButton === 'hover' && 'opacity-0 group-hover:opacity-100'),
         },
       }}
       {...props}

@@ -60,10 +60,12 @@ export const ratingGroup = cva(
     variants: {
       color: {
         default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
-        primary:
-          'peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground',
-        secondary:
-          'peer-data-[state=checked]:border-secondary peer-data-[state=checked]:bg-secondary peer-data-[state=checked]:text-secondary-foreground',
+        brand:
+          'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
+        'brand-secondary': `
+          peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary
+          peer-data-[state=checked]:text-brand-secondary-foreground
+        `,
       },
       disabled: {
         true: 'cursor-default opacity-100',
@@ -78,13 +80,13 @@ export const ratingGroup = cva(
       },
       {
         disabled: false,
-        color: 'primary',
-        className: 'hover:border-primary-accent',
+        color: 'brand',
+        className: 'hover:border-brand',
       },
       {
         disabled: false,
-        color: 'secondary',
-        className: 'hover:border-secondary',
+        color: 'brand-secondary',
+        className: 'hover:border-brand-secondary-accent',
       },
     ],
   },

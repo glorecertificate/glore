@@ -10,7 +10,7 @@ export const generateMetadata = generatePageMetadata({
 
 export default async () => {
   const api = await getApi()
-  const user = api.users.current()
+  const user = await api.users.getCurrent()
 
   if (!user || (!user.isAdmin && !user.isEditor)) return notFound()
 

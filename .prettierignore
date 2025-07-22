@@ -5,3 +5,6 @@
 # Build artifacts
 /CHANGELOG.md
 /pnpm-lock.yaml
+
+# Format-specific
+/.github/chatmodes/*.chatmode.md

@@ -4,9 +4,9 @@ import { type Locale } from 'use-intl'
 
 import { type AnyRecord } from '@repo/utils'
 
+import { LOCALES } from '@/lib/i18n/config'
 import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
-import { LOCALES } from '@/lib/i18n/utils'
 import { type PageProps, type Route } from '@/lib/navigation'
 import { Asset, Public } from '@/lib/storage/types'
 import { asset } from '@/lib/storage/utils'

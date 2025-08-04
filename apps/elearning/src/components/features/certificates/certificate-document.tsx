@@ -23,12 +23,11 @@ import { Separator } from '@/components/ui/separator'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { localizeDate } from '@/lib/i18n/utils'
 import { cn } from '@/lib/utils'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
-  const { locale, localize } = useLocale()
+  const { localize, localizeDate } = useLocale()
   const t = useTranslations()
 
   const isIssued = useMemo(() => !!certificate.issuedAt, [certificate])
@@ -57,7 +56,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             </CardTitle>
             {certificate.issuedAt && (
               <CardDescription>
-                {t('Certificates.issuedOn')} {localizeDate(certificate.issuedAt, locale)}
+                {t('Certificates.issuedOn')} {localizeDate(certificate.issuedAt)}
               </CardDescription>
             )}
           </div>
@@ -124,7 +123,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.startDate')}</h3>
-              <p>{localizeDate(certificate.activityStartDate, locale, 'short')}</p>
+              <p>{localizeDate(certificate.activityStartDate, 'short')}</p>
             </div>
           </div>
 
@@ -132,7 +131,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.endDate')}</h3>
-              <p>{localizeDate(certificate.activityEndDate, locale, 'short')}</p>
+              <p>{localizeDate(certificate.activityEndDate, 'short')}</p>
             </div>
           </div>
 

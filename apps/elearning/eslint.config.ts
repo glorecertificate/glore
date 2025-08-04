@@ -10,7 +10,7 @@ export default eslintConfig(
     ],
     customExternalImports: ['@next', 'next', 'react'],
     customInternalImports: ['@repo'],
-    internalImports: ['#rte', 'config', 'supabase'],
+    internalImports: ['config', 'supabase', '#rte'],
     maxLines: -1,
     namedImports: ['react'],
     react: 'nextjs',
@@ -29,7 +29,7 @@ export default eslintConfig(
           '!src/lib/**',
         ],
         group: ['next/navigation', 'use-intl'],
-        importNames: ['usePathname', 'useLocale', 'useTranslations'],
+        importNames: ['useLocale', 'usePathname', 'useTranslations'],
         message: 'Import the internal hook instead.',
       },
       {
@@ -41,7 +41,12 @@ export default eslintConfig(
       {
         files: ['src/components/ui/rich-text-editor/**'],
         group: ['@/components/ui/rich-text-editor/**'],
-        message: 'Import using the alias #rte instead.',
+        message: 'Import using the scoped alias instead.',
+      },
+      {
+        files: ['**/*.ts?(x)', '!src/components/ui/rich-text-editor/**'],
+        group: ['#rte/**'],
+        message: 'Import from the components folder instead.',
       },
     ],
     sortArrays: ['src/**/*.ts?(x)'],

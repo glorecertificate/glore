@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation'
 
 import { getApi } from '@/api/client'
-import { CourseFlow } from '@/components/features/course-flow'
+import { CourseView } from '@/components/features/courses/course-view'
 import { getLocale } from '@/lib/i18n/server'
-import { localizeJson } from '@/lib/i18n/utils'
+import { localize } from '@/lib/i18n/utils'
 import { pageMetadata } from '@/lib/metadata'
 import { type PageProps, type Route } from '@/lib/navigation'
 
@@ -31,8 +31,8 @@ export const generateMetadata = async (props: PageProps<Route.Course>) => {
   const locale = await getLocale()
 
   return pageMetadata({
-    title: localizeJson(course.title, locale),
-    description: localizeJson(course.description, locale),
+    title: localize(course.title, locale),
+    description: localize(course.description, locale),
     translate: false,
   })
 }
@@ -47,5 +47,5 @@ export default async (props: PageProps<Route.Course>) => {
     await api.courses.enrollUser(course.id)
   }
 
-  return <CourseFlow course={course} />
+  return <CourseView course={course} />
 }

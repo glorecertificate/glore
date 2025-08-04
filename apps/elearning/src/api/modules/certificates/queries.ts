@@ -1,6 +1,7 @@
 import { skillQuery } from '@/api/modules/courses/queries'
 import { organizationQuery } from '@/api/modules/organizations/queries'
 import { baseUserQuery } from '@/api/modules/users/queries'
+import { timestamps } from '@/api/utils'
 
 export const certificateQuery = `
   id,
@@ -15,8 +16,7 @@ export const certificateQuery = `
   reviewerComment:reviewer_comment,
   documentUrl:document_url,
   issuedAt:issued_at,
-  createdAt:created_at,
-  updatedAt:updated_at,
+  ${timestamps},
   skills (
     ${skillQuery}
   ),

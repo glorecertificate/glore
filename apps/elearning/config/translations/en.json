@@ -85,7 +85,8 @@
     "accept": "Accept",
     "cancel": "Cancel",
     "url": "URL",
-    "insert": "Insert"
+    "insert": "Insert",
+    "switchLanguage": "Switch language"
   },
   "Auth": {
     "backToLogin": "Back to login",
@@ -246,7 +247,12 @@
     "atTheMoment": "{message} at the moment",
     "updateFilters": "Try to update the filters to view other courses",
     "emptyMessageArchived": "No course has been yet archived",
-    "createdBy": "Created by"
+    "createdBy": "Created by",
+    "selectLanguage": "Select a language",
+    "addLanguage": "Add language",
+    "notCreated": "Not created",
+    "editMessage": "Edit the course",
+    "previewMessage": "See preview"
   },
   "Certificates": {
     "backTo": "Back to all certificates",
@@ -301,8 +307,8 @@
       "audio": "Audio",
       "file": "File",
       "table": "Table",
-      "bulletList": "Bullet List",
-      "numberedList": "Numbered List",
+      "bulletList": "Bullet list",
+      "numberedList": "Numbered list",
       "todoList": "Checklist",
       "quote": "Quote",
       "codeBlock": "Code Block",

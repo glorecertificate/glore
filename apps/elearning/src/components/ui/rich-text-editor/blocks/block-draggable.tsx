@@ -5,7 +5,7 @@ import { memo, useEffect, useMemo, useState } from 'react'
 import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin } from '@platejs/selection/react'
 import { GripVertical } from 'lucide-react'
-import { getPluginByType, isType, KEYS, type TElement } from 'platejs'
+import { isType, KEYS, type TElement } from 'platejs'
 import {
   MemoizedChildren,
   useEditorRef,
@@ -18,7 +18,6 @@ import {
 } from 'platejs/react'
 
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
@@ -29,10 +28,7 @@ export const BlockDraggable: RenderNodeWrapper = props => {
 
   const enabled = useMemo(() => {
     if (editor.dom.readOnly) return false
-
-    if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
-      return true
-    }
+    if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) return true
     if (path.length === 3 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       const block = editor.api.some({
         at: path,
@@ -40,10 +36,7 @@ export const BlockDraggable: RenderNodeWrapper = props => {
           type: editor.getType(KEYS.column),
         },
       })
-
-      if (block) {
-        return true
-      }
+      if (block) return true
     }
     if (path.length === 4 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       const block = editor.api.some({
@@ -52,12 +45,8 @@ export const BlockDraggable: RenderNodeWrapper = props => {
           type: editor.getType(KEYS.table),
         },
       })
-
-      if (block) {
-        return true
-      }
+      if (block) return true
     }
-
     return false
   }, [editor, element, path])
 
@@ -74,10 +63,7 @@ const Draggable = (props: PlateElementProps) => {
     element,
     onDropHandler: (_, { dragItem }) => {
       const id = (dragItem as { id: string[] | string }).id
-
-      if (blockSelectionApi) {
-        blockSelectionApi.add(id)
-      }
+      if (blockSelectionApi) blockSelectionApi.add(id)
       resetPreview()
     },
   })
@@ -94,9 +80,8 @@ const Draggable = (props: PlateElementProps) => {
   }
 
   useEffect(() => {
-    if (!isDragging) {
-      resetPreview()
-    }
+    if (isDragging) return
+    resetPreview()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragging])
 
@@ -104,11 +89,7 @@ const Draggable = (props: PlateElementProps) => {
 
   return (
     <div
-      className={cn(
-        'relative',
-        isDragging && 'opacity-50',
-        getPluginByType(editor, element.type)?.node.isContainer ? 'group/container' : 'group',
-      )}
+      className={cn('group/container relative', isDragging && 'opacity-50')}
       onMouseEnter={() => {
         if (isDragging) return
         setDragButtonTop(calcDragButtonTop(editor, element))
@@ -119,8 +100,7 @@ const Draggable = (props: PlateElementProps) => {
           <div className={cn('slate-blockToolbarWrapper', 'flex h-[1.5em]', isInColumn && 'h-4')}>
             <div
               className={cn(
-                'slate-blockToolbar relative w-4.5',
-                'pointer-events-auto mr-1 flex items-center',
+                'slate-blockToolbar pointer-events-auto relative mr-1 flex w-4.5 items-center',
                 isInColumn && 'mr-1.5',
               )}
             >
@@ -154,8 +134,6 @@ const Draggable = (props: PlateElementProps) => {
 }
 
 const Gutter = ({ children, className, ...props }: React.ComponentProps<'div'>) => {
-  const editor = useEditorRef()
-  const element = useElement()
   const isSelectionAreaVisible = usePluginOption(BlockSelectionPlugin, 'isSelectionAreaVisible')
   const selected = useSelected()
 
@@ -163,16 +141,13 @@ const Gutter = ({ children, className, ...props }: React.ComponentProps<'div'>) 
     <div
       {...props}
       className={cn(
-        'slate-gutterLeft',
-        'absolute top-0 z-50 flex h-full -translate-x-full cursor-text hover:opacity-100 sm:opacity-0',
-        getPluginByType(editor, element.type)?.node.isContainer
-          ? 'group-hover/container:opacity-100'
-          : 'group-hover:opacity-100',
+        'slate-gutterLeft absolute top-0 z-50 flex h-full -translate-x-full cursor-text group-hover/container:opacity-100 sm:opacity-0',
         isSelectionAreaVisible && 'hidden',
         !selected && 'opacity-0',
         className,
       )}
       contentEditable={false}
+      data-selected={selected}
     >
       {children}
     </div>
@@ -194,47 +169,39 @@ const DragHandle = memo(
     const t = useTranslations('Editor.actions')
 
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div
-            className="flex size-full items-center justify-center"
-            onClick={() => {
-              editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
-            }}
-            onMouseDown={e => {
-              if (e.button !== 0 || e.shiftKey) return
+      <div
+        className="flex size-full items-center justify-center"
+        onClick={() => {
+          editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
+        }}
+        onMouseDown={e => {
+          if (e.button !== 0 || e.shiftKey) return
 
-              const elements = createDragPreviewElements(editor, { currentBlock: element })
-              previewRef.current?.append(...elements)
-              previewRef.current?.classList.remove('hidden')
-              editor.setOption(DndPlugin, 'multiplePreviewRef', previewRef)
-            }}
-            onMouseEnter={() => {
-              if (isDragging) return
-
-              const blockSelection = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes({ sort: true })
-
-              const selectedBlocks = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
-
-              const ids = selectedBlocks.map(block => block[0].id as string)
-
-              if (ids.length > 1 && ids.includes(element.id as string)) {
-                const previewTop = calculatePreviewTop(editor, {
-                  blocks: selectedBlocks.map(block => block[0]),
-                  element,
-                })
-                setPreviewTop(previewTop)
-              } else {
-                setPreviewTop(0)
-              }
-            }}
-            role="button"
-          >
-            <GripVertical className="text-muted-foreground" />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent arrow={false}>{t('dragToMove')}</TooltipContent>
-      </Tooltip>
+          const elements = createDragPreviewElements(editor, { currentBlock: element })
+          previewRef.current?.append(...elements)
+          previewRef.current?.classList.remove('hidden')
+          editor.setOption(DndPlugin, 'multiplePreviewRef', previewRef)
+        }}
+        onMouseEnter={() => {
+          if (isDragging) return
+          const blockSelection = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes({ sort: true })
+          const selectedBlocks = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
+          const ids = selectedBlocks.map(block => block[0].id as string)
+          if (ids.length > 1 && ids.includes(element.id as string)) {
+            const previewTop = calculatePreviewTop(editor, {
+              blocks: selectedBlocks.map(block => block[0]),
+              element,
+            })
+            setPreviewTop(previewTop)
+            return
+          }
+          setPreviewTop(0)
+        }}
+        role="button"
+        title={t('dragToMove')}
+      >
+        <GripVertical className="text-muted-foreground" />
+      </div>
     )
   },
 )

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-import { LoginForm } from '@/components/features/login-form'
+import { LoginForm } from '@/components/features/auth/login-form'
 import { cookies } from '@/lib/storage/client'
 
 export default () => {

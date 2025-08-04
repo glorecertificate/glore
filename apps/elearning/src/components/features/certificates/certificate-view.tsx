@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { CertificateDocument } from '@/components/features/certificate-document'
+import { CertificateDocument } from '@/components/features/certificates/certificate-document'
 import { Button } from '@/components/ui/button'
 import { CertificateGraphic } from '@/components/ui/graphics/certificate'
 import { NoAccessGraphic } from '@/components/ui/graphics/no-access'

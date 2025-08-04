@@ -141,7 +141,7 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
-        <ToolbarButton className="min-w-[125px]" isDropdown pressed={open} tooltip={t('actions.turnInto')}>
+        <ToolbarButton className="min-w-[125px]" isDropdown pressed={open}>
           {selectedItem.label}
         </ToolbarButton>
       </DropdownMenuTrigger>

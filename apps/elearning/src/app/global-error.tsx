@@ -10,7 +10,8 @@ import { hasHistory, log } from '@repo/utils'
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
-import { LOCALES, localizeJson } from '@/lib/i18n/utils'
+import { LOCALES } from '@/lib/i18n/config'
+import { localize } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
 import config from 'config/app.json'
@@ -50,23 +51,23 @@ export default ({ error }: ErrorProps) => {
             <ServerErrorGraphic width={240} />
             <div className="text-center">
               <h2 className="mb-4 font-mono text-2xl font-bold tracking-tight text-foreground">
-                {localizeJson(errors.title, locale)}
+                {localize(errors.title, locale)}
               </h2>
-              <p className="mb-8 font-mono text-foreground/75">{localizeJson(errors.message, locale)}</p>
+              <p className="mb-8 font-mono text-foreground/75">{localize(errors.message, locale)}</p>
               <div className="flex justify-center gap-4">
                 {hasHistory() ? (
                   <Button onClick={onBackClick} size="lg" variant="outline">
-                    {localizeJson(errors.backToPrevious, locale)}
+                    {localize(errors.backToPrevious, locale)}
                   </Button>
                 ) : (
                   pathname !== '/' && (
                     <Button onClick={goToHome} size="lg" variant="outline">
-                      {localizeJson(errors.backToHome, locale)}
+                      {localize(errors.backToHome, locale)}
                     </Button>
                   )
                 )}
                 <Button onClick={reloadPage} size="lg" variant="outline">
-                  {localizeJson(errors.refreshPage, locale)}
+                  {localize(errors.refreshPage, locale)}
                 </Button>
               </div>
             </div>

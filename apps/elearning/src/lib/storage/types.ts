@@ -3,7 +3,7 @@ import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 import { type Position } from '@repo/utils'
 
 import { type User } from '@/api/modules/users/types'
-import { type CourseTab } from '@/components/features/course-list'
+import { type CourseTab } from '@/components/features/courses/course-list'
 import { type Locale } from '@/lib/i18n/types'
 import { type Theme } from '@/lib/theme'
 

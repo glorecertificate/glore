@@ -71,7 +71,8 @@
     "showOnGoogleMaps": "Mostrar en Google Maps",
     "url": "Url",
     "cancel": "Cancelar",
-    "insert": "Insertar"
+    "insert": "Insertar",
+    "switchLanguage": "Cambiar el idioma"
   },
   "Auth": {
     "backToLogin": "Volver a iniciar sesión",
@@ -232,7 +233,12 @@
     "atTheMoment": "{message} en este momento",
     "updateFilters": "Intente actualizar los filtros para ver otros cursos",
     "emptyMessageArchived": "Ningún curso ha sido archivado todavía",
-    "createdBy": "Creado por"
+    "createdBy": "Creado por",
+    "selectLanguage": "Seleccione un idioma",
+    "addLanguage": "Agregar idioma",
+    "notCreated": "No creado",
+    "editMessage": "Editar el curso",
+    "previewMessage": "Ver vista previa"
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",

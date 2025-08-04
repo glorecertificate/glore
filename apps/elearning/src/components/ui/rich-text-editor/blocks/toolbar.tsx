@@ -9,7 +9,7 @@ import { ChevronDown } from 'lucide-react'
 
 import { DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Separator } from '@/components/ui/separator'
-import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipTrigger, type TooltipContentProps, type TooltipTriggerProps } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 export const Toolbar = ({ className, ...props }: React.ComponentProps<typeof ToolbarPrimitive.Root>) => (
@@ -121,10 +121,7 @@ export const ToolbarButton = ({
         <ToolbarToggleGroup disabled={props.disabled} type="single" value="single">
           <ToolbarToggleItem
             className={cn(
-              toolbarButtonVariants({
-                size,
-                variant,
-              }),
+              toolbarButtonVariants({ size, variant }),
               isDropdown && 'justify-between gap-1 pr-1',
               className,
             )}
@@ -145,14 +142,7 @@ export const ToolbarButton = ({
         </ToolbarToggleGroup>
       ) : (
         <ToolbarPrimitive.Button
-          className={cn(
-            toolbarButtonVariants({
-              size,
-              variant,
-            }),
-            isDropdown && 'pr-1',
-            className,
-          )}
+          className={cn(toolbarButtonVariants({ size, variant }), isDropdown && 'pr-1', className)}
           {...props}
         >
           {children}
@@ -179,31 +169,53 @@ export const ToolbarSplitButton = ({ className, ...props }: React.ComponentProps
   <ToolbarButton className={cn('group flex gap-0 px-0 hover:bg-transparent', className)} {...props} />
 )
 
-type ToolbarSplitButtonPrimaryProps = Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'value'> &
-  VariantProps<typeof toolbarButtonVariants>
+export interface ToolbarSplitButtonPrimaryProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'value'>,
+    VariantProps<typeof toolbarButtonVariants> {
+  tooltip?: string
+  tooltipTriggerProps?: TooltipTriggerProps
+  tooltipContentProps?: TooltipContentProps
+}
 
 export const ToolbarSplitButtonPrimary = ({
   children,
   className,
   size = 'sm',
+  tooltip,
+  tooltipContentProps,
+  tooltipTriggerProps,
   variant,
   ...props
-}: ToolbarSplitButtonPrimaryProps) => (
-  <span
-    className={cn(
-      toolbarButtonVariants({
-        size,
-        variant,
-      }),
-      'rounded-r-none',
-      'group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground',
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </span>
-)
+}: ToolbarSplitButtonPrimaryProps) => {
+  const button = useMemo(
+    () => (
+      <span
+        className={cn(
+          toolbarButtonVariants({ size, variant }),
+          'rounded-r-none group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+      </span>
+    ),
+    [children, className, size, variant, props],
+  )
+
+  if (tooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild {...tooltipTriggerProps}>
+          {button}
+        </TooltipTrigger>
+        <TooltipContent {...tooltipContentProps}>{tooltip}</TooltipContent>
+      </Tooltip>
+    )
+  }
+
+  return button
+}
 
 export const ToolbarSplitButtonSecondary = ({
   className,

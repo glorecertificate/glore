@@ -1,4 +1,4 @@
-import { CourseList } from '@/components/features/course-list'
+import { CourseList } from '@/components/features/courses/course-list'
 import { generatePageMetadata } from '@/lib/metadata'
 import { getCookie } from '@/lib/storage/server'
 

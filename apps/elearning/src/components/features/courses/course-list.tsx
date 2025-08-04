@@ -9,7 +9,7 @@ import { hasHistory } from '@repo/utils'
 
 import { api } from '@/api/client'
 import { type Course } from '@/api/modules/courses/types'
-import { CourseCard } from '@/components/features/course-card'
+import { CourseCard } from '@/components/features/courses/course-card'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -26,7 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/utils'
+import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
 import { cn } from '@/lib/utils'

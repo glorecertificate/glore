@@ -3,7 +3,7 @@ import { type User } from '@supabase/supabase-js'
 
 import { handleize, randomItem, randomRange } from '@repo/utils'
 
-import { LOCALES } from '@/lib/i18n/utils'
+import { LOCALES } from '@/lib/i18n/config'
 import { dynamicSeeds, placeholderImageUrl } from 'supabase/.snaplet/data.json'
 import { type Enums } from 'supabase/types'
 

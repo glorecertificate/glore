@@ -19,7 +19,6 @@ import {
 } from '#rte/blocks/list-toolbar-button'
 import { MarkToolbarButton } from '#rte/blocks/mark-toolbar-button'
 import { MediaToolbarButton } from '#rte/blocks/media-toolbar-button'
-import { ModeToolbarButton } from '#rte/blocks/mode-toolbar-button'
 import { TableToolbarButton } from '#rte/blocks/table-toolbar-button'
 import { ToggleToolbarButton } from '#rte/blocks/toggle-toolbar-button'
 import { ToolbarGroup } from '#rte/blocks/toolbar'
@@ -68,8 +67,8 @@ export const FixedToolbarButtons = () => {
 
           <ToolbarGroup>
             <AlignToolbarButton />
-            <NumberedListToolbarButton />
-            <BulletedListToolbarButton />
+            <NumberedListToolbarButton tooltip={t('blocks.numberedList')} />
+            <BulletedListToolbarButton tooltip={t('blocks.bulletList')} />
             <TodoListToolbarButton />
             <ToggleToolbarButton />
           </ToolbarGroup>
@@ -77,16 +76,12 @@ export const FixedToolbarButtons = () => {
           <ToolbarGroup separator={false}>
             <TableToolbarButton />
             <EmojiToolbarButton />
-            <MediaToolbarButton nodeType={KEYS.img} />
-            <MediaToolbarButton nodeType={KEYS.video} />
-            <MediaToolbarButton nodeType={KEYS.file} />
+            <MediaToolbarButton nodeType={KEYS.img} tooltip={t('blocks.image')} />
+            <MediaToolbarButton nodeType={KEYS.video} tooltip={t('blocks.video')} />
+            <MediaToolbarButton nodeType={KEYS.file} tooltip={t('blocks.file')} />
           </ToolbarGroup>
         </>
       )}
-
-      <ToolbarGroup className="grow justify-end">
-        <ModeToolbarButton />
-      </ToolbarGroup>
     </div>
   )
 }

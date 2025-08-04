@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { type SlotProps } from '@radix-ui/react-slot'
 import { MoveIcon } from 'lucide-react'
 
 import { type Position } from '@repo/utils'
@@ -12,7 +11,7 @@ import { cookies } from '@/lib/storage/client'
 import { type Cookie } from '@/lib/storage/types'
 import { cn } from '@/lib/utils'
 
-export interface DevWidgetProps extends SlotProps {
+export interface DevWidgetProps extends React.PropsWithChildren<React.HTMLAttributes<HTMLElement>> {
   /** @default true */
   asChild?: boolean
   /** Key for storing the widget position */

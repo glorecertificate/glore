@@ -1,12 +1,12 @@
 import { userQuery } from '@/api/modules/users/queries'
+import { timestamps } from '@/api/utils'
 
 export const skillQuery = `
   id,
   name,
   description,
   iconUrl:icon_url,
-  createdAt:created_at,
-  updatedAt:updated_at,
+  ${timestamps},
   area:skill_areas (
     id,
     name,
@@ -24,8 +24,7 @@ export const lessonQuery = `
   title,
   content,
   sortOrder:sort_order,
-  createdAt:created_at,
-  updatedAt:updated_at,
+  ${timestamps},
   user_lessons(count),
   questions (
     id,
@@ -66,8 +65,7 @@ export const courseQuery = `
   publishedLocales:published_locales,
   draftLocales:draft_locales,
   sortOrder:sort_order,
-  createdAt:created_at,
-  updatedAt:updated_at,
+  ${timestamps},
   archivedAt:archived_at,
   user_courses(count),
   skill:skills (

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { getApi } from '@/api/client'
-import { CertificateDocument } from '@/components/features/certificate-document'
+import { CertificateDocument } from '@/components/features/certificates/certificate-document'
 import { type PageProps, type Route } from '@/lib/navigation'
 
 interface CertificatePageProps extends PageProps<Route.Certificates> {}

@@ -300,7 +300,7 @@ export const AIMenu = () => {
   useHotkeys('esc', () => {
     api.aiChat.stop()
     // Remove if using the route /api/ai/command
-    chat._abortFakeStream()
+    // chat._abortFakeStream()
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'

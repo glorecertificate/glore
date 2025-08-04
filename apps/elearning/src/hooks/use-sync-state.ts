@@ -4,6 +4,7 @@ import { SyncStateContext } from '@/components/providers/sync-state-provider'
 
 /**
  * Hook to access the sync state context.
+ *
  * It provides the current sync state and methods to manage synchronization.
  */
 export const useSyncState = () => {

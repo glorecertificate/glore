@@ -13,7 +13,7 @@ import { AutoformatKit } from '#rte/kits/autoformat'
 import { BasicBlocksKit } from '#rte/kits/basic-blocks'
 import { BasicMarksKit } from '#rte/kits/basic-marks'
 import { BlockMenuKit } from '#rte/kits/block-menu'
-import { blockPlaceholderKit } from '#rte/kits/block-placeholder'
+import { useBlockPlaceholderKit } from '#rte/kits/block-placeholder'
 import { CalloutKit } from '#rte/kits/callout'
 import { ColumnKit } from '#rte/kits/column'
 import { CopilotKit } from '#rte/kits/copilot'
@@ -66,19 +66,29 @@ export const PLUGINS = [
   ...TrailingBlockKit,
 ]
 
-export interface RichTextEditorProps extends EditorProps {}
+export interface RichTextEditorProviderProps extends React.PropsWithChildren<Pick<RichTextEditorProps, 'value'>> {}
 
-export const RichTextEditor = ({ value, ...props }: RichTextEditorProps) => {
-  const t = useTranslations('Editor.placeholders')
-  const plugins = useMemo(() => [...PLUGINS, ...blockPlaceholderKit(t)], [t])
+export const RichTextEditorProvider = ({ children, value }: RichTextEditorProviderProps) => {
+  const BlockPlaceholderKit = useBlockPlaceholderKit()
+  const plugins = useMemo(() => [...PLUGINS, ...BlockPlaceholderKit], [BlockPlaceholderKit])
   const editor = usePlateEditor({ plugins, value: value as string })
 
   return (
     <Plate editor={editor}>
-      <EditorContainer>
-        <Editor placeholder={t('editor')} {...props} />
-      </EditorContainer>
+      {children}
       <SettingsDialog />
     </Plate>
+  )
+}
+
+export interface RichTextEditorProps extends EditorProps {}
+
+export const RichTextEditor = (props: RichTextEditorProps) => {
+  const t = useTranslations('Editor.placeholders')
+
+  return (
+    <EditorContainer>
+      <Editor placeholder={t('editor')} {...props} />
+    </EditorContainer>
   )
 }

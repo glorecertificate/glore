@@ -20,12 +20,16 @@ export const Tooltip = (props: TooltipProps) => (
 )
 
 export interface TooltipTriggerProps extends React.ComponentProps<typeof TooltipPrimitive.Trigger> {
-  pointerEvents?: boolean
+  /**
+   * Pointer events applied when `asChild` is used.
+   * @default 'none'
+   */
+  pointerEvents?: 'auto' | 'none'
 }
 
-export const TooltipTrigger = ({ className, pointerEvents = false, ...props }: TooltipTriggerProps) => (
+export const TooltipTrigger = ({ className, pointerEvents = 'none', ...props }: TooltipTriggerProps) => (
   <TooltipPrimitive.Trigger
-    className={cn(pointerEvents && 'pointer-events-auto!', className)}
+    className={cn(pointerEvents === 'auto' && 'pointer-events-auto!', className)}
     data-slot="tooltip-trigger"
     {...props}
   />
@@ -41,19 +45,19 @@ export const TooltipContent = ({
   arrow = true,
   children,
   className,
-  color,
   sideOffset = 4,
+  variant,
   ...props
 }: TooltipContentProps) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
-      className={cn(tooltipContentVariants({ color }), className)}
+      className={cn(tooltipContentVariants({ variant }), className)}
       data-slot="tooltip-content"
       sideOffset={sideOffset}
       {...props}
     >
       {children}
-      {arrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ color })} />}
+      {arrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
     </TooltipPrimitive.Content>
   </TooltipPrimitive.Portal>
 )
@@ -68,30 +72,30 @@ export const tooltipContentVariants = cva(
     data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
   `,
   {
+    defaultVariants: {
+      variant: 'default',
+    },
     variants: {
-      color: {
+      variant: {
         default: 'bg-foreground/95 text-background',
         success: 'bg-success-accent/95 text-success-foreground',
         warning: 'bg-warning-accent/95 text-warning-foreground',
         destructive: 'bg-destructive/95 text-destructive-foreground',
       },
     },
-    defaultVariants: {
-      color: 'default',
-    },
   },
 )
 
 const tooltipArrowVariants = cva('z-50', {
+  defaultVariants: {
+    variant: 'default',
+  },
   variants: {
-    color: {
+    variant: {
       default: 'fill-foreground',
       success: 'fill-success-accent',
       warning: 'fill-warning-accent',
       destructive: 'fill-destructive-accent',
     },
-  },
-  defaultVariants: {
-    color: 'default',
   },
 })

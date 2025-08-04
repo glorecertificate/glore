@@ -1,4 +1,5 @@
 import { organizationQuery } from '@/api/modules/organizations/queries'
+import { timestamps } from '@/api/utils'
 
 export const baseUserQuery = `
   id,
@@ -18,9 +19,7 @@ export const baseUserQuery = `
   avatarUrl:avatar_url,
   isAdmin:is_admin,
   isEditor:is_editor,
-  createdAt:created_at,
-  updatedAt:updated_at,
-  deletedAt:deleted_at
+  ${timestamps}
 `
 
 export const userQuery = `

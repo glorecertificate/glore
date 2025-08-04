@@ -2,12 +2,11 @@
 
 import { useMemo } from 'react'
 
-import { Avatar } from '@radix-ui/react-avatar'
 import { BookOpenIcon, LanguagesIcon, UserPenIcon } from 'lucide-react'
 
 import { type Course } from '@/api/modules/courses/types'
 import { UserCard } from '@/components/features/user-card'
-import { AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -19,8 +18,8 @@ import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } fro
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { type Locale, type LocaleItem } from '@/lib/i18n/types'
-import { LOCALE_ITEMS } from '@/lib/i18n/utils'
 import { dynamicRoute, Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -45,14 +44,14 @@ const CourseCardFlag = ({
     const displayLanguage = locale === 'en' ? language : language.toLowerCase()
     return `${active ? t('Courses.localePublished') : t('Courses.localeNotPublished')} ${displayLanguage}`
   }, [active, language, locale, t])
-  const contentColor = useMemo<TooltipContentProps['color']>(() => (active ? 'success' : 'default'), [active])
+  const tooltipVariant = useMemo<TooltipContentProps['variant']>(() => (active ? 'success' : 'default'), [active])
 
   if (!showTooltip) return trigger
 
   return (
     <Tooltip delayDuration={300}>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent arrow={false} color={contentColor}>
+      <TooltipContent arrow={false} variant={tooltipVariant}>
         {content}
       </TooltipContent>
     </Tooltip>
@@ -119,7 +118,7 @@ export const CourseCard = ({
             {course.imageUrl && (
               <Image
                 alt={localize(course.title)}
-                className="object-cover transition-all duration-200 group-hover:scale-110"
+                className="object-cover transition-all duration-200 group-hover:scale-110 group-has-[[data-state=open]]:scale-110"
                 fill
                 src={course.imageUrl}
               />
@@ -154,10 +153,7 @@ export const CourseCard = ({
               <BookOpenIcon className="size-3.5 text-foreground" />
               {lessonsCount > 0 ? (
                 <>
-                  {course.lessons?.length}{' '}
-                  {t('Common.lessons', {
-                    count: course.lessons?.length || 0,
-                  })}
+                  {course.lessons?.length} {t('Common.lessons', { count: course.lessons?.length || 0 })}
                 </>
               ) : (
                 t('Courses.noLessons')
@@ -171,7 +167,11 @@ export const CourseCard = ({
                   <HoverCard closeDelay={50} openDelay={300}>
                     <HoverCardTrigger asChild>
                       <Button
-                        className="cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground"
+                        className={`
+                          peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground
+                          data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground
+                          dark:data-[state=open]:bg-accent/50
+                        `}
                         size="text"
                         variant="ghost"
                       >

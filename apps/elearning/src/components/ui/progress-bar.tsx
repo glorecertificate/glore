@@ -48,12 +48,9 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
     return () => clearInterval(t)
   }, [state, value])
 
-  const start = useCallback(
-    () => () => {
-      setState('in-progress')
-    },
-    [],
-  )
+  const start = useCallback(() => {
+    setState('in-progress')
+  }, [])
 
   const done = useCallback(() => {
     setState('complete')
@@ -77,7 +74,9 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
       }, 300)
     }
 
-    return () => clearTimeout(t)
+    return () => {
+      clearTimeout(t)
+    }
   }, [reset, value])
 
   const contextValue = useMemo<ProgressBarContext>(
@@ -103,7 +102,7 @@ export const ProgressBar = ({ children }: React.PropsWithChildren) => {
     <>
       {state !== 'initial' && (
         <div
-          className="fixed z-50 h-1 bg-gradient-to-r from-foreground/25 to-foreground/40 transition-all duration-300 ease-in-out"
+          className="fixed z-50 h-1 bg-gradient-to-r from-foreground/15 to-foreground/30 transition-all duration-300 ease-in-out"
           style={{ width: `${value}%` }}
         />
       )}

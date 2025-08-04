@@ -1,13 +1,15 @@
 import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'use-intl'
 
+import { type AnyRecord } from '@repo/utils'
+
 import { type locales } from 'config/app.json'
 import type messages from 'config/translations/en.json'
 
-import { type formats } from './config'
+import { type FORMATS } from './config'
 
 export type Locale = keyof typeof locales
 type Messages = typeof messages
-type Formats = typeof formats
+type Formats = typeof FORMATS
 
 declare module 'use-intl' {
   interface AppConfig {
@@ -43,4 +45,22 @@ export interface LocaleItem {
   label: string
   value: Locale
   icon: string
+}
+
+/**
+ * Record with translations for different locales.
+ */
+export type IntlRecord = Partial<Record<Locale, string>>
+
+/**
+ * Record with localized values.
+ */
+export type Localized<T extends AnyRecord> = {
+  [K in keyof T]: T[K] extends IntlRecord | undefined
+    ? T[K] extends undefined
+      ? undefined
+      : string | undefined
+    : T[K] extends IntlRecord
+      ? string | undefined
+      : T[K]
 }

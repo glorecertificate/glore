@@ -68,7 +68,7 @@ export const UserCard = ({ hide = [], user }: { hide?: Array<keyof User>; user: 
         <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
           {isVisible('publicLocation') && (
             <div className="flex items-center gap-1.5">
-              <MapPin className="size-4" />
+              <MapPin className="size-3.5" />
               <Link
                 href={googleMapsUrl(user.publicLocation!)}
                 size="sm"
@@ -81,13 +81,13 @@ export const UserCard = ({ hide = [], user }: { hide?: Array<keyof User>; user: 
           )}
           {isVisible('languages') && (
             <div className="flex items-center gap-1.5">
-              <LanguagesIcon className="size-4" />
+              <LanguagesIcon className="size-3.5" />
               <span>{languages}</span>
             </div>
           )}
           {isVisible('email') && (
             <div className="flex items-center gap-1.5">
-              <MailIcon className="size-4" />
+              <MailIcon className="size-3.5" />
               <Link href={`mailto:${user.email}`} size="sm" title={contactTitle} variant="underline">
                 {user.email}
               </Link>

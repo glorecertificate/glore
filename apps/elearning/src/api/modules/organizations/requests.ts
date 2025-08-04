@@ -16,5 +16,5 @@ export const find = async (db: DatabaseClient, id: number): Promise<Organization
     redirect(Route.Login)
   }
 
-  return data
+  return data as Organization
 }

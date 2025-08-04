@@ -2,12 +2,12 @@
 
 import { useCallback, useState } from 'react'
 
-import { AdminCertificates } from '@/components/features/admin-certificates'
-import { AdminHeader } from '@/components/features/admin-header'
-import { AdminOrganizations } from '@/components/features/admin-organizations'
-import { AdminOverview } from '@/components/features/admin-overview'
-import { AdminTeam } from '@/components/features/admin-team'
-import { AdminUsers } from '@/components/features/admin-users'
+import { AdminCertificates } from '@/components/features/admin/admin-certificates'
+import { AdminHeader } from '@/components/features/admin/admin-header'
+import { AdminOrganizations } from '@/components/features/admin/admin-organizations'
+import { AdminOverview } from '@/components/features/admin/admin-overview'
+import { AdminTeam } from '@/components/features/admin/admin-team'
+import { AdminUsers } from '@/components/features/admin/admin-users'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 type AdminDashboardTab = 'overview' | 'certificates' | 'users' | 'organizations' | 'team'

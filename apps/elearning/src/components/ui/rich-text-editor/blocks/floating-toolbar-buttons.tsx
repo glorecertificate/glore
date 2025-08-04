@@ -1,17 +1,13 @@
 'use client'
 
-import { BoldIcon, Code2Icon, ItalicIcon, StrikethroughIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
+import { BoldIcon, ItalicIcon, StrikethroughIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
 import { KEYS } from 'platejs'
 import { useEditorReadOnly } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
 import { AIToolbarButton } from '#rte/blocks/ai-toolbar-button'
-import { CommentToolbarButton } from '#rte/blocks/comment-toolbar-button'
-import { InlineEquationToolbarButton } from '#rte/blocks/equation-toolbar-button'
 import { LinkToolbarButton } from '#rte/blocks/link-toolbar-button'
 import { MarkToolbarButton } from '#rte/blocks/mark-toolbar-button'
-import { MoreToolbarButton } from '#rte/blocks/more-toolbar-button'
-import { SuggestionToolbarButton } from '#rte/blocks/suggestion-toolbar-button'
 import { ToolbarGroup } from '#rte/blocks/toolbar'
 import { TurnIntoToolbarButton } from '#rte/blocks/turn-into-toolbar-button'
 
@@ -49,23 +45,10 @@ export const FloatingToolbarButtons = () => {
               <StrikethroughIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.code} tooltip={`${t('blocks.code')} (⌘+E)`}>
-              <Code2Icon />
-            </MarkToolbarButton>
-
-            <InlineEquationToolbarButton />
-
             <LinkToolbarButton />
           </ToolbarGroup>
         </>
       )}
-
-      <ToolbarGroup>
-        <CommentToolbarButton />
-        <SuggestionToolbarButton />
-
-        {!readOnly && <MoreToolbarButton />}
-      </ToolbarGroup>
     </>
   )
 }

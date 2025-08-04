@@ -6,6 +6,7 @@ import { type Theme } from '@/lib/theme'
 
 /**
  * Extends the hook from `next-themes` to provide type-safe access to the application themes.
+ *
  * It provides the current theme, resolved theme, and methods to set the theme.
  * It also includes booleans for simplified checks of light and dark modes.
  */

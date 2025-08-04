@@ -1,4 +1,4 @@
-import { AdminDashboard } from '@/components/features/admin-dashboard'
+import { AdminDashboard } from '@/components/features/admin/admin-dashboard'
 import { generatePageMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generatePageMetadata({

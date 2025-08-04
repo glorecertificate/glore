@@ -6,7 +6,7 @@ import { cva } from 'class-variance-authority'
 import { usePluginOption, type PlateElementProps } from 'platejs/react'
 
 export const blockSelectionVariants = cva(
-  'pointer-events-none absolute inset-0 z-1 bg-brand/[.13] transition-opacity',
+  'pointer-events-none absolute inset-0 z-1 bg-foreground/5 transition-opacity',
   {
     defaultVariants: {
       active: true,

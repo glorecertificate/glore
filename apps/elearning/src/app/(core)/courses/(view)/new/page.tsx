@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { getApi } from '@/api/client'
-import { CourseFlow } from '@/components/features/course-flow'
+import { CourseView } from '@/components/features/courses/course-view'
 import { generatePageMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generatePageMetadata({
@@ -14,5 +14,5 @@ export default async () => {
 
   if (!user || (!user.isAdmin && !user.isEditor)) return notFound()
 
-  return <CourseFlow />
+  return <CourseView />
 }

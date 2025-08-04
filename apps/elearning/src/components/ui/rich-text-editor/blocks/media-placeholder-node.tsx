@@ -8,7 +8,7 @@ import { KEYS, type TPlaceholderElement } from 'platejs'
 import { PlateElement, useEditorPlugin, withHOC, type PlateElementProps } from 'platejs/react'
 import { useFilePicker } from 'use-file-picker'
 
-import { useUploadFile } from '@/hooks/use-upload-file'
+import { useFileUpload } from '@/hooks/use-file-upload'
 import { cn } from '@/lib/utils'
 
 const CONTENT: Record<
@@ -46,7 +46,7 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
 
   const { api } = useEditorPlugin(PlaceholderPlugin)
 
-  const { isUploading, progress, uploadFile, uploadedFile, uploadingFile } = useUploadFile()
+  const { isUploading, progress, uploadFile, uploadedFile, uploadingFile } = useFileUpload()
 
   const loading = isUploading && uploadingFile
 

@@ -63,14 +63,14 @@ const ThemeButtonBase = ({ active, children, className, icon: Icon, title, ...pr
 )
 
 const ThemeButton = ({ title, tooltip, ...props }: ThemeButtonProps) => {
-  const contentProps = useMemo(() => (typeof tooltip === 'object' ? tooltip : {}), [tooltip])
+  const tooltipProps = useMemo(() => (typeof tooltip === 'object' ? tooltip : {}), [tooltip])
 
   return tooltip ? (
     <Tooltip>
       <TooltipTrigger asChild>
         <ThemeButtonBase title={title} {...props} />
       </TooltipTrigger>
-      <TooltipContent {...contentProps}>{title}</TooltipContent>
+      <TooltipContent {...tooltipProps}>{title}</TooltipContent>
     </Tooltip>
   ) : (
     <ThemeButtonBase title={title} {...props} />

@@ -1,11 +1,11 @@
 import { type Certificate } from '@/api/modules/certificates/types'
 import { type BaseOrganization } from '@/api/modules/organizations/types'
-import { type Entity } from '@/api/types'
+import { type Entity, type Timestamp } from '@/api/types'
 import { type Enums } from 'supabase/types'
 
 export interface BaseUser extends Exclude<Entity<'users'>, 'phone'> {}
 
-export interface User extends Entity<'users', 'created_at' | 'updated_at' | 'deleted_at'> {
+export interface User extends Entity<'users', never, Timestamp> {
   canEdit: boolean
   fullName: string | null
   initials: string[] | null

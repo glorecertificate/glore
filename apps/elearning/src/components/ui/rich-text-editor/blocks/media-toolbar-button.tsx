@@ -66,7 +66,14 @@ const MEDIA_CONFIG: Record<
   },
 }
 
-export const MediaToolbarButton = ({ nodeType, ...props }: DropdownMenuProps & { nodeType: string }) => {
+export const MediaToolbarButton = ({
+  nodeType,
+  tooltip,
+  ...props
+}: DropdownMenuProps & {
+  nodeType: string
+  tooltip?: string
+}) => {
   const currentConfig = MEDIA_CONFIG[nodeType]
 
   const editor = useEditorRef()
@@ -98,7 +105,7 @@ export const MediaToolbarButton = ({ nodeType, ...props }: DropdownMenuProps & {
         }}
         pressed={open}
       >
-        <ToolbarSplitButtonPrimary>{currentConfig.icon}</ToolbarSplitButtonPrimary>
+        <ToolbarSplitButtonPrimary tooltip={tooltip}>{currentConfig.icon}</ToolbarSplitButtonPrimary>
 
         <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
           <DropdownMenuTrigger asChild>

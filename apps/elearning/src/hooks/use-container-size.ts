@@ -14,6 +14,7 @@ const DEFAULT_RECT: DOMRect = {
 
 /**
  * Hook to observe the size of a container element.
+ *
  * It uses the `ResizeObserver` API to detect changes in size and returns the current size as a `DOMRect`.
  */
 export const useContainerSize = (element: HTMLElement | null) => {

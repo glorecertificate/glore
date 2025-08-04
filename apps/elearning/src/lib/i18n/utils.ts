@@ -1,42 +1,29 @@
 import { type Locale } from 'use-intl'
 
-import { type Json } from '@repo/utils'
+import { isPlainObject, type AnyRecord } from '@repo/utils'
 
-import { type LocaleItem } from '@/lib/i18n/types'
-import config from 'config/app.json'
-
-/**
- * List of supported locales in the application, derived from the app configuration.
- */
-export const LOCALES = Object.keys(config.locales) as Locale[]
+import { LOCALES } from '@/lib/i18n/config'
+import { type IntlRecord, type Localized } from '@/lib/i18n/types'
 
 /**
- * Items used to display the available locales across the application.
+ * Localizes a record based on the provided locale.
  */
-export const LOCALE_ITEMS = Object.entries(config.locales).map(
-  ([value, { flag, name }]) =>
-    ({
-      label: name,
-      value,
-      icon: flag,
-    }) as LocaleItem,
-)
+export const localizeRecord = <T extends AnyRecord>(record: T, locale: Locale, fallback?: Locale): Localized<T> =>
+  Object.entries(record).reduce((acc, [key, value]) => {
+    const next = { ...acc, [key as keyof Localized<T>]: value as Localized<T>[keyof Localized<T>] }
+    if (!isPlainObject(value)) return next
+    const keys = Object.keys(value as object)
+    if (keys.length === 0 || !keys.every(key => LOCALES.includes(key as Locale))) return next
+    return { ...acc, [key]: localize(value as IntlRecord, locale, fallback) }
+  }, {} as Localized<T>)
 
 /**
  * Localizes a JSON object based on the provided locale.
  */
-export const localizeJson = <T extends Json>(data: T, locale?: Locale, fallback?: Locale): string | undefined => {
-  if (typeof data !== 'object' || data === null) return String(data)
-  if (Array.isArray(data))
-    return data
-      .map(item => localizeJson(item, locale, fallback))
-      .filter(Boolean)
-      .join(', ')
-  const locales = Object.keys(data)
-  if (!locale || !locales.length) return data[locales[0]] as string | undefined
-  if (locales.includes(locale)) return data[locale] as string | undefined
-  const fallbackLocale = fallback || locales[0] || config.defaultLocale
-  return data[fallbackLocale] as string
+export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) => {
+  const keys = Object.keys(record)
+  if (keys.includes(locale)) return record[locale]
+  return fallback ? record[fallback] : undefined
 }
 
 /**
@@ -44,19 +31,10 @@ export const localizeJson = <T extends Json>(data: T, locale?: Locale, fallback?
  */
 export const localizeDate = (
   input: Date | string | number,
-  locale: Locale,
   type: 'short' | 'long' = 'long',
+  locale: Locale,
 ): string => {
   const date = typeof input === 'object' ? input : new Date(input)
   if (type === 'short') return new Intl.DateTimeFormat(locale).format(date)
   return new Date(date).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })
 }
-
-/**
- * Localizes an array of items based on the provided locale.
- */
-export const localizeItems = (locale: Locale, items = LOCALE_ITEMS) =>
-  items.map(item => ({
-    ...item,
-    label: localizeJson(item.label, locale),
-  }))

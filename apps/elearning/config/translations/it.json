@@ -71,7 +71,8 @@
     "showOnGoogleMaps": "Mostra su Google Maps",
     "url": "URL",
     "cancel": "Cancella",
-    "insert": "Inserisci"
+    "insert": "Inserisci",
+    "switchLanguage": "Cambia lingua"
   },
   "Auth": {
     "backToLogin": "Torna al login",
@@ -203,7 +204,7 @@
     "published": "Pubblicato",
     "courseTitlePlaceholder": "Nuovo corso",
     "preview": "Anteprima",
-    "edit": "Modificare",
+    "edit": "Modifica",
     "publishCourseMessage": "Il corso diventerà visibile nelle lingue selezionate",
     "unpublish": "Sospendi pubblicazione",
     "unpublishCourseMessage": "Il corso non sarà visibile sulla piattaforma",
@@ -232,7 +233,12 @@
     "emptyMessageDraft": "Non ci sono draft",
     "updateFilters": "Prova ad aggiornare i filtri per visualizzare altri corsi",
     "emptyMessageArchived": "Nessun corso è stato ancora archiviato",
-    "createdBy": "Creato da"
+    "createdBy": "Creato da",
+    "selectLanguage": "Seleziona una lingua",
+    "addLanguage": "Aggiungi lingua",
+    "notCreated": "Non creato",
+    "editMessage": "Modifica il corso",
+    "previewMessage": "Visualizza anteprima"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",

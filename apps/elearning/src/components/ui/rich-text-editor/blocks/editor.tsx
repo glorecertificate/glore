@@ -1,7 +1,14 @@
 'use client'
 
 import { cva, type VariantProps } from 'class-variance-authority'
-import { PlateContainer, PlateContent, PlateView, type PlateContentProps, type PlateViewProps } from 'platejs/react'
+import {
+  PlateContainer,
+  PlateContent,
+  PlateView,
+  usePlateState,
+  type PlateContentProps,
+  type PlateViewProps,
+} from 'platejs/react'
 
 import { cn } from '@/lib/utils'
 
@@ -22,21 +29,24 @@ export const EditorView = ({ className, variant, ...props }: PlateViewProps & Va
   <PlateView {...props} className={cn(editorVariants({ variant }), className)} />
 )
 
-export const Editor = ({ className, disabled, focused, variant, ...props }: EditorProps) => (
-  <PlateContent
-    className={cn(editorVariants({ disabled, focused, variant }), className)}
-    disabled={disabled}
-    disableDefaultStyles
-    {...props}
-  />
-)
+export const Editor = ({ className, disabled, focused, variant, ...props }: EditorProps) => {
+  const [readOnly] = usePlateState('readOnly')
+
+  return (
+    <PlateContent
+      className={cn(editorVariants({ disabled, focused, variant }), readOnly && 'rounded-lg', className)}
+      disabled={disabled}
+      disableDefaultStyles
+      {...props}
+    />
+  )
+}
 
 const editorContainerVariants = cva(
   `
     relative w-full cursor-text overflow-y-auto caret-foreground/50 select-text
-    selection:bg-brand/25
     focus-visible:outline-none
-    [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border [&_.slate-selection-area]:border-brand/25 [&_.slate-selection-area]:bg-brand/15
+    [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border
   `,
   {
     defaultVariants: {

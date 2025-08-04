@@ -4,6 +4,7 @@ import { isServer } from '@repo/utils'
 
 /**
  * Hook to track the current scroll position of the window.
+ *
  * It provides the current scroll position and a boolean indicating if the page is scrolled.
  */
 export const useScroll = () => {
@@ -33,8 +34,5 @@ export const useScroll = () => {
     }
   }, [onWindowScroll])
 
-  return {
-    scroll,
-    scrolled,
-  }
+  return { scroll, scrolled }
 }

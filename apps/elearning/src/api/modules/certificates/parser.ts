@@ -4,8 +4,9 @@ import { parseSkill } from '@/api/modules/courses/parser'
 import { createParser } from '@/api/utils'
 
 export const parseCertificate = createParser<'certificates', typeof certificateQuery, Certificate>(
-  ({ skills, ...certificate }) => ({
-    ...certificate,
-    skills: skills.map(parseSkill),
-  }),
+  ({ skills, ...certificate }) =>
+    ({
+      ...certificate,
+      skills: skills.map(parseSkill),
+    }) as Certificate,
 )

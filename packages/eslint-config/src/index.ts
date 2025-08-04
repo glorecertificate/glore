@@ -121,19 +121,45 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
       continue
     }
 
-    const { files: restrictedFiles, ...rest } = restrictedImport
-    const config: ScopedRestrictedImport = rest
+    const { files: restrictedFiles, ...config } = restrictedImport
 
-    for (const file of restrictedFiles) {
-      if (file.startsWith('!')) {
-        const ignoreFile = file.slice(1)
-        config.ignores = config.ignores ? [...config.ignores, ignoreFile] : [ignoreFile]
-        continue
-      }
-      config.files = config.files ? [...config.files, file] : [file]
+    const includes = restrictedFiles.filter(file => !file.startsWith('!'))
+    const ignores = restrictedFiles.filter(file => file.startsWith('!')).map(file => file.slice(1))
+
+    const scopedImport = scopedRestrictedImports.find(({ files }) => includes.every(file => files?.includes(file)))
+
+    if (!scopedImport) {
+      scopedRestrictedImports.push({
+        files: includes,
+        ignores,
+        restrictedImports: [config],
+      })
+      continue
     }
 
-    scopedRestrictedImports.push(config)
+    scopedImport.ignores = [...new Set([...(scopedImport.ignores ?? []), ...ignores])]
+    scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
+    // for (const file of restrictedFiles) {
+    //   if (file.startsWith('!')) {
+    //     const ignore = file.slice(1)
+    //     const scopedImport = scopedRestrictedImports.find(({ ignores }) => ignores?.includes(ignore))
+    //     if (!scopedImport) {
+    //       scopedRestrictedImports.push({ ignores: [ignore], restrictedImports: [config] })
+    //       continue
+    //     }
+    //     scopedImport.ignores = [...new Set([...(scopedImport.ignores ?? []), ignore])]
+    //     scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
+    //     continue
+    //   }
+
+    //   const scopedImport = scopedRestrictedImports.find(({ files }) => files?.includes(file))
+    //   if (!scopedImport) {
+    //     scopedRestrictedImports.push({ files: [file], restrictedImports: [config] })
+    //     continue
+    //   }
+    //   scopedImport.files = [...new Set([...(scopedImport.files ?? []), file])]
+    //   scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
+    // }
   }
 
   const [relativeImportsValue, relativeImportOptions] =
@@ -208,7 +234,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
             noRestrictedImportsOptions({
               allowRelativeImports: relativeImportsValue,
               namedImports,
-              restrictedImports: globalRestrictedImports,
+              restrictedImports: [...new Set(globalRestrictedImports)],
               nodePrefix,
             }),
           ],
@@ -329,7 +355,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
         },
       },
       ...(scopedRestrictedImports.length > 0
-        ? scopedRestrictedImports.map(({ files, ignores = [], ...restrictedImport }) => ({
+        ? scopedRestrictedImports.map(({ files, ignores = [], restrictedImports }) => ({
             files,
             ignores,
             rules: {
@@ -338,7 +364,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                 noRestrictedImportsOptions({
                   allowRelativeImports,
                   namedImports,
-                  restrictedImports: [restrictedImport],
+                  restrictedImports,
                   nodePrefix,
                 }),
               ],

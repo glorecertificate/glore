@@ -12,7 +12,7 @@ import { log } from '@repo/utils'
 
 import { api } from '@/api/client'
 import { type User } from '@/api/modules/users/types'
-import { AuthForm } from '@/components/features/auth-form'
+import { AuthForm } from '@/components/features/auth/auth-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

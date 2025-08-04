@@ -1,3 +1,5 @@
+import { timestamps } from '@/api/utils'
+
 export const organizationQuery = `
   id,
   handle,
@@ -14,7 +16,5 @@ export const organizationQuery = `
   rating,
   avatarUrl:avatar_url,
   approvedAt:approved_at,
-  createdAt:created_at,
-  updatedAt:updated_at,
-  deletedAt:deleted_at
+  ${timestamps}
 `

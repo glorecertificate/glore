@@ -8,6 +8,7 @@ const MOBILE_BREAKPOINT = 768
 
 /**
  * Hook to detect the device type based on the window width.
+ *
  * Returns the device type and booleans for simplified checks.
  */
 export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {

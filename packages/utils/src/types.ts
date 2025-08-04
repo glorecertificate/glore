@@ -41,7 +41,15 @@ export type BooleanString = 'true' | 'false'
 /**
  * JSON value type.
  */
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | {
+      [key: string]: Json | undefined
+    }
+  | Json[]
 
 /**
  * JSON record type.
@@ -106,8 +114,8 @@ export interface Recursive<T> {
 /**
  * Record with keys converted from `snake_case` to `camelCase`.
  */
-export type SnakeToCamelCase<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
-  ? `${T}${Capitalize<SnakeToCamelCase<U>>}`
+export type SnakeToCamel<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<SnakeToCamel<U>>}`
   : S
 
 /**

@@ -4,48 +4,38 @@ import { useCallback, useMemo } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'
 
-import { type Course, type Lesson } from '@/api/modules/courses/types'
+import { type Course } from '@/api/modules/courses/types'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
 import { useScroll } from '@/hooks/use-scroll'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 
 export const CourseHeaderMobile = ({
   course,
-  editable = true,
-  lesson,
+  language,
   setStep,
   step,
 }: {
   course: Course | Partial<Course>
-  editable?: boolean
-  lesson?: Lesson | Partial<Lesson>
-  setStep: (step: number) => void
-  step?: number
+  language?: Locale
+  step: number
+  setStep: (index: number) => void
 }) => {
   const { localize } = useLocale()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
-  const lessonTitle = useMemo(
-    () => (lesson?.title ? localize(lesson.title) : t('newLesson')),
-    [lesson?.title, localize, t],
-  )
+  const currentLesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
   const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
 
-  const isActive = useCallback((index: number) => index === step, [step])
-  const isCompleted = useCallback((index: number) => !!course.lessons?.[index].completed, [course.lessons])
-  const showCompleted = useCallback((index: number) => !editable && isCompleted(index), [editable, isCompleted])
-  const formatLessonType = useCallback(
-    (type: string) =>
-      t('lessonType', {
-        type,
-      }),
-    [t],
-  )
+  const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
+
+  const isCurrentLesson = useCallback((index: number) => index === step, [step])
+  const isCompletedLesson = useCallback((index: number) => !!course.lessons?.[index].completed, [course.lessons])
 
   return (
     <div className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}>
@@ -53,12 +43,10 @@ export const CourseHeaderMobile = ({
         <DropdownMenuTrigger asChild>
           <Button className="w-full justify-between py-6" variant="outline">
             <div className="flex flex-col items-start">
-              {lesson ? (
+              {currentLesson ? (
                 <>
-                  <span className="font-medium">{lessonTitle}</span>
-                  {lesson.type && (
-                    <span className="text-xs text-muted-foreground">{formatLessonType(lesson.type)}</span>
-                  )}
+                  <span className="font-medium">{localize(currentLesson.title, language)}</span>
+                  <span className="text-xs text-muted-foreground">{formatLessonType(currentLesson.type)}</span>
                 </>
               ) : (
                 <span className="font-medium">{'No lessons'}</span>
@@ -72,9 +60,9 @@ export const CourseHeaderMobile = ({
             course.lessons.map((lesson, index) => (
               <DropdownMenuItem className="flex justify-between py-2" key={lesson.id} onClick={() => setStep(index)}>
                 <div className="flex flex-col">
-                  <span className={cn(isActive(index) && 'font-semibold')}>
-                    {localize(lesson.title)}{' '}
-                    {showCompleted(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
+                  <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
+                    {localize(lesson.title, language)}{' '}
+                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
                   </span>
                   <span className="text-xs text-muted-foreground">{formatLessonType(lesson.type)}</span>
                 </div>

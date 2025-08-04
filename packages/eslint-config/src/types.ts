@@ -24,8 +24,10 @@ export type RestrictedImport =
         }
     ))
 
-export type ScopedRestrictedImport = Exclude<RestrictedImport, string> & {
+export interface ScopedRestrictedImport {
+  files?: string[]
   ignores?: string[]
+  restrictedImports?: Omit<RestrictedImport[], 'files'>
 }
 
 export interface SortImportGroup {

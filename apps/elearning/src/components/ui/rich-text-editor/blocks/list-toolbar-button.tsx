@@ -22,7 +22,7 @@ import {
   ToolbarSplitButtonSecondary,
 } from '#rte/blocks/toolbar'
 
-export const BulletedListToolbarButton = () => {
+export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => {
   const editor = useEditorRef()
   const t = useTranslations('Editor.blocks')
 
@@ -43,6 +43,7 @@ export const BulletedListToolbarButton = () => {
             listStyleType: ListStyleType.Disc,
           })
         }}
+        tooltip={tooltip}
       >
         <List className="size-4" />
       </ToolbarSplitButtonPrimary>
@@ -97,7 +98,7 @@ export const BulletedListToolbarButton = () => {
   )
 }
 
-export const NumberedListToolbarButton = () => {
+export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => {
   const editor = useEditorRef()
   const t = useTranslations('Editor.blocks')
   const [open, setOpen] = useState(false)
@@ -124,6 +125,7 @@ export const NumberedListToolbarButton = () => {
             listStyleType: ListStyleType.Decimal,
           })
         }
+        tooltip={tooltip}
       >
         <ListOrdered className="size-4" />
       </ToolbarSplitButtonPrimary>

@@ -342,12 +342,12 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
             <SidebarMenuButton
               className={cn(
                 `
-                  rounded-lg bg-background/80 py-7 shadow-xl transition-all duration-150
+                  group/sidebar-user rounded-lg bg-background/80 py-7 shadow-sm transition-all duration-150
                   hover:bg-background/80
-                  active:bg-background/40 active:shadow-inner
+                  active:bg-background/50 active:shadow-inner
                   data-[state=open]:bg-background/20 data-[state=open]:text-sidebar-accent-foreground
                 `,
-                open ? 'overflow-hidden' : 'overflow-visible',
+                open ? 'overflow-hidden shadow-inner' : 'overflow-visible',
               )}
               size="lg"
             >
@@ -377,8 +377,12 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                     {user.firstName}
                     {user.isAdmin && (
                       <Tooltip>
-                        <TooltipTrigger asChild pointerEvents>
-                          <ShieldUserIcon size={14} />
+                        <TooltipTrigger
+                          asChild
+                          className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"
+                          pointerEvents="auto"
+                        >
+                          <ShieldUserIcon className="size-3" />
                         </TooltipTrigger>
                         <TooltipContent sideOffset={3}>
                           <span className="text-xs">{t('Navigation.adminUser')}</span>
@@ -387,8 +391,12 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                     )}
                     {user.isEditor && (
                       <Tooltip>
-                        <TooltipTrigger asChild>
-                          <PencilIcon size={14} />
+                        <TooltipTrigger
+                          asChild
+                          className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"
+                          pointerEvents="auto"
+                        >
+                          <PencilIcon className="size-3" />
                         </TooltipTrigger>
                         <TooltipContent>
                           <span className="text-xs">{t('Navigation.editorUser')}</span>

@@ -4,6 +4,7 @@ import { type LocalStorageKey, type LocalStorageValue } from '@/lib/storage/type
 
 /**
  * Hook to manage local storage values.
+ *
  * It initializes the value from local storage and updates it when the value changes.
  */
 export const useLocalStorage = <T extends LocalStorageKey>(key: T, defaultValue?: LocalStorageValue<T>) => {

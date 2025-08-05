@@ -85,7 +85,7 @@ const useAIChatItems = () => {
         const isEmpty = NodeApi.string(ancestorNode[0]).trim().length === 0
         void editor.getApi(AIChatPlugin).aiChat.submit({
           mode: 'insert',
-          prompt: isEmpty ? t('ai.continueEmptyWritingPrompt') : t('ai.continueWritingPrompt'),
+          prompt: isEmpty ? t.raw('ai.continueEmptyWritingPrompt') : t.raw('ai.continueWritingPrompt'),
         })
       },
     },

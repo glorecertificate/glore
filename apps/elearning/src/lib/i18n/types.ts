@@ -20,11 +20,18 @@ declare module 'use-intl' {
 }
 
 /**
- * Extends the `Translator` type to include the `flat` function.
+ * Intl translator function type.
  */
-export type Translator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never> = ReturnType<
+export type IntlTranslator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never> = ReturnType<
   typeof createTranslator<Messages, NestedKey>
-> & {
+>
+
+/**
+ * Extends the `IntlTranslator` type to include a `flat` function.
+ */
+export interface Translator<NestedKey extends NamespaceKeys<Messages, NestedKeyOf<Messages>> = never>
+  extends IntlTranslator<NestedKey> {
+  raw(key: Parameters<IntlTranslator<NestedKey>['raw']>[0]): string
   /**
    * Flat translation function that allows passing any string as a key.
    *

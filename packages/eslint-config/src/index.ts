@@ -617,7 +617,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
               rules: {
                 'prettier/prettier': [
                   RuleSeverity.Error,
-                  ...(typeof prettier === 'object' ? [prettier] : [{}, { usePrettierRc: true }]),
+                  ...(typeof prettier === 'object' ? [prettier] : [{}, { usePrettierrc: true }]),
                 ],
               },
             },

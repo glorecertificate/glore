@@ -38,17 +38,18 @@
     "@release-it/conventional-changelog": "^8.0.2",
     "@repo/eslint-config": "workspace:^",
     "@repo/prettier-config": "workspace:^",
+    "@repo/release-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
     "@types/node": "catalog:",
     "dotenv-cli": "^10.0.0",
     "eslint": "catalog:",
     "husky": "^9.1.7",
     "prettier": "catalog:",
-    "release-it": "^19.0.4",
+    "release-it": "catalog:",
     "release-it-pnpm": "^4.6.6",
     "shellcheck": "catalog:",
     "turbo": "^2.5.5",
     "typescript": "catalog:",
-    "vercel": "^44.7.2"
+    "vercel": "^44.7.3"
   }
 }

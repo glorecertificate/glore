@@ -505,7 +505,7 @@ export const SidebarMenuButton = ({
     [onClick, isMobile],
   )
 
-  if (isMobile || !tooltip || hideTooltip) return content
+  if (active || isMobile || !tooltip || hideTooltip) return content
   if (typeof tooltip === 'string') tooltip = { children: tooltip }
 
   return (

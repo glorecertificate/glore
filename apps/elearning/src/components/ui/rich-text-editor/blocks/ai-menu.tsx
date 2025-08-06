@@ -130,26 +130,6 @@ const useAIChatItems = () => {
         })
       },
     },
-    // generateMarkdownSample: {
-    //   icon: <BookOpenCheckIcon />,
-    //   label: t('ai.generateMarkdownSample'),
-    //   value: 'generateMarkdownSample',
-    //   onSelect: ({ editor }) => {
-    //     void editor.getApi(AIChatPlugin).aiChat.submit({
-    //       prompt: t('ai.generateMarkdownSamplePrompt'),
-    //     })
-    //   },
-    // },
-    // generateMdxSample: {
-    //   icon: <BookOpenCheckIcon />,
-    //   label: t('ai.generateMdxSample'),
-    //   value: 'generateMdxSample',
-    //   onSelect: ({ editor }) => {
-    //     void editor.getApi(AIChatPlugin).aiChat.submit({
-    //       prompt: t('ai.generateMdxSamplePrompt'),
-    //     })
-    //   },
-    // },
     improveWriting: {
       icon: <WandIcon />,
       label: t('ai.improveWriting'),
@@ -248,14 +228,23 @@ export const AIMenu = () => {
 
   const content = useLastAssistantMessage()?.content
 
+  const placeholder = useMemo(
+    () => (messages?.length ? t('placeholders.askAIEdit') : t('placeholders.askAI')),
+    [messages, t],
+  )
+
+  // const placeholder = useMemo(() => {
+  //   if (messages && messages.length > 0 && !isSelecting) return t('placeholders.askAIEdit')
+  //   return t('placeholders.askAI')
+  // }, [messages, isSelecting, t])
+
   useEffect(() => {
-    if (streaming) {
-      const anchor = api.aiChat.node({ anchor: true })
-      setTimeout(() => {
-        const anchorDom = editor.api.toDOMNode(anchor![0])!
-        setAnchorElement(anchorDom)
-      }, 0)
-    }
+    if (!streaming) return
+    const anchor = api.aiChat.node({ anchor: true })
+    setTimeout(() => {
+      const anchorDom = editor.api.toDOMNode(anchor![0])!
+      setAnchorElement(anchorDom)
+    }, 0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [streaming])
 
@@ -267,10 +256,13 @@ export const AIMenu = () => {
     [api],
   )
 
-  const show = (anchorElement: HTMLElement) => {
-    setAnchorElement(anchorElement)
-    setOpen(true)
-  }
+  const show = useCallback(
+    (anchorElement: HTMLElement) => {
+      setAnchorElement(anchorElement)
+      setOpen(true)
+    },
+    [setOpen],
+  )
 
   useEditorChat({
     chat,
@@ -299,8 +291,6 @@ export const AIMenu = () => {
 
   useHotkeys('esc', () => {
     api.aiChat.stop()
-    // Remove if using the route /api/ai/command
-    // chat._abortFakeStream()
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
@@ -356,7 +346,7 @@ export const AIMenu = () => {
                 }
               }}
               onValueChange={setInput}
-              placeholder={t('ai.askPlaceholder')}
+              placeholder={placeholder}
               value={input}
             />
           )}
@@ -385,13 +375,7 @@ export const AIMenuItems = ({ setValue }: { setValue: (value: string) => void })
     () => ({
       cursorCommand: [
         {
-          items: [
-            // aiChatItems.generateMdxSample,
-            // aiChatItems.generateMarkdownSample,
-            aiChatItems.continueWrite,
-            aiChatItems.summarize,
-            aiChatItems.explain,
-          ],
+          items: [aiChatItems.continueWrite, aiChatItems.summarize, aiChatItems.explain],
         },
       ],
       cursorSuggestion: [

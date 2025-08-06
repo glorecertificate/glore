@@ -54,6 +54,7 @@ const toolbarButtonVariants = cva(
         default: 'h-9 min-w-9 px-2',
         lg: 'h-10 min-w-10 px-2.5',
         sm: 'h-8 min-w-8 px-1.5',
+        xs: 'h-7 min-w-7 px-1 [&_svg]:size-3.5!',
       },
       variant: {
         default: 'bg-transparent',
@@ -257,7 +258,7 @@ export const ToolbarGroup = ({
   separator?: boolean
 }) => (
   <div className={cn('group/toolbar-group relative hidden has-[button]:flex', className)}>
-    <div className="flex items-center">{children}</div>
+    <div className="flex items-center gap-1">{children}</div>
 
     {separator && (
       <div className="mx-1.5 py-0.5 group-last/toolbar-group:hidden!">

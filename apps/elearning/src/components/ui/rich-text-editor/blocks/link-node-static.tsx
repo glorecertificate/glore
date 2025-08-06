@@ -9,7 +9,7 @@ export const LinkElementStatic = (props: SlateElementProps<TLinkElement>) => (
       ...props.attributes,
       ...getLinkAttributes(props.editor, props.element),
     }}
-    className="font-medium text-primary underline decoration-primary underline-offset-4"
+    className="font-medium text-brand underline decoration-primary underline-offset-4"
   >
     {props.children}
   </SlateElement>

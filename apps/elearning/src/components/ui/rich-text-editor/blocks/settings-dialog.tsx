@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ApiRoute } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import { aiChatPlugin } from '#rte/kits/ai'
 
@@ -51,8 +52,8 @@ export const SettingsDialog = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Update AI chat options
     const options = editor.getOptions(aiChatPlugin) as Record<'chatOptions', ChatRequestOptions>
+
     if (!options.chatOptions) {
       console.warn('AI chat options not found. Please ensure the AI plugin is configured correctly.')
       return
@@ -60,6 +61,7 @@ export const SettingsDialog = () => {
 
     editor.setOption(aiChatPlugin, 'chatOptions', {
       ...options.chatOptions,
+      api: ApiRoute.AiCommand,
       body: {
         ...options.chatOptions.body,
         apiKey: tempKeys.openai,
@@ -69,7 +71,6 @@ export const SettingsDialog = () => {
 
     setOpen(false)
 
-    // Update AI complete options
     const completeOptions = editor.getOptions(CopilotPlugin).completeOptions ?? {}
     editor.setOption(CopilotPlugin, 'completeOptions', {
       ...completeOptions,

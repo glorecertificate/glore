@@ -97,7 +97,7 @@ const Draggable = (props: PlateElementProps) => {
     >
       {!isInTable && (
         <Gutter>
-          <div className={cn('slate-blockToolbarWrapper', 'flex h-[1.5em]', isInColumn && 'h-4')}>
+          <div className={cn('slate-blockToolbarWrapper flex h-[1.5em]', isInColumn && 'h-4')}>
             <div
               className={cn(
                 'slate-blockToolbar pointer-events-auto relative mr-1 flex w-4.5 items-center',

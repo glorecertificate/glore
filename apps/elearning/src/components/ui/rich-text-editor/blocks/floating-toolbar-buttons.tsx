@@ -20,7 +20,7 @@ export const FloatingToolbarButtons = () => {
       {!readOnly && (
         <>
           <ToolbarGroup>
-            <AIToolbarButton tooltip={t('aiCommands')}>
+            <AIToolbarButton size="xs">
               <WandSparklesIcon />
               {t('ai.askAI')}
             </AIToolbarButton>
@@ -29,23 +29,23 @@ export const FloatingToolbarButtons = () => {
           <ToolbarGroup>
             <TurnIntoToolbarButton />
 
-            <MarkToolbarButton nodeType={KEYS.bold} tooltip={`${t('blocks.bold')} (⌘+B)`}>
+            <MarkToolbarButton nodeType={KEYS.bold} size="xs">
               <BoldIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.italic} tooltip={`${t('blocks.italic')} (⌘+I)`}>
+            <MarkToolbarButton nodeType={KEYS.italic} size="xs">
               <ItalicIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.underline} tooltip={`${t('blocks.underline')} (⌘+U)`}>
+            <MarkToolbarButton nodeType={KEYS.underline} size="xs">
               <UnderlineIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.strikethrough} tooltip={`${t('blocks.strikethrough')} (⌘+⇧+M)`}>
+            <MarkToolbarButton nodeType={KEYS.strikethrough} size="xs">
               <StrikethroughIcon />
             </MarkToolbarButton>
 
-            <LinkToolbarButton />
+            <LinkToolbarButton size="xs" />
           </ToolbarGroup>
         </>
       )}

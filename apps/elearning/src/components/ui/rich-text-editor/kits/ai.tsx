@@ -2,10 +2,10 @@
 
 import { streamInsertChunk, withAIBatch } from '@platejs/ai'
 import { AIChatPlugin, AIPlugin, useChatChunk } from '@platejs/ai/react'
-import type { UseChatOptions } from 'ai/react'
 import { KEYS, PathApi } from 'platejs'
 import { usePluginOption } from 'platejs/react'
 
+import { ApiRoute } from '@/lib/navigation'
 import { AILoadingBar, AIMenu } from '#rte/blocks/ai-menu'
 import { AIAnchorElement, AILeaf } from '#rte/blocks/ai-node'
 import { CursorOverlayKit } from '#rte/kits/cursor-overlay'
@@ -19,9 +19,9 @@ interface AiTemplateOptions {
 export const aiChatPlugin = AIChatPlugin.extend({
   options: {
     chatOptions: {
-      api: '/api/ai/command',
+      api: ApiRoute.AiCommand,
       body: {},
-    } as UseChatOptions,
+    },
     promptTemplate: ({ isBlockSelecting, isSelecting }: AiTemplateOptions) =>
       isBlockSelecting
         ? PROMPT_TEMPLATES.userBlockSelecting

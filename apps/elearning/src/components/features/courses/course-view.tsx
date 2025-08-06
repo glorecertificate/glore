@@ -63,7 +63,7 @@ export const CourseView = (props: { course?: Course }) => {
     const locales = [...publishedLocales, ...draftLocales]
     if (param && locales.includes(param)) return param
     if (locales.includes(locale)) return locale
-    return LOCALE_ITEMS.filter(({ value }) => locales.includes(value))[0].value || locale || locales[0]
+    return LOCALE_ITEMS.filter(({ value }) => locales.includes(value))[0]?.value || locale || locales[0]
   }, [searchParams, publishedLocales, draftLocales, locale])
 
   const [language, setLanguage] = useState<Locale>(initialLanguage)
@@ -203,7 +203,7 @@ export const CourseView = (props: { course?: Course }) => {
                 step={step}
               />
 
-              {!user.canEdit && hasLessons && (
+              {hasLessons && (
                 <CourseFooter
                   lessons={course.lessons}
                   onNext={handleNext}

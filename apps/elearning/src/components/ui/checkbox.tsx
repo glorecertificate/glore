@@ -13,8 +13,8 @@ export const Checkbox = ({ className, ...props }: React.ComponentProps<typeof Ch
         focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
         disabled:cursor-not-allowed disabled:opacity-50
         aria-invalid:border-destructive aria-invalid:ring-destructive/20
-        data-[state=checked]:border-brand-secondary data-[state=checked]:bg-brand-secondary data-[state=checked]:text-brand-secondary-foreground
-        dark:aria-invalid:ring-destructive/40
+        data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground
+        dark:bg-input/30 dark:aria-invalid:ring-destructive/40 dark:data-[state=checked]:bg-primary
       `,
       className,
     )}

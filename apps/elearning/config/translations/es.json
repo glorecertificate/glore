@@ -72,7 +72,9 @@
     "url": "Url",
     "cancel": "Cancelar",
     "insert": "Insertar",
-    "switchLanguage": "Cambiar el idioma"
+    "switchLanguage": "Cambiar el idioma",
+    "accept": "Aceptar",
+    "invalidUrl": "URL no válida"
   },
   "Auth": {
     "backToLogin": "Volver a iniciar sesión",
@@ -284,11 +286,11 @@
     "contact": "Contactar {user}"
   },
   "Editor": {
-    "aiCommands": "Comandos AI",
     "undo": "Revertir",
     "export": "Exportar",
     "exportHtml": "Exportar como HTML",
     "blocks": {
+      "aiCommands": "Comandos AI",
       "bold": "Negrita",
       "italic": "Cursiva",
       "underline": "Subrayado",
@@ -366,15 +368,16 @@
       "tableDragColumn": "Arrastrar para mover la columna"
     },
     "placeholders": {
-      "content": "Comience a escribir...",
+      "content": "Comience a escribir, pulsa espacio para la asistencia de IA o '/' para comandos...",
       "linkUrl": "Ingrese URL",
       "linkText": "Ingrese texto del enlace",
       "searchEmoji": "Buscar emoji",
       "searchMention": "Buscar personas",
       "askAI": "Pregunta algo a la IA...",
       "searchLanguage": "Buscas un idioma...",
-      "editor": "Comience a escribir, pulsa espacio para la asistencia de IA o '/' para comandos...",
-      "block": "Escriba algo..."
+      "editor": "Empiece a escribir una nueva lección...",
+      "block": "Escriba algo...",
+      "askAIEdit": "Pedir que se modifique..."
     },
     "actions": {
       "save": "Guardar",
@@ -456,7 +459,6 @@
       "tryAgain": "Intentar otra vez",
       "editing": "Editando...",
       "thinking": "Pensamiento...",
-      "askPlaceholder": "Haz cualquier pregunta à l'AI...",
       "writing": "Escribiendo...",
       "stop": "Interrumpes",
       "continueEmptyWritingPrompt": "<Document>{editor}</Document>Comience a escribir un nuevo párrafo DESPUÈS DE <Document> SOLO UNA ORACIÓN"
@@ -507,6 +509,9 @@
       "replace": "Reemplazas:"
     },
     "colors": {
+      "clear": "Remover color",
+      "customColors": "Colores custom",
+      "defaultColors": "Colores predeterminados",
       "black": "Negro",
       "white": "Blanco",
       "grey": "Gris",
@@ -599,5 +604,24 @@
       "suggesting": "Sugerencia",
       "viewing": "Avance"
     }
+  },
+  "Countries": {
+    "ar": "Argentina",
+    "au": "Australia",
+    "br": "Brasil",
+    "ca": "Canadá",
+    "cn": "Porcelana",
+    "de": "Alemania",
+    "es": "España",
+    "fr": "Francia",
+    "in": "India",
+    "it": "Italia",
+    "jp": "Japón",
+    "mx": "México",
+    "pt": "Portugal",
+    "ru": "Rusia",
+    "uk": "Reino Unido",
+    "us": "Estados Unidos",
+    "za": "Sudáfrica"
   }
 }

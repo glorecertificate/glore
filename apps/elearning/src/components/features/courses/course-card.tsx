@@ -112,19 +112,23 @@ export const CourseCard = ({
 
   return (
     <Card className="group flex h-full flex-col justify-between gap-0 overflow-hidden pt-0">
-      <div>
-        <div className="relative h-40 w-full overflow-hidden">
-          <Link href={coursePath}>
-            {course.imageUrl && (
-              <Image
-                alt={localize(course.title)}
-                className="object-cover transition-all duration-200 group-hover:scale-110 group-has-[[data-state=open]]:scale-110"
-                fill
-                src={course.imageUrl}
-              />
-            )}
-          </Link>
-        </div>
+      <>
+        {course.imageUrl && (
+          <div className="relative h-40 w-full overflow-hidden">
+            <Link href={coursePath}>
+              {course.imageUrl && (
+                <div className="relative h-full w-full overflow-hidden">
+                  <Image
+                    alt={localize(course.title)}
+                    className="object-cover transition-all duration-200 group-hover:scale-110 group-has-[[data-state=open]]:scale-110"
+                    fill
+                    src={course.imageUrl}
+                  />
+                </div>
+              )}
+            </Link>
+          </div>
+        )}
         <div className="flex flex-col gap-3 py-4">
           <CardHeader>
             <h3 className="flex items-center font-semibold">
@@ -192,7 +196,7 @@ export const CourseCard = ({
             )}
           </CardContent>
         </div>
-      </div>
+      </>
       <CardFooter className="flex-col gap-4">
         {!user.canEdit && course.enrolled && (
           <div className="w-full">

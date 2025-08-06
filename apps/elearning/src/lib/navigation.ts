@@ -37,6 +37,11 @@ export enum Route {
   About = '/about',
 }
 
+export enum ApiRoute {
+  AiCommand = '/api/ai/command',
+  AiCopilot = '/api/ai/copilot',
+}
+
 export enum AuthPage {
   Login = Route.Login,
   PasswordReset = Route.PasswordReset,

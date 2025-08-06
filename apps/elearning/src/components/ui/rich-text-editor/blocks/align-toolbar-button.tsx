@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
 import { ToolbarButton } from '#rte/blocks/toolbar'
 
 const items = [
@@ -39,11 +40,10 @@ const items = [
 
 export const AlignToolbarButton = (props: DropdownMenuProps) => {
   const { editor, tf } = useEditorPlugin(TextAlignPlugin)
-  const value =
-    useSelectionFragmentProp({
-      defaultValue: 'start',
-      getProp: node => node.align,
-    }) ?? 'left'
+  const value = useSelectionFragmentProp({
+    defaultValue: 'left',
+    getProp: node => node.align,
+  })
   const t = useTranslations('Editor.actions')
 
   const [open, setOpen] = useState(false)
@@ -67,7 +67,10 @@ export const AlignToolbarButton = (props: DropdownMenuProps) => {
         >
           {items.map(({ icon: Icon, value: itemValue }) => (
             <DropdownMenuRadioItem
-              className="pl-2 data-[state=checked]:bg-accent *:first:[span]:hidden"
+              className={cn(
+                'cursor-pointer pl-2 data-[state=checked]:bg-accent *:first:[span]:hidden',
+                value === itemValue && 'pointer-events-none bg-accent',
+              )}
               key={itemValue}
               value={itemValue}
             >

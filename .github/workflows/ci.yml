@@ -74,8 +74,8 @@ jobs:
       - run: pnpm db push
         working-directory: ${{ vars.APP_PATH }}
 
-  code-checks:
-    name: Code checks
+  check-and-deploy:
+    name: Check and deploy
     runs-on: ubuntu-latest
     if: ${{ !startsWith(github.event.head_commit.message, 'chore(release)') }}
     permissions:

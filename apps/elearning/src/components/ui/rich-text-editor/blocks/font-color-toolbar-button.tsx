@@ -11,7 +11,8 @@ import { debounce } from '@repo/utils'
 
 import { buttonVariants } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { FontColorIcon } from '@/components/ui/icons/font-color'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '#rte/blocks/toolbar'
@@ -462,7 +463,6 @@ export const useColors = () => {
 }
 
 export const FontColorToolbarButton = ({
-  children,
   nodeType,
   tooltip,
 }: {
@@ -476,13 +476,6 @@ export const FontColorToolbarButton = ({
 
   const [selectedColor, setSelectedColor] = useState<string>()
   const [open, setOpen] = useState(false)
-
-  const onToggle = useCallback(
-    (value = !open) => {
-      setOpen(value)
-    },
-    [open, setOpen],
-  )
 
   const updateColor = useCallback(
     (value: string) => {
@@ -498,14 +491,6 @@ export const FontColorToolbarButton = ({
     [editor, nodeType],
   )
 
-  const updateColorAndClose = useCallback(
-    (value: string) => {
-      updateColor(value)
-      onToggle()
-    },
-    [onToggle, updateColor],
-  )
-
   const clearColor = useCallback(() => {
     if (editor.selection) {
       editor.tf.select(editor.selection)
@@ -514,10 +499,8 @@ export const FontColorToolbarButton = ({
       if (selectedColor) {
         editor.tf.removeMarks(nodeType)
       }
-
-      onToggle()
     }
-  }, [editor, selectedColor, onToggle, nodeType])
+  }, [editor, selectedColor, nodeType])
 
   useEffect(() => {
     if (selectionDefined) {
@@ -535,7 +518,7 @@ export const FontColorToolbarButton = ({
     >
       <DropdownMenuTrigger asChild>
         <ToolbarButton pressed={open} tooltip={tooltip}>
-          {children}
+          <FontColorIcon color={selectedColor || color} />
         </ToolbarButton>
       </DropdownMenuTrigger>
 
@@ -545,7 +528,7 @@ export const FontColorToolbarButton = ({
           color={selectedColor || color}
           colors={colors}
           customColors={customColors}
-          updateColor={updateColorAndClose}
+          updateColor={updateColor}
           updateCustomColor={updateColor}
         />
       </DropdownMenuContent>
@@ -569,31 +552,35 @@ const PureColorPicker = ({
   updateColor: (color: string) => void
   updateCustomColor: (color: string) => void
   color?: string
-}) => (
-  <div className={cn('flex flex-col', className)} {...props}>
-    <ToolbarMenuGroup label="Custom Colors">
-      <ColorCustom
-        className="px-2"
-        color={color}
-        colors={colors}
-        customColors={customColors}
-        updateColor={updateColor}
-        updateCustomColor={updateCustomColor}
-      />
-    </ToolbarMenuGroup>
-    <ToolbarMenuGroup label="Default Colors">
-      <ColorDropdownMenuItems className="px-2" color={color} colors={colors} updateColor={updateColor} />
-    </ToolbarMenuGroup>
-    {color && (
-      <ToolbarMenuGroup>
-        <DropdownMenuItem className="p-2" onClick={clearColor}>
-          <EraserIcon />
-          <span>{'Clear'}</span>
-        </DropdownMenuItem>
+}) => {
+  const t = useTranslations('Editor.colors')
+
+  return (
+    <div className={cn('flex flex-col', className)} {...props}>
+      <ToolbarMenuGroup label={t('customColors')}>
+        <ColorCustom
+          className="px-2"
+          color={color}
+          colors={colors}
+          customColors={customColors}
+          updateColor={updateColor}
+          updateCustomColor={updateCustomColor}
+        />
       </ToolbarMenuGroup>
-    )}
-  </div>
-)
+      <ToolbarMenuGroup label={t('defaultColors')}>
+        <ColorDropdownMenuItems className="px-2" color={color} colors={colors} updateColor={updateColor} />
+      </ToolbarMenuGroup>
+      {color && (
+        <ToolbarMenuGroup>
+          <DropdownMenuItem className="p-2" onClick={clearColor}>
+            <EraserIcon className="stroke-foreground" />
+            <span>{t('clear')}</span>
+          </DropdownMenuItem>
+        </ToolbarMenuGroup>
+      )}
+    </div>
+  )
+}
 
 const ColorPicker = memo(
   PureColorPicker,
@@ -622,7 +609,6 @@ const ColorCustom = ({
     if (!color || customColors.some(c => c.value === color) || colors.some(c => c.value === color)) {
       return
     }
-
     setCustomColor(color)
   }, [color, colors, customColors])
 
@@ -646,7 +632,7 @@ const ColorCustom = ({
 
   return (
     <div className={cn('relative flex flex-col gap-4', className)} {...props}>
-      <ColorDropdownMenuItems color={color} colors={computedColors} updateColor={updateColor}>
+      <ColorDropdownMenuItems color={color} colors={computedColors} showTitles={false} updateColor={updateColor}>
         <ColorInput
           onChange={e => {
             setValue(e.target.value)
@@ -723,50 +709,37 @@ const ColorDropdownMenuItem = ({
   value: string
   updateColor: (color: string) => void
   name?: string
-} & DropdownMenuItemProps) => {
-  const content = (
-    <DropdownMenuItem
-      className={cn(
-        buttonVariants({
-          size: 'icon',
-          variant: 'outline',
-        }),
-        'my-1 flex size-6 items-center justify-center rounded-full border border-solid border-muted p-0 transition-all hover:scale-125',
-        !isBrightColor && 'border-transparent',
-        isSelected && 'border-2 border-primary',
-        className,
-      )}
-      onSelect={e => {
-        e.preventDefault()
-        updateColor(value)
-      }}
-      style={{ backgroundColor: value }}
-      {...props}
-    />
-  )
-
-  return name ? (
-    <Tooltip>
-      <TooltipTrigger>{content}</TooltipTrigger>
-      <TooltipContent className="mb-1 capitalize">{name}</TooltipContent>
-    </Tooltip>
-  ) : (
-    content
-  )
-}
+} & DropdownMenuItemProps) => (
+  <DropdownMenuItem
+    className={cn(
+      'my-1 flex size-5 rounded-full border p-0 shadow-2xs transition-all hover:scale-110',
+      isBrightColor ? 'border-muted' : 'border-transparent',
+      isSelected && 'border-foreground',
+      className,
+    )}
+    onSelect={e => {
+      e.preventDefault()
+      updateColor(value)
+    }}
+    style={{ backgroundColor: value }}
+    {...props}
+  />
+)
 
 export const ColorDropdownMenuItems = ({
   className,
   color,
   colors,
+  showTitles = true,
   updateColor,
   ...props
 }: {
-  colors: TColor[]
-  updateColor: (color: string) => void
   color?: string
+  colors: TColor[]
+  showTitles?: boolean
+  updateColor: (color: string) => void
 } & React.ComponentProps<'div'>) => (
-  <div className={cn('grid grid-cols-[repeat(10,1fr)] place-items-center gap-x-1', className)} {...props}>
+  <div className={cn('grid grid-cols-[repeat(10,1fr)] place-items-center gap-x-1.5', className)} {...props}>
     <TooltipProvider>
       {colors.map(({ isBrightColor, name, value }) => (
         <ColorDropdownMenuItem
@@ -774,6 +747,7 @@ export const ColorDropdownMenuItems = ({
           isSelected={color === value}
           key={name ?? value}
           name={name}
+          title={showTitles ? name : undefined}
           updateColor={updateColor}
           value={value}
         />

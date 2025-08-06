@@ -94,9 +94,9 @@ export const CourseSidebar = ({
               {course.lessons?.map((lesson, index) => (
                 <div
                   className={cn(
-                    'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12 dark:bg-transparent',
-                    isCurrent(index) && 'pointer-events-none bg-accent/50',
-                    isReachable(index) && 'hover:bg-accent/50',
+                    'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12',
+                    isCurrent(index) && 'pointer-events-none bg-accent/50 dark:bg-accent/30',
+                    isReachable(index) && 'hover:bg-accent/40 dark:hover:bg-accent/20',
                     !isReachable(index) && 'cursor-not-allowed text-muted-foreground',
                   )}
                   key={lesson.id}

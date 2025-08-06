@@ -1,6 +1,6 @@
 'use client'
 
-import { BaselineIcon, BoldIcon, ItalicIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
+import { BoldIcon, ItalicIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
 import { KEYS } from 'platejs'
 import { useEditorReadOnly } from 'platejs/react'
 
@@ -25,7 +25,7 @@ import { ToolbarGroup } from '#rte/blocks/toolbar'
 import { TurnIntoToolbarButton } from '#rte/blocks/turn-into-toolbar-button'
 
 export const FixedToolbarButtons = () => {
-  const t = useTranslations('Editor')
+  const t = useTranslations('Editor.blocks')
   const readOnly = useEditorReadOnly()
 
   return (
@@ -46,29 +46,27 @@ export const FixedToolbarButtons = () => {
           </ToolbarGroup>
 
           <ToolbarGroup>
-            <MarkToolbarButton nodeType={KEYS.bold} tooltip={`${t('blocks.bold')} (⌘+B)`}>
+            <MarkToolbarButton nodeType={KEYS.bold} tooltip={`${t('bold')} (⌘+B)`}>
               <BoldIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.italic} tooltip={`${t('blocks.italic')} (⌘+I)`}>
+            <MarkToolbarButton nodeType={KEYS.italic} tooltip={`${t('italic')} (⌘+I)`}>
               <ItalicIcon />
             </MarkToolbarButton>
 
-            <MarkToolbarButton nodeType={KEYS.underline} tooltip={`${t('blocks.underline')} (⌘+U)`}>
+            <MarkToolbarButton nodeType={KEYS.underline} tooltip={`${t('underline')} (⌘+U)`}>
               <UnderlineIcon />
             </MarkToolbarButton>
 
-            <LinkToolbarButton />
+            <LinkToolbarButton tooltip={t('link')} />
 
-            <FontColorToolbarButton nodeType={KEYS.color} tooltip={t('blocks.textColor')}>
-              <BaselineIcon />
-            </FontColorToolbarButton>
+            <FontColorToolbarButton nodeType={KEYS.color} tooltip={t('textColor')} />
           </ToolbarGroup>
 
           <ToolbarGroup>
             <AlignToolbarButton />
-            <NumberedListToolbarButton tooltip={t('blocks.numberedList')} />
-            <BulletedListToolbarButton tooltip={t('blocks.bulletList')} />
+            <NumberedListToolbarButton tooltip={t('numberedList')} />
+            <BulletedListToolbarButton tooltip={t('bulletList')} />
             <TodoListToolbarButton />
             <ToggleToolbarButton />
           </ToolbarGroup>
@@ -76,9 +74,9 @@ export const FixedToolbarButtons = () => {
           <ToolbarGroup separator={false}>
             <TableToolbarButton />
             <EmojiToolbarButton />
-            <MediaToolbarButton nodeType={KEYS.img} tooltip={t('blocks.image')} />
-            <MediaToolbarButton nodeType={KEYS.video} tooltip={t('blocks.video')} />
-            <MediaToolbarButton nodeType={KEYS.file} tooltip={t('blocks.file')} />
+            <MediaToolbarButton nodeType={KEYS.img} tooltip={t('image')} />
+            <MediaToolbarButton nodeType={KEYS.video} tooltip={t('video')} />
+            <MediaToolbarButton nodeType={KEYS.file} tooltip={t('file')} />
           </ToolbarGroup>
         </>
       )}

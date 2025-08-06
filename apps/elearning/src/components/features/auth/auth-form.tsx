@@ -9,7 +9,7 @@ import { Form } from '@/components/ui/form'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
-export type AuthFormProps<T extends FieldValues> = React.ComponentProps<'form'> & {
+export interface AuthFormProps<T extends FieldValues> extends React.ComponentProps<'form'> {
   disabledTitle?: string
   footer?: React.ReactNode
   form?: UseFormReturn<T>
@@ -23,6 +23,9 @@ export type AuthFormProps<T extends FieldValues> = React.ComponentProps<'form'> 
   title?: string
 }
 
+const defaultSubmitDisabled = <T extends FieldValues>(form?: UseFormReturn<T>) =>
+  !form?.formState.isDirty || Object.keys(form.formState.errors).length > 0
+
 export const AuthForm = <T extends FieldValues>({
   children,
   className,
@@ -32,7 +35,7 @@ export const AuthForm = <T extends FieldValues>({
   header,
   loading,
   onSubmit,
-  submitDisabled = !form?.formState.isDirty,
+  submitDisabled = defaultSubmitDisabled(form),
   submitLabel,
   submitLoadingLabel,
   subtitle,

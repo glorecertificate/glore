@@ -26,4 +26,5 @@ export const Dashboard = ({
     />
   </svg>
 )
+
 export const DashboardIcon = Dashboard

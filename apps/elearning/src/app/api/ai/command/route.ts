@@ -5,24 +5,16 @@ import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { convertToCoreMessages, streamText, type Message, type TextStreamPart, type ToolSet } from 'ai'
 
+import { Env } from '@/lib/env'
+
 /**
  * Detects the first chunk in a buffer.
- *
- * @param buffer - The buffer to detect the first chunk in.
- * @returns The first detected chunk, or `undefined` if no chunk was detected.
  */
 export type ChunkDetector = (buffer: string) => string | null | undefined
-
-type delayer = (buffer: string) => number
 
 /**
  * Smooths text streaming output.
  *
- * @param delayInMs - The delay in milliseconds between each chunk. Defaults to
- *   10ms. Can be set to `null` to skip the delay.
- * @param chunking - Controls how the text is chunked for streaming. Use "word"
- *   to stream word by word (default), "line" to stream line by line, or provide
- *   a custom RegExp pattern for custom chunking.
  * @returns A transform stream that smooths text streaming output.
  */
 const smoothStream = <TOOLS extends ToolSet>({
@@ -30,49 +22,53 @@ const smoothStream = <TOOLS extends ToolSet>({
   chunking = 'word',
   delayInMs = 10,
 }: {
-  /** Internal. For test use only. May change without notice. */
+  /**
+   * Internal, for test use only.
+   */
   _internal?: {
     delay?: (delayInMs: number | null) => Promise<void>
   }
+  /**
+   * Controls how the text is chunked for streaming.
+   * Use "word" to stream word by word (default), "line" to stream line by line,
+   * or provide a custom RegExp pattern for custom chunking.
+   */
   chunking?: ChunkDetector | RegExp | 'line' | 'word'
-  delayInMs?: delayer | number | null
+  /**
+   * Delay in milliseconds between each chunk defaulting to 10ms.
+   * Can be set to null to skip the delay.
+   */
+  delayInMs?: ((buffer: string) => number) | number | null
 } = {}): ((options: { tools: TOOLS }) => TransformStream<TextStreamPart<TOOLS>, TextStreamPart<TOOLS>>) => {
   let detectChunk: ChunkDetector
 
   if (typeof chunking === 'function') {
     detectChunk = buffer => {
       const match = chunking(buffer)
+
       if (!match) return null
 
-      if (match.length === 0) {
-        throw new Error('Chunking function must return a non-empty string.')
-      }
+      if (match.length === 0) throw new Error('Chunking function must return a non-empty string.')
 
-      if (!buffer.startsWith(match)) {
+      if (!buffer.startsWith(match))
         throw new Error(
           `Chunking function must return a match that is a prefix of the buffer. Received: "${match}" expected to start with "${buffer}"`,
         )
-      }
 
       return match
     }
   } else {
     const chunkingRegex = typeof chunking === 'string' ? CHUNKING_REGEXPS[chunking] : chunking
 
-    if (!chunkingRegex) {
+    if (!chunkingRegex)
       throw new InvalidArgumentError({
         argument: 'chunking',
         message: `Chunking must be "word" or "line" or a RegExp. Received: ${chunking}`,
       })
-    }
 
     detectChunk = buffer => {
       const match = chunkingRegex.exec(buffer)
-
-      if (!match) {
-        return null
-      }
-
+      if (!match) return null
       return buffer.slice(0, match.index) + match?.[0]
     }
   }
@@ -87,7 +83,6 @@ const smoothStream = <TOOLS extends ToolSet>({
             controller.enqueue({ textDelta: buffer, type: 'text-delta' })
             buffer = ''
           }
-
           controller.enqueue(chunk)
           return
         }
@@ -126,7 +121,7 @@ export const POST = async (req: NextRequest) => {
     system?: string
   }
 
-  const apiKey = key || process.env.OPENAI_API_KEY
+  const apiKey = key || Env.OPENAI_API_KEY
 
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })
@@ -192,7 +187,7 @@ export const POST = async (req: NextRequest) => {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: openai('gpt-4o'),
+      model: openai(Env.OPENAI_MODEL),
       system,
     })
 

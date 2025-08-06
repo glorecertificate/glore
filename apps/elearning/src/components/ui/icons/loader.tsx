@@ -26,4 +26,5 @@ export const Loader = ({
     <path className={cn(colored && 'text-brand')} d="m4.9 4.9 2.9 2.9" />
   </svg>
 )
+
 export const LoaderIcon = Loader

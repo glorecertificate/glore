@@ -31,4 +31,5 @@ export const Logo = ({ className, height, width, ...props }: IconProps) => {
     </svg>
   )
 }
+
 export const LogoIcon = Logo

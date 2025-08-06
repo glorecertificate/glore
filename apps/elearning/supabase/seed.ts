@@ -16,10 +16,10 @@ import { seedUsers } from './seeds/user'
 
 const CACHE = '.temp/output.json'
 
-const AI_MODEL_NAME = process.env.AI_MODEL_NAME || 'gpt-4o'
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o'
 
-const AI_INSTRUCTION =
-  process.env.AI_INSTRUCTION ||
+const AI_SEED_INSTRUCTION =
+  process.env.AI_SEED_INSTRUCTION ||
   `
     You are generating seeds for a Supabase database.
     The output_text must always be a valid plain JSON object, without extra characters, unuseful spacing or markdown indicators (eg: '\`\`\`json').
@@ -27,8 +27,8 @@ const AI_INSTRUCTION =
     Example JSON: ${JSON.stringify(dynamicSeeds)}
   `
 
-const AI_INPUT =
-  process.env.AI_INPUT ||
+const AI_SEED_INPUT =
+  process.env.AI_SEED_INPUT ||
   `
     Return an object with equal structure and:
     - 4 different unique skill areas
@@ -67,14 +67,12 @@ const log = silent
 const includes = (seed: string) => args.filter(arg => !arg.startsWith('--')).length === 0 || args.includes(seed)
 
 const jsonChat = async (input: string, retry = 0): Promise<typeof dynamicSeeds> => {
-  const openAI = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  })
+  const openAI = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
   try {
     const { output_text } = await openAI.responses.create({
-      model: AI_MODEL_NAME,
-      instructions: AI_INSTRUCTION,
+      model: OPENAI_MODEL,
+      instructions: AI_SEED_INSTRUCTION,
       input,
     })
     return JSON.parse(output_text.replace(/```(json)?/g, '')) as typeof dynamicSeeds
@@ -99,7 +97,7 @@ const generateData = async () => {
   }
   log('Generating seed data...')
 
-  const data = await jsonChat(AI_INPUT)
+  const data = await jsonChat(AI_SEED_INPUT)
   const [dir] = cache.split('/').slice(-2)
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
   writeFileSync(cache, JSON.stringify(data, null, 2))

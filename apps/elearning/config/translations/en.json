@@ -2,6 +2,25 @@
   "App": {
     "description": "GloRe is an open network that aims to enlarge its audience both of volunteers and NGOs all over the world to make certificates available to everybody."
   },
+  "Countries": {
+    "uk": "United Kingdom",
+    "us": "United States",
+    "it": "Italy",
+    "fr": "France",
+    "es": "Spain",
+    "de": "Germany",
+    "pt": "Portugal",
+    "cn": "China",
+    "jp": "Japan",
+    "ru": "Russia",
+    "ar": "Argentina",
+    "br": "Brazil",
+    "ca": "Canada",
+    "au": "Australia",
+    "in": "India",
+    "za": "South Africa",
+    "mx": "Mexico"
+  },
   "Languages": {
     "en": "English",
     "it": "Italian",
@@ -286,7 +305,6 @@
     "contact": "Contact {user}"
   },
   "Editor": {
-    "aiCommands": "AI commands",
     "undo": "Undo",
     "export": "Export",
     "exportHtml": "Export as HTML",
@@ -296,6 +314,7 @@
       "viewing": "Preview"
     },
     "blocks": {
+      "aiCommands": "AI commands",
       "bold": "Bold",
       "italic": "Italic",
       "underline": "Underline",
@@ -373,7 +392,7 @@
       "tableDragColumn": "Drag to move column"
     },
     "placeholders": {
-      "editor": "Start writing, press space for AI assistance or '/' for commands...",
+      "editor": "Start writing a new lesson...",
       "content": "Start typing...",
       "linkUrl": "Enter URL",
       "linkText": "Enter link text",
@@ -381,7 +400,8 @@
       "searchMention": "Search people",
       "askAI": "Ask AI anything...",
       "searchLanguage": "Search language...",
-      "block": "Type something..."
+      "block": "Start writing, press space for AI assistance or '/' for commands...",
+      "askAIEdit": "Ask AI to modify..."
     },
     "actions": {
       "save": "Save",
@@ -463,7 +483,6 @@
       "tryAgain": "Try again",
       "editing": "Editing...",
       "thinking": "Thinking...",
-      "askPlaceholder": "Ask AI anything...",
       "writing": "Writing...",
       "stop": "Stop",
       "continueEmptyWritingPrompt": "<Document>{editor}</Document>Start writing a new paragraph AFTER <Document> ONLY ONE SENTENCE"
@@ -514,6 +533,9 @@
       "replace": "Replace:"
     },
     "colors": {
+      "clear": "Clear color",
+      "customColors": "Custom colors",
+      "defaultColors": "Default colors",
       "black": "Black",
       "white": "White",
       "grey": "Grey",

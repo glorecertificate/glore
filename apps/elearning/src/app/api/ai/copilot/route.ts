@@ -3,10 +3,12 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createOpenAI } from '@ai-sdk/openai'
 import { generateText } from 'ai'
 
+import { Env } from '@/lib/env'
+
 export const POST = async (req: NextRequest) => {
   const {
     apiKey: key,
-    model = 'gpt-4o-mini',
+    model = Env.OPENAI_MODEL,
     prompt,
     system,
   } = (await req.json()) as {
@@ -16,7 +18,7 @@ export const POST = async (req: NextRequest) => {
     system?: string
   }
 
-  const apiKey = key || process.env.OPENAI_API_KEY
+  const apiKey = key ?? Env.OPENAI_API_KEY
 
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })

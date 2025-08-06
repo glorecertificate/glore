@@ -43,11 +43,7 @@ export const Editor = ({ className, disabled, focused, variant, ...props }: Edit
 }
 
 const editorContainerVariants = cva(
-  `
-    relative w-full cursor-text overflow-y-auto caret-foreground/50 select-text
-    focus-visible:outline-none
-    [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border
-  `,
+  'relative w-full cursor-text overflow-y-auto select-text focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border',
   {
     defaultVariants: {
       variant: 'default',

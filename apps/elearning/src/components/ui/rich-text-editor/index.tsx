@@ -6,7 +6,6 @@ import { Plate, usePlateEditor } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
 import { Editor, EditorContainer, type EditorProps } from '#rte/blocks/editor'
-import { SettingsDialog } from '#rte/blocks/settings-dialog'
 import { AIKit } from '#rte/kits/ai'
 import { AlignKit } from '#rte/kits/align'
 import { AutoformatKit } from '#rte/kits/autoformat'
@@ -37,32 +36,32 @@ import { ToggleKit } from '#rte/kits/toggle'
 import { TrailingBlockKit } from '#rte/kits/trailing-block'
 
 export const PLUGINS = [
-  ...CopilotKit,
   ...AIKit,
+  ...AlignKit,
+  ...AutoformatKit,
   ...BasicBlocksKit,
-  ...TableKit,
-  ...ToggleKit,
-  ...MediaKit,
+  ...BasicMarksKit,
+  ...BlockMenuKit,
   ...CalloutKit,
   ...ColumnKit,
-  ...DateKit,
-  ...LinkKit,
-  ...BasicMarksKit,
-  ...FontKit,
-  ...ListKit,
-  ...AlignKit,
-  ...LineHeightKit,
-  ...SlashKit,
-  ...AutoformatKit,
+  ...CopilotKit,
   ...CursorOverlayKit,
-  ...BlockMenuKit,
+  ...DateKit,
   ...DndKit,
+  ...DocxKit,
   ...EmojiKit,
   ...ExitBreakKit,
-  ...DocxKit,
-  ...MarkdownKit,
   ...FixedToolbarKit,
   ...FloatingToolbarKit,
+  ...FontKit,
+  ...LineHeightKit,
+  ...LinkKit,
+  ...ListKit,
+  ...MarkdownKit,
+  ...MediaKit,
+  ...SlashKit,
+  ...TableKit,
+  ...ToggleKit,
   ...TrailingBlockKit,
 ]
 
@@ -73,12 +72,7 @@ export const RichTextEditorProvider = ({ children, value }: RichTextEditorProvid
   const plugins = useMemo(() => [...PLUGINS, ...BlockPlaceholderKit], [BlockPlaceholderKit])
   const editor = usePlateEditor({ plugins, value: value as string })
 
-  return (
-    <Plate editor={editor}>
-      {children}
-      <SettingsDialog />
-    </Plate>
-  )
+  return <Plate editor={editor}>{children}</Plate>
 }
 
 export interface RichTextEditorProps extends EditorProps {}

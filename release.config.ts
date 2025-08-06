@@ -73,57 +73,57 @@ const plugins = {
       name: 'conventionalcommits',
       issuePrefixes: ISSUE_PREFIX ? [ISSUE_PREFIX] : [],
       issueUrlFormat: ISSUE_URL,
-      types: [
-        {
-          type: 'feat',
-          section: 'Features ✨',
-        },
-        {
-          type: 'fix',
-          section: 'Fixes 🔧',
-        },
-        {
-          type: 'ci',
-          section: 'CI 🤖',
-          hidden: false,
-        },
-        {
-          type: 'build',
-          section: 'Build 📦',
-          scopes: ['deps', 'dev-deps'],
-        },
-        {
-          type: 'docs',
-          section: 'Docs 📑',
-        },
-        {
-          type: 'chore',
-          section: 'Other',
-        },
-        {
-          type: 'perf',
-          section: 'Other',
-        },
-        {
-          type: 'refactor',
-          section: 'Other',
-        },
-        {
-          type: 'revert',
-          section: 'Other',
-        },
-        {
-          type: 'style',
-          section: 'Other',
-        },
-        {
-          type: 'test',
-          section: 'Other',
-        },
-      ].map(type => ({
-        ...type,
-        hidden: type.hidden ?? false,
-      })),
+      // types: [
+      //   {
+      //     type: 'feat',
+      //     section: 'Features ✨',
+      //   },
+      //   {
+      //     type: 'fix',
+      //     section: 'Fixes 🔧',
+      //   },
+      //   {
+      //     type: 'ci',
+      //     section: 'CI 🤖',
+      //     hidden: false,
+      //   },
+      //   {
+      //     type: 'build',
+      //     section: 'Build 📦',
+      //     scopes: ['deps', 'dev-deps'],
+      //   },
+      //   {
+      //     type: 'docs',
+      //     section: 'Docs 📑',
+      //   },
+      //   {
+      //     type: 'chore',
+      //     section: 'Other',
+      //   },
+      //   {
+      //     type: 'perf',
+      //     section: 'Other',
+      //   },
+      //   {
+      //     type: 'refactor',
+      //     section: 'Other',
+      //   },
+      //   {
+      //     type: 'revert',
+      //     section: 'Other',
+      //   },
+      //   {
+      //     type: 'style',
+      //     section: 'Other',
+      //   },
+      //   {
+      //     type: 'test',
+      //     section: 'Other',
+      //   },
+      // ].map(type => ({
+      //   ...type,
+      //   hidden: type.hidden ?? false,
+      // })),
     },
   },
 } satisfies ReleaseConfig['plugins']

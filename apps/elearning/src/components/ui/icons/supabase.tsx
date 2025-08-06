@@ -33,4 +33,5 @@ export const Supabase = (props: IconProps) => (
     />
   </svg>
 )
+
 export const SupabaseIcon = Supabase

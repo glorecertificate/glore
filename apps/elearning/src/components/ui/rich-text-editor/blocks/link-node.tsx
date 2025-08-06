@@ -15,7 +15,7 @@ export const LinkElement = (props: PlateElementProps<TLinkElement>) => (
         e.stopPropagation()
       },
     }}
-    className="font-medium text-primary underline decoration-primary underline-offset-4"
+    className="font-medium text-brand underline decoration-primary underline-offset-4"
   >
     {props.children}
   </PlateElement>

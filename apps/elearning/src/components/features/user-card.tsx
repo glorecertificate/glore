@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
-import { LanguagesIcon, MailIcon, MapPin, ShieldUserIcon } from 'lucide-react'
+import { LanguagesIcon, MailIcon, MapPin, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter } from 'use-intl'
 
 import { type User } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Link } from '@/components/ui/link'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { googleMapsUrl } from '@/lib/navigation'
@@ -42,28 +42,36 @@ export const UserCard = ({ hide = [], user }: { hide?: Array<keyof User>; user: 
 
   return (
     <div className="flex items-start gap-3">
-      <Avatar className="size-7 rounded-full shadow-sm">
+      <Avatar className="size-7 rounded-full object-cover shadow-sm">
         {user.avatarUrl && <AvatarImage alt={user.fullName ?? ''} src={user.avatarUrl} />}
         <AvatarFallback className="text-base font-semibold">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <h4 className="text-sm leading-none font-semibold">{user.fullName}</h4>
-            {isVisible('pronouns') && <small className="text-xs text-muted-foreground">{user.pronouns}</small>}
+            {isVisible('isAdmin') && (
+              <Tooltip>
+                <TooltipTrigger asChild pointerEvents="auto">
+                  <ShieldUserIcon className="size-3.5" />
+                </TooltipTrigger>
+                <TooltipContent sideOffset={3}>
+                  <span className="text-xs">{t('Navigation.adminUser')}</span>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {isVisible('isEditor') && (
+              <Tooltip>
+                <TooltipTrigger asChild pointerEvents="auto">
+                  <PencilIcon className="size-3.5" />
+                </TooltipTrigger>
+                <TooltipContent sideOffset={3}>
+                  <span className="text-xs">{t('Navigation.editorUser')}</span>
+                </TooltipContent>
+              </Tooltip>
+            )}
           </div>
-          {isVisible('isAdmin') && (
-            <Badge color="secondary" size="xs">
-              <ShieldUserIcon />
-              {t('Common.admin')}
-            </Badge>
-          )}
-          {isVisible('isEditor') && (
-            <Badge size="xs">
-              <ShieldUserIcon />
-              {t('Common.editor')}
-            </Badge>
-          )}
+          {isVisible('pronouns') && <small className="text-xs text-muted-foreground">{user.pronouns}</small>}
         </div>
         <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
           {isVisible('publicLocation') && (
@@ -80,9 +88,9 @@ export const UserCard = ({ hide = [], user }: { hide?: Array<keyof User>; user: 
             </div>
           )}
           {isVisible('languages') && (
-            <div className="flex items-center gap-1.5">
-              <LanguagesIcon className="size-3.5" />
-              <span>{languages}</span>
+            <div className="flex items-start gap-1.5">
+              <LanguagesIcon className="size-3.5 pt-0.5" />
+              <span className="max-w-44 break-words">{languages}</span>
             </div>
           )}
           {isVisible('email') && (

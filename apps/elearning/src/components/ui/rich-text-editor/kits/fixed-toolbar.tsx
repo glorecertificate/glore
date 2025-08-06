@@ -10,7 +10,7 @@ export const FixedToolbarKit = [
     key: 'fixed-toolbar',
     render: {
       beforeEditable: () => (
-        <FixedToolbar className="bg-accent">
+        <FixedToolbar className="cursor-default">
           <FixedToolbarButtons />
         </FixedToolbar>
       ),

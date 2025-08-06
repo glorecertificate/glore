@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.4.12](https://github.com/gabrielecanepa/glore/compare/v0.4.11...v0.4.12) (2025-08-06)
+
+
+### Features ✨
+
+* Add rich text editor ([a5051c7](https://github.com/gabrielecanepa/glore/commit/a5051c76ef5e2e45cb34cdc6eae26195530acad3))
+* Enhance rich text editor and improve AI integration ([d54c7f2](https://github.com/gabrielecanepa/glore/commit/d54c7f289390b8d156e90f11edc9beed9261ac78))
+
+
+### CI 🤖
+
+* Add custom editor chatmode ([b8fc9a0](https://github.com/gabrielecanepa/glore/commit/b8fc9a03e3d95f3dd6c31fd764b2d9d8847ad105))
+* Refactor release configuration ([070beac](https://github.com/gabrielecanepa/glore/commit/070beac75d3adb4b3b8c13c3d8c381b101d3d650))
+
+
+### Build 📦
+
+* Bump Node.js version to 22.18.0 ([c141dad](https://github.com/gabrielecanepa/glore/commit/c141dade9d36e0d16c13d063760a9afa72c3680e))
+* **deps:** Bump pnpm to 10.14.0 and all dependencies to latest version ([f9a2e2a](https://github.com/gabrielecanepa/glore/commit/f9a2e2a833f66addbab7e72ead58e0f27e4e1b44))
+
+
+### Other
+
+* **eslint-config:** Improve relative imports configuration ([bd95a56](https://github.com/gabrielecanepa/glore/commit/bd95a56d52a6eddd9549eb1df5ec9395b22090b2))
+* Remove unused editor page ([0e70ea6](https://github.com/gabrielecanepa/glore/commit/0e70ea6dd208a214afb91b200b8043e8aecee03b))
+* Restructure course components and improve localization ([512efe9](https://github.com/gabrielecanepa/glore/commit/512efe9413a030c3103094165c9cc08299aedcf3))
+* Restructure translator types to allow raw strings ([bc21160](https://github.com/gabrielecanepa/glore/commit/bc2116092e89054b6c0b36c3f551d236c2065c36))
+* Update UI component styling and type definitions ([6d4039a](https://github.com/gabrielecanepa/glore/commit/6d4039a5e38354d8ce5a9046f484aa31aecc4598))
+* **utils:** Add debounce utility function ([dfeff2b](https://github.com/gabrielecanepa/glore/commit/dfeff2b8a430702655b846536b98714fca116592))
+
 ## [0.4.11](https://github.com/gabrielecanepa/glore/compare/v0.4.10...v0.4.11) (2025-07-17)
 
 

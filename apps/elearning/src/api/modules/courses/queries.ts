@@ -5,12 +5,11 @@ export const skillQuery = `
   id,
   name,
   description,
-  iconUrl:icon_url,
   ${timestamps},
-  area:skill_areas (
+  group:skill_groups (
     id,
     name,
-    description
+    icon
   ),
   user_assessments (
     id,
@@ -20,7 +19,6 @@ export const skillQuery = `
 
 export const lessonQuery = `
   id,
-  type,
   title,
   content,
   sortOrder:sort_order,
@@ -60,7 +58,6 @@ export const courseQuery = `
   slug,
   title,
   description,
-  type,
   imageUrl:image_url,
   publishedLocales:published_locales,
   draftLocales:draft_locales,

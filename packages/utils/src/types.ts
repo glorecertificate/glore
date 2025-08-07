@@ -9,6 +9,12 @@ export type Any = any
 export type OrArray<T> = T | T[]
 
 /**
+ * Enum type with string values.
+ */
+// @ts-ignore-next-line
+export type Enum<T> = T | `${T}`
+
+/**
  * Function with any arguments and return type.
  */
 export type AnyFunction = (...args: any) => any

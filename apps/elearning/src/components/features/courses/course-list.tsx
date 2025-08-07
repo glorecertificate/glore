@@ -307,15 +307,22 @@ export const CourseList = ({
       </div>
       <div className="w-full grow py-6">
         <Tabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
-          <div className="mb-6 flex h-auto flex-col justify-between gap-4 sm:flex-row">
-            <div className="flex items-center gap-2">
+          <div className="mb-6 flex h-auto flex-col flex-wrap justify-between gap-4 sm:flex-row">
+            <div className="flex flex-wrap items-center gap-2">
               <TabsList className="w-full sm:w-fit">
                 {tabs.map(tab => (
                   <CourseTabsTrigger count={courses[tab].length} key={tab} label={t(tab)} value={tab} />
                 ))}
               </TabsList>
               {user.canEdit && (
-                <Button asChild effect="expandIcon" icon={PlusIcon} iconPlacement="right" variant="brand">
+                <Button
+                  asChild
+                  className="max-sm:w-full"
+                  effect="expandIcon"
+                  icon={PlusIcon}
+                  iconPlacement="right"
+                  variant="brand"
+                >
                   <Link href={Route.CourseNew}>{t('newCourse')}</Link>
                 </Button>
               )}

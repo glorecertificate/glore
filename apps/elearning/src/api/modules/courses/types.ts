@@ -1,30 +1,50 @@
+import { type Enum } from '@repo/utils'
+
 import { type User } from '@/api/modules/users/types'
 import type { Entity, Timestamp } from '@/api/types'
 
-export type CourseStatus = 'not_started' | 'in_progress' | 'completed'
+export enum CourseType {
+  Introduction = 'introduction',
+  Skill = 'skill',
+}
+
+export enum CourseStatus {
+  NotStarted = 'not_started',
+  InProgress = 'in_progress',
+  Completed = 'completed',
+}
 
 export interface Course extends Entity<'courses', 'title' | 'description', Timestamp> {
   skill?: Skill
+  type: CourseType
   lessons?: Lesson[]
-  creator?: User
-  enrolled: boolean
-  progress: number
-  status: CourseStatus
   lessonsCount: number
   lessonsCompleted: number
+  enrolled: boolean
+  progress: number
+  status: Enum<CourseStatus>
   completed: boolean
+  creator?: User
 }
 
 export interface Skill extends Entity<'skills', 'name' | 'description', Timestamp> {
-  area?: Entity<'skill_areas'>
+  group?: Entity<'skill_groups'>
   userRating?: number
 }
 
+export enum LessonType {
+  Reading = 'reading',
+  Questions = 'questions',
+  Evaluations = 'evaluations',
+  Assessment = 'assessment',
+}
+
 export interface Lesson extends Entity<'lessons', 'title' | 'content', Timestamp> {
-  completed: boolean
+  type: Enum<LessonType>
   questions?: Question[]
   assessment?: Assessment
   evaluations?: Evaluation[]
+  completed: boolean
 }
 
 export interface Question extends Entity<'questions', 'description' | 'explanation'> {

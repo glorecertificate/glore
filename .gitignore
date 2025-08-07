@@ -6,3 +6,4 @@ build/
 node_modules/
 private/
 .DS_Store
+*.tsbuildinfo

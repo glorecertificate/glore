@@ -1,7 +1,7 @@
 import { copycat } from '@snaplet/copycat'
 import { createClient, type User } from '@supabase/supabase-js'
 
-import { log, randomItem, randomRange, uuid } from '@repo/utils'
+import { log, pickRandom, randomRange, uuid } from '@repo/utils'
 
 import { emailDomain, placeholderAvatarUrl, staticSeeds } from 'supabase/.snaplet/data.json'
 import { type Database } from 'supabase/types'
@@ -53,9 +53,9 @@ export const seedUsers = async (roles = staticSeeds.users) =>
             avatar_url: `${placeholderAvatarUrl}?u=${role}`,
             languages: randomRange(LANGUAGES, 1, 3),
             birthday: copycat.dateString(role, { min: '1970-01-01', max: '2000-12-31' }),
-            sex: randomItem(['female', 'male', 'non-binary', null]),
-            pronouns: randomItem(['she/her', 'he/him', 'they/them', null]),
-            nationality: copycat.country(randomItem([role, uuid()])),
+            sex: pickRandom(['female', 'male', 'non-binary', null]),
+            pronouns: pickRandom(['she/her', 'he/him', 'they/them', null]),
+            nationality: copycat.country(pickRandom([role, uuid()])),
             country: copycat.country(role),
             city: copycat.city(role),
             bio: copycat.paragraph(role, { min: 1, max: 3 }),

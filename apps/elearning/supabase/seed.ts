@@ -31,8 +31,8 @@ const AI_SEED_INPUT =
   process.env.AI_SEED_INPUT ||
   `
     Return an object with equal structure and:
-    - 4 different unique skill areas
-    - 8 unique skills per area
+    - 4 different unique skill groups
+    - 8 unique skills per group
     - 1 course per skill where the type is always 'assessment'
     - At least 4 lessons per course
     - The fist lesson must be of type 'descriptive'
@@ -113,7 +113,7 @@ const logUsers = (users: User[]) => {
 
 void (async () => {
   try {
-    const { skill_areas } = await generateData()
+    const { skill_groups } = await generateData()
     const seed = await createSeedClient({ dryRun })
 
     if (reset) {
@@ -131,8 +131,8 @@ void (async () => {
     }
 
     if (includes('course')) {
-      const store = await seedSkills(seed, skill_areas, users)
-      log.success(`Created ${store.skills.length} skills grouped in ${store.skill_areas.length} areas`)
+      const store = await seedSkills(seed, skill_groups, users)
+      log.success(`Created ${store.skills.length} skills grouped in ${store.skill_groups.length} groups`)
       log.success(`Created ${store.courses.length} courses with ${store.lessons.length} lessons`)
     }
 

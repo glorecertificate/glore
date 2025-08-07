@@ -33,7 +33,7 @@ jobs:
             Version:
               rich_text:
                 - text:
-                    content: "[${{ steps.parse-release.outputs.version }}](${{ steps.parse-release.outputs.url }})"
+                    content: "${{ steps.parse-release.outputs.version }}"
             Date:
               date:
                 start: "${{ steps.parse-release.outputs.date }}"

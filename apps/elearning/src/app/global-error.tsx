@@ -15,7 +15,7 @@ import { localize } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
 import config from 'config/app.json'
-import errors from 'config/translations/global/errors.json'
+import errors from 'config/translations/static/errors.json'
 
 export default ({ error }: ErrorProps) => {
   const pathname = usePathname()

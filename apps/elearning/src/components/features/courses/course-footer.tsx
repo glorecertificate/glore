@@ -4,6 +4,8 @@ import { useMemo } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 
+import { type Enum } from '@repo/utils'
+
 import { type CourseStatus, type Lesson } from '@/api/modules/courses/types'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -34,7 +36,7 @@ export const CourseFooter = ({
   lessons?: Lesson[]
   onNext: () => Promise<void>
   onPrevious: () => void
-  status?: CourseStatus
+  status?: Enum<CourseStatus>
   step: number
 }) => {
   const { courses } = useSession()
@@ -46,7 +48,7 @@ export const CourseFooter = ({
 
   const canProceed = useMemo(() => {
     if (!lesson) return false
-    if (lesson.type === 'descriptive' || lesson.completed) return true
+    if (lesson.type === 'reading' || lesson.completed) return true
     if (lesson.type === 'questions') return lesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
     if (lesson.type === 'evaluations') return lesson.evaluations?.every(e => !!e.userRating)
     if (lesson.type === 'assessment') return !!lesson.assessment?.userRating

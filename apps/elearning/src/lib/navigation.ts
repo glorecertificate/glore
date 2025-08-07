@@ -1,14 +1,14 @@
-import { type AnyRecord, type HTTPUrl } from '@repo/utils'
+import { type AnyRecord, type Enum, type HTTPUrl } from '@repo/utils'
 
 import { Env } from '@/lib/env'
 import metadata from 'config/metadata.json'
 
-export interface PageProps<R extends Route | `${Route}`, K extends AnyRecord = AnyRecord> {
+export interface PageProps<R extends Enum<Route>, K extends AnyRecord = AnyRecord> {
   params?: Promise<RouteSegments<R>>
   searchParams?: Promise<K>
 }
 
-export type Pathname = Route | `${Route}/${string}`
+export type Pathname = Enum<Route> | `${Route}/${string}`
 
 export type RouteSegments<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
   ? Record<Param | keyof RouteSegments<Rest>, string>

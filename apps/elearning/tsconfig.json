@@ -6,10 +6,10 @@
     "allowArbitraryExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "#rte/*": ["./src/components/ui/rich-text-editor/*"],
       "config/*": ["./config/*"],
       "supabase/*": ["./supabase/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "#rte/*": ["./src/components/ui/rich-text-editor/*"]
     },
     "noEmit": true,
     "types": ["node"]

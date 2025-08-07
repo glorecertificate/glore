@@ -20,7 +20,7 @@ export interface CurrentUser extends User {
 }
 
 export interface UserOrganization extends BaseOrganization {
-  role: Enums<'organization_role'>
+  role: Enums<'role'>
 }
 
 export interface UserCourse extends Entity<'user_courses'> {}

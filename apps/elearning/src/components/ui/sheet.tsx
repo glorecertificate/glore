@@ -93,7 +93,12 @@ export const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>
 )
 
 export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Title>) => (
-  <SheetPrimitive.Title className={cn('font-semibold text-foreground', className)} data-slot="sheet-title" {...props} />
+  <SheetPrimitive.Title
+    className={cn('font-semibold text-foreground', className)}
+    data-slot="sheet-title"
+    suppressHydrationWarning
+    {...props}
+  />
 )
 
 export const SheetDescription = ({ className, ...props }: React.ComponentProps<typeof SheetPrimitive.Description>) => (

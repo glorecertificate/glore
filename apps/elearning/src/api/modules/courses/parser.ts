@@ -2,11 +2,12 @@ import { parseUser } from '@/api/modules/users/parser'
 import { createParser } from '@/api/utils'
 
 import { type courseQuery, type lessonQuery, type skillQuery } from './queries'
-import type { Course, Lesson, Skill } from './types'
+import { CourseType, LessonType, type Course, type Lesson, type Skill } from './types'
 
 export const parseCourse = createParser<'courses', typeof courseQuery, Course>(course => {
   const { creator: courseCreator, lessons: courseLessons, skill: courseSkill, user_courses, ...rest } = course
   const skill = courseSkill ? parseSkill(courseSkill) : undefined
+  const type = course.skill ? CourseType.Skill : CourseType.Introduction
   const lessons = courseLessons.map(parseLesson)
   const enrolled = user_courses.length > 0
   const lessonsCount = lessons.length
@@ -19,48 +20,60 @@ export const parseCourse = createParser<'courses', typeof courseQuery, Course>(c
   return {
     ...rest,
     skill,
+    type,
     lessons,
-    enrolled,
-    progress,
-    completed,
-    creator,
     lessonsCount,
     lessonsCompleted,
+    enrolled,
+    progress,
     status,
+    completed,
+    creator,
   } as Course
 })
 
 export const parseSkill = createParser<'skills', typeof skillQuery, Skill>(
-  ({ area, user_assessments, ...skill }) =>
+  ({ group, user_assessments, ...skill }) =>
     ({
       ...skill,
-      area: area ?? undefined,
+      group: group ?? undefined,
       userRating: user_assessments[0]?.value,
     }) as Skill,
 )
 
-export const parseLesson = createParser<'lessons', typeof lessonQuery, Lesson>(
-  ({ assessment, evaluations, questions, user_lessons, ...lesson }) =>
-    ({
-      ...lesson,
-      completed: user_lessons.length > 0,
-      questions: questions.map(({ options, ...question }) => ({
-        ...question,
-        options: options.map(({ user_answers, ...option }) => ({
-          ...option,
-          isUserAnswer: user_answers.length > 0,
-        })),
-        answered: options.some(option => option.user_answers.length > 0),
-      })),
-      assessment: assessment
-        ? {
-            ...assessment,
-            userRating: assessment.user_assessments[0]?.value,
-          }
-        : undefined,
-      evaluations: evaluations.map(({ user_evaluations, ...evaluation }) => ({
-        ...evaluation,
-        userRating: user_evaluations[0]?.value,
-      })),
-    }) as Lesson,
-)
+export const parseLesson = createParser<'lessons', typeof lessonQuery, Lesson>(({ user_lessons, ...lesson }) => {
+  const questions = lesson.questions.map(({ options, ...question }) => ({
+    ...question,
+    options: options.map(({ user_answers, ...option }) => ({
+      ...option,
+      isUserAnswer: user_answers.length > 0,
+    })),
+    answered: options.some(option => option.user_answers.length > 0),
+  }))
+  const assessment = lesson.assessment
+    ? {
+        ...lesson.assessment,
+        userRating: lesson.assessment.user_assessments[0]?.value,
+      }
+    : undefined
+  const evaluations = lesson.evaluations.map(({ user_evaluations, ...evaluation }) => ({
+    ...evaluation,
+    userRating: user_evaluations[0]?.value,
+  }))
+
+  let type: LessonType = LessonType.Reading
+  if (questions.length) type = LessonType.Questions
+  if (evaluations.length) type = LessonType.Evaluations
+  if (assessment) type = LessonType.Assessment
+
+  const completed = user_lessons.length > 0
+
+  return {
+    ...lesson,
+    type,
+    questions,
+    assessment,
+    evaluations,
+    completed,
+  } as Lesson
+})

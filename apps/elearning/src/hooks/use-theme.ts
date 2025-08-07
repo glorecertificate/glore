@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
+import { type Enum } from '@repo/utils'
+
 import { type Theme } from '@/lib/theme'
 
 /**
@@ -18,10 +20,10 @@ export const useTheme = () => {
     themes: nextThemes,
   } = useNextTheme()
 
-  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Theme | `${Theme}`>>
+  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Enum<Theme>>>
   const resolvedTheme = resolvedNextTheme as Omit<Theme, 'system'>
-  const theme = nextTheme as Theme | `${Theme}`
-  const themes = nextThemes as Array<Theme | `${Theme}`>
+  const theme = nextTheme as Enum<Theme>
+  const themes = nextThemes as Array<Enum<Theme>>
   const isLightMode = useMemo(() => resolvedTheme === 'light', [resolvedTheme])
   const isDarkMode = useMemo(() => resolvedTheme === 'dark', [resolvedTheme])
 

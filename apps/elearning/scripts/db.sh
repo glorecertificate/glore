@@ -67,7 +67,7 @@ init_db() {
 
 sync_schema() {
   if supabase db dump --file $SCHEMA_PATH --yes $@ >/dev/null 2>&1 && format_sql $SCHEMA_PATH; then
-    echo "Finished schema dump."
+    echo "Finished schema update."
   fi
 }
 
@@ -103,6 +103,7 @@ dump_db() {
   fi
   supabase db diff --db-url "$SUPABASE_DB_URL" --schema $SCHEMA --file "$1"
   format_sql $MIGRATIONS_PATH/*_"$1".sql
+  sync_schema --local
   sync_types
   sync_seeds
 }

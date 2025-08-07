@@ -9,7 +9,7 @@
     "dev": "sh scripts/dev.sh",
     "db": "sh scripts/db.sh",
     "typegen": "sh scripts/db.sh typegen",
-    "type-check": "tsc -p tsconfig.build.json",
+    "type-check": "sh scripts/type-check.sh",
     "lint": "sh scripts/lint.sh",
     "format": "sh scripts/lint.sh --fix",
     "check": "pnpm type-check && pnpm lint",

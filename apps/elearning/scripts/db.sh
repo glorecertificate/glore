@@ -38,6 +38,10 @@ CMDS="
 
 cmd=$1
 
+is_ci() {
+  sh scripts/is_ci.sh
+}
+
 print_error() {
   printf "\033[0;31m%s\033[0m\n" "$1"
 }
@@ -46,13 +50,6 @@ format_sql() {
   prettier --write $@ >/dev/null 2>&1
 }
 
-is_ci() {
-  if [ "$ENV" = "production" ] || [ "$NODE_ENV" = "production" ] || [ "$GITHUB_ACTIONS" = "true" ] || [ "$CI" = "true" ] || [ "$CI" = 1 ]; then
-    return 0
-  else
-    return 1
-  fi
-}
 
 init_db() {
   supabase login --token "$SUPABASE_ACCESS_TOKEN" >/dev/null

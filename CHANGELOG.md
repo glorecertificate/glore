@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.13](https://github.com/gabrielecanepa/glore/compare/v0.4.12...v0.4.13) (2025-08-09)
+
+### CI 🤖
+
+- Run type checks depending on the enviroment ([15f30a5](https://github.com/gabrielecanepa/glore/commit/15f30a5a6dd24d4a6ba8a04b8843c95d213c7fb8))
+
+### Other
+
+- Improve database configuration ([ac7f6bd](https://github.com/gabrielecanepa/glore/commit/ac7f6bd7be059d220edd43ee2890e6f079727ef5))
+- Replace Snaplet seeding with custom implementation ([477c7a5](https://github.com/gabrielecanepa/glore/commit/477c7a5a0863979a528a3461962ad4a275d38dba))
+
 ## [0.4.12](https://github.com/gabrielecanepa/glore/compare/v0.4.11...v0.4.12) (2025-08-06)
 
 ### Features ✨

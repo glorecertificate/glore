@@ -88,7 +88,7 @@
     "passwordLabel": "Password",
     "passwordRequired": "Inserte su password",
     "passwordResetMessage": "Recibirás pronto un correo electrónico con un enlace para restablecer tu contraseña.",
-    "passwordResetSent": "Te hemos enviado un correo electrónico",
+    "passwordResetSent": "Te hemos enviado una email!",
     "passwordResetSubtitle": "Ingrese su correo electrónico o nombre de usuario para recibir un enlace de restablecimiento de contraseña.",
     "passwordResetTitle": "¿Olvidaste tu contraseña?",
     "rememberMe": "Acuérdate de mí",
@@ -283,7 +283,9 @@
   },
   "User": {
     "speaks": "Habla {languages}",
-    "contact": "Contactar {user}"
+    "contact": "Contactar {user}",
+    "admin": "Usuario admin",
+    "editor": "Editor"
   },
   "Editor": {
     "undo": "Revertir",

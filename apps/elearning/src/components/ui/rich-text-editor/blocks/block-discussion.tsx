@@ -69,9 +69,9 @@ const BlockCommentContent = ({
   suggestionNodes,
 }: PlateElementProps & {
   blockPath: Path
-  commentNodes: Array<NodeEntry<TCommentText>>
+  commentNodes: NodeEntry<TCommentText>[]
   draftCommentNode: NodeEntry<TCommentText> | undefined
-  suggestionNodes: Array<NodeEntry<TElement | TSuggestionText>>
+  suggestionNodes: NodeEntry<TElement | TSuggestionText>[]
 }) => {
   const editor = useEditorRef()
 
@@ -252,7 +252,7 @@ const BlockComment = ({ discussion, isLast }: { discussion: TDiscussion; isLast:
   )
 }
 
-const useResolvedDiscussion = (commentNodes: Array<NodeEntry<TCommentText>>, blockPath: Path) => {
+const useResolvedDiscussion = (commentNodes: NodeEntry<TCommentText>[], blockPath: Path) => {
   const { api, getOption, setOption } = useEditorPlugin(commentPlugin)
 
   const discussions = usePluginOption(discussionPlugin, 'discussions')

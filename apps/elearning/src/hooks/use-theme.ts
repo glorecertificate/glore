@@ -23,7 +23,7 @@ export const useTheme = () => {
   const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Enum<Theme>>>
   const resolvedTheme = resolvedNextTheme as Omit<Theme, 'system'>
   const theme = nextTheme as Enum<Theme>
-  const themes = nextThemes as Array<Enum<Theme>>
+  const themes = nextThemes as Enum<Theme>[]
   const isLightMode = useMemo(() => resolvedTheme === 'light', [resolvedTheme])
   const isDarkMode = useMemo(() => resolvedTheme === 'dark', [resolvedTheme])
 

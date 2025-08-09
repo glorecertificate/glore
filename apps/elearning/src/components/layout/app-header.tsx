@@ -27,7 +27,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
     <>
       <header
         className={cn(
-          'z-50 ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
+          'sticky top-0 z-5 ml-[1px] min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
           hasShadow && scrolled && 'border-b',
           className,
         )}

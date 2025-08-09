@@ -1,9 +1,14 @@
 import { defineConfig } from '@repo/release-config'
 
 export default defineConfig({
+  git: {
+    requireBranch: 'main',
+    requireCleanWorkingDir: true,
+    pushArgs: ['--follow-tags', '--force'],
+  },
   hooks: {
-    'after:init': '[ -n "$(git log @{u}..)" ] && [ "$SKIP_CI" != 1 ] && pnpm build && pnpm run check || exit 0',
-    'before:release': 'pnpm run format && git add .',
+    'after:init': 'sh scripts/release.sh validate',
+    'before:release': 'sh scripts/release.sh format',
   },
   plugins: {
     '@release-it/bumper': {

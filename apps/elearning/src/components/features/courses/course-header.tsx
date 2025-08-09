@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react'
 
 import { EyeIcon, PencilIcon } from 'lucide-react'
 
-import { type Course } from '@/api/modules/courses/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -13,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Course } from '@/lib/api/modules/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 

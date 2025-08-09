@@ -32,14 +32,14 @@ CMDS="
   start                     Start the Supabase local development environment
   status                    Show the status of the local Supabase environment
   stop                      Stop the Supabase local development environment
-  sync                      Sync types, schema and seeds files
+  sync                      Sync the local schema and types
   typegen                   Generate TypeScript types from database schema
   help, -h, --help          Show this help message"
 
 cmd=$1
 
-is_ci() {
-  sh scripts/is_ci.sh
+is_dev() {
+  [ "$ENV" != "production" ] && [ "$NODE_ENV" != "production" ] && [ "$GITHUB_ACTIONS" != "true" ] && [ "$CI" != "true" ] && [ "$CI" != 1 ]
 }
 
 print_error() {
@@ -50,13 +50,11 @@ format_sql() {
   prettier --write $@ >/dev/null 2>&1
 }
 
-
 init_db() {
   supabase login --token "$SUPABASE_ACCESS_TOKEN" >/dev/null
   supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD" >/dev/null 2>&1
-  if ! is_ci; then
+  if is_dev; then
     echo "Starting database..."
-    snaplet-seed init supabase >/dev/null 2>&1 && echo "Finished seed generation."
     supabase start >/dev/null 2>&1 && echo "Finished database start."
   fi
   sync_types
@@ -70,27 +68,19 @@ sync_schema() {
 
 sync_types() {
   arg="--local"
-  is_ci && arg="--project-id=$SUPABASE_PROJECT_ID"
+  ! is_dev && arg="--project-id=$SUPABASE_PROJECT_ID"
   if supabase gen types typescript --schema $SCHEMA "$arg" > $TYPES_PATH; then
     echo "Finished types generation."
-  fi
-}
-
-sync_seeds() {
-  if snaplet-seed sync >/dev/null 2>&1; then
-    echo "Finished seeds synchronization."
   fi
 }
 
 sync_db() {
   sync_schema $@
   sync_types
-  sync_seeds
 }
 
 run_seeds() {
-  sync_seeds
-  tsx supabase/seed.ts
+  tsx supabase/seeds/cli.ts
 }
 
 dump_db() {
@@ -102,7 +92,6 @@ dump_db() {
   format_sql $MIGRATIONS_PATH/*_"$1".sql
   sync_schema --local
   sync_types
-  sync_seeds
 }
 
 pull_db() {
@@ -117,7 +106,7 @@ pull_db() {
 
 reset_db() {
   ! supabase db reset && return 1
-  sync_types
+  sync_db
   run_seeds
 }
 
@@ -137,7 +126,7 @@ case $cmd in
     init_db
     ;;
   push)
-    if ! is_ci; then
+    if is_dev; then
       printf "Are you sure you want to push the local config and update the remote schema? [y/N] "
       read -r response
       if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
@@ -159,7 +148,7 @@ case $cmd in
     last=1
     location=local
     [ -n "$2" ] && last=$2
-    is_ci && location="linked"
+    ! is_dev && location="linked"
     supabase migration down --$location --last "$last" --yes
     ;;
   seed)

@@ -13,11 +13,11 @@ import { type MessageKey } from '@/lib/i18n/types'
 import { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
-const themes: Array<{
+const themes: {
   name: Theme
   icon: Icon
   titleKey: MessageKey
-}> = [
+}[] = [
   {
     name: Theme.System,
     icon: MonitorSmartphoneIcon,

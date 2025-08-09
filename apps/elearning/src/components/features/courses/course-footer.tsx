@@ -6,7 +6,6 @@ import { ArrowLeftIcon } from 'lucide-react'
 
 import { type Enum } from '@repo/utils'
 
-import { type CourseStatus, type Lesson } from '@/api/modules/courses/types'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import {
@@ -22,6 +21,7 @@ import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { type CourseStatus, type Lesson } from '@/lib/api/modules/courses/types'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 import config from 'config/app.json'

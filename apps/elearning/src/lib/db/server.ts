@@ -9,7 +9,7 @@ import { noop } from '@repo/utils'
 import { Env } from '@/lib/env'
 import type { Database } from 'supabase/types'
 
-export const getDatabase = async (callback = noop) => {
+export const createDatabase = async (callback = noop) => {
   const { getAll, set } = await cookies()
 
   return createServerClient<Database>(Env.SUPABASE_URL, Env.SUPABASE_ANON_KEY, {

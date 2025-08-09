@@ -38,7 +38,7 @@ import { insertBlock, insertInlineElement } from '#rte/utils'
 
 interface Group {
   group: string
-  items: Array<{
+  items: {
     icon: React.ReactNode
     value: string
     onSelect: (editor: PlateEditor, value: string) => void
@@ -46,7 +46,7 @@ interface Group {
     focusEditor?: boolean
     keywords?: string[]
     label?: string
-  }>
+  }[]
 }
 
 export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement>) => {

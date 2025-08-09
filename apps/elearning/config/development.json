@@ -1,10 +1,5 @@
 {
   "seeder": {
-    "emailDomain": "glore.net",
-    "imageUrl": "https://picsum.photos/600/400",
-    "avatarUrl": "https://i.pravatar.cc/300",
-    "roles": ["admin", "editor", "coordinator", "representative", "tutor", "volunteer", "learner"],
-    "sex": ["female", "male", "non-binary", null],
     "countries": [
       {
         "code": "it",
@@ -31,7 +26,7 @@
         "prefix": "+49"
       },
       {
-        "code": "en",
+        "code": "uk",
         "flag": "🇬🇧",
         "languages": ["en"],
         "prefix": "+44"
@@ -43,287 +38,340 @@
         "prefix": "+1"
       }
     ],
-    "skill_groups": [
-      {
-        "name": { "en": "Work", "es": "Trabajo", "it": "Lavoro" },
-        "icon": "briefcase-business",
-        "skills": [
-          {
-            "name": {
-              "en": "Organization and time management",
-              "es": "Organización y gestión del tiempo",
-              "it": "Organizzazione e gestione del tempo"
-            },
-            "description": {
-              "en": "Ability to design tasks by prioritising and planning ahead, in order to achieve one's goals within set deadlines. This includes taking available resources (human, economic, time) into consideration; and sharing activities and responsibilities equitably, considering team resources.",
-              "es": "Capacidad para diseñar tareas priorizando y planificando con antelación, con el fin de alcanzar los objetivos dentro de los plazos establecidos. Esto incluye tener en cuenta los recursos disponibles (humanos, económicos, temporales) y compartir las actividades y responsabilidades de manera equitativa, considerando los recursos del equipo.",
-              "it": "Capacità di progettare compiti dando priorità e pianificando in anticipo, al fine di raggiungere i propri obiettivi entro le scadenze stabilite. Ciò include la considerazione delle risorse disponibili (umane, economiche, temporali) e la condivisione delle attività e delle responsabilità in modo equo, tenendo conto delle risorse del team."
-            }
-          },
-          {
-            "name": { "en": "Team work", "es": "Trabajo en equipo", "it": "Lavoro di squadra" },
-            "description": {
-              "en": "Ability to effectively contribute as a member of a team.",
-              "es": "Capacidad para contribuir de manera efectiva como miembro de un equipo.",
-              "it": "Capacità di contribuire in modo efficace come membro di un team."
-            }
-          },
-          {
-            "name": {
-              "en": "Autonomy",
-              "es": "Autonomía",
-              "it": "Autonomia"
-            },
-            "description": {
-              "en": "Ability to work independently and proactively without constant outside monitoring and instruction.",
-              "es": "Capacidad para trabajar de forma independiente y proactiva sin necesidad de supervisión e instrucción constantes.",
-              "it": "Capacità di lavorare in modo indipendente e proattivo senza la necessità di monitoraggio e istruzioni costanti."
-            }
-          },
-          {
-            "name": {
-              "en": "Stress management",
-              "es": "Gestión del estrés",
-              "it": "Gestione dello stress"
-            },
-            "description": {
-              "en": "Ability to manage your emotions in order to cope well with stressful situations.",
-              "es": "Capacidad para gestionar las emociones con el fin de afrontar bien las situaciones estresantes.",
-              "it": "Capacità di gestire le proprie emozioni per affrontare bene le situazioni stressanti."
-            }
-          }
-        ]
+    "user": {
+      "domain": "glore.net",
+      "avatarUrl": "https://api.dicebear.com/9.x",
+      "avatarStyle": "open-peeps",
+      "avatarColors": [
+        "f0f0f0",
+        "d9d9d9",
+        "c0c0c0",
+        "a6a6a6",
+        "8c8c8c",
+        "737373",
+        "595959",
+        "404040",
+        "262626",
+        "0d0d0d"
+      ],
+      "roles": [
+        "admin",
+        "editor",
+        "coordinator",
+        "representative",
+        "tutor",
+        "volunteer",
+        "learner"
+      ],
+      "sex": ["female", "male", "non-binary", null],
+      "pronouns": ["she/her", "he/him", "they/them"]
+    },
+    "organization": {
+      "handle": "joint",
+      "name": "Joint",
+      "avatar": "avatars/joint.png",
+      "description": {
+        "en": "Joint is a non-profit organization that aims to promote social inclusion and equal opportunities through education and training.",
+        "es": "Joint es una organización sin fines de lucro que tiene como objetivo promover la inclusión social y la igualdad de oportunidades a través de la educación y la formación.",
+        "it": "Joint è un'organizzazione senza scopo di lucro che mira a promuovere l'inclusione sociale e le pari opportunità attraverso l'istruzione e la formazione."
       },
-      {
-        "name": { "en": "Social Skills", "es": "Habilidades sociales", "it": "Competenze sociali" },
-        "icon": "users",
-        "skills": [
-          {
-            "name": {
-              "en": "Socio-cultural awareness / Multi-cultural awareness",
-              "es": "Conciencia sociocultural / Conciencia multicultural",
-              "it": "Consapevolezza socio-culturale / Consapevolezza multiculturale"
+      "url": "https://associazionejoint.org",
+      "email": "info@associazionejoint.org",
+      "phone": "+391234567890",
+      "country": "it",
+      "region": "MI",
+      "city": "Milan",
+      "postcode": "20142",
+      "address": "Via Giovanola 25C",
+      "memberships": ["representative", "tutor", "volunteer"]
+    },
+    "skill": {
+      "groups": [
+        {
+          "name": { "en": "Work", "es": "Trabajo", "it": "Lavoro" },
+          "icon": "briefcase-business",
+          "courses": [
+            {
+              "title": {
+                "en": "Organization and time management",
+                "es": "Organización y gestión del tiempo",
+                "it": "Organizzazione e gestione del tempo"
+              },
+              "description": {
+                "en": "Ability to design tasks by prioritising and planning ahead, in order to achieve one's goals within set deadlines. This includes taking available resources (human, economic, time) into consideration; and sharing activities and responsibilities equitably, considering team resources.",
+                "es": "Capacidad para diseñar tareas priorizando y planificando con antelación, con el fin de alcanzar los objetivos dentro de los plazos establecidos. Esto incluye tener en cuenta los recursos disponibles (humanos, económicos, temporales) y compartir las actividades y responsabilidades de manera equitativa, considerando los recursos del equipo.",
+                "it": "Capacità di progettare compiti dando priorità e pianificando in anticipo, al fine di raggiungere i propri obiettivi entro le scadenze stabilite. Ciò include la considerazione delle risorse disponibili (umane, economiche, temporali) e la condivisione delle attività e delle responsabilità in modo equo, tenendo conto delle risorse del team."
+              }
             },
-            "description": {
-              "en": "Ability to cope with social and cultural differences and specificities; ability to make others part of a group, taking their differences (rights, needs and opinions) into consideration.",
-              "es": "Capacidad para hacer frente a las diferencias y especificidades sociales y culturales; capacidad para hacer que otros formen parte de un grupo, teniendo en cuenta sus diferencias (derechos, necesidades y opiniones).",
-              "it": "Capacità di affrontare le differenze e le specificità sociali e culturali; capacità di far entrare gli altri in un gruppo, tenendo conto delle loro differenze (diritti, bisogni e opinioni)."
-            }
-          },
-          {
-            "name": {
-              "en": "Flexibility",
-              "es": "Flexibilidad",
-              "it": "Flessibilità"
+            {
+              "title": { "en": "Team work", "es": "Trabajo en equipo", "it": "Lavoro di squadra" },
+              "description": {
+                "en": "Ability to effectively contribute as a member of a team.",
+                "es": "Capacidad para contribuir de manera efectiva como miembro de un equipo.",
+                "it": "Capacità di contribuire in modo efficace come membro di un team."
+              }
             },
-            "description": {
-              "en": "Ability to adjust to new environments and change, and to adapt to unexpected or challenging situations. Ability to understand different contexts and to act accordingly to cope with new situations and environments.",
-              "es": "Capacidad para adaptarse a nuevos entornos y cambios, y para adaptarse a situaciones inesperadas o desafiantes. Capacidad para entender diferentes contextos y actuar en consecuencia para hacer frente a nuevas situaciones y entornos.",
-              "it": "Capacità di adattarsi a nuovi ambienti e cambiamenti, e di adattarsi a situazioni inaspettate o impegnative. Capacità di comprendere contesti diversi e di agire di conseguenza per affrontare nuove situazioni e ambienti."
-            }
-          },
-          {
-            "name": {
-              "en": "Conflict management",
-              "es": "Gestión de conflictos",
-              "it": "Gestione dei conflitti"
+            {
+              "title": {
+                "en": "Autonomy",
+                "es": "Autonomía",
+                "it": "Autonomia"
+              },
+              "description": {
+                "en": "Ability to work independently and proactively without constant outside monitoring and instruction.",
+                "es": "Capacidad para trabajar de forma independiente y proactiva sin necesidad de supervisión e instrucción constantes.",
+                "it": "Capacità di lavorare in modo indipendente e proattivo senza la necessità di monitoraggio e istruzioni costanti."
+              }
             },
-            "description": {
-              "en": "Ability to cope with emotions that emerge in dealing with diverging opinions and interests, and the ability to reach an outcome beneficial to all parties, over one or more issues, through dialogue.",
-              "es": "Capacidad para hacer frente a las emociones que surgen al tratar con opiniones e intereses divergentes, y la capacidad de alcanzar un resultado beneficioso para todas las partes, sobre uno o más temas, a través del diálogo.",
-              "it": "Capacità di affrontare le emozioni che emergono nel trattare opinioni e interessi divergenti, e la capacità di raggiungere un risultato vantaggioso per tutte le parti, su una o più questioni, attraverso il dialogo."
+            {
+              "title": {
+                "en": "Stress management",
+                "es": "Gestión del estrés",
+                "it": "Gestione dello stress"
+              },
+              "description": {
+                "en": "Ability to manage your emotions in order to cope well with stressful situations.",
+                "es": "Capacidad para gestionar las emociones con el fin de afrontar bien las situaciones estresantes.",
+                "it": "Capacità di gestire le proprie emozioni per affrontare bene le situazioni stressanti."
+              }
             }
-          },
-          {
-            "name": {
-              "en": "Open-mindedness and tolerance",
-              "es": "Mentalidad abierta y tolerancia",
-              "it": "Mentalità aperta e tolleranza"
-            },
-            "description": {
-              "en": "Ability to be open to new ideas, experiences, theories, people and ways of living; ability to adopt a fair and respectful attitude towards opinions, beliefs, and practices that differ from one's own.",
-              "es": "Capacidad de estar abierto a nuevas ideas, experiencias, teorías, personas y formas de vida; capacidad de adoptar una actitud justa y respetuosa hacia opiniones, creencias y prácticas que difieren de las propias.",
-              "it": "Capacità di essere aperti a nuove idee, esperienze, teorie, persone e modi di vivere; capacità di adottare un atteggiamento equo e rispettoso verso opinioni, credenze e pratiche diverse dalle proprie."
-            }
-          },
-          {
-            "name": {
-              "en": "Networking and public relations",
-              "es": "Redes de contacto y relaciones públicas",
-              "it": "Networking e relazioni pubbliche"
-            },
-            "description": {
-              "en": "Ability to create connections with people or institutions external to the organization and keep them active in order to create productive work relationships",
-              "es": "Capacidad para crear conexiones con personas o instituciones externas a la organización y mantenerlas activas para crear relaciones de trabajo productivas",
-              "it": "Capacità di creare connessioni con persone o istituzioni esterne all'organizzazione e mantenerle attive per creare relazioni di lavoro produttive"
-            }
-          }
-        ]
-      },
-      {
-        "name": {
-          "en": "Communication Skills",
-          "es": "Habilidades de comunicación",
-          "it": "Competenze di comunicazione"
+          ]
         },
-        "icon": "speech",
-        "skills": [
-          {
-            "name": {
-              "en": "Communication and active listening",
-              "es": "Comunicación y escucha activa",
-              "it": "Comunicazione e ascolto attivo"
-            },
-            "description": {
-              "en": "Ability to understand both verbal and non-verbal messages, and to ask questions to better understand the situation. This also includes the ability to answer questions, and to give and to receive constructive feedback.",
-              "es": "Capacidad para comprender tanto los mensajes verbales como no verbales, y para hacer preguntas para entender mejor la situación. Esto también incluye la capacidad de responder preguntas, y de dar y recibir retroalimentación constructiva.",
-              "it": "Capacità di comprendere sia i messaggi verbali che non verbali, e di fare domande per comprendere meglio la situazione. Questo include anche la capacità di rispondere alle domande, e di dare e ricevere feedback costruttivi."
-            }
+        {
+          "name": {
+            "en": "Social skills",
+            "es": "Habilidades sociales",
+            "it": "Competenze sociali"
           },
-          {
-            "name": {
-              "en": "Assertiveness",
-              "es": "Asertividad",
-              "it": "Assertività"
+          "icon": "users",
+          "courses": [
+            {
+              "title": {
+                "en": "Socio-cultural awareness",
+                "es": "Conciencia sociocultural",
+                "it": "Consapevolezza socio-culturale"
+              },
+              "description": {
+                "en": "Ability to cope with social and cultural differences and specificities; ability to make others part of a group, taking their differences (rights, needs and opinions) into consideration.",
+                "es": "Capacidad para hacer frente a las diferencias y especificidades sociales y culturales; capacidad para hacer que otros formen parte de un grupo, teniendo en cuenta sus diferencias (derechos, necesidades y opiniones).",
+                "it": "Capacità di affrontare le differenze e le specificità sociali e culturali; capacità di far entrare gli altri in un gruppo, tenendo conto delle loro differenze (diritti, bisogni e opinioni)."
+              }
             },
-            "description": {
-              "en": "Ability to express one's own point of view while respecting and taking into consideration the views of others; and to share and accept constructive criticism, different opinions and advice.",
-              "es": "Capacidad para expresar el propio punto de vista respetando y teniendo en cuenta las opiniones de otros; y para compartir y aceptar críticas constructivas, diferentes opiniones y consejos.",
-              "it": "Capacità di esprimere il proprio punto di vista rispettando e tenendo conto delle opinioni degli altri; e di condividere e accettare critiche costruttive, opinioni diverse e consigli."
-            }
-          },
-          {
-            "name": {
-              "en": "Public speaking",
-              "es": "Hablar en público",
-              "it": "Parlare in pubblico"
+            {
+              "title": {
+                "en": "Flexibility",
+                "es": "Flexibilidad",
+                "it": "Flessibilità"
+              },
+              "description": {
+                "en": "Ability to adjust to new environments and change, and to adapt to unexpected or challenging situations. Ability to understand different contexts and to act accordingly to cope with new situations and environments.",
+                "es": "Capacidad para adaptarse a nuevos entornos y cambios, y para adaptarse a situaciones inesperadas o desafiantes. Capacidad para entender diferentes contextos y actuar en consecuencia para hacer frente a nuevas situaciones y entornos.",
+                "it": "Capacità di adattarsi a nuovi ambienti e cambiamenti, e di adattarsi a situazioni inaspettate o impegnative. Capacità di comprendere contesti diversi e di agire di conseguenza per affrontare nuove situazioni e ambienti."
+              }
             },
-            "description": {
-              "en": "Ability to communicate clearly and effectively in front of both familiar and unfamiliar people.",
-              "es": "Capacidad para comunicarse de manera clara y efectiva frente a personas conocidas y desconocidas.",
-              "it": "Capacità di comunicare chiaramente ed efficacemente di fronte a persone familiari e non familiari."
-            }
-          },
-          {
-            "name": {
-              "en": "Digital communication",
-              "es": "Comunicación digital",
-              "it": "Comunicazione digitale"
+            {
+              "title": {
+                "en": "Conflict management",
+                "es": "Gestión de conflictos",
+                "it": "Gestione dei conflitti"
+              },
+              "description": {
+                "en": "Ability to cope with emotions that emerge in dealing with diverging opinions and interests, and the ability to reach an outcome beneficial to all parties, over one or more issues, through dialogue.",
+                "es": "Capacidad para hacer frente a las emociones que surgen al tratar con opiniones e intereses divergentes, y la capacidad de alcanzar un resultado beneficioso para todas las partes, sobre uno o más temas, a través del diálogo.",
+                "it": "Capacità di affrontare le emozioni che emergono nel trattare opinioni e interessi divergenti, e la capacità di raggiungere un risultato vantaggioso per tutte le parti, su una o più questioni, attraverso il dialogo."
+              }
             },
-            "description": {
-              "en": "Ability to effectively and efficiently communicate through digital media, being familiar with new ICT tools.",
-              "es": "Capacidad para comunicarse de manera efectiva y eficiente a través de medios digitales, estando familiarizado con las nuevas herramientas TIC.",
-              "it": "Capacità di comunicare efficacemente ed efficientemente attraverso i media digitali, avendo familiarità con i nuovi strumenti ICT."
+            {
+              "title": {
+                "en": "Open-mindedness and tolerance",
+                "es": "Mentalidad abierta y tolerancia",
+                "it": "Mentalità aperta e tolleranza"
+              },
+              "description": {
+                "en": "Ability to be open to new ideas, experiences, theories, people and ways of living; ability to adopt a fair and respectful attitude towards opinions, beliefs, and practices that differ from one's own.",
+                "es": "Capacidad de estar abierto a nuevas ideas, experiencias, teorías, personas y formas de vida; capacidad de adoptar una actitud justa y respetuosa hacia opiniones, creencias y prácticas que difieren de las propias.",
+                "it": "Capacità di essere aperti a nuove idee, esperienze, teorie, persone e modi di vivere; capacità di adottare un atteggiamento equo e rispettoso verso opinioni, credenze e pratiche diverse dalle proprie."
+              }
+            },
+            {
+              "title": {
+                "en": "Networking and public relations",
+                "es": "Redes de contacto y relaciones públicas",
+                "it": "Networking e relazioni pubbliche"
+              },
+              "description": {
+                "en": "Ability to create connections with people or institutions external to the organization and keep them active in order to create productive work relationships",
+                "es": "Capacidad para crear conexiones con personas o instituciones externas a la organización y mantenerlas activas para crear relaciones de trabajo productivas",
+                "it": "Capacità di creare connessioni con persone o istituzioni esterne all'organizzazione e mantenerle attive per creare relazioni di lavoro produttive"
+              }
             }
-          }
-        ]
-      },
-      {
-        "name": {
-          "en": "Personal Skills",
-          "es": "Habilidades personales",
-          "it": "Competenze personali"
+          ]
         },
-        "icon": "user",
-        "skills": [
-          {
-            "name": {
-              "en": "Empathy",
-              "es": "Empatía",
-              "it": "Empatia"
-            },
-            "description": {
-              "en": "Ability to understand or feel what another person is experiencing by putting oneself in their place.",
-              "es": "Capacidad para entender o sentir lo que otra persona está experimentando poniéndose en su lugar.",
-              "it": "Capacità di comprendere o sentire ciò che un'altra persona sta sperimentando mettendosi al suo posto."
-            }
+        {
+          "name": {
+            "en": "Communication Skills",
+            "es": "Habilidades de comunicación",
+            "it": "Competenze di comunicazione"
           },
-          {
-            "name": {
-              "en": "Self-awareness",
-              "es": "Autoconocimiento",
-              "it": "Autoconsapevolezza"
+          "icon": "speech",
+          "courses": [
+            {
+              "title": {
+                "en": "Communication and active listening",
+                "es": "Comunicación y escucha activa",
+                "it": "Comunicazione e ascolto attivo"
+              },
+              "description": {
+                "en": "Ability to understand both verbal and non-verbal messages, and to ask questions to better understand the situation. This also includes the ability to answer questions, and to give and to receive constructive feedback.",
+                "es": "Capacidad para comprender tanto los mensajes verbales como no verbales, y para hacer preguntas para entender mejor la situación. Esto también incluye la capacidad de responder preguntas, y de dar y recibir retroalimentación constructiva.",
+                "it": "Capacità di comprendere sia i messaggi verbali che non verbali, e di fare domande per comprendere meglio la situazione. Questo include anche la capacità di rispondere alle domande, e di dare e ricevere feedback costruttivi."
+              }
             },
-            "description": {
-              "en": "Ability to identify one's own strengths and weaknesses, learn from them, and improve upon them.",
-              "es": "Capacidad para identificar las propias fortalezas y debilidades, aprender de ellas y mejorarlas.",
-              "it": "Capacità di identificare i propri punti di forza e di debolezza, imparare da essi e migliorarli."
+            {
+              "title": {
+                "en": "Assertiveness",
+                "es": "Asertividad",
+                "it": "Assertività"
+              },
+              "description": {
+                "en": "Ability to express one's own point of view while respecting and taking into consideration the views of others; and to share and accept constructive criticism, different opinions and advice.",
+                "es": "Capacidad para expresar el propio punto de vista respetando y teniendo en cuenta las opiniones de otros; y para compartir y aceptar críticas constructivas, diferentes opiniones y consejos.",
+                "it": "Capacità di esprimere il proprio punto di vista rispettando e tenendo conto delle opinioni degli altri; e di condividere e accettare critiche costruttive, opinioni diverse e consigli."
+              }
+            },
+            {
+              "title": {
+                "en": "Public speaking",
+                "es": "Hablar en público",
+                "it": "Parlare in pubblico"
+              },
+              "description": {
+                "en": "Ability to communicate clearly and effectively in front of both familiar and unfamiliar people.",
+                "es": "Capacidad para comunicarse de manera clara y efectiva frente a personas conocidas y desconocidas.",
+                "it": "Capacità di comunicare chiaramente ed efficacemente di fronte a persone familiari e non familiari."
+              }
+            },
+            {
+              "title": {
+                "en": "Digital communication",
+                "es": "Comunicación digital",
+                "it": "Comunicazione digitale"
+              },
+              "description": {
+                "en": "Ability to effectively and efficiently communicate through digital media, being familiar with new ICT tools.",
+                "es": "Capacidad para comunicarse de manera efectiva y eficiente a través de medios digitales, estando familiarizado con las nuevas herramientas TIC.",
+                "it": "Capacità di comunicare efficacemente ed efficientemente attraverso i media digitali, avendo familiarità con i nuovi strumenti ICT."
+              }
             }
+          ]
+        },
+        {
+          "name": {
+            "en": "Personal Skills",
+            "es": "Habilidades personales",
+            "it": "Competenze personali"
           },
-          {
-            "name": {
-              "en": "Critical thinking",
-              "es": "Pensamiento crítico",
-              "it": "Pensiero critico"
+          "icon": "user",
+          "courses": [
+            {
+              "title": {
+                "en": "Empathy",
+                "es": "Empatía",
+                "it": "Empatia"
+              },
+              "description": {
+                "en": "Ability to understand or feel what another person is experiencing by putting oneself in their place.",
+                "es": "Capacidad para entender o sentir lo que otra persona está experimentando poniéndose en su lugar.",
+                "it": "Capacità di comprendere o sentire ciò che un'altra persona sta sperimentando mettendosi al suo posto."
+              }
             },
-            "description": {
-              "en": "Ability to evaluate information and interpret it through independent and unconstrained analysis; and to analyze various situations and think from different perspectives.",
-              "es": "Capacidad para evaluar información e interpretarla a través de un análisis independiente y sin restricciones; y para analizar diversas situaciones y pensar desde diferentes perspectivas.",
-              "it": "Capacità di valutare le informazioni e interpretarle attraverso un'analisi indipendente e libera; e di analizzare varie situazioni e pensare da diverse prospettive."
-            }
-          },
-          {
-            "name": {
-              "en": "Responsibility",
-              "es": "Responsabilidad",
-              "it": "Responsabilità"
+            {
+              "title": {
+                "en": "Self-awareness",
+                "es": "Autoconocimiento",
+                "it": "Autoconsapevolezza"
+              },
+              "description": {
+                "en": "Ability to identify one's own strengths and weaknesses, learn from them, and improve upon them.",
+                "es": "Capacidad para identificar las propias fortalezas y debilidades, aprender de ellas y mejorarlas.",
+                "it": "Capacità di identificare i propri punti di forza e di debolezza, imparare da essi e migliorarli."
+              }
             },
-            "description": {
-              "en": "Ability to assume one's own actions and to be accountable for them.",
-              "es": "Capacidad para asumir las propias acciones y ser responsable de ellas.",
-              "it": "Capacità di assumersi le proprie azioni e di essere responsabili per esse."
-            }
-          },
-          {
-            "name": {
-              "en": "Leadership",
-              "es": "Liderazgo",
-              "it": "Leadership"
+            {
+              "title": {
+                "en": "Critical thinking",
+                "es": "Pensamiento crítico",
+                "it": "Pensiero critico"
+              },
+              "description": {
+                "en": "Ability to evaluate information and interpret it through independent and unconstrained analysis; and to analyze various situations and think from different perspectives.",
+                "es": "Capacidad para evaluar información e interpretarla a través de un análisis independiente y sin restricciones; y para analizar diversas situaciones y pensar desde diferentes perspectivas.",
+                "it": "Capacità di valutare le informazioni e interpretarle attraverso un'analisi indipendente e libera; e di analizzare varie situazioni e pensare da diverse prospettive."
+              }
             },
-            "description": {
-              "en": "Ability to motivate, activate, and involve group members towards a common goal.",
-              "es": "Capacidad para motivar, activar e involucrar a los miembros del grupo hacia un objetivo común.",
-              "it": "Capacità di motivare, attivare e coinvolgere i membri del gruppo verso un obiettivo comune."
-            }
-          },
-          {
-            "name": {
-              "en": "Creativity and innovation",
-              "es": "Creatividad e innovación",
-              "it": "Creatività e innovazione"
+            {
+              "title": {
+                "en": "Responsibility",
+                "es": "Responsabilidad",
+                "it": "Responsabilità"
+              },
+              "description": {
+                "en": "Ability to assume one's own actions and to be accountable for them.",
+                "es": "Capacidad para asumir las propias acciones y ser responsable de ellas.",
+                "it": "Capacità di assumersi le proprie azioni e di essere responsabili per esse."
+              }
             },
-            "description": {
-              "en": "Ability to generate new or alternative solutions to problems, to think outside of the box, and to find solutions to improve current practices.",
-              "es": "Capacidad para generar soluciones nuevas o alternativas a los problemas, para pensar fuera de lo convencional y encontrar soluciones para mejorar las prácticas actuales.",
-              "it": "Capacità di generare soluzioni nuove o alternative ai problemi, di pensare fuori dagli schemi e di trovare soluzioni per migliorare le pratiche attuali."
-            }
-          },
-          {
-            "name": {
-              "en": "Learning to learn",
-              "es": "Aprender a aprender",
-              "it": "Imparare ad imparare"
+            {
+              "title": {
+                "en": "Leadership",
+                "es": "Liderazgo",
+                "it": "Leadership"
+              },
+              "description": {
+                "en": "Ability to motivate, activate, and involve group members towards a common goal.",
+                "es": "Capacidad para motivar, activar e involucrar a los miembros del grupo hacia un objetivo común.",
+                "it": "Capacità di motivare, attivare e coinvolgere i membri del gruppo verso un obiettivo comune."
+              }
             },
-            "description": {
-              "en": "Ability to understand one's own learning style and aims, and to implement a personal learning plan accordingly.",
-              "es": "Capacidad para comprender el propio estilo de aprendizaje y objetivos, e implementar un plan de aprendizaje personal en consecuencia.",
-              "it": "Capacità di comprendere il proprio stile di apprendimento e i propri obiettivi, e di implementare di conseguenza un piano di apprendimento personale."
-            }
-          },
-          {
-            "name": {
-              "en": "Confidence in oneself and others",
-              "es": "Confianza en uno mismo y en otros",
-              "it": "Fiducia in se stessi e negli altri"
+            {
+              "title": {
+                "en": "Creativity and innovation",
+                "es": "Creatividad e innovación",
+                "it": "Creatività e innovazione"
+              },
+              "description": {
+                "en": "Ability to generate new or alternative solutions to problems, to think outside of the box, and to find solutions to improve current practices.",
+                "es": "Capacidad para generar soluciones nuevas o alternativas a los problemas, para pensar fuera de lo convencional y encontrar soluciones para mejorar las prácticas actuales.",
+                "it": "Capacità di generare soluzioni nuove o alternative ai problemi, di pensare fuori dagli schemi e di trovare soluzioni per migliorare le pratiche attuali."
+              }
             },
-            "description": {
-              "en": "Ability to believe in oneself and others, and to establish trusting relationships.",
-              "es": "Capacidad para creer en uno mismo y en otros, y para establecer relaciones de confianza.",
-              "it": "Capacità di credere in se stessi e negli altri, e di stabilire relazioni di fiducia."
+            {
+              "title": {
+                "en": "Learning to learn",
+                "es": "Aprender a aprender",
+                "it": "Imparare ad imparare"
+              },
+              "description": {
+                "en": "Ability to understand one's own learning style and aims, and to implement a personal learning plan accordingly.",
+                "es": "Capacidad para comprender el propio estilo de aprendizaje y objetivos, e implementar un plan de aprendizaje personal en consecuencia.",
+                "it": "Capacità di comprendere il proprio stile di apprendimento e i propri obiettivi, e di implementare di conseguenza un piano di apprendimento personale."
+              }
+            },
+            {
+              "title": {
+                "en": "Confidence in oneself and others",
+                "es": "Confianza en uno mismo y en otros",
+                "it": "Fiducia in se stessi e negli altri"
+              },
+              "description": {
+                "en": "Ability to believe in oneself and others, and to establish trusting relationships.",
+                "es": "Capacidad para creer en uno mismo y en otros, y para establecer relaciones de confianza.",
+                "it": "Capacità di credere in se stessi e negli altri, e di stabilire relazioni di fiducia."
+              }
             }
-          }
-        ]
-      }
-    ]
+          ]
+        }
+      ]
+    }
   }
 }

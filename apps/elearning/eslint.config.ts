@@ -72,10 +72,4 @@ export default eslintConfig(
       '@next/next/no-img-element': 0,
     },
   },
-  {
-    files: ['supabase/seed.ts'],
-    rules: {
-      'turbo/no-undeclared-env-vars': 0,
-    },
-  },
 )

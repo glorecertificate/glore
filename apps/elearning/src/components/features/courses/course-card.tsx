@@ -4,7 +4,6 @@ import { useMemo } from 'react'
 
 import { BookOpenIcon, LanguagesIcon, UserPenIcon } from 'lucide-react'
 
-import { type Course } from '@/api/modules/courses/types'
 import { UserCard } from '@/components/features/user-card'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } fro
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Course } from '@/lib/api/modules/courses/types'
 import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { type Locale, type LocaleItem } from '@/lib/i18n/types'
 import { dynamicRoute, Route } from '@/lib/navigation'
@@ -85,7 +85,7 @@ export const CourseCard = ({
           if (draftLocales.includes(locale)) return [...items, { ...item, active: false }]
           return items
         },
-        [] as Array<LocaleItem & { active: boolean }>,
+        [] as (LocaleItem & { active: boolean })[],
       ),
     [activeLocales, publishedLocales, draftLocales],
   )

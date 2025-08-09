@@ -3,12 +3,12 @@ import { useCallback, useMemo } from 'react'
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { type Question, type QuestionOption } from '@/api/modules/courses/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Markdown } from '@/components/ui/markdown'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Question, type QuestionOption } from '@/lib/api/modules/courses/types'
 import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({

@@ -1,5 +1,12 @@
 /* eslint-disable no-console */
 
+import noop from '@/noop'
+
+/**
+ * Logger type definition for the log utility.
+ */
+export type Logger = typeof log
+
 /**
  * Simple logging utility supporting error and warn methods.
  */
@@ -14,5 +21,20 @@ export const log = Object.assign(
     warn: (...data: any[]) => console.warn('\x1b[33m⚠︎\x1b[0m', ...data),
   },
 )
+export const logger = log
+
+/**
+ * Creates a logging instance that conditionally logs based on the provided condition.
+ * If the condition is true, it returns a noop logger, otherwise it returns a standard log instance.
+ */
+export const createLogger = (silent = false) =>
+  silent
+    ? Object.assign(noop, {
+        error: noop,
+        info: noop,
+        success: noop,
+        warn: noop,
+      })
+    : log
 
 export default log

@@ -17,11 +17,12 @@ import {
 } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
 
 export interface MultiSelectProps extends PopoverProps {
+  /** @default true */
+  capitalize?: boolean
   contentProps?: PopoverContentProps
   disabled?: boolean
   isLoading?: boolean
@@ -31,28 +32,32 @@ export interface MultiSelectProps extends PopoverProps {
     delay?: number
   }
   onChange: (selected: string[]) => void
-  options: Array<{
+  options: {
     label: string
     value: string
     icon?: React.ReactNode | string
-  }>
+  }[]
   placeholder?: string
   search?: boolean
-  toasterTimeout?: number
+  toastTimeout?: number
+  toastType?: 'info' | 'success' | 'error' | 'warning'
   triggerProps?: PopoverTriggerProps
   value: string[]
 }
 
 const MultiSelectBadge = ({
+  capitalize,
   className,
   disabled,
   disabledMessage,
   item,
   onSelect,
   options,
+  title: userTitle,
   tooltipDelay = 500,
   ...props
 }: BadgeProps & {
+  capitalize?: boolean
   disabled: boolean
   disabledMessage?: string
   item: string
@@ -60,15 +65,30 @@ const MultiSelectBadge = ({
   options: MultiSelectProps['options']
   tooltipDelay?: number
 }) => {
-  const { locale } = useLocale()
-  const t = useTranslations()
+  const t = useTranslations('Common')
+  const tLang = useTranslations('Languages')
 
-  const option = useMemo(() => options.find(({ value }) => value === item), [item, options])
+  const { icon, label, value } = useMemo(() => options.find(({ value }) => value === item), [item, options]) ?? {}
 
-  const title = useMemo(
-    () =>
-      disabled ? undefined : `${t('Common.remove')} ${locale === 'en' ? option?.label : option?.label?.toLowerCase()}`,
-    [disabled, locale, option?.label, t],
+  const title = useMemo(() => {
+    if (disabled) return undefined
+    if (userTitle) return userTitle
+    if (!label) return undefined
+    const translation = tLang.flat(value!)
+    return `${t('remove')} ${capitalize ? translation : translation.toLowerCase()}`
+  }, [capitalize, disabled, label, t, tLang, userTitle, value])
+
+  const onClick = useCallback(() => {
+    if (disabled) return
+    onSelect(item)
+  }, [disabled, item, onSelect])
+
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled || e.key !== 'Enter') return
+      onSelect(item)
+    },
+    [disabled, item, onSelect],
   )
 
   const badge = useMemo(
@@ -77,15 +97,15 @@ const MultiSelectBadge = ({
         asChild
         className={cn('group px-1.5 py-0', disabled ? 'cursor-not-allowed' : 'cursor-pointer', className)}
         key={item}
-        onClick={onSelect.bind(null, item)}
-        onKeyDown={e => e.key === 'Enter' && onSelect(item)}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
         size="xs"
         tabIndex={0}
         title={title}
         {...props}
       >
         <div className="flex items-center justify-between gap-1">
-          <span className="text-sm">{option?.icon}</span>
+          {icon && <span className="text-sm">{icon}</span>}
           <span
             className={cn(
               'translate-x-[3px] rounded-full p-[1.5px] transition-all',
@@ -99,7 +119,7 @@ const MultiSelectBadge = ({
         </div>
       </Badge>
     ),
-    [className, disabled, item, onSelect, option, props, title],
+    [className, disabled, icon, item, onClick, onKeyDown, props, title],
   )
 
   if (!disabled || !disabledMessage) return badge
@@ -115,27 +135,34 @@ const MultiSelectBadge = ({
 }
 
 export const MultiSelect = ({
+  capitalize = true,
   className,
   contentProps,
   disabled = false,
   isLoading = false,
   minItems,
   onChange,
-  options,
   search = true,
-  toasterTimeout = 2_000,
+  toastTimeout = 2_000,
+  toastType = 'info',
   triggerProps,
   value,
   ...props
 }: MultiSelectProps) => {
-  const t = useTranslations('Common')
+  const tCommon = useTranslations('Common')
+  const tLanguages = useTranslations('Languages')
   const [open, setOpen] = useState(false)
   const [selectTime, setSelectTime] = useState<number | null>(null)
 
-  const placeholder = useMemo(() => props.placeholder ?? t('selectItems'), [props.placeholder, t])
+  const placeholder = useMemo(() => props.placeholder ?? tCommon('selectItems'), [props.placeholder, tCommon])
   const { className: contentClassName, ...contentRest } = contentProps || {}
   const { className: triggerClassName, ...triggerRest } = triggerProps || {}
   const { count = 0, delay, message } = minItems || {}
+
+  const options = useMemo(
+    () => (props.options ?? []).map(({ label, ...opt }) => ({ ...opt, label: tLanguages.flat(opt.value) ?? label })),
+    [props.options, tLanguages],
+  )
 
   const canUnselect = useMemo(() => value.length > count, [count, value.length])
 
@@ -149,20 +176,17 @@ export const MultiSelect = ({
   const onUnselect = useCallback(
     (item: string) => {
       if (canUnselect) return onChange(value.filter(i => i !== item))
-      if (selectTime && Date.now() - selectTime < toasterTimeout) return
+      if (selectTime && Date.now() - selectTime < toastTimeout) return
 
-      toast.info(message, { duration: 2_000 })
+      toast[toastType](message, { duration: 2_000 })
       setSelectTime(Date.now())
     },
-    [canUnselect, message, onChange, selectTime, toasterTimeout, value],
+    [canUnselect, message, onChange, selectTime, toastTimeout, toastType, value],
   )
 
   const onSelect = useCallback(
     (item: string) => () => {
-      if (value.includes(item)) {
-        onUnselect(item)
-        return
-      }
+      if (value.includes(item)) return onUnselect(item)
       onChange([...value, item])
     },
     [onUnselect, onChange, value],
@@ -202,6 +226,7 @@ export const MultiSelect = ({
               ) : (
                 value.map(item => (
                   <MultiSelectBadge
+                    capitalize={capitalize}
                     disabled={!canUnselect}
                     disabledMessage={message}
                     item={item}
@@ -233,7 +258,7 @@ export const MultiSelect = ({
         </PopoverTrigger>
         <PopoverContent align="end" className={cn('p-0', contentClassName)} {...contentRest}>
           <Command>
-            {search && <CommandInput autoFocus placeholder={`${t('searchItems')}...`} />}
+            {search && <CommandInput autoFocus placeholder={`${tCommon('searchItems')}...`} />}
             <CommandList>
               <CommandEmpty className="p-0">
                 {isLoading ? (

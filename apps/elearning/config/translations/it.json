@@ -48,7 +48,7 @@
     "updatedYesterday": "Aggiornato ieri",
     "useDarkTheme": "Tema scuro",
     "useLightTheme": "Tema chiaro",
-    "useSystemTheme": "Tema di sistema",
+    "useSystemTheme": "Tema del sistema",
     "refreshPage": "Ricarica pagina",
     "startDate": "Data di inizio",
     "endDate": "Data di fine",
@@ -88,7 +88,7 @@
     "passwordLabel": "Password",
     "passwordRequired": "Inserisci una password",
     "passwordResetMessage": "Riceverai a breve una mail con un link per reimpostare la tua password.",
-    "passwordResetSent": "Ti abbiamo inviato un'email",
+    "passwordResetSent": "Ti abbiamo inviato un'email!",
     "passwordResetSubtitle": "Inserisci la tua e-mail o nome utente per ricevere un link e reimpostarla.",
     "passwordResetTitle": "Hai dimenticato la password?",
     "rememberMe": "Ricordami",
@@ -283,7 +283,9 @@
   },
   "User": {
     "speaks": "Parla {languages}",
-    "contact": "Contatta {user}"
+    "contact": "Contatta {user}",
+    "admin": "Utente admin",
+    "editor": "Editor"
   },
   "Editor": {
     "undo": "Torna indietro",
@@ -329,7 +331,7 @@
       "align": "Allinea",
       "stop": "Ferma",
       "dragToMove": "Trascina per spostare",
-      "formatCode": "Codice di formato",
+      "formatCode": "Formatta codice",
       "editComment": "Modifica commento",
       "deleteComment": "Elimina il commento",
       "reply": "Rispondi...",

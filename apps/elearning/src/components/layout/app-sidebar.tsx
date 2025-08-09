@@ -21,7 +21,6 @@ import {
 
 import { titleize } from '@repo/utils'
 
-import { type User, type UserOrganization } from '@/api/modules/users/types'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -57,10 +56,11 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDatabase } from '@/hooks/use-database'
 import { usePathname } from '@/hooks/use-pathname'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { db } from '@/lib/db/client'
+import { type User, type UserOrganization } from '@/lib/api/modules/users/types'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
 import { cn } from '@/lib/utils'
@@ -287,25 +287,14 @@ const SidebarNav = () => {
   const { user } = useSession()
   const t = useTranslations('Navigation')
 
-  // const onDocsClick = useCallback(
-  //   (e: React.MouseEvent) => {
-  //     setPathname(Route.Docs)
-  //     if (!isActivePath(Route.Docs) && docsCollapsibleOpen) {
-  //       e.stopPropagation()
-  //       e.preventDefault()
-  //       return
-  //     }
-  //     toggleDocsCollapsible()
-  //   },
-  //   [docsCollapsibleOpen, isActivePath, setPathname, toggleDocsCollapsible],
-  // )
+  const showCertificates = useMemo(() => !user.isEditor, [user.isEditor])
 
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4">
         <SidebarNavItem icon={DashboardIcon} iconProps={{ colored: true }} label={t('dashboard')} route={Route.Home} />
         <SidebarNavItem icon={BookOpenIcon} label={t('courses')} route={Route.Courses} />
-        <SidebarNavItem icon={AwardIcon} label={t('certificates')} route={Route.Certificates} />
+        {showCertificates && <SidebarNavItem icon={AwardIcon} label={t('certificates')} route={Route.Certificates} />}
         <SidebarNavCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route={Route.Docs}>
           <SidebarNavItem label={t('docsIntro')} route={Route.DocsIntro} subItem />
           <SidebarNavItem label={t('docsTutorials')} route={Route.DocsTutorials} subItem />
@@ -318,7 +307,7 @@ const SidebarNav = () => {
 }
 
 const SidebarUser = ({ organization, user }: { organization?: UserOrganization; user: User }) => {
-  const { auth } = db
+  const db = useDatabase()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
@@ -330,9 +319,9 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
 
   const logOutUser = useCallback(async () => {
     onLinkClick()
-    await auth.signOut()
+    await db.auth.signOut()
     redirect(Route.Login)
-  }, [auth, onLinkClick])
+  }, [db.auth, onLinkClick])
 
   return (
     <SidebarMenu>
@@ -341,12 +330,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                `
-                  group/sidebar-user rounded-lg bg-background/80 py-7 shadow-sm transition-all duration-150
-                  hover:bg-background/80
-                  active:bg-background/50 active:shadow-inner
-                  data-[state=open]:bg-background/20 data-[state=open]:text-sidebar-accent-foreground
-                `,
+                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-popover aria-expanded:border-transparent',
                 open ? 'overflow-hidden shadow-inner' : 'overflow-visible',
               )}
               size="lg"
@@ -372,7 +356,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                     />
                   )}
                 </div>
-                <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'invisible')}>
+                <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
                   <span className="flex items-center gap-1 font-semibold">
                     {user.firstName}
                     {user.isAdmin && (
@@ -469,7 +453,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
               <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
                 <span className="text-sm font-normal text-foreground">{t('Common.language')}</span>
                 <div data-orientation="horizontal" dir="ltr">
-                  <LanguageSelect className="h-8 px-2" />
+                  <LanguageSelect className="h-9 px-2 text-[13.8px]" />
                 </div>
               </div>
             </DropdownMenuGroup>

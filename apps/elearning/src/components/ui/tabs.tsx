@@ -36,20 +36,24 @@ export interface TabsTriggerProps
 export const TabsTrigger = ({
   children,
   className,
-  color,
   count = 0,
   showZeroCount = false,
   size,
+  variant,
   ...props
 }: TabsTriggerProps) => {
   const showCount = useMemo(() => count !== undefined && (showZeroCount || count > 0), [count, showZeroCount])
 
   return (
-    <TabsPrimitive.Trigger className={cn(tabsTrigger({ color, size }), className)} data-slot="tabs-trigger" {...props}>
+    <TabsPrimitive.Trigger
+      className={cn(tabsTrigger({ size, variant }), className)}
+      data-slot="tabs-trigger"
+      {...props}
+    >
       {showCount ? (
         <span className="flex items-center gap-1">
           {children}
-          <span className={cn(tabsTriggerBadge({ color, size }))}>{count}</span>
+          <span className={cn(tabsTriggerBadge({ size, variant }))}>{count}</span>
         </span>
       ) : (
         children
@@ -72,11 +76,11 @@ export const tabsTrigger = cva(
   `,
   {
     defaultVariants: {
-      color: 'default',
+      variant: 'default',
       size: 'md',
     },
     variants: {
-      color: {
+      variant: {
         default: `
           text-muted-foreground
           focus-visible:ring-ring/50 focus-visible:outline-ring
@@ -109,33 +113,25 @@ export const tabsTrigger = cva(
   },
 )
 
-export const tabsTriggerBadge = cva(
-  'flex items-center justify-center rounded-full text-stroke-0 group-data-[state=active]/tabs-trigger:font-semibold',
-  {
-    defaultVariants: {
-      color: 'default',
-      size: 'md',
+export const tabsTriggerBadge = cva('text-stroke-0', {
+  defaultVariants: {
+    variant: 'default',
+    size: 'md',
+  },
+  variants: {
+    variant: {
+      default: 'text-muted-foreground/50 group-data-[state=active]/tabs-trigger:text-muted-foreground',
+      brand: 'bg-brand-secondary text-brand-foreground',
+      'brand-secondary': 'bg-brand-secondary-accent text-brand-secondary-foreground',
+      'brand-tertiary': 'bg-brand-tertiary-accent text-brand-tertiary-foreground',
     },
-    variants: {
-      color: {
-        default: `
-          bg-muted-foreground/15 text-muted-foreground/75
-          group-data-[state=active]/tabs-trigger:bg-muted-foreground/80 group-data-[state=active]/tabs-trigger:text-accent
-          dark:group-data-[state=active]/tabs-trigger:bg-muted-foreground/35 dark:group-data-[state=active]/tabs-trigger:text-foreground
-          dark:group-data-[state=active]/tabs-trigger:text-shadow-lg
-        `,
-        brand: 'bg-brand text-brand-foreground',
-        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground',
-        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground',
-      },
-      size: {
-        sm: 'text-[9px]',
-        md: 'min-w-[15px] text-[10.5px]',
-        lg: 'text-sm',
-      },
+    size: {
+      sm: 'text-[10.5px]',
+      md: 'text-[11.5px]',
+      lg: 'text-xs',
     },
   },
-)
+})
 
 export interface TabsContentProps extends React.ComponentProps<typeof TabsPrimitive.Content> {}
 

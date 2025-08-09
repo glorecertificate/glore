@@ -6,7 +6,7 @@ export enum RuleSeverity {
   Error = 2,
 }
 
-export type ConfigFiles = Array<string | string[]> | undefined
+export type ConfigFiles = (string | string[])[] | undefined
 
 export type RestrictedImport =
   | string
@@ -31,8 +31,8 @@ export interface ScopedRestrictedImport {
 }
 
 export interface SortImportGroup {
-  type: Record<string, Array<string | RegExp>>
-  value: Record<string, Array<string | RegExp>>
+  type: Record<string, (string | RegExp)[]>
+  value: Record<string, (string | RegExp)[]>
 }
 
 export type RelativeImportsValue = 'always' | 'never' | 'siblings'
@@ -157,7 +157,7 @@ export interface SortImportsOptions {
    *   "bottom"
    * ]
    */
-  importGroups?: Array<string | string[]>
+  importGroups?: (string | string[])[]
   /**
    * List of internal imports to match.
    */

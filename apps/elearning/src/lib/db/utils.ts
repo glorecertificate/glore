@@ -10,9 +10,9 @@ export enum PostgRESTCode {
  * @see {@link https://postgrest.org/en/stable/api.html?highlight=options#errors-and-http-status-codes}
  */
 export class DatabaseError extends Error {
-  readonly code: PostgRESTCode
+  readonly code: PostgRESTCode | `${PostgRESTCode}`
 
-  constructor(code: PostgRESTCode, message?: string) {
+  constructor(code: PostgRESTCode | `${PostgRESTCode}`, message?: string) {
     super(message)
     this.name = 'DatabaseError'
 

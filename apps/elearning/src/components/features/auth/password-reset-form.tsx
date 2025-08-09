@@ -14,12 +14,13 @@ import { EmailSentGraphic } from '@/components/ui/graphics/email-sent'
 import { PasswordResetGraphic } from '@/components/ui/graphics/password-reset'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
+import { useDatabase } from '@/hooks/use-database'
 import { useTranslations } from '@/hooks/use-translations'
-import { db } from '@/lib/db/client'
 import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
 import { Route } from '@/lib/navigation'
 
 export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
+  const db = useDatabase()
   const t = useTranslations('Auth')
   const [isSubmitting, setSubmitting] = useState(false)
   const [showSuccess, setSuccess] = useState(false)
@@ -59,7 +60,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         if (userError) throw userError
         if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
 
-        const { error } = await db.auth.resetPasswordForEmail(user)
+        const { error } = await db.auth.resetPasswordForEmail(data.email)
         if (error) throw error
 
         setSubmitting(false)
@@ -80,7 +81,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         return toast.error(t('networkError'))
       }
     },
-    [form, t],
+    [db, form, t],
   )
 
   return showSuccess ? (
@@ -88,7 +89,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
       disabledTitle={t('insertEmail')}
       header={
         <div className="flex flex-col gap-2">
-          <EmailSentGraphic className="mb-4" width={220} />
+          <EmailSentGraphic className="mb-4 size-64" />
           <h1 className="text-2xl font-bold">{t('passwordResetSent')}</h1>
           <p className="mb-2 text-left text-balance text-muted-foreground">{t('passwordResetMessage')}</p>
           <Button asChild variant="outline">
@@ -106,11 +107,6 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         className="mt-2 gap-4"
         footer={
           <div className="flex w-full justify-end">
-            {/* <Link className="mt-1 text-[13px]" href={Route.Login}>
-              <Button className="font-normal" size="sm" variant="link">
-                {t('backToLogin')}
-              </Button>
-            </Link> */}
             <Button
               asChild
               className="text-[13px] text-muted-foreground"
@@ -118,7 +114,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
               size="text"
               variant="link"
             >
-              <Link href={Route.Login}>{t('forgotPassword')}</Link>
+              <Link href={Route.Login}>{t('backToLogin')}</Link>
             </Button>
           </div>
         }

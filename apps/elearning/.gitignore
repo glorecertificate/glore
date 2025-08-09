@@ -1,11 +1,9 @@
 /.next/
-/config/translations/*.d.json.ts
 /supabase/.branches/
-/supabase/.snaplet/
-!/supabase/.snaplet/config.json
 /supabase/.temp/
 /supabase/types.ts
 /*.d.ts
 .env*
 !.env.example
 *.tsbuildinfo
+

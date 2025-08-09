@@ -32,12 +32,12 @@ export type Plugins = {
       name: 'conventionalcommits'
       issuePrefixes?: string[]
       issueUrlFormat?: string
-      types?: Array<{
+      types?: {
         section: string
         type: string
         scope?: string
         hidden?: boolean
-      }>
+      }[]
     }
   }
   'release-it-pnpm'?: {

@@ -40,6 +40,7 @@ export enum Route {
 export enum ApiRoute {
   AiCommand = '/api/ai/command',
   AiCopilot = '/api/ai/copilot',
+  Upload = '/api/upload',
 }
 
 export enum AuthPage {

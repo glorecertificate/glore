@@ -28,5 +28,8 @@
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"
+  },
+  "dependencies": {
+    "irregular-plurals": "^4.0.0"
   }
 }

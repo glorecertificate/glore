@@ -1,4 +1,0 @@
-{
-  "adapter": "pg",
-  "projectDescription": "This project is about an online learning platform or educational management system which tracks and manages various educational components like courses, assessments, lessons, skills, and certificates. It involves user management with tables for public users and authenticated users, and provides functionalities for organizing users and their interactions with the platform through memberships, organizations, and regions. The project also includes mechanisms for tracking user's progress and contributions through assessments, courses, and evaluations."
-}

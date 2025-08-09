@@ -5,7 +5,7 @@ import { type Locale } from 'use-intl'
 import { type AnyRecord } from '@repo/utils'
 
 import { LOCALES } from '@/lib/i18n/config'
-import { getFlatTranslations, getLocale } from '@/lib/i18n/server'
+import { getLocale, getTranslations } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
 import { type PageProps, type Route } from '@/lib/navigation'
 import { Asset, Public } from '@/lib/storage/types'
@@ -88,16 +88,16 @@ const DEFAULT_METADATA: Metadata = {
  * Localizes and merges the provided values with the default metadata and
  * returns a function that generates metadata for a page.
  */
-export const generatePageMetadata =
+export const createMetadata =
   <R extends Route, K extends AnyRecord = AnyRecord, T extends boolean = true>(options: MetadataOptions<T> = {}) =>
   async (_: PageProps<R, K>, parent: ResolvingMetadata) =>
-    pageMetadata<T>({ ...options, parent: (await parent) as Metadata })
+    intlMetadata<T>({ ...options, parent: (await parent) as Metadata })
 
 /**
  * Localizes the provided values and returns a complete metadata object.
  * Localization is skipped when the `static` flag is set to true.
  */
-export const pageMetadata = async <T extends boolean = true>(options: MetadataOptions<T> = {}) => {
+export const intlMetadata = async <T extends boolean = true>(options: MetadataOptions<T> = {}) => {
   const {
     description: userDescription,
     image,
@@ -107,16 +107,16 @@ export const pageMetadata = async <T extends boolean = true>(options: MetadataOp
     translate = true as T,
   } = options
 
-  const t = await getFlatTranslations()
+  const t = await getTranslations()
   const locale = await getLocale()
   const alternateLocale = LOCALES[LOCALES.indexOf(locale) + 1] ?? LOCALES[0]
 
   const title = userTitle
-    ? `${translate ? t(userTitle as MessageKey) : userTitle} ${separator} ${metadata.title}`
+    ? `${translate ? t.flat(userTitle) : userTitle} ${separator} ${metadata.title}`
     : metadata.title
   const description = userDescription
     ? translate
-      ? t(userDescription as MessageKey)
+      ? t.flat(userDescription)
       : userDescription
     : metadata.description[locale]
 

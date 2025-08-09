@@ -1,6 +1,6 @@
-import { generatePageMetadata } from '@/lib/metadata'
+import { createMetadata } from '@/lib/metadata'
 
-export const generateMetadata = generatePageMetadata({
+export const generateMetadata = createMetadata({
   title: 'Navigation.help',
 })
 

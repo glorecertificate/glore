@@ -119,7 +119,7 @@
     "passwordLabel": "Password",
     "passwordRequired": "Insert your password to continue",
     "passwordResetMessage": "You will receive soon an email with a link to reset your password.",
-    "passwordResetSent": "We've sent you an email",
+    "passwordResetSent": "We've sent you an email!",
     "passwordResetSubtitle": "Enter your email or username to receive a password reset link.",
     "passwordResetTitle": "Forgot your password?",
     "rememberMe": "Remember me",
@@ -302,7 +302,9 @@
   },
   "User": {
     "speaks": "Speaks {languages}",
-    "contact": "Contact {user}"
+    "contact": "Contact {user}",
+    "admin": "Admin user",
+    "editor": "Editor user"
   },
   "Editor": {
     "undo": "Undo",

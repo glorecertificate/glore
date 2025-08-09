@@ -8,8 +8,6 @@ import { type Locale } from 'use-intl'
 
 import { log, pick } from '@repo/utils'
 
-import { api } from '@/api/client'
-import { type Course } from '@/api/modules/courses/types'
 import { CourseContent } from '@/components/features/courses/course-content'
 import { CourseFooter } from '@/components/features/courses/course-footer'
 import { CourseHeader } from '@/components/features/courses/course-header'
@@ -17,17 +15,20 @@ import { CourseHeaderMobile } from '@/components/features/courses/course-header-
 import { CourseSidebar } from '@/components/features/courses/course-sidebar'
 import { Badge } from '@/components/ui/badge'
 import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { useApi } from '@/hooks/use-api'
 import { useHeader } from '@/hooks/use-header'
 import { useLocale } from '@/hooks/use-locale'
 import { useSearchParams } from '@/hooks/use-search-params'
 import { useSession } from '@/hooks/use-session'
 import { useSyncState } from '@/hooks/use-sync-state'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Course } from '@/lib/api/modules/courses/types'
 import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const CourseView = (props: { course?: Course }) => {
+  const api = useApi()
   const { searchParams, setSearchParam } = useSearchParams()
 
   const { locale, localize } = useLocale()
@@ -174,7 +175,7 @@ export const CourseView = (props: { course?: Course }) => {
       setSyncState('error')
       log.error(e)
     }
-  }, [currentLesson, step, isLastLesson, updateCourse, setSyncState, course, t])
+  }, [currentLesson, step, isLastLesson, updateCourse, course, api.courses, setSyncState, t])
 
   return (
     <>

@@ -207,7 +207,7 @@ export const BlockSuggestionCard = ({
 }
 
 export const useResolveSuggestion = (
-  suggestionNodes: Array<NodeEntry<TElement | TSuggestionText>>,
+  suggestionNodes: NodeEntry<TElement | TSuggestionText>[],
   blockPath: Path,
 ): ResolvedSuggestion[] => {
   const discussions = usePluginOption(discussionPlugin, 'discussions')

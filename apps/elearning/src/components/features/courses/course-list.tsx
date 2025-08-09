@@ -7,8 +7,6 @@ import { type Locale } from 'use-intl'
 
 import { hasHistory } from '@repo/utils'
 
-import { api } from '@/api/client'
-import { type Course } from '@/api/modules/courses/types'
 import { CourseCard } from '@/components/features/courses/course-card'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,9 +21,11 @@ import { NoResultsGraphic } from '@/components/ui/graphics/no-results'
 import { Link } from '@/components/ui/link'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Course } from '@/lib/api/modules/courses/types'
 import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage/client'
@@ -37,25 +37,25 @@ const LEARNER_TABS = ['all', 'not_started', 'in_progress', 'completed'] as const
 const LEARNER_SORTS = ['name', 'progress', 'type'] as const
 
 export type CourseTab = (typeof EDITOR_TABS)[number] | (typeof LEARNER_TABS)[number]
-type CourseSort = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[number]
-type SortOptions = Record<CourseSort, string>
-type SortDirection = 'asc' | 'desc'
+export type CourseSort = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[number]
+export type CourseSortOptions = Record<CourseSort, string>
+export type CourseSortDirection = 'asc' | 'desc'
 
-const CourseTabsTrigger = ({ count, label, value }: { count: number; label: string; value: CourseTab }) => (
-  <TabsTrigger className="flex items-center gap-1" count={count} value={value}>
+const CourseTabsTrigger = ({ label, ...props }: { count: number; label: string; value: CourseTab }) => (
+  <TabsTrigger className="flex items-center gap-1" {...props}>
     {label}
   </TabsTrigger>
 )
 
-const SortDropdown = ({
+const CourseSortDropdown = ({
   direction,
   setDirection,
   setValue,
   tab,
   value,
 }: {
-  direction: SortDirection | null
-  setDirection: React.Dispatch<React.SetStateAction<SortDirection | null>>
+  direction: CourseSortDirection | null
+  setDirection: React.Dispatch<React.SetStateAction<CourseSortDirection | null>>
   tab: CourseTab
   value: CourseSort | null
   setValue: React.Dispatch<React.SetStateAction<CourseSort | null>>
@@ -66,7 +66,7 @@ const SortDropdown = ({
 
   const options = useMemo(() => {
     const sorts = user.canEdit ? EDITOR_SORTS : LEARNER_SORTS
-    return sorts.reduce((options, sort) => ({ ...options, [sort]: t(`Courses.${sort}`) }), {} as SortOptions)
+    return sorts.reduce((options, sort) => ({ ...options, [sort]: t(`Courses.${sort}`) }), {} as CourseSortOptions)
   }, [t, user.canEdit])
 
   const icon = useMemo(() => {
@@ -155,13 +155,14 @@ export const CourseList = ({
   defaultLocales?: Locale[]
   defaultTab?: CourseTab
 }) => {
+  const api = useApi()
   const { localize } = useLocale()
   const { courses: allCourses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseTab>(defaultTab)
   const [activeSort, setActiveSort] = useState<CourseSort | null>(null)
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
+  const [sortDirection, CoursesetSortDirection] = useState<CourseSortDirection | null>(null)
   const [locales, setLocaleState] = useState<Locale[]>(defaultLocales)
 
   const getCourseLocales = useCallback(
@@ -233,7 +234,7 @@ export const CourseList = ({
           case 'type':
             return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
           default:
-            return a.sortOrder - b.sortOrder
+            return a.createdAt < b.createdAt ? 1 : 0
         }
       }),
     [activeSort, activeTab, courses, localize, sortDirection],
@@ -282,7 +283,7 @@ export const CourseList = ({
     if (!hasHistory()) return
     const courses = await api.courses.list()
     setCourses(courses)
-  }, [setCourses])
+  }, [api.courses, setCourses])
 
   const handleTabChange = useCallback((value: string) => {
     const tab = value as CourseTab
@@ -330,7 +331,7 @@ export const CourseList = ({
             <div className="flex gap-2">
               <MultiSelect
                 contentProps={{
-                  className: 'w-36',
+                  className: 'w-32',
                 }}
                 minItems={{
                   count: 1,
@@ -340,11 +341,12 @@ export const CourseList = ({
                 options={LOCALE_ITEMS}
                 placeholder={t('selectLanguages')}
                 search={false}
+                toastType="warning"
                 value={locales}
               />
-              <SortDropdown
+              <CourseSortDropdown
                 direction={sortDirection}
-                setDirection={setSortDirection}
+                setDirection={CoursesetSortDirection}
                 setValue={setActiveSort}
                 tab={activeTab}
                 value={activeSort}

@@ -10,8 +10,6 @@ import { z } from 'zod'
 
 import { log } from '@repo/utils'
 
-import { api } from '@/api/client'
-import { type User } from '@/api/modules/users/types'
 import { AuthForm } from '@/components/features/auth/auth-form'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,7 +26,9 @@ import { Image } from '@/components/ui/image'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
+import { useApi } from '@/hooks/use-api'
 import { useTranslations } from '@/hooks/use-translations'
+import { type User } from '@/lib/api/modules/users/types'
 import { PostgRESTCode, type DatabaseError } from '@/lib/db/utils'
 import { externalRoute, Route } from '@/lib/navigation'
 import { asset } from '@/lib/storage/utils'
@@ -82,6 +82,7 @@ const LoginFormFooter = () => {
 }
 
 export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
+  const api = useApi()
   const t = useTranslations('Auth')
   const [submitting, setSubmitting] = useState(false)
 
@@ -144,7 +145,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
 
       redirect(Route.Home)
     },
-    [form, t, setSubmitting],
+    [api, form, t, setSubmitting],
   )
 
   return (

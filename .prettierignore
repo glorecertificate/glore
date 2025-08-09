@@ -1,9 +1,7 @@
-# Scoped packages
 /apps/
 /packages/
 
 # Build artifacts
-/CHANGELOG.md
 /pnpm-lock.yaml
 
 # Format-specific

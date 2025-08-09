@@ -45,10 +45,10 @@ interface AIChatItem {
     menuState: EditorChatState
   }>
   filterItems?: boolean
-  items?: Array<{
+  items?: {
     label: string
     value: string
-  }>
+  }[]
   shortcut?: string
   onSelect?: ({ aiEditor, editor }: { aiEditor: SlateEditor; editor: PlateEditor }) => void
 }
@@ -56,10 +56,10 @@ interface AIChatItem {
 interface MenuStateItems
   extends Record<
     EditorChatState,
-    Array<{
-      items: Array<ReturnType<typeof useAIChatItems>[keyof ReturnType<typeof useAIChatItems>]>
+    {
+      items: ReturnType<typeof useAIChatItems>[keyof ReturnType<typeof useAIChatItems>][]
       heading?: string
-    }>
+    }[]
   > {}
 
 const useAIChatItems = () => {

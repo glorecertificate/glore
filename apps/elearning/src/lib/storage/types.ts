@@ -1,9 +1,7 @@
 import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
-import { type Position } from '@repo/utils'
-
-import { type User } from '@/api/modules/users/types'
 import { type CourseTab } from '@/components/features/courses/course-list'
+import { type User } from '@/lib/api/modules/users/types'
 import { type Locale } from '@/lib/i18n/types'
 import { type Theme } from '@/lib/theme'
 
@@ -16,7 +14,6 @@ export interface Cookies {
   'course-locales': Locale[]
   'course-tab': CourseTab
   'sidebar-open': boolean
-  'supabase-widget-position': Position
   user: User
 }
 

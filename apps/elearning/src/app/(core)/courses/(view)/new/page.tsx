@@ -1,15 +1,15 @@
 import { notFound } from 'next/navigation'
 
-import { getApi } from '@/api/client'
 import { CourseView } from '@/components/features/courses/course-view'
-import { generatePageMetadata } from '@/lib/metadata'
+import { createApi } from '@/lib/api/server'
+import { createMetadata } from '@/lib/metadata'
 
-export const generateMetadata = generatePageMetadata({
+export const generateMetadata = createMetadata({
   title: 'Courses.newCourse',
 })
 
 export default async () => {
-  const api = await getApi()
+  const api = await createApi()
   const user = await api.users.getCurrent()
 
   if (!user || (!user.isAdmin && !user.isEditor)) return notFound()

@@ -4,14 +4,14 @@ import { useCallback, useMemo } from 'react'
 
 import { log } from '@repo/utils'
 
-import { api } from '@/api/client'
-import { type Course, type Lesson, type Question, type QuestionOption } from '@/api/modules/courses/types'
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
 import { RichTextEditor } from '@/components/ui/rich-text-editor'
+import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSyncState } from '@/hooks/use-sync-state'
+import { type Course, type Lesson, type Question, type QuestionOption } from '@/lib/api/modules/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 
@@ -28,6 +28,7 @@ export const CourseContent = ({
   setCourse: (updater: (course: Course) => Course) => void
   step: number
 }) => {
+  const api = useApi()
   const { localize } = useLocale()
   const { setSyncState } = useSyncState()
 
@@ -61,7 +62,7 @@ export const CourseContent = ({
         log.error(e)
       }
     },
-    [step, setCourse, setSyncState],
+    [api.courses, step, setCourse, setSyncState],
   )
 
   const onEvaluation = useCallback(

@@ -4,13 +4,13 @@ import { useCallback, useMemo } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'
 
-import { type Course } from '@/api/modules/courses/types'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
 import { useScroll } from '@/hooks/use-scroll'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Course } from '@/lib/api/modules/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 

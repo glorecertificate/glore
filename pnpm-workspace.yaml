@@ -24,6 +24,5 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 onlyBuiltDependencies:
-  - '@snaplet/seed'
   - '@vercel/speed-insights'
   - supabase

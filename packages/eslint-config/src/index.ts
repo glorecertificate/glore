@@ -164,7 +164,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
 
   const [relativeImportsValue, relativeImportOptions] =
     typeof allowRelativeImports === 'string' ? [allowRelativeImports] : allowRelativeImports
-  const scopedRelativeImports = [] as Array<{ files: string[]; value: RelativeImportsValue }>
+  const scopedRelativeImports = [] as { files: string[]; value: RelativeImportsValue }[]
   if (relativeImportOptions) {
     for (const [value, files] of Object.entries(relativeImportOptions)) {
       scopedRelativeImports.push({ files, value: value as RelativeImportsValue })
@@ -488,10 +488,10 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                 ],
                 '@typescript-eslint/array-type': [
                   RuleSeverity.Error,
-                  {
-                    default: 'array-simple',
-                    readonly: 'array-simple',
-                  },
+                  // {
+                  //   default: 'array-simple',
+                  //   readonly: 'array-simple',
+                  // },
                 ],
                 '@typescript-eslint/consistent-type-imports': [
                   RuleSeverity.Error,

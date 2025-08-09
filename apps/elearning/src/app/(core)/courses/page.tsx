@@ -1,8 +1,8 @@
 import { CourseList } from '@/components/features/courses/course-list'
-import { generatePageMetadata } from '@/lib/metadata'
+import { createMetadata } from '@/lib/metadata'
 import { getCookie } from '@/lib/storage/server'
 
-export const generateMetadata = generatePageMetadata({
+export const generateMetadata = createMetadata({
   title: 'Navigation.courses',
 })
 

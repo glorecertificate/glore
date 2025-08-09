@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 
-import { getApi } from '@/api/client'
 import { AppHeader } from '@/components/layout/app-header'
+import { AppMain } from '@/components/layout/app-main'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
 import { HeaderProvider } from '@/components/providers/header-provider'
@@ -9,16 +9,17 @@ import { SessionProvider } from '@/components/providers/session-provider'
 import { SyncStateProvider } from '@/components/providers/sync-state-provider'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { createApi } from '@/lib/api/server'
 import { Route } from '@/lib/navigation'
-import { getCookie, hasCookie } from '@/lib/storage/server'
+import { deleteCookie, getCookie, hasCookie } from '@/lib/storage/server'
 
 export default async ({ children }: React.PropsWithChildren) => {
-  const api = await getApi()
+  const api = await createApi()
   const user = await api.users.getCurrent()
 
   if (!user) {
     if (await hasCookie('user')) {
-      throw new Error('User not found, but cookie exists. This might indicate a session issue.')
+      await deleteCookie('user')
     }
     redirect(Route.Login)
   }
@@ -41,8 +42,8 @@ export default async ({ children }: React.PropsWithChildren) => {
             <ProgressBar />
             <AppSidebar />
             <SidebarInset>
-              <AppHeader className="sticky top-0 z-5" />
-              <main className="flex h-full min-h-[calc(100vh-72px)] flex-col px-8">{children}</main>
+              <AppHeader />
+              <AppMain>{children}</AppMain>
             </SidebarInset>
           </HeaderProvider>
         </SidebarProvider>

@@ -185,7 +185,7 @@ export const CodeSyntaxLeaf = (props: PlateLeafProps<TCodeSyntaxLeaf>) => {
   return <PlateLeaf className={tokenClassName} {...props} />
 }
 
-const languages: Array<{ label: string; value: string }> = [
+const languages: { label: string; value: string }[] = [
   { label: 'Auto', value: 'auto' },
   { label: 'Plain Text', value: 'plaintext' },
   { label: 'ABAP', value: 'abap' },

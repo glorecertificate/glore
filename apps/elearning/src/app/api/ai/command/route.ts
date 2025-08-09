@@ -117,7 +117,7 @@ export const POST = async (req: NextRequest) => {
     system,
   } = (await req.json()) as {
     apiKey?: string
-    messages: Array<Omit<Message, 'id'>>
+    messages: Omit<Message, 'id'>[]
     system?: string
   }
 

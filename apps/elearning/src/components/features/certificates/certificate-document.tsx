@@ -14,7 +14,6 @@ import {
   ViewIcon,
 } from 'lucide-react'
 
-import { type Certificate } from '@/api/modules/certificates/types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -23,6 +22,7 @@ import { Separator } from '@/components/ui/separator'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
+import { type Certificate } from '@/lib/api/modules/certificates/types'
 import { cn } from '@/lib/utils'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {

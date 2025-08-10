@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { log } from '@repo/utils'
+import { log } from '@repo/utils/logger'
 
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
@@ -11,7 +11,7 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSyncState } from '@/hooks/use-sync-state'
-import { type Course, type Lesson, type Question, type QuestionOption } from '@/lib/api/modules/courses/types'
+import { type Course, type Lesson, type Question, type QuestionOption } from '@/lib/api/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 

@@ -4,7 +4,11 @@ import { useCallback, useEffect } from 'react'
 
 import confetti from 'canvas-confetti'
 
+import { usePathname } from '@/hooks/use-pathname'
+
 export default () => {
+  const { setPathname } = usePathname()
+
   const fireConfetti = useCallback(
     async () =>
       await confetti({
@@ -18,7 +22,8 @@ export default () => {
 
   useEffect(() => {
     void fireConfetti()
-  })
+    setPathname('/')
+  }, [fireConfetti, setPathname])
 
   return <>{'Welcome!'}</>
 }

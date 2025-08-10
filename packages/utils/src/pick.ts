@@ -17,5 +17,3 @@ export const pick = <T extends AnyRecord, K extends keyof T>(records: T[], ...ke
       {} as Pick<T, K>,
     ),
   )
-
-export default pick

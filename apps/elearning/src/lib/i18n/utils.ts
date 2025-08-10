@@ -1,6 +1,7 @@
 import { type Locale } from 'use-intl'
 
-import { isPlainObject, type AnyRecord } from '@repo/utils'
+import { isPlainObject } from '@repo/utils/is-plain-object'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { LOCALES } from '@/lib/i18n/config'
 import { type IntlRecord, type Localized } from '@/lib/i18n/types'

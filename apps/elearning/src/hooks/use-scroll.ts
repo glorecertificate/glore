@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isServer } from '@repo/utils'
+import { isServer } from '@repo/utils/is-server'
 
 /**
  * Hook to track the current scroll position of the window.

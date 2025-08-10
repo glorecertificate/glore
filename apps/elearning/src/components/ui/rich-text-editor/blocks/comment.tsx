@@ -17,7 +17,7 @@ import {
 } from 'platejs/react'
 import { useFormatter } from 'use-intl'
 
-import { type Any } from '@repo/utils'
+import { type Any } from '@repo/utils/types'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'

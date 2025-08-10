@@ -3,7 +3,7 @@
 import { useChat as useBaseChat } from '@ai-sdk/react'
 import { usePluginOption } from 'platejs/react'
 
-import { type AnyRecord } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { aiChatPlugin } from '#rte/kits/ai'
 

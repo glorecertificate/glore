@@ -1,35 +1,35 @@
-import { serialize } from '@repo/utils'
+import { serialize } from '@repo/utils/serialize'
 
-import * as users from '@/lib/api/modules/users/requests'
-import type { UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from '@/lib/api/modules/users/types'
 import { type DatabaseClient } from '@/lib/api/types'
-import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
+import { getCurrentUser } from '@/lib/api/users'
+import type { UserAnswer, UserAssessment, UserCourse, UserEvaluation, UserLesson } from '@/lib/api/users/types'
+import { DatabaseError } from '@/lib/db/utils'
 import { getLocale } from '@/lib/i18n/server'
 
 import { parseCourse } from './parser'
 import { courseQuery } from './queries'
 import type { Course } from './types'
 
-export const list = async (db: DatabaseClient): Promise<Course[]> => {
+export const listCourses = async (db: DatabaseClient): Promise<Course[]> => {
   const { data, error } = await db.from('courses').select(courseQuery)
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return data.map(course => parseCourse(course))
 }
 
-export const find = async (db: DatabaseClient, slug: string): Promise<Course> => {
+export const findCourse = async (db: DatabaseClient, slug: string): Promise<Course> => {
   const { data, error } = await db.from('courses').select(courseQuery).eq('slug', slug).single()
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return parseCourse(data)
 }
 
 export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<UserCourse> => {
-  const user = users.current()
+  const user = await getCurrentUser()
   const locale = await getLocale()
 
   const { data, error } = await db
@@ -38,13 +38,13 @@ export const enrollUser = async (db: DatabaseClient, courseId: number): Promise<
     .select()
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return serialize(data[0])
 }
 
 export const completeLesson = async (db: DatabaseClient, id: number): Promise<UserLesson> => {
-  const user = users.current()
+  const user = await getCurrentUser()
 
   const { data, error } = await db
     .from('user_lessons')
@@ -52,13 +52,13 @@ export const completeLesson = async (db: DatabaseClient, id: number): Promise<Us
     .select('id')
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return serialize(data[0])
 }
 
 export const submitAnswers = async (db: DatabaseClient, answers: { id: number }[]): Promise<UserAnswer[]> => {
-  const user = users.current()
+  const user = await getCurrentUser()
 
   const { data, error } = await db
     .from('user_answers')
@@ -66,7 +66,7 @@ export const submitAnswers = async (db: DatabaseClient, answers: { id: number }[
     .select('id')
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return serialize(data)
 }
@@ -75,7 +75,7 @@ export const submitEvaluations = async (
   db: DatabaseClient,
   evaluations: { id: number; value: number }[],
 ): Promise<UserEvaluation[]> => {
-  const user = users.current()
+  const user = await getCurrentUser()
 
   const { data, error } = await db
     .from('user_evaluations')
@@ -83,13 +83,13 @@ export const submitEvaluations = async (
     .select('id, value')
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return serialize(data)
 }
 
 export const submitAssessment = async (db: DatabaseClient, id: number, value: number): Promise<UserAssessment> => {
-  const user = users.current()
+  const user = await getCurrentUser()
 
   const { data, error } = await db
     .from('user_assessments')
@@ -102,7 +102,19 @@ export const submitAssessment = async (db: DatabaseClient, id: number, value: nu
     .single()
 
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+  if (!data) throw new DatabaseError('NO_RESULTS')
 
   return serialize(data)
+}
+
+export * from './types'
+
+export default {
+  list: listCourses,
+  find: findCourse,
+  enrollUser,
+  completeLesson,
+  submitAnswers,
+  submitEvaluations,
+  submitAssessment,
 }

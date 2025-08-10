@@ -1,7 +1,7 @@
 'use client'
 
 import { useDatabase } from '@/hooks/use-database'
-import { API_MODULES } from '@/lib/api/config'
+import { api } from '@/lib/api'
 import { createClient } from '@/lib/api/utils'
 
 /**
@@ -9,5 +9,5 @@ import { createClient } from '@/lib/api/utils'
  */
 export const useApi = () => {
   const db = useDatabase()
-  return createClient(API_MODULES, db)
+  return createClient(api, db)
 }

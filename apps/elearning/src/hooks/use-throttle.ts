@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { type Any } from '@repo/utils'
+import { type Any } from '@repo/utils/types'
 
 /**
  * Hook to create a throttled version of a callback function.

@@ -1,4 +1,4 @@
-import { type Enum } from '@repo/utils'
+import { type Enum } from '@repo/utils/types'
 
 import { Env } from '@/lib/env'
 import app from 'config/app.json'

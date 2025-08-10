@@ -1,6 +1,8 @@
 import { type User } from '@supabase/supabase-js'
 
-import { handleize, pick, pickRandom } from '@repo/utils'
+import { handleize } from '@repo/utils/handleize'
+import { pick } from '@repo/utils/pick'
+import { pickRandom } from '@repo/utils/random'
 
 import { client, STORAGE_URL } from 'supabase/seeds/config'
 import { skill } from 'supabase/seeds/data'

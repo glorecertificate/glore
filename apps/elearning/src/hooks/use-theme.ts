@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { type Enum } from '@repo/utils'
+import { type Enum } from '@repo/utils/types'
 
 import { type Theme } from '@/lib/theme'
 

@@ -6,7 +6,7 @@ import { startTransition, useCallback, useMemo } from 'react'
 
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { type HTTPUrl, type MailToUrl, type TelUrl } from '@repo/utils'
+import { type HTTPUrl, type MailToUrl, type TelUrl } from '@repo/utils/types'
 
 import { useProgressBar } from '@/components/ui/progress-bar'
 import { usePathname } from '@/hooks/use-pathname'

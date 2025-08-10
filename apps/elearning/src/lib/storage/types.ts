@@ -1,7 +1,7 @@
 import { type ResponseCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 import { type CourseTab } from '@/components/features/courses/course-list'
-import { type User } from '@/lib/api/modules/users/types'
+import { type User } from '@/lib/api/users/types'
 import { type Locale } from '@/lib/i18n/types'
 import { type Theme } from '@/lib/theme'
 

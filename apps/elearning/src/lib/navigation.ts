@@ -1,6 +1,5 @@
-import { type AnyRecord, type Enum, type HTTPUrl } from '@repo/utils'
+import { type AnyRecord, type Enum, type HTTPUrl } from '@repo/utils/types'
 
-import { Env } from '@/lib/env'
 import metadata from 'config/metadata.json'
 
 export interface PageProps<R extends Enum<Route>, K extends AnyRecord = AnyRecord> {
@@ -51,7 +50,6 @@ export enum AuthPage {
 export const ExternalRoute = {
   App: metadata.url,
   GoogleMaps: 'https://google.com/maps',
-  SupabaseStudio: Env.SUPABASE_STUDIO_URL,
   Website: metadata.website,
 }
 

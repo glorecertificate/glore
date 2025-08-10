@@ -8,7 +8,7 @@ import { type RelationType } from 'react-archer/lib/types'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/modules/courses/types'
+import { type Course } from '@/lib/api/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 

@@ -1,6 +1,8 @@
 import { type PostgrestSingleResponse, type UserResponse } from '@supabase/supabase-js'
 
-import { log, pickRandom, pluralize, randomRange } from '@repo/utils'
+import { log } from '@repo/utils/logger'
+import { pluralize } from '@repo/utils/pluralize'
+import { pickRandom, randomRange } from '@repo/utils/random'
 
 import { pg } from 'supabase/seeds/config'
 import { locales, user } from 'supabase/seeds/data'

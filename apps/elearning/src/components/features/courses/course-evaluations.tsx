@@ -7,7 +7,7 @@ import Markdown from 'react-markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Evaluation } from '@/lib/api/modules/courses/types'
+import { type Evaluation } from '@/lib/api/courses/types'
 
 export const CourseEvaluations = ({
   completed,

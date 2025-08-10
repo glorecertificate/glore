@@ -3,8 +3,8 @@
 import { useContext, useState } from 'react'
 
 import { SessionContext } from '@/components/providers/session-provider'
-import { type Course } from '@/lib/api/modules/courses/types'
-import { type CurrentUser, type UserOrganization } from '@/lib/api/modules/users/types'
+import { type Course } from '@/lib/api/courses/types'
+import { type CurrentUser, type UserOrganization } from '@/lib/api/users/types'
 
 /**
  * Hook to access the session context.

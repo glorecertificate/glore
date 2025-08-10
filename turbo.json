@@ -45,22 +45,20 @@
       "cache": false,
       "persistent": true
     },
-    "test": {
-      "outputs": ["**/coverage/**"]
-    },
     "typegen": {
       "outputs": ["**/*.d.ts"]
     },
     "type-check": {
-      "outputs": ["**/tsconfig.tsbuildinfo"]
+      "dependsOn": ["^type-check"]
     },
-    "db": {
-      "dependsOn": ["^db"],
-      "outputs": ["supabase/.branches/**", "supabase/.temp/**", "supabase/types.ts"],
-      "env": ["SUPABASE_DB_URL", "SUPABASE_SERVICE_ROLE_KEY"]
+    "lint": {
+      "dependsOn": ["^lint"]
     },
-    "lint": {},
-    "format": {},
-    "check": {}
+    "format": {
+      "dependsOn": ["^format"]
+    },
+    "check": {
+      "dependsOn": ["^check"]
+    }
   }
 }

@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress'
 import { useLocale } from '@/hooks/use-locale'
 import { useScroll } from '@/hooks/use-scroll'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/modules/courses/types'
+import { type Course } from '@/lib/api/courses/types'
 import { type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 

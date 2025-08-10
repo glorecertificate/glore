@@ -1,8 +1,8 @@
-import * as users from '@/lib/api/modules/users/requests'
-import { type User } from '@/lib/api/modules/users/types'
 import { type DatabaseClient } from '@/lib/api/types'
-import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
-import { cookies } from '@/lib/storage/client'
+import { findUser } from '@/lib/api/users'
+import { type User } from '@/lib/api/users/types'
+import { DatabaseError } from '@/lib/db/utils'
+import { cookies } from '@/lib/storage'
 
 export const login = async (
   db: DatabaseClient,
@@ -15,9 +15,10 @@ export const login = async (
 ) => {
   const { data, error } = await db.auth.signInWithPassword({ email, password })
   if (error) throw error
-  if (!data) throw new DatabaseError(PostgRESTCode.INVALID_CREDENTIALS)
+  if (!data?.user) throw new DatabaseError('INVALID_CREDENTIALS')
 
-  const user = await users.find(db, data.user.id)
+  const user = await findUser(db, data.user.id)
+  if (!user) throw new DatabaseError('NO_RESULTS', 'User not found')
 
   cookies.setEncoded('user', user)
 
@@ -31,4 +32,11 @@ export const logout = async (db: DatabaseClient) => {
   cookies.delete('user')
 
   return true
+}
+
+export * from './types'
+
+export default {
+  login,
+  logout,
 }

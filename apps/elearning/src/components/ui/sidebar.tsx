@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
 import { useTranslations } from '@/hooks/use-translations'
-import { cookies } from '@/lib/storage/client'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7

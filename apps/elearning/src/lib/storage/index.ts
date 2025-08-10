@@ -1,4 +1,5 @@
-import { decode, encode, isServer } from '@repo/utils'
+import { decode, encode } from '@repo/utils/encode'
+import { isServer } from '@repo/utils/is-server'
 
 import { RESET_COOKIES } from './config'
 import { type Cookie, type CookieKeyOptions, type CookieOptions, type CookieValue } from './types'
@@ -9,11 +10,10 @@ import { parseCookieKey } from './utils'
  */
 export const cookies = {
   /**
-   * Gets a cookie by its name.
+   * Gets a cookie value by its name.
    */
   get<T extends Cookie>(cookie: T, options?: CookieKeyOptions) {
     if (isServer()) return undefined
-
     const name = `${parseCookieKey(cookie, options)}=`
     const decodedCookie = decodeURIComponent(document.cookie)
     const cookieArray = decodedCookie.split(';')
@@ -30,7 +30,7 @@ export const cookies = {
     return undefined
   },
   /**
-   * Gets and decodes a cookie by its name.
+   * Gets and decodes a cookie value by its name.
    */
   getEncoded<T extends Cookie>(cookie: T, options?: CookieKeyOptions) {
     if (isServer()) return undefined

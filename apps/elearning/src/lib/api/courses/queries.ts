@@ -1,4 +1,4 @@
-import { userQuery } from '@/lib/api/modules/users/queries'
+import { userQuery } from '@/lib/api/users/queries'
 import { timestamps } from '@/lib/api/utils'
 
 export const skillQuery = `

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
 import { type Locale } from 'use-intl'
 
-import { hasHistory } from '@repo/utils'
+import { hasHistory } from '@repo/utils/has-history'
 
 import { CourseCard } from '@/components/features/courses/course-card'
 import { Button } from '@/components/ui/button'
@@ -25,10 +25,10 @@ import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/modules/courses/types'
+import { type Course } from '@/lib/api/courses/types'
 import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/client'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 const EDITOR_TABS = ['all', 'active', 'partial', 'draft', 'archived'] as const

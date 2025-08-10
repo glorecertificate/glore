@@ -11,7 +11,7 @@ export default async ({ children }: React.PropsWithChildren) => {
   const api = await createApi()
   const user = await api.users.getCurrent()
 
-  if (user.isEditor) return notFound()
+  if (user.canEdit) return notFound()
 
   return children
 }

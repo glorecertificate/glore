@@ -22,7 +22,7 @@ import { Separator } from '@/components/ui/separator'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Certificate } from '@/lib/api/modules/certificates/types'
+import { type Certificate } from '@/lib/api/certificates/types'
 import { cn } from '@/lib/utils'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {

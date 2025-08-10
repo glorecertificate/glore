@@ -11,5 +11,3 @@ export const titleize = (input: string) => {
   })
   return capitalizedWords.join(' ')
 }
-
-export default titleize

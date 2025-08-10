@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { log } from '@repo/utils'
+import { log } from '@repo/utils/logger'
 
 import { ErrorView, type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'

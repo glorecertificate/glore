@@ -24,7 +24,7 @@ import {
 import { NodeApi, type NodeEntry, type SlateEditor } from 'platejs'
 import { useEditorPlugin, useEditorRef, useHotkeys, usePluginOption, type PlateEditor } from 'platejs/react'
 
-import { type Any } from '@repo/utils'
+import { type Any } from '@repo/utils/types'
 
 import { Button } from '@/components/ui/button'
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'

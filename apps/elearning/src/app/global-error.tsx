@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo } from 'react'
 
 import { type Locale } from 'use-intl'
 
-import { hasHistory, log } from '@repo/utils'
+import { hasHistory } from '@repo/utils/has-history'
+import { log } from '@repo/utils/logger'
 
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
@@ -13,7 +14,7 @@ import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
 import { LOCALES } from '@/lib/i18n/config'
 import { localize } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/client'
+import { cookies } from '@/lib/storage'
 import config from 'config/app.json'
 import errors from 'config/translations/static/errors.json'
 

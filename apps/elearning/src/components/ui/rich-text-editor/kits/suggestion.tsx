@@ -4,7 +4,7 @@ import { BaseSuggestionPlugin, type BaseSuggestionConfig } from '@platejs/sugges
 import { isSlateEditor, isSlateElement, isSlateString, type ExtendConfig, type Path } from 'platejs'
 import { toTPlatePlugin, type RenderNodeWrapper } from 'platejs/react'
 
-import { type Any } from '@repo/utils'
+import { type Any } from '@repo/utils/types'
 
 import { BlockSuggestion } from '#rte/blocks/block-suggestion'
 import { SuggestionLeaf, SuggestionLineBreak } from '#rte/blocks/suggestion-node'

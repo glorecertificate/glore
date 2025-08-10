@@ -17,7 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } fro
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/modules/courses/types'
+import { type Course } from '@/lib/api/courses/types'
 import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { type Locale, type LocaleItem } from '@/lib/i18n/types'
 import { dynamicRoute, Route } from '@/lib/navigation'

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-
-import noop from '@/noop'
+import { noop } from '@/noop'
 
 /**
  * Logger type definition for the log utility.
@@ -36,5 +35,3 @@ export const createLogger = (silent = false) =>
         warn: noop,
       })
     : log
-
-export default log

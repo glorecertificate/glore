@@ -1,4 +1,4 @@
-import { parseUser } from '@/lib/api/modules/users/parser'
+import { parseUser } from '@/lib/api/users/parser'
 import { createParser } from '@/lib/api/utils'
 
 import { type courseQuery, type lessonQuery, type skillQuery } from './queries'

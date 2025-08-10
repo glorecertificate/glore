@@ -1,4 +1,4 @@
-import { NextResponse, type MiddlewareConfig, type NextMiddleware, type NextRequest } from 'next/server'
+import { NextResponse, type MiddlewareConfig, type NextMiddleware } from 'next/server'
 
 import { createDatabase } from '@/lib/db/server'
 import { AuthPage, Route } from '@/lib/navigation'
@@ -9,21 +9,23 @@ export const config: MiddlewareConfig = {
   ],
 }
 
-export const middleware: NextMiddleware = async (request: NextRequest) => {
+export const middleware: NextMiddleware = async request => {
+  const next = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  })
+
   try {
-    let response = NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    })
+    let response = next
 
     const db = await createDatabase(() => {
       response = NextResponse.next({ request })
     })
 
-    const isAuth = Object.values(AuthPage).includes(request.nextUrl.pathname as AuthPage)
-
     const { error } = await db.auth.getUser()
+
+    const isAuth = Object.values(AuthPage).includes(request.nextUrl.pathname as AuthPage)
 
     if (error) {
       return isAuth ? response : NextResponse.redirect(new URL(Route.Login, request.url))
@@ -31,10 +33,6 @@ export const middleware: NextMiddleware = async (request: NextRequest) => {
 
     return isAuth ? NextResponse.redirect(new URL(Route.Home, request.url)) : response
   } catch {
-    return NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    })
+    return next
   }
 }

@@ -2,7 +2,7 @@
 
 import { useCallback, useContext } from 'react'
 
-import { type AnyRecord } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { I18nContext } from '@/components/providers/i18n-provider'
 import { LOCALES } from '@/lib/i18n/config'

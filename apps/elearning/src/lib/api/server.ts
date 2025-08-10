@@ -2,7 +2,7 @@
 
 import { createDatabase } from '@/lib/db/server'
 
-import { API_MODULES } from './config'
+import { api } from '.'
 import { createClient } from './utils'
 
 /**
@@ -10,5 +10,5 @@ import { createClient } from './utils'
  */
 export const createApi = async () => {
   const db = await createDatabase()
-  return createClient(API_MODULES, db)
+  return createClient(api, db)
 }

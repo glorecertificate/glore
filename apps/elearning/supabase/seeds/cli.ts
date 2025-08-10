@@ -1,4 +1,4 @@
-import { log } from '@repo/utils'
+import { log } from '@repo/utils/logger'
 
 import { seedMemberships } from 'supabase/seeds/models/membership'
 import { seedOrganizations } from 'supabase/seeds/models/organization'

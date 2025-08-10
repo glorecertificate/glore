@@ -5,9 +5,9 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import { type Locale, type Messages } from 'use-intl'
 import { IntlProvider } from 'use-intl/react'
 
-import { timezone } from '@repo/utils'
+import { timezone } from '@repo/utils/timezone'
 
-import { cookies } from '@/lib/storage/client'
+import { cookies } from '@/lib/storage'
 import app from 'config/app.json'
 
 export interface I18nProviderProps

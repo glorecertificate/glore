@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { useDatabase } from '@/hooks/use-database'
 import { useTranslations } from '@/hooks/use-translations'
-import { DatabaseError, PostgRESTCode } from '@/lib/db/utils'
+import { DatabaseError } from '@/lib/db/utils'
 import { Route } from '@/lib/navigation'
 
 export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
@@ -58,7 +58,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
           .or(`email.eq.${user},username.eq.${user}`)
           .single()
         if (userError) throw userError
-        if (!data) throw new DatabaseError(PostgRESTCode.NO_RESULTS)
+        if (!data) throw new DatabaseError('NO_RESULTS')
 
         const { error } = await db.auth.resetPasswordForEmail(data.email)
         if (error) throw error
@@ -71,10 +71,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         const error = e as DatabaseError
         const dbError = new DatabaseError(error.code, error.message)
 
-        if (
-          dbError.code !== PostgRESTCode.NETWORK_ERROR &&
-          (!error.code || dbError.code === PostgRESTCode.NO_RESULTS)
-        ) {
+        if (dbError.code !== 'NETWORK_ERROR' && (!error.code || dbError.code === 'NO_RESULTS')) {
           return form.setError('user', { message: t('userNotFound') })
         }
 

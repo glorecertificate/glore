@@ -1,6 +1,6 @@
-import { skillQuery } from '@/lib/api/modules/courses/queries'
-import { organizationQuery } from '@/lib/api/modules/organizations/queries'
-import { baseUserQuery } from '@/lib/api/modules/users/queries'
+import { skillQuery } from '@/lib/api/courses/queries'
+import { organizationQuery } from '@/lib/api/organizations/queries'
+import { baseUserQuery } from '@/lib/api/users/queries'
 import { timestamps } from '@/lib/api/utils'
 
 export const certificateQuery = `

@@ -1,8 +1,6 @@
 /**
- * A utility function that does nothing, can be used as default or placeholder function.
+ * Utility function that does nothing, useful as placeholder function.
  */
 export const noop = () => {
   /**/
 }
-
-export default noop

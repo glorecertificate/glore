@@ -1,18 +1,19 @@
-import type { AnyArray, SnakeToCamel } from '@repo/utils'
+import type { AnyArray, SnakeToCamel } from '@repo/utils/types'
 
 import { createDatabase } from '@/lib/db/server'
-import { type TableName, type Tables } from '@/lib/db/types'
+import { type TableName } from '@/lib/db/types'
 import { type IntlRecord } from '@/lib/i18n/types'
+import { type Tables } from 'supabase/types'
 
 import { type createApi } from './server'
 
 /**
- * API client type.
+ * Internal API client.
  */
 export type Api = ReturnType<typeof createApi>
 
 /**
- * Entity from the database with keys transformed to camel case and optional foreign keys or timestamps.
+ * Entity from the database with camelized keys and optional foreign keys and timestamps.
  */
 export type Entity<
   T extends TableName,

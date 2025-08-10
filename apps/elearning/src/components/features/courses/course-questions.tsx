@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Markdown } from '@/components/ui/markdown'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { type Question, type QuestionOption } from '@/lib/api/modules/courses/types'
+import { type Question, type QuestionOption } from '@/lib/api/courses/types'
 import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({

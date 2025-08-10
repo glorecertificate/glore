@@ -24,7 +24,7 @@ import {
 } from 'platejs'
 import { useEditorPlugin, usePluginOption } from 'platejs/react'
 
-import { type AnyRecord } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isServer } from '@repo/utils'
+import { isServer } from '@repo/utils/is-server'
 
 const MOBILE_BREAKPOINT = 768
 

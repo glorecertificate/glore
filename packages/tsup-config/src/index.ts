@@ -7,6 +7,7 @@ const tsupConfigBase: Options = {
   format: ['cjs', 'esm'],
   minify: true,
   outDir: 'build',
+  splitting: false,
 }
 
 type Config = ReturnType<typeof defineConfig>

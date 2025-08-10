@@ -89,5 +89,3 @@ const _retry = async <T>(callback: RetryCallback<T>, options?: RetryOptions, att
     return Promise.reject(error)
   }
 }
-
-export default retry

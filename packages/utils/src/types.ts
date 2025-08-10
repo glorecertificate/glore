@@ -9,10 +9,16 @@ export type Any = any
 export type OrArray<T> = T | T[]
 
 /**
- * Enum type with string values.
+ * Enum type with stringified values
  */
 // @ts-ignore-next-line
 export type Enum<T> = T | `${T}`
+
+/**
+ * Enum type with stringified keys.
+ */
+// @ts-ignore-next-line
+export type EnumKey<T> = T | keyof typeof T
 
 /**
  * Function with any arguments and return type.

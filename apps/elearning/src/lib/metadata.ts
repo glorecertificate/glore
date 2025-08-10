@@ -2,7 +2,7 @@ import { type Metadata, type ResolvingMetadata } from 'next'
 
 import { type Locale } from 'use-intl'
 
-import { type AnyRecord } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { LOCALES } from '@/lib/i18n/config'
 import { getLocale, getTranslations } from '@/lib/i18n/server'

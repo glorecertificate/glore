@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 
 import { createServerClient } from '@supabase/ssr'
 
-import { noop } from '@repo/utils'
+import { noop } from '@repo/utils/noop'
 
 import { Env } from '@/lib/env'
 import type { Database } from 'supabase/types'

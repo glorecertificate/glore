@@ -8,7 +8,7 @@ import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
-import { type User } from '@/lib/api/modules/users/types'
+import { type User } from '@/lib/api/users/types'
 import { googleMapsUrl } from '@/lib/navigation'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {

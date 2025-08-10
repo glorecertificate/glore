@@ -21,15 +21,9 @@ catalogs:
     prettier-plugin-sql:
       specifier: ^0.19.2
       version: 0.19.2
-    release-it:
-      specifier: ^19.0.4
-      version: 19.0.4
     shellcheck:
       specifier: ^3.1.0
       version: 3.1.0
-    tsup:
-      specifier: ^8.5.0
-      version: 8.5.0
     typescript:
       specifier: ^5.9.2
       version: 5.9.2

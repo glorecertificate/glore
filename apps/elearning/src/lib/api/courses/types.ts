@@ -1,7 +1,7 @@
-import { type Enum } from '@repo/utils'
+import { type Enum } from '@repo/utils/types'
 
-import { type User } from '@/lib/api/modules/users/types'
 import type { Entity, Timestamp } from '@/lib/api/types'
+import { type User } from '@/lib/api/users/types'
 
 export enum CourseType {
   Introduction = 'introduction',

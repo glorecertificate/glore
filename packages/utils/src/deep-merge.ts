@@ -27,5 +27,3 @@ export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P =>
   }
   return target
 }
-
-export default deepMerge

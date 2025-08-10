@@ -65,7 +65,7 @@ export const TabsTrigger = ({
 export const tabsTrigger = cva(
   `
     group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm whitespace-nowrap
-    text-foreground
+    text-foreground select-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:outline-1
     disabled:pointer-events-none disabled:opacity-50
     data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow

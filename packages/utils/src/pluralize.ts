@@ -387,4 +387,3 @@ for (const search of UNCOUNTABLES) {
 }
 
 export { pluralize }
-export default pluralize

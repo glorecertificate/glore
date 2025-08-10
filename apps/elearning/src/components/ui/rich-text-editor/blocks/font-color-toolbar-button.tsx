@@ -7,7 +7,7 @@ import { useComposedRef } from '@udecode/cn'
 import { EraserIcon, PlusIcon } from 'lucide-react'
 import { useEditorRef, useEditorSelector } from 'platejs/react'
 
-import { debounce } from '@repo/utils'
+import { debounce } from '@repo/utils/debounce'
 
 import { buttonVariants } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'

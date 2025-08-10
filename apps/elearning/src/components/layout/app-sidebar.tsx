@@ -19,7 +19,7 @@ import {
   ShieldUserIcon,
 } from 'lucide-react'
 
-import { titleize } from '@repo/utils'
+import { titleize } from '@repo/utils/titleize'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -60,9 +60,9 @@ import { useDatabase } from '@/hooks/use-database'
 import { usePathname } from '@/hooks/use-pathname'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type User, type UserOrganization } from '@/lib/api/modules/users/types'
+import { type User, type UserOrganization } from '@/lib/api/users/types'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/client'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps<I extends Icon = Icon>
@@ -287,7 +287,7 @@ const SidebarNav = () => {
   const { user } = useSession()
   const t = useTranslations('Navigation')
 
-  const showCertificates = useMemo(() => !user.isEditor, [user.isEditor])
+  const showCertificates = useMemo(() => !user.canEdit, [user.canEdit])
 
   return (
     <SidebarGroup>
@@ -344,7 +344,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                       !user.avatarUrl && 'border',
                     )}
                   >
-                    <AvatarImage src={user.avatarUrl!} />
+                    {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
                     <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                   </Avatar>
                   {organization?.avatarUrl && (

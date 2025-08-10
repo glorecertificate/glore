@@ -1,6 +1,6 @@
 import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'use-intl'
 
-import { type AnyRecord } from '@repo/utils'
+import { type AnyRecord } from '@repo/utils/types'
 
 import { type locales } from 'config/app.json'
 import type messages from 'config/translations/en.json'

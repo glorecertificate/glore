@@ -1,4 +1,4 @@
-import { organizationQuery } from '@/lib/api/modules/organizations/queries'
+import { organizationQuery } from '@/lib/api/organizations/queries'
 import { timestamps } from '@/lib/api/utils'
 
 export const baseUserQuery = `

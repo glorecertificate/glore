@@ -6,5 +6,3 @@ export const env = <T extends string>(key: string, defaultValue?: string): T => 
   if (value === undefined) throw new Error(`Environment variable ${key} is not defined`)
   return value as T
 }
-
-export default env

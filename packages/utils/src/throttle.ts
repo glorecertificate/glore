@@ -15,5 +15,3 @@ export const throttle = <T extends unknown[]>(callback: (...args: T) => void, de
     }, delay)
   }
 }
-
-export default throttle

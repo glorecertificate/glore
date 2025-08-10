@@ -1,28 +1,31 @@
-export enum PostgRESTCode {
-  INVALID_CREDENTIALS = 'invalid_credentials',
-  NETWORK_ERROR = 'NETWORK_ERROR',
-  NO_RESULTS = 'PGRST116',
-}
+export type DatabaseErrorCode = (typeof DATABASE_ERRORS)[keyof typeof DATABASE_ERRORS]['codes'][number]
+
+const DATABASE_ERRORS = {
+  INVALID_CREDENTIALS: {
+    codes: ['INVALID_CREDENTIALS', 'invalid_credentials'],
+    message: 'Invalid credentials',
+  },
+  NETWORK_ERROR: {
+    codes: ['NETWORK_ERROR'],
+    message: 'Network error',
+  },
+  NO_RESULTS: {
+    codes: ['NO_RESULTS', 'PGRST116'],
+    message: 'No results found',
+  },
+} as const
 
 /**
- * Database error class using PostgREST codes.
- *
- * @see {@link https://postgrest.org/en/stable/api.html?highlight=options#errors-and-http-status-codes}
+ * Custom error class for handling database-related errors.
  */
 export class DatabaseError extends Error {
-  readonly code: PostgRESTCode | `${PostgRESTCode}`
+  readonly code: DatabaseErrorCode
 
-  constructor(code: PostgRESTCode | `${PostgRESTCode}`, message?: string) {
-    super(message)
+  constructor(code: DatabaseErrorCode, message?: string) {
+    const group = Object.values(DATABASE_ERRORS).find(({ codes }) => codes.includes(code as never))
+
+    super(message ?? group?.message)
     this.name = 'DatabaseError'
-
-    switch (message) {
-      case 'TypeError: Failed to fetch':
-        this.code = PostgRESTCode.NETWORK_ERROR
-        break
-      default:
-        this.code = code
-        break
-    }
+    this.code = code
   }
 }

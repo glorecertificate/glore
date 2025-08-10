@@ -6,5 +6,3 @@ export const hasHistory = () => {
   const { referrer } = document
   return !!referrer && referrer.startsWith(window.location.origin) && referrer !== window.location.href
 }
-
-export default hasHistory

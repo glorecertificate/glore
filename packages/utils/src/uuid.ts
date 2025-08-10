@@ -8,5 +8,3 @@ export const uuid = () =>
     const c = Number.parseInt(s, 10)
     return (c ^ (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
   })
-
-export default uuid

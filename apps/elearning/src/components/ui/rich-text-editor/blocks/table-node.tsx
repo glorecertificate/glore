@@ -55,7 +55,7 @@ import {
   type PlateElementProps,
 } from 'platejs/react'
 
-import { type Any, type AnyRecord } from '@repo/utils'
+import { type Any, type AnyRecord } from '@repo/utils/types'
 
 import { Button } from '@/components/ui/button'
 import {

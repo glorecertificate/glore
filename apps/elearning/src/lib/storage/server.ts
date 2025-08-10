@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers'
 
-import { decodeAsync, encodeAsync } from '@repo/utils'
+import { decodeAsync, encodeAsync } from '@repo/utils/encode'
 
 import { RESET_COOKIES } from './config'
 import { type Cookie, type CookieKeyOptions, type CookieOptions, type CookieValue } from './types'

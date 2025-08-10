@@ -1,5 +1,5 @@
-import { type Certificate } from '@/lib/api/modules/certificates/types'
-import { type BaseOrganization } from '@/lib/api/modules/organizations/types'
+import { type Certificate } from '@/lib/api/certificates/types'
+import { type BaseOrganization } from '@/lib/api/organizations/types'
 import { type Entity, type Timestamp } from '@/lib/api/types'
 import { type Enums } from 'supabase/types'
 

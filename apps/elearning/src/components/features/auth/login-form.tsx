@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { log } from '@repo/utils'
+import { log } from '@repo/utils/logger'
 
 import { AuthForm } from '@/components/features/auth/auth-form'
 import { Button } from '@/components/ui/button'
@@ -28,8 +28,8 @@ import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { useApi } from '@/hooks/use-api'
 import { useTranslations } from '@/hooks/use-translations'
-import { type User } from '@/lib/api/modules/users/types'
-import { PostgRESTCode, type DatabaseError } from '@/lib/db/utils'
+import { type User } from '@/lib/api/users/types'
+import { type DatabaseError } from '@/lib/db/utils'
 import { externalRoute, Route } from '@/lib/navigation'
 import { asset } from '@/lib/storage/utils'
 
@@ -126,18 +126,18 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
-        if (error.code === PostgRESTCode.NO_RESULTS) return form.setError('user', { message: t('userNotFound') })
+        if (error.code === 'NO_RESULTS') return form.setError('user', { message: t('userNotFound') })
         log.error(e)
         return toast.error(t('networkError'))
       }
 
       try {
-        await api.auth.login({ ...user, password })
+        await api.auth.login({ email: user.email, password })
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
         log.error(e)
-        if (error.code === PostgRESTCode.INVALID_CREDENTIALS) {
+        if (error.code === 'INVALID_CREDENTIALS') {
           return form.setError('password', { message: t('passwordInvalid') })
         }
         return toast.error(t('networkError'))

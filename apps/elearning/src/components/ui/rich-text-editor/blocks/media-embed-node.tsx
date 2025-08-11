@@ -9,9 +9,9 @@ import LiteYouTubeEmbed from 'react-lite-youtube-embed'
 import { Tweet } from 'react-tweet'
 
 import { cn } from '@/lib/utils'
-import { Caption, CaptionTextarea } from '#rte/blocks/caption'
-import { MediaToolbar } from '#rte/blocks/media-toolbar'
-import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '#rte/blocks/resize-handle'
+import { Caption, CaptionTextarea } from '@rte/blocks/caption'
+import { MediaToolbar } from '@rte/blocks/media-toolbar'
+import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '@rte/blocks/resize-handle'
 
 export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElementProps<TMediaEmbedElement>) => {
   const {

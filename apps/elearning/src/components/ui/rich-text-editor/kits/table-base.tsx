@@ -5,7 +5,7 @@ import {
   TableCellHeaderElementStatic,
   TableElementStatic,
   TableRowElementStatic,
-} from '#rte/blocks/table-node-static'
+} from '@rte/blocks/table-node-static'
 
 export const BaseTableKit = [
   BaseTablePlugin.withComponent(TableElementStatic),

@@ -23,7 +23,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
-import { CaptionButton } from '#rte/blocks/caption'
+import { CaptionButton } from '@rte/blocks/caption'
 
 const inputVariants = cva(
   `

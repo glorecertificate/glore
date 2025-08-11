@@ -11,14 +11,14 @@ import {
 } from '@platejs/media/react'
 import { KEYS } from 'platejs'
 
-import { AudioElement } from '#rte/blocks/media-audio-node'
-import { MediaEmbedElement } from '#rte/blocks/media-embed-node'
-import { FileElement } from '#rte/blocks/media-file-node'
-import { ImageElement } from '#rte/blocks/media-image-node'
-import { PlaceholderElement } from '#rte/blocks/media-placeholder-node'
-import { MediaPreviewDialog } from '#rte/blocks/media-preview-dialog'
-import { MediaUploadToast } from '#rte/blocks/media-upload-toast'
-import { VideoElement } from '#rte/blocks/media-video-node'
+import { AudioElement } from '@rte/blocks/media-audio-node'
+import { MediaEmbedElement } from '@rte/blocks/media-embed-node'
+import { FileElement } from '@rte/blocks/media-file-node'
+import { ImageElement } from '@rte/blocks/media-image-node'
+import { PlaceholderElement } from '@rte/blocks/media-placeholder-node'
+import { MediaPreviewDialog } from '@rte/blocks/media-preview-dialog'
+import { MediaUploadToast } from '@rte/blocks/media-upload-toast'
+import { VideoElement } from '@rte/blocks/media-video-node'
 
 export const MediaKit = [
   ImagePlugin.configure({

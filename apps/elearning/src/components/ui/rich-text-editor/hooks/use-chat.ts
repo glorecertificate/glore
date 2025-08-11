@@ -5,7 +5,7 @@ import { usePluginOption } from 'platejs/react'
 
 import { type AnyRecord } from '@repo/utils/types'
 
-import { aiChatPlugin } from '#rte/kits/ai'
+import { aiChatPlugin } from '@rte/kits/ai'
 
 export const useChat = () => {
   const options = usePluginOption(aiChatPlugin, 'chatOptions') as AnyRecord

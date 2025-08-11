@@ -10,7 +10,7 @@ export default eslintConfig(
     ],
     customExternalImports: ['@next', 'next', 'react'],
     customInternalImports: ['@repo'],
-    internalImports: ['config', 'supabase', '#rte'],
+    internalImports: ['config', 'supabase', '@rte'],
     maxLines: -1,
     namedImports: ['react'],
     react: 'nextjs',
@@ -45,7 +45,7 @@ export default eslintConfig(
       },
       {
         files: ['**/*.ts?(x)', '!src/components/ui/rich-text-editor/**'],
-        group: ['#rte/**'],
+        group: ['@rte/**'],
         message: 'Import from the components folder instead.',
       },
     ],

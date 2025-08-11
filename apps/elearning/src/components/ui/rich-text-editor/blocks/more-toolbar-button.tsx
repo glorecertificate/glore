@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 export const MoreToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()

@@ -7,7 +7,7 @@ import type { TSuggestionData, TSuggestionText } from 'platejs'
 import { PlateLeaf, useEditorPlugin, usePluginOption, type PlateLeafProps, type RenderNodeWrapper } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
-import { suggestionPlugin, type SuggestionConfig } from '#rte/kits/suggestion'
+import { suggestionPlugin, type SuggestionConfig } from '@rte/kits/suggestion'
 
 export const SuggestionLeaf = (props: PlateLeafProps<TSuggestionText>) => {
   const { api, setOption } = useEditorPlugin(suggestionPlugin)

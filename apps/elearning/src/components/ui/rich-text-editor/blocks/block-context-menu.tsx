@@ -18,7 +18,7 @@ import {
   ContextMenuSubContent,
   ContextMenuSubTrigger,
   ContextMenuTrigger,
-} from '#rte/blocks/context-menu'
+} from '@rte/blocks/context-menu'
 
 type Value = 'askAI' | null
 

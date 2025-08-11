@@ -4,7 +4,7 @@ import { Redo2Icon, Undo2Icon } from 'lucide-react'
 import { useEditorRef, useEditorSelector } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 export const RedoToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const editor = useEditorRef()

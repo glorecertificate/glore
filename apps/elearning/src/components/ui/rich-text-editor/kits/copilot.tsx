@@ -5,8 +5,8 @@ import { CopilotPlugin } from '@platejs/ai/react'
 import { serializeMd, stripMarkdown } from '@platejs/markdown'
 
 import { ApiRoute } from '@/lib/navigation'
-import { GhostText } from '#rte/blocks/ghost-text'
-import { MarkdownKit } from '#rte/kits/markdown'
+import { GhostText } from '@rte/blocks/ghost-text'
+import { MarkdownKit } from '@rte/kits/markdown'
 
 export const CopilotKit = [
   ...MarkdownKit,

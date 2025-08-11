@@ -5,11 +5,11 @@ import { KEYS } from 'platejs'
 import { useEditorReadOnly } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
-import { AIToolbarButton } from '#rte/blocks/ai-toolbar-button'
-import { LinkToolbarButton } from '#rte/blocks/link-toolbar-button'
-import { MarkToolbarButton } from '#rte/blocks/mark-toolbar-button'
-import { ToolbarGroup } from '#rte/blocks/toolbar'
-import { TurnIntoToolbarButton } from '#rte/blocks/turn-into-toolbar-button'
+import { AIToolbarButton } from '@rte/blocks/ai-toolbar-button'
+import { LinkToolbarButton } from '@rte/blocks/link-toolbar-button'
+import { MarkToolbarButton } from '@rte/blocks/mark-toolbar-button'
+import { ToolbarGroup } from '@rte/blocks/toolbar'
+import { TurnIntoToolbarButton } from '@rte/blocks/turn-into-toolbar-button'
 
 export const FloatingToolbarButtons = () => {
   const t = useTranslations('Editor')

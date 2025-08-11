@@ -4,7 +4,7 @@ import { BaseCommentPlugin, getDraftCommentKey, type BaseCommentConfig } from '@
 import { isSlateString, type ExtendConfig, type Path } from 'platejs'
 import { toTPlatePlugin } from 'platejs/react'
 
-import { CommentLeaf } from '#rte/blocks/comment-node'
+import { CommentLeaf } from '@rte/blocks/comment-node'
 
 type CommentConfig = ExtendConfig<
   BaseCommentConfig,

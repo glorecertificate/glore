@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 type ImportType = 'html' | 'markdown'
 

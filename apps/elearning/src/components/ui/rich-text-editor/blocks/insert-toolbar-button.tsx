@@ -26,8 +26,8 @@ import { useEditorRef, type PlateEditor } from 'platejs/react'
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton, ToolbarMenuGroup } from '#rte/blocks/toolbar'
-import { insertBlock, insertInlineElement } from '#rte/utils'
+import { ToolbarButton, ToolbarMenuGroup } from '@rte/blocks/toolbar'
+import { insertBlock, insertInlineElement } from '@rte/utils'
 
 interface Group {
   group: string

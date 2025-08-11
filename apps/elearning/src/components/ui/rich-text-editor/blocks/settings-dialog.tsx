@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ApiRoute } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import { aiChatPlugin } from '#rte/kits/ai'
+import { aiChatPlugin } from '@rte/kits/ai'
 
 interface Model {
   label: string

@@ -30,9 +30,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { Editor, EditorContainer } from '#rte/blocks/editor'
-import { BasicMarksKit } from '#rte/kits/basic-marks'
-import { discussionPlugin, type TDiscussion } from '#rte/kits/discussion'
+import { Editor, EditorContainer } from '@rte/blocks/editor'
+import { BasicMarksKit } from '@rte/kits/basic-marks'
+import { discussionPlugin, type TDiscussion } from '@rte/kits/discussion'
 
 export interface TComment {
   id: string

@@ -28,7 +28,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { useLocale } from '@/hooks/use-locale'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 const I18N_DATA = { en, es, it }
 

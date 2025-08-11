@@ -33,8 +33,8 @@ import {
   InlineComboboxGroupLabel,
   InlineComboboxInput,
   InlineComboboxItem,
-} from '#rte/blocks/inline-combobox'
-import { insertBlock, insertInlineElement } from '#rte/utils'
+} from '@rte/blocks/inline-combobox'
+import { insertBlock, insertInlineElement } from '@rte/utils'
 
 interface Group {
   group: string

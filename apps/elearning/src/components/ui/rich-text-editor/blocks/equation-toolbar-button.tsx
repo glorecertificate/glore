@@ -4,7 +4,7 @@ import { insertInlineEquation } from '@platejs/math'
 import { RadicalIcon } from 'lucide-react'
 import { useEditorRef } from 'platejs/react'
 
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 export const InlineEquationToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const editor = useEditorRef()

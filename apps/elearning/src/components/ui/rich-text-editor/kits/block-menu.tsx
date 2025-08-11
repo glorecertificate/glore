@@ -2,8 +2,8 @@
 
 import { BlockMenuPlugin } from '@platejs/selection/react'
 
-import { BlockContextMenu } from '#rte/blocks/block-context-menu'
-import { BlockSelectionKit } from '#rte/kits/block-selection'
+import { BlockContextMenu } from '@rte/blocks/block-context-menu'
+import { BlockSelectionKit } from '@rte/kits/block-selection'
 
 export const BlockMenuKit = [
   ...BlockSelectionKit,

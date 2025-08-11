@@ -31,9 +31,9 @@ import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { AIChatEditor } from '#rte/blocks/ai-chat-editor'
-import { isHotkey } from '#rte/blocks/utils'
-import { useChat } from '#rte/hooks/use-chat'
+import { AIChatEditor } from '@rte/blocks/ai-chat-editor'
+import { isHotkey } from '@rte/blocks/utils'
+import { useChat } from '@rte/hooks/use-chat'
 
 type EditorChatState = 'cursorCommand' | 'cursorSuggestion' | 'selectionCommand' | 'selectionSuggestion'
 

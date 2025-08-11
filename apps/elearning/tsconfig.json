@@ -9,7 +9,7 @@
       "config/*": ["./config/*"],
       "supabase/*": ["./supabase/*"],
       "@/*": ["./src/*"],
-      "#rte/*": ["./src/components/ui/rich-text-editor/*"]
+      "@rte/*": ["./src/components/ui/rich-text-editor/*"]
     },
     "noEmit": true,
     "types": ["node"]

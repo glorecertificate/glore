@@ -6,7 +6,7 @@ import { KEYS } from 'platejs'
 import { useEditorId, useEventEditorValue, usePluginOption } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
-import { Toolbar } from '#rte/blocks/toolbar'
+import { Toolbar } from '@rte/blocks/toolbar'
 
 export const FloatingToolbar = ({
   children,

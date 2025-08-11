@@ -6,10 +6,10 @@ import { KEYS, PathApi } from 'platejs'
 import { usePluginOption } from 'platejs/react'
 
 import { ApiRoute } from '@/lib/navigation'
-import { AILoadingBar, AIMenu } from '#rte/blocks/ai-menu'
-import { AIAnchorElement, AILeaf } from '#rte/blocks/ai-node'
-import { CursorOverlayKit } from '#rte/kits/cursor-overlay'
-import { MarkdownKit } from '#rte/kits/markdown'
+import { AILoadingBar, AIMenu } from '@rte/blocks/ai-menu'
+import { AIAnchorElement, AILeaf } from '@rte/blocks/ai-node'
+import { CursorOverlayKit } from '@rte/kits/cursor-overlay'
+import { MarkdownKit } from '@rte/kits/markdown'
 
 interface AiTemplateOptions {
   isBlockSelecting: boolean

@@ -7,9 +7,9 @@ import type { TImageElement } from 'platejs'
 import { PlateElement, withHOC, type PlateElementProps } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
-import { Caption, CaptionTextarea } from '#rte/blocks/caption'
-import { MediaToolbar } from '#rte/blocks/media-toolbar'
-import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '#rte/blocks/resize-handle'
+import { Caption, CaptionTextarea } from '@rte/blocks/caption'
+import { MediaToolbar } from '@rte/blocks/media-toolbar'
+import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '@rte/blocks/resize-handle'
 
 export const ImageElement = withHOC(ResizableProvider, (props: PlateElementProps<TImageElement>) => {
   const { align = 'center', focused, readOnly, selected } = useMediaState()

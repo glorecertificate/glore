@@ -15,7 +15,7 @@ import { FontColorIcon } from '@/components/ui/icons/font-color'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { ToolbarButton, ToolbarMenuGroup } from '#rte/blocks/toolbar'
+import { ToolbarButton, ToolbarMenuGroup } from '@rte/blocks/toolbar'
 
 export const useColors = () => {
   const t = useTranslations('Editor.colors')

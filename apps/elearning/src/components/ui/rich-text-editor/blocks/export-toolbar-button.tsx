@@ -16,9 +16,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
-import { EditorStatic } from '#rte/blocks/editor-static'
-import { ToolbarButton } from '#rte/blocks/toolbar'
-import { BaseEditorKit } from '#rte/kits/editor-base'
+import { EditorStatic } from '@rte/blocks/editor-static'
+import { ToolbarButton } from '@rte/blocks/toolbar'
+import { BaseEditorKit } from '@rte/kits/editor-base'
 
 const siteUrl = 'https://platejs.org'
 

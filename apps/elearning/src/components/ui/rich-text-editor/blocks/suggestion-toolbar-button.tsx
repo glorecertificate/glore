@@ -5,7 +5,7 @@ import { PencilLineIcon } from 'lucide-react'
 import { useEditorPlugin, usePluginOption } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 export const SuggestionToolbarButton = () => {
   const { setOption } = useEditorPlugin(SuggestionPlugin)

@@ -10,8 +10,8 @@ import LiteYouTubeEmbed from 'react-lite-youtube-embed'
 import ReactPlayer from 'react-player'
 
 import { cn } from '@/lib/utils'
-import { Caption, CaptionTextarea } from '#rte/blocks/caption'
-import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '#rte/blocks/resize-handle'
+import { Caption, CaptionTextarea } from '@rte/blocks/caption'
+import { mediaResizeHandleVariants, Resizable, ResizeHandle } from '@rte/blocks/resize-handle'
 
 export const VideoElement = withHOC(ResizableProvider, (props: PlateElementProps<TVideoElement & TResizableProps>) => {
   const {

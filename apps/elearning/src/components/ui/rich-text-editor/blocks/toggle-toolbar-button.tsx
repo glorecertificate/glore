@@ -4,7 +4,7 @@ import { useToggleToolbarButton, useToggleToolbarButtonState } from '@platejs/to
 import { ListCollapseIcon } from 'lucide-react'
 
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 export const ToggleToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const state = useToggleToolbarButtonState()

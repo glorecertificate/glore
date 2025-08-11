@@ -2,7 +2,7 @@
 
 import { TableCellHeaderPlugin, TableCellPlugin, TablePlugin, TableRowPlugin } from '@platejs/table/react'
 
-import { TableCellElement, TableCellHeaderElement, TableElement, TableRowElement } from '#rte/blocks/table-node'
+import { TableCellElement, TableCellHeaderElement, TableElement, TableRowElement } from '@rte/blocks/table-node'
 
 export const TableKit = [
   TablePlugin.withComponent(TableElement),

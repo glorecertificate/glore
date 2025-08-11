@@ -30,8 +30,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton, ToolbarMenuGroup } from '#rte/blocks/toolbar'
-import { getBlockType, setBlockType } from '#rte/utils'
+import { ToolbarButton, ToolbarMenuGroup } from '@rte/blocks/toolbar'
+import { getBlockType, setBlockType } from '@rte/utils'
 
 export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()

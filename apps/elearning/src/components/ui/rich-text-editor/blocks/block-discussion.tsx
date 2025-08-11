@@ -26,11 +26,11 @@ import {
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { BlockSuggestionCard, isResolvedSuggestion, useResolveSuggestion } from '#rte/blocks/block-suggestion'
-import { Comment, CommentCreateForm } from '#rte/blocks/comment'
-import { commentPlugin } from '#rte/kits/comment'
-import { discussionPlugin, type TDiscussion } from '#rte/kits/discussion'
-import { suggestionPlugin } from '#rte/kits/suggestion'
+import { BlockSuggestionCard, isResolvedSuggestion, useResolveSuggestion } from '@rte/blocks/block-suggestion'
+import { Comment, CommentCreateForm } from '@rte/blocks/comment'
+import { commentPlugin } from '@rte/kits/comment'
+import { discussionPlugin, type TDiscussion } from '@rte/kits/discussion'
+import { suggestionPlugin } from '@rte/kits/suggestion'
 
 export const BlockDiscussion: RenderNodeWrapper<AnyPluginConfig> = props => {
   const { editor, element } = props

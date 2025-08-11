@@ -5,7 +5,7 @@ import { PlateElement, useReadOnly, type PlateElementProps } from 'platejs/react
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { Calendar } from '#rte/blocks/calendar'
+import { Calendar } from '@rte/blocks/calendar'
 
 export const DateElement = (props: PlateElementProps<TDateElement>) => {
   const { editor, element } = props

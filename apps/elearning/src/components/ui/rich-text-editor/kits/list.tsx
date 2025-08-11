@@ -3,8 +3,8 @@
 import { ListPlugin } from '@platejs/list/react'
 import { KEYS } from 'platejs'
 
-import { BlockList } from '#rte/blocks/block-list'
-import { IndentKit } from '#rte/kits/indent'
+import { BlockList } from '@rte/blocks/block-list'
+import { IndentKit } from '@rte/kits/indent'
 
 export const ListKit = [
   ...IndentKit,

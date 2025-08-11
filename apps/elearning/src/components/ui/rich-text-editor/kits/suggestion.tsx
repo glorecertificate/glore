@@ -6,9 +6,9 @@ import { toTPlatePlugin, type RenderNodeWrapper } from 'platejs/react'
 
 import { type Any } from '@repo/utils/types'
 
-import { BlockSuggestion } from '#rte/blocks/block-suggestion'
-import { SuggestionLeaf, SuggestionLineBreak } from '#rte/blocks/suggestion-node'
-import { discussionPlugin } from '#rte/kits/discussion'
+import { BlockSuggestion } from '@rte/blocks/block-suggestion'
+import { SuggestionLeaf, SuggestionLineBreak } from '@rte/blocks/suggestion-node'
+import { discussionPlugin } from '@rte/kits/discussion'
 
 export type SuggestionConfig = ExtendConfig<
   BaseSuggestionConfig,

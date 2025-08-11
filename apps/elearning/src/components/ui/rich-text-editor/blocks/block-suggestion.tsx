@@ -30,9 +30,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { Comment, CommentCreateForm, useCommentDate, type TComment } from '#rte/blocks/comment'
-import { discussionPlugin, type TDiscussion } from '#rte/kits/discussion'
-import { suggestionPlugin } from '#rte/kits/suggestion'
+import { Comment, CommentCreateForm, useCommentDate, type TComment } from '@rte/blocks/comment'
+import { discussionPlugin, type TDiscussion } from '@rte/kits/discussion'
+import { suggestionPlugin } from '@rte/kits/suggestion'
 
 export interface ResolvedSuggestion extends TResolvedSuggestion {
   comments: TComment[]

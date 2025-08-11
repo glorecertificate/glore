@@ -70,9 +70,9 @@ import {
 import { Popover, PopoverContent } from '@/components/ui/popover'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { blockSelectionVariants } from '#rte/blocks/block-selection'
-import { ColorDropdownMenuItems, useColors } from '#rte/blocks/font-color-toolbar-button'
-import { ResizeHandle } from '#rte/blocks/resize-handle'
+import { blockSelectionVariants } from '@rte/blocks/block-selection'
+import { ColorDropdownMenuItems, useColors } from '@rte/blocks/font-color-toolbar-button'
+import { ResizeHandle } from '@rte/blocks/resize-handle'
 import {
   BorderAllIcon,
   BorderBottomIcon,
@@ -80,8 +80,8 @@ import {
   BorderNoneIcon,
   BorderRightIcon,
   BorderTopIcon,
-} from '#rte/blocks/table-icons'
-import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarMenuGroup } from '#rte/blocks/toolbar'
+} from '@rte/blocks/table-icons'
+import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarMenuGroup } from '@rte/blocks/toolbar'
 export const TableElement = withHOC(TableProvider, ({ children, ...props }: PlateElementProps<TTableElement>) => {
   const readOnly = useReadOnly()
   const isSelectionAreaVisible = usePluginOption(BlockSelectionPlugin, 'isSelectionAreaVisible')

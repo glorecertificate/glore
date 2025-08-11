@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTranslations } from '@/hooks/use-translations'
 import { cn } from '@/lib/utils'
-import { ToolbarButton } from '#rte/blocks/toolbar'
+import { ToolbarButton } from '@rte/blocks/toolbar'
 
 const items = [
   {

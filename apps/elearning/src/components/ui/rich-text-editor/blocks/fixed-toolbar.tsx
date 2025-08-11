@@ -3,7 +3,7 @@
 import { usePlateState } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
-import { Toolbar } from '#rte/blocks/toolbar'
+import { Toolbar } from '@rte/blocks/toolbar'
 
 export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeof Toolbar>) => {
   const [readOnly] = usePlateState('readOnly')

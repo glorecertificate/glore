@@ -4,8 +4,8 @@ import { MessageSquareTextIcon } from 'lucide-react'
 import { useEditorRef } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarButton } from '#rte/blocks/toolbar'
-import { commentPlugin } from '#rte/kits/comment'
+import { ToolbarButton } from '@rte/blocks/toolbar'
+import { commentPlugin } from '@rte/kits/comment'
 
 export const CommentToolbarButton = () => {
   const editor = useEditorRef()

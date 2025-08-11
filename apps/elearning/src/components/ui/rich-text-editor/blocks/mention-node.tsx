@@ -15,7 +15,7 @@ import {
   InlineComboboxGroup,
   InlineComboboxInput,
   InlineComboboxItem,
-} from '#rte/blocks/inline-combobox'
+} from '@rte/blocks/inline-combobox'
 
 export const MentionElement = (
   props: PlateElementProps<TMentionElement> & {

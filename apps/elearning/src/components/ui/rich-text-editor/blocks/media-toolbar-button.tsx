@@ -29,7 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { useTranslations } from '@/hooks/use-translations'
-import { ToolbarSplitButton, ToolbarSplitButtonPrimary, ToolbarSplitButtonSecondary } from '#rte/blocks/toolbar'
+import { ToolbarSplitButton, ToolbarSplitButtonPrimary, ToolbarSplitButtonSecondary } from '@rte/blocks/toolbar'
 
 const MEDIA_CONFIG: Record<
   string,

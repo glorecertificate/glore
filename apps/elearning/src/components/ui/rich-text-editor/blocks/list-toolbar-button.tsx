@@ -20,7 +20,7 @@ import {
   ToolbarSplitButton,
   ToolbarSplitButtonPrimary,
   ToolbarSplitButtonSecondary,
-} from '#rte/blocks/toolbar'
+} from '@rte/blocks/toolbar'
 
 export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => {
   const editor = useEditorRef()

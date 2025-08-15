@@ -58,7 +58,10 @@ const configs = {
 /**
  * ESLint configuration function.
  */
-const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Config[]): Promise<Linter.Config[]> => {
+const eslintConfig = async <Rules extends Linter.RulesRecord>(
+  options?: ConfigOptions,
+  ...userConfig: Linter.Config<Rules>[]
+): Promise<Linter.Config<Rules>[]> => {
   const {
     allowRelativeImports = 'siblings',
     bottomImports,
@@ -139,27 +142,6 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
 
     scopedImport.ignores = [...new Set([...(scopedImport.ignores ?? []), ...ignores])]
     scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
-    // for (const file of restrictedFiles) {
-    //   if (file.startsWith('!')) {
-    //     const ignore = file.slice(1)
-    //     const scopedImport = scopedRestrictedImports.find(({ ignores }) => ignores?.includes(ignore))
-    //     if (!scopedImport) {
-    //       scopedRestrictedImports.push({ ignores: [ignore], restrictedImports: [config] })
-    //       continue
-    //     }
-    //     scopedImport.ignores = [...new Set([...(scopedImport.ignores ?? []), ignore])]
-    //     scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
-    //     continue
-    //   }
-
-    //   const scopedImport = scopedRestrictedImports.find(({ files }) => files?.includes(file))
-    //   if (!scopedImport) {
-    //     scopedRestrictedImports.push({ files: [file], restrictedImports: [config] })
-    //     continue
-    //   }
-    //   scopedImport.files = [...new Set([...(scopedImport.files ?? []), file])]
-    //   scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
-    // }
   }
 
   const [relativeImportsValue, relativeImportOptions] =
@@ -486,13 +468,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
                     },
                   },
                 ],
-                '@typescript-eslint/array-type': [
-                  RuleSeverity.Error,
-                  // {
-                  //   default: 'array-simple',
-                  //   readonly: 'array-simple',
-                  // },
-                ],
+                '@typescript-eslint/array-type': RuleSeverity.Error,
                 '@typescript-eslint/consistent-type-imports': [
                   RuleSeverity.Error,
                   {
@@ -592,6 +568,12 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
           'react/jsx-key': RuleSeverity.Error,
           'react/jsx-uses-react': RuleSeverity.Off,
           'react/react-in-jsx-scope': RuleSeverity.Off,
+          'react-hooks/exhaustive-deps': [
+            RuleSeverity.Warn,
+            {
+              enableDangerousAutofixThisMayCauseInfiniteLoops: true,
+            },
+          ],
         },
       },
       {
@@ -676,7 +658,7 @@ const eslintConfig = async (options?: ConfigOptions, ...userConfig: Linter.Confi
         rules,
       },
       ...userConfig,
-    ] as Linter.Config[]
+    ] as Linter.Config<Rules>[]
   )
     .filter(config => typeof config === 'object' && Object.keys(config).length > 0)
     .map(config => {

@@ -10,5 +10,5 @@ export default async () => {
   const locales = await getCookie('course-locales')
   const tab = await getCookie('course-tab')
 
-  return <CourseList defaultLocales={locales} defaultTab={tab} />
+  return <CourseList defaultLanguages={locales} defaultTab={tab} />
 }

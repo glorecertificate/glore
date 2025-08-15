@@ -1,57 +1,107 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BookOpenIcon, LanguagesIcon, UserPenIcon } from 'lucide-react'
+import { BookCheckIcon, BookOpenIcon, DraftingCompassIcon, UserPenIcon } from 'lucide-react'
+import { type IconName } from 'lucide-react/dynamic'
 
-import { UserCard } from '@/components/features/user-card'
+import { truncate, TRUNCATE_SYMBOL } from '@repo/utils/truncate'
+
+import { UserCard } from '@/components/features/users/user-card'
 import { Avatar, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { Image } from '@/components/ui/image'
+import { DynamicIcon } from '@/components/ui/icons/dynamic'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
-import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api/courses/types'
-import { LOCALE_ITEMS } from '@/lib/i18n/config'
-import { type Locale, type LocaleItem } from '@/lib/i18n/types'
-import { dynamicRoute, Route } from '@/lib/navigation'
+import { type IntlRecord, type Locale, type LocaleItem } from '@/lib/i18n/types'
+import { route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
-const CourseCardFlag = ({
-  active,
-  icon,
-  showTooltip,
-  value,
-}: LocaleItem & {
+interface LanguageItemProps extends LocaleItem {
   active: boolean
-  showTooltip?: boolean
-}) => {
-  const { locale } = useLocale()
-  const t = useTranslations()
+  onClick: (value: Locale) => void
+  showTooltip: boolean
+}
 
-  const language = useMemo(() => t(`Languages.${value}`), [t, value])
+const CourseCardFlag = ({ active, icon, onClick, showTooltip, value }: LanguageItemProps) => {
+  const { locale, titleCaseLocales } = useLocale()
+  const t = useTranslations('Courses')
+  const tLanguages = useTranslations('Languages')
+
+  const language = useMemo(() => tLanguages(value), [tLanguages, value])
+
+  const onFlagClick = useCallback(() => {
+    if (active) return
+    onClick(value)
+  }, [active, onClick, value])
+
   const trigger = useMemo(
-    () => <span className={cn('cursor-default leading-none text-shadow-2xs', !active && 'opacity-40')}>{icon}</span>,
-    [icon, active],
+    () => (
+      <Button
+        className={cn('text-base leading-[1]', active ? 'pointer-events-none cursor-default' : 'opacity-50')}
+        onClick={onFlagClick}
+        size="text"
+        variant="transparent"
+      >
+        {icon}
+      </Button>
+    ),
+    [active, icon, onFlagClick],
   )
-  const content = useMemo(() => {
-    const displayLanguage = locale === 'en' ? language : language.toLowerCase()
-    return `${active ? t('Courses.localePublished') : t('Courses.localeNotPublished')} ${displayLanguage}`
-  }, [active, language, locale, t])
-  const tooltipVariant = useMemo<TooltipContentProps['variant']>(() => (active ? 'success' : 'default'), [active])
 
-  if (!showTooltip) return trigger
+  const content = useMemo(() => {
+    const displayLanguage = titleCaseLocales.includes(locale) ? language : language.toLowerCase()
+    return `${t('seeIn')} ${displayLanguage}`
+  }, [language, locale, t, titleCaseLocales])
+
+  if (active || !showTooltip) return trigger
 
   return (
-    <Tooltip delayDuration={300}>
+    <Tooltip delayDuration={500} disableHoverableContent>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent arrow={false} variant={tooltipVariant}>
+      <TooltipContent arrow={false} size="sm">
+        {content}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+const CourseCardDraft = ({ active, icon, onClick, value }: LanguageItemProps) => {
+  const { isTitleCase } = useLocale()
+  const t = useTranslations('Courses')
+  const tLang = useTranslations('Languages')
+
+  const content = useMemo(() => {
+    const lang = isTitleCase(value) ? tLang(value) : tLang(value).toLowerCase()
+    return `${t('seeIn')} ${lang}`
+  }, [isTitleCase, tLang, t, value])
+
+  const onDraftClick = useCallback(() => {
+    if (active) return
+    onClick(value)
+  }, [active, onClick, value])
+
+  return (
+    <Tooltip delayDuration={500} disableHoverableContent>
+      <TooltipTrigger asChild>
+        <Button
+          className={cn('text-sm leading-[1]', active ? 'pointer-events-none' : 'opacity-50')}
+          onClick={onDraftClick}
+          size="text"
+          variant="transparent"
+        >
+          {icon}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent arrow={false} sideOffset={4} size="sm">
         {content}
       </TooltipContent>
     </Tooltip>
@@ -67,28 +117,96 @@ export const CourseCard = ({
   course: Course
   showTooltips?: boolean
 }) => {
-  const { localize } = useLocale()
+  const { locale, localeItems, locales, localize } = useLocale()
   const { user } = useSession()
-  const t = useTranslations()
+  const t = useTranslations('Courses')
 
-  const coursePath = useMemo(() => dynamicRoute(Route.Course, { slug: course.slug }), [course.slug])
-  const lessonsCount = useMemo(() => course.lessons?.length || 0, [course.lessons])
-  const publishedLocales = useMemo(() => course.publishedLocales ?? [], [course.publishedLocales])
-  const draftLocales = useMemo(() => course.draftLocales ?? [], [course.draftLocales])
+  const getLang = useCallback(
+    () =>
+      course.publishedLocales?.includes(locale)
+        ? course.publishedLocales.sort((a, b) => locales.indexOf(a) - locales.indexOf(b))[0]
+        : locale,
+    [course.publishedLocales, locale, locales],
+  )
+
+  const [language, setLanguage] = useState(getLang())
+
+  const translate = useCallback((record: IntlRecord) => localize(record, language), [localize, language])
+
+  const onLanguageClick = useCallback(
+    (value: Locale) => {
+      if (value === language) return
+      setLanguage(value)
+    },
+    [language],
+  )
+
+  const coursePath = useMemo(
+    () => route('/courses/:slug', { slug: course.slug }, { lang: language }),
+    [course.slug, language],
+  )
+
+  const languageItems = useMemo(
+    () =>
+      localeItems
+        .reduce(
+          (items, item) => [
+            ...items,
+            {
+              ...item,
+              active: item.value === language,
+              onClick: onLanguageClick,
+              showTooltip: showTooltips,
+            },
+          ],
+          [] as LanguageItemProps[],
+        )
+        .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
+    [language, localeItems, locales, onLanguageClick, showTooltips],
+  )
 
   const languages = useMemo(
-    () =>
-      activeLocales.reduce(
-        (items, locale) => {
-          const item = LOCALE_ITEMS.find(({ value }) => value === locale)!
-          if (publishedLocales.includes(locale)) return [...items, { ...item, active: true }]
-          if (draftLocales.includes(locale)) return [...items, { ...item, active: false }]
-          return items
-        },
-        [] as (LocaleItem & { active: boolean })[],
-      ),
-    [activeLocales, publishedLocales, draftLocales],
+    () => languageItems.filter(({ value }) => activeLocales.includes(value)),
+    [activeLocales, languageItems],
   )
+
+  const publishedLanguages = useMemo(
+    () => languages.filter(({ value }) => course.publishedLocales?.includes(value)),
+    [course.publishedLocales, languages],
+  )
+
+  const draftLang = useMemo(
+    () => languages.filter(({ value }) => course.draftLocales?.includes(value)),
+    [course.draftLocales, languages],
+  )
+
+  const title = useMemo(() => translate(course.title), [course.title, translate])
+
+  const description = useMemo(() => {
+    const courseDescription = translate(course.description)
+    if (!courseDescription) return undefined
+    return courseDescription.length > 150 ? (
+      <>
+        {truncate(courseDescription, 150, { ellipsis: '' })}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-help">{TRUNCATE_SYMBOL}</span>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-[300px] text-sm" side="top" sideOffset={4}>
+            {courseDescription}
+          </TooltipContent>
+        </Tooltip>
+      </>
+    ) : (
+      courseDescription
+    )
+  }, [course.description, translate])
+
+  const lessons = useMemo(() => {
+    const count = course.lessons?.length ?? 0
+    if (count === 0) return undefined
+    return `${count} ${t('lessons', { count })}`
+  }, [course.lessons?.length, t])
 
   const creator = useMemo(() => {
     if (!course.creator) return null
@@ -103,126 +221,158 @@ export const CourseCard = ({
     return { ...course.creator, name }
   }, [course.creator])
 
-  const actionLabel = useMemo(() => {
-    if (user.canEdit) return t('Courses.editCourse')
-    if (!course.enrolled) return t('Courses.startCourse')
-    if (course.completed) return t('Courses.reviewCourse')
-    return t('Courses.continueCourse')
+  const action = useMemo(() => {
+    if (user.canEdit) return t('editCourse')
+    if (!course.enrolled) return t('startCourse')
+    if (course.completed) return t('reviewCourse')
+    return t('continueCourse')
   }, [course.enrolled, course.completed, t, user.canEdit])
 
+  useEffect(() => {
+    if (activeLocales.includes(language)) return
+    return setLanguage(getLang())
+  }, [activeLocales, getLang, language])
+
   return (
-    <Card className="group flex h-full flex-col justify-between gap-0 overflow-hidden pt-0">
-      <>
-        {course.imageUrl && (
-          <div className="relative h-40 w-full overflow-hidden">
-            <Link href={coursePath}>
-              {course.imageUrl && (
-                <div className="relative h-full w-full overflow-hidden">
-                  <Image
-                    alt={localize(course.title)}
-                    className="object-cover transition-all duration-200 group-hover:scale-110 group-has-[[data-state=open]]:scale-110"
-                    fill
-                    src={course.imageUrl}
-                  />
-                </div>
-              )}
-            </Link>
-          </div>
-        )}
-        <div className="flex flex-col gap-3 py-4">
-          <CardHeader>
-            <h3 className="flex items-center font-semibold">
-              <Link className="text-lg" href={coursePath}>
-                {localize(course.title)}
-              </Link>
-              {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
-              {user.canEdit && publishedLocales.length === 0 && (
-                <Badge className="ml-1.5" size="xs">
-                  {t('Courses.draft')}
-                </Badge>
-              )}
-            </h3>
-            <p className="text-sm text-muted-foreground">{localize(course.description)}</p>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <LanguagesIcon className="size-3.5" />
-              <div className="flex items-center gap-1.5">
-                {languages.map(item => (
-                  <CourseCardFlag key={item.value} showTooltip={showTooltips} {...item} />
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-              <BookOpenIcon className="size-3.5 text-foreground" />
-              {lessonsCount > 0 ? (
-                <>
-                  {course.lessons?.length} {t('Common.lessons', { count: course.lessons?.length || 0 })}
-                </>
-              ) : (
-                t('Courses.noLessons')
-              )}
-            </div>
-            {creator && (
-              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-                <UserPenIcon className="size-3.5 text-foreground" />
-                <div className="flex items-center gap-2">
-                  <span>{t('Courses.createdBy')}</span>
-                  <HoverCard closeDelay={50} openDelay={300}>
-                    <HoverCardTrigger asChild>
-                      <Button
-                        className={`
-                          peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground
-                          data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground
-                          dark:data-[state=open]:bg-accent/50
-                        `}
-                        size="text"
-                        variant="ghost"
-                      >
-                        {creator.avatarUrl && (
-                          <Avatar className={cn('size-3.5 rounded-full')}>
-                            <AvatarImage className="rounded-full" src={creator.avatarUrl} />
-                          </Avatar>
-                        )}
-                        {creator.name}
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="bg-popover" side="top">
-                      <UserCard user={creator} />
-                    </HoverCardContent>
-                  </HoverCard>
-                </div>
-              </div>
+    <Card className="min-h-80">
+      <CardHeader className="gap-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex gap-2.5">
+            {course.icon && (
+              <DynamicIcon
+                className="size-4 shrink-0 stroke-muted-foreground"
+                name={course.icon as IconName}
+                placeholder={Skeleton}
+                placeholderProps={{ className: 'size-4 shrink-0' }}
+              />
             )}
-          </CardContent>
+            <div className="flex grow flex-col gap-0.5">
+              <div className="-mt-0.5 flex">
+                <Link
+                  className={cn(
+                    'text-base leading-[normal]',
+                    title ? 'font-semibold' : 'font-medium text-muted-foreground/50',
+                  )}
+                  href={coursePath}
+                  title={t('viewCourse')}
+                >
+                  {'ciao'}
+                  {title ?? t('noTitle')}
+                </Link>
+                {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
+              </div>
+              {course.skill?.group && (
+                <span className="text-xs font-medium text-muted-foreground">
+                  {translate(course.skill.group.name as IntlRecord)}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5">
+            {publishedLanguages.map(item => (
+              <CourseCardFlag key={item.value} {...item} />
+            ))}
+          </div>
         </div>
-      </>
-      <CardFooter className="flex-col gap-4">
+      </CardHeader>
+      <CardContent className="mb-0.5">
+        <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground/50')}>
+          {description}
+        </p>
+      </CardContent>
+      <CardFooter className="flex grow flex-col justify-end gap-4">
+        <div className="flex flex-col gap-2">
+          {user.canEdit && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+              <BookCheckIcon className="size-3.5 text-muted-foreground" />
+              {draftLang.length > 0 ? (
+                <div className="flex items-center gap-1">
+                  {t('draftIn')}
+                  {draftLang.map(item => (
+                    <CourseCardDraft key={item.value} {...item} />
+                  ))}
+                </div>
+              ) : (
+                <span className="pointer-events-none text-muted-foreground/50">{t('noDrafts')}</span>
+              )}
+            </div>
+          )}
+          {user.canEdit && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+              <DraftingCompassIcon className="size-3.5 text-muted-foreground" />
+              {draftLang.length > 0 ? (
+                <div className="flex items-center gap-1">
+                  {t('draftIn')}
+                  {draftLang.map(item => (
+                    <CourseCardDraft key={item.value} {...item} />
+                  ))}
+                </div>
+              ) : (
+                <span className="pointer-events-none text-muted-foreground/50">{t('noDrafts')}</span>
+              )}
+            </div>
+          )}
+          <div
+            className={cn(
+              'flex items-center gap-2.5 text-xs font-normal',
+              lessons ? 'text-muted-foreground' : 'pointer-events-none text-muted-foreground/50',
+            )}
+          >
+            <BookOpenIcon className="size-3.5 text-muted-foreground" />
+            {lessons ?? t('noLessons')}
+          </div>
+          {creator && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+              <UserPenIcon className="size-3.5 text-muted-foreground" />
+              <div className="flex items-center gap-2">
+                <span>{t('createdBy')}</span>
+                <HoverCard closeDelay={50} openDelay={300}>
+                  <HoverCardTrigger asChild>
+                    <Button
+                      className={`
+                        peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground
+                        data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground
+                        dark:data-[state=open]:bg-accent/50
+                      `}
+                      size="text"
+                      variant="ghost"
+                    >
+                      {creator.avatarUrl && (
+                        <Avatar className={cn('size-3.5 rounded-full')}>
+                          <AvatarImage className="rounded-full" src={creator.avatarUrl} />
+                        </Avatar>
+                      )}
+                      {creator.name}
+                    </Button>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="bg-popover" side="top">
+                    <UserCard user={creator} />
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            </div>
+          )}
+        </div>
         {!user.canEdit && course.enrolled && (
           <div className="w-full">
             <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">
                 {course.lessonsCompleted}
                 {' / '}
-                {course.lessonsCount}{' '}
-                {t('Common.lessons', {
-                  count: course.lessonsCount,
-                })}
+                {course.lessonsCount} {t('lessons', { count: course.lessonsCount })}
               </span>
               <span>
                 {course.progress}
                 {'% '}
-                {t('Common.completed').toLowerCase()}
+                {t('completed').toLowerCase()}
               </span>
             </div>
             <Progress className="h-1.5" value={course.progress} />
           </div>
         )}
-        <Link className="w-full" href={coursePath}>
-          <Button className="w-full dark:hover:bg-background/50" variant="outline">
-            {actionLabel}
-          </Button>
-        </Link>
+        <Button asChild className="w-full" variant="outline">
+          <Link href={coursePath}>{action}</Link>
+        </Button>
       </CardFooter>
     </Card>
   )

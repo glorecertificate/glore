@@ -528,7 +528,7 @@ export const sidebarMenuButton = cva(
     active:bg-sidebar-accent active:text-sidebar-accent-foreground
     disabled:pointer-events-none disabled:opacity-50
     aria-disabled:pointer-events-none aria-disabled:opacity-50
-    data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[active=true]:text-stroke-0.25
+    data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground
     data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground
     [&>span:last-child]:truncate
     [&>svg]:shrink-0 [&>svg]:grow-0

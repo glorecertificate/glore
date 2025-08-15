@@ -1,9 +1,9 @@
 import { type Options as PrettierOptions } from 'prettier'
 
 export enum RuleSeverity {
-  Off = 0,
-  Warn = 1,
-  Error = 2,
+  Off = 'off',
+  Warn = 'warn',
+  Error = 'error',
 }
 
 export type ConfigFiles = (string | string[])[] | undefined
@@ -229,7 +229,10 @@ export interface ConfigOptions extends FileOptions, ImportOptions {
   /**
    * Additional rules to apply to the ESLint configuration.
    */
-  rules?: Record<string, RuleSeverity>
+  rules?: Record<
+    string,
+    RuleSeverity | `${RuleSeverity}` | [RuleSeverity | `${RuleSeverity}`, Record<string | number | symbol, any> | any[]]
+  >
   /**
    * Whether to sort array values, or a pattern of files to sort.
    *

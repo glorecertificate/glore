@@ -21,6 +21,15 @@ export const LOCALE_ITEMS = Object.entries(config.locales).map(
     }) as LocaleItem,
 )
 
+/**
+ * Locales that should be displayed in title case.
+ * This is useful for languages that have specific capitalization rules.
+ */
+export const TITLE_CASE_LOCALES = config.titleCaseLocales as Locale[]
+
+/**
+ * Formats used for localization.
+ */
 export const FORMATS: Formats = {
   dateTime: {
     short: {

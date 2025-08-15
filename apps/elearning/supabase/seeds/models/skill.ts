@@ -4,7 +4,7 @@ import { handleize } from '@repo/utils/handleize'
 import { pick } from '@repo/utils/pick'
 import { pickRandom } from '@repo/utils/random'
 
-import { client, STORAGE_URL } from 'supabase/seeds/config'
+import { client } from 'supabase/seeds/config'
 import { skill } from 'supabase/seeds/data'
 import { pickLocales, randomLocales, verifyResponse } from 'supabase/seeds/utils'
 import { type Tables } from 'supabase/types'
@@ -14,10 +14,7 @@ const CREATOR_ROLES = ['admin', 'editor']
 export const seedSkills = async ({ users }: { users?: User[] }) => {
   const skills: Tables<'skills'>[] = []
 
-  const groups = await client
-    .from('skill_groups')
-    .insert(pick(skill.groups, 'name', 'icon'))
-    .select()
+  const groups = await client.from('skill_groups').insert(pick(skill.groups, 'name')).select()
   verifyResponse(groups, 'skill_groups')
 
   for (const skillGroup of skill.groups) {
@@ -32,7 +29,6 @@ export const seedSkills = async ({ users }: { users?: User[] }) => {
       const publishedLocales = randomLocales()
       const draftLocales = randomLocales().filter(locale => !publishedLocales.includes(locale))
       const courseLocales = [...new Set([...publishedLocales, ...draftLocales])]
-      const imageUrl = `${STORAGE_URL}/content/${slug}.png`
 
       const title = pickLocales(course.title, courseLocales)
       const description = pickLocales(course.description, courseLocales)
@@ -53,9 +49,10 @@ export const seedSkills = async ({ users }: { users?: User[] }) => {
           slug,
           title,
           description,
-          image_url: imageUrl,
+          icon: course.icon,
           published_locales: publishedLocales,
           draft_locales: draftLocales,
+          sort_order: skills.length + 1,
           skill_id: skill.data![0].id,
           creator_id: creator?.id,
         })

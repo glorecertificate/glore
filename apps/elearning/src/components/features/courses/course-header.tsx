@@ -78,7 +78,7 @@ export const CourseHeader = ({
       <div className="flex items-center justify-end gap-2">
         {user.isLearner && (
           <>
-            {course.status === 'completed' && (
+            {course.userStatus === 'completed' && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Badge

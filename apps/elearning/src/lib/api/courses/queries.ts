@@ -8,8 +8,7 @@ export const skillQuery = `
   ${timestamps},
   group:skill_groups (
     id,
-    name,
-    icon
+    name
   ),
   user_assessments (
     id,
@@ -58,7 +57,7 @@ export const courseQuery = `
   slug,
   title,
   description,
-  imageUrl:image_url,
+  icon,
   publishedLocales:published_locales,
   draftLocales:draft_locales,
   sortOrder:sort_order,

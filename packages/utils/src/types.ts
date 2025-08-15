@@ -28,7 +28,7 @@ export type AnyFunction = (...args: any) => any
 /**
  * Any object type with string keys.
  */
-export type AnyRecord = Record<string, any>
+export type AnyRecord = Record<AnyKey, any>
 
 /**
  * Object with no properties.
@@ -82,8 +82,7 @@ export type KeysOf<T> = T extends object
  *
  * @example
  * ```ts
- * type Params = PathParams<'/users/:id/posts/:postId'>
- * // Result: { id: string; postId: string }
+ * type Params = PathParams<'/users/:id/posts/:postId'> // { id: string; postId: string }
  * ```
  */
 export type PathParams<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
@@ -124,11 +123,77 @@ export interface Recursive<T> {
 }
 
 /**
- * Record with keys converted from `snake_case` to `camelCase`.
+ * Capitalizes the first letter of a string and converts the rest to lowercase.
+ *
+ * @example
+ * ```ts
+ * type Capitalized = Capitalize<'hello world'> // 'Hello world'
+ * type Capitalized = Capitalize<'HELLO WORLD'> // 'Hello world'
+ * ```
+ */
+export type Capitalize<S extends string> = S extends `${infer First}${infer Rest}`
+  ? `${Uppercase<First>}${Lowercase<Rest>}`
+  : S
+
+/**
+ * Record with keys converted from snake to camel case.
+ *
+ * @example
+ * ```ts
+ * type CamelCasedString = SnakeToCamel<'hello_world'> // 'helloWorld'
+ * ```
  */
 export type SnakeToCamel<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
   ? `${T}${Capitalize<SnakeToCamel<U>>}`
   : S
+
+/**
+ * Record with keys converted from camel to snake case.
+ *
+ * @example
+ * ```ts
+ * type SnakeCasedString = CamelToSnake<'helloWorld'> // 'hello_world'
+ * ```
+ */
+export type CamelToSnake<S extends string | number | symbol> = S extends `${infer T}${infer U}`
+  ? T extends Uppercase<T>
+    ? `${Lowercase<T>}_${CamelToSnake<U>}`
+    : `${T}${CamelToSnake<U>}`
+  : S
+
+/**
+ * Record with keys converted to snake case.
+ *
+ * @example
+ * ```ts
+ * interface Example {
+ *   camelCaseKey: string
+ *   anotherKey: number
+ * }
+ *
+ * type SnakeCasedRecord = SnakeCased<Example> // { camel_case_key: string; another_key: number; }
+ * ```
+ */
+export type SnakeCased<T extends AnyRecord> = {
+  [K in keyof T as K extends string ? CamelToSnake<K> : K]: T[K]
+}
+
+/**
+ * Record with keys converted to camel case.
+ *
+ * @example
+ * ```ts
+ * interface Example {
+ *   snake_case_key: string
+ *   another_key: number
+ * }
+ *
+ * type CamelCasedRecord = CamelCased<Example> // { snakeCaseKey: string; anotherKey: number; }
+ * ```
+ */
+export type CamelCased<T extends AnyRecord> = {
+  [K in keyof T as K extends string ? SnakeToCamel<K> : K]: T[K]
+}
 
 /**
  * String or number type.
@@ -180,3 +245,8 @@ export interface Position {
   x: number
   y: number
 }
+
+/**
+ * Hexadecimal color type.
+ */
+export type HexColor = `#${string}${string}${string}` | `#${string}${string}${string}${string}${string}${string}`

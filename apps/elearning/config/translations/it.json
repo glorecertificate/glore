@@ -3,6 +3,7 @@
     "description": "GloRe è una rete aperta che mira ad allargare il suo pubblico sia di volontari che di ONG di tutto il mondo per rendere i certificati disponibili a tutti."
   },
   "Common": {
+    "and": "e",
     "verified": "Verificato",
     "organization": "Organizzazione",
     "underReview": "In revisione",
@@ -15,7 +16,6 @@
     "help": "Aiuto",
     "hide": "Nascondi",
     "language": "Lingua",
-    "lessons": "{count, plural, =1 {lezione} other {lezioni}}",
     "light": "Chiaro",
     "next": "Successivo",
     "notFound": "Pagina non trovata",
@@ -131,6 +131,7 @@
     "certificates": "Certificati"
   },
   "Courses": {
+    "draftIn": "Draft in",
     "answerDisabled": "Non puoi modificare la tua risposta",
     "backTo": "Vedi tutti i corsi",
     "completeCourse": "Completa il corso",
@@ -148,6 +149,7 @@
     "all": "Tutti i corsi",
     "active": "Attivi",
     "partial": "Parziali",
+    "lessons": "{count, plural, =1 {lezione} other {lezioni}}",
     "draft": "Draft",
     "archived": "Archiviati",
     "not_started": "Non iniziati",
@@ -240,7 +242,14 @@
     "addLanguage": "Aggiungi lingua",
     "notCreated": "Non creato",
     "editMessage": "Modifica il corso",
-    "previewMessage": "Visualizza anteprima"
+    "previewMessage": "Visualizza anteprima",
+    "noDescriptionAvailable": "Nessuna descrizione disponibile.",
+    "archive": "Archivio",
+    "seeIn": "Visualizza in",
+    "editIn": "Modifica in",
+    "noDrafts": "Nessun draft disponibile",
+    "noTitle": "Nessun titolo",
+    "viewCourse": "Vedi corso"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",
@@ -285,7 +294,7 @@
     "speaks": "Parla {languages}",
     "contact": "Contatta {user}",
     "admin": "Utente admin",
-    "editor": "Editor"
+    "editor": "Utente editor"
   },
   "Editor": {
     "undo": "Torna indietro",

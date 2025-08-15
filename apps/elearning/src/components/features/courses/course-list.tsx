@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
+import { ArchiveIcon, ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
 import { type Locale } from 'use-intl'
 
 import { hasHistory } from '@repo/utils/has-history'
+import { toCamelCase } from '@repo/utils/to-camel-case'
+import { type SnakeToCamel } from '@repo/utils/types'
 
 import { CourseCard } from '@/components/features/courses/course-card'
 import { Button } from '@/components/ui/button'
@@ -21,6 +23,7 @@ import { NoResultsGraphic } from '@/components/ui/graphics/no-results'
 import { Link } from '@/components/ui/link'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
@@ -41,11 +44,28 @@ export type CourseSort = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[
 export type CourseSortOptions = Record<CourseSort, string>
 export type CourseSortDirection = 'asc' | 'desc'
 
-const CourseTabsTrigger = ({ label, ...props }: { count: number; label: string; value: CourseTab }) => (
-  <TabsTrigger className="flex items-center gap-1" {...props}>
-    {label}
-  </TabsTrigger>
-)
+const CourseTabsTrigger = ({ value, ...props }: { count: number; value: CourseTab }) => {
+  const t = useTranslations('Courses')
+
+  return value === 'archived' ? (
+    <TabsTrigger className="flex items-center p-0" value={value} {...props}>
+      <Tooltip delayDuration={0} disableHoverableContent>
+        <TooltipTrigger asChild>
+          <span className="inline-block px-3.5">
+            <ArchiveIcon />
+          </span>
+        </TooltipTrigger>
+        <TooltipContent arrow={false} sideOffset={10}>
+          {t('archive')}
+        </TooltipContent>
+      </Tooltip>
+    </TabsTrigger>
+  ) : (
+    <TabsTrigger className="flex items-center gap-1" value={value} {...props}>
+      {t(value)}
+    </TabsTrigger>
+  )
+}
 
 const CourseSortDropdown = ({
   direction,
@@ -109,7 +129,6 @@ const CourseSortDropdown = ({
         <DropdownMenuSeparator />
         {Object.entries(options).map(([key, label]) => {
           const option = key as keyof typeof options
-
           return (
             (option !== 'progress' || (tab !== 'not_started' && tab !== 'completed')) && (
               <DropdownMenuItem
@@ -149,23 +168,28 @@ const CourseSortDropdown = ({
 }
 
 export const CourseList = ({
-  defaultLocales = LOCALES,
+  defaultLanguages = LOCALES,
   defaultTab = 'all',
 }: {
-  defaultLocales?: Locale[]
+  defaultLanguages?: Locale[]
   defaultTab?: CourseTab
 }) => {
   const api = useApi()
-  const { localize } = useLocale()
+  const { localize, ...localeStore } = useLocale()
   const { courses: allCourses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseTab>(defaultTab)
   const [activeSort, setActiveSort] = useState<CourseSort | null>(null)
   const [sortDirection, CoursesetSortDirection] = useState<CourseSortDirection | null>(null)
-  const [locales, setLocaleState] = useState<Locale[]>(defaultLocales)
+  const [localeState, setLocaleState] = useState<Locale[]>(defaultLanguages)
 
-  const getCourseLocales = useCallback(
+  const locales = useMemo(
+    () => localeState.sort((a, b) => localeStore.locales.indexOf(a) - localeStore.locales.indexOf(b)),
+    [localeState, localeStore.locales],
+  )
+
+  const getCourseLanguages = useCallback(
     (course: Course) => [...(course.publishedLocales || []), ...(course.draftLocales || [])],
     [],
   )
@@ -177,11 +201,11 @@ export const CourseList = ({
 
   const hasFilters = useMemo(() => locales.length !== LOCALES.length, [locales.length])
 
-  const courses = useMemo<Record<CourseTab, Course[]>>(() => {
+  const courses = useMemo<Record<SnakeToCamel<CourseTab>, Course[]>>(() => {
     const notArchived = allCourses.filter(course => !course.archivedAt)
     const archived = allCourses.filter(course => course.archivedAt)
 
-    const all = notArchived.filter(course => locales.some(locale => getCourseLocales(course).includes(locale)))
+    const all = notArchived.filter(course => locales.some(locale => getCourseLanguages(course).includes(locale)))
     const active = all.filter(course => locales.every(locale => course.publishedLocales?.includes(locale)))
     const partial = all.filter(
       course =>
@@ -193,12 +217,12 @@ export const CourseList = ({
     )
 
     const visible = notArchived.filter(course => locales.some(locale => course.publishedLocales?.includes(locale)))
-    const not_started = visible.filter(course => course.status === 'not_started')
-    const in_progress = visible.filter(course => course.status === 'in_progress')
-    const completed = visible.filter(course => course.status === 'completed')
+    const notStarted = visible.filter(course => course.userStatus === 'not_started')
+    const inProgress = visible.filter(course => course.userStatus === 'in_progress')
+    const completed = visible.filter(course => course.userStatus === 'completed')
 
-    return { all, active, partial, draft, archived, not_started, in_progress, completed }
-  }, [allCourses, getCourseLocales, locales])
+    return { all, active, partial, draft, archived, notStarted, inProgress, completed }
+  }, [allCourses, getCourseLanguages, locales])
 
   const tabs = useMemo(
     () =>
@@ -221,7 +245,7 @@ export const CourseList = ({
 
   const displayedCourses = useMemo(
     () =>
-      courses[activeTab].sort((a, b) => {
+      courses[toCamelCase(activeTab)].sort((a, b) => {
         switch (activeSort) {
           case 'name': {
             const titleA = localize(a.title)
@@ -308,11 +332,11 @@ export const CourseList = ({
       </div>
       <div className="w-full grow py-6">
         <Tabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
-          <div className="mb-6 flex h-auto flex-col flex-wrap justify-between gap-4 sm:flex-row">
-            <div className="flex flex-wrap items-center gap-2">
+          <div className="mb-4 block justify-between gap-4 xl:flex">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 xl:mb-0 xl:justify-start">
               <TabsList className="w-full sm:w-fit">
                 {tabs.map(tab => (
-                  <CourseTabsTrigger count={courses[tab].length} key={tab} label={t(tab)} value={tab} />
+                  <CourseTabsTrigger count={courses[toCamelCase(tab)].length} key={tab} value={tab} />
                 ))}
               </TabsList>
               {user.canEdit && (
@@ -328,10 +352,11 @@ export const CourseList = ({
                 </Button>
               )}
             </div>
-            <div className="flex gap-2">
+            <div className="flex justify-between gap-2 xl:justify-end">
               <MultiSelect
+                className="w-auto"
                 contentProps={{
-                  className: 'w-32',
+                  className: 'w-36',
                 }}
                 minItems={{
                   count: 1,
@@ -371,7 +396,7 @@ export const CourseList = ({
                 </div>
               </div>
             ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {displayedCourses.map(course => (
                   <CourseCard activeLocales={locales} course={course} key={course.id} showTooltips={showCardTooltips} />
                 ))}

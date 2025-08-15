@@ -15,7 +15,6 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"],
       "env": [
         "ENABLE_EXPERIMENTAL_COREPACK",
         "POSTGRES_DATABASE",
@@ -29,13 +28,14 @@
         "SUPABASE_JWT_SECRET",
         "SUPABASE_SERVICE_ROLE_KEY",
         "SUPABASE_URL"
-      ]
+      ],
+      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"]
     },
     "start": {
-      "dependsOn": ["build"],
       "cache": false,
-      "persistent": true,
-      "env": ["SUPABASE_ANON_KEY", "SUPABASE_URL"]
+      "dependsOn": ["build"],
+      "env": ["SUPABASE_ANON_KEY", "SUPABASE_URL"],
+      "persistent": true
     },
     "dev": {
       "cache": false,
@@ -59,6 +59,11 @@
     },
     "check": {
       "dependsOn": ["^check"]
+    },
+    "db": {
+      "cache": false,
+      "dependsOn": ["^db"],
+      "outputs": ["supabase/**"]
     }
   }
 }

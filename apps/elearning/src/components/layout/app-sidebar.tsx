@@ -360,7 +360,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                   <span className="flex items-center gap-1 font-semibold">
                     {user.firstName}
                     {user.isAdmin && (
-                      <Tooltip>
+                      <Tooltip disableHoverableContent>
                         <TooltipTrigger
                           asChild
                           className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"
@@ -374,7 +374,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                       </Tooltip>
                     )}
                     {user.isEditor && (
-                      <Tooltip>
+                      <Tooltip disableHoverableContent>
                         <TooltipTrigger
                           asChild
                           className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"

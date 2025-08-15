@@ -19,7 +19,7 @@ export const Badge = ({ asChild = false, className, color, size, variant, ...pro
 export const badge = cva(
   `
     inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md border border-transparent font-medium whitespace-nowrap
-    transition-[color]
+    transition-[color] select-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
     dark:aria-invalid:ring-destructive/40
@@ -42,6 +42,9 @@ export const badge = cva(
           'border-brand-secondary bg-brand-secondary text-brand-secondary-foreground [a&]:hover:bg-brand-secondary/90',
         'brand-secondary.accent':
           'border-brand-secondary-accent bg-brand-secondary-accent text-brand-secondary-foreground',
+        'brand-tertiary':
+          'border-brand-tertiary bg-brand-tertiary text-brand-tertiary-foreground [a&]:hover:bg-brand-tertiary/90',
+        'brand-tertiary.accent': 'border-brand-tertiary-accent bg-brand-tertiary-accent text-brand-tertiary-foreground',
         destructive: `
           border-destructive bg-destructive text-white
           focus-visible:ring-destructive/20

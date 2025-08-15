@@ -46,12 +46,13 @@ export const TooltipContent = ({
   children,
   className,
   sideOffset = 4,
+  size,
   variant,
   ...props
 }: TooltipContentProps) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
-      className={cn(tooltipContentVariants({ variant }), className)}
+      className={cn(tooltipContentVariants({ size, variant }), className)}
       data-slot="tooltip-content"
       sideOffset={sideOffset}
       {...props}
@@ -64,7 +65,7 @@ export const TooltipContent = ({
 
 export const tooltipContentVariants = cva(
   `
-    z-50 max-w-sm rounded-md bg-foreground px-3 py-1.5 text-xs text-background animate-in fade-in-0 zoom-in-95
+    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95
     data-[side=bottom]:slide-in-from-top-2
     data-[side=left]:slide-in-from-right-2
     data-[side=right]:slide-in-from-left-2
@@ -74,6 +75,7 @@ export const tooltipContentVariants = cva(
   {
     defaultVariants: {
       variant: 'default',
+      size: 'md',
     },
     variants: {
       variant: {
@@ -81,6 +83,11 @@ export const tooltipContentVariants = cva(
         success: 'bg-success-accent/95 text-success-foreground',
         warning: 'bg-warning-accent/95 text-warning-foreground',
         destructive: 'bg-destructive/95 text-destructive-foreground',
+      },
+      size: {
+        sm: 'px-2 py-1 text-[11px]',
+        md: 'px-3 py-1.5 text-xs',
+        lg: 'px-4 py-2 text-sm',
       },
     },
   },

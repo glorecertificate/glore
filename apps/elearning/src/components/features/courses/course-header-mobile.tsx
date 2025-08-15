@@ -77,7 +77,7 @@ export const CourseHeaderMobile = ({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      {course.status !== 'completed' && (
+      {course.userStatus !== 'completed' && (
         <div className="flex items-center justify-end gap-2 bg-background md:top-[72px]">
           <span className="text-sm">
             {course.progress}

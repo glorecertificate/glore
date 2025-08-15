@@ -101,7 +101,7 @@ export const CourseView = (props: { course?: Course }) => {
   })
 
   const initialStep = useMemo(() => {
-    if (!course || course.status === 'completed') return 0
+    if (!course || course.userStatus === 'completed') return 0
     const incompletedIndex = course.lessons?.findIndex(lesson => !lesson.completed)
     if (incompletedIndex !== -1) return incompletedIndex || 0
     return (course.lessons?.length || 0) - 1
@@ -139,7 +139,7 @@ export const CourseView = (props: { course?: Course }) => {
       updateCourse(course => ({
         ...course,
         lessons: course.lessons?.map((s, i) => (i === index ? { ...s, completed: true } : s)),
-        status: isLastLesson ? 'completed' : course.status,
+        status: isLastLesson ? 'completed' : course.userStatus,
         completed: isLastLesson,
       }))
 
@@ -210,7 +210,7 @@ export const CourseView = (props: { course?: Course }) => {
                   lessons={course.lessons}
                   onNext={handleNext}
                   onPrevious={handlePrevious}
-                  status={course.status}
+                  status={course.userStatus}
                   step={step}
                 />
               )}

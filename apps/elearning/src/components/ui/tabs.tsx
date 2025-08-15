@@ -71,7 +71,7 @@ export const tabsTrigger = cva(
     data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow
     data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground
     dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:text-foreground
-    [&_svg]:pointer-events-none [&_svg]:shrink-0
+    [&_svg]:shrink-0
     [&_svg:not([class*="size-"])]:size-4
   `,
   {

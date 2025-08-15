@@ -1,32 +1,46 @@
+import { type SelectData } from '@/lib/api'
 import { parseUser } from '@/lib/api/users/parser'
 import { createParser } from '@/lib/api/utils'
+import { LOCALE_ITEMS } from '@/lib/i18n/config'
 
 import { type courseQuery, type lessonQuery, type skillQuery } from './queries'
-import { CourseType, LessonType, type Course, type Lesson, type Skill } from './types'
+import { CourseStatus, CourseType, LessonType, type Course, type Lesson, type Skill } from './types'
+
+const parseCourseStatus = ({
+  archivedAt,
+  publishedLocales,
+}: SelectData<'courses', typeof courseQuery>): CourseStatus => {
+  if (archivedAt) return CourseStatus.Archived
+  if (!publishedLocales || publishedLocales.length === 0) return CourseStatus.Draft
+  if (publishedLocales.length < LOCALE_ITEMS.length) return CourseStatus.Partial
+  return CourseStatus.Published
+}
 
 export const parseCourse = createParser<'courses', typeof courseQuery, Course>(course => {
   const { creator: courseCreator, lessons: courseLessons, skill: courseSkill, user_courses, ...rest } = course
   const skill = courseSkill ? parseSkill(courseSkill) : undefined
   const type = course.skill ? CourseType.Skill : CourseType.Introduction
+  const status = parseCourseStatus(course)
   const lessons = courseLessons.map(parseLesson)
   const enrolled = user_courses.length > 0
   const lessonsCount = lessons.length
   const lessonsCompleted = lessons.filter(lesson => lesson.completed).length
   const progress = Math.round((lessonsCompleted / lessonsCount) * 100) || 0
   const completed = progress === 100
-  const status = progress === 0 ? 'not_started' : completed ? 'completed' : 'in_progress'
+  const userStatus = progress === 0 ? 'not_started' : completed ? 'completed' : 'in_progress'
   const creator = parseUser(courseCreator)
 
   return {
     ...rest,
     skill,
     type,
+    status,
     lessons,
     lessonsCount,
     lessonsCompleted,
     enrolled,
     progress,
-    status,
+    userStatus,
     completed,
     creator,
   } as Course

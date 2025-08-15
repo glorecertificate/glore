@@ -34,6 +34,7 @@
     "ar": "Arabic"
   },
   "Common": {
+    "and": "and",
     "verified": "Verified",
     "completed": "Completed",
     "underReview": "Under review",
@@ -47,7 +48,6 @@
     "help": "Help",
     "hide": "Hide",
     "language": "Language",
-    "lessons": "{count, plural, =1 {lesson} other {lessons}}",
     "light": "Light",
     "next": "Next",
     "notFound": "Not found",
@@ -162,6 +162,8 @@
     "certificates": "Certificates"
   },
   "Courses": {
+    "draftIn": "Draft in",
+    "lessons": "{count, plural, =1 {lesson} other {lessons}}",
     "answerDisabled": "You can't modify your answer",
     "backTo": "See all courses",
     "completeCourse": "Complete course",
@@ -271,7 +273,14 @@
     "addLanguage": "Add language",
     "notCreated": "Not created",
     "editMessage": "Edit the course",
-    "previewMessage": "See preview"
+    "previewMessage": "See preview",
+    "noDescriptionAvailable": "No description available.",
+    "archive": "Archive",
+    "seeIn": "See in",
+    "editIn": "Edit in",
+    "noDrafts": "No drafts available",
+    "noTitle": "No title available",
+    "viewCourse": "View course"
   },
   "Certificates": {
     "backTo": "Back to all certificates",

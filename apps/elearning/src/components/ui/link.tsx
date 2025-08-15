@@ -9,7 +9,6 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { type HTTPUrl, type MailToUrl, type TelUrl } from '@repo/utils/types'
 
 import { useProgressBar } from '@/components/ui/progress-bar'
-import { usePathname } from '@/hooks/use-pathname'
 import { type Pathname } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -37,7 +36,6 @@ export const Link = <T extends AllowedUrl>({
   ...props
 }: LinkProps<T>) => {
   const progressBar = useProgressBar()
-  const { setPathname } = usePathname()
   const router = useRouter()
 
   const styles = useMemo(() => cn(link({ color, variant, size }), className), [className, color, size, variant])
@@ -54,14 +52,13 @@ export const Link = <T extends AllowedUrl>({
 
         startTransition(() => {
           router.push(href)
-          setPathname(href as Pathname)
           progressBar.done()
         })
       }
 
       if (onClick) onClick(e)
     },
-    [color, hasProgress, href, onClick, progressBar, router, setPathname],
+    [color, hasProgress, href, onClick, progressBar, router],
   )
 
   if (external) return <a className={styles} href={href} onClick={onClick} target={target} {...props} />

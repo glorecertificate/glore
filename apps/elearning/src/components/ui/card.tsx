@@ -2,7 +2,10 @@ import { cn } from '@/lib/utils'
 
 export const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
-    className={cn('flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-xs', className)}
+    className={cn(
+      'group flex h-full flex-col justify-between gap-3 overflow-hidden rounded-xl border bg-card p-6 text-card-foreground shadow-xs',
+      className,
+    )}
     data-slot="card"
     {...props}
   />
@@ -11,11 +14,7 @@ export const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
 export const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      `
-        @container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6
-        has-[data-slot=card-action]:grid-cols-[1fr_auto]
-        [.border-b]:pb-6
-      `,
+      '@container/card-header grid auto-rows-min items-start gap-1.5 has-[data-slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6',
       className,
     )}
     data-slot="card-header"
@@ -39,10 +38,8 @@ export const CardAction = ({ className, ...props }: React.ComponentProps<'div'>)
   />
 )
 
-export const CardContent = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('px-6', className)} data-slot="card-content" {...props} />
-)
+export const CardContent = (props: React.ComponentProps<'div'>) => <div data-slot="card-content" {...props} />
 
 export const CardFooter = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('flex items-center px-6 [.border-t]:pt-6', className)} data-slot="card-footer" {...props} />
+  <div className={cn('[.border-t]:pt-6', className)} data-slot="card-footer" {...props} />
 )

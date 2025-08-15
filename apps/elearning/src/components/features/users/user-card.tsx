@@ -57,24 +57,24 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center gap-1">
             <h4 className="text-sm leading-none font-semibold">{user.fullName}</h4>
             {isVisible('isAdmin') && (
-              <Tooltip>
+              <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
                   <ShieldUserIcon className="size-3.5" />
                 </TooltipTrigger>
-                <TooltipContent sideOffset={3}>
+                <TooltipContent size="sm">
                   <span className="text-xs">{t('User.admin')}</span>
                 </TooltipContent>
               </Tooltip>
             )}
             {isVisible('isEditor') && (
-              <Tooltip>
+              <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
-                  <PencilIcon className="size-3.5" />
+                  <PencilIcon className="size-3" />
                 </TooltipTrigger>
-                <TooltipContent sideOffset={3}>
+                <TooltipContent size="sm">
                   <span className="text-xs">{t('User.editor')}</span>
                 </TooltipContent>
               </Tooltip>

@@ -9,6 +9,13 @@ export enum CourseType {
 }
 
 export enum CourseStatus {
+  Draft = 'draft',
+  Partial = 'partial',
+  Published = 'published',
+  Archived = 'archived',
+}
+
+export enum CourseUserStatus {
   NotStarted = 'not_started',
   InProgress = 'in_progress',
   Completed = 'completed',
@@ -17,18 +24,21 @@ export enum CourseStatus {
 export interface Course extends Entity<'courses', 'title' | 'description', Timestamp> {
   skill?: Skill
   type: CourseType
+  status: Enum<CourseStatus>
   lessons?: Lesson[]
   lessonsCount: number
   lessonsCompleted: number
   enrolled: boolean
   progress: number
-  status: Enum<CourseStatus>
+  userStatus: Enum<CourseUserStatus>
   completed: boolean
   creator?: User
 }
 
+export interface SkillGroup extends Entity<'skill_groups'> {}
+
 export interface Skill extends Entity<'skills', 'name' | 'description', Timestamp> {
-  group?: Entity<'skill_groups'>
+  group?: SkillGroup
   userRating?: number
 }
 

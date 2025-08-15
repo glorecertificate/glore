@@ -56,22 +56,18 @@ export const ExternalRoute = {
 /**
  * Generates a URL path from a route.
  */
-export const route = <R extends Route>(route: R, params?: Record<string, string>) => {
-  const searchParams = new URLSearchParams(params)
-  const search = searchParams.toString()
-  return (search ? `${route}?${search}` : route) as Pathname
-}
-
-/**
- * Generates a URL path from a dynamic route.
- */
-export const dynamicRoute = <R extends Route>(
-  dynamicRoute: R,
-  segments: RouteSegments<R>,
+export const route = <R extends Enum<Route>>(
+  route: R,
+  segments?: RouteSegments<R>,
   params?: Record<string, string>,
 ) => {
-  const path = dynamicRoute.replace(/:([\w-]+)/g, (_, key) => segments[key as keyof RouteSegments<R>] as string)
-  return route(path as Route, params)
+  const path =
+    segments && Object.keys(segments as object).length > 0
+      ? route.replace(/:([\w-]+)/g, (_, key) => segments[key as keyof RouteSegments<R>] as string)
+      : route
+  const searchParams = new URLSearchParams(params)
+  const search = searchParams.toString()
+  return (search ? `${path}?${search}` : path) as Pathname
 }
 
 /**

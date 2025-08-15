@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
+import { CommandSeparator } from 'cmdk'
 import { Check, ChevronsUpDown, X } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -192,6 +193,12 @@ export const MultiSelect = ({
     [onUnselect, onChange, value],
   )
 
+  const onSelectAll = useCallback(() => {
+    onChange(options.map(option => option.value))
+  }, [onChange, options])
+
+  const isAllSelected = useMemo(() => value.length === options.length, [value.length, options.length])
+
   const onButtonClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -294,6 +301,10 @@ export const MultiSelect = ({
                     </div>
                   </CommandItem>
                 ))}
+                <CommandSeparator />
+                <CommandItem className="cursor-pointer" disabled={isAllSelected} onSelect={onSelectAll} value="all">
+                  {tCommon('selectAll')}
+                </CommandItem>
               </CommandGroup>
             </CommandList>
           </Command>

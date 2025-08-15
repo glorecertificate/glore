@@ -19,12 +19,12 @@ import {
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useConfig } from '@/hooks/use-config'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type CourseStatus, type Lesson } from '@/lib/api/courses/types'
+import { type CourseUserStatus, type Lesson } from '@/lib/api/courses/types'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-import config from 'config/app.json'
 
 export const CourseFooter = ({
   lessons,
@@ -36,9 +36,10 @@ export const CourseFooter = ({
   lessons?: Lesson[]
   onNext: () => Promise<void>
   onPrevious: () => void
-  status?: Enum<CourseStatus>
+  status?: Enum<CourseUserStatus>
   step: number
 }) => {
+  const { minSkills } = useConfig()
   const { courses } = useSession()
   const t = useTranslations('Courses')
 
@@ -71,10 +72,10 @@ export const CourseFooter = ({
     () =>
       completedCount < 3
         ? t('completedMessage')
-        : completedCount === config.minSkills
+        : completedCount === minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
-    [completedCount, t],
+    [completedCount, minSkills, t],
   )
 
   return (
@@ -120,12 +121,12 @@ export const CourseFooter = ({
                     <Link href={Route.Courses}>{t('backTo')}</Link>
                   </Button>
                 )}
-                {completedCount === config.minSkills && (
+                {completedCount === minSkills && (
                   <Button asChild variant="brand-secondary">
                     <Link href={Route.CertificateNew}>{t('requestCertificate')}</Link>
                   </Button>
                 )}
-                {completedCount > config.minSkills && (
+                {completedCount > minSkills && (
                   <Button asChild variant="outline">
                     <Link href={Route.Certificates}>{t('goToCertificate')}</Link>
                   </Button>

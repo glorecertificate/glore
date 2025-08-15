@@ -3,6 +3,7 @@
     "description": "GloRe es una red abierta que tiene como objetivo ampliar su audiencia tanto de voluntarios como de ONG de todo el mundo para hacer que los certificados estén disponibles para todos."
   },
   "Common": {
+    "and": "y",
     "verified": "Verificado",
     "organization": "Organización",
     "underReview": "Bajo revisión",
@@ -15,7 +16,6 @@
     "help": "Ayuda",
     "hide": "Esconder",
     "language": "Idioma",
-    "lessons": "{count, plural, =1 {lección} other {lecciones}}",
     "light": "Claro",
     "next": "Siguiente",
     "notFound": "No encontrado",
@@ -131,6 +131,8 @@
     "certificates": "Certificados"
   },
   "Courses": {
+    "draftIn": "Draft en",
+    "lessons": "{count, plural, =1 {lección} other {lecciones}}",
     "answerDisabled": "No puedes modificar tu respuesta",
     "backTo": "Mirar todos los cursos",
     "completeCourse": "Completar curso",
@@ -240,7 +242,14 @@
     "addLanguage": "Agregar idioma",
     "notCreated": "No creado",
     "editMessage": "Editar el curso",
-    "previewMessage": "Ver vista previa"
+    "previewMessage": "Ver vista previa",
+    "noDescriptionAvailable": "No hay descripción disponible.",
+    "archive": "Archivo",
+    "seeIn": "Ver en",
+    "editIn": "Editar en",
+    "noDrafts": "No hay drafts disponibles",
+    "noTitle": "No hay título",
+    "viewCourse": "Ver el curso"
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",
@@ -285,7 +294,7 @@
     "speaks": "Habla {languages}",
     "contact": "Contactar {user}",
     "admin": "Usuario admin",
-    "editor": "Editor"
+    "editor": "Utente editor"
   },
   "Editor": {
     "undo": "Revertir",

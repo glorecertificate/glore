@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.4.14](https://github.com/gabrielecanepa/glore/compare/v0.4.13...v0.4.14) (2025-08-16)
+
+### Build 📦
+
+- **deps:** Bump dependencies to latest patch ([5c597fc](https://github.com/gabrielecanepa/glore/commit/5c597fcc744b82ecda419611bb5de988190ca723))
+
+### Other
+
+- Add health check API endpoint ([a8d038c](https://github.com/gabrielecanepa/glore/commit/a8d038c0d25d9be9ab05c907080c439b3b60a78c))
+- Enhance course management with improved UI and new utilities ([b167890](https://github.com/gabrielecanepa/glore/commit/b1678902c208019bec31166cb4624422c5022fbf))
+- Reorganize API modules ([c5949a2](https://github.com/gabrielecanepa/glore/commit/c5949a2ef3abd222a5a9817c13a2f111561e32c4))
+- Replace `#rte` path alias with `[@rte](https://github.com/rte)` ([0ffc1db](https://github.com/gabrielecanepa/glore/commit/0ffc1db5f05b3df9da50738103aac8552e0acce5))
+
 ## [0.4.13](https://github.com/gabrielecanepa/glore/compare/v0.4.12...v0.4.13) (2025-08-09)
 
 ### CI 🤖

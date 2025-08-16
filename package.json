@@ -20,7 +20,7 @@
     "format": "pnpm root#format && turbo run format",
     "check": "pnpm root#check && turbo run check",
     "db": "turbo run db --ui=stream --",
-    "deploy": "pnpm check && vercel build && vercel --prebuilt",
+    "deploy:preview": "pnpm check && vercel build && vercel --prebuilt",
     "deploy:prod": "pnpm check && vercel build --prod && vercel --prebuilt --prod",
     "analyze": "turbo run analyze",
     "bump": "corepack use pnpm@latest && pnpm upgrade --recursive",

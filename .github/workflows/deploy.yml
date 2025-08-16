@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - v*
-  workflow_dispatch:
 
 env:
   NEXT_TELEMETRY_DISABLED: true
@@ -44,12 +43,21 @@ jobs:
         run: |
           pnpm install --dev --frozen-lockfile --strict-peer-dependencies
           echo ./node_modules/.bin >> $GITHUB_PATH
-      - name: Verify migrations
+      - name: Verify configuration changes
+        id: verify-config
+        uses: tj-actions/changed-files@v46
+        with:
+          files: 'apps/*/supabase/config.toml'
+      - name: Verify new migrations
         id: verify-migrations
         uses: tj-actions/changed-files@v46
         with:
           files: 'apps/*/supabase/migrations/*.sql'
+      - name: Skip database push
+        if: ${{ steps.verify-config.outputs.any_changed != 'true' && steps.verify-migrations.outputs.any_changed != 'true' }}
+        run: echo "::notice::No changes detected, skipping push."
       - run: pnpm db push
+        if: ${{ steps.verify-config.outputs.any_changed == 'true' || steps.verify-migrations.outputs.any_changed == 'true' }}
         working-directory: ${{ vars.APP_PATH }}
 
   deploy:
@@ -63,6 +71,8 @@ jobs:
       name: Production
       url: ${{ steps.vercel.outputs.deployment-url }}
     env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_API_MODEL: ${{ vars.OPENAI_MODEL }}
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
     steps:
       - uses: actions/checkout@v4

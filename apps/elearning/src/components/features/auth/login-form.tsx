@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { type PostgrestError } from '@supabase/supabase-js'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -125,8 +126,8 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         user = await api.users.findByUsername(username)
       } catch (e) {
         setSubmitting(false)
-        const error = e as DatabaseError
-        if (error.code === 'NO_RESULTS') return form.setError('user', { message: t('userNotFound') })
+        const error = e as PostgrestError
+        if (error.code === 'PGRST116') return form.setError('user', { message: t('userNotFound') })
         log.error(e)
         return toast.error(t('networkError'))
       }
@@ -136,13 +137,10 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       } catch (e) {
         setSubmitting(false)
         const error = e as DatabaseError
+        if (error.code === 'PGRST116') return form.setError('password', { message: t('passwordInvalid') })
         log.error(e)
-        if (error.code === 'INVALID_CREDENTIALS') {
-          return form.setError('password', { message: t('passwordInvalid') })
-        }
         return toast.error(t('networkError'))
       }
-
       redirect(Route.Home)
     },
     [api, form, t, setSubmitting],

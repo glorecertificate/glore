@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-import { BookCheckIcon, BookOpenIcon, DraftingCompassIcon, UserPenIcon } from 'lucide-react'
+import { BookOpenIcon, DraftingCompassIcon, UserPenIcon } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 
 import { truncate, TRUNCATE_SYMBOL } from '@repo/utils/truncate'
@@ -23,6 +23,7 @@ import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api/courses/types'
 import { type IntlRecord, type Locale, type LocaleItem } from '@/lib/i18n/types'
 import { route } from '@/lib/navigation'
+import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 interface LanguageItemProps extends LocaleItem {
@@ -109,36 +110,33 @@ const CourseCardDraft = ({ active, icon, onClick, value }: LanguageItemProps) =>
 }
 
 export const CourseCard = ({
-  activeLocales,
+  activeLanguages,
   course,
   showTooltips = true,
 }: {
-  activeLocales: Locale[]
-  course: Course
+  activeLanguages: Locale[]
+  course: Course & {
+    language: Locale
+  }
   showTooltips?: boolean
 }) => {
-  const { locale, localeItems, locales, localize } = useLocale()
+  const { localeItems, locales, localize } = useLocale()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
-  const getLang = useCallback(
-    () =>
-      course.publishedLocales?.includes(locale)
-        ? course.publishedLocales.sort((a, b) => locales.indexOf(a) - locales.indexOf(b))[0]
-        : locale,
-    [course.publishedLocales, locale, locales],
-  )
-
-  const [language, setLanguage] = useState(getLang())
+  const [language, setLanguage] = useState(course.language)
 
   const translate = useCallback((record: IntlRecord) => localize(record, language), [localize, language])
 
-  const onLanguageClick = useCallback(
+  const updateLanguage = useCallback(
     (value: Locale) => {
       if (value === language) return
       setLanguage(value)
+      const languageCookie = cookies.get('courses-language') || {}
+      languageCookie[String(course.id)] = value
+      cookies.set('courses-language', languageCookie)
     },
-    [language],
+    [course.id, language],
   )
 
   const coursePath = useMemo(
@@ -155,19 +153,22 @@ export const CourseCard = ({
             {
               ...item,
               active: item.value === language,
-              onClick: onLanguageClick,
+              onClick: updateLanguage,
               showTooltip: showTooltips,
             },
           ],
           [] as LanguageItemProps[],
         )
         .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
-    [language, localeItems, locales, onLanguageClick, showTooltips],
+    [language, localeItems, locales, updateLanguage, showTooltips],
   )
 
   const languages = useMemo(
-    () => languageItems.filter(({ value }) => activeLocales.includes(value)),
-    [activeLocales, languageItems],
+    () =>
+      languageItems
+        .filter(({ value }) => activeLanguages.includes(value))
+        .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
+    [activeLanguages, languageItems, locales],
   )
 
   const publishedLanguages = useMemo(
@@ -175,7 +176,7 @@ export const CourseCard = ({
     [course.publishedLocales, languages],
   )
 
-  const draftLang = useMemo(
+  const draftLanguages = useMemo(
     () => languages.filter(({ value }) => course.draftLocales?.includes(value)),
     [course.draftLocales, languages],
   )
@@ -201,6 +202,11 @@ export const CourseCard = ({
       courseDescription
     )
   }, [course.description, translate])
+
+  const draftMessage = useMemo(
+    () => (course.publishedLocales?.length === locales.length ? t('allLanguagesPublished') : t('noDrafts')),
+    [course.publishedLocales, locales, t],
+  )
 
   const lessons = useMemo(() => {
     const count = course.lessons?.length ?? 0
@@ -228,11 +234,6 @@ export const CourseCard = ({
     return t('continueCourse')
   }, [course.enrolled, course.completed, t, user.canEdit])
 
-  useEffect(() => {
-    if (activeLocales.includes(language)) return
-    return setLanguage(getLang())
-  }, [activeLocales, getLang, language])
-
   return (
     <Card className="min-h-80">
       <CardHeader className="gap-4">
@@ -256,7 +257,6 @@ export const CourseCard = ({
                   href={coursePath}
                   title={t('viewCourse')}
                 >
-                  {'ciao'}
                   {title ?? t('noTitle')}
                 </Link>
                 {user.isLearner && course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
@@ -284,31 +284,16 @@ export const CourseCard = ({
         <div className="flex flex-col gap-2">
           {user.canEdit && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-              <BookCheckIcon className="size-3.5 text-muted-foreground" />
-              {draftLang.length > 0 ? (
-                <div className="flex items-center gap-1">
-                  {t('draftIn')}
-                  {draftLang.map(item => (
-                    <CourseCardDraft key={item.value} {...item} />
-                  ))}
-                </div>
-              ) : (
-                <span className="pointer-events-none text-muted-foreground/50">{t('noDrafts')}</span>
-              )}
-            </div>
-          )}
-          {user.canEdit && (
-            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
               <DraftingCompassIcon className="size-3.5 text-muted-foreground" />
-              {draftLang.length > 0 ? (
+              {draftLanguages.length > 0 ? (
                 <div className="flex items-center gap-1">
                   {t('draftIn')}
-                  {draftLang.map(item => (
+                  {draftLanguages.map(item => (
                     <CourseCardDraft key={item.value} {...item} />
                   ))}
                 </div>
               ) : (
-                <span className="pointer-events-none text-muted-foreground/50">{t('noDrafts')}</span>
+                <span className="pointer-events-none text-muted-foreground/50">{draftMessage}</span>
               )}
             </div>
           )}

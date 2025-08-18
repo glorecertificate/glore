@@ -221,7 +221,7 @@
     "emptyMessageInProgress": "No tienes cursos en progreso",
     "emptyMessageNotStarted": "Ya ha comenzado todos los cursos disponibles 👏",
     "emptyTitle": "No hay cursos disponibles",
-    "emptyTitleActive": "No hay cursos activos disponibles",
+    "emptyTitlePublished": "No hay cursos publicados",
     "emptyTitleArchived": "El archivo está vacío",
     "emptyTitleCommon": "No se encontraron cursos",
     "emptyTitleDraft": "No hay borradores disponibles",
@@ -231,7 +231,7 @@
     "progress": "Progreso",
     "name": "Nombre",
     "type": "Tipo",
-    "emptyMessageActive": "No hay cursos activoseste momento",
+    "emptyMessagePublished": "No hay cursos publicados",
     "emptyMessageDraft": "No hay draft",
     "withFilters": "{message} con los idiomas seleccionados",
     "atTheMoment": "{message} en este momento",
@@ -249,7 +249,8 @@
     "editIn": "Editar en",
     "noDrafts": "No hay drafts disponibles",
     "noTitle": "No hay título",
-    "viewCourse": "Ver el curso"
+    "viewCourse": "Ver el curso",
+    "allLanguagesPublished": "Todos los idiomas están publicados "
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",

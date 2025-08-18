@@ -11,7 +11,8 @@ import { type Theme } from '@/lib/theme'
 export interface Cookies {
   NEXT_LOCALE: Locale
   'active-org': number
-  'course-locales': Locale[]
+  'courses-language': Record<string, Locale>
+  'courses-language-filter': Locale[]
   'course-tab': CourseTab
   'sidebar-open': boolean
   user: User

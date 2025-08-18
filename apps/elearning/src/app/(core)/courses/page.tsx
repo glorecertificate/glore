@@ -7,8 +7,9 @@ export const generateMetadata = createMetadata({
 })
 
 export default async () => {
-  const locales = await getCookie('course-locales')
+  const coursesLanguage = await getCookie('courses-language')
+  const languageFilter = await getCookie('courses-language-filter')
   const tab = await getCookie('course-tab')
 
-  return <CourseList defaultLanguages={locales} defaultTab={tab} />
+  return <CourseList defaultCoursesLanguage={coursesLanguage} defaultLanguageFilter={languageFilter} defaultTab={tab} />
 }

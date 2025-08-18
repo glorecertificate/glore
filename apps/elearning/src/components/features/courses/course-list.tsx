@@ -29,18 +29,22 @@ import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api/courses/types'
-import { LOCALE_ITEMS, LOCALES } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const EDITOR_TABS = ['all', 'active', 'partial', 'draft', 'archived'] as const
-const EDITOR_SORTS = ['name', 'type'] as const
-const LEARNER_TABS = ['all', 'not_started', 'in_progress', 'completed'] as const
-const LEARNER_SORTS = ['name', 'progress', 'type'] as const
+const TABS = Object.freeze({
+  editor: ['all', 'published', 'partial', 'draft', 'archived'] as const,
+  learner: ['all', 'not_started', 'in_progress', 'completed'] as const,
+})
 
-export type CourseTab = (typeof EDITOR_TABS)[number] | (typeof LEARNER_TABS)[number]
-export type CourseSort = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[number]
+const SORTS = Object.freeze({
+  editor: ['name', 'type'] as const,
+  learner: ['name', 'progress', 'type'] as const,
+})
+
+export type CourseTab = (typeof TABS.editor)[number] | (typeof TABS.learner)[number]
+export type CourseSort = (typeof SORTS.editor)[number] | (typeof SORTS.learner)[number]
 export type CourseSortOptions = Record<CourseSort, string>
 export type CourseSortDirection = 'asc' | 'desc'
 
@@ -85,7 +89,7 @@ const CourseSortDropdown = ({
   const [open, setOpen] = useState(false)
 
   const options = useMemo(() => {
-    const sorts = user.canEdit ? EDITOR_SORTS : LEARNER_SORTS
+    const sorts = user.canEdit ? SORTS.editor : SORTS.learner
     return sorts.reduce((options, sort) => ({ ...options, [sort]: t(`Courses.${sort}`) }), {} as CourseSortOptions)
   }, [t, user.canEdit])
 
@@ -168,108 +172,135 @@ const CourseSortDropdown = ({
 }
 
 export const CourseList = ({
-  defaultLanguages = LOCALES,
+  defaultCoursesLanguage,
+  defaultLanguageFilter,
   defaultTab = 'all',
 }: {
-  defaultLanguages?: Locale[]
+  defaultCoursesLanguage?: Record<string, Locale>
+  defaultLanguageFilter?: Locale[]
   defaultTab?: CourseTab
 }) => {
   const api = useApi()
-  const { localize, ...localeStore } = useLocale()
+  const { locale, localeItems, locales, localize } = useLocale()
   const { courses: allCourses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseTab>(defaultTab)
   const [activeSort, setActiveSort] = useState<CourseSort | null>(null)
-  const [sortDirection, CoursesetSortDirection] = useState<CourseSortDirection | null>(null)
-  const [localeState, setLocaleState] = useState<Locale[]>(defaultLanguages)
-
-  const locales = useMemo(
-    () => localeState.sort((a, b) => localeStore.locales.indexOf(a) - localeStore.locales.indexOf(b)),
-    [localeState, localeStore.locales],
-  )
-
-  const getCourseLanguages = useCallback(
-    (course: Course) => [...(course.publishedLocales || []), ...(course.draftLocales || [])],
-    [],
-  )
+  const [languageFilter, setLanguageFilter] = useState<Locale[]>(defaultLanguageFilter ?? locales)
+  const [sortDirection, setSortDirection] = useState<CourseSortDirection | null>(null)
 
   const pageDescription = useMemo(
     () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
     [t, user.isAdmin, user.isEditor],
   )
 
-  const hasFilters = useMemo(() => locales.length !== LOCALES.length, [locales.length])
+  const activeLanguages = useMemo(
+    () => languageFilter.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)),
+    [languageFilter, locales],
+  )
+
+  const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
+
+  const sortLanguages = useCallback(
+    (langs: Locale[] | null) => langs?.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)) ?? [],
+    [locales],
+  )
+
+  const getAvailableLanguages = useCallback(
+    (course: Course) => {
+      const published = sortLanguages(course.publishedLocales)
+      const draft = sortLanguages(course.draftLocales)
+
+      return { all: sortLanguages([...published, ...draft]), published, draft }
+    },
+    [sortLanguages],
+  )
 
   const courses = useMemo<Record<SnakeToCamel<CourseTab>, Course[]>>(() => {
     const notArchived = allCourses.filter(course => !course.archivedAt)
     const archived = allCourses.filter(course => course.archivedAt)
 
-    const all = notArchived.filter(course => locales.some(locale => getCourseLanguages(course).includes(locale)))
-    const active = all.filter(course => locales.every(locale => course.publishedLocales?.includes(locale)))
+    const all = notArchived.filter(course =>
+      activeLanguages.some(locale => getAvailableLanguages(course).all.includes(locale)),
+    )
+    const published = all.filter(course => activeLanguages.every(locale => course.publishedLocales?.includes(locale)))
     const partial = all.filter(
       course =>
-        locales.some(locale => course.publishedLocales?.includes(locale)) &&
-        locales.some(locale => course.draftLocales?.includes(locale)),
+        activeLanguages.some(locale => course.publishedLocales?.includes(locale)) &&
+        activeLanguages.some(locale => course.draftLocales?.includes(locale)),
     )
     const draft = all.filter(course =>
-      locales.every(locale => !course.publishedLocales?.includes(locale) || course.draftLocales?.includes(locale)),
+      activeLanguages.every(
+        locale => !course.publishedLocales?.includes(locale) || course.draftLocales?.includes(locale),
+      ),
     )
 
-    const visible = notArchived.filter(course => locales.some(locale => course.publishedLocales?.includes(locale)))
+    const visible = notArchived.filter(course =>
+      activeLanguages.some(locale => course.publishedLocales?.includes(locale)),
+    )
     const notStarted = visible.filter(course => course.userStatus === 'not_started')
     const inProgress = visible.filter(course => course.userStatus === 'in_progress')
     const completed = visible.filter(course => course.userStatus === 'completed')
 
-    return { all, active, partial, draft, archived, notStarted, inProgress, completed }
-  }, [allCourses, getCourseLanguages, locales])
+    return { all, published, partial, draft, archived, notStarted, inProgress, completed }
+  }, [allCourses, activeLanguages, getAvailableLanguages])
 
   const tabs = useMemo(
     () =>
       user.canEdit
-        ? locales.length > 1 && courses.partial.length > 0
-          ? EDITOR_TABS
-          : EDITOR_TABS.filter(tab => tab !== 'partial')
-        : LEARNER_TABS,
-    [courses.partial.length, locales.length, user.canEdit],
-  )
-
-  const setLocales = useCallback(
-    (selected: Locale[]) => {
-      setLocaleState(selected)
-      cookies.set('course-locales', selected)
-      if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
-    },
-    [activeTab, courses.partial.length],
+        ? activeLanguages.length > 1 && courses.partial.length > 0
+          ? TABS.editor
+          : TABS.editor.filter(tab => tab !== 'partial')
+        : TABS.learner,
+    [courses.partial.length, activeLanguages.length, user.canEdit],
   )
 
   const displayedCourses = useMemo(
     () =>
-      courses[toCamelCase(activeTab)].sort((a, b) => {
-        switch (activeSort) {
-          case 'name': {
-            const titleA = localize(a.title)
-            const titleB = localize(b.title)
-            if (!titleA || !titleB) return 0
-            return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
+      courses[toCamelCase(activeTab)]
+        .map(course => {
+          const cookieLanguage = defaultCoursesLanguage?.[String(course.id)]
+          if (cookieLanguage && activeLanguages.includes(cookieLanguage)) return { ...course, language: cookieLanguage }
+          const langs = getAvailableLanguages(course)
+          const lang = langs.all.includes(locale) ? locale : langs.published[0] || langs.draft[0]
+          return { ...course, language: lang }
+        })
+        .sort((a, b) => {
+          switch (activeSort) {
+            case 'name': {
+              const titleA = localize(a.title)
+              const titleB = localize(b.title)
+              if (!titleA || !titleB) return 0
+              return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
+            }
+            case 'progress':
+              return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
+            case 'type':
+              return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
+            default:
+              return a.createdAt < b.createdAt ? 1 : 0
           }
-          case 'progress':
-            return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
-          case 'type':
-            return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
-          default:
-            return a.createdAt < b.createdAt ? 1 : 0
-        }
-      }),
-    [activeSort, activeTab, courses, localize, sortDirection],
+        }),
+    [
+      activeLanguages,
+      activeSort,
+      activeTab,
+      courses,
+      defaultCoursesLanguage,
+      getAvailableLanguages,
+      locale,
+      localize,
+      sortDirection,
+    ],
   )
 
   const showCardTooltips = useMemo(() => activeTab !== 'archived', [activeTab])
 
   const emptyListTitle = useMemo(() => {
     switch (activeTab) {
-      case 'active':
-        return t('emptyTitleActive')
+      case 'published':
+        return t('emptyTitlePublished')
       case 'draft':
         return t('emptyTitleDraft')
       case 'archived':
@@ -286,8 +317,8 @@ export const CourseList = ({
 
   const emptyListMessage = useMemo(() => {
     switch (activeTab) {
-      case 'active':
-        return enhanceEmptyListMessage(t('emptyMessageActive'))
+      case 'published':
+        return enhanceEmptyListMessage(t('emptyMessagePublished'))
       case 'draft':
         return enhanceEmptyListMessage(t('emptyMessageDraft'))
       case 'archived':
@@ -315,14 +346,20 @@ export const CourseList = ({
     cookies.set('course-tab', tab)
   }, [])
 
+  const setActiveLanguages = useCallback(
+    (selected: Locale[]) => {
+      setLanguageFilter(selected)
+      cookies.set('courses-language-filter', selected)
+      if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
+    },
+    [activeTab, courses.partial.length],
+  )
+
   useEffect(() => {
-    const localeCookie = cookies.get('course-locales')
-    if (!localeCookie || localeCookie.length === 0) {
-      setLocaleState(LOCALES)
-      cookies.set('course-locales', LOCALES)
-    }
+    const languageCookie = cookies.get('courses-language-filter')
+    if (!languageCookie || languageCookie.length === 0) setActiveLanguages(locales)
     void fetchCourses()
-  }, [fetchCourses])
+  }, [fetchCourses, locales, setActiveLanguages])
 
   return (
     <>
@@ -362,16 +399,16 @@ export const CourseList = ({
                   count: 1,
                   message: t('selectAtLeastOneLanguage'),
                 }}
-                onChange={setLocales as (selected: string[]) => void}
-                options={LOCALE_ITEMS}
+                onChange={setActiveLanguages as (selected: string[]) => void}
+                options={localeItems}
                 placeholder={t('selectLanguages')}
                 search={false}
                 toastType="warning"
-                value={locales}
+                value={activeLanguages}
               />
               <CourseSortDropdown
                 direction={sortDirection}
-                setDirection={CoursesetSortDirection}
+                setDirection={setSortDirection}
                 setValue={setActiveSort}
                 tab={activeTab}
                 value={activeSort}
@@ -398,7 +435,12 @@ export const CourseList = ({
             ) : (
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {displayedCourses.map(course => (
-                  <CourseCard activeLocales={locales} course={course} key={course.id} showTooltips={showCardTooltips} />
+                  <CourseCard
+                    activeLanguages={activeLanguages}
+                    course={course}
+                    key={course.id}
+                    showTooltips={showCardTooltips}
+                  />
                 ))}
               </div>
             )}

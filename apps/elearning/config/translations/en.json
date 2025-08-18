@@ -248,7 +248,7 @@
     "noLessons": "No lessons",
     "emptyTitle": "No courses available",
     "emptyTitleCommon": "No courses found",
-    "emptyTitleActive": "No active courses available",
+    "emptyTitlePublished": "There are no published courses",
     "emptyTitleDraft": "No drafts available",
     "emptyTitleArchived": "The archive is empty",
     "emptyMessage": "There are no courses available in this section",
@@ -262,7 +262,7 @@
     "progress": "Progress",
     "name": "Name",
     "type": "Type",
-    "emptyMessageActive": "There are no active courses",
+    "emptyMessagePublished": "There are no published courses",
     "emptyMessageDraft": "There are no drafted courses",
     "withFilters": "{message} with the selected languages",
     "atTheMoment": "{message} at the moment",
@@ -280,7 +280,8 @@
     "editIn": "Edit in",
     "noDrafts": "No drafts available",
     "noTitle": "No title available",
-    "viewCourse": "View course"
+    "viewCourse": "View course",
+    "allLanguagesPublished": "All languages are published"
   },
   "Certificates": {
     "backTo": "Back to all certificates",

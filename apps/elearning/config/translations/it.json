@@ -205,7 +205,7 @@
     "syncErrorMessage": "Si è verificato un errore di sincronizzazione, aggiorna la pagina",
     "previous": "Precedente",
     "publicationStatus": "{type, select, active {Attivo} draft {Draft} archived {Archiviato} other {}}",
-    "published": "Pubblicato",
+    "published": "Pubblicati",
     "courseTitlePlaceholder": "Nuovo corso",
     "preview": "Anteprima",
     "edit": "Modifica",
@@ -221,7 +221,7 @@
     "emptyMessageInProgress": "Non hai corsi in corso",
     "emptyMessageNotStarted": "Hai già iniziato tutti i corsi disponibili 👏",
     "emptyTitle": "Nessun corso disponibile",
-    "emptyTitleActive": "Non sono disponibili corsi attivi",
+    "emptyTitlePublished": "Non ci sono corsi pubblicati",
     "emptyTitleArchived": "L'archivio è vuoto",
     "emptyTitleCommon": "Nessun corso trovato",
     "emptyTitleDraft": "Nessun draft disponibile",
@@ -231,7 +231,7 @@
     "progress": "Progresso",
     "name": "Nome",
     "type": "Tipo",
-    "emptyMessageActive": "Non ci sono corsi attivi",
+    "emptyMessagePublished": "Non ci sono corsi pubblicati",
     "withFilters": "{message} nelle lingue selezionate",
     "atTheMoment": "{message} al momento",
     "emptyMessageDraft": "Non ci sono draft",
@@ -249,7 +249,8 @@
     "editIn": "Modifica in",
     "noDrafts": "Nessun draft disponibile",
     "noTitle": "Nessun titolo",
-    "viewCourse": "Vedi corso"
+    "viewCourse": "Vedi corso",
+    "allLanguagesPublished": "Tutte le lingue sono pubblicate"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",

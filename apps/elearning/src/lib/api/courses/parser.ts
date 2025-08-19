@@ -23,26 +23,37 @@ export const parseCourse = createParser<'courses', typeof courseQuery, Course>(c
   const status = parseCourseStatus(course)
   const lessons = courseLessons.map(parseLesson)
   const enrolled = user_courses.length > 0
-  const lessonsCount = lessons.length
-  const lessonsCompleted = lessons.filter(lesson => lesson.completed).length
-  const progress = Math.round((lessonsCompleted / lessonsCount) * 100) || 0
-  const completed = progress === 100
-  const userStatus = progress === 0 ? 'not_started' : completed ? 'completed' : 'in_progress'
+  const completion = Math.round((lessons.filter(lesson => lesson.completed).length / lessons.length) * 100) || 0
+  const completed = completion === 100
+  const progress = completion === 0 ? 'not_started' : completed ? 'completed' : 'in_progress'
   const creator = parseUser(courseCreator)
+  const contributions = [
+    {
+      id: 0,
+      user: creator,
+      createdAt: course.createdAt,
+      updatedAt: course.createdAt,
+    },
+    ...lessons.flatMap(lesson => lesson.contributions),
+  ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  const contributors = [...new Set(contributions.map(contribution => contribution.user))].map(user => ({
+    ...user,
+    count: contributions.filter(contribution => contribution.user.id === user.id).length,
+  }))
 
   return {
     ...rest,
     skill,
     type,
     status,
-    lessons,
-    lessonsCount,
-    lessonsCompleted,
-    enrolled,
-    progress,
-    userStatus,
-    completed,
     creator,
+    lessons,
+    contributions,
+    contributors,
+    enrolled,
+    completion,
+    progress,
+    completed,
   } as Course
 })
 
@@ -74,6 +85,10 @@ export const parseLesson = createParser<'lessons', typeof lessonQuery, Lesson>((
     ...evaluation,
     userRating: user_evaluations[0]?.value,
   }))
+  const contributions = lesson.contributions.map(contribution => ({
+    ...contribution,
+    user: parseUser(contribution.user),
+  }))
 
   let type: LessonType = LessonType.Reading
   if (questions.length) type = LessonType.Questions
@@ -89,5 +104,6 @@ export const parseLesson = createParser<'lessons', typeof lessonQuery, Lesson>((
     assessment,
     evaluations,
     completed,
+    contributions,
   } as Lesson
 })

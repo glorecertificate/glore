@@ -17,7 +17,8 @@ export const RadioGroupItem = ({ className, ...props }: RadioGroupItemProps) => 
   <RadioGroupPrimitive.Item
     className={cn(
       `
-        aspect-square size-4 shrink-0 rounded-full border border-input text-brand-secondary shadow-xs transition-[color,box-shadow] outline-none
+        aspect-square size-4 shrink-0 rounded-full border border-input text-brand-secondary shadow-xs transition-[color,box-shadow]
+        outline-none
         focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
         disabled:cursor-not-allowed disabled:opacity-50
         aria-invalid:border-destructive aria-invalid:ring-destructive/20
@@ -32,7 +33,7 @@ export const RadioGroupItem = ({ className, ...props }: RadioGroupItemProps) => 
       className="relative flex items-center justify-center"
       data-slot="radio-group-indicator"
     >
-      <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-brand-secondary" />
+      <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-1/2 fill-brand-secondary" />
     </RadioGroupPrimitive.Indicator>
   </RadioGroupPrimitive.Item>
 )

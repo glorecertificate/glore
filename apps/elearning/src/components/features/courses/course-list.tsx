@@ -1,11 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ArchiveIcon, ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
 import { type Locale } from 'use-intl'
 
-import { hasHistory } from '@repo/utils/has-history'
 import { toCamelCase } from '@repo/utils/to-camel-case'
 import { type SnakeToCamel } from '@repo/utils/types'
 
@@ -21,10 +20,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { NoResultsGraphic } from '@/components/ui/graphics/no-results'
 import { Link } from '@/components/ui/link'
+import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
 import { MultiSelect } from '@/components/ui/multi-select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useApi } from '@/hooks/use-api'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
@@ -33,26 +31,39 @@ import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const TABS = Object.freeze({
-  editor: ['all', 'published', 'partial', 'draft', 'archived'] as const,
-  learner: ['all', 'not_started', 'in_progress', 'completed'] as const,
-})
+const TABS = {
+  editor: ['all', 'published', 'partial', 'draft', 'missing', 'archived'],
+  learner: ['all', 'not_started', 'in_progress', 'completed'],
+}
 
-const SORTS = Object.freeze({
-  editor: ['name', 'type'] as const,
-  learner: ['name', 'progress', 'type'] as const,
-})
+const SORTS = {
+  editor: ['name', 'type'],
+  learner: ['name', 'progress', 'type'],
+}
 
-export type CourseTab = (typeof TABS.editor)[number] | (typeof TABS.learner)[number]
-export type CourseSort = (typeof SORTS.editor)[number] | (typeof SORTS.learner)[number]
+export type CourseTab = (typeof TABS.editor)[number]
+export type CourseSort = (typeof SORTS.editor)[number]
 export type CourseSortOptions = Record<CourseSort, string>
 export type CourseSortDirection = 'asc' | 'desc'
 
-const CourseTabsTrigger = ({ value, ...props }: { count: number; value: CourseTab }) => {
+const CourseListTab = ({ value, ...props }: { count: number; value: CourseTab }) => {
   const t = useTranslations('Courses')
 
+  const variant = useMemo(() => {
+    switch (value) {
+      case 'published':
+        return 'success'
+      case 'partial':
+        return 'warning'
+      case 'missing':
+        return 'destructive'
+      default:
+        return 'default'
+    }
+  }, [value])
+
   return value === 'archived' ? (
-    <TabsTrigger className="flex items-center p-0" value={value} {...props}>
+    <MotionTabsTrigger badgeProps={{ variant }} className="flex items-center p-0" value={value} {...props}>
       <Tooltip delayDuration={0} disableHoverableContent>
         <TooltipTrigger asChild>
           <span className="inline-block px-3.5">
@@ -63,15 +74,15 @@ const CourseTabsTrigger = ({ value, ...props }: { count: number; value: CourseTa
           {t('archive')}
         </TooltipContent>
       </Tooltip>
-    </TabsTrigger>
+    </MotionTabsTrigger>
   ) : (
-    <TabsTrigger className="flex items-center gap-1" value={value} {...props}>
-      {t(value)}
-    </TabsTrigger>
+    <MotionTabsTrigger badgeProps={{ variant }} className="flex items-center gap-1" value={value} {...props}>
+      {t.flat(value)}
+    </MotionTabsTrigger>
   )
 }
 
-const CourseSortDropdown = ({
+const CourseListSort = ({
   direction,
   setDirection,
   setValue,
@@ -85,13 +96,14 @@ const CourseSortDropdown = ({
   setValue: React.Dispatch<React.SetStateAction<CourseSort | null>>
 }) => {
   const { user } = useSession()
-  const t = useTranslations()
+  const t = useTranslations('Common')
+  const tCourses = useTranslations('Courses')
   const [open, setOpen] = useState(false)
 
   const options = useMemo(() => {
     const sorts = user.canEdit ? SORTS.editor : SORTS.learner
-    return sorts.reduce((options, sort) => ({ ...options, [sort]: t(`Courses.${sort}`) }), {} as CourseSortOptions)
-  }, [t, user.canEdit])
+    return sorts.reduce((options, sort) => ({ ...options, [sort]: tCourses.flat(sort) }), {} as CourseSortOptions)
+  }, [tCourses, user.canEdit])
 
   const icon = useMemo(() => {
     if (!value) return <ChevronsUpDown className="size-3.5" />
@@ -123,16 +135,16 @@ const CourseSortDropdown = ({
     <DropdownMenu onOpenChange={setOpen} open={open}>
       <DropdownMenuTrigger asChild>
         <Button className="group h-9 gap-0 has-[>svg]:px-3" size="sm" variant="outline">
-          <span className="mr-1.5">{t('Common.sortBy')}</span>
+          <span className="mr-1.5">{t('sortBy')}</span>
           {value && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[value]}</span>}
           {icon}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>{t('Courses.sortBy')}</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('sortBy')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {Object.entries(options).map(([key, label]) => {
-          const option = key as keyof typeof options
+          const option = key
           return (
             (option !== 'progress' || (tab !== 'not_started' && tab !== 'completed')) && (
               <DropdownMenuItem
@@ -147,7 +159,11 @@ const CourseSortDropdown = ({
                 <span className={cn('text-foreground/90', value === option && 'text-foreground')}>{label}</span>
                 {value === option && (
                   <Button
-                    className="size-6 bg-card transition-all duration-75 hover:bg-card hover:shadow-none active:bg-card/50"
+                    className={`
+                      size-6 bg-card transition-all duration-75
+                      hover:bg-card hover:shadow-none
+                      active:bg-card/50
+                    `}
                     size="icon"
                   >
                     {direction === 'asc' ? <ArrowUpIcon className="size-3" /> : <ArrowDownIcon className="size-3" />}
@@ -161,8 +177,8 @@ const CourseSortDropdown = ({
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={clearSort}>
-              <XIcon className="mr-1 h-4 w-4" />
-              {t('Common.clearSort')}
+              <XIcon className="mr-1 size-4" />
+              {t('clearSort')}
             </DropdownMenuItem>
           </>
         )}
@@ -180,9 +196,8 @@ export const CourseList = ({
   defaultLanguageFilter?: Locale[]
   defaultTab?: CourseTab
 }) => {
-  const api = useApi()
   const { locale, localeItems, locales, localize } = useLocale()
-  const { courses: allCourses, setCourses, user } = useSession()
+  const { courses: allCourses, user } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseTab>(defaultTab)
@@ -195,23 +210,19 @@ export const CourseList = ({
     [t, user.isAdmin, user.isEditor],
   )
 
-  const activeLanguages = useMemo(
-    () => languageFilter.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)),
-    [languageFilter, locales],
-  )
-
-  const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
-
   const sortLanguages = useCallback(
     (langs: Locale[] | null) => langs?.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)) ?? [],
     [locales],
   )
 
+  const activeLanguages = useMemo(() => sortLanguages(languageFilter), [languageFilter, sortLanguages])
+
+  const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
+
   const getAvailableLanguages = useCallback(
     (course: Course) => {
       const published = sortLanguages(course.publishedLocales)
       const draft = sortLanguages(course.draftLocales)
-
       return { all: sortLanguages([...published, ...draft]), published, draft }
     },
     [sortLanguages],
@@ -227,33 +238,38 @@ export const CourseList = ({
     const published = all.filter(course => activeLanguages.every(locale => course.publishedLocales?.includes(locale)))
     const partial = all.filter(
       course =>
-        activeLanguages.some(locale => course.publishedLocales?.includes(locale)) &&
-        activeLanguages.some(locale => course.draftLocales?.includes(locale)),
+        activeLanguages.length !== course.publishedLocales?.length &&
+        activeLanguages.some(locale => course.publishedLocales?.includes(locale)),
     )
     const draft = all.filter(course =>
       activeLanguages.every(
         locale => !course.publishedLocales?.includes(locale) || course.draftLocales?.includes(locale),
       ),
     )
+    const missing = all.filter(course =>
+      locales.some(locale => !course.publishedLocales?.includes(locale) && !course.draftLocales?.includes(locale)),
+    )
 
     const visible = notArchived.filter(course =>
       activeLanguages.some(locale => course.publishedLocales?.includes(locale)),
     )
-    const notStarted = visible.filter(course => course.userStatus === 'not_started')
-    const inProgress = visible.filter(course => course.userStatus === 'in_progress')
-    const completed = visible.filter(course => course.userStatus === 'completed')
+    const notStarted = visible.filter(course => course.progress === 'not_started')
+    const inProgress = visible.filter(course => course.progress === 'in_progress')
+    const completed = visible.filter(course => course.progress === 'completed')
 
-    return { all, published, partial, draft, archived, notStarted, inProgress, completed }
-  }, [allCourses, activeLanguages, getAvailableLanguages])
+    return { all, published, partial, draft, missing, archived, notStarted, inProgress, completed }
+  }, [allCourses, activeLanguages, getAvailableLanguages, locales])
 
-  const tabs = useMemo(
+  const tabs = useMemo<CourseTab[]>(
     () =>
       user.canEdit
-        ? activeLanguages.length > 1 && courses.partial.length > 0
-          ? TABS.editor
+        ? activeLanguages.length > 1
+          ? hasFilters
+            ? TABS.editor
+            : TABS.editor.filter(tab => tab !== 'missing')
           : TABS.editor.filter(tab => tab !== 'partial')
         : TABS.learner,
-    [courses.partial.length, activeLanguages.length, user.canEdit],
+    [user.canEdit, activeLanguages.length, hasFilters],
   )
 
   const displayedCourses = useMemo(
@@ -275,7 +291,7 @@ export const CourseList = ({
               return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
             }
             case 'progress':
-              return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
+              return sortDirection === 'asc' ? a.completion - b.completion : b.completion - a.completion
             case 'type':
               return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
             default:
@@ -334,32 +350,20 @@ export const CourseList = ({
     }
   }, [activeTab, enhanceEmptyListMessage, t])
 
-  const fetchCourses = useCallback(async () => {
-    if (!hasHistory()) return
-    const courses = await api.courses.list()
-    setCourses(courses)
-  }, [api.courses, setCourses])
-
   const handleTabChange = useCallback((value: string) => {
-    const tab = value as CourseTab
+    const tab = value
     setActiveTab(tab)
-    cookies.set('course-tab', tab)
+    cookies.set('course-list-tab', tab)
   }, [])
 
   const setActiveLanguages = useCallback(
     (selected: Locale[]) => {
       setLanguageFilter(selected)
-      cookies.set('courses-language-filter', selected)
+      cookies.set('course-list-languages', selected)
       if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
     },
     [activeTab, courses.partial.length],
   )
-
-  useEffect(() => {
-    const languageCookie = cookies.get('courses-language-filter')
-    if (!languageCookie || languageCookie.length === 0) setActiveLanguages(locales)
-    void fetchCourses()
-  }, [fetchCourses, locales, setActiveLanguages])
 
   return (
     <>
@@ -368,14 +372,14 @@ export const CourseList = ({
         <p className="text-muted-foreground">{pageDescription}</p>
       </div>
       <div className="w-full grow py-6">
-        <Tabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
+        <MotionTabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
           <div className="mb-4 block justify-between gap-4 xl:flex">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2 xl:mb-0 xl:justify-start">
-              <TabsList className="w-full sm:w-fit">
+              <MotionTabsList className="w-full sm:w-fit">
                 {tabs.map(tab => (
-                  <CourseTabsTrigger count={courses[toCamelCase(tab)].length} key={tab} value={tab} />
+                  <CourseListTab count={courses[toCamelCase(tab)].length} key={tab} value={tab} />
                 ))}
-              </TabsList>
+              </MotionTabsList>
               {user.canEdit && (
                 <Button
                   asChild
@@ -385,7 +389,9 @@ export const CourseList = ({
                   iconPlacement="right"
                   variant="brand"
                 >
-                  <Link href={Route.CourseNew}>{t('newCourse')}</Link>
+                  <Link href={Route.CourseNew} scroll={false}>
+                    {t('newCourse')}
+                  </Link>
                 </Button>
               )}
             </div>
@@ -406,7 +412,7 @@ export const CourseList = ({
                 toastType="warning"
                 value={activeLanguages}
               />
-              <CourseSortDropdown
+              <CourseListSort
                 direction={sortDirection}
                 setDirection={setSortDirection}
                 setValue={setActiveSort}
@@ -415,7 +421,7 @@ export const CourseList = ({
               />
             </div>
           </div>
-          <TabsContent className="grow space-y-4 pb-2" value={activeTab}>
+          <MotionTabsContent className="grow space-y-4 pb-2" value={activeTab}>
             {displayedCourses.length === 0 ? (
               <div className="flex h-full flex-col items-center justify-center pt-10 text-center">
                 <NoResultsGraphic className="mb-8 w-64" />
@@ -444,8 +450,8 @@ export const CourseList = ({
                 ))}
               </div>
             )}
-          </TabsContent>
-        </Tabs>
+          </MotionTabsContent>
+        </MotionTabs>
       </div>
     </>
   )

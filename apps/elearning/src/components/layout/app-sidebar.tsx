@@ -94,7 +94,7 @@ const SidebarOrgs = ({
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
-      cookies.set('active-org', org.id)
+      cookies.set('org', org.id)
       router.push(Route.Home)
       setPathname(Route.Home)
       setTimeout(() => {
@@ -121,7 +121,10 @@ const SidebarOrgs = ({
               <>
                 <Avatar
                   className={cn(
-                    'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
+                    `
+                      flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted
+                      transition-all duration-150
+                    `,
                     !open && 'ml-8 size-8 text-xs',
                     !currentOrg.avatarUrl && 'border',
                   )}
@@ -144,7 +147,7 @@ const SidebarOrgs = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
@@ -212,7 +215,7 @@ const SidebarNavItem = <I extends Icon = Icon>({
       `
         border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70
         hover:text-sidebar-foreground
-        data-[active=true]:rounded-tl-none data-[active=true]:rounded-bl-none data-[active=true]:border-sidebar-border
+        data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border
       `,
       className,
     )
@@ -330,7 +333,11 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-popover aria-expanded:border-transparent',
+                `
+                  group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150
+                  hover:bg-popover
+                  aria-expanded:border-transparent
+                `,
                 open ? 'overflow-hidden shadow-inner' : 'overflow-visible',
               )}
               size="lg"
@@ -407,7 +414,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-68 rounded-lg pt-2"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-68 rounded-lg pt-2"
             side="top"
             sideOffset={4}
           >

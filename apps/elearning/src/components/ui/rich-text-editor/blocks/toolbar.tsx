@@ -33,7 +33,8 @@ export const ToolbarSeparator = ({ className, ...props }: React.ComponentProps<t
 
 const toolbarButtonVariants = cva(
   `
-    inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none
+    inline-flex cursor-pointer items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap
+    transition-[color,box-shadow] outline-none
     hover:bg-muted
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     disabled:pointer-events-none disabled:opacity-50
@@ -65,7 +66,10 @@ const toolbarButtonVariants = cva(
 )
 
 const dropdownArrowVariants = cva(
-  'inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50',
+  `
+    inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors
+    disabled:pointer-events-none disabled:opacity-50
+  `,
   {
     defaultVariants: {
       size: 'sm',
@@ -284,7 +288,10 @@ const TooltipContent = ({
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       className={cn(
-        'z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-foreground/85 px-3 py-1.5 text-xs text-balance text-background',
+        `
+          z-50 w-fit origin-(--radix-tooltip-content-transform-origin) rounded-md bg-foreground/85 px-3 py-1.5 text-xs text-balance
+          text-background
+        `,
         className,
       )}
       data-slot="tooltip-content"
@@ -306,7 +313,12 @@ export const ToolbarMenuGroup = ({
     <DropdownMenuSeparator
       className={cn(
         'hidden',
-        'mb-0 shrink-0 peer-has-[[role=menuitem]]/menu-group:block peer-has-[[role=menuitemradio]]/menu-group:block peer-has-[[role=option]]/menu-group:block',
+        `
+          mb-0 shrink-0
+          peer-has-[[role=menuitem]]/menu-group:block
+          peer-has-[[role=menuitemradio]]/menu-group:block
+          peer-has-[[role=option]]/menu-group:block
+        `,
       )}
     />
 

@@ -15,7 +15,7 @@ export enum CourseStatus {
   Archived = 'archived',
 }
 
-export enum CourseUserStatus {
+export enum CourseProgress {
   NotStarted = 'not_started',
   InProgress = 'in_progress',
   Completed = 'completed',
@@ -25,14 +25,14 @@ export interface Course extends Entity<'courses', 'title' | 'description', Times
   skill?: Skill
   type: CourseType
   status: Enum<CourseStatus>
-  lessons?: Lesson[]
-  lessonsCount: number
-  lessonsCompleted: number
+  lessons: Lesson[]
   enrolled: boolean
-  progress: number
-  userStatus: Enum<CourseUserStatus>
+  completion: number
+  progress: Enum<CourseProgress>
   completed: boolean
-  creator?: User
+  creator: User
+  contributions: LessonContribution[]
+  contributors: User[] & { count?: number }
 }
 
 export interface SkillGroup extends Entity<'skill_groups'> {}
@@ -49,12 +49,17 @@ export enum LessonType {
   Assessment = 'assessment',
 }
 
+export interface LessonContribution extends Entity<'contributions', never, Timestamp> {
+  user: User
+}
+
 export interface Lesson extends Entity<'lessons', 'title' | 'content', Timestamp> {
   type: Enum<LessonType>
   questions?: Question[]
   assessment?: Assessment
   evaluations?: Evaluation[]
   completed: boolean
+  contributions: LessonContribution[]
 }
 
 export interface Question extends Entity<'questions', 'description' | 'explanation'> {

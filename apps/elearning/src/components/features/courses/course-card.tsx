@@ -1,14 +1,15 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BookOpenIcon, DraftingCompassIcon, UserPenIcon } from 'lucide-react'
+import { BookOpenIcon, DraftingCompassIcon, Edit3Icon, UserPenIcon } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
+import { useFormatter } from 'use-intl'
 
 import { truncate, TRUNCATE_SYMBOL } from '@repo/utils/truncate'
 
 import { UserCard } from '@/components/features/users/user-card'
-import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
@@ -16,7 +17,7 @@ import { DynamicIcon } from '@/components/ui/icons/dynamic'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
 import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
@@ -26,84 +27,53 @@ import { route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-interface LanguageItemProps extends LocaleItem {
+interface LanguageItem extends LocaleItem {
   active: boolean
-  onClick: (value: Locale) => void
+  setLanguage: (value: Locale) => void
   showTooltip: boolean
+  tooltipProps?: TooltipContentProps
 }
 
-const CourseCardFlag = ({ active, icon, onClick, showTooltip, value }: LanguageItemProps) => {
-  const { locale, titleCaseLocales } = useLocale()
+const CourseCardLanguage = ({
+  active,
+  className,
+  displayLabel,
+  icon,
+  setLanguage,
+  showTooltip,
+  tooltipProps,
+  value,
+  ...props
+}: React.HTMLAttributes<HTMLButtonElement> & LanguageItem) => {
   const t = useTranslations('Courses')
-  const tLanguages = useTranslations('Languages')
 
-  const language = useMemo(() => tLanguages(value), [tLanguages, value])
-
-  const onFlagClick = useCallback(() => {
+  const handleClick = useCallback(() => {
     if (active) return
-    onClick(value)
-  }, [active, onClick, value])
+    setLanguage(value)
+  }, [active, setLanguage, value])
 
   const trigger = useMemo(
     () => (
       <Button
-        className={cn('text-base leading-[1]', active ? 'pointer-events-none cursor-default' : 'opacity-50')}
-        onClick={onFlagClick}
+        className={cn('text-base leading-[1]', active ? 'pointer-events-none cursor-default' : 'opacity-40', className)}
+        onClick={handleClick}
         size="text"
         variant="transparent"
+        {...props}
       >
         {icon}
       </Button>
     ),
-    [active, icon, onFlagClick],
+    [active, className, handleClick, icon, props],
   )
-
-  const content = useMemo(() => {
-    const displayLanguage = titleCaseLocales.includes(locale) ? language : language.toLowerCase()
-    return `${t('seeIn')} ${displayLanguage}`
-  }, [language, locale, t, titleCaseLocales])
 
   if (active || !showTooltip) return trigger
 
   return (
     <Tooltip delayDuration={500} disableHoverableContent>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent arrow={false} size="sm">
-        {content}
-      </TooltipContent>
-    </Tooltip>
-  )
-}
-
-const CourseCardDraft = ({ active, icon, onClick, value }: LanguageItemProps) => {
-  const { isTitleCase } = useLocale()
-  const t = useTranslations('Courses')
-  const tLang = useTranslations('Languages')
-
-  const content = useMemo(() => {
-    const lang = isTitleCase(value) ? tLang(value) : tLang(value).toLowerCase()
-    return `${t('seeIn')} ${lang}`
-  }, [isTitleCase, tLang, t, value])
-
-  const onDraftClick = useCallback(() => {
-    if (active) return
-    onClick(value)
-  }, [active, onClick, value])
-
-  return (
-    <Tooltip delayDuration={500} disableHoverableContent>
-      <TooltipTrigger asChild>
-        <Button
-          className={cn('text-sm leading-[1]', active ? 'pointer-events-none' : 'opacity-50')}
-          onClick={onDraftClick}
-          size="text"
-          variant="transparent"
-        >
-          {icon}
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent arrow={false} sideOffset={4} size="sm">
-        {content}
+      <TooltipContent arrow={false} size="sm" {...tooltipProps}>
+        {`${t('seeIn')} ${displayLabel}`}
       </TooltipContent>
     </Tooltip>
   )
@@ -120,9 +90,10 @@ export const CourseCard = ({
   }
   showTooltips?: boolean
 }) => {
-  const { localeItems, locales, localize } = useLocale()
+  const { locale, localeItems, locales, localize } = useLocale()
   const { user } = useSession()
   const t = useTranslations('Courses')
+  const f = useFormatter()
 
   const [language, setLanguage] = useState(course.language)
 
@@ -132,53 +103,73 @@ export const CourseCard = ({
     (value: Locale) => {
       if (value === language) return
       setLanguage(value)
-      const languageCookie = cookies.get('courses-language') || {}
-      languageCookie[String(course.id)] = value
-      cookies.set('courses-language', languageCookie)
+      const languageCookie = cookies.get('course-card-language') || {}
+      languageCookie[course.slug] = value
+      cookies.set('course-card-language', languageCookie)
     },
-    [course.id, language],
-  )
-
-  const coursePath = useMemo(
-    () => route('/courses/:slug', { slug: course.slug }, { lang: language }),
     [course.slug, language],
   )
+
+  const getCoursePath = useCallback(
+    (lang: Locale) => route('/courses/:slug', { slug: course.slug }, { lang }),
+    [course.slug],
+  )
+
+  const coursePath = useMemo(() => getCoursePath(language), [getCoursePath, language])
 
   const languageItems = useMemo(
     () =>
       localeItems
         .reduce(
-          (items, item) => [
-            ...items,
-            {
-              ...item,
-              active: item.value === language,
-              onClick: updateLanguage,
-              showTooltip: showTooltips,
-            },
-          ],
-          [] as LanguageItemProps[],
+          (items, item) =>
+            activeLanguages.includes(item.value)
+              ? [
+                  ...items,
+                  {
+                    ...item,
+                    active: item.value === language,
+                    setLanguage: updateLanguage,
+                    showTooltip: showTooltips,
+                  },
+                ]
+              : items,
+          [] as LanguageItem[],
         )
         .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
-    [language, localeItems, locales, updateLanguage, showTooltips],
+    [activeLanguages, language, localeItems, locales, showTooltips, updateLanguage],
   )
 
-  const languages = useMemo(
+  const publishedLanguageItems = useMemo(
+    () => languageItems.filter(({ value }) => course.publishedLocales?.includes(value)),
+    [course.publishedLocales, languageItems],
+  )
+
+  const draftLanguageItems = useMemo(
+    () => languageItems.filter(({ value }) => course.draftLocales?.includes(value)),
+    [course.draftLocales, languageItems],
+  )
+
+  const missingLanguageItems = useMemo(
     () =>
-      languageItems
-        .filter(({ value }) => activeLanguages.includes(value))
-        .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
-    [activeLanguages, languageItems, locales],
+      languageItems.filter(
+        ({ value }) => !course.publishedLocales?.includes(value) && !course.draftLocales?.includes(value),
+      ),
+    [course.publishedLocales, course.draftLocales, languageItems],
   )
 
-  const publishedLanguages = useMemo(
-    () => languages.filter(({ value }) => course.publishedLocales?.includes(value)),
-    [course.publishedLocales, languages],
+  const visibleLanguages = useMemo(
+    () => [...(course.publishedLocales ?? []), ...(course.draftLocales ?? [])],
+    [course.publishedLocales, course.draftLocales],
   )
 
-  const draftLanguages = useMemo(
-    () => languages.filter(({ value }) => course.draftLocales?.includes(value)),
-    [course.draftLocales, languages],
+  const isPublished = useMemo(
+    () => publishedLanguageItems.length === languageItems.length,
+    [publishedLanguageItems.length, languageItems.length],
+  )
+
+  const isPartial = useMemo(
+    () => publishedLanguageItems.length > 0 && publishedLanguageItems.length < languageItems.length,
+    [publishedLanguageItems.length, languageItems.length],
   )
 
   const title = useMemo(() => translate(course.title), [course.title, translate])
@@ -203,29 +194,35 @@ export const CourseCard = ({
     )
   }, [course.description, translate])
 
-  const draftMessage = useMemo(
-    () => (course.publishedLocales?.length === locales.length ? t('allLanguagesPublished') : t('noDrafts')),
-    [course.publishedLocales, locales, t],
+  const noDraftsMessage = useMemo(() => {
+    if (languageItems.length === publishedLanguageItems.length)
+      return (
+        <>
+          {t('allLanguagesPublished')} <span className="text-muted-foreground/80">{'🎉'}</span>
+        </>
+      )
+    return t('noDrafts')
+  }, [languageItems.length, publishedLanguageItems.length, t])
+
+  const lessonsCount = useMemo(() => course.lessons?.length, [course.lessons])
+
+  const lessonsMessage = useMemo(() => {
+    if (lessonsCount > 0) return `${lessonsCount} ${t('lessons', { count: lessonsCount })}`
+    return user.canEdit ? t('noLessonsCreated') : t('noLessons')
+  }, [lessonsCount, t, user.canEdit])
+
+  const createdOn = useMemo(
+    () =>
+      t('createdOnBy', {
+        date: f.relativeTime(new Date(course.createdAt), Date.now()),
+      }),
+    [course.createdAt, f, t],
   )
 
-  const lessons = useMemo(() => {
-    const count = course.lessons?.length ?? 0
-    if (count === 0) return undefined
-    return `${count} ${t('lessons', { count })}`
-  }, [course.lessons?.length, t])
-
-  const creator = useMemo(() => {
-    if (!course.creator) return null
-    const nameParts = []
-    if (course.creator.firstName) nameParts.push(course.creator.firstName)
-    if (course.creator.lastName) nameParts.push(`${course.creator.lastName[0]}.`)
-    if (nameParts.length === 0) nameParts.push(course.creator.username ?? course.creator.email)
-    const name = nameParts
-      .filter(Boolean)
-      .map(part => part.trim())
-      .join(' ')
-    return { ...course.creator, name }
-  }, [course.creator])
+  const completedLessons = useMemo(
+    () => course.lessons?.filter(lesson => lesson.completed).length ?? 0,
+    [course.lessons],
+  )
 
   const action = useMemo(() => {
     if (user.canEdit) return t('editCourse')
@@ -234,19 +231,27 @@ export const CourseCard = ({
     return t('continueCourse')
   }, [course.enrolled, course.completed, t, user.canEdit])
 
+  useEffect(() => {
+    if (activeLanguages.includes(language)) return
+    updateLanguage(visibleLanguages.includes(locale) ? locale : activeLanguages[0])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeLanguages])
+
   return (
     <Card className="min-h-80">
       <CardHeader className="gap-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex gap-2.5">
-            {course.icon && (
-              <DynamicIcon
-                className="size-4 shrink-0 stroke-muted-foreground"
-                name={course.icon as IconName}
-                placeholder={Skeleton}
-                placeholderProps={{ className: 'size-4 shrink-0' }}
-              />
-            )}
+            <DynamicIcon
+              className={cn(
+                'size-4 shrink-0 stroke-muted-foreground/80',
+                isPartial && 'stroke-warning-accent',
+                isPublished && 'stroke-success-accent',
+              )}
+              name={course.icon as IconName}
+              placeholder={Skeleton}
+              placeholderProps={{ className: 'size-4 shrink-0' }}
+            />
             <div className="flex grow flex-col gap-0.5">
               <div className="-mt-0.5 flex">
                 <Link
@@ -269,8 +274,8 @@ export const CourseCard = ({
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            {publishedLanguages.map(item => (
-              <CourseCardFlag key={item.value} {...item} />
+            {publishedLanguageItems.map(item => (
+              <CourseCardLanguage key={item.value} {...item} />
             ))}
           </div>
         </div>
@@ -282,35 +287,72 @@ export const CourseCard = ({
       </CardContent>
       <CardFooter className="flex grow flex-col justify-end gap-4">
         <div className="flex flex-col gap-2">
+          {/* Drafts */}
           {user.canEdit && (
-            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-              <DraftingCompassIcon className="size-3.5 text-muted-foreground" />
-              {draftLanguages.length > 0 ? (
-                <div className="flex items-center gap-1">
-                  {t('draftIn')}
-                  {draftLanguages.map(item => (
-                    <CourseCardDraft key={item.value} {...item} />
-                  ))}
-                </div>
-              ) : (
-                <span className="pointer-events-none text-muted-foreground/50">{draftMessage}</span>
-              )}
-            </div>
+            <>
+              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+                <DraftingCompassIcon className="size-3.5 text-muted-foreground" />
+                {draftLanguageItems.length + missingLanguageItems.length > 0 ? (
+                  <div className="flex items-center gap-1">
+                    {draftLanguageItems.length > 0 && (
+                      <>
+                        {t('draftIn')}
+                        {draftLanguageItems.map(item => (
+                          <CourseCardLanguage
+                            className="text-sm"
+                            key={item.value}
+                            tooltipProps={{ size: 'xs', sideOffset: 2 }}
+                            {...item}
+                          />
+                        ))}
+                      </>
+                    )}
+                    {missingLanguageItems.length > 0 && (
+                      <>
+                        {draftLanguageItems.length > 0 ? (
+                          <span>{`– ${t('missingIn').toLowerCase()}`}</span>
+                        ) : (
+                          t('missingIn')
+                        )}
+                        {missingLanguageItems.map(({ displayLabel, icon, value }) => (
+                          <Tooltip delayDuration={250} disableHoverableContent key={value}>
+                            <TooltipTrigger asChild>
+                              <Button
+                                className="text-sm leading-[1] opacity-40 hover:opacity-100"
+                                size="text"
+                                variant="transparent"
+                              >
+                                <Link href={getCoursePath(value)}>{icon}</Link>
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent arrow={false} sideOffset={2} size="xs">
+                              {`${t('createIn')} ${displayLabel}`}
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <span className="pointer-events-none text-muted-foreground/50 select-none">{noDraftsMessage}</span>
+                )}
+              </div>
+            </>
           )}
           <div
             className={cn(
               'flex items-center gap-2.5 text-xs font-normal',
-              lessons ? 'text-muted-foreground' : 'pointer-events-none text-muted-foreground/50',
+              lessonsCount ? 'text-muted-foreground' : 'pointer-events-none text-muted-foreground/50 select-none',
             )}
           >
             <BookOpenIcon className="size-3.5 text-muted-foreground" />
-            {lessons ?? t('noLessons')}
+            {lessonsMessage}
           </div>
-          {creator && (
+          {user.canEdit && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
               <UserPenIcon className="size-3.5 text-muted-foreground" />
-              <div className="flex items-center gap-2">
-                <span>{t('createdBy')}</span>
+              <div className="flex items-center gap-1.5">
+                <span>{createdOn}</span>
                 <HoverCard closeDelay={50} openDelay={300}>
                   <HoverCardTrigger asChild>
                     <Button
@@ -322,37 +364,63 @@ export const CourseCard = ({
                       size="text"
                       variant="ghost"
                     >
-                      {creator.avatarUrl && (
-                        <Avatar className={cn('size-3.5 rounded-full')}>
-                          <AvatarImage className="rounded-full" src={creator.avatarUrl} />
-                        </Avatar>
-                      )}
-                      {creator.name}
+                      <Avatar className="size-3.5 rounded-full">
+                        {course.creator.avatarUrl && (
+                          <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
+                        )}
+                        <AvatarFallback>{user.initials}</AvatarFallback>
+                      </Avatar>
+                      {course.creator.shortName}
                     </Button>
                   </HoverCardTrigger>
                   <HoverCardContent className="bg-popover" side="top">
-                    <UserCard user={creator} />
+                    <UserCard user={course.creator} />
                   </HoverCardContent>
                 </HoverCard>
               </div>
             </div>
           )}
+          <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+            <Edit3Icon className="size-3.5 text-muted-foreground" />
+            <div className="flex items-center gap-1.5">
+              <span>{t('writtenBy')}</span>
+              <div className="flex -space-x-0.5 hover:space-x-1">
+                {course.contributors.map(user => (
+                  <HoverCard closeDelay={50} key={user.id} openDelay={300}>
+                    <HoverCardTrigger asChild>
+                      <Avatar
+                        className={`
+                          size-3.5 rounded-full ring-2 ring-background transition-all duration-200 ease-in-out
+                        `}
+                      >
+                        {user.avatarUrl && <AvatarImage className="rounded-full" src={user.avatarUrl} />}
+                        <AvatarFallback className="text-xs">{user.initials}</AvatarFallback>
+                      </Avatar>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="bg-popover" side="top">
+                      <UserCard user={user} />
+                    </HoverCardContent>
+                  </HoverCard>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
         {!user.canEdit && course.enrolled && (
           <div className="w-full">
             <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
               <span className="flex items-center">
-                {course.lessonsCompleted}
+                {completedLessons}
                 {' / '}
-                {course.lessonsCount} {t('lessons', { count: course.lessonsCount })}
+                {course.lessons.length} {t('lessons', { count: course.lessons.length })}
               </span>
               <span>
-                {course.progress}
+                {course.completion}
                 {'% '}
                 {t('completed').toLowerCase()}
               </span>
             </div>
-            <Progress className="h-1.5" value={course.progress} />
+            <Progress className="h-1.5" value={course.completion} />
           </div>
         )}
         <Button asChild className="w-full" variant="outline">

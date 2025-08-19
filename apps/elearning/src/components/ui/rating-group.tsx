@@ -50,44 +50,41 @@ export const RatingGroup = ({ className, color, disabled, disabledToast, id, val
   )
 }
 
-export const ratingGroup = cva(
-  'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]',
-  {
-    defaultVariants: {
-      color: 'default',
-      disabled: false,
-    },
-    variants: {
-      color: {
-        default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
-        brand:
-          'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
-        'brand-secondary': `
+export const ratingGroup = cva('flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]', {
+  defaultVariants: {
+    color: 'default',
+    disabled: false,
+  },
+  variants: {
+    color: {
+      default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
+      brand:
+        'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
+      'brand-secondary': `
           peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary
           peer-data-[state=checked]:text-brand-secondary-foreground
         `,
-      },
-      disabled: {
-        true: 'cursor-default opacity-100',
-        false: 'hover:cursor-pointer',
-      },
     },
-    compoundVariants: [
-      {
-        disabled: false,
-        color: 'default',
-        className: 'hover:bg-muted',
-      },
-      {
-        disabled: false,
-        color: 'brand',
-        className: 'hover:border-brand',
-      },
-      {
-        disabled: false,
-        color: 'brand-secondary',
-        className: 'hover:border-brand-secondary-accent',
-      },
-    ],
+    disabled: {
+      true: 'cursor-default opacity-100',
+      false: 'hover:cursor-pointer',
+    },
   },
-)
+  compoundVariants: [
+    {
+      disabled: false,
+      color: 'default',
+      className: 'hover:bg-muted',
+    },
+    {
+      disabled: false,
+      color: 'brand',
+      className: 'hover:border-brand',
+    },
+    {
+      disabled: false,
+      color: 'brand-secondary',
+      className: 'hover:border-brand-secondary-accent',
+    },
+  ],
+})

@@ -14,6 +14,6 @@ export const ColumnElementStatic = (props: SlateElementProps<TColumnElement>) =>
 
 export const ColumnGroupElementStatic = (props: SlateElementProps) => (
   <SlateElement className="mb-2" {...props}>
-    <div className="flex size-full rounded">{props.children}</div>
+    <div className="flex size-full rounded-sm">{props.children}</div>
   </SlateElement>
 )

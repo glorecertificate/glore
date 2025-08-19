@@ -105,7 +105,7 @@ export const CourseSidebar = ({
                 >
                   <div
                     className={cn(
-                      'absolute top-1/2 left-6 z-10 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border',
+                      'absolute top-1/2 left-6 z-10 flex size-6 -translate-1/2 items-center justify-center rounded-full border',
                       isCurrent(index) || isPast(index)
                         ? 'border-brand-accent bg-brand text-brand-foreground'
                         : 'border-border bg-background',

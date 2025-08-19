@@ -281,7 +281,13 @@
     "noDrafts": "No drafts available",
     "noTitle": "No title available",
     "viewCourse": "View course",
-    "allLanguagesPublished": "All languages are published"
+    "allLanguagesPublished": "All languages are online",
+    "writtenBy": "Written by",
+    "missing": "Missing",
+    "createIn": "Create in",
+    "missingIn": "Missing in",
+    "createdOnBy": "Created {date} by",
+    "noLessonsCreated": "No lessons created"
   },
   "Certificates": {
     "backTo": "Back to all certificates",

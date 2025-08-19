@@ -127,11 +127,11 @@ export const AdminOrganizations = () => {
         <h2 className="text-3xl font-bold tracking-tight">{'Organizations Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button>
-            <Building2 className="mr-2 h-4 w-4" />
+            <Building2 className="mr-2 size-4" />
             {'Add Organization'}
           </Button>
         </div>
@@ -139,7 +139,7 @@ export const AdminOrganizations = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
             onChange={e => setSearchTerm(e.target.value)}
@@ -153,9 +153,9 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
+                <Filter className="mr-2 size-4" />
                 {'Type'}
-                {selectedType && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
+                {selectedType && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -171,9 +171,9 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
+                <Filter className="mr-2 size-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
+                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -188,9 +188,9 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
+                <Filter className="mr-2 size-4" />
                 {'Region'}
-                {selectedRegion && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
+                {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -247,7 +247,7 @@ export const AdminOrganizations = () => {
                   <TableCell>
                     <div className="flex items-center">
                       <div
-                        className={`mr-2 h-2 w-2 rounded-full ${
+                        className={`mr-2 size-2 rounded-full ${
                           org.status === 'Verified'
                             ? 'bg-green-500'
                             : org.status === 'Suspended'
@@ -265,7 +265,7 @@ export const AdminOrganizations = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
+                          <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

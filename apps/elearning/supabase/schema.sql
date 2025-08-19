@@ -1719,6 +1719,53 @@ WITH
     )
   );
 
+CREATE POLICY "Admins can delete contributions" ON "public"."contributions" FOR delete TO "authenticated" USING (
+  (
+    EXISTS (
+      SELECT
+        1
+      FROM
+        "public"."users" "u"
+      WHERE
+        (
+          (
+            "u"."id" = (
+              SELECT
+                "auth"."uid" () AS "uid"
+            )
+          ) AND
+          ("u"."is_admin" = TRUE)
+        )
+    )
+  )
+);
+
+CREATE POLICY "Admins or editors can create contributions" ON "public"."contributions" FOR insert TO "authenticated"
+WITH
+  CHECK (
+    (
+      EXISTS (
+        SELECT
+          1
+        FROM
+          "public"."users" "u"
+        WHERE
+          (
+            (
+              "u"."id" = (
+                SELECT
+                  "auth"."uid" () AS "uid"
+              )
+            ) AND
+            (
+              ("u"."is_admin" = TRUE) OR
+              ("u"."is_editor" = TRUE)
+            )
+          )
+      )
+    )
+  );
+
 CREATE POLICY "Allow all users to view skill groups" ON "public"."skill_groups" FOR
 SELECT
   TO "authenticated" USING (TRUE);
@@ -1736,6 +1783,10 @@ SELECT
   TO "authenticated" USING (TRUE);
 
 CREATE POLICY "Authenticated users can view all users" ON "public"."users" FOR
+SELECT
+  TO "authenticated" USING (TRUE);
+
+CREATE POLICY "Authenticated users can view contributions" ON "public"."contributions" FOR
 SELECT
   TO "authenticated" USING (TRUE);
 

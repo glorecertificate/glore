@@ -29,11 +29,13 @@ export const TabsList = ({ className, ...props }: TabsListProps) => (
 export interface TabsTriggerProps
   extends Omit<React.ComponentProps<typeof TabsPrimitive.Trigger>, 'color'>,
     VariantProps<typeof tabsTrigger> {
+  badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof tabsTriggerBadge>
   count?: number
   showZeroCount?: boolean
 }
 
 export const TabsTrigger = ({
+  badgeProps,
   children,
   className,
   count = 0,
@@ -43,6 +45,7 @@ export const TabsTrigger = ({
   ...props
 }: TabsTriggerProps) => {
   const showCount = useMemo(() => count !== undefined && (showZeroCount || count > 0), [count, showZeroCount])
+  const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
 
   return (
     <TabsPrimitive.Trigger
@@ -51,9 +54,9 @@ export const TabsTrigger = ({
       {...props}
     >
       {showCount ? (
-        <span className="flex items-center gap-1">
+        <span className="flex items-center gap-1" {...badgeRest}>
           {children}
-          <span className={cn(tabsTriggerBadge({ size, variant }))}>{count}</span>
+          <span className={cn(tabsTriggerBadge({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
         </span>
       ) : (
         children
@@ -64,12 +67,12 @@ export const TabsTrigger = ({
 
 export const tabsTrigger = cva(
   `
-    group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm whitespace-nowrap
-    text-foreground select-none
+    group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1
+    text-sm whitespace-nowrap text-foreground select-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:outline-1
     disabled:pointer-events-none disabled:opacity-50
-    data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow
-    data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground
+    data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground
+    data-[state=active]:shadow-sm data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground
     dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:text-foreground
     [&_svg]:shrink-0
     [&_svg:not([class*="size-"])]:size-4
@@ -124,6 +127,9 @@ export const tabsTriggerBadge = cva('text-stroke-0', {
       brand: 'bg-brand-secondary text-brand-foreground',
       'brand-secondary': 'bg-brand-secondary-accent text-brand-secondary-foreground',
       'brand-tertiary': 'bg-brand-tertiary-accent text-brand-tertiary-foreground',
+      success: 'text-success-accent/50 group-data-[state=active]/tabs-trigger:text-success-accent',
+      warning: 'text-warning-accent/50 group-data-[state=active]/tabs-trigger:text-warning-accent',
+      destructive: 'text-destructive-accent/50 group-data-[state=active]/tabs-trigger:text-destructive-accent',
     },
     size: {
       sm: 'text-[10.5px]',

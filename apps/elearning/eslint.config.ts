@@ -54,7 +54,6 @@ export default eslintConfig(
     sortObjectKeys: ['*.ts'],
     tailwind: {
       allowedClasses: [
-        'dark',
         'font-heading',
         'ignore-click-outside/*',
         'lucide',

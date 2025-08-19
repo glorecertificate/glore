@@ -10,13 +10,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{'Total Users'}</CardTitle>
-          <Users className="h-4 w-4 text-muted-foreground" />
+          <Users className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{'1,248'}</div>
           <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 h-3 w-3" />
+              <ArrowUpRight className="mr-1 size-3" />
               {'12%'}
             </span>
             {'from last month'}
@@ -27,13 +27,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{'Organizations'}</CardTitle>
-          <Building2 className="h-4 w-4 text-muted-foreground" />
+          <Building2 className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{'86'}</div>
           <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 h-3 w-3" />
+              <ArrowUpRight className="mr-1 size-3" />
               {'4%'}
             </span>
             {'from last month'}
@@ -44,13 +44,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{'Certifications'}</CardTitle>
-          <Award className="h-4 w-4 text-muted-foreground" />
+          <Award className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{'3,782'}</div>
           <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-red-500">
-              <ArrowDownRight className="mr-1 h-3 w-3" />
+              <ArrowDownRight className="mr-1 size-3" />
               {'2%'}
             </span>
             {'from last month'}
@@ -61,13 +61,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{'Active Regions'}</CardTitle>
-          <Globe className="h-4 w-4 text-muted-foreground" />
+          <Globe className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{'24'}</div>
           <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 h-3 w-3" />
+              <ArrowUpRight className="mr-1 size-3" />
               {'8%'}
             </span>
             {'from last month'}
@@ -86,13 +86,13 @@ export const AdminOverview = () => (
           <div className="space-y-4">
             {[1, 2, 3, 4, 5].map(i => (
               <div className="flex items-center gap-4 border-b pb-4 last:border-0 last:pb-0" key={i}>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-secondary/10">
+                <div className="flex size-8 items-center justify-center rounded-full bg-brand-secondary/10">
                   {i % 3 === 0 ? (
-                    <Users className="h-4 w-4 text-brand-secondary" />
+                    <Users className="size-4 text-brand-secondary" />
                   ) : i % 3 === 1 ? (
-                    <Award className="h-4 w-4 text-brand-secondary" />
+                    <Award className="size-4 text-brand-secondary" />
                   ) : (
-                    <Building2 className="h-4 w-4 text-brand-secondary" />
+                    <Building2 className="size-4 text-brand-secondary" />
                   )}
                 </div>
                 <div className="flex-1">

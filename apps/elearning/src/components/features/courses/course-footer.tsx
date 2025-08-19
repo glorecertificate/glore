@@ -22,7 +22,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useConfig } from '@/hooks/use-config'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
-import { type CourseUserStatus, type Lesson } from '@/lib/api/courses/types'
+import { type CourseProgress, type Lesson } from '@/lib/api/courses/types'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -36,7 +36,7 @@ export const CourseFooter = ({
   lessons?: Lesson[]
   onNext: () => Promise<void>
   onPrevious: () => void
-  status?: Enum<CourseUserStatus>
+  status?: Enum<CourseProgress>
   step: number
 }) => {
   const { minSkills } = useConfig()
@@ -82,7 +82,7 @@ export const CourseFooter = ({
     <div className={cn('mt-6 flex', isFirstLesson ? 'justify-end' : 'justify-between')}>
       {!isFirstLesson && (
         <Button className="gap-1" disabled={isFirstLesson} onClick={onPrevious} variant="outline">
-          <ArrowLeftIcon className="h-4 w-4" />
+          <ArrowLeftIcon className="size-4" />
           {t('previous')}
         </Button>
       )}

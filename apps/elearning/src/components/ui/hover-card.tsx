@@ -28,7 +28,8 @@ export const HoverCardContent = ({
       align={align}
       className={cn(
         `
-          relative z-50 origin-(--radix-hover-card-content-transform-origin) rounded-lg border bg-popover p-4 text-popover-foreground shadow-xs outline-hidden
+          relative z-50 origin-(--radix-hover-card-content-transform-origin) rounded-lg border bg-popover p-3.5 text-popover-foreground
+          shadow-xs outline-hidden
           data-[side=bottom]:slide-in-from-top-2
           data-[side=left]:slide-in-from-right-2
           data-[side=right]:slide-in-from-left-2

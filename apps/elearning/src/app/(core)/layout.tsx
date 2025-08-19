@@ -26,10 +26,8 @@ export default async ({ children }: React.PropsWithChildren) => {
 
   const courses = await api.courses.list()
 
-  const organizationCookie = await getCookie('active-org')
-  const organization = organizationCookie
-    ? user.organizations.find(({ id }) => id === organizationCookie)
-    : user.organizations?.[0]
+  const orgCookie = await getCookie('org')
+  const organization = orgCookie ? user.organizations.find(({ id }) => id === orgCookie) : user.organizations?.[0]
 
   const sidebarOpen = (await getCookie('sidebar-open')) ?? true
 

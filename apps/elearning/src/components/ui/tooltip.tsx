@@ -85,6 +85,7 @@ export const tooltipContentVariants = cva(
         destructive: 'bg-destructive/95 text-destructive-foreground',
       },
       size: {
+        xs: 'px-[7px] py-[3.5px] text-[10.5px]',
         sm: 'px-2 py-1 text-[11px]',
         md: 'px-3 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',

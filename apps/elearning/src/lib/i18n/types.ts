@@ -49,6 +49,7 @@ export type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
  * Locale item used in the application.
  */
 export interface LocaleItem {
+  displayLabel: string
   label: string
   value: Locale
   icon: string

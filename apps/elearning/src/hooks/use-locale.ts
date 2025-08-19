@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 
 import { I18nContext } from '@/components/providers/i18n-provider'
+import { useTranslations } from '@/hooks/use-translations'
 import { LOCALE_ITEMS, LOCALES, TITLE_CASE_LOCALES } from '@/lib/i18n/config'
-import { type IntlRecord, type Locale } from '@/lib/i18n/types'
+import { type IntlRecord, type Locale, type LocaleItem } from '@/lib/i18n/types'
 import * as utils from '@/lib/i18n/utils'
 
 /**
@@ -13,6 +14,23 @@ import * as utils from '@/lib/i18n/utils'
 export const useLocale = () => {
   const context = useContext(I18nContext)
   if (!context) throw new Error('useLocale must be used within a I18nProvider')
+
+  const t = useTranslations('Languages')
+
+  const localeItems = useMemo<LocaleItem[]>(
+    () =>
+      LOCALE_ITEMS.map(item => {
+        const label = t(item.value)
+        const displayLabel = TITLE_CASE_LOCALES.includes(context.locale) ? label : label.toLowerCase()
+
+        return {
+          ...item,
+          label,
+          displayLabel,
+        }
+      }),
+    [context.locale, t],
+  )
 
   const localize = useCallback(
     (record?: IntlRecord, locale?: Locale) => {
@@ -39,7 +57,7 @@ export const useLocale = () => {
     /**
      * Locale items used across the application.
      */
-    localeItems: LOCALE_ITEMS,
+    localeItems,
     /**
      * Locales that should be displayed in title case.
      */

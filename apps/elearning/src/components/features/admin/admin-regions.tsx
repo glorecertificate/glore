@@ -47,11 +47,11 @@ export const RegionsManagement = () => {
         <h2 className="text-3xl font-bold tracking-tight">{'Regions Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
+            <Download className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button>
-            <Globe className="mr-2 h-4 w-4" />
+            <Globe className="mr-2 size-4" />
             {'Add Region'}
           </Button>
         </div>
@@ -59,7 +59,7 @@ export const RegionsManagement = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
             onChange={e => setSearchTerm(e.target.value)}
@@ -73,9 +73,9 @@ export const RegionsManagement = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
+                <Filter className="mr-2 size-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 h-2 w-2 rounded-full bg-brand-secondary"></span>}
+                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -129,7 +129,8 @@ export const RegionsManagement = () => {
                   <TableCell>
                     <div className="flex items-center">
                       <div
-                        className={`mr-2 h-2 w-2 rounded-full ${region.status === 'Active' ? 'bg-green-500' : 'bg-gray-400'}`}
+                        className={`mr-2 size-2 rounded-full ${region.status === 'Active' ? 'bg-green-500' : 'bg-gray-400'}
+                        `}
                       />
                       {region.status}
                     </div>
@@ -138,7 +139,7 @@ export const RegionsManagement = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
+                          <MoreHorizontal className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

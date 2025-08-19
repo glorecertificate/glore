@@ -49,6 +49,13 @@ export const lessonQuery = `
       id,
       value
     )
+  ),
+  contributions (
+    id,
+    ${timestamps},
+    user:users (
+      ${userQuery}
+    )
   )
 `
 

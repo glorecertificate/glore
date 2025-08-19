@@ -46,7 +46,7 @@ export const ColumnElement = withHOC(ResizableProvider, (props: PlateElementProp
       {!readOnly && !isSelectionAreaVisible && (
         <div
           className={cn(
-            'absolute top-2 left-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
+            'absolute top-2 left-1/2 z-50 -translate-1/2',
             'pointer-events-auto flex items-center',
             'opacity-0 transition-opacity group-hover/column:opacity-100',
           )}
@@ -84,7 +84,7 @@ const ColumnDragHandle = memo(() => {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button className="h-5 !px-1" variant="ghost">
+          <Button className="h-5 px-1!" variant="ghost">
             <GripHorizontal
               className="text-muted-foreground"
               onClick={event => {
@@ -121,7 +121,7 @@ const DropLine = () => {
 export const ColumnGroupElement = (props: PlateElementProps) => (
   <PlateElement className="mb-2" {...props}>
     <ColumnFloatingToolbar>
-      <div className="flex size-full rounded">{props.children}</div>
+      <div className="flex size-full rounded-sm">{props.children}</div>
     </ColumnFloatingToolbar>
   </PlateElement>
 )

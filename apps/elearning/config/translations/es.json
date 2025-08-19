@@ -250,7 +250,13 @@
     "noDrafts": "No hay drafts disponibles",
     "noTitle": "No hay título",
     "viewCourse": "Ver el curso",
-    "allLanguagesPublished": "Todos los idiomas están publicados "
+    "allLanguagesPublished": "Todos los idiomas están online",
+    "writtenBy": "Escrito por",
+    "missing": "Faltantes",
+    "createIn": "Crear en",
+    "missingIn": "Ausente en",
+    "createdOnBy": "Creado {date} por",
+    "noLessonsCreated": "Ninguna lección creada"
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",

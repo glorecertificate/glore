@@ -16,7 +16,8 @@ export const Toggle = ({
 
 export const toggleVariants = cva(
   `
-    inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow] outline-none
+    inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,box-shadow]
+    outline-none
     hover:bg-muted hover:text-muted-foreground
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     disabled:pointer-events-none disabled:opacity-50

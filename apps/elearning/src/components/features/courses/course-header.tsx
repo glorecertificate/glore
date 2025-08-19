@@ -38,7 +38,7 @@ export const CourseHeader = ({
   const { scrolled } = useScroll()
 
   const hasLessons = useMemo(() => course.lessons && course.lessons.length > 0, [course.lessons])
-  const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
+  const progressColor = useMemo(() => (course.completion === 100 ? 'success' : 'default'), [course.completion])
   const published = useMemo(() => course?.publishedLocales ?? [], [course.publishedLocales])
   const draft = useMemo(() => course?.draftLocales ?? [], [course.draftLocales])
 
@@ -78,14 +78,14 @@ export const CourseHeader = ({
       <div className="flex items-center justify-end gap-2">
         {user.isLearner && (
           <>
-            {course.userStatus === 'completed' && (
+            {course.progress === 'completed' && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Badge
                     className="mr-2 cursor-help rounded-full border-muted-foreground/60 p-1.5 text-muted-foreground/90"
                     variant="outline"
                   >
-                    <EyeIcon className="h-4 w-4 text-muted-foreground" />
+                    <EyeIcon className="size-4 text-muted-foreground" />
                   </Badge>
                 </TooltipTrigger>
                 <TooltipContent arrow={false} className="max-w-72 text-center" side="bottom">
@@ -97,7 +97,7 @@ export const CourseHeader = ({
               {course.progress}
               {'%'}
             </span>
-            <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
+            <Progress className="md:max-w-sm" color={progressColor} value={course.completion} />
           </>
         )}
         {user.canEdit && (
@@ -112,12 +112,12 @@ export const CourseHeader = ({
             />
             {preview ? (
               <Button className="gap-1" onClick={() => setPreview(false)} title={t('editMessage')} variant="outline">
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className="size-4" />
                 {t('edit')}
               </Button>
             ) : (
               <Button className="gap-1" onClick={() => setPreview(true)} title={t('previewMessage')} variant="outline">
-                <EyeIcon className="h-4 w-4" />
+                <EyeIcon className="size-4" />
                 {t('preview')}
               </Button>
             )}

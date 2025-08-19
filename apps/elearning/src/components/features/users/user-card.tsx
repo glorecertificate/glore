@@ -80,7 +80,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
               </Tooltip>
             )}
           </div>
-          {isVisible('pronouns') && <small className="text-xs text-muted-foreground">{user.pronouns}</small>}
+          {isVisible('pronouns') && <small className="text-[11px] text-muted-foreground">{user.pronouns}</small>}
         </div>
         <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
           {(isVisible('country') || isVisible('city')) && location && (

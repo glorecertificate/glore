@@ -115,7 +115,7 @@ const MultiSelectBadge = ({
             )}
             role="button"
           >
-            <X className={cn('h-2 w-2', !disabled && 'group-hover:stroke-white')} />
+            <X className={cn('size-2', !disabled && 'group-hover:stroke-white')} />
           </span>
         </div>
       </Badge>
@@ -259,7 +259,7 @@ export const MultiSelect = ({
               role="button"
               tabIndex={0}
             >
-              <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
             </span>
           </div>
         </PopoverTrigger>
@@ -291,7 +291,7 @@ export const MultiSelect = ({
                   >
                     <Check
                       className={cn(
-                        'h-4 w-4',
+                        'size-4',
                         isSelected(option.value) ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30',
                       )}
                     />

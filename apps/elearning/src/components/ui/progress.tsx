@@ -19,7 +19,10 @@ export const Progress = ({ className, color, value, ...props }: ProgressProps) =
 )
 
 export const progress = cva(
-  'relative h-2 w-full overflow-hidden rounded-full bg-brand-secondary/20 [&>div]:h-full [&>div]:w-full [&>div]:flex-1 [&>div]:transition-all',
+  `
+    relative h-2 w-full overflow-hidden rounded-full bg-brand-secondary/20
+    [&>div]:h-full [&>div]:w-full [&>div]:flex-1 [&>div]:transition-all
+  `,
   {
     defaultVariants: {
       color: 'default',

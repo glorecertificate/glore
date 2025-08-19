@@ -326,7 +326,8 @@ export const AIMenu = () => {
               autoFocus
               className={cn(
                 `
-                  flex h-9 w-full min-w-0 border-b border-input bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none
+                  flex h-9 w-full min-w-0 border-b border-input bg-transparent px-3 py-1 text-base transition-[color,box-shadow]
+                  outline-none
                   placeholder:text-muted-foreground
                   focus-visible:ring-transparent
                   aria-invalid:border-destructive aria-invalid:ring-destructive/20
@@ -462,17 +463,19 @@ export const AILoadingBar = () => {
     <div
       className={cn(
         `
-          absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-sm
-          text-muted-foreground shadow-md transition-all duration-300
+          absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5
+          text-sm text-muted-foreground shadow-md transition-all duration-300
         `,
       )}
     >
-      <span className="h-4 w-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
+      <span className="size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />
       <span>{status === 'submitted' ? t('ai.thinking') : t('ai.writing')}</span>
       <Button className="flex items-center gap-1 text-xs" onClick={() => api.aiChat.stop()} size="sm" variant="ghost">
-        <PauseIcon className="h-4 w-4" />
+        <PauseIcon className="size-4" />
         {t('ai.stop')}
-        <kbd className="ml-1 rounded bg-border px-1 font-mono text-[10px] text-muted-foreground shadow-sm">{'Esc'}</kbd>
+        <kbd className="ml-1 rounded-sm bg-border px-1 font-mono text-[10px] text-muted-foreground shadow-sm">
+          {'Esc'}
+        </kbd>
       </Button>
     </div>
   )

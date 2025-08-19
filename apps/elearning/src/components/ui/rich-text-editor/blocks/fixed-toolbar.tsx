@@ -12,8 +12,8 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
     <Toolbar
       className={cn(
         `
-          sticky top-0 left-0 scrollbar-hide w-full justify-between overflow-x-auto rounded-t-lg border border-b-0 border-border bg-background/95 p-1
-          backdrop-blur-sm
+          sticky top-0 left-0 scrollbar-hide w-full justify-between overflow-x-auto rounded-t-lg border border-b-0 border-border
+          bg-background/95 p-1 backdrop-blur-sm
           supports-backdrop-blur:bg-background/60
         `,
         readOnly && 'hidden',

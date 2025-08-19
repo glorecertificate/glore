@@ -18,8 +18,8 @@ export const Badge = ({ asChild = false, className, color, size, variant, ...pro
 
 export const badge = cva(
   `
-    inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md border border-transparent font-medium whitespace-nowrap
-    transition-[color] select-none
+    inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md border border-transparent font-medium
+    whitespace-nowrap transition-[color] select-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
     dark:aria-invalid:ring-destructive/40

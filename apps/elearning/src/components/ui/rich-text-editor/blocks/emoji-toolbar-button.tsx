@@ -359,8 +359,8 @@ const EmojiPickerSearchAndClear = ({
         aria-label="Clear"
         className={cn(
           `
-            absolute top-1/2 right-0.5 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-transparent
-            text-popover-foreground
+            absolute top-1/2 right-0.5 flex size-8 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none
+            bg-transparent text-popover-foreground
             hover:bg-transparent
           `,
         )}

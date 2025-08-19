@@ -30,7 +30,7 @@ export const CourseHeaderMobile = ({
   const t = useTranslations('Courses')
 
   const currentLesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
-  const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
+  const progressColor = useMemo(() => (course.completion === 100 ? 'success' : 'default'), [course.completion])
 
   const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
 
@@ -52,7 +52,7 @@ export const CourseHeaderMobile = ({
                 <span className="font-medium">{'No lessons'}</span>
               )}
             </div>
-            <ChevronDownIcon className="h-4 w-4 opacity-50" />
+            <ChevronDownIcon className="size-4 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -77,13 +77,13 @@ export const CourseHeaderMobile = ({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      {course.userStatus !== 'completed' && (
+      {course.progress !== 'completed' && (
         <div className="flex items-center justify-end gap-2 bg-background md:top-[72px]">
           <span className="text-sm">
-            {course.progress}
+            {course.completion}
             {'%'}
           </span>
-          <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
+          <Progress className="md:max-w-sm" color={progressColor} value={course.completion} />
         </div>
       )}
     </div>

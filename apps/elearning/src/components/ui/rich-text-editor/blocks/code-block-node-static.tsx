@@ -23,7 +23,8 @@ export const CodeBlockElementStatic = (props: SlateElementProps<TCodeBlockElemen
       dark:**:[.hljs-regexp,.hljs-string,.hljs-meta_.hljs-string]:text-[#3593ff]
       **:[.hljs-section]:font-bold **:[.hljs-section]:text-[#005cc5]
       dark:**:[.hljs-section]:text-[#61a5f2]
-      **:[.hljs-strong]:font-bold **:[.hljs-title,.hljs-title.class\\\\_,.hljs-title.class\\\\_.inherited\\\\_\\\\_,.hljs-title.function\\\\_]:text-[#6f42c1]
+      **:[.hljs-strong]:font-bold
+      **:[.hljs-title,.hljs-title.class\\\\_,.hljs-title.class\\\\_.inherited\\\\_\\\\_,.hljs-title.function\\\\_]:text-[#6f42c1]
       dark:**:[.hljs-title,.hljs-title.class\\\\_,.hljs-title.class\\\\_.inherited\\\\_\\\\_,.hljs-title.function\\\\_]:text-[#a77bfa]
     `}
     {...props}

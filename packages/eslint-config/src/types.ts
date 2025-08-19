@@ -35,7 +35,7 @@ export interface SortImportGroup {
   value: Record<string, (string | RegExp)[]>
 }
 
-export type RelativeImportsValue = 'always' | 'never' | 'siblings'
+export type RelativeImportValue = 'always' | 'never' | 'siblings'
 
 export interface FileOptions {
   /**
@@ -110,7 +110,7 @@ export interface NoRestrictedImportOptions {
    * allowRelativeImports: 'never'
    * ```
    */
-  allowRelativeImports?: RelativeImportsValue | [RelativeImportsValue, Partial<Record<RelativeImportsValue, string[]>>]
+  allowRelativeImports?: RelativeImportValue | [RelativeImportValue, Partial<Record<RelativeImportValue, string[]>>]
   /**
    * Modules that don't allow default imports.
    */
@@ -197,7 +197,7 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
   removeUnusedImports?: boolean
 }
 
-export interface ConfigOptions extends FileOptions, ImportOptions {
+export interface Options extends FileOptions, ImportOptions {
   /**
    * Whether to add a newline after the return statement.
    *
@@ -270,16 +270,11 @@ export interface ConfigOptions extends FileOptions, ImportOptions {
    */
   tailwind?: {
     /**
-     * Path to the entry file of the CSS-based configuration.
-     * In v3 and older versions, set this value to `null` and specify `tailwindConfig` instead.
+     * List of additional classes that are not defined in the Tailwind configuration.
      *
-     * @default "src/app/globals.css"
+     * @default ["dark", "^group(?:\\/(\\S*))?$", "^peer(?:\\/(\\S*))?$"]
      */
-    entryPoint: string | null
-    /**
-     * In v3 and older versions, path to the `tailwind.config[jt]s` file.
-     */
-    tailwindConfig?: string
+    allowedClasses?: string[]
     /**
      * Name of the attributes containing the Tailwind classes.
      *
@@ -293,21 +288,32 @@ export interface ConfigOptions extends FileOptions, ImportOptions {
      */
     callees?: string[]
     /**
-     * List of variables to include.
+     * Path to the entry file of the CSS-based configuration.
+     * In v3 and older versions, set this value to `null` and specify `tailwindConfig` instead.
      *
-     * @default ["className", "classNames", "classes", "style", "styles"]
+     * @default "src/app/globals.css"
      */
-    variables?: string[]
+    entryPoint: string | null
+    /**
+     * Maximum line length for Tailwind classes.
+     *
+     * @default 120
+     */
+    printWidth?: number
     /**
      * List of template literal tag names to include.
      */
     tags?: string[]
     /**
-     * List of additional classes that are not defined in the Tailwind configuration.
-     *
-     * @default ["^group(?:\\/(\\S*))?$", "^peer(?:\\/(\\S*))?$"]
+     * In v3 and older versions, path to the `tailwind.config[jt]s` file.
      */
-    allowedClasses?: string[]
+    tailwindConfig?: string
+    /**
+     * List of variables to include.
+     *
+     * @default ["className", "classNames", "classes", "style", "styles"]
+     */
+    variables?: string[]
   }
   /**
    * Whether to use the Turborepo ESLint plugin.

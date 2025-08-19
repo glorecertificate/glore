@@ -24,7 +24,6 @@ import { useSession } from '@/hooks/use-session'
 import { useSyncState } from '@/hooks/use-sync-state'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api/courses/types'
-import { LOCALE_ITEMS } from '@/lib/i18n/config'
 import { Route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -32,7 +31,7 @@ export const CourseView = (props: { course?: Course }) => {
   const api = useApi()
   const { searchParams, setSearchParam } = useSearchParams()
 
-  const { locale, localize } = useLocale()
+  const { locale, localeItems, localize } = useLocale()
   const { courses, setCourses, user } = useSession()
   const t = useTranslations('Courses')
 
@@ -65,8 +64,8 @@ export const CourseView = (props: { course?: Course }) => {
     const locales = [...publishedLocales, ...draftLocales]
     if (param && locales.includes(param)) return param
     if (locales.includes(locale)) return locale
-    return LOCALE_ITEMS.filter(({ value }) => locales.includes(value))[0]?.value || locale || locales[0]
-  }, [searchParams, publishedLocales, draftLocales, locale])
+    return localeItems.filter(({ value }) => locales.includes(value))[0]?.value || locale || locales[0]
+  }, [searchParams, publishedLocales, draftLocales, locale, localeItems])
 
   const [language, setLanguage] = useState<Locale>(initialLanguage)
 
@@ -101,7 +100,7 @@ export const CourseView = (props: { course?: Course }) => {
   })
 
   const initialStep = useMemo(() => {
-    if (!course || course.userStatus === 'completed') return 0
+    if (!course || course.progress === 'completed') return 0
     const incompletedIndex = course.lessons?.findIndex(lesson => !lesson.completed)
     if (incompletedIndex !== -1) return incompletedIndex || 0
     return (course.lessons?.length || 0) - 1
@@ -111,7 +110,7 @@ export const CourseView = (props: { course?: Course }) => {
   const hasLessons = useMemo(() => course.lessons && course.lessons.length > 0, [course.lessons])
   const currentLesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
   const isFirstLesson = useMemo(() => step === 0, [step])
-  const isLastLesson = useMemo(() => step === (course.lessonsCount ?? 0) - 1, [step, course.lessonsCount])
+  const isLastLesson = useMemo(() => step === (course.lessons?.length ?? 0) - 1, [step, course.lessons?.length])
 
   const isPreview = useMemo(() => !user.canEdit || !!readOnly, [user.canEdit, readOnly])
 
@@ -139,7 +138,7 @@ export const CourseView = (props: { course?: Course }) => {
       updateCourse(course => ({
         ...course,
         lessons: course.lessons?.map((s, i) => (i === index ? { ...s, completed: true } : s)),
-        userStatus: isLastLesson ? 'completed' : course.userStatus,
+        progress: isLastLesson ? 'completed' : course.progress,
         completed: isLastLesson,
       }))
 
@@ -210,7 +209,7 @@ export const CourseView = (props: { course?: Course }) => {
                   lessons={course.lessons}
                   onNext={handleNext}
                   onPrevious={handlePrevious}
-                  status={course.userStatus}
+                  status={course.progress}
                   step={step}
                 />
               )}

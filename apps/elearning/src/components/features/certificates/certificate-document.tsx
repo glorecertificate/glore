@@ -37,7 +37,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
       <div className="flex items-center">
         {[1, 2, 3, 4, 5].map(i => (
           <StarIcon
-            className={cn('h-5 w-5', i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')}
+            className={cn('size-5', i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')}
             key={i}
           />
         ))}
@@ -95,7 +95,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             {certificate.organization.avatarUrl ? (
               <Image src={certificate.organization.avatarUrl} width={20} />
             ) : (
-              <Building className="mt-0.5 h-5 w-5 text-muted-foreground" />
+              <Building className="mt-0.5 size-5 text-muted-foreground" />
             )}
             <div>
               <h3 className="font-medium">{t('Common.organization')}</h3>
@@ -104,7 +104,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           </div>
           {certificate.reviewer && (
             <div className="flex items-start space-x-3">
-              <UserIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
+              <UserIcon className="mt-0.5 size-5 text-muted-foreground" />
               <div>
                 <h3 className="font-medium">{t('Certificates.reviewedBy')}</h3>
                 <p>
@@ -120,7 +120,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         {/* Dates and Duration */}
         <div className="grid grid-cols-1 gap-6 py-4 md:grid-cols-3">
           <div className="flex items-start space-x-3">
-            <CalendarIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
+            <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.startDate')}</h3>
               <p>{localizeDate(certificate.activityStartDate, 'short')}</p>
@@ -128,7 +128,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           </div>
 
           <div className="flex items-start space-x-3">
-            <CalendarIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
+            <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.endDate')}</h3>
               <p>{localizeDate(certificate.activityEndDate, 'short')}</p>
@@ -136,7 +136,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           </div>
 
           <div className="flex items-start space-x-3">
-            <Clock className="mt-0.5 h-5 w-5 text-muted-foreground" />
+            <Clock className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.duration')}</h3>
               <p>
@@ -162,7 +162,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           <div className="flex flex-wrap gap-2">
             {certificate.skills.map(skill => (
               <Badge className="px-3 py-1" key={skill.id}>
-                <Award className="mr-1 h-3.5 w-3.5" />
+                <Award className="mr-1 size-3.5" />
                 {localize(skill.name)} {skill.userRating && renderStarRating(skill.userRating)}
               </Badge>
             ))}
@@ -173,15 +173,15 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
       <CardFooter className="flex justify-end pt-2">
         <Button>
           {t('Common.preview')}
-          <ViewIcon className="ml-2 h-4 w-4" />
+          <ViewIcon className="ml-2 size-4" />
         </Button>
         <Button>
           {t('Common.share')}
-          <ShareIcon className="ml-2 h-4 w-4" />
+          <ShareIcon className="ml-2 size-4" />
         </Button>
         <Button onClick={() => window.print()}>
           {t('Certificates.download')}
-          <PrinterIcon className="ml-2 h-4 w-4" />
+          <PrinterIcon className="ml-2 size-4" />
         </Button>
       </CardFooter>
     </Card>

@@ -2,15 +2,18 @@ import eslint from '@eslint/js'
 import { type Linter } from 'eslint'
 
 import stylisticPlugin from '@stylistic/eslint-plugin'
+import { deepmerge } from 'deepmerge-ts'
 import gitignoreConfig from 'eslint-config-flat-gitignore'
 import importPlugin from 'eslint-plugin-import'
 import perfectionistPlugin from 'eslint-plugin-perfectionist'
 import { config as typescriptConfig, configs as typescriptConfigs } from 'typescript-eslint'
 
+import { DEFAULT_OPTIONS } from '@/config'
+
 import {
   RuleSeverity,
-  type ConfigOptions,
-  type RelativeImportsValue,
+  type Options,
+  type RelativeImportValue,
   type RestrictedImport,
   type ScopedRestrictedImport,
 } from './types'
@@ -59,56 +62,46 @@ const configs = {
  * ESLint configuration function.
  */
 const eslintConfig = async <Rules extends Linter.RulesRecord>(
-  options?: ConfigOptions,
+  options?: Options,
   ...userConfig: Linter.Config<Rules>[]
 ) => {
   const {
-    allowRelativeImports = 'siblings',
+    allowRelativeImports,
     bottomImports,
     customExternalImports,
     customInternalImports,
-    emptyLineAfterReturn = true,
-    exportLast = false,
+    emptyLineAfterReturn,
+    exportLast,
     files: userFiles,
-    ignoreJs = false,
-    ignoreTs = false,
+    ignoreJs,
+    ignoreTs,
     ignores,
-    importGroups = [
-      ['side-effect', 'side-effect-style'],
-      'builtin',
-      'custom-external',
-      'external',
-      'custom-internal',
-      'internal',
-      ['parent', 'index', 'sibling'],
-      'types',
-    ],
-    includeDotfiles = false,
-    includeRoot = true,
+    importGroups,
+    includeDotfiles,
+    includeRoot,
     includes,
     internalImports,
-    maxLines = 300,
+    maxLines,
     namedImports,
-    newlineAfterImport = true,
-    newlinesBetweenGroups = 'always',
-    nodePrefix = 'always',
-    preferArrow = true,
-    prettier = true,
+    newlineAfterImport,
+    newlinesBetweenGroups,
+    nodePrefix,
+    preferArrow,
+    prettier,
     prettierIncludes,
-    react = false,
-    removeUnusedImports = true,
-    restrictedImports = [],
+    react,
+    removeUnusedImports,
+    restrictedImports,
     rules,
-    sortArrays = true,
-    sortDestructuredKeys = true,
-    sortInterfaces = true,
-    sortObjectKeys = true,
-    sortProps = true,
-    tailwind,
-    tsconfig = './tsconfig.json',
-    turbo = true,
-    typecheck = true,
-  } = options || {}
+    sortArrays,
+    sortDestructuredKeys,
+    sortInterfaces,
+    sortObjectKeys,
+    sortProps,
+    tsconfig,
+    turbo,
+    typecheck,
+  } = { ...DEFAULT_OPTIONS, ...(options ?? {}) }
 
   const files = userFiles ?? fileOptions({ ignoreJs, ignoreTs, includes, includeDotfiles, includeRoot, react })
   const jsxFiles = userFiles ?? jsxFileOptions({ ignoreJs, ignoreTs, includeDotfiles, includeRoot })
@@ -146,10 +139,10 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
 
   const [relativeImportsValue, relativeImportOptions] =
     typeof allowRelativeImports === 'string' ? [allowRelativeImports] : allowRelativeImports
-  const scopedRelativeImports = [] as { files: string[]; value: RelativeImportsValue }[]
+  const scopedRelativeImports = [] as { files: string[]; value: RelativeImportValue }[]
   if (relativeImportOptions) {
     for (const [value, files] of Object.entries(relativeImportOptions)) {
-      scopedRelativeImports.push({ files, value: value as RelativeImportsValue })
+      scopedRelativeImports.push({ files, value: value as RelativeImportValue })
     }
   }
 
@@ -157,7 +150,8 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
 
   const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
 
-  const { allowedClasses, ...tailwindConfig } = tailwind || {}
+  const tailwind = options?.tailwind ? deepmerge(DEFAULT_OPTIONS.tailwind, options.tailwind) : false
+  const { allowedClasses, printWidth, ...tailwindConfig } = tailwind || {}
   const allowedTailwindClasses = [...(allowedClasses ?? []), '^group(?:\\/(\\S*))?$', '^peer(?:\\/(\\S*))?$']
 
   if (preferArrow) plugins['prefer-arrow-functions'] = (await import('eslint-plugin-prefer-arrow-functions')).default
@@ -626,16 +620,21 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
           'better-tailwindcss': tailwindConfig,
         },
         rules: {
-          'better-tailwindcss/no-conflicting-classes': RuleSeverity.Error,
-          'better-tailwindcss/no-duplicate-classes': RuleSeverity.Error,
-          'better-tailwindcss/multiline': [
+          'better-tailwindcss/enforce-consistent-class-order': RuleSeverity.Error,
+          'better-tailwindcss/enforce-consistent-important-position': RuleSeverity.Error,
+          'better-tailwindcss/enforce-consistent-line-wrapping': [
             RuleSeverity.Error,
             {
               group: 'newLine',
               preferSingleLine: true,
-              printWidth: 160,
+              printWidth,
             },
           ],
+          'better-tailwindcss/enforce-consistent-variable-syntax': RuleSeverity.Error,
+          'better-tailwindcss/enforce-shorthand-classes': RuleSeverity.Error,
+          'better-tailwindcss/no-conflicting-classes': RuleSeverity.Error,
+          'better-tailwindcss/no-duplicate-classes': RuleSeverity.Error,
+          'better-tailwindcss/no-deprecated-classes': RuleSeverity.Error,
           'better-tailwindcss/no-restricted-classes': RuleSeverity.Error,
           'better-tailwindcss/no-unnecessary-whitespace': RuleSeverity.Error,
           'better-tailwindcss/no-unregistered-classes': [
@@ -669,5 +668,5 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
 }
 
 export default eslintConfig
-export type { ConfigOptions }
+export type { Options }
 export * from './types'

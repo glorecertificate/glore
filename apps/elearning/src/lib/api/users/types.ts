@@ -8,6 +8,7 @@ export interface BaseUser extends Exclude<Entity<'users'>, 'phone'> {}
 export interface User extends Entity<'users', never, Timestamp> {
   canEdit: boolean
   fullName: string | null
+  shortName: string | null
   initials: string[] | null
   isLearner: boolean
   organizations: UserOrganization[]

@@ -157,7 +157,8 @@ const BlockCommentContent = ({
         <PopoverContent
           align="center"
           className={`
-            max-h-[min(50dvh,calc(-24px+var(--radix-popper-available-height)))] w-[380px] max-w-[calc(100vw-24px)] min-w-[130px] overflow-y-auto p-0
+            max-h-[min(50dvh,calc(-24px+var(--radix-popper-available-height)))] w-[380px] max-w-[calc(100vw-24px)] min-w-[130px]
+            overflow-y-auto p-0
             data-[state=closed]:opacity-0
           `}
           onCloseAutoFocus={e => e.preventDefault()}
@@ -203,7 +204,11 @@ const BlockCommentContent = ({
           <div className="relative left-0 size-0 select-none">
             <PopoverTrigger asChild>
               <Button
-                className="mt-1 ml-1 flex h-6 gap-1 !px-1.5 py-0 text-muted-foreground/80 hover:text-muted-foreground/80 data-[active=true]:bg-muted"
+                className={`
+                  mt-1 ml-1 flex h-6 gap-1 px-1.5! py-0 text-muted-foreground/80
+                  hover:text-muted-foreground/80
+                  data-[active=true]:bg-muted
+                `}
                 contentEditable={false}
                 data-active={open}
                 variant="ghost"

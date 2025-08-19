@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import { SessionContext } from '@/components/providers/session-provider'
 import { type Course } from '@/lib/api/courses/types'
@@ -19,8 +19,21 @@ export const useSession = () => {
   const [user, setUser] = useState<CurrentUser>(context.user)
   const [organization, setOrganization] = useState<UserOrganization | undefined>(context.organization)
 
+  const setCourse = useCallback(
+    (course: Course) => {
+      setCourses(courses => {
+        const index = courses.findIndex(({ id }) => id === course.id)
+        if (index === -1) return [...courses, course]
+        courses[index] = course
+        return courses
+      })
+    },
+    [setCourses],
+  )
+
   return {
     courses,
+    setCourse,
     setCourses,
     user,
     setUser,

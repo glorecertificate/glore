@@ -67,7 +67,10 @@ export const LanguageSelect = ({
       if (status.published?.includes(locale))
         return { badge: <CircleIcon className="size-2.5 fill-success stroke-none" />, status: tCourses('published') }
       if (status.draft?.includes(locale))
-        return { badge: <CircleIcon className="size-2.5 fill-warning stroke-none" />, status: tCourses('draft') }
+        return {
+          badge: <CircleIcon className="size-2.5 fill-muted-foreground stroke-none" />,
+          status: tCourses('draft'),
+        }
       return { badge: <CircleDashedIcon className="size-2.5 text-muted-foreground" />, status: tCourses('notCreated') }
     },
     [status, tCourses],

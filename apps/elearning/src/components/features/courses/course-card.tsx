@@ -245,8 +245,8 @@ export const CourseCard = ({
             <DynamicIcon
               className={cn(
                 'size-4 shrink-0 stroke-muted-foreground/80',
-                isPartial && 'stroke-warning-accent',
-                isPublished && 'stroke-success-accent',
+                isPartial && 'stroke-warning',
+                isPublished && 'stroke-success',
               )}
               name={course.icon as IconName}
               placeholder={Skeleton}

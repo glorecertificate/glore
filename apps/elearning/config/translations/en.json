@@ -287,7 +287,24 @@
     "createIn": "Create in",
     "missingIn": "Missing in",
     "createdOnBy": "Created {date} by",
-    "noLessonsCreated": "No lessons created"
+    "noLessonsCreated": "No lessons created",
+    "courses": "Courses",
+    "backToAll": "Back to all courses",
+    "untitledLesson": "Untitled lesson",
+    "editor": "Editor",
+    "courseType": "Course type",
+    "courseTypeIntroductory": "Introduction",
+    "courseTypeSoftSkill": "Soft skill",
+    "courseTypeIntroductoryDescription": "An introductory course provides foundational knowledge on a topic.",
+    "courseTypeSoftSkillDescription": "A soft skill course focuses on developing interpersonal and professional skills.",
+    "courseTitle": "Title",
+    "courseSlug": "URL slug",
+    "courseSlugPlaceholder": "course-url-slug",
+    "courseSlugDescription": "The URL slug is used to create the course's web address. It should be unique and descriptive.",
+    "courseDescription": "Description",
+    "courseDescriptionPlaceholder": "Describe what students will learn in this course...",
+    "softSkillNotice": "For soft skill courses, the title and description will also be used to describe the skill itself.",
+    "courseCreator": "Course creator"
   },
   "Certificates": {
     "backTo": "Back to all certificates",
@@ -411,6 +428,7 @@
     },
     "placeholders": {
       "editor": "Start writing a new lesson...",
+      "editorReadonly": "No content to visualize.",
       "content": "Start typing...",
       "linkUrl": "Enter URL",
       "linkText": "Enter link text",

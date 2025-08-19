@@ -11,15 +11,10 @@ const getPageData = async ({ params }: PageProps<Route.Course>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return {}
 
-  const api = await createApi()
-  const course = await api.courses.find(slug)
-  if (!course) return {}
-
-  const user = await api.users.getCurrent()
-  if (!user) return {}
-
-  const publishedLocales = course.publishedLocales ?? []
-  if (!user.isEditor && (!!course.archivedAt || publishedLocales.length === 0)) return {}
+  const { courses, users } = await createApi()
+  const user = await users.getCurrent()
+  const course = await courses.find(slug)
+  if (!course || !user) return notFound()
 
   return { course, user }
 }

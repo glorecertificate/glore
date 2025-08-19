@@ -256,7 +256,24 @@
     "createIn": "Crea in",
     "missingIn": "Mancante in",
     "createdOnBy": "Creato il {date} da",
-    "noLessonsCreated": "Nessuna lezione creata"
+    "noLessonsCreated": "Nessuna lezione creata",
+    "courses": "Corsi",
+    "backToAll": "Torna a tutti i corsi",
+    "untitledLesson": "Lezione senza titolo",
+    "editor": "Editor",
+    "courseType": "Tipo di corso",
+    "courseTypeIntroductory": "Introduzione",
+    "courseTypeSoftSkill": "Soft skill",
+    "courseTypeIntroductoryDescription": "Un corso introduttivo fornisce conoscenze di base su un argomento.",
+    "courseTypeSoftSkillDescription": "Un corso di soft skill si concentra sullo sviluppo di competenze interpersonali e professionali.",
+    "courseTitle": "Titolo",
+    "courseSlug": "Slug URL",
+    "courseSlugPlaceholder": "slug-url-del-corso",
+    "courseSlugDescription": "Lo slug URL viene utilizzato per creare l'indirizzo web del corso. Dovrebbe essere unico e descrittivo.",
+    "courseDescription": "Descrizione",
+    "courseDescriptionPlaceholder": "Descrivi quello che gli studenti impareranno in questo corso...",
+    "softSkillNotice": "Per i corsi di soft skill, il titolo e la descrizione verranno utilizzati anche per descrivere la competenza stessa.",
+    "courseCreator": "Creatore del corso"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",
@@ -318,7 +335,8 @@
       "searchLanguage": "Lingua di ricerca ...",
       "editor": "Inizia a scrivere una nuova lezione...",
       "block": "Digita qualcosa...",
-      "askAIEdit": "Chiedi di modificare..."
+      "askAIEdit": "Chiedi di modificare...",
+      "editorReadonly": "Nessun contenuto da visualizzare"
     },
     "actions": {
       "save": "Salva",

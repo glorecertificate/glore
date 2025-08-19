@@ -31,22 +31,22 @@ import { Route } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
-const TABS = {
+const COURSE_LIST_TABS = {
   editor: ['all', 'published', 'partial', 'draft', 'missing', 'archived'],
   learner: ['all', 'not_started', 'in_progress', 'completed'],
-}
+} as const
 
-const SORTS = {
+const COURSE_LIST_SORTS = {
   editor: ['name', 'type'],
   learner: ['name', 'progress', 'type'],
-}
+} as const
 
-export type CourseTab = (typeof TABS.editor)[number]
-export type CourseSort = (typeof SORTS.editor)[number]
-export type CourseSortOptions = Record<CourseSort, string>
-export type CourseSortDirection = 'asc' | 'desc'
+export type CourseListTab = (typeof COURSE_LIST_TABS.editor)[number] | (typeof COURSE_LIST_TABS.learner)[number]
+export type CourseListSort = (typeof COURSE_LIST_SORTS.editor)[number] | (typeof COURSE_LIST_SORTS.learner)[number]
+export type CourseListSortOptions = Record<CourseListSort, string>
+export type CourseListSortDirection = 'asc' | 'desc'
 
-const CourseListTab = ({ value, ...props }: { count: number; value: CourseTab }) => {
+const CourseListTab = ({ value, ...props }: { count: number; value: CourseListTab }) => {
   const t = useTranslations('Courses')
 
   const variant = useMemo(() => {
@@ -89,11 +89,11 @@ const CourseListSort = ({
   tab,
   value,
 }: {
-  direction: CourseSortDirection | null
-  setDirection: React.Dispatch<React.SetStateAction<CourseSortDirection | null>>
-  tab: CourseTab
-  value: CourseSort | null
-  setValue: React.Dispatch<React.SetStateAction<CourseSort | null>>
+  direction: CourseListSortDirection | null
+  setDirection: React.Dispatch<React.SetStateAction<CourseListSortDirection | null>>
+  tab: CourseListTab
+  value: CourseListSort | null
+  setValue: React.Dispatch<React.SetStateAction<CourseListSort | null>>
 }) => {
   const { user } = useSession()
   const t = useTranslations('Common')
@@ -101,8 +101,8 @@ const CourseListSort = ({
   const [open, setOpen] = useState(false)
 
   const options = useMemo(() => {
-    const sorts = user.canEdit ? SORTS.editor : SORTS.learner
-    return sorts.reduce((options, sort) => ({ ...options, [sort]: tCourses.flat(sort) }), {} as CourseSortOptions)
+    const sorts = user.canEdit ? COURSE_LIST_SORTS.editor : COURSE_LIST_SORTS.learner
+    return sorts.reduce((options, sort) => ({ ...options, [sort]: tCourses.flat(sort) }), {} as CourseListSortOptions)
   }, [tCourses, user.canEdit])
 
   const icon = useMemo(() => {
@@ -114,7 +114,7 @@ const CourseListSort = ({
   const inverseDirection = useMemo(() => (direction === 'asc' ? 'desc' : 'asc'), [direction])
 
   const handleSortChange = useCallback(
-    (sort: CourseSort) => () => {
+    (sort: CourseListSort) => () => {
       if (sort === value) setDirection(inverseDirection)
       if (!value || value !== sort) setValue(sort)
       setOpen(true)
@@ -144,7 +144,7 @@ const CourseListSort = ({
         <DropdownMenuLabel>{t('sortBy')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {Object.entries(options).map(([key, label]) => {
-          const option = key
+          const option = key as CourseListSort
           return (
             (option !== 'progress' || (tab !== 'not_started' && tab !== 'completed')) && (
               <DropdownMenuItem
@@ -194,16 +194,16 @@ export const CourseList = ({
 }: {
   defaultCoursesLanguage?: Record<string, Locale>
   defaultLanguageFilter?: Locale[]
-  defaultTab?: CourseTab
+  defaultTab?: CourseListTab
 }) => {
   const { locale, localeItems, locales, localize } = useLocale()
   const { courses: allCourses, user } = useSession()
   const t = useTranslations('Courses')
 
-  const [activeTab, setActiveTab] = useState<CourseTab>(defaultTab)
-  const [activeSort, setActiveSort] = useState<CourseSort | null>(null)
+  const [activeTab, setActiveTab] = useState<CourseListTab>(defaultTab)
+  const [activeSort, setActiveSort] = useState<CourseListSort | null>(null)
   const [languageFilter, setLanguageFilter] = useState<Locale[]>(defaultLanguageFilter ?? locales)
-  const [sortDirection, setSortDirection] = useState<CourseSortDirection | null>(null)
+  const [sortDirection, setSortDirection] = useState<CourseListSortDirection | null>(null)
 
   const pageDescription = useMemo(
     () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
@@ -228,7 +228,7 @@ export const CourseList = ({
     [sortLanguages],
   )
 
-  const courses = useMemo<Record<SnakeToCamel<CourseTab>, Course[]>>(() => {
+  const courses = useMemo<Record<SnakeToCamel<CourseListTab>, Course[]>>(() => {
     const notArchived = allCourses.filter(course => !course.archivedAt)
     const archived = allCourses.filter(course => course.archivedAt)
 
@@ -260,15 +260,15 @@ export const CourseList = ({
     return { all, published, partial, draft, missing, archived, notStarted, inProgress, completed }
   }, [allCourses, activeLanguages, getAvailableLanguages, locales])
 
-  const tabs = useMemo<CourseTab[]>(
+  const tabs = useMemo<CourseListTab[]>(
     () =>
       user.canEdit
         ? activeLanguages.length > 1
           ? hasFilters
-            ? TABS.editor
-            : TABS.editor.filter(tab => tab !== 'missing')
-          : TABS.editor.filter(tab => tab !== 'partial')
-        : TABS.learner,
+            ? [...COURSE_LIST_TABS.editor]
+            : COURSE_LIST_TABS.editor.filter(tab => tab !== 'missing')
+          : COURSE_LIST_TABS.editor.filter(tab => tab !== 'partial')
+        : [...COURSE_LIST_TABS.learner],
     [user.canEdit, activeLanguages.length, hasFilters],
   )
 
@@ -351,7 +351,7 @@ export const CourseList = ({
   }, [activeTab, enhanceEmptyListMessage, t])
 
   const handleTabChange = useCallback((value: string) => {
-    const tab = value
+    const tab = value as CourseListTab
     setActiveTab(tab)
     cookies.set('course-list-tab', tab)
   }, [])

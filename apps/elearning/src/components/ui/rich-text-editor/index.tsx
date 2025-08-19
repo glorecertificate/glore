@@ -1,8 +1,8 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
-import { Plate, usePlateEditor } from 'platejs/react'
+import { Plate, useEditorRef, usePlateEditor, usePlateState } from 'platejs/react'
 
 import { useTranslations } from '@/hooks/use-translations'
 import { Editor, EditorContainer, type EditorProps } from '@rte/blocks/editor'
@@ -15,7 +15,6 @@ import { BlockMenuKit } from '@rte/kits/block-menu'
 import { useBlockPlaceholderKit } from '@rte/kits/block-placeholder'
 import { CalloutKit } from '@rte/kits/callout'
 import { ColumnKit } from '@rte/kits/column'
-import { CopilotKit } from '@rte/kits/copilot'
 import { CursorOverlayKit } from '@rte/kits/cursor-overlay'
 import { DateKit } from '@rte/kits/date'
 import { DndKit } from '@rte/kits/dnd'
@@ -44,7 +43,6 @@ export const PLUGINS = [
   ...BlockMenuKit,
   ...CalloutKit,
   ...ColumnKit,
-  ...CopilotKit,
   ...CursorOverlayKit,
   ...DateKit,
   ...DndKit,
@@ -77,12 +75,22 @@ export const RichTextEditorProvider = ({ children, value }: RichTextEditorProvid
 
 export interface RichTextEditorProps extends EditorProps {}
 
-export const RichTextEditor = (props: RichTextEditorProps) => {
+export const RichTextEditor = ({ autoFocus, ...props }: RichTextEditorProps) => {
+  const editor = useEditorRef()
+  const [readOnly] = usePlateState('readOnly')
   const t = useTranslations('Editor.placeholders')
+
+  const placeholder = useMemo(() => (readOnly ? t('editorReadonly') : t('editor')), [readOnly, t])
+
+  useEffect(() => {
+    if (!autoFocus || editor.dom.focused) return
+    editor.tf.focus({ edge: 'end' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <EditorContainer>
-      <Editor placeholder={t('editor')} {...props} />
+      <Editor autoFocus={autoFocus} placeholder={placeholder} {...props} />
     </EditorContainer>
   )
 }

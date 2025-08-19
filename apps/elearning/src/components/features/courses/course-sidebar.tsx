@@ -9,7 +9,7 @@ import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
 import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api/courses/types'
-import { type Locale } from '@/lib/i18n/types'
+import { type IntlRecord, type Locale } from '@/lib/i18n/types'
 import { cn } from '@/lib/utils'
 
 export const CourseSidebar = ({
@@ -43,6 +43,14 @@ export const CourseSidebar = ({
     [isCurrent, isPast, isFuture, isCompleted],
   )
 
+  const formatLessonTitle = useCallback(
+    (title: IntlRecord) => {
+      const localized = localize(title, language)
+      return <span className={cn(!localized && 'text-muted-foreground/50')}>{localized ?? t('untitledLesson')}</span>
+    },
+    [localize, language, t],
+  )
+
   const formatLessonType = useCallback(
     (type: string) =>
       t('lessonType', {
@@ -51,7 +59,7 @@ export const CourseSidebar = ({
     [t],
   )
 
-  const formatLessonTitle = useCallback(
+  const formatLessonMessage = useCallback(
     (index: number) => {
       if (isReachable(index)) return undefined
       return t('completeLessonsToProceed')
@@ -99,13 +107,16 @@ export const CourseSidebar = ({
                     isReachable(index) && 'hover:bg-accent/40 dark:hover:bg-accent/20',
                     !isReachable(index) && 'cursor-not-allowed text-muted-foreground',
                   )}
-                  key={lesson.id}
+                  key={index}
                   onClick={onLessonClick.bind(null, index)}
-                  title={formatLessonTitle(index)}
+                  title={formatLessonMessage(index)}
                 >
                   <div
                     className={cn(
-                      'absolute top-1/2 left-6 z-10 flex size-6 -translate-1/2 items-center justify-center rounded-full border',
+                      `
+                        absolute top-1/2 left-6 z-10 flex size-6 -translate-1/2 items-center justify-center rounded-full
+                        border
+                      `,
                       isCurrent(index) || isPast(index)
                         ? 'border-brand-accent bg-brand text-brand-foreground'
                         : 'border-border bg-background',
@@ -117,9 +128,9 @@ export const CourseSidebar = ({
                   </div>
                   <div className={cn('flex-1 opacity-85', isCurrent(index) && 'opacity-100')}>
                     <span className="inline-block text-sm font-medium">
-                      {localize(lesson.title, language)}{' '}
+                      {formatLessonTitle(lesson.title)}
                       {user.isLearner && isCompleted(index) && (
-                        <span className="ml-1 text-xs text-success">{'✔︎'}</span>
+                        <span className="ml-1 text-xs text-success">{' ✔︎'}</span>
                       )}
                     </span>
                     <p className="text-xs opacity-80">{formatLessonType(lesson.type)}</p>

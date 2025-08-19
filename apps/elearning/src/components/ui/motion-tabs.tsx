@@ -165,8 +165,8 @@ export const MotionTabsTrigger = ({
       <motion.button
         className={cn(
           `
-            group/motion-tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border-2
-            border-transparent px-4 py-1 text-sm whitespace-nowrap text-muted-foreground select-none
+            group/motion-tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md
+            border-2 border-transparent px-4 py-1 text-sm whitespace-nowrap text-muted-foreground select-none
             data-[active=true]:pointer-events-none data-[active=true]:text-foreground
             dark:text-foreground dark:data-[active=true]:text-foreground
             [&_svg]:shrink-0
@@ -201,9 +201,9 @@ export const motionTabsTriggerBadge = cva('text-stroke-0', {
   variants: {
     variant: {
       default: 'text-muted-foreground/50 group-data-[state=active]/motion-tabs-trigger:text-muted-foreground',
-      success: 'text-success-accent/50 group-data-[state=active]/motion-tabs-trigger:text-success-accent',
-      warning: 'text-warning-accent/50 group-data-[state=active]/motion-tabs-trigger:text-warning-accent',
-      destructive: 'text-destructive-accent/50 group-data-[state=active]/motion-tabs-trigger:text-destructive-accent',
+      success: 'text-success/50 group-data-[state=active]/motion-tabs-trigger:text-success',
+      warning: 'text-warning/50 group-data-[state=active]/motion-tabs-trigger:text-warning',
+      destructive: 'text-destructive/50 group-data-[state=active]/motion-tabs-trigger:text-destructive',
     },
   },
 })

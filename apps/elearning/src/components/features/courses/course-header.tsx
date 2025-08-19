@@ -2,11 +2,12 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { EyeIcon, PencilIcon } from 'lucide-react'
+import { EyeIcon } from 'lucide-react'
 
+import { COURSE_VIEW_TABS } from '@/components/features/courses/course-view'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useScroll } from '@/hooks/use-scroll'
@@ -19,16 +20,12 @@ import { cn } from '@/lib/utils'
 export const CourseHeader = ({
   course,
   language,
-  preview,
   setLanguage,
-  setPreview,
   step,
   updater,
 }: {
   course: Course | Partial<Course>
   language?: Locale
-  preview: boolean
-  setPreview: (value: boolean) => void
   step: number
   setLanguage: (language: Locale) => void
   updater: (fn: (course: Course) => Course) => void
@@ -63,19 +60,24 @@ export const CourseHeader = ({
   return (
     <div
       className={cn(
-        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-[72px] md:flex',
+        `
+          sticky top-36 z-50 hidden w-full grid-cols-1 items-center justify-between gap-2 bg-background px-1 pb-4
+          md:top-[72px] md:grid md:grid-cols-[minmax(208px,1fr)_3fr]
+        `,
         scrolled && 'border-b',
       )}
     >
-      <span className="pt-1 text-sm text-muted-foreground">
-        {hasLessons
-          ? t('lessonCount', {
-              count: String(step + 1),
-              total: String(course.lessons?.length || 0),
-            })
-          : ''}
-      </span>
-      <div className="flex items-center justify-end gap-2">
+      <div className="flex h-full items-end gap-2">
+        <span className="pt-1 text-sm text-muted-foreground">
+          {hasLessons
+            ? t('lessonCount', {
+                count: String(step + 1),
+                total: String(course.lessons?.length || 0),
+              })
+            : ''}
+        </span>
+      </div>
+      <div className="flex items-center justify-between gap-2">
         {user.isLearner && (
           <>
             {course.progress === 'completed' && (
@@ -110,7 +112,14 @@ export const CourseHeader = ({
               status={{ published, draft }}
               value={language}
             />
-            {preview ? (
+            <MotionTabsList className="w-full sm:w-fit">
+              {COURSE_VIEW_TABS.map(tab => (
+                <MotionTabsTrigger className="flex items-center gap-1" key={tab} value={tab}>
+                  {t(tab)}
+                </MotionTabsTrigger>
+              ))}
+            </MotionTabsList>
+            {/* {preview ? (
               <Button className="gap-1" onClick={() => setPreview(false)} title={t('editMessage')} variant="outline">
                 <PencilIcon className="size-4" />
                 {t('edit')}
@@ -120,7 +129,7 @@ export const CourseHeader = ({
                 <EyeIcon className="size-4" />
                 {t('preview')}
               </Button>
-            )}
+            )} */}
             {/* {course.publicationStatus === 'draft' && (
                       <Tooltip>
                         <TooltipTrigger asChild>

@@ -100,7 +100,7 @@ export const CourseContent = ({
 
   return (
     <div>
-      <RichTextEditor defaultValue={localize(lesson.content, language)} variant="fullWidth" />
+      <RichTextEditor autoFocus defaultValue={localize(lesson.content, language)} variant="fullWidth" />
       {lesson.type === 'questions' && lesson.questions && (
         <CourseQuestions
           className={blockStyles}

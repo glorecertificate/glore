@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "watch": "tsup --watch",
+    "dev": "tsup --watch",
     "type-check": "tsc --noEmit && tsup --silent",
     "lint": "prettier --check .",
     "format": "prettier --write .",

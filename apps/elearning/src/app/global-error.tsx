@@ -3,19 +3,16 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { type Locale } from 'use-intl'
-
 import { hasHistory } from '@repo/utils/has-history'
 import { log } from '@repo/utils/logger'
 
 import { type ErrorProps } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
-import { LOCALES } from '@/lib/i18n/config'
+import { i18n } from '@/lib/i18n/config'
 import { localize } from '@/lib/i18n/utils'
 import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
-import config from 'config/app.json'
+import { cookies } from '@/lib/storage/cookies'
 import errors from 'config/translations/static/errors.json'
 
 export default ({ error }: ErrorProps) => {
@@ -24,7 +21,7 @@ export default ({ error }: ErrorProps) => {
 
   const locale = useMemo(() => {
     const cookieLocale = cookies.get('NEXT_LOCALE')
-    if (!cookieLocale || !LOCALES.includes(cookieLocale)) return config.defaultLocale as Locale
+    if (!cookieLocale || !i18n.locales.includes(cookieLocale)) return i18n.defaultLocale
     return cookieLocale
   }, [])
 

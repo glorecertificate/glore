@@ -23,13 +23,13 @@ export const generateMetadata = createMetadata({
 export default async ({ children }: React.PropsWithChildren) => {
   const locale = await getLocale()
   const messages = await getMessages(locale)
-  const t = await getTranslations()
+  const t = await getTranslations('App')
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
     name: meta.name,
-    description: t('App.description'),
+    description: t('description'),
     image: asset(Asset.OpenGraph),
   }
 

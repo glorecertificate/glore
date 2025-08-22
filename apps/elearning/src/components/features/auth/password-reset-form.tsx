@@ -31,7 +31,7 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         user: z
           .string()
           .nonempty(t('userRequired'))
-          .min(2, {
+          .min(5, {
             message: t('userInvalid'),
           }),
       }),
@@ -104,15 +104,9 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
         className="mt-2 gap-4"
         footer={
           <div className="flex w-full justify-end">
-            <Button
-              asChild
-              className="text-[13px] text-muted-foreground"
-              effect="hoverUnderline"
-              size="text"
-              variant="link"
-            >
-              <Link href={Route.Login}>{t('backToLogin')}</Link>
-            </Button>
+            <Link className="text-[13px]" color="muted" href={Route.Login}>
+              {t('backToLogin')}
+            </Link>
           </div>
         }
         form={form}

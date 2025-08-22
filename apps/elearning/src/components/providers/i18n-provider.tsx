@@ -7,7 +7,7 @@ import { IntlProvider } from 'use-intl/react'
 
 import { timezone } from '@repo/utils/timezone'
 
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/cookies'
 import app from 'config/app.json'
 
 export interface I18nProviderProps

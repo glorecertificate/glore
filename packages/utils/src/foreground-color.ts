@@ -1,10 +1,10 @@
-import { type HexColor } from '@/types'
+import { type Hex } from '@/types'
 
 export interface ForegroundColorOptions {
   /** @default "#000000" */
-  dark?: HexColor
+  dark?: Hex
   /** @default "#ffffff" */
-  light?: HexColor
+  light?: Hex
   /** @default 0.5 */
   threshold?: number
 }
@@ -22,7 +22,7 @@ const DEFAULTS: ForegroundColorOptions = {
  * @param options - Optional settings for dark, light colors and threshold.
  * @returns The computed foreground color in hex format.
  */
-export const foregroundColor = (color: HexColor, options?: ForegroundColorOptions): string => {
+export const foregroundColor = (color: Hex, options?: ForegroundColorOptions): string => {
   const { dark, light, threshold } = { ...DEFAULTS, ...options } as Required<ForegroundColorOptions>
 
   const hex = color.replace('#', '')

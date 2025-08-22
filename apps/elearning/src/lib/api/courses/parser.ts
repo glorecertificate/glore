@@ -1,24 +1,20 @@
-import { type SelectData } from '@/lib/api'
 import { parseUser } from '@/lib/api/users/parser'
 import { createParser } from '@/lib/api/utils'
-import { LOCALE_ITEMS } from '@/lib/i18n/config'
+import { i18n } from '@/lib/i18n/config'
 
 import { type courseQuery, type lessonQuery } from './queries'
-import { CourseStatus, LessonType, type Course, type Lesson } from './types'
-
-const parseCourseStatus = ({
-  archivedAt,
-  publishedLocales,
-}: SelectData<'courses', typeof courseQuery>): CourseStatus => {
-  if (archivedAt) return CourseStatus.Archived
-  if (!publishedLocales || publishedLocales.length === 0) return CourseStatus.Draft
-  if (publishedLocales.length < LOCALE_ITEMS.length) return CourseStatus.Partial
-  return CourseStatus.Published
-}
+import { LessonType, type Course, type Lesson } from './types'
 
 export const parseCourse = createParser<'courses', typeof courseQuery, Course>(course => {
   const { creator: courseCreator, lessons: courseLessons, user_courses, ...rest } = course
-  const status = parseCourseStatus(course)
+  const languages = course.languages || []
+  const status = course.archivedAt
+    ? 'archived'
+    : languages.length === 0
+      ? 'draft'
+      : languages.length < i18n.locales.length
+        ? 'partial'
+        : 'published'
   const lessons = courseLessons.map(parseLesson)
   const enrolled = user_courses.length > 0
   const completion = Math.round((lessons.filter(lesson => lesson.completed).length / lessons.length) * 100) || 0
@@ -41,6 +37,7 @@ export const parseCourse = createParser<'courses', typeof courseQuery, Course>(c
 
   return {
     ...rest,
+    languages,
     status,
     lessons,
     enrolled,

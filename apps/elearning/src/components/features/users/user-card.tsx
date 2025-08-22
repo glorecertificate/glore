@@ -20,7 +20,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
     if (!user.city && !user.country) return undefined
     const locations = []
     if (user.city) locations.push(user.city)
-    if (user.country) locations.push(t.flat(`Countries.${user.country}`))
+    if (user.country) locations.push(t.dynamic(`Countries.${user.country}`))
     return locations.filter(Boolean).join(', ')
   }, [t, user.city, user.country])
 
@@ -30,7 +30,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   }, [location])
 
   const languages = useMemo(() => {
-    const langs = user.languages!.map(lang => t.flat(`Languages.${lang}`))
+    const langs = user.languages!.map(lang => t.dynamic(`Languages.${lang}`))
     const list = locale === 'en' ? langs : langs.map(lang => lang.toLowerCase())
     return t('User.speaks', { languages: format.list(list) })
   }, [format, locale, t, user.languages])

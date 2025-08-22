@@ -22,7 +22,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Globe } from '@/components/ui/globe'
 import { Image } from '@/components/ui/image'
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
@@ -43,7 +44,7 @@ const LoginFormFooter = () => {
         {t.rich('Auth.signupMessage', {
           link: content => (
             <DialogTrigger asChild>
-              <Button className="font-medium text-muted-foreground" effect="hoverUnderline" size="text" variant="link">
+              <Button className="font-medium" size="text" variant="link">
                 {content}
               </Button>
             </DialogTrigger>
@@ -62,11 +63,7 @@ const LoginFormFooter = () => {
             b: content => <span className="font-semibold">{content}</span>,
             p: content => <p>{content}</p>,
             link: content => (
-              <Link
-                className="text-base text-muted-foreground underline underline-offset-4 hover:text-foreground"
-                href={externalRoute('Website')}
-                target="_blank"
-              >
+              <Link className="text-base" color="link" href={externalRoute('Website')} target="_blank">
                 {content}
               </Link>
             ),
@@ -93,14 +90,14 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         user: z
           .string()
           .nonempty(t('userRequired'))
-          .min(2, {
+          .min(5, {
             message: t('userInvalid'),
           }),
         password: z
           .string()
           .nonempty(t('passwordRequired'))
           .min(8, {
-            message: t('passwordInvalid'),
+            message: t('passwordTooShort'),
           }),
       }),
     [t],
@@ -152,6 +149,7 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
       disabledTitle={t('insertCredentials')}
       footer={<LoginFormFooter />}
       form={form}
+      header={<Globe className="size-50" />}
       loading={submitting}
       onSubmit={form.handleSubmit(onSubmit)}
       submitLabel={t('login')}
@@ -165,9 +163,8 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         name="user"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>{t('userLabel')}</FormLabel>
             <FormControl>
-              <Input autoFocus placeholder="me@example.com" {...field} />
+              <Input autoFocus placeholder={t('userLabel')} variant="floating" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -178,21 +175,14 @@ export const LoginForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
         name="password"
         render={({ field }) => (
           <FormItem>
-            <div className="flex items-center justify-between">
-              <FormLabel>{t('passwordLabel')}</FormLabel>
-              <Button
-                asChild
-                className="text-[13px] text-muted-foreground"
-                effect="hoverUnderline"
-                size="text"
-                variant="link"
-              >
-                <Link href={Route.PasswordReset}>{t('forgotPassword')}</Link>
-              </Button>
-            </div>
             <FormControl>
-              <PasswordInput {...field} />
+              <PasswordInput placeholder={t('passwordLabel')} variant="floating" {...field} />
             </FormControl>
+            <div className="flex w-full justify-end">
+              <Link className="text-[13px] font-medium" color="link" href={Route.PasswordReset}>
+                {t('forgotPassword')}
+              </Link>
+            </div>
             <FormMessage />
           </FormItem>
         )}

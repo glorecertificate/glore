@@ -4,7 +4,7 @@ import { type Locale } from 'use-intl'
 
 import { type AnyRecord } from '@repo/utils/types'
 
-import { LOCALES } from '@/lib/i18n/config'
+import { i18n } from '@/lib/i18n/config'
 import { getLocale, getTranslations } from '@/lib/i18n/server'
 import { type MessageKey } from '@/lib/i18n/types'
 import { type PageProps, type Route } from '@/lib/navigation'
@@ -17,8 +17,8 @@ export interface MetadataOptions<T extends boolean> {
   image?: string
   parent?: Metadata
   separator?: string
-  translate?: T
   title?: T extends true ? MessageKey : string
+  translate?: T
 }
 
 export interface MetadataParams<T extends AnyRecord> {
@@ -26,7 +26,7 @@ export interface MetadataParams<T extends AnyRecord> {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-const alternateLanguages = LOCALES.reduce(
+const alternateLanguages = i18n.locales.reduce(
   (languages, locale) => ({ ...languages, [locale]: `${metadata.url}?lang=${locale}` }),
   {} as Record<Locale, string>,
 )
@@ -109,14 +109,14 @@ export const intlMetadata = async <T extends boolean = true>(options: MetadataOp
 
   const t = await getTranslations()
   const locale = await getLocale()
-  const alternateLocale = LOCALES[LOCALES.indexOf(locale) + 1] ?? LOCALES[0]
+  const alternateLocale = i18n.locales[i18n.locales.indexOf(locale) + 1] ?? i18n.locales[0]
 
   const title = userTitle
-    ? `${translate ? t.flat(userTitle) : userTitle} ${separator} ${metadata.title}`
+    ? `${translate ? t.dynamic(userTitle) : userTitle} ${separator} ${metadata.title}`
     : metadata.title
   const description = userDescription
     ? translate
-      ? t.flat(userDescription)
+      ? t.dynamic(userDescription)
       : userDescription
     : metadata.description[locale]
 

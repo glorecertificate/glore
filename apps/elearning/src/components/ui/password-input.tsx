@@ -23,23 +23,21 @@ export const PasswordInput = ({ className, disabled, value, ...props }: InputPro
   return (
     <div className="relative">
       <Input className={cn('pr-10', className)} type={inputType} {...props} />
-      {value && (
-        <Button
-          className="absolute top-0 right-0 h-full py-2 hover:bg-transparent has-[>svg]:px-3"
-          disabled={disabled}
-          onClick={togglePassword}
-          size="sm"
-          type="button"
-          variant="ghost"
-        >
-          {showPassword && !disabled ? (
-            <EyeIcon aria-hidden="true" className="size-4.5 fill-brand/10 stroke-muted-foreground" />
-          ) : (
-            <EyeOffIcon aria-hidden="true" className="size-4.5 fill-brand/10 stroke-muted-foreground" />
-          )}
-          <span className="sr-only">{srText}</span>
-        </Button>
-      )}
+      <Button
+        className="absolute top-0 right-0 h-full py-2 hover:bg-transparent has-[>svg]:px-3"
+        disabled={disabled}
+        onClick={togglePassword}
+        size="sm"
+        type="button"
+        variant="ghost"
+      >
+        {showPassword && !disabled ? (
+          <EyeIcon aria-hidden="true" className="size-4.5 fill-brand/10 stroke-muted-foreground" />
+        ) : (
+          <EyeOffIcon aria-hidden="true" className="size-4.5 fill-brand/10 stroke-muted-foreground" />
+        )}
+        <span className="sr-only">{srText}</span>
+      </Button>
     </div>
   )
 }

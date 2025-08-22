@@ -1,10 +1,10 @@
+'use client'
+
 import { useMemo } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { type Enum } from '@repo/utils/types'
-
-import { type Theme } from '@/lib/theme'
+import { type Theme } from '@/components/providers/theme-provider'
 
 /**
  * Extends the hook from `next-themes` to provide type-safe access to the application themes.
@@ -20,10 +20,10 @@ export const useTheme = () => {
     themes: nextThemes,
   } = useNextTheme()
 
-  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Enum<Theme>>>
-  const resolvedTheme = resolvedNextTheme as Omit<Theme, 'system'>
-  const theme = nextTheme as Enum<Theme>
-  const themes = nextThemes as Enum<Theme>[]
+  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Theme>>
+  const resolvedTheme = resolvedNextTheme as Exclude<Theme, 'system'>
+  const theme = nextTheme as Theme
+  const themes = nextThemes as Theme[]
   const isLightMode = useMemo(() => resolvedTheme === 'light', [resolvedTheme])
   const isDarkMode = useMemo(() => resolvedTheme === 'dark', [resolvedTheme])
 

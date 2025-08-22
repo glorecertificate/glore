@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import type { ClientUploadedFileData, UploadFilesOptions } from 'uploadthing/types'
 import { ZodError } from 'zod'
 
-import type { OurFileRouter } from '@/lib/uploader'
+import type { OurFileRouter } from '@/lib/storage/uploader'
 
 export type UploadedFile<T = unknown> = ClientUploadedFileData<T>
 

@@ -5,6 +5,7 @@ import { type AnyRecord } from '@/types'
  */
 export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P => {
   if (!sources.length) return target
+
   for (const [key, value] of Object.entries(sources.shift() ?? [])) {
     if (!value) continue
     if (!target[key]) {
@@ -25,5 +26,6 @@ export const deepMerge = <P extends AnyRecord>(target: P, ...sources: P[]): P =>
     }
     Object.assign(target, { [key]: value })
   }
+
   return target
 }

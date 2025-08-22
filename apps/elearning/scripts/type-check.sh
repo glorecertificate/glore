@@ -1,10 +1,6 @@
 #!/usr/bin/env sh
 
-is_dev() {
-  [ "$ENV" != "production" ] && [ "$NODE_ENV" != "production" ] && [ "$GITHUB_ACTIONS" != "true" ] && [ "$CI" != "true" ] && [ "$CI" != 1 ]
-}
-
-if is_dev; then
+if [ "$NODE_ENV" != "production" ] && [ -z "$CI" ] && [ -z "$GITHUB_ACTIONS" ]; then
   tsc
   exit $?
 fi

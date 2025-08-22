@@ -11,7 +11,8 @@
     "typegen": "sh scripts/db.sh typegen",
     "type-check": "sh scripts/type-check.sh",
     "lint": "sh scripts/lint.sh",
-    "format": "sh scripts/lint.sh --fix",
+    "lint:fix": "sh scripts/lint.sh --fix",
+    "lint:debug": "TIMING=1 DEBUG=eslint:cli-engine sh scripts/lint.sh",
     "check": "pnpm type-check && pnpm lint",
     "analyze": "ANALYZE=true next build"
   },
@@ -88,6 +89,7 @@
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
+    "cobe": "^0.6.4",
     "date-fns": "^4.1.0",
     "html2canvas-pro": "^1.5.11",
     "lowlight": "^3.3.0",
@@ -108,6 +110,7 @@
     "react-markdown": "^10.1.0",
     "react-medium-image-zoom": "^5.3.0",
     "react-player": "^3.3.1",
+    "react-spring": "^10.0.1",
     "react-textarea-autosize": "^8.5.9",
     "react-tweet": "^3.2.2",
     "remark-gfm": "^4.0.1",
@@ -117,7 +120,7 @@
     "tailwind-scrollbar-hide": "^4.0.0",
     "uploadthing": "7.7.2",
     "use-file-picker": "2.1.2",
-    "use-intl": "^4.3.4",
+    "use-intl": "^4.3.5",
     "zod": "^4.0.17"
   },
   "devDependencies": {
@@ -139,7 +142,7 @@
     "prettier-plugin-sql": "catalog:",
     "shadcn": "^2.10.0",
     "shellcheck": "catalog:",
-    "supabase": "^2.34.3",
+    "supabase": "^2.39.2",
     "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.20.4",

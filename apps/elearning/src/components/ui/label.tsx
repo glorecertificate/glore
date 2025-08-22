@@ -4,7 +4,9 @@ import * as LabelPrimitive from '@radix-ui/react-label'
 
 import { cn } from '@/lib/utils'
 
-export const Label = ({ className, ...props }: React.ComponentProps<typeof LabelPrimitive.Root>) => (
+export interface LabelProps extends React.ComponentProps<typeof LabelPrimitive.Root> {}
+
+export const Label = ({ className, ...props }: LabelProps) => (
   <LabelPrimitive.Root
     className={cn(
       `

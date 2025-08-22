@@ -236,4 +236,9 @@ export interface Position {
 /**
  * Hexadecimal color type.
  */
-export type HexColor = `#${string}${string}${string}` | `#${string}${string}${string}${string}${string}${string}`
+export type Hex = `#${string}${string}${string}` | `#${string}${string}${string}${string}${string}${string}`
+
+/**
+ * RGB color type.
+ */
+export type Rgb = [number, number, number]

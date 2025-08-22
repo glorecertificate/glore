@@ -2,6 +2,7 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["tsconfig.json"],
   "globalEnv": [
+    "ANALYZE",
     "GH_TOKEN",
     "GITHUB_TOKEN",
     "ISSUE_PREFIX",
@@ -51,8 +52,8 @@
     "lint": {
       "dependsOn": ["^lint"]
     },
-    "format": {
-      "dependsOn": ["^format"]
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
     },
     "check": {
       "dependsOn": ["^check"]

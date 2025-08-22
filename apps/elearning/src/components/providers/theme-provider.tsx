@@ -1,9 +1,9 @@
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
-import { Theme } from '@/lib/theme'
+import config from 'config/app.json'
 
-export const ThemeProvider = ({ children }: React.PropsWithChildren) => (
-  <NextThemesProvider attribute="class" enableSystem themes={Object.values(Theme)}>
-    {children}
-  </NextThemesProvider>
+export type Theme = keyof typeof config.themes
+
+export const ThemeProvider = (props: React.PropsWithChildren) => (
+  <NextThemesProvider attribute="class" enableSystem themes={Object.keys(config.themes)} {...props} />
 )

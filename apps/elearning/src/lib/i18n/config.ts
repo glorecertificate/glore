@@ -1,52 +1,82 @@
-import { type Formats } from 'use-intl'
+import { type DateTimeFormatOptions, type Formats, type Locale, type NumberFormatOptions } from 'use-intl'
 
+import { type LocaleItem } from '@/lib/i18n/types'
 import config from 'config/app.json'
+import type messages from 'config/translations/en.json'
 
-import { type Locale, type LocaleItem } from './types'
+declare module 'use-intl' {
+  interface AppConfig {
+    Locale: keyof typeof config.locales
+    Messages: typeof messages
+    Formats: typeof FORMATS
+  }
+}
 
-/**
- * List of locales supported by the application.
- */
-export const LOCALES = Object.keys(config.locales) as Locale[]
+const LOCALES = Object.freeze(Object.keys(config.locales) as Locale[])
 
-/**
- * Items used to display locales across the application.
- */
-export const LOCALE_ITEMS = Object.entries(config.locales).map(
-  ([value, { flag, name }]) =>
-    ({
-      label: name,
-      value,
-      icon: flag,
-    }) as LocaleItem,
+const DEFAULT_LOCALE = config.defaultLocale as Locale
+
+const LOCALE_ITEMS = Object.freeze(
+  Object.entries(config.locales).map(
+    ([value, { flag, name }]) =>
+      Object.freeze({
+        label: name,
+        displayLabel: name,
+        value: value as Locale,
+        icon: flag,
+      }) as LocaleItem,
+  ),
 )
 
-/**
- * Locales that should be displayed in title case.
- * This is useful for languages that have specific capitalization rules.
- */
-export const TITLE_CASE_LOCALES = config.titleCaseLocales as Locale[]
+const TITLE_CASE_LOCALES = Object.freeze(config.titleCaseLocales as Locale[])
 
-/**
- * Formats used for localization.
- */
-export const FORMATS: Formats = {
-  dateTime: {
-    short: {
+const FORMATS = Object.freeze({
+  dateTime: Object.freeze({
+    short: Object.freeze({
       day: 'numeric',
       month: 'short',
       year: 'numeric',
-    },
-  },
-  number: {
-    precise: {
-      maximumFractionDigits: 5,
-    },
-  },
-  list: {
-    enumeration: {
+    }),
+  }),
+  list: Object.freeze({
+    enumeration: Object.freeze({
       style: 'long',
       type: 'conjunction',
-    },
-  },
+    }),
+  }),
+  number: Object.freeze({
+    precise: Object.freeze({
+      maximumFractionDigits: 5,
+    }),
+  }),
+}) satisfies {
+  dateTime: Record<string, DateTimeFormatOptions>
+  list: Record<string, Intl.ListFormatOptions>
+  number: Record<string, NumberFormatOptions>
+}
+
+/**
+ * Internationalization configuration object.
+ */
+export const i18n = {
+  /**
+   * List of locales supported by the application.
+   */
+  locales: LOCALES,
+  /**
+   * Default locale of the application.
+   */
+  defaultLocale: DEFAULT_LOCALE,
+  /**
+   * Locales that should be displayed in title case, useful for languages with specific capitalization rules.
+   */
+  titleCaseLocales: TITLE_CASE_LOCALES,
+  /**
+   * Items used to display locales across the application.
+   */
+  localeItems: LOCALE_ITEMS,
+  /**
+   * Formats used for localization.
+   */
+  formats: FORMATS as Formats,
 }

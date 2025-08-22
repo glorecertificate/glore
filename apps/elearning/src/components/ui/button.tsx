@@ -5,6 +5,8 @@ import { useCallback, useMemo } from 'react'
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
+import { type Any } from '@repo/utils/types'
+
 import { Loader } from '@/components/ui/icons/loader'
 import { cn } from '@/lib/utils'
 
@@ -15,7 +17,7 @@ export interface ButtonProps
   asChild?: boolean
   disabledCursor?: boolean
   disabledTitle?: string
-  icon?: React.ElementType
+  icon?: React.ComponentType<Any>
   iconPlacement?: 'left' | 'right'
   loading?: boolean
   loadingText?: string
@@ -138,7 +140,7 @@ export const buttonVariants = cva(
         'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground shadow-xs',
         outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
         ghost: '',
-        link: 'underline-offset-4 hover:underline',
+        link: 'text-link hover:text-link-accent',
         transparent: 'bg-transparent text-current',
       },
       size: {

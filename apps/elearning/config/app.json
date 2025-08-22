@@ -16,6 +16,11 @@
   "defaultLocale": "en",
   "titleCaseLocales": ["en"],
   "cookiePrefix": "glore",
+  "themes": {
+    "light": true,
+    "dark": true,
+    "system": true
+  },
   "minSkills": 3,
   "minSkillRating": 3
 }

@@ -4,13 +4,13 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { MonitorSmartphoneIcon, MoonStarIcon, SunIcon } from 'lucide-react'
 
+import { type Theme } from '@/components/providers/theme-provider'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { type Icon } from '@/components/ui/icons/types'
 import { Tooltip, TooltipContent, TooltipTrigger, type TooltipContentProps } from '@/components/ui/tooltip'
 import { useTheme } from '@/hooks/use-theme'
 import { useTranslations } from '@/hooks/use-translations'
 import { type MessageKey } from '@/lib/i18n/types'
-import { Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
 const themes: {
@@ -19,17 +19,17 @@ const themes: {
   titleKey: MessageKey
 }[] = [
   {
-    name: Theme.System,
+    name: 'system',
     icon: MonitorSmartphoneIcon,
     titleKey: 'Common.useSystemTheme',
   },
   {
-    name: Theme.Light,
+    name: 'light',
     icon: SunIcon,
     titleKey: 'Common.useLightTheme',
   },
   {
-    name: Theme.Dark,
+    name: 'dark',
     icon: MoonStarIcon,
     titleKey: 'Common.useDarkTheme',
   },
@@ -107,7 +107,7 @@ export const ThemeSwitch = ({
               icon={icon}
               key={name}
               onClick={() => setTheme(name)}
-              title={t.flat(titleKey)}
+              title={t.dynamic(titleKey)}
               tooltip={tooltip}
             >
               {name.toLowerCase()}

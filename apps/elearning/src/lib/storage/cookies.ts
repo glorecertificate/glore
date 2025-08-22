@@ -41,7 +41,6 @@ export const cookies = {
    * Sets a cookie with the specified name, value and options.
    */
   set<T extends Cookie>(cookie: T, value: CookieValue<T>, options?: CookieOptions) {
-    if (isServer()) return
     const { maxAge, path, prefix, separator } = { maxAge: 60 * 60 * 24 * 30, path: '/', ...(options ?? {}) }
     const cookieKey = parseCookieKey(cookie, { prefix, separator })
     const cookieValue = typeof value === 'string' ? value : JSON.stringify(value)

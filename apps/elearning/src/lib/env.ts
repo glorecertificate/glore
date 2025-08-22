@@ -13,7 +13,7 @@ if (!STORAGE_URL || !SUPABASE_ANON_KEY || !SUPABASE_URL || (isServer() && !OPENA
 const NODE_ENV = env('NODE_ENV', 'development')
 const DEV = NODE_ENV === 'development'
 const PROD = NODE_ENV === 'production'
-const ANALYZE = env('ANALYZE', 'false') === 'true' || env('ANALYZE', 'false') === '1'
+const ANALYZE = env('ANALYZE', 'false') === 'true'
 
 /**
  * Application environment.

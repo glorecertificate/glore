@@ -42,7 +42,7 @@ export const Link = <T extends AllowedUrl>({
   const external = useMemo(() => !href.startsWith('/') && !href.startsWith('#'), [href])
   const hasProgress = useMemo(() => !external && !hideProgress, [external, hideProgress])
 
-  const handleInternalClick = useCallback(
+  const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
 
@@ -63,34 +63,35 @@ export const Link = <T extends AllowedUrl>({
 
   if (external) return <a className={styles} href={href} onClick={onClick} target={target} {...props} />
 
-  return <NextLink className={styles} href={href} onClick={handleInternalClick} {...props} />
+  return <NextLink className={styles} href={href} onClick={handleClick} {...props} />
 }
 
 export const link = cva('transition-all', {
   defaultVariants: {
     color: 'default',
-    variant: 'default',
     size: 'md',
+    variant: 'default',
   },
   variants: {
     color: {
       default: 'text-current',
-      brand: 'text-brand hover:text-brand-accent',
-      'brand-secondary': 'text-brand-secondary hover:text-brand-secondary-accent',
-      'brand-tertiary': 'text-brand-tertiary hover:text-brand-tertiary-accent',
+      link: 'text-link',
+      primary: 'text-brand hover:text-brand-accent',
+      secondary: 'text-brand-secondary hover:text-brand-secondary-accent',
+      tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',
       destructive: 'text-destructive hover:text-destructive',
       success: 'text-success hover:text-success',
       transparent: 'text-transparent hover:text-foreground',
-      muted: 'text-muted hover:text-muted-foreground',
-    },
-    variant: {
-      default: 'no-underline',
-      underline: 'hover:underline',
+      muted: 'text-muted-foreground hover:text-foreground/90',
     },
     size: {
       sm: 'text-xs',
       md: 'text-sm',
       lg: 'text-base',
+    },
+    variant: {
+      default: 'no-underline',
+      underline: 'hover:underline',
     },
   },
 })

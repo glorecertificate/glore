@@ -51,33 +51,37 @@ export const AuthForm = <T extends FieldValues>({
   }, [loading, submitLabel, submitLoadingLabel, t])
 
   return (
-    <div className="flex flex-col">
-      {header ??
-        ((title || subtitle) && (
-          <div className="mb-2 flex flex-col gap-2 text-center">
+    <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-2">
+        {header && <div className="flex justify-center">{header}</div>}
+        {(title || subtitle) && (
+          <div className="flex flex-col gap-2 text-center">
             {title && <h1 className="text-3xl font-bold">{title}</h1>}
             {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
           </div>
-        ))}
+        )}
+      </div>
       {form && (
-        <Form {...form}>
-          <form className={cn('mt-4 grid gap-6', footer && 'mb-2', className)} onSubmit={onSubmit} {...props}>
-            <div className="grid gap-4">{children}</div>
-            <Button
-              className="w-full [&_svg]:size-4"
-              disabled={submitDisabled}
-              disabledCursor
-              disabledTitle={disabledTitle}
-              loading={loading}
-              type="submit"
-              variant="brand"
-            >
-              {buttonLabel}
-            </Button>
-          </form>
-        </Form>
+        <div className="flex flex-col gap-0">
+          <Form {...form}>
+            <form className={cn('mt-4 grid gap-6', footer && 'mb-2', className)} onSubmit={onSubmit} {...props}>
+              <div className="grid gap-4">{children}</div>
+              <Button
+                className="w-full [&_svg]:size-4"
+                disabled={submitDisabled}
+                disabledCursor
+                disabledTitle={disabledTitle}
+                loading={loading}
+                type="submit"
+                variant="brand"
+              >
+                {buttonLabel}
+              </Button>
+            </form>
+          </Form>
+          {footer}
+        </div>
       )}
-      {footer}
     </div>
   )
 }

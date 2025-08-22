@@ -14,11 +14,11 @@ export default ({ children }: React.PropsWithChildren) => (
           <Logo className="w-20" />
         </Link>
         <div className="flex flex-col items-center gap-2">
-          <LanguageSelect className="border" />
+          <LanguageSelect className="min-w-28 border" />
         </div>
       </div>
       <div className="flex flex-1 items-center justify-center">
-        <div className="w-full max-w-sm">{children}</div>
+        <div className="w-full max-w-[400px]">{children}</div>
       </div>
       <div className="flex justify-end">
         <ThemeSwitch className="text-sm" tooltip={{ arrow: false, side: 'top' }} />

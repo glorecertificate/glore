@@ -2,7 +2,7 @@ import { type DatabaseClient } from '@/lib/api/types'
 import { findUser } from '@/lib/api/users'
 import { type User } from '@/lib/api/users/types'
 import { DatabaseError } from '@/lib/db/utils'
-import { cookies } from '@/lib/storage'
+import { cookies } from '@/lib/storage/cookies'
 
 export const login = async (
   db: DatabaseClient,

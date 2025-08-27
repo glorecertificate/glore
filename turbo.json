@@ -3,6 +3,7 @@
   "globalDependencies": ["tsconfig.json"],
   "globalEnv": [
     "ANALYZE",
+    "CI",
     "GH_TOKEN",
     "GITHUB_TOKEN",
     "ISSUE_PREFIX",

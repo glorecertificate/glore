@@ -78,7 +78,11 @@ export const configFileOptions = (options: FileOptions) => {
  *
  * @see {@link https://eslint.org/docs/rules/no-restricted-imports}
  */
-export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = {}) => {
+export const noRestrictedImportsOptions = (
+  options: Omit<NoRestrictedImportOptions, 'restrictedImports'> & {
+    restrictedImports?: Omit<Exclude<RestrictedImport, string>, 'ignoreFiles'>[]
+  } = {},
+) => {
   const { allowRelativeImports, namedImports = [], nodePrefix, restrictedImports = [] } = options
 
   const rule = {
@@ -87,7 +91,7 @@ export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = 
       message: 'Use named imports instead.',
       name,
     })),
-    patterns: [] as RestrictedImport[],
+    patterns: [] as Omit<RestrictedImport, 'ignoreFiles'>[],
   }
 
   const group = []
@@ -108,13 +112,10 @@ export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = 
 
   if (restrictedImports.length)
     rule.patterns.push(
-      ...restrictedImports.map(pattern =>
-        typeof pattern === 'string'
-          ? {
-              group: [pattern],
-            }
-          : pattern,
-      ),
+      ...restrictedImports.map(({ caseSensitive = true, ...pattern }) => ({
+        ...pattern,
+        caseSensitive,
+      })),
     )
 
   if (nodePrefix === 'never')
@@ -139,7 +140,11 @@ export const noRestrictedImportsOptions = (options: NoRestrictedImportOptions = 
  *
  * @see {@link https://perfectionist.dev/rules/sort-imports}
  */
-export const sortImportsOptions = (options: SortImportsOptions = {}) => {
+export const sortImportsOptions = (
+  options: SortImportsOptions & {
+    tsconfig?: string
+  } = {},
+) => {
   const {
     bottomImports = [],
     customExternalImports = [],

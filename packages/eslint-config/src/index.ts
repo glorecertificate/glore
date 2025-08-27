@@ -10,13 +10,7 @@ import { config as typescriptConfig, configs as typescriptConfigs } from 'typesc
 
 import { DEFAULT_OPTIONS } from '@/config'
 
-import {
-  RuleSeverity,
-  type Options,
-  type RelativeImportValue,
-  type RestrictedImport,
-  type ScopedRestrictedImport,
-} from './types'
+import { RuleSeverity, type Options, type RelativeImportValue, type RestrictedImport } from './types'
 import { configFileOptions, fileOptions, jsxFileOptions, noRestrictedImportsOptions, sortImportsOptions } from './utils'
 
 const BASE_PLUGINS = {
@@ -86,6 +80,7 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
     newlineAfterImport,
     newlinesBetweenGroups,
     nodePrefix,
+    optimizeTypedRules,
     preferArrow,
     prettier,
     prettierIncludes,
@@ -100,43 +95,44 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
     sortProps,
     tsconfig,
     turbo,
-    typecheck,
+    typeCheck,
   } = { ...DEFAULT_OPTIONS, ...(options ?? {}) }
 
+  // Files
   const files = userFiles ?? fileOptions({ ignoreJs, ignoreTs, includes, includeDotfiles, includeRoot, react })
   const jsxFiles = userFiles ?? jsxFileOptions({ ignoreJs, ignoreTs, includeDotfiles, includeRoot })
   const configFiles = configFileOptions({ ignoreJs, ignoreTs })
   const prettierFiles = prettierIncludes ?? files
 
-  const globalRestrictedImports: RestrictedImport[] = []
-  const scopedRestrictedImports: ScopedRestrictedImport[] = []
+  // Restricted imports
+  const restrictedPatterns = restrictedImports.map((pattern, i) =>
+    typeof pattern === 'string'
+      ? {
+          id: i,
+          group: [pattern],
+        }
+      : { id: i, ...pattern },
+  )
+  const globalRestrictedImports: Omit<RestrictedImport, 'ignoreFiles'>[] = restrictedPatterns.map(
+    ({ id, ignoreFiles, ...pattern }) => pattern,
+  )
+  const scopedRestrictedImports: {
+    ignores: string[]
+    restrictedImports: Omit<RestrictedImport, 'ignoreFiles'>[]
+  }[] = []
 
-  for (const restrictedImport of restrictedImports) {
-    if (typeof restrictedImport === 'string' || !restrictedImport.files) {
-      globalRestrictedImports.push(restrictedImport)
-      continue
-    }
+  for (const pattern of restrictedPatterns) {
+    if (!pattern.ignoreFiles?.length) continue
 
-    const { files: restrictedFiles, ...config } = restrictedImport
+    const patterns = restrictedPatterns.filter(({ id }) => id !== pattern.id).map(({ id, ignoreFiles, ...p }) => p)
 
-    const includes = restrictedFiles.filter(file => !file.startsWith('!'))
-    const ignores = restrictedFiles.filter(file => file.startsWith('!')).map(file => file.slice(1))
-
-    const scopedImport = scopedRestrictedImports.find(({ files }) => includes.every(file => files?.includes(file)))
-
-    if (!scopedImport) {
-      scopedRestrictedImports.push({
-        files: includes,
-        ignores,
-        restrictedImports: [config],
-      })
-      continue
-    }
-
-    scopedImport.ignores = [...new Set([...(scopedImport.ignores ?? []), ...ignores])]
-    scopedImport.restrictedImports = [...(scopedImport.restrictedImports ?? []), config]
+    scopedRestrictedImports.push({
+      ignores: pattern.ignoreFiles,
+      restrictedImports: patterns,
+    })
   }
 
+  // Relative imports
   const [relativeImportsValue, relativeImportOptions] =
     typeof allowRelativeImports === 'string' ? [allowRelativeImports] : allowRelativeImports
   const scopedRelativeImports = [] as { files: string[]; value: RelativeImportValue }[]
@@ -146,14 +142,19 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
     }
   }
 
+  // React
   const hasNextJs = typeof react === 'string' && react === 'nextjs'
 
+  // Typescript
   const tsconfigDir = tsconfig.split('/').slice(0, -1).join('/')
+  const tsSeverity = typeCheck && (!optimizeTypedRules || process.env.CI) ? RuleSeverity.Error : RuleSeverity.Off
 
+  // Tailwind
   const tailwind = options?.tailwind ? deepmerge(DEFAULT_OPTIONS.tailwind, options.tailwind) : false
   const { allowedClasses, printWidth, ...tailwindConfig } = tailwind || {}
   const allowedTailwindClasses = [...(allowedClasses ?? []), '^group(?:\\/(\\S*))?$', '^peer(?:\\/(\\S*))?$']
 
+  // Plugins and configs
   if (preferArrow) plugins['prefer-arrow-functions'] = (await import('eslint-plugin-prefer-arrow-functions')).default
   if (prettier) plugins.prettier = (await import('eslint-plugin-prettier')).default
   if (react) {
@@ -172,7 +173,7 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
   if (!ignoreTs) {
     configs.typescript = typescriptConfig
     configs.typescriptStylistic = typescriptConfigs.stylistic
-    if (typecheck) {
+    if (typeCheck) {
       configs.typescriptRecommended = typescriptConfigs.recommendedTypeChecked
       configs.typescriptStrict = typescriptConfigs.strictTypeChecked
     }
@@ -210,7 +211,7 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
             noRestrictedImportsOptions({
               allowRelativeImports: relativeImportsValue,
               namedImports,
-              restrictedImports: [...new Set(globalRestrictedImports)],
+              restrictedImports: globalRestrictedImports,
               nodePrefix,
             }),
           ],
@@ -331,16 +332,15 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
         },
       },
       ...(scopedRestrictedImports.length > 0
-        ? scopedRestrictedImports.map(({ files, ignores = [], restrictedImports }) => ({
-            files,
-            ignores,
+        ? scopedRestrictedImports.map(({ ignores, restrictedImports: scopedPatterns }) => ({
+            files: ignores,
             rules: {
               'no-restricted-imports': [
                 RuleSeverity.Error,
                 noRestrictedImportsOptions({
                   allowRelativeImports,
                   namedImports,
-                  restrictedImports,
+                  restrictedImports: scopedPatterns,
                   nodePrefix,
                 }),
               ],
@@ -418,14 +418,15 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
               ignores: ['**/*.?(c|m)js'],
             },
             configs.typescriptStylistic!,
-            typecheck === true ? configs.typescriptRecommended! : {},
-            typecheck === 'strict' ? configs.typescriptStrict! : {},
+            typeCheck === true ? configs.typescriptRecommended! : {},
+            typeCheck === 'strict' ? configs.typescriptStrict! : {},
             {
               name: '@repo/ts',
               languageOptions: {
                 parserOptions: {
                   ecmaFeatures: {
                     jsx: !!react,
+                    project: [tsconfig],
                   },
                   projectService: true,
                   tsconfigRootDir: tsconfigDir,
@@ -462,7 +463,9 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
                     },
                   },
                 ],
+                '@stylistic/ts/indent': RuleSeverity.Off,
                 '@typescript-eslint/array-type': RuleSeverity.Error,
+                '@typescript-eslint/await-thenable': tsSeverity,
                 '@typescript-eslint/consistent-type-imports': [
                   RuleSeverity.Error,
                   {
@@ -478,7 +481,7 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
                   },
                 ],
                 '@typescript-eslint/no-misused-promises': [
-                  RuleSeverity.Error,
+                  tsSeverity,
                   {
                     checksVoidReturn: {
                       attributes: false,
@@ -486,6 +489,7 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
                   },
                 ],
                 '@typescript-eslint/no-unnecessary-template-expression': RuleSeverity.Error,
+                '@typescript-eslint/no-unsafe-assignment': tsSeverity,
                 '@typescript-eslint/no-unused-vars': [
                   RuleSeverity.Error,
                   {
@@ -507,6 +511,15 @@ const eslintConfig = async <Rules extends Linter.RulesRecord>(
                   },
                 ],
                 '@typescript-eslint/unbound-method': RuleSeverity.Off,
+                'import/default': RuleSeverity.Off,
+                'import/named': RuleSeverity.Off,
+                'import/namespace': RuleSeverity.Off,
+                'import/no-cycle': tsSeverity,
+                'import/no-deprecated': tsSeverity,
+                'import/no-named-as-default-member': RuleSeverity.Off,
+                'import/no-named-as-default': tsSeverity,
+                'import/no-unresolved': RuleSeverity.Off,
+                'import/no-unused-modules': tsSeverity,
                 'perfectionist/sort-interfaces': sortInterfaces === true ? RuleSeverity.Error : RuleSeverity.Off,
               },
             },

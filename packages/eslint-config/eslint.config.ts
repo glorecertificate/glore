@@ -6,5 +6,5 @@ export default eslintConfig({
   maxLines: -1,
   newlineAfterImport: true,
   sortObjectKeys: false,
-  typecheck: false,
+  typeCheck: false,
 })

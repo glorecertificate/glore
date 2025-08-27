@@ -1,42 +1,83 @@
 import { type Options as PrettierOptions } from 'prettier'
 
+/**
+ * Severity levels for ESLint rules.
+ */
 export enum RuleSeverity {
   Off = 'off',
   Warn = 'warn',
   Error = 'error',
 }
 
+/**
+ * File patterns to include in the ESLint configuration.
+ */
 export type ConfigFiles = (string | string[])[] | undefined
 
+/**
+ * Type for restricted imports in ESLint configuration.
+ */
 export type RestrictedImport =
   | string
   | ({
-      files?: string[]
+      /**
+       * Sets the patterns specified in the group or regex properties to be case-sensitive.
+       *
+       * @default true
+       */
+      caseSensitive?: boolean
+      /**
+       * Specifies the names of specific imports to restrict.
+       * Using "default" will restrict the default export from being imported.
+       */
+      importNames?: string[]
+      /**
+       * Specifies the names of imports that are allowed.
+       */
+      allowImportNames?: string[]
+      /**
+       * Specifies a regex pattern for restricting modules.
+       */
+      importNamePattern?: string
+      /**
+       * Specifies a regex pattern for allowing imports.
+       */
+      allowImportNamePattern?: string
+      /**
+       * Files to ignore for this restriction.
+       */
+      ignoreFiles?: string[]
+      /**
+       * Custom message to append to the default error message from the rule.
+       */
+      message?: string
     } & (
       | {
+          /** Specifies the gitignore-style patterns for restricting modules. */
           group: string[]
-          importNames?: string[]
-          message?: string
         }
       | {
+          /** Specifies the regex patterns for restricting modules. */
           regex: string
-          message?: string
         }
     ))
 
-export interface ScopedRestrictedImport {
-  files?: string[]
-  ignores?: string[]
-  restrictedImports?: Omit<RestrictedImport[], 'files'>
-}
-
+/**
+ * Type for defining import sorting groups in ESLint configuration.
+ */
 export interface SortImportGroup {
   type: Record<string, (string | RegExp)[]>
   value: Record<string, (string | RegExp)[]>
 }
 
+/**
+ * Type for relative import settings in ESLint configuration.
+ */
 export type RelativeImportValue = 'always' | 'never' | 'siblings'
 
+/**
+ * Options for configuring file handling in ESLint configuration.
+ */
 export interface FileOptions {
   /**
    * Patterns of files to lint.
@@ -50,8 +91,6 @@ export interface FileOptions {
   ignoreJs?: boolean
   /**
    * Patterns of files and folders to ignore.
-   *
-   * @default true
    */
   ignores?: string[]
   /**
@@ -84,6 +123,9 @@ export interface FileOptions {
   react?: boolean | 'nextjs'
 }
 
+/**
+ * Options for configuring restricted imports in ESLint configuration.
+ */
 export interface NoRestrictedImportOptions {
   /**
    * Controls when relative imports are allowed.
@@ -127,6 +169,9 @@ export interface NoRestrictedImportOptions {
   restrictedImports?: RestrictedImport[]
 }
 
+/**
+ * Options for configuring import sorting in ESLint configuration.
+ */
 export interface SortImportsOptions {
   /**
    * Imports that will be placed at the bottom of the block.
@@ -168,14 +213,11 @@ export interface SortImportsOptions {
    * @default "always"
    */
   newlinesBetweenGroups?: 'always' | 'never' | 'ignore'
-  /**
-   * Specifies the path to the TypeScript configuration file.
-   *
-   * @default "./tsconfig.json"
-   */
-  tsconfig?: string
 }
 
+/**
+ * Options for configuring import handling in ESLint configuration.
+ */
 export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOptions {
   /**
    * Whether to force placing exports at the end of the file.
@@ -186,7 +228,7 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
   /**
    * Whether to add a newline after the import block.
    *
-   * @default false
+   * @default true
    */
   newlineAfterImport?: boolean
   /**
@@ -197,7 +239,93 @@ export interface ImportOptions extends NoRestrictedImportOptions, SortImportsOpt
   removeUnusedImports?: boolean
 }
 
-export interface Options extends FileOptions, ImportOptions {
+/**
+ * Tailwind CSS configuration options.
+ *
+ * @see {@link https://github.com/schoero/eslint-plugin-better-tailwindcss/blob/main/docs/settings/settings.md|`eslint-plugin-better-tailwindcss`}
+ */
+export interface TailwindOptions {
+  /**
+   * List of additional classes that are not defined in the Tailwind configuration.
+   *
+   * @default ["dark", "^group(?:\\/(\\S*))?$", "^peer(?:\\/(\\S*))?$"]
+   */
+  allowedClasses?: string[]
+  /**
+   * Name of the attributes containing the Tailwind classes.
+   *
+   * @default ["class", "className", ".*ClassName"]
+   */
+  attributes?: string[]
+  /**
+   * List of function names to include.
+   *
+   * @default ["cc", "clb", "clsx", "cn", "cnb", "ctl", "cva", "cx", "dcnb", "objstr", "tv", "twJoin", "twMerge"]
+   */
+  callees?: string[]
+  /**
+   * Path to the entry file of the CSS-based configuration.
+   * In v3 and older versions, set this value to `null` and specify `tailwindConfig` instead.
+   *
+   * @default "./src/app/globals.css"
+   */
+  entryPoint?: string | null
+  /**
+   * Maximum line length for Tailwind classes.
+   *
+   * @default 140
+   */
+  printWidth?: number
+  /**
+   * List of template literal tag names to include.
+   */
+  tags?: string[]
+  /**
+   * In v3 and older versions, path to the `tailwind.config[jt]s` file.
+   */
+  tailwindConfig?: string
+  /**
+   * List of variables to include.
+   *
+   * @default ["className", "classNames", "classes", "style", "styles"]
+   */
+  variables?: string[]
+}
+
+/**
+ * TypeScript-specific options for ESLint configuration.
+ */
+export interface TypescriptOptions {
+  /**
+   * Whether to avoid running type-aware rules in development.
+   *
+   * @default false
+   */
+  optimizeTypedRules?: boolean
+  /**
+   * Whether to sort TypeScript interfaces, or a pattern of files to sort.
+   *
+   * @default true
+   */
+  sortInterfaces?: boolean
+  /**
+   * Specifies the path to the TypeScript configuration file.
+   *
+   * @default "./tsconfig.json"
+   */
+  tsconfig?: string
+  /**
+   * Whether to apply type checking to TypeScript files.
+   *
+   * @default true
+   */
+  typeCheck?: boolean | 'strict'
+}
+
+/**
+ * Available options for the ESLint configuration.
+ */
+export interface Options extends FileOptions, ImportOptions, TypescriptOptions {
   /**
    * Whether to add a newline after the return statement.
    *
@@ -246,12 +374,6 @@ export interface Options extends FileOptions, ImportOptions {
    */
   sortDestructuredKeys?: boolean | string[]
   /**
-   * Whether to sort TypeScript interfaces, or a pattern of files to sort.
-   *
-   * @default true
-   */
-  sortInterfaces?: boolean
-  /**
    * Whether to sort object keys, or a pattern of files to sort.
    *
    * @default true
@@ -268,64 +390,12 @@ export interface Options extends FileOptions, ImportOptions {
    *
    * @see {@link https://github.com/schoero/eslint-plugin-better-tailwindcss/blob/main/docs/settings/settings.md|`eslint-plugin-better-tailwindcss`}
    */
-  tailwind?: {
-    /**
-     * List of additional classes that are not defined in the Tailwind configuration.
-     *
-     * @default ["dark", "^group(?:\\/(\\S*))?$", "^peer(?:\\/(\\S*))?$"]
-     */
-    allowedClasses?: string[]
-    /**
-     * Name of the attributes containing the Tailwind classes.
-     *
-     * @default ["class", "className"]
-     */
-    attributes?: string[]
-    /**
-     * List of function names to include.
-     *
-     * @default ["cc", "clb", "clsx", "cn", "cnb", "ctl", "cva", "cx", "dcnb", "objstr", "tv", "twJoin", "twMerge"]
-     */
-    callees?: string[]
-    /**
-     * Path to the entry file of the CSS-based configuration.
-     * In v3 and older versions, set this value to `null` and specify `tailwindConfig` instead.
-     *
-     * @default "src/app/globals.css"
-     */
-    entryPoint: string | null
-    /**
-     * Maximum line length for Tailwind classes.
-     *
-     * @default 120
-     */
-    printWidth?: number
-    /**
-     * List of template literal tag names to include.
-     */
-    tags?: string[]
-    /**
-     * In v3 and older versions, path to the `tailwind.config[jt]s` file.
-     */
-    tailwindConfig?: string
-    /**
-     * List of variables to include.
-     *
-     * @default ["className", "classNames", "classes", "style", "styles"]
-     */
-    variables?: string[]
-  }
+  tailwind?: TailwindOptions
   /**
    * Whether to use the Turborepo ESLint plugin.
-   * @see {@link https://turborepo.com/docs/reference/eslint-plugin-turbo}
    *
+   * @see {@link https://turborepo.com/docs/reference/eslint-plugin-turbo|`eslint-plugin-turbo`}
    * @default true
    */
   turbo?: boolean
-  /**
-   * Whether to apply type checking to TypeScript files.
-   *
-   * @default true
-   */
-  typecheck?: boolean | 'strict'
 }

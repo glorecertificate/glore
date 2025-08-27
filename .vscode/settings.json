@@ -21,7 +21,6 @@
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
-  "eslint.useFlatConfig": true,
   "eslint.validate": ["typescript", "typescriptreact"],
   "eslint.workingDirectories": [
     {
@@ -34,6 +33,7 @@
   "files.exclude": {
     "**/.turbo": true
   },
+  "gitlens.ai.generateCommitMessage.customInstructions": "Use the Conventional Commit specification to provide a clear and descriptive commit message. The message must be concise and informative, summarizing only the main changes made to the codebase while avoiding a cheesecakey language. Optionally add a body including a sentence of maximum 20 words explaining the changes generically, and a list of maximum 5 points of 10 or less words with more specific references. Both title and body points must be written in an imperative mood using first-person verbs and a sentence-case format. The body sentence must end with a period, while list points must not. If the the commit contains simple updates and the context doesn't suggest it, avoid writing the body sentence and/or the bullet points. Example: `feat: Correct typos across the codebase\n\nCorrect several typos in the codebase to improve readability and maintainability.\n\n- Fix typo in variable name\n- Update comments for clarity\n- Refactor function names for consistency`",
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],

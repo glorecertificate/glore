@@ -30,6 +30,6 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "irregular-plurals": "^4.0.0"
+    "irregular-plurals": "^4.1.0"
   }
 }

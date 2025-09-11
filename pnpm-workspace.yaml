@@ -3,13 +3,13 @@ packages:
   - packages/*
 
 catalog:
-  '@types/node': 24.2.0
-  dotenv: ^17.2.1
-  eslint: ^9.33.0
+  '@types/node': 24.3.1
+  dotenv: ^17.2.2
+  eslint: ^9.35.0
   prettier: ^3.6.2
   prettier-plugin-sql: ^0.19.2
   release-it: ^19.0.4
-  shellcheck: ^3.1.0
+  shellcheck: ^4.1.0
   tsup: ^8.5.0
   typescript: ^5.9.2
 

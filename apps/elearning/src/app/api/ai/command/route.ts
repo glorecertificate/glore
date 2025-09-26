@@ -5,7 +5,7 @@ import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { convertToCoreMessages, streamText, type Message, type TextStreamPart, type ToolSet } from 'ai'
 
-import { Env } from '@/lib/env'
+import { env } from '@/lib/env'
 
 /**
  * Detects the first chunk in a buffer.
@@ -121,7 +121,7 @@ export const POST = async (req: NextRequest) => {
     system?: string
   }
 
-  const apiKey = key || Env.OPENAI_API_KEY
+  const apiKey = key ?? env.OPENAI_API_KEY
 
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })
@@ -187,7 +187,7 @@ export const POST = async (req: NextRequest) => {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: openai(Env.OPENAI_MODEL),
+      model: openai(env.OPENAI_MODEL),
       system,
     })
 

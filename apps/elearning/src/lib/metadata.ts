@@ -1,37 +1,28 @@
-import { type Metadata, type ResolvingMetadata } from 'next'
+import { type Metadata } from 'next'
+import { type AppRoutes } from 'next/types/routes'
 
-import { type Locale } from 'use-intl'
+import metadata from '@config/metadata'
+import { i18n, type Locale, type MessageKey } from '@repo/i18n'
 
-import { type AnyRecord } from '@repo/utils/types'
+import { env } from '@/lib/env'
+import { getLocale, getTranslations } from '@/lib/i18n'
+import { Public } from '@/lib/storage'
 
-import { i18n } from '@/lib/i18n/config'
-import { getLocale, getTranslations } from '@/lib/i18n/server'
-import { type MessageKey } from '@/lib/i18n/types'
-import { type PageProps, type Route } from '@/lib/navigation'
-import { Asset, Public } from '@/lib/storage/types'
-import { asset } from '@/lib/storage/utils'
-import metadata from 'config/metadata.json'
-
-export interface MetadataOptions<T extends boolean> {
-  description?: T extends true ? MessageKey : string
+/**
+ * Options for generating metadata.
+ *
+ * The `Translate` generic determines whether localization should be applied to title and description.
+ */
+export interface MetadataOptions<Translate extends boolean> {
+  description?: Translate extends true ? MessageKey : string
   image?: string
-  parent?: Metadata
   separator?: string
-  title?: T extends true ? MessageKey : string
-  translate?: T
+  translate?: Translate
+  title?: Translate extends true ? MessageKey : string
 }
 
-export interface MetadataParams<T extends AnyRecord> {
-  params: Promise<T>
-  searchParams: Promise<Record<string, string | string[] | undefined>>
-}
-
-const alternateLanguages = i18n.locales.reduce(
-  (languages, locale) => ({ ...languages, [locale]: `${metadata.url}?lang=${locale}` }),
-  {} as Record<Locale, string>,
-)
-
-const DEFAULT_METADATA: Metadata = {
+const DEFAULT_METADATA = {
+  metadataBase: new URL(env.APP_URL),
   applicationName: metadata.name,
   category: metadata.category,
   authors: metadata.authors,
@@ -44,72 +35,77 @@ const DEFAULT_METADATA: Metadata = {
     'max-snippet': -1,
     'max-video-preview': -1,
   },
-  alternates: {
-    canonical: metadata.url,
-    languages: alternateLanguages,
+  formatDetection: {
+    telephone: false,
   },
-  formatDetection: { telephone: false },
+  alternates: {
+    canonical: env.APP_URL,
+    languages: i18n.locales.reduce(
+      (languages, lang) => ({ ...languages, [lang]: `${env.APP_URL}?lang=${lang}` }),
+      {} as Record<Locale, string>,
+    ),
+  },
   openGraph: {
     type: 'website',
     emails: metadata.email,
-    images: [asset(Asset.OpenGraph)],
+    images: [Public.OpenGraph],
     phoneNumbers: metadata.phone,
     siteName: metadata.name,
     ttl: 60,
   },
   icons: [
     {
-      sizes: '96x96',
-      type: 'image/png',
-      url: asset(Asset.Favicon96),
-    },
-    {
       rel: 'shortcut icon',
       url: Public.Favicon,
     },
     {
+      sizes: '96x96',
+      type: 'image/png',
+      url: Public.Favicon96,
+    },
+    {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: asset(Asset.AppleIcon),
+      url: Public.AppleIcon,
     },
   ],
   appleWebApp: {
     capable: true,
     title: metadata.name,
     statusBarStyle: 'black-translucent',
-    startupImage: asset(Asset.WebAppScreenshotNarrow),
+    startupImage: Public.WebAppScreenshotNarrow,
   },
-  other: {
-    'mobile-web-app-capable': 'yes',
-  },
-}
+} as const satisfies Metadata
 
 /**
- * Localizes and merges the provided values with the default metadata and
- * returns a function that generates metadata for a page.
+ * Merges the provided values with the default metadata and returns a metadata generator function.
+ *
+ * The `translate` flag determines whether localization should be applied. When set to true, title
+ * and description must be valid localization keys.
  */
 export const createMetadata =
-  <R extends Route, K extends AnyRecord = AnyRecord, T extends boolean = true>(options: MetadataOptions<T> = {}) =>
-  async (_: PageProps<R, K>, parent: ResolvingMetadata) =>
-    intlMetadata<T>({ ...options, parent: (await parent) as Metadata })
+  <R extends AppRoutes, T extends boolean>(options: MetadataOptions<T> = {}) =>
+  async (_: PageProps<R>) =>
+    createAsyncMetadata<T>(options)
 
 /**
- * Localizes the provided values and returns a complete metadata object.
- * Localization is skipped when the `static` flag is set to true.
+ * Asynchronously generates metadata by merging the provided options with the default metadata.
+ *
+ * The `translate` flag determines whether localization should be applied. When set to true (default),
+ * title and description must be valid localization keys.
  */
-export const intlMetadata = async <T extends boolean = true>(options: MetadataOptions<T> = {}) => {
+export const createAsyncMetadata = async <T extends boolean>(options: MetadataOptions<T> = {}): Promise<Metadata> => {
   const {
     description: userDescription,
     image,
-    parent = {},
     separator = metadata.titleSeparator,
     title: userTitle,
-    translate = true as T,
+    translate = true,
   } = options
 
   const t = await getTranslations()
   const locale = await getLocale()
-  const alternateLocale = i18n.locales[i18n.locales.indexOf(locale) + 1] ?? i18n.locales[0]
+  const alternateLocale = i18n.locales.filter(language => language !== locale)[0]
 
   const title = userTitle
     ? `${translate ? t.dynamic(userTitle) : userTitle} ${separator} ${metadata.title}`
@@ -118,16 +114,17 @@ export const intlMetadata = async <T extends boolean = true>(options: MetadataOp
     ? translate
       ? t.dynamic(userDescription)
       : userDescription
-    : metadata.description[locale]
+    : t('App.description')
+
+  const { openGraph, ...defaultMetadata } = DEFAULT_METADATA
 
   return {
-    ...DEFAULT_METADATA,
-    ...parent,
+    ...defaultMetadata,
     title,
     description,
+    manifest: `${Public.Manifest}?locale=${locale}`,
     openGraph: {
-      ...DEFAULT_METADATA.openGraph,
-      ...(parent.openGraph ?? {}),
+      ...openGraph,
       title,
       description,
       ...(image ? { images: image } : {}),

@@ -1,0 +1,35 @@
+{
+  "name": "@repo/release-config",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "require": "./build/index.cjs",
+      "default": "./build/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "type-check": "tsc && tsup --silent",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "check": "pnpm type-check && pnpm lint"
+  },
+  "prettier": "@repo/prettier-config",
+  "dependencies": {
+    "@repo/utils": "workspace:^"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
+    "@repo/tsconfig": "workspace:^",
+    "@repo/tsup-config": "workspace:^",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "release-it": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
+  }
+}

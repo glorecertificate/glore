@@ -1,4 +1,4 @@
-import { isServer } from '@/is-server'
+import { isServer } from './is-server'
 
 /**
  * Encodes a string to base64 format using the browser's `btoa` function.

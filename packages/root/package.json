@@ -1,0 +1,11 @@
+{
+  "name": "@repo/root",
+  "description": "Stub to watch packages in development and run root-level scripts.",
+  "scripts": {
+    "dev": "cd ../.. && pnpm watch",
+    "type-check": "cd ../.. && tsc",
+    "lint": "cd ../.. && eslint . && prettier --check . && shellcheck $(find .husky -maxdepth 1 -type f)",
+    "lint:fix": "cd ../.. && eslint --fix . && prettier --write .",
+    "check": "pnpm type-check && pnpm lint"
+  }
+}

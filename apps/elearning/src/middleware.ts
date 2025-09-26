@@ -1,15 +1,18 @@
 import { NextResponse, type MiddlewareConfig, type NextMiddleware } from 'next/server'
 
-import { createDatabase } from '@/lib/db/server'
-import { AuthPage, Route } from '@/lib/navigation'
+import { createDatabase } from '@/lib/db/ssr'
+import { getLocale } from '@/lib/i18n'
+import { authRoutes } from '@/lib/navigation'
 
 export const config: MiddlewareConfig = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|manifest.json|.*.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|api/|favicon.ico|sitemap.xml|robots.txt|manifest.json|.*.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
 
 export const middleware: NextMiddleware = async request => {
+  const isAuth = authRoutes.some(route => request.nextUrl.pathname.startsWith(route))
+
   const next = NextResponse.next({
     request: {
       headers: request.headers,
@@ -25,13 +28,17 @@ export const middleware: NextMiddleware = async request => {
 
     const { error } = await db.auth.getUser()
 
-    const isAuth = Object.values(AuthPage).includes(request.nextUrl.pathname as AuthPage)
-
     if (error) {
-      return isAuth ? response : NextResponse.redirect(new URL(Route.Login, request.url))
+      if (!isAuth) return NextResponse.redirect(new URL('/login', request.url))
+
+      const locale = await getLocale()
+      const lang = new URL(request.url).searchParams.get('lang')
+      if (lang && lang !== locale) response.headers.append('Set-Cookie', `NEXT_LOCALE=${lang}`)
+
+      return response
     }
 
-    return isAuth ? NextResponse.redirect(new URL(Route.Home, request.url)) : response
+    return isAuth ? NextResponse.redirect(new URL('/', request.url)) : response
   } catch {
     return next
   }

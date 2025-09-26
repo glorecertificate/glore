@@ -4,14 +4,19 @@ import { useCallback, useMemo } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Progress } from '@/components/ui/progress'
+import { useLocale, useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@repo/ui/components/dropdown-menu'
+import { Progress } from '@repo/ui/components/progress'
+import { useScroll } from '@repo/ui/hooks/use-scroll'
+import { cn } from '@repo/ui/utils'
+
 import { useCourse } from '@/hooks/use-course'
-import { useLocale } from '@/hooks/use-locale'
-import { useScroll } from '@/hooks/use-scroll'
-import { useTranslations } from '@/hooks/use-translations'
-import { cn } from '@/lib/utils'
 
 export const CourseHeaderMobile = () => {
   const { course, language, setStep, step } = useCourse()

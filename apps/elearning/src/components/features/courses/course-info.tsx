@@ -3,16 +3,15 @@
 import { useCallback, useMemo } from 'react'
 
 import { MessageCircleWarningIcon } from 'lucide-react'
-import { type Locale } from 'use-intl'
 
-import { AlertCallout } from '@/components/ui/alert'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { useLocale, useTranslations, type Locale } from '@repo/i18n'
+import { AlertCallout } from '@repo/ui/components/alert'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
+import { Textarea } from '@repo/ui/components/textarea'
+
 import { useCourse } from '@/hooks/use-course'
-import { useLocale } from '@/hooks/use-locale'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses'
+import { type Course } from '@/lib/api'
 import { type Enums } from 'supabase/types'
 
 export interface CourseInfoData {

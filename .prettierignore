@@ -6,3 +6,5 @@
 
 # Format-specific
 /.github/chatmodes/*.chatmode.md
+
+.env

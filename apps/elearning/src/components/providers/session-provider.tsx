@@ -2,8 +2,7 @@
 
 import { createContext } from 'react'
 
-import { type Course } from '@/lib/api/courses/types'
-import { type CurrentUser, type UserOrganization } from '@/lib/api/users/types'
+import { type Course, type CurrentUser, type UserOrganization } from '@/lib/api'
 
 export interface SessionContext {
   courses: Course[]

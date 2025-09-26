@@ -1,3 +1,5 @@
-import { RichTextEditorProvider } from '@/components/ui/rich-text-editor'
+import { RichTextEditorProvider } from '@repo/ui/blocks/rich-text-editor'
 
-export default ({ children }: React.PropsWithChildren) => <RichTextEditorProvider>{children}</RichTextEditorProvider>
+export default ({ children }: LayoutProps<'/certificates'>) => (
+  <RichTextEditorProvider>{children}</RichTextEditorProvider>
+)

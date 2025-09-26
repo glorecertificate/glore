@@ -1,4 +1,5 @@
-import { redirect } from 'next/navigation'
+import { ProgressBar } from '@repo/ui/components/progress-bar'
+import { SidebarInset, SidebarProvider } from '@repo/ui/components/sidebar'
 
 import { AppHeader } from '@/components/layout/app-header'
 import { AppMain } from '@/components/layout/app-main'
@@ -7,13 +8,11 @@ import { RouteListener } from '@/components/layout/route-listener'
 import { HeaderProvider } from '@/components/providers/header-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { SyncStateProvider } from '@/components/providers/sync-state-provider'
-import { ProgressBar } from '@/components/ui/progress-bar'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { createApi } from '@/lib/api/server'
-import { Route } from '@/lib/navigation'
-import { deleteCookie, getCookie, hasCookie } from '@/lib/storage/server'
+import { createApi } from '@/lib/api/ssr'
+import { redirect } from '@/lib/navigation'
+import { deleteCookie, getCookie, hasCookie } from '@/lib/storage/ssr'
 
-export default async ({ children }: React.PropsWithChildren) => {
+export default async ({ children }: LayoutProps<'/'>) => {
   const api = await createApi()
   const user = await api.users.getCurrent()
 
@@ -21,7 +20,7 @@ export default async ({ children }: React.PropsWithChildren) => {
     if (await hasCookie('user')) {
       await deleteCookie('user')
     }
-    redirect(Route.Login)
+    redirect('/login')
   }
 
   const courses = await api.courses.list()

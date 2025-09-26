@@ -1,6 +1,5 @@
-import { type Certificate } from '@/lib/api/certificates/types'
-import { type BaseOrganization } from '@/lib/api/organizations/types'
-import { type Entity, type Timestamp } from '@/lib/api/types'
+import { type BaseOrganization, type Certificate } from '@/lib/api'
+import { type Entity, type Timestamp } from '@/lib/db'
 import { type Enums } from 'supabase/types'
 
 export interface BaseUser extends Exclude<Entity<'users'>, 'phone'> {}

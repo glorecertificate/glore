@@ -1,21 +1,18 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
+import { useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { GloreIcon } from '@repo/ui/icons/glore'
 import { log } from '@repo/utils/logger'
 
 import { ErrorView, type ErrorProps } from '@/components/layout/error-view'
-import { Button } from '@/components/ui/button'
-import { Logo } from '@/components/ui/icons/logo'
 import { Link } from '@/components/ui/link'
-import { usePathname } from '@/hooks/use-pathname'
-import { useTranslations } from '@/hooks/use-translations'
-import { Route } from '@/lib/navigation'
+import { useNavigation } from '@/hooks/use-navigation'
 
 export default ({ error }: ErrorProps) => {
-  const { pathname } = usePathname()
-  const router = useRouter()
+  const { pathname, router } = useNavigation()
   const t = useTranslations('Common')
 
   useEffect(() => {
@@ -40,8 +37,8 @@ export default ({ error }: ErrorProps) => {
       className="min-h-[calc(100vh-4rem)]"
       header={
         <header className="flex h-16 w-full items-center justify-center px-4">
-          <Link href={Route.Home} title={t('backToHome')}>
-            <Logo className="mt-8 h-8" />
+          <Link href="/" title={t('backToHome')}>
+            <GloreIcon className="mt-8 h-8" />
           </Link>
         </header>
       }
@@ -51,7 +48,7 @@ export default ({ error }: ErrorProps) => {
           {t('backToPrevious')}
         </Button>
       ) : (
-        pathname !== Route.Home && (
+        pathname !== '/' && (
           <Button asChild size="lg" variant="outline">
             {t('backToHome')}
           </Button>

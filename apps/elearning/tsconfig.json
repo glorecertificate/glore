@@ -1,17 +1,16 @@
 {
   "extends": "@repo/tsconfig/nextjs",
-  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"],
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-env.d.ts"],
+  "exclude": ["build", "node_modules"],
   "compilerOptions": {
-    "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
-      "config/*": ["./config/*"],
-      "supabase/*": ["./supabase/*"],
       "@/*": ["./src/*"],
-      "@rte/*": ["./src/components/ui/rich-text-editor/*"]
+      "@config/*": ["../../config/*.json"],
+      "next/types/*": ["./.next/types/*"],
+      "supabase/*": ["./supabase/*"]
     },
-    "noEmit": true,
-    "types": ["node"]
+    "plugins": [{ "name": "next" }]
   }
 }

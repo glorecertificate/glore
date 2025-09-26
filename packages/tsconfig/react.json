@@ -1,9 +1,0 @@
-{
-  "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "@repo/react",
-  "extends": "./base.json",
-  "compilerOptions": {
-    "incremental": true,
-    "types": ["react", "react-dom"]
-  }
-}

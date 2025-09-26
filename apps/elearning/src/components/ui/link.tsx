@@ -1,97 +1,62 @@
 'use client'
 
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
-import { useRouter } from 'next/navigation'
 import { startTransition, useCallback, useMemo } from 'react'
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { Link as BaseLink, linkVariants, type LinkProps as BaseLinkProps } from '@repo/ui/components/link'
+import { useProgressBar, type ProgressBarProps } from '@repo/ui/components/progress-bar'
+import { cn } from '@repo/ui/utils'
 
-import { type HTTPUrl, type MailToUrl, type TelUrl } from '@repo/utils/types'
+import { useNavigation } from '@/hooks/use-navigation'
+import { type AnyUrl, type ExternalUrl, type Routes } from '@/lib/navigation'
 
-import { useProgressBar } from '@/components/ui/progress-bar'
-import { type Pathname } from '@/lib/navigation'
-import { cn } from '@/lib/utils'
-
-export type AllowedUrl = Pathname | HTTPUrl | MailToUrl | TelUrl
-
-export interface LinkProps<T extends AllowedUrl = Pathname>
-  extends React.PropsWithChildren<NextLinkProps>,
-    VariantProps<typeof link> {
-  className?: string
-  hideProgress?: T extends Pathname ? boolean : never
-  href: T
-  target?: T extends Pathname | MailToUrl | TelUrl ? undefined : React.HTMLAttributeAnchorTarget
-  title?: string
+type MappedLinkProps<T extends AnyUrl> = {
+  [K in keyof Omit<NextLinkProps, keyof React.AnchorHTMLAttributes<HTMLAnchorElement>>]: T extends ExternalUrl
+    ? never
+    : NextLinkProps[K]
 }
 
-export const Link = <T extends AllowedUrl>({
-  className,
-  color,
-  hideProgress,
-  href,
-  onClick,
-  size,
-  target,
-  variant,
-  ...props
-}: LinkProps<T>) => {
-  const progressBar = useProgressBar()
-  const router = useRouter()
+export interface LinkProps<T extends AnyUrl> extends BaseLinkProps, MappedLinkProps<T> {
+  href: T
+  /** @default true */
+  progress?: T extends ExternalUrl ? never : boolean | Exclude<ProgressBarProps['variant'], undefined | null>
+}
 
-  const styles = useMemo(() => cn(link({ color, variant, size }), className), [className, color, size, variant])
-  const external = useMemo(() => !href.startsWith('/') && !href.startsWith('#'), [href])
-  const hasProgress = useMemo(() => !external && !hideProgress, [external, hideProgress])
+export const Link = <T extends Routes | ExternalUrl>({ progress, ...props }: LinkProps<T>) => {
+  const { className, onClick, underline, variant, ...nextLinkProps } = props
+
+  const progressBar = useProgressBar()
+  const { router } = useNavigation()
+
+  const external = useMemo(() => !props.href.startsWith('/') && !props.href.startsWith('#'), [props.href])
+  const hasProgress = useMemo(() => !external && !progress, [external, progress])
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault()
 
       if (hasProgress && progressBar.state !== 'in-progress') {
-        progressBar.colorize(color)
+        if (variant) progressBar.colorize(variant)
         progressBar.start()
 
         startTransition(() => {
-          router.push(href)
+          router.push(props.href)
           progressBar.done()
         })
       }
 
-      if (onClick) onClick(e)
+      onClick?.(e)
     },
-    [color, hasProgress, href, onClick, progressBar, router],
+    [hasProgress, onClick, progressBar, props.href, router, variant],
   )
 
-  if (external) return <a className={styles} href={href} onClick={onClick} target={target} {...props} />
-
-  return <NextLink className={styles} href={href} onClick={handleClick} {...props} />
+  return external ? (
+    <BaseLink {...props} />
+  ) : (
+    <NextLink
+      className={cn(linkVariants({ variant, underline }), className)}
+      onClick={handleClick}
+      {...nextLinkProps}
+    />
+  )
 }
-
-export const link = cva('transition-all', {
-  defaultVariants: {
-    color: 'default',
-    size: 'md',
-    variant: 'default',
-  },
-  variants: {
-    color: {
-      default: 'text-current',
-      link: 'text-link',
-      primary: 'text-brand hover:text-brand-accent',
-      secondary: 'text-brand-secondary hover:text-brand-secondary-accent',
-      tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',
-      destructive: 'text-destructive hover:text-destructive',
-      success: 'text-success hover:text-success',
-      transparent: 'text-transparent hover:text-foreground',
-      muted: 'text-muted-foreground hover:text-foreground/90',
-    },
-    size: {
-      sm: 'text-xs',
-      md: 'text-sm',
-      lg: 'text-base',
-    },
-    variant: {
-      default: 'no-underline',
-      underline: 'hover:underline',
-    },
-  },
-})

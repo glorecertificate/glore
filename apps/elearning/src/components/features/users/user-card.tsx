@@ -1,15 +1,14 @@
 import { useCallback, useMemo } from 'react'
 
 import { LanguagesIcon, MailIcon, MapPin, PencilIcon, ShieldUserIcon } from 'lucide-react'
-import { useFormatter } from 'use-intl'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useFormatter, useLocale, useTranslations } from '@repo/i18n'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+
 import { Link } from '@/components/ui/link'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useLocale } from '@/hooks/use-locale'
-import { useTranslations } from '@/hooks/use-translations'
-import { type User } from '@/lib/api/users/types'
-import { googleMapsUrl } from '@/lib/navigation'
+import { type User } from '@/lib/api'
+import { googleMaps } from '@/lib/navigation'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
   const { locale } = useLocale()
@@ -26,7 +25,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
 
   const locationUrl = useMemo(() => {
     if (!location) return undefined
-    return googleMapsUrl(location)
+    return googleMaps(location)
   }, [location])
 
   const languages = useMemo(() => {
@@ -87,7 +86,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
             <div className="flex items-center gap-1.5">
               <MapPin className="size-3.5" />
               {locationUrl ? (
-                <Link href={locationUrl} size="sm" target="_blank" title={t('Common.showOnGoogleMaps')}>
+                <Link className="text-xs" href={locationUrl} target="_blank" title={t('Common.showOnGoogleMaps')}>
                   {location}
                 </Link>
               ) : (
@@ -104,7 +103,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
           {isVisible('email') && (
             <div className="flex items-center gap-1.5">
               <MailIcon className="size-3.5" />
-              <Link href={`mailto:${user.email}`} size="sm" title={contactTitle} variant="underline">
+              <Link className="text-xs" href={`mailto:${user.email}`} title={contactTitle} underline>
                 {user.email}
               </Link>
             </div>

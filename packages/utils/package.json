@@ -1,6 +1,5 @@
 {
   "name": "@repo/utils",
-  "version": "0.4.14",
   "type": "module",
   "exports": {
     "./*": {
@@ -10,15 +9,15 @@
       "default": "./build/*.js"
     }
   },
-  "prettier": "@repo/prettier-config",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
-    "type-check": "tsc --noEmit && tsup --silent",
+    "watch": "tsup --watch",
+    "type-check": "tsc && tsup --silent",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint --fix . && prettier --write .",
     "check": "pnpm type-check && pnpm lint"
   },
+  "prettier": "@repo/prettier-config",
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",
     "@repo/tsconfig": "workspace:^",
@@ -28,8 +27,5 @@
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"
-  },
-  "dependencies": {
-    "irregular-plurals": "^4.0.0"
   }
 }

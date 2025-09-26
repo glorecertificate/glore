@@ -1,0 +1,13 @@
+{
+  "name": "@repo/cli",
+  "bin": {
+    "glore": "./cli.sh"
+  },
+  "scripts": {
+    "lint": "shellcheck *.sh **/*.sh",
+    "check": "pnpm lint"
+  },
+  "devDependencies": {
+    "shellcheck": "catalog:"
+  }
+}

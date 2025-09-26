@@ -2,12 +2,12 @@
 
 import { useMemo } from 'react'
 
-import { NotFoundGraphic } from '@/components/ui/graphics/not-found'
-import { ServerErrorGraphic } from '@/components/ui/graphics/server-error'
-import { useDevice } from '@/hooks/use-device'
-import { useTranslations } from '@/hooks/use-translations'
-import { cn } from '@/lib/utils'
-import metadata from 'config/metadata.json'
+import metadata from '@config/metadata'
+import { useTranslations } from '@repo/i18n'
+import { NotFoundGraphic } from '@repo/ui/graphics/not-found'
+import { ServerErrorGraphic } from '@repo/ui/graphics/server-error'
+import { useDevice } from '@repo/ui/hooks/use-device'
+import { cn } from '@repo/ui/utils'
 
 export interface ErrorProps {
   error: { digest?: string } & Error

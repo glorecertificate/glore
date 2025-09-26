@@ -1,12 +1,11 @@
-import { type User } from '@supabase/supabase-js'
-
+import { type AuthUser } from '@/lib/api'
 import { type Enums, type Tables } from 'supabase/types'
 
-import { client } from './config/client'
-import { organization as seeder } from './config/data'
-import { emailToRole, verifyResponse } from './config/utils'
+import { client } from './shared/client'
+import { organization as seeder } from './shared/data'
+import { emailToRole, verifyResponse } from './shared/utils'
 
-export const seedMemberships = async (organization: Tables<'organizations'>, users: User[]) => {
+export const seedMemberships = async (organization: Tables<'organizations'>, users: AuthUser[]) => {
   const response = await client
     .from('memberships')
     .insert(

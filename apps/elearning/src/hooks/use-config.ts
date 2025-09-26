@@ -1,17 +1,13 @@
 'use client'
 
-import { useMemo } from 'react'
+import app from '@config/app'
+import metadata from '@config/metadata'
+import theme from '@config/theme'
 
-import config from 'config/app.json'
+const config = { app, metadata, theme } as const
 
 /**
  * Hook exposing the application configuration.
  */
-export const useConfig = () =>
-  useMemo(
-    () =>
-      ({
-        ...config,
-      }) as const,
-    [],
-  )
+export const useConfig = <T extends keyof typeof config>(namespace?: T) =>
+  (namespace ? config[namespace] : config) as T extends keyof typeof config ? (typeof config)[T] : typeof config

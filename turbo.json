@@ -1,25 +1,24 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["tsconfig.json"],
-  "globalEnv": [
-    "ANALYZE",
-    "CI",
-    "GH_TOKEN",
-    "GITHUB_TOKEN",
-    "ISSUE_PREFIX",
-    "ISSUE_URL",
-    "NODE_ENV",
-    "OPENAI_API_KEY",
-    "OPENAI_MODEL",
-    "SUPABASE_ACCESS_TOKEN",
-    "SUPABASE_DB_URL"
-  ],
   "ui": "tui",
+  "globalEnv": [
+    "COOKIE_PREFIX",
+    "NODE_ENV",
+    "SUPABASE_DB_URL",
+    "SUPABASE_TOKEN",
+    "TURBO_TEAM",
+    "TURBO_TELEMETRY_DISABLED",
+    "TURBO_TOKEN"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "APP_URL",
         "ENABLE_EXPERIMENTAL_COREPACK",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
         "POSTGRES_PASSWORD",
@@ -37,27 +36,44 @@
     "start": {
       "cache": false,
       "dependsOn": ["build"],
-      "env": ["SUPABASE_ANON_KEY", "SUPABASE_URL"],
+      "env": ["OPENAI_API_KEY", "OPENAI_MODEL", "STORAGE_URL", "SUPABASE_ANON_KEY", "SUPABASE_URL"],
       "persistent": true
     },
     "dev": {
       "cache": false,
+      "persistent": true,
+      "env": [
+        "APP_URL",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "STORAGE_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_URL"
+      ]
+    },
+    "watch": {
+      "cache": false,
       "persistent": true
     },
     "typegen": {
-      "outputs": ["**/*.d.ts"]
+      "dependsOn": ["^typegen"],
+      "outputs": ["**/*.d.ts", "src/types.ts", "supabase/types.ts"]
     },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "dependsOn": ["^type-check"],
+      "env": ["APP_URL"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "env": ["APP_URL"]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+      "dependsOn": ["^lint:fix"],
+      "env": ["APP_URL"]
     },
     "check": {
-      "dependsOn": ["^check"]
+      "dependsOn": ["^check"],
+      "env": ["APP_URL"]
     },
     "db": {
       "cache": false,

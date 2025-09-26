@@ -1,6 +1,6 @@
-import { client, STORAGE_URL } from './config/client'
-import { organization } from './config/data'
-import { verifyResponse } from './config/utils'
+import { client, STORAGE_URL } from './shared/client'
+import { organization } from './shared/data'
+import { verifyResponse } from './shared/utils'
 
 export const seedOrganizations = async () => {
   const { avatar, memberships, ...rest } = organization

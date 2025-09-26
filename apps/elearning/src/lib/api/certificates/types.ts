@@ -1,9 +1,7 @@
-import { type Locale } from 'use-intl'
+import { type Locale } from '@repo/i18n'
 
-import { type Course } from '@/lib/api/courses'
-import { type Organization } from '@/lib/api/organizations/types'
-import { type Entity } from '@/lib/api/types'
-import { type BaseUser } from '@/lib/api/users/types'
+import { type BaseUser, type Course, type Organization } from '@/lib/api'
+import { type Entity } from '@/lib/db'
 
 export interface Certificate extends Entity<'certificates', never, 'created_at' | 'updated_at'> {
   language: Locale

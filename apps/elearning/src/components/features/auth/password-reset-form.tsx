@@ -1,38 +1,47 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { AuthForm } from '@/components/features/auth/auth-form'
-import { Button } from '@/components/ui/button'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { EmailSentGraphic } from '@/components/ui/graphics/email-sent'
-import { PasswordResetGraphic } from '@/components/ui/graphics/password-reset'
-import { Input } from '@/components/ui/input'
-import { Link } from '@/components/ui/link'
-import { useDatabase } from '@/hooks/use-database'
-import { useTranslations } from '@/hooks/use-translations'
-import { DatabaseError } from '@/lib/db/utils'
-import { Route } from '@/lib/navigation'
+import { useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@repo/ui/components/form'
+import { PasswordInput } from '@repo/ui/components/password-input'
+import { log } from '@repo/utils/logger'
+import { type Enum } from '@repo/utils/types'
 
-export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>) => {
-  const db = useDatabase()
+import { useApi } from '@/hooks/use-api'
+import { PASSWORD_REGEX } from '@/lib/api'
+import { type AuthView } from '@/lib/navigation'
+
+export const PasswordResetForm = ({
+  setEmail,
+  setErrored,
+  setView,
+  token,
+}: {
+  setEmail: (email: string) => void
+  setErrored: (hasErrors: boolean) => void
+  setView: (view: Enum<AuthView>) => void
+  token?: string | null
+}) => {
+  const api = useApi()
   const t = useTranslations('Auth')
-  const [isSubmitting, setSubmitting] = useState(false)
-  const [showSuccess, setSuccess] = useState(false)
 
   const formSchema = useMemo(
     () =>
       z.object({
-        user: z
+        password: z
           .string()
-          .nonempty(t('userRequired'))
-          .min(5, {
-            message: t('userInvalid'),
+          .nonempty(t('newPasswordRequired'))
+          .min(8, {
+            message: t('passwordTooShort'),
+          })
+          .regex(PASSWORD_REGEX, {
+            message: t('passwordRequirements'),
           }),
       }),
     [t],
@@ -41,102 +50,73 @@ export const PasswordResetForm = (props: React.ComponentPropsWithoutRef<'form'>)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user: '',
+      password: '',
     },
   })
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      setSubmitting(true)
-
-      const user = schema.user.trim()
+      const password = schema.password.trim()
 
       try {
-        const { data, error: userError } = await db
-          .from('users')
-          .select()
-          .or(`email.eq.${user},username.eq.${user}`)
-          .single()
-        if (userError) throw userError
-        if (!data) throw new DatabaseError('NO_RESULTS')
-
-        const { error } = await db.auth.resetPasswordForEmail(data.email)
-        if (error) throw error
-
-        setSubmitting(false)
-        setSuccess(true)
+        if (!token) throw new Error()
+        await api.auth.verify({ type: 'email', token_hash: token })
+        const user = await api.auth.updateUser({ password })
+        setEmail(user.email!)
       } catch (e) {
-        setSubmitting(false)
-
-        const error = e as DatabaseError
-        const dbError = new DatabaseError(error.code, error.message)
-
-        if (dbError.code !== 'NETWORK_ERROR' && (!error.code || dbError.code === 'NO_RESULTS')) {
-          return form.setError('user', { message: t('userNotFound') })
-        }
-
-        return toast.error(t('networkError'))
+        log.error(e)
+        setView('invalid_password_reset')
+        return
       }
+
+      setView('password_updated')
+      await api.auth.logout()
     },
-    [db, form, t],
+    [api.auth, setEmail, setView, token],
   )
 
-  return showSuccess ? (
-    <AuthForm
-      disabledTitle={t('insertEmail')}
-      header={
-        <div className="flex flex-col gap-2">
-          <EmailSentGraphic className="mb-4 size-64" />
-          <h1 className="text-2xl font-bold">{t('passwordResetSent')}</h1>
-          <p className="mb-2 text-left text-balance text-muted-foreground">{t('passwordResetMessage')}</p>
-          <Button asChild variant="outline">
-            <Link className="hover:no-underline" href={Route.Login}>
-              {t('backToLogin')}
-            </Link>
-          </Button>
-        </div>
-      }
-      {...props}
-    />
-  ) : (
+  const hasErrors = Object.keys(form.formState.errors).length > 0
+
+  useEffect(() => {
+    setErrored(hasErrors)
+  }, [hasErrors, setErrored])
+
+  return (
     <>
-      <AuthForm
-        className="mt-2 gap-4"
-        footer={
-          <div className="flex w-full justify-end">
-            <Link className="text-[13px]" color="muted" href={Route.Login}>
-              {t('backToLogin')}
-            </Link>
+      <Form {...form}>
+        <form className="grid gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="grid gap-6">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PasswordInput autoFocus open placeholder={t('passwordLabel')} variant="floating" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        }
-        form={form}
-        header={
-          <div className="mb-2 flex flex-col gap-2">
-            <PasswordResetGraphic className="mb-4 w-72" />
-            <h1 className="text-2xl font-bold">{t('passwordResetTitle')}</h1>
-            <p className="mb-2 text-left text-sm text-muted-foreground">{t('passwordResetSubtitle')}</p>
-          </div>
-        }
-        loading={isSubmitting}
-        onSubmit={form.handleSubmit(onSubmit)}
-        subtitle={t('passwordResetSubtitle')}
-        title={t('passwordResetTitle')}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="user"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('userLabel')}</FormLabel>
-              <FormControl>
-                <Input autoFocus placeholder="me@example.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </AuthForm>
+          <Button
+            className="w-full [&_svg]:size-4"
+            disabled={defaultFormDisabled(form)}
+            disabledCursor
+            disabledTitle={t('insertNewPassword')}
+            loading={form.formState.isSubmitting}
+            type="submit"
+            variant="brand"
+          >
+            {form.formState.isSubmitting ? t('submitting') : t('submit')}
+          </Button>
+        </form>
+      </Form>
+      <div className="mt-2 flex w-full justify-end">
+        <Button onClick={() => setView('login')} size="text" variant="link">
+          {t('skipAndLogin')}
+        </Button>
+      </div>
     </>
   )
 }

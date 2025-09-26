@@ -1,4 +1,4 @@
-import { cn } from '@udecode/cn'
+import { cn } from '@repo/ui/utils'
 
 export const AppMain = ({ className, ...props }: React.ComponentProps<'main'>) => (
   <main

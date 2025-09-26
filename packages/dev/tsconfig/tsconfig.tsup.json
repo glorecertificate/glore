@@ -1,0 +1,7 @@
+{
+  "display": "@repo/tsconfig/tsup",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "removeComments": false
+  }
+}

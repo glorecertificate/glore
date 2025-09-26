@@ -1,0 +1,9 @@
+{
+  "display": "@repo/tsconfig/nextjs",
+  "extends": "./tsconfig.react.json",
+  "compilerOptions": {
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "types": ["next", "node", "react", "react-dom"]
+  }
+}

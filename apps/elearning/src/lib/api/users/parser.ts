@@ -1,5 +1,4 @@
-import { type SelectData } from '@/lib/api'
-import { createParser } from '@/lib/api/utils'
+import { createParser, type SelectData } from '@/lib/db'
 
 import { type userQuery } from './queries'
 import { type User } from './types'

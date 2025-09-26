@@ -1,6 +1,7 @@
+import { i18n } from '@repo/i18n'
+
 import { parseUser } from '@/lib/api/users/parser'
-import { createParser } from '@/lib/api/utils'
-import { i18n } from '@/lib/i18n/config'
+import { createParser } from '@/lib/db'
 
 import { type courseQuery, type lessonQuery } from './queries'
 import { LessonType, type Course, type Lesson } from './types'

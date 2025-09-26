@@ -1,18 +1,17 @@
-import { type User } from '@supabase/supabase-js'
-
-import { handleize } from '@repo/utils/handleize'
 import { pick } from '@repo/utils/pick'
-import { pickRandom } from '@repo/utils/random'
+import { randomItem } from '@repo/utils/random'
+import { handleize } from '@repo/utils/string'
 
+import { type AuthUser } from '@/lib/api'
 import { type Tables } from 'supabase/types'
 
-import { client } from './config/client'
-import { course } from './config/data'
-import { pickLanguages, randomLanguages, verifyResponse } from './config/utils'
+import { client } from './shared/client'
+import { course } from './shared/data'
+import { pickLanguages, randomLanguages, verifyResponse } from './shared/utils'
 
 const CREATOR_ROLES = ['admin', 'editor']
 
-export const seedCourses = async ({ users }: { users?: User[] }) => {
+export const seedCourses = async ({ users }: { users?: AuthUser[] }) => {
   const courses: Tables<'courses'>[] = []
 
   const groups = await client.from('skill_groups').insert(pick(course.groups, 'name')).select()
@@ -25,7 +24,7 @@ export const seedCourses = async ({ users }: { users?: User[] }) => {
     for (const skillCourse of skillGroup.courses) {
       const slug = handleize(skillCourse.title.en)
       const creator = users
-        ? pickRandom(users.filter(user => CREATOR_ROLES.includes(user.email!.split('@')[0])))
+        ? randomItem(users.filter(user => CREATOR_ROLES.includes(user.email!.split('@')[0])))
         : undefined
       const languages = randomLanguages()
 

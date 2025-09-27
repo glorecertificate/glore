@@ -1,4 +1,4 @@
-import { type AnyRecord } from '@/types'
+import { type AnyRecord } from './types'
 
 /**
  * Deep merges a target object with one or more source objects.

@@ -2,9 +2,7 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
-import { Tooltip } from '@radix-ui/react-tooltip'
-import { type Locale } from 'use-intl'
-
+import { i18n, useLocale, useTranslations, type Locale, type LocaleItem } from '@repo/i18n'
 import {
   Select,
   SelectContent,
@@ -12,16 +10,9 @@ import {
   SelectTrigger,
   type SelectContentProps,
   type SelectTriggerProps,
-} from '@/components/ui/select'
-import { TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useLocale } from '@/hooks/use-locale'
-import { useTranslations } from '@/hooks/use-translations'
-import { i18n } from '@/lib/i18n/config'
-import { type LocaleItem } from '@/lib/i18n/types'
-import { cn } from '@/lib/utils'
-import config from 'config/app.json'
-
-const DEFAULT_VALUES = Object.keys(config.locales) as Locale[]
+} from '@repo/ui/components/select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { cn } from '@repo/ui/utils'
 
 interface LanguageSelectItem extends LocaleItem {
   badge?: React.ReactNode
@@ -49,21 +40,21 @@ export const LanguageSelect = ({
   onChange,
   status,
   value,
-  values = DEFAULT_VALUES,
+  values = i18n.locales,
   ...props
 }: LanguageSelectProps) => {
-  const { locale, setLocale } = useLocale()
+  const { locale, localeItems, setLocale } = useLocale()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
   const items = useMemo<LanguageSelectItem[]>(
-    () => i18n.localeItems.filter(item => values.includes(item.value)),
-    [values],
+    () => localeItems.filter(item => values.includes(item.value)),
+    [localeItems, values],
   )
 
   const activeItem = useMemo<LanguageSelectItem>(
-    () => items.find(item => (controlled ? item.value === value : item.value === locale))!,
-    [controlled, items, locale, value],
+    () => localeItems.find(item => (controlled ? item.value === value : item.value === locale))!,
+    [controlled, locale, localeItems, value],
   )
 
   const activeItemValue = useMemo(() => (controlled ? value : locale), [controlled, locale, value])

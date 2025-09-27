@@ -2,9 +2,9 @@
 
 import { createContext, useContext } from 'react'
 
-import { type Locale } from 'use-intl'
+import { type Locale } from '@repo/i18n'
 
-import { type Course } from '@/lib/api/courses/types'
+import { type Course } from '@/lib/api'
 
 const COURSE_TABS = ['settings', 'info', 'editor', 'preview'] as const
 

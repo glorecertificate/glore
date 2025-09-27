@@ -1,14 +1,14 @@
 import { notFound } from 'next/navigation'
 
-import { CourseView } from '@/components/features/courses/course-view'
-import { createApi } from '@/lib/api/server'
-import { getLocale } from '@/lib/i18n/server'
-import { localize } from '@/lib/i18n/utils'
-import { intlMetadata } from '@/lib/metadata'
-import { type PageProps, type Route } from '@/lib/navigation'
-import { getCookie } from '@/lib/storage/server'
+import { localize } from '@repo/i18n'
 
-const getPageData = async ({ params }: PageProps<Route.Course>) => {
+import { CourseView } from '@/components/features/courses/course-view'
+import { createApi } from '@/lib/api/ssr'
+import { getLocale } from '@/lib/i18n'
+import { createAsyncMetadata } from '@/lib/metadata'
+import { getCookie } from '@/lib/storage/ssr'
+
+const getPageData = async ({ params }: PageProps<'/courses/[slug]'>) => {
   const { slug } = (await params) ?? {}
   if (!slug) return {}
 
@@ -20,20 +20,20 @@ const getPageData = async ({ params }: PageProps<Route.Course>) => {
   return { course, user }
 }
 
-export const generateMetadata = async (props: PageProps<Route.Course>) => {
+export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
   const { course, user } = await getPageData(props)
-  if (!course || !user) return intlMetadata()
+  if (!course || !user) return createAsyncMetadata()
 
   const locale = await getLocale()
 
-  return intlMetadata({
+  return createAsyncMetadata({
     title: localize(course.title, locale),
     description: localize(course.description, locale),
     translate: false,
   })
 }
 
-export default async (props: PageProps<Route.Course>) => {
+export default async (props: PageProps<'/courses/[slug]'>) => {
   const { course, user } = await getPageData(props)
   if (!course || !user) return notFound()
 
@@ -43,7 +43,7 @@ export default async (props: PageProps<Route.Course>) => {
     await api.courses.enrollUser(course.id)
   }
 
-  const tabs = await getCookie('course-view-tab')
+  const tabs = await getCookie('course-tab')
 
   return <CourseView course={course} defaultTab={tabs?.[course.slug]} />
 }

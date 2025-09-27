@@ -1,10 +1,12 @@
 import { faker } from '@faker-js/faker'
 
-import { pickRandom, randomRange } from '@repo/utils/random'
+import { randomItem, randomRange } from '@repo/utils/random'
 
-import { client } from './config/client'
-import { countries, languages, user } from './config/data'
-import { randomUserDetails, verifyResponse } from './config/utils'
+import { type Enums } from 'supabase/types'
+
+import { client } from './shared/client'
+import { countries, languages, user } from './shared/data'
+import { randomUserDetails, verifyResponse } from './shared/utils'
 
 const { avatar, domain } = user
 
@@ -13,11 +15,11 @@ export const seedUsers = async (roles = user.roles) =>
     roles.map(async (role, i) => {
       faker.seed(i)
 
-      const country = pickRandom(countries)
+      const country = randomItem(countries)
       const userLanguages = [...new Set([...country.languages, ...randomRange(languages, 0, 3)])]
       const { gender, pronouns, sex } = randomUserDetails()
       const name = faker.person.firstName(gender)
-      const phone = pickRandom([`${country.prefix}${Math.floor(1000000000 + Math.random() * 9000000000)}`, undefined])
+      const phone = randomItem([`${country.prefix}${Math.floor(1000000000 + Math.random() * 9000000000)}`, undefined])
 
       const authResponse = await client.auth.admin.createUser({
         email: `${role}@${domain}`,
@@ -47,7 +49,7 @@ export const seedUsers = async (roles = user.roles) =>
       const publicResponse = await client
         .from('users')
         .update({
-          sex,
+          sex: sex as Enums<'sex'>,
           pronouns,
           languages: userLanguages,
           birthday: faker.date.between({ from: '1970-01-01', to: '2000-12-31' }).toISOString(),

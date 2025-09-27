@@ -4,8 +4,7 @@ import { useCallback, useContext, useState } from 'react'
 
 import { SessionContext } from '@/components/providers/session-provider'
 import { useApi } from '@/hooks/use-api'
-import { type Course, type CourseCreate, type CourseUpdate } from '@/lib/api/courses'
-import { type CurrentUser, type UserOrganization } from '@/lib/api/users'
+import { type Course, type CourseCreate, type CourseUpdate, type CurrentUser, type UserOrganization } from '@/lib/api'
 
 /**
  * Hook to access the session context.

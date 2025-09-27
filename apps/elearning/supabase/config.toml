@@ -45,12 +45,12 @@ api_url = "http://localhost:5000"
 openai_api_key = "env(OPENAI_API_KEY)"
 
 [inbucket]
-enabled = false
-# port = 54324
-# smtp_port = 54325
-# pop3_port = 54326
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+enabled = true
+port = 54324
+smtp_port = 54325
+pop3_port = 54326
+admin_email = "noreply@glorecertificate.net"
+sender_name = "GloRe Certificate"
 
 [storage]
 enabled = true
@@ -128,3 +128,9 @@ enabled = false
 enabled = true
 port = 54327
 backend = "postgres"
+
+[functions.auth-email]
+enabled = true
+verify_jwt = false
+import_map = "./functions/auth-email/deno.json"
+entrypoint = "./functions/auth-email/index.ts"

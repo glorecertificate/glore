@@ -3,19 +3,19 @@
 import { useCallback, useMemo } from 'react'
 
 import { EyeIcon } from 'lucide-react'
-import { type Locale } from 'use-intl'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useTranslations, type Locale } from '@repo/i18n'
+import { Badge } from '@repo/ui/components/badge'
+import { Button } from '@repo/ui/components/button'
+import { MotionTabsList, MotionTabsTrigger } from '@repo/ui/components/motion-tabs'
+import { Progress } from '@repo/ui/components/progress'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { useScroll } from '@repo/ui/hooks/use-scroll'
+import { cn } from '@repo/ui/utils'
+
 import { LanguageSelect } from '@/components/ui/language-select'
-import { MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
-import { Progress } from '@/components/ui/progress'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
-import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
   const { course, language, setLanguage, step, tab, tabs } = useCourse()

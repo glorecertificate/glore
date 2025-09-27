@@ -1,4 +1,4 @@
-import { type AnyRecord, type CamelCased, type SnakeCased } from '@/types'
+import { type AnyRecord, type CamelCased, type SnakeCased } from './types'
 
 export type TransformKeysCase = 'camel' | 'snake'
 

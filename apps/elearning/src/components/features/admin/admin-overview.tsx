@@ -1,6 +1,6 @@
 import { ArrowDownRight, ArrowUpRight, Award, Building2, Globe, Users } from 'lucide-react'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/components/card'
 
 export const AdminOverview = () => (
   <div className="space-y-6">

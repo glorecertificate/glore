@@ -12,13 +12,19 @@ export type OrArray<T> = T | T[]
  * Enum type with stringified values
  */
 // @ts-ignore-next-line
-export type Enum<T> = T | `${T}`
+export type Enum<T> = T | EnumValue<T>
 
 /**
  * Enum type with stringified keys.
  */
 // @ts-ignore-next-line
 export type EnumKey<T> = T | keyof typeof T
+
+/**
+ * Enum type with stringified keys.
+ */
+// @ts-ignore-next-line
+export type EnumValue<T> = `${T}`
 
 /**
  * Function with any arguments and return type.
@@ -135,6 +141,18 @@ export type SnakeToCamel<S extends string | number | symbol> = S extends `${infe
   : S
 
 /**
+ * String with underscores converted to dashes.
+ *
+ * @example
+ * ```ts
+ * type KebabCasedString = SnakeToKebab<'hello_world'> // 'hello-world'
+ * ```
+ */
+export type SnakeToKebab<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
+  ? `${T}-${SnakeToKebab<U>}`
+  : S
+
+/**
  * Record with keys converted from camel to snake case.
  *
  * @example
@@ -203,6 +221,11 @@ export type ToString<T> = T extends string ? T : string
 export type Without<T, K> = Pick<T, Exclude<keyof T, K>>
 
 /**
+ * Email type.
+ */
+export type Email = `${string}@${string}.${string}`
+
+/**
  * URL type.
  */
 export type HTTPUrl = `http${string}`
@@ -211,6 +234,13 @@ export type HTTPUrl = `http${string}`
  * Mail URL type.
  */
 export type MailToUrl = `mailto:${string}`
+
+/**
+ * Message URL type.
+ *
+ * The URL scheme opens a new message in the user's default email application.
+ */
+export type MessageUrl = `message:${string}`
 
 /**
  * Telephone URL type.
@@ -242,3 +272,17 @@ export type Hex = `#${string}${string}${string}` | `#${string}${string}${string}
  * RGB color type.
  */
 export type Rgb = [number, number, number]
+
+/**
+ * `Error` type with optional `code` property.
+ */
+export type AnyError = Error & { code?: number }
+
+/**
+ * Replaces a substring within a given string type with another string type.
+ */
+export type Replace<S extends string, From extends string, To extends string = ''> = From extends ''
+  ? S
+  : S extends `${infer A}${From}${infer B}`
+    ? `${A}${To}${B}`
+    : never

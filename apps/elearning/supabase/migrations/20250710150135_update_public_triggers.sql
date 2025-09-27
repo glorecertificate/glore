@@ -5,4 +5,4 @@ EXECUTE function set_skill_id ();
 
 CREATE TRIGGER create_username
 AFTER insert ON public.users FOR each ROW
-EXECUTE function set_username ();
+EXECUTE function set_username (),

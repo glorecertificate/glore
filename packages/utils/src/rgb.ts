@@ -1,4 +1,4 @@
-import { type Rgb } from '@/types'
+import { type Rgb } from './types'
 
 /**
  * Returns RGB values as a normalized array.

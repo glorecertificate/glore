@@ -1,19 +1,20 @@
 'use client'
 
+import { type AppRoutes } from 'next/types/routes'
 import { useMemo } from 'react'
 
+import { useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { CertificateGraphic } from '@repo/ui/graphics/certificate'
+import { NoAccessGraphic } from '@repo/ui/graphics/no-access'
+
 import { CertificateDocument } from '@/components/features/certificates/certificate-document'
-import { Button } from '@/components/ui/button'
-import { CertificateGraphic } from '@/components/ui/graphics/certificate'
-import { NoAccessGraphic } from '@/components/ui/graphics/no-access'
 import { Link } from '@/components/ui/link'
 import { useConfig } from '@/hooks/use-config'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { Route } from '@/lib/navigation'
 
 export const CertificateView = () => {
-  const { minSkillRating, minSkills } = useConfig()
+  const config = useConfig('app')
   const { courses, organization, user } = useSession()
   const t = useTranslations('Certificates')
 
@@ -23,21 +24,21 @@ export const CertificateView = () => {
   )
 
   const hasEnoughCourses = useMemo(
-    () => courses.filter(course => course.completed).length >= minSkills,
-    [courses, minSkills],
+    () => courses.filter(course => course.completed).length >= config.minSkills,
+    [config.minSkills, courses],
   )
   const validCourses = useMemo(
     () =>
       courses.filter(course =>
         course.lessons?.find(
-          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= minSkillRating,
+          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.minSkillRating,
         ),
       ),
-    [courses, minSkillRating],
+    [config.minSkillRating, courses],
   )
   const canRequestCertificate = useMemo(
-    () => hasEnoughCourses && validCourses.length >= minSkills,
-    [hasEnoughCourses, minSkills, validCourses.length],
+    () => hasEnoughCourses && validCourses.length >= config.minSkills,
+    [config.minSkills, hasEnoughCourses, validCourses.length],
   )
 
   const NoCertificateImage = useMemo(
@@ -63,16 +64,16 @@ export const CertificateView = () => {
       canRequestCertificate
         ? t('requestCertificateMessage')
         : hasEnoughCourses
-          ? t('invalidCoursesMessage', { rating: String(minSkillRating) })
-          : t('missingCoursesMessage', { count: String(minSkills) }),
-    [canRequestCertificate, hasEnoughCourses, minSkillRating, minSkills, t],
+          ? t('invalidCoursesMessage', { rating: String(config.minSkillRating) })
+          : t('missingCoursesMessage', { count: String(config.minSkills) }),
+    [canRequestCertificate, config.minSkillRating, config.minSkills, hasEnoughCourses, t],
   )
   const noCertificateLabel = useMemo(
     () => (canRequestCertificate ? t('requestCertificate') : t('goToCourses')),
     [canRequestCertificate, t],
   )
-  const noCertificateLink = useMemo(
-    () => (canRequestCertificate ? Route.CertificateNew : Route.Courses),
+  const noCertificateLink = useMemo<AppRoutes>(
+    () => (canRequestCertificate ? '/certificates/new' : '/courses'),
     [canRequestCertificate],
   )
 

@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect } from 'react'
 
-import confetti from 'canvas-confetti'
+import { confetti } from '@repo/ui/components/confetti'
 
-import { usePathname } from '@/hooks/use-pathname'
+import { useNavigation } from '@/hooks/use-navigation'
 
 export default () => {
-  const { setUiPathname } = usePathname()
+  const { setUiPathname } = useNavigation()
 
   const fireConfetti = useCallback(
     async () =>

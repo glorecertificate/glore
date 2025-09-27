@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { CourseView } from '@/components/features/courses/course-view'
-import { createApi } from '@/lib/api/server'
+import { createApi } from '@/lib/api/ssr'
 import { createMetadata } from '@/lib/metadata'
 
 export const generateMetadata = createMetadata({

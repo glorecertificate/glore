@@ -2,18 +2,18 @@
 
 import { useCallback, useMemo } from 'react'
 
+import { useLocale } from '@repo/i18n'
+import { RichTextEditor } from '@repo/ui/blocks/rich-text-editor'
+import { cn } from '@repo/ui/utils'
 import { log } from '@repo/utils/logger'
 
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
-import { RichTextEditor } from '@/components/ui/rich-text-editor'
 import { useApi } from '@/hooks/use-api'
 import { useCourse } from '@/hooks/use-course'
-import { useLocale } from '@/hooks/use-locale'
 import { useSyncState } from '@/hooks/use-sync-state'
-import { type Lesson, type Question, type QuestionOption } from '@/lib/api/courses/types'
-import { cn } from '@/lib/utils'
+import { type Lesson, type Question, type QuestionOption } from '@/lib/api'
 
 export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: boolean }) => {
   const api = useApi()

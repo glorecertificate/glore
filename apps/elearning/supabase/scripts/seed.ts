@@ -1,9 +1,9 @@
 import { log } from '@repo/utils/logger'
 
-import { createIncludes, logEntities, resetDatabase } from 'supabase/seeds/config/utils'
 import { seedCourses } from 'supabase/seeds/course'
 import { seedMemberships } from 'supabase/seeds/membership'
 import { seedOrganizations } from 'supabase/seeds/organization'
+import { createIncludes, logEntities, resetDatabase } from 'supabase/seeds/shared/utils'
 import { seedUsers } from 'supabase/seeds/user'
 
 const args = process.argv.slice(2)

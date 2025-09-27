@@ -1,19 +1,8 @@
-export type DatabaseErrorCode = (typeof DATABASE_ERRORS)[keyof typeof DATABASE_ERRORS]['codes'][number]
+import { serialize } from '@repo/utils/serialize'
+import { type AnyRecord } from '@repo/utils/types'
 
-const DATABASE_ERRORS = {
-  INVALID_CREDENTIALS: {
-    codes: ['INVALID_CREDENTIALS', 'invalid_credentials'],
-    message: 'Invalid credentials',
-  },
-  NETWORK_ERROR: {
-    codes: ['NETWORK_ERROR'],
-    message: 'Network error',
-  },
-  NO_RESULTS: {
-    codes: ['NO_RESULTS', 'PGRST116'],
-    message: 'No results found',
-  },
-} as const
+import { DATABASE_ERRORS } from './config'
+import { type DatabaseErrorCode, type PublicTable, type SelectData } from './types'
 
 /**
  * Custom error class for handling database-related errors.
@@ -29,3 +18,11 @@ export class DatabaseError extends Error {
     this.code = code
   }
 }
+
+/**
+ * Creates a parser function from a database record.
+ */
+export const createParser =
+  <T extends PublicTable, Q extends string, O extends AnyRecord>(parser: (r: SelectData<T, Q>) => O) =>
+  (record: SelectData<T, Q>) =>
+    serialize(parser(record))

@@ -2,12 +2,11 @@
 
 import { useCallback } from 'react'
 
-import Markdown from 'react-markdown'
+import { useLocale, useTranslations } from '@repo/i18n'
+import { Markdown } from '@repo/ui/components/markdown'
+import { RatingGroup } from '@repo/ui/components/rating-group'
 
-import { RatingGroup } from '@/components/ui/rating-group'
-import { useLocale } from '@/hooks/use-locale'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Evaluation } from '@/lib/api/courses/types'
+import { type Evaluation } from '@/lib/api'
 
 export const CourseEvaluations = ({
   completed,

@@ -1,4 +1,4 @@
-import { type AnyRecord } from '@/types'
+import { type AnyRecord } from './types'
 
 /**
  * Picks specific keys from an array of objects.

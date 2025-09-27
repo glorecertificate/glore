@@ -1,0 +1,30 @@
+{
+  "name": "@repo/i18n",
+  "exports": {
+    ".": "./src/index.ts",
+    "./provider": "./src/provider.tsx",
+    "./ssr": "./src/ssr.ts"
+  },
+  "scripts": {
+    "type-check": "tsc",
+    "lint": "eslint . && prettier --check .",
+    "lint:fix": "eslint --fix . && prettier --write .",
+    "check": "pnpm type-check && pnpm lint"
+  },
+  "prettier": "@repo/prettier-config",
+  "dependencies": {
+    "@repo/utils": "workspace:^",
+    "react": "catalog:",
+    "use-intl": "^4.3.9"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:^",
+    "@repo/prettier-config": "workspace:^",
+    "@repo/tsconfig": "workspace:^",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:"
+  }
+}

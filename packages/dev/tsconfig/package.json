@@ -1,0 +1,22 @@
+{
+  "name": "@repo/tsconfig",
+  "main": "tsconfig.json",
+  "exports": {
+    ".": "./tsconfig.json",
+    "./*": "./tsconfig.*.json"
+  },
+  "files": [
+    "tsconfig.json",
+    "tsconfig.*.json"
+  ],
+  "scripts": {
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write .",
+    "check": "pnpm lint"
+  },
+  "prettier": "@repo/prettier-config",
+  "devDependencies": {
+    "@repo/prettier-config": "workspace:^",
+    "prettier": "catalog:"
+  }
+}

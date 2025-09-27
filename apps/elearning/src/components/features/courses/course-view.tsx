@@ -3,10 +3,16 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { type IconName } from 'lucide-react/dynamic'
-import { usePlateState } from 'platejs/react'
 import { toast } from 'sonner'
-import { type Locale } from 'use-intl'
 
+import { intlPlaceholder, useLocale, useTranslations, type Locale } from '@repo/i18n'
+import { useEditorState } from '@repo/ui/blocks/rich-text-editor'
+import { Badge } from '@repo/ui/components/badge'
+import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@repo/ui/components/breadcrumb'
+import { MotionTabs } from '@repo/ui/components/motion-tabs'
+import { Skeleton } from '@repo/ui/components/skeleton'
+import { DynamicIcon } from '@repo/ui/icons/dynamic'
+import { cn } from '@repo/ui/utils'
 import { log } from '@repo/utils/logger'
 import { pick } from '@repo/utils/pick'
 
@@ -17,37 +23,27 @@ import { CourseHeaderMobile } from '@/components/features/courses/course-header-
 import { CourseInfo } from '@/components/features/courses/course-info'
 import { CourseSettings } from '@/components/features/courses/course-settings'
 import { CourseSidebar } from '@/components/features/courses/course-sidebar'
-import { Badge } from '@/components/ui/badge'
-import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
-import { DynamicIcon } from '@/components/ui/icons/dynamic'
-import { MotionTabs } from '@/components/ui/motion-tabs'
-import { Skeleton } from '@/components/ui/skeleton'
 import { useApi } from '@/hooks/use-api'
 import { CourseProvider, createCourseProviderValue, type CourseTab } from '@/hooks/use-course'
 import { useHeader } from '@/hooks/use-header'
-import { useLocale } from '@/hooks/use-locale'
-import { useQueryParams } from '@/hooks/use-query-params'
+import { useNavigation } from '@/hooks/use-navigation'
 import { useSession } from '@/hooks/use-session'
 import { useSyncState } from '@/hooks/use-sync-state'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses/types'
-import { emptyIntlRecord } from '@/lib/i18n/utils'
-import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/cookies'
-import { cn } from '@/lib/utils'
+import { type Course } from '@/lib/api'
+import { cookies } from '@/lib/storage'
 
 export const DEFAULT_COURSE: Partial<Course> = {
   type: 'skill',
   slug: '',
-  title: emptyIntlRecord,
-  description: emptyIntlRecord,
+  title: intlPlaceholder,
+  description: intlPlaceholder,
 }
 
 export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) => {
   const api = useApi()
   const { locale, localeItems, localize } = useLocale()
-  const [readOnly, setReadOnly] = usePlateState('readOnly')
-  const { queryParams, setQueryParam } = useQueryParams()
+  const [readOnly, setReadOnly] = useEditorState('readOnly')
+  const { searchParams } = useNavigation()
   const { user } = useSession()
   const { setSyncState } = useSyncState()
   const t = useTranslations('Courses')
@@ -73,29 +69,29 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
   )
 
   const initialLanguage = useMemo(() => {
-    const param = queryParams.get('lang') as Locale | null
+    const param = searchParams.get('lang') as Locale | null
     if (param && course.languages?.includes(param)) return param
     if (course.languages?.includes(locale)) return locale
     return (
       localeItems.filter(({ value }) => course.languages?.includes(value))[0]?.value || locale || course.languages?.[0]
     )
-  }, [queryParams, course.languages, locale, localeItems])
+  }, [course.languages, locale, localeItems, searchParams])
 
   const [language, setLanguageState] = useState<Locale>(initialLanguage)
 
   const setLanguage = useCallback(
     (lang: Locale) => {
       setLanguageState(lang)
-      setQueryParam('lang', lang)
+      searchParams.set('lang', lang)
     },
-    [setQueryParam],
+    [searchParams],
   )
 
   useHeader({
     shadow: false,
     header: (
       <BreadcrumbList className="sm:gap-1">
-        <BreadcrumbLink href={Route.Courses} title={t('backToAll')}>
+        <BreadcrumbLink href="/courses" title={t('backToAll')}>
           {t('courses')}
         </BreadcrumbLink>
         <BreadcrumbSeparator />
@@ -146,9 +142,9 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
       if (tab === 'preview') setReadOnly(true)
       setTab(tab)
       if (!course.slug) return
-      const tabCookie = cookies.get('course-view-tab') || {}
+      const tabCookie = cookies.get('course-tab') || {}
       tabCookie[course.slug] = tab
-      cookies.set('course-view-tab', tabCookie)
+      cookies.set('course-tab', tabCookie)
     },
     [course.slug, setReadOnly],
   )

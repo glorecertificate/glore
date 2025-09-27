@@ -1,10 +1,10 @@
 'use client'
 
+import { useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+
 import { ErrorView } from '@/components/layout/error-view'
-import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { useTranslations } from '@/hooks/use-translations'
-import { Route } from '@/lib/navigation'
 
 export default () => {
   const t = useTranslations('Certificates')
@@ -12,7 +12,7 @@ export default () => {
   return (
     <ErrorView message={t('notFoundMessage')} title={t('notFound')} type="not-found">
       <Button asChild size="lg" variant="outline">
-        <Link href={Route.Certificates}>{t('backTo')}</Link>
+        <Link href="/certificates">{t('backTo')}</Link>
       </Button>
     </ErrorView>
   )

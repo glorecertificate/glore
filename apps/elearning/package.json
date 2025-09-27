@@ -50,7 +50,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.9.0",
+    "@faker-js/faker": "^10.0.0",
     "@next/bundle-analyzer": "^15.5.4",
     "@repo/cli": "workspace:^",
     "@repo/eslint-config": "workspace:^",
@@ -65,10 +65,10 @@
     "pg": "^8.16.3",
     "postcss": "^8.5.6",
     "prettier": "catalog:",
-    "shadcn": "^2.10.0",
+    "shadcn": "^3.3.1",
     "supabase": "^2.45.5",
     "tailwindcss": "catalog:",
-    "tsx": "^4.20.5",
+    "tsx": "^4.20.6",
     "typescript": "catalog:"
   }
 }

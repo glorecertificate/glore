@@ -2,11 +2,11 @@
   <h1>
     <img src="./.github/assets/logo.svg" alt="" width="200">
   </h1>
-  <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
-  <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
-  <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
-  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml/badge.svg"></a>
-  <a href="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
+  <a href="https://github.com/glorecertificate/glore/releases"><img src="https://img.shields.io/github/package-json/v/glorecertificate/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
+  <a href="https://github.com/glorecertificate/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
+  <a href="https://github.com/glorecertificate/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
+  <a href="https://github.com/glorecertificate/glore/actions/workflows/ci.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
 </div>
 <br>
 
@@ -37,9 +37,9 @@ Alternatively, a tool like [colima](https://github.com/abiosoft/colima) can be u
 Download the project using the GitHub client or Git:
 
 ```sh
-gh repo clone gabrielecanepa/glore
+gh repo clone glorecertificate/glore
 # or
-git clone https://github.com/gabrielecanepa/glore.git
+git clone https://github.com/glorecertificate/glore.git
 ```
 
 Switch to the project directory and copy the example env file:

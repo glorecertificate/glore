@@ -10,11 +10,6 @@ inputs:
     required: false
     default: main
 
-outputs:
-  url:
-    description: URL to the database logs.
-    value: ${{ steps.deployment.outputs.url || '' }}
-
 runs:
   using: composite
   steps:
@@ -34,10 +29,6 @@ runs:
       shell: sh
       run: |
         if ! git push origin HEAD:${{ inputs.environment }} --force --no-verify; then
-          echo "::error::Failed to push rebased branch"
+          echo "::error::Failed to push ${{ inputs.environment }} branch"
           exit 1
         fi
-    - name: Output deployment URL
-      id: deployment
-      shell: sh
-      run: echo "url=$VERCEL_PROJECT_URL?environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT

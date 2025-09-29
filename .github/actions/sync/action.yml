@@ -11,9 +11,6 @@ outputs:
   updated:
     description: Whether there were any updates to the database.
     value: ${{ steps.push.outputs.updated }}
-  db-logs-url:
-    description: URL to the database logs.
-    value: ${{ steps.db-logs.outputs.url || '' }}
 
 runs:
   using: composite
@@ -51,10 +48,3 @@ runs:
         fi
     - name: Run code checks
       uses: ./.github/actions/code-checks
-    - name: Output database logs
-      id: db-logs
-      if: steps.push.outputs.updated == 'true'
-      shell: sh
-      run: |
-        PROJECT_ID=$(echo "$SUPABASE_DB_URL" | sed -E 's|.*@db\.([^.]+)\.supabase\.co:5432/postgres|\1|')
-        echo "url=$SUPABASE_PROJECT_URL/$PROJECT_ID" >> $GITHUB_OUTPUT

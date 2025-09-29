@@ -6,16 +6,8 @@ inputs:
     description: Number of migrations to revert.
     required: true
 
-outputs:
-  db-logs-url:
-    description: URL to the database logs.
-    value: ${{ steps.db-logs.outputs.url || '' }}
-
 runs:
   using: composite
-  permissions:
-    checks: write
-    contents: read
   steps:
     - name: Set up environment
       uses: ./.github/actions/setup
@@ -25,9 +17,3 @@ runs:
     - name: Revert database updates
       shell: sh
       run: pnpm db revert ${{ inputs.migrations }}
-    - name: Output database logs
-      id: db-logs
-      shell: sh
-      run: |
-        PROJECT_ID=$(echo "$SUPABASE_DB_URL" | sed -E 's|.*@db\.([^.]+)\.supabase\.co:5432/postgres|\1|')
-        echo "url=$SUPABASE_PROJECT_URL/$PROJECT_ID" >> $GITHUB_OUTPUT

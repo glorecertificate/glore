@@ -37,7 +37,7 @@
     "eslint-plugin-sort-destructure-keys": "^2.0.0",
     "eslint-plugin-turbo": "^2.5.8",
     "eslint-plugin-unused-imports": "^4.2.0",
-    "typescript-eslint": "^8.44.1"
+    "typescript-eslint": "^8.45.0"
   },
   "devDependencies": {
     "@repo/prettier-config": "workspace:^",

@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.5.0](https://github.com/gabrielecanepa/glore/compare/v0.4.14...v0.5.0) (2025-09-29)
+
+### ⚠ BREAKING CHANGES
+
+- env variable names and cookie keys have been updates, update the local `.env` file accordingly.
+
+### Features ✨
+
+- Add course info component and improve course UI ([9a31c69](https://github.com/gabrielecanepa/glore/commit/9a31c691389ab9025f1a97ebdd700d72cd1d1125))
+- Enhance course management with improved UI ([859a2be](https://github.com/gabrielecanepa/glore/commit/859a2be7add96400072c58d043e27c5e62d9da38))
+- Unify i18n and courses with new schema ([0875d62](https://github.com/gabrielecanepa/glore/commit/0875d62c6fed02dd59059a5f56a0aa7d9ef3e1b9))
+
+### Fixes 🔧
+
+- Update login validation to render inline errors ([5c745cd](https://github.com/gabrielecanepa/glore/commit/5c745cddc06994db71524228f4d51ae468ebb21a))
+
+### CI 🤖
+
+- **eslint-config:** Optimize ESLint typed rules and simplify restricted imports ([58d87d3](https://github.com/gabrielecanepa/glore/commit/58d87d317c2273c7165c4cc7aa7a5cfede8784ed))
+- Optimize database deployment with conditional checks ([0b33e53](https://github.com/gabrielecanepa/glore/commit/0b33e53f52a068f53d9a795f3ac904f3f17fe7ad))
+- Replace watch script with dev command ([35de654](https://github.com/gabrielecanepa/glore/commit/35de6543c3d3f1f096d712c4901de387e8961351))
+
+### Other
+
+- Fix deploy workflow ([ff3a0c4](https://github.com/gabrielecanepa/glore/commit/ff3a0c486c7e4bfac757a80a9151eb6b953d07ef))
+- Manage per-course language preference with cookies ([1e9f4ab](https://github.com/gabrielecanepa/glore/commit/1e9f4aba9b8489c89da97818567841ee113e7be7))
+- Refactor auth, env config and use shared UI ([47b4981](https://github.com/gabrielecanepa/glore/commit/47b4981a3a77f02b17c8dd80275e95de7c639146))
+- Replace skills with courses in data model ([ec6a8e1](https://github.com/gabrielecanepa/glore/commit/ec6a8e1248b637d2d3f0adf368b70a6c217a1a8b))
+
 ## [0.4.14](https://github.com/gabrielecanepa/glore/compare/v0.4.13...v0.4.14) (2025-08-16)
 
 ### Build 📦

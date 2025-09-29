@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1](https://github.com/gabrielecanepa/glore/compare/v0.5.0...v0.5.1) (2025-09-29)
+
+### CI 🤖
+
+- Fix release changelog format ([1b57583](https://github.com/gabrielecanepa/glore/commit/1b575833185887df4413059dbfe580e6e205d1e6))
+
 ## [0.5.0](https://github.com/gabrielecanepa/glore/compare/v0.4.14...v0.5.0) (2025-09-29)
 
 ### ⚠ BREAKING CHANGES

@@ -1,0 +1,24 @@
+name: Code Checks
+description: Run code quality checks on the codebase. Needs a `setup` step before.
+
+runs:
+  using: composite
+  steps:
+    - name: Run commitlint on push
+      if: github.event_name == 'push'
+      shell: sh
+      run: |
+        if ! commitlint --from ${{ github.event.before }} --to ${{ github.event.after }} --verbose; then
+          echo "::warning::Cannot execute commitlint on this range, running on last commit instead."
+          commitlint --last --verbose
+        fi
+    - name: Run commitlint on pull request
+      if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+      shell: sh
+      run: |
+        if ! commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose; then
+          echo "::warning::Cannot execute commitlint on this range, running on last commit instead."
+          commitlint --last --verbose
+        fi
+    - shell: sh
+      run: pnpm check

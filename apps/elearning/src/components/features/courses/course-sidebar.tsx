@@ -5,12 +5,11 @@ import { useCallback, useMemo } from 'react'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 
+import { useLocale, useTranslations, type IntlRecord } from '@repo/i18n'
+import { cn } from '@repo/ui/utils'
+
 import { useCourse } from '@/hooks/use-course'
-import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { type IntlRecord } from '@/lib/i18n/types'
-import { cn } from '@/lib/utils'
 
 export const CourseSidebar = () => {
   const { course, language, setStep, step } = useCourse()

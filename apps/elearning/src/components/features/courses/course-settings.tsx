@@ -3,17 +3,17 @@
 import { useCallback, useMemo } from 'react'
 
 import { InfoIcon } from 'lucide-react'
-import { useFormatter } from 'use-intl'
+
+import { useFormatter, useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
+import { Separator } from '@repo/ui/components/separator'
+import { Tabs, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
 
 import { UserCard } from '@/components/features/users/user-card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCourse } from '@/hooks/use-course'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses'
+import { type Course } from '@/lib/api'
 
 export const CourseSettings = () => {
   const { course, initialCourse, setCourse } = useCourse()

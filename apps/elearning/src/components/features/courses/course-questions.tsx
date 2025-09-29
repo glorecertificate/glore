@@ -3,13 +3,13 @@ import { useCallback, useMemo } from 'react'
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Markdown } from '@/components/ui/markdown'
-import { useLocale } from '@/hooks/use-locale'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Question, type QuestionOption } from '@/lib/api/courses/types'
-import { cn } from '@/lib/utils'
+import { useLocale, useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { Card, CardContent } from '@repo/ui/components/card'
+import { Markdown } from '@repo/ui/components/markdown'
+import { cn } from '@repo/ui/utils'
+
+import { type Question, type QuestionOption } from '@/lib/api'
 
 const CourseQuestion = ({
   completed,

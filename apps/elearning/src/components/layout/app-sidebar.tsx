@@ -1,6 +1,6 @@
 'use client'
 
-import { redirect, useRouter } from 'next/navigation'
+import { type AppRoutes } from 'next/types/routes'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
@@ -19,11 +19,10 @@ import {
   ShieldUserIcon,
 } from 'lucide-react'
 
-import { titleize } from '@repo/utils/titleize'
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { useTranslations } from '@repo/i18n'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
+import { Button } from '@repo/ui/components/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/ui/components/collapsible'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,12 +31,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { DashboardIcon } from '@/components/ui/icons/dashboard'
-import { type Icon } from '@/components/ui/icons/types'
-import { Image } from '@/components/ui/image'
-import { LanguageSelect } from '@/components/ui/language-select'
-import { Link } from '@/components/ui/link'
+} from '@repo/ui/components/dropdown-menu'
 import {
   Sidebar,
   SidebarContent,
@@ -53,28 +47,32 @@ import {
   SidebarRail,
   useSidebar,
   type SidebarMenuButtonProps,
-} from '@/components/ui/sidebar'
-import { ThemeSwitch } from '@/components/ui/theme-switch'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useDatabase } from '@/hooks/use-database'
-import { usePathname } from '@/hooks/use-pathname'
-import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { type User, type UserOrganization } from '@/lib/api/users/types'
-import { Route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/cookies'
-import { cn } from '@/lib/utils'
+} from '@repo/ui/components/sidebar'
+import { ThemeSwitch } from '@repo/ui/components/theme-switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { DashboardIcon } from '@repo/ui/icons/dashboard'
+import { type Icon } from '@repo/ui/types'
+import { cn } from '@repo/ui/utils'
+import { titleize } from '@repo/utils/string'
 
-interface SidebarItemProps<I extends Icon = Icon>
-  extends Omit<SidebarMenuButtonProps, 'icon'>,
-    React.PropsWithChildren<{
-      className?: string
-      icon?: I
-      iconProps?: React.ComponentProps<I>
-      label: string
-      route: Route
-      subItem?: boolean
-    }> {}
+import { Image } from '@/components/ui/image'
+import { LanguageSelect } from '@/components/ui/language-select'
+import { Link } from '@/components/ui/link'
+import { useDatabase } from '@/hooks/use-database'
+import { useNavigation } from '@/hooks/use-navigation'
+import { useSession } from '@/hooks/use-session'
+import { type User, type UserOrganization } from '@/lib/api'
+import { cookies } from '@/lib/storage'
+
+interface SidebarItemProps<I extends Icon = Icon> extends SidebarMenuButtonProps {
+  className?: string
+  icon?: I
+  iconProps?: React.ComponentProps<I>
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+  label: string
+  route: AppRoutes
+  subItem?: boolean
+}
 
 const SidebarOrgs = ({
   currentOrg,
@@ -85,8 +83,7 @@ const SidebarOrgs = ({
   orgs: UserOrganization[]
   setOrg: (org: UserOrganization) => void
 }) => {
-  const { setUiPathname } = usePathname()
-  const router = useRouter()
+  const { router, setUiPathname } = useNavigation()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
@@ -95,8 +92,8 @@ const SidebarOrgs = ({
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
       cookies.set('org', org.id)
-      router.push(Route.Home)
-      setUiPathname(Route.Home)
+      router.push('/')
+      setUiPathname('/')
       setTimeout(() => setOrg(org), 200)
     },
     [router, setOrg, setUiPathname],
@@ -178,17 +175,17 @@ const SidebarOrgs = ({
   )
 }
 
-const SidebarNavItem = <I extends Icon = Icon>({
+const SidebarNavItem = <I extends Icon>({
   asChild = false,
   className,
-  icon,
+  icon: Icon,
   iconProps,
   label,
   onClick,
   route,
   subItem,
 }: SidebarItemProps<I>) => {
-  const { setUiPathname, uiPathname } = usePathname()
+  const { setUiPathname, uiPathname } = useNavigation()
 
   const Wrapper = useMemo(
     () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
@@ -199,7 +196,7 @@ const SidebarNavItem = <I extends Icon = Icon>({
 
   const active = useMemo(() => {
     if (isActivePath || subItem) return isActivePath
-    if (route === Route.Home) return uiPathname === Route.Home
+    if (route === '/') return uiPathname === '/'
     return uiPathname.startsWith(route)
   }, [isActivePath, subItem, route, uiPathname])
 
@@ -216,16 +213,20 @@ const SidebarNavItem = <I extends Icon = Icon>({
   }, [className, subItem])
 
   const content = useMemo(() => {
-    const Icon = icon as Icon
-    const { className: iconClassName, ...iconRest } = iconProps || {}
+    const { className: iconClassName, ...iconRest } = iconProps ?? {}
+    const IconComponent = Icon as React.ComponentType<React.SVGProps<SVGSVGElement>>
+    const iconElement = Icon ? (
+      <IconComponent {...iconRest} className={cn('size-4 text-muted-foreground', iconClassName)} />
+    ) : null
+
     const inner = (
       <>
-        {Icon && <Icon className={cn('size-4 text-muted-foreground', iconClassName)} {...iconRest} />}
+        {iconElement}
         <span>{label}</span>
       </>
     )
     return isActivePath ? <span>{inner}</span> : <Link href={route}>{inner}</Link>
-  }, [iconProps, icon, isActivePath, label, route])
+  }, [Icon, iconProps, isActivePath, label, route])
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -251,8 +252,8 @@ const SidebarNavItem = <I extends Icon = Icon>({
   )
 }
 
-const SidebarNavCollapsible = ({ children, icon, label, route }: SidebarItemProps) => {
-  const { uiPathname } = usePathname()
+const SidebarNavCollapsible = <I extends Icon>({ children, icon, label, route }: SidebarItemProps<I>) => {
+  const { uiPathname } = useNavigation()
   const [open, setOpen] = useState(uiPathname.startsWith(route))
 
   const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
@@ -289,15 +290,15 @@ const SidebarNav = () => {
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4">
-        <SidebarNavItem icon={DashboardIcon} iconProps={{ colored: true }} label={t('dashboard')} route={Route.Home} />
-        <SidebarNavItem icon={BookOpenIcon} label={t('courses')} route={Route.Courses} />
-        {showCertificates && <SidebarNavItem icon={AwardIcon} label={t('certificates')} route={Route.Certificates} />}
-        <SidebarNavCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route={Route.Docs}>
-          <SidebarNavItem label={t('docsIntro')} route={Route.DocsIntro} subItem />
-          <SidebarNavItem label={t('docsTutorials')} route={Route.DocsTutorials} subItem />
-          <SidebarNavItem label={t('docsFaq')} route={Route.DocsFaq} subItem />
+        <SidebarNavItem icon={DashboardIcon} iconProps={{ colored: true }} label={t('dashboard')} route="/" />
+        <SidebarNavItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
+        {showCertificates && <SidebarNavItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
+        <SidebarNavCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
+          <SidebarNavItem label={t('docsIntro')} route="/docs/intro" subItem />
+          <SidebarNavItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
+          <SidebarNavItem label={t('docsFaq')} route="/docs/faq" subItem />
         </SidebarNavCollapsible>
-        {user.isAdmin && <SidebarNavItem icon={CogIcon} label={t('admin')} route={Route.Admin} />}
+        {user.isAdmin && <SidebarNavItem icon={CogIcon} label={t('admin')} route="/admin" />}
       </SidebarMenu>
     </SidebarGroup>
   )
@@ -305,6 +306,7 @@ const SidebarNav = () => {
 
 const SidebarUser = ({ organization, user }: { organization?: UserOrganization; user: User }) => {
   const db = useDatabase()
+  const { redirect } = useNavigation()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
@@ -317,8 +319,8 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
   const logOutUser = useCallback(async () => {
     onLinkClick()
     await db.auth.signOut()
-    redirect(Route.Login)
-  }, [db.auth, onLinkClick])
+    redirect('/login')
+  }, [db.auth, onLinkClick, redirect])
 
   return (
     <SidebarMenu>
@@ -413,19 +415,19 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <Link href={Route.Settings} onClick={onLinkClick}>
+              <Link href="/settings" onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <SettingsIcon />
                   {t('Navigation.settings')}
                 </DropdownMenuItem>
               </Link>
-              <Link href={Route.Help} onClick={onLinkClick}>
+              <Link href="/help" onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <HelpCircleIcon />
                   {t('Navigation.help')}
                 </DropdownMenuItem>
               </Link>
-              <Link href={Route.About} onClick={onLinkClick}>
+              <Link href="/about" onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <InfoIcon />
                   {t('Navigation.about')}

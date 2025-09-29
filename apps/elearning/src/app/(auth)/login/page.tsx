@@ -1,14 +1,7 @@
-'use client'
+import { AuthFlow } from '@/components/features/auth/auth-flow'
+import { getEncodedCookie } from '@/lib/storage/ssr'
 
-import { useEffect } from 'react'
-
-import { LoginForm } from '@/components/features/auth/login-form'
-import { cookies } from '@/lib/storage/cookies'
-
-export default () => {
-  useEffect(() => {
-    cookies.deleteAll()
-  })
-
-  return <LoginForm />
+export default async () => {
+  const token = await getEncodedCookie('login-token')
+  return <AuthFlow token={token} />
 }

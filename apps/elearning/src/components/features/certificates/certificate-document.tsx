@@ -4,15 +4,15 @@ import { useMemo } from 'react'
 
 import { Award, Building, CalendarIcon, Clock, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLocale, useTranslations } from '@repo/i18n'
+import { Badge } from '@repo/ui/components/badge'
+import { Button } from '@repo/ui/components/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@repo/ui/components/card'
+import { Separator } from '@repo/ui/components/separator'
+
 import { Image } from '@/components/ui/image'
-import { Separator } from '@/components/ui/separator'
-import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Certificate } from '@/lib/api/certificates/types'
+import { type Certificate } from '@/lib/api'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()

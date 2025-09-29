@@ -1,4 +1,4 @@
-import { type Hex } from '@/types'
+import { type Hex } from './types'
 
 export interface ForegroundColorOptions {
   /** @default "#000000" */

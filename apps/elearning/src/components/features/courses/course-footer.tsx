@@ -4,10 +4,9 @@ import { useMemo } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 
-import { type Enum } from '@repo/utils/types'
-
-import { Button } from '@/components/ui/button'
-import { ConfettiButton } from '@/components/ui/confetti'
+import { useTranslations } from '@repo/i18n'
+import { Button } from '@repo/ui/components/button'
+import { ConfettiButton } from '@repo/ui/components/confetti'
 import {
   Dialog,
   DialogClose,
@@ -16,16 +15,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@repo/ui/components/dialog'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { cn } from '@repo/ui/utils'
+import { type Enum } from '@repo/utils/types'
+
 import { Link } from '@/components/ui/link'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useConfig } from '@/hooks/use-config'
 import { useCourse } from '@/hooks/use-course'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { type CourseProgress, type Lesson } from '@/lib/api/courses/types'
-import { Route } from '@/lib/navigation'
-import { cn } from '@/lib/utils'
+import { type CourseProgress, type Lesson } from '@/lib/api'
 
 export const CourseFooter = ({
   lessons,
@@ -38,7 +37,7 @@ export const CourseFooter = ({
   onPrevious: () => void
   status?: Enum<CourseProgress>
 }) => {
-  const { minSkills } = useConfig()
+  const { minSkills } = useConfig('app')
   const { step } = useCourse()
   const { courses } = useSession()
   const t = useTranslations('Courses')
@@ -118,17 +117,17 @@ export const CourseFooter = ({
                 </DialogClose>
                 {completedCount < 3 && (
                   <Button asChild variant="outline">
-                    <Link href={Route.Courses}>{t('backTo')}</Link>
+                    <Link href="/courses">{t('backTo')}</Link>
                   </Button>
                 )}
                 {completedCount === minSkills && (
                   <Button asChild variant="brand-secondary">
-                    <Link href={Route.CertificateNew}>{t('requestCertificate')}</Link>
+                    <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 )}
                 {completedCount > minSkills && (
                   <Button asChild variant="outline">
-                    <Link href={Route.Certificates}>{t('goToCertificate')}</Link>
+                    <Link href="/certificates">{t('goToCertificate')}</Link>
                   </Button>
                 )}
               </DialogFooter>

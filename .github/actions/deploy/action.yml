@@ -1,0 +1,43 @@
+name: Deploy
+description: Rebases the environment-specific branch onto the default branch and triggers a deployment.
+
+inputs:
+  environment:
+    description: The environment to deploy to, either `production` or `preview`.
+    required: true
+  ref:
+    description: The branch to rebase onto, defaults to `main`.
+    required: false
+    default: main
+
+outputs:
+  url:
+    description: URL to the database logs.
+    value: ${{ steps.deployment.outputs.url || '' }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        ref: ${{ inputs.environment }}
+    - name: Rebase onto ${{ inputs.ref }}
+      shell: sh
+      run: |
+        git fetch origin ${{ inputs.ref }}
+        if ! git reset --hard origin/${{ inputs.ref }}; then
+          echo "::error::Failed to rebase ${{ inputs.environment }} onto ${{ inputs.ref }}"
+          exit 1
+        fi
+    - name: Push rebased branch
+      shell: sh
+      run: |
+        if ! git push origin HEAD:${{ inputs.environment }} --force --no-verify; then
+          echo "::error::Failed to push rebased branch"
+          exit 1
+        fi
+    - name: Output deployment URL
+      id: deployment
+      shell: sh
+      run: echo "url=$VERCEL_PROJECT_URL?environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT

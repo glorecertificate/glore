@@ -4,28 +4,25 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
-import { useFormatter, type Locale } from 'use-intl'
 
+import { useFormatter, useLocale, useTranslations, type IntlRecord, type Locale, type LocaleItem } from '@repo/i18n'
+import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
+import { Button } from '@repo/ui/components/button'
+import { Card, CardContent, CardFooter, CardHeader } from '@repo/ui/components/card'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@repo/ui/components/hover-card'
+import { Progress } from '@repo/ui/components/progress'
+import { Skeleton } from '@repo/ui/components/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { DynamicIcon } from '@repo/ui/icons/dynamic'
+import { cn } from '@repo/ui/utils'
 import { truncate, TRUNCATE_SYMBOL } from '@repo/utils/truncate'
 
 import { UserCard } from '@/components/features/users/user-card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { DynamicIcon } from '@/components/ui/icons/dynamic'
 import { Link } from '@/components/ui/link'
-import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { type Course } from '@/lib/api/courses/types'
-import { type IntlRecord, type LocaleItem } from '@/lib/i18n/types'
+import { type Course } from '@/lib/api'
 import { route } from '@/lib/navigation'
-import { cookies } from '@/lib/storage/cookies'
-import { cn } from '@/lib/utils'
+import { cookies } from '@/lib/storage'
 
 interface LanguageItem extends LocaleItem {
   active: boolean
@@ -108,15 +105,15 @@ export const CourseCard = ({
     (value: Locale) => {
       if (value === language) return
       setLanguage(value)
-      const languageCookie = cookies.get('course-language') || {}
+      const languageCookie = cookies.get('course-locale') || {}
       languageCookie[course.slug] = value
-      cookies.set('course-language', languageCookie)
+      cookies.set('course-locale', languageCookie)
     },
     [course.slug, language],
   )
 
   const getCoursePath = useCallback(
-    (lang: Locale) => route('/courses/:slug', { slug: course.slug }, { lang }),
+    (lang: Locale) => route('/courses/[slug]', { slug: course.slug }, { lang }),
     [course.slug],
   )
 

@@ -1,0 +1,5 @@
+{
+  "extends": "@repo/tsconfig/tsup",
+  "include": ["**/*.ts"],
+  "exclude": ["build", "node_modules"]
+}

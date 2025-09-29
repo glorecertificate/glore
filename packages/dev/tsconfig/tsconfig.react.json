@@ -1,0 +1,8 @@
+{
+  "display": "@repo/tsconfig/react",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowArbitraryExtensions": true,
+    "types": ["react", "react-dom"]
+  }
+}

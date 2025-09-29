@@ -1,12 +1,13 @@
 #!/usr/bin/env sh
 
-commit=$(cat "$1")
-
-# Skip temporary commits
-case "$commit" in
+# Commitlint
+case "$(cat "$1")" in
+  # Skip temporary commits
   "[tmp]"*|\#*)
     exit 0
     ;;
+  *)
+    commitlint --edit "$1"
+    ;;
 esac
 
-commitlint --edit "$1"

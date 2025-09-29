@@ -1,12 +1,12 @@
 import { userQuery } from '@/lib/api/users/queries'
-import { timestamps } from '@/lib/api/utils'
+import { TIMESTAMPS } from '@/lib/db'
 
 export const lessonQuery = `
   id,
   title,
   content,
   sortOrder:sort_order,
-  ${timestamps},
+  ${TIMESTAMPS},
   user_lessons(count),
   questions (
     id,
@@ -37,7 +37,7 @@ export const lessonQuery = `
   ),
   contributions (
     id,
-    ${timestamps},
+    ${TIMESTAMPS},
     user:users (
       ${userQuery}
     )
@@ -53,7 +53,7 @@ export const courseQuery = `
   icon,
   languages,
   sortOrder:sort_order,
-  ${timestamps},
+  ${TIMESTAMPS},
   archivedAt:archived_at,
   skillGroup:skill_groups (
     id,

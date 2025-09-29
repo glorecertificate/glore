@@ -1,18 +1,16 @@
 'use client'
 
-import { redirect } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 
 import { toast } from 'sonner'
 
-import { useConfig } from '@/hooks/use-config'
+import config from '@config/app'
+import { useTranslations } from '@repo/i18n'
+
 import { useSession } from '@/hooks/use-session'
-import { useTranslations } from '@/hooks/use-translations'
-import { Route } from '@/lib/navigation'
-import config from 'config/app.json'
+import { redirect } from '@/lib/navigation'
 
 export default () => {
-  const { minSkills } = useConfig()
   const { courses, organization, user } = useSession()
   const t = useTranslations('Certificates')
 
@@ -21,8 +19,8 @@ export default () => {
     [user.certificates, organization?.id],
   )
   const hasEnoughCourses = useMemo(
-    () => courses.filter(course => course.completed).length >= minSkills,
-    [courses, minSkills],
+    () => courses.filter(course => course.completed).length >= config.minSkills,
+    [courses],
   )
   const validCourses = useMemo(
     () =>
@@ -34,8 +32,8 @@ export default () => {
     [courses],
   )
   const canRequestCertificate = useMemo(
-    () => hasEnoughCourses && validCourses.length >= minSkills,
-    [hasEnoughCourses, minSkills, validCourses.length],
+    () => hasEnoughCourses && validCourses.length >= config.minSkills,
+    [hasEnoughCourses, validCourses.length],
   )
 
   const toastMessage = useMemo(() => {
@@ -47,7 +45,7 @@ export default () => {
   useEffect(() => {
     if (!toastMessage) return
     toast.error(toastMessage)
-    redirect(Route.Certificates)
+    redirect('/certificates')
   })
 
   return <p>{'New certificate'}</p>

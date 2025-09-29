@@ -1,4 +1,4 @@
-import { type Entity, type Timestamp } from '@/lib/api/types'
+import { type Entity, type Timestamp } from '@/lib/db'
 
 export interface BaseOrganization extends Entity<'organizations'> {}
 

@@ -1,9 +1,8 @@
 <div align="center">
   <h1>
-    <img src="logo.svg" alt="" width="200">
-    <br>
-    <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2&style=flat-square"></a>
+    <img src="./.github/assets/logo.svg" alt="" width="200">
   </h1>
+  <a href="https://github.com/gabrielecanepa/glore/releases"><img src="https://img.shields.io/github/package-json/v/gabrielecanepa/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/gabrielecanepa/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
   <a href="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml"><img src="https://github.com/gabrielecanepa/glore/actions/workflows/ci.yml/badge.svg"></a>
@@ -43,14 +42,14 @@ gh repo clone gabrielecanepa/glore
 git clone https://github.com/gabrielecanepa/glore.git
 ```
 
-Switch to the project directory and copy the example env files:
+Switch to the project directory and copy the example env file:
 
 ```sh
-cp ./.env.example ./.env
-cp ./apps/elearning/.env.example ./apps/elearning/.env
+cd glore
+cp .env.example .env
 ```
 
-Open the new files and fill in the required values to gain access to the services used throughout the project.
+Open the new file and fill in the required values to gain access to the services used throughout the project.
 
 ### Running the application
 
@@ -69,13 +68,13 @@ Run a development server with:
 pnpm dev
 ```
 
-This command will start the Next.js application and the Docker instance of Supabase.
+This command will start the Next.js application, the Docker instance of Supabase, and the different background services.
 
 Open [localhost:3000](http://localhost:3000) in your browser to see the result. Any changes you make to the code will be reflected in real time.
 
 Supabase Studio, an interface for managing the local database, will be available at [localhost:54321](http://localhost:54321) while the Docker container is running.
 
-<!-- TODO: working with the local database -->
+<!-- Write working with the local database -->
 
 ### Contributing
 

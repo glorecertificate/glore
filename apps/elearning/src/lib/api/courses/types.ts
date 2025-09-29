@@ -1,7 +1,7 @@
 import { type Enum } from '@repo/utils/types'
 
-import type { Entity, Timestamp } from '@/lib/api/types'
 import { type User } from '@/lib/api/users/types'
+import type { Entity, Timestamp } from '@/lib/db/types'
 import { type Enums, type Tables } from 'supabase/types'
 
 export interface SkillGroup extends Entity<'skill_groups'> {}

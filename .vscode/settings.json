@@ -17,27 +17,34 @@
   "css.format.newlineBetweenSelectors": false,
   "css.format.spaceAroundSelectorSeparator": true,
   "css.lint.duplicateProperties": "error",
+  "deno.enablePaths": ["./apps/*/supabase/functions"],
+  "deno.lint": true,
+  "deno.path": "./node_modules/.bin/deno",
+  "deno.unstable": ["bare-node-builtins", "broadcast-channel", "byonm", "cron", "ffi", "fs", "http", "kv", "net", "sloppy-imports", "unsafe-proto", "webgpu", "worker-options"],
   "editor.tabSize": 2,
   "eslint.codeActionsOnSave.mode": "problems",
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
-  "eslint.useFlatConfig": true,
   "eslint.validate": ["typescript", "typescriptreact"],
-  "eslint.workingDirectories": [
-    {
-      "pattern": "./packages/*/"
-    }
-  ],
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "files.exclude": {
     "**/.turbo": true
   },
+  "github.copilot.chat.agent.thinkingTool": true,
+  "github.copilot.chat.codesearch.enabled": true,
+  "github.copilot.chat.languageContext.fix.typescript.enabled": true,
+  "github.copilot.chat.languageContext.inline.typescript.enabled": true,
+  "github.copilot.chat.languageContext.typescript.enabled": true,
+  "gitlens.ai.generateCommits.customInstructions": "Use the Conventional Commit specification following this project's patterns:\n\n**Types:** feat, fix, docs, style, refactor, test, chore, ci, build, perf\n\n**Scopes (when applicable):**\n- Package names: deps, ui, utils, i18n, env, cli, dev, eslint-config, prettier-config, release-config\n- Feature areas: auth, courses, database, api, middleware, components\n- Build/CI: deps (for dependency updates), release\n\n**Format:**\n- Title: `type(scope): Brief description in sentence case` (50 chars max)\n- Use imperative mood: \"Add feature\" not \"Adds feature\" or \"Added feature\"\n- No period at end of title\n- Body (optional): One sentence explaining the change, max 72 chars per line\n- List specific changes as bullet points (max 5 items)\n- End body sentences with periods, not bullet points\n\n**Examples from this project:**\n- `feat: Add rich text editor`\n- `fix: Fix database user triggers`\n- `chore(deps): Bump pnpm to 10.14.0 and all dependencies to latest version`\n- `ci: Add automated database migration workflow`\n- `build: Bump Node.js version to 22.18.0`\n- `refactor(utils): Add debounce utility function`\n\n**Avoid body/bullets for simple changes like:** dependency bumps, typo fixes, minor config updates.",
+  "gitlens.ai.largePromptWarningThreshold": 1000000,
+  "gitlens.ai.model": "vscode",
+  "gitlens.ai.vscode.model": "copilot:gpt-5",
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
-  "prettier.ignorePath": "./apps/elearning/.prettierignore",
+  "i18n-ally.localesPaths": ["./config/translations"],
+  "prettier.ignorePath": "",
   "search.useGlobalIgnoreFiles": true,
   "search.useIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [
@@ -58,5 +65,5 @@
   },
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.lint.recommendedVariantOrder": "error",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }

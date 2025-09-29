@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { type LocalStorageKey, type LocalStorageValue } from '@/lib/storage/types'
+import { type LocalStorageKey, type LocalStorageValue } from '@/lib/storage'
 
 /**
  * Hook to manage local storage values.

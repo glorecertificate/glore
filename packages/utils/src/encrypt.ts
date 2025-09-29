@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv } from 'node:crypto'
 
-import { encode } from '@/encode'
+import { encode } from './encode'
 
 export type EncryptAlgorithm = 'aes-128-ccm' | 'aes-192-ccm' | 'aes-256-ccm'
 

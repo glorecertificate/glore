@@ -3,11 +3,11 @@
 import { useEffect } from 'react'
 
 import { useHeader } from '@/hooks/use-header'
-import { usePathname } from '@/hooks/use-pathname'
+import { useNavigation } from '@/hooks/use-navigation'
 
 export const RouteListener = () => {
   const { setHeader, showShadow } = useHeader()
-  const { pathname, setUiPathname } = usePathname()
+  const { pathname, setUiPathname } = useNavigation()
 
   useEffect(() => {
     setHeader(undefined)

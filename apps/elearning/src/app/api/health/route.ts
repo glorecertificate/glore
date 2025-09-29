@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-import { createDatabase } from '@/lib/db/server'
+import { createDatabase } from '@/lib/db/ssr'
 
 interface HealthResponse {
   db: boolean

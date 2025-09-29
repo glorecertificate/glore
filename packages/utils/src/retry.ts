@@ -1,5 +1,5 @@
-import { noop } from '@/noop'
-import { sleep } from '@/sleep'
+import { noop } from './noop'
+import { sleep } from './sleep'
 
 /**
  * Callback function that returns a promise, used for retrying operations.

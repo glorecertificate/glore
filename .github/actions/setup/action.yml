@@ -1,0 +1,38 @@
+name: Setup
+description: Set up the environment for the project.
+
+inputs:
+  build:
+    description: Whether to build the repository packages after installing the dependencies.
+    required: false
+    default: true
+  dev-only:
+    description: Whether to install only the dependencies in `devDependencies` or all dependencies (default).
+    required: false
+    default: false
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v4
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-
+    - uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .node-version
+        cache: pnpm
+    - name: Install dependencies
+      shell: sh
+      run: |
+        pnpm install --frozen-lockfile --strict-peer-dependencies${{ inputs.dev-only == 'true' && ' --dev --ignore-scripts' || '' }}
+        echo ./node_modules/.bin >> $GITHUB_PATH
+    - name: Build packages
+      if: inputs.build == 'true'
+      shell: sh
+      run: pnpm build --filter @repo/*

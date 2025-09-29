@@ -1,0 +1,20 @@
+{
+  "name": "GloRe",
+  "version": "0.4.14",
+  "slug": "glore",
+  "title": "GloRe Certificate",
+  "titleSeparator": "-",
+  "keywords": ["glore", "certificate", "elearning", "soft skills"],
+  "url": "https://elearning.glorecertificate.net",
+  "website": "https://glorecertificate.net",
+  "email": "info@glorecertificate.net",
+  "phone": "+390256568779",
+  "category": "E-Learning",
+  "themeColor": "#fefefe",
+  "authors": [
+    {
+      "name": "Gabriele Canepa",
+      "url": "https://gabrielecanepa.com"
+    }
+  ]
+}

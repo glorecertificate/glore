@@ -1,27 +1,34 @@
-/**
- * Regular expression to match full hex color format (e.g. `#0033FF`).
- */
-export const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+import { type Rgb } from './types'
 
 /**
- * Regular expression to match shorthand hex color format (e.g. `#03F`).
+ * Converts a hex color string to an array of RGB values.
  */
-export const SHORTHAND_HEX_REGEX = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
-
-/**
- * Converts a hex color string to an RGB object.
- * Supports shorthand (e.g. `#03F`) and full (e.g. `#0033FF`) hex formats, returning
- * an object with `r`, `g`, and `b` properties, or `null` if the input is invalid.
- */
-export const hexToRgb = (hex: string) => {
-  const color = hex.replace(SHORTHAND_HEX_REGEX, (_, r, g, b) => r + r + g + g + b + b)
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color)
-
-  return result
-    ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
-    : null
+export const hexToRgb = (hex: string): Rgb => {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return [r, g, b]
 }
+
+/**
+ * Converts a record of hex color strings to a record of RGB arrays.
+ */
+export const recordToRgb = <T extends Record<string, string>>(record: T) =>
+  Object.entries(record).reduce(
+    (rgbRecord, [key, value]) => ({ ...rgbRecord, [key]: hexToRgb(value) }),
+    {} as { [K in keyof T]: Rgb },
+  )
+
+/**
+ * Converts a hex color string to an array of normalized RGB values (0 to 1 range).
+ */
+export const hexToNormalizedRgb = (hex: string) => hexToRgb(hex).map(rgb => rgb / 255) as [number, number, number]
+
+/**
+ * Converts a record of hex color strings to a record of normalized RGB arrays (0 to 1 range).
+ */
+export const recordToNormalizedRgb = <T extends Record<string, string>>(record: T) =>
+  Object.entries(record).reduce(
+    (rgbRecord, [key, value]) => ({ ...rgbRecord, [key]: hexToNormalizedRgb(value) }),
+    {} as { [K in keyof T]: [number, number, number] },
+  )

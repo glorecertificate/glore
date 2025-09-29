@@ -1,54 +1,55 @@
-import eslintConfig from '@repo/eslint-config'
+import eslintConfig, { noRestrictedImports } from '@repo/eslint-config'
 
 export default eslintConfig(
   {
-    allowRelativeImports: [
-      'siblings',
-      {
-        never: ['src/components/ui/rich-text-editor/**'],
-      },
-    ],
-    customExternalImports: ['@next', 'next', 'react'],
-    customInternalImports: ['@repo'],
-    internalImports: ['config', 'supabase'],
-    maxLines: -1,
-    namedImports: ['react'],
-    optimizeTypedRules: true,
     react: 'nextjs',
+    maxLines: -1,
+    optimizeTypedRules: true,
+    customExternalImports: ['@next', 'next', 'react'],
+    customInternalImports: ['@config', '@repo'],
+    customSideEffectImports: ['@repo/env/config'],
+    namedImports: ['react'],
     restrictedImports: [
       {
-        group: ['@radix-ui'],
-        ignoreFiles: ['src/components/ui/**'],
-        message: 'Import or create a new component instead.',
+        allowTypeImports: true,
+        group: ['next/link', '@repo/ui/components/link'],
+        ignoreFiles: ['src/components/ui/link.tsx'],
+        message: 'Import from @/components/ui/link instead.',
       },
       {
-        group: ['next/navigation', 'use-intl'],
+        regex: '^@\\/lib\\/[^/]+\\/(?!ssr$).+',
+        ignoreFiles: ['src/lib/*/*/**'],
+        message:
+          'Avoid deep imports from the lib folder. Import from the root or /ssr for server-side imports instead.',
+      },
+      {
+        group: ['@repo/i18n'],
+        ignoreFiles: ['src/lib/i18n.ts'],
+        importNames: ['getTranslations'],
+        message: 'Import from @/lib/i18n instead.',
+      },
+      {
+        group: ['@supabase/supabase-js'],
+        ignoreFiles: ['src/lib/api/auth/types.ts'],
+        importNames: ['AuthUser', 'User', 'UserAttributes', 'UserResponse'],
+        message: 'Import the prefixed Auth* type from @/lib/api instead.',
+      },
+      {
+        group: ['next/navigation'],
         ignoreFiles: [
           'src/app/global-error.tsx',
-          'src/components/providers/**',
-          'src/hooks/use-locale.ts',
-          'src/hooks/use-pathname.ts',
-          'src/hooks/use-translations.ts',
-          'src/lib/i18n/**',
+          'src/components/providers/navigation-provider.tsx',
+          'src/hooks/use-navigation.ts',
+          'src/lib/navigation/**',
         ],
-        importNames: ['getTranslations', 'useLocale', 'usePathname', 'useTranslations'],
-        message: 'Import the internal hook or provider instead.',
-      },
-      {
-        group: ['next/link'],
-        ignoreFiles: ['src/components/ui/link.tsx'],
-        importNames: ['default'],
-        message: 'Import the internal component instead.',
-      },
-      {
-        group: ['@rte/**'],
-        ignoreFiles: ['src/components/ui/rich-text-editor/**'],
-        message: 'Import from the components folder instead.',
+        allowImportNames: ['notFound'],
+        message: 'Use the useNavigation hook or import from @/lib/navigation instead.',
       },
     ],
-    sortArrays: ['src/**/*.ts?(x)'],
+    sortArrays: ['src'],
+    sortExports: false,
     sortInterfaces: false,
-    sortObjectKeys: ['*.ts'],
+    sortObjectKeys: false,
     tailwind: {
       allowedClasses: [
         'font-heading',
@@ -60,11 +61,31 @@ export default eslintConfig(
         'toaster',
       ],
     },
+    turbo: {
+      allowList: ['ANALYZE', 'COOKIE_PREFIX'],
+    },
   },
   {
-    files: ['src/components/ui/rich-text-editor/**'],
+    files: ['supabase/functions/**'],
     rules: {
-      '@next/next/no-img-element': 'off',
+      ...noRestrictedImports({
+        allowRelativeImports: 'always',
+        restrictedImports: [
+          {
+            allowTypeImports: false,
+            group: ['@/**'],
+            message: 'Only relative imports are allowed in Supabase functions.',
+          },
+        ],
+      }),
+      'import/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          ts: 'always',
+        },
+      ],
+      'react/react-in-jsx-scope': 'error',
     },
   },
 )

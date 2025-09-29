@@ -1,0 +1,7 @@
+{
+  "name": "@repo/watcher",
+  "description": "Stub-package to watch internal dependencies when running a development server.",
+  "scripts": {
+    "dev": "cd ../../.. && pnpm watch"
+  }
+}

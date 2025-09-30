@@ -4,7 +4,7 @@
     "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi, ricevere notifiche e gestire i tuoi certificati offline."
   },
   "Email": {
-    "recovery": {
+    "reset_password": {
       "subject": "Reimposta la tua password GloRe",
       "greeting": "Ciao,",
       "greetingUser": "Ciao {user},",

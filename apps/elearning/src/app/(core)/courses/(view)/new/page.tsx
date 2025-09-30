@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { CourseView } from '@/components/features/courses/course-view'
-import { createApi } from '@/lib/api/ssr'
+import { createApiClient } from '@/lib/api'
 import { createMetadata } from '@/lib/metadata'
 
 export const generateMetadata = createMetadata({
@@ -9,10 +9,10 @@ export const generateMetadata = createMetadata({
 })
 
 export default async () => {
-  const api = await createApi()
+  const api = await createApiClient()
   const user = await api.users.getCurrent()
 
-  if (!user || (!user.isAdmin && !user.isEditor)) return notFound()
+  if (!(user && (user.isAdmin || user.isEditor))) return notFound()
 
   return <CourseView />
 }

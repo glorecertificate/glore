@@ -1,38 +1,51 @@
 import { faker } from '@faker-js/faker'
 
-import { randomItem, randomRange } from '@repo/utils/random'
+import { randomItem, randomRange } from '@glore/utils/random'
 
-import { type Enums } from 'supabase/types'
+import { type Enums } from '@/lib/db'
 
-import { client } from './shared/client'
-import { countries, languages, user } from './shared/data'
-import { randomUserDetails, verifyResponse } from './shared/utils'
+import { seedClient, seeder, verifyResponse } from './shared'
 
-const { avatar, domain } = user
+const { avatar, domain } = seeder.user
 
-export const seedUsers = async (roles = user.roles) =>
+const randomUserDetails = () => {
+  const sex = randomItem(seeder.user.sex)
+  const gender = ['male', 'female'].includes(sex ?? '') ? (sex as 'male' | 'female') : undefined
+  const pronouns =
+    sex === 'male'
+      ? 'he/him'
+      : sex === 'female'
+        ? 'she/her'
+        : sex === 'non-binary'
+          ? randomItem(seeder.user.pronouns)
+          : undefined
+
+  return { gender, pronouns, sex }
+}
+
+export const seedUsers = async (roles = seeder.user.roles) =>
   await Promise.all(
     roles.map(async (role, i) => {
       faker.seed(i)
 
-      const country = randomItem(countries)
-      const userLanguages = [...new Set([...country.languages, ...randomRange(languages, 0, 3)])]
+      const country = randomItem(seeder.countries)
+      const userLanguages = [...new Set([...country.languages, ...randomRange(seeder.languages, 0, 3)])]
       const { gender, pronouns, sex } = randomUserDetails()
       const name = faker.person.firstName(gender)
       const phone = randomItem([`${country.prefix}${Math.floor(1000000000 + Math.random() * 9000000000)}`, undefined])
 
-      const authResponse = await client.auth.admin.createUser({
+      const authResponse = await seedClient.auth.admin.createUser({
         email: `${role}@${domain}`,
-        password: 'password',
         email_confirm: true,
+        password: 'password',
+        phone,
         phone_confirm: true,
         role: 'authenticated',
-        phone,
         user_metadata: {
           first_name: name,
-          last_name: faker.person.lastName(gender),
           is_admin: role === 'admin',
           is_editor: role === 'editor',
+          last_name: faker.person.lastName(gender),
         },
       })
       verifyResponse(authResponse, 'users')
@@ -46,22 +59,22 @@ export const seedUsers = async (roles = user.roles) =>
         avatarParams.set(key, param)
       }
 
-      const publicResponse = await client
+      const publicResponse = await seedClient
         .from('users')
         .update({
-          sex: sex as Enums<'sex'>,
-          pronouns,
-          languages: userLanguages,
-          birthday: faker.date.between({ from: '1970-01-01', to: '2000-12-31' }).toISOString(),
           avatar_url: `${avatar.url}/${avatar.style}/png?${avatarParams.toString()}`,
-          country: country.code,
-          city: faker.location.city(),
           bio: faker.lorem.paragraph(),
+          birthday: faker.date.between({ from: '1970-01-01', to: '2000-12-31' }).toISOString(),
+          city: faker.location.city(),
+          country: country.code,
+          languages: userLanguages,
+          pronouns,
+          sex: sex as Enums<'sex'>,
         })
         .eq('id', authUser.id)
         .select()
       verifyResponse(publicResponse, 'users')
 
       return authUser
-    }),
+    })
   )

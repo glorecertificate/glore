@@ -4,18 +4,19 @@ import { useCallback, useMemo } from 'react'
 
 import { EyeIcon } from 'lucide-react'
 
-import { useTranslations, type Locale } from '@repo/i18n'
-import { Badge } from '@repo/ui/components/badge'
-import { Button } from '@repo/ui/components/button'
-import { MotionTabsList, MotionTabsTrigger } from '@repo/ui/components/motion-tabs'
-import { Progress } from '@repo/ui/components/progress'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { useScroll } from '@repo/ui/hooks/use-scroll'
-import { cn } from '@repo/ui/utils'
+import { type Locale } from '@glore/i18n'
 
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
+import { Progress } from '@/components/ui/progress'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
+import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
   const { course, language, setLanguage, step, tab, tabs } = useCourse()
@@ -32,14 +33,14 @@ export const CourseHeader = () => {
     (language: Locale) => {
       setLanguage(language)
     },
-    [setLanguage],
+    [setLanguage]
   )
 
   return (
     <div
       className={cn(
         'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-[72px] md:flex',
-        scrolled && 'border-b',
+        scrolled && 'border-b'
       )}
     >
       {user.canEdit ? (
@@ -75,7 +76,7 @@ export const CourseHeader = () => {
       ) : (
         <>
           <div className="flex h-full items-center gap-2">
-            <span className="pt-1 text-sm text-muted-foreground">
+            <span className="pt-1 text-muted-foreground text-sm">
               {hasLessons
                 ? t('lessonCount', {
                     count: String(step + 1),

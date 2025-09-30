@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server'
 
-import { createDatabase } from '@/lib/db/ssr'
+import { createDatabaseClient } from '@/lib/db'
 
 interface HealthResponse {
-  db: boolean
+  database: boolean
 }
 
 export const GET = async () => {
-  const db = await createDatabase()
+  const db = await createDatabaseClient()
 
   const { error, status } = await db.from('courses').select('').limit(1)
 
-  return NextResponse.json<HealthResponse>({ db: !error }, { status })
+  return NextResponse.json<HealthResponse>({ database: !error }, { status })
 }

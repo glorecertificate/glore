@@ -1,7 +1,7 @@
 /.next/
 /supabase/.branches/
 /supabase/.temp/
-/supabase/types.ts
+/supabase/types.d.ts
 /*.d.ts
 .env*
 !.env.example

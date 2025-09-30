@@ -4,15 +4,17 @@ import { useCallback, useMemo } from 'react'
 
 import { MessageCircleWarningIcon } from 'lucide-react'
 
-import { useLocale, useTranslations, type Locale } from '@repo/i18n'
-import { AlertCallout } from '@repo/ui/components/alert'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
-import { Textarea } from '@repo/ui/components/textarea'
+import { type Locale } from '@glore/i18n'
 
+import { AlertCallout } from '@/components/ui/alert'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { useCourse } from '@/hooks/use-course'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api'
-import { type Enums } from 'supabase/types'
+import { type Enums } from '@/lib/db'
 
 export interface CourseInfoData {
   type: Enums<'course_type'>
@@ -42,7 +44,7 @@ export const CourseInfo = () => {
 
   const description = useMemo(
     () => localize(course.description, language) ?? '',
-    [course.description, language, localize],
+    [course.description, language, localize]
   )
 
   const handleLocalizedChange = useCallback(
@@ -55,15 +57,15 @@ export const CourseInfo = () => {
         },
       }))
     },
-    [setCourse, language],
+    [setCourse, language]
   )
 
   return (
     <div className="space-y-6 pb-8">
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">{t('infoSettings')}</h2>
-          <p className="text-sm text-muted-foreground">{t('infoSettingsDescription')}</p>
+          <h2 className="font-semibold text-foreground text-lg">{t('infoSettings')}</h2>
+          <p className="text-muted-foreground text-sm">{t('infoSettingsDescription')}</p>
         </div>
 
         {isSoftSkill && (

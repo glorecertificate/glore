@@ -1,12 +1,7 @@
 {
   "recommendations": [
+    "biomejs.biome",
     "bradlc.vscode-tailwindcss",
-    "csstools.postcss",
-    "dbaeumer.vscode-eslint",
-    "denoland.vscode-deno",
-    "eamodio.gitlens",
-    "esbenp.prettier-vscode",
-    "lokalise.i18n-ally",
-    "timonwong.shellcheck"
+    "lokalise.i18n-ally"
   ]
 }

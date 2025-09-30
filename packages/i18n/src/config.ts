@@ -22,7 +22,7 @@ export const i18n = {
         icon: flag,
         label: name,
         value,
-      }) as const as LocaleItem,
+      }) as const as LocaleItem
   ),
   /**
    * Default application locale.

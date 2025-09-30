@@ -13,8 +13,7 @@ export const RouteListener = () => {
     setHeader(undefined)
     showShadow(true)
     setUiPathname(pathname)
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [pathname])
+  }, [pathname, setHeader, setUiPathname, showShadow])
 
-  return <></>
+  return null
 }

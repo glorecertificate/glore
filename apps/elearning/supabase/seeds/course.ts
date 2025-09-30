@@ -1,48 +1,55 @@
-import { pick } from '@repo/utils/pick'
-import { randomItem } from '@repo/utils/random'
-import { handleize } from '@repo/utils/string'
+import { type IntlRecord } from '@glore/i18n'
+import { pick } from '@glore/utils/pick'
+import { randomItem, randomRange } from '@glore/utils/random'
+import { handleize } from '@glore/utils/string'
 
-import { type AuthUser } from '@/lib/api'
-import { type Tables } from 'supabase/types'
+import { type AuthUser, type Enums, type Tables } from '@/lib/db'
 
-import { client } from './shared/client'
-import { course } from './shared/data'
-import { pickLanguages, randomLanguages, verifyResponse } from './shared/utils'
+import { seedClient, seeder, verifyResponse } from './shared'
 
 const CREATOR_ROLES = ['admin', 'editor']
+
+const pickLanguages = (record: Record<Enums<'locale'>, string>, locales: Enums<'locale'>[]) => {
+  const obj = Object.entries(record).reduce(
+    (obj, [locale, value]) => (locales.includes(locale as Enums<'locale'>) ? { ...obj, [locale]: value } : obj),
+    {}
+  )
+  return Object.keys(obj).length ? (obj as Record<Enums<'locale'>, string>) : record
+}
+
+const randomLanguages = () => randomRange(seeder.locales, 0, 3)
 
 export const seedCourses = async ({ users }: { users?: AuthUser[] }) => {
   const courses: Tables<'courses'>[] = []
 
-  const groups = await client.from('skill_groups').insert(pick(course.groups, 'name')).select()
+  const groups = await seedClient.from('skill_groups').insert(pick(seeder.course.groups, 'name')).select()
   verifyResponse(groups, 'skill_groups')
 
-  for (const skillGroup of course.groups) {
-    // @ts-expect-error coherce json type
-    const group = groups.data!.find(({ name }) => name.en === skillGroup.name.en)!
+  for (const skillGroup of seeder.course.groups) {
+    const group = groups.data?.find(({ name }) => (name as IntlRecord).en === skillGroup.name.en)!
 
     for (const skillCourse of skillGroup.courses) {
       const slug = handleize(skillCourse.title.en)
       const creator = users
-        ? randomItem(users.filter(user => CREATOR_ROLES.includes(user.email!.split('@')[0])))
+        ? randomItem(users.filter(user => CREATOR_ROLES.includes(user.email?.split('@')[0]!)))
         : undefined
       const languages = randomLanguages()
 
-      const title = pickLanguages(skillCourse.title, languages)
-      const description = pickLanguages(skillCourse.description, languages)
+      const title = pickLanguages(skillCourse.title, seeder.languages)
+      const description = pickLanguages(skillCourse.description, seeder.languages)
 
-      const newCourse = await client
+      const newCourse = await seedClient
         .from('courses')
         .insert({
-          type: 'skill',
-          slug,
-          title,
+          creator_id: creator?.id,
           description,
           icon: skillCourse.icon,
           languages,
-          sort_order: courses.length + 1,
           skill_group_id: group.id,
-          creator_id: creator?.id,
+          slug,
+          sort_order: courses.length + 1,
+          title,
+          type: 'skill',
         })
         .select()
       verifyResponse(newCourse, 'courses')

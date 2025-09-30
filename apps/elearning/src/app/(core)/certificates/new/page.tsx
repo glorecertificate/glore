@@ -5,9 +5,9 @@ import { useEffect, useMemo } from 'react'
 import { toast } from 'sonner'
 
 import config from '@config/app'
-import { useTranslations } from '@repo/i18n'
 
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
 import { redirect } from '@/lib/navigation'
 
 export default () => {
@@ -16,24 +16,24 @@ export default () => {
 
   const certificate = useMemo(
     () => user.certificates?.find(certificate => certificate.organization.id === organization?.id),
-    [user.certificates, organization?.id],
+    [user.certificates, organization?.id]
   )
   const hasEnoughCourses = useMemo(
     () => courses.filter(course => course.completed).length >= config.minSkills,
-    [courses],
+    [courses]
   )
   const validCourses = useMemo(
     () =>
       courses.filter(course =>
         course.lessons?.find(
-          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.minSkillRating,
-        ),
+          lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.minSkillRating
+        )
       ),
-    [courses],
+    [courses]
   )
   const canRequestCertificate = useMemo(
     () => hasEnoughCourses && validCourses.length >= config.minSkills,
-    [hasEnoughCourses, validCourses.length],
+    [hasEnoughCourses, validCourses.length]
   )
 
   const toastMessage = useMemo(() => {

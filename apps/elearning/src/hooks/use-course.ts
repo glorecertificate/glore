@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react'
 
-import { type Locale } from '@repo/i18n'
+import { type Locale } from '@glore/i18n'
 
 import { type Course } from '@/lib/api'
 
@@ -36,7 +36,7 @@ export const CourseProvider = CourseContext.Provider
  */
 export const createCourseProviderValue = (
   course: Partial<Course>,
-  props: Omit<CourseContext, 'initialCourse'>,
+  props: Omit<CourseContext, 'initialCourse'>
 ): CourseContext => ({
   initialCourse: structuredClone(course),
   ...props,

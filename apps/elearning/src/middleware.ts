@@ -1,6 +1,6 @@
 import { NextResponse, type MiddlewareConfig, type NextMiddleware } from 'next/server'
 
-import { createDatabase } from '@/lib/db/ssr'
+import { createDatabaseClient } from '@/lib/db'
 import { getLocale } from '@/lib/i18n'
 import { authRoutes } from '@/lib/navigation'
 
@@ -22,7 +22,7 @@ export const middleware: NextMiddleware = async request => {
   try {
     let response = next
 
-    const db = await createDatabase(() => {
+    const db = await createDatabaseClient(() => {
       response = NextResponse.next({ request })
     })
 

@@ -1,21 +1,19 @@
-import { client, STORAGE_URL } from './shared/client'
-import { organization } from './shared/data'
-import { verifyResponse } from './shared/utils'
+import { seedClient, seeder, verifyResponse } from './shared'
 
 export const seedOrganizations = async () => {
-  const { avatar, memberships, ...rest } = organization
+  const { avatar, memberships, ...rest } = seeder.organization
   const now = new Date().toISOString()
   const rating = Math.round(Math.random() * 5 * 100) / 100
-  const avatarUrl = STORAGE_URL ? `${STORAGE_URL}/${avatar}` : undefined
+  const avatarUrl = `${process.env.STORAGE_URL}/${avatar}`
 
-  const response = await client
+  const response = await seedClient
     .from('organizations')
     .insert({
       ...rest,
-      avatar_url: avatarUrl,
-      rating,
       approved_at: now,
+      avatar_url: avatarUrl,
       deleted_at: null,
+      rating,
     })
     .select()
   verifyResponse(response, 'memberships')

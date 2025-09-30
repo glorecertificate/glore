@@ -6,30 +6,31 @@ import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 
 import themeConfig from '@config/theme'
-import { useTranslations, type Locale } from '@repo/i18n'
-import { Button, type ButtonProps } from '@repo/ui/components/button'
-import { Globe, type GlobeColorOptions } from '@repo/ui/components/globe'
-import { ThemeSwitch } from '@repo/ui/components/theme-switch'
-import { useTheme } from '@repo/ui/hooks/use-theme'
-import { Glore } from '@repo/ui/icons/glore'
-import { cn } from '@repo/ui/utils'
-import { recordToRgb } from '@repo/utils/hex-to-rgb'
-import { snakeToCamel } from '@repo/utils/string'
-import { type Enum } from '@repo/utils/types'
+import { type Locale } from '@glore/i18n'
+import { rgbRecord } from '@glore/utils/hex-to-rgb'
+import { snakeToCamel } from '@glore/utils/string'
+import { type Enum } from '@glore/utils/types'
 
 import { EmailClientsFooter } from '@/components/features/auth/email-clients-footer'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
+import { Glore } from '@/components/icons/glore'
+import { Button, type ButtonProps } from '@/components/ui/button'
+import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useNavigation } from '@/hooks/use-navigation'
+import { useTheme } from '@/hooks/use-theme'
+import { useTranslations } from '@/hooks/use-translations'
 import { type AuthView } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 const themeColors = {
-  light: recordToRgb(themeConfig.colors.light),
-  dark: recordToRgb(themeConfig.colors.dark),
+  light: rgbRecord(themeConfig.colors.light),
+  dark: rgbRecord(themeConfig.colors.dark),
 }
 
 const AuthActionButton = ({ children, ...props }: ButtonProps) => (
@@ -53,7 +54,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
 
   const defaultView = useMemo<Enum<AuthView>>(
     () => (token === null ? 'invalid_token' : token ? 'password_reset' : 'login'),
-    [token],
+    [token]
   )
 
   const { setTitleKey } = useMetadata({
@@ -70,7 +71,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
   const title = useMemo(() => (view ? t.dynamic(snakeToCamel(`${view}_title`)) : null), [t, view])
   const message = useMemo(() => {
     if (!view) return null
-    if (!email || !['email_sent', 'password_updated'].includes(view)) return t.dynamic(snakeToCamel(`${view}_message`))
+    if (!(email && ['email_sent', 'password_updated'].includes(view))) return t.dynamic(snakeToCamel(`${view}_message`))
     return t(snakeToCamel(`${view}_message`), { email })
   }, [email, t, view])
 
@@ -79,7 +80,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
       setViewState(view)
       setTitleKey(snakeToCamel(`${view}_meta_title`))
     },
-    [setTitleKey],
+    [setTitleKey]
   )
 
   const content = useMemo(() => {
@@ -112,8 +113,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
   useEffect(() => {
     searchParams.delete('lang')
     cookies.delete('login-token')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [searchParams.delete, searchParams])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
@@ -134,7 +134,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
     const ro = new ResizeObserver(() => updateHeight(element))
     ro.observe(element)
     return () => ro.disconnect()
-  }, [view, title, message, updateHeight])
+  }, [view, updateHeight])
 
   const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
 
@@ -230,7 +230,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
           <Glore
             className={cn(
               'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-              view === 'login' ? 'pointer-events-none' : 'cursor-pointer',
+              view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
             )}
             onClick={() => setView('login')}
             tabIndex={view === 'login' ? -1 : 0}
@@ -260,7 +260,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
                   key={`heading-${view}`}
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
-                  {title && <h1 className="text-3xl font-bold">{title}</h1>}
+                  {title && <h1 className="font-bold text-3xl">{title}</h1>}
                   {message && <p className="text-muted-foreground">{message}</p>}
                 </motion.div>
               </AnimatePresence>

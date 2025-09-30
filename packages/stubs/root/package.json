@@ -1,0 +1,7 @@
+{
+  "name": "@glore/root",
+  "description": "Stub package to run top-level scripts",
+  "scripts": {
+    "type-check": "cd ../.. && tsc --noEmit"
+  }
+}

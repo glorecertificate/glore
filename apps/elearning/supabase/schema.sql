@@ -66,15 +66,6 @@ CREATE TYPE "auth"."factor_type" AS ENUM (
 ALTER TYPE "auth"."factor_type" OWNER TO "supabase_auth_admin";
 
 
-CREATE TYPE "auth"."oauth_registration_type" AS ENUM (
-    'dynamic',
-    'manual'
-);
-
-
-ALTER TYPE "auth"."oauth_registration_type" OWNER TO "supabase_auth_admin";
-
-
 CREATE TYPE "auth"."one_time_token_type" AS ENUM (
     'confirmation_token',
     'reauthentication_token',
@@ -97,14 +88,14 @@ CREATE TYPE "public"."course_type" AS ENUM (
 ALTER TYPE "public"."course_type" OWNER TO "postgres";
 
 
-CREATE TYPE "public"."language" AS ENUM (
+CREATE TYPE "public"."locale" AS ENUM (
     'es',
     'en',
     'it'
 );
 
 
-ALTER TYPE "public"."language" OWNER TO "postgres";
+ALTER TYPE "public"."locale" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."role" AS ENUM (
@@ -425,28 +416,6 @@ COMMENT ON TABLE "auth"."mfa_factors" IS 'auth: stores metadata about factors';
 
 
 
-CREATE TABLE IF NOT EXISTS "auth"."oauth_clients" (
-    "id" "uuid" NOT NULL,
-    "client_id" "text" NOT NULL,
-    "client_secret_hash" "text" NOT NULL,
-    "registration_type" "auth"."oauth_registration_type" NOT NULL,
-    "redirect_uris" "text" NOT NULL,
-    "grant_types" "text" NOT NULL,
-    "client_name" "text",
-    "client_uri" "text",
-    "logo_uri" "text",
-    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "deleted_at" timestamp with time zone,
-    CONSTRAINT "oauth_clients_client_name_length" CHECK (("char_length"("client_name") <= 1024)),
-    CONSTRAINT "oauth_clients_client_uri_length" CHECK (("char_length"("client_uri") <= 2048)),
-    CONSTRAINT "oauth_clients_logo_uri_length" CHECK (("char_length"("logo_uri") <= 2048))
-);
-
-
-ALTER TABLE "auth"."oauth_clients" OWNER TO "supabase_auth_admin";
-
-
 CREATE TABLE IF NOT EXISTS "auth"."one_time_tokens" (
     "id" "uuid" NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -745,7 +714,7 @@ CREATE TABLE IF NOT EXISTS "public"."certificates" (
     "user_id" "uuid" NOT NULL,
     "reviewer_id" "uuid",
     "organization_id" bigint NOT NULL,
-    "language" "public"."language" NOT NULL,
+    "language" "public"."locale" NOT NULL,
     "activity_start_date" "date" NOT NULL,
     "activity_end_date" "date" NOT NULL,
     "activity_duration" smallint NOT NULL,
@@ -908,7 +877,7 @@ CREATE TABLE IF NOT EXISTS "public"."courses" (
     "icon" "text",
     "skill_group_id" bigint,
     "type" "public"."course_type" DEFAULT 'skill'::"public"."course_type",
-    "languages" "public"."language"[]
+    "languages" "public"."locale"[]
 );
 
 
@@ -1186,7 +1155,7 @@ CREATE TABLE IF NOT EXISTS "public"."user_courses" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deleted_at" timestamp with time zone,
-    "locale" "public"."language" NOT NULL
+    "locale" "public"."locale" NOT NULL
 );
 
 
@@ -1240,7 +1209,7 @@ CREATE TABLE IF NOT EXISTS "public"."user_locales" (
     "email" "text" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "locale" "public"."language" DEFAULT 'en'::"public"."language" NOT NULL
+    "locale" "public"."locale" DEFAULT 'en'::"public"."locale" NOT NULL
 );
 
 
@@ -1266,7 +1235,8 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "is_editor" boolean DEFAULT false,
     "email" "text" NOT NULL,
     "phone" "text",
-    "languages" "text"[]
+    "languages" "text"[],
+    "locale" "public"."locale" DEFAULT 'en'::"public"."locale"
 );
 
 
@@ -1328,16 +1298,6 @@ ALTER TABLE ONLY "auth"."mfa_factors"
 
 ALTER TABLE ONLY "auth"."mfa_factors"
     ADD CONSTRAINT "mfa_factors_pkey" PRIMARY KEY ("id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_clients"
-    ADD CONSTRAINT "oauth_clients_client_id_key" UNIQUE ("client_id");
-
-
-
-ALTER TABLE ONLY "auth"."oauth_clients"
-    ADD CONSTRAINT "oauth_clients_pkey" PRIMARY KEY ("id");
 
 
 
@@ -1679,14 +1639,6 @@ CREATE UNIQUE INDEX "mfa_factors_user_friendly_name_unique" ON "auth"."mfa_facto
 
 
 CREATE INDEX "mfa_factors_user_id_idx" ON "auth"."mfa_factors" USING "btree" ("user_id");
-
-
-
-CREATE INDEX "oauth_clients_client_id_idx" ON "auth"."oauth_clients" USING "btree" ("client_id");
-
-
-
-CREATE INDEX "oauth_clients_deleted_at_idx" ON "auth"."oauth_clients" USING "btree" ("deleted_at");
 
 
 
@@ -2673,11 +2625,6 @@ GRANT ALL ON TABLE "auth"."mfa_factors" TO "dashboard_user";
 
 
 
-GRANT ALL ON TABLE "auth"."oauth_clients" TO "postgres";
-GRANT ALL ON TABLE "auth"."oauth_clients" TO "dashboard_user";
-
-
-
 GRANT INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,MAINTAIN,UPDATE ON TABLE "auth"."one_time_tokens" TO "postgres";
 GRANT SELECT ON TABLE "auth"."one_time_tokens" TO "postgres" WITH GRANT OPTION;
 GRANT ALL ON TABLE "auth"."one_time_tokens" TO "dashboard_user";
@@ -2735,15 +2682,15 @@ GRANT SELECT ON TABLE "auth"."users" TO "postgres" WITH GRANT OPTION;
 
 
 
-GRANT ALL ON TABLE "public"."assessments" TO "anon";
-GRANT ALL ON TABLE "public"."assessments" TO "authenticated";
-GRANT ALL ON TABLE "public"."assessments" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."assessments" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."assessments" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."assessments" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."evaluations" TO "anon";
-GRANT ALL ON TABLE "public"."evaluations" TO "authenticated";
-GRANT ALL ON TABLE "public"."evaluations" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."evaluations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."evaluations" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."evaluations" TO "service_role";
 
 
 
@@ -2753,9 +2700,9 @@ GRANT ALL ON SEQUENCE "public"."assessments_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."certificate_skills" TO "anon";
-GRANT ALL ON TABLE "public"."certificate_skills" TO "authenticated";
-GRANT ALL ON TABLE "public"."certificate_skills" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."certificate_skills" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."certificate_skills" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."certificate_skills" TO "service_role";
 
 
 
@@ -2765,9 +2712,9 @@ GRANT ALL ON SEQUENCE "public"."certificate_skills_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."certificates" TO "anon";
-GRANT ALL ON TABLE "public"."certificates" TO "authenticated";
-GRANT ALL ON TABLE "public"."certificates" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."certificates" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."certificates" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."certificates" TO "service_role";
 
 
 
@@ -2777,9 +2724,9 @@ GRANT ALL ON SEQUENCE "public"."certificates_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_answers" TO "anon";
-GRANT ALL ON TABLE "public"."user_answers" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_answers" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_answers" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_answers" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_answers" TO "service_role";
 
 
 
@@ -2789,9 +2736,9 @@ GRANT ALL ON SEQUENCE "public"."closed_question_answers_id_seq" TO "service_role
 
 
 
-GRANT ALL ON TABLE "public"."question_options" TO "anon";
-GRANT ALL ON TABLE "public"."question_options" TO "authenticated";
-GRANT ALL ON TABLE "public"."question_options" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."question_options" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."question_options" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."question_options" TO "service_role";
 
 
 
@@ -2801,9 +2748,9 @@ GRANT ALL ON SEQUENCE "public"."closed_question_options_id_seq" TO "service_role
 
 
 
-GRANT ALL ON TABLE "public"."questions" TO "anon";
-GRANT ALL ON TABLE "public"."questions" TO "authenticated";
-GRANT ALL ON TABLE "public"."questions" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."questions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."questions" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."questions" TO "service_role";
 
 
 
@@ -2813,9 +2760,9 @@ GRANT ALL ON SEQUENCE "public"."closed_questions_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."contributions" TO "anon";
-GRANT ALL ON TABLE "public"."contributions" TO "authenticated";
-GRANT ALL ON TABLE "public"."contributions" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."contributions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."contributions" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."contributions" TO "service_role";
 
 
 
@@ -2825,9 +2772,9 @@ GRANT ALL ON SEQUENCE "public"."contributions_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."courses" TO "anon";
-GRANT ALL ON TABLE "public"."courses" TO "authenticated";
-GRANT ALL ON TABLE "public"."courses" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."courses" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."courses" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."courses" TO "service_role";
 
 
 
@@ -2837,9 +2784,9 @@ GRANT ALL ON SEQUENCE "public"."courses_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."lessons" TO "anon";
-GRANT ALL ON TABLE "public"."lessons" TO "authenticated";
-GRANT ALL ON TABLE "public"."lessons" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."lessons" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."lessons" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."lessons" TO "service_role";
 
 
 
@@ -2849,9 +2796,9 @@ GRANT ALL ON SEQUENCE "public"."lessons_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."memberships" TO "anon";
-GRANT ALL ON TABLE "public"."memberships" TO "authenticated";
-GRANT ALL ON TABLE "public"."memberships" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."memberships" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."memberships" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."memberships" TO "service_role";
 
 
 
@@ -2861,9 +2808,9 @@ GRANT ALL ON SEQUENCE "public"."memberships_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."organization_regions" TO "anon";
-GRANT ALL ON TABLE "public"."organization_regions" TO "authenticated";
-GRANT ALL ON TABLE "public"."organization_regions" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."organization_regions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."organization_regions" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."organization_regions" TO "service_role";
 
 
 
@@ -2873,9 +2820,9 @@ GRANT ALL ON SEQUENCE "public"."organization_regions_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."organizations" TO "anon";
-GRANT ALL ON TABLE "public"."organizations" TO "authenticated";
-GRANT ALL ON TABLE "public"."organizations" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."organizations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."organizations" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."organizations" TO "service_role";
 
 
 
@@ -2885,9 +2832,9 @@ GRANT ALL ON SEQUENCE "public"."organizations_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."regions" TO "anon";
-GRANT ALL ON TABLE "public"."regions" TO "authenticated";
-GRANT ALL ON TABLE "public"."regions" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."regions" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."regions" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."regions" TO "service_role";
 
 
 
@@ -2897,9 +2844,9 @@ GRANT ALL ON SEQUENCE "public"."regions_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_assessments" TO "anon";
-GRANT ALL ON TABLE "public"."user_assessments" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_assessments" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_assessments" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_assessments" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_assessments" TO "service_role";
 
 
 
@@ -2909,9 +2856,9 @@ GRANT ALL ON SEQUENCE "public"."self_ skill_assessments_id_seq" TO "service_role
 
 
 
-GRANT ALL ON TABLE "public"."user_evaluations" TO "anon";
-GRANT ALL ON TABLE "public"."user_evaluations" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_evaluations" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_evaluations" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_evaluations" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_evaluations" TO "service_role";
 
 
 
@@ -2927,9 +2874,9 @@ GRANT ALL ON SEQUENCE "public"."skill_assessments_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."skill_groups" TO "anon";
-GRANT ALL ON TABLE "public"."skill_groups" TO "authenticated";
-GRANT ALL ON TABLE "public"."skill_groups" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."skill_groups" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."skill_groups" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."skill_groups" TO "service_role";
 
 
 
@@ -2939,9 +2886,9 @@ GRANT ALL ON SEQUENCE "public"."skill_groups_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_courses" TO "anon";
-GRANT ALL ON TABLE "public"."user_courses" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_courses" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_courses" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_courses" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_courses" TO "service_role";
 
 
 
@@ -2951,9 +2898,9 @@ GRANT ALL ON SEQUENCE "public"."user_courses_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_lessons" TO "anon";
-GRANT ALL ON TABLE "public"."user_lessons" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_lessons" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_lessons" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_lessons" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_lessons" TO "service_role";
 
 
 
@@ -2963,16 +2910,15 @@ GRANT ALL ON SEQUENCE "public"."user_lessons_id_seq" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."user_locales" TO "anon";
-GRANT ALL ON TABLE "public"."user_locales" TO "authenticated";
-GRANT ALL ON TABLE "public"."user_locales" TO "service_role";
+GRANT MAINTAIN ON TABLE "public"."user_locales" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."user_locales" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."user_locales" TO "service_role";
 
 
 
-GRANT ALL ON TABLE "public"."users" TO "anon";
-GRANT ALL ON TABLE "public"."users" TO "authenticated";
-GRANT ALL ON TABLE "public"."users" TO "service_role";
-GRANT SELECT,INSERT,REFERENCES,DELETE,TRIGGER,TRUNCATE,UPDATE ON TABLE "public"."users" TO "supabase_auth_admin";
+GRANT MAINTAIN ON TABLE "public"."users" TO "anon";
+GRANT MAINTAIN ON TABLE "public"."users" TO "authenticated";
+GRANT MAINTAIN ON TABLE "public"."users" TO "service_role";
 
 
 

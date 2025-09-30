@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 
-import { createApi } from '@/lib/api/ssr'
+import { createApiClient } from '@/lib/api'
 import { createMetadata } from '@/lib/metadata'
 
 export const metadata = createMetadata({
@@ -8,7 +8,7 @@ export const metadata = createMetadata({
 })
 
 export default async ({ children }: LayoutProps<'/certificates'>) => {
-  const api = await createApi()
+  const api = await createApiClient()
   const user = await api.users.getCurrent()
 
   if (user.canEdit) return notFound()

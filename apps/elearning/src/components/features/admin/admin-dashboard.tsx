@@ -2,13 +2,12 @@
 
 import { useCallback, useState } from 'react'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
-
 import { AdminCertificates } from '@/components/features/admin/admin-certificates'
 import { AdminOrganizations } from '@/components/features/admin/admin-organizations'
 import { AdminOverview } from '@/components/features/admin/admin-overview'
 import { AdminTeam } from '@/components/features/admin/admin-team'
 import { AdminUsers } from '@/components/features/admin/admin-users'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 type AdminDashboardTab = 'overview' | 'certificates' | 'users' | 'organizations' | 'team'
 

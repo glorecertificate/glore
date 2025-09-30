@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Download, Filter, MoreHorizontal, Search, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '@repo/ui/components/button'
-import { Checkbox } from '@repo/ui/components/checkbox'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/dialog'
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,11 +20,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/components/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/components/table'
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const staticUsers = [
   {
@@ -155,7 +155,7 @@ export const AdminTeam = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">{'Users Management'}</h2>
+        <h2 className="font-bold text-3xl tracking-tight">{'Users Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
             <Download className="mr-2 size-4" />
@@ -186,7 +186,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
                 {'Role'}
-                {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -202,7 +202,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -219,7 +219,7 @@ export const AdminTeam = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
                 {'Region'}
-                {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -255,7 +255,7 @@ export const AdminTeam = () => {
               <TableHead>{'Status'}</TableHead>
               <TableHead>{'Region'}</TableHead>
               <TableHead>{'Joined'}</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
+              <TableHead className="w-[80px]" />
             </TableRow>
           </TableHeader>
           <TableBody>

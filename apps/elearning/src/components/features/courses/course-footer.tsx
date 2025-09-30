@@ -4,9 +4,10 @@ import { useMemo } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { ConfettiButton } from '@repo/ui/components/confetti'
+import { type Enum } from '@glore/utils/types'
+
+import { Button } from '@/components/ui/button'
+import { ConfettiButton } from '@/components/ui/confetti'
 import {
   Dialog,
   DialogClose,
@@ -15,16 +16,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { cn } from '@repo/ui/utils'
-import { type Enum } from '@repo/utils/types'
-
+} from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useConfig } from '@/hooks/use-config'
 import { useCourse } from '@/hooks/use-course'
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
 import { type CourseProgress, type Lesson } from '@/lib/api'
+import { cn } from '@/lib/utils'
 
 export const CourseFooter = ({
   lessons,
@@ -56,7 +56,7 @@ export const CourseFooter = ({
   }, [lesson])
 
   const nextTooltip = useMemo(() => {
-    if (!lesson) return undefined
+    if (!lesson) return
     if (!canProceed) return t('replyToProceed', { type: lesson.type })
   }, [canProceed, lesson, t])
 
@@ -64,7 +64,7 @@ export const CourseFooter = ({
 
   const completedTitle = useMemo(
     () => (completedCount === courses.length ? t('completedTitleAll') : t('completedTitle', { count: completedCount })),
-    [completedCount, courses.length, t],
+    [completedCount, courses.length, t]
   )
 
   const completedMessage = useMemo(
@@ -74,7 +74,7 @@ export const CourseFooter = ({
         : completedCount === minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
-    [completedCount, minSkills, t],
+    [completedCount, minSkills, t]
   )
 
   return (
@@ -105,7 +105,7 @@ export const CourseFooter = ({
             </DialogTrigger>
             <DialogContent className="px-8 sm:max-w-xl">
               <DialogHeader>
-                <DialogTitle className="mt-3 flex gap-2 text-lg font-medium">
+                <DialogTitle className="mt-3 flex gap-2 font-medium text-lg">
                   {completedTitle}
                   {' 🎉'}
                 </DialogTitle>

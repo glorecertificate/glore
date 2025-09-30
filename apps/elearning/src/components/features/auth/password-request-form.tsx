@@ -3,22 +3,21 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type PostgrestError } from '@supabase/supabase-js'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@repo/ui/components/form'
-import { Input } from '@repo/ui/components/input'
-import { cn } from '@repo/ui/utils'
-import { log } from '@repo/utils/logger'
-import { type Enum } from '@repo/utils/types'
+import { type Enum } from '@glore/utils/types'
 
+import { Button } from '@/components/ui/button'
+import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { useApi } from '@/hooks/use-api'
+import { useTranslations } from '@/hooks/use-translations'
 import { type User } from '@/lib/api'
+import { type DatabaseError } from '@/lib/db'
 import { type AuthView } from '@/lib/navigation'
+import { cn } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
   setEmail,
@@ -30,7 +29,6 @@ export const PasswordRequestForm = ({
   setView: (view: Enum<AuthView>) => void
 }) => {
   const api = useApi()
-  const { locale } = useLocale()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -43,7 +41,7 @@ export const PasswordRequestForm = ({
             message: t('userInvalid'),
           }),
       }),
-    [t],
+    [t]
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,23 +59,23 @@ export const PasswordRequestForm = ({
       try {
         user = await api.users.findByUsername(username)
       } catch (e) {
-        const error = e as PostgrestError
+        const error = e as DatabaseError
         if (error.code === 'PGRST116') return form.setError('user', { message: t('userNotFound') })
-        log.error(e)
+        console.error(e)
         return toast.error(t('networkError'))
       }
 
       try {
-        await api.auth.resetPassword(user.email, { redirectTo: '/', locale })
+        await api.auth.resetPassword(user.email)
       } catch (e) {
-        log.error(e)
+        console.error(e)
         return toast.error(t('networkError'))
       }
 
       setEmail(user.email)
       setView('email_sent')
     },
-    [api.auth, api.users, form, locale, setEmail, setView, t],
+    [api.auth, api.users, form, setEmail, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

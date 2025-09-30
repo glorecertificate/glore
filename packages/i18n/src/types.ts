@@ -4,6 +4,7 @@ import type config from '@config/i18n'
 import type messages from '@config/translations/en'
 
 import { type i18n } from './config'
+import { type createFormatter } from './utils'
 
 export type Locale = keyof typeof config.locales
 export type Messages = typeof messages
@@ -18,7 +19,7 @@ declare module 'use-intl' {
 }
 
 /**
- * Extends the `next-intl` translator to include a `dynamic` function.
+ * Extends the `use-intl` translator to include a `dynamic` function.
  */
 export interface Translator<NestedKey extends Namespace = never>
   extends ReturnType<typeof createTranslator<Messages, NestedKey>> {
@@ -30,6 +31,11 @@ export interface Translator<NestedKey extends Namespace = never>
   dynamic: (key: string) => string
   raw(key: NamespaceKey<NestedKey>): string
 }
+
+/**
+ * Formatter function returned by `createFormatter`.
+ */
+export type Formatter = ReturnType<typeof createFormatter>
 
 /**
  * Namespace of the application static messages.

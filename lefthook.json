@@ -1,0 +1,23 @@
+{
+  "pre-commit": {
+    "commands": {
+      "check": {
+        "run": "biome check {staged_files}"
+      }
+    }
+  },
+  "commit-msg": {
+    "commands": {
+      "validate": {
+        "run": "[ $(cat $1) =~ ^([tmp]|#).*$ ] && commitlint --edit $1"
+      }
+    }
+  },
+  "pre-push": {
+    "commands": {
+      "check": {
+        "run": "pnpm run check"
+      }
+    }
+  }
+}

@@ -12,10 +12,8 @@
   ],
   "globalEnv": [
     "APP_URL",
-    "COOKIE_PREFIX",
     "NEXT_TELEMETRY_DISABLED",
     "NODE_ENV",
-    "SUPABASE_DB_URL",
     "SUPABASE_TOKEN",
     "TURBO_TEAM",
     "TURBO_TELEMETRY_DISABLED",
@@ -26,33 +24,64 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "AUTH_EMAIL_HOOK_SECRET",
+        "COOKIE_PREFIX",
+        "EMAIL_SENDER",
         "ENABLE_EXPERIMENTAL_COREPACK",
+        "NEXT_PUBLIC_*",
         "OPENAI_API_KEY",
         "OPENAI_MODEL",
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
         "POSTGRES_PASSWORD",
         "POSTGRES_PRISMA_URL",
-        "POSTGRES_URL",
         "POSTGRES_URL_NON_POOLING",
+        "POSTGRES_URL",
         "POSTGRES_USER",
+        "SMTP_HOST",
+        "SMTP_PASSWORD",
+        "SMTP_USER",
         "SUPABASE_ANON_KEY",
+        "SUPABASE_DB_URL",
         "SUPABASE_JWT_SECRET",
         "SUPABASE_SERVICE_ROLE_KEY",
         "SUPABASE_URL"
       ],
-      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"]
+      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "dist/**"]
     },
     "start": {
       "dependsOn": ["build"],
       "cache": false,
       "persistent": true,
-      "env": ["OPENAI_API_KEY", "OPENAI_MODEL", "STORAGE_URL", "SUPABASE_ANON_KEY", "SUPABASE_URL"]
+      "env": [
+        "COOKIE_PREFIX",
+        "NEXT_PUBLIC_*",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "STORAGE_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_DB_URL",
+        "SUPABASE_URL"
+      ]
     },
     "dev": {
       "cache": false,
       "persistent": true,
-      "env": ["OPENAI_API_KEY", "OPENAI_MODEL", "STORAGE_URL", "SUPABASE_ANON_KEY", "SUPABASE_URL"]
+      "env": [
+        "AUTH_EMAIL_HOOK_SECRET",
+        "COOKIE_PREFIX",
+        "EMAIL_SENDER",
+        "NEXT_PUBLIC_*",
+        "OPENAI_API_KEY",
+        "OPENAI_MODEL",
+        "SMTP_HOST",
+        "SMTP_PASSWORD",
+        "SMTP_USER",
+        "STORAGE_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_DB_URL",
+        "SUPABASE_URL"
+      ]
     },
     "watch": {
       "cache": false,
@@ -60,24 +89,24 @@
     },
     "typegen": {
       "dependsOn": ["^typegen"],
-      "outputs": ["**/*.d.ts", "supabase/types.ts"]
+      "outputs": ["**/*.d.ts", "supabase/types.ts"],
+      "env": ["SUPABASE_DB_URL"]
     },
     "type-check": {
-      "dependsOn": ["^type-check"]
+      "dependsOn": ["^type-check"],
+      "env": [
+        "AUTH_EMAIL_HOOK_SECRET",
+        "COOKIE_PREFIX",
+        "EMAIL_SENDER",
+        "SMTP_HOST",
+        "SMTP_PASSWORD",
+        "SMTP_USER",
+        "SUPABASE_DB_URL"
+      ]
     },
+    "type-check:root": {},
     "lint": {
       "dependsOn": ["^lint"]
-    },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
-    },
-    "check": {
-      "dependsOn": ["^check"]
-    },
-    "db": {
-      "cache": false,
-      "dependsOn": ["^db"],
-      "outputs": ["supabase/**"]
     }
   }
 }

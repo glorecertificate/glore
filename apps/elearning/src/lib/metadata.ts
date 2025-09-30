@@ -2,11 +2,10 @@ import { type Metadata } from 'next'
 import { type AppRoutes } from 'next/types/routes'
 
 import metadata from '@config/metadata'
-import { i18n, type Locale, type MessageKey } from '@repo/i18n'
+import { i18n, type Locale, type MessageKey } from '@glore/i18n'
 
-import { env } from '@/lib/env'
+import { PublicAsset } from '@/lib/assets'
 import { getLocale, getTranslations } from '@/lib/i18n'
-import { Public } from '@/lib/storage'
 
 /**
  * Options for generating metadata.
@@ -22,8 +21,8 @@ export interface MetadataOptions<Translate extends boolean> {
 }
 
 const DEFAULT_METADATA = {
-  metadataBase: new URL(env.APP_URL),
-  applicationName: metadata.name,
+  metadataBase: new URL(process.env.APP_URL),
+  applicationName: metadata.shortName,
   category: metadata.category,
   authors: metadata.authors,
   creator: metadata.authors[0].name,
@@ -39,16 +38,16 @@ const DEFAULT_METADATA = {
     telephone: false,
   },
   alternates: {
-    canonical: env.APP_URL,
+    canonical: process.env.APP_URL,
     languages: i18n.locales.reduce(
-      (languages, lang) => ({ ...languages, [lang]: `${env.APP_URL}?lang=${lang}` }),
-      {} as Record<Locale, string>,
+      (languages, lang) => ({ ...languages, [lang]: `${process.env.APP_URL}?lang=${lang}` }),
+      {} as Record<Locale, string>
     ),
   },
   openGraph: {
     type: 'website',
     emails: metadata.email,
-    images: [Public.OpenGraph],
+    images: [PublicAsset.OpenGraph],
     phoneNumbers: metadata.phone,
     siteName: metadata.name,
     ttl: 60,
@@ -56,24 +55,24 @@ const DEFAULT_METADATA = {
   icons: [
     {
       rel: 'shortcut icon',
-      url: Public.Favicon,
+      url: PublicAsset.Favicon,
     },
     {
       sizes: '96x96',
       type: 'image/png',
-      url: Public.Favicon96,
+      url: PublicAsset.Favicon96,
     },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: Public.AppleIcon,
+      url: PublicAsset.AppleIcon,
     },
   ],
   appleWebApp: {
     capable: true,
-    title: metadata.name,
+    title: metadata.shortName,
     statusBarStyle: 'black-translucent',
-    startupImage: Public.WebAppScreenshotNarrow,
+    startupImage: PublicAsset.WebAppScreenshotNarrow,
   },
 } as const satisfies Metadata
 
@@ -98,7 +97,7 @@ export const createAsyncMetadata = async <T extends boolean>(options: MetadataOp
   const {
     description: userDescription,
     image,
-    separator = metadata.titleSeparator,
+    separator = metadata.separator,
     title: userTitle,
     translate = true,
   } = options
@@ -108,8 +107,8 @@ export const createAsyncMetadata = async <T extends boolean>(options: MetadataOp
   const alternateLocale = i18n.locales.filter(language => language !== locale)[0]
 
   const title = userTitle
-    ? `${translate ? t.dynamic(userTitle) : userTitle} ${separator} ${metadata.title}`
-    : metadata.title
+    ? `${translate ? t.dynamic(userTitle) : userTitle} ${separator} ${metadata.name}`
+    : metadata.name
   const description = userDescription
     ? translate
       ? t.dynamic(userDescription)
@@ -122,7 +121,7 @@ export const createAsyncMetadata = async <T extends boolean>(options: MetadataOp
     ...defaultMetadata,
     title,
     description,
-    manifest: `${Public.Manifest}?locale=${locale}`,
+    manifest: `${PublicAsset.Manifest}?locale=${locale}`,
     openGraph: {
       ...openGraph,
       title,

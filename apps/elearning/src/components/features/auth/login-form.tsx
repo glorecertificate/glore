@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type PostgrestError } from '@supabase/supabase-js'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
+import { type Enum } from '@glore/utils/types'
+
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -18,19 +18,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@repo/ui/components/form'
-import { Input } from '@repo/ui/components/input'
-import { PasswordInput } from '@repo/ui/components/password-input'
-import { cn } from '@repo/ui/utils'
-import { log } from '@repo/utils/logger'
-import { type Enum } from '@repo/utils/types'
-
+} from '@/components/ui/dialog'
+import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
+import { PasswordInput } from '@/components/ui/password-input'
 import { useApi } from '@/hooks/use-api'
-import { PASSWORD_REGEX, type User } from '@/lib/api'
-import { DatabaseError } from '@/lib/db'
+import { useTranslations } from '@/hooks/use-translations'
+import { type User } from '@/lib/api'
+import { DatabaseError, PASSWORD_REGEX } from '@/lib/db'
 import { redirect, route, type AuthView } from '@/lib/navigation'
+import { cn } from '@/lib/utils'
 
 export const LoginForm = ({
   setErrored,
@@ -58,7 +56,7 @@ export const LoginForm = ({
             message: t('passwordTooShort'),
           }),
       }),
-    [t],
+    [t]
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -78,33 +76,33 @@ export const LoginForm = ({
       try {
         user = await api.users.findByUsername(username)
       } catch (e) {
-        const error = e as PostgrestError
+        const error = e as DatabaseError
         if (error.code === 'PGRST116') {
           form.setError('user', { message: t('userNotFound') })
           form.setFocus('user')
           return
         }
-        log.error(e)
+        console.error(e)
         return toast.error(t('networkError'))
       }
 
       try {
-        if (!PASSWORD_REGEX.test(password)) throw new DatabaseError('invalid_credentials')
+        if (!PASSWORD_REGEX.test(password)) throw new DatabaseError('INVALID_CREDENTIALS')
         await api.auth.login({ email: user.email, password })
       } catch (e) {
         const error = e as DatabaseError
-        if (error.code === 'PGRST116' || error.code === 'invalid_credentials') {
+        if (error.code === 'PGRST116' || error.code === 'INVALID_CREDENTIALS') {
           form.setError('password', { message: t('passwordInvalid') })
           form.setFocus('password')
           return
         }
-        log.error(e)
+        console.error(e)
         return toast.error(t('networkError'))
       }
 
       redirect('/')
     },
-    [api, form, t],
+    [api, form, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
@@ -144,10 +142,7 @@ export const LoginForm = ({
                 <FormItem className="gap-1">
                   <div className="flex w-full justify-end">
                     <Button
-                      className={cn(
-                        'text-[13px] text-foreground/95',
-                        form.formState.isSubmitting && 'pointer-events-none',
-                      )}
+                      className={cn('text-foreground/95', form.formState.isSubmitting && 'pointer-events-none')}
                       disabled={form.formState.isSubmitting}
                       onClick={() => setView('password_request')}
                       size="text"
@@ -186,12 +181,12 @@ export const LoginForm = ({
         </form>
       </Form>
       <Dialog>
-        <div className="mt-2 text-center text-sm text-muted-foreground">
+        <div className="mt-2 text-center text-muted-foreground text-sm">
           {t.rich('signupMessage', {
             link: content => (
               <DialogTrigger asChild>
                 <Button
-                  className={cn('text-[13px] text-foreground/95', form.formState.isSubmitting && 'pointer-events-none')}
+                  className={cn('text-foreground/95', form.formState.isSubmitting && 'pointer-events-none')}
                   disabled={form.formState.isSubmitting}
                   size="text"
                   type="button"

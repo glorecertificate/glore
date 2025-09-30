@@ -1,0 +1,7 @@
+{
+  "name": "@glore/edge-functions",
+  "description": "Stub package to run edge functions locally using the dev command",
+  "scripts": {
+    "dev": "cd ../.. && glore edge"
+  }
+}

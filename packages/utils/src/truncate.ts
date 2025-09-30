@@ -4,7 +4,7 @@ export interface TruncateOptions {
 
 export const TRUNCATE_SYMBOL = '…' as const
 export const TRUNCATE_URL_REGEX = Object.freeze(
-  /(((ftp|https?):\/\/)[-\w@:%_+.~#?,&//=]+)|((mailto:)?[_.\w-]{1,300}@(.{1,300}\.)[a-zA-Z]{2,3})/g,
+  /(((ftp|https?):\/\/)[-\w@:%_+.~#?,&//=]+)|((mailto:)?[_.\w-]{1,300}@(.{1,300}\.)[a-zA-Z]{2,3})/g
 )
 
 /**

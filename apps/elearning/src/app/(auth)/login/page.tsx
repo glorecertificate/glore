@@ -1,7 +1,7 @@
 import { AuthFlow } from '@/components/features/auth/auth-flow'
-import { getEncodedCookie } from '@/lib/storage/ssr'
+import { createCookieClient } from '@/lib/storage'
 
 export default async () => {
-  const token = await getEncodedCookie('login-token')
-  return <AuthFlow token={token} />
+  const { get } = await createCookieClient()
+  return <AuthFlow token={get('login-token')} />
 }

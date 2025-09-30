@@ -35,4 +35,4 @@ runs:
     - name: Build packages
       if: inputs.build == 'true'
       shell: sh
-      run: pnpm build --filter @repo/*
+      run: pnpm build --filter @glore/*

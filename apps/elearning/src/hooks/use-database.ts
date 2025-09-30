@@ -2,10 +2,10 @@
 
 import { createBrowserClient } from '@supabase/ssr'
 
-import { env } from '@/lib/env'
-import type { Database } from 'supabase/types'
+import { type Database } from '@/lib/db'
 
 /**
- * Creates a client-side database client.
+ * Returns a client-side database client.
  */
-export const useDatabase = () => createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
+export const useDatabase = () =>
+  createBrowserClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)

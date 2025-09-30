@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Award, Download, Filter, MoreHorizontal, Search } from 'lucide-react'
 
-import { Button } from '@repo/ui/components/button'
-import { Checkbox } from '@repo/ui/components/checkbox'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +11,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { Input } from '@repo/ui/components/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/components/table'
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 const certifications = [
   {
@@ -113,7 +113,7 @@ export const AdminCertificates = () => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">{'Certifications Management'}</h2>
+        <h2 className="font-bold text-3xl tracking-tight">{'Certifications Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
             <Download className="mr-2 size-4" />
@@ -144,7 +144,7 @@ export const AdminCertificates = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
                 {'Organization'}
-                {selectedOrganization && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {selectedOrganization && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -163,7 +163,7 @@ export const AdminCertificates = () => {
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
                 {'Status'}
-                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -195,7 +195,7 @@ export const AdminCertificates = () => {
               <TableHead>{'Status'}</TableHead>
               <TableHead>{'Issued'}</TableHead>
               <TableHead>{'Created'}</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
+              <TableHead className="w-[80px]" />
             </TableRow>
           </TableHeader>
           <TableBody>

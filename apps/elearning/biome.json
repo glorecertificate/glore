@@ -1,0 +1,47 @@
+{
+  "extends": "//",
+  "linter": {
+    "domains": {
+      "next": "all",
+      "react": "all"
+    },
+    "rules": {
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["@udecode/cn"],
+                "importNamePattern": "cn",
+                "message": "Import from @/lib/utils instead."
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/components/blocks/rich-text-editor/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["supabase/functions/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    }
+  ]
+}

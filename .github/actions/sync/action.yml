@@ -32,7 +32,7 @@ runs:
       if: steps.config.outputs.any_changed || steps.migrations.outputs.any_changed
       shell: sh
       run: |
-        if pnpm db push; then
+        if glore db push; then
           echo updated=true >> $GITHUB_OUTPUT
         else
           echo "::error::Failed to push database updates"

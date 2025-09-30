@@ -71,10 +71,11 @@ file_size_limit = "50MiB"
 # ]
 # objects_path = "./assets"
 
+
 [auth]
 enabled = true
-site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = []
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
@@ -85,15 +86,10 @@ minimum_password_length = 8
 password_requirements = "lower_upper_letters_digits_symbols"
 
 [auth.rate_limit]
-email_sent = 2
+email_sent = 10
 token_refresh = 150
 sign_in_sign_ups = 30
 token_verifications = 30
-
-# [auth.captcha]
-# enabled = true
-# provider = "hcaptcha"
-# secret = ""
 
 [auth.email]
 enable_signup = true
@@ -117,12 +113,34 @@ otp_expiry = 3600
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
+[auth.hook.custom_access_token]
+enabled = false
+
 [auth.sms]
 enable_signup = false
 enable_confirmations = false
 
-[edge_runtime]
+# [auth.captcha]
+# enabled = true
+# provider = "hcaptcha"
+# secret = ""
+
+[auth.hook.send_sms]
 enabled = false
+
+[auth.hook.send_email]
+enabled = true
+uri = "http://host.docker.internal:54321/functions/v1/auth-email"
+secrets = "v1,whsec_0ZU52QG30m+k1zb5jWGroLnzW4kqmotVKwwVsGdvEw/U7fhybZNEVEWx1D4eY2RqZpIzSSK9Tn3hR/jl"
+
+[auth.hook.mfa_verification_attempt]
+enabled = false
+
+[auth.hook.password_verification_attempt]
+enabled = false
+
+[edge_runtime]
+enabled = true
 
 [analytics]
 enabled = true

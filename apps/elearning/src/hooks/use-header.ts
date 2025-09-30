@@ -28,8 +28,7 @@ export const useHeader = ({
       setHeader(undefined)
       setShadow(true)
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [])
+  }, [header, setHeader, setShadow, shadow])
 
   return {
     ...props,

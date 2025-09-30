@@ -5,17 +5,9 @@ import { useCallback, useMemo, useState } from 'react'
 import { type IconName } from 'lucide-react/dynamic'
 import { toast } from 'sonner'
 
-import { intlPlaceholder, useLocale, useTranslations, type Locale } from '@repo/i18n'
-import { useEditorState } from '@repo/ui/blocks/rich-text-editor'
-import { Badge } from '@repo/ui/components/badge'
-import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@repo/ui/components/breadcrumb'
-import { MotionTabs } from '@repo/ui/components/motion-tabs'
-import { Skeleton } from '@repo/ui/components/skeleton'
-import { DynamicIcon } from '@repo/ui/icons/dynamic'
-import { cn } from '@repo/ui/utils'
-import { log } from '@repo/utils/logger'
-import { pick } from '@repo/utils/pick'
+import { intlPlaceholder, type Locale } from '@glore/i18n'
 
+import { useEditorState } from '@/components/blocks/rich-text-editor'
 import { CourseContent } from '@/components/features/courses/course-content'
 import { CourseFooter } from '@/components/features/courses/course-footer'
 import { CourseHeader } from '@/components/features/courses/course-header'
@@ -23,14 +15,22 @@ import { CourseHeaderMobile } from '@/components/features/courses/course-header-
 import { CourseInfo } from '@/components/features/courses/course-info'
 import { CourseSettings } from '@/components/features/courses/course-settings'
 import { CourseSidebar } from '@/components/features/courses/course-sidebar'
+import { DynamicIcon } from '@/components/icons/dynamic'
+import { Badge } from '@/components/ui/badge'
+import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { MotionTabs } from '@/components/ui/motion-tabs'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useApi } from '@/hooks/use-api'
 import { CourseProvider, createCourseProviderValue, type CourseTab } from '@/hooks/use-course'
 import { useHeader } from '@/hooks/use-header'
+import { useLocale } from '@/hooks/use-locale'
 import { useNavigation } from '@/hooks/use-navigation'
 import { useSession } from '@/hooks/use-session'
 import { useSyncState } from '@/hooks/use-sync-state'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api'
 import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 export const DEFAULT_COURSE: Partial<Course> = {
   type: 'skill',
@@ -61,11 +61,11 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
   const isDraft = useMemo(() => !isArchived && course.languages?.length === 0, [course.languages?.length, isArchived])
   const isPublished = useMemo(
     () => !isDraft && course.languages?.length === localeItems.length,
-    [isDraft, course.languages?.length, localeItems.length],
+    [isDraft, course.languages?.length, localeItems.length]
   )
   const isPartial = useMemo(
     () => course.languages && course.languages.length > 0 && course.languages.length < localeItems.length,
-    [course.languages, localeItems.length],
+    [course.languages, localeItems.length]
   )
 
   const initialLanguage = useMemo(() => {
@@ -84,7 +84,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
       setLanguageState(lang)
       searchParams.set('lang', lang)
     },
-    [searchParams],
+    [searchParams]
   )
 
   useHeader({
@@ -101,7 +101,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
               className={cn(
                 'size-4 shrink-0 stroke-muted-foreground/80',
                 isPartial && 'stroke-warning',
-                isPublished && 'stroke-success',
+                isPublished && 'stroke-success'
               )}
               name={course.icon as IconName}
               placeholder={Skeleton}
@@ -124,7 +124,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
   }, [course])
 
   const [step, setStep] = useState(initialStep)
-  const currentLesson = useMemo(() => course.lessons![step], [course.lessons, step])
+  const currentLesson = useMemo(() => course.lessons?.[step]!, [course.lessons, step])
   const isFirstLesson = useMemo(() => step === 0, [step])
   const isLastLesson = useMemo(() => step === (course.lessons?.length ?? 0) - 1, [step, course.lessons?.length])
 
@@ -146,7 +146,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
       tabCookie[course.slug] = tab
       cookies.set('course-tab', tabCookie)
     },
-    [course.slug, setReadOnly],
+    [course.slug, setReadOnly]
   )
 
   const isSettings = useMemo(() => tab === 'settings', [tab])
@@ -159,7 +159,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
   const handlePrevious = useCallback(() => {
     if (isFirstLesson) return
     setStep(i => i - 1)
-  }, [isFirstLesson, setStep])
+  }, [isFirstLesson])
 
   const handleNext = useCallback(async () => {
     try {
@@ -184,7 +184,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
         case 'questions': {
           const options = lesson.questions?.flatMap(q => q.options.filter(o => o.isUserAnswer).map(o => ({ id: o.id })))
           if (!options || options.length === 0) return
-          await api.courses.submitAnswers(pick(options, 'id'))
+          await api.courses.submitAnswers(options)
           break
         }
         case 'evaluations': {
@@ -195,7 +195,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
         case 'assessment': {
           const id = lesson.assessment?.id
           const value = lesson.assessment?.userRating
-          if (!id || !value) return
+          if (!(id && value)) return
           await api.courses.submitAssessment(id, value)
         }
       }
@@ -207,9 +207,9 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
         position: 'bottom-right',
       })
       setSyncState('error')
-      log.error(e)
+      console.error(e)
     }
-  }, [currentLesson, step, isLastLesson, course, setCourse, setSyncState, api.courses, t])
+  }, [currentLesson, step, isLastLesson, course, setSyncState, api.courses, t])
 
   return (
     <CourseProvider

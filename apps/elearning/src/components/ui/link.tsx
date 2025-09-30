@@ -3,12 +3,12 @@
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
 import { startTransition, useCallback, useMemo } from 'react'
 
-import { Link as BaseLink, linkVariants, type LinkProps as BaseLinkProps } from '@repo/ui/components/link'
-import { useProgressBar, type ProgressBarProps } from '@repo/ui/components/progress-bar'
-import { cn } from '@repo/ui/utils'
+import { cva, type VariantProps } from 'class-variance-authority'
 
+import { useProgressBar, type ProgressBarProps } from '@/components/ui/progress-bar'
 import { useNavigation } from '@/hooks/use-navigation'
 import { type AnyUrl, type ExternalUrl, type Routes } from '@/lib/navigation'
+import { cn } from '@/lib/utils'
 
 type MappedLinkProps<T extends AnyUrl> = {
   [K in keyof Omit<NextLinkProps, keyof React.AnchorHTMLAttributes<HTMLAnchorElement>>]: T extends ExternalUrl
@@ -16,20 +16,23 @@ type MappedLinkProps<T extends AnyUrl> = {
     : NextLinkProps[K]
 }
 
-export interface LinkProps<T extends AnyUrl> extends BaseLinkProps, MappedLinkProps<T> {
+export interface LinkProps<T extends AnyUrl>
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    VariantProps<typeof linkVariants>,
+    MappedLinkProps<T> {
   href: T
   /** @default true */
   progress?: T extends ExternalUrl ? never : boolean | Exclude<ProgressBarProps['variant'], undefined | null>
 }
 
-export const Link = <T extends Routes | ExternalUrl>({ progress, ...props }: LinkProps<T>) => {
-  const { className, onClick, underline, variant, ...nextLinkProps } = props
+export const Link = <T extends Routes | ExternalUrl>({ progress, underline, variant, ...props }: LinkProps<T>) => {
+  const { className, onClick, ...nextLinkProps } = props
 
   const progressBar = useProgressBar()
   const { router } = useNavigation()
 
-  const external = useMemo(() => !props.href.startsWith('/') && !props.href.startsWith('#'), [props.href])
-  const hasProgress = useMemo(() => !external && !progress, [external, progress])
+  const external = useMemo(() => !(props.href.startsWith('/') || props.href.startsWith('#')), [props.href])
+  const hasProgress = useMemo(() => !(external || progress), [external, progress])
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -47,11 +50,11 @@ export const Link = <T extends Routes | ExternalUrl>({ progress, ...props }: Lin
 
       onClick?.(e)
     },
-    [hasProgress, onClick, progressBar, props.href, router, variant],
+    [hasProgress, onClick, progressBar, props.href, router, variant]
   )
 
   return external ? (
-    <BaseLink {...props} />
+    <a className={cn(linkVariants({ variant, underline }), className)} {...props} />
   ) : (
     <NextLink
       className={cn(linkVariants({ variant, underline }), className)}
@@ -60,3 +63,26 @@ export const Link = <T extends Routes | ExternalUrl>({ progress, ...props }: Lin
     />
   )
 }
+
+export const linkVariants = cva('transition-all', {
+  defaultVariants: {
+    variant: null,
+    underline: false,
+  },
+  variants: {
+    variant: {
+      link: 'text-link',
+      primary: 'text-brand hover:text-brand-accent',
+      secondary: 'text-brand-secondary hover:text-brand-secondary-accent',
+      tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',
+      destructive: 'text-destructive hover:text-destructive',
+      success: 'text-success hover:text-success',
+      transparent: 'text-transparent hover:text-foreground',
+      muted: 'text-muted-foreground hover:text-foreground/90',
+    },
+    underline: {
+      false: 'no-underline',
+      true: 'underline-offset-2 hover:underline',
+    },
+  },
+})

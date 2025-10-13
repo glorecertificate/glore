@@ -1,53 +1,53 @@
-import './globals.css'
+import '@/app/globals.css'
 
 import Script from 'next/script'
+import { Suspense, use } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 
-import meta from '@config/metadata'
+import metadata from '@config/metadata'
 import theme from '@config/theme'
-import { getMessages } from '@repo/i18n'
-import { I18nProvider } from '@repo/i18n/provider'
-import { ProgressBarProvider } from '@repo/ui/components/progress-bar'
-import { ThemeProvider } from '@repo/ui/components/theme-provider'
-import { Toaster } from '@repo/ui/components/toaster'
 
-import { NavigationProvider } from '@/components/providers/navigation-provider'
-import { getLocale, getTranslations } from '@/lib/i18n'
-import { createMetadata } from '@/lib/metadata'
-import { Public } from '@/lib/storage'
+import { I18nProvider } from '@/components/providers/i18n-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
+import { ProgressBarProvider } from '@/components/ui/progress-bar'
+import { Toaster } from '@/components/ui/toaster'
+import { intlMetadata } from '@/lib/metadata'
+import { publicAsset } from '@/lib/storage'
 
-export const generateMetadata = createMetadata({
-  description: 'App.description',
-})
+export const generateMetadata = intlMetadata()
 
-export default async ({ children }: LayoutProps<'/'>) => {
+const resolveRootLayoutData = async () => {
   const locale = await getLocale()
-  const messages = await getMessages(locale)
-  const t = await getTranslations('App')
+  const [messages, t] = await Promise.all([getMessages({ locale }), getTranslations('Metadata')])
+
+  return { locale, messages, t }
+}
+
+const RootLayoutContent = ({ children }: LayoutProps<'/'>) => {
+  const { locale, messages, t } = use(resolveRootLayoutData())
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: meta.name,
+    name: metadata.name,
     description: t('description'),
-    image: Public.OpenGraph,
+    image: publicAsset('open-graph.png'),
   }
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <I18nProvider cookie="NEXT_LOCALE" locale={locale} messages={messages}>
+        <I18nProvider locale={locale} messages={messages}>
           <ThemeProvider themes={Object.keys(theme.modes)}>
-            <NavigationProvider>
-              <ProgressBarProvider>
-                {children}
-                <Toaster />
-                <Analytics />
-                <SpeedInsights />
-              </ProgressBarProvider>
-            </NavigationProvider>
+            <ProgressBarProvider>
+              {children}
+              <Toaster />
+              <Analytics />
+              <SpeedInsights />
+            </ProgressBarProvider>
           </ThemeProvider>
         </I18nProvider>
         <Script id="jsonLd" type="application/ld+json">
@@ -57,3 +57,9 @@ export default async ({ children }: LayoutProps<'/'>) => {
     </html>
   )
 }
+
+export default (props: LayoutProps<'/'>) => (
+  <Suspense fallback={null}>
+    <RootLayoutContent {...props} />
+  </Suspense>
+)

@@ -1,41 +1,42 @@
 import { useCallback, useMemo } from 'react'
 
 import { LanguagesIcon, MailIcon, MapPin, PencilIcon, ShieldUserIcon } from 'lucide-react'
+import { useFormatter, useTranslations } from 'next-intl'
 
-import { useFormatter, useLocale, useTranslations } from '@repo/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
+import { type Any } from '@glore/utils/types'
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
-import { type User } from '@/lib/api'
-import { googleMaps } from '@/lib/navigation'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useI18n } from '@/hooks/use-i18n'
+import { type User } from '@/lib/data'
+import { googleMapsUrl } from '@/lib/navigation'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
-  const { locale } = useLocale()
+  const { locale } = useI18n()
   const t = useTranslations()
   const format = useFormatter()
 
   const location = useMemo(() => {
-    if (!user.city && !user.country) return undefined
+    if (!(user.city || user.country)) return
     const locations = []
     if (user.city) locations.push(user.city)
-    if (user.country) locations.push(t.dynamic(`Countries.${user.country}`))
+    if (user.country) locations.push(t(`Countries.${user.country}` as Any))
     return locations.filter(Boolean).join(', ')
   }, [t, user.city, user.country])
 
-  const locationUrl = useMemo(() => {
-    if (!location) return undefined
-    return googleMaps(location)
-  }, [location])
+  const locationUrl = useMemo(() => (location ? googleMapsUrl(location) : undefined), [location])
 
   const languages = useMemo(() => {
-    const langs = user.languages!.map(lang => t.dynamic(`Languages.${lang}`))
-    const list = locale === 'en' ? langs : langs.map(lang => lang.toLowerCase())
-    return t('User.speaks', { languages: format.list(list) })
+    if (!user.languages?.length) return
+    const langs = user.languages.map((lang: string) => t(`Languages.${lang}` as Any))
+    const list = locale === 'en' ? langs : langs.map((lang: string) => lang.toLowerCase())
+    const formatted = String(format.list(list))
+    return t('User.speaks', { languages: formatted })
   }, [format, locale, t, user.languages])
 
   const contactTitle = useMemo(() => {
-    if (!user.firstName) return undefined
+    if (!user.firstName) return
     return t('User.contact', { user: user.firstName })
   }, [t, user.firstName])
 
@@ -45,19 +46,19 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
       const hasValue = Array.isArray(user[key]) ? user[key]?.length > 0 : Boolean(user[key])
       return isVisibleKey && hasValue
     },
-    [hide, user],
+    [hide, user]
   )
 
   return (
     <div className="flex items-start gap-3">
       <Avatar className="size-7 rounded-full object-cover shadow-sm">
         {user.avatarUrl && <AvatarImage alt={user.fullName ?? ''} src={user.avatarUrl} />}
-        <AvatarFallback className="text-xs font-semibold text-muted-foreground">{user.initials}</AvatarFallback>
+        <AvatarFallback className="font-semibold text-muted-foreground text-xs">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1">
-            <h4 className="text-sm leading-none font-semibold">{user.fullName}</h4>
+            <h4 className="font-semibold text-sm leading-none">{user.fullName}</h4>
             {isVisible('isAdmin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
@@ -81,7 +82,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
           </div>
           {isVisible('pronouns') && <small className="text-[11px] text-muted-foreground">{user.pronouns}</small>}
         </div>
-        <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
+        <div className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           {(isVisible('country') || isVisible('city')) && location && (
             <div className="flex items-center gap-1.5">
               <MapPin className="size-3.5" />
@@ -90,14 +91,14 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
                   {location}
                 </Link>
               ) : (
-                <span className="max-w-44 break-words">{location}</span>
+                <span className="wrap-break-word max-w-44">{location}</span>
               )}
             </div>
           )}
-          {isVisible('languages') && (
+          {isVisible('languages') && languages && (
             <div className="flex items-start gap-1.5">
               <LanguagesIcon className="size-3.5 pt-0.5" />
-              <span className="max-w-44 break-words">{languages}</span>
+              <span className="wrap-break-word max-w-44">{languages}</span>
             </div>
           )}
           {isVisible('email') && (

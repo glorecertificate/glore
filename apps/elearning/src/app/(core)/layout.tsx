@@ -1,5 +1,4 @@
-import { ProgressBar } from '@repo/ui/components/progress-bar'
-import { SidebarInset, SidebarProvider } from '@repo/ui/components/sidebar'
+import { Suspense, use } from 'react'
 
 import { AppHeader } from '@/components/layout/app-header'
 import { AppMain } from '@/components/layout/app-main'
@@ -7,44 +6,53 @@ import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
 import { HeaderProvider } from '@/components/providers/header-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
-import { SyncStateProvider } from '@/components/providers/sync-state-provider'
-import { createApi } from '@/lib/api/ssr'
+import { ProgressBar } from '@/components/ui/progress-bar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { getCurrentUser, listCourses } from '@/lib/data/server'
 import { redirect } from '@/lib/navigation'
-import { deleteCookie, getCookie, hasCookie } from '@/lib/storage/ssr'
+import { serverCookies } from '@/lib/storage/server'
 
-export default async ({ children }: LayoutProps<'/'>) => {
-  const api = await createApi()
-  const user = await api.users.getCurrent()
+const resolveCoreLayoutData = async () => {
+  const { get, reset } = await serverCookies()
+  const user = await getCurrentUser()
 
   if (!user) {
-    if (await hasCookie('user')) {
-      await deleteCookie('user')
-    }
+    reset()
     redirect('/login')
   }
 
-  const courses = await api.courses.list()
+  const org = get('org')
+  const sidebarOpen = get('sidebar-open')
 
-  const orgCookie = await getCookie('org')
-  const organization = orgCookie ? user.organizations.find(({ id }) => id === orgCookie) : user.organizations?.[0]
+  const courses = await listCourses()
 
-  const sidebarOpen = (await getCookie('sidebar-open')) ?? true
+  return { courses, org, sidebarOpen, user }
+}
+
+const CoreLayoutContent = ({ children }: LayoutProps<'/'>) => {
+  const { courses, org, sidebarOpen, user } = use(resolveCoreLayoutData())
+
+  const organization = org ? user.organizations.find(({ id }) => id === org) : user.organizations?.[0]
 
   return (
     <SessionProvider courses={courses} organization={organization} user={user}>
-      <SyncStateProvider>
-        <SidebarProvider defaultOpen={sidebarOpen}>
-          <HeaderProvider>
-            <RouteListener />
-            <ProgressBar />
-            <AppSidebar />
-            <SidebarInset>
-              <AppHeader />
-              <AppMain>{children}</AppMain>
-            </SidebarInset>
-          </HeaderProvider>
-        </SidebarProvider>
-      </SyncStateProvider>
+      <SidebarProvider defaultOpen={sidebarOpen}>
+        <HeaderProvider>
+          <RouteListener />
+          <ProgressBar />
+          <AppSidebar />
+          <SidebarInset>
+            <AppHeader />
+            <AppMain>{children}</AppMain>
+          </SidebarInset>
+        </HeaderProvider>
+      </SidebarProvider>
     </SessionProvider>
   )
 }
+
+export default (props: LayoutProps<'/'>) => (
+  <Suspense fallback={null}>
+    <CoreLayoutContent {...props} />
+  </Suspense>
+)

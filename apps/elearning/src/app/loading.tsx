@@ -1,4 +1,4 @@
-import { Loader } from '@repo/ui/icons/loader'
+import { Loader } from '@/components/icons/loader'
 
 export default () => (
   <div className="flex h-full min-h-svh items-center justify-center">

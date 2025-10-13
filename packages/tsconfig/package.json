@@ -1,0 +1,12 @@
+{
+  "name": "@glore/tsconfig",
+  "main": "tsconfig.json",
+  "exports": {
+    ".": "./tsconfig.json",
+    "./*": "./tsconfig.*.json"
+  },
+  "files": [
+    "tsconfig.json",
+    "tsconfig.*.json"
+  ]
+}

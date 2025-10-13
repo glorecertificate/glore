@@ -1,11 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pnpm install --frozen-lockfile --strict-peer-dependencies",
+  "buildCommand": "pnpm build",
   "cleanUrls": true,
+  "framework": "nextjs",
+  "trailingSlash": false,
   "crons": [
     {
       "path": "/api/health",
       "schedule": "0 0 * * *"
     }
-  ],
-  "trailingSlash": false
+  ]
 }

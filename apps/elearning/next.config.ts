@@ -1,29 +1,47 @@
-import '@repo/env/config'
+import { type NextConfig } from 'next'
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 
 import bundleAnalyzer from '@next/bundle-analyzer'
-import { type NextConfig } from 'next'
+import nextIntl from 'next-intl/plugin'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+const I18N_CONFIG = './src/i18n.ts'
+const I18N_MESSAGES = '../../config/translations/en.json'
 
-const isDev = process.env.NODE_ENV === 'development'
-const analyze = process.env.ANALYZE === 'true'
-const tsconfigPath = isDev ? 'tsconfig.json' : 'tsconfig.build.json'
-const remotePatterns = SUPABASE_URL ? [new URL(SUPABASE_URL)] : []
+export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
+  const nextConfig: NextConfig = {
+    ...defaultConfig,
+    cacheComponents: true,
+    experimental: {
+      turbopackFileSystemCacheForDev: true,
+    },
+    images: {
+      remotePatterns: [new URL(process.env.SUPABASE_URL)],
+    },
+    reactStrictMode: true,
+    trailingSlash: false,
+    typedRoutes: true,
+    typescript: {
+      tsconfigPath: phase === PHASE_DEVELOPMENT_SERVER ? 'tsconfig.json' : 'tsconfig.build.json',
+    },
+    webpack: (config, { isServer }) => ({
+      ...config,
+      infrastructureLogging: {
+        level: isServer ? 'info' : 'warn',
+      },
+    }),
+  }
 
-const nextConfig: NextConfig = {
-  experimental: {
-    typedEnv: isDev,
-    useCache: true,
-  },
-  images: {
-    remotePatterns,
-    unoptimized: isDev,
-  },
-  reactStrictMode: true,
-  transpilePackages: ['@repo/i18n', '@repo/ui'],
-  typescript: {
-    tsconfigPath,
-  },
+  const plugins = [
+    bundleAnalyzer({
+      enabled: process.env.ANALYZE === 'true',
+    }),
+    nextIntl({
+      requestConfig: I18N_CONFIG,
+      experimental: {
+        createMessagesDeclaration: I18N_MESSAGES,
+      },
+    }),
+  ]
+
+  return plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)
 }
-
-export default bundleAnalyzer({ enabled: analyze })(nextConfig)

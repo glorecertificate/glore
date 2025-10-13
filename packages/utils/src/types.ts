@@ -1,50 +1,40 @@
 /**
- * Utility to use the any type and avoid linter warnings.
+ * Utility to use the `any` when needed and avoid linter warnings.
  */
+// biome-ignore lint/suspicious/noExplicitAny: allow explicit any
 export type Any = any
 
 /**
- * Type or array of type.
+ * Primitive type.
  */
-export type OrArray<T> = T | T[]
+export type Primitive = string | number | bigint | boolean | null | undefined
 
 /**
  * Enum type with stringified values
  */
-// @ts-ignore-next-line
 export type Enum<T> = T | EnumValue<T>
 
 /**
  * Enum type with stringified keys.
  */
-// @ts-ignore-next-line
+// @ts-expect-error-next-line
 export type EnumKey<T> = T | keyof typeof T
 
 /**
  * Enum type with stringified keys.
  */
-// @ts-ignore-next-line
+// @ts-expect-error-next-line
 export type EnumValue<T> = `${T}`
-
-/**
- * Function with any arguments and return type.
- */
-export type AnyFunction = (...args: any) => any
 
 /**
  * Any object type with string keys.
  */
-export type AnyRecord = Record<AnyKey, any>
-
-/**
- * Object with no properties.
- */
-export type EmptyRecord = Record<string, never>
+export type AnyRecord = Record<AnyKey, Any>
 
 /**
  * Any array type, including nested arrays.
  */
-export type AnyArray = any[] | any[][]
+export type AnyArray = Any[] | Any[][]
 
 /**
  * Any type of object key.
@@ -52,12 +42,17 @@ export type AnyArray = any[] | any[][]
 export type AnyKey = string | number | symbol
 
 /**
- * Boolean value expressed as a string.
+ * Any callable function type.
  */
-export type BooleanString = 'true' | 'false'
+export type AnyFunction = (...args: Any[]) => Any
 
 /**
- * JSON value type.
+ * Type that can be either a value of type T or a Promise resolving to type T.
+ */
+export type MaybePromise<T> = T | Promise<T>
+
+/**
+ * Possible JSON value types.
  */
 export type Json =
   | string
@@ -70,155 +65,16 @@ export type Json =
   | Json[]
 
 /**
- * JSON record type.
- */
-export type JsonRecord = Record<string, Json>
-
-/**
- * Record keys with dot notation.
- */
-export type KeysOf<T> = T extends object
-  ? {
-      [K in keyof T & string]: K | (T[K] extends object ? `${K}.${KeysOf<T[K]>}` : K)
-    }[keyof T & string]
-  : never
-
-/**
- * Record of parameters extracted from segments of a string path.
- *
- * @example
- * ```ts
- * type Params = PathParams<'/users/:id/posts/:postId'> // { id: string; postId: string }
- * ```
- */
-export type PathParams<S extends string> = S extends `${infer _}:${infer Param}/${infer Rest}`
-  ? Record<Param | keyof PathParams<Rest>, string>
-  : S extends `${infer _}:${infer Param}`
-    ? Record<Param, string>
-    : AnyRecord
-
-/**
- * Partial record with non-nullable values.
- */
-export type NonNullablePartial<T> = Partial<{
-  [K in keyof T]: NonNullable<T[K]>
-}>
-
-/**
- * Record with `null` values converted to `undefined`.
- */
-export type NullToUndefined<T> = {
-  [K in keyof T]: null extends T[K] ? NonNullable<T[K]> | undefined : T[K]
-}
-
-/**
- * Type or null type.
- */
-export type Nullable<T> = T | null
-
-/**
- * Primitive type.
- */
-export type Primitive = string | number | bigint | boolean | null | undefined
-
-/**
- * Record with recursive values.
- */
-export interface Recursive<T> {
-  [key: string]: Recursive<T> | T
-}
-
-/**
  * Record with keys converted from snake to camel case.
  *
  * @example
  * ```ts
- * type CamelCasedString = SnakeToCamel<'hello_world'> // 'helloWorld'
+ * type CamelCaseString = SnakeToCamel<'hello_world'> // 'helloWorld'
  * ```
  */
 export type SnakeToCamel<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
   ? `${T}${Capitalize<SnakeToCamel<U>>}`
   : S
-
-/**
- * String with underscores converted to dashes.
- *
- * @example
- * ```ts
- * type KebabCasedString = SnakeToKebab<'hello_world'> // 'hello-world'
- * ```
- */
-export type SnakeToKebab<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
-  ? `${T}-${SnakeToKebab<U>}`
-  : S
-
-/**
- * Record with keys converted from camel to snake case.
- *
- * @example
- * ```ts
- * type SnakeCasedString = CamelToSnake<'helloWorld'> // 'hello_world'
- * ```
- */
-export type CamelToSnake<S extends string | number | symbol> = S extends `${infer T}${infer U}`
-  ? T extends Uppercase<T>
-    ? `${Lowercase<T>}_${CamelToSnake<U>}`
-    : `${T}${CamelToSnake<U>}`
-  : S
-
-/**
- * Record with keys converted to snake case.
- *
- * @example
- * ```ts
- * interface Example {
- *   camelCaseKey: string
- *   anotherKey: number
- * }
- *
- * type SnakeCasedRecord = SnakeCased<Example> // { camel_case_key: string; another_key: number; }
- * ```
- */
-export type SnakeCased<T extends AnyRecord> = {
-  [K in keyof T as K extends string ? CamelToSnake<K> : K]: T[K]
-}
-
-/**
- * Record with keys converted to camel case.
- *
- * @example
- * ```ts
- * interface Example {
- *   snake_case_key: string
- *   another_key: number
- * }
- *
- * type CamelCasedRecord = CamelCased<Example> // { snakeCaseKey: string; anotherKey: number; }
- * ```
- */
-export type CamelCased<T extends AnyRecord> = {
-  [K in keyof T as K extends string ? SnakeToCamel<K> : K]: T[K]
-}
-
-/**
- * String or number type.
- */
-export type StringOrNumber = string | number
-
-/**
- * Boolean type from the string representation of boolean.
- */
-export type StringToBoolean<T> = T extends 'true' | 'false' ? boolean : T
-
-/**
- * String from any type.
- */
-export type ToString<T> = T extends string ? T : string
-
-/**
- * Record without the specified keys.
- */
-export type Without<T, K> = Pick<T, Exclude<keyof T, K>>
 
 /**
  * Email type.
@@ -246,27 +102,6 @@ export type MessageUrl = `message:${string}`
  * Telephone URL type.
  */
 export type TelUrl = `tel:${string}`
-
-/**
- * Dimension record with height and width.
- */
-export interface Dimension {
-  height: number
-  width: number
-}
-
-/**
- * Position record with x and y coordinates.
- */
-export interface Position {
-  x: number
-  y: number
-}
-
-/**
- * Hexadecimal color type.
- */
-export type Hex = `#${string}${string}${string}` | `#${string}${string}${string}${string}${string}${string}`
 
 /**
  * RGB color type.

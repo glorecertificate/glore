@@ -1,284 +1,269 @@
-import { decode, encode } from './encode'
-import { isServer } from './is-server'
+import { type ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+
+import { decodeAsync, encodeAsync } from './encode'
+import { capitalize } from './string'
+import { type Any, type AnyRecord } from './types'
 
 /**
- * Options for settings the HTTP `Set-Cookie` response header, used to send a cookie from the server to the user agent,
- * so that the user agent can send it back to the server later.
- *
- * To send multiple cookies, multiple Set-Cookie headers should be sent in the same response.
- *
- * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie).
+ * Options for defining a cookie store passed to {@link defineCookies}.
  */
-export interface CookieOptions {
+export interface CookiesConfig<T extends AnyRecord> extends CookieOptions {
   /**
-   * Defines the host to which the cookie will be sent, which can only be the current or higher order domain.
-   *
-   * If omitted, it defaults to the host of the current document URL, not including subdomains.
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Set-Cookie#domaindomain-value).
-   *
-   * @default null
+   * Specifies an array of cookie names to be deleted when the `reset` method is called.
    */
-  domain?: string | null
-  /**
-   * Indicates the maximum lifetime of the cookie as an HTTP-date timestamp.
-   *
-   * If not specified, defaults to 30 days from the time the cookie is set.
-   * When set to `null`, the cookie becomes a session cookie and terminates when the client shuts down.
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Reference/Headers/Set-Cookie#expiresdate).
-   *
-   * @default 259200000
-   */
-  expires?: DOMHighResTimeStamp | null
-  /**
-   * Indicates that the cookie should be stored using partitioned storage. If set, the `Secure` directive must also be set.
-   * See [Cookies Having Independent Partitioned State (CHIPS)](https://developer.mozilla.org/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies)
-   * for more details.
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie#partitioned).
-   *
-   * @default false
-   */
-  partitioned?: boolean
-  /**
-   * Indicates the path that must exist in the requested URL for the browser to send the `Cookie` header.
-   *
-   * If omitted, this attribute defaults to the path component of the request URL.
-   * For example, if a cookie is set by a request to https://example.com/docs/HTTP/index.html, the default path will be `/docs/HTTP/`.
-   *
-   * The forward slash character is interpreted as a directory separator, with subdirectories matched as well.
-   * For example, `Path=/docs` will match paths `/docs`, `/docs/`, and `/docs/HTTP/`, while `/`, `/docsets`, `/fr/docs` will not match.
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value).
-   *
-   * @default '/'
-   */
-  path?: string
-  /**
-   * Controls whether or not a cookie is sent with cross-site requests, blocking requests originating from a different site than the site that set the cookie.
-   * This provides some protection against certain cross-site attacks, including [cross-site request forgery (CSRF)](https://developer.mozilla.org/docs/Glossary/CSRF) attacks.
-   *
-   * The possible attribute values are:
-   * - `lax` will send the cookie only for requests originating from the same site that sets the cookie, and for cross-site requests that meet certain criteria.
-   * - `strict` will send the cookie only for requests originating from the same site that sets the cookie.
-   * - `none` will send cookie with both cross-site and same-site requests. The `Secure` attribute must also be set when using this value.
-   *
-   * [MDN Reference](https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value).
-   */
-  sameSite?: CookieSameSite
+  resets?: (keyof T)[]
 }
 
-const COOKIE_OPTIONS = {
-  domain: null,
-  expires: 60 * 60 * 24 * 30 * 1000, // 30 days
-  partitioned: false,
-  path: '/',
-} satisfies CookieOptions
+/**
+ * Options for configuring a cookie.
+ *
+ * @see {@link https://developer.mozilla.org/docs/Web/HTTP/Guides/Cookies|MDN Reference}
+ */
+export interface CookieOptions extends Omit<CookieInit, 'domain' | 'expires' | 'name' | 'value'> {
+  expires?: number | Date
+  domain?: string
+  prefix?: string | false
+}
 
-const COOKIE_OPTIONS_MAP = {
-  domain: 'Domain',
-  expires: 'Expires',
-  partitioned: 'Partitioned',
-  path: 'Path',
-  sameSite: 'SameSite',
-} satisfies Record<keyof CookieOptions, string>
+type NextCookies = () => Promise<ReadonlyRequestCookies>
+
+const createPrefixer =
+  <T>(prefix?: string) =>
+  <K extends keyof T>(key: K, options?: CookieOptions) => {
+    if (options?.prefix === false) return String(key)
+    const cookiePrefix = options?.prefix ?? prefix
+    return cookiePrefix ? `${cookiePrefix}${String(key)}` : String(key)
+  }
+
+const createUnprefixer =
+  <T>(prefix?: string) =>
+  <K extends keyof T>(key: K, options?: CookieOptions) => {
+    if (options?.prefix === false) return String(key)
+    const cookiePrefix = options?.prefix ?? prefix
+    return cookiePrefix ? String(key).replace(String(cookiePrefix), '') : String(key)
+  }
 
 /**
- * Client-side cookie management.
+ * Returns a {@link CookieStore} providing methods to manage cookies in a browser environment.
  */
-export const defineCookies = <T extends Record<string, any>>(cookieOptions: CookieOptions = {}) => ({
-  /**
-   * Deletes the specified cookies.
-   */
-  delete(...cookies: (keyof T)[]) {
-    if (isServer()) return
+export const defineCookies = <T extends AnyRecord>(config: CookiesConfig<T> = {}) => {
+  const { resets, prefix, ...cookieOptions } = config
+  const prefixKey = createPrefixer<T>(prefix || '')
+  const unprefixKey = createUnprefixer<T>(prefix || '')
 
-    for (const cookie of cookies) {
-      if (!this.has(cookie)) return
-      document.cookie = `${String(cookie)}=;`
-    }
-  },
-  /**
-   * Gets a cookie value by its name.
-   */
-  get<C extends keyof T>(cookie: C) {
-    if (isServer()) return undefined
-
-    const decodedCookie = decodeURIComponent(document.cookie)
-    const cookieArray = decodedCookie.split(';')
-
-    for (let name of cookieArray) {
-      while (name.startsWith(' ')) name = name.substring(1)
-
-      if (!name.startsWith(String(cookie))) continue
-
-      const value = name.substring(String(cookie).length, name.length)
-
-      try {
-        return JSON.parse(value) as T[C]
-      } catch {
-        return value as T[C]
+  return {
+    /**
+     * Cookie configuration options.
+     */
+    config,
+    /**
+     * Deletes all cookie data.
+     */
+    clear(options?: CookieOptions) {
+      this.delete(Object.keys(this.getAll(options)) as (keyof T)[], options)
+    },
+    /**
+     * Deletes the specified cookies.
+     */
+    delete(keys: keyof T | (keyof T)[], options?: CookieOptions) {
+      for (const key of Array.isArray(keys) ? keys : [keys]) {
+        if (!this.has(key, options)) return
+        document.cookie = `${prefixKey(key, options)}=;`
       }
-    }
+    },
+    /**
+     * Gets a cookie value by its name.
+     */
+    get<K extends keyof T>(key: K, options?: CookieOptions) {
+      const cookieKey = prefixKey(key, options)
+      const chunks = decodeURIComponent(document.cookie).split(';')
+      let value: Any
 
-    return undefined
-  },
-  /**
-   * Gets all available cookies.
-   */
-  getAll() {
-    if (isServer()) return {}
+      for (let chunk of chunks) {
+        while (chunk.startsWith(' ')) chunk = chunk.substring(1)
+        if (!chunk.startsWith(`${cookieKey}=`)) continue
+        const stringValue = chunk.substring(cookieKey.length + 1, chunk.length)
 
-    const decodedCookie = decodeURIComponent(document.cookie)
-    const cookieArray = decodedCookie.split(';')
-    const cookies: Record<string, string> = {}
-
-    for (let name of cookieArray) {
-      while (name.startsWith(' ')) name = name.substring(1)
-
-      const separatorIndex = name.indexOf('=')
-      if (separatorIndex === -1) continue
-
-      const key = name.substring(0, separatorIndex)
-      const value = name.substring(separatorIndex + 1, name.length)
-
-      try {
-        cookies[key] = JSON.parse(value)
-      } catch {
-        cookies[key] = value ?? undefined
+        try {
+          value = JSON.parse(stringValue)
+        } catch {
+          value = stringValue
+        }
+        break
       }
-    }
 
-    return cookies as Partial<T>
-  },
-  /**
-   * Gets and decodes a cookie value by its name.
-   */
-  getEncoded<C extends keyof T>(cookie: C) {
-    if (isServer()) return undefined
+      return value as T[K]
+    },
+    /**
+     * Gets all available cookies.
+     */
+    getAll(options?: CookieOptions) {
+      const cookies: Record<string, string> = {}
+      const chunks = decodeURIComponent(document.cookie).split(';')
 
-    const value = this.get(cookie)
-    return decode(value)
-  },
-  /**
-   * Checks if a cookie exists.
-   */
-  has(cookie: keyof T) {
-    if (isServer()) return false
+      for (let chunk of chunks) {
+        while (chunk.startsWith(' ')) chunk = chunk.substring(1)
+        const index = chunk.indexOf('=')
+        if (index === -1) continue
+        const name = chunk.substring(0, index)
+        const key = unprefixKey(name as keyof T, options)
+        const value = chunk.substring(index + 1, chunk.length)
 
-    return document.cookie.split(';').some(key => key.trim().startsWith(`${String(cookie)}=`))
-  },
-  /**
-   * Sets a cookie with the specified name, value and options.
-   */
-  set<C extends keyof T>(cookie: C, value: T[C], options?: CookieOptions) {
-    if (isServer()) return
-
-    const params = { ...COOKIE_OPTIONS, ...cookieOptions, ...options }
-    const args = [`${String(cookie)}=${JSON.stringify(value)}`]
-
-    for (const [key, value] of Object.entries(params)) {
-      if (!value) continue
-      const cookieKey = COOKIE_OPTIONS_MAP[key as keyof CookieOptions]
-      if (!cookieKey) continue
-      args.push(`${cookieKey}=${value}`)
-    }
-
-    document.cookie = args.join('; ')
-  },
-  /**
-   * Encodes and sets a cookie with the specified name, value and options.
-   */
-  setEncoded<C extends keyof T>(cookie: C, value: T[C], options?: CookieOptions) {
-    if (isServer()) return
-
-    this.set(cookie, encode(value) as T[C], options)
-  },
-})
-
-export const defineAsyncCookies = <T extends Record<string, string> = Record<string, string>>(
-  cookieOptions: CookieOptions = {},
-) => ({
-  /**
-   * Deletes the specified cookies.
-   */
-  async delete(...cookies: (keyof T)[]) {
-    if (isServer()) return
-
-    for (const cookie of cookies) {
-      if (!this.has(cookie)) return
-      await cookieStore.delete(String(cookie))
-    }
-  },
-  /**
-   * Gets a cookie value by its name.
-   */
-  async get<C extends keyof T>(cookie: C) {
-    if (isServer()) return undefined
-
-    const { value } = (await cookieStore.get(String(cookie))) ?? {}
-    if (!value) return undefined
-
-    try {
-      return JSON.parse(value) as T[C]
-    } catch {
-      return value as T[C]
-    }
-  },
-  /**
-   * Gets all available cookies.
-   */
-  async getAll() {
-    if (isServer()) return {} as Partial<T>
-
-    return Object.entries(await cookieStore.getAll()).reduce((all, [k, { value }]) => {
-      if (!value) return { ...all, [k]: undefined }
-
-      try {
-        return { ...all, [k]: JSON.parse(value) }
-      } catch {
-        return { ...all, [k]: value }
+        try {
+          cookies[key] = JSON.parse(value)
+        } catch {
+          cookies[key] = value ?? undefined
+        }
       }
-    }, {} as Partial<T>)
-  },
-  /**
-   * Gets and decodes a cookie value by its name.
-   */
-  async getEncoded<C extends keyof T>(cookie: C) {
-    if (isServer()) return undefined
+      return cookies as Partial<T>
+    },
+    /**
+     * Gets and decodes a cookie value by its name.
+     */
+    getEncoded<K extends keyof T>(key: K, options?: CookieOptions) {
+      const value = this.get(key, options)
+      const encodeValue = typeof value === 'string' ? value : JSON.stringify(value)
+      return atob(encodeValue) as T[K]
+    },
+    /**
+     * Checks if a cookie exists.
+     */
+    has(key: keyof T, options?: CookieOptions) {
+      return document.cookie.split(';').some(k => k.trim().startsWith(`${prefixKey(key, options)}=`))
+    },
+    /**
+     * Deletes the cookies specified by the `resets` option.
+     */
+    reset(options?: CookieOptions) {
+      if (!resets?.length) return
+      this.delete(resets, options)
+    },
+    /**
+     * Sets a cookie with the specified name, value and options.
+     */
+    set<K extends keyof T>(key: K, value: T[K], options?: CookieOptions) {
+      const { prefix, ...params } = { ...cookieOptions, ...options }
+      const serializedValue = typeof value === 'string' ? value : JSON.stringify(value)
+      const args = [`${prefixKey(key, { prefix })}=${serializedValue}`]
 
-    const value = await this.get(cookie)
-    return decode(value)
-  },
-  /**
-   * Checks if a cookie exists.
-   */
-  has(cookie: keyof T) {
-    if (isServer()) return false
+      for (const [key, value] of Object.entries(params)) {
+        if (!value) continue
+        args.push(`${capitalize(key)}=${String(value)}`)
+      }
+      document.cookie = args.join('; ')
+    },
+    /**
+     * Encodes and sets a cookie with the specified name, value and options.
+     */
+    setEncoded<K extends keyof T>(key: K, value: T[K], options?: CookieOptions) {
+      const encodeValue = typeof value === 'string' ? value : JSON.stringify(value)
+      this.set(key, btoa(encodeValue) as T[keyof T], options)
+    },
+  }
+}
 
-    return document.cookie.split(';').some(key => key.trim().startsWith(`${String(cookie)}=`))
-  },
-  /**
-   * Sets a cookie with the specified name, value and options.
-   */
-  async set<C extends keyof T>(cookie: C, value: T[C], options?: CookieOptions) {
-    if (isServer()) return
+/**
+ * Returns a set of utility functions to manage cookies safely in a server-side context.
+ */
+export const defineServerCookies = <T extends AnyRecord>(cookies: NextCookies, config: CookiesConfig<T> = {}) => {
+  const { resets, prefix, ...cookieOptions } = config ?? {}
+  const prefixKey = createPrefixer<T>(prefix || '')
+  const unprefixKey = createUnprefixer<T>(prefix || '')
 
-    const params = { ...COOKIE_OPTIONS, ...cookieOptions, ...options }
+  return async () => {
+    const store = await cookies()
 
-    cookieStore.set({
-      name: String(cookie),
-      value: JSON.stringify(value),
-      ...params,
-    })
-  },
-  /**
-   * Encodes and sets a cookie with the specified name, value and options.
-   */
-  async setEncoded<C extends keyof T>(cookie: C, value: T[C], options?: CookieOptions) {
-    if (isServer()) return
+    return {
+      /**
+       * Cookie configuration options.
+       */
+      config,
+      /**
+       * Deletes all cookie data.
+       */
+      clear(options?: CookieOptions) {
+        this.delete(Object.keys(this.getAll(options)) as (keyof T)[], options)
+      },
+      delete(keys: keyof T | (keyof T)[], options?: CookieOptions) {
+        const names = (Array.isArray(keys) ? keys : [keys]).map(key => prefixKey(key, options))
+        for (const name of names) {
+          store.delete({ name, ...options })
+        }
+      },
+      /**
+       * Gets a cookie value by its name.
+       */
+      get<K extends keyof T>(key: K, options?: CookieOptions) {
+        const value = store.get(prefixKey(key, options))?.value
+        try {
+          return JSON.parse(String(value)) as T[K]
+        } catch {
+          return value as T[K] | undefined
+        }
+      },
+      /**
+       * Gets all available cookies.
+       */
+      getAll(options?: CookieOptions) {
+        const cookiesRecord = {} as T
 
-    await this.set(cookie, encode(value) as T[C], options)
-  },
-})
+        for (const { name, value } of store.getAll()) {
+          const key = unprefixKey(name, options) as keyof T
+
+          try {
+            cookiesRecord[key] = JSON.parse(String(value))
+          } catch {
+            cookiesRecord[key] = value as T[typeof key]
+          }
+        }
+        return cookiesRecord
+      },
+      /**
+       * Gets and decodes a cookie value by its name.
+       */
+      async getEncoded<K extends keyof T>(key: K, options?: CookieOptions) {
+        const encoded = store.get(prefixKey(key, options))?.value
+        const value = encoded ? await decodeAsync(encoded) : undefined
+        try {
+          return JSON.parse(String(value)) as T[K]
+        } catch {
+          return value as T[K] | undefined
+        }
+      },
+      /**
+       * Checks if a cookie exists.
+       */
+      has(key: keyof T, options: CookieOptions) {
+        return store.has(prefixKey(key, options))
+      },
+      /**
+       * Deletes the cookies specified by the `resets` option configuration.
+       */
+      reset(options?: CookieOptions) {
+        if (!resets) return
+        for (const name of resets) {
+          const key = prefixKey(name, options)
+          store.delete(key)
+        }
+      },
+      /**
+       * Sets a cookie with the specified name, value and options.
+       */
+      set<K extends keyof T>(key: K, value: T[K], options?: CookieOptions) {
+        store.set({ name: prefixKey(key, options), value: String(value), ...cookieOptions, ...options })
+      },
+      /**
+       * Encodes and sets a cookie with the specified name, value and options.
+       */
+      async setEncoded<K extends keyof T>(key: K, value: T[K], options?: CookieOptions) {
+        const encoded = typeof value === 'string' ? value : JSON.stringify(value)
+        store.set({
+          name: prefixKey(key, options),
+          value: String(await encodeAsync(encoded)),
+          ...cookieOptions,
+          ...options,
+        })
+      },
+    }
+  }
+}

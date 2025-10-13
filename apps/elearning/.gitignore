@@ -1,9 +1,6 @@
-/.next/
-/supabase/.branches/
-/supabase/.temp/
-/supabase/types.ts
-/*.d.ts
-.env*
+.next/
+.env
+.env.*
 !.env.example
+*.d.ts
 *.tsbuildinfo
-

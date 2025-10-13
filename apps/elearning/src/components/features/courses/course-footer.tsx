@@ -3,10 +3,13 @@
 import { useMemo } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { ConfettiButton } from '@repo/ui/components/confetti'
+import config from '@config/app'
+import { type Enum } from '@glore/utils/types'
+
+import { Button } from '@/components/ui/button'
+import { ConfettiButton } from '@/components/ui/confetti'
 import {
   Dialog,
   DialogClose,
@@ -15,16 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { cn } from '@repo/ui/utils'
-import { type Enum } from '@repo/utils/types'
-
+} from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
-import { useConfig } from '@/hooks/use-config'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
 import { useSession } from '@/hooks/use-session'
-import { type CourseProgress, type Lesson } from '@/lib/api'
+import { type CourseProgress, type Lesson } from '@/lib/data'
+import { cn } from '@/lib/utils'
 
 export const CourseFooter = ({
   lessons,
@@ -37,7 +37,6 @@ export const CourseFooter = ({
   onPrevious: () => void
   status?: Enum<CourseProgress>
 }) => {
-  const { minSkills } = useConfig('app')
   const { step } = useCourse()
   const { courses } = useSession()
   const t = useTranslations('Courses')
@@ -56,7 +55,7 @@ export const CourseFooter = ({
   }, [lesson])
 
   const nextTooltip = useMemo(() => {
-    if (!lesson) return undefined
+    if (!lesson) return
     if (!canProceed) return t('replyToProceed', { type: lesson.type })
   }, [canProceed, lesson, t])
 
@@ -64,17 +63,17 @@ export const CourseFooter = ({
 
   const completedTitle = useMemo(
     () => (completedCount === courses.length ? t('completedTitleAll') : t('completedTitle', { count: completedCount })),
-    [completedCount, courses.length, t],
+    [completedCount, courses.length, t]
   )
 
   const completedMessage = useMemo(
     () =>
       completedCount < 3
         ? t('completedMessage')
-        : completedCount === minSkills
+        : completedCount === config.minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
-    [completedCount, minSkills, t],
+    [completedCount, t]
   )
 
   return (
@@ -105,7 +104,7 @@ export const CourseFooter = ({
             </DialogTrigger>
             <DialogContent className="px-8 sm:max-w-xl">
               <DialogHeader>
-                <DialogTitle className="mt-3 flex gap-2 text-lg font-medium">
+                <DialogTitle className="mt-3 flex gap-2 font-medium text-lg">
                   {completedTitle}
                   {' 🎉'}
                 </DialogTitle>
@@ -120,12 +119,12 @@ export const CourseFooter = ({
                     <Link href="/courses">{t('backTo')}</Link>
                   </Button>
                 )}
-                {completedCount === minSkills && (
+                {completedCount === config.minSkills && (
                   <Button asChild variant="brand-secondary">
                     <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 )}
-                {completedCount > minSkills && (
+                {completedCount > config.minSkills && (
                   <Button asChild variant="outline">
                     <Link href="/certificates">{t('goToCertificate')}</Link>
                   </Button>

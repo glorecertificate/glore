@@ -1,17 +1,21 @@
 import { notFound } from 'next/navigation'
+import { Suspense, use } from 'react'
 
-import { createApi } from '@/lib/api/ssr'
-import { createMetadata } from '@/lib/metadata'
+import { getCurrentUser } from '@/lib/data/server'
+import { intlMetadata } from '@/lib/metadata'
 
-export const metadata = createMetadata({
-  title: 'Navigation.admin',
+export const generateMetadata = intlMetadata({
+  title: 'admin',
 })
 
-export default async ({ children }: LayoutProps<'/admin'>) => {
-  const api = await createApi()
-  const user = await api.users.getCurrent()
-
+const AdminLayoutContent = ({ children }: LayoutProps<'/admin'>) => {
+  const user = use(getCurrentUser())
   if (!user.isAdmin) return notFound()
-
   return children
 }
+
+export default (props: LayoutProps<'/admin'>) => (
+  <Suspense fallback={null}>
+    <AdminLayoutContent {...props} />
+  </Suspense>
+)

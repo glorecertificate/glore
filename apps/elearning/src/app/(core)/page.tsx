@@ -2,13 +2,9 @@
 
 import { useCallback, useEffect } from 'react'
 
-import { confetti } from '@repo/ui/components/confetti'
-
-import { useNavigation } from '@/hooks/use-navigation'
+import { confetti } from '@/components/ui/confetti'
 
 export default () => {
-  const { setUiPathname } = useNavigation()
-
   const fireConfetti = useCallback(
     async () =>
       await confetti({
@@ -17,13 +13,13 @@ export default () => {
         origin: { y: 0.6 },
         colors: ['#ff0', '#f00', '#0f0', '#00f'],
       }),
-    [],
+    []
   )
 
+  // biome-ignore lint: fire once
   useEffect(() => {
     void fireConfetti()
-    setUiPathname('/')
-  }, [fireConfetti, setUiPathname])
+  }, [])
 
   return <>{'Welcome!'}</>
 }

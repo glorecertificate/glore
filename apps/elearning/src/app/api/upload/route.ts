@@ -1,5 +1,15 @@
-import { createRouteHandler } from 'uploadthing/next'
+import { createRouteHandler, createUploadthing } from 'uploadthing/next'
 
-import { fileRouter } from '@/lib/storage'
-
-export const { GET, POST } = createRouteHandler({ router: fileRouter })
+export const { GET, POST } = createRouteHandler({
+  router: {
+    editorUploader: createUploadthing()(['image', 'text', 'blob', 'pdf', 'video', 'audio'])
+      .middleware(() => ({}))
+      .onUploadComplete(({ file }) => ({
+        key: file.key,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        url: file.ufsUrl,
+      })),
+  },
+})

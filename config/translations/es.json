@@ -1,17 +1,37 @@
 {
-  "App": {
-    "description": "GloRe es una red abierta que tiene como objetivo ampliar su audiencia tanto de voluntarios como de ONG de todo el mundo para hacer que los certificados estén disponibles para todos.",
-    "pwaDescription": "Instala GloRe en tu dispositivo para acceder a los cursos, recibir notificaciones y gestionar tus certificados offline."
-  },
   "Email": {
-    "recovery": {
-      "subject": "Restablece tu contraseña de GloRe",
+    "common": {
+      "address": "Associazione articular, Via Giovanola 25/C, 20139 Milano (MI), Italia",
+      "app": "Glore",
+      "contactUs": "Contáctenos",
+      "copyright": "© {Year} Associazione Joint. \nReservados todos los derechos.",
+      "homepage": "Página principal",
+      "outro": "Gracias,",
+      "signature": "El equipo de Glore",
       "greeting": "Hola,",
-      "greetingUser": "Hola {user},",
-      "intro": "Recientemente solicitaste restablecer la contraseña de tu cuenta. Haz clic en el botón de abajo para restablecerla.",
+      "greetingUser": "Hola {usuario},"
+    },
+    "auth/invite": {
+      "button": "Aceptar invitación",
+      "buttonInstruction": "Haga clic en el botón a continuación para aceptar la invitación y configurar su cuenta:",
+      "footer": "Estás recibiendo este correo electrónico porque has sido invitado a unirte a GloRe. \nSi no esperaba esta invitación, ignore este correo electrónico o <emailLink>háganoslo saber</emailLink>.",
+      "instructions": "Este enlace de invitación es válido durante las próximas 24 horas.",
+      "intro": "Te han invitado a unirte a la plataforma GloRe como miembro del equipo.",
+      "manualLink": "Si el botón anterior no funciona, abra el siguiente enlace en su navegador:",
+      "preview": "Te han invitado a unirte a la plataforma GloRe como miembro del equipo. \nHaga clic en el enlace de este correo electrónico para aceptar la invitación y configurar su cuenta.",
+      "subject": "Has sido invitado a unirte a GloRe"
+    },
+    "auth/recovery": {
       "button": "Restablece tu contraseña",
-      "instruction": "Si no solicitaste un restablecimiento de contraseña, por favor ignora este correo electrónico o responde para hacérnoslo saber.",
-      "outro": "Gracias,\nEl equipo"
+      "buttonInstruction": "Haga clic en el botón a continuación para restablecerlo:",
+      "footer": "Está recibiendo este correo electrónico porque solicitó restablecer la contraseña de su cuenta GloRe. \nSi no lo solicitó, ignore este correo electrónico o <emailLink>háganoslo saber</emailLink>.",
+      "greeting": "Hola,",
+      "greetingUser": "Hola {usuario},",
+      "instructions": "Este enlace para restablecer contraseña es válido durante las próximas 24 horas.",
+      "intro": "Recientemente solicitó restablecer la contraseña de su cuenta.",
+      "manualLink": "Si el botón anterior no funciona, abra el siguiente enlace en su navegador:",
+      "preview": "Recientemente solicitó restablecer la contraseña de su cuenta GloRe. \nPara completar este proceso, siga el enlace seguro proporcionado en este correo electrónico para crear una nueva contraseña y recuperar el acceso a su cuenta.",
+      "subject": "Restablece tu contraseña de GloRe"
     }
   },
   "Errors": {
@@ -104,7 +124,11 @@
     "accept": "Aceptar",
     "invalidUrl": "URL no válida",
     "accessApp": "Accedes a GloRe",
-    "openDefaultEmailClient": "Abra su client email predeterminado"
+    "openDefaultEmailClient": "Abra su client email predeterminado",
+    "archive": "Archivo",
+    "continue": "Continuar",
+    "delete": "Borrar",
+    "unarchive": "Desarchivar"
   },
   "Auth": {
     "loginTitle": "Únete a el GloRe Network",
@@ -114,7 +138,7 @@
     "passwordRequestMessage": "Ingrese su correo electrónico o nombre de usuario para recibir un enlace de restablecimiento de contraseña.",
     "passwordRequestMetaTitle": "Restableces contraseña",
     "emailSentTitle": "Te hemos enviado una email!",
-    "emailSentMessage": "Abre tu correo electrónico {email} para obtener el enlace de restablecimiento de contraseña. Si no lo ves, revisa tu carpeta de spam o inténtalo de nuevo.",
+    "emailSentMessage": "Abre tu correo electrónico <email></email> para obtener el enlace de restablecimiento de contraseña. Si no lo ves, revisa tu carpeta de spam o inténtalo de nuevo.",
     "emailSentMetaTitle": "Revisa tu correo electrónico",
     "passwordResetTitle": "Restableces tu contraseña",
     "passwordResetMessage": "Ingrese una nueva contraseña para su cuenta.",
@@ -160,7 +184,8 @@
     "goToLogin": "Ir a iniciar sesión",
     "passwordRequirements": "Debe contener una letra minúscula y en mayúscula, un número y un símbolo",
     "hidePassword": "Ocultas contraseña",
-    "showPassword": "Mostras contraseña"
+    "showPassword": "Mostras contraseña",
+    "passwordSameAsOld": "La nueva contraseña no puede ser la misma que la anterior."
   },
   "Users": {
     "role": "{role, select, representative {Representante} tutor {Tutor} volunteer {Voluntario} learner {Alumno} other {}}"
@@ -344,7 +369,35 @@
     "infoSettingsDescription": "Información que debe traducirse y localizarse",
     "saveDraft": "Guardar draft",
     "noDescription": "No hay descripción disponible.",
-    "previewDraftIn": "Ver draft {lang}"
+    "previewDraftIn": "Ver draft {lang}",
+    "confirmArchiveMessage": "Archivar este curso lo eliminará de la lista de cursos activos. \nEncontrará el curso en la sección archivado, donde podrá restaurarlo más tarde si es necesario.",
+    "confirmArchiveTitle": "¿Estás seguro de que deseas archivar este curso?",
+    "confirmDeleteMessage": "La eliminación de este curso es permanente y no se puede deshacer. \nTodos los datos asociados se perderán.",
+    "confirmDeleteTitle": "¿Estás seguro de que deseas eliminar este curso?",
+    "confirmUnarchiveMessage": "Al desarchivar este curso, volverá a estar visible en la lista de cursos activos.",
+    "confirmUnarchiveTitle": "¿Estás seguro de que deseas desarchivar este curso?",
+    "courseArchived": "Curso archivado exitosamente",
+    "courseArchivedError": "No se pudo archivar el curso, inténtelo de nuevo",
+    "courseCreated": "Curso creado exitosamente",
+    "courseCreationFailed": "No se pudo crear el curso",
+    "courseDeleted": "Curso eliminado exitosamente",
+    "courseDeletedError": "No se pudo eliminar el curso, inténtelo nuevamente",
+    "courseSlugTaken": "Este slug de URL ya está en uso. \nPor favor elige otro.",
+    "courseUnarchived": "Curso desarchivado exitosamente",
+    "createCourse": "Crear curso",
+    "defaultTitle": "Curso sin título",
+    "enterCourseSlug": "Por favor ingrese una URL",
+    "failedToLoadSkillGroups": "No se pudieron cargar los grupos de habilidades",
+    "invalidSlugFormat": "Formato de slug no válido. \nSólo se permiten letras minúsculas, números y guiones.",
+    "loading": "Cargando...",
+    "newCourseDescription": "Complete la información básica para crear un nuevo curso. \nPuedes agregar contenido y traducciones más tarde.",
+    "publishIn": "Publicar en...",
+    "publishInLanguage": "Publicar en {lang}",
+    "selectCourseType": "Por favor seleccione un tipo de curso",
+    "selectSkillGroup": "Seleccione un grupo de habilidades",
+    "skillGroup": "grupo de habilidades",
+    "skillGroupDescription": "Elija el grupo de habilidades al que pertenece este curso.",
+    "unpublishFromLanguage": "Despublicar en {lang}"
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",
@@ -371,7 +424,49 @@
     "cantRequest": "Todavía no puede solicitar un certificado"
   },
   "Settings": {
-    "title": "Ajustes"
+    "title": "Configuración",
+    "description": "Administra tu información de perfil y preferencias",
+    "profile": "Perfil",
+    "personalInfo": "Información personal",
+    "preferences": "Preferencias",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "birthday": "Fecha de nacimiento",
+    "sex": "Sexo",
+    "pronouns": "Pronombres",
+    "bio": "Biografía",
+    "location": "Ubicación",
+    "city": "Ciudad",
+    "country": "País",
+    "languages": "Idiomas",
+    "selectLanguages": "Selecciona los idiomas que hablas",
+    "locale": "Idioma preferido",
+    "selectLocale": "Selecciona tu idioma preferido",
+    "avatarUrl": "Foto de perfil",
+    "updateProfile": "Actualizar perfil",
+    "updatingProfile": "Actualizando...",
+    "profileUpdated": "Perfil actualizado con éxito",
+    "profileUpdateError": "Error al actualizar el perfil",
+    "cancel": "Cancelar",
+    "saveChanges": "Guardar cambios",
+    "firstNamePlaceholder": "Ingresa tu nombre",
+    "lastNamePlaceholder": "Ingresa tu apellido",
+    "usernamePlaceholder": "Elige un nombre de usuario",
+    "phonePlaceholder": "Ingresa tu número de teléfono",
+    "bioPlaceholder": "Cuéntanos sobre ti",
+    "cityPlaceholder": "Ingresa tu ciudad",
+    "countryPlaceholder": "Selecciona tu país",
+    "pronounsPlaceholder": "ej. ella, él, elle",
+    "usernameInvalid": "El nombre de usuario debe tener al menos 3 caracteres",
+    "usernameRequired": "El nombre de usuario es obligatorio",
+    "female": "Femenino",
+    "male": "Masculino",
+    "nonBinary": "No binario",
+    "unspecified": "Prefiero no decir",
+    "selectSex": "Selecciona tu sexo"
   },
   "Languages": {
     "en": "Inglés",
@@ -392,11 +487,11 @@
     "editor": "Utente editor"
   },
   "Editor": {
-    "undo": "Revertir",
-    "export": "Exportar",
-    "exportHtml": "Exportar como HTML",
+    "common": {
+      "url": "URL",
+      "invalidUrl": "Invalid URL"
+    },
     "blocks": {
-      "aiCommands": "Comandos AI",
       "bold": "Negrita",
       "italic": "Cursiva",
       "underline": "Subrayado",
@@ -471,7 +566,8 @@
       "advancedBlocks": "Bloques avanzados",
       "tableBackgroundColor": "Color de fondo",
       "tableCellBorders": "Bordes de la celda",
-      "tableDragColumn": "Arrastrar para mover la columna"
+      "tableDragColumn": "Arrastrar para mover la columna",
+      "aiCommands": "Comandos de IA"
     },
     "placeholders": {
       "content": "Comience a escribir, pulsa espacio para la asistencia de IA o '/' para comandos...",
@@ -487,6 +583,9 @@
       "editorReadonly": "No hay contenido para visualizar."
     },
     "actions": {
+      "undo": "Revertir",
+      "export": "Exportar",
+      "exportHtml": "Exportar como HTML",
       "save": "Guardar",
       "cancel": "Cancelar",
       "insert": "Insertar",
@@ -712,6 +811,41 @@
       "viewing": "Avance"
     }
   },
+  "Admin": {
+    "team": {
+      "title": "Gestión de Equipo",
+      "addUser": "Agregar Usuario",
+      "export": "Exportar",
+      "searchPlaceholder": "Buscar usuarios...",
+      "filterRole": "Rol",
+      "filterByRole": "Filtrar por Rol",
+      "clearFilters": "Limpiar Filtros",
+      "tableHeaderName": "Nombre",
+      "tableHeaderEmail": "Email",
+      "tableHeaderRole": "Rol",
+      "tableHeaderJoined": "Se unió",
+      "loading": "Cargando...",
+      "noUsers": "No se encontraron usuarios.",
+      "viewDetails": "Ver Detalles",
+      "editUser": "Editar Usuario",
+      "deleteUser": "Eliminar Usuario",
+      "dialogTitle": "Invitar Miembro del Equipo",
+      "dialogDescription": "Enviar una invitación para unirse a la plataforma GloRe. El usuario recibirá un correo electrónico para configurar su cuenta.",
+      "emailLabel": "Email",
+      "roleLabel": "Rol",
+      "selectRole": "Seleccionar un rol",
+      "roleAdmin": "Administrador",
+      "roleEditor": "Editor",
+      "roleUser": "Usuario",
+      "cancel": "Cancelar",
+      "inviteUser": "Enviar Invitación",
+      "inviting": "Enviando...",
+      "inviteSuccess": "¡Invitación enviada con éxito!",
+      "errorLoading": "Error al cargar los miembros del equipo",
+      "errorInviting": "Error al enviar la invitación",
+      "errorInvalidInput": "Por favor proporcione un email y rol válidos"
+    }
+  },
   "Countries": {
     "ar": "Argentina",
     "au": "Australia",
@@ -730,5 +864,11 @@
     "uk": "Reino Unido",
     "us": "Estados Unidos",
     "za": "Sudáfrica"
+  },
+  "Metadata": {
+    "description": "GloRe es una red abierta que pretende ampliar su audiencia tanto de voluntarios como de ONG de todo el mundo para poner los certificados a disposición de todo el mundo.",
+    "keywords": "GloRe, voluntariado, red global, ONG, certificado, habilidades blandas, cursos, aprendizaje, comunidad",
+    "pwaDescription": "Instale GloRe en su dispositivo para acceder a cursos, recibir notificaciones y administrar sus certificados sin conexión.",
+    "title": "GloRe - Red Mundial de Voluntariado"
   }
 }

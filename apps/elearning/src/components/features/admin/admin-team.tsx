@@ -1,10 +1,14 @@
-import { useState } from 'react'
+'use client'
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Download, Filter, MoreHorizontal, Search, UserPlus } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { Button } from '@repo/ui/components/button'
-import { Checkbox } from '@repo/ui/components/checkbox'
+import { Loader } from '@/components/icons/loader'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Dialog,
   DialogContent,
@@ -12,7 +16,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@repo/ui/components/dialog'
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,150 +24,139 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@repo/ui/components/select'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/components/table'
-
-const staticUsers = [
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    role: 'Organization Admin',
-    status: 'Active',
-    region: 'Europe',
-    joined: '2025-06-18',
-  },
-  {
-    id: '3',
-    name: 'Robert Johnson',
-    email: 'robert@example.com',
-    role: 'Volunteer',
-    status: 'Inactive',
-    region: 'Asia',
-    joined: '2025-04-22',
-  },
-  {
-    id: '4',
-    name: 'Emily Davis',
-    email: 'emily@example.com',
-    role: 'Admin',
-    status: 'Active',
-    region: 'North America',
-    joined: '2025-07-30',
-  },
-  {
-    id: '5',
-    name: 'Michael Wilson',
-    email: 'michael@example.com',
-    role: 'Volunteer',
-    status: 'Active',
-    region: 'South America',
-    joined: '2025-08-05',
-  },
-  {
-    id: '6',
-    name: 'Sarah Brown',
-    email: 'sarah@example.com',
-    role: 'Organization Admin',
-    status: 'Active',
-    region: 'Europe',
-    joined: '2025-09-14',
-  },
-  {
-    id: '7',
-    name: 'David Miller',
-    email: 'david@example.com',
-    role: 'Volunteer',
-    status: 'Pending',
-    region: 'Africa',
-    joined: '2025-10-02',
-  },
-  {
-    id: '8',
-    name: 'Lisa Taylor',
-    email: 'lisa@example.com',
-    role: 'Volunteer',
-    status: 'Active',
-    region: 'Oceania',
-    joined: '2025-11-19',
-  },
-  {
-    id: '9',
-    name: 'John Doe',
-    email: 'john@example.com',
-    role: 'Volunteer',
-    status: 'Active',
-    region: 'North America',
-    joined: '2025-05-12',
-  },
-].reverse()
-
-const newUser = {
-  id: '10',
-  name: 'Editor User',
-  email: 'editor@glorecertificate.net',
-  role: 'Editor',
-  status: 'Active',
-  region: '',
-  joined: '2025-06-26',
-}
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { getTeamMembers, type User } from '@/lib/data'
 
 export const AdminTeam = () => {
+  const t = useTranslations('Admin.team')
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string | undefined>()
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>()
-  const [selectedRegion, setSelectedRegion] = useState<string | undefined>()
-  const [users, setUsers] = useState(staticUsers)
+  const [users, setUsers] = useState<User[]>([])
+  const [loading, setLoading] = useState(true)
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState<'admin' | 'editor'>('editor')
+  const [submitting, setSubmitting] = useState(false)
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const loadTeamMembers = useCallback(async () => {
+    const users = await getTeamMembers()
+    setUsers(users)
+    setLoading(false)
+  }, [])
 
-    const matchesRole = !selectedRole || user.role === selectedRole
-    const matchesStatus = !selectedStatus || user.status === selectedStatus
-    const matchesRegion = !selectedRegion || user.region === selectedRegion
+  useEffect(() => void loadTeamMembers(), [loadTeamMembers])
 
-    return matchesSearch && matchesRole && matchesStatus && matchesRegion
-  })
+  const inviteTeamMember = useCallback(async (email: string, role: 'admin' | 'editor') => {
+    const response = await fetch('/api/admin/team', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        role,
+        redirectTo: `${window.location.origin}/welcome`,
+      }),
+    })
 
-  const clearFilters = () => {
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Failed to invite user')
+    }
+
+    const data = await response.json()
+    return data.user
+  }, [])
+
+  const filteredUsers = useMemo(
+    () =>
+      users.filter(user => {
+        const matchesSearch =
+          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
+
+        const userRole = user.isAdmin ? 'admin' : user.isEditor ? 'editor' : null
+        const matchesRole = !selectedRole || userRole === selectedRole
+
+        return matchesSearch && matchesRole
+      }),
+    [users, searchTerm, selectedRole]
+  )
+
+  const clearFilters = useCallback(() => {
     setSelectedRole(undefined)
-    setSelectedStatus(undefined)
-    setSelectedRegion(undefined)
-  }
+  }, [])
 
-  const formatDate = (dateString: string) => {
+  const formatDate = useCallback((dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     }).format(date)
-  }
+  }, [])
 
-  const _onAddUser = () => {
-    setUsers(prev => [newUser, ...prev])
-    setIsAddUserOpen(false)
-    toast.success('User added successfully!')
-  }
+  const getDisplayName = useCallback((user: User) => {
+    if (user.firstName && user.lastName) {
+      return `${user.firstName} ${user.lastName}`
+    }
+    if (user.firstName) return user.firstName
+    if (user.username) return `@${user.username}`
+    return user.email
+  }, [])
+
+  const getRoleLabel = useCallback(
+    (user: User) => {
+      if (user.isAdmin) return t('roleAdmin')
+      if (user.isEditor) return t('roleEditor')
+      return t('roleUser')
+    },
+    [t]
+  )
+
+  const handleInviteUser = useCallback(async () => {
+    if (!inviteEmail) {
+      toast.error(t('errorInvalidInput'))
+      return
+    }
+
+    if (!inviteRole) {
+      toast.error(t('errorInvalidInput'))
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      await inviteTeamMember(inviteEmail, inviteRole)
+      toast.success(t('inviteSuccess'))
+      setIsAddUserOpen(false)
+      setInviteEmail('')
+      setInviteRole('editor')
+      await loadTeamMembers()
+    } catch (error) {
+      console.error(error)
+      toast.error(error instanceof Error ? error.message : t('errorInviting'))
+    } finally {
+      setSubmitting(false)
+    }
+  }, [inviteEmail, inviteTeamMember, inviteRole, loadTeamMembers, t])
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">{'Users Management'}</h2>
+        <h2 className="font-bold text-3xl tracking-tight">{t('title')}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
             <Download className="mr-2 size-4" />
-            {'Export'}
+            {t('export')}
           </Button>
           <Button onClick={() => setIsAddUserOpen(true)} variant="brand">
             <UserPlus className="mr-2 size-4" />
-            {'Add User'}
+            {t('addUser')}
           </Button>
         </div>
       </div>
@@ -174,7 +167,7 @@ export const AdminTeam = () => {
           <Input
             className="w-full pl-9"
             onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search users..."
+            placeholder={t('searchPlaceholder')}
             type="search"
             value={searchTerm}
           />
@@ -185,58 +178,21 @@ export const AdminTeam = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <Filter className="mr-2 size-4" />
-                {'Role'}
-                {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
+                {t('filterRole')}
+                {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Role'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{t('filterByRole')}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedRole('Admin')}>{'Admin'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRole('Editor')}>{'Editor'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRole('admin')}>{t('roleAdmin')}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRole('editor')}>{t('roleEditor')}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
-                {'Status'}
-                {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Status'}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>{'Active'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>{'Inactive'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Pending')}>{'Pending'}</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
-                {'Region'}
-                {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary"></span>}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Region'}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedRegion('North America')}>{'North America'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Europe')}>{'Europe'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Asia')}>{'Asia'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('South America')}>{'South America'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Africa')}>{'Africa'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Oceania')}>{'Oceania'}</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {(selectedRole || selectedStatus || selectedRegion) && (
+          {selectedRole && (
             <Button onClick={clearFilters} size="sm" variant="ghost">
-              {'Clear Filters'}
+              {t('clearFilters')}
             </Button>
           )}
         </div>
@@ -249,20 +205,24 @@ export const AdminTeam = () => {
               <TableHead className="w-[50px]">
                 <Checkbox />
               </TableHead>
-              <TableHead>{'Name'}</TableHead>
-              <TableHead>{'Email'}</TableHead>
-              <TableHead>{'Role'}</TableHead>
-              <TableHead>{'Status'}</TableHead>
-              <TableHead>{'Region'}</TableHead>
-              <TableHead>{'Joined'}</TableHead>
-              <TableHead className="w-[80px]"></TableHead>
+              <TableHead>{t('tableHeaderName')}</TableHead>
+              <TableHead>{t('tableHeaderEmail')}</TableHead>
+              <TableHead>{t('tableHeaderRole')}</TableHead>
+              <TableHead>{t('tableHeaderJoined')}</TableHead>
+              <TableHead className="w-20" />
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredUsers.length === 0 ? (
+            {loading ? (
               <TableRow>
-                <TableCell className="h-24 text-center" colSpan={8}>
-                  {'No users found.'}
+                <TableCell className="h-24 text-center" colSpan={6}>
+                  <Loader className="size-4" />
+                </TableCell>
+              </TableRow>
+            ) : filteredUsers.length === 0 ? (
+              <TableRow>
+                <TableCell className="h-24 text-center" colSpan={6}>
+                  {t('noUsers')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -271,25 +231,10 @@ export const AdminTeam = () => {
                   <TableCell>
                     <Checkbox />
                   </TableCell>
-                  <TableCell className="font-medium">{user.name}</TableCell>
+                  <TableCell className="font-medium">{getDisplayName(user)}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center">
-                      <div
-                        className={`mr-2 size-2 rounded-full ${
-                          user.status === 'Active'
-                            ? 'bg-green-500'
-                            : user.status === 'Inactive'
-                              ? 'bg-gray-400'
-                              : 'bg-amber-500'
-                        }`}
-                      />
-                      {user.status}
-                    </div>
-                  </TableCell>
-                  <TableCell>{user.region}</TableCell>
-                  <TableCell>{formatDate(user.joined)}</TableCell>
+                  <TableCell>{getRoleLabel(user)}</TableCell>
+                  <TableCell>{formatDate(user.createdAt)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -298,10 +243,10 @@ export const AdminTeam = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>{'View Details'}</DropdownMenuItem>
-                        <DropdownMenuItem>{'Edit User'}</DropdownMenuItem>
+                        <DropdownMenuItem>{t('viewDetails')}</DropdownMenuItem>
+                        <DropdownMenuItem>{t('editUser')}</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">{'Delete User'}</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">{t('deleteUser')}</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -315,55 +260,46 @@ export const AdminTeam = () => {
       <Dialog onOpenChange={setIsAddUserOpen} open={isAddUserOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>{'Add New User'}</DialogTitle>
-            <DialogDescription>
-              {'Create a new user account. The user will receive an email to set their password.'}
-            </DialogDescription>
+            <DialogTitle>{t('dialogTitle')}</DialogTitle>
+            <DialogDescription>{t('dialogDescription')}</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="first-name">{'First name'}</Label>
-                <Input id="first-name" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="last-name">{'Last name'}</Label>
-                <Input id="last-name" />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">{t('emailLabel')}</Label>
+              <Input
+                disabled={submitting}
+                id="email"
+                onChange={e => setInviteEmail(e.target.value)}
+                type="email"
+                value={inviteEmail}
+              />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">{'Email'}</Label>
-              <Input id="email" type="email" />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="role">{'Role'}</Label>
-              <Select>
+              <Label htmlFor="role">{t('roleLabel')}</Label>
+              <Select
+                disabled={submitting}
+                onValueChange={value => setInviteRole(value as 'admin' | 'editor')}
+                value={inviteRole}
+              >
                 <SelectTrigger id="role">
-                  <SelectValue placeholder="Select a role" />
+                  <SelectValue placeholder={t('selectRole')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">{'Admin'}</SelectItem>
-                  <SelectItem value="volunteer">{'Editor'}</SelectItem>
-                  <SelectItem value="organization-admin">{'Organization Admin'}</SelectItem>
+                  <SelectItem value="admin">{t('roleAdmin')}</SelectItem>
+                  <SelectItem value="editor">{t('roleEditor')}</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox id="send-email" />
-              <Label htmlFor="send-email">{'Send welcome email'}</Label>
             </div>
           </div>
 
           <DialogFooter>
-            <Button onClick={() => setIsAddUserOpen(false)} variant="outline">
-              {'Cancel'}
+            <Button disabled={submitting} onClick={() => setIsAddUserOpen(false)} variant="outline">
+              {t('cancel')}
             </Button>
-            <Button onClick={_onAddUser} type="submit" variant="brand">
-              {'Create User'}
+            <Button disabled={submitting} onClick={handleInviteUser} type="submit" variant="brand">
+              {submitting ? t('inviting') : t('inviteUser')}
             </Button>
           </DialogFooter>
         </DialogContent>

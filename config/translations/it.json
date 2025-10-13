@@ -1,17 +1,37 @@
 {
-  "App": {
-    "description": "GloRe è una rete aperta che mira ad allargare il suo pubblico sia di volontari che di ONG di tutto il mondo per rendere i certificati disponibili a tutti.",
-    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi, ricevere notifiche e gestire i tuoi certificati offline."
-  },
   "Email": {
-    "recovery": {
-      "subject": "Reimposta la tua password GloRe",
-      "greeting": "Ciao,",
-      "greetingUser": "Ciao {user},",
-      "intro": "Hai recentemente richiesto di reimpostare la password del tuo account. Clicca il pulsante qui sotto per reimpostarla.",
+    "auth/invite": {
+      "subject": "Sei stato invitato a unirti a GloRe",
+      "intro": "Sei stato invitato a unirti alla piattaforma GloRe come membro del team.",
+      "buttonInstruction": "Clicca il pulsante qui sotto per accettare l'invito e configurare il tuo account:",
+      "button": "Accetta l'invito",
+      "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente link nel tuo browser:",
+      "instructions": "Questo link di invito è valido per le prossime 24 ore.",
+      "footer": "Stai ricevendo questa email perché sei stato invitato a unirti a GloRe. Se non ti aspettavi questo invito, ignora questa email o <emailLink>faccelo sapere</emailLink>.",
+      "preview": "Sei stato invitato a unirti alla piattaforma GloRe come membro del team. \nFai clic sul collegamento contenuto in questa email per accettare l'invito e configurare il tuo account."
+    },
+    "auth/recovery": {
       "button": "Reimposta la tua password",
-      "instruction": "Se non hai richiesto un reset della password, ignora questa email o rispondi per farcelo sapere.",
-      "outro": "Grazie,\nIl team"
+      "buttonInstruction": "Fare clic sul pulsante qui sotto per reimpostarlo:",
+      "footer": "Hai ricevuto questa email perché hai richiesto la reimpostazione della password per il tuo account GloRe. \nSe non l'hai richiesto, ignora questa email o <emailLink>faccelo sapere</emailLink>.",
+      "greeting": "Ciao,",
+      "greetingUser": "Ciao {utente},",
+      "instructions": "Questo collegamento per la reimpostazione della password è valido per le prossime 24 ore.",
+      "intro": "Recentemente hai richiesto di reimpostare la password per il tuo account.",
+      "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente collegamento nel tuo browser:",
+      "preview": "Di recente hai richiesto di reimpostare la password per il tuo account GloRe. \nPer completare questo processo, segui il collegamento sicuro fornito in questa email per creare una nuova password e riottenere l'accesso al tuo account.",
+      "subject": "Reimposta la tua password GloRe"
+    },
+    "common": {
+      "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italia",
+      "app": "GloRe",
+      "contactUs": "Contattaci",
+      "copyright": "© {anno} Associazione Joint. \nTutti i diritti riservati.",
+      "greeting": "Ciao,",
+      "greetingUser": "Ciao {utente},",
+      "homepage": "Home page",
+      "outro": "Grazie,",
+      "signature": "Il team GloRe"
     }
   },
   "Errors": {
@@ -104,7 +124,11 @@
     "accept": "Accettare",
     "invalidUrl": "URL non valido",
     "accessApp": "Accedi a GloRe",
-    "openDefaultEmailClient": "Apri il tuo client email predefinito"
+    "openDefaultEmailClient": "Apri il tuo client email predefinito",
+    "archive": "Archivio",
+    "continue": "Continuare",
+    "delete": "Eliminare",
+    "unarchive": "Annulla l'archiviazione"
   },
   "Auth": {
     "loginTitle": "Accedi al GloRe Network",
@@ -114,7 +138,7 @@
     "passwordRequestMessage": "Inserisci la tua e-mail o nome utente per ricevere un link e reimpostarla.",
     "passwordRequestMetaTitle": "Reimposta password",
     "emailSentTitle": "Ti abbiamo inviato una mail!",
-    "emailSentMessage": "Controlla la tua mail {email} per reimpostare la password. Se non la vedi, controlla la cartella spam o riprova.",
+    "emailSentMessage": "Controlla la tua mail <email></email> per reimpostare la password. Se non vedi nuove email, controlla la cartella spam o riprova.",
     "emailSentMetaTitle": "Controlla la tua email",
     "passwordResetTitle": "Reimposta la tua password",
     "passwordResetMessage": "Inserisci una nuova password per il tuo account.",
@@ -160,7 +184,8 @@
     "goToLogin": "Vai al login",
     "passwordRequirements": "Deve contenere una lettera minuscola e maiuscola, un numero e un simbolo",
     "hidePassword": "Nascondi password",
-    "showPassword": "Mostra password"
+    "showPassword": "Mostra password",
+    "passwordSameAsOld": "La nuova password non può essere uguale a quella vecchia"
   },
   "Users": {
     "role": "{role, select, representative {Referent} tutor {Tutor} volunteer {Volontario} learner {Studente} other {}}"
@@ -344,7 +369,35 @@
     "infoSettingsDescription": "Informazioni che devono essere tradotte e localizzate",
     "saveDraft": "Salva draft",
     "noDescription": "Nessuna descrizione disponibile.",
-    "previewDraftIn": "Anteprima draft {lang}"
+    "previewDraftIn": "Anteprima draft {lang}",
+    "confirmArchiveMessage": "L'archiviazione di questo corso lo rimuoverà dall'elenco dei corsi attivi. \nTroverai il corso nella sezione archiviati, dove potrai ripristinarlo in seguito, se necessario.",
+    "confirmArchiveTitle": "Sei sicuro di voler archiviare questo corso?",
+    "confirmDeleteMessage": "L'eliminazione di questo corso è permanente e non può essere annullata. \nTutti i dati associati andranno persi.",
+    "confirmDeleteTitle": "Sei sicuro di voler eliminare questo corso?",
+    "confirmUnarchiveMessage": "L'annullamento dell'archiviazione di questo corso lo renderà nuovamente visibile nell'elenco dei corsi attivi.",
+    "confirmUnarchiveTitle": "Sei sicuro di voler annullare l'archiviazione di questo corso?",
+    "courseArchived": "Corso archiviato con successo",
+    "courseArchivedError": "Impossibile archiviare il corso, riprova",
+    "courseCreated": "Corso creato con successo",
+    "courseCreationFailed": "Impossibile creare il corso",
+    "courseDeleted": "Corso eliminato con successo",
+    "courseDeletedError": "Impossibile eliminare il corso, riprova",
+    "courseSlugTaken": "Questo slug URL è già in uso. \nPer favore scegline un altro.",
+    "courseUnarchived": "Corso annullato con successo",
+    "createCourse": "Crea corso",
+    "defaultTitle": "Corso senza titolo",
+    "enterCourseSlug": "Inserisci uno slug URL",
+    "failedToLoadSkillGroups": "Impossibile caricare i gruppi di abilità",
+    "invalidSlugFormat": "Formato slug non valido. \nSono consentiti solo lettere minuscole, numeri e trattini.",
+    "loading": "Caricamento...",
+    "newCourseDescription": "Inserisci le informazioni di base per creare un nuovo corso. \nPuoi aggiungere contenuti e traduzioni in un secondo momento.",
+    "publishIn": "Pubblica in...",
+    "publishInLanguage": "Pubblica in {lang}",
+    "selectCourseType": "Seleziona un tipo di corso",
+    "selectSkillGroup": "Seleziona un gruppo di abilità",
+    "skillGroup": "Gruppo di abilità",
+    "skillGroupDescription": "Scegli il gruppo di abilità a cui appartiene questo corso.",
+    "unpublishFromLanguage": "Annulla pubblicazione in {lang}"
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",
@@ -371,7 +424,49 @@
     "cantRequest": "Non puoi ancora richiedere un certificato"
   },
   "Settings": {
-    "title": "Impostazioni"
+    "title": "Impostazioni",
+    "description": "Gestisci le tue informazioni personali e preferenze",
+    "profile": "Profilo",
+    "personalInfo": "Informazioni personali",
+    "preferences": "Preferenze",
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "username": "Nome utente",
+    "email": "Email",
+    "phone": "Telefono",
+    "birthday": "Data di nascita",
+    "sex": "Sesso",
+    "pronouns": "Pronomi",
+    "bio": "Biografia",
+    "location": "Posizione",
+    "city": "Città",
+    "country": "Paese",
+    "languages": "Lingue",
+    "selectLanguages": "Seleziona le lingue che parli",
+    "locale": "Lingua preferita",
+    "selectLocale": "Seleziona la tua lingua preferita",
+    "avatarUrl": "Foto profilo",
+    "updateProfile": "Aggiorna profilo",
+    "updatingProfile": "Aggiornamento...",
+    "profileUpdated": "Profilo aggiornato con successo",
+    "profileUpdateError": "Errore nell'aggiornamento del profilo",
+    "cancel": "Annulla",
+    "saveChanges": "Salva modifiche",
+    "firstNamePlaceholder": "Inserisci il tuo nome",
+    "lastNamePlaceholder": "Inserisci il tuo cognome",
+    "usernamePlaceholder": "Scegli un nome utente",
+    "phonePlaceholder": "Inserisci il tuo numero di telefono",
+    "bioPlaceholder": "Raccontaci di te",
+    "cityPlaceholder": "Inserisci la tua città",
+    "countryPlaceholder": "Seleziona il tuo paese",
+    "pronounsPlaceholder": "es. lei, lui, loro",
+    "usernameInvalid": "Il nome utente deve essere di almeno 3 caratteri",
+    "usernameRequired": "Il nome utente è obbligatorio",
+    "female": "Femminile",
+    "male": "Maschile",
+    "nonBinary": "Non binario",
+    "unspecified": "Preferisco non dire",
+    "selectSex": "Seleziona il tuo sesso"
   },
   "Languages": {
     "en": "Inglese",
@@ -392,9 +487,6 @@
     "editor": "Utente editor"
   },
   "Editor": {
-    "undo": "Torna indietro",
-    "export": "Esporta",
-    "exportHtml": "Esporta come HTML",
     "placeholders": {
       "content": "Inizia a scrivere, premi spazio per l'assistenza AI o '/' per tutti i comandi...",
       "linkUrl": "Inserisci URL",
@@ -409,6 +501,9 @@
       "editorReadonly": "Nessun contenuto da visualizzare"
     },
     "actions": {
+      "undo": "Torna indietro",
+      "export": "Esporta",
+      "exportHtml": "Esporta come HTML",
       "save": "Salva",
       "cancel": "Annulla",
       "insert": "Inserisci",
@@ -710,6 +805,45 @@
       "editing": "Editing",
       "suggesting": "Suggerendo",
       "viewing": "Anteprima"
+    },
+    "common": {
+      "invalidUrl": "URL non valido",
+      "url": "URL"
+    }
+  },
+  "Admin": {
+    "team": {
+      "title": "Gestione Team",
+      "addUser": "Aggiungi Utente",
+      "export": "Esporta",
+      "searchPlaceholder": "Cerca utenti...",
+      "filterRole": "Ruolo",
+      "filterByRole": "Filtra per Ruolo",
+      "clearFilters": "Rimuovi Filtri",
+      "tableHeaderName": "Nome",
+      "tableHeaderEmail": "Email",
+      "tableHeaderRole": "Ruolo",
+      "tableHeaderJoined": "Iscritto",
+      "loading": "Caricamento...",
+      "noUsers": "Nessun utente trovato.",
+      "viewDetails": "Vedi Dettagli",
+      "editUser": "Modifica Utente",
+      "deleteUser": "Elimina Utente",
+      "dialogTitle": "Invita Membro del Team",
+      "dialogDescription": "Invia un invito per unirsi alla piattaforma GloRe. L'utente riceverà un'email per configurare il proprio account.",
+      "emailLabel": "Email",
+      "roleLabel": "Ruolo",
+      "selectRole": "Seleziona un ruolo",
+      "roleAdmin": "Amministratore",
+      "roleEditor": "Editor",
+      "roleUser": "Utente",
+      "cancel": "Annulla",
+      "inviteUser": "Invia Invito",
+      "inviting": "Invio in corso...",
+      "inviteSuccess": "Invito inviato con successo!",
+      "errorLoading": "Impossibile caricare i membri del team",
+      "errorInviting": "Impossibile inviare l'invito",
+      "errorInvalidInput": "Per favore fornisci un'email e un ruolo validi"
     }
   },
   "Countries": {
@@ -730,5 +864,11 @@
     "uk": "Regno Unito",
     "us": "Stati Uniti",
     "za": "Sudafrica"
+  },
+  "Metadata": {
+    "description": "GloRe è una rete aperta che mira ad ampliare il proprio pubblico sia di volontari che di ONG in tutto il mondo per rendere i certificati disponibili a tutti.",
+    "keywords": "GloRe, volontariato, rete globale, ONG, certificato, competenze trasversali, corsi, apprendimento, comunità",
+    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi, ricevere notifiche e gestire i tuoi certificati offline.",
+    "title": "GloRe - Rete globale di volontariato"
   }
 }

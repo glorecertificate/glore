@@ -2,12 +2,14 @@
 
 import { useMemo } from 'react'
 
+import { useTranslations } from 'next-intl'
+
 import metadata from '@config/metadata'
-import { useTranslations } from '@repo/i18n'
-import { NotFoundGraphic } from '@repo/ui/graphics/not-found'
-import { ServerErrorGraphic } from '@repo/ui/graphics/server-error'
-import { useDevice } from '@repo/ui/hooks/use-device'
-import { cn } from '@repo/ui/utils'
+
+import { NotFoundGraphic } from '@/components/graphics/not-found'
+import { ServerErrorGraphic } from '@/components/graphics/server-error'
+import { useDevice } from '@/hooks/use-device'
+import { cn } from '@/lib/utils'
 
 export interface ErrorProps {
   error: { digest?: string } & Error
@@ -39,12 +41,12 @@ export const ErrorView = ({
       ) : (
         <ServerErrorGraphic width={isMobile ? 160 : 180} />
       ),
-    [isMobile, type],
+    [isMobile, type]
   )
 
   const errorTitle = useMemo(
     () => title || (type === 'not-found' ? t('Common.notFound') : t('Common.errorTitle')),
-    [t, title, type],
+    [t, title, type]
   )
 
   const errorMessage = useMemo(
@@ -59,7 +61,7 @@ export const ErrorView = ({
               </a>
             ),
           })),
-    [message, t, type],
+    [message, t, type]
   )
 
   return (
@@ -68,14 +70,14 @@ export const ErrorView = ({
       <div
         className={cn(
           'flex h-full flex-col items-center justify-start bg-background px-4 py-12 text-center',
-          className,
+          className
         )}
         {...props}
       >
         <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
           {ErrorImage}
           <div className="text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">{errorTitle}</h2>
+            <h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight">{errorTitle}</h2>
             <p className="mb-8 text-base text-foreground/75">{errorMessage}</p>
             <div className="flex justify-center gap-4">{children}</div>
           </div>

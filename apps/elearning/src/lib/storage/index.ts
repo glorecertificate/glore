@@ -1,5 +1,2 @@
-export * from './config'
+export * from './assets'
 export * from './cookies'
-export * from './upload'
-export * from './utils'
-export type * from './types'

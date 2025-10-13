@@ -1,0 +1,18 @@
+import { createDatabase } from '../../supabase'
+import { createRepositoryRunner, expectList, expectSingle } from '../utils'
+import { certificateQuery } from './queries'
+import { parseCertificate } from './utils'
+
+const run = createRepositoryRunner(createDatabase)
+
+export const findCertificate = async (id: number | string) =>
+  run(async database => {
+    const result = await database.from('certificates').select(certificateQuery).eq('id', Number(id)).single()
+    return parseCertificate(expectSingle(result))
+  })
+
+export const listCertificates = async () =>
+  run(async database => {
+    const result = await database.from('certificates').select(certificateQuery)
+    return expectList(result).map(parseCertificate)
+  })

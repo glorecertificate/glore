@@ -1,9 +1,9 @@
 'use client'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
+import { useTranslations } from 'next-intl'
 
 import { ErrorView } from '@/components/layout/error-view'
+import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { useHeader } from '@/hooks/use-header'
 

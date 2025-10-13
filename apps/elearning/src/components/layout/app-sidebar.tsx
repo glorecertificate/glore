@@ -1,6 +1,6 @@
 'use client'
 
-import { type AppRoutes } from 'next/types/routes'
+import { useRouter } from 'next/navigation'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
@@ -18,11 +18,15 @@ import {
   SettingsIcon,
   ShieldUserIcon,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
-import { useTranslations } from '@repo/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
-import { Button } from '@repo/ui/components/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/ui/components/collapsible'
+import { titleize } from '@glore/utils/string'
+
+import { DashboardIcon } from '@/components/icons/dashboard'
+import { type Icon } from '@/components/icons/types'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +35,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
+import { Image } from '@/components/ui/image'
+import { LanguageSelect } from '@/components/ui/language-select'
+import { Link } from '@/components/ui/link'
 import {
   Sidebar,
   SidebarContent,
@@ -41,28 +48,20 @@ import {
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
+  type SidebarMenuButtonProps,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarRail,
   useSidebar,
-  type SidebarMenuButtonProps,
-} from '@repo/ui/components/sidebar'
-import { ThemeSwitch } from '@repo/ui/components/theme-switch'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { DashboardIcon } from '@repo/ui/icons/dashboard'
-import { type Icon } from '@repo/ui/types'
-import { cn } from '@repo/ui/utils'
-import { titleize } from '@repo/utils/string'
-
-import { Image } from '@/components/ui/image'
-import { LanguageSelect } from '@/components/ui/language-select'
-import { Link } from '@/components/ui/link'
-import { useDatabase } from '@/hooks/use-database'
-import { useNavigation } from '@/hooks/use-navigation'
+} from '@/components/ui/sidebar'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/hooks/use-session'
-import { type User, type UserOrganization } from '@/lib/api'
+import { logout, type User, type UserOrganization } from '@/lib/data'
+import { type AppRoutes, redirect } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 interface SidebarItemProps<I extends Icon = Icon> extends SidebarMenuButtonProps {
   className?: string
@@ -83,7 +82,8 @@ const SidebarOrgs = ({
   orgs: UserOrganization[]
   setOrg: (org: UserOrganization) => void
 }) => {
-  const { router, setUiPathname } = useNavigation()
+  const router = useRouter()
+  const { setActivePath } = useSidebar()
   const { isMobile, open } = useSidebar()
   const t = useTranslations('Navigation')
 
@@ -93,10 +93,10 @@ const SidebarOrgs = ({
     (org: UserOrganization) => {
       cookies.set('org', org.id)
       router.push('/')
-      setUiPathname('/')
+      setActivePath('/')
       setTimeout(() => setOrg(org), 200)
     },
-    [router, setOrg, setUiPathname],
+    [router, setOrg, setActivePath]
   )
 
   return (
@@ -106,35 +106,29 @@ const SidebarOrgs = ({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               asChild
-              className={`
-                justify-center overflow-visible rounded-lg py-7
-                peer-data-[state=collapsed]:border
-                data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground
-              `}
+              className={
+                'justify-center overflow-visible rounded-lg py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground peer-data-[state=collapsed]:border'
+              }
               size="lg"
             >
-              <>
-                <Avatar
-                  className={cn(
-                    'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
-                    !open && 'ml-8 size-8 text-xs',
-                    !currentOrg.avatarUrl && 'border',
-                  )}
-                >
-                  {currentOrg.avatarUrl ? (
-                    <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
-                  ) : (
-                    <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
-                  )}
-                </Avatar>
-                <div className="grid flex-1 text-left leading-tight">
-                  <span className="truncate font-semibold">{currentOrg.name}</span>
-                  <span className="truncate text-xs font-normal text-muted-foreground">
-                    {titleize(currentOrg.role)}
-                  </span>
-                </div>
-                <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
-              </>
+              <Avatar
+                className={cn(
+                  'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
+                  !open && 'ml-8 size-8 text-xs',
+                  !currentOrg.avatarUrl && 'border'
+                )}
+              >
+                {currentOrg.avatarUrl ? (
+                  <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
+                ) : (
+                  <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
+                )}
+              </Avatar>
+              <div className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-semibold">{currentOrg.name}</span>
+                <span className="truncate font-normal text-muted-foreground text-xs">{titleize(currentOrg.role)}</span>
+              </div>
+              <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -143,7 +137,7 @@ const SidebarOrgs = ({
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">{t('organizations')}</DropdownMenuLabel>
             {orgs.map(org => (
               <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
@@ -154,10 +148,10 @@ const SidebarOrgs = ({
                   <span className="flex items-center truncate font-semibold">
                     {org.name}
                     {org.id === currentOrg.id && (
-                      <span className="mt-[1.5px] ml-1.5 inline-block size-[7px] rounded-full bg-green-500"></span>
+                      <span className="mt-[1.5px] ml-1.5 inline-block size-[7px] rounded-full bg-green-500" />
                     )}
                   </span>
-                  <span className="truncate text-xs font-normal text-muted-foreground">{titleize(org.role)}</span>
+                  <span className="truncate font-normal text-muted-foreground text-xs">{titleize(org.role)}</span>
                 </div>
               </DropdownMenuItem>
             ))}
@@ -185,20 +179,20 @@ const SidebarNavItem = <I extends Icon>({
   route,
   subItem,
 }: SidebarItemProps<I>) => {
-  const { setUiPathname, uiPathname } = useNavigation()
+  const { setActivePath, activePath } = useSidebar()
 
   const Wrapper = useMemo(
     () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
-    [asChild, subItem],
+    [asChild, subItem]
   )
 
-  const isActivePath = useMemo(() => route === uiPathname, [uiPathname, route])
+  const isActivePath = useMemo(() => route === activePath, [activePath, route])
 
   const active = useMemo(() => {
     if (isActivePath || subItem) return isActivePath
-    if (route === '/') return uiPathname === '/'
-    return uiPathname.startsWith(route)
-  }, [isActivePath, subItem, route, uiPathname])
+    if (route === '/') return activePath === '/'
+    return activePath.startsWith(route)
+  }, [isActivePath, subItem, route, activePath])
 
   const buttonClassName = useMemo(() => {
     if (!subItem) return className
@@ -208,7 +202,7 @@ const SidebarNavItem = <I extends Icon>({
         hover:text-sidebar-foreground
         data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border
       `,
-      className,
+      className
     )
   }, [className, subItem])
 
@@ -232,9 +226,9 @@ const SidebarNavItem = <I extends Icon>({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       onClick?.(e)
       if (isActivePath) return
-      setUiPathname(route)
+      setActivePath(route)
     },
-    [isActivePath, onClick, route, setUiPathname],
+    [isActivePath, onClick, route, setActivePath]
   )
 
   return (
@@ -253,8 +247,8 @@ const SidebarNavItem = <I extends Icon>({
 }
 
 const SidebarNavCollapsible = <I extends Icon>({ children, icon, label, route }: SidebarItemProps<I>) => {
-  const { uiPathname } = useNavigation()
-  const [open, setOpen] = useState(uiPathname.startsWith(route))
+  const { activePath } = useSidebar()
+  const [open, setOpen] = useState(activePath.startsWith(route))
 
   const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
 
@@ -305,8 +299,6 @@ const SidebarNav = () => {
 }
 
 const SidebarUser = ({ organization, user }: { organization?: UserOrganization; user: User }) => {
-  const db = useDatabase()
-  const { redirect } = useNavigation()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
@@ -318,9 +310,9 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
 
   const logOutUser = useCallback(async () => {
     onLinkClick()
-    await db.auth.signOut()
+    await logout()
     redirect('/login')
-  }, [db.auth, onLinkClick, redirect])
+  }, [onLinkClick])
 
   return (
     <SidebarMenu>
@@ -329,83 +321,77 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                `
-                  group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150
-                  hover:bg-popover
-                  aria-expanded:border-transparent
-                `,
-                open ? 'overflow-hidden shadow-inner' : 'overflow-visible',
+                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-popover aria-expanded:border-transparent',
+                open ? 'overflow-hidden shadow-inner' : 'overflow-visible'
               )}
               size="lg"
             >
-              <>
-                <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
-                  <Avatar
-                    className={cn(
-                      'aspect-square size-8 rounded-lg border',
-                      !open && 'text-xs',
-                      !user.avatarUrl && 'border',
-                    )}
-                  >
-                    {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
-                    <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
-                  </Avatar>
-                  {organization?.avatarUrl && (
-                    <Image
-                      className="absolute -right-1 -bottom-1 rounded-full object-cover"
-                      height={14}
-                      src={organization.avatarUrl}
-                      width={14}
-                    />
-                  )}
-                </div>
-                <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
-                  <span className="flex items-center gap-1 font-semibold">
-                    {user.firstName}
-                    {user.isAdmin && (
-                      <Tooltip disableHoverableContent>
-                        <TooltipTrigger
-                          asChild
-                          className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"
-                          pointerEvents="auto"
-                        >
-                          <ShieldUserIcon className="size-3" />
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={3}>
-                          <span className="text-xs">{t('Navigation.adminUser')}</span>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                    {user.isEditor && (
-                      <Tooltip disableHoverableContent>
-                        <TooltipTrigger
-                          asChild
-                          className="group-aria-[expanded=true]/sidebar-user:pointer-events-none!"
-                          pointerEvents="auto"
-                        >
-                          <PencilIcon className="size-3" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <span className="text-xs">{t('Navigation.editorUser')}</span>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                  </span>
-                  <span className="truncate text-xs font-normal text-muted-foreground">{user.username}</span>
-                </div>
-                <Button
-                  asChild
+              <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
+                <Avatar
                   className={cn(
-                    'ml-auto flex size-6 items-center justify-center border border-transparent hover:border-border',
-                    !open && 'invisible',
+                    'aspect-square size-8 rounded-lg border',
+                    !open && 'text-xs',
+                    !user.avatarUrl && 'border'
                   )}
-                  variant="ghost"
                 >
-                  <span>
-                    <ChevronsUpDownIcon className="size-4 stroke-foreground/64" />
-                  </span>
-                </Button>
-              </>
+                  {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
+                  <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
+                </Avatar>
+                {organization?.avatarUrl && (
+                  <Image
+                    className="-right-1 -bottom-1 absolute rounded-full object-cover"
+                    height={14}
+                    src={organization.avatarUrl}
+                    width={14}
+                  />
+                )}
+              </div>
+              <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
+                <span className="flex items-center gap-1 font-semibold">
+                  {user.firstName}
+                  {user.isAdmin && (
+                    <Tooltip disableHoverableContent>
+                      <TooltipTrigger
+                        asChild
+                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
+                        pointerEvents="auto"
+                      >
+                        <ShieldUserIcon className="size-3" />
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={3}>
+                        <span className="text-xs">{t('Navigation.adminUser')}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                  {user.isEditor && (
+                    <Tooltip disableHoverableContent>
+                      <TooltipTrigger
+                        asChild
+                        className="group-aria-expanded/sidebar-user:pointer-events-none!"
+                        pointerEvents="auto"
+                      >
+                        <PencilIcon className="size-3" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <span className="text-xs">{t('Navigation.editorUser')}</span>
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </span>
+                <span className="truncate font-normal text-muted-foreground text-xs">{user.username}</span>
+              </div>
+              <Button
+                asChild
+                className={cn(
+                  'ml-auto flex size-6 items-center justify-center border border-transparent hover:border-border',
+                  !open && 'invisible'
+                )}
+                variant="ghost"
+              >
+                <span>
+                  <ChevronsUpDownIcon className="size-4 stroke-foreground/64" />
+                </span>
+              </Button>
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -441,20 +427,20 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">
               <div className="flex items-center px-1.5 py-1">
-                <span className="text-[13px] leading-[16px] font-medium text-muted-foreground">
+                <span className="font-medium text-[13px] text-muted-foreground leading-4">
                   {t('Common.preferences')}
                 </span>
               </div>
             </DropdownMenuGroup>
             <DropdownMenuGroup className="p-1 pt-0">
               <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="text-sm font-normal text-foreground">{t('Common.theme')}</span>
+                <span className="font-normal text-foreground text-sm">{t('Common.theme')}</span>
                 <div data-orientation="horizontal" dir="ltr">
                   <ThemeSwitch />
                 </div>
               </div>
               <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="text-sm font-normal text-foreground">{t('Common.language')}</span>
+                <span className="font-normal text-foreground text-sm">{t('Common.language')}</span>
                 <div data-orientation="horizontal" dir="ltr">
                   <LanguageSelect className="h-9 px-2 text-[13.8px]" />
                 </div>
@@ -479,16 +465,14 @@ export const AppSidebar = ({
     (org: UserOrganization) => {
       setUser(prev => ({ ...prev, current_org: org }))
     },
-    [setUser],
+    [setUser]
   )
 
   return (
     <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
-      {organization && (
-        <SidebarHeader>
-          <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />
-        </SidebarHeader>
-      )}
+      <SidebarHeader>
+        {organization && <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />}
+      </SidebarHeader>
       <SidebarContent>
         <SidebarNav />
       </SidebarContent>

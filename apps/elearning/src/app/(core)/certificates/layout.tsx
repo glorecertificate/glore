@@ -1,17 +1,21 @@
 import { notFound } from 'next/navigation'
+import { Suspense, use } from 'react'
 
-import { createApi } from '@/lib/api/ssr'
+import { getCurrentUser } from '@/lib/data/server'
 import { createMetadata } from '@/lib/metadata'
 
 export const metadata = createMetadata({
-  title: 'Navigation.certificates',
+  title: 'certificates',
 })
 
-export default async ({ children }: LayoutProps<'/certificates'>) => {
-  const api = await createApi()
-  const user = await api.users.getCurrent()
-
+const CertificateGuard = ({ children }: LayoutProps<'/certificates'>) => {
+  const user = use(getCurrentUser())
   if (user.canEdit) return notFound()
-
   return children
 }
+
+export default (props: LayoutProps<'/certificates'>) => (
+  <Suspense fallback={null}>
+    <CertificateGuard {...props} />
+  </Suspense>
+)

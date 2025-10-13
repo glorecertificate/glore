@@ -4,32 +4,31 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 
 import themeConfig from '@config/theme'
-import { useTranslations, type Locale } from '@repo/i18n'
-import { Button, type ButtonProps } from '@repo/ui/components/button'
-import { Globe, type GlobeColorOptions } from '@repo/ui/components/globe'
-import { ThemeSwitch } from '@repo/ui/components/theme-switch'
-import { useTheme } from '@repo/ui/hooks/use-theme'
-import { Glore } from '@repo/ui/icons/glore'
-import { cn } from '@repo/ui/utils'
-import { recordToRgb } from '@repo/utils/hex-to-rgb'
-import { snakeToCamel } from '@repo/utils/string'
-import { type Enum } from '@repo/utils/types'
+import { rgbRecord } from '@glore/utils/hex-to-rgb'
+import { snakeToCamel } from '@glore/utils/string'
+import { type Enum } from '@glore/utils/types'
 
 import { EmailClientsFooter } from '@/components/features/auth/email-clients-footer'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
+import { Glore } from '@/components/icons/glore'
+import { Button, type ButtonProps } from '@/components/ui/button'
+import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useMetadata } from '@/hooks/use-metadata'
-import { useNavigation } from '@/hooks/use-navigation'
+import { useSearchParams } from '@/hooks/use-search-params'
+import { useTheme } from '@/hooks/use-theme'
 import { type AuthView } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 const themeColors = {
-  light: recordToRgb(themeConfig.colors.light),
-  dark: recordToRgb(themeConfig.colors.dark),
+  light: rgbRecord(themeConfig.colors.light),
+  dark: rgbRecord(themeConfig.colors.dark),
 }
 
 const AuthActionButton = ({ children, ...props }: ButtonProps) => (
@@ -46,15 +45,15 @@ const AuthActionButton = ({ children, ...props }: ButtonProps) => (
   </Button>
 )
 
-export const AuthFlow = ({ token }: { token?: string | null }) => {
-  const { searchParams } = useNavigation<{ lang: Locale }>()
+interface AuthFlowProps {
+  defaultView: Enum<AuthView>
+  token?: string
+}
+
+export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
+  const searchParams = useSearchParams()
   const { resolvedTheme } = useTheme()
   const t = useTranslations('Auth')
-
-  const defaultView = useMemo<Enum<AuthView>>(
-    () => (token === null ? 'invalid_token' : token ? 'password_reset' : 'login'),
-    [token],
-  )
 
   const { setTitleKey } = useMetadata({
     namespace: 'Auth',
@@ -67,25 +66,28 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
   const [errored, setErrored] = useState(false)
   const [email, setEmail] = useState<string | null>(null)
 
-  const title = useMemo(() => (view ? t.dynamic(snakeToCamel(`${view}_title`)) : null), [t, view])
+  const title = useMemo(() => (view ? t(snakeToCamel(`${view}_title`)) : null), [t, view])
   const message = useMemo(() => {
     if (!view) return null
-    if (!email || !['email_sent', 'password_updated'].includes(view)) return t.dynamic(snakeToCamel(`${view}_message`))
-    return t(snakeToCamel(`${view}_message`), { email })
+    if (view === 'email_sent')
+      return t.rich('emailSentMessage', {
+        email: () => <span className="font-semibold">{email}</span>,
+      })
+    return t(snakeToCamel(`${view}_message`))
   }, [email, t, view])
 
   const setView = useCallback(
-    (view: Enum<AuthView>) => {
-      setViewState(view)
-      setTitleKey(snakeToCamel(`${view}_meta_title`))
+    (newView: Enum<AuthView>) => {
+      setViewState(newView)
+      setTitleKey(snakeToCamel(`${newView}_meta_title`))
     },
-    [setTitleKey],
+    [setTitleKey]
   )
 
   const content = useMemo(() => {
     switch (view) {
       case 'login':
-        return <LoginForm setErrored={setErrored} setView={setView} />
+        return <LoginForm defaultEmail={email} setErrored={setErrored} setView={setView} />
       case 'password_request':
         return <PasswordRequestForm setEmail={setEmail} setErrored={setErrored} setView={setView} />
       case 'email_sent':
@@ -107,13 +109,12 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
       default:
         return null
     }
-  }, [view, setView, token, t])
+  }, [email, view, setView, t, token])
 
   useEffect(() => {
-    searchParams.delete('lang')
-    cookies.delete('login-token')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (searchParams.has('lang')) searchParams.delete('lang')
+    if (defaultView === 'invalid_token' && searchParams.has('resetToken')) searchParams.delete('resetToken')
+  }, [defaultView, searchParams])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
@@ -134,7 +135,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
     const ro = new ResizeObserver(() => updateHeight(element))
     ro.observe(element)
     return () => ro.disconnect()
-  }, [view, title, message, updateHeight])
+  }, [view, updateHeight])
 
   const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
 
@@ -175,62 +176,14 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
     }
   }, [errored, resolvedTheme, view])
 
-  //   const variants = {
-  //     brand: {
-  //       baseColor: colors.brand,
-  //       markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
-  //     },
-  //     neutral: {
-  //       baseColor: colors.neutral,
-  //       markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
-  //     },
-  //     success: {
-  //       baseColor: colors.success,
-  //       markerColor: [colors.success],
-  //     },
-  //     destructive: {
-  //       baseColor: colors.destructive,
-  //       markerColor: [colors.destructive],
-  //     },
-  //     background: {
-  //       baseColor: colors.background,
-  //       markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
-  //     },
-  //   } satisfies Record<string, Pick<GlobeOptions, 'baseColor' | 'markerColor'>>
-
-  //   return {
-  //     glowColor: background,
-  //     ...(errored ? variants.destructive : viewColors[view]),
-  //   }
-  // }, [errored, resolvedTheme, view])
-
-  // const globeColorProps = useMemo(() => {
-  //   const variants = globeColors(resolvedTheme)
-
-  //   const viewColors = {
-  //     login: variants.brand,
-  //     password_request: variants.neutral,
-  //     email_sent: variants.success,
-  //     password_reset: variants.neutral,
-  //     password_updated: variants.success,
-  //     invalid_token: variants.destructive,
-  //     invalid_password_reset: variants.destructive,
-  //   }
-
-  //   return {
-  //     glowColor: background,
-  //     ...(errored ? variants.destructive : viewColors[view]),
-  //   }
-  // }, [errored, resolvedTheme, view])
-
   return (
-    <div className="flex h-full min-h-[100vh] flex-col gap-4 p-6 md:p-10">
+    <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
       <div className="flex justify-between gap-2">
         <div title={view === 'login' ? undefined : t('goToLogin')}>
           <Glore
             className={cn(
               'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
-              view === 'login' ? 'pointer-events-none' : 'cursor-pointer',
+              view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
             )}
             onClick={() => setView('login')}
             tabIndex={view === 'login' ? -1 : 0}
@@ -260,7 +213,7 @@ export const AuthFlow = ({ token }: { token?: string | null }) => {
                   key={`heading-${view}`}
                   transition={{ duration: 0.2, ease: 'easeOut' }}
                 >
-                  {title && <h1 className="text-3xl font-bold">{title}</h1>}
+                  {title && <h1 className="font-bold text-3xl">{title}</h1>}
                   {message && <p className="text-muted-foreground">{message}</p>}
                 </motion.div>
               </AnimatePresence>

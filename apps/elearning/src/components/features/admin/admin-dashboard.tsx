@@ -2,13 +2,12 @@
 
 import { useCallback, useState } from 'react'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
-
 import { AdminCertificates } from '@/components/features/admin/admin-certificates'
 import { AdminOrganizations } from '@/components/features/admin/admin-organizations'
 import { AdminOverview } from '@/components/features/admin/admin-overview'
 import { AdminTeam } from '@/components/features/admin/admin-team'
 import { AdminUsers } from '@/components/features/admin/admin-users'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 type AdminDashboardTab = 'overview' | 'certificates' | 'users' | 'organizations' | 'team'
 
@@ -25,10 +24,10 @@ export const AdminDashboard = () => {
         <div className="mb-6 flex items-center justify-between">
           <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="overview">{'Overview'}</TabsTrigger>
+            <TabsTrigger value="team">{'Team'}</TabsTrigger>
             <TabsTrigger value="certificates">{'Certificates'}</TabsTrigger>
             <TabsTrigger value="users">{'Users'}</TabsTrigger>
             <TabsTrigger value="organizations">{'Organizations'}</TabsTrigger>
-            <TabsTrigger value="team">{'Team'}</TabsTrigger>
           </TabsList>
         </div>
 

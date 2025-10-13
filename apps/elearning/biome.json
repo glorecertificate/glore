@@ -1,0 +1,94 @@
+{
+  "extends": "//",
+  "linter": {
+    "domains": {
+      "next": "all",
+      "react": "all"
+    },
+    "rules": {
+      "complexity": {
+        "noBannedTypes": "off"
+      },
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "patterns": [
+              {
+                "group": ["../*"],
+                "message": "Parent imports are not allowed. Use path aliases instead."
+              },
+              {
+                "group": ["@/lib/*/**", "!@/lib/*/server", "!@/lib/services/*"],
+                "message": "Deep imports from lib are not allowed. Import from the root of the module instead."
+              },
+              {
+                "group": ["@udecode/cn"],
+                "importNamePattern": "cn",
+                "message": "Import from @/lib/utils instead."
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":NODE:",
+              ":BLANK_LINE:",
+              ["next", "next/*", "react", "react/*"],
+              ":BLANK_LINE:",
+              [":PACKAGE:", "!@config/**", "!@glore/**"],
+              ":BLANK_LINE:",
+              ["@config/**", "@glore/**"],
+              ":BLANK_LINE:",
+              [":ALIAS:", ":PATH:"]
+            ]
+          }
+        }
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/lib/*/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/lib/*/**",
+                      "!@/lib/*/server",
+                      "!@/lib/services/*"
+                    ],
+                    "message": "Deep imports from lib are not allowed. Import from the root or use an absolute path if inside the current lib"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/components/blocks/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
+          }
+        }
+      }
+    }
+  ]
+}

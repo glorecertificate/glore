@@ -3,9 +3,15 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { ArchiveIcon, ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
+import { type Locale, useTranslations } from 'next-intl'
 
-import { useLocale, useTranslations, type Locale } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
+import { snakeToCamel } from '@glore/utils/string'
+import { type SnakeToCamel } from '@glore/utils/types'
+
+import { CourseCard } from '@/components/features/courses/course-card'
+import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
+import { NoResultsGraphic } from '@/components/graphics/no-results'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,21 +19,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@repo/ui/components/motion-tabs'
-import { MultiSelect } from '@repo/ui/components/multi-select'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { NoResultsGraphic } from '@repo/ui/graphics/no-results'
-import { cn } from '@repo/ui/utils'
-import { snakeToCamel } from '@repo/utils/string'
-import { type SnakeToCamel } from '@repo/utils/types'
-
-import { CourseCard } from '@/components/features/courses/course-card'
-import { Link } from '@/components/ui/link'
+} from '@/components/ui/dropdown-menu'
+import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
+import { MultiSelect } from '@/components/ui/multi-select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
-import { type Course } from '@/lib/api'
+import { type Course } from '@/lib/data'
 import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 const EDITOR_SORTS = ['name', 'type'] as const
 const LEARNER_SORTS = ['name', 'progress', 'type'] as const
@@ -35,12 +36,18 @@ const LEARNER_SORTS = ['name', 'progress', 'type'] as const
 type SortType = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[number]
 type SortDirection = 'asc' | 'desc'
 
-const CourseListTabs = ({ value, ...props }: { count: number; value: CourseListView }) => {
+const CourseListTabs = ({ count, value }: { count: number; value: CourseListView }) => {
   const t = useTranslations('Courses')
+
+  const archiveTooltip = useMemo(() => {
+    if (value !== 'archived') return null
+    if (count === 0) return t('archive')
+    return `${t('archive')} (${count})`
+  }, [count, t, value])
 
   if (value === 'archived')
     return (
-      <MotionTabsTrigger className="flex items-center p-0" value={value} {...props}>
+      <MotionTabsTrigger className="flex items-center p-0" value={value}>
         <Tooltip delayDuration={0} disableHoverableContent>
           <TooltipTrigger asChild>
             <span className="inline-block px-3.5">
@@ -48,15 +55,15 @@ const CourseListTabs = ({ value, ...props }: { count: number; value: CourseListV
             </span>
           </TooltipTrigger>
           <TooltipContent arrow={false} sideOffset={10}>
-            {t('archive')}
+            {archiveTooltip}
           </TooltipContent>
         </Tooltip>
       </MotionTabsTrigger>
     )
 
   return (
-    <MotionTabsTrigger className="flex items-center gap-1" value={value} {...props}>
-      {t.dynamic(value)}
+    <MotionTabsTrigger className="flex items-center gap-1" count={count} value={value}>
+      {t(value)}
     </MotionTabsTrigger>
   )
 }
@@ -81,7 +88,7 @@ const SortType = ({
 
   const options = useMemo<Record<SortType, string>>(() => {
     const sorts = user.canEdit ? EDITOR_SORTS : LEARNER_SORTS
-    return sorts.reduce((acc, sort) => ({ ...acc, [sort]: tCourses.dynamic(sort) }), {} as Record<SortType, string>)
+    return sorts.reduce((acc, sort) => ({ ...acc, [sort]: tCourses(sort) }), {} as Record<SortType, string>)
   }, [tCourses, user.canEdit])
 
   const icon = useMemo(() => {
@@ -98,7 +105,7 @@ const SortType = ({
       if (!value || value !== sort) setValue(sort)
       setOpen(true)
     },
-    [inverseDirection, setDirection, setValue, value],
+    [inverseDirection, setDirection, setValue, value]
   )
 
   const handleSortItemSelect = useCallback((e: Event) => {
@@ -115,7 +122,7 @@ const SortType = ({
       <DropdownMenuTrigger asChild>
         <Button className="group h-9 gap-0 has-[>svg]:px-3" size="sm" variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
-          {value && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[value]}</span>}
+          {value && <span className="mr-0.5 font-medium text-muted-foreground text-xs">{options[value]}</span>}
           {icon}
         </Button>
       </DropdownMenuTrigger>
@@ -128,7 +135,7 @@ const SortType = ({
               <DropdownMenuItem
                 className={cn(
                   'group/dropdown-menu-item flex h-9 cursor-pointer items-center justify-between',
-                  value === option && 'cursor-default bg-accent dark:bg-background/40',
+                  value === option && 'cursor-default bg-accent dark:bg-background/40'
                 )}
                 key={option}
                 onClick={handleSortChange(option)}
@@ -144,7 +151,7 @@ const SortType = ({
                   </Button>
                 )}
               </DropdownMenuItem>
-            ),
+            )
         )}
         {value && (
           <>
@@ -169,23 +176,24 @@ export const CourseList = ({
   defaultLanguageFilter?: Locale[]
   defaultTab?: CourseListView
 }) => {
-  const { locale, localeItems, locales, localize } = useLocale()
-  const { user, ...session } = useSession()
+  const { locale, localeItems, locales, localize } = useI18n()
+  const { user, courses: sessionCourses } = useSession()
   const t = useTranslations('Courses')
 
   const [activeTab, setActiveTab] = useState<CourseListView>(defaultTab)
   const [activeSort, setActiveSort] = useState<SortType | null>(null)
   const [languageFilter, setLanguageFilter] = useState<Locale[]>(defaultLanguageFilter ?? [...locales])
   const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const pageDescription = useMemo(
     () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
-    [t, user.isAdmin, user.isEditor],
+    [t, user.isAdmin, user.isEditor]
   )
 
   const sortLanguages = useCallback(
     (langs: Locale[] | null) => langs?.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)) ?? [],
-    [locales],
+    [locales]
   )
 
   const activeLanguages = useMemo(() => sortLanguages(languageFilter), [languageFilter, sortLanguages])
@@ -193,7 +201,7 @@ export const CourseList = ({
   const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
 
   const courses = useMemo<Record<SnakeToCamel<CourseListView>, Course[]>>(() => {
-    const all = session.courses.filter(course => !course.archivedAt)
+    const all = sessionCourses.filter(course => !course.archivedAt)
 
     if (user.canEdit)
       return {
@@ -204,7 +212,7 @@ export const CourseList = ({
           return published.length > 0 && published.length < activeLanguages.length
         }),
         draft: all.filter(course => activeLanguages.every(lang => !course.languages.includes(lang))),
-        archived: session.courses.filter(course => course.archivedAt),
+        archived: sessionCourses.filter(course => course.archivedAt),
         notStarted: [],
         inProgress: [],
         completed: [],
@@ -215,12 +223,12 @@ export const CourseList = ({
       published: [],
       partial: [],
       draft: [],
-      archived: session.courses.filter(course => course.archivedAt),
+      archived: sessionCourses.filter(course => course.archivedAt),
       notStarted: all.filter(course => course.progress === 'not_started'),
       inProgress: all.filter(course => course.progress === 'in_progress'),
       completed: all.filter(course => course.progress === 'completed'),
     }
-  }, [session.courses, user.canEdit, activeLanguages])
+  }, [sessionCourses, user.canEdit, activeLanguages])
 
   const tabs = useMemo<CourseListView[]>(
     () =>
@@ -229,7 +237,7 @@ export const CourseList = ({
           ? [...Object.values(CourseListEditorView)]
           : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
         : [...Object.values(CourseListLearnerView)],
-    [user.canEdit, activeLanguages.length],
+    [user.canEdit, activeLanguages.length]
   )
 
   const displayedCourses = useMemo(
@@ -246,7 +254,7 @@ export const CourseList = ({
             case 'name': {
               const titleA = localize(a.title)
               const titleB = localize(b.title)
-              if (!titleA || !titleB) return 0
+              if (!(titleA && titleB)) return 0
               return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
             }
             case 'progress':
@@ -257,7 +265,7 @@ export const CourseList = ({
               return a.createdAt < b.createdAt ? 1 : 0
           }
         }) as (Course & { language: Locale })[],
-    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection],
+    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection]
   )
 
   const emptyListTitle = useMemo(() => {
@@ -275,7 +283,7 @@ export const CourseList = ({
 
   const enhanceEmptyListMessage = useCallback(
     (message: string) => (hasFilters ? t.markup('withFilters', { message }) : t('atTheMoment', { message })),
-    [hasFilters, t],
+    [hasFilters, t]
   )
 
   const emptyListMessage = useMemo(() => {
@@ -309,13 +317,13 @@ export const CourseList = ({
       cookies.set('course-list-locales', selected)
       if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
     },
-    [activeTab, courses.partial.length],
+    [activeTab, courses.partial.length]
   )
 
   return (
     <>
       <div className="pb-2">
-        <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
+        <h1 className="mb-2 font-bold text-3xl">{t('title')}</h1>
         <p className="text-muted-foreground">{pageDescription}</p>
       </div>
       <div className="w-full grow py-6">
@@ -329,16 +337,14 @@ export const CourseList = ({
               </MotionTabsList>
               {user.canEdit && (
                 <Button
-                  asChild
                   className="max-sm:w-full"
                   effect="expandIcon"
                   icon={PlusIcon}
                   iconPlacement="right"
+                  onClick={() => setIsCreateModalOpen(true)}
                   variant="brand"
                 >
-                  <Link href="/courses/new" scroll={false}>
-                    {t('newCourse')}
-                  </Link>
+                  {t('newCourse')}
                 </Button>
               )}
             </div>
@@ -372,8 +378,8 @@ export const CourseList = ({
               <div className="flex h-full flex-col items-center justify-center pt-10 text-center">
                 <NoResultsGraphic className="mb-8 w-64" />
                 <div className="flex flex-col items-center gap-1">
-                  <h3 className="text-lg font-medium">{emptyListTitle}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <h3 className="font-medium text-lg">{emptyListTitle}</h3>
+                  <p className="mt-1 text-muted-foreground text-sm">
                     {`${emptyListMessage}.`}
                     {hasFilters && (
                       <>
@@ -390,7 +396,7 @@ export const CourseList = ({
                   <CourseCard
                     activeLanguages={activeLanguages}
                     course={course}
-                    key={course.id}
+                    key={course.slug}
                     showState={activeTab !== 'archived'}
                   />
                 ))}
@@ -399,6 +405,7 @@ export const CourseList = ({
           </MotionTabsContent>
         </MotionTabs>
       </div>
+      {user.canEdit && <CourseSettingsModal onOpenChange={setIsCreateModalOpen} open={isCreateModalOpen} />}
     </>
   )
 }

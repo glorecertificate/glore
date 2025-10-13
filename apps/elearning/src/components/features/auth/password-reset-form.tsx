@@ -3,19 +3,20 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { type PostgrestError } from '@supabase/supabase-js'
+import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@repo/ui/components/form'
-import { PasswordInput } from '@repo/ui/components/password-input'
-import { log } from '@repo/utils/logger'
-import { type Enum } from '@repo/utils/types'
+import { type Enum } from '@glore/utils/types'
 
-import { useApi } from '@/hooks/use-api'
-import { PASSWORD_REGEX } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { PasswordInput } from '@/components/ui/password-input'
+import { useSearchParams } from '@/hooks/use-search-params'
+import { logout, PASSWORD_REGEX, updateAuthUser, verifyAuthUser } from '@/lib/data'
 import { type AuthView } from '@/lib/navigation'
+import { cookies } from '@/lib/storage'
 
 export const PasswordResetForm = ({
   setEmail,
@@ -28,7 +29,7 @@ export const PasswordResetForm = ({
   setView: (view: Enum<AuthView>) => void
   token?: string | null
 }) => {
-  const api = useApi()
+  const searchParams = useSearchParams()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -44,7 +45,7 @@ export const PasswordResetForm = ({
             message: t('passwordRequirements'),
           }),
       }),
-    [t],
+    [t]
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,19 +61,26 @@ export const PasswordResetForm = ({
 
       try {
         if (!token) throw new Error()
-        await api.auth.verify({ type: 'email', token_hash: token })
-        const user = await api.auth.updateUser({ password })
+        await verifyAuthUser({ type: 'email', token })
+        const user = await updateAuthUser({ password })
         setEmail(user.email!)
+        setView('password_updated')
+        searchParams.delete('resetToken')
       } catch (e) {
-        log.error(e)
+        const error = e as PostgrestError
+        if (error.code === 'same_password') {
+          form.setError('password', { message: t('passwordSameAsOld') })
+          return form.setFocus('password')
+        }
         setView('invalid_password_reset')
+        cookies.delete('user')
+        searchParams.delete('resetToken')
         return
+      } finally {
+        await logout()
       }
-
-      setView('password_updated')
-      await api.auth.logout()
     },
-    [api.auth, setEmail, setView, token],
+    [setEmail, setView, token, searchParams, t, form]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

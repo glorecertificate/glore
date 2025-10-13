@@ -1,15 +1,15 @@
 import { useCallback, useMemo } from 'react'
 
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { Card, CardContent } from '@repo/ui/components/card'
-import { Markdown } from '@repo/ui/components/markdown'
-import { cn } from '@repo/ui/utils'
-
-import { type Question, type QuestionOption } from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Markdown } from '@/components/ui/markdown'
+import { useI18n } from '@/hooks/use-i18n'
+import { type Question, type QuestionOption } from '@/lib/data'
+import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({
   completed,
@@ -21,12 +21,12 @@ const CourseQuestion = ({
   question: Question
   title?: string
 }) => {
-  const { localize } = useLocale()
+  const { localize } = useI18n()
   const t = useTranslations('Courses')
 
   const isCorrectUserAnswer = useMemo(
     () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
-    [question],
+    [question]
   )
 
   const onOptionClick = useCallback(
@@ -39,7 +39,7 @@ const CourseQuestion = ({
         duration: 1200,
       })
     },
-    [onComplete, question, completed, t],
+    [onComplete, question, completed, t]
   )
 
   const optionClassName = useCallback(
@@ -48,9 +48,9 @@ const CourseQuestion = ({
         'flex-1',
         question.answered && 'cursor-default',
         option.isUserAnswer && 'border-foreground/60 bg-accent',
-        question.answered && !option.isUserAnswer && 'text-muted-foreground',
+        question.answered && !option.isUserAnswer && 'text-muted-foreground'
       ),
-    [question.answered],
+    [question.answered]
   )
 
   return (
@@ -72,7 +72,7 @@ const CourseQuestion = ({
         >
           <CardContent>
             <div className="flex items-start gap-2">
-              <div className="flex items-start pt-[2px]">
+              <div className="flex items-start pt-0.5">
                 {isCorrectUserAnswer ? (
                   <CheckCircleIcon className="size-5 text-green-500" />
                 ) : (
@@ -107,7 +107,7 @@ export const CourseQuestions = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{t('questionsTitle')}</h3>}
+      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{t('questionsTitle')}</h3>}
       <p className="mb-4 font-medium">
         {t('questionsSubtitle', {
           count: questions.length,

@@ -3,13 +3,15 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { i18n, useTranslations } from '@repo/i18n'
-import { I18nProvider } from '@repo/i18n/provider'
-import { Button } from '@repo/ui/components/button'
-import { ServerErrorGraphic } from '@repo/ui/graphics/server-error'
-import { hasHistory } from '@repo/utils/has-history'
-import { type AnyError } from '@repo/utils/types'
+import { useTranslations } from 'next-intl'
 
+import { hasHistory } from '@glore/utils/has-history'
+import { type AnyError } from '@glore/utils/types'
+
+import { ServerErrorGraphic } from '@/components/graphics/server-error'
+import { I18nProvider } from '@/components/providers/i18n-provider'
+import { Button } from '@/components/ui/button'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/intl'
 import { cookies } from '@/lib/storage'
 
 const GlobalErrorView = () => {
@@ -33,7 +35,7 @@ const GlobalErrorView = () => {
     <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
       <ServerErrorGraphic width={240} />
       <div className="text-center">
-        <h2 className="mb-4 font-mono text-2xl font-bold tracking-tight text-foreground">{t('title')}</h2>
+        <h2 className="mb-4 font-bold font-mono text-2xl text-foreground tracking-tight">{t('title')}</h2>
         <p className="mb-8 font-mono text-foreground/75">{t('message')}</p>
         <div className="flex justify-center gap-4">
           {hasHistory() ? (
@@ -59,8 +61,8 @@ const GlobalErrorView = () => {
 export default ({ error }: { error: AnyError }) => {
   const locale = useMemo(() => {
     const cookieLocale = cookies.get('NEXT_LOCALE')
-    if (cookieLocale && !i18n.locales.includes(cookieLocale)) return cookieLocale
-    return i18n.defaultLocale
+    if (cookieLocale && !LOCALES.includes(cookieLocale)) return cookieLocale
+    return DEFAULT_LOCALE
   }, [])
 
   useEffect(() => {
@@ -71,7 +73,7 @@ export default ({ error }: { error: AnyError }) => {
     <html lang={locale}>
       <body>
         <I18nProvider locale={locale}>
-          <div className="flex min-h-[100vh] flex-col items-center bg-background px-4 py-12 text-center">
+          <div className="flex min-h-screen flex-col items-center bg-background px-4 py-12 text-center">
             <GlobalErrorView />
           </div>
         </I18nProvider>

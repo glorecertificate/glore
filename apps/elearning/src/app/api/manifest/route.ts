@@ -1,19 +1,22 @@
 import { type MetadataRoute } from 'next'
+import { NextResponse } from 'next/server'
+
+import { type Locale } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
 import metadata from '@config/metadata'
-import { i18n, type Locale } from '@repo/i18n'
 
-import { getTranslations } from '@/lib/i18n'
-import { Public } from '@/lib/storage'
+import { DEFAULT_LOCALE } from '@/lib/intl'
+import { publicAsset } from '@/lib/storage'
 
 export const GET = async (request: Request) => {
   const url = new URL(request.url)
-  const locale = (url.searchParams.get('locale') ?? i18n.defaultLocale) as Locale
-  const t = await getTranslations('App', { locale })
+  const locale = (url.searchParams.get('locale') ?? DEFAULT_LOCALE) as Locale
+  const t = await getTranslations({ namespace: 'Metadata', locale })
 
   const manifest: MetadataRoute.Manifest = {
-    name: metadata.title,
-    short_name: metadata.name,
+    name: metadata.name,
+    short_name: metadata.shortName,
     description: t('pwaDescription'),
     start_url: '/',
     background_color: metadata.themeColor,
@@ -23,27 +26,27 @@ export const GET = async (request: Request) => {
       {
         purpose: 'any',
         sizes: '192x192',
-        src: Public.WebAppIcon192,
+        src: publicAsset('web-app-icon-192x192.png'),
         type: 'image/png',
       },
       {
         purpose: 'any',
         sizes: '512x512',
-        src: Public.WebAppIcon512,
+        src: publicAsset('web-app-icon-512x512.png'),
         type: 'image/png',
       },
     ],
     screenshots: [
       {
         form_factor: 'wide',
-        src: Public.WebAppScreenshotWide,
+        src: publicAsset('web-app-screenshot-wide.png'),
         sizes: '1280x720',
         type: 'image/png',
         label: metadata.name,
       },
       {
         form_factor: 'narrow',
-        src: Public.WebAppScreenshotNarrow,
+        src: publicAsset('web-app-screenshot-narrow.png'),
         sizes: '720x1280',
         type: 'image/png',
         label: metadata.name,
@@ -51,9 +54,5 @@ export const GET = async (request: Request) => {
     ],
   }
 
-  return new Response(JSON.stringify(manifest), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return NextResponse.json<MetadataRoute.Manifest>(manifest, { status: 200 })
 }

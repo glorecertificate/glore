@@ -20,6 +20,7 @@ export const useHeader = ({
 
   const { setHeader, setShadow, ...props } = context
 
+  // biome-ignore lint: exhaustive-deps
   useEffect(() => {
     if (header) setHeader(header)
     if (shadow !== undefined) setShadow(shadow)
@@ -28,7 +29,6 @@ export const useHeader = ({
       setHeader(undefined)
       setShadow(true)
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [])
 
   return {

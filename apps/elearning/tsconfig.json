@@ -1,16 +1,12 @@
 {
-  "extends": "@repo/tsconfig/nextjs",
-  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next-env.d.ts"],
-  "exclude": ["build", "node_modules"],
+  "extends": "@glore/tsconfig/nextjs",
+  "include": ["src", "supabase", "*.ts", ".next/types/validator.ts"],
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@config/*": ["../../config/*.json"],
-      "next/types/*": ["./.next/types/*"],
-      "supabase/*": ["./supabase/*"]
+      "@config/*": ["../../config/*.json"]
     },
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "types": ["deno"]
   }
 }

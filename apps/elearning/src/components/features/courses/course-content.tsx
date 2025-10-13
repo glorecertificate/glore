@@ -2,24 +2,17 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { useLocale } from '@repo/i18n'
-import { RichTextEditor } from '@repo/ui/blocks/rich-text-editor'
-import { cn } from '@repo/ui/utils'
-import { log } from '@repo/utils/logger'
-
+import { RichTextEditor } from '@/components/blocks/rich-text-editor'
+import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
-import { useApi } from '@/hooks/use-api'
 import { useCourse } from '@/hooks/use-course'
-import { useSyncState } from '@/hooks/use-sync-state'
-import { type Lesson, type Question, type QuestionOption } from '@/lib/api'
+import { type Lesson, type Question, type QuestionOption, submitAnswers } from '@/lib/data'
+import { cn } from '@/lib/utils'
 
 export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: boolean }) => {
-  const api = useApi()
-  const { language, setCourse, step } = useCourse()
-  const { localize } = useLocale()
-  const { setSyncState } = useSyncState()
+  const { setCourse, step } = useCourse()
 
   const onQuestionAnswer = useCallback(
     async (question: Question, option: QuestionOption) => {
@@ -36,22 +29,19 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
                         answered: true,
                         options: q.options.map(o => ({ ...o, isUserAnswer: o.id === option.id })),
                       }
-                    : q,
+                    : q
                 ),
               }
-            : lesson,
+            : lesson
         ),
       }))
       try {
-        setSyncState('syncing')
-        await api.courses.submitAnswers([{ id: question.id }])
-        setSyncState('complete')
+        await submitAnswers([{ id: question.id }])
       } catch (e) {
-        setSyncState('error')
-        log.error(e)
+        console.error(e)
       }
     },
-    [api.courses, step, setCourse, setSyncState],
+    [step, setCourse]
   )
 
   const onEvaluation = useCallback(
@@ -64,11 +54,11 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
                 ...lesson,
                 evaluations: evaluations?.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
               }
-            : lesson,
+            : lesson
         ),
       }))
     },
-    [step, setCourse],
+    [step, setCourse]
   )
 
   const onAssessment = useCallback(
@@ -78,18 +68,20 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
         lessons: lessons?.map((lesson, i) =>
           i === step && lesson.assessment
             ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }
-            : lesson,
+            : lesson
         ),
       }))
     },
-    [step, setCourse],
+    [step, setCourse]
   )
 
   const blockStyles = useMemo(() => cn('pt-4', preview && 'mt-8 border-t-2 pt-6'), [preview])
 
   return (
     <div>
-      <RichTextEditor autoFocus defaultValue={localize(lesson.content, language)} variant="fullWidth" />
+      <RichTextEditorProvider>
+        <RichTextEditor variant="fullWidth" />
+      </RichTextEditorProvider>
       {lesson.type === 'questions' && lesson.questions && (
         <CourseQuestions
           className={blockStyles}

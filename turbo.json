@@ -1,6 +1,5 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
   "globalDependencies": [
     "config/**",
     ".env",
@@ -12,72 +11,59 @@
   ],
   "globalEnv": [
     "APP_URL",
+    "STORAGE_URL",
     "COOKIE_PREFIX",
-    "NEXT_TELEMETRY_DISABLED",
-    "NODE_ENV",
-    "SUPABASE_DB_URL",
-    "SUPABASE_TOKEN",
+    "SUPABASE_ACCESS_TOKEN",
+    "OPENAI_API_KEY",
+    "OPENAI_MODEL",
     "TURBO_TEAM",
-    "TURBO_TELEMETRY_DISABLED",
-    "TURBO_TOKEN",
-    "VERCEL_TELEMETRY_DISABLED"
+    "TURBO_TOKEN"
   ],
   "tasks": {
+    "typegen": {
+      "dependsOn": ["^typegen"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "NEXT_PUBLIC_*",
         "ENABLE_EXPERIMENTAL_COREPACK",
-        "OPENAI_API_KEY",
-        "OPENAI_MODEL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_URL",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "EMAIL_SENDER",
+        "SMTP_HOST",
+        "SMTP_PASSWORD",
+        "SMTP_USER",
         "POSTGRES_DATABASE",
         "POSTGRES_HOST",
         "POSTGRES_PASSWORD",
         "POSTGRES_PRISMA_URL",
-        "POSTGRES_URL",
         "POSTGRES_URL_NON_POOLING",
-        "POSTGRES_USER",
-        "SUPABASE_ANON_KEY",
-        "SUPABASE_JWT_SECRET",
-        "SUPABASE_SERVICE_ROLE_KEY",
-        "SUPABASE_URL"
+        "POSTGRES_URL",
+        "POSTGRES_USER"
       ],
-      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "build/**"]
+      "outputs": [".next/**", "!.next/cache/**", ".vercel/output/**", "dist/**"]
     },
     "start": {
       "dependsOn": ["build"],
       "cache": false,
-      "persistent": true,
-      "env": ["OPENAI_API_KEY", "OPENAI_MODEL", "STORAGE_URL", "SUPABASE_ANON_KEY", "SUPABASE_URL"]
+      "persistent": true
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "env": ["OPENAI_API_KEY", "OPENAI_MODEL", "STORAGE_URL", "SUPABASE_ANON_KEY", "SUPABASE_URL"]
+      "persistent": true
     },
-    "watch": {
+    "edge": {
       "cache": false,
       "persistent": true
     },
-    "typegen": {
-      "dependsOn": ["^typegen"],
-      "outputs": ["**/*.d.ts", "supabase/types.ts"]
-    },
-    "type-check": {
-      "dependsOn": ["^type-check"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"]
+    "email": {
+      "cache": false,
+      "persistent": true
     },
     "check": {
       "dependsOn": ["^check"]
-    },
-    "db": {
-      "cache": false,
-      "dependsOn": ["^db"],
-      "outputs": ["supabase/**"]
     }
   }
 }

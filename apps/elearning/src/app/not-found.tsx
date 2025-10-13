@@ -1,15 +1,21 @@
-import { Button } from '@repo/ui/components/button'
+import { Suspense, use } from 'react'
+
+import { getTranslations } from 'next-intl/server'
 
 import { ErrorView } from '@/components/layout/error-view'
+import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { createApi } from '@/lib/api/ssr'
-import { getTranslations } from '@/lib/i18n'
+import { getCurrentUser } from '@/lib/data/server'
 
-export default async () => {
-  const api = await createApi()
-  const t = await getTranslations('Common')
-  const user = await api.users.getCurrent()
+const resolveNotFoundContent = async () => {
+  const [t, user] = await Promise.all([getTranslations('Common'), getCurrentUser()])
   const message = user ? t('backToHome') : t('accessApp')
+
+  return { message }
+}
+
+const NotFoundContent = () => {
+  const { message } = use(resolveNotFoundContent())
 
   return (
     <ErrorView className="min-h-screen" type="not-found">
@@ -19,3 +25,9 @@ export default async () => {
     </ErrorView>
   )
 }
+
+export default () => (
+  <Suspense fallback={null}>
+    <NotFoundContent />
+  </Suspense>
+)

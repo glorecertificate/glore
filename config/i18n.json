@@ -14,5 +14,25 @@
     }
   },
   "defaultLocale": "en",
-  "titleCaseLocales": ["en"]
+  "titleCaseLocales": ["en"],
+  "formats": {
+    "dateTime": {
+      "short": {
+        "day": "numeric",
+        "month": "short",
+        "year": "numeric"
+      }
+    },
+    "list": {
+      "enumeration": {
+        "style": "long",
+        "type": "conjunction"
+      }
+    },
+    "number": {
+      "precise": {
+        "maximumFractionDigits": 5
+      }
+    }
+  }
 }

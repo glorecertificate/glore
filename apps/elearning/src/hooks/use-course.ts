@@ -2,13 +2,10 @@
 
 import { createContext, useContext } from 'react'
 
-import { type Locale } from '@repo/i18n'
+import { type Locale } from 'next-intl'
 
-import { type Course } from '@/lib/api'
-
-const COURSE_TABS = ['settings', 'info', 'editor', 'preview'] as const
-
-export type CourseTab = (typeof COURSE_TABS)[number]
+import { type Course } from '@/lib/data'
+import { COURSE_TABS, type CourseTab } from '@/lib/navigation'
 
 export interface CourseContext {
   course: Partial<Course>
@@ -36,7 +33,7 @@ export const CourseProvider = CourseContext.Provider
  */
 export const createCourseProviderValue = (
   course: Partial<Course>,
-  props: Omit<CourseContext, 'initialCourse'>,
+  props: Omit<CourseContext, 'initialCourse'>
 ): CourseContext => ({
   initialCourse: structuredClone(course),
   ...props,

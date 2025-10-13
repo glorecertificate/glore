@@ -1,15 +1,31 @@
+import { Suspense, use } from 'react'
+
 import { CourseList } from '@/components/features/courses/course-list'
 import { createMetadata } from '@/lib/metadata'
-import { getCookie } from '@/lib/storage/ssr'
+import { serverCookies } from '@/lib/storage/server'
 
-export const generateMetadata = createMetadata({
-  title: 'Navigation.courses',
+export const metadata = createMetadata({
+  title: 'courses',
 })
 
-export default async () => {
-  const coursesLanguage = await getCookie('course-locale')
-  const languageFilter = await getCookie('course-list-locales')
-  const tab = await getCookie('course-list-view')
+const resolveCoursePageDefaults = async () => {
+  const { get } = await serverCookies()
+
+  return {
+    coursesLanguage: get('course-locale'),
+    languageFilter: get('course-list-locales'),
+    tab: get('course-list-view'),
+  }
+}
+
+const CoursesPageContent = () => {
+  const { coursesLanguage, languageFilter, tab } = use(resolveCoursePageDefaults())
 
   return <CourseList defaultCoursesLanguage={coursesLanguage} defaultLanguageFilter={languageFilter} defaultTab={tab} />
 }
+
+export default () => (
+  <Suspense fallback={null}>
+    <CoursesPageContent />
+  </Suspense>
+)

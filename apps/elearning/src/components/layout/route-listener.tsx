@@ -2,19 +2,21 @@
 
 import { useEffect } from 'react'
 
+import { useSidebar } from '@/components/ui/sidebar'
 import { useHeader } from '@/hooks/use-header'
-import { useNavigation } from '@/hooks/use-navigation'
+import { usePathname } from '@/hooks/use-pathname'
 
 export const RouteListener = () => {
   const { setHeader, showShadow } = useHeader()
-  const { pathname, setUiPathname } = useNavigation()
+  const pathname = usePathname()
+  const { setActivePath } = useSidebar()
 
+  // biome-ignore lint: exhaustive-deps
   useEffect(() => {
     setHeader(undefined)
     showShadow(true)
-    setUiPathname(pathname)
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    setActivePath(pathname)
   }, [pathname])
 
-  return <></>
+  return null
 }

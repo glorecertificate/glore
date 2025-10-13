@@ -3,22 +3,22 @@
 import { useCallback, useMemo } from 'react'
 
 import { EyeIcon } from 'lucide-react'
+import { type Locale, useTranslations } from 'next-intl'
 
-import { useTranslations, type Locale } from '@repo/i18n'
-import { Badge } from '@repo/ui/components/badge'
-import { Button } from '@repo/ui/components/button'
-import { MotionTabsList, MotionTabsTrigger } from '@repo/ui/components/motion-tabs'
-import { Progress } from '@repo/ui/components/progress'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { useScroll } from '@repo/ui/hooks/use-scroll'
-import { cn } from '@repo/ui/utils'
-
+import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { LanguageSelect } from '@/components/ui/language-select'
+import { MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
+import { Progress } from '@/components/ui/progress'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
+import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
+import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
-  const { course, language, setLanguage, step, tab, tabs } = useCourse()
+  const { course, language, setLanguage, step, tabs } = useCourse()
   const { scrolled } = useScroll()
   const { user } = useSession()
   const t = useTranslations('Courses')
@@ -26,20 +26,18 @@ export const CourseHeader = () => {
   const hasLessons = useMemo(() => course.lessons && course.lessons.length > 0, [course.lessons])
   const progressColor = useMemo(() => (course.completion === 100 ? 'success' : 'default'), [course.completion])
 
-  const showLanguage = useMemo(() => tab !== 'settings', [tab])
-
   const onLanguageChange = useCallback(
     (language: Locale) => {
       setLanguage(language)
     },
-    [setLanguage],
+    [setLanguage]
   )
 
   return (
     <div
       className={cn(
         'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-[72px] md:flex',
-        scrolled && 'border-b',
+        scrolled && 'border-b'
       )}
     >
       {user.canEdit ? (
@@ -52,30 +50,27 @@ export const CourseHeader = () => {
                 </MotionTabsTrigger>
               ))}
             </MotionTabsList>
-            {showLanguage && (
-              <LanguageSelect
-                contentProps={{ className: 'min-w-40' }}
-                controlled
-                onChange={onLanguageChange}
-                value={language}
-              />
-            )}
+            <LanguageSelect
+              contentProps={{ className: 'min-w-40' }}
+              controlled
+              onChange={onLanguageChange}
+              value={language}
+            />
           </div>
-          {showLanguage && (
-            <div className="flex items-center gap-2">
-              <Button size="sm" variant="outline">
-                {t('saveDraft')}
-              </Button>
-              <Button size="sm" variant="success">
-                {t('publish')}
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline">
+              {t('saveDraft')}
+            </Button>
+            <Button size="sm" variant="success">
+              {t('publish')}
+            </Button>
+          </div>
+          <CourseSettingsModal course={course} onOpenChange={() => {}} open={false} />
         </>
       ) : (
         <>
           <div className="flex h-full items-center gap-2">
-            <span className="pt-1 text-sm text-muted-foreground">
+            <span className="pt-1 text-muted-foreground text-sm">
               {hasLessons
                 ? t('lessonCount', {
                     count: String(step + 1),

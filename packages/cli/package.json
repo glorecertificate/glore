@@ -7,6 +7,6 @@
     "lint": "shellcheck *.sh **/*.sh"
   },
   "devDependencies": {
-    "shellcheck": "^3.1.0"
+    "shellcheck": "^4.1.0"
   }
 }

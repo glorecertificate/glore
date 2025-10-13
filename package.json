@@ -28,9 +28,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.5",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/types": "^19.8.1",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/types": "^20.0.0",
     "@glore/cli": "workspace:^",
     "@glore/tsconfig": "workspace:^",
     "@release-it/bumper": "^7.0.5",
@@ -42,7 +42,7 @@
     "release-it": "^19.0.5",
     "turbo": "^2.5.8",
     "typescript": "catalog:",
-    "vercel": "^44.7.3"
+    "vercel": "^48.2.9"
   },
   "resolutions": {
     "conventional-changelog-conventionalcommits": "8.0.0"

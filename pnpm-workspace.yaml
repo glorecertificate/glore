@@ -4,7 +4,7 @@ packages:
   - packages/stubs/*
 
 catalog:
-  "@supabase/supabase-js": 2.55.0
+  "@supabase/supabase-js": 2.75.0
   "@types/node": ^24.7.2
   "@types/react": ^19.2.2
   "@types/react-dom": ^19.2.2

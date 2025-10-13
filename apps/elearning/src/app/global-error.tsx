@@ -3,13 +3,14 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { i18n, useTranslations } from '@repo/i18n'
-import { I18nProvider } from '@repo/i18n/provider'
-import { Button } from '@repo/ui/components/button'
-import { ServerErrorGraphic } from '@repo/ui/graphics/server-error'
-import { hasHistory } from '@repo/utils/has-history'
-import { type AnyError } from '@repo/utils/types'
+import { i18nConfig } from '@glore/i18n'
+import { hasHistory } from '@glore/utils/has-history'
+import { type AnyError } from '@glore/utils/types'
 
+import { ServerErrorGraphic } from '@/components/graphics/server-error'
+import { I18nProvider } from '@/components/providers/i18n-provider'
+import { Button } from '@/components/ui/button'
+import { useTranslations } from '@/hooks/use-translations'
 import { cookies } from '@/lib/storage'
 
 const GlobalErrorView = () => {
@@ -33,7 +34,7 @@ const GlobalErrorView = () => {
     <div className="relative flex w-full grow flex-col items-center justify-center gap-6">
       <ServerErrorGraphic width={240} />
       <div className="text-center">
-        <h2 className="mb-4 font-mono text-2xl font-bold tracking-tight text-foreground">{t('title')}</h2>
+        <h2 className="mb-4 font-bold font-mono text-2xl text-foreground tracking-tight">{t('title')}</h2>
         <p className="mb-8 font-mono text-foreground/75">{t('message')}</p>
         <div className="flex justify-center gap-4">
           {hasHistory() ? (
@@ -59,8 +60,8 @@ const GlobalErrorView = () => {
 export default ({ error }: { error: AnyError }) => {
   const locale = useMemo(() => {
     const cookieLocale = cookies.get('NEXT_LOCALE')
-    if (cookieLocale && !i18n.locales.includes(cookieLocale)) return cookieLocale
-    return i18n.defaultLocale
+    if (cookieLocale && !i18nConfig.locales.includes(cookieLocale)) return cookieLocale
+    return i18nConfig.defaultLocale
   }, [])
 
   useEffect(() => {

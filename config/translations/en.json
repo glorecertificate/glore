@@ -4,14 +4,25 @@
     "pwaDescription": "Install GloRe on your device to access courses, receive notifications, and manage your certificates offline."
   },
   "Email": {
-    "recovery": {
+    "common": {
+      "outro": "Thanks,",
+      "signature": "The GloRe Team",
+      "copyright": "© {year} Associazione Joint. All rights reserved.",
+      "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italy",
+      "app": "GloRe",
+      "contactUs": "Contact Us",
+      "homepage": "Homepage"
+    },
+    "auth/recovery": {
       "subject": "Reset your GloRe password",
       "greeting": "Hello there,",
       "greetingUser": "Hello {user},",
-      "intro": "You recently requested to reset your password for your account. Click the button below to reset it.",
+      "intro": "You recently requested to reset your password for your account.",
+      "buttonInstruction": "Click the button below to reset it:",
       "button": "Reset your password",
-      "instruction": "If you did not request a password reset, please ignore this email or reply to let us know.",
-      "outro": "Thanks,\nThe Team"
+      "manualLink": "If the button above does not work, open the following link in your browser:",
+      "instructions": "This password reset link is valid for the next 24 hours.",
+      "footer": "You're receiving this email because you requested a password reset for your GloRe account. If you didn't request it, please ignore this email or <emailLink>let us know</emailLink>."
     }
   },
   "Errors": {

@@ -1,14 +1,15 @@
 import { useCallback, useMemo } from 'react'
 
 import { LanguagesIcon, MailIcon, MapPin, PencilIcon, ShieldUserIcon } from 'lucide-react'
+import { useFormatter } from 'next-intl'
 
-import { useFormatter, useLocale, useTranslations } from '@repo/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/ui/components/avatar'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
 import { type User } from '@/lib/api'
-import { googleMaps } from '@/lib/navigation'
+import { maps } from '@/lib/navigation'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
   const { locale } = useLocale()
@@ -16,7 +17,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const format = useFormatter()
 
   const location = useMemo(() => {
-    if (!user.city && !user.country) return undefined
+    if (!(user.city || user.country)) return
     const locations = []
     if (user.city) locations.push(user.city)
     if (user.country) locations.push(t.dynamic(`Countries.${user.country}`))
@@ -24,18 +25,18 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   }, [t, user.city, user.country])
 
   const locationUrl = useMemo(() => {
-    if (!location) return undefined
-    return googleMaps(location)
+    if (!location) return
+    return maps(location)
   }, [location])
 
   const languages = useMemo(() => {
-    const langs = user.languages!.map(lang => t.dynamic(`Languages.${lang}`))
+    const langs = user.languages?.map(lang => t.dynamic(`Languages.${lang}`))!
     const list = locale === 'en' ? langs : langs.map(lang => lang.toLowerCase())
     return t('User.speaks', { languages: format.list(list) })
   }, [format, locale, t, user.languages])
 
   const contactTitle = useMemo(() => {
-    if (!user.firstName) return undefined
+    if (!user.firstName) return
     return t('User.contact', { user: user.firstName })
   }, [t, user.firstName])
 
@@ -45,19 +46,19 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
       const hasValue = Array.isArray(user[key]) ? user[key]?.length > 0 : Boolean(user[key])
       return isVisibleKey && hasValue
     },
-    [hide, user],
+    [hide, user]
   )
 
   return (
     <div className="flex items-start gap-3">
       <Avatar className="size-7 rounded-full object-cover shadow-sm">
         {user.avatarUrl && <AvatarImage alt={user.fullName ?? ''} src={user.avatarUrl} />}
-        <AvatarFallback className="text-xs font-semibold text-muted-foreground">{user.initials}</AvatarFallback>
+        <AvatarFallback className="font-semibold text-muted-foreground text-xs">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1">
-            <h4 className="text-sm leading-none font-semibold">{user.fullName}</h4>
+            <h4 className="font-semibold text-sm leading-none">{user.fullName}</h4>
             {isVisible('isAdmin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
@@ -81,7 +82,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
           </div>
           {isVisible('pronouns') && <small className="text-[11px] text-muted-foreground">{user.pronouns}</small>}
         </div>
-        <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
+        <div className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           {(isVisible('country') || isVisible('city')) && location && (
             <div className="flex items-center gap-1.5">
               <MapPin className="size-3.5" />

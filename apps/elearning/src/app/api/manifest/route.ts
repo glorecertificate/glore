@@ -1,19 +1,21 @@
 import { type MetadataRoute } from 'next'
+import { NextResponse } from 'next/server'
 
 import metadata from '@config/metadata'
-import { i18n, type Locale } from '@repo/i18n'
 
+import { type Locale, i18nConfig } from '@glore/i18n'
+
+import { PublicAsset } from '@/lib/assets'
 import { getTranslations } from '@/lib/i18n'
-import { Public } from '@/lib/storage'
 
 export const GET = async (request: Request) => {
   const url = new URL(request.url)
-  const locale = (url.searchParams.get('locale') ?? i18n.defaultLocale) as Locale
+  const locale = (url.searchParams.get('locale') ?? i18nConfig.defaultLocale) as Locale
   const t = await getTranslations('App', { locale })
 
   const manifest: MetadataRoute.Manifest = {
-    name: metadata.title,
-    short_name: metadata.name,
+    name: metadata.name,
+    short_name: metadata.shortName,
     description: t('pwaDescription'),
     start_url: '/',
     background_color: metadata.themeColor,
@@ -23,27 +25,27 @@ export const GET = async (request: Request) => {
       {
         purpose: 'any',
         sizes: '192x192',
-        src: Public.WebAppIcon192,
+        src: PublicAsset.WebAppIcon192,
         type: 'image/png',
       },
       {
         purpose: 'any',
         sizes: '512x512',
-        src: Public.WebAppIcon512,
+        src: PublicAsset.WebAppIcon512,
         type: 'image/png',
       },
     ],
     screenshots: [
       {
         form_factor: 'wide',
-        src: Public.WebAppScreenshotWide,
+        src: PublicAsset.WebAppScreenshotWide,
         sizes: '1280x720',
         type: 'image/png',
         label: metadata.name,
       },
       {
         form_factor: 'narrow',
-        src: Public.WebAppScreenshotNarrow,
+        src: PublicAsset.WebAppScreenshotNarrow,
         sizes: '720x1280',
         type: 'image/png',
         label: metadata.name,
@@ -51,9 +53,5 @@ export const GET = async (request: Request) => {
     ],
   }
 
-  return new Response(JSON.stringify(manifest), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return NextResponse.json<MetadataRoute.Manifest>(manifest, { status: 200 })
 }

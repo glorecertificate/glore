@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect } from 'react'
 
-import { confetti } from '@repo/ui/components/confetti'
-
+import { confetti } from '@/components/ui/confetti'
 import { useNavigation } from '@/hooks/use-navigation'
 
 export default () => {
@@ -17,7 +16,7 @@ export default () => {
         origin: { y: 0.6 },
         colors: ['#ff0', '#f00', '#0f0', '#00f'],
       }),
-    [],
+    []
   )
 
   useEffect(() => {

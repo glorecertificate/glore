@@ -1,8 +1,0 @@
-/apps/
-/packages/
-
-# Build artifacts
-/pnpm-lock.yaml
-
-# Format-specific
-/.github/chatmodes/*.chatmode.md

@@ -1,13 +1,12 @@
-import { type DateTimeFormatOptions, type NumberFormatOptions } from 'use-intl/core'
-
 import config from '@config/i18n'
+import { type DateTimeFormatOptions, type NumberFormatOptions } from 'next-intl'
 
 import { type Locale, type LocaleItem } from './types'
 
 /**
  * Internationalization configuration object.
  */
-export const i18n = {
+export const i18nConfig = {
   /**
    * List of locales supported by the application.
    */
@@ -22,7 +21,7 @@ export const i18n = {
         icon: flag,
         label: name,
         value,
-      }) as const as LocaleItem,
+      }) as const as LocaleItem
   ),
   /**
    * Default application locale.

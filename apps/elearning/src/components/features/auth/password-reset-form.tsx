@@ -6,15 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@repo/ui/components/form'
-import { PasswordInput } from '@repo/ui/components/password-input'
-import { log } from '@repo/utils/logger'
-import { type Enum } from '@repo/utils/types'
+import { type Enum } from '@glore/utils/types'
 
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormMessage, defaultFormDisabled } from '@/components/ui/form'
+import { PasswordInput } from '@/components/ui/password-input'
 import { useApi } from '@/hooks/use-api'
-import { PASSWORD_REGEX } from '@/lib/api'
+import { useTranslations } from '@/hooks/use-translations'
+import { PASSWORD_REGEX } from '@/lib/db'
 import { type AuthView } from '@/lib/navigation'
 
 export const PasswordResetForm = ({
@@ -44,7 +43,7 @@ export const PasswordResetForm = ({
             message: t('passwordRequirements'),
           }),
       }),
-    [t],
+    [t]
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,7 +63,7 @@ export const PasswordResetForm = ({
         const user = await api.auth.updateUser({ password })
         setEmail(user.email!)
       } catch (e) {
-        log.error(e)
+        console.error(e)
         setView('invalid_password_reset')
         return
       }
@@ -72,7 +71,7 @@ export const PasswordResetForm = ({
       setView('password_updated')
       await api.auth.logout()
     },
-    [api.auth, setEmail, setView, token],
+    [api.auth, setEmail, setView, token]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

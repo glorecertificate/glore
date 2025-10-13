@@ -1,29 +1,20 @@
 {
-  "name": "@repo/i18n",
+  "name": "@glore/i18n",
+  "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./provider": "./src/provider.tsx"
+    ".": "./src/index.ts"
   },
   "scripts": {
-    "type-check": "tsc",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "check": "pnpm type-check && pnpm lint"
+    "type-check": "tsc --noEmit"
   },
-  "prettier": "@repo/prettier-config",
   "dependencies": {
-    "@repo/utils": "workspace:^",
-    "react": "catalog:",
-    "use-intl": "^4.3.9"
+    "intl-messageformat": "^10.7.18",
+    "react": "catalog:"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:^",
-    "@repo/prettier-config": "workspace:^",
-    "@repo/tsconfig": "workspace:^",
+    "@glore/tsconfig": "workspace:^",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
+    "next-intl": "catalog:",
     "typescript": "catalog:"
   }
 }

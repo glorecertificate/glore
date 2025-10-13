@@ -4,14 +4,14 @@ import { useMemo } from 'react'
 
 import { Award, Building, CalendarIcon, Clock, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Badge } from '@repo/ui/components/badge'
-import { Button } from '@repo/ui/components/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@repo/ui/components/card'
-import { Separator } from '@repo/ui/components/separator'
-
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
+import { Separator } from '@/components/ui/separator'
+import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Certificate } from '@/lib/api'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
@@ -70,7 +70,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
       <CardContent className="space-y-6">
         <div className="flex flex-col items-center justify-center space-y-2">
           <p>{t('Certificates.certificateMessagePre')}</p>
-          <h3 className="text-xl font-bold">
+          <h3 className="font-bold text-xl">
             {user.firstName} {user.lastName}
           </h3>
           <p>

@@ -1,9 +1,13 @@
-import { type AppRouteHandlerRoutes } from 'next/types/routes'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import metadata from '@config/metadata'
-import { i18n, useLocale, useTranslations, type Locale, type Namespace, type NamespaceKey } from '@repo/i18n'
-import { usePWA } from '@repo/ui/hooks/use-pwa'
+import { type AppRouteHandlerRoutes } from 'next/types/routes'
+
+import { type Locale, type Namespace, type NamespaceKey, i18nConfig } from '@glore/i18n'
+
+import { useLocale } from '@/hooks/use-locale'
+import { usePWA } from '@/hooks/use-pwa'
+import { useTranslations } from '@/hooks/use-translations'
 
 const OG_TITLE_SELECTORS = ['meta[property="og:title"]', 'meta[name="twitter:title"]'] as const
 const DESCRIPTION_SELECTOR = 'meta[name="description"]' as const
@@ -43,16 +47,20 @@ export const useMetadata = <T extends Namespace = never>({
   const tApp = useTranslations('App')
   const { displayMode } = usePWA()
 
-  const [titleKey, setTitleKey] = useState<NamespaceKey<T> | undefined>(options.titleKey)
-  const [descriptionKey, setDescriptionKey] = useState<NamespaceKey<T> | undefined>(options.descriptionKey)
+  const initialTitleKey = options.titleKey
+  const initialDescriptionKey = options.descriptionKey
+  const initialImage = options.image
+
+  const [titleKey, setTitleKey] = useState<NamespaceKey<T> | undefined>(initialTitleKey)
+  const [descriptionKey, setDescriptionKey] = useState<NamespaceKey<T> | undefined>(initialDescriptionKey)
 
   const getMetaContent = useCallback((selectors: readonly string[]) => {
-    if (typeof document === 'undefined') return undefined
+    if (typeof document === 'undefined') return
     for (const selector of selectors) {
       const element = document.querySelector<HTMLMetaElement>(selector)
       if (element) return element.content
     }
-    return undefined
+    return
   }, [])
 
   const updateMetaSelectors = useCallback((selectors: readonly string[], value: string) => {
@@ -75,7 +83,7 @@ export const useMetadata = <T extends Namespace = never>({
 
   const description = useMemo(
     () => (descriptionKey ? t.dynamic(descriptionKey) : tApp('description')),
-    [descriptionKey, t, tApp],
+    [descriptionKey, t, tApp]
   )
 
   const image = useMemo(() => getMetaContent(IMAGE_SELECTORS), [getMetaContent])
@@ -84,7 +92,7 @@ export const useMetadata = <T extends Namespace = never>({
     if (!title) return
     const content =
       displayMode === 'browser'
-        ? `${title} ${metadata.titleSeparator} ${fullTitle ? metadata.title : metadata.name}`
+        ? `${title} ${metadata.separator} ${fullTitle ? metadata.name : metadata.shortName}`
         : title
     document.title = content
     if (!ogTitle) return
@@ -104,20 +112,18 @@ export const useMetadata = <T extends Namespace = never>({
       html.setAttribute('lang', language)
       updateMetaSelectors([OG_LOCALE_SELECTOR], language)
       updateLinkSelectors([MANIFEST_SELECTOR], `${MANIFEST_ROUTE}?locale=${language}`)
-      updateMetaSelectors([OG_ALTERNATE_LOCALE_SELECTOR], i18n.locales.filter(l => l !== language)[0])
+      updateMetaSelectors([OG_ALTERNATE_LOCALE_SELECTOR], i18nConfig.locales.filter(l => l !== language)[0])
     },
-    [updateLinkSelectors, updateMetaSelectors],
+    [updateLinkSelectors, updateMetaSelectors]
   )
 
   const setImage = useCallback((image: string) => updateMetaSelectors(IMAGE_SELECTORS, image), [updateMetaSelectors])
 
   useEffect(() => {
-    if (!options) return
-    if (options.titleKey) setTitleKey(options.titleKey)
-    if (options.descriptionKey) setDescriptionKey(options.descriptionKey)
-    if (options.image) setImage(options.image)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    if (initialTitleKey) setTitleKey(initialTitleKey)
+    if (initialDescriptionKey) setDescriptionKey(initialDescriptionKey)
+    if (initialImage) setImage(initialImage)
+  }, [setImage, initialDescriptionKey, initialImage, initialTitleKey])
 
   useEffect(() => {
     setLanguage(locale)
@@ -128,8 +134,7 @@ export const useMetadata = <T extends Namespace = never>({
     }, delay)
 
     return () => clearTimeout(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [description, locale, title])
+  }, [locale, delay, setLanguage, updateDescription, updateTitle])
 
   return {
     title,

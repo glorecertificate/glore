@@ -1,16 +1,16 @@
 'use server'
 
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
-import { createDatabase } from '@/lib/db/ssr'
+import { createDatabaseClient } from '@/lib/server'
 
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   const { origin, searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const redirectTo = searchParams.get('redirect_to')?.toString()
 
   if (code) {
-    const { auth } = await createDatabase()
+    const { auth } = await createDatabaseClient()
     await auth.exchangeCodeForSession(code)
   }
 

@@ -4,8 +4,13 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { ArchiveIcon, ArrowDownIcon, ArrowUpIcon, ChevronsUpDown, PlusIcon, XIcon } from 'lucide-react'
 
-import { useLocale, useTranslations, type Locale } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
+import { type Locale } from '@glore/i18n'
+import { snakeToCamel } from '@glore/utils/string'
+import { type SnakeToCamel } from '@glore/utils/types'
+
+import { CourseCard } from '@/components/features/courses/course-card'
+import { NoResultsGraphic } from '@/components/graphics/no-results'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,21 +18,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@repo/ui/components/motion-tabs'
-import { MultiSelect } from '@repo/ui/components/multi-select'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { NoResultsGraphic } from '@repo/ui/graphics/no-results'
-import { cn } from '@repo/ui/utils'
-import { snakeToCamel } from '@repo/utils/string'
-import { type SnakeToCamel } from '@repo/utils/types'
-
-import { CourseCard } from '@/components/features/courses/course-card'
+} from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
+import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
+import { MultiSelect } from '@/components/ui/multi-select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api'
 import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
 import { cookies } from '@/lib/storage'
+import { cn } from '@/lib/utils'
 
 const EDITOR_SORTS = ['name', 'type'] as const
 const LEARNER_SORTS = ['name', 'progress', 'type'] as const
@@ -98,7 +100,7 @@ const SortType = ({
       if (!value || value !== sort) setValue(sort)
       setOpen(true)
     },
-    [inverseDirection, setDirection, setValue, value],
+    [inverseDirection, setDirection, setValue, value]
   )
 
   const handleSortItemSelect = useCallback((e: Event) => {
@@ -115,7 +117,7 @@ const SortType = ({
       <DropdownMenuTrigger asChild>
         <Button className="group h-9 gap-0 has-[>svg]:px-3" size="sm" variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
-          {value && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[value]}</span>}
+          {value && <span className="mr-0.5 font-medium text-muted-foreground text-xs">{options[value]}</span>}
           {icon}
         </Button>
       </DropdownMenuTrigger>
@@ -128,7 +130,7 @@ const SortType = ({
               <DropdownMenuItem
                 className={cn(
                   'group/dropdown-menu-item flex h-9 cursor-pointer items-center justify-between',
-                  value === option && 'cursor-default bg-accent dark:bg-background/40',
+                  value === option && 'cursor-default bg-accent dark:bg-background/40'
                 )}
                 key={option}
                 onClick={handleSortChange(option)}
@@ -144,7 +146,7 @@ const SortType = ({
                   </Button>
                 )}
               </DropdownMenuItem>
-            ),
+            )
         )}
         {value && (
           <>
@@ -180,12 +182,12 @@ export const CourseList = ({
 
   const pageDescription = useMemo(
     () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
-    [t, user.isAdmin, user.isEditor],
+    [t, user.isAdmin, user.isEditor]
   )
 
   const sortLanguages = useCallback(
     (langs: Locale[] | null) => langs?.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)) ?? [],
-    [locales],
+    [locales]
   )
 
   const activeLanguages = useMemo(() => sortLanguages(languageFilter), [languageFilter, sortLanguages])
@@ -229,7 +231,7 @@ export const CourseList = ({
           ? [...Object.values(CourseListEditorView)]
           : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
         : [...Object.values(CourseListLearnerView)],
-    [user.canEdit, activeLanguages.length],
+    [user.canEdit, activeLanguages.length]
   )
 
   const displayedCourses = useMemo(
@@ -246,7 +248,7 @@ export const CourseList = ({
             case 'name': {
               const titleA = localize(a.title)
               const titleB = localize(b.title)
-              if (!titleA || !titleB) return 0
+              if (!(titleA && titleB)) return 0
               return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
             }
             case 'progress':
@@ -257,7 +259,7 @@ export const CourseList = ({
               return a.createdAt < b.createdAt ? 1 : 0
           }
         }) as (Course & { language: Locale })[],
-    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection],
+    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection]
   )
 
   const emptyListTitle = useMemo(() => {
@@ -275,7 +277,7 @@ export const CourseList = ({
 
   const enhanceEmptyListMessage = useCallback(
     (message: string) => (hasFilters ? t.markup('withFilters', { message }) : t('atTheMoment', { message })),
-    [hasFilters, t],
+    [hasFilters, t]
   )
 
   const emptyListMessage = useMemo(() => {
@@ -309,13 +311,13 @@ export const CourseList = ({
       cookies.set('course-list-locales', selected)
       if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
     },
-    [activeTab, courses.partial.length],
+    [activeTab, courses.partial.length]
   )
 
   return (
     <>
       <div className="pb-2">
-        <h1 className="mb-2 text-3xl font-bold">{t('title')}</h1>
+        <h1 className="mb-2 font-bold text-3xl">{t('title')}</h1>
         <p className="text-muted-foreground">{pageDescription}</p>
       </div>
       <div className="w-full grow py-6">
@@ -372,8 +374,8 @@ export const CourseList = ({
               <div className="flex h-full flex-col items-center justify-center pt-10 text-center">
                 <NoResultsGraphic className="mb-8 w-64" />
                 <div className="flex flex-col items-center gap-1">
-                  <h3 className="text-lg font-medium">{emptyListTitle}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <h3 className="font-medium text-lg">{emptyListTitle}</h3>
+                  <p className="mt-1 text-muted-foreground text-sm">
                     {`${emptyListMessage}.`}
                     {hasFilters && (
                       <>

@@ -5,11 +5,13 @@ import { useCallback, useMemo } from 'react'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 
-import { useLocale, useTranslations, type IntlRecord } from '@repo/i18n'
-import { cn } from '@repo/ui/utils'
+import { type IntlRecord } from '@glore/i18n'
 
 import { useCourse } from '@/hooks/use-course'
+import { useLocale } from '@/hooks/use-locale'
 import { useSession } from '@/hooks/use-session'
+import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
 
 export const CourseSidebar = () => {
   const { course, language, setStep, step } = useCourse()
@@ -30,7 +32,7 @@ export const CourseSidebar = () => {
       if (isFuture(index) && isCompleted(index - 1)) return true
       return false
     },
-    [isCurrent, isPast, isFuture, isCompleted],
+    [isCurrent, isPast, isFuture, isCompleted]
   )
 
   const formatLessonTitle = useCallback(
@@ -38,17 +40,17 @@ export const CourseSidebar = () => {
       const localized = localize(title, language)
       return <span className={cn(!localized && 'text-muted-foreground/50')}>{localized ?? t('untitledLesson')}</span>
     },
-    [localize, language, t],
+    [localize, language, t]
   )
 
   const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
 
   const formatLessonMessage = useCallback(
     (index: number) => {
-      if (isReachable(index)) return undefined
+      if (isReachable(index)) return
       return t('completeLessonsToProceed')
     },
-    [isReachable, t],
+    [isReachable, t]
   )
 
   const getRelations = useCallback(
@@ -66,7 +68,7 @@ export const CourseSidebar = () => {
               targetId: `${index + 1}`,
             },
           ],
-    [step],
+    [step]
   )
 
   const onLessonClick = useCallback(
@@ -74,7 +76,7 @@ export const CourseSidebar = () => {
       if (!isReachable(index)) return
       setStep(index)
     },
-    [isReachable, setStep],
+    [isReachable, setStep]
   )
 
   return (
@@ -89,7 +91,7 @@ export const CourseSidebar = () => {
                     'relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12',
                     isCurrent(index) && 'pointer-events-none bg-accent/50 dark:bg-accent/30',
                     isReachable(index) && 'hover:bg-accent/40 dark:hover:bg-accent/20',
-                    !isReachable(index) && 'cursor-not-allowed text-muted-foreground',
+                    !isReachable(index) && 'cursor-not-allowed text-muted-foreground'
                   )}
                   key={index}
                   onClick={onLessonClick.bind(null, index)}
@@ -97,10 +99,10 @@ export const CourseSidebar = () => {
                 >
                   <div
                     className={cn(
-                      'absolute top-1/2 left-6 z-10 flex size-6 -translate-1/2 items-center justify-center rounded-full border',
+                      '-translate-1/2 absolute top-1/2 left-6 z-10 flex size-6 items-center justify-center rounded-full border',
                       isCurrent(index) || isPast(index)
                         ? 'border-brand-accent bg-brand text-brand-foreground'
-                        : 'border-border bg-background',
+                        : 'border-border bg-background'
                     )}
                   >
                     <ArcherElement id={String(index)} key={lesson.id} relations={getRelations(index)}>
@@ -108,10 +110,10 @@ export const CourseSidebar = () => {
                     </ArcherElement>
                   </div>
                   <div className={cn('flex-1 opacity-85', isCurrent(index) && 'opacity-100')}>
-                    <span className="inline-block text-sm font-medium">
+                    <span className="inline-block font-medium text-sm">
                       {formatLessonTitle(lesson.title)}
                       {user.isLearner && isCompleted(index) && (
-                        <span className="ml-1 text-xs text-success">{' ✔︎'}</span>
+                        <span className="ml-1 text-success text-xs">{' ✔︎'}</span>
                       )}
                     </span>
                     <p className="text-xs opacity-80">{formatLessonType(lesson.type)}</p>

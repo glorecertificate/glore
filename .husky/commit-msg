@@ -1,13 +1,12 @@
 #!/usr/bin/env sh
 
-# Commitlint
 case "$(cat "$1")" in
-  # Skip temporary commits
   "[tmp]"*|\#*)
     exit 0
     ;;
   *)
     commitlint --edit "$1"
+    biome check --fix --unsafe
+    git add . >/dev/null
     ;;
 esac
-

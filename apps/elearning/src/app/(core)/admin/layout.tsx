@@ -1,17 +1,14 @@
 import { notFound } from 'next/navigation'
 
-import { createApi } from '@/lib/api/ssr'
 import { createMetadata } from '@/lib/metadata'
+import { getCurrentUser } from '@/lib/server'
 
 export const metadata = createMetadata({
   title: 'Navigation.admin',
 })
 
 export default async ({ children }: LayoutProps<'/admin'>) => {
-  const api = await createApi()
-  const user = await api.users.getCurrent()
-
+  const user = await getCurrentUser()
   if (!user.isAdmin) return notFound()
-
   return children
 }

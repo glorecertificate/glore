@@ -4,19 +4,14 @@ import { useCallback, useMemo } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@repo/ui/components/dropdown-menu'
-import { Progress } from '@repo/ui/components/progress'
-import { useScroll } from '@repo/ui/hooks/use-scroll'
-import { cn } from '@repo/ui/utils'
-
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Progress } from '@/components/ui/progress'
 import { useCourse } from '@/hooks/use-course'
+import { useLocale } from '@/hooks/use-locale'
+import { useScroll } from '@/hooks/use-scroll'
+import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
 
 export const CourseHeaderMobile = () => {
   const { course, language, setStep, step } = useCourse()
@@ -41,7 +36,7 @@ export const CourseHeaderMobile = () => {
               {currentLesson ? (
                 <>
                   <span className="font-medium">{localize(currentLesson.title, language)}</span>
-                  <span className="text-xs text-muted-foreground">{formatLessonType(currentLesson.type)}</span>
+                  <span className="text-muted-foreground text-xs">{formatLessonType(currentLesson.type)}</span>
                 </>
               ) : (
                 <span className="font-medium">{'No lessons'}</span>
@@ -57,9 +52,9 @@ export const CourseHeaderMobile = () => {
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
                     {localize(lesson.title, language)}{' '}
-                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
+                    {isCompletedLesson(index) && <span className="ml-1 text-success text-xs">{'✔︎'}</span>}
                   </span>
-                  <span className="text-xs text-muted-foreground">{formatLessonType(lesson.type)}</span>
+                  <span className="text-muted-foreground text-xs">{formatLessonType(lesson.type)}</span>
                 </div>
               </DropdownMenuItem>
             ))

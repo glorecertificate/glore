@@ -1,25 +1,45 @@
-import {
-  getTranslations as createTranslations,
-  getMessages,
-  i18n,
-  type Locale,
-  type Messages,
-  type Namespace,
-} from '@repo/i18n'
+import { createTranslator } from 'next-intl'
+import { getRequestConfig } from 'next-intl/server'
 
-import { getCookie, setCookie } from '@/lib/storage/ssr'
+import { type Locale, type Messages, type Namespace, type Translator, getMessages, i18nConfig } from '@glore/i18n'
 
-export const getLocale = async () => (await getCookie('NEXT_LOCALE', { prefix: false })) ?? i18n.defaultLocale
+import { createCookieStore } from '@/lib/server'
 
-export const setLocale = async (locale: Locale) => await setCookie('NEXT_LOCALE', locale)
+export default getRequestConfig(async () => {
+  const locale = await getLocale()
+  const messages = await getMessages(locale)
+  return { locale, messages }
+})
 
+/**
+ * Retrieves the current locale from cookies or returns the default locale.
+ */
+export const getLocale = async () => {
+  const { get } = await createCookieStore()
+  return get('NEXT_LOCALE', { prefix: false }) ?? i18nConfig.defaultLocale
+}
+
+/**
+ * Sets the current locale in cookies.
+ */
+export const setLocale = async (locale: Locale) => {
+  const { set } = await createCookieStore()
+  await set('NEXT_LOCALE', locale, { prefix: false })
+}
+
+/**
+ * Retrieves a translator function for the specified namespace and options.
+ */
 export const getTranslations = async <NestedKey extends Namespace = never>(
   namespace?: NestedKey,
   options: {
     locale?: Locale
     messages?: Messages
-  } = {},
+  } = {}
 ) => {
   const { locale = await getLocale(), messages = await getMessages(locale) } = options
-  return createTranslations(namespace, { locale, messages })
+  const translations = createTranslator<Messages, NestedKey>({ locale, messages, namespace })
+  // @ts-expect-error - Allow dynamic translations
+  translations.dynamic = (key: string) => translations(key)
+  return translations as Translator<NestedKey>
 }

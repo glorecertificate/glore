@@ -21,7 +21,7 @@ export interface AppRouter extends ReturnType<typeof useRouter> {
     options?: {
       kind: 'auto' | 'full' | 'temporary'
       onInvalidate?: () => void
-    },
+    }
   ): void
 }
 
@@ -52,10 +52,10 @@ export const useNavigation = <T extends Record<string, string>>(_?: UseNavigatio
   const getSearchParam = useCallback(
     <K extends keyof T>(name: K): T[K] | undefined => {
       const value = searchParams.get(String(name))
-      if (value === null) return undefined
+      if (value === null) return
       return value as T[K]
     },
-    [searchParams],
+    [searchParams]
   )
 
   const hasSearchParam = useCallback(<K extends keyof T>(name: K) => !!getSearchParam(name), [getSearchParam])
@@ -65,7 +65,7 @@ export const useNavigation = <T extends Record<string, string>>(_?: UseNavigatio
       searchParams.set(String(name), String(value))
       router.replace(`?${searchParams}`, { scroll: false })
     },
-    [router, searchParams],
+    [router, searchParams]
   )
 
   const deleteSearchParam = useCallback(
@@ -74,7 +74,7 @@ export const useNavigation = <T extends Record<string, string>>(_?: UseNavigatio
       searchParams.delete(String(name))
       router.replace(`?${searchParams}`, { scroll: false })
     },
-    [hasSearchParam, router, searchParams],
+    [hasSearchParam, router, searchParams]
   )
 
   return {

@@ -1,10 +1,9 @@
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { AppleMailIcon } from '@repo/ui/icons/apple-mail'
-import { GmailIcon } from '@repo/ui/icons/gmail'
-import { OutlookIcon } from '@repo/ui/icons/outlook'
-
+import { AppleMailIcon } from '@/components/icons/apple-mail'
+import { GmailIcon } from '@/components/icons/gmail'
+import { OutlookIcon } from '@/components/icons/outlook'
+import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { useTranslations } from '@/hooks/use-translations'
 
 const GMAIL_URL = 'https://mail.google.com/mail'
 const OUTLOOK_URL = 'https://outlook.live.com/mail'

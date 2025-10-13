@@ -1,14 +1,12 @@
-import { Button } from '@repo/ui/components/button'
-
 import { ErrorView } from '@/components/layout/error-view'
+import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { createApi } from '@/lib/api/ssr'
 import { getTranslations } from '@/lib/i18n'
+import { getCurrentUser } from '@/lib/server'
 
 export default async () => {
-  const api = await createApi()
   const t = await getTranslations('Common')
-  const user = await api.users.getCurrent()
+  const user = await getCurrentUser()
   const message = user ? t('backToHome') : t('accessApp')
 
   return (

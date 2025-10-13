@@ -2,17 +2,20 @@
 
 import { useCallback, useMemo, useTransition } from 'react'
 
-import { i18n, useLocale, useTranslations, type Locale, type LocaleItem } from '@repo/i18n'
+import { type Locale, type LocaleItem, i18nConfig } from '@glore/i18n'
+
 import {
   Select,
   SelectContent,
+  type SelectContentProps,
   SelectItem,
   SelectTrigger,
-  type SelectContentProps,
   type SelectTriggerProps,
-} from '@repo/ui/components/select'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@repo/ui/components/tooltip'
-import { cn } from '@repo/ui/utils'
+} from '@/components/ui/select'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
+import { cn } from '@/lib/utils'
 
 interface LanguageSelectItem extends LocaleItem {
   badge?: React.ReactNode
@@ -40,7 +43,7 @@ export const LanguageSelect = ({
   onChange,
   status,
   value,
-  values = i18n.locales,
+  values = i18nConfig.locales,
   ...props
 }: LanguageSelectProps) => {
   const { locale, localeItems, setLocale } = useLocale()
@@ -49,12 +52,12 @@ export const LanguageSelect = ({
 
   const items = useMemo<LanguageSelectItem[]>(
     () => localeItems.filter(item => values.includes(item.value)),
-    [localeItems, values],
+    [localeItems, values]
   )
 
   const activeItem = useMemo<LanguageSelectItem>(
     () => localeItems.find(item => (controlled ? item.value === value : item.value === locale))!,
-    [controlled, locale, localeItems, value],
+    [controlled, locale, localeItems, value]
   )
 
   const activeItemValue = useMemo(() => (controlled ? value : locale), [controlled, locale, value])
@@ -64,7 +67,7 @@ export const LanguageSelect = ({
       if (!controlled) startTransition(() => setLocale(locale))
       onChange?.(locale)
     },
-    [controlled, onChange, setLocale],
+    [controlled, onChange, setLocale]
   )
 
   return (
@@ -99,7 +102,7 @@ export const LanguageSelect = ({
               </span>
               <span className="flex items-center gap-1 [&_svg]:size-2">
                 {item.badge}
-                <span className="text-xs text-muted-foreground">{item.status}</span>
+                <span className="text-muted-foreground text-xs">{item.status}</span>
               </span>
             </div>
           </SelectItem>

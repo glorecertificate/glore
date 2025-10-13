@@ -1,31 +1,23 @@
 {
-  "name": "@repo/utils",
+  "name": "@glore/utils",
   "type": "module",
   "exports": {
     "./*": {
-      "types": "./build/*.d.ts",
-      "import": "./build/*.js",
-      "require": "./build/*.cjs",
-      "default": "./build/*.js"
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "require": "./dist/*.cjs",
+      "default": "./dist/*.js"
     }
   },
   "scripts": {
-    "build": "tsup",
-    "watch": "tsup --watch",
-    "type-check": "tsc && tsup --silent",
-    "lint": "eslint . && prettier --check .",
-    "lint:fix": "eslint --fix . && prettier --write .",
-    "check": "pnpm type-check && pnpm lint"
+    "build": "tsdown",
+    "watch": "tsdown --watch",
+    "type-check": "tsc --noEmit"
   },
-  "prettier": "@repo/prettier-config",
   "devDependencies": {
-    "@repo/prettier-config": "workspace:^",
-    "@repo/tsconfig": "workspace:^",
-    "@repo/tsup-config": "workspace:^",
+    "@glore/tsconfig": "workspace:^",
     "@types/node": "catalog:",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "tsup": "catalog:",
+    "tsdown": "^0.15.6",
     "typescript": "catalog:"
   }
 }

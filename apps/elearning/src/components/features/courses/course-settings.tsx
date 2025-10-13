@@ -3,16 +3,16 @@
 import { useCallback, useMemo } from 'react'
 
 import { InfoIcon } from 'lucide-react'
-
-import { useFormatter, useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { Input } from '@repo/ui/components/input'
-import { Label } from '@repo/ui/components/label'
-import { Separator } from '@repo/ui/components/separator'
-import { Tabs, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
+import { useFormatter } from 'next-intl'
 
 import { UserCard } from '@/components/features/users/user-card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useCourse } from '@/hooks/use-course'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Course } from '@/lib/api'
 
 export const CourseSettings = () => {
@@ -24,7 +24,7 @@ export const CourseSettings = () => {
 
   const disabledMessage = useMemo(() => {
     if (course.type === initialCourse.type && course.slug === initialCourse.slug) return t('noChangesDetected')
-    if (!course.type && !course.slug) return t('fillSettingsFields')
+    if (!(course.type || course.slug)) return t('fillSettingsFields')
     if (!course.languages?.some(language => course.title?.[language])) return t('noTitleProvided')
   }, [course, initialCourse, t])
 
@@ -45,7 +45,7 @@ export const CourseSettings = () => {
     (field: keyof Course, value: string) => {
       setCourse(prev => ({ ...prev, [field]: value }))
     },
-    [setCourse],
+    [setCourse]
   )
 
   // const handleSave = useCallback(async () => {
@@ -75,8 +75,8 @@ export const CourseSettings = () => {
     <div className="flex flex-col gap-8 pb-8">
       <div className="flex flex-col gap-5">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">{t('settings')}</h2>
-          <p className="text-sm text-foreground/75">{t('settingsDescription')}</p>
+          <h2 className="font-semibold text-foreground text-lg">{t('settings')}</h2>
+          <p className="text-foreground/75 text-sm">{t('settingsDescription')}</p>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -88,7 +88,7 @@ export const CourseSettings = () => {
                 <TabsTrigger value="skill">{t('courseTypeSoftSkill')}</TabsTrigger>
               </TabsList>
             </Tabs>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {course.type === 'skill' ? t('courseTypeSoftSkillDescription') : t('courseTypeIntroductoryDescription')}
             </p>
           </div>
@@ -101,17 +101,17 @@ export const CourseSettings = () => {
               placeholder={t('courseSlugPlaceholder')}
               value={course.slug}
             />
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1 text-muted-foreground text-sm">
               <InfoIcon className="size-3.5 shrink-0" />
               <span>{t('courseSlugDescription')}</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+          <div className="flex flex-col gap-1.5 text-muted-foreground text-sm">
             <Button className="w-fit text-foreground" disabled={isDisabled} disabledCursor variant="outline">
               {t('save')}
             </Button>
-            {disabledMessage && <p className="text-xs text-muted-foreground">{disabledMessage}</p>}
+            {disabledMessage && <p className="text-muted-foreground text-xs">{disabledMessage}</p>}
           </div>
         </div>
       </div>
@@ -122,22 +122,22 @@ export const CourseSettings = () => {
 
           <div className="flex flex-col gap-5">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">{t('courseMetadata')}</h2>
-              <p className="text-sm text-foreground/75">{t('courseMetadataDescription')}</p>
+              <h2 className="font-semibold text-foreground text-lg">{t('courseMetadata')}</h2>
+              <p className="text-foreground/75 text-sm">{t('courseMetadataDescription')}</p>
             </div>
 
             <div className="flex flex-col gap-4">
               {course.creator && (
                 <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-foreground">{t('courseCreator')}</h3>
+                  <h3 className="font-medium text-foreground text-sm">{t('courseCreator')}</h3>
                   <UserCard hide={['city', 'country', 'languages']} user={course.creator} />
                 </div>
               )}
 
               {course.createdAt && (
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-foreground">{t('createdOn')}</h3>
-                  <p className="text-sm text-muted-foreground">{createdDate}</p>
+                  <h3 className="font-medium text-foreground text-sm">{t('createdOn')}</h3>
+                  <p className="text-muted-foreground text-sm">{createdDate}</p>
                 </div>
               )}
             </div>

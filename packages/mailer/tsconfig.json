@@ -1,0 +1,12 @@
+{
+  "extends": "@glore/tsconfig/react",
+  "include": ["src"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "paths": {
+      "@config/*": ["../../config/*.json"],
+      "@glore/mailer/*": ["./src/*"]
+    },
+    "types": ["node"]
+  }
+}

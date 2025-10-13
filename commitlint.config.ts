@@ -2,10 +2,9 @@ import { execSync } from 'node:child_process'
 
 import { RuleConfigSeverity, type UserConfig } from '@commitlint/types'
 
-const PKG_NAMESPACE = '@repo'
-const LIST_CMD = 'pnpm m ls --depth -1 --json'
-
+const PKG_NAMESPACE = '@glore'
 const SCOPES = ['deps', 'deps-dev', 'dev', 'infra', 'release', 'security']
+const LIST_CMD = 'pnpm m ls --depth -1 --json'
 
 const packages = (JSON.parse(execSync(LIST_CMD, { encoding: 'utf8' })) as { name: string }[])
   .filter(({ name }) => name.startsWith(PKG_NAMESPACE))

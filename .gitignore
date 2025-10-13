@@ -2,8 +2,10 @@
 
 .turbo/
 .vercel/
-build/
+dist/
 node_modules/
 private/
 .DS_Store
+*.d.json.ts
 *.tsbuildinfo
+.vercel

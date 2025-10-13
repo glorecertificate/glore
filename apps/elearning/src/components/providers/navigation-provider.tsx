@@ -1,8 +1,9 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { type AppRoutes } from 'next/types/routes'
 import { createContext, useState } from 'react'
+
+import { type AppRoutes } from 'next/types/routes'
 
 interface NavigationContext {
   pathname: AppRoutes

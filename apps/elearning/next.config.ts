@@ -1,29 +1,35 @@
-import '@repo/env/config'
+import '@glore/env'
 
-import bundleAnalyzer from '@next/bundle-analyzer'
 import { type NextConfig } from 'next'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
+import bundleAnalyzer from '@next/bundle-analyzer'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const I18N_PATH = './src/lib/i18n.ts'
+const MESSAGES_DECLARATION = '../../config/translations/en.json'
 
 const isDev = process.env.NODE_ENV === 'development'
 const analyze = process.env.ANALYZE === 'true'
-const tsconfigPath = isDev ? 'tsconfig.json' : 'tsconfig.build.json'
-const remotePatterns = SUPABASE_URL ? [new URL(SUPABASE_URL)] : []
 
 const nextConfig: NextConfig = {
   experimental: {
     typedEnv: isDev,
-    useCache: true,
   },
   images: {
-    remotePatterns,
-    unoptimized: isDev,
+    remotePatterns: [new URL(process.env.SUPABASE_URL)],
   },
   reactStrictMode: true,
-  transpilePackages: ['@repo/i18n', '@repo/ui'],
+  // transpilePackages: ['@glore/i18n', '@glore/mailer'],
   typescript: {
-    tsconfigPath,
+    tsconfigPath: isDev ? 'tsconfig.json' : 'tsconfig.build.json',
   },
 }
 
-export default bundleAnalyzer({ enabled: analyze })(nextConfig)
+const nextIntl = createNextIntlPlugin({
+  requestConfig: I18N_PATH,
+  experimental: {
+    createMessagesDeclaration: MESSAGES_DECLARATION,
+  },
+})
+
+export default bundleAnalyzer({ enabled: analyze })(nextIntl(nextConfig))

@@ -1,9 +1,9 @@
 /.next/
-/supabase/.branches/
-/supabase/.temp/
-/supabase/types.ts
+/supabase/.*/
+/supabase/types.d.ts
 /*.d.ts
 .env*
 !.env.example
 *.tsbuildinfo
 
+.vercel

@@ -2,10 +2,10 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Markdown } from '@repo/ui/components/markdown'
-import { RatingGroup } from '@repo/ui/components/rating-group'
-
+import { Markdown } from '@/components/ui/markdown'
+import { RatingGroup } from '@/components/ui/rating-group'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Assessment } from '@/lib/api'
 
 export const CourseAssessment = ({
@@ -31,12 +31,12 @@ export const CourseAssessment = ({
       if (completed) return
       onValueChange(Number(value))
     },
-    [completed, onValueChange],
+    [completed, onValueChange]
   )
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{title}</h3>}
+      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {
           count: 1,

@@ -1,11 +1,11 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import '@glore/env'
+
+import { type NextRequest, NextResponse } from 'next/server'
 
 import { createOpenAI } from '@ai-sdk/openai'
 import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
-import { convertToCoreMessages, streamText, type Message, type TextStreamPart, type ToolSet } from 'ai'
-
-import { env } from '@/lib/env'
+import { type Message, type TextStreamPart, type ToolSet, convertToCoreMessages, streamText } from 'ai'
 
 /**
  * Detects the first chunk in a buffer.
@@ -52,7 +52,7 @@ const smoothStream = <TOOLS extends ToolSet>({
 
       if (!buffer.startsWith(match))
         throw new Error(
-          `Chunking function must return a match that is a prefix of the buffer. Received: "${match}" expected to start with "${buffer}"`,
+          `Chunking function must return a match that is a prefix of the buffer. Received: "${match}" expected to start with "${buffer}"`
         )
 
       return match
@@ -89,15 +89,18 @@ const smoothStream = <TOOLS extends ToolSet>({
 
         buffer += chunk.textDelta
 
-        let match
+        let match: string | null | undefined
 
-        while ((match = detectChunk(buffer))) {
+        match = detectChunk(buffer)
+        while (match) {
           controller.enqueue({ textDelta: match, type: 'text-delta' })
           buffer = buffer.slice(match.length)
 
           const _delayInMs = typeof delayInMs === 'number' ? delayInMs : (delayInMs?.(buffer) ?? 10)
 
           await delay(_delayInMs)
+
+          match = detectChunk(buffer)
         }
       },
     })
@@ -110,6 +113,8 @@ const CHUNKING_REGEXPS = {
   word: /\S+\s+/m,
 }
 
+const CODE_BLOCK_REGEX = /```[^\s]+/
+
 export const POST = async (req: NextRequest) => {
   const {
     apiKey: key,
@@ -121,7 +126,7 @@ export const POST = async (req: NextRequest) => {
     system?: string
   }
 
-  const apiKey = key ?? env.OPENAI_API_KEY
+  const apiKey = key ?? process.env.OPENAI_API_KEY
 
   if (!apiKey) {
     return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })
@@ -138,7 +143,7 @@ export const POST = async (req: NextRequest) => {
       experimental_transform: smoothStream({
         chunking: buffer => {
           // Check for code block markers
-          if (/```[^\s]+/.test(buffer)) {
+          if (CODE_BLOCK_REGEX.test(buffer)) {
             isInCodeBlock = true
           } else if (isInCodeBlock && buffer.includes('```')) {
             isInCodeBlock = false
@@ -165,7 +170,7 @@ export const POST = async (req: NextRequest) => {
 
           // Use line chunking for code blocks and tables, word chunking otherwise
           // Choose the appropriate chunking strategy based on content type
-          let match
+          let match: RegExpExecArray | null
 
           if (isInCodeBlock || isInTable || isInLink) {
             // Use line chunking for code blocks and tables
@@ -187,7 +192,7 @@ export const POST = async (req: NextRequest) => {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: openai(env.OPENAI_MODEL),
+      model: openai(process.env.OPENAI_MODEL),
       system,
     })
 

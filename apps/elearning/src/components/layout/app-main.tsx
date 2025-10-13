@@ -1,4 +1,4 @@
-import { cn } from '@repo/ui/utils'
+import { cn } from '@/lib/utils'
 
 export const AppMain = ({ className, ...props }: React.ComponentProps<'main'>) => (
   <main

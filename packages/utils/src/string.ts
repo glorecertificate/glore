@@ -1,4 +1,4 @@
-import { type CamelToSnake, type SnakeToCamel, type SnakeToKebab } from './types'
+import { type SnakeToCamel } from './types'
 
 /**
  * Capitalizes the first letter of a string.
@@ -24,20 +24,7 @@ export const titleize = (input: string) => {
   return capitalizedWords.join(' ')
 }
 
-/**
- * Converts a camel cased string to snake case format.
- *
- * @example
- * ```ts
- * camelToSnake('helloWorld') // 'hello_world'
- * ```
- */
-export const camelToSnake = <T extends string>(input: T) =>
-  input
-    .split(/[\s.\\/-]+|(?=[A-Z])/)
-    .filter(Boolean)
-    .map(word => word.toLowerCase())
-    .join('_') as CamelToSnake<T>
+const SNAKE_TO_CAMEL_REGEX = /[\s_.\\/-]+/
 
 /**
  * Converts a snake cased string to camel case format.
@@ -49,7 +36,7 @@ export const camelToSnake = <T extends string>(input: T) =>
  */
 export const snakeToCamel = <T extends string>(input: T) =>
   input
-    .split(/[\s_.\\/-]+/)
+    .split(SNAKE_TO_CAMEL_REGEX)
     .filter(Boolean)
     .map((word, index) => {
       const cleanWord = word.toLowerCase()
@@ -58,16 +45,17 @@ export const snakeToCamel = <T extends string>(input: T) =>
     .join('') as SnakeToCamel<T>
 
 /**
- * Converts a snake cased string to kebab case format.
+ * Resolves a template string by replacing placeholders with corresponding values.
  *
  * @example
  * ```ts
- * snakeToKebab('hello_world') // 'hello-world'
+ * const template = 'Hello {name}, welcome to {place}!'
+ * const result = resolveTemplate(template, { name: 'John', place: 'Wonderland' })
+ * console.log(result) // => 'Hello John, welcome to Wonderland!'
  * ```
  */
-export const snakeToKebab = <T extends string>(input: T) =>
-  input
-    .split(/[\s_.\\/-]+/)
-    .filter(Boolean)
-    .map(word => word.toLowerCase())
-    .join('-') as SnakeToKebab<T>
+export const resolveTemplate = (template: string, values: Record<string, string | number>) =>
+  template.replace(/\{([^{}]+)\}/g, (match, k: string) => {
+    const key = k.trim()
+    return Object.hasOwn(values, key) ? String(values[key]) : match
+  })

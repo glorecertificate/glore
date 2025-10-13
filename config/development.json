@@ -99,7 +99,11 @@
               "icon": "clock"
             },
             {
-              "title": { "en": "Team work", "es": "Trabajo en equipo", "it": "Lavoro di squadra" },
+              "title": {
+                "en": "Team work",
+                "es": "Trabajo en equipo",
+                "it": "Lavoro di squadra"
+              },
               "description": {
                 "en": "Ability to effectively contribute as a member of a team.",
                 "es": "Capacidad para contribuir de manera efectiva como miembro de un equipo.",

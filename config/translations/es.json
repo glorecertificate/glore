@@ -4,7 +4,7 @@
     "pwaDescription": "Instala GloRe en tu dispositivo para acceder a los cursos, recibir notificaciones y gestionar tus certificados offline."
   },
   "Email": {
-    "recovery": {
+    "reset_password": {
       "subject": "Restablece tu contraseña de GloRe",
       "greeting": "Hola,",
       "greetingUser": "Hola {user},",
@@ -12,6 +12,28 @@
       "button": "Restablece tu contraseña",
       "instruction": "Si no solicitaste un restablecimiento de contraseña, por favor ignora este correo electrónico o responde para hacérnoslo saber.",
       "outro": "Gracias,\nEl equipo"
+    },
+    "auth": {
+      "recovery": {
+        "button": "",
+        "buttonInstruction": "",
+        "footer": "",
+        "greeting": "",
+        "greetingUser": "",
+        "instructions": "",
+        "intro": "",
+        "manualLink": "",
+        "subject": ""
+      }
+    },
+    "common": {
+      "address": "Associazione articular, Via Giovanola 25/C, 20139 Milano (MI), Italia",
+      "app": "Glore",
+      "contactUs": "Contáctenos",
+      "copyright": "© {Year} Associazione Joint. \nReservados todos los derechos.",
+      "homepage": "Página principal",
+      "outro": "Gracias,",
+      "signature": "El equipo de Glore"
     }
   },
   "Errors": {

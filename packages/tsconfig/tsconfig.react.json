@@ -1,0 +1,9 @@
+{
+  "display": "@glore/tsconfig/react",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowArbitraryExtensions": true,
+    "noEmit": true,
+    "types": ["react"]
+  }
+}

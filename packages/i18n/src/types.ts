@@ -1,15 +1,14 @@
-import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'use-intl'
-
 import type config from '@config/i18n'
 import type messages from '@config/translations/en'
+import { type NamespaceKeys, type NestedKeyOf, type createTranslator } from 'next-intl'
 
-import { type i18n } from './config'
+import { type i18nConfig } from './config'
 
 export type Locale = keyof typeof config.locales
 export type Messages = typeof messages
-export type Formats = typeof i18n.formats
+export type Formats = typeof i18nConfig.formats
 
-declare module 'use-intl' {
+declare module 'next-intl' {
   interface AppConfig {
     Locale: Locale
     Messages: Messages

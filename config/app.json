@@ -1,4 +1,5 @@
 {
+  "cookiePrefix": "glore.",
   "minSkills": 3,
   "minSkillRating": 3
 }

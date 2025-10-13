@@ -16,4 +16,4 @@ runs:
         dev-only: true
     - name: Revert database updates
       shell: sh
-      run: pnpm db revert ${{ inputs.migrations }}
+      run: glore db revert ${{ inputs.migrations }}

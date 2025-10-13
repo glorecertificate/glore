@@ -1,6 +1,6 @@
 {
-  "extends": "@repo/tsconfig/react",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "extends": "@glore/tsconfig",
+  "include": ["src"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "paths": {

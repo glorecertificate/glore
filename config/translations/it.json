@@ -4,7 +4,7 @@
     "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi, ricevere notifiche e gestire i tuoi certificati offline."
   },
   "Email": {
-    "recovery": {
+    "reset_password": {
       "subject": "Reimposta la tua password GloRe",
       "greeting": "Ciao,",
       "greetingUser": "Ciao {user},",
@@ -114,7 +114,7 @@
     "passwordRequestMessage": "Inserisci la tua e-mail o nome utente per ricevere un link e reimpostarla.",
     "passwordRequestMetaTitle": "Reimposta password",
     "emailSentTitle": "Ti abbiamo inviato una mail!",
-    "emailSentMessage": "Controlla la tua mail {email} per reimpostare la password. Se non la vedi, controlla la cartella spam o riprova.",
+    "emailSentMessage": "Controlla la tua mail {email} per reimpostare la password. Se non vedi nuove email, controlla la cartella spam o riprova.",
     "emailSentMetaTitle": "Controlla la tua email",
     "passwordResetTitle": "Reimposta la tua password",
     "passwordResetMessage": "Inserisci una nuova password per il tuo account.",

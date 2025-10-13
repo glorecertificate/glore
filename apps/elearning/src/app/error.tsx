@@ -2,26 +2,24 @@
 
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { GloreIcon } from '@repo/ui/icons/glore'
-import { log } from '@repo/utils/logger'
-
-import { ErrorView, type ErrorProps } from '@/components/layout/error-view'
+import { GloreIcon } from '@/components/icons/glore'
+import { type ErrorProps, ErrorView } from '@/components/layout/error-view'
+import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { useNavigation } from '@/hooks/use-navigation'
+import { useTranslations } from '@/hooks/use-translations'
 
 export default ({ error }: ErrorProps) => {
   const { pathname, router } = useNavigation()
   const t = useTranslations('Common')
 
   useEffect(() => {
-    log.error(error)
+    console.error(error)
   }, [error])
 
   const canGoBack = useMemo(() => {
     const previousUrl = document.referrer
-    return previousUrl && previousUrl.startsWith(window.location.origin) && previousUrl !== window.location.href
+    return previousUrl?.startsWith(window.location.origin) && previousUrl !== window.location.href
   }, [])
 
   const onBackClick = useCallback(() => {

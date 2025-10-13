@@ -1,43 +1,28 @@
 packages:
   - apps/*
   - packages/*
-  - packages/dev/*
 
 catalog:
-  '@types/node': 24.2.0
-  '@types/react': ^19.1.15
-  '@types/react-dom': ^19.1.9
+  "@supabase/supabase-js": 2.55.0
+  "@types/node": ^24.7.2
+  "@types/react": ^19.2.2
+  "@types/react-dom": ^19.2.2
   class-variance-authority: ^0.7.1
-  deepmerge-ts: ^7.1.5
-  dotenv: ^17.2.2
-  eslint: ^9.36.0
-  lucide-react: ^0.525.0
-  motion: ^12.23.22
-  prettier: ^3.6.2
-  react: ^19.1.1
-  react-dom: ^19.1.1
-  react-hook-form: ^7.63.0
-  release-it: ^19.0.5
+  next-intl: ^4.3.12
+  react: ^19.2.0
+  react-dom: ^19.2.0
   shellcheck: ^3.1.0
-  sonner: ^2.0.7
-  tailwindcss: ^4.1.13
-  tsup: ^8.5.0
-  typescript: ^5.9.2
-  uploadthing: ^7.7.4
-  zod: ^4.1.11
+  tailwind-merge: ^3.3.1
+  typescript: ^5.9.3
+  zod: ^4.1.12
 
 dangerouslyAllowAllBuilds: false
 
 ignoredBuiltDependencies:
-  - '@prisma/engines'
-  - '@tailwindcss/oxide'
   - deno
-  - esbuild
-  - msgpackr-extract
-  - msw
   - sharp
-  - unrs-resolver
 
 onlyBuiltDependencies:
-  - '@vercel/speed-insights'
+  - "@tailwindcss/oxide"
+  - "@vercel/speed-insights"
   - supabase

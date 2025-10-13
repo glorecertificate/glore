@@ -1,32 +1,16 @@
-import { createTranslator } from 'use-intl/core'
+import { i18nConfig } from './config'
+import { type IntlRecord, type Locale, type Messages } from './types'
 
-import { i18n } from './config'
-import { type IntlRecord, type Locale, type Messages, type Namespace, type Translator } from './types'
+/**
+ * A placeholder object for internationalized fields.
+ */
+export const intlPlaceholder = i18nConfig.locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {} as IntlRecord)
 
 /**
  * Retrieves messages for the specified locale.
  */
-export const getMessages = async (locale: Locale) => {
-  const messages = (await import(`../../../config/translations/${locale}.json`)) as { default: Messages }
-  return messages.default
-}
-
-/**
- * Retrieves a translator function for the specified namespace and options.
- */
-export const getTranslations = async <NestedKey extends Namespace = never>(
-  namespace?: NestedKey,
-  options?: {
-    locale?: Locale
-    messages?: Messages
-  },
-) => {
-  const { locale = i18n.defaultLocale, messages = await getMessages(locale) } = options ?? {}
-  const translations = createTranslator<Messages, NestedKey>({ locale, messages, namespace })
-  // @ts-expect-error - Allow dynamic translations
-  translations.dynamic = (key: string) => translations(key)
-  return translations as Translator<NestedKey>
-}
+export const getMessages = async (locale: Locale) =>
+  (await import(`../../../config/translations/${locale}`)).default as Messages
 
 /**
  * Localizes a JSON object based on the provided locale.
@@ -43,17 +27,9 @@ export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) 
 export const localizeDate = (
   input: Date | string | number,
   type: 'short' | 'long' = 'long',
-  locale: Locale,
+  locale: Locale
 ): string => {
   const date = typeof input === 'object' ? input : new Date(input)
   if (type === 'short') return new Intl.DateTimeFormat(locale).format(date)
   return new Date(date).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
 }
-
-/**
- * Record with locale keys and empty string values.
- */
-export const intlPlaceholder = i18n.locales.reduce((acc, locale) => {
-  acc[locale] = ''
-  return acc
-}, {} as IntlRecord)

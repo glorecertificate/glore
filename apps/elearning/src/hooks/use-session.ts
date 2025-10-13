@@ -18,7 +18,7 @@ export const useSession = () => {
   const api = useApi()
   const [courses, setCourses] = useState<Course[]>(context.courses)
   const [user, setUser] = useState<CurrentUser>(context.user)
-  const [organization, _setOrganization] = useState<UserOrganization | undefined>(context.organization)
+  const [organization] = useState<UserOrganization | undefined>(context.organization)
 
   const setCourse = useCallback((course: Course) => {
     setCourses(courses => {
@@ -35,7 +35,7 @@ export const useSession = () => {
       setCourse(course)
       return course
     },
-    [api.courses, setCourse],
+    [api.courses, setCourse]
   )
 
   const updateCourse = useCallback(
@@ -45,7 +45,7 @@ export const useSession = () => {
       setCourse(course)
       return course
     },
-    [api.courses, setCourse],
+    [api.courses, setCourse]
   )
 
   return {

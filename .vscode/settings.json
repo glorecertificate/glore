@@ -1,50 +1,39 @@
 {
   "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[sql]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "css.format.newlineBetweenSelectors": false,
-  "css.format.spaceAroundSelectorSeparator": true,
-  "css.lint.duplicateProperties": "error",
-  "deno.enablePaths": ["./apps/*/supabase/functions"],
-  "deno.lint": true,
-  "deno.path": "./node_modules/.bin/deno",
-  "deno.unstable": ["bare-node-builtins", "broadcast-channel", "byonm", "cron", "ffi", "fs", "http", "kv", "net", "sloppy-imports", "unsafe-proto", "webgpu", "worker-options"],
+  "css.completion.completePropertyWithSemicolon": true,
+  "css.format.enable": true,
+  "css.format.maxPreserveNewLines": 100,
+  "css.validate": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "eslint.codeActionsOnSave.mode": "problems",
-  "eslint.format.enable": true,
-  "eslint.lintTask.enable": true,
-  "eslint.validate": ["typescript", "typescriptreact"],
+  "eslint.enable": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "files.exclude": {
-    "**/.turbo": true
+    ".husky/_": true,
+    "**/.turbo": true,
+    "**/supabase/.*": true
   },
-  "github.copilot.chat.agent.thinkingTool": true,
-  "github.copilot.chat.codesearch.enabled": true,
-  "github.copilot.chat.languageContext.fix.typescript.enabled": true,
-  "github.copilot.chat.languageContext.inline.typescript.enabled": true,
-  "github.copilot.chat.languageContext.typescript.enabled": true,
-  "gitlens.ai.generateCommits.customInstructions": "Use the Conventional Commit specification to provide a clear, concise and descriptive commit message without using a complex language. Optionally add a body including a sentence of maximum 20 words explaining the general changes and, if needed, append a bullet list of max 5 points of 10 words or less with more specific references. Title and list items must be written in an imperative mood using singular first-person verbs and a sentence-case format. Bullet points must not end with a period. The body sentence must use a third-person perspective, be sentence-case and end with a dot. Example commit message: \"feat: Correct typos across the codebase\n\nCorrected several typos in the codebase to improve readability and maintainability.\n\n- Fix typo in variable name\n- Update comments for clarity\n- Refactor function names for consistency\"",
-  "gitlens.ai.largePromptWarningThreshold": 1000000,
-  "gitlens.ai.model": "vscode",
-  "gitlens.ai.vscode.model": "copilot:claude-sonnet-4",
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./config/translations"],
-  "prettier.ignorePath": "",
+  "prettier.enable": false,
   "search.useGlobalIgnoreFiles": true,
   "search.useIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [
@@ -65,5 +54,6 @@
   },
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.lint.recommendedVariantOrder": "error",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "./node_modules/typescript/lib"
 }

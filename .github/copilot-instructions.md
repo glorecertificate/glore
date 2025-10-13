@@ -83,7 +83,7 @@ pnpm lint:fix
 ### TypeScript Conventions
 
 - **Strict configuration**: `strict: true`, `noUncheckedIndexedAccess: true`
-- **Import aliases**: Use `@/` for app imports, `@repo/` for package imports
+- **Import aliases**: Use `@/` for app imports, `@glore/` for package imports
 - **Interface naming**: Use `Props` suffix (e.g., `ButtonProps`)
 - **Generic components**: Extend standard HTML props with intersection types
 
@@ -99,7 +99,7 @@ pnpm lint:fix
 ### Package Structure
 
 - **Export pattern**: Use `exports` field in package.json for granular imports
-- **Package naming**: `@repo/` prefix for internal packages
+- **Package naming**: `@glore/` prefix for internal packages
 - **CLI tools**: Shell scripts in `packages/cli/scripts` called via the `glore` command
 
 ### Component Files
@@ -117,7 +117,7 @@ pnpm lint:fix
 
 ## Performance Considerations
 
-- **Bundle optimization**: `transpilePackages: ['@repo/ui']` in Next.js config
+- **Bundle optimization**: `transpilePackages: ['@glore/ui']` in Next.js config
 - **Image optimization**: Use Next.js `Image` with Supabase storage patterns
 - **Code splitting**: Leverage Next.js App Router automatic splitting
 - **Build cache**: Turborepo cache configured for CI/CD optimization

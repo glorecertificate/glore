@@ -1,7 +1,7 @@
 {
-  "extends": "@repo/tsconfig/tsup",
+  "extends": "@glore/tsconfig/pkg",
   "include": ["**/*.ts"],
-  "exclude": ["build", "node_modules"],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "types": ["node"]
   }

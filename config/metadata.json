@@ -1,9 +1,9 @@
 {
-  "name": "GloRe",
+  "name": "GloRe Certificate",
+  "shortName": "GloRe",
   "version": "0.5.0",
   "slug": "glore",
-  "title": "GloRe Certificate",
-  "titleSeparator": "-",
+  "separator": "-",
   "keywords": ["glore", "certificate", "elearning", "soft skills"],
   "url": "https://elearning.glorecertificate.net",
   "website": "https://glorecertificate.net",

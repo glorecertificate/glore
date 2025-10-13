@@ -2,21 +2,21 @@ import './globals.css'
 
 import Script from 'next/script'
 
+import metadata from '@config/metadata'
+import theme from '@config/theme'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
-import meta from '@config/metadata'
-import theme from '@config/theme'
-import { getMessages } from '@repo/i18n'
-import { I18nProvider } from '@repo/i18n/provider'
-import { ProgressBarProvider } from '@repo/ui/components/progress-bar'
-import { ThemeProvider } from '@repo/ui/components/theme-provider'
-import { Toaster } from '@repo/ui/components/toaster'
+import { getMessages } from '@glore/i18n'
 
+import { I18nProvider } from '@/components/providers/i18n-provider'
 import { NavigationProvider } from '@/components/providers/navigation-provider'
+import { ProgressBarProvider } from '@/components/ui/progress-bar'
+import { ThemeProvider } from '@/components/ui/theme-provider'
+import { Toaster } from '@/components/ui/toaster'
+import { PublicAsset } from '@/lib/assets'
 import { getLocale, getTranslations } from '@/lib/i18n'
 import { createMetadata } from '@/lib/metadata'
-import { Public } from '@/lib/storage'
 
 export const generateMetadata = createMetadata({
   description: 'App.description',
@@ -30,15 +30,15 @@ export default async ({ children }: LayoutProps<'/'>) => {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: meta.name,
+    name: metadata.name,
     description: t('description'),
-    image: Public.OpenGraph,
+    image: PublicAsset.OpenGraph,
   }
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <I18nProvider cookie="NEXT_LOCALE" locale={locale} messages={messages}>
+        <I18nProvider locale={locale} messages={messages}>
           <ThemeProvider themes={Object.keys(theme.modes)}>
             <NavigationProvider>
               <ProgressBarProvider>

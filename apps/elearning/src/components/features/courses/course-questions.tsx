@@ -3,13 +3,13 @@ import { useCallback, useMemo } from 'react'
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { useLocale, useTranslations } from '@repo/i18n'
-import { Button } from '@repo/ui/components/button'
-import { Card, CardContent } from '@repo/ui/components/card'
-import { Markdown } from '@repo/ui/components/markdown'
-import { cn } from '@repo/ui/utils'
-
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Markdown } from '@/components/ui/markdown'
+import { useLocale } from '@/hooks/use-locale'
+import { useTranslations } from '@/hooks/use-translations'
 import { type Question, type QuestionOption } from '@/lib/api'
+import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({
   completed,
@@ -26,7 +26,7 @@ const CourseQuestion = ({
 
   const isCorrectUserAnswer = useMemo(
     () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
-    [question],
+    [question]
   )
 
   const onOptionClick = useCallback(
@@ -39,7 +39,7 @@ const CourseQuestion = ({
         duration: 1200,
       })
     },
-    [onComplete, question, completed, t],
+    [onComplete, question, completed, t]
   )
 
   const optionClassName = useCallback(
@@ -48,9 +48,9 @@ const CourseQuestion = ({
         'flex-1',
         question.answered && 'cursor-default',
         option.isUserAnswer && 'border-foreground/60 bg-accent',
-        question.answered && !option.isUserAnswer && 'text-muted-foreground',
+        question.answered && !option.isUserAnswer && 'text-muted-foreground'
       ),
-    [question.answered],
+    [question.answered]
   )
 
   return (
@@ -107,7 +107,7 @@ export const CourseQuestions = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{t('questionsTitle')}</h3>}
+      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{t('questionsTitle')}</h3>}
       <p className="mb-4 font-medium">
         {t('questionsSubtitle', {
           count: questions.length,

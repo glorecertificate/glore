@@ -1,5 +1,5 @@
 import { createRouteHandler } from 'uploadthing/next'
 
-import { fileRouter } from '@/lib/storage'
+import { uploader } from '@/lib/assets'
 
-export const { GET, POST } = createRouteHandler({ router: fileRouter })
+export const { GET, POST } = createRouteHandler({ router: uploader })

@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/tsconfig",
+  "extends": "@glore/tsconfig",
   "include": ["src"],
   "exclude": ["node_modules"]
 }

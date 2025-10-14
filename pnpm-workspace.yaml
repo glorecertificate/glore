@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 catalog:
-  "@supabase/supabase-js": 2.55.0
+  "@supabase/supabase-js": 2.75.0
   "@types/node": ^24.7.2
   "@types/react": ^19.2.2
   "@types/react-dom": ^19.2.2
@@ -11,7 +11,7 @@ catalog:
   next-intl: ^4.3.12
   react: ^19.2.0
   react-dom: ^19.2.0
-  shellcheck: ^3.1.0
+  shellcheck: ^4.1.0
   tailwind-merge: ^3.3.1
   typescript: ^5.9.3
   zod: ^4.1.12

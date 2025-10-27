@@ -9,10 +9,10 @@ import { hasHistory } from '@glore/utils/has-history'
 import { type AnyError } from '@glore/utils/types'
 
 import { ServerErrorGraphic } from '@/components/graphics/server-error'
-import { I18nProvider } from '@/components/providers/i18n-provider'
+import { IntlProvider } from '@/components/providers/intl-provider'
 import { Button } from '@/components/ui/button'
+import { useCookies } from '@/hooks/use-cookies'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/intl'
-import { cookies } from '@/lib/storage'
 
 const GlobalErrorView = () => {
   const pathname = usePathname()
@@ -59,11 +59,13 @@ const GlobalErrorView = () => {
 }
 
 export default ({ error }: { error: AnyError }) => {
+  const cookies = useCookies()
+
   const locale = useMemo(() => {
     const cookieLocale = cookies.get('NEXT_LOCALE')
     if (cookieLocale && !LOCALES.includes(cookieLocale)) return cookieLocale
     return DEFAULT_LOCALE
-  }, [])
+  }, [cookies])
 
   useEffect(() => {
     console.error(error)
@@ -72,11 +74,11 @@ export default ({ error }: { error: AnyError }) => {
   return (
     <html lang={locale}>
       <body>
-        <I18nProvider locale={locale}>
+        <IntlProvider locale={locale}>
           <div className="flex min-h-screen flex-col items-center bg-background px-4 py-12 text-center">
             <GlobalErrorView />
           </div>
-        </I18nProvider>
+        </IntlProvider>
       </body>
     </html>
   )

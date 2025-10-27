@@ -4,8 +4,7 @@ import { AppleMailIcon } from '@/components/icons/apple-mail'
 import { GmailIcon } from '@/components/icons/gmail'
 import { OutlookIcon } from '@/components/icons/outlook'
 import { Button } from '@/components/ui/button'
-import { Link } from '@/components/ui/link'
-import { buildExternalRoute } from '@/lib/navigation'
+import { ExternalLink } from '@/components/ui/link'
 
 export const EmailClientsFooter = () => {
   const t = useTranslations('Common')
@@ -21,9 +20,9 @@ export const EmailClientsFooter = () => {
         title={`${t('open')} Gmail`}
         variant="outline"
       >
-        <Link href={buildExternalRoute('gmail')} target="_blank">
+        <ExternalLink href="https://mail.google.com" target="_blank">
           {'Gmail'}
-        </Link>
+        </ExternalLink>
       </Button>
       <Button
         asChild
@@ -34,9 +33,9 @@ export const EmailClientsFooter = () => {
         title={`${t('open')} Outlook`}
         variant="outline"
       >
-        <Link href={buildExternalRoute('outlook')} target="_blank">
+        <ExternalLink href="https://outlook.office.com/mail" target="_blank">
           {'Outlook'}
-        </Link>
+        </ExternalLink>
       </Button>
       <Button
         asChild
@@ -47,7 +46,7 @@ export const EmailClientsFooter = () => {
         title={t('openDefaultEmailClient')}
         variant="outline"
       >
-        <Link href={buildExternalRoute('apple-mail')}>{'Mail'}</Link>
+        <ExternalLink href="message://">{'Mail'}</ExternalLink>
       </Button>
     </div>
   )

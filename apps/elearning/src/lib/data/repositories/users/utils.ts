@@ -1,4 +1,5 @@
-import { type Enums } from '../../supabase'
+import { type Enums } from 'supabase/types'
+
 import { type BaseOrganization } from '../organizations/types'
 import { createParser } from '../utils'
 import { type User } from './types'

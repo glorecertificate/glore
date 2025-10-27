@@ -5,14 +5,12 @@
     "prepare": "pnpm run typegen",
     "typegen": "tsx ./scripts/typegen.ts",
     "build": "tsx ./scripts/build.ts",
-    "start": "next start --turbo",
+    "start": "next start",
     "dev": "tsx ./scripts/dev.ts",
-    "edge": "dotenv -e ./.env -e .env.local -e ./supabase/functions/.env -- lt",
-    "email": "dotenv -- email dev --dir ./src/lib/services/mailer/templates --port 8081",
+    "edge": "tsx ./scripts/edge.ts",
+    "email": "tsx ./scripts/email.ts",
     "check": "tsx ./scripts/check.ts",
-    "analyze": "ANALYZE=true next build",
-    "deploy:preview": "vercel build && vercel --prebuilt",
-    "deploy:production": "vercel build && vercel --prebuilt --prod"
+    "analyze": "ANALYZE=true next build"
   },
   "postcss": {
     "plugins": {
@@ -144,6 +142,7 @@
     "@types/pg": "^8.15.5",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "chalk": "^5.6.2",
     "dotenv-cli": "catalog:",
     "localtunnel": "^2.0.2",
     "pg": "^8.16.3",

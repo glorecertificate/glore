@@ -9,13 +9,13 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
 import { useCourse } from '@/hooks/use-course'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 
 export const CourseHeaderMobile = () => {
   const { course, language, setStep, step } = useCourse()
-  const { localize } = useI18n()
+  const { localize } = useIntl()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
@@ -35,7 +35,7 @@ export const CourseHeaderMobile = () => {
             <div className="flex flex-col items-start">
               {currentLesson ? (
                 <>
-                  <span className="font-medium">{localize(currentLesson.title, language)}</span>
+                  <span className="font-medium">{localize(currentLesson.title, language.value)}</span>
                   <span className="text-muted-foreground text-xs">{formatLessonType(currentLesson.type)}</span>
                 </>
               ) : (
@@ -51,7 +51,7 @@ export const CourseHeaderMobile = () => {
               <DropdownMenuItem className="flex justify-between py-2" key={lesson.id} onClick={() => setStep(index)}>
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
-                    {localize(lesson.title, language)}{' '}
+                    {localize(lesson.title, language.value)}{' '}
                     {isCompletedLesson(index) && <span className="ml-1 text-success text-xs">{'✔︎'}</span>}
                   </span>
                   <span className="text-muted-foreground text-xs">{formatLessonType(lesson.type)}</span>

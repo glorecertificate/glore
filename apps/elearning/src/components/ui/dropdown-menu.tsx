@@ -1,5 +1,7 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import {
   CheckboxItem,
   Content,
@@ -56,22 +58,29 @@ export const DropdownMenuItemIndicator = (props: React.ComponentProps<typeof Ite
 )
 
 export interface DropdownMenuItemProps extends React.ComponentProps<typeof Item> {
+  as?: React.ElementType
   inset?: boolean
-  variant?: 'default' | 'destructive'
+  variant?: 'default' | 'destructive' | 'flat'
 }
 
-export const DropdownMenuItem = ({ className, inset, variant = 'default', ...props }: DropdownMenuItemProps) => (
-  <Item
-    className={cn(
-      `relative flex cursor-pointer select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden focus:bg-accent focus:text-accent-foreground data-disabled:pointer-events-none data-inset:pl-8 data-[variant=destructive]:text-destructive data-disabled:opacity-50 data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[variant=destructive]:*:[svg]:text-destructive!`,
-      className
-    )}
-    data-inset={inset}
-    data-slot="dropdown-menu-item"
-    data-variant={variant}
-    {...props}
-  />
-)
+export const DropdownMenuItem = ({ className, as, inset, variant = 'default', ...props }: DropdownMenuItemProps) => {
+  const Component = useMemo(() => as || Item, [as])
+
+  return (
+    <Component
+      className={cn(
+        `relative flex select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden data-disabled:pointer-events-none data-inset:pl-8 data-[variant=destructive]:text-destructive data-disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[variant=destructive]:*:[svg]:text-destructive!`,
+        variant !== 'flat' &&
+          'cursor-pointer focus:bg-accent focus:text-accent-foreground data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/40',
+        className
+      )}
+      data-inset={inset}
+      data-slot="dropdown-menu-item"
+      data-variant={variant}
+      {...props}
+    />
+  )
+}
 
 export const DropdownMenuCheckboxItem = ({
   checked,

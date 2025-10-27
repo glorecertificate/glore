@@ -1,37 +1,34 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import { EyeIcon } from 'lucide-react'
-import { type Locale, useTranslations } from 'next-intl'
+import { DialogTitle } from '@radix-ui/react-dialog'
+import { EyeIcon, HistoryIcon, SettingsIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
+import { CourseSettings } from '@/components/features/courses/course-settings'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { LanguageSelect } from '@/components/ui/language-select'
+import { Dialog, DialogContent, DialogDescription, DialogTrigger } from '@/components/ui/dialog'
 import { MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
+import { useIntl } from '@/hooks/use-intl'
 import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
-  const { course, language, setLanguage, step, tabs } = useCourse()
+  const { course, step } = useCourse()
+  const { localeItems } = useIntl()
   const { scrolled } = useScroll()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
   const hasLessons = useMemo(() => course.lessons && course.lessons.length > 0, [course.lessons])
   const progressColor = useMemo(() => (course.completion === 100 ? 'success' : 'default'), [course.completion])
-
-  const onLanguageChange = useCallback(
-    (language: Locale) => {
-      setLanguage(language)
-    },
-    [setLanguage]
-  )
 
   return (
     <div
@@ -43,19 +40,60 @@ export const CourseHeader = () => {
       {user.canEdit ? (
         <>
           <div className="flex items-center gap-2">
-            <MotionTabsList className="w-full sm:w-fit">
-              {tabs.map(tab => (
-                <MotionTabsTrigger className="flex items-center gap-1" key={tab} value={tab}>
-                  {t(tab)}
+            <div className="flex gap-1.5">
+              <Dialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <Button size="xs" variant="outline">
+                        <SettingsIcon className="size-3.5" />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} className="max-w-72 text-center">
+                    {t('settings')}
+                  </TooltipContent>
+                </Tooltip>
+                <DialogContent size="lg">
+                  <DialogTitle className="sr-only">{t('settings')}</DialogTitle>
+                  <DialogDescription className="mb-4 text-muted-foreground text-sm">
+                    {t('description')}
+                  </DialogDescription>
+                  <CourseSettings />
+                </DialogContent>
+              </Dialog>
+              <Dialog>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <Button size="xs" variant="outline">
+                        <HistoryIcon className="size-3.5" />
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} className="max-w-72 text-center">
+                    {t('history')}
+                  </TooltipContent>
+                </Tooltip>
+                <DialogContent size="lg">
+                  <DialogTitle className="sr-only">{t('settings')}</DialogTitle>
+                  <DialogDescription className="mb-4 text-muted-foreground text-sm">
+                    {t('description')}
+                  </DialogDescription>
+                  <CourseSettings />
+                </DialogContent>
+              </Dialog>
+            </div>
+            <MotionTabsList className="w-full sm:w-fit" size="xs">
+              {localeItems.map(({ displayLabel, icon, value }) => (
+                <MotionTabsTrigger className="flex items-center gap-1 text-[13px]" key={value} value={value}>
+                  {displayLabel}{' '}
+                  <span className="opacity-70 grayscale-75 group-data-[state=active]/motion-tabs-trigger:opacity-100 group-data-[state=active]/motion-tabs-trigger:grayscale-0">
+                    {icon}
+                  </span>
                 </MotionTabsTrigger>
               ))}
             </MotionTabsList>
-            <LanguageSelect
-              contentProps={{ className: 'min-w-40' }}
-              controlled
-              onChange={onLanguageChange}
-              value={language}
-            />
           </div>
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline">

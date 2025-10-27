@@ -4,14 +4,15 @@ import { useCallback, useMemo } from 'react'
 
 import { MessageCircleWarningIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
+import { type Enums } from 'supabase/types'
 
 import { AlertCallout } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useCourse } from '@/hooks/use-course'
-import { useI18n } from '@/hooks/use-i18n'
-import { type Course, type Enums } from '@/lib/data'
+import { useIntl } from '@/hooks/use-intl'
+import { type Course } from '@/lib/data'
 
 export interface CourseInfoData {
   type: Enums<'course_type'>
@@ -32,16 +33,16 @@ export interface CourseInfoProps {
  */
 export const CourseInfo = () => {
   const { course, language, setCourse } = useCourse()
-  const { localize } = useI18n()
+  const { localize } = useIntl()
   const t = useTranslations('Courses')
 
   const isSoftSkill = useMemo(() => course.type === 'skill', [course.type])
 
-  const title = useMemo(() => localize(course.title, language) ?? '', [course.title, language, localize])
+  const title = useMemo(() => localize(course.title, language.value) ?? '', [course.title, language.value, localize])
 
   const description = useMemo(
-    () => localize(course.description, language) ?? '',
-    [course.description, language, localize]
+    () => localize(course.description, language.value) ?? '',
+    [course.description, language.value, localize]
   )
 
   const handleLocalizedChange = useCallback(
@@ -50,11 +51,11 @@ export const CourseInfo = () => {
         ...prev,
         [field]: {
           ...((prev[field] as Record<string, string>) || {}),
-          [language]: value,
+          [language.value]: value,
         },
       }))
     },
-    [setCourse, language]
+    [setCourse, language.value]
   )
 
   return (

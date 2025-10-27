@@ -1,8 +1,9 @@
 import { cache } from 'react'
 
+import { type Enums, type Tables } from 'supabase/types'
+
 import { serialize } from '@glore/utils/serialize'
 
-import { type Enums, type Tables } from '../../supabase'
 import { getDatabase } from '../../supabase/server'
 import { type UserCourse } from '../users'
 import { getCurrentUser } from '../users/server'

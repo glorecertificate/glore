@@ -18,10 +18,12 @@ import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
+  defaultEmail,
   setEmail,
   setErrored,
   setView,
 }: {
+  defaultEmail?: string
   setEmail: (email: string) => void
   setErrored: (hasErrors: boolean) => void
   setView: (view: Enum<AuthView>) => void
@@ -44,7 +46,7 @@ export const PasswordRequestForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user: '',
+      user: defaultEmail ?? '',
     },
   })
 
@@ -57,8 +59,8 @@ export const PasswordRequestForm = ({
         email = await findUserEmail(username)
       } catch (e) {
         const error = e as DatabaseError
-        if (error.code === 'PGRST116') return form.setError('user', { message: t('userNotFound') })
-        console.error(e)
+        if (error.code === 'PGRST116')
+          return form.setError('user', { message: t('userNotFound') }, { shouldFocus: true })
         return toast.error(t('networkError'))
       }
 
@@ -109,7 +111,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={defaultFormDisabled(form)}
+            disabled={!defaultEmail && defaultFormDisabled(form)}
             disabledCursor
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}

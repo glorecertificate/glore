@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense, use } from 'react'
 
+import { LoadingView } from '@/components/layout/loading-view'
 import { getCurrentUser } from '@/lib/data/server'
 import { createMetadata } from '@/lib/metadata'
 
@@ -15,7 +16,7 @@ const CertificateGuard = ({ children }: LayoutProps<'/certificates'>) => {
 }
 
 export default (props: LayoutProps<'/certificates'>) => (
-  <Suspense fallback={null}>
+  <Suspense fallback={<LoadingView />}>
     <CertificateGuard {...props} />
   </Suspense>
 )

@@ -13,7 +13,7 @@ import {
   type SelectTriggerProps,
 } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { LOCALES, type LocaleItem } from '@/lib/intl'
 import { cn } from '@/lib/utils'
 
@@ -46,7 +46,7 @@ export const LanguageSelect = ({
   values = LOCALES,
   ...props
 }: LanguageSelectProps) => {
-  const { locale, localeItems, setLocale } = useI18n()
+  const { locale, localeItems, setLocale } = useIntl()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 

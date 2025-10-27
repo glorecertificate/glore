@@ -27,7 +27,7 @@ import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverPortal, PopoverTrigger } from '@/components/ui/popover'
 import { ToolbarButton } from '@/components/ui/toolbar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { cn } from '@/lib/utils'
 
 const I18N_DATA = { en, es, it }
@@ -98,7 +98,7 @@ export const EmojiPicker = ({
 }: Omit<UseEmojiPickerType, 'icons'> & {
   icons?: EmojiIconList<React.ReactElement>
 }) => {
-  const { locale } = useI18n()
+  const { locale } = useIntl()
   const t = useTranslations('Editor.emoji')
 
   const i18n = useMemo(

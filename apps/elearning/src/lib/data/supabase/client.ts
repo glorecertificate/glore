@@ -1,8 +1,9 @@
 'use client'
 
 import { createBrowserClient } from '@supabase/ssr'
+import { type Database } from 'supabase/types'
 
-import { type Database, type DatabaseClient, type PublicSchema } from './types'
+import { type DatabaseClient, type PublicSchema } from './types'
 
 let client: DatabaseClient | undefined
 

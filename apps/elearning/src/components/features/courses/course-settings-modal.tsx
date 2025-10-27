@@ -7,6 +7,7 @@ import { type PostgrestError } from '@supabase/supabase-js'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import { type Enums } from 'supabase/types'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -21,9 +22,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { type Course, type Enums, getSkillGroups, type SkillGroup } from '@/lib/data'
+import { type Course, getSkillGroups, type SkillGroup } from '@/lib/data'
 
 const SLUG_REGEX = /^[a-z0-9-]+$/
 
@@ -35,7 +36,7 @@ interface CourseSettingsModalProps {
 
 export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettingsModalProps) => {
   const router = useRouter()
-  const { localize } = useI18n()
+  const { localize } = useIntl()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
 

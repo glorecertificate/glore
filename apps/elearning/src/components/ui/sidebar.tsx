@@ -1,5 +1,6 @@
 'use client'
 
+import { type AppRoutes } from 'next/types/routes'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Slot } from '@radix-ui/react-slot'
@@ -14,7 +15,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
 import { usePathname } from '@/hooks/use-pathname'
-import { type AppRoutes } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7

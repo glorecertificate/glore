@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation'
-import { Suspense, use } from 'react'
+import { use } from 'react'
 
 import { getLocale } from 'next-intl/server'
 
+import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseView } from '@/components/features/courses/course-view'
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { enrollUser, findCourse, getCurrentUser } from '@/lib/data/server'
 import { localize } from '@/lib/intl'
 import { createMetadata } from '@/lib/metadata'
-import { serverCookies } from '@/lib/storage/server'
+import { CourseMode } from '@/lib/navigation'
 
 const createPageData = async ({ params }: PageProps<'/courses/[slug]'>) => {
   const { slug } = (await params) ?? {}
@@ -34,27 +36,30 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
 }
 
 const resolveCoursePageContent = async (props: PageProps<'/courses/[slug]'>) => {
-  const { get } = await serverCookies()
   const { course, user } = await createPageData(props)
   const locale = await getLocale()
-
-  const tabs = get('course-tab')
 
   if (user.isLearner && !course.enrolled) {
     await enrollUser(course.id, locale)
   }
 
-  return { course, defaultTab: tabs?.[course.slug] }
+  const defaultMode = user.canEdit ? CourseMode.Editor : CourseMode.Student
+
+  return { course, defaultMode }
 }
 
 const CoursePageContent = (props: PageProps<'/courses/[slug]'>) => {
-  const { course, defaultTab } = use(resolveCoursePageContent(props))
+  const { course, defaultMode } = use(resolveCoursePageContent(props))
 
-  return <CourseView course={course} defaultTab={defaultTab} />
+  return (
+    <RichTextEditorProvider>
+      <CourseView course={course} defaultMode={defaultMode} />
+    </RichTextEditorProvider>
+  )
 }
 
 export default (props: PageProps<'/courses/[slug]'>) => (
-  <Suspense fallback={null}>
+  <SuspenseLayout>
     <CoursePageContent {...props} />
-  </Suspense>
+  </SuspenseLayout>
 )

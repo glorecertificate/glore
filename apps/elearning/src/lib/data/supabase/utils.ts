@@ -1,15 +1,19 @@
 import { PostgrestError } from '@supabase/supabase-js'
 
-export type DatabaseErrorCode =
-  | 'PGRST116' // NO_RESULTS
-  | '23505' // CONFLICT
-  | '28P01' // INVALID_CREDENTIALS
-  | 'same_password'
-  | 'NETWORK_ERROR'
-  | 'unknown_error'
+const DATABASE_ERROR_CODES = [
+  'PGRST116', // NO_RESULTS
+  'PGRST401', // UNAUTHENTICATED
+  '28P01', // INVALID_CREDENTIALS
+  '23505', // CONFLICT
+  'same_password',
+  'NETWORK_ERROR',
+  'UNKNOWN',
+]
+
+export type DatabaseErrorCode = (typeof DATABASE_ERROR_CODES)[number]
 
 export interface DatabaseErrorContext {
-  code: DatabaseErrorCode | string
+  code: string
   message?: string
   details?: string
   hint?: string
@@ -21,6 +25,6 @@ export class DatabaseError extends PostgrestError {
   constructor({ code, message = 'A database error occurred', details = '', hint = '' }: DatabaseErrorContext) {
     super({ message, code, details, hint })
     this.name = 'DatabaseError'
-    this.code = code as DatabaseErrorCode
+    this.code = DATABASE_ERROR_CODES.includes(code) ? code : 'UNKNOWN'
   }
 }

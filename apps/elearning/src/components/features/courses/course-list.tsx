@@ -23,11 +23,11 @@ import {
 import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
+import { useCookies } from '@/hooks/use-cookies'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { type Course } from '@/lib/data'
 import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 const EDITOR_SORTS = ['name', 'type'] as const
@@ -176,7 +176,8 @@ export const CourseList = ({
   defaultLanguageFilter?: Locale[]
   defaultTab?: CourseListView
 }) => {
-  const { locale, localeItems, locales, localize } = useI18n()
+  const cookies = useCookies()
+  const { locale, localeItems, locales, localize } = useIntl()
   const { user, courses: sessionCourses } = useSession()
   const t = useTranslations('Courses')
 
@@ -305,11 +306,14 @@ export const CourseList = ({
     }
   }, [activeTab, enhanceEmptyListMessage, t])
 
-  const handleTabChange = useCallback((value: string) => {
-    const tab = value as CourseListView
-    setActiveTab(tab)
-    cookies.set('course-list-view', tab)
-  }, [])
+  const handleTabChange = useCallback(
+    (value: string) => {
+      const tab = value as CourseListView
+      setActiveTab(tab)
+      cookies.set('course-list-view', tab)
+    },
+    [cookies.set]
+  )
 
   const setActiveLanguages = useCallback(
     (selected: Locale[]) => {
@@ -317,7 +321,7 @@ export const CourseList = ({
       cookies.set('course-list-locales', selected)
       if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
     },
-    [activeTab, courses.partial.length]
+    [activeTab, courses.partial.length, cookies.set]
   )
 
   return (

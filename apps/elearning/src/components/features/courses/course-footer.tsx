@@ -6,7 +6,6 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import config from '@config/app'
-import { type Enum } from '@glore/utils/types'
 
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -23,27 +22,16 @@ import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
 import { useSession } from '@/hooks/use-session'
-import { type CourseProgress, type Lesson } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
-export const CourseFooter = ({
-  lessons,
-  onNext,
-  onPrevious,
-  status,
-}: {
-  lessons?: Lesson[]
-  onNext: () => Promise<void>
-  onPrevious: () => void
-  status?: Enum<CourseProgress>
-}) => {
-  const { step } = useCourse()
+export const CourseFooter = () => {
+  const { course, moveNext, movePrevious, step } = useCourse()
   const { courses } = useSession()
   const t = useTranslations('Courses')
 
-  const lesson = useMemo(() => lessons?.[step], [lessons, step])
+  const lesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
   const isFirstLesson = useMemo(() => step === 0, [step])
-  const isLastLesson = useMemo(() => step === (lessons?.length ?? 0) - 1, [lessons?.length, step])
+  const isLastLesson = useMemo(() => step === (course.lessons?.length ?? 0) - 1, [course.lessons?.length, step])
 
   const canProceed = useMemo(() => {
     if (!lesson) return false
@@ -79,7 +67,7 @@ export const CourseFooter = ({
   return (
     <div className={cn('mt-6 flex', isFirstLesson ? 'justify-end' : 'justify-between')}>
       {!isFirstLesson && (
-        <Button className="gap-1" disabled={isFirstLesson} onClick={onPrevious} variant="outline">
+        <Button className="gap-1" disabled={isFirstLesson} onClick={movePrevious} variant="outline">
           <ArrowLeftIcon className="size-4" />
           {t('previous')}
         </Button>
@@ -94,7 +82,7 @@ export const CourseFooter = ({
                   className={cn('gap-1')}
                   disabled={!canProceed}
                   effect="fireworks"
-                  onClick={onNext}
+                  onClick={moveNext}
                   options={{ zIndex: 100 }}
                   variant="outline"
                 >
@@ -143,7 +131,7 @@ export const CourseFooter = ({
           </Tooltip>
         )
       ) : canProceed ? (
-        <Button className="gap-1" onClick={() => onNext()} title={t('proceedToNextLesson')} variant="outline">
+        <Button className="gap-1" onClick={() => moveNext()} title={t('proceedToNextLesson')} variant="outline">
           {t('next')}
         </Button>
       ) : (

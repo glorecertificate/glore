@@ -1,4 +1,6 @@
-import { type Enums, type Timestamp } from '../../supabase'
+import { type Enums } from 'supabase/types'
+
+import { type Timestamp } from '../../supabase'
 import { type Certificate } from '../certificates/types'
 import { type BaseOrganization } from '../organizations/types'
 import { type Entity } from '../types'

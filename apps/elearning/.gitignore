@@ -1,6 +1,2 @@
-.next/
-.env
-.env.*
-!.env.example
 *.d.ts
-*.tsbuildinfo
+supabase/types.ts

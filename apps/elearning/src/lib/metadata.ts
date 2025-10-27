@@ -1,4 +1,5 @@
 import { type Metadata } from 'next'
+import { type AppRoutes } from 'next/types/routes'
 
 import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
@@ -6,7 +7,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import metadata from '@config/metadata'
 
 import { LOCALES, type NavigationKey } from '@/lib/intl'
-import { APP_URL, type AppRoutes, apiRoute } from '@/lib/navigation'
+import { APP_URL, apiRoute } from '@/lib/navigation'
 import { publicAsset } from '@/lib/storage'
 
 export const METADATA = {

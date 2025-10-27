@@ -1,3 +1,5 @@
+'use client'
+
 import { createPlatePlugin } from 'platejs/react'
 
 import { FixedToolbar } from '@/components/blocks/rich-text-editor/ui/fixed-toolbar'

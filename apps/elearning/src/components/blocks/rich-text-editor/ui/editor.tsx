@@ -1,35 +1,24 @@
 'use client'
 
 import { cva, type VariantProps } from 'class-variance-authority'
-import {
-  PlateContainer,
-  PlateContent,
-  type PlateContentProps,
-  PlateView,
-  type PlateViewProps,
-  usePlateState,
-} from 'platejs/react'
+import { PlateContainer, PlateContent, type PlateContentProps, PlateView, type PlateViewProps } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
 
 export interface EditorProps extends PlateContentProps, Omit<VariantProps<typeof editorVariants>, 'disabled'> {}
 
-export const Editor = ({ className, disabled, focused, variant, ...props }: EditorProps) => {
-  const [readOnly] = usePlateState('readOnly')
-
-  return (
-    <PlateContent
-      className={cn(
-        editorVariants({ disabled, focused, variant }),
-        readOnly && 'rounded-lg border-transparent pt-2',
-        className
-      )}
-      disableDefaultStyles
-      disabled={disabled}
-      {...props}
-    />
-  )
-}
+export const Editor = ({ className, disabled, focused, readOnly, variant, ...props }: EditorProps) => (
+  <PlateContent
+    className={cn(
+      editorVariants({ disabled, focused, variant }),
+      readOnly && 'rounded-lg border-transparent pt-2',
+      className
+    )}
+    disabled={disabled}
+    readOnly={readOnly}
+    {...props}
+  />
+)
 
 export const editorVariants = cva(
   cn(

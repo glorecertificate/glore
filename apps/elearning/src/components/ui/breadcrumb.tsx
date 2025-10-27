@@ -4,7 +4,6 @@ import { ChevronRight, MoreHorizontal } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Link, type LinkProps } from '@/components/ui/link'
-import { type AnyUrl } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
@@ -30,7 +29,7 @@ export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li
   />
 )
 
-export const BreadcrumbLink = <T extends AnyUrl>({ className, ...props }: LinkProps<T>) => (
+export const BreadcrumbLink = <T,>({ className, ...props }: LinkProps<T>) => (
   <BreadcrumbItem>
     <Button asChild className={cn('h-8 px-3 font-normal', className)} variant="ghost">
       <Link {...props} />

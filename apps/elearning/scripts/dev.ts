@@ -1,4 +1,7 @@
 import { execSync } from 'node:child_process'
 
-execSync('pnpm run typegen', { stdio: 'ignore' })
-execSync('./node_modules/.bin/dotenv -- ./node_modules/.bin/next dev', { stdio: 'inherit' })
+import env from '@next/env'
+
+env.loadEnvConfig('.')
+
+execSync('./node_modules/.bin/next dev', { stdio: 'inherit' })

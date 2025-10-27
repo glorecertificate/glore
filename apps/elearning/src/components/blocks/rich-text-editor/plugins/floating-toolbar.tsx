@@ -1,3 +1,5 @@
+'use client'
+
 import { createPlatePlugin } from 'platejs/react'
 
 import { FloatingToolbar } from '@/components/blocks/rich-text-editor/ui/floating-toolbar'

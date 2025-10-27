@@ -1,5 +1,6 @@
 'use client'
 
+import { redirect } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -8,7 +9,6 @@ import { toast } from 'sonner'
 import config from '@config/app'
 
 import { useSession } from '@/hooks/use-session'
-import { redirect } from '@/lib/navigation'
 
 export default () => {
   const { courses, organization, user } = useSession()

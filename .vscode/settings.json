@@ -39,6 +39,8 @@
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./config/translations"],
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.sourceLanguage": "en",
   "prettier.enable": false,
   "search.useGlobalIgnoreFiles": true,
   "search.useIgnoreFiles": true,

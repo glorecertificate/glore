@@ -1,6 +1,5 @@
 import { usePathname as useNextPathname } from 'next/navigation'
-
-import { type AppRoutes } from '@/lib/navigation'
+import { type AppRoutes } from 'next/types/routes'
 
 /**
  * Typed version of Next.js's `usePathname` hook that returns

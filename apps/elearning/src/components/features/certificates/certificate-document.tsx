@@ -10,13 +10,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { type Certificate } from '@/lib/data'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
-  const { localize, localizeDate } = useI18n()
+  const { localize, localizeDate } = useIntl()
   const t = useTranslations()
 
   const isIssued = useMemo(() => !!certificate.issuedAt, [certificate])

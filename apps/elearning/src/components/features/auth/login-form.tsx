@@ -1,5 +1,6 @@
 'use client'
 
+import { redirect } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,10 +23,10 @@ import {
 } from '@/components/ui/dialog'
 import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Link } from '@/components/ui/link'
+import { ExternalLink } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { DatabaseError, findUserEmail, login, PASSWORD_REGEX } from '@/lib/data'
-import { type AuthView, buildExternalRoute, redirect } from '@/lib/navigation'
+import { APP_URL, type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const LoginForm = ({
@@ -33,7 +34,7 @@ export const LoginForm = ({
   setErrored,
   setView,
 }: {
-  defaultEmail: string | null
+  defaultEmail?: string
   setErrored: (hasErrors: boolean) => void
   setView: (view: Enum<AuthView>) => void
 }) => {
@@ -89,7 +90,7 @@ export const LoginForm = ({
         await login({ email, password })
       } catch (e) {
         const error = e as DatabaseError
-        if (error.code === 'PGRST116' || error.code === '28P01') {
+        if (error.code === '28P01') {
           form.setError('password', { message: t('passwordInvalid') })
           form.setFocus('password')
           return
@@ -121,7 +122,7 @@ export const LoginForm = ({
                 <FormItem>
                   <FormControl>
                     <Input
-                      autoFocus
+                      autoFocus={!defaultEmail}
                       defaultOpen
                       disabled={form.formState.isSubmitting}
                       placeholder={t('userLabel')}
@@ -152,6 +153,7 @@ export const LoginForm = ({
                   </div>
                   <FormControl>
                     <PasswordInput
+                      autoFocus={!!defaultEmail}
                       disabled={form.formState.isSubmitting}
                       placeholder={t('passwordLabel')}
                       srHide={t('hidePassword')}
@@ -205,9 +207,9 @@ export const LoginForm = ({
               p: content => <p>{content}</p>,
               b: content => <span className="font-medium">{content}</span>,
               link: content => (
-                <Link className="font-medium" href={buildExternalRoute('www')} underline>
+                <ExternalLink className="font-medium" href={APP_URL} variant="underlined">
                   {content}
-                </Link>
+                </ExternalLink>
               ),
             })}
           </div>

@@ -1,12 +1,12 @@
 # See https://help.github.com/articles/ignoring-files for more about ignoring files.
 
-.github/chatmodes/
+.next/
 .turbo/
 .vercel/
-dist/
 node_modules/
 private/
 .DS_Store
 *.d.json.ts
 *.tsbuildinfo
-.vercel
+.env
+.env.local

@@ -89,6 +89,7 @@ export const MotionTabs = ({ children, className, defaultValue, onValueChange, v
 
 export interface MotionTabsListProps extends React.ComponentProps<'div'> {
   activeClassName?: string
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   transition?: Transition
 }
 
@@ -96,6 +97,7 @@ export const MotionTabsList = ({
   activeClassName,
   children,
   className,
+  size = 'md',
   transition = {
     type: 'spring',
     duration: 0.1,
@@ -115,7 +117,11 @@ export const MotionTabsList = ({
     >
       <div
         className={cn(
-          'inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5 text-muted-foreground',
+          'inline-flex w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5 text-muted-foreground',
+          size === 'xs' && 'h-7',
+          size === 'sm' && 'h-8',
+          size === 'md' && 'h-10',
+          size === 'lg' && 'h-12',
           className
         )}
         data-slot="motion-tabs-list"

@@ -1,25 +1,26 @@
 'use client'
 
-import { Arrow, Content, Portal, Provider, Root, Trigger } from '@radix-ui/react-tooltip'
+import * as TooltipPrimitive from '@radix-ui/react-tooltip'
+import { type TooltipProviderProps } from '@radix-ui/react-tooltip'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-export interface TooltipProviderProps extends React.ComponentProps<typeof Provider> {}
+export const TooltipPortal = TooltipPrimitive.Portal
 
 export const TooltipProvider = ({ delayDuration = 0, ...props }: TooltipProviderProps) => (
-  <Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
+  <TooltipPrimitive.Provider data-slot="tooltip-provider" delayDuration={delayDuration} {...props} />
 )
 
-export interface TooltipProps extends React.ComponentProps<typeof Root> {}
+export type TooltipProps = TooltipPrimitive.TooltipProps
 
-export const Tooltip = (props: TooltipProps) => (
+export const Tooltip = (props: TooltipPrimitive.TooltipProps) => (
   <TooltipProvider>
-    <Root data-slot="tooltip" {...props} />
+    <TooltipPrimitive.Root data-slot="tooltip" {...props} />
   </TooltipProvider>
 )
 
-export interface TooltipTriggerProps extends React.ComponentProps<typeof Trigger> {
+export interface TooltipTriggerProps extends TooltipPrimitive.TooltipTriggerProps {
   /**
    * Pointer events applied when `asChild` is used.
    * @default 'none'
@@ -28,7 +29,7 @@ export interface TooltipTriggerProps extends React.ComponentProps<typeof Trigger
 }
 
 export const TooltipTrigger = ({ className, pointerEvents = 'none', ...props }: TooltipTriggerProps) => (
-  <Trigger
+  <TooltipPrimitive.Trigger
     className={cn(pointerEvents === 'auto' && 'pointer-events-auto!', className)}
     data-slot="tooltip-trigger"
     {...props}
@@ -36,7 +37,7 @@ export const TooltipTrigger = ({ className, pointerEvents = 'none', ...props }: 
 )
 
 export interface TooltipContentProps
-  extends Omit<React.ComponentProps<typeof Content>, 'color'>,
+  extends Omit<TooltipPrimitive.TooltipContentProps, 'color'>,
     VariantProps<typeof tooltipContentVariants> {
   arrow?: boolean
 }
@@ -50,17 +51,17 @@ export const TooltipContent = ({
   variant,
   ...props
 }: TooltipContentProps) => (
-  <Portal>
-    <Content
+  <TooltipPortal>
+    <TooltipPrimitive.Content
       className={cn(tooltipContentVariants({ size, variant }), className)}
       data-slot="tooltip-content"
       sideOffset={sideOffset}
       {...props}
     >
       {children}
-      {arrow && <Arrow className={tooltipArrowVariants({ variant })} />}
-    </Content>
-  </Portal>
+      {arrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
+    </TooltipPrimitive.Content>
+  </TooltipPortal>
 )
 
 export const tooltipContentVariants = cva(

@@ -1,6 +1,7 @@
 'use client'
 
 import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
+import { cva, type VariantProps } from 'class-variance-authority'
 import { XIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -41,21 +42,16 @@ export const DialogContent = ({
   className,
   overlay = 0.5,
   showClose = true,
+  size,
   ...props
-}: React.ComponentProps<typeof Content> & {
-  overlay?: number
-  showClose?: boolean
-}) => (
+}: React.ComponentProps<typeof Content> &
+  VariantProps<typeof dialogContentVariants> & {
+    overlay?: number
+    showClose?: boolean
+  }) => (
   <DialogPortal data-slot="dialog-portal">
     {overlay && <DialogOverlay opacity={overlay} />}
-    <Content
-      className={cn(
-        'data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 translate-[-50%] fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:max-w-lg',
-        className
-      )}
-      data-slot="dialog-content"
-      {...props}
-    >
+    <Content className={cn(dialogContentVariants({ size }), className)} data-slot="dialog-content" {...props}>
       {children}
       {showClose && (
         <Close
@@ -67,6 +63,21 @@ export const DialogContent = ({
       )}
     </Content>
   </DialogPortal>
+)
+
+const dialogContentVariants = cva(
+  'data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 translate-[-50%] fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in',
+  {
+    variants: {
+      size: {
+        default: 'sm:max-w-lg',
+        lg: 'sm:max-w-2xl',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  }
 )
 
 export const DialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (

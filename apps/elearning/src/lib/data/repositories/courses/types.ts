@@ -1,7 +1,9 @@
+import { type Enums, type Tables } from 'supabase/types'
+
 import { type Enum } from '@glore/utils/types'
 
 import { type IntlRecord } from '@/lib/intl'
-import { type Enums, type Tables, type Timestamp } from '../../supabase'
+import { type Timestamp } from '../../supabase'
 import { type LESSON_TYPE } from '../courses'
 import { type Entity } from '../types'
 import { type User } from '../users'

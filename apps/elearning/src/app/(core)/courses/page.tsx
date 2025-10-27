@@ -1,6 +1,7 @@
-import { Suspense, use } from 'react'
+import { use } from 'react'
 
 import { CourseList } from '@/components/features/courses/course-list'
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { createMetadata } from '@/lib/metadata'
 import { serverCookies } from '@/lib/storage/server'
 
@@ -25,7 +26,7 @@ const CoursesPageContent = () => {
 }
 
 export default () => (
-  <Suspense fallback={null}>
+  <SuspenseLayout>
     <CoursesPageContent />
-  </Suspense>
+  </SuspenseLayout>
 )

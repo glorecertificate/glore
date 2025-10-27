@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
+import { type AppRoutes } from 'next/types/routes'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
@@ -13,17 +14,30 @@ import {
   InfoIcon,
   LogOutIcon,
   MessageCircleQuestionIcon,
+  PaletteIcon,
   PencilIcon,
   PlusIcon,
   SettingsIcon,
   ShieldUserIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 import { titleize } from '@glore/utils/string'
 
 import { DashboardIcon } from '@/components/icons/dashboard'
 import { type Icon } from '@/components/icons/types'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
@@ -37,7 +51,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Image } from '@/components/ui/image'
-import { LanguageSelect } from '@/components/ui/language-select'
 import { Link } from '@/components/ui/link'
 import {
   Sidebar,
@@ -57,10 +70,9 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useCookies } from '@/hooks/use-cookies'
 import { useSession } from '@/hooks/use-session'
 import { logout, type User, type UserOrganization } from '@/lib/data'
-import { type AppRoutes, redirect } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps<I extends Icon = Icon> extends SidebarMenuButtonProps {
@@ -83,8 +95,8 @@ const SidebarOrgs = ({
   setOrg: (org: UserOrganization) => void
 }) => {
   const router = useRouter()
-  const { setActivePath } = useSidebar()
-  const { isMobile, open } = useSidebar()
+  const cookies = useCookies()
+  const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Navigation')
 
   const getOrgInitials = useCallback((org: UserOrganization) => org.name.slice(0, 2).toUpperCase(), [])
@@ -96,7 +108,7 @@ const SidebarOrgs = ({
       setActivePath('/')
       setTimeout(() => setOrg(org), 200)
     },
-    [router, setOrg, setActivePath]
+    [cookies, router, setOrg, setActivePath]
   )
 
   return (
@@ -302,17 +314,34 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
   const { open, openMobile, setOpenMobile } = useSidebar()
   const t = useTranslations()
 
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
   const onLinkClick = useCallback(() => {
     if (openMobile) {
       setOpenMobile(false)
     }
   }, [openMobile, setOpenMobile])
 
-  const logOutUser = useCallback(async () => {
-    onLinkClick()
-    await logout()
-    redirect('/login')
-  }, [onLinkClick])
+  const onLogoutClick = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
+      if (isLoggingOut) return
+
+      setIsLoggingOut(true)
+      onLinkClick()
+
+      try {
+        await logout()
+      } catch {
+        toast.error('logout failed')
+        return setIsLoggingOut(false)
+      }
+
+      redirect('/login')
+    },
+    [isLoggingOut, onLinkClick]
+  )
 
   return (
     <SidebarMenu>
@@ -407,6 +436,16 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                   {t('Navigation.settings')}
                 </DropdownMenuItem>
               </Link>
+              <DropdownMenuItem as="div" className="justify-between" variant="flat">
+                <span className="flex items-center gap-2">
+                  <PaletteIcon />
+                  {t('Common.theme')}
+                </span>
+                <ThemeSwitch />
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
               <Link href="/help" onClick={onLinkClick}>
                 <DropdownMenuItem>
                   <HelpCircleIcon />
@@ -419,32 +458,34 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                   {t('Navigation.about')}
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem onClick={logOutUser}>
-                <LogOutIcon />
-                {t('Navigation.logout')}
-              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">
-              <div className="flex items-center px-1.5 py-1">
-                <span className="font-medium text-[13px] text-muted-foreground leading-4">
-                  {t('Common.preferences')}
-                </span>
-              </div>
-            </DropdownMenuGroup>
-            <DropdownMenuGroup className="p-1 pt-0">
-              <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="font-normal text-foreground text-sm">{t('Common.theme')}</span>
-                <div data-orientation="horizontal" dir="ltr">
-                  <ThemeSwitch />
-                </div>
-              </div>
-              <div className="flex h-10 w-full items-center justify-between gap-4 px-1.5">
-                <span className="font-normal text-foreground text-sm">{t('Common.language')}</span>
-                <div data-orientation="horizontal" dir="ltr">
-                  <LanguageSelect className="h-9 px-2 text-[13.8px]" />
-                </div>
-              </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <DropdownMenuItem onSelect={e => e.preventDefault()} variant="destructive">
+                    <LogOutIcon />
+                    {t('Navigation.logout')}
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{'Sure?'}</AlertDialogTitle>
+                    <AlertDialogDescription>{'Your session blabla'}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{'cancel'}</AlertDialogCancel>
+                    <AlertDialogAction
+                      loading={isLoggingOut}
+                      loadingText="logging you out.."
+                      onClick={onLogoutClick}
+                      variant="destructive"
+                    >
+                      {'logout user'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

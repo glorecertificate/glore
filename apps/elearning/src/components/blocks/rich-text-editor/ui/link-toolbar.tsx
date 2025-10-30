@@ -13,7 +13,7 @@ import {
   useFloatingLinkInsertState,
 } from '@platejs/link/react'
 import { cva } from 'class-variance-authority'
-import { ExternalLink, Link, Text, Unlink } from 'lucide-react'
+import { ExternalLinkIcon, LinkIcon, TextIcon, UnlinkIcon } from 'lucide-react'
 import { KEYS, type TLinkElement } from 'platejs'
 import { useEditorRef, useEditorSelection, useFormInputProps, usePluginOption } from 'platejs/react'
 
@@ -26,7 +26,7 @@ const popoverVariants = cva(
 
 const inputVariants = cva(
   `
-    flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
+    flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
     placeholder:text-muted-foreground
     focus-visible:ring-transparent focus-visible:outline-none
     md:text-sm
@@ -78,7 +78,7 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
     <div className="flex w-[330px] flex-col" {...inputProps}>
       <div className="flex items-center">
         <div className="flex items-center pr-1 pl-2 text-muted-foreground">
-          <Link className="size-4" />
+          <LinkIcon className="size-4" />
         </div>
 
         <FloatingLinkUrlInput className={inputVariants()} data-plate-focus placeholder="Paste link" />
@@ -86,9 +86,9 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
       <Separator className="my-1" />
       <div className="flex items-center">
         <div className="flex items-center pr-1 pl-2 text-muted-foreground">
-          <Text className="size-4" />
+          <TextIcon className="size-4" />
         </div>
-        <input className={inputVariants()} data-plate-focus placeholder="Text to display" {...textInputProps} />
+        <input className={inputVariants()} data-plate-focus placeholder="TextIcon to display" {...textInputProps} />
       </div>
     </div>
   )
@@ -115,7 +115,7 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
         type="button"
         {...unlinkButtonProps}
       >
-        <Unlink width={18} />
+        <UnlinkIcon width={18} />
       </button>
     </div>
   )
@@ -165,7 +165,7 @@ const LinkOpenButton = () => {
       rel="noreferrer"
       target="_blank"
     >
-      <ExternalLink width={18} />
+      <ExternalLinkIcon width={18} />
     </a>
   )
 }

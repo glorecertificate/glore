@@ -19,7 +19,7 @@ export default {
   },
   plugins: {
     '@release-it/bumper': {
-      out: ['config/metadata.json'],
+      out: ['./apps/*/config/metadata.json'],
     },
     '@release-it/conventional-changelog': {
       header: '# Changelog',

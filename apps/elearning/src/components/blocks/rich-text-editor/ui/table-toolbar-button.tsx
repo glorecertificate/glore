@@ -4,15 +4,15 @@ import { useState } from 'react'
 
 import { TablePlugin, useTableMergeState } from '@platejs/table/react'
 import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
-  Combine,
+  ArrowDownIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  CombineIcon,
   Grid3x3Icon,
-  Table,
+  TableIcon,
   Trash2Icon,
-  Ungroup,
+  UngroupIcon,
   XIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -45,7 +45,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
         <ToolbarButton isDropdown pressed={open} tooltip={t('table')}>
-          <Table />
+          <TableIcon />
         </ToolbarButton>
       </DropdownMenuTrigger>
 
@@ -78,7 +78,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <Combine />
+                <CombineIcon />
                 {t('tableMerge')}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -89,7 +89,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <Ungroup />
+                <UngroupIcon />
                 {t('tableSplit')}
               </DropdownMenuItem>
             </DropdownMenuSubContent>
@@ -112,7 +112,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <ArrowUp />
+                <ArrowUpIcon />
                 {t('tableInsertRowBefore')}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -123,7 +123,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <ArrowDown />
+                <ArrowDownIcon />
                 {t('tableInsertRowAfter')}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -157,7 +157,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <ArrowLeft />
+                <ArrowLeftIcon />
                 {t('tableInsertColumnBefore')}
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -168,7 +168,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
                   editor.tf.focus()
                 }}
               >
-                <ArrowRight />
+                <ArrowRightIcon />
                 {t('tableInsertColumnAfter')}
               </DropdownMenuItem>
               <DropdownMenuItem

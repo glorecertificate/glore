@@ -2,7 +2,7 @@
 
 import { useMediaState } from '@platejs/media/react'
 import { ResizableProvider } from '@platejs/resizable'
-import { FileUp } from 'lucide-react'
+import { FileUpIcon } from 'lucide-react'
 import { type TFileElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly, withHOC } from 'platejs/react'
 
@@ -24,7 +24,7 @@ export const FileElement = withHOC(ResizableProvider, (props: PlateElementProps<
         target="_blank"
       >
         <div className="flex items-center gap-1 p-1">
-          <FileUp className="size-5" />
+          <FileUpIcon className="size-5" />
           <div>{name}</div>
         </div>
 

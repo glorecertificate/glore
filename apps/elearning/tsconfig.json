@@ -1,10 +1,13 @@
 {
   "extends": "@glore/tsconfig/nextjs",
-  "include": ["src", "supabase", "*.ts", ".next/types/validator.ts"],
+  "include": ["**/*.ts", "**/*.tsx", ".next/types"],
   "compilerOptions": {
+    "allowArbitraryExtensions": true,
     "paths": {
+      "next/types/*": ["./.next/types/*"],
+      "supabase/types": ["./supabase/types.ts"],
       "@/*": ["./src/*"],
-      "@config/*": ["../../config/*.json"]
+      "@config/*": ["./config/*.json"]
     },
     "plugins": [{ "name": "next" }],
     "types": ["deno"]

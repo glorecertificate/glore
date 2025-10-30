@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { type Evaluation } from '@/lib/data'
 
 export const CourseEvaluations = ({
@@ -21,7 +21,7 @@ export const CourseEvaluations = ({
   onEvaluation: (id: number, rating: number) => void
   title?: string
 }) => {
-  const { localize } = useI18n()
+  const { localize } = useIntl()
   const t = useTranslations('Courses')
 
   const onValueChange = useCallback(

@@ -46,6 +46,8 @@ export const aiChatPlugin = AIChatPlugin.extend({
     useChatChunk({
       onChunk: ({ chunk, isFirst, nodes }) => {
         if (isFirst && mode === 'insert') {
+          const path = editor.selection?.focus.path.slice(0, 1)
+
           editor.tf.withoutSaving(() => {
             editor.tf.insertNodes(
               {
@@ -53,7 +55,7 @@ export const aiChatPlugin = AIChatPlugin.extend({
                 type: KEYS.aiChat,
               },
               {
-                at: PathApi.next(editor.selection?.focus.path.slice(0, 1)!),
+                at: PathApi.next(path!),
               }
             )
           })
@@ -93,11 +95,11 @@ You are an advanced AI-powered note-taking assistant, designed to enhance produc
 Respond directly to user prompts with clear, concise, and relevant content. Maintain a neutral, helpful tone.
 
 Rules:
-- <Document> is the entire note the user is working on.
-- <Reminder> is a reminder of how you should reply to INSTRUCTIONS. It does not apply to questions.
+- [Document] is the entire note the user is working on.
+- [Reminder] is a reminder of how you should reply to INSTRUCTIONS. It does not apply to questions.
 - Anything else is the user prompt.
 - Your response should be tailored to the user's prompt, providing precise assistance to optimize note management.
-- For INSTRUCTIONS: Follow the <Reminder> exactly. Provide ONLY the content to be inserted or replaced. No explanations or comments.
+- For INSTRUCTIONS: Follow the [Reminder] exactly. Provide ONLY the content to be inserted or replaced. No explanations or comments.
 - For QUESTIONS: Provide a helpful and concise answer. You may include brief explanations if necessary.
 - CRITICAL: DO NOT remove or modify the following custom MDX tags: <u>, <callout>, <kbd>, <toc>, <sub>, <sup>, <mark>, <del>, <date>, <span>, <column>, <column_group>, <file>, <audio>, <video> in <Selection> unless the user explicitly requests this change.
 - CRITICAL: Distinguish between INSTRUCTIONS and QUESTIONS. Instructions typically ask you to modify or add content. Questions ask for information or clarification.
@@ -106,23 +108,23 @@ Rules:
 
 const systemDefault = `\
 ${systemCommon}
-- <Block> is the current block of text the user is working on.
-- Ensure your output can seamlessly fit into the existing <Block> structure.
+- [Block] is the current block of text the user is working on.
+- Ensure your output can seamlessly fit into the existing [Block] structure.
 
-<Block>
+[Block]
 {block}
-</Block>
+[/Block]
 `
 
 const systemSelecting = `\
 ${systemCommon}
-- <Block> is the block of text containing the user's selection, providing context.
-- Ensure your output can seamlessly fit into the existing <Block> structure.
+- [Block] is the block of text containing the user's selection, providing context.
+- Ensure your output can seamlessly fit into the existing [Block] structure.
 - <Selection> is the specific text the user has selected in the block and wants to modify or ask about.
-- Consider the context provided by <Block>, but only modify <Selection>. Your response should be a direct replacement for <Selection>.
-<Block>
+- Consider the context provided by [Block], but only modify <Selection>. Your response should be a direct replacement for <Selection>.
+[Block]
 {block}
-</Block>
+[/Block]
 <Selection>
 {selection}
 </Selection>
@@ -139,23 +141,23 @@ ${systemCommon}
 </Selection>
 `
 
-const userDefault = `<Reminder>
-CRITICAL: NEVER write <Block>.
+const userDefault = `[Reminder]
+CRITICAL: NEVER write [Block].
 </Reminder>
 {prompt}`
-const userSelecting = `<Reminder>
+const userSelecting = `[Reminder]
 If this is a question, provide a helpful and concise answer about <Selection>.
 If this is an instruction, provide ONLY the text to replace <Selection>. No explanations.
-Ensure it fits seamlessly within <Block>. If <Block> is empty, write ONE random sentence.
-NEVER write <Block> or <Selection>.
+Ensure it fits seamlessly within [Block]. If [Block] is empty, write ONE random sentence.
+NEVER write [Block] or <Selection>.
 </Reminder>
 {prompt} about <Selection>`
 
-const userBlockSelecting = `<Reminder>
+const userBlockSelecting = `[Reminder]
 If this is a question, provide a helpful and concise answer about <Selection>.
 If this is an instruction, provide ONLY the content to replace the entire <Selection>. No explanations.
 Maintain the overall structure unless instructed otherwise.
-NEVER write <Block> or <Selection>.
+NEVER write [Block] or <Selection>.
 </Reminder>
 {prompt} about <Selection>`
 

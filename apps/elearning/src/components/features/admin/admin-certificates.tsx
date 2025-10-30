@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Award, Download, Filter, MoreHorizontal, Search } from 'lucide-react'
+import { AwardIcon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -83,20 +83,20 @@ const certifications = [
 ]
 
 export const AdminCertificates = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchIconTerm] = useState('')
   const [selectedOrganization, setSelectedOrganization] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()
 
   const filteredCertifications = certifications.filter(cert => {
-    const matchesSearch = cert.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearchIcon = cert.title.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesOrganization = !selectedOrganization || cert.organization === selectedOrganization
     const matchesStatus = !selectedStatus || cert.status === selectedStatus
 
-    return matchesSearch && matchesOrganization && matchesStatus
+    return matchesSearchIcon && matchesOrganization && matchesStatus
   })
 
-  const clearFilters = () => {
+  const clearFilterIcons = () => {
     setSelectedOrganization(undefined)
     setSelectedStatus(undefined)
   }
@@ -116,11 +116,11 @@ export const AdminCertificates = () => {
         <h2 className="font-bold text-3xl tracking-tight">{'Certifications Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 size-4" />
+            <DownloadIcon className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button>
-            <Award className="mr-2 size-4" />
+            <AwardIcon className="mr-2 size-4" />
             {'Add Certification'}
           </Button>
         </div>
@@ -128,11 +128,11 @@ export const AdminCertificates = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+          <SearchIcon className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search certifications..."
+            onChange={e => setSearchIconTerm(e.target.value)}
+            placeholder="SearchIcon certifications..."
             type="search"
             value={searchTerm}
           />
@@ -142,13 +142,13 @@ export const AdminCertificates = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Organization'}
                 {selectedOrganization && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{'Filter by Organization'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Organization'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {[...new Set(certifications.map(cert => cert.organization))].map(org => (
                 <DropdownMenuItem key={org} onClick={() => setSelectedOrganization(org)}>
@@ -161,13 +161,13 @@ export const AdminCertificates = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Status'}
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>{'Active'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>{'Inactive'}</DropdownMenuItem>
@@ -176,8 +176,8 @@ export const AdminCertificates = () => {
           </DropdownMenu>
 
           {(selectedOrganization || selectedStatus) && (
-            <Button onClick={clearFilters} size="sm" variant="ghost">
-              {'Clear Filters'}
+            <Button onClick={clearFilterIcons} size="sm" variant="ghost">
+              {'Clear FilterIcons'}
             </Button>
           )}
         </div>
@@ -233,7 +233,7 @@ export const AdminCertificates = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="size-4" />
+                          <MoreHorizontalIcon className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin } from '@platejs/selection/react'
-import { GripVertical } from 'lucide-react'
+import { GripVerticalIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { isType, KEYS, type TElement } from 'platejs'
 import {
@@ -104,7 +104,7 @@ const Draggable = (props: PlateElementProps) => {
               )}
             >
               <Button
-                className="-left-0 absolute h-6 w-full p-0"
+                className="absolute left-0 h-6 w-full p-0"
                 data-plate-prevent-deselect
                 ref={handleRef}
                 style={{ top: `${dragButtonTop + 3}px` }}
@@ -118,7 +118,7 @@ const Draggable = (props: PlateElementProps) => {
       )}
 
       <div
-        className={cn('-left-0 absolute hidden w-full')}
+        className={cn('absolute left-0 hidden w-full')}
         contentEditable={false}
         ref={previewRef}
         style={{ top: `${-previewTop}px` }}
@@ -198,7 +198,7 @@ const DragHandle = memo(
         }}
         title={t('dragToMove')}
       >
-        <GripVertical className="text-muted-foreground" />
+        <GripVerticalIcon className="text-muted-foreground" />
       </div>
     )
   }

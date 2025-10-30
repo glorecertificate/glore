@@ -3,6 +3,8 @@
 import { Fallback, Image, Root } from '@radix-ui/react-avatar'
 import { HoverCardContent } from '@radix-ui/react-hover-card'
 
+// import { type FileWithPath } from 'react-dropzone'
+
 import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card'
 import { cn } from '@/lib/utils'
 
@@ -76,3 +78,26 @@ export const AvatarStack = <
     </div>
   )
 }
+
+// export const AvatarUploader = () => {
+//   const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null)
+
+//   const onDrop = useCallback(
+//     (acceptedFiles: FileWithPath[]) => {
+//       const file = acceptedFiles[0]
+//       if (!file) {
+//         alert('Selected image is too large!')
+//         return
+//       }
+
+//       const fileWithPreview = Object.assign(file, {
+//         preview: URL.createObjectURL(file),
+//       })
+
+//       setSelectedFile(fileWithPreview)
+//       setDialogOpen(true)
+//     },
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//     []
+//   )
+// }

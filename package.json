@@ -24,22 +24,21 @@
     "release": "dotenv release-it -- --config release.config.ts"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@commitlint/types": "^19.8.1",
+    "@biomejs/biome": "catalog:",
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/types": "^20.0.0",
     "@glore/tsconfig": "workspace:^",
     "@release-it/bumper": "^7.0.5",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/node": "catalog:",
-    "deno": "^2.5.4",
-    "dotenv-cli": "catalog:",
+    "dotenv-cli": "^10.0.0",
     "husky": "^9.1.7",
     "release-it": "^19.0.5",
-    "shellcheck": "^3.1.0",
+    "shellcheck": "^4.1.0",
     "turbo": "^2.5.8",
     "typescript": "catalog:",
-    "vercel": "^48.5.0"
+    "vercel": "^48.6.0"
   },
   "resolutions": {
     "conventional-changelog-conventionalcommits": "8.0.0"

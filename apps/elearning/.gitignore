@@ -1,6 +1,3 @@
-.next/
-.env
-.env.*
-!.env.example
 *.d.ts
-*.tsbuildinfo
+*.d.json.ts
+/supabase/.*/

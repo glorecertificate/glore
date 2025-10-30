@@ -1,5 +1,7 @@
 import { cn } from '@/lib/utils'
 
+export interface TextareaProps extends React.ComponentProps<'textarea'> {}
+
 export const Textarea = ({ className, ...props }: React.ComponentProps<'textarea'>) => (
   <textarea
     className={cn(

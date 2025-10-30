@@ -9,7 +9,7 @@ import {
   useImagePreviewValue,
 } from '@platejs/media/react'
 import { cva } from 'class-variance-authority'
-import { Link, Trash2Icon } from 'lucide-react'
+import { LinkIcon, Trash2Icon } from 'lucide-react'
 import { type WithRequiredKey } from 'platejs'
 import {
   useEditorRef,
@@ -27,7 +27,7 @@ import { Separator } from '@/components/ui/separator'
 
 const inputVariants = cva(
   `
-    flex h-[28px] w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
+    flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
     placeholder:text-muted-foreground
     focus-visible:ring-transparent focus-visible:outline-none
     md:text-sm
@@ -65,7 +65,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
           <div className="flex w-[330px] flex-col">
             <div className="flex items-center">
               <div className="flex items-center pr-1 pl-2 text-muted-foreground">
-                <Link className="size-4" />
+                <LinkIcon className="size-4" />
               </div>
 
               <FloatingMediaPrimitive.UrlInput

@@ -2,7 +2,15 @@ import { type TailwindConfig } from '@react-email/tailwind'
 import { Message, type MessageAttachment, type SMTPConnectionOptions } from 'emailjs'
 import { type Locale } from 'next-intl'
 
-import { type EMAIL_TEMPLATES } from './constants'
+import { type Enum } from '@glore/utils/types'
+
+/**
+ * Enumeration of available email templates.
+ */
+export enum EmailTemplate {
+  AuthRecovery = 'auth/recovery',
+  AuthInvite = 'auth/invite',
+}
 
 /**
  * Options for sending an email.
@@ -79,7 +87,7 @@ export interface AuthEmailOptions {
 /**
  * Options for sending an email with a specific template.
  */
-export type SendEmailOptions<T extends EmailTemplate> = Omit<TemplateOptions<T>, 'locale'> & {
+export type SendEmailOptions<T extends Enum<EmailTemplate>> = Omit<TemplateOptions<T>, 'locale'> & {
   /**
    * Locale used to render the email, defaults to the configured default locale.
    */
@@ -91,14 +99,9 @@ export type SendEmailOptions<T extends EmailTemplate> = Omit<TemplateOptions<T>,
 }
 
 /**
- * Available email templates.
- */
-export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number]
-
-/**
  * Mapping of email templates to their specific properties.
  */
-export type TemplateOptions<T extends EmailTemplate> = {
+export type TemplateOptions<T extends Enum<EmailTemplate>> = {
   'auth/recovery': AuthEmailProps
   'auth/invite': AuthEmailProps
 }[T]

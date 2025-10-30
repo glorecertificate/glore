@@ -1,19 +1,19 @@
 import { useCallback, useMemo } from 'react'
 
-import { LanguagesIcon, MailIcon, MapPin, PencilIcon, ShieldUserIcon } from 'lucide-react'
+import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { type Any } from '@glore/utils/types'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Link } from '@/components/ui/link'
+import { ExternalLink } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { type User } from '@/lib/data'
-import { googleMapsUrl } from '@/lib/navigation'
+import { mapsUrl } from '@/lib/navigation'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
-  const { locale } = useI18n()
+  const { locale } = useIntl()
   const t = useTranslations()
   const format = useFormatter()
 
@@ -25,7 +25,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
     return locations.filter(Boolean).join(', ')
   }, [t, user.city, user.country])
 
-  const locationUrl = useMemo(() => (location ? googleMapsUrl(location) : undefined), [location])
+  const locationUrl = useMemo(() => (location ? mapsUrl(location) : undefined), [location])
 
   const languages = useMemo(() => {
     if (!user.languages?.length) return
@@ -85,11 +85,11 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
         <div className="flex flex-col gap-1.5 text-muted-foreground text-xs">
           {(isVisible('country') || isVisible('city')) && location && (
             <div className="flex items-center gap-1.5">
-              <MapPin className="size-3.5" />
+              <MapPinIcon className="size-3.5" />
               {locationUrl ? (
-                <Link className="text-xs" href={locationUrl} target="_blank" title={t('Common.showOnGoogleMaps')}>
+                <ExternalLink className="text-xs" href={locationUrl} target="_blank" title={t('Common.showOnMaps')}>
                   {location}
-                </Link>
+                </ExternalLink>
               ) : (
                 <span className="wrap-break-word max-w-44">{location}</span>
               )}
@@ -104,9 +104,9 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
           {isVisible('email') && (
             <div className="flex items-center gap-1.5">
               <MailIcon className="size-3.5" />
-              <Link className="text-xs" href={`mailto:${user.email}`} title={contactTitle} underline>
+              <ExternalLink className="text-xs" href={`mailto:${user.email}`} title={contactTitle} variant="underlined">
                 {user.email}
-              </Link>
+              </ExternalLink>
             </div>
           )}
         </div>

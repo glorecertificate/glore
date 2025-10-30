@@ -121,3 +121,10 @@ export type Replace<S extends string, From extends string, To extends string = '
   : S extends `${infer A}${From}${infer B}`
     ? `${A}${To}${B}`
     : never
+
+/**
+ * Exclude keys of U from T.
+ */
+export type ExcludeFrom<T extends AnyRecord, U extends AnyRecord> = Partial<{
+  [K in Exclude<keyof T, keyof U>]: T[K]
+}>

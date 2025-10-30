@@ -18,22 +18,22 @@ export const useHeader = ({
   const context = useContext(HeaderContext)
   if (!context) throw new Error('useHeader must be used within a HeaderProvider')
 
-  const { setHeader, setShadow, ...props } = context
+  const { setBreadcrumb, setShadow, ...props } = context
 
   // biome-ignore lint: exhaustive-deps
   useEffect(() => {
-    if (header) setHeader(header)
+    if (header) setBreadcrumb(header)
     if (shadow !== undefined) setShadow(shadow)
 
     return () => {
-      setHeader(undefined)
+      setBreadcrumb(undefined)
       setShadow(true)
     }
   }, [])
 
   return {
     ...props,
-    setHeader,
+    setBreadcrumb,
     setShadow,
     hasShadow: props.shadow,
     showShadow: setShadow,

@@ -1,13 +1,15 @@
 {
   "root": true,
   "files": {
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.json"],
-    "experimentalScannerIgnores": [
-      ".next",
-      ".turbo",
-      ".vercel",
-      "dist",
-      "node_modules"
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.json",
+      "!.next",
+      "!.turbo",
+      "!.vercel",
+      "!dist",
+      "!node_modules"
     ],
     "ignoreUnknown": true
   },
@@ -88,15 +90,7 @@
       "nursery": {
         "noImportCycles": "off",
         "noUselessUndefined": "error",
-        "useAnchorHref": "off",
         "useConsistentArrowReturn": "error",
-        "useConsistentTypeDefinitions": {
-          "level": "error",
-          "fix": "safe",
-          "options": {
-            "style": "interface"
-          }
-        },
         "useSortedClasses": {
           "level": "error",
           "fix": "safe",
@@ -131,6 +125,7 @@
         "noUnusedTemplateLiteral": "error",
         "noUselessElse": "error",
         "useCollapsedIf": "error",
+        "useComponentExportOnlyModules": "off",
         "useConsistentArrayType": {
           "level": "error",
           "fix": "safe",
@@ -142,6 +137,13 @@
           "level": "error",
           "options": {
             "syntax": "shorthand"
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "style": "interface"
           }
         },
         "useConst": "error",
@@ -167,7 +169,10 @@
           "level": "error",
           "fix": "safe"
         },
-        "useTemplate": "error"
+        "useTemplate": {
+          "level": "error",
+          "fix": "safe"
+        }
       },
       "suspicious": {
         "noArrayIndexKey": "off",

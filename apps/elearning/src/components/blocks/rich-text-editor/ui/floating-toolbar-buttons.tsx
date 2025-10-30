@@ -3,7 +3,7 @@
 import { BoldIcon, ItalicIcon, StrikethroughIcon, UnderlineIcon, WandSparklesIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { KEYS } from 'platejs'
-import { useEditorReadOnly } from 'platejs/react'
+import { usePlateState } from 'platejs/react'
 
 import { AIToolbarButton } from '@/components/blocks/rich-text-editor/ui/ai-toolbar-button'
 import { LinkToolbarButton } from '@/components/blocks/rich-text-editor/ui/link-toolbar-button'
@@ -13,7 +13,7 @@ import { ToolbarGroup } from '@/components/ui/toolbar'
 
 export const FloatingToolbarButtons = () => {
   const t = useTranslations('Editor.ai')
-  const readOnly = useEditorReadOnly()
+  const [readOnly] = usePlateState('readOnly')
 
   return (
     <>

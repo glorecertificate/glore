@@ -2,72 +2,62 @@
 
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback, useMemo } from 'react'
+import { startTransition, useCallback } from 'react'
 
 import { cva, type VariantProps } from 'class-variance-authority'
 
+import { type Any, type Enum, type HTTPUrl, type MailToUrl } from '@glore/utils/types'
+
 import { type ProgressBarProps, useProgressBar } from '@/components/ui/progress-bar'
-import { type AnyUrl, type ExternalUrl } from '@/lib/navigation'
+import { type ExternalRoute } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
-type MappedLinkProps<T extends AnyUrl> = {
-  [K in keyof Omit<NextLinkProps, keyof React.AnchorHTMLAttributes<HTMLAnchorElement>>]: T extends ExternalUrl
-    ? never
-    : NextLinkProps[K]
-}
-
-export interface LinkProps<T extends AnyUrl>
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof linkVariants>,
-    MappedLinkProps<T> {
-  href: T
+export interface LinkProps<T> extends NextLinkProps<T>, VariantProps<typeof linkVariants> {
   /** @default true */
-  progress?: T extends ExternalUrl ? never : boolean | Exclude<ProgressBarProps['variant'], undefined | null>
+  progress?: boolean | Exclude<ProgressBarProps['variant'], undefined | null>
 }
 
-export const Link = <T extends AnyUrl>({ progress, underline, variant, ...props }: LinkProps<T>) => {
-  const { className, onClick, ...nextLinkProps } = props
-
+export const Link = <T,>({ className, onClick, progress, variant, ...props }: LinkProps<T>) => {
   const progressBar = useProgressBar()
   const router = useRouter()
 
-  const external = useMemo(() => !(props.href.startsWith('/') || props.href.startsWith('#')), [props.href])
-  const hasProgress = useMemo(() => !(external || progress), [external, progress])
-
-  const handleClick = useCallback(
+  const onLinkClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (progress === false) return onClick?.(e)
+
       e.preventDefault()
 
-      if (hasProgress && progressBar.state !== 'in-progress') {
-        if (variant) progressBar.colorize(variant)
-        progressBar.start()
+      const colorVariant = typeof progress === 'string' ? progress : variant
 
-        startTransition(() => {
-          router.push(props.href)
-          progressBar.done()
-        })
-      }
+      if (colorVariant && colorVariant !== 'underlined') progressBar.colorize(colorVariant)
+      if (progressBar.state !== 'in-progress') progressBar.start()
+
+      startTransition(() => {
+        router.push(props.href as Any)
+        progressBar.done()
+      })
 
       onClick?.(e)
     },
-    [hasProgress, onClick, progressBar, props.href, router, variant]
+    [onClick, progress, progressBar, props.href, router, variant]
   )
 
-  return external ? (
-    <a className={cn(linkVariants({ variant, underline }), className)} {...props} />
-  ) : (
-    <NextLink
-      className={cn(linkVariants({ variant, underline }), className)}
-      onClick={handleClick}
-      {...nextLinkProps}
-    />
-  )
+  return <NextLink className={cn(linkVariants({ variant }), className)} onClick={onLinkClick} {...props} />
 }
 
-export const linkVariants = cva('transition-all', {
+export interface ExternalLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
+    VariantProps<typeof linkVariants> {
+  href: Enum<ExternalRoute> | HTTPUrl | MailToUrl
+}
+
+export const ExternalLink = ({ className, variant, ...props }: ExternalLinkProps) => (
+  <a className={cn(linkVariants({ variant }), className)} {...props} />
+)
+
+export const linkVariants = cva('no-underline transition-all', {
   defaultVariants: {
     variant: null,
-    underline: false,
   },
   variants: {
     variant: {
@@ -79,10 +69,7 @@ export const linkVariants = cva('transition-all', {
       success: 'text-success hover:text-success',
       transparent: 'text-transparent hover:text-foreground',
       muted: 'text-muted-foreground hover:text-foreground/90',
-    },
-    underline: {
-      false: 'no-underline',
-      true: 'underline-offset-2 hover:underline',
+      underlined: 'underline-offset-2 hover:underline',
     },
   },
 })

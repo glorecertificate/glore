@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import { LineHeightPlugin } from '@platejs/basic-styles/react'
-import { CheckIcon, WrapText } from 'lucide-react'
+import { CheckIcon, WrapTextIcon } from 'lucide-react'
 import { useEditorRef, useSelectionFragmentProp } from 'platejs/react'
 
 import {
@@ -34,7 +34,7 @@ export const LineHeightToolbarButton = (props: DropdownMenuProps) => {
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
         <ToolbarButton isDropdown pressed={open} tooltip="Line height">
-          <WrapText />
+          <WrapTextIcon />
         </ToolbarButton>
       </DropdownMenuTrigger>
 

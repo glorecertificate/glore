@@ -2,14 +2,14 @@
 
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { IntlProvider, type Locale, type Messages } from 'next-intl'
+import { type Locale, type Messages, IntlProvider as NextIntlProvider } from 'next-intl'
 
 import { defineCookies } from '@glore/utils/cookies'
 
 import { DEFAULT_LOCALE } from '@/lib/intl'
 import { type Cookie } from '@/lib/storage'
 
-export interface I18nProviderProps
+export interface IntlProviderProps
   extends React.PropsWithChildren<{
     /** @default "NEXT_LOCALE" */
     cookie?: Cookie
@@ -18,14 +18,14 @@ export interface I18nProviderProps
     timezone?: string
   }> {}
 
-export interface I18nContext {
+export interface IntlContext {
   locale: Locale
   setLocale: (locale: Locale) => Promise<void>
 }
 
-export const I18nContext = createContext<I18nContext | null>(null)
+export const IntlContext = createContext<IntlContext | null>(null)
 
-export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', timezone, ...props }: I18nProviderProps) => {
+export const IntlProvider = ({ children, cookie = 'NEXT_LOCALE', timezone, ...props }: IntlProviderProps) => {
   const defaultLocale = props.locale ?? DEFAULT_LOCALE
   const [locale, setLocaleState] = useState<Locale>(defaultLocale)
   const timeZone = useMemo(() => timezone ?? Intl.DateTimeFormat(locale).resolvedOptions().timeZone, [locale, timezone])
@@ -37,7 +37,7 @@ export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', timezone, ...pr
   const setMessages = useCallback(
     async (locale: Locale) => {
       if (messageStore[locale]) return
-      const { default: messages } = (await import(`../../../../../config/translations/${locale}.json`)) as {
+      const { default: messages } = (await import(`../../../config/translations/${locale}.json`)) as {
         default: Messages
       }
       setMessagesStore(prev => ({ ...prev, [locale]: messages }))
@@ -65,10 +65,10 @@ export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', timezone, ...pr
   const messages = useMemo(() => messageStore[locale] ?? {}, [locale, messageStore])
 
   return (
-    <I18nContext.Provider value={{ locale, setLocale }}>
-      <IntlProvider locale={locale} messages={messages} timeZone={timeZone}>
+    <IntlContext.Provider value={{ locale, setLocale }}>
+      <NextIntlProvider locale={locale} messages={messages} timeZone={timeZone}>
         {children}
-      </IntlProvider>
-    </I18nContext.Provider>
+      </NextIntlProvider>
+    </IntlContext.Provider>
   )
 }

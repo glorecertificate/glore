@@ -26,7 +26,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
   return (
     <header
       className={cn(
-        'sticky top-0 z-5 ml-px min-h-12 shrink-0 gap-2 bg-background transition-[width,height] ease-linear',
+        'sticky top-0 z-5 ml-px min-h-12 shrink-0 gap-2 bg-linear-to-tr from-background to-background/90 transition-[width,height] ease-linear',
         hasShadow && scrolled && 'border-b',
         className
       )}
@@ -50,7 +50,7 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
           </Tooltip>
           {header && <Breadcrumb className="flex h-full items-center">{header}</Breadcrumb>}
         </div>
-        <Link className={cn(pathname === '/' && 'pointer-events-none')} href="/" title={t('Navigation.goToDashboard')}>
+        <Link className={cn(pathname === '/' && 'pointer-events-none')} href="/">
           <GloreIcon className="mr-2 w-18 transition-[width,height]" height={200} />
         </Link>
       </div>

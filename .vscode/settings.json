@@ -1,8 +1,8 @@
 {
-  "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
+  "[css]": {
+    "editor.defaultFormatter": "bradlc.vscode-tailwindcss"
   },
-  "[sql]": {
+  "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
@@ -11,10 +11,6 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "css.completion.completePropertyWithSemicolon": true,
-  "css.format.enable": true,
-  "css.format.maxPreserveNewLines": 100,
-  "css.validate": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
@@ -25,32 +21,20 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "files.exclude": {
-    ".husky/_": true,
-    "**/.turbo": true,
-    "**/supabase/.*": true
-  },
   "json.schemas": [
     {
       "fileMatch": ["biome.json"],
       "url": "./node_modules/@biomejs/biome/configuration_schema.json"
     }
   ],
-  "i18n-ally.enabledFrameworks": ["next-intl"],
-  "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./config/translations"],
   "prettier.enable": false,
   "search.useGlobalIgnoreFiles": true,
   "search.useIgnoreFiles": true,
+  "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
-    [
-      "(tw`(?:(?:(?:[^`]*\\$\\{[^]*?\\})[^`]*)+|[^`]*`))",
-      "((?:(?<=`)(?:[^\"'`]*)(?=\\${|`))|(?:(?<=\\})(?:[^\"'`]*)(?=\\${))|(?:(?<=\\})(?:[^\"'`]*)(?=`))|(?:(?<=')(?:[^\"'`]*)(?='))|(?:(?<=\")(?:[^\"'`]*)(?=\"))|(?:(?<=`)(?:[^\"'`]*)(?=`)))"
-    ],
+    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
-    ["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["(?:\\w+)?[Cc]lassName\\s*=\\s*[{]?[`'\"]([^`'\"]*)[`'\"][}]?"],
-    ["(?:\\w+)?[Cc]lassName\\s*=\\s*[{]?`([^`]*)`[}]?"],
     ["fill=['\"]([^'\"]*)"],
     ["stroke=['\"]([^'\"]*)"]
   ],
@@ -58,7 +42,6 @@
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   },
-  "tailwindCSS.lint.cssConflict": "error",
-  "tailwindCSS.lint.recommendedVariantOrder": "error",
+  "typescript.preferences.autoImportFileExcludePatterns": ["lucide-react"],
   "typescript.tsdk": "./node_modules/typescript/lib"
 }

@@ -1,8 +1,9 @@
-import { Suspense, use } from 'react'
+import { use } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
 import { ErrorView } from '@/components/layout/error-view'
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { getCurrentUser } from '@/lib/data/server'
@@ -27,7 +28,7 @@ const NotFoundContent = () => {
 }
 
 export default () => (
-  <Suspense fallback={null}>
+  <SuspenseLayout size="full">
     <NotFoundContent />
-  </Suspense>
+  </SuspenseLayout>
 )

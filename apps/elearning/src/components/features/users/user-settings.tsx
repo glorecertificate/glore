@@ -23,7 +23,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { useI18n } from '@/hooks/use-i18n'
+import { useHeader } from '@/hooks/use-header'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { updateUser } from '@/lib/data'
 
@@ -31,7 +32,11 @@ export const UserSettings = () => {
   const tGlobal = useTranslations()
   const t = useTranslations('Settings')
   const { user, setUser } = useSession()
-  const { localeItems } = useI18n()
+  const { localeItems } = useIntl()
+
+  useHeader({
+    shadow: false,
+  })
 
   const formSchema = useMemo(
     () =>
@@ -194,7 +199,6 @@ export const UserSettings = () => {
                   )}
                 />
               </div>
-
               <FormField
                 control={form.control}
                 name="username"

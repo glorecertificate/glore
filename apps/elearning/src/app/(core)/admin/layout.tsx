@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
-import { Suspense, use } from 'react'
+import { use } from 'react'
 
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { getCurrentUser } from '@/lib/data/server'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -15,7 +16,7 @@ const AdminLayoutContent = ({ children }: LayoutProps<'/admin'>) => {
 }
 
 export default (props: LayoutProps<'/admin'>) => (
-  <Suspense fallback={null}>
+  <SuspenseLayout>
     <AdminLayoutContent {...props} />
-  </Suspense>
+  </SuspenseLayout>
 )

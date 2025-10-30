@@ -4,15 +4,15 @@ import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 import bundleAnalyzer from '@next/bundle-analyzer'
 import nextIntl from 'next-intl/plugin'
 
-const I18N_CONFIG = './src/i18n.ts'
-const I18N_MESSAGES = '../../config/translations/en.json'
+const INTL_CONFIG = './src/i18n.ts'
+const INTL_MESSAGES = './config/translations/en.json'
 
 export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
   const nextConfig: NextConfig = {
     ...defaultConfig,
     cacheComponents: true,
     experimental: {
-      turbopackFileSystemCacheForDev: true,
+      typedEnv: false,
     },
     images: {
       remotePatterns: [new URL(process.env.SUPABASE_URL)],
@@ -36,9 +36,9 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
       enabled: process.env.ANALYZE === 'true',
     }),
     nextIntl({
-      requestConfig: I18N_CONFIG,
+      requestConfig: INTL_CONFIG,
       experimental: {
-        createMessagesDeclaration: I18N_MESSAGES,
+        createMessagesDeclaration: INTL_MESSAGES,
       },
     }),
   ]

@@ -241,7 +241,8 @@ export const AIMenu = () => {
     if (!streaming) return
     const anchor = api.aiChat.node({ anchor: true })
     setTimeout(() => {
-      const anchorDom = editor.api.toDOMNode(anchor?.[0]!)!
+      if (!anchor?.[0]) return
+      const anchorDom = editor.api.toDOMNode(anchor[0])!
       setAnchorElement(anchorDom)
     }, 0)
   }, [streaming, api.aiChat.node, editor.api.toDOMNode, api.aiChat, editor.api])
@@ -265,7 +266,9 @@ export const AIMenu = () => {
   useEditorChat({
     chat,
     onOpenBlockSelection: (blocks: NodeEntry[]) => {
-      show(editor.api.toDOMNode(blocks.at(-1)?.[0]!)!)
+      const block = blocks.at(-1)?.[0]
+      if (!block) return
+      show(editor.api.toDOMNode(block)!)
     },
     onOpenChange: open => {
       if (!open) {
@@ -283,7 +286,9 @@ export const AIMenu = () => {
       show(editor.api.toDOMNode(ancestor)!)
     },
     onOpenSelection: () => {
-      show(editor.api.toDOMNode(editor.api.blocks().at(-1)?.[0]!)!)
+      const block = editor.api.blocks().at(-1)?.[0]
+      if (!block) return
+      show(editor.api.toDOMNode(block)!)
     },
   })
 

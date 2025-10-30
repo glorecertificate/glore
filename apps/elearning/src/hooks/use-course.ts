@@ -4,19 +4,28 @@ import { createContext, useContext } from 'react'
 
 import { type Locale } from 'next-intl'
 
-import { type Course } from '@/lib/data'
-import { COURSE_TABS, type CourseTab } from '@/lib/navigation'
+import { type AnyFunction, type Enum } from '@glore/utils/types'
+
+import { type Course, type CourseProgress, type Lesson } from '@/lib/data'
+import { type LocaleItem } from '@/lib/intl'
+import { type CourseMode } from '@/lib/navigation'
 
 export interface CourseContext {
   course: Partial<Course>
+  infoVisible: boolean
   initialCourse: Partial<Course>
-  language: Locale
+  language: LocaleItem
+  lesson: Lesson
+  mode?: Enum<CourseMode>
+  moveNext: AnyFunction
+  movePrevious: AnyFunction
   setCourse: React.Dispatch<React.SetStateAction<Partial<Course>>>
-  setLanguage: (language: Locale) => void
+  setInfoVisible: React.Dispatch<React.SetStateAction<boolean>>
+  setLanguage: (locale: Locale) => void
+  setMode: (mode: Enum<CourseMode>) => void
   setStep: React.Dispatch<React.SetStateAction<number>>
-  setTab: React.Dispatch<React.SetStateAction<CourseTab>>
+  status?: Enum<CourseProgress>
   step: number
-  tab: CourseTab
 }
 
 const CourseContext = createContext<CourseContext | undefined>(undefined)
@@ -42,5 +51,5 @@ export const createCourseProviderValue = (
 export const useCourse = () => {
   const context = useContext(CourseContext)
   if (!context) throw new Error('useCourse must be used within a CourseProvider')
-  return { ...context, tabs: COURSE_TABS }
+  return context
 }

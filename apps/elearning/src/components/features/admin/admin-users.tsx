@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Download, Filter, MoreHorizontal, Search, UserPlus } from 'lucide-react'
+import { DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon, UserPlusIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -101,14 +101,14 @@ const users = [
 ]
 
 export const AdminUsers = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchIconTerm] = useState('')
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>()
 
   const filteredUsers = users.filter(user => {
-    const matchesSearch =
+    const matchesSearchIcon =
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
 
@@ -116,10 +116,10 @@ export const AdminUsers = () => {
     const matchesStatus = !selectedStatus || user.status === selectedStatus
     const matchesRegion = !selectedRegion || user.region === selectedRegion
 
-    return matchesSearch && matchesRole && matchesStatus && matchesRegion
+    return matchesSearchIcon && matchesRole && matchesStatus && matchesRegion
   })
 
-  const clearFilters = () => {
+  const clearFilterIcons = () => {
     setSelectedRole(undefined)
     setSelectedStatus(undefined)
     setSelectedRegion(undefined)
@@ -140,11 +140,11 @@ export const AdminUsers = () => {
         <h2 className="font-bold text-3xl tracking-tight">{'Users Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 size-4" />
+            <DownloadIcon className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button onClick={() => setIsAddUserOpen(true)}>
-            <UserPlus className="mr-2 size-4" />
+            <UserPlusIcon className="mr-2 size-4" />
             {'Add User'}
           </Button>
         </div>
@@ -152,11 +152,11 @@ export const AdminUsers = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+          <SearchIcon className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search users..."
+            onChange={e => setSearchIconTerm(e.target.value)}
+            placeholder="SearchIcon users..."
             type="search"
             value={searchTerm}
           />
@@ -166,13 +166,13 @@ export const AdminUsers = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Role'}
                 {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Role'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Role'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedRole('Admin')}>{'Admin'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedRole('Volunteer')}>{'Volunteer'}</DropdownMenuItem>
@@ -185,13 +185,13 @@ export const AdminUsers = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Status'}
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>{'Active'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>{'Inactive'}</DropdownMenuItem>
@@ -202,13 +202,13 @@ export const AdminUsers = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Region'}
                 {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Region'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Region'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedRegion('North America')}>{'North America'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedRegion('Europe')}>{'Europe'}</DropdownMenuItem>
@@ -220,8 +220,8 @@ export const AdminUsers = () => {
           </DropdownMenu>
 
           {(selectedRole || selectedStatus || selectedRegion) && (
-            <Button onClick={clearFilters} size="sm" variant="ghost">
-              {'Clear Filters'}
+            <Button onClick={clearFilterIcons} size="sm" variant="ghost">
+              {'Clear FilterIcons'}
             </Button>
           )}
         </div>
@@ -279,7 +279,7 @@ export const AdminUsers = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="size-4" />
+                          <MoreHorizontalIcon className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

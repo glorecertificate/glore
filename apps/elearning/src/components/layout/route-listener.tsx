@@ -7,13 +7,13 @@ import { useHeader } from '@/hooks/use-header'
 import { usePathname } from '@/hooks/use-pathname'
 
 export const RouteListener = () => {
-  const { setHeader, showShadow } = useHeader()
+  const { setBreadcrumb, showShadow } = useHeader()
   const pathname = usePathname()
   const { setActivePath } = useSidebar()
 
   // biome-ignore lint: exhaustive-deps
   useEffect(() => {
-    setHeader(undefined)
+    setBreadcrumb(undefined)
     showShadow(true)
     setActivePath(pathname)
   }, [pathname])

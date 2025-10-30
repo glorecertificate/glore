@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { Download, Filter, MoreHorizontal, Search, UserPlus } from 'lucide-react'
+import { CheckIcon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -151,11 +151,11 @@ export const AdminTeam = () => {
         <h2 className="font-bold text-3xl tracking-tight">{t('title')}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 size-4" />
+            <DownloadIcon className="mr-2 size-4" />
             {t('export')}
           </Button>
           <Button onClick={() => setIsAddUserOpen(true)} variant="brand">
-            <UserPlus className="mr-2 size-4" />
+            <UserPlusIcon className="mr-2 size-4" />
             {t('addUser')}
           </Button>
         </div>
@@ -163,7 +163,7 @@ export const AdminTeam = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+          <SearchIcon className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
             onChange={e => setSearchTerm(e.target.value)}
@@ -177,7 +177,7 @@ export const AdminTeam = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {t('filterRole')}
                 {selectedRole && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
@@ -192,6 +192,7 @@ export const AdminTeam = () => {
 
           {selectedRole && (
             <Button onClick={clearFilters} size="sm" variant="ghost">
+              <CheckIcon />
               {t('clearFilters')}
             </Button>
           )}
@@ -239,7 +240,7 @@ export const AdminTeam = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="size-4" />
+                          <MoreHorizontalIcon className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

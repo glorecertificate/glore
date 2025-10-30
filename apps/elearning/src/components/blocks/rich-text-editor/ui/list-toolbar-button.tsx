@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { ListStyleType, someList, toggleList } from '@platejs/list'
 import { useIndentTodoToolBarButton, useIndentTodoToolBarButtonState } from '@platejs/list/react'
-import { List, ListOrdered, ListTodoIcon } from 'lucide-react'
+import { ListIcon, ListOrderedIcon, ListTodoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEditorRef, useEditorSelector } from 'platejs/react'
 
@@ -45,7 +45,7 @@ export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
         }}
         tooltip={tooltip}
       >
-        <List className="size-4" />
+        <ListIcon className="size-4" />
       </ToolbarSplitButtonPrimary>
 
       <DropdownMenu modal={false} onOpenChange={setOpen} open={open}>
@@ -127,7 +127,7 @@ export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
         }
         tooltip={tooltip}
       >
-        <ListOrdered className="size-4" />
+        <ListOrderedIcon className="size-4" />
       </ToolbarSplitButtonPrimary>
 
       <DropdownMenu modal={false} onOpenChange={setOpen} open={open}>

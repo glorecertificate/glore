@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Building2, Download, Filter, MoreHorizontal, Search } from 'lucide-react'
+import { Building2Icon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -91,22 +91,22 @@ const organizations = [
 ]
 
 export const AdminOrganizations = () => {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchIconTerm] = useState('')
   const [selectedType, setSelectedType] = useState<string | undefined>()
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>()
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>()
 
   const filteredOrganizations = organizations.filter(org => {
-    const matchesSearch = org.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSearchIcon = org.name.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesType = !selectedType || org.type === selectedType
     const matchesStatus = !selectedStatus || org.status === selectedStatus
     const matchesRegion = !selectedRegion || org.region === selectedRegion
 
-    return matchesSearch && matchesType && matchesStatus && matchesRegion
+    return matchesSearchIcon && matchesType && matchesStatus && matchesRegion
   })
 
-  const clearFilters = () => {
+  const clearFilterIcons = () => {
     setSelectedType(undefined)
     setSelectedStatus(undefined)
     setSelectedRegion(undefined)
@@ -127,11 +127,11 @@ export const AdminOrganizations = () => {
         <h2 className="font-bold text-3xl tracking-tight">{'Organizations Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 size-4" />
+            <DownloadIcon className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button>
-            <Building2 className="mr-2 size-4" />
+            <Building2Icon className="mr-2 size-4" />
             {'Add Organization'}
           </Button>
         </div>
@@ -139,11 +139,11 @@ export const AdminOrganizations = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+          <SearchIcon className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="Search organizations..."
+            onChange={e => setSearchIconTerm(e.target.value)}
+            placeholder="SearchIcon organizations..."
             type="search"
             value={searchTerm}
           />
@@ -153,13 +153,13 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Type'}
                 {selectedType && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Type'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Type'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedType('Non-profit')}>{'Non-profit'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedType('NGO')}>{'NGO'}</DropdownMenuItem>
@@ -171,13 +171,13 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Status'}
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedStatus('Verified')}>{'Verified'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedStatus('Pending')}>{'Pending'}</DropdownMenuItem>
@@ -188,13 +188,13 @@ export const AdminOrganizations = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Region'}
                 {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Region'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Region'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedRegion('North America')}>{'North America'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedRegion('Europe')}>{'Europe'}</DropdownMenuItem>
@@ -206,8 +206,8 @@ export const AdminOrganizations = () => {
           </DropdownMenu>
 
           {(selectedType || selectedStatus || selectedRegion) && (
-            <Button onClick={clearFilters} size="sm" variant="ghost">
-              {'Clear Filters'}
+            <Button onClick={clearFilterIcons} size="sm" variant="ghost">
+              {'Clear FilterIcons'}
             </Button>
           )}
         </div>
@@ -265,7 +265,7 @@ export const AdminOrganizations = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="size-4" />
+                          <MoreHorizontalIcon className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

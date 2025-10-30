@@ -4,10 +4,10 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import metadata from '@config/metadata'
 
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { usePWA } from '@/hooks/use-pwa'
 import { LOCALES, type Namespace, type NamespaceKey } from '@/lib/intl'
-import { type ApiRoutes } from '@/lib/navigation'
+import { apiRoute } from '@/lib/navigation'
 
 const OG_TITLE_SELECTORS = ['meta[property="og:title"]', 'meta[name="twitter:title"]'] as const
 const DESCRIPTION_SELECTOR = 'meta[name="description"]' as const
@@ -20,7 +20,7 @@ const OG_LOCALE_SELECTOR = 'meta[property="og:locale"]' as const
 const OG_ALTERNATE_LOCALE_SELECTOR = 'meta[property="og:locale:alternate"]' as const
 const IMAGE_SELECTORS = ['meta[property="og:image"]', 'meta[name="twitter:image"]', 'meta[itemprop="image"]'] as const
 const MANIFEST_SELECTOR = 'link[rel="manifest"]'
-const MANIFEST_ROUTE = '/api/manifest' satisfies ApiRoutes
+const MANIFEST_ROUTE = apiRoute('/api/manifest')
 
 export const useMetadata = <T extends Namespace = never>({
   delay = 200,
@@ -42,7 +42,7 @@ export const useMetadata = <T extends Namespace = never>({
   /** @default 200 */
   delay?: number
 } = {}) => {
-  const { locale } = useI18n()
+  const { locale } = useIntl()
   const t = useTranslations(options.namespace)
   const tMeta = useTranslations('Metadata')
   const { displayMode } = usePWA()

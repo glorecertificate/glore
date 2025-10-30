@@ -1,5 +1,3 @@
-import { getTranslations } from 'next-intl/server'
-
 import metadata from '@config/metadata'
 
 import { EmailButton } from '../../components/button'
@@ -7,7 +5,7 @@ import { EmailLayout, EmailRow, EmailSection } from '../../components/layout'
 import { EmailLink } from '../../components/link'
 import { EmailText } from '../../components/text'
 import { type AuthEmailProps } from '../../types'
-import { authPreviewProps } from '../../utils'
+import { authPreviewProps, getTranslations } from '../../utils'
 
 const AuthRecovery = async ({
   locale,
@@ -19,7 +17,8 @@ const AuthRecovery = async ({
   username,
   ...props
 }: AuthEmailProps) => {
-  const t = await getTranslations({ namespace: 'Email.auth/recovery', locale })
+  const tCommon = await getTranslations('Email.common', { locale })
+  const t = await getTranslations('Email.auth/recovery', { locale })
 
   const resetUrl = `${redirectTo}?resetToken=${tokenHash}`
 
@@ -34,7 +33,7 @@ const AuthRecovery = async ({
       <EmailSection>
         <EmailRow>
           <EmailText className="text font-medium">
-            {username ? t('greetingUser', { user: username }) : t('greeting')}
+            {username ? tCommon('greetingUser', { user: username }) : tCommon('greeting')}
           </EmailText>
           <EmailText>{t('intro')}</EmailText>
           <EmailText>{t('buttonInstruction')}</EmailText>

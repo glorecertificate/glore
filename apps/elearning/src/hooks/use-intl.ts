@@ -4,7 +4,7 @@ import { useCallback, useContext, useMemo } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 
-import { I18nContext } from '@/components/providers/i18n-provider'
+import { IntlContext } from '@/components/providers/intl-provider'
 import {
   type IntlRecord,
   LOCALE_ITEMS,
@@ -18,9 +18,9 @@ import {
 /**
  * Hook to access internationalization (i18n) utilities.
  */
-export const useI18n = () => {
-  const context = useContext(I18nContext)
-  if (!context) throw new Error('useI18n must be used within a I18nProvider')
+export const useIntl = () => {
+  const context = useContext(IntlContext)
+  if (!context) throw new Error('useIntl must be used within a IntlProvider')
 
   const t = useTranslations('Languages')
 

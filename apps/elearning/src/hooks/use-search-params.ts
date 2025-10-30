@@ -9,16 +9,6 @@ export const useSearchParams = () => {
   const router = useRouter()
 
   // biome-ignore lint: exhaustive-deps
-  const set = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set(name, value)
-      router.push(`${pathname}?${params.toString()}`, { scroll: false })
-    },
-    [searchParams]
-  )
-
-  // biome-ignore lint: exhaustive-deps
   const _delete = useCallback(
     (name: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -29,12 +19,25 @@ export const useSearchParams = () => {
     [searchParams]
   )
 
+  const get = useCallback(<T extends string>(name: string) => searchParams.get(name) as T | null, [searchParams])
+
   const has = useCallback((name: string) => searchParams.has(name), [searchParams])
+
+  // biome-ignore lint: exhaustive-deps
+  const set = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+      router.push(`${pathname}?${params.toString()}`, { scroll: false })
+    },
+    [searchParams]
+  )
 
   return {
     ...searchParams,
+    delete: _delete,
+    get,
     has,
     set,
-    delete: _delete,
   }
 }

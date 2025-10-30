@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Download, Filter, Globe, MoreHorizontal, Search } from 'lucide-react'
+import { DownloadIcon, FilterIcon, GlobeIcon, MoreHorizontalIcon, SearchIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -37,7 +37,7 @@ export const RegionsManagement = () => {
     return matchesSearch && matchesStatus
   })
 
-  const clearFilters = () => {
+  const clearFilterIcons = () => {
     setSelectedStatus(undefined)
   }
 
@@ -47,11 +47,11 @@ export const RegionsManagement = () => {
         <h2 className="font-bold text-3xl tracking-tight">{'Regions Management'}</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
-            <Download className="mr-2 size-4" />
+            <DownloadIcon className="mr-2 size-4" />
             {'Export'}
           </Button>
           <Button>
-            <Globe className="mr-2 size-4" />
+            <GlobeIcon className="mr-2 size-4" />
             {'Add Region'}
           </Button>
         </div>
@@ -59,7 +59,7 @@ export const RegionsManagement = () => {
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:w-96">
-          <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+          <SearchIcon className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
           <Input
             className="w-full pl-9"
             onChange={e => setSearchTerm(e.target.value)}
@@ -73,13 +73,13 @@ export const RegionsManagement = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
-                <Filter className="mr-2 size-4" />
+                <FilterIcon className="mr-2 size-4" />
                 {'Status'}
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'Filter by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>{'Active'}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>{'Inactive'}</DropdownMenuItem>
@@ -87,8 +87,8 @@ export const RegionsManagement = () => {
           </DropdownMenu>
 
           {selectedStatus && (
-            <Button onClick={clearFilters} size="sm" variant="ghost">
-              {'Clear Filters'}
+            <Button onClick={clearFilterIcons} size="sm" variant="ghost">
+              {'Clear FilterIcons'}
             </Button>
           )}
         </div>
@@ -139,7 +139,7 @@ export const RegionsManagement = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
-                          <MoreHorizontal className="size-4" />
+                          <MoreHorizontalIcon className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

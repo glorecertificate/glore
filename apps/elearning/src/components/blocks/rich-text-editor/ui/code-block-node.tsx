@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { formatCodeBlock, isLangSupported } from '@platejs/code-block'
-import { BracesIcon, Check, CheckIcon, CopyIcon } from 'lucide-react'
+import { BracesIcon, CheckIcon, CopyIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { NodeApi, type TCodeBlockElement, type TCodeSyntaxLeaf } from 'platejs'
 import {
@@ -117,7 +117,7 @@ const CodeBlockCombobox = () => {
                   }}
                   value={language.value}
                 >
-                  <Check className={cn(value === language.value ? 'opacity-100' : 'opacity-0')} />
+                  <CheckIcon className={cn(value === language.value ? 'opacity-100' : 'opacity-0')} />
                   {language.label}
                 </CommandItem>
               ))}

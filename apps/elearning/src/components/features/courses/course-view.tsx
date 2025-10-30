@@ -1,11 +1,13 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
 import { type IconName } from 'lucide-react/dynamic'
 import { type Locale, useTranslations } from 'next-intl'
+import { usePlateState } from 'platejs/react'
 import { toast } from 'sonner'
+
+import { type Enum } from '@glore/utils/types'
 
 import { CourseContent } from '@/components/features/courses/course-content'
 import { CourseFooter } from '@/components/features/courses/course-footer'
@@ -20,12 +22,12 @@ import { MotionTabs } from '@/components/ui/motion-tabs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CourseProvider, createCourseProviderValue } from '@/hooks/use-course'
 import { useHeader } from '@/hooks/use-header'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
+import { useSearchParams } from '@/hooks/use-search-params'
 import { useSession } from '@/hooks/use-session'
 import { type Course, completeLesson, submitAnswers, submitAssessment, submitEvaluations } from '@/lib/data'
 import { INTL_PLACEHOLDER } from '@/lib/intl'
-import { type CourseTab } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { type CourseMode } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const DEFAULT_COURSE: Partial<Course> = {
@@ -35,16 +37,14 @@ export const DEFAULT_COURSE: Partial<Course> = {
   description: INTL_PLACEHOLDER,
 }
 
-export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) => {
-  const pathname = usePathname()
-  const router = useRouter()
+export const CourseView = (props: { course?: Course; defaultMode: CourseMode }) => {
   const searchParams = useSearchParams()
-
-  const { locale, localeItems, localize } = useI18n()
+  const { locale, localeItems, localize } = useIntl()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
-  // const [readOnly, setReadOnly] = usePlateState('readOnly')
+  const [_, setReadOnly] = usePlateState('readOnly')
+  const [infoVisible, setInfoVisible] = useState(false)
 
   const isNew = useMemo(() => !props.course, [props.course])
   const hasLessons = useMemo(() => props.course?.lessons && props.course.lessons.length > 0, [props.course?.lessons])
@@ -66,8 +66,8 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
     [course.languages, localeItems.length]
   )
 
-  const [language, setLanguageState] = useState<Locale>(() => {
-    const param = searchParams.get('lang') as Locale | null
+  const [courseLocale, setLanguage] = useState<Locale>(() => {
+    const param = searchParams.get<Locale>('lang')
     if (param && initialCourse.languages?.includes(param)) return param
     if (initialCourse.languages?.includes(locale)) return locale
     return (
@@ -78,15 +78,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
     )
   })
 
-  const setLanguage = useCallback(
-    (lang: Locale) => {
-      setLanguageState(lang)
-      const params = new URLSearchParams(searchParams.toString())
-      params.set('lang', lang)
-      router.push(`${pathname}?${params.toString()}`)
-    },
-    [searchParams, pathname, router]
-  )
+  const language = useMemo(() => localeItems.find(item => item.value === courseLocale)!, [courseLocale, localeItems])
 
   useHeader({
     shadow: false,
@@ -109,7 +101,7 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
               placeholderProps={{ className: 'size-4 shrink-0' }}
             />
           )}
-          {localize(course.title, language)}
+          {localize(course.title, courseLocale)}
           {user.canEdit && isDraft && <Badge size="xs">{t('draft')}</Badge>}
           {user.canEdit && isArchived && <Badge size="xs">{t('archived')}</Badge>}
         </BreadcrumbItem>
@@ -124,45 +116,33 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
     return (course.lessons?.length || 0) - 1
   }, [course])
 
-  const [step, setStep] = useState(initialStep)
-  const currentLesson = useMemo(() => course.lessons?.[step]!, [course.lessons, step])
+  const [mode, setModeState] = useState(props.defaultMode)
+  const [step, setStepState] = useState(initialStep)
+  const currentLesson = useMemo(() => (course.lessons ?? [])[step], [course.lessons, step])
   const isFirstLesson = useMemo(() => step === 0, [step])
   const isLastLesson = useMemo(() => step === (course.lessons?.length ?? 0) - 1, [step, course.lessons?.length])
 
-  const defaultTab = useMemo<CourseTab>(() => {
-    if (!user.canEdit) return 'preview'
-    return props.defaultTab ?? 'editor'
-  }, [props.defaultTab, user.canEdit])
-
-  const [tab, setTab] = useState(defaultTab)
-
-  const onTabChange = useCallback(
-    (value: string) => {
-      const tab = value as CourseTab
-      // if (tab === 'editor') setReadOnly(false)
-      // if (tab === 'preview') setReadOnly(true)
-      setTab(tab)
-      if (!course.slug) return
-      const tabCookie = cookies.get('course-tab') || {}
-      tabCookie[course.slug] = tab
-      cookies.set('course-tab', tabCookie)
+  const setMode = useCallback(
+    (mode: Enum<CourseMode>) => {
+      setReadOnly(mode === 'preview')
+      setModeState(mode as CourseMode)
     },
-    [course.slug]
+    [setReadOnly]
   )
 
-  const isInfo = useMemo(() => tab === 'info', [tab])
-  const isEditorView = useMemo(() => tab === 'editor' || tab === 'preview', [tab])
-  const isPreview = useMemo(() => !user.canEdit, [user.canEdit])
-  // const isPreview = useMemo(() => !user.canEdit || !!readOnly, [user.canEdit, readOnly])
+  const setStep = useCallback((value: React.SetStateAction<number>) => {
+    setStepState(value)
+    setInfoVisible(false)
+  }, [])
 
   const hasFooter = useMemo(() => course.lessons && course.lessons.length > 1, [course.lessons])
 
-  const handlePrevious = useCallback(() => {
+  const movePrevious = useCallback(() => {
     if (isFirstLesson) return
     setStep(i => i - 1)
-  }, [isFirstLesson])
+  }, [isFirstLesson, setStep])
 
-  const handleNext = useCallback(async () => {
+  const moveNext = useCallback(async () => {
     try {
       const lesson = currentLesson
       const index = step
@@ -206,42 +186,41 @@ export const CourseView = (props: { course?: Course; defaultTab?: CourseTab }) =
       })
       console.error(e)
     }
-  }, [currentLesson, step, isLastLesson, course, t])
+  }, [course, currentLesson, isLastLesson, setStep, step, t])
+
+  const courseContext = useMemo(
+    () =>
+      createCourseProviderValue(initialCourse, {
+        course,
+        infoVisible,
+        language,
+        lesson: currentLesson,
+        mode,
+        moveNext,
+        movePrevious,
+        setCourse,
+        setInfoVisible,
+        setLanguage,
+        setMode,
+        setStep,
+        status: course.progress,
+        step,
+      }),
+    [course, currentLesson, infoVisible, initialCourse, language, mode, moveNext, movePrevious, setMode, setStep, step]
+  )
 
   return (
-    <CourseProvider
-      value={createCourseProviderValue(initialCourse, {
-        course,
-        setCourse,
-        language,
-        setLanguage,
-        step,
-        setStep,
-        tab,
-        setTab,
-      })}
-    >
-      <MotionTabs className="h-full" defaultValue="all" onValueChange={onTabChange} value={tab}>
+    <CourseProvider value={courseContext}>
+      <MotionTabs onValueChange={v => setLanguage(v as Locale)} value={courseLocale}>
         <CourseHeader />
-        {isInfo && <CourseInfo />}
-        {isEditorView && (
-          <div className="grid grid-cols-1 gap-2 pb-8 md:grid-cols-[minmax(208px,1fr)_3fr]">
-            <CourseSidebar />
-
-            <div className="flex w-full min-w-0 flex-col">
-              <CourseHeaderMobile />
-              <CourseContent lesson={currentLesson} preview={isPreview} />
-              {hasFooter && (
-                <CourseFooter
-                  lessons={course.lessons}
-                  onNext={handleNext}
-                  onPrevious={handlePrevious}
-                  status={course.progress}
-                />
-              )}
-            </div>
+        <div className="grid grow grid-cols-1 gap-2 pb-8 md:grid-cols-[minmax(208px,1fr)_3fr]">
+          <CourseSidebar />
+          <div className="flex w-full min-w-0 flex-col">
+            <CourseHeaderMobile />
+            {infoVisible ? <CourseInfo /> : <CourseContent />}
+            {hasFooter && <CourseFooter />}
           </div>
-        )}
+        </div>
       </MotionTabs>
     </CourseProvider>
   )

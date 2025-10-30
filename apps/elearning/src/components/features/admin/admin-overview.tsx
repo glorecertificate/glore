@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight, Award, Building2, Globe, Users } from 'lucide-react'
+import { ArrowDownRightIcon, ArrowUpRightIcon, AwardIcon, Building2Icon, GlobeIcon, UsersIcon } from 'lucide-react'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -9,14 +9,14 @@ export const AdminOverview = () => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-medium text-sm">{'Total Users'}</CardTitle>
-          <Users className="size-4 text-muted-foreground" />
+          <CardTitle className="font-medium text-sm">{'Total users'}</CardTitle>
+          <UsersIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="font-bold text-2xl">{'1,248'}</div>
           <p className="mt-1 flex items-center text-muted-foreground text-xs">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 size-3" />
+              <ArrowUpRightIcon className="mr-1 size-3" />
               {'12%'}
             </span>
             {'from last month'}
@@ -27,13 +27,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="font-medium text-sm">{'Organizations'}</CardTitle>
-          <Building2 className="size-4 text-muted-foreground" />
+          <Building2Icon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="font-bold text-2xl">{'86'}</div>
           <p className="mt-1 flex items-center text-muted-foreground text-xs">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 size-3" />
+              <ArrowUpRightIcon className="mr-1 size-3" />
               {'4%'}
             </span>
             {'from last month'}
@@ -44,13 +44,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="font-medium text-sm">{'Certifications'}</CardTitle>
-          <Award className="size-4 text-muted-foreground" />
+          <AwardIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="font-bold text-2xl">{'3,782'}</div>
           <p className="mt-1 flex items-center text-muted-foreground text-xs">
             <span className="mr-1 flex items-center text-red-500">
-              <ArrowDownRight className="mr-1 size-3" />
+              <ArrowDownRightIcon className="mr-1 size-3" />
               {'2%'}
             </span>
             {'from last month'}
@@ -61,13 +61,13 @@ export const AdminOverview = () => (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="font-medium text-sm">{'Active Regions'}</CardTitle>
-          <Globe className="size-4 text-muted-foreground" />
+          <GlobeIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="font-bold text-2xl">{'24'}</div>
           <p className="mt-1 flex items-center text-muted-foreground text-xs">
             <span className="mr-1 flex items-center text-green-500">
-              <ArrowUpRight className="mr-1 size-3" />
+              <ArrowUpRightIcon className="mr-1 size-3" />
               {'8%'}
             </span>
             {'from last month'}
@@ -88,11 +88,11 @@ export const AdminOverview = () => (
               <div className="flex items-center gap-4 border-b pb-4 last:border-0 last:pb-0" key={i}>
                 <div className="flex size-8 items-center justify-center rounded-full bg-brand-secondary/10">
                   {i % 3 === 0 ? (
-                    <Users className="size-4 text-brand-secondary" />
+                    <UsersIcon className="size-4 text-brand-secondary" />
                   ) : i % 3 === 1 ? (
-                    <Award className="size-4 text-brand-secondary" />
+                    <AwardIcon className="size-4 text-brand-secondary" />
                   ) : (
-                    <Building2 className="size-4 text-brand-secondary" />
+                    <Building2Icon className="size-4 text-brand-secondary" />
                   )}
                 </div>
                 <div className="flex-1">

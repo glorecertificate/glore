@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { PlaceholderPlugin, PlaceholderProvider, updateUploadHistory } from '@platejs/media/react'
-import { AudioLines, FileUp, Film, ImageIcon, Loader2Icon } from 'lucide-react'
+import { AudioLinesIcon, FileUpIcon, FilmIcon, ImageIcon, Loader2Icon } from 'lucide-react'
 import { KEYS, type TPlaceholderElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useEditorPlugin, withHOC } from 'platejs/react'
 import { useFilePicker } from 'use-file-picker'
@@ -22,12 +22,12 @@ const CONTENT: Record<
   [KEYS.audio]: {
     accept: ['audio/*'],
     content: 'Add an audio file',
-    icon: <AudioLines />,
+    icon: <AudioLinesIcon />,
   },
   [KEYS.file]: {
     accept: ['*'],
     content: 'Add a file',
-    icon: <FileUp />,
+    icon: <FileUpIcon />,
   },
   [KEYS.img]: {
     accept: ['image/*'],
@@ -37,7 +37,7 @@ const CONTENT: Record<
   [KEYS.video]: {
     accept: ['video/*'],
     content: 'Add a video',
-    icon: <Film />,
+    icon: <FilmIcon />,
   },
 }
 
@@ -67,8 +67,8 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
   const { openFilePicker } = useFilePicker({
     accept: currentContent.accept,
     multiple: true,
-    onFilesSelected: ({ plainFiles }) => {
-      const [file, rest] = plainFiles as [File, FileList]
+    onFilesSelected: (data: { plainFiles?: unknown }) => {
+      const [file, rest] = data.plainFiles as [File, FileList]
 
       replaceCurrentPlaceholder(file)
 

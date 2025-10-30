@@ -13,10 +13,10 @@ import { type Enum } from '@glore/utils/types'
 import { Button } from '@/components/ui/button'
 import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
+import { useCookies } from '@/hooks/use-cookies'
 import { useSearchParams } from '@/hooks/use-search-params'
 import { logout, PASSWORD_REGEX, updateAuthUser, verifyAuthUser } from '@/lib/data'
 import { type AuthView } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
 
 export const PasswordResetForm = ({
   setEmail,
@@ -30,6 +30,7 @@ export const PasswordResetForm = ({
   token?: string | null
 }) => {
   const searchParams = useSearchParams()
+  const cookies = useCookies()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -80,7 +81,7 @@ export const PasswordResetForm = ({
         await logout()
       }
     },
-    [setEmail, setView, token, searchParams, t, form]
+    [setEmail, setView, token, searchParams, t, form, cookies.delete]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

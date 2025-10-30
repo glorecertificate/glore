@@ -4,7 +4,15 @@ import { useState } from 'react'
 
 import { CopilotPlugin } from '@platejs/ai/react'
 import { type ChatRequestOptions } from 'ai'
-import { Check, ChevronsUpDown, ExternalLinkIcon, Eye, EyeOff, Settings, Wand2Icon } from 'lucide-react'
+import {
+  CheckIcon,
+  ChevronsUpDownIcon,
+  ExternalLinkIcon,
+  EyeIcon,
+  EyeOffIcon,
+  SettingsIcon,
+  Wand2Icon,
+} from 'lucide-react'
 import { useEditorRef } from 'platejs/react'
 
 import { aiChatPlugin } from '@/components/blocks/rich-text-editor/plugins/ai'
@@ -36,7 +44,7 @@ export const models: Model[] = [
   { label: 'gpt-3.5-turbo-instruct', value: 'gpt-3.5-turbo-instruct' },
 ]
 
-export const SettingsDialog = () => {
+export const SettingsIconDialog = () => {
   const editor = useEditorRef()
 
   const [tempModel, setTempModel] = useState(models[0])
@@ -127,7 +135,7 @@ export const SettingsDialog = () => {
         type="button"
         variant="ghost"
       >
-        {showKey[service] ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+        {showKey[service] ? <EyeOffIcon className="size-4" /> : <EyeIcon className="size-4" />}
         <span className="sr-only">
           {showKey[service] ? 'Hide' : 'Show'} {label}
         </span>
@@ -145,17 +153,17 @@ export const SettingsDialog = () => {
           )}
           size="icon"
         >
-          <Settings className="size-4" />
+          <SettingsIcon className="size-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl">{'Settings'}</DialogTitle>
+          <DialogTitle className="text-xl">{'SettingsIcon'}</DialogTitle>
           <DialogDescription>{'Configure your API keys and preferences.'}</DialogDescription>
         </DialogHeader>
 
         <form className="space-y-10" onSubmit={handleSubmit}>
-          {/* AI Settings Group */}
+          {/* AI SettingsIcon Group */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="size-8 rounded-full bg-purple-100 p-2 dark:bg-purple-900">
@@ -186,7 +194,7 @@ export const SettingsDialog = () => {
                       variant="outline"
                     >
                       <code>{tempModel.label}</code>
-                      <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                      <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
@@ -204,7 +212,7 @@ export const SettingsDialog = () => {
                               }}
                               value={m.value}
                             >
-                              <Check
+                              <CheckIcon
                                 className={cn('mr-2 size-4', tempModel.value === m.value ? 'opacity-100' : 'opacity-0')}
                               />
                               <code>{m.label}</code>
@@ -219,7 +227,7 @@ export const SettingsDialog = () => {
             </div>
           </div>
 
-          {/* Upload Settings Group */}
+          {/* Upload SettingsIcon Group */}
           {/* <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="size-8 rounded-full bg-red-100 p-2 dark:bg-red-900">

@@ -7,7 +7,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Markdown } from '@/components/ui/markdown'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { type Question, type QuestionOption } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
@@ -21,7 +21,7 @@ const CourseQuestion = ({
   question: Question
   title?: string
 }) => {
-  const { localize } = useI18n()
+  const { localize } = useIntl()
   const t = useTranslations('Courses')
 
   const isCorrectUserAnswer = useMemo(

@@ -1,16 +1,21 @@
 import { type Metadata } from 'next'
+import { type AppRoutes } from 'next/types/routes'
 
 import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import metadata from '@config/metadata'
+import { type HTTPUrl } from '@glore/utils/types'
 
 import { LOCALES, type NavigationKey } from '@/lib/intl'
-import { APP_URL, type AppRoutes, apiRoute } from '@/lib/navigation'
+import { apiRoute } from '@/lib/navigation'
 import { publicAsset } from '@/lib/storage'
 
+export const APP_NAME = metadata.shortName
+export const APP_URL = (process.env.APP_URL as HTTPUrl) ?? ''
+
 export const METADATA = {
-  metadataBase: new URL(APP_URL),
+  metadataBase: APP_URL,
   applicationName: metadata.shortName,
   category: metadata.category,
   authors: metadata.authors,

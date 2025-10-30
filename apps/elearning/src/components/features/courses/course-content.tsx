@@ -1,18 +1,17 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { RichTextEditor } from '@/components/blocks/rich-text-editor'
-import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
 import { useCourse } from '@/hooks/use-course'
-import { type Lesson, type Question, type QuestionOption, submitAnswers } from '@/lib/data'
+import { type Question, type QuestionOption, submitAnswers } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
-export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: boolean }) => {
-  const { setCourse, step } = useCourse()
+export const CourseContent = () => {
+  const { lesson, mode, setCourse, step } = useCourse()
 
   const onQuestionAnswer = useCallback(
     async (question: Question, option: QuestionOption) => {
@@ -75,16 +74,16 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
     [step, setCourse]
   )
 
-  const blockStyles = useMemo(() => cn('pt-4', preview && 'mt-8 border-t-2 pt-6'), [preview])
-
   return (
-    <div>
-      <RichTextEditorProvider>
-        <RichTextEditor variant="fullWidth" />
-      </RichTextEditorProvider>
+    <div className="h-full">
+      {mode === 'editor' ? (
+        <RichTextEditor className="h-full" variant="fullWidth" />
+      ) : (
+        <RichTextEditor readOnly variant="fullWidth" />
+      )}
       {lesson.type === 'questions' && lesson.questions && (
         <CourseQuestions
-          className={blockStyles}
+          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
           completed={lesson.completed}
           onComplete={onQuestionAnswer}
           questions={lesson.questions}
@@ -92,7 +91,7 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
       )}
       {lesson.type === 'evaluations' && lesson.evaluations && (
         <CourseEvaluations
-          className={blockStyles}
+          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
           completed={lesson.completed}
           evaluations={lesson.evaluations}
           onEvaluation={onEvaluation}
@@ -101,7 +100,7 @@ export const CourseContent = ({ lesson, preview }: { lesson: Lesson; preview: bo
       {lesson.type === 'assessment' && lesson.assessment && (
         <CourseAssessment
           assessment={lesson.assessment}
-          className={blockStyles}
+          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
           completed={lesson.completed}
           onValueChange={onAssessment}
         />

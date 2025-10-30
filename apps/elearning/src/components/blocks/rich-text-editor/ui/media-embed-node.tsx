@@ -53,7 +53,7 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
             {isVideo ? (
               isYoutube ? (
                 <LiteYouTubeEmbed
-                  id={embed?.id!}
+                  id={embed?.id ?? ''}
                   title="youtube"
                   wrapperClass={cn(
                     'rounded-sm',

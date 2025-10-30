@@ -2,7 +2,16 @@
 
 import { useMemo } from 'react'
 
-import { Award, Building, CalendarIcon, Clock, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
+import {
+  AwardIcon,
+  BuildingIcon,
+  CalendarIcon,
+  ClockIcon,
+  PrinterIcon,
+  ShareIcon,
+  UserIcon,
+  ViewIcon,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Badge } from '@/components/ui/badge'
@@ -10,13 +19,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
-import { useI18n } from '@/hooks/use-i18n'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { type Certificate } from '@/lib/data'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
-  const { localize, localizeDate } = useI18n()
+  const { localize, localizeDate } = useIntl()
   const t = useTranslations()
 
   const isIssued = useMemo(() => !!certificate.issuedAt, [certificate])
@@ -84,7 +93,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             {certificate.organization.avatarUrl ? (
               <Image src={certificate.organization.avatarUrl} width={20} />
             ) : (
-              <Building className="mt-0.5 size-5 text-muted-foreground" />
+              <BuildingIcon className="mt-0.5 size-5 text-muted-foreground" />
             )}
             <div>
               <h3 className="font-medium">{t('Common.organization')}</h3>
@@ -125,7 +134,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           </div>
 
           <div className="flex items-start space-x-3">
-            <Clock className="mt-0.5 size-5 text-muted-foreground" />
+            <ClockIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.duration')}</h3>
               <p>
@@ -151,7 +160,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
           <div className="flex flex-wrap gap-2">
             {certificate.skills.map(skill => (
               <Badge className="px-3 py-1" key={skill.id}>
-                <Award className="mr-1 size-3.5" />
+                <AwardIcon className="mr-1 size-3.5" />
                 {localize(skill.title)}
               </Badge>
             ))}

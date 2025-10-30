@@ -42,7 +42,7 @@
             "groups": [
               ":NODE:",
               ":BLANK_LINE:",
-              ["next", "next/*", "react", "react/*"],
+              ["next", "next/**", "react", "react/**"],
               ":BLANK_LINE:",
               [":PACKAGE:", "!@config/**", "!@glore/**"],
               ":BLANK_LINE:",
@@ -56,6 +56,26 @@
     }
   },
   "overrides": [
+    {
+      "includes": ["scripts/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noNamespaceImport": "off"
+          }
+        }
+      }
+    },
     {
       "includes": ["src/lib/*/**"],
       "linter": {

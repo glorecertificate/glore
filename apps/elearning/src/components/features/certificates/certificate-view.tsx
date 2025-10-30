@@ -1,5 +1,6 @@
 'use client'
 
+import { type AppRoutes } from 'next/types/routes'
 import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
@@ -12,7 +13,6 @@ import { NoAccessGraphic } from '@/components/graphics/no-access'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { useSession } from '@/hooks/use-session'
-import { type AppRoutes } from '@/lib/navigation'
 
 export const CertificateView = () => {
   const { courses, organization, user } = useSession()

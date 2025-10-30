@@ -4,8 +4,6 @@ import { type AnyRecord } from '@glore/utils/types'
 
 import { type Database } from '../../../../supabase/types'
 
-export type { Database, Enums, Tables } from '../../../../supabase/types'
-
 export type DatabaseClient = SupabaseClient<Database, 'public', PublicSchema>
 
 export type PublicSchema = Database['public']

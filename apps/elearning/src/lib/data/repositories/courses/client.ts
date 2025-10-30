@@ -4,15 +4,24 @@ import { createDatabase } from '../../supabase/client'
 import { getCurrentUser } from '../users/server'
 import { type UserAnswer, type UserAssessment, type UserEvaluation, type UserLesson } from '../users/types'
 import { createRepositoryRunner, expectList, expectSingle } from '../utils'
+import { DEFAULT_COURSE_TITLE } from './constants'
 import { courseQuery } from './queries'
-import { type Course, type CreateCourseOptions, type SkillGroup, type UpdateCourseOptions } from './types'
+import { type Course, type CourseSettings, type SkillGroup, type UpdateCourseOptions } from './types'
 import { parseCourse } from './utils'
 
 const run = createRepositoryRunner(createDatabase)
 
-export const createCourse = async (course: CreateCourseOptions): Promise<Course> =>
+export const createCourse = async (
+  course: CourseSettings & {
+    title?: Course['title']
+  }
+): Promise<Course> =>
   run(async database => {
-    const result = await database.from('courses').insert(course).select(courseQuery).single()
+    const result = await database
+      .from('courses')
+      .insert({ ...course, title: course.title ?? DEFAULT_COURSE_TITLE })
+      .select(courseQuery)
+      .single()
     return parseCourse(expectSingle(result))
   })
 
@@ -20,6 +29,12 @@ export const updateCourse = async (course: UpdateCourseOptions): Promise<Course>
   run(async database => {
     const { id, ...updates } = course
     const result = await database.from('courses').update(updates).eq('id', id).select(courseQuery).single()
+    return parseCourse(expectSingle(result))
+  })
+
+export const updateCourseSettings = async (id: number, settings: CourseSettings): Promise<Course> =>
+  run(async database => {
+    const result = await database.from('courses').update(settings).eq('id', id).select(courseQuery).single()
     return parseCourse(expectSingle(result))
   })
 

@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 import { SlateElement, type SlateElementProps } from 'platejs'
 
 export const ToggleElementStatic = (props: SlateElementProps) => (
@@ -9,7 +9,7 @@ export const ToggleElementStatic = (props: SlateElementProps) => (
       }
       contentEditable={false}
     >
-      <ChevronRight className="rotate-0 transition-transform duration-75" />
+      <ChevronRightIcon className="rotate-0 transition-transform duration-75" />
     </div>
     {props.children}
   </SlateElement>

@@ -1,9 +1,9 @@
 import metadata from '@config/metadata'
 import theme from '@config/theme'
 
-export const APP_URL = process.env.APP_URL ?? metadata.url
+import { type EmailTemplate, type SendEmailOptions } from './types'
 
-export const EMAIL_TEMPLATES = ['auth/recovery', 'auth/invite'] as const
+export const MAIL_APP_URL = process.env.APP_URL ?? metadata.url
 
 export const SMTP_CONFIG = {
   host: process.env.SMTP_HOST,
@@ -28,16 +28,13 @@ export const EMAIL_THEME = {
 } as const
 
 export const EMAIL_PREVIEW_PROPS = {
-  common: {
-    from: process.env.EMAIL_SENDER,
-    to: 'john.doe@example.com',
-    username: 'John Doe',
-  },
-  auth: {
-    token: '123456',
-    tokenHash: 'abcdef1234567890',
-    tokenNew: '654321',
-    tokenHashNew: '098765fedcba',
-    redirectTo: process.env.APP_URL,
-  },
-} as const
+  from: process.env.EMAIL_SENDER,
+  to: 'john.doe@example.com',
+  username: 'John Doe',
+  locale: 'it',
+  token: '123456',
+  tokenHash: 'abcdef1234567890',
+  tokenNew: '654321',
+  tokenHashNew: '098765fedcba',
+  redirectTo: MAIL_APP_URL,
+} as const satisfies SendEmailOptions<EmailTemplate>

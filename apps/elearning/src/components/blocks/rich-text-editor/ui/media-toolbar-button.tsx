@@ -85,8 +85,8 @@ export const MediaToolbarButton = ({
   const { openFilePicker } = useFilePicker({
     accept: currentConfig.accept,
     multiple: true,
-    onFilesSelected: ({ plainFiles }) => {
-      const files = plainFiles as FileList
+    onFilesSelected: (data: { plainFiles?: unknown }) => {
+      const files = data.plainFiles as FileList
       editor.getTransforms(PlaceholderPlugin).insert.media(files)
     },
   })

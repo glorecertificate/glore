@@ -9,6 +9,7 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { Tooltip, TooltipContent, type TooltipContentProps, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
+import { type IntlRecord } from '@/lib/intl'
 import { type Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
@@ -40,7 +41,11 @@ const THEMES = [
       it: 'Sistema',
     },
   },
-] as const
+] as const satisfies {
+  name: Theme
+  icon: Icon
+  label: IntlRecord
+}[]
 
 export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {
   active: boolean
@@ -59,7 +64,7 @@ const ThemeSwitchButtonBase = ({
 }: ThemeSwitchButtonProps) => (
   <Button
     className={cn(
-      'inline-flex size-7 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-1.5 font-medium text-sm transition-all',
+      'inline-flex size-[26px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-1.5 font-medium text-sm transition-all',
       active && 'pointer-events-none border bg-accent dark:bg-accent',
       className
     )}
@@ -70,7 +75,7 @@ const ThemeSwitchButtonBase = ({
     {...props}
   >
     <div className="relative z-10 flex items-center gap-1.5">
-      <Icon className="size-4" />
+      <Icon className={cn('size-3.5', active && 'text-foreground')} />
       <span className="sr-only">{children}</span>
     </div>
   </Button>
@@ -135,9 +140,7 @@ export const ThemeSwitch = ({ className, locale = 'en', themes, tooltip, ...prop
               {name.toLowerCase()}
             </ThemeSwitchButton>
           ))
-        : items.map(({ icon, name }) => (
-            <ThemeSwitchButton active={false} className="w-8" icon={icon} key={name} title="" />
-          ))}
+        : items.map(({ icon, name }) => <ThemeSwitchButton active={false} icon={icon} key={name} title="" />)}
     </div>
   )
 }

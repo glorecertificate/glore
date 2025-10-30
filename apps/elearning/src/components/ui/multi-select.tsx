@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { CommandSeparator } from 'cmdk'
-import { Check, ChevronsUpDown, X } from 'lucide-react'
+import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Badge, type BadgeProps } from '@/components/ui/badge'
@@ -99,7 +99,7 @@ const MultiSelectBadge = ({
           )}
           role="button"
         >
-          <X className={cn('size-2', !disabled && 'group-hover:stroke-white')} />
+          <XIcon className={cn('size-2', !disabled && 'group-hover:stroke-white')} />
         </span>
       </div>
     </Badge>
@@ -253,7 +253,7 @@ export const MultiSelect = ({
               role="button"
               tabIndex={0}
             >
-              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+              <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
             </span>
           </div>
         </PopoverTrigger>
@@ -283,7 +283,7 @@ export const MultiSelect = ({
                     onSelect={onSelect(option.value)}
                     value={option.value}
                   >
-                    <Check
+                    <CheckIcon
                       className={cn(
                         'size-4',
                         isSelected(option.value) ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30'

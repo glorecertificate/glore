@@ -4,32 +4,36 @@ import { createContext, useCallback, useState } from 'react'
 
 import {
   type Course,
-  type CreateCourseOptions,
+  type CourseSettings,
   type CurrentUser,
   createCourse,
-  DEFAULT_COURSE_TITLE,
   deleteCourse,
+  type SkillGroup,
   type UpdateCourseOptions,
   type UserOrganization,
   updateCourse,
+  updateCourseSettings,
 } from '@/lib/data'
 
 export interface SessionContext {
   user: CurrentUser
   setUser?: React.Dispatch<React.SetStateAction<CurrentUser>>
   organization?: UserOrganization
+  skillGroups: SkillGroup[]
   courses: Course[]
-  createCourse?: (payload: Omit<CreateCourseOptions, 'title'>) => Promise<Course>
+  createCourse?: (payload: CourseSettings) => Promise<Course>
   updateCourse?: (value: React.SetStateAction<UpdateCourseOptions>) => Promise<Course>
+  updateCourseSettings?: (id: number, settings: CourseSettings) => Promise<Course>
   deleteCourse?: (id: number) => Promise<void>
 }
 
 export const SessionContext = createContext<SessionContext | null>(null)
 
 export const SessionProvider = ({ children, ...context }: React.PropsWithChildren<SessionContext>) => {
-  const [courses, setCourses] = useState<Course[]>(context.courses)
-  const [user, setUser] = useState<CurrentUser>(context.user)
-  const [organization] = useState<UserOrganization | undefined>(context.organization)
+  const [courses, setCourses] = useState(context.courses)
+  const [user, setUser] = useState(context.user)
+  const [organization] = useState(context.organization)
+  const [skillGroups] = useState(context.skillGroups ?? [])
 
   const setCourse = useCallback((course: Course) => {
     setCourses(courses => {
@@ -42,9 +46,8 @@ export const SessionProvider = ({ children, ...context }: React.PropsWithChildre
   }, [])
 
   const createSessionCourse = useCallback(
-    async (payload: Omit<CreateCourseOptions, 'title'>) => {
-      const title = DEFAULT_COURSE_TITLE
-      const course = await createCourse({ ...payload, title })
+    async (settings: CourseSettings) => {
+      const course = await createCourse(settings)
       setCourse(course)
       return course
     },
@@ -55,6 +58,15 @@ export const SessionProvider = ({ children, ...context }: React.PropsWithChildre
     async (value: React.SetStateAction<UpdateCourseOptions>) => {
       const payload = typeof value === 'function' ? value((value.arguments as UpdateCourseOptions[])[0]) : value
       const course = await updateCourse(payload)
+      setCourse(course)
+      return course
+    },
+    [setCourse]
+  )
+
+  const updateSessionCourseSettings = useCallback(
+    async (id: number, settings: CourseSettings) => {
+      const course = await updateCourseSettings(id, settings)
       setCourse(course)
       return course
     },
@@ -72,9 +84,11 @@ export const SessionProvider = ({ children, ...context }: React.PropsWithChildre
         user,
         setUser,
         organization,
+        skillGroups,
         courses,
         createCourse: createSessionCourse,
         updateCourse: updateSessionCourse,
+        updateCourseSettings: updateSessionCourseSettings,
         deleteCourse: deleteSessionCourse,
       }}
     >

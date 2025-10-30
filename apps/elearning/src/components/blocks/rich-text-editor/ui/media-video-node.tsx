@@ -65,7 +65,7 @@ export const VideoElement = withHOC(ResizableProvider, (props: PlateElementProps
             {!isUpload && isYoutube && (
               <div ref={handleRef}>
                 <LiteYouTubeEmbed
-                  id={embed?.id!}
+                  id={embed?.id ?? ''}
                   title="youtube"
                   wrapperClass={cn(
                     'aspect-video rounded-sm',

@@ -14,7 +14,7 @@ export const StaticEditor = ({
 const staticEditorVariants = cva(
   cn(
     'group/editor',
-    'relative w-full cursor-text select-text overflow-x-hidden whitespace-pre-wrap break-words',
+    'wrap-break-word relative w-full cursor-text select-text overflow-x-hidden whitespace-pre-wrap',
     'rounded-md ring-offset-background focus-visible:outline-none',
     `
       placeholder:text-muted-foreground/80

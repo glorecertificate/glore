@@ -8,7 +8,7 @@ import { useDebouncePopoverOpen } from '@platejs/layout/react'
 import { ResizableProvider } from '@platejs/resizable'
 import { BlockSelectionPlugin } from '@platejs/selection/react'
 import { useComposedRef } from '@udecode/cn'
-import { GripHorizontal, type LucideProps, Trash2Icon } from 'lucide-react'
+import { GripHorizontalIcon, type LucideProps, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { PathApi, type TColumnElement } from 'platejs'
 import {
@@ -85,7 +85,7 @@ const ColumnDragHandle = memo(() => {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button className="h-5 px-1!" variant="ghost">
-            <GripHorizontal
+            <GripHorizontalIcon
               className="text-muted-foreground"
               onClick={event => {
                 event.stopPropagation()

@@ -51,12 +51,12 @@ import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
+import { useCookies } from '@/hooks/use-cookies'
+import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { type Course, DEFAULT_COURSE_TITLE } from '@/lib/data'
 import { type IntlRecord, type LocaleItem } from '@/lib/intl'
-import { buildRoute } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 interface LanguageItem extends LocaleItem {
@@ -124,7 +124,8 @@ export const CourseCard = ({
   }
   showState?: boolean
 }) => {
-  const { locale, localeItems, locales, localize } = useI18n()
+  const cookies = useCookies()
+  const { locale, localeItems, locales, localize } = useIntl()
   const { user, updateCourse, deleteCourse: deleteSessionCourse } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
@@ -142,11 +143,11 @@ export const CourseCard = ({
       languageCookie[course.slug] = value
       cookies.set('course-locale', languageCookie)
     },
-    [course.slug, language]
+    [cookies, course.slug, language]
   )
 
   const getCoursePath = useCallback(
-    (lang: Locale) => buildRoute('/courses/[slug]', { slug: course.slug }, { lang }),
+    (lang: Locale) => route('/courses/[slug]', { slug: course.slug }, { lang }),
     [course.slug]
   )
 

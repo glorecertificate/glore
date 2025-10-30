@@ -1,5 +1,6 @@
 'use client'
 
+import { type AppRoutes } from 'next/types/routes'
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import { Slot } from '@radix-ui/react-slot'
@@ -14,14 +15,13 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDevice } from '@/hooks/use-device'
 import { usePathname } from '@/hooks/use-pathname'
-import { type AppRoutes } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-export const SIDEBAR_WIDTH = '16rem'
+export const SIDEBAR_WIDTH = '18rem'
 export const SIDEBAR_WIDTH_MOBILE = '18rem'
 export const SIDEBAR_WIDTH_ICON = '3rem'
-export const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
+export const SIDEBAR_KEYBOARD_SHORTCUT = '\\'
 
 interface SidebarContext {
   activePath: string

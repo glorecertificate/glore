@@ -9,10 +9,10 @@ import { type VerifyUserParams } from './types'
 export const login = async (credentials: SignInWithPasswordCredentials) => {
   const database = createDatabase()
   const { data, error } = await database.auth.signInWithPassword(credentials)
-  if (error || !data?.user) throw new DatabaseError({ code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' })
+  if (error || !data?.user) throw new DatabaseError({ code: '28P01', message: 'Invalid credentials' })
 
   const user = await findUser(data.user.id)
-  if (!user) throw new DatabaseError({ code: 'NO_RESULTS', message: 'User not found' })
+  if (!user) throw new DatabaseError({ code: 'PGRST116', message: 'User not found' })
 
   cookies.setEncoded('user', user)
 
@@ -43,7 +43,7 @@ export const updateAuthUser = async (attributes: UserAttributes) => {
   const database = createDatabase()
   const { data, error } = await database.auth.updateUser(attributes)
   if (error) throw error
-  if (!data?.user) throw new DatabaseError({ code: 'NO_RESULTS', message: 'User not found' })
+  if (!data?.user) throw new DatabaseError({ code: 'PGRST116', message: 'User not found' })
 
   return data.user
 }
@@ -52,7 +52,7 @@ export const verifyAuthUser = async ({ token, type }: VerifyUserParams) => {
   const database = createDatabase()
   const { data, error } = await database.auth.verifyOtp({ token_hash: token, type })
   if (error) throw error
-  if (!data?.user) throw new DatabaseError({ code: 'INVALID_CREDENTIALS', message: 'Invalid or expired token' })
+  if (!data?.user) throw new DatabaseError({ code: '28P01', message: 'Invalid or expired token' })
 
   return data.user
 }

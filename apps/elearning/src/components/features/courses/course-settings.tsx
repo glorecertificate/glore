@@ -1,148 +1,222 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import { useCallback, useId, useMemo } from 'react'
 
-import { InfoIcon } from 'lucide-react'
-import { useFormatter, useTranslations } from 'next-intl'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { type PostgrestError } from '@supabase/supabase-js'
+import { Link2Icon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { type Enums } from 'supabase/types'
+import z from 'zod'
 
-import { UserCard } from '@/components/features/users/user-card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Form, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
-import { Separator } from '@/components/ui/separator'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCourse } from '@/hooks/use-course'
-import { type Course } from '@/lib/data'
+import { useIntl } from '@/hooks/use-intl'
+import { useSession } from '@/hooks/use-session'
+import { COURSE_SLUG_REGEX, COURSE_TYPES, type Course } from '@/lib/data'
+import { cn } from '@/lib/utils'
 
-export const CourseSettings = () => {
-  const { course, initialCourse, setCourse } = useCourse()
+interface CourseSettingsProps {
+  course?: Partial<Course>
+}
+
+export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) => {
+  const router = useRouter()
+
+  const { localize } = useIntl()
+  const { createCourse, skillGroups, updateCourseSettings } = useSession()
+  const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
-  const f = useFormatter()
 
-  const isNew = useMemo(() => !course.id, [course.id])
+  const isNew = useMemo(() => !initialCourse, [initialCourse])
 
-  const disabledMessage = useMemo(() => {
-    if (course.type === initialCourse.type && course.slug === initialCourse.slug) return t('noChangesDetected')
-    if (!(course.type || course.slug)) return t('fillSettingsFields')
-    if (!course.languages?.some(language => course.title?.[language])) return t('noTitleProvided')
-  }, [course, initialCourse, t])
-
-  const isDisabled = useMemo(() => !!disabledMessage, [disabledMessage])
-
-  const createdDate = useMemo(() => {
-    if (!course.createdAt) return null
-    return f.dateTime(new Date(course.createdAt), {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }, [course.createdAt, f])
-
-  const handleChange = useCallback(
-    (field: keyof Course, value: string) => {
-      setCourse(prev => ({ ...prev, [field]: value }))
-    },
-    [setCourse]
+  const formSchema = useMemo(
+    () =>
+      z.object({
+        type: z.enum(COURSE_TYPES),
+        skill_group_id: z.number().nullable(),
+        slug: z.string().regex(COURSE_SLUG_REGEX, t('invalidSlugFormat')).min(5, t('courseSlugTooShort')),
+      }),
+    [t]
   )
 
-  // const handleSave = useCallback(async () => {
-  //   if (isDisabled) return
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    mode: 'onChange',
+    defaultValues: {
+      type: initialCourse?.type ?? 'intro',
+      skill_group_id: initialCourse?.skillGroup?.id ?? null,
+      slug: initialCourse?.slug ?? '',
+    },
+  })
+  form.watch()
 
-  //   const { slug, type } = course as Required<Course>
+  const slugId = useId()
+  const slugPrefix = useMemo(() => `${window.location.origin}/courses/`, [])
 
-  //   if (isNew) {
-  //     try {
-  //       const created = await createCourse({ slug, type })
-  //       setInitialCourse(created)
-  //       toast.success(t('courseCreated'))
-  //     } catch (error) {
-  //       toast.error(t('courseCreationFailed'))
-  //       return
-  //     }
-  //   }
+  const disabled = useMemo(
+    () => !form.formState.isDirty || form.formState.isSubmitting || !form.formState.isValid,
+    [form.formState, form]
+  )
 
-  //   try {
-  //     const updated = await updateCourse({ id: course.id!, type: course.type, slug: course.slug })
-  //     setInitialCourse(updated)
-  //     toast.success(t('courseUpdated'))
-  //   } catch {}
-  // }, [course, createCourse, isDisabled, isNew, t, updateCourse])
+  const submitMessage = useMemo(() => {
+    if (!form.formState.isDirty) return tCommon('noChangesToSave')
+    if (form.formState.isSubmitting) return isNew ? t('creatingCourse') : t('savingChange')
+    if (!form.formState.isValid) return // tCommon('fixErrorsToContinue')
+    return isNew ? t('createCourse') : t('saveChanges')
+  }, [form.formState, isNew, t, tCommon])
+
+  const createSettings = useMemo(
+    () => async (schema: z.infer<typeof formSchema>) => {
+      try {
+        const course = await createCourse(schema)
+        toast.success(t('courseCreated'))
+        router.push(`/courses/${course.slug}`)
+      } catch (e) {
+        const error = e as PostgrestError
+        console.error(error.message, error)
+        toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
+      }
+    },
+    [createCourse, router, t]
+  )
+
+  const updateSettings = useMemo(
+    () => async (schema: z.infer<typeof formSchema>) => {
+      try {
+        if (!initialCourse?.id) return
+
+        const course = await updateCourseSettings(initialCourse.id, schema)
+        toast.success(t('courseSettingsUpdated'))
+        router.replace(`/courses/${course.slug}`)
+      } catch (e) {
+        const error = e as PostgrestError
+        console.error(error.message, error)
+        toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
+      }
+    },
+    [initialCourse?.id, router, t, updateCourseSettings]
+  )
+
+  const onSubmit = useCallback(
+    (schema: z.infer<typeof formSchema>) => (isNew ? createSettings(schema) : updateSettings(schema)),
+    [createSettings, isNew, updateSettings]
+  )
 
   return (
-    <div className="flex flex-col gap-8 pb-8">
-      <div className="flex flex-col gap-5">
+    <Form {...form}>
+      <form className="grid gap-10" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <div className="flex flex-col space-y-1">
+                  <FormLabel className="text-[15px]">{t('courseType')}</FormLabel>
+                  <FormDescription>{t('courseTypeDescription')}</FormDescription>
+                </div>
+                <div className="space-y-2.5">
+                  <Tabs
+                    onValueChange={value => form.setValue('type', value as Enums<'course_type'>)}
+                    value={field.value}
+                  >
+                    <TabsList className="grid grid-cols-2">
+                      <TabsTrigger value="intro">{t('courseTypeIntroductory')}</TabsTrigger>
+                      <TabsTrigger value="skill">{t('courseTypeSoftSkill')}</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                  <p className="text-xs">
+                    {field.value === 'intro'
+                      ? t('courseTypeIntroductoryDescription')
+                      : t('courseTypeSoftSkillDescription')}
+                  </p>
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="skill_group_id"
+            render={({ field }) => (
+              <FormItem
+                className={cn('space-y-1', form.getValues('type') === 'intro' && 'pointer-events-none opacity-50')}
+              >
+                <div className="flex flex-col space-y-1">
+                  <FormLabel className="text-[15px]">{t('skillGroup')}</FormLabel>
+                  <FormDescription>{t('skillGroupDescription')}</FormDescription>
+                </div>
+                <Select
+                  onValueChange={value => form.setValue('skill_group_id', Number(value))}
+                  value={String(field.value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('selectSkillGroup')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {skillGroups.map(group => (
+                      <SelectItem key={group.id} value={group.id.toString()}>
+                        {localize(group.name as Record<string, string>)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field: { onChange, ...field } }) => (
+              <FormItem className="space-y-1">
+                <div className="flex flex-col space-y-1">
+                  <Label className="text-[15px]">{t('courseSlug')}</Label>
+                  <FormDescription>{t('courseSlugDescription')}</FormDescription>
+                </div>
+                <InputGroup>
+                  <InputGroupAddon>
+                    <InputGroupText className="text-muted-foreground/80">{slugPrefix}</InputGroupText>
+                  </InputGroupAddon>
+                  <InputGroupAddon align="inline-end">
+                    <Link2Icon className="cursor-default" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    className="pl-0.5!"
+                    disabled={form.formState.isSubmitting}
+                    id={slugId}
+                    onChange={e => {
+                      const { value } = e.target
+                      const slug = value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+                      onChange(slug)
+                    }}
+                    {...field}
+                  />
+                </InputGroup>
+              </FormItem>
+            )}
+          />
+        </div>
         <div>
-          <h2 className="font-semibold text-foreground text-lg">{t('settings')}</h2>
-          <p className="text-foreground/75 text-sm">{t('settingsDescription')}</p>
+          <p className="text-right text-muted-foreground text-xs">{form.formState.errors.slug?.message}</p>
+          <Button
+            className="w-full [&_svg]:size-4"
+            disabled={disabled}
+            disabledCursor
+            loading={form.formState.isSubmitting}
+            type="submit"
+            variant="brand"
+          >
+            {submitMessage}
+          </Button>
         </div>
-
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label>{t('courseType')}</Label>
-            <Tabs onValueChange={value => handleChange('type', value)} value={course.type}>
-              <TabsList className="grid grid-cols-2">
-                <TabsTrigger value="intro">{t('courseTypeIntroductory')}</TabsTrigger>
-                <TabsTrigger value="skill">{t('courseTypeSoftSkill')}</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <p className="text-muted-foreground text-sm">
-              {course.type === 'skill' ? t('courseTypeSoftSkillDescription') : t('courseTypeIntroductoryDescription')}
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="course-slug">{t('courseSlug')}</Label>
-            <Input
-              id="course-slug"
-              onChange={e => handleChange('slug', e.target.value)}
-              placeholder={t('courseSlugPlaceholder')}
-              value={course.slug}
-            />
-            <div className="flex items-center gap-1 text-muted-foreground text-sm">
-              <InfoIcon className="size-3.5 shrink-0" />
-              <span>{t('courseSlugDescription')}</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1.5 text-muted-foreground text-sm">
-            <Button className="w-fit text-foreground" disabled={isDisabled} disabledCursor variant="outline">
-              {t('save')}
-            </Button>
-            {disabledMessage && <p className="text-muted-foreground text-xs">{disabledMessage}</p>}
-          </div>
-        </div>
-      </div>
-
-      {!isNew && (
-        <>
-          <Separator className="m-0" />
-
-          <div className="flex flex-col gap-5">
-            <div>
-              <h2 className="font-semibold text-foreground text-lg">{t('courseMetadata')}</h2>
-              <p className="text-foreground/75 text-sm">{t('courseMetadataDescription')}</p>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              {course.creator && (
-                <div className="space-y-3">
-                  <h3 className="font-medium text-foreground text-sm">{t('courseCreator')}</h3>
-                  <UserCard hide={['city', 'country', 'languages']} user={course.creator} />
-                </div>
-              )}
-
-              {course.createdAt && (
-                <div className="space-y-2">
-                  <h3 className="font-medium text-foreground text-sm">{t('createdOn')}</h3>
-                  <p className="text-muted-foreground text-sm">{createdDate}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+      </form>
+    </Form>
   )
 }

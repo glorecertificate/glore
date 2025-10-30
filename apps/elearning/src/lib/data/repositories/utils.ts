@@ -48,7 +48,7 @@ export const expectList = <T>(
  */
 export const createRepositoryRunner =
   (resolveDatabase: () => MaybePromise<DatabaseClient>) =>
-  async <T>(operation: (database: DatabaseClient) => MaybePromise<T>): Promise<T> => {
+  async <T>(operation: (database: DatabaseClient) => MaybePromise<T>) => {
     const database = await resolveDatabase()
     return operation(database)
   }

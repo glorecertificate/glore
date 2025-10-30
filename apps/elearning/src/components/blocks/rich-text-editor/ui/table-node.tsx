@@ -16,14 +16,14 @@ import {
 } from '@platejs/table/react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import {
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  ArrowUp,
+  ArrowDownIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
   CombineIcon,
   EraserIcon,
   Grid2X2Icon,
-  GripVertical,
+  GripVerticalIcon,
   PaintBucketIcon,
   SquareSplitHorizontalIcon,
   Trash2Icon,
@@ -189,7 +189,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
                 onMouseDown={e => e.preventDefault()}
                 tooltip={t('tableInsertRowBefore')}
               >
-                <ArrowUp />
+                <ArrowUpIcon />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
@@ -198,7 +198,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
                 onMouseDown={e => e.preventDefault()}
                 tooltip={t('tableInsertRowAfter')}
               >
-                <ArrowDown />
+                <ArrowDownIcon />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
@@ -221,7 +221,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
                 onMouseDown={e => e.preventDefault()}
                 tooltip={t('tableInsertColumnBefore')}
               >
-                <ArrowLeft />
+                <ArrowLeftIcon />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
@@ -230,7 +230,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
                 onMouseDown={e => e.preventDefault()}
                 tooltip={t('tableInsertColumnAfter')}
               >
-                <ArrowRight />
+                <ArrowRightIcon />
               </ToolbarButton>
               <ToolbarButton
                 onClick={() => {
@@ -412,7 +412,7 @@ const RowDragHandle = ({ dragRef }: { dragRef: React.Ref<HTMLButtonElement> }) =
       ref={dragRef}
       variant="outline"
     >
-      <GripVertical className="text-muted-foreground" />
+      <GripVerticalIcon className="text-muted-foreground" />
     </Button>
   )
 }
@@ -494,7 +494,7 @@ export const TableCellElement = ({
         >
           {!readOnly && (
             <>
-              <ResizeHandle {...rightProps} className="-top-2 -right-1 h-[calc(100%_+_8px)] w-2" data-col={colIndex} />
+              <ResizeHandle {...rightProps} className="-top-2 -right-1 h-[calc(100%+8px)] w-2" data-col={colIndex} />
               <ResizeHandle {...bottomProps} className="-bottom-1 h-2" />
               {!hiddenLeft && (
                 <ResizeHandle

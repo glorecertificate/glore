@@ -1,7 +1,7 @@
 'use client'
 
 import { useToggleButton, useToggleButtonState } from '@platejs/toggle/react'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 import { PlateElement, type PlateElementProps } from 'platejs/react'
 
 import { Button } from '@/components/ui/button'
@@ -22,7 +22,7 @@ export const ToggleElement = (props: PlateElementProps) => {
         variant="ghost"
         {...buttonProps}
       >
-        <ChevronRight
+        <ChevronRightIcon
           className={open ? 'rotate-90 transition-transform duration-75' : 'rotate-0 transition-transform duration-75'}
         />
       </Button>

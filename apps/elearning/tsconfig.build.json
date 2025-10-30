@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src", ".next/types/validator.ts"],
+  "include": ["src", "*.d.ts", ".next/types"],
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "types": []

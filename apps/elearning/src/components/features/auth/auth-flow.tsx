@@ -20,6 +20,7 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { useCookies } from '@/hooks/use-cookies'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useSearchParams } from '@/hooks/use-search-params'
 import { useTheme } from '@/hooks/use-theme'
@@ -46,11 +47,13 @@ const AuthActionButton = ({ children, ...props }: ButtonProps) => (
 )
 
 interface AuthFlowProps {
+  defaultEmail?: string
   defaultView: Enum<AuthView>
   token?: string
 }
 
-export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
+export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) => {
+  const cookies = useCookies()
   const searchParams = useSearchParams()
   const { resolvedTheme } = useTheme()
   const t = useTranslations('Auth')
@@ -64,7 +67,7 @@ export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
 
   const [view, setViewState] = useState<Enum<AuthView>>(defaultView)
   const [errored, setErrored] = useState(false)
-  const [email, setEmail] = useState<string | null>(null)
+  const [email, setEmailState] = useState<string | undefined>(defaultEmail)
 
   const title = useMemo(() => (view ? t(snakeToCamel(`${view}_title`)) : null), [t, view])
   const message = useMemo(() => {
@@ -84,12 +87,22 @@ export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
     [setTitleKey]
   )
 
+  const setEmail = useCallback(
+    (newEmail: string) => {
+      setEmailState(newEmail)
+      cookies.set('email', newEmail)
+    },
+    [cookies]
+  )
+
   const content = useMemo(() => {
     switch (view) {
       case 'login':
         return <LoginForm defaultEmail={email} setErrored={setErrored} setView={setView} />
       case 'password_request':
-        return <PasswordRequestForm setEmail={setEmail} setErrored={setErrored} setView={setView} />
+        return (
+          <PasswordRequestForm defaultEmail={email} setEmail={setEmail} setErrored={setErrored} setView={setView} />
+        )
       case 'email_sent':
         return <EmailClientsFooter />
       case 'password_reset':
@@ -109,7 +122,7 @@ export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
       default:
         return null
     }
-  }, [email, view, setView, t, token])
+  }, [email, setView, t, token, view, setEmail])
 
   useEffect(() => {
     if (searchParams.has('lang')) searchParams.delete('lang')
@@ -158,11 +171,16 @@ export const AuthFlow = ({ defaultView, token }: AuthFlowProps) => {
           markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
         }
       case 'password_request':
-      case 'password_reset':
         return {
           ...options,
           baseColor: colors.neutral,
           markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
+        }
+      case 'password_reset':
+        return {
+          ...options,
+          baseColor: colors.warning,
+          markerColor: [colors.warning],
         }
       case 'password_updated':
       case 'email_sent':

@@ -1,41 +1,43 @@
-import { Suspense, use } from 'react'
+import { redirect } from 'next/navigation'
+import { use } from 'react'
 
 import { AppHeader } from '@/components/layout/app-header'
 import { AppMain } from '@/components/layout/app-main'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { HeaderProvider } from '@/components/providers/header-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { getCurrentUser, listCourses } from '@/lib/data/server'
-import { redirect } from '@/lib/navigation'
+import { getCurrentUser, getSkillGroups, listCourses } from '@/lib/data/server'
 import { serverCookies } from '@/lib/storage/server'
 
 const resolveCoreLayoutData = async () => {
-  const { get, reset } = await serverCookies()
+  const cookies = await serverCookies()
   const user = await getCurrentUser()
 
   if (!user) {
-    reset()
+    cookies.reset()
     redirect('/login')
   }
 
-  const org = get('org')
-  const sidebarOpen = get('sidebar-open')
+  const org = cookies.get('org')
+  const sidebarOpen = cookies.get('sidebar-open')
 
   const courses = await listCourses()
+  const skillGroups = await getSkillGroups()
 
-  return { courses, org, sidebarOpen, user }
+  return { courses, skillGroups, org, sidebarOpen, user }
 }
 
 const CoreLayoutContent = ({ children }: LayoutProps<'/'>) => {
-  const { courses, org, sidebarOpen, user } = use(resolveCoreLayoutData())
+  const { courses, org, sidebarOpen, skillGroups, user } = use(resolveCoreLayoutData())
 
   const organization = org ? user.organizations.find(({ id }) => id === org) : user.organizations?.[0]
 
   return (
-    <SessionProvider courses={courses} organization={organization} user={user}>
+    <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
       <SidebarProvider defaultOpen={sidebarOpen}>
         <HeaderProvider>
           <RouteListener />
@@ -52,7 +54,7 @@ const CoreLayoutContent = ({ children }: LayoutProps<'/'>) => {
 }
 
 export default (props: LayoutProps<'/'>) => (
-  <Suspense fallback={null}>
+  <SuspenseLayout size="full">
     <CoreLayoutContent {...props} />
-  </Suspense>
+  </SuspenseLayout>
 )

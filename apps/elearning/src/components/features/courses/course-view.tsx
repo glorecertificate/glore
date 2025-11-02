@@ -80,34 +80,34 @@ export const CourseView = (props: { course?: Course; defaultMode: CourseMode }) 
 
   const language = useMemo(() => localeItems.find(item => item.value === courseLocale)!, [courseLocale, localeItems])
 
-  useHeader({
-    shadow: false,
-    header: (
-      <BreadcrumbList className="sm:gap-1">
-        <BreadcrumbLink href="/courses" title={t('backToAll')}>
-          {t('courses')}
-        </BreadcrumbLink>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem className={cn('gap-1.5', course.title ? 'text-foreground/80' : 'text-muted')}>
-          {course.icon && (
-            <DynamicIcon
-              className={cn(
-                'size-4 shrink-0 stroke-muted-foreground/80',
-                isPartial && 'stroke-warning',
-                isPublished && 'stroke-success'
-              )}
-              name={course.icon as IconName}
-              placeholder={Skeleton}
-              placeholderProps={{ className: 'size-4 shrink-0' }}
-            />
-          )}
-          {localize(course.title, courseLocale)}
-          {user.canEdit && isDraft && <Badge size="xs">{t('draft')}</Badge>}
-          {user.canEdit && isArchived && <Badge size="xs">{t('archived')}</Badge>}
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    ),
-  })
+  useHeader(
+    <BreadcrumbList className="sm:gap-1">
+      <BreadcrumbLink href="/courses" title={t('backToAll')}>
+        {t('courses')}
+      </BreadcrumbLink>
+      <BreadcrumbSeparator />
+      <BreadcrumbItem className={cn('gap-1.5', course.title ? 'text-foreground/80' : 'text-muted')}>
+        {course.icon && (
+          <DynamicIcon
+            className={cn(
+              'size-4 shrink-0 stroke-muted-foreground/80',
+              isPartial && 'stroke-warning',
+              isPublished && 'stroke-success'
+            )}
+            name={course.icon as IconName}
+            placeholder={Skeleton}
+            placeholderProps={{ className: 'size-4 shrink-0' }}
+          />
+        )}
+        {localize(course.title, courseLocale)}
+        {user.canEdit && isDraft && <Badge size="xs">{t('draft')}</Badge>}
+        {user.canEdit && isArchived && <Badge size="xs">{t('archived')}</Badge>}
+      </BreadcrumbItem>
+    </BreadcrumbList>,
+    {
+      shadow: false,
+    }
+  )
 
   const initialStep = useMemo(() => {
     if (!course.lessons || course.progress === 'completed') return 0

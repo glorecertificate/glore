@@ -100,3 +100,16 @@ export const submitAssessment = async (id: number, value: number): Promise<UserA
 
     return serialize(expectSingle(result))
   })
+
+export const reorderCourses = async (courses: Course[]): Promise<void> =>
+  run(async database => {
+    const updates = courses.map(({ id, slug }, i) => ({ id, slug, sort_order: i + 1 }))
+    const { error } = await database.from('courses').upsert(updates)
+    if (error) throw error
+  })
+
+export const updateCourseIcon = async (id: number, icon: string | null): Promise<Course> =>
+  run(async database => {
+    const result = await database.from('courses').update({ icon }).eq('id', id).select(courseQuery).single()
+    return parseCourse(expectSingle(result))
+  })

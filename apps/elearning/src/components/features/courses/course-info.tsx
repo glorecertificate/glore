@@ -13,7 +13,6 @@ import { Textarea } from '@/components/ui/textarea'
 import { useCourse } from '@/hooks/use-course'
 import { useIntl } from '@/hooks/use-intl'
 import { type Course } from '@/lib/data'
-
 export interface CourseInfoData {
   type: Enums<'course_type'>
   title: string
@@ -68,6 +67,7 @@ export const CourseInfo = () => {
 
         {isSoftSkill && (
           <AlertCallout
+            className="border-warning/20 bg-warning/5"
             description={t('softSkillNotice')}
             icon={MessageCircleWarningIcon}
             title={t('softSkillNoticeTitle')}

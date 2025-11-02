@@ -43,10 +43,9 @@ export const LOCALE_ITEMS: LocaleItem[] = Object.entries(config.locales).map(([v
 export const INTL_PLACEHOLDER = LOCALES.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {} as IntlRecord)
 
 export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) => {
-  if (!record) return
-  const keys = Object.keys(record)
-  if (keys.includes(locale)) return record[locale]
-  return fallback ? record[fallback] : undefined
+  if (!record) return ''
+  if (Object.keys(record).includes(locale)) return record[locale] as string
+  return fallback && Object.keys(record).includes(fallback) ? (record[fallback] as string) : ''
 }
 
 export const localizeDate = (

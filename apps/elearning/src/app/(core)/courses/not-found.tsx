@@ -10,7 +10,7 @@ import { useHeader } from '@/hooks/use-header'
 export default () => {
   const t = useTranslations('Courses')
 
-  useHeader({ shadow: false })
+  useHeader(null)
 
   return (
     <ErrorView message={t('notFoundMessage')} title={t('notFound')} type="not-found">

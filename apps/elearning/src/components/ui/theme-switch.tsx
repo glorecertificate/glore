@@ -1,146 +1,124 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { type Icon } from '@/components/icons/types'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Tooltip, TooltipContent, type TooltipContentProps, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
-import { type IntlRecord } from '@/lib/intl'
 import { type Theme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
-
-const THEMES = [
-  {
-    name: 'light',
-    icon: SunIcon,
-    label: {
-      en: 'Light',
-      es: 'Claro',
-      it: 'Chiaro',
-    },
-  },
-  {
-    name: 'dark',
-    icon: MoonIcon,
-    label: {
-      en: 'Dark',
-      es: 'Oscuro',
-      it: 'Scuro',
-    },
-  },
-  {
-    name: 'system',
-    icon: MonitorIcon,
-    label: {
-      en: 'System',
-      es: 'Sistema',
-      it: 'Sistema',
-    },
-  },
-] as const satisfies {
-  name: Theme
-  icon: Icon
-  label: IntlRecord
-}[]
 
 export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {
   active: boolean
   icon: Icon
+  isFirst: boolean
+  isLast: boolean
+  label: string
   title: string
   tooltip?: boolean | TooltipContentProps
 }
 
-const ThemeSwitchButtonBase = ({
+export interface ThemeSwitchProps extends React.HTMLAttributes<HTMLDivElement> {
+  defaultTheme?: Theme
+  tooltip?: boolean | TooltipContentProps
+}
+
+export const ThemeSwitchButton = ({
   active,
   children,
   className,
   icon: Icon,
+  isFirst,
+  isLast,
+  label,
   title,
+  tooltip,
   ...props
-}: ThemeSwitchButtonProps) => (
-  <Button
-    className={cn(
-      'inline-flex size-[26px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-1.5 font-medium text-sm transition-all',
-      active && 'pointer-events-none border bg-accent dark:bg-accent',
-      className
-    )}
-    data-orientation="horizontal"
-    role="tab"
-    title={title}
-    variant="ghost"
-    {...props}
-  >
-    <div className="relative z-10 flex items-center gap-1.5">
-      <Icon className={cn('size-3.5', active && 'text-foreground')} />
-      <span className="sr-only">{children}</span>
-    </div>
-  </Button>
-)
+}: ThemeSwitchButtonProps) => {
+  const tooltipProps = typeof tooltip === 'object' ? tooltip : {}
 
-export const ThemeSwitchButton = ({ title, tooltip, ...props }: ThemeSwitchButtonProps) => {
-  const tooltipProps = useMemo(() => (typeof tooltip === 'object' ? tooltip : {}), [tooltip])
+  const content = (
+    <Button
+      className={cn(
+        'inline-flex size-[26px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-transparent px-1.5 font-medium text-sm transition-all',
+        active && 'cursor-default border-border bg-accent/80 text-accent-foreground dark:bg-accent/50',
+        isFirst && '-ml-px',
+        isLast && '-mr-px',
+        className
+      )}
+      data-orientation="horizontal"
+      role="tab"
+      title={active ? undefined : title}
+      variant="ghost"
+      {...props}
+    >
+      <div className="relative z-10 flex items-center gap-1.5">
+        <Icon className={cn('size-3.5', active && 'text-foreground')} />
+        <span className="sr-only">{children}</span>
+      </div>
+    </Button>
+  )
 
-  if (!tooltip) return <ThemeSwitchButtonBase title={title} {...props} />
+  if (!tooltip) return content
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <ThemeSwitchButtonBase title={title} {...props} />
-      </TooltipTrigger>
-      <TooltipContent {...tooltipProps}>{title}</TooltipContent>
+      <TooltipTrigger asChild>{content}</TooltipTrigger>
+      <TooltipContent {...tooltipProps}>{label}</TooltipContent>
     </Tooltip>
   )
 }
 
-export interface ThemeSwitchProps<L extends keyof (typeof THEMES)[0]['label'] = 'en'>
-  extends React.HTMLAttributes<HTMLDivElement> {
-  locale?: L
-  themes?: {
-    name: Theme
-    icon: Icon
-    label: string | Record<L, string>
-  }[]
-  tooltip?: boolean | TooltipContentProps
-}
-
-export const ThemeSwitch = ({ className, locale = 'en', themes, tooltip, ...props }: ThemeSwitchProps) => {
-  const { setTheme, theme } = useTheme()
+export const ThemeSwitch = ({ className, defaultTheme, tooltip, ...props }: ThemeSwitchProps) => {
   const mounted = useMounted()
+  const { setTheme, theme } = useTheme()
+  const t = useTranslations('Theme')
 
-  const items = useMemo(
-    () =>
-      (themes ?? THEMES).map(({ label, ...theme }) => ({
-        ...theme,
-        label: typeof label === 'string' ? label : (label[locale] ?? label.en),
-      })),
-    [locale, themes]
-  )
+  const items = [
+    {
+      name: 'light',
+      icon: SunIcon,
+      label: t('light'),
+      title: t('lightTitle'),
+    },
+    {
+      name: 'dark',
+      icon: MoonIcon,
+      label: t('dark'),
+      title: t('darkTitle'),
+    },
+    {
+      name: 'system',
+      icon: MonitorIcon,
+      label: t('system'),
+      title: t('systemTitle'),
+    },
+  ] as const
+
+  const activeTheme = mounted ? theme : (defaultTheme ?? 'system')
 
   return (
     <div
-      className={cn('flex h-fit items-center gap-0.5 overflow-hidden rounded-full border p-0 outline-0', className)}
+      className={cn('flex h-fit items-center gap-0 rounded-full border p-0 outline-0', className)}
       role="tablist"
-      tabIndex={0}
       {...props}
     >
-      {mounted
-        ? items.map(({ icon, label, name }) => (
-            <ThemeSwitchButton
-              active={theme === name}
-              icon={icon}
-              key={name}
-              onClick={() => setTheme(name)}
-              title={label}
-              tooltip={tooltip}
-            >
-              {name.toLowerCase()}
-            </ThemeSwitchButton>
-          ))
-        : items.map(({ icon, name }) => <ThemeSwitchButton active={false} icon={icon} key={name} title="" />)}
+      {items.map(({ name, ...item }, i) => (
+        <ThemeSwitchButton
+          active={activeTheme === name}
+          isFirst={i === 0}
+          isLast={i === items.length - 1}
+          key={name}
+          onClick={() => setTheme(name)}
+          tooltip={tooltip}
+          {...item}
+        >
+          {name.toLowerCase()}
+        </ThemeSwitchButton>
+      ))}
     </div>
   )
 }

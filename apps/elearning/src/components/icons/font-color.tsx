@@ -1,6 +1,6 @@
 import { type IconProps } from '@/components/icons/types'
 
-export const FontColor = ({ color, ...props }: IconProps) => (
+export const FontColorIcon = ({ color, ...props }: IconProps) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -19,5 +19,3 @@ export const FontColor = ({ color, ...props }: IconProps) => (
     <path d="M8 12h8" />
   </svg>
 )
-
-export const FontColorIcon = FontColor

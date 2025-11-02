@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-export const ServerError = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
+export const ErrorIllustration = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
   <svg
     className={cn('fill-destructive', className)}
     preserveAspectRatio="xMidYMid meet"
@@ -24,5 +24,3 @@ export const ServerError = ({ className, ...props }: React.SVGProps<SVGSVGElemen
     />
   </svg>
 )
-
-export const ServerErrorGraphic = ServerError

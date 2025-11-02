@@ -34,9 +34,7 @@ export const UserSettings = () => {
   const { user, setUser } = useSession()
   const { localeItems } = useIntl()
 
-  useHeader({
-    shadow: false,
-  })
+  useHeader(null, { shadow: false })
 
   const formSchema = useMemo(
     () =>
@@ -152,6 +150,14 @@ export const UserSettings = () => {
   const countries = useMemo(
     () => ['uk', 'us', 'it', 'fr', 'es', 'de', 'pt', 'cn', 'jp', 'ru', 'ar', 'br', 'ca', 'au', 'in', 'za', 'mx'],
     []
+  )
+
+  const translateCountry = useCallback(
+    (country: string) => {
+      const key = `Countries.${country}` as Any
+      return tGlobal.has?.(key) ? tGlobal(key) : country.toUpperCase()
+    },
+    [tGlobal]
   )
 
   return (
@@ -352,7 +358,7 @@ export const UserSettings = () => {
                       <SelectContent>
                         {countries.map(country => (
                           <SelectItem key={country} value={country}>
-                            {tGlobal(`Countries.${country}` as Any)}
+                            {translateCountry(country)}
                           </SelectItem>
                         ))}
                       </SelectContent>

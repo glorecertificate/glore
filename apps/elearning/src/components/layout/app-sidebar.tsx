@@ -23,13 +23,13 @@ import {
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { sleep } from '@glore/utils/sleep'
 import { titleize } from '@glore/utils/string'
 
 import { DashboardIcon } from '@/components/icons/dashboard'
 import { type Icon } from '@/components/icons/types'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -316,6 +316,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
   const tCommon = useTranslations('Common')
   const t = useTranslations('Navigation')
 
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const onLinkClick = useCallback(() => {
@@ -324,27 +325,23 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
     }
   }, [openMobile, setOpenMobile])
 
-  const onLogoutClick = useCallback(
-    async (e: React.MouseEvent) => {
-      e.stopPropagation()
-      e.preventDefault()
-      if (isLoggingOut) return
+  const onLogoutClick = useCallback(async () => {
+    setLogoutDialogOpen(true)
 
-      setIsLoggingOut(true)
-      onLinkClick()
+    setIsLoggingOut(true)
+    onLinkClick()
 
-      try {
-        await logout()
-      } catch {
-        toast.error(t('logoutFailed'))
-        setIsLoggingOut(false)
-        return
-      }
+    try {
+      await logout()
+    } catch {
+      toast.error(t('logoutFailed'))
+      setIsLoggingOut(false)
+      return
+    }
 
-      redirect('/login')
-    },
-    [isLoggingOut, onLinkClick, t]
-  )
+    await sleep(500)
+    redirect('/login')
+  }, [onLinkClick, t])
 
   return (
     <SidebarMenu>
@@ -464,7 +461,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">
-              <AlertDialog>
+              <AlertDialog onOpenChange={setLogoutDialogOpen} open={logoutDialogOpen}>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem onSelect={e => e.preventDefault()} variant="destructive">
                     <LogOutIcon />
@@ -473,19 +470,19 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>{'Sure?'}</AlertDialogTitle>
-                    <AlertDialogDescription>{'Your session blabla'}</AlertDialogDescription>
+                    <AlertDialogTitle>{t('logoutConfirmTitle')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('logoutConfirmMessage')}</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>{'cancel'}</AlertDialogCancel>
-                    <AlertDialogAction
+                    <AlertDialogCancel disabled={isLoggingOut}>{t('logoutCancel')}</AlertDialogCancel>
+                    <Button
                       loading={isLoggingOut}
-                      loadingText="logging you out.."
+                      loadingText={t('logoutLoading')}
                       onClick={onLogoutClick}
                       variant="destructive"
                     >
-                      {t('logoutFromApp', { app: APP_NAME })}
-                    </AlertDialogAction>
+                      {t('logoutConfirm', { app: APP_NAME })}
+                    </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

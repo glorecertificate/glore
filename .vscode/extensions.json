@@ -2,6 +2,6 @@
   "recommendations": [
     "biomejs.biome",
     "bradlc.vscode-tailwindcss",
-    "loccy.loccy"
+    "lokalise.i18n-ally"
   ]
 }

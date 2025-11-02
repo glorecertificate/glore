@@ -1,7 +1,7 @@
 import { type IconProps } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
-export const Dashboard = ({
+export const DashboardIcon = ({
   colored,
   ...props
 }: IconProps<{
@@ -26,5 +26,3 @@ export const Dashboard = ({
     />
   </svg>
 )
-
-export const DashboardIcon = Dashboard

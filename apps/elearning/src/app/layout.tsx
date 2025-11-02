@@ -1,7 +1,6 @@
 import '@/app/globals.css'
 
 import Script from 'next/script'
-import { Suspense, use } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -10,6 +9,7 @@ import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import metadata from '@config/metadata'
 import theme from '@config/theme'
 
+import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { IntlProvider } from '@/components/providers/intl-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
@@ -19,14 +19,10 @@ import { publicAsset } from '@/lib/storage'
 
 export const generateMetadata = intlMetadata()
 
-const resolveRootLayoutData = async () => {
+export default async ({ children }: LayoutProps<'/'>) => {
   const locale = await getLocale()
-  const [messages, t] = await Promise.all([getMessages({ locale }), getTranslations('Metadata')])
-  return { locale, messages, t }
-}
-
-const RootLayoutContent = ({ children }: LayoutProps<'/'>) => {
-  const { locale, messages, t } = use(resolveRootLayoutData())
+  const messages = await getMessages({ locale })
+  const t = await getTranslations('Metadata')
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -38,27 +34,23 @@ const RootLayoutContent = ({ children }: LayoutProps<'/'>) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body suppressHydrationWarning>
-        <IntlProvider locale={locale} messages={messages}>
-          <ThemeProvider themes={Object.keys(theme.modes)}>
-            <ProgressBarProvider>
-              {children}
-              <Toaster />
-              <Analytics />
-              <SpeedInsights />
-            </ProgressBarProvider>
-          </ThemeProvider>
-        </IntlProvider>
-        <Script id="jsonLd" type="application/ld+json">
-          {JSON.stringify(jsonLd)}
-        </Script>
+      <body>
+        <SuspenseLayout size="full">
+          <IntlProvider locale={locale} messages={messages}>
+            <ThemeProvider themes={Object.keys(theme.modes)}>
+              <ProgressBarProvider>
+                {children}
+                <Toaster />
+                <Analytics />
+                <SpeedInsights />
+              </ProgressBarProvider>
+            </ThemeProvider>
+          </IntlProvider>
+          <Script id="jsonLd" type="application/ld+json">
+            {JSON.stringify(jsonLd)}
+          </Script>
+        </SuspenseLayout>
       </body>
     </html>
   )
 }
-
-export default (props: LayoutProps<'/'>) => (
-  <Suspense fallback={null}>
-    <RootLayoutContent {...props} />
-  </Suspense>
-)

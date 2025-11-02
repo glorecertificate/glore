@@ -15,15 +15,14 @@ import { EmailClientsFooter } from '@/components/features/auth/email-clients-foo
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
-import { Glore } from '@/components/icons/glore'
+import { GloreIcon } from '@/components/icons/glore'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
-import { ThemeSwitch } from '@/components/ui/theme-switch'
-import { useCookies } from '@/hooks/use-cookies'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useSearchParams } from '@/hooks/use-search-params'
 import { useTheme } from '@/hooks/use-theme'
+import { EMAIL_REGEX } from '@/lib/constants'
 import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -47,13 +46,12 @@ const AuthActionButton = ({ children, ...props }: ButtonProps) => (
 )
 
 interface AuthFlowProps {
-  defaultEmail?: string
+  defaultUsername?: string
   defaultView: Enum<AuthView>
   token?: string
 }
 
-export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) => {
-  const cookies = useCookies()
+export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps) => {
   const searchParams = useSearchParams()
   const { resolvedTheme } = useTheme()
   const t = useTranslations('Auth')
@@ -65,48 +63,40 @@ export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) =>
     ogDescription: true,
   })
 
-  const [view, setViewState] = useState<Enum<AuthView>>(defaultView)
+  const [view, setView] = useState(defaultView)
   const [errored, setErrored] = useState(false)
-  const [email, setEmailState] = useState<string | undefined>(defaultEmail)
+  const [username, setUsername] = useState(defaultUsername)
 
-  const title = useMemo(() => (view ? t(snakeToCamel(`${view}_title`)) : null), [t, view])
+  const title = view ? t(snakeToCamel(`${view}_title`)) : null
+
   const message = useMemo(() => {
     if (!view) return null
-    if (view === 'email_sent')
-      return t.rich('emailSentMessage', {
-        email: () => <span className="font-semibold">{email}</span>,
-      })
-    return t(snakeToCamel(`${view}_message`))
-  }, [email, t, view])
-
-  const setView = useCallback(
-    (newView: Enum<AuthView>) => {
-      setViewState(newView)
-      setTitleKey(snakeToCamel(`${newView}_meta_title`))
-    },
-    [setTitleKey]
-  )
-
-  const setEmail = useCallback(
-    (newEmail: string) => {
-      setEmailState(newEmail)
-      cookies.set('email', newEmail)
-    },
-    [cookies]
-  )
+    if (view !== 'email_sent') return t(snakeToCamel(`${view}_message`))
+    return t.rich('emailSentMessage', {
+      email: () =>
+        username && EMAIL_REGEX.test(username) ? <span className="font-semibold">{` ${username} `}</span> : null,
+    })
+  }, [username, t, view])
 
   const content = useMemo(() => {
     switch (view) {
       case 'login':
-        return <LoginForm defaultEmail={email} setErrored={setErrored} setView={setView} />
+        return (
+          <LoginForm defaultUsername={username} setErrored={setErrored} setUsername={setUsername} setView={setView} />
+        )
       case 'password_request':
         return (
-          <PasswordRequestForm defaultEmail={email} setEmail={setEmail} setErrored={setErrored} setView={setView} />
+          <PasswordRequestForm
+            defaultUsername={username}
+            setErrored={setErrored}
+            setUsername={setUsername}
+            setView={setView}
+          />
         )
       case 'email_sent':
         return <EmailClientsFooter />
       case 'password_reset':
-        return <PasswordResetForm setEmail={setEmail} setErrored={setErrored} setView={setView} token={token} />
+        return <PasswordResetForm setErrored={setErrored} setView={setView} token={token} />
       case 'password_updated':
         return <AuthActionButton onClick={() => setView('login')}>{t('passwordUpdatedAction')}</AuthActionButton>
       case 'invalid_token':
@@ -122,12 +112,18 @@ export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) =>
       default:
         return null
     }
-  }, [email, setView, t, token, view, setEmail])
+  }, [t, token, username, view])
+
+  // biome-ignore lint: exhaustive-deps
+  useEffect(() => {
+    if (defaultView === 'invalid_token' && searchParams.has('resetToken')) {
+      searchParams.delete('resetToken')
+    }
+  }, [])
 
   useEffect(() => {
-    if (searchParams.has('lang')) searchParams.delete('lang')
-    if (defaultView === 'invalid_token' && searchParams.has('resetToken')) searchParams.delete('resetToken')
-  }, [defaultView, searchParams])
+    setTitleKey(snakeToCamel(`${view}_meta_title`))
+  }, [setTitleKey, view])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
@@ -195,10 +191,10 @@ export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) =>
   }, [errored, resolvedTheme, view])
 
   return (
-    <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
+    <>
       <div className="flex justify-between gap-2">
         <div title={view === 'login' ? undefined : t('goToLogin')}>
-          <Glore
+          <GloreIcon
             className={cn(
               'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
               view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
@@ -251,9 +247,6 @@ export const AuthFlow = ({ defaultView, defaultEmail, token }: AuthFlowProps) =>
           </div>
         </div>
       </div>
-      <div className="flex justify-end">
-        <ThemeSwitch className="text-sm" tooltip={{ arrow: false, side: 'top' }} />
-      </div>
-    </div>
+    </>
   )
 }

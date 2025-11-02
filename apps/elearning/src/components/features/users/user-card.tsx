@@ -17,23 +17,41 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const t = useTranslations()
   const format = useFormatter()
 
+  const resolveCountryLabel = useCallback(
+    (country: string | null | undefined) => {
+      if (!country) return ''
+      const key = `Countries.${country}` as Any
+      return t.has?.(key) ? t(key) : country.toUpperCase()
+    },
+    [t]
+  )
+
+  const resolveLanguageLabel = useCallback(
+    (language: string) => {
+      const key = `Languages.${language}` as Any
+      return t.has?.(key) ? t(key) : language.toUpperCase()
+    },
+    [t]
+  )
+
   const location = useMemo(() => {
     if (!(user.city || user.country)) return
     const locations = []
     if (user.city) locations.push(user.city)
-    if (user.country) locations.push(t(`Countries.${user.country}` as Any))
+    const countryLabel = resolveCountryLabel(user.country)
+    if (countryLabel) locations.push(countryLabel)
     return locations.filter(Boolean).join(', ')
-  }, [t, user.city, user.country])
+  }, [resolveCountryLabel, user.city, user.country])
 
   const locationUrl = useMemo(() => (location ? mapsUrl(location) : undefined), [location])
 
   const languages = useMemo(() => {
     if (!user.languages?.length) return
-    const langs = user.languages.map((lang: string) => t(`Languages.${lang}` as Any))
+    const langs = user.languages.map((lang: string) => resolveLanguageLabel(lang))
     const list = locale === 'en' ? langs : langs.map((lang: string) => lang.toLowerCase())
     const formatted = String(format.list(list))
     return t('User.speaks', { languages: formatted })
-  }, [format, locale, t, user.languages])
+  }, [format, locale, resolveLanguageLabel, t, user.languages])
 
   const contactTitle = useMemo(() => {
     if (!user.firstName) return

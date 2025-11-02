@@ -8,7 +8,7 @@ import { decodeAsync } from '@glore/utils/encode'
 
 import { getProxyDatabase } from '@/lib/data/server'
 import { AuthRoute } from '@/lib/navigation'
-import { cookies } from '@/lib/storage'
+import { cookieStore } from '@/lib/storage'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -40,7 +40,7 @@ export const proxy: NextProxy = async request => {
 
 const verifyRequest = async (request: NextRequest) => {
   try {
-    const userCookie = request.cookies.get(`${cookies.config.prefix ?? ''}user`)
+    const userCookie = request.cookies.get(`${cookieStore.config.prefix ?? ''}user`)
     const user = JSON.parse(await decodeAsync(userCookie?.value ?? 'null'))
     if (!user) throw Error
     return true

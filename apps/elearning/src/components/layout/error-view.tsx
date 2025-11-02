@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl'
 
 import metadata from '@config/metadata'
 
-import { NotFoundGraphic } from '@/components/graphics/not-found'
-import { ServerErrorGraphic } from '@/components/graphics/server-error'
+import { ErrorIllustration } from '@/components/illustrations/error'
+import { NotFoundIllustration } from '@/components/illustrations/not-found'
 import { useDevice } from '@/hooks/use-device'
 import { cn } from '@/lib/utils'
 
@@ -37,9 +37,9 @@ export const ErrorView = ({
   const ErrorImage = useMemo(
     () =>
       type === 'not-found' ? (
-        <NotFoundGraphic className="mb-8" width={isMobile ? 320 : 360} />
+        <NotFoundIllustration className="mb-8" width={isMobile ? 320 : 360} />
       ) : (
-        <ServerErrorGraphic width={isMobile ? 160 : 180} />
+        <ErrorIllustration width={isMobile ? 160 : 180} />
       ),
     [isMobile, type]
   )

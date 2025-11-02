@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -31,20 +31,23 @@ import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const LoginForm = ({
-  defaultEmail,
+  defaultUsername,
   setErrored,
+  setUsername,
   setView,
 }: {
-  defaultEmail?: string
+  defaultUsername?: string
   setErrored: (hasErrors: boolean) => void
+  setUsername: (username?: string) => void
   setView: (view: Enum<AuthView>) => void
 }) => {
   const t = useTranslations('Auth')
+  const [loading, setLoading] = useState(false)
 
   const formSchema = useMemo(
     () =>
       z.object({
-        user: z
+        username: z
           .string()
           .nonempty(t('userRequired'))
           .min(5, {
@@ -63,24 +66,27 @@ export const LoginForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user: defaultEmail ?? '',
+      username: defaultUsername ?? '',
       password: '',
     },
   })
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      const username = schema.user.trim()
+      setLoading(true)
+
+      const username = schema.username.trim()
       const password = schema.password.trim()
       let email: string
 
       try {
         email = await findUserEmail(username)
       } catch (e) {
+        setLoading(false)
         const error = e as DatabaseError
         if (error.code === 'PGRST116') {
-          form.setError('user', { message: t('userNotFound') })
-          return form.setFocus('user')
+          form.setError('username', { message: t('userNotFound') })
+          return form.setFocus('username')
         }
         console.error(e)
         return toast.error(t('networkError'))
@@ -90,10 +96,10 @@ export const LoginForm = ({
         if (!PASSWORD_REGEX.test(password)) throw new DatabaseError({ code: '28P01' })
         await login({ email, password })
       } catch (e) {
+        setLoading(false)
         const error = e as DatabaseError
         if (error.code === '28P01') {
-          form.setError('password', { message: t('passwordInvalid') })
-          form.setFocus('password')
+          form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
           return
         }
         console.error(e)
@@ -105,11 +111,23 @@ export const LoginForm = ({
     [form, t]
   )
 
-  const hasErrors = Object.keys(form.formState.errors).length > 0
+  const setPasswordReset = useCallback(() => {
+    setUsername(form.getValues('username'))
+    setView('password_request')
+  }, [form, setUsername, setView])
 
+  const hasErrors = Object.keys(form.formState.errors).length > 0
+  const passwordError = form.formState.errors.password
+
+  // biome-ignore lint: exhaustive-deps
   useEffect(() => {
     setErrored(hasErrors)
-  }, [hasErrors, setErrored])
+  }, [hasErrors])
+
+  // biome-ignore lint: exhaustive-deps
+  useEffect(() => {
+    return defaultUsername ? form.setFocus('password') : form.setFocus('username')
+  }, [])
 
   return (
     <>
@@ -118,14 +136,14 @@ export const LoginForm = ({
           <div className="grid gap-3">
             <FormField
               control={form.control}
-              name="user"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
-                      autoFocus={!defaultEmail}
+                      autoFocus={!defaultUsername}
                       defaultOpen
-                      disabled={form.formState.isSubmitting}
+                      disabled={loading}
                       placeholder={t('userLabel')}
                       variant="floating"
                       {...field}
@@ -142,9 +160,9 @@ export const LoginForm = ({
                 <FormItem className="gap-1">
                   <div className="flex w-full justify-end">
                     <Button
-                      className={cn('text-foreground/95', form.formState.isSubmitting && 'pointer-events-none')}
-                      disabled={form.formState.isSubmitting}
-                      onClick={() => setView('password_request')}
+                      className={cn('text-foreground/95', loading && 'pointer-events-none')}
+                      disabled={loading}
+                      onClick={setPasswordReset}
                       size="text"
                       type="button"
                       variant="link"
@@ -154,8 +172,8 @@ export const LoginForm = ({
                   </div>
                   <FormControl>
                     <PasswordInput
-                      autoFocus={!!defaultEmail}
-                      disabled={form.formState.isSubmitting}
+                      autoFocus={!!defaultUsername}
+                      disabled={loading}
                       placeholder={t('passwordLabel')}
                       srHide={t('hidePassword')}
                       srShow={t('showPassword')}
@@ -163,7 +181,11 @@ export const LoginForm = ({
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  {passwordError && (
+                    <p className="text-destructive text-sm leading-[normal]">
+                      {passwordError.type === 'validate' ? t('passwordInvalid') : passwordError.message}
+                    </p>
+                  )}
                 </FormItem>
               )}
             />
@@ -173,11 +195,11 @@ export const LoginForm = ({
             disabled={defaultFormDisabled(form)}
             disabledCursor
             disabledTitle={t('insertCredentials')}
-            loading={form.formState.isSubmitting}
+            loading={loading}
             type="submit"
             variant="brand"
           >
-            {form.formState.isSubmitting ? t('loggingIn') : t('login')}
+            {loading ? t('loggingIn') : t('login')}
           </Button>
         </form>
       </Form>
@@ -187,8 +209,8 @@ export const LoginForm = ({
             link: content => (
               <DialogTrigger asChild>
                 <Button
-                  className={cn('text-foreground/95', form.formState.isSubmitting && 'pointer-events-none')}
-                  disabled={form.formState.isSubmitting}
+                  className={cn('text-foreground/95', loading && 'pointer-events-none')}
+                  disabled={loading}
                   size="text"
                   type="button"
                   variant="link"

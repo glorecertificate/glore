@@ -2,12 +2,11 @@
 
 import { useCallback, useMemo } from 'react'
 
-import { EditIcon } from 'lucide-react'
+import { EditIcon, TextSearchIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ArcherContainer, ArcherElement } from 'react-archer'
 import { type RelationType } from 'react-archer/lib/types'
 
-import { InformationIcon } from '@/components/icons/information'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCourse } from '@/hooks/use-course'
@@ -101,7 +100,7 @@ export const CourseSidebar = () => {
               infoVisible && 'border-brand bg-brand text-brand-foreground'
             )}
           >
-            <InformationIcon className={cn('size-6 text-muted-foreground', infoVisible && 'text-white')} />
+            <TextSearchIcon className={cn('size-4 text-muted-foreground', infoVisible && 'text-white')} />
           </div>
           <div className={cn('flex-1')}>
             <span className="inline-block font-medium text-sm">{t('info')}</span>

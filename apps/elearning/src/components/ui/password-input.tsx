@@ -31,12 +31,12 @@ export const PasswordInput = ({
     <div className="relative">
       <Input className={cn('pr-10', className)} disabled={disabled} type={inputType} {...props} />
       <Button
-        className="absolute top-0 right-0 h-full py-2 has-[>svg]:px-3"
+        className="-translate-y-1/2 absolute top-1/2 right-1.5 size-6 rounded-full p-0 has-[>svg]:px-3"
         disabled={disabled}
         onClick={togglePassword}
         size="sm"
         type="button"
-        variant="transparent"
+        variant="ghost"
       >
         {showPassword && !disabled ? (
           <EyeIcon aria-hidden="true" className="size-4.5 stroke-foreground/80" />

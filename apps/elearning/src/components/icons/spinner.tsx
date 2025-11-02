@@ -3,29 +3,11 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { type IconProps } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
-export const loaderVariants = cva('animate-spin stroke-2 stroke-current', {
-  variants: {
-    colored: {
-      true: '',
-      false: 'text-foreground/50',
-    },
-    speed: {
-      slow: 'duration-400',
-      normal: 'duration-250',
-      fast: 'duration-200',
-    },
-    defaultVariants: {
-      colored: true,
-      speed: 'normal',
-    },
-  },
-})
+export type SpinnerProps = IconProps<VariantProps<typeof spinnerVariants>>
 
-export type LoaderProps = IconProps<VariantProps<typeof loaderVariants>>
-
-export const Loader = ({ className, colored, ...props }: LoaderProps) => (
+export const Spinner = ({ className, colored, ...props }: SpinnerProps) => (
   <svg
-    className={cn(loaderVariants({ colored, ...props }), className)}
+    className={cn(spinnerVariants({ colored, ...props }), className)}
     strokeLinecap="round"
     strokeLinejoin="round"
     viewBox="0 0 24 24"
@@ -43,4 +25,20 @@ export const Loader = ({ className, colored, ...props }: LoaderProps) => (
   </svg>
 )
 
-export const LoaderIcon = Loader
+export const spinnerVariants = cva('animate-spin stroke-2 stroke-current', {
+  variants: {
+    colored: {
+      true: '',
+      false: 'text-foreground/50',
+    },
+    speed: {
+      slow: 'duration-400',
+      normal: 'duration-250',
+      fast: 'duration-200',
+    },
+    defaultVariants: {
+      colored: true,
+      speed: 'normal',
+    },
+  },
+})

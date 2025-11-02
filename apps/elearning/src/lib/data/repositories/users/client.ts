@@ -1,4 +1,4 @@
-import { cookies } from '@/lib/storage'
+import { cookieStore } from '@/lib/storage'
 import { type DatabaseClient, DatabaseError } from '../../supabase'
 import { createDatabase } from '../../supabase/client'
 import { createRepositoryRunner, expectSingle } from '../utils'
@@ -24,7 +24,7 @@ export const getUser = async (): Promise<User> =>
 
 export const getCurrentUser = async (): Promise<CurrentUser> =>
   run(async database => {
-    const cached = cookies.getEncoded('user') as CurrentUser | undefined
+    const cached = cookieStore.getEncoded('user') as CurrentUser | undefined
     if (cached) return cached
 
     const { data, error } = await database.auth.getUser()
@@ -76,7 +76,7 @@ export const updateUser = async (
   }
 
   const user: CurrentUser = await response.json()
-  cookies.setEncoded('user', user)
+  cookieStore.setEncoded('user', user)
 
   return user
 }

@@ -8,7 +8,7 @@ import { type Database } from 'supabase/types'
 
 import { noop } from '@glore/utils/noop'
 
-import { type DatabaseClient, type PublicSchema } from './types'
+import { type DatabaseClient } from './types'
 
 /**
  * Creates a server-side database client scoped to the public schema.
@@ -16,7 +16,7 @@ import { type DatabaseClient, type PublicSchema } from './types'
 export const getDatabase = async (callback = noop): Promise<DatabaseClient> => {
   const { getAll, set } = await cookies()
 
-  return createServerClient<Database, 'public', PublicSchema>(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
+  return createServerClient<Database, 'public'>(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
     cookies: {
       getAll,
       setAll: cookies => {
@@ -59,21 +59,17 @@ export const getProxyDatabase = async (request: NextRequest, callback = noop): P
 export const getServiceDatabase = async (callback = noop): Promise<DatabaseClient> => {
   const { getAll, set } = await cookies()
 
-  return createServerClient<Database, 'public', PublicSchema>(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY,
-    {
-      cookies: {
-        getAll,
-        setAll: cookies => {
-          try {
-            for (const { name, options, value } of cookies) {
-              set(name, value, options)
-            }
-          } catch {}
-          callback()
-        },
+  return createServerClient<Database, 'public'>(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
+    cookies: {
+      getAll,
+      setAll: cookies => {
+        try {
+          for (const { name, options, value } of cookies) {
+            set(name, value, options)
+          }
+        } catch {}
+        callback()
       },
-    }
-  )
+    },
+  })
 }

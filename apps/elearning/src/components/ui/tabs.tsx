@@ -17,10 +17,7 @@ export interface TabsListProps extends React.ComponentProps<typeof List> {}
 
 export const TabsList = ({ className, ...props }: TabsListProps) => (
   <List
-    className={cn(
-      'inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5 text-muted-foreground',
-      className
-    )}
+    className={cn('inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5', className)}
     data-slot="tabs-list"
     {...props}
   />
@@ -50,7 +47,7 @@ export const TabsTrigger = ({
   return (
     <Trigger className={cn(tabsTrigger({ size, variant }), className)} data-slot="tabs-trigger" {...props}>
       {showCount ? (
-        <span className="flex items-center gap-1" {...badgeRest}>
+        <span className="flex items-center gap-1 leading-0" {...badgeRest}>
           {children}
           <span className={cn(tabsTriggerBadge({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
         </span>
@@ -63,15 +60,12 @@ export const TabsTrigger = ({
 
 export const tabsTrigger = cva(
   `
-    group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1
-    text-sm whitespace-nowrap text-foreground select-none
-    focus-visible:border-ring focus-visible:ring-[3px] focus-visible:outline-1
+    group/tabs-trigger
+    leading-0 inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm whitespace-nowrap select-none
+    focus-visible:border-ring focus-visible:ring-2 focus-visible:outline-1
     disabled:pointer-events-none disabled:opacity-50
-    data-[state=active]:pointer-events-none data-[state=active]:bg-background data-[state=active]:text-foreground
-    data-[state=active]:shadow-sm data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground
-    dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:text-foreground
-    [&_svg]:shrink-0
-    [&_svg:not([class*="size-"])]:size-4
+    data-[state=active]:pointer-events-none data-[state=active]:shadow-sm
+    [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4
   `,
   {
     defaultVariants: {
@@ -81,10 +75,10 @@ export const tabsTrigger = cva(
     variants: {
       variant: {
         default: `
-          text-muted-foreground
-          focus-visible:ring-ring/50 focus-visible:outline-ring
-          data-[state=active]:bg-background
-          dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
+          text-muted-foreground border
+          focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring
+          data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground
+          dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
         `,
         brand: `
           focus-visible:text-brand-foreground focus-visible:ring-brand/50 focus-visible:outline-brand
@@ -128,8 +122,8 @@ export const tabsTriggerBadge = cva('text-stroke-0', {
       destructive: 'text-destructive-accent/50 group-data-[state=active]/tabs-trigger:text-destructive-accent',
     },
     size: {
-      sm: 'text-[10.5px]',
-      md: 'text-[11.5px]',
+      sm: 'text-[10px]',
+      md: 'text-[11px]',
       lg: 'text-xs',
     },
   },

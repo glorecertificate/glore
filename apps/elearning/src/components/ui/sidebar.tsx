@@ -424,7 +424,7 @@ export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'l
 
 export interface SidebarMenuButtonProps
   extends Omit<ButtonProps, 'size' | 'variant'>,
-    VariantProps<typeof sidebarMenuButton> {
+    VariantProps<typeof sidebarMenuVariants> {
   active?: boolean
   asChild?: boolean
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
@@ -448,7 +448,7 @@ export const SidebarMenuButton = ({
 
   const content = (
     <Component
-      className={cn(sidebarMenuButton({ size, variant }), className)}
+      className={cn(sidebarMenuVariants({ size, variant }), className)}
       color={color ?? undefined}
       data-active={active}
       data-sidebar="menu-button"
@@ -485,7 +485,7 @@ export const SidebarMenuButton = ({
   )
 }
 
-export const sidebarMenuButton = cva(
+export const sidebarMenuVariants = cva(
   `
     peer/menu-button flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md px-3 py-2 text-left text-sm ring-sidebar-ring
     outline-hidden transition-[width,height,padding]
@@ -495,6 +495,7 @@ export const sidebarMenuButton = cva(
     active:bg-sidebar-accent active:text-sidebar-accent-foreground
     disabled:pointer-events-none disabled:opacity-50
     aria-disabled:pointer-events-none aria-disabled:opacity-50
+    focus-visible:ring-2 focus-visible:ring-ring/50
     data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground
     data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground
     [&>span:last-child]:truncate

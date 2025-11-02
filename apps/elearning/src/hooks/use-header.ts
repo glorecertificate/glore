@@ -7,14 +7,12 @@ import { HeaderContext } from '@/components/providers/header-provider'
 /**
  * Hook to manage the application header content.
  */
-export const useHeader = ({
-  header,
-  shadow = true,
-}: {
-  header?: React.JSX.Element
-  /** @default true */
-  shadow?: boolean
-} = {}) => {
+export const useHeader = (
+  breadcrumb?: React.JSX.Element | null,
+  options = {
+    shadow: true,
+  }
+) => {
   const context = useContext(HeaderContext)
   if (!context) throw new Error('useHeader must be used within a HeaderProvider')
 
@@ -22,8 +20,8 @@ export const useHeader = ({
 
   // biome-ignore lint: exhaustive-deps
   useEffect(() => {
-    if (header) setBreadcrumb(header)
-    if (shadow !== undefined) setShadow(shadow)
+    if (breadcrumb) setBreadcrumb(breadcrumb)
+    if (options.shadow !== undefined) setShadow(options.shadow)
 
     return () => {
       setBreadcrumb(undefined)

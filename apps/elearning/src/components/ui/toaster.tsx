@@ -11,10 +11,10 @@ export interface ToasterProps extends Omit<SonnerProps, 'closeButton'> {
 
 export const Toaster = ({
   className,
-  closeButton = 'hover',
-  duration = 3_000,
+  closeButton,
+  duration = 2000,
+  hotkey = ['Escape'],
   position = 'top-right',
-  richColors = true,
   ...props
 }: ToasterProps) => {
   const { theme } = useTheme()
@@ -25,7 +25,6 @@ export const Toaster = ({
       closeButton={!!closeButton}
       duration={duration}
       position={position}
-      richColors={richColors}
       style={
         {
           '--normal-bg': 'var(--popover)',

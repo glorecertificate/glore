@@ -1,6 +1,6 @@
 import { type IconProps } from '@/components/icons/types'
 
-export const Gmail = (props: IconProps) => (
+export const GmailIcon = (props: IconProps) => (
   <svg viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6" fill="#4285f4" />
     <path d="M120 108h14c3.32 0 6-2.69 6-6V59l-20 15" fill="#34a853" />
@@ -9,5 +9,3 @@ export const Gmail = (props: IconProps) => (
     <path d="M52 51v8l20 15V48l-5.6-4.2c-5.94-4.45-14.4-.22-14.4 7.2" fill="#c5221f" />
   </svg>
 )
-
-export const GmailIcon = Gmail

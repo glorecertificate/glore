@@ -11,7 +11,7 @@ const alertVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-card text-card-foreground',
+        default: 'bg-card/20 text-card-foreground',
         destructive:
           'bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90 [&>svg]:text-current',
         info: `
@@ -19,8 +19,7 @@ const alertVariants = cva(
           dark:text-blue-300 dark:[&>svg]:text-blue-300 dark:border-blue-600 dark:bg-blue-900/50 dark:*:data-[slot=alert-description]:text-blue-400/95
         `,
         warning: `
-          text-yellow-800 border-yellow-300 bg-yellow-50 [&>svg]:text-yellow-800 *:data-[slot=alert-description]:text-yellow-800/80
-          dark:text-yellow-300 dark:[&>svg]:text-yellow-300 dark:border-yellow-600 dark:bg-yellow-900/50 dark:*:data-[slot=alert-description]:text-yellow-400/95
+          border-warning/25 bg-warning/5 [&>svg]:text-warning/80
         `,
         success: `
           text-green-800 border-green-200 bg-green-50 [&>svg]:text-green-800 *:data-[slot=alert-description]:text-green-800/80

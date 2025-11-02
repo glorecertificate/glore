@@ -3,7 +3,7 @@
 import { createBrowserClient } from '@supabase/ssr'
 import { type Database } from 'supabase/types'
 
-import { type DatabaseClient, type PublicSchema } from './types'
+import { type DatabaseClient } from './types'
 
 let client: DatabaseClient | undefined
 
@@ -12,7 +12,7 @@ let client: DatabaseClient | undefined
  */
 export const createDatabase = (): DatabaseClient => {
   if (!client)
-    client = createBrowserClient<Database, 'public', PublicSchema>(
+    client = createBrowserClient<Database, 'public'>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )

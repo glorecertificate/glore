@@ -15,12 +15,16 @@ import {
   updateCourseSettings,
 } from '@/lib/data'
 
+export type SessionCourse = Partial<Course> & { id: number }
+
 export interface SessionContext {
   user: CurrentUser
   setUser?: React.Dispatch<React.SetStateAction<CurrentUser>>
   organization?: UserOrganization
   skillGroups: SkillGroup[]
-  courses: Course[]
+  courses: SessionCourse[]
+  setCourse?: (course: SessionCourse) => void
+  setCourses?: React.Dispatch<React.SetStateAction<SessionCourse[]>>
   createCourse?: (payload: CourseSettings) => Promise<Course>
   updateCourse?: (value: React.SetStateAction<UpdateCourseOptions>) => Promise<Course>
   updateCourseSettings?: (id: number, settings: CourseSettings) => Promise<Course>
@@ -35,12 +39,12 @@ export const SessionProvider = ({ children, ...context }: React.PropsWithChildre
   const [organization] = useState(context.organization)
   const [skillGroups] = useState(context.skillGroups ?? [])
 
-  const setCourse = useCallback((course: Course) => {
+  const setCourse = useCallback((course: SessionCourse) => {
     setCourses(courses => {
       const index = courses.findIndex(({ id }) => id === course.id)
       if (index === -1) return [...courses, course]
       const next = [...courses]
-      next[index] = course
+      next[index] = { ...next[index], ...course }
       return next
     })
   }, [])
@@ -86,6 +90,8 @@ export const SessionProvider = ({ children, ...context }: React.PropsWithChildre
         organization,
         skillGroups,
         courses,
+        setCourse,
+        setCourses,
         createCourse: createSessionCourse,
         updateCourse: updateSessionCourse,
         updateCourseSettings: updateSessionCourseSettings,

@@ -97,7 +97,7 @@ export const CourseHeader = () => {
                 </DialogContent>
               </Dialog>
             </div>
-            <MotionTabsList className="w-full sm:w-fit" size="xs">
+            <MotionTabsList className="h-8 w-full sm:w-fit">
               {localeItems.map(({ displayLabel, icon, value }) => (
                 <MotionTabsTrigger className="flex items-center gap-1 text-[13px]" key={value} value={value}>
                   {displayLabel}{' '}

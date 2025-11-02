@@ -19,12 +19,10 @@ import { logout, PASSWORD_REGEX, updateAuthUser, verifyAuthUser } from '@/lib/da
 import { type AuthView } from '@/lib/navigation'
 
 export const PasswordResetForm = ({
-  setEmail,
   setErrored,
   setView,
   token,
 }: {
-  setEmail: (email: string) => void
   setErrored: (hasErrors: boolean) => void
   setView: (view: Enum<AuthView>) => void
   token?: string | null
@@ -63,8 +61,7 @@ export const PasswordResetForm = ({
       try {
         if (!token) throw new Error()
         await verifyAuthUser({ type: 'email', token })
-        const user = await updateAuthUser({ password })
-        setEmail(user.email!)
+        await updateAuthUser({ password })
         setView('password_updated')
         searchParams.delete('resetToken')
       } catch (e) {
@@ -81,7 +78,7 @@ export const PasswordResetForm = ({
         await logout()
       }
     },
-    [setEmail, setView, token, searchParams, t, form, cookies.delete]
+    [setView, token, searchParams, t, form, cookies.delete]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

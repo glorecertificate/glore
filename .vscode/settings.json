@@ -21,16 +21,25 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
+  "files.exclude": {
+    ".husky/_": true,
+    "**/.turbo": true,
+    "**/supabase/.*": true
+  },
   "json.schemas": [
     {
       "fileMatch": ["biome.json"],
       "url": "./node_modules/@biomejs/biome/configuration_schema.json"
     }
   ],
+  "i18n-ally.enabledFrameworks": ["next-intl"],
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.annotations": false,
   "prettier.enable": false,
   "search.useGlobalIgnoreFiles": true,
   "search.useIgnoreFiles": true,
-  "tailwindCSS.emmetCompletions": true,
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],

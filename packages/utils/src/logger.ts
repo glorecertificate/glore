@@ -31,6 +31,7 @@ logger.inline = (message: string) => {
 }
 logger.red = (message: string, options: LoggerOptions = {}) => logger(red(message), options)
 logger.green = (message: string, options: LoggerOptions = {}) => logger(green(message), options)
+logger.yellow = (message: string, options: LoggerOptions = {}) => logger(yellow(message), options)
 logger.success = (message: string, options: LoggerOptions = {}) => logger(green('✓ ') + message, options)
 logger.error = (message: string, options: LoggerOptions = {}) => {
   if (options.replace) clearLine()

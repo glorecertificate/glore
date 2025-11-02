@@ -1,4 +1,4 @@
-export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
+export const CertificateIllustration = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" height="440" viewBox="0 0 472 440" width="472" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="m430.696 76.5442c-11.342-14.979-25.456-27.973-42.673-38.172-27.572-16.332-58.661-26.225-90.123-31.67097-99.552-17.23003-154.114.957-195.275 30.63197-27.2639 19.656-35.8309 61.484-43.8849 91.8998-4.52 17.072-8.544 34.314-14.168 51.069-8.731 26.014-28.556 47.047-35.17504 73.806-6.998 28.29-6.441 58.093 3.24904 85.709 19.145 54.562 51.69 86.151 126.3539 96.68 39.977 5.638 72.154-10.884 105.34-30.775 20.465-12.266 41.676-23.312 65.152-28.308 24.802-5.279 50.309-6.006 75.178-10.901 55.629-10.95 73.482-63.6 80.711-113.473 8.751-60.382 3.269-126.369-34.685-176.4958z"
@@ -359,5 +359,3 @@ export const Certificate = (props: React.SVGProps<SVGSVGElement>) => (
     <path d="m.166992 439.333h461.833008" stroke="#305271" strokeMiterlimit="10" />
   </svg>
 )
-
-export const CertificateGraphic = Certificate

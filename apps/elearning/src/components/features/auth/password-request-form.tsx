@@ -13,27 +13,29 @@ import { type Enum } from '@glore/utils/types'
 import { Button } from '@/components/ui/button'
 import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useCookies } from '@/hooks/use-cookies'
 import { type DatabaseError, findUserEmail, resetPassword } from '@/lib/data'
 import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
-  defaultEmail,
-  setEmail,
+  defaultUsername,
   setErrored,
+  setUsername,
   setView,
 }: {
-  defaultEmail?: string
-  setEmail: (email: string) => void
+  defaultUsername?: string
   setErrored: (hasErrors: boolean) => void
+  setUsername: (name?: string) => void
   setView: (view: Enum<AuthView>) => void
 }) => {
+  const cookies = useCookies()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
     () =>
       z.object({
-        user: z
+        username: z
           .string()
           .nonempty(t('userRequired'))
           .min(5, {
@@ -46,13 +48,13 @@ export const PasswordRequestForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      user: defaultEmail ?? '',
+      username: defaultUsername ?? '',
     },
   })
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      const username = schema.user.trim()
+      const username = schema.username.trim()
       let email: string
 
       try {
@@ -60,7 +62,7 @@ export const PasswordRequestForm = ({
       } catch (e) {
         const error = e as DatabaseError
         if (error.code === 'PGRST116')
-          return form.setError('user', { message: t('userNotFound') }, { shouldFocus: true })
+          return form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
         return toast.error(t('networkError'))
       }
 
@@ -72,13 +74,18 @@ export const PasswordRequestForm = ({
         return toast.error(t('networkError'))
       }
 
-      setEmail(email)
       setView('email_sent')
+      cookies.set('login_user', username)
     },
-    [form, setEmail, setView, t]
+    [cookies, form, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
+
+  const backToLogin = useCallback(() => {
+    setUsername(form.getValues('username'))
+    setView('login')
+  }, [form, setUsername, setView])
 
   useEffect(() => {
     setErrored(hasErrors)
@@ -91,7 +98,7 @@ export const PasswordRequestForm = ({
           <div className="grid gap-6">
             <FormField
               control={form.control}
-              name="user"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -111,7 +118,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!defaultEmail && defaultFormDisabled(form)}
+            disabled={!defaultUsername && defaultFormDisabled(form)}
             disabledCursor
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
@@ -126,7 +133,7 @@ export const PasswordRequestForm = ({
         <Button
           className={cn(form.formState.isSubmitting && 'pointer-events-none')}
           disabled={form.formState.isSubmitting}
-          onClick={() => setView('login')}
+          onClick={backToLogin}
           size="text"
           variant="link"
         >

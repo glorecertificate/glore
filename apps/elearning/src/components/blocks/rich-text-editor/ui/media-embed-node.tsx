@@ -58,7 +58,7 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
                   wrapperClass={cn(
                     'rounded-sm',
                     focused && selected && 'ring-2 ring-ring ring-offset-2',
-                    'relative block cursor-pointer bg-black bg-center bg-cover [contain:content]',
+                    'relative block cursor-pointer bg-black bg-center bg-cover contain-content',
                     `
                       [&.lyt-activated]:before:absolute [&.lyt-activated]:before:top-0 [&.lyt-activated]:before:h-[60px]
                       [&.lyt-activated]:before:w-full [&.lyt-activated]:before:bg-top [&.lyt-activated]:before:bg-repeat-x

@@ -1,6 +1,6 @@
 import { type IconProps } from '@/components/icons/types'
 
-export const Information = (props: IconProps) => (
+export const InformationIcon = (props: IconProps) => (
   <svg
     fill="none"
     height="24"
@@ -17,5 +17,3 @@ export const Information = (props: IconProps) => (
     <path d="M12 8h.01" />
   </svg>
 )
-
-export const InformationIcon = Information

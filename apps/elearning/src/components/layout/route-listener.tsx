@@ -16,6 +16,7 @@ export const RouteListener = () => {
     setBreadcrumb(undefined)
     showShadow(true)
     setActivePath(pathname)
+    window.scrollTo(0, 0)
   }, [pathname])
 
   return null

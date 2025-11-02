@@ -8,12 +8,9 @@ const INTL_CONFIG = './src/i18n.ts'
 const INTL_MESSAGES = './config/translations/en.json'
 
 export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
-  const nextConfig: NextConfig = {
+  const nextConfig = {
     ...defaultConfig,
-    cacheComponents: true,
-    experimental: {
-      typedEnv: false,
-    },
+    // cacheComponents: true,
     images: {
       remotePatterns: [new URL(process.env.SUPABASE_URL)],
     },
@@ -29,7 +26,7 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
         level: isServer ? 'info' : 'warn',
       },
     }),
-  }
+  } satisfies NextConfig
 
   const plugins = [
     bundleAnalyzer({

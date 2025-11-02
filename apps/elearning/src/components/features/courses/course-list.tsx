@@ -2,217 +2,92 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
-import { ArchiveIcon, ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, PlusIcon, XIcon } from 'lucide-react'
+import { GripVerticalIcon, PlusIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
+import { pluck } from '@glore/utils/pluck'
 import { snakeToCamel } from '@glore/utils/string'
 import { type SnakeToCamel } from '@glore/utils/types'
 
 import { CourseCard } from '@/components/features/courses/course-card'
+import {
+  CourseListSort,
+  type CourseListSortDirection,
+  type CourseListSortType,
+} from '@/components/features/courses/course-list-sort'
+import { CourseListTab } from '@/components/features/courses/course-list-tab'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
-import { NoResultsGraphic } from '@/components/graphics/no-results'
+import { NoResultsIllustration } from '@/components/illustrations/no-results'
+import { type SessionCourse } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { MotionTabs, MotionTabsContent, MotionTabsList, MotionTabsTrigger } from '@/components/ui/motion-tabs'
-import { MultiSelect } from '@/components/ui/multi-select'
+  MultiSelect,
+  MultiSelectBadge,
+  MultiSelectContent,
+  MultiSelectItem,
+  MultiSelectTrigger,
+} from '@/components/ui/multi-select'
+import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { type Course } from '@/lib/data'
+import { type Course, reorderCourses } from '@/lib/data'
 import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
-import { cn } from '@/lib/utils'
-
-const EDITOR_SORTS = ['name', 'type'] as const
-const LEARNER_SORTS = ['name', 'progress', 'type'] as const
-
-type SortType = (typeof EDITOR_SORTS)[number] | (typeof LEARNER_SORTS)[number]
-type SortDirection = 'asc' | 'desc'
-
-const CourseListTabs = ({ count, value }: { count: number; value: CourseListView }) => {
-  const t = useTranslations('Courses')
-
-  const archiveTooltip = useMemo(() => {
-    if (value !== 'archived') return null
-    if (count === 0) return t('archive')
-    return `${t('archive')} (${count})`
-  }, [count, t, value])
-
-  if (value === 'archived')
-    return (
-      <MotionTabsTrigger className="flex items-center p-0" value={value}>
-        <Tooltip delayDuration={0} disableHoverableContent>
-          <TooltipTrigger asChild>
-            <span className="inline-block px-3.5">
-              <ArchiveIcon />
-            </span>
-          </TooltipTrigger>
-          <TooltipContent arrow={false} sideOffset={10}>
-            {archiveTooltip}
-          </TooltipContent>
-        </Tooltip>
-      </MotionTabsTrigger>
-    )
-
-  return (
-    <MotionTabsTrigger className="flex items-center gap-1" count={count} value={value}>
-      {t(value)}
-    </MotionTabsTrigger>
-  )
-}
-
-const SortType = ({
-  direction,
-  setDirection,
-  setValue,
-  tab,
-  value,
-}: {
-  direction: SortDirection | null
-  setDirection: React.Dispatch<React.SetStateAction<SortDirection | null>>
-  tab: CourseListView
-  value: SortType | null
-  setValue: React.Dispatch<React.SetStateAction<SortType | null>>
-}) => {
-  const { user } = useSession()
-  const t = useTranslations('Common')
-  const tCourses = useTranslations('Courses')
-  const [open, setOpen] = useState(false)
-
-  const options = useMemo<Record<SortType, string>>(() => {
-    const sorts = user.canEdit ? EDITOR_SORTS : LEARNER_SORTS
-    return sorts.reduce((acc, sort) => ({ ...acc, [sort]: tCourses(sort) }), {} as Record<SortType, string>)
-  }, [tCourses, user.canEdit])
-
-  const icon = useMemo(() => {
-    if (!value) return <ChevronsUpDownIcon className="size-3.5" />
-    const Icon = direction === 'asc' ? ArrowUpIcon : ArrowDownIcon
-    return <Icon className="size-3 text-muted-foreground" />
-  }, [direction, value])
-
-  const inverseDirection = useMemo(() => (direction === 'asc' ? 'desc' : 'asc'), [direction])
-
-  const handleSortChange = useCallback(
-    (sort: SortType) => () => {
-      if (sort === value) setDirection(inverseDirection)
-      if (!value || value !== sort) setValue(sort)
-      setOpen(true)
-    },
-    [inverseDirection, setDirection, setValue, value]
-  )
-
-  const handleSortItemSelect = useCallback((e: Event) => {
-    e.preventDefault()
-  }, [])
-
-  const clearSort = useCallback(() => {
-    setValue(null)
-    setDirection(null)
-  }, [setDirection, setValue])
-
-  return (
-    <DropdownMenu onOpenChange={setOpen} open={open}>
-      <DropdownMenuTrigger asChild>
-        <Button className="group h-9 gap-0 has-[>svg]:px-3" size="sm" variant="outline">
-          <span className="mr-1.5">{t('sortBy')}</span>
-          {value && <span className="mr-0.5 font-medium text-muted-foreground text-xs">{options[value]}</span>}
-          {icon}
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuLabel>{t('sortBy')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {(Object.entries(options) as [SortType, string][]).map(
-          ([option, label]) =>
-            (option !== 'progress' || (tab !== 'not_started' && tab !== 'completed')) && (
-              <DropdownMenuItem
-                className={cn(
-                  'group/dropdown-menu-item flex h-9 cursor-pointer items-center justify-between',
-                  value === option && 'cursor-default bg-accent dark:bg-background/40'
-                )}
-                key={option}
-                onClick={handleSortChange(option)}
-                onSelect={handleSortItemSelect}
-              >
-                <span className={cn('text-foreground/90', value === option && 'text-foreground')}>{label}</span>
-                {value === option && (
-                  <Button
-                    className="size-6 bg-card transition-all duration-75 hover:bg-card hover:shadow-none active:bg-card/50"
-                    size="icon"
-                  >
-                    {direction === 'asc' ? <ArrowUpIcon className="size-3" /> : <ArrowDownIcon className="size-3" />}
-                  </Button>
-                )}
-              </DropdownMenuItem>
-            )
-        )}
-        {value && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={clearSort}>
-              <XIcon className="mr-1 size-4" />
-              {t('clearSort')}
-            </DropdownMenuItem>
-          </>
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
 
 export const CourseList = ({
-  defaultCoursesLanguage,
-  defaultLanguageFilter,
+  defaultCourseLanguage,
+  defaultGroups,
+  defaultLanguages,
   defaultTab = 'all',
 }: {
-  defaultCoursesLanguage?: Record<string, Locale>
-  defaultLanguageFilter?: Locale[]
+  defaultCourseLanguage?: Record<string, Locale>
+  defaultLanguages?: Locale[]
+  defaultGroups?: string[]
   defaultTab?: CourseListView
 }) => {
   const cookies = useCookies()
+  const { user, courses: sessionCourses, setCourses, skillGroups } = useSession()
   const { locale, localeItems, locales, localize } = useIntl()
-  const { user, courses: sessionCourses } = useSession()
   const t = useTranslations('Courses')
 
+  const groups = skillGroups.map(group => ({
+    label: localize(group.name),
+    value: String(group.id),
+  }))
+  const groupOptions = pluck(groups, 'value')
+
   const [activeTab, setActiveTab] = useState<CourseListView>(defaultTab)
-  const [activeSort, setActiveSort] = useState<SortType | null>(null)
-  const [languageFilter, setLanguageFilter] = useState<Locale[]>(defaultLanguageFilter ?? [...locales])
-  const [sortDirection, setSortDirection] = useState<SortDirection | null>(null)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [activeSort, setActiveSort] = useState<CourseListSortType | null>(null)
+  const [activeGroups, setActiveGroups] = useState(defaultGroups ?? [...groupOptions])
+  const [activeLanguages, setActiveLanguages] = useState<Locale[]>(defaultLanguages ?? [...locales])
+  const [sortDirection, setSortDirection] = useState<CourseListSortDirection | null>(null)
+  const [createModalOpen, setCreateModalOpen] = useState(false)
 
-  const pageDescription = useMemo(
-    () => (user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')),
-    [t, user.isAdmin, user.isEditor]
-  )
+  const activeGroupItems = groups.filter(group => activeGroups.includes(group.value))
+  const activeLanguageItems = localeItems.filter(item => activeLanguages.includes(item.value))
+  const hasFilters = activeLanguages.length !== locales.length
+  const canDrag = activeTab === 'all' && activeSort === null
 
-  const sortLanguages = useCallback(
-    (langs: Locale[] | null) => langs?.sort((a, b) => locales.indexOf(a) - locales.indexOf(b)) ?? [],
-    [locales]
-  )
+  const tabs = user.canEdit
+    ? activeLanguages.length > 1
+      ? [...Object.values(CourseListEditorView)]
+      : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
+    : [...Object.values(CourseListLearnerView)]
 
-  const activeLanguages = useMemo(() => sortLanguages(languageFilter), [languageFilter, sortLanguages])
-
-  const hasFilters = useMemo(() => activeLanguages.length !== locales.length, [activeLanguages.length, locales.length])
-
-  const courses = useMemo<Record<SnakeToCamel<CourseListView>, Course[]>>(() => {
+  const courses = useMemo<Record<SnakeToCamel<CourseListView>, SessionCourse[]>>(() => {
     const all = sessionCourses.filter(course => !course.archivedAt)
 
     if (user.canEdit)
       return {
         all,
-        published: all.filter(course => activeLanguages.every(lang => course.languages.includes(lang))),
+        published: all.filter(course => activeLanguages.every(lang => course.languages?.includes(lang))),
         partial: all.filter(course => {
-          const published = activeLanguages.filter(lang => course.languages.includes(lang))
+          const published = activeLanguages.filter(lang => course.languages?.includes(lang))
           return published.length > 0 && published.length < activeLanguages.length
         }),
-        draft: all.filter(course => activeLanguages.every(lang => !course.languages.includes(lang))),
+        draft: all.filter(course => activeLanguages.every(lang => !course.languages?.includes(lang))),
         archived: sessionCourses.filter(course => course.archivedAt),
         notStarted: [],
         inProgress: [],
@@ -231,23 +106,13 @@ export const CourseList = ({
     }
   }, [sessionCourses, user.canEdit, activeLanguages])
 
-  const tabs = useMemo<CourseListView[]>(
-    () =>
-      user.canEdit
-        ? activeLanguages.length > 1
-          ? [...Object.values(CourseListEditorView)]
-          : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
-        : [...Object.values(CourseListLearnerView)],
-    [user.canEdit, activeLanguages.length]
-  )
-
   const displayedCourses = useMemo(
     () =>
       courses[snakeToCamel(activeTab)]
         .map(course => {
-          const cookieLanguage = defaultCoursesLanguage?.[String(course.id)]
+          const cookieLanguage = defaultCourseLanguage?.[String(course.id)]
           if (cookieLanguage && activeLanguages.includes(cookieLanguage)) return { ...course, language: cookieLanguage }
-          const lang = course.languages.includes(locale) ? locale : course.languages[0]
+          const lang = course.languages?.includes(locale) ? locale : course.languages?.[0]
           return { ...course, language: lang }
         })
         .sort((a, b) => {
@@ -258,15 +123,39 @@ export const CourseList = ({
               if (!(titleA && titleB)) return 0
               return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
             }
-            case 'progress':
+            case 'progress': {
+              if (a.completion == null || b.completion == null) return 0
               return sortDirection === 'asc' ? a.completion - b.completion : b.completion - a.completion
-            case 'type':
+            }
+            case 'skillGroup': {
+              if (!(a.skillGroup?.name && b.skillGroup?.name)) return 0
+              const skillA = localize(a.skillGroup.name)
+              const skillB = localize(b.skillGroup.name)
+              if (!(skillA && skillB)) return 0
+              return sortDirection === 'asc' ? skillA.localeCompare(skillB) : skillB.localeCompare(skillA)
+            }
+            case 'creationDate': {
+              if (!(a.createdAt && b.createdAt)) return 0
+              return sortDirection === 'asc'
+                ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            }
+            case 'lastUpdated': {
+              if (!(a.updatedAt && b.updatedAt)) return 0
+              return sortDirection === 'asc'
+                ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+                : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+            }
+            case 'type': {
+              if (!(a.type && b.type)) return 0
               return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
+            }
             default:
-              return a.createdAt < b.createdAt ? 1 : 0
+              if (a.sortOrder == null || b.sortOrder == null) return 0
+              return a.sortOrder - b.sortOrder
           }
         }) as (Course & { language: Locale })[],
-    [activeLanguages, activeSort, activeTab, courses, defaultCoursesLanguage, locale, localize, sortDirection]
+    [activeLanguages, activeSort, activeTab, courses, defaultCourseLanguage, locale, localize, sortDirection]
   )
 
   const emptyListTitle = useMemo(() => {
@@ -306,110 +195,209 @@ export const CourseList = ({
     }
   }, [activeTab, enhanceEmptyListMessage, t])
 
-  const handleTabChange = useCallback(
+  const onTabChange = useCallback(
     (value: string) => {
       const tab = value as CourseListView
       setActiveTab(tab)
-      cookies.set('course-list-view', tab)
+      cookies.set('course_list_view', tab)
     },
     [cookies.set]
   )
 
-  const setActiveLanguages = useCallback(
-    (selected: Locale[]) => {
-      setLanguageFilter(selected)
-      cookies.set('course-list-locales', selected)
-      if (activeTab === 'partial' && (selected.length === 1 || courses.partial.length === 0)) setActiveTab('all')
+  const onLanguagesChange = useCallback(
+    (selected: string[]) => {
+      const lanaguages = selected as Locale[]
+      setActiveLanguages(lanaguages)
+      cookies.set('course_list_locales', lanaguages)
+      if (activeTab === 'partial' && (lanaguages.length === 1 || courses.partial.length === 0)) {
+        setActiveTab('all')
+      }
     },
     [activeTab, courses.partial.length, cookies.set]
   )
 
+  const onGroupChange = useCallback(
+    (selected: string[]) => {
+      setActiveGroups(selected)
+      cookies.set('course_list_groups', selected)
+    },
+    [cookies.set]
+  )
+
+  const setOrder = useCallback(
+    async (orderedCourses: Course[]) => {
+      const nextOrders = new Map(orderedCourses.map((course, index) => [course.id, index + 1]))
+
+      setCourses(prev => {
+        const reordered = orderedCourses.map(course => {
+          const previousCourse = new Map(prev.map(course => [course.id, course])).get(course.id)
+          const sortOrder = nextOrders.get(course.id)
+
+          if (!previousCourse) {
+            const { language: _language, ...rest } = course as Course & { language?: Locale }
+            return sortOrder ? { ...rest, sortOrder } : rest
+          }
+
+          if (!sortOrder || previousCourse.sortOrder === sortOrder) return previousCourse
+          return { ...previousCourse, sortOrder }
+        })
+
+        const untouched = prev.filter(course => !nextOrders.has(course.id))
+        return [...reordered, ...untouched]
+      })
+
+      await reorderCourses(orderedCourses)
+    },
+    [setCourses]
+  )
+
   return (
     <>
-      <div className="pb-2">
-        <h1 className="mb-2 font-bold text-3xl">{t('title')}</h1>
-        <p className="text-muted-foreground">{pageDescription}</p>
-      </div>
-      <div className="w-full grow py-6">
-        <MotionTabs className="h-full" defaultValue="all" onValueChange={handleTabChange} value={activeTab}>
-          <div className="mb-4 block justify-between gap-4 xl:flex">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 xl:mb-0 xl:justify-start">
-              <MotionTabsList className="w-full sm:w-fit">
+      <Tabs className="h-full gap-6 pt-1 pb-5" defaultValue="all" onValueChange={onTabChange} value={activeTab}>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3">
+              <TabsList className="h-[38px] w-full rounded-xl sm:w-fit">
                 {tabs.map(tab => (
-                  <CourseListTabs count={courses[snakeToCamel(tab)].length} key={tab} value={tab} />
-                ))}
-              </MotionTabsList>
-              {user.canEdit && (
-                <Button
-                  className="max-sm:w-full"
-                  effect="expandIcon"
-                  icon={PlusIcon}
-                  iconPlacement="right"
-                  onClick={() => setIsCreateModalOpen(true)}
-                  variant="brand"
-                >
-                  {t('newCourse')}
-                </Button>
-              )}
-            </div>
-            <div className="flex justify-between gap-2 xl:justify-end">
-              <MultiSelect
-                className="w-auto"
-                contentProps={{
-                  className: 'w-36',
-                }}
-                enableSearch={false}
-                minItems={{
-                  count: 1,
-                  message: t('selectAtLeastOneLanguage'),
-                }}
-                onChange={setActiveLanguages as (selected: string[]) => void}
-                options={localeItems}
-                placeholder={t('selectLanguages')}
-                value={activeLanguages}
-              />
-              <SortType
-                direction={sortDirection}
-                setDirection={setSortDirection}
-                setValue={setActiveSort}
-                tab={activeTab}
-                value={activeSort}
-              />
-            </div>
-          </div>
-          <MotionTabsContent className="grow space-y-4 pb-2" value={activeTab}>
-            {displayedCourses.length === 0 ? (
-              <div className="flex h-full flex-col items-center justify-center pt-10 text-center">
-                <NoResultsGraphic className="mb-8 w-64" />
-                <div className="flex flex-col items-center gap-1">
-                  <h3 className="font-medium text-lg">{emptyListTitle}</h3>
-                  <p className="mt-1 text-muted-foreground text-sm">
-                    {`${emptyListMessage}.`}
-                    {hasFilters && (
-                      <>
-                        <br />
-                        {`${t('updateFilters')}.`}
-                      </>
-                    )}
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {displayedCourses.map(course => (
-                  <CourseCard
-                    activeLanguages={activeLanguages}
-                    course={course}
-                    key={course.slug}
-                    showState={activeTab !== 'archived'}
+                  <CourseListTab
+                    active={tab === activeTab}
+                    count={courses[snakeToCamel(tab)].length}
+                    key={tab}
+                    value={tab}
                   />
                 ))}
+              </TabsList>
+              {user.canEdit && (
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <Button
+                      className="size-8 rounded-full text-[13px]"
+                      onClick={() => setCreateModalOpen(true)}
+                      size="icon"
+                      variant="brand"
+                    >
+                      <PlusIcon className="size-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent arrow={false} sideOffset={2}>
+                    {t('createCourse')}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+            <CourseListSort
+              direction={sortDirection}
+              setDirection={setSortDirection}
+              setValue={setActiveSort}
+              tab={activeTab}
+              value={activeSort}
+            />
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <MultiSelect onValueChange={onGroupChange} options={groupOptions} value={activeGroups}>
+              <MultiSelectTrigger>
+                {activeGroupItems.map(item => (
+                  <MultiSelectBadge key={item.value} {...item} />
+                ))}
+              </MultiSelectTrigger>
+              <MultiSelectContent align="start">
+                {groups.map(item => (
+                  <MultiSelectItem key={item.value} {...item} />
+                ))}
+              </MultiSelectContent>
+            </MultiSelect>
+            <MultiSelect onValueChange={onLanguagesChange} options={locales} value={activeLanguages}>
+              <MultiSelectTrigger>
+                {activeLanguageItems.map(({ displayLabel, icon, ...item }) => (
+                  <MultiSelectBadge key={item.value} size="md" {...item}>
+                    {icon && <span className="mr-1 inline-block">{icon}</span>}
+                  </MultiSelectBadge>
+                ))}
+              </MultiSelectTrigger>
+              <MultiSelectContent align="end">
+                {localeItems.map(({ displayLabel, icon, ...item }) => (
+                  <MultiSelectItem key={item.value} {...item}>
+                    {displayLabel} {icon}
+                  </MultiSelectItem>
+                ))}
+              </MultiSelectContent>
+            </MultiSelect>
+          </div>
+        </div>
+        <TabsContent className="grow space-y-4" value={activeTab}>
+          {displayedCourses.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
+              <NoResultsIllustration className="w-64" />
+              <div className="flex flex-col items-center gap-1">
+                <h3 className="font-medium text-xl">{emptyListTitle}</h3>
+                <p className="mt-1 text-muted-foreground">
+                  {`${emptyListMessage}.`}
+                  {hasFilters && (
+                    <>
+                      <br />
+                      {`${t('updateFilters')}.`}
+                    </>
+                  )}
+                </p>
               </div>
-            )}
-          </MotionTabsContent>
-        </MotionTabs>
-      </div>
-      {user.canEdit && <CourseSettingsModal onOpenChange={setIsCreateModalOpen} open={isCreateModalOpen} />}
+            </div>
+          ) : user.canEdit ? (
+            <Sortable
+              getItemValue={item => item.id}
+              onValueChange={setOrder}
+              orientation="mixed"
+              value={displayedCourses}
+            >
+              <SortableContent className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                {displayedCourses.map(course => (
+                  <SortableItem className="group/sortable-item relative" key={course.slug} value={course.id}>
+                    <CourseCard
+                      activeLanguages={activeLanguages}
+                      course={course}
+                      key={course.slug}
+                      showState={activeTab !== 'archived'}
+                    />
+                    {canDrag ? (
+                      <SortableItemHandle
+                        className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
+                        title={t('reorderCourse')}
+                      >
+                        <GripVerticalIcon className="size-4 text-muted-foreground" />
+                      </SortableItemHandle>
+                    ) : (
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger asChild>
+                          <SortableItemHandle
+                            className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-50"
+                            disabled
+                          >
+                            <GripVerticalIcon className="size-4 text-muted-foreground" />
+                          </SortableItemHandle>
+                        </TooltipTrigger>
+                        <TooltipContent arrow={false} sideOffset={10}>
+                          {t('reorderDisabled')}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+                  </SortableItem>
+                ))}
+              </SortableContent>
+            </Sortable>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {displayedCourses.map(course => (
+                <CourseCard
+                  activeLanguages={activeLanguages}
+                  course={course}
+                  key={course.slug}
+                  showState={activeTab !== 'archived'}
+                />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+      {user.canEdit && <CourseSettingsModal onOpenChange={setCreateModalOpen} open={createModalOpen} />}
     </>
   )
 }

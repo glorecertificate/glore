@@ -13,12 +13,11 @@ import {
   Trash2Icon,
   UserPenIcon,
 } from 'lucide-react'
-import { type IconName } from 'lucide-react/dynamic'
 import { type Locale, useFormatter, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { UserCard } from '@/components/features/users/user-card'
-import { DynamicIcon } from '@/components/icons/dynamic'
+import { type IconName } from '@/components/icons/dynamic'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,15 +46,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { type Course, DEFAULT_COURSE_TITLE } from '@/lib/data'
-import { type IntlRecord, type LocaleItem } from '@/lib/intl'
+import { type Course, DEFAULT_COURSE_TITLE, updateCourse } from '@/lib/data'
+import { type LocaleItem } from '@/lib/intl'
 import { route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -102,13 +101,13 @@ const CourseCardLanguage = ({
 
   return (
     <div className="flex flex-col items-center gap-0">
-      <Tooltip delayDuration={300} disableHoverableContent>
+      <Tooltip delayDuration={250}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent arrow={false} sideOffset={2} size="sm">
           {t(published ? 'previewIn' : 'previewDraftIn', { lang: displayLabel })}
         </TooltipContent>
       </Tooltip>
-      {showState && <div className={cn('size-1 rounded-full', published ? 'bg-success' : 'bg-warning/90')} />}
+      {showState && <div className={cn('size-1 rounded-full', published ? 'bg-success' : 'bg-muted-foreground/50')} />}
     </div>
   )
 }
@@ -126,32 +125,33 @@ export const CourseCard = ({
 }) => {
   const cookies = useCookies()
   const { locale, localeItems, locales, localize } = useIntl()
-  const { user, updateCourse, deleteCourse: deleteSessionCourse } = useSession()
+  const { deleteCourse: deleteSessionCourse, setCourse, user } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
   const f = useFormatter()
 
   const [language, setLanguage] = useState(course.language)
 
-  const translate = useCallback((record: IntlRecord) => localize(record, language), [localize, language])
-
   const updateLanguage = useCallback(
     (value: Locale) => {
       if (value === language) return
       setLanguage(value)
-      const languageCookie = cookies.get('course-locale') || {}
+      const languageCookie = cookies.get('course_locale') || {}
       languageCookie[course.slug] = value
-      cookies.set('course-locale', languageCookie)
+      cookies.set('course_locale', languageCookie)
     },
     [cookies, course.slug, language]
   )
 
-  const getCoursePath = useCallback(
-    (lang: Locale) => route('/courses/[slug]', { slug: course.slug }, { lang }),
-    [course.slug]
+  const updateIcon = useCallback(
+    async (icon: IconName | null) => {
+      await setCourse({ id: course.id, icon })
+      await updateCourse({ id: course.id, icon })
+    },
+    [course.id, setCourse]
   )
 
-  const coursePath = useMemo(() => getCoursePath(language), [getCoursePath, language])
+  const coursePath = route('/courses/[slug]', { slug: course.slug }, { lang: language })
 
   const languageItems = useMemo(
     () =>
@@ -175,11 +175,11 @@ export const CourseCard = ({
     [activeLanguages, course.languages, language, localeItems, locales, updateLanguage]
   )
 
-  const title = useMemo(() => translate(course.title), [course.title, translate])
-  const isDefaultTitle = useMemo(() => title === localize(DEFAULT_COURSE_TITLE, language), [language, localize, title])
+  const title = localize(course.title, language)
+  const isDefaultTitle = title === localize(DEFAULT_COURSE_TITLE, language)
 
   const description = useMemo(() => {
-    const translation = translate(course.description)
+    const translation = localize(course.description, language)
     if (!translation) return
 
     const courseDescription = `${translation.split('.')[0]}.`
@@ -199,28 +199,18 @@ export const CourseCard = ({
     ) : (
       courseDescription
     )
-  }, [course.description, translate])
+  }, [course.description, language, localize])
 
-  const lessonsMessage = useMemo(
-    () =>
-      course.lessons.length > 0
-        ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
-        : t('noLessonsCreated'),
-    [course.lessons.length, t]
-  )
+  const lessonsMessage =
+    course.lessons.length > 0
+      ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
+      : t('noLessonsCreated')
 
-  const createdOn = useMemo(
-    () =>
-      t('createdOnBy', {
-        date: f.relativeTime(new Date(course.createdAt), Date.now()),
-      }),
-    [course.createdAt, f, t]
-  )
+  const createdOn = t('createdOnBy', {
+    date: f.relativeTime(new Date(course.createdAt), Date.now()),
+  })
 
-  const completedLessons = useMemo(
-    () => course.lessons?.filter(lesson => lesson.completed).length ?? 0,
-    [course.lessons]
-  )
+  const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
 
   const action = useMemo(() => {
     if (user.canEdit) return t('editCourse')
@@ -237,7 +227,7 @@ export const CourseCard = ({
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, updateCourse])
+  }, [course.id, t])
 
   const unarchiveCourse = useCallback(async () => {
     try {
@@ -247,7 +237,7 @@ export const CourseCard = ({
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, updateCourse])
+  }, [course.id, t])
 
   const deleteCourse = useCallback(async () => {
     try {
@@ -267,22 +257,19 @@ export const CourseCard = ({
   return (
     <Card className="min-h-80">
       <CardHeader className="gap-4">
-        <div className="flex gap-2.5">
-          {course.icon ? (
-            <DynamicIcon
-              className="size-4 shrink-0 stroke-muted-foreground/80"
-              name={course.icon as IconName}
-              placeholder={Skeleton}
-              placeholderProps={{ className: 'size-4 shrink-0' }}
-            />
-          ) : (
-            <Skeleton className="size-4 shrink-0 animate-none" />
-          )}
-          <div className="flex grow flex-col gap-2">
-            <div className="-mt-0.5 flex">
+        <IconPicker
+          className="size-8 shrink-0 rounded-full stroke-muted-foreground/80"
+          onValueChange={updateIcon}
+          title={course.icon ? t('updateIcon') : t('addIcon')}
+          value={(course.icon as IconName) ?? undefined}
+          variant="ghost"
+        />
+        <div className="flex grow flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <div className="flex">
               <Link
                 className={cn(
-                  'font-semibold text-base leading-[normal] transition-none',
+                  'font-medium leading-[normal] transition-none',
                   (isDefaultTitle || !title) && 'text-muted-foreground/50'
                 )}
                 href={coursePath}
@@ -307,12 +294,8 @@ export const CourseCard = ({
                 </Link>
               </div>
             )}
-            {course.skillGroup && (
-              <Badge className="text-[11px]" size="xs">
-                {translate(course.skillGroup.name as IntlRecord)}
-              </Badge>
-            )}
           </div>
+          {course.skillGroup && <Badge size="sm">{localize(course.skillGroup.name, language)}</Badge>}
         </div>
       </CardHeader>
       <CardContent className="mb-0.5">

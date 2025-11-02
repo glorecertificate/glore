@@ -3,13 +3,13 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createOpenAI } from '@ai-sdk/openai'
 import { generateText } from 'ai'
 
-export const POST = async (req: NextRequest) => {
+export const POST = async (request: NextRequest) => {
   const {
     apiKey: key,
     model = process.env.OPENAI_MODEL,
     prompt,
     system,
-  } = (await req.json()) as {
+  } = (await request.json()) as {
     apiKey?: string
     model?: string
     prompt: string
@@ -26,7 +26,7 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const result = await generateText({
-      abortSignal: req.signal,
+      abortSignal: request.signal,
       maxTokens: 50,
       model: openai(model ?? 'gpt-5'),
       prompt,

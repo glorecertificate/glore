@@ -1,6 +1,6 @@
 import { type SignInWithPasswordCredentials, type UserAttributes } from '@supabase/supabase-js'
 
-import { cookies } from '@/lib/storage'
+import { cookieStore } from '@/lib/storage'
 import { createDatabase, DatabaseError } from '../../supabase'
 import { findUser } from '../users/client'
 import { RESET_PASSWORD_REDIRECT } from './constants'
@@ -14,7 +14,7 @@ export const login = async (credentials: SignInWithPasswordCredentials) => {
   const user = await findUser(data.user.id)
   if (!user) throw new DatabaseError({ code: 'PGRST116', message: 'User not found' })
 
-  cookies.setEncoded('user', user)
+  cookieStore.setEncoded('user', user)
 
   return user
 }
@@ -24,7 +24,7 @@ export const logout = async () => {
   const { error } = await database.auth.signOut()
   if (error) throw new DatabaseError({ code: 'NETWORK_ERROR', message: 'Failed to log out' })
 
-  cookies.delete('user')
+  cookieStore.delete('user')
 
   return true
 }

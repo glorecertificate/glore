@@ -1,9 +1,8 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useTheme as useNextTheme } from 'next-themes'
 
+import { useCookies } from '@/hooks/use-cookies'
 import { type ResolvedTheme, type Theme } from '@/lib/theme'
 
 /**
@@ -13,6 +12,8 @@ import { type ResolvedTheme, type Theme } from '@/lib/theme'
  * It also includes booleans for simplified checks of light and dark modes.
  */
 export const useTheme = () => {
+  const cookies = useCookies()
+
   const {
     resolvedTheme: resolvedNextTheme,
     setTheme: setNextTheme,
@@ -20,12 +21,16 @@ export const useTheme = () => {
     themes: nextThemes,
   } = useNextTheme()
 
-  const setTheme = setNextTheme as React.Dispatch<React.SetStateAction<Theme>>
-  const resolvedTheme = resolvedNextTheme as ResolvedTheme
+  const setTheme = (theme: Theme) => {
+    setNextTheme(theme)
+    cookies.set('theme', theme)
+  }
+
   const theme = nextTheme as Theme
   const themes = nextThemes as Theme[]
-  const isLightMode = useMemo(() => resolvedTheme === 'light', [resolvedTheme])
-  const isDarkMode = useMemo(() => resolvedTheme === 'dark', [resolvedTheme])
+  const resolvedTheme = resolvedNextTheme as ResolvedTheme
+  const isLightMode = resolvedTheme === 'light'
+  const isDarkMode = resolvedTheme === 'dark'
 
   return {
     setTheme,

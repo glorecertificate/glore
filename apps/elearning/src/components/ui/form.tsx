@@ -17,6 +17,9 @@ import {
 import { Label, type LabelProps } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
+export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFormReturn<T>) =>
+  !formState.isDirty || Object.keys(formState.errors).length > 0
+
 interface FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -136,6 +139,3 @@ export const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>) 
 }
 
 export const Form = FormProvider
-
-export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFormReturn<T>) =>
-  !formState.isDirty || Object.keys(formState.errors).length > 0

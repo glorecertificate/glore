@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { Loader } from '@/components/icons/loader'
+import { Spinner } from '@/components/icons/spinner'
 import { type Icon } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
@@ -88,9 +88,8 @@ export const Button = ({
       <Slottable>
         {loading ? (
           <>
-            <Loader />
-            {loadingText && <span>{loadingText}</span>}
-            {children}
+            <Spinner />
+            {loadingText ? <span>{loadingText}</span> : children}
           </>
         ) : (
           children

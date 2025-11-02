@@ -1,5 +1,5 @@
 import { type MetadataRoute } from 'next'
-import { NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
@@ -9,7 +9,7 @@ import metadata from '@config/metadata'
 import { DEFAULT_LOCALE } from '@/lib/intl'
 import { publicAsset } from '@/lib/storage'
 
-export const GET = async (request: Request) => {
+export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)
   const locale = (url.searchParams.get('locale') ?? DEFAULT_LOCALE) as Locale
   const t = await getTranslations({ namespace: 'Metadata', locale })

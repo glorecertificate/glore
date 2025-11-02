@@ -1,40 +1,31 @@
 'use client'
 
-import { useMemo } from 'react'
-
-import {
-  Action,
-  Cancel,
-  Content,
-  Description,
-  Overlay,
-  Portal,
-  Root,
-  Title,
-  Trigger,
-} from '@radix-ui/react-alert-dialog'
+import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import { type VariantProps } from 'class-variance-authority'
 
-import { Loader } from '@/components/icons/loader'
+import { Spinner } from '@/components/icons/spinner'
 import { type Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-export const AlertDialog = ({ ...props }: React.ComponentProps<typeof Root>) => (
-  <Root data-slot="alert-dialog" {...props} />
+export const AlertDialog = (props: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => (
+  <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />
 )
 
-export const AlertDialogTrigger = ({ ...props }: React.ComponentProps<typeof Trigger>) => (
-  <Trigger data-slot="alert-dialog-trigger" {...props} />
+export const AlertDialogTrigger = (props: React.ComponentProps<typeof AlertDialogPrimitive.Trigger>) => (
+  <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
 )
 
-export const AlertDialogPortal = ({ ...props }: React.ComponentProps<typeof Portal>) => (
-  <Portal data-slot="alert-dialog-portal" {...props} />
+export const AlertDialogPortal = (props: React.ComponentProps<typeof AlertDialogPrimitive.Portal>) => (
+  <AlertDialogPrimitive.Portal data-slot="alert-dialog-portal" {...props} />
 )
 
-export const AlertDialogOverlay = ({ className, ...props }: React.ComponentProps<typeof Overlay>) => (
-  <Overlay
+export const AlertDialogOverlay = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Overlay>) => (
+  <AlertDialogPrimitive.Overlay
     className={cn(
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in',
+      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-51 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in',
       className
     )}
     data-slot="alert-dialog-overlay"
@@ -42,19 +33,29 @@ export const AlertDialogOverlay = ({ className, ...props }: React.ComponentProps
   />
 )
 
-export const AlertDialogContent = ({ className, ...props }: React.ComponentProps<typeof Content>) => (
-  <AlertDialogPortal>
-    <AlertDialogOverlay />
-    <Content
-      className={cn(
-        'translate-[-50%] data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:max-w-lg',
-        className
-      )}
-      data-slot="alert-dialog-content"
-      {...props}
-    />
-  </AlertDialogPortal>
-)
+export const AlertDialogContent = ({
+  className,
+  portal = true,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
+  portal?: boolean
+}) => {
+  const content = (
+    <>
+      <AlertDialogOverlay />
+      <AlertDialogPrimitive.Content
+        className={cn(
+          'translate-[-50%] data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-51 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in sm:max-w-lg',
+          className
+        )}
+        data-slot="alert-dialog-content"
+        {...props}
+      />
+    </>
+  )
+  if (!portal) return content
+  return <AlertDialogPortal>{content}</AlertDialogPortal>
+}
 
 export const AlertDialogHeader = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
@@ -72,12 +73,19 @@ export const AlertDialogFooter = ({ className, ...props }: React.ComponentProps<
   />
 )
 
-export const AlertDialogTitle = ({ className, ...props }: React.ComponentProps<typeof Title>) => (
-  <Title className={cn('font-semibold text-lg', className)} data-slot="alert-dialog-title" {...props} />
+export const AlertDialogTitle = ({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Title>) => (
+  <AlertDialogPrimitive.Title
+    className={cn('font-semibold text-lg', className)}
+    data-slot="alert-dialog-title"
+    {...props}
+  />
 )
 
-export const AlertDialogDescription = ({ className, ...props }: React.ComponentProps<typeof Description>) => (
-  <Description
+export const AlertDialogDescription = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Description>) => (
+  <AlertDialogPrimitive.Description
     className={cn('text-muted-foreground text-sm', className)}
     data-slot="alert-dialog-description"
     {...props}
@@ -94,23 +102,33 @@ export const AlertDialogAction = ({
   size,
   variant,
   ...props
-}: React.ComponentProps<typeof Action> & VariantProps<typeof Button>) => {
-  const isDisabled = useMemo(() => disabled || loading, [disabled, loading])
+}: Omit<React.ComponentProps<typeof AlertDialogPrimitive.Action>, 'disabled'> &
+  VariantProps<typeof Button> & {
+    loading?: boolean
+    loadingText?: string
+  }) => {
+  const isDisabled = disabled || loading
 
   return (
-    <Action
-      className={cn('cursor-pointer', buttonVariants({ variant, disabled: isDisabled, size, effect }), className)}
+    <AlertDialogPrimitive.Action
+      className={cn(
+        'cursor-pointer',
+        buttonVariants({ variant, disabled: isDisabled, size, effect }),
+        isDisabled && 'cursor-not-allowed',
+        className
+      )}
       disabled={isDisabled}
       {...props}
     >
-      {loading && (
+      {loading ? (
         <>
-          <Loader />
-          {loadingText && <span>{loadingText}</span>}
+          <Spinner />
+          {loadingText ?? children}
         </>
+      ) : (
+        children
       )}
-      {children}
-    </Action>
+    </AlertDialogPrimitive.Action>
   )
 }
 
@@ -121,6 +139,14 @@ export const AlertDialogCancel = ({
   size,
   variant,
   ...props
-}: React.ComponentProps<typeof Cancel> & VariantProps<typeof Button>) => (
-  <Cancel className={cn('cursor-pointer', buttonVariants({ variant, disabled, size, effect }), className)} {...props} />
+}: Omit<React.ComponentProps<typeof AlertDialogPrimitive.Cancel>, 'disabled'> & VariantProps<typeof Button>) => (
+  <AlertDialogPrimitive.Cancel
+    className={cn(
+      'cursor-pointer',
+      buttonVariants({ variant, disabled, size, effect }),
+      disabled && 'cursor-not-allowed',
+      className
+    )}
+    {...props}
+  />
 )

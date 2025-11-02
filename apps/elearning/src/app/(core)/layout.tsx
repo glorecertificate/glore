@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { use } from 'react'
 
 import { AppHeader } from '@/components/layout/app-header'
 import { AppMain } from '@/components/layout/app-main'
@@ -13,7 +12,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { getCurrentUser, getSkillGroups, listCourses } from '@/lib/data/server'
 import { serverCookies } from '@/lib/storage/server'
 
-const resolveCoreLayoutData = async () => {
+export default async ({ children }: LayoutProps<'/'>) => {
   const cookies = await serverCookies()
   const user = await getCurrentUser()
 
@@ -23,38 +22,28 @@ const resolveCoreLayoutData = async () => {
   }
 
   const org = cookies.get('org')
-  const sidebarOpen = cookies.get('sidebar-open')
+  const sidebarOpen = cookies.get('sidebar_open')
 
   const courses = await listCourses()
   const skillGroups = await getSkillGroups()
 
-  return { courses, skillGroups, org, sidebarOpen, user }
-}
-
-const CoreLayoutContent = ({ children }: LayoutProps<'/'>) => {
-  const { courses, org, sidebarOpen, skillGroups, user } = use(resolveCoreLayoutData())
-
   const organization = org ? user.organizations.find(({ id }) => id === org) : user.organizations?.[0]
 
   return (
-    <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
-      <SidebarProvider defaultOpen={sidebarOpen}>
-        <HeaderProvider>
-          <RouteListener />
-          <ProgressBar />
-          <AppSidebar />
-          <SidebarInset>
-            <AppHeader />
-            <AppMain>{children}</AppMain>
-          </SidebarInset>
-        </HeaderProvider>
-      </SidebarProvider>
-    </SessionProvider>
+    <SuspenseLayout>
+      <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
+        <SidebarProvider defaultOpen={sidebarOpen}>
+          <HeaderProvider>
+            <RouteListener />
+            <ProgressBar />
+            <AppSidebar />
+            <SidebarInset>
+              <AppHeader />
+              <AppMain>{children}</AppMain>
+            </SidebarInset>
+          </HeaderProvider>
+        </SidebarProvider>
+      </SessionProvider>
+    </SuspenseLayout>
   )
 }
-
-export default (props: LayoutProps<'/'>) => (
-  <SuspenseLayout size="full">
-    <CoreLayoutContent {...props} />
-  </SuspenseLayout>
-)

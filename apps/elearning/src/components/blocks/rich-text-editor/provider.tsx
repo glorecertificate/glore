@@ -64,17 +64,6 @@ export const PLUGINS = {
   trailingBlock: TrailingBlockKit,
 }
 
-// BlockPlaceholderPlugin.configure({
-//   options: {
-//     className:
-//       'before:absolute before:cursor-text before:text-muted-foreground/80 before:content-[attr(placeholder)]',
-//     placeholders: {
-//       [KEYS.p]: t('block'),
-//     },
-//     query: ({ path }) => path.length === 1,
-//   },
-// }),
-
 export type RichTextEditorPlugin = keyof typeof PLUGINS
 
 export interface RichTextEditorProviderProps

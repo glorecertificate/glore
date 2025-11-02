@@ -1,3 +1,5 @@
+'use client'
+
 import { usePathname as useNextPathname } from 'next/navigation'
 import { type AppRoutes } from 'next/types/routes'
 

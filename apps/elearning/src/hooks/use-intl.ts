@@ -3,6 +3,7 @@
 import { useCallback, useContext, useMemo } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
+import { type Json } from 'supabase/types'
 
 import { IntlContext } from '@/components/providers/intl-provider'
 import {
@@ -40,9 +41,12 @@ export const useIntl = () => {
   )
 
   const localize = useCallback(
-    (record?: IntlRecord, locale: Locale = context.locale) => {
-      if (!record) return record
-      return localizeFn(record, locale)
+    (record?: IntlRecord | Json, locale: Locale = context.locale) => {
+      if (typeof record === 'object' && !Array.isArray(record) && record !== null) {
+        return localizeFn(record as IntlRecord, locale)
+      }
+      console.warn('Invalid intl record:', record)
+      return ''
     },
     [context.locale]
   )

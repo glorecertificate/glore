@@ -5,37 +5,25 @@ import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { convertToCoreMessages, type Message, streamText, type TextStreamPart, type ToolSet } from 'ai'
 
-/**
- * Detects the first chunk in a buffer.
- */
-export type ChunkDetector = (buffer: string) => string | null | undefined
+const CHUNKING_REGEXPS = {
+  line: /\n+/m,
+  list: /.{8}/m,
+  word: /\S+\s+/m,
+}
 
-/**
- * Smooths text streaming output.
- *
- * @returns A transform stream that smooths text streaming output.
- */
+const CODE_BLOCK_REGEX = /```[^\s]+/
+
+type ChunkDetector = (buffer: string) => string | null | undefined
+
 const smoothStream = <TOOLS extends ToolSet>({
   _internal: { delay = originalDelay } = {},
   chunking = 'word',
   delayInMs = 10,
 }: {
-  /**
-   * Internal, for test use only.
-   */
   _internal?: {
     delay?: (delayInMs: number | null) => Promise<void>
   }
-  /**
-   * Controls how the text is chunked for streaming.
-   * Use "word" to stream word by word (default), "line" to stream line by line,
-   * or provide a custom RegExp pattern for custom chunking.
-   */
   chunking?: ChunkDetector | RegExp | 'line' | 'word'
-  /**
-   * Delay in milliseconds between each chunk defaulting to 10ms.
-   * Can be set to null to skip the delay.
-   */
   delayInMs?: ((buffer: string) => number) | number | null
 } = {}): ((options: { tools: TOOLS }) => TransformStream<TextStreamPart<TOOLS>, TextStreamPart<TOOLS>>) => {
   let detectChunk: ChunkDetector
@@ -43,9 +31,7 @@ const smoothStream = <TOOLS extends ToolSet>({
   if (typeof chunking === 'function') {
     detectChunk = buffer => {
       const match = chunking(buffer)
-
       if (!match) return null
-
       if (match.length === 0) throw new Error('Chunking function must return a non-empty string.')
 
       if (!buffer.startsWith(match))
@@ -86,18 +72,14 @@ const smoothStream = <TOOLS extends ToolSet>({
         }
 
         buffer += chunk.textDelta
-
         let match: string | null | undefined
-
         match = detectChunk(buffer)
+
         while (match) {
           controller.enqueue({ textDelta: match, type: 'text-delta' })
           buffer = buffer.slice(match.length)
-
           const _delayInMs = typeof delayInMs === 'number' ? delayInMs : (delayInMs?.(buffer) ?? 10)
-
           await delay(_delayInMs)
-
           match = detectChunk(buffer)
         }
       },
@@ -105,84 +87,45 @@ const smoothStream = <TOOLS extends ToolSet>({
   }
 }
 
-const CHUNKING_REGEXPS = {
-  line: /\n+/m,
-  list: /.{8}/m,
-  word: /\S+\s+/m,
-}
-
-const CODE_BLOCK_REGEX = /```[^\s]+/
-
-export const POST = async (req: NextRequest) => {
-  const {
-    apiKey: key,
-    messages,
-    system,
-  } = (await req.json()) as {
+export const POST = async (request: NextRequest) => {
+  const { apiKey, messages, system } = (await request.json()) as {
     apiKey?: string
     messages: Omit<Message, 'id'>[]
     system?: string
   }
 
-  const apiKey = key ?? process.env.OPENAI_API_KEY
+  const key = apiKey ?? process.env.OPENAI_API_KEY
 
-  if (!apiKey) {
+  if (!key) {
     return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })
   }
 
-  const openai = createOpenAI({ apiKey })
+  const openai = createOpenAI({ apiKey: key })
 
   let isInCodeBlock = false
   let isInTable = false
   let isInList = false
   let isInLink = false
+
   try {
     const result = streamText({
       experimental_transform: smoothStream({
         chunking: buffer => {
-          // Check for code block markers
-          if (CODE_BLOCK_REGEX.test(buffer)) {
-            isInCodeBlock = true
-          } else if (isInCodeBlock && buffer.includes('```')) {
-            isInCodeBlock = false
-          }
-          // test case: should not deserialize link with markdown syntax
-          if (buffer.includes('http')) {
-            isInLink = true
-          } else if (buffer.includes('https')) {
-            isInLink = true
-          } else if (buffer.includes('\n') && isInLink) {
-            isInLink = false
-          }
-          if (buffer.includes('*') || buffer.includes('-')) {
-            isInList = true
-          } else if (buffer.includes('\n') && isInList) {
-            isInList = false
-          }
-          // Simple table detection: enter on |, exit on double newline
-          if (!isInTable && buffer.includes('|')) {
-            isInTable = true
-          } else if (isInTable && buffer.includes('\n\n')) {
-            isInTable = false
-          }
+          if (CODE_BLOCK_REGEX.test(buffer)) isInCodeBlock = true
+          else if (isInCodeBlock && buffer.includes('```')) isInCodeBlock = false
+          if (buffer.includes('http')) isInLink = true
+          else if (buffer.includes('https')) isInLink = true
+          else if (buffer.includes('\n') && isInLink) isInLink = false
+          if (buffer.includes('*') || buffer.includes('-')) isInList = true
+          else if (buffer.includes('\n') && isInList) isInList = false
+          if (!isInTable && buffer.includes('|')) isInTable = true
+          else if (isInTable && buffer.includes('\n\n')) isInTable = false
 
-          // Use line chunking for code blocks and tables, word chunking otherwise
-          // Choose the appropriate chunking strategy based on content type
           let match: RegExpExecArray | null
-
-          if (isInCodeBlock || isInTable || isInLink) {
-            // Use line chunking for code blocks and tables
-            match = CHUNKING_REGEXPS.line.exec(buffer)
-          } else if (isInList) {
-            // Use list chunking for lists
-            match = CHUNKING_REGEXPS.list.exec(buffer)
-          } else {
-            // Use word chunking for regular text
-            match = CHUNKING_REGEXPS.word.exec(buffer)
-          }
-          if (!match) {
-            return null
-          }
+          if (isInCodeBlock || isInTable || isInLink) match = CHUNKING_REGEXPS.line.exec(buffer)
+          else if (isInList) match = CHUNKING_REGEXPS.list.exec(buffer)
+          else match = CHUNKING_REGEXPS.word.exec(buffer)
+          if (!match) return null
 
           return buffer.slice(0, match.index) + match?.[0]
         },

@@ -1,27 +1,29 @@
 import { type Locale } from 'next-intl'
 
-import { type CookiesConfig, defineCookies } from '@glore/utils/cookies'
+import { defineCookies } from '@glore/utils/cookies'
 
 import { type Course, type User } from '@/lib/data'
 import { type CourseListView } from '@/lib/navigation'
+import { type Theme } from '@/lib/theme'
 
 export interface Cookies {
-  'course-locale': Record<Course['slug'], Locale>
-  'course-list-locales': Locale[]
-  'course-list-view': CourseListView
+  course_list_groups: string[]
+  course_list_locales: Locale[]
+  course_list_view: CourseListView
+  course_locale: Record<Course['slug'], Locale>
+  email: string
+  login_user: string
   NEXT_LOCALE: Locale
   org: number
-  'sidebar-open': boolean
-  email: string
+  sidebar_open: boolean
+  theme: Theme
   user: User
 }
 
 export type Cookie = keyof Cookies
 
-export const COOKIES_CONFIG: CookiesConfig<Cookies> = {
+export const cookieStore = defineCookies<Cookies>({
   expires: 60 * 60 * 24 * 30,
   prefix: process.env.NEXT_PUBLIC_COOKIE_PREFIX ?? 'glore.',
-  resets: ['course-list-locales', 'course-list-view'],
-}
-
-export const cookies = defineCookies<Cookies>(COOKIES_CONFIG)
+  resets: ['course_list_locales', 'course_list_view'],
+})

@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useTranslations } from 'next-intl'
 
 import { GloreIcon } from '@/components/icons/glore'
@@ -15,13 +13,14 @@ import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 
 export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
-  const { hasShadow, header } = useHeader()
   const pathname = usePathname()
+  const t = useTranslations('Common')
+
+  const { hasShadow, header } = useHeader()
   const { scrolled } = useScroll()
   const { open } = useSidebar()
-  const t = useTranslations()
 
-  const sidebarAction = useMemo(() => (open ? t('Common.sidebarClose') : t('Common.sidebarOpen')), [open, t])
+  const sidebarAction = open ? t('sidebarClose') : t('sidebarOpen')
 
   return (
     <header

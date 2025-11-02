@@ -12,7 +12,7 @@ import { apiRoute } from '@/lib/navigation'
 import { publicAsset } from '@/lib/storage'
 
 export const APP_NAME = metadata.shortName
-export const APP_URL = (process.env.APP_URL as HTTPUrl) ?? ''
+export const APP_URL = process.env.APP_URL as HTTPUrl
 
 export const METADATA = {
   metadataBase: APP_URL,
@@ -112,7 +112,7 @@ export const createMetadata = async <T extends boolean>(options: MetadataOptions
 
   const title = userTitle
     ? `${translate ? tNav(userTitle as NavigationKey) : userTitle} ${separator} ${metadata.name}`
-    : t('title')
+    : metadata.name
   const description = userDescription
     ? translate
       ? tNav(userDescription as NavigationKey)

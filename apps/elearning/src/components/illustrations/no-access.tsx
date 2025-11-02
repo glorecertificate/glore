@@ -1,4 +1,4 @@
-export const NoAccess = (props: React.SVGProps<SVGSVGElement>) => (
+export const NoAccessIllustration = (props: React.SVGProps<SVGSVGElement>) => (
   <svg fill="none" height="384" viewBox="0 0 374 384" width="374" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path d="m347.023 51.67-39.697-39.6973-280.3499 280.3493 39.6973 39.698z" fill="#e2162a" />
     <path d="m66.67 11.9765-39.6973 39.6973 280.3493 280.3492 39.698-39.697z" fill="#e2162a" />
@@ -216,5 +216,3 @@ export const NoAccess = (props: React.SVGProps<SVGSVGElement>) => (
     />
   </svg>
 )
-
-export const NoAccessGraphic = NoAccess

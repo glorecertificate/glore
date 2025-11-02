@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -20,18 +20,7 @@ export default ({ error }: ErrorProps) => {
     console.error(error)
   }, [error])
 
-  const canGoBack = useMemo(() => {
-    const previousUrl = document.referrer
-    return previousUrl?.startsWith(window.location.origin) && previousUrl !== window.location.href
-  }, [])
-
-  const onBackClick = useCallback(() => {
-    router.back()
-  }, [router])
-
-  const reload = useCallback(() => {
-    window.location.reload()
-  }, [])
+  const canGoBack = document.referrer?.startsWith(window.location.origin) && document.referrer !== window.location.href
 
   return (
     <ErrorView
@@ -45,7 +34,7 @@ export default ({ error }: ErrorProps) => {
       }
     >
       {canGoBack ? (
-        <Button onClick={onBackClick} size="lg" variant="outline">
+        <Button onClick={() => router.back()} size="lg" variant="outline">
           {t('backToPrevious')}
         </Button>
       ) : (
@@ -55,7 +44,7 @@ export default ({ error }: ErrorProps) => {
           </Button>
         )
       )}
-      <Button onClick={reload} size="lg" variant="outline">
+      <Button onClick={() => window.location.reload()} size="lg" variant="outline">
         {t('refreshPage')}
       </Button>
     </ErrorView>

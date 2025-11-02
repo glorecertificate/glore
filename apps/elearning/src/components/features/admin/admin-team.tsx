@@ -6,7 +6,7 @@ import { CheckIcon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon, Us
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { Loader } from '@/components/icons/loader'
+import { Spinner } from '@/components/icons/spinner'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -217,7 +217,7 @@ export const AdminTeam = () => {
             {loading ? (
               <TableRow>
                 <TableCell className="h-24 text-center" colSpan={6}>
-                  <Loader className="size-4" />
+                  <Spinner className="size-4" />
                 </TableCell>
               </TableRow>
             ) : filteredUsers.length === 0 ? (

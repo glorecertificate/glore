@@ -6,6 +6,7 @@ import { useCallback, useId, useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type PostgrestError } from '@supabase/supabase-js'
 import { Link2Icon } from 'lucide-react'
+import { type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -14,6 +15,7 @@ import z from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { IconPicker } from '@/components/ui/icon-picker'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -42,6 +44,7 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
       z.object({
         type: z.enum(COURSE_TYPES),
         skill_group_id: z.number().nullable(),
+        icon: z.string().optional(),
         slug: z.string().regex(COURSE_SLUG_REGEX, t('invalidSlugFormat')).min(5, t('courseSlugTooShort')),
       }),
     [t]
@@ -53,13 +56,14 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
     defaultValues: {
       type: initialCourse?.type ?? 'intro',
       skill_group_id: initialCourse?.skillGroup?.id ?? null,
+      icon: initialCourse?.icon ?? '',
       slug: initialCourse?.slug ?? '',
     },
   })
   form.watch()
 
   const slugId = useId()
-  const slugPrefix = useMemo(() => `${window.location.origin}/courses/`, [])
+  const slugPrefix = `${window.location.origin}/courses/`
 
   const disabled = useMemo(
     () => !form.formState.isDirty || form.formState.isSubmitting || !form.formState.isValid,
@@ -72,6 +76,15 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
     if (!form.formState.isValid) return // tCommon('fixErrorsToContinue')
     return isNew ? t('createCourse') : t('saveChanges')
   }, [form.formState, isNew, t, tCommon])
+
+  const onSlugChange = useCallback(
+    (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target
+      const slug = value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+      onChange(slug)
+    },
+    []
+  )
 
   const createSettings = useMemo(
     () => async (schema: z.infer<typeof formSchema>) => {
@@ -173,6 +186,26 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
           />
           <FormField
             control={form.control}
+            name="icon"
+            render={({ field }) => (
+              <FormItem
+                className={cn('space-y-1', form.getValues('type') === 'intro' && 'pointer-events-none opacity-50')}
+              >
+                <div className="flex flex-col space-y-1">
+                  <FormLabel className="text-[15px]">{t('icon')}</FormLabel>
+                  <FormDescription>{t('iconDescription')}</FormDescription>
+                </div>
+                <IconPicker
+                  className="w-fit justify-start"
+                  defaultValue={field.value as IconName | undefined}
+                  onValueChange={field.onChange}
+                  tooltips={false}
+                />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="slug"
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
@@ -191,11 +224,7 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
                     className="pl-0.5!"
                     disabled={form.formState.isSubmitting}
                     id={slugId}
-                    onChange={e => {
-                      const { value } = e.target
-                      const slug = value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
-                      onChange(slug)
-                    }}
+                    onChange={onSlugChange(onChange)}
                     {...field}
                   />
                 </InputGroup>

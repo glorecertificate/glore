@@ -8,8 +8,8 @@ import { useTranslations } from 'next-intl'
 import config from '@config/app'
 
 import { CertificateDocument } from '@/components/features/certificates/certificate-document'
-import { CertificateGraphic } from '@/components/graphics/certificate'
-import { NoAccessGraphic } from '@/components/graphics/no-access'
+import { CertificateIllustration } from '@/components/illustrations/certificate'
+import { NoAccessIllustration } from '@/components/illustrations/no-access'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { useSession } from '@/hooks/use-session'
@@ -44,9 +44,9 @@ export const CertificateView = () => {
   const NoCertificateImage = useMemo(
     () =>
       canRequestCertificate ? (
-        <CertificateGraphic className="mx-auto mb-6" width={300} />
+        <CertificateIllustration className="mx-auto mb-6" width={300} />
       ) : (
-        <NoAccessGraphic className="mx-auto mb-0" width={220} />
+        <NoAccessIllustration className="mx-auto mb-0" width={220} />
       ),
     [canRequestCertificate]
   )

@@ -16,34 +16,15 @@ import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
 import { GloreIcon } from '@/components/icons/glore'
-import { Button, type ButtonProps } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useSearchParams } from '@/hooks/use-search-params'
 import { useTheme } from '@/hooks/use-theme'
-import { EMAIL_REGEX } from '@/lib/constants'
+import { EMAIL_REGEX } from '@/lib/data'
 import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
-
-const themeColors = {
-  light: rgbRecord(themeConfig.colors.light),
-  dark: rgbRecord(themeConfig.colors.dark),
-}
-
-const AuthActionButton = ({ children, ...props }: ButtonProps) => (
-  <Button
-    className="mx-auto justify-center"
-    effect="expandIcon"
-    icon={ArrowRightIcon}
-    iconPlacement="right"
-    size="lg"
-    variant="outline"
-    {...props}
-  >
-    {children}
-  </Button>
-)
 
 interface AuthFlowProps {
   defaultUsername?: string
@@ -56,16 +37,14 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
   const { resolvedTheme } = useTheme()
   const t = useTranslations('Auth')
 
-  const { setTitleKey } = useMetadata({
-    namespace: 'Auth',
-    titleKey: snakeToCamel(`${defaultView}_title`),
-    fullTitle: true,
-    ogDescription: true,
-  })
-
   const [view, setView] = useState(defaultView)
   const [errored, setErrored] = useState(false)
   const [username, setUsername] = useState(defaultUsername)
+
+  useMetadata({
+    applicationName: 'full',
+    title: t(snakeToCamel(`${view}_meta_title`)),
+  })
 
   const title = view ? t(snakeToCamel(`${view}_title`)) : null
 
@@ -74,7 +53,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
     if (view !== 'email_sent') return t(snakeToCamel(`${view}_message`))
     return t.rich('emailSentMessage', {
       email: () =>
-        username && EMAIL_REGEX.test(username) ? <span className="font-semibold">{` ${username} `}</span> : null,
+        username && EMAIL_REGEX.test(username) ? <span className="font-medium">{` ${username} `}</span> : null,
     })
   }, [username, t, view])
 
@@ -98,16 +77,46 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
       case 'password_reset':
         return <PasswordResetForm setErrored={setErrored} setView={setView} token={token} />
       case 'password_updated':
-        return <AuthActionButton onClick={() => setView('login')}>{t('passwordUpdatedAction')}</AuthActionButton>
+        return (
+          <Button
+            className="mx-auto justify-center"
+            effect="expandIcon"
+            icon={ArrowRightIcon}
+            iconPlacement="right"
+            onClick={() => setView('login')}
+            size="lg"
+            variant="outline"
+          >
+            {t('passwordUpdatedAction')}
+          </Button>
+        )
       case 'invalid_token':
         return (
-          <AuthActionButton onClick={() => setView('password_request')}>{t('invalidTokenAction')}</AuthActionButton>
+          <Button
+            className="mx-auto justify-center"
+            effect="expandIcon"
+            icon={ArrowRightIcon}
+            iconPlacement="right"
+            onClick={() => setView('password_request')}
+            size="lg"
+            variant="outline"
+          >
+            {t('invalidTokenAction')}
+          </Button>
         )
       case 'invalid_password_reset':
         return (
-          <AuthActionButton onClick={() => setView('password_request')}>
+          <Button
+            className="mx-auto justify-center"
+            effect="expandIcon"
+            icon={ArrowRightIcon}
+            iconPlacement="right"
+            onClick={() => setView('password_request')}
+            size="lg"
+            variant="outline"
+          >
             {t('invalidPasswordResetAction')}
-          </AuthActionButton>
+          </Button>
         )
       default:
         return null
@@ -120,10 +129,6 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
       searchParams.delete('resetToken')
     }
   }, [])
-
-  useEffect(() => {
-    setTitleKey(snakeToCamel(`${view}_meta_title`))
-  }, [setTitleKey, view])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
@@ -149,7 +154,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
   const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
 
   const globeColorOptions = useMemo<GlobeColorOptions>(() => {
-    const colors = themeColors[resolvedTheme ?? 'light']
+    const colors = rgbRecord(themeConfig.colors[resolvedTheme ?? 'light'])
     const options = { glowColor: colors.background } as GlobeColorOptions
 
     if (errored || view === 'invalid_token' || view === 'invalid_password_reset')

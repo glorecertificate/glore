@@ -12,7 +12,7 @@ import { parseUser } from './utils'
 
 const run = createRepositoryRunner(getDatabase)
 
-const loadUser = async (database: DatabaseClient, id: string): Promise<User> => {
+const loadUser = async (database: DatabaseClient, id: string) => {
   const result = await database.from('users').select(userQuery).eq('id', id).single()
   return parseUser(expectSingle(result, 'PGRST116', 'User not found'))
 }
@@ -41,7 +41,7 @@ export const getCurrentUser = cache(
 
       const user = await requireAuthUser(database)
 
-      return (await loadUser(database, user.id)) as CurrentUser
+      return await loadUser(database, user.id)
     })
 )
 

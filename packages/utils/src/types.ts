@@ -65,7 +65,7 @@ export type Json =
   | Json[]
 
 /**
- * Record with keys converted from snake to camel case.
+ * Snake case to camel case conversion.
  *
  * @example
  * ```ts
@@ -75,6 +75,62 @@ export type Json =
 export type SnakeToCamel<S extends string | number | symbol> = S extends `${infer T}_${infer U}`
   ? `${T}${Capitalize<SnakeToCamel<U>>}`
   : S
+
+/**
+ * Camel case to snake case conversion.
+ *
+ * @example
+ * ```ts
+ * type SnakeCaseString = CamelToSnake<'helloWorld'> // 'hello_world'
+ * ```
+ */
+export type CamelToSnake<S extends string> = S extends `${infer T}${infer U}`
+  ? U extends Uncapitalize<U>
+    ? `${T}${CamelToSnake<U>}`
+    : `${T}_${Lowercase<CamelToSnake<U>>}`
+  : S
+
+/**
+ * Converts the top-level keys of a record from snake case to camel case.
+ *
+ * @example
+ * ```ts
+ * type CamelCaseRecord = SnakeToCamelRecord<{ first_name: string; address_info: { street_name: string } }>
+ * // Result: { first_name: string; addressInfo: { streetName: string } }
+ * ```
+ */
+export type SnakeToCamelRecord<T extends AnyRecord> = {
+  [K in keyof T as SnakeToCamel<K>]: T[K] extends AnyRecord
+    ? SnakeToCamelRecord<T[K]>
+    : T[K] extends AnyArray
+      ? T[K] extends Array<infer U>
+        ? U extends AnyRecord
+          ? SnakeToCamelRecord<U>[]
+          : T[K]
+        : T[K]
+      : T[K]
+}
+
+/**
+ * Recursively converts all keys of a record from camel case to snake case.
+ *
+ * @example
+ * ```ts
+ * type SnakeCaseRecord = CamelToSnakeRecord<{ first_name: string; addressInfo: { streetName: string } }>
+ * // Result: { first_name: string; address_info: { street_name: string } }
+ * ```
+ */
+export type CamelToSnakeRecord<T extends AnyRecord> = {
+  [K in keyof T as CamelToSnake<K & string>]: T[K] extends AnyRecord
+    ? CamelToSnakeRecord<T[K]>
+    : T[K] extends AnyArray
+      ? T[K] extends Array<infer U>
+        ? U extends AnyRecord
+          ? CamelToSnakeRecord<U>[]
+          : T[K]
+        : T[K]
+      : T[K]
+}
 
 /**
  * Email type.
@@ -128,3 +184,18 @@ export type Replace<S extends string, From extends string, To extends string = '
 export type ExcludeFrom<T extends AnyRecord, U extends AnyRecord> = Partial<{
   [K in Exclude<keyof T, keyof U>]: T[K]
 }>
+
+/**
+ * Makes all properties of T recursively optional.
+ */
+export type DeepPartial<T> = T extends (infer U)[]
+  ? DeepPartial<U>[]
+  : T extends readonly (infer U)[]
+    ? readonly DeepPartial<U>[]
+    : T extends {
+          [key in keyof T]: T[key]
+        }
+      ? {
+          [K in keyof T]?: DeepPartial<T[K]>
+        }
+      : T

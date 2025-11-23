@@ -7,7 +7,6 @@ import { type PostgrestError } from '@supabase/supabase-js'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { type Enums } from 'supabase/types'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -22,11 +21,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { type Course, getSkillGroups, type SkillGroup } from '@/lib/data'
-
-const SLUG_REGEX = /^[a-z0-9-]+$/
+import { COURSE_SLUG_REGEX, type Course, getSkillGroups, type SkillGroup } from '@/lib/data'
+import { type Enums } from '../../../../supabase/types'
 
 interface CourseSettingsModalProps {
   course?: Partial<Course>
@@ -74,7 +73,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
       e.preventDefault()
       setIsCreating(true)
 
-      if (!SLUG_REGEX.test(slug)) {
+      if (!COURSE_SLUG_REGEX.test(slug)) {
         toast.error(t('invalidSlugFormat'))
         setIsCreating(false)
         return
@@ -187,11 +186,15 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
                 <Button disabled={isCreating} onClick={() => handleOpenChange(false)} type="button" variant="outline">
                   {tCommon('cancel')}
                 </Button>
-                <Button disabled={isDisabled} disabledCursor loading={isCreating} type="submit" variant="brand">
-                  {t('createCourse')}
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button disabled={isDisabled} loading={isCreating} type="submit" variant="brand">
+                      {t('createCourse')}
+                    </Button>
+                  </TooltipTrigger>
+                  {disabledMessage && <TooltipContent>{disabledMessage}</TooltipContent>}
+                </Tooltip>
               </div>
-              {disabledMessage && <p className="text-right text-muted-foreground text-xs">{disabledMessage}</p>}
             </div>
           </DialogFooter>
         </form>

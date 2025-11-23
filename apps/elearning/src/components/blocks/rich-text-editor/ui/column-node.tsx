@@ -78,7 +78,7 @@ export const ColumnElement = withHOC(ResizableProvider, (props: PlateElementProp
 })
 
 const ColumnDragHandle = memo(() => {
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   return (
     <TooltipProvider>
@@ -94,7 +94,6 @@ const ColumnDragHandle = memo(() => {
             />
           </Button>
         </TooltipTrigger>
-
         <TooltipContent>{t('tableDragColumn')}</TooltipContent>
       </Tooltip>
     </TooltipProvider>

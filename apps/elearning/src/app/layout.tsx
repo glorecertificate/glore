@@ -9,10 +9,8 @@ import { getLocale, getMessages, getTranslations } from 'next-intl/server'
 import metadata from '@config/metadata'
 import theme from '@config/theme'
 
-import { SuspenseLayout } from '@/components/layout/suspense-layout'
 import { IntlProvider } from '@/components/providers/intl-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { intlMetadata } from '@/lib/metadata'
 import { publicAsset } from '@/lib/storage'
@@ -34,22 +32,18 @@ export default async ({ children }: LayoutProps<'/'>) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body>
-        <SuspenseLayout size="full">
-          <IntlProvider locale={locale} messages={messages}>
-            <ThemeProvider themes={Object.keys(theme.modes)}>
-              <ProgressBarProvider>
-                {children}
-                <Toaster />
-                <Analytics />
-                <SpeedInsights />
-              </ProgressBarProvider>
-            </ThemeProvider>
-          </IntlProvider>
-          <Script id="jsonLd" type="application/ld+json">
-            {JSON.stringify(jsonLd)}
-          </Script>
-        </SuspenseLayout>
+      <body suppressHydrationWarning>
+        <IntlProvider locale={locale} messages={messages}>
+          <ThemeProvider themes={Object.keys(theme.modes)}>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </IntlProvider>
+        <Analytics />
+        <SpeedInsights />
+        <Script id="jsonLd" type="application/ld+json">
+          {JSON.stringify(jsonLd)}
+        </Script>
       </body>
     </html>
   )

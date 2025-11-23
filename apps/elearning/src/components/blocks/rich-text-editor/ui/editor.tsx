@@ -83,7 +83,7 @@ export const editorContainerVariants = cva(
           has-aria-disabled:border-input has-aria-disabled:bg-muted
           has-[[data-slate-editor]:focus]:border-brand/50 has-[[data-slate-editor]:focus]:ring-2 has-[[data-slate-editor]:focus]:ring-brand/30
         `,
-        default: 'h-full',
+        default: '',
         select: `
           group rounded-md border border-input ring-offset-background
           focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2

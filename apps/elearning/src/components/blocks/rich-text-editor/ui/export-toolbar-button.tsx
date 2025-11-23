@@ -23,7 +23,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 const siteUrl = 'https://platejs.org'
 
 export const ExportToolbarButton = (props: DropdownMenuProps) => {
-  const t = useTranslations('Editor.actions')
+  const t = useTranslations('Components.RichTextEditor.actions')
   const editor = useEditorRef()
   const [open, setOpen] = useState(false)
 

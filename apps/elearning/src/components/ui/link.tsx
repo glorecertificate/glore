@@ -13,6 +13,7 @@ import { type ExternalRoute } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 export interface LinkProps<T> extends NextLinkProps<T>, VariantProps<typeof linkVariants> {
+  className?: string
   /** @default true */
   progress?: boolean | Exclude<ProgressBarProps['variant'], undefined | null>
 }

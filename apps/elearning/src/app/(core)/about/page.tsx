@@ -1,7 +1,7 @@
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = intlMetadata({
-  title: 'about',
+  title: 'Navigation.about',
 })
 
 export default () => <h1>{'About'}</h1>

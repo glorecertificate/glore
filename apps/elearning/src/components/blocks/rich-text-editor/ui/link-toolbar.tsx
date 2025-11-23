@@ -14,6 +14,7 @@ import {
 } from '@platejs/link/react'
 import { cva } from 'class-variance-authority'
 import { ExternalLinkIcon, LinkIcon, TextIcon, UnlinkIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { KEYS, type TLinkElement } from 'platejs'
 import { useEditorRef, useEditorSelection, useFormInputProps, usePluginOption } from 'platejs/react'
 
@@ -34,6 +35,7 @@ const inputVariants = cva(
 )
 
 export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarState }) => {
+  const t = useTranslations('Components.RichTextEditor.media')
   const activeCommentId = usePluginOption({ key: KEYS.comment }, 'activeId') as string | undefined
   const activeSuggestionId = usePluginOption({ key: KEYS.suggestion }, 'activeId') as string | undefined
 
@@ -98,7 +100,7 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
   ) : (
     <div className="box-content flex items-center">
       <button className={buttonVariants({ size: 'sm', variant: 'ghost' })} type="button" {...editButtonProps}>
-        {'Edit link'}
+        {t('editLink')}
       </button>
 
       <Separator orientation="vertical" />
@@ -122,11 +124,10 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
 
   return (
     <>
-      <div className={popoverVariants()} ref={insertRef} {...insertProps}>
+      <div className={popoverVariants()} ref={insertRef} {...(insertProps as React.HTMLAttributes<HTMLDivElement>)}>
         {input}
       </div>
-
-      <div className={popoverVariants()} ref={editRef} {...editProps}>
+      <div className={popoverVariants()} ref={editRef} {...(editProps as React.HTMLAttributes<HTMLDivElement>)}>
         {editContent}
       </div>
     </>

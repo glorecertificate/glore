@@ -22,7 +22,7 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 export const useColors = () => {
-  const t = useTranslations('Editor.colors')
+  const t = useTranslations('Components.RichTextEditor.colors')
 
   return useMemo(
     () => ({
@@ -557,7 +557,7 @@ const PureColorPicker = ({
   updateCustomColor: (color: string) => void
   color?: string
 }) => {
-  const t = useTranslations('Editor.colors')
+  const t = useTranslations('Components.RichTextEditor.colors')
 
   return (
     <div className={cn('flex flex-col', className)} {...props}>
@@ -657,7 +657,6 @@ const ColorCustom = ({
               e.preventDefault()
             }}
           >
-            <span className="sr-only">{'Custom'}</span>
             <PlusIcon />
           </DropdownMenuItem>
         </ColorInput>

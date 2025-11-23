@@ -55,6 +55,7 @@ const useMultiSelect = () => {
 
 export interface MultiSelectProps extends PopoverProps {
   disabled?: boolean
+  entity?: string
   loading?: boolean
   options: string[]
   onValueChange: (selected: string[]) => void
@@ -69,6 +70,7 @@ export interface MultiSelectProps extends PopoverProps {
 export const MultiSelect = ({
   children,
   disabled,
+  entity,
   loading,
   onValueChange,
   options,
@@ -168,13 +170,12 @@ export const MultiSelectBadge = ({
     <Badge
       asChild
       className={cn(
-        'group h-5.5 items-center justify-between gap-0.5 px-1.5 py-0',
+        'group/multi-select-badge gap-0.5 px-2',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         className
       )}
       onClick={() => selectOption(value)}
       onKeyDown={onKeyDown}
-      size="sm"
       tabIndex={0}
       title={title}
       {...props}
@@ -185,11 +186,11 @@ export const MultiSelectBadge = ({
           className={cn(
             'translate-x-[3px] rounded-full p-[1.5px] transition-all',
             !disabled &&
-              'group-hover:border-destructive-accent group-hover:bg-destructive/75 group-hover:text-destructive-foreground'
+              'group-hover/multi-select-badge:border-destructive-accent group-hover/multi-select-badge:bg-destructive/75 group-hover/multi-select-badge:text-destructive-foreground'
           )}
           role="button"
         >
-          <XIcon className={cn('size-2', !disabled && 'group-hover:stroke-white')} />
+          <XIcon className={cn('size-2', !disabled && 'group-hover/multi-select-badge:stroke-white')} />
         </span>
       </span>
     </Badge>
@@ -200,7 +201,7 @@ export const MultiSelectBadge = ({
   return (
     <Tooltip delayDuration={tooltipDelay} disableHoverableContent>
       <TooltipTrigger asChild>{badge}</TooltipTrigger>
-      <TooltipContent align="center" arrow={false} className="text-[11px]" side="top">
+      <TooltipContent align="center" className="text-[11px]" side="top">
         {disabledMessage}
       </TooltipContent>
     </Tooltip>

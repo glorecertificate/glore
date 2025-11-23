@@ -54,9 +54,9 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   }, [format, locale, resolveLanguageLabel, t, user.languages])
 
   const contactTitle = useMemo(() => {
-    if (!user.firstName) return
-    return t('User.contact', { user: user.firstName })
-  }, [t, user.firstName])
+    if (!user.first_name) return
+    return t('User.contact', { user: user.first_name })
+  }, [t, user.first_name])
 
   const isVisible = useCallback(
     (key: keyof User) => {
@@ -70,14 +70,14 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   return (
     <div className="flex items-start gap-3">
       <Avatar className="size-7 rounded-full object-cover shadow-sm">
-        {user.avatarUrl && <AvatarImage alt={user.fullName ?? ''} src={user.avatarUrl} />}
+        {user.avatar_url && <AvatarImage alt={user.fullName ?? ''} src={user.avatar_url} />}
         <AvatarFallback className="font-semibold text-muted-foreground text-xs">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1">
             <h4 className="font-semibold text-sm leading-none">{user.fullName}</h4>
-            {isVisible('isAdmin') && (
+            {isVisible('is_admin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
                   <ShieldUserIcon className="size-3.5" />
@@ -87,7 +87,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
                 </TooltipContent>
               </Tooltip>
             )}
-            {isVisible('isEditor') && (
+            {isVisible('is_editor') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
                   <PencilIcon className="size-3" />

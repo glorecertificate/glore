@@ -5,9 +5,9 @@ import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
 import metadata from '@config/metadata'
-import { type HTTPUrl } from '@glore/utils/types'
+import { type Any, type HTTPUrl } from '@glore/utils/types'
 
-import { LOCALES, type NavigationKey } from '@/lib/intl'
+import { getAlternateLocales, LOCALES, type MessageKey } from '@/lib/intl'
 import { apiRoute } from '@/lib/navigation'
 import { publicAsset } from '@/lib/storage'
 
@@ -73,31 +73,35 @@ export const METADATA = {
 /**
  * Options for generating metadata.
  *
- * @template T - Boolean indicating whether to translate title and description.
+ * @template Translate - Boolean indicating whether to translate title and description.
  */
-export interface MetadataOptions<T extends boolean> {
-  description?: T extends true ? NavigationKey : string
+export interface MetadataOptions<Translate extends boolean = true> {
+  applicationName?: boolean | 'full'
+  description?: Translate extends true ? MessageKey : string
   image?: string
+  translate?: Translate
   separator?: string
-  translate?: T
-  title?: T extends true ? NavigationKey : string
+  title?: Translate extends true ? MessageKey : string
 }
 
 /**
  * Translates and merges the provided options with the defaults and returns a generator function.
  */
 export const intlMetadata =
-  <R extends AppRoutes, T extends boolean = true>(options: MetadataOptions<T> = {}) =>
+  <R extends AppRoutes, Translate extends boolean = true>(options: MetadataOptions<Translate> = {}) =>
   async (_: PageProps<R>) =>
-    await createMetadata<T>(options)
+    await createIntlMetadata<Translate>(options)
 
 /**
  * Translates and merges asynchronously the provided values with the defaults.
  *
  * When `translate` is set to `true` (default behavior), title and description must be valid translation keys.
  */
-export const createMetadata = async <T extends boolean>(options: MetadataOptions<T> = {}): Promise<Metadata> => {
+export const createIntlMetadata = async <Translate extends boolean = true>(
+  options: MetadataOptions<Translate> = {}
+): Promise<Metadata> => {
   const {
+    applicationName = true,
     description: userDescription,
     image,
     separator = metadata.separator,
@@ -105,19 +109,18 @@ export const createMetadata = async <T extends boolean>(options: MetadataOptions
     translate = true,
   } = options
 
-  const tNav = await getTranslations('Navigation')
-  const t = await getTranslations('Metadata')
   const locale = await getLocale()
-  const alternateLocale = LOCALES.filter(language => language !== locale)[0]
+  const alternateLocale = getAlternateLocales(locale)
+  const tMeta = await getTranslations('Metadata')
+  const t = translate ? await getTranslations() : (key: string) => key
 
-  const title = userTitle
-    ? `${translate ? tNav(userTitle as NavigationKey) : userTitle} ${separator} ${metadata.name}`
-    : metadata.name
-  const description = userDescription
-    ? translate
-      ? tNav(userDescription as NavigationKey)
-      : userDescription
-    : t('description')
+  const pageTitle = userTitle ? (translate ? t(userTitle as Any) : userTitle) : undefined
+  const title = pageTitle
+    ? applicationName
+      ? `${pageTitle} ${separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+      : pageTitle
+    : tMeta('title')
+  const description = userDescription ? (translate ? t(userDescription as Any) : userDescription) : tMeta('description')
 
   const { openGraph, ...defaultMetadata } = METADATA
 

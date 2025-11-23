@@ -28,7 +28,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
   const { localize, localizeDate } = useIntl()
   const t = useTranslations()
 
-  const isIssued = useMemo(() => !!certificate.issuedAt, [certificate])
+  const isIssued = useMemo(() => !!certificate.issued_at, [certificate])
 
   // const renderStarRating = useCallback(
   //   (rating: number) => (
@@ -52,9 +52,9 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CardTitle className="text-2xl">
               {t('Certificates.title')} {localize(certificate.organization.description)}
             </CardTitle>
-            {certificate.issuedAt && (
+            {certificate.issued_at && (
               <CardDescription>
-                {t('Certificates.issuedOn')} {localizeDate(certificate.issuedAt)}
+                {t('Certificates.issuedOn')} {localizeDate(certificate.issued_at)}
               </CardDescription>
             )}
           </div>
@@ -80,7 +80,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         <div className="flex flex-col items-center justify-center space-y-2">
           <p>{t('Certificates.certificateMessagePre')}</p>
           <h3 className="font-bold text-xl">
-            {user.firstName} {user.lastName}
+            {user.first_name} {user.last_name}
           </h3>
           <p>
             {t('Certificates.certificateMessagePost', {
@@ -90,8 +90,8 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         </div>
         <div className="grid grid-cols-1 gap-6 pb-4 md:grid-cols-2">
           <div className="flex items-start space-x-3">
-            {certificate.organization.avatarUrl ? (
-              <Image src={certificate.organization.avatarUrl} width={20} />
+            {certificate.organization.avatar_url ? (
+              <Image src={certificate.organization.avatar_url} width={20} />
             ) : (
               <BuildingIcon className="mt-0.5 size-5 text-muted-foreground" />
             )}
@@ -106,7 +106,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
               <div>
                 <h3 className="font-medium">{t('Certificates.reviewedBy')}</h3>
                 <p>
-                  {certificate.reviewer?.firstName} {certificate.reviewer?.lastName}
+                  {certificate.reviewer?.first_name} {certificate.reviewer?.last_name}
                 </p>
               </div>
             </div>
@@ -121,7 +121,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.startDate')}</h3>
-              <p>{localizeDate(certificate.activityStartDate, 'short')}</p>
+              <p>{localizeDate(certificate.activity_start_date, 'short')}</p>
             </div>
           </div>
 
@@ -129,7 +129,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.endDate')}</h3>
-              <p>{localizeDate(certificate.activityEndDate, 'short')}</p>
+              <p>{localizeDate(certificate.activity_end_date, 'short')}</p>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <div>
               <h3 className="font-medium">{t('Common.duration')}</h3>
               <p>
-                {certificate.activityDuration} {t('Common.hours').toLowerCase()}
+                {certificate.activity_duration} {t('Common.hours').toLowerCase()}
               </p>
             </div>
           </div>
@@ -149,7 +149,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         {/* Description */}
         <div className="py-4">
           <h3 className="mb-2 font-medium">{t('Certificates.certificateDescription')}</h3>
-          <p className="whitespace-pre-line text-muted-foreground">{certificate.activityDescription}</p>
+          <p className="whitespace-pre-line text-muted-foreground">{certificate.activity_description}</p>
         </div>
 
         <Separator />

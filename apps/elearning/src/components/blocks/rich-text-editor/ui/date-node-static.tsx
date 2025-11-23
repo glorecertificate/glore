@@ -1,7 +1,9 @@
+import { useTranslations } from 'next-intl'
 import { SlateElement, type SlateElementProps, type TDateElement } from 'platejs'
 
 export const DateElementStatic = (props: SlateElementProps<TDateElement>) => {
   const { element } = props
+  const t = useTranslations('Components.RichTextEditor.actions')
 
   return (
     <SlateElement className="inline-block" {...props}>
@@ -31,7 +33,7 @@ export const DateElementStatic = (props: SlateElementProps<TDateElement>) => {
             })
           })()
         ) : (
-          <span>{'Pick a date'}</span>
+          <span>{t('pickDate')}</span>
         )}
       </span>
       {props.children}

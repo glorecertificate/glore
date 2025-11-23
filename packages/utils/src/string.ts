@@ -1,4 +1,7 @@
-import { type SnakeToCamel } from './types'
+import { type CamelToSnake, type SnakeToCamel } from './types'
+
+const SNAKE_TO_CAMEL_REGEX = /[\s_.\\/-]+/
+const CAMEL_TO_SNAKE_REGEX = /([a-z0-9])([A-Z])/g
 
 /**
  * Capitalizes the first letter of a string.
@@ -24,8 +27,6 @@ export const titleize = (input: string) => {
   return capitalizedWords.join(' ')
 }
 
-const SNAKE_TO_CAMEL_REGEX = /[\s_.\\/-]+/
-
 /**
  * Converts a snake cased string to camel case format.
  *
@@ -43,6 +44,19 @@ export const snakeToCamel = <T extends string>(input: T) =>
       return index === 0 ? cleanWord : cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1)
     })
     .join('') as SnakeToCamel<T>
+
+/**
+ * Converts a camel cased string to snake case format.
+ *
+ * @example
+ * ```ts
+ * camelToSnake('helloWorld') // 'hello_world'
+ * ```
+ */
+export const camelToSnake = <T extends string>(input: T) =>
+  input
+    .replace(CAMEL_TO_SNAKE_REGEX, (_, lowerChar, upperChar) => `${lowerChar}_${upperChar.toLowerCase()}`)
+    .toLowerCase() as CamelToSnake<T>
 
 /**
  * Resolves a template string by replacing placeholders with corresponding values.

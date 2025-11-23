@@ -14,9 +14,11 @@ export interface ButtonProps
     React.RefAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  disabledCursor?: boolean
+  /** @default 'default' */
+  disabledCursor?: 'default' | 'not-allowed'
   disabledTitle?: string
   icon?: Icon
+  /** @default 'left' */
   iconPlacement?: 'left' | 'right'
   loading?: boolean
   loadingText?: string
@@ -28,17 +30,18 @@ export const Button = ({
   children,
   className,
   disabled,
-  disabledCursor = false,
+  disabledCursor = 'not-allowed',
   disabledTitle,
   effect,
   icon: Icon,
-  iconPlacement,
+  iconPlacement = 'left',
   loading = false,
   loadingText,
   loadingTitle,
   onClick,
   size,
   title,
+  type,
   variant,
   ...props
 }: ButtonProps) => {
@@ -63,13 +66,15 @@ export const Button = ({
     <Component
       className={cn(
         buttonVariants({ variant, disabled: isDisabled, size, effect }),
-        disabledCursor && isDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        isDisabled ? (disabledCursor === 'not-allowed' ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer',
         loading && 'cursor-wait',
+        type === 'submit' ? 'transition-colors' : 'transition-all',
         className
       )}
       disabled={isDisabled}
       onClick={handleClick}
       title={buttonTitle}
+      type={type}
       {...props}
     >
       {Icon &&
@@ -114,7 +119,7 @@ export const Button = ({
 
 export const buttonVariants = cva(
   `
-    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none
+    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap outline-none
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
     dark:aria-invalid:ring-destructive/40
@@ -128,19 +133,16 @@ export const buttonVariants = cva(
       effect: null,
     },
     variants: {
-      disabled: {
-        true: 'opacity-50',
-      },
       variant: {
-        primary: 'bg-primary text-primary-foreground shadow-xs',
-        secondary: 'bg-secondary text-secondary-foreground shadow-xs',
-        destructive: 'bg-destructive text-destructive-foreground shadow-xs',
-        warning: 'bg-warning text-warning-foreground shadow-xs',
-        success: 'bg-success text-success-foreground shadow-xs',
-        brand: 'bg-brand text-brand-foreground shadow-xs',
-        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground shadow-xs',
-        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground shadow-xs',
-        outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
+        primary: 'bg-primary text-primary-foreground',
+        secondary: 'bg-secondary text-secondary-foreground',
+        destructive: 'bg-destructive text-destructive-foreground',
+        warning: 'bg-warning text-warning-foreground',
+        success: 'bg-success text-success-foreground',
+        brand: 'bg-brand text-brand-foreground',
+        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground',
+        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground',
+        outline: 'border border-input bg-background dark:bg-input/30',
         ghost: '',
         link: 'hover:underline hover:underline-offset-2',
         transparent: 'bg-transparent text-current',
@@ -152,6 +154,9 @@ export const buttonVariants = cva(
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
         icon: 'size-9',
         text: 'h-auto p-0',
+      },
+      disabled: {
+        true: 'opacity-50',
       },
       effect: {
         expandIcon: 'group relative gap-0',
@@ -200,6 +205,21 @@ export const buttonVariants = cva(
       },
     },
     compoundVariants: [
+      {
+        variant: [
+          'primary',
+          'secondary',
+          'destructive',
+          'warning',
+          'success',
+          'brand',
+          'brand-secondary',
+          'brand-tertiary',
+          'outline',
+        ],
+        disabled: false,
+        className: 'shadow-xs transition-shadow [:active,[data-pressed]]:shadow-none',
+      },
       {
         variant: 'primary',
         disabled: false,

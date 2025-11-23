@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils'
 
 export const CodeBlockElement = (props: PlateElementProps<TCodeBlockElement>) => {
   const { editor, element } = props
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   return (
     <PlateElement
@@ -69,7 +69,7 @@ const CodeBlockCombobox = () => {
   const readOnly = useReadOnly()
   const editor = useEditorRef()
   const element = useElement<TCodeBlockElement>()
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   const value = useMemo(() => element.lang || 'plaintext', [element.lang])
   const [searchValue, setSearchValue] = useState('')
@@ -133,7 +133,7 @@ const CopyButton = ({
   value,
   ...props
 }: { value: (() => string) | string } & Omit<React.ComponentProps<typeof Button>, 'value'>) => {
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   const [hasCopied, setHasCopied] = useState(false)
 

@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 
 import { EmojiInlineIndexSearch, insertEmoji } from '@platejs/emoji'
 import { EmojiPlugin } from '@platejs/emoji/react'
+import { useTranslations } from 'next-intl'
 import { PlateElement, type PlateElementProps, usePluginOption } from 'platejs/react'
 
 import {
@@ -21,6 +22,8 @@ const COLON_REGEX = /:$/
 export const EmojiInputElement = (props: PlateElementProps) => {
   const { editor, element } = props
   const data = usePluginOption(EmojiPlugin, 'data')!
+  const t = useTranslations('Components.RichTextEditor.emoji')
+
   const [value, setValue] = useState('')
   const debouncedValue = useDebounce(value, 100)
   const isPending = value !== debouncedValue
@@ -36,7 +39,7 @@ export const EmojiInputElement = (props: PlateElementProps) => {
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          {!isPending && <InlineComboboxEmpty>{'No results'}</InlineComboboxEmpty>}
+          {!isPending && <InlineComboboxEmpty>{t('searchNoResultsTitle')}</InlineComboboxEmpty>}
 
           <InlineComboboxGroup>
             {filteredEmojis.map(emoji => (

@@ -16,10 +16,14 @@ export const POST = async (request: NextRequest) => {
   let locale: Locale | undefined
   let username: string | undefined
 
+  const redirectUrl = new URL(input.email_data.redirect_to)
+  const redirectLocale = redirectUrl.searchParams.get('locale') as Locale | null
+  redirectUrl.searchParams.delete('locale')
+
   try {
     const user = await findUser(input.user.id)
-    locale = user.locale ?? undefined
-    username = user.firstName ?? (user.username ? `@${user.username}` : undefined)
+    locale = user.locale ?? redirectLocale ?? undefined
+    username = user.first_name ?? (user.username ? `@${user.username}` : undefined)
   } catch {}
 
   try {
@@ -27,7 +31,7 @@ export const POST = async (request: NextRequest) => {
       to: input.user.email,
       locale,
       username,
-      redirectTo: input.email_data.redirect_to,
+      redirectTo: redirectUrl.toString(),
       token: input.email_data.token,
       tokenHash: input.email_data.token_hash,
       tokenNew: input.email_data.token_new,

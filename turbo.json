@@ -12,7 +12,6 @@
   "globalEnv": [
     "APP_URL",
     "STORAGE_URL",
-    "COOKIE_PREFIX",
     "SUPABASE_ACCESS_TOKEN",
     "OPENAI_API_KEY",
     "OPENAI_MODEL",

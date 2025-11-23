@@ -62,7 +62,7 @@ interface MenuStateItems
   > {}
 
 const useAIChatItems = () => {
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   return {
     accept: {
@@ -216,7 +216,7 @@ export const useChat = () => {
 }
 
 export const AIMenu = () => {
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
   const { api, editor } = useEditorPlugin(AIChatPlugin)
   const open = usePluginOption(AIChatPlugin, 'open')
   const mode = usePluginOption(AIChatPlugin, 'mode')
@@ -439,7 +439,7 @@ export const AIMenuItems = ({ setValue }: { setValue: (value: string) => void })
 }
 
 export const AILoadingBar = () => {
-  const t = useTranslations('Editor.ai')
+  const t = useTranslations('Components.RichTextEditor.ai')
   const chat = usePluginOption(AIChatPlugin, 'chat')
   const mode = usePluginOption(AIChatPlugin, 'mode')
 
@@ -465,7 +465,7 @@ export const AILoadingBar = () => {
         <PauseIcon className="size-4" />
         {t('stop')}
         <kbd className="ml-1 rounded-sm bg-border px-1 font-mono text-[10px] text-muted-foreground shadow-sm">
-          {'Esc'}
+          {t('esc')}
         </kbd>
       </Button>
     </div>

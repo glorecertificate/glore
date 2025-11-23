@@ -165,7 +165,7 @@ const DragHandle = memo(
   }) => {
     const editor = useEditorRef()
     const element = useElement()
-    const t = useTranslations('Editor.actions')
+    const t = useTranslations('Components.RichTextEditor.actions')
 
     return (
       <div

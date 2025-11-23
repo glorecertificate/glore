@@ -1,5 +1,8 @@
 import { PostgrestError } from '@supabase/supabase-js'
 
+import { type Database } from '../../../../supabase/types'
+import { createDatabase } from './client'
+
 const DATABASE_ERROR_CODES = [
   'PGRST116', // NO_RESULTS
   'PGRST401', // UNAUTHENTICATED
@@ -28,3 +31,8 @@ export class DatabaseError extends PostgrestError {
     this.code = DATABASE_ERROR_CODES.includes(code) ? code : 'UNKNOWN'
   }
 }
+
+export const singleSelect =
+  <T extends keyof Database['public']['Tables'], Q extends string>(table: T, query: Q) =>
+  async () =>
+    await (await createDatabase()).from(table).select(query).single()

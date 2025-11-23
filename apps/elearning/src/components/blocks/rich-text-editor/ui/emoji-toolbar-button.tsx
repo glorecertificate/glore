@@ -39,7 +39,7 @@ export const EmojiToolbarButton = ({
   options?: EmojiDropdownMenuOptions
 } & React.ComponentPropsWithoutRef<typeof ToolbarButton>) => {
   const { emojiPickerState, isOpen, setIsOpen } = useEmojiDropdownMenuState(options)
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   return (
     <EmojiPopover
@@ -99,7 +99,7 @@ export const EmojiPicker = ({
   icons?: EmojiIconList<React.ReactElement>
 }) => {
   const { locale } = useIntl()
-  const t = useTranslations('Editor.emoji')
+  const t = useTranslations('Components.RichTextEditor.emoji')
 
   const i18n = useMemo(
     () => ({
@@ -113,9 +113,7 @@ export const EmojiPicker = ({
   )
 
   return (
-    <div
-      className={cn('flex flex-col rounded-xl bg-popover text-popover-foreground', 'h-[23rem] w-80 border shadow-md')}
-    >
+    <div className={cn('flex flex-col rounded-xl bg-popover text-popover-foreground', 'h-92 w-80 border shadow-md')}>
       <EmojiPickerNavigation
         emojiLibrary={emojiLibrary}
         focusedCategory={focusedCategory}

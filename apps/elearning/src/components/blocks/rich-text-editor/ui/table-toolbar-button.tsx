@@ -37,7 +37,7 @@ export const TableToolbarButton = (props: DropdownMenuProps) => {
   const tableSelected = useEditorSelector(editor => editor.api.some({ match: { type: KEYS.table } }), [])
   const { editor, tf } = useEditorPlugin(TablePlugin)
   const mergeState = useTableMergeState()
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   const [open, setOpen] = useState(false)
 

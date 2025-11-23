@@ -8,13 +8,12 @@ import { parseUser } from './utils'
 
 const run = createRepositoryRunner(createDatabase)
 
-const loadUser = async (database: DatabaseClient, id: string): Promise<User> => {
+const loadUser = async (database: DatabaseClient, id: string) => {
   const result = await database.from('users').select(userQuery).eq('id', id).single()
-
   return parseUser(expectSingle(result, 'PGRST116', 'User not found'))
 }
 
-export const getUser = async (): Promise<User> =>
+export const getUser = async () =>
   run(async database => {
     const { data } = await database.auth.getUser()
     if (!data.user) throw new DatabaseError({ code: 'PGRST401', message: 'Unauthenticated' })
@@ -22,7 +21,7 @@ export const getUser = async (): Promise<User> =>
     return loadUser(database, data.user.id)
   })
 
-export const getCurrentUser = async (): Promise<CurrentUser> =>
+export const getCurrentUser = async () =>
   run(async database => {
     const cached = cookieStore.getEncoded('user') as CurrentUser | undefined
     if (cached) return cached
@@ -50,7 +49,7 @@ export const findUserEmail = async (username: string): Promise<string> =>
 export const updateUser = async (
   updates: Partial<{
     username: string
-    firstName: string
+    first_name: string
     lastName: string
     bio: string
     birthday: string
@@ -60,10 +59,10 @@ export const updateUser = async (
     city: string
     languages: string[]
     locale: string
-    avatarUrl: string
+    avatar_url: string
     phone: string
   }>
-): Promise<CurrentUser> => {
+) => {
   const response = await fetch('/api/users', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -72,7 +71,10 @@ export const updateUser = async (
 
   if (!response.ok) {
     const error = await response.json()
-    throw new DatabaseError({ code: error.code || 'UNKNOWN_ERROR', message: error.message || 'Failed to update user' })
+    throw new DatabaseError({
+      code: error.code || 'UNKNOWN_ERROR',
+      message: error.message || 'Failed to update user',
+    })
   }
 
   const user: CurrentUser = await response.json()
@@ -81,7 +83,7 @@ export const updateUser = async (
   return user
 }
 
-export const getTeamMembers = async (): Promise<User[]> =>
+export const getTeamMembers = async () =>
   run(async database => {
     const { data, error } = await database
       .from('users')

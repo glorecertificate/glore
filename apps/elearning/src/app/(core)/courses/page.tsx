@@ -1,12 +1,14 @@
+import { redirect } from 'next/navigation'
+
 import { getTranslations } from 'next-intl/server'
 
 import { CourseList } from '@/components/features/courses/course-list'
 import { SectionLayout } from '@/components/layout/section-layout'
-import { createMetadata } from '@/lib/metadata'
+import { intlMetadata } from '@/lib/metadata'
 import { serverCookies } from '@/lib/storage/server'
 
-export const metadata = createMetadata({
-  title: 'courses',
+export const generateMetadata = intlMetadata({
+  title: 'Navigation.courses',
 })
 
 export default async () => {
@@ -16,10 +18,10 @@ export default async () => {
   const groups = get('course_list_groups')
   const tab = get('course_list_view')
   const user = get('user')
-  if (!user) throw new Error('Unauthorized')
+  if (!user) redirect('/login')
 
   const t = await getTranslations('Courses')
-  const description = user.isAdmin ? t('descriptionAdmin') : user.isEditor ? t('descriptionEditor') : t('description')
+  const description = user.is_admin ? t('descriptionAdmin') : user.is_editor ? t('descriptionEditor') : t('description')
 
   return (
     <SectionLayout className="gap-4" description={description} title={t('title')}>

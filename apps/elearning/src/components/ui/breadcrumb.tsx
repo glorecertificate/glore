@@ -31,7 +31,7 @@ export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li
 
 export const BreadcrumbLink = <T,>({ className, ...props }: LinkProps<T>) => (
   <BreadcrumbItem>
-    <Button asChild className={cn('h-8 px-3 font-normal', className)} variant="ghost">
+    <Button asChild className={cn('h-8 px-2 text-muted-foreground', className)} variant="ghost">
       <Link {...props} />
     </Button>
   </BreadcrumbItem>
@@ -51,7 +51,7 @@ export const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'sp
 export const BreadcrumbSeparator = ({ children, className, ...props }: React.ComponentProps<'li'>) => (
   <li
     aria-hidden="true"
-    className={cn('mr-2 [&>svg]:size-3.5', className)}
+    className={cn('[&>svg]:size-3.5', className)}
     data-slot="breadcrumb-separator"
     role="presentation"
     {...props}

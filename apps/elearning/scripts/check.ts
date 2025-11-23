@@ -7,15 +7,15 @@ import { logger } from '@glore/utils/logger'
 import i18n from '../config/i18n.json'
 import packageJson from '../package.json'
 
-const CHECKS = ['types', 'size', 'i18n', 'i18n-unused'] as const
+const CHECKS = ['types', 'lint', 'size', 'i18n', 'i18n-unused'] as const
 
 const I18N_PATH = './config/translations'
 const I18N_COMMANDS = ['invalidKeys', 'missingKeys']
 const I18N_UNUSED_COMMAND = 'unused'
 const I18N_IGNORED_KEYS = [
   'Auth.*',
+  'Components.RichTextEditor.*',
   'Countries.*',
-  'Editor.*',
   'Email.*',
   'Errors.*',
   'Icons.categories.*',
@@ -32,9 +32,21 @@ const args = process.argv.slice(2)
 const included = (check: (typeof CHECKS)[number]) => args.length === 0 || args.includes(check)
 
 if (included('types')) {
-  logger.inline('Running type checks...')
+  logger.inline('Checking validity of types...')
   execSync(`./node_modules/.bin/tsc -p ${tsconfig} --noEmit`, { stdio: 'inherit' })
-  logger.success('Type checks passed successfully', logOptions)
+  logger.success('Type check passed successfully', logOptions)
+}
+
+if (included('lint')) {
+  try {
+    logger.inline('Running lint and format checks...')
+    execSync('./node_modules/.bin/biome check', { stdio: 'ignore' })
+    logger.success('All files are properly linted and formatted', logOptions)
+  } catch {
+    logger.error('Found linting issues', logOptions)
+    logger("Run 'biome check --fix' to apply safe fixes and see a detailed report.", logOptions)
+    process.exit(1)
+  }
 }
 
 if (included('size')) {

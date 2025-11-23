@@ -21,7 +21,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 export const ModeToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()
   const [readOnly, setReadOnly] = usePlateState('readOnly')
-  const t = useTranslations('Editor.mode')
+  const t = useTranslations('Components.RichTextEditor.mode')
 
   const [open, setOpen] = useState(false)
 

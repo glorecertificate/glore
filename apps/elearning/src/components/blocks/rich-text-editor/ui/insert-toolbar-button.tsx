@@ -49,7 +49,7 @@ interface Item {
 
 export const InsertToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   const [open, setOpen] = useState(false)
 

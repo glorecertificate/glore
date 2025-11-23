@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useCookies } from '@/hooks/use-cookies'
-import { type DatabaseError, findUserEmail, resetPassword } from '@/lib/data'
+import { type DatabaseError, findUserEmail, isValidUsername, resetPassword } from '@/lib/data'
 import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
@@ -30,6 +30,7 @@ export const PasswordRequestForm = ({
   setView: (view: Enum<AuthView>) => void
 }) => {
   const cookies = useCookies()
+  const locale = useLocale()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -38,7 +39,11 @@ export const PasswordRequestForm = ({
         username: z
           .string()
           .nonempty(t('userRequired'))
+          .nonempty(t('userRequired'))
           .min(5, {
+            message: t('userTooShort'),
+          })
+          .refine(isValidUsername, {
             message: t('userInvalid'),
           }),
       }),
@@ -67,7 +72,7 @@ export const PasswordRequestForm = ({
       }
 
       try {
-        await resetPassword(email)
+        await resetPassword(email, locale)
       } catch (e) {
         const error = e as DatabaseError
         console.error(error.message)
@@ -77,7 +82,7 @@ export const PasswordRequestForm = ({
       setView('email_sent')
       cookies.set('login_user', username)
     },
-    [cookies, form, setView, t]
+    [cookies, form, locale, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
@@ -119,7 +124,6 @@ export const PasswordRequestForm = ({
           <Button
             className="w-full [&_svg]:size-4"
             disabled={!defaultUsername && defaultFormDisabled(form)}
-            disabledCursor
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

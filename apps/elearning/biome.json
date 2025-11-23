@@ -55,6 +55,11 @@
       }
     }
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "overrides": [
     {
       "includes": ["scripts/**"],
@@ -86,11 +91,7 @@
               "options": {
                 "patterns": [
                   {
-                    "group": [
-                      "@/lib/*/**",
-                      "!@/lib/*/server",
-                      "!@/lib/services/*"
-                    ],
+                    "group": ["@/lib/*/**", "!@/lib/*/server", "!@/lib/services/*"],
                     "message": "Deep imports from lib are not allowed. Import from the root or use an absolute path if inside the current lib"
                   }
                 ]

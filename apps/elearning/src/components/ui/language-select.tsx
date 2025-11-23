@@ -80,7 +80,7 @@ export const LanguageSelect = ({
                 <TooltipTrigger asChild pointerEvents="auto">
                   {activeItem.badge}
                 </TooltipTrigger>
-                <TooltipContent arrow={false}>{activeItem.status}</TooltipContent>
+                <TooltipContent>{activeItem.status}</TooltipContent>
               </Tooltip>
             )}
             <span>

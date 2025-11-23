@@ -2,7 +2,7 @@ import { UserSettings } from '@/components/features/users/user-settings'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = intlMetadata({
-  title: 'settings',
+  title: 'Navigation.settings',
 })
 
 export default () => (

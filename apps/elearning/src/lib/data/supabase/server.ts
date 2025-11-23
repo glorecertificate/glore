@@ -4,10 +4,10 @@ import { cookies } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { createServerClient } from '@supabase/ssr'
-import { type Database } from 'supabase/types'
 
 import { noop } from '@glore/utils/noop'
 
+import { type Database } from '../../../../supabase/types'
 import { type DatabaseClient } from './types'
 
 /**

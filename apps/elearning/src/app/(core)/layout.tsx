@@ -4,10 +4,9 @@ import { AppHeader } from '@/components/layout/app-header'
 import { AppMain } from '@/components/layout/app-main'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { RouteListener } from '@/components/layout/route-listener'
-import { SuspenseLayout } from '@/components/layout/suspense-layout'
-import { HeaderProvider } from '@/components/providers/header-provider'
+import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { SessionProvider } from '@/components/providers/session-provider'
-import { ProgressBar } from '@/components/ui/progress-bar'
+import { ProgressBar, ProgressBarProvider } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { getCurrentUser, getSkillGroups, listCourses } from '@/lib/data/server'
 import { serverCookies } from '@/lib/storage/server'
@@ -23,6 +22,7 @@ export default async ({ children }: LayoutProps<'/'>) => {
 
   const org = cookies.get('org')
   const sidebarOpen = cookies.get('sidebar_open')
+  const sidebarWidth = cookies.get('sidebar_width')
 
   const courses = await listCourses()
   const skillGroups = await getSkillGroups()
@@ -30,20 +30,20 @@ export default async ({ children }: LayoutProps<'/'>) => {
   const organization = org ? user.organizations.find(({ id }) => id === org) : user.organizations?.[0]
 
   return (
-    <SuspenseLayout>
-      <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
-        <SidebarProvider defaultOpen={sidebarOpen}>
-          <HeaderProvider>
-            <RouteListener />
-            <ProgressBar />
-            <AppSidebar />
-            <SidebarInset>
-              <AppHeader />
+    <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
+      <ProgressBarProvider>
+        <ProgressBar />
+        <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
+          <AppSidebar />
+          <SidebarInset>
+            <AppHeader />
+            <SuspenseLoader size="full">
               <AppMain>{children}</AppMain>
-            </SidebarInset>
-          </HeaderProvider>
-        </SidebarProvider>
-      </SessionProvider>
-    </SuspenseLayout>
+            </SuspenseLoader>
+          </SidebarInset>
+        </SessionProvider>
+        <RouteListener />
+      </ProgressBarProvider>
+    </SidebarProvider>
   )
 }

@@ -73,7 +73,7 @@ export interface RichTextEditorProviderProps
 
 export const RichTextEditorProvider = ({ children, exclude = [], id, ...props }: RichTextEditorProviderProps) => {
   const randomId = useId()
-  const t = useTranslations('Editor.placeholders')
+  const t = useTranslations('Components.RichTextEditor.placeholders')
 
   const plugins = useMemo(
     () =>

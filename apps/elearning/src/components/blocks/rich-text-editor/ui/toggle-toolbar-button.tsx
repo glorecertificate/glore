@@ -9,7 +9,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 export const ToggleToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const state = useToggleToolbarButtonState()
   const { props: buttonProps } = useToggleToolbarButton(state)
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   return (
     <ToolbarButton {...props} {...buttonProps} tooltip={t('toggle')}>

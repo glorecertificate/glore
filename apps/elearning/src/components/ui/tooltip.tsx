@@ -39,13 +39,13 @@ export const TooltipTrigger = ({ className, pointerEvents = 'none', ...props }: 
 export interface TooltipContentProps
   extends Omit<TooltipPrimitive.TooltipContentProps, 'color'>,
     VariantProps<typeof tooltipContentVariants> {
-  arrow?: boolean
+  showArrow?: boolean
 }
 
 export const TooltipContent = ({
-  arrow = true,
   children,
   className,
+  showArrow = false,
   sideOffset = 4,
   size,
   variant,
@@ -59,14 +59,14 @@ export const TooltipContent = ({
       {...props}
     >
       {children}
-      {arrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
+      {showArrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
     </TooltipPrimitive.Content>
   </TooltipPortal>
 )
 
 export const tooltipContentVariants = cva(
   `
-    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95
+    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95 cursor-default
     data-[side=bottom]:slide-in-from-top-2
     data-[side=left]:slide-in-from-right-2
     data-[side=right]:slide-in-from-left-2

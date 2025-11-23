@@ -122,7 +122,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
   const element = useElement<TTableElement>()
   const { props: buttonProps } = useRemoveNodeButton({ element })
   const collapsedInside = useEditorSelector(editor => selected && editor.api.isCollapsed(), [selected])
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   const { canMerge, canSplit } = useTableMergeState()
 
@@ -508,7 +508,9 @@ export const TableCellElement = ({
                 className={cn(
                   'absolute top-0 z-30 hidden h-full w-1 bg-ring',
                   'right-[-1.5px]',
-                  columnResizeVariants({ colIndex: colIndex as VariantProps<typeof columnResizeVariants>['colIndex'] })
+                  columnResizeVariants({
+                    colIndex: colIndex as VariantProps<typeof columnResizeVariants>['colIndex'],
+                  })
                 )}
               />
               {colIndex === 0 && (

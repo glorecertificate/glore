@@ -22,7 +22,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 type ImportType = 'html' | 'markdown'
 
 export const ImportToolbarButton = (props: DropdownMenuProps) => {
-  const t = useTranslations('Editor.actions')
+  const t = useTranslations('Components.RichTextEditor.actions')
   const editor = useEditorRef()
   const [open, setOpen] = useState(false)
 

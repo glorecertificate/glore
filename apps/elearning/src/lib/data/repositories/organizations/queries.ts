@@ -1,5 +1,3 @@
-import { TIMESTAMPS } from '../utils'
-
 export const organizationQuery = `
   id,
   handle,
@@ -14,7 +12,8 @@ export const organizationQuery = `
   city,
   address,
   rating,
-  avatarUrl:avatar_url,
-  approvedAt:approved_at,
-  ${TIMESTAMPS}
+  avatar_url,
+  approved_at,
+  created_at,
+  updated_at
 `

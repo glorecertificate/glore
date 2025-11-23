@@ -1,11 +1,13 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
+import { type Icon } from '@/components/icons/types'
 import { Label } from '@/components/ui/label'
 import { useMounted } from '@/hooks/use-mounted'
 import { cn } from '@/lib/utils'
 
 export interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'>, VariantProps<typeof inputVariants> {
   defaultOpen?: boolean
+  icon?: Icon
   open?: boolean
 }
 
@@ -13,6 +15,7 @@ export const Input = ({
   className,
   defaultOpen,
   disabled,
+  icon: Icon,
   id,
   open,
   placeholder,
@@ -25,8 +28,9 @@ export const Input = ({
   if (variant !== 'floating')
     return (
       <input
-        className={cn(inputVariants({ variant, size }), className)}
+        className={cn(inputVariants({ size, variant }), className)}
         disabled={disabled}
+        id={id}
         placeholder={placeholder}
         {...props}
       />
@@ -35,7 +39,7 @@ export const Input = ({
   return (
     <div className={cn('relative', disabled && 'cursor-not-allowed')}>
       <input
-        className={cn(inputVariants({ variant, size }), className)}
+        className={cn(inputVariants({ size, variant }), className)}
         disabled={disabled}
         id={id}
         placeholder={placeholder}
@@ -51,34 +55,39 @@ export const Input = ({
       >
         {placeholder}
       </Label>
+      {Icon && (
+        <Icon className="-translate-y-1/2 absolute top-1/2 right-3 size-4 text-muted-foreground peer-focus/input:text-foreground" />
+      )}
     </div>
   )
 }
 
 export const inputVariants = cva(
   `
-    flex w-full min-w-0 rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] outline-none
-    file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground
-    placeholder:text-muted-foreground
+    flex w-full min-w-0 bg-transparent transition-[color,box-shadow] outline-none rounded-md border border-input shadow-xs
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30
     disabled:pointer-events-none disabled:opacity-60
     aria-invalid:border-destructive aria-invalid:ring-destructive/20
+    placeholder:text-muted-foreground
+    file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground
     dark:bg-input/30 dark:aria-invalid:ring-destructive/40
   `,
   {
+    defaultVariants: {
+      variant: 'default',
+      size: 'default',
+    },
     variants: {
       variant: {
+        default: '',
         brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
         floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
       },
       size: {
         sm: 'h-8 px-2.5 py-0.5 text-xs placeholder:text-xs',
-        md: 'h-9 px-3 py-1 text-sm placeholder:text-sm',
+        default: 'h-9 px-3 py-1 text-sm placeholder:text-sm',
         lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
       },
-    },
-    defaultVariants: {
-      size: 'md',
     },
   }
 )

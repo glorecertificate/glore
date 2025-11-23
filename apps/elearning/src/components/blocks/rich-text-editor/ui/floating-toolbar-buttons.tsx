@@ -12,7 +12,7 @@ import { TurnIntoToolbarButton } from '@/components/blocks/rich-text-editor/ui/t
 import { ToolbarGroup } from '@/components/ui/toolbar'
 
 export const FloatingToolbarButtons = () => {
-  const t = useTranslations('Editor.ai')
+  const t = useTranslations('Components.RichTextEditor.ai')
   const [readOnly] = usePlateState('readOnly')
 
   return (

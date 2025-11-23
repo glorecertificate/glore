@@ -45,7 +45,12 @@ export const EmailLayout = async ({
   return (
     <Html lang={locale} title={subject} {...props}>
       <Head>{head}</Head>
-      <Tailwind config={{ presets: [pixelBasedPreset], theme: { extend: deepMerge(EMAIL_THEME, tailwindConfig) } }}>
+      <Tailwind
+        config={{
+          presets: [pixelBasedPreset],
+          theme: { extend: deepMerge(EMAIL_THEME, tailwindConfig) },
+        }}
+      >
         {preview && <Preview>{preview}</Preview>}
         <Body className="bg-offwhite font-sans text-base">
           <EmailLink href={MAIL_APP_URL} variant="wrapper">

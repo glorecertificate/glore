@@ -44,7 +44,7 @@ export const AlignToolbarButton = (props: DropdownMenuProps) => {
     defaultValue: 'left',
     getProp: node => node.align,
   })
-  const t = useTranslations('Editor.actions')
+  const t = useTranslations('Components.RichTextEditor.actions')
 
   const [open, setOpen] = useState(false)
   const IconValue = items.find(item => item.value === value)?.icon ?? AlignLeftIcon

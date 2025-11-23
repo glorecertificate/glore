@@ -191,18 +191,11 @@ export const InlineComboboxInput = forwardRef<HTMLInputElement, React.HTMLAttrib
 
     const ref = useComposedRef(propRef, contextRef)
 
-    /**
-     * To create an auto-resizing input, we render a visually hidden span
-     * containing the input value and position the input element on top of it.
-     * This works well for all cases except when input exceeds the width of the
-     * container.
-     */
-
     return (
       <>
         {showTrigger && trigger}
 
-        <span className="relative min-h-[1lh]">
+        <span className="relative min-h-lh">
           <span aria-hidden="true" className="invisible overflow-hidden text-nowrap">
             {value || '\u200B'}
           </span>
@@ -224,7 +217,7 @@ export const InlineComboboxInput = forwardRef<HTMLInputElement, React.HTMLAttrib
 export const InlineComboboxContent: typeof ComboboxPopover = ({ className, ...props }) => (
   <Portal>
     <ComboboxPopover
-      className={cn('z-500 max-h-[288px] w-[300px] overflow-y-auto rounded-md bg-popover shadow-md', className)}
+      className={cn('z-500 max-h-72 w-[300px] overflow-y-auto rounded-md bg-popover shadow-md', className)}
       {...props}
     />
   </Portal>
@@ -232,7 +225,7 @@ export const InlineComboboxContent: typeof ComboboxPopover = ({ className, ...pr
 
 const comboboxItemVariants = cva(
   `
-    relative mx-1 flex h-[28px] items-center rounded-sm px-2 text-sm text-foreground outline-none select-none
+    relative mx-1 flex h-7 items-center rounded-sm px-2 text-sm text-foreground outline-none select-none
     [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
   `,
   {

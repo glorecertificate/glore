@@ -2,12 +2,12 @@ import { type Enums } from 'supabase/types'
 
 import { type Timestamp } from '../../supabase'
 import { type Certificate } from '../certificates/types'
-import { type BaseOrganization } from '../organizations/types'
+import { type Organization } from '../organizations/types'
 import { type Entity } from '../types'
 
 export type BaseUser = Omit<Entity<'users'>, 'phone'>
 
-export interface User extends Entity<'users', never, Timestamp> {
+export interface User extends Entity<'users', Timestamp> {
   canEdit: boolean
   fullName: string | null
   initials: string[] | null
@@ -21,7 +21,7 @@ export interface CurrentUser extends User {
   certificates?: Certificate[]
 }
 
-export interface UserOrganization extends BaseOrganization {
+export interface UserOrganization extends Organization {
   role: Enums<'role'>
 }
 

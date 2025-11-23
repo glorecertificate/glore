@@ -1,8 +1,8 @@
 {
-  "[css]": {
-    "editor.defaultFormatter": "bradlc.vscode-tailwindcss"
-  },
   "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescript]": {
@@ -11,41 +11,30 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
+  "biome.enabled": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
-  "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "eslint.enable": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "files.exclude": {
-    ".husky/_": true,
-    "**/.turbo": true,
-    "**/supabase/.*": true
-  },
+  "i18n-ally.annotationInPlace": false,
+  "i18n-ally.enabledFrameworks": ["next-intl"],
+  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
+  "i18n-ally.namespace": true,
   "json.schemas": [
     {
       "fileMatch": ["biome.json"],
       "url": "./node_modules/@biomejs/biome/configuration_schema.json"
     }
   ],
-  "i18n-ally.enabledFrameworks": ["next-intl"],
-  "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
-  "i18n-ally.sortKeys": true,
-  "i18n-ally.annotations": false,
   "prettier.enable": false,
-  "search.useGlobalIgnoreFiles": true,
-  "search.useIgnoreFiles": true,
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-    ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
-    ["(?:\\w+)?[Cc]lassName\\s*=\\s*[{]?[`'\"]([^`'\"]*)[`'\"][}]?"],
-    ["fill=['\"]([^'\"]*)"],
-    ["stroke=['\"]([^'\"]*)"]
+    ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"]
   ],
   "tailwindCSS.experimental.configFile": "./apps/elearning/src/app/globals.css",
   "tailwindCSS.includeLanguages": {

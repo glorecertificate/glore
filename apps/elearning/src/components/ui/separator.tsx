@@ -1,8 +1,10 @@
 'use client'
 
-import { Separator as SeparatorPrimitive, type SeparatorProps } from '@radix-ui/react-separator'
+import { Separator as SeparatorPrimitive } from '@radix-ui/react-separator'
 
 import { cn } from '@/lib/utils'
+
+export type SeparatorProps = React.ComponentProps<typeof SeparatorPrimitive>
 
 export const Separator = ({ className, decorative = true, orientation = 'horizontal', ...props }: SeparatorProps) => (
   <SeparatorPrimitive

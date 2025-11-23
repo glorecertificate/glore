@@ -18,7 +18,7 @@ interface AiTemplateOptions {
 export const aiChatPlugin = AIChatPlugin.extend({
   options: {
     chatOptions: {
-      api: '/api/ai/chat',
+      api: '/api/ai/command',
       body: {},
     },
     promptTemplate: ({ isBlockSelecting, isSelecting }: AiTemplateOptions) =>

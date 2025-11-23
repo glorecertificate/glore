@@ -36,6 +36,7 @@ export const TabsTrigger = ({
   children,
   className,
   count = 0,
+  effect,
   showZeroCount = false,
   size,
   variant,
@@ -45,7 +46,7 @@ export const TabsTrigger = ({
   const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
 
   return (
-    <Trigger className={cn(tabsTrigger({ size, variant }), className)} data-slot="tabs-trigger" {...props}>
+    <Trigger className={cn(tabsTrigger({ effect, size, variant }), className)} data-slot="tabs-trigger" {...props}>
       {showCount ? (
         <span className="flex items-center gap-1 leading-0" {...badgeRest}>
           {children}
@@ -77,7 +78,7 @@ export const tabsTrigger = cva(
         default: `
           text-muted-foreground border
           focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring
-          data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground
+          data-[state=active]:bg-background data-[state=active]:text-foreground
           dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
         `,
         brand: `
@@ -98,9 +99,13 @@ export const tabsTrigger = cva(
         `,
       },
       size: {
-        sm: 'px-4 text-sm',
+        sm: 'gap-1 px-4 text-[13.5px] text-sm',
         md: 'px-4 text-sm',
         lg: 'px-6 py-3 text-lg',
+      },
+      effect: {
+        grayscale: 'data-[state=inactive]:grayscale-80 data-[state=inactive]:*:opacity-60',
+        'text-stroke': 'data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground',
       },
     },
   }

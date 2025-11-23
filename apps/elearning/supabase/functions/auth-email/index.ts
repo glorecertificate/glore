@@ -24,7 +24,11 @@ Deno.serve(async request => {
     if (isDevelopment) headers.set('Bypass-Tunnel-Reminder', 'true')
 
     try {
-      await fetch(`${appUrl}/api/auth/email`, { method: 'POST', headers, body: JSON.stringify(data) })
+      await fetch(`${appUrl}/api/auth/email`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
+      })
     } catch (e) {
       console.error('Error forwarding request to API:', e)
       return new Response(JSON.stringify(e), { status: 500, headers })

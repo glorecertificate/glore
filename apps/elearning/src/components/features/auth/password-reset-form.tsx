@@ -98,7 +98,7 @@ export const PasswordResetForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <PasswordInput autoFocus open placeholder={t('passwordLabel')} variant="floating" {...field} />
+                    <PasswordInput autoFocus open variant="floating" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,7 +108,6 @@ export const PasswordResetForm = ({
           <Button
             className="w-full [&_svg]:size-4"
             disabled={defaultFormDisabled(form)}
-            disabledCursor
             disabledTitle={t('insertNewPassword')}
             loading={form.formState.isSubmitting}
             type="submit"

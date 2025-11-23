@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { type TDateElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly } from 'platejs/react'
 
@@ -10,6 +11,7 @@ import { cn } from '@/lib/utils'
 export const DateElement = (props: PlateElementProps<TDateElement>) => {
   const { editor, element } = props
 
+  const t = useTranslations('Components.RichTextEditor.actions')
   const readOnly = useReadOnly()
 
   const trigger = (
@@ -41,7 +43,7 @@ export const DateElement = (props: PlateElementProps<TDateElement>) => {
           })
         })()
       ) : (
-        <span>{'Pick a date'}</span>
+        <span>{t('pickDate')}</span>
       )}
     </span>
   )

@@ -10,6 +10,7 @@ import {
 } from '@platejs/media/react'
 import { cva } from 'class-variance-authority'
 import { LinkIcon, Trash2Icon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { type WithRequiredKey } from 'platejs'
 import {
   useEditorRef,
@@ -35,6 +36,7 @@ const inputVariants = cva(
 )
 
 export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; plugin: WithRequiredKey }) => {
+  const t = useTranslations('Components.RichTextEditor.media')
   const editor = useEditorRef()
   const readOnly = useReadOnly()
   const selected = useSelected()
@@ -78,11 +80,11 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
         ) : (
           <div className="box-content flex items-center">
             <FloatingMediaPrimitive.EditButton className={buttonVariants({ size: 'sm', variant: 'ghost' })}>
-              {'Edit link'}
+              {t('editLink')}
             </FloatingMediaPrimitive.EditButton>
 
             <CaptionButton size="sm" variant="ghost">
-              {'Caption'}
+              {t('caption')}
             </CaptionButton>
 
             <Separator className="mx-1 h-6" orientation="vertical" />

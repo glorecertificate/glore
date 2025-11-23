@@ -1,8 +1,7 @@
 import { type EmailOtpType, type SupabaseClient, type User } from '@supabase/supabase-js'
 
-import { type AnyRecord } from '@glore/utils/types'
-
 import { type Database } from '../../../../supabase/types'
+import { type singleSelect } from './utils'
 
 export type DatabaseClient = SupabaseClient<Database, 'public'>
 
@@ -16,10 +15,12 @@ export type ForeignKey<T extends PublicTable> = {
 
 export type Timestamp = 'created_at' | 'updated_at'
 
-export type SelectData<T extends PublicTable, Q extends string> = AnyRecord & {
-  /** Phantom tuple to preserve table/query generics without affecting runtime shape. */
-  readonly __meta?: [T, Q]
-}
+/**
+ * Data returned from a database select query.
+ */
+export type SelectData<T extends PublicTable, Q extends string> = NonNullable<
+  Awaited<ReturnType<ReturnType<typeof singleSelect<T, Q>>>>['data']
+>
 
 /** @see https://supabase.com/docs/guides/auth/auth-hooks/send-email-hook */
 export interface AuthEmailInput {

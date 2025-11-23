@@ -11,14 +11,14 @@ import { type Question, type QuestionOption, submitAnswers } from '@/lib/data'
 import { cn } from '@/lib/utils'
 
 export const CourseContent = () => {
-  const { lesson, mode, setCourse, step } = useCourse()
+  const { currentLesson, setCourse, step } = useCourse()
 
   const onQuestionAnswer = useCallback(
     async (question: Question, option: QuestionOption) => {
       setCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map((lesson, i) =>
-          i === step
+          i === step - 1
             ? {
                 ...lesson,
                 questions: lesson.questions?.map(q =>
@@ -48,7 +48,7 @@ export const CourseContent = () => {
       setCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map(({ evaluations, ...lesson }, i) =>
-          i === step
+          i === step - 1
             ? {
                 ...lesson,
                 evaluations: evaluations?.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
@@ -65,7 +65,7 @@ export const CourseContent = () => {
       setCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons?.map((lesson, i) =>
-          i === step && lesson.assessment
+          i === step - 1 && lesson.assessment
             ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }
             : lesson
         ),
@@ -75,36 +75,32 @@ export const CourseContent = () => {
   )
 
   return (
-    <div className="h-full">
-      {mode === 'editor' ? (
-        <RichTextEditor className="h-full" variant="fullWidth" />
-      ) : (
-        <RichTextEditor readOnly variant="fullWidth" />
-      )}
-      {lesson.type === 'questions' && lesson.questions && (
+    <>
+      <RichTextEditor variant="fullWidth" />
+      {currentLesson?.type === 'questions' && currentLesson.questions && (
         <CourseQuestions
-          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
-          completed={lesson.completed}
+          className={cn('mt-8 border-t-2 pt-6')}
+          completed={currentLesson.completed}
           onComplete={onQuestionAnswer}
-          questions={lesson.questions}
+          questions={currentLesson.questions}
         />
       )}
-      {lesson.type === 'evaluations' && lesson.evaluations && (
+      {currentLesson?.type === 'evaluations' && currentLesson.evaluations && (
         <CourseEvaluations
-          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
-          completed={lesson.completed}
-          evaluations={lesson.evaluations}
+          className={cn('mt-8 border-t-2 pt-6')}
+          completed={!!currentLesson.completed}
+          evaluations={currentLesson.evaluations}
           onEvaluation={onEvaluation}
         />
       )}
-      {lesson.type === 'assessment' && lesson.assessment && (
+      {currentLesson?.type === 'assessment' && currentLesson.assessment && (
         <CourseAssessment
-          assessment={lesson.assessment}
-          className={cn('pt-4', mode !== 'editor' && 'mt-8 border-t-2 pt-6')}
-          completed={lesson.completed}
+          assessment={currentLesson.assessment}
+          className={cn('mt-8 border-t-2 pt-6')}
+          completed={!!currentLesson.completed}
           onValueChange={onAssessment}
         />
       )}
-    </div>
+    </>
   )
 }

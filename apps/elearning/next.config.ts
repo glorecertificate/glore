@@ -4,13 +4,26 @@ import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 import bundleAnalyzer from '@next/bundle-analyzer'
 import nextIntl from 'next-intl/plugin'
 
-const INTL_CONFIG = './src/i18n.ts'
 const INTL_MESSAGES = './config/translations/en.json'
+const INTL_REQUEST_CONFIG = './src/i18n.ts'
 
 export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
   const nextConfig = {
     ...defaultConfig,
-    // cacheComponents: true,
+    experimental: {
+      turbopackFileSystemCacheForDev: true,
+    },
+    headers: () => [
+      {
+        headers: [
+          {
+            key: 'cache-control',
+            value: 'public, max-age=3600',
+          },
+        ],
+        source: '/api/manifest',
+      },
+    ],
     images: {
       remotePatterns: [new URL(process.env.SUPABASE_URL)],
     },
@@ -20,12 +33,6 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
     typescript: {
       tsconfigPath: phase === PHASE_DEVELOPMENT_SERVER ? 'tsconfig.json' : 'tsconfig.build.json',
     },
-    webpack: (config, { isServer }) => ({
-      ...config,
-      infrastructureLogging: {
-        level: isServer ? 'info' : 'warn',
-      },
-    }),
   } satisfies NextConfig
 
   const plugins = [
@@ -33,7 +40,7 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
       enabled: process.env.ANALYZE === 'true',
     }),
     nextIntl({
-      requestConfig: INTL_CONFIG,
+      requestConfig: INTL_REQUEST_CONFIG,
       experimental: {
         createMessagesDeclaration: INTL_MESSAGES,
       },

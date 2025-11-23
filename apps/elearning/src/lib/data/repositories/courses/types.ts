@@ -1,61 +1,47 @@
-import { type Enums, type Tables } from 'supabase/types'
-
 import { type Enum } from '@glore/utils/types'
 
 import { type IntlRecord } from '@/lib/intl'
+import { type Tables } from '../../../../../supabase/types'
 import { type Timestamp } from '../../supabase'
-import { type LESSON_TYPE } from '../courses'
+import { type LESSON_TYPE } from '../courses/constants'
 import { type Entity } from '../types'
-import { type User } from '../users'
+import { type User } from '../users/types'
 
 export interface SkillGroup extends Entity<'skill_groups'> {}
 
-export interface Course extends Entity<'courses', 'title' | 'description', Timestamp> {
-  archivedAt: string | null
+export interface Course extends Entity<'courses', Timestamp, 'title' | 'description'> {
   completed: boolean
-  completion: number
   contributions: LessonContribution[]
   contributors: User[] & { count?: number }
   creator: User
   enrolled: boolean
-  languages: Enums<'locale'>[]
   lessons: Lesson[]
-  progress: Enum<CourseProgress>
-  skillGroup: SkillGroup
-  status: Enum<CourseStatus>
-  title: IntlRecord
-  description: IntlRecord
-  createdAt: string
-  updatedAt: string
-  type: Enums<'course_type'>
+  progress: number
+  progressStatus: Enum<CourseProgressStatus>
+  publicationStatus: Enum<CoursePublicationStatus>
+  skillGroup: SkillGroup | null
 }
 
-export enum CourseStatus {
+export enum CoursePublicationStatus {
   Draft = 'draft',
   Partial = 'partial',
   Published = 'published',
   Archived = 'archived',
 }
 
-export enum CourseProgress {
+export enum CourseProgressStatus {
   NotStarted = 'not_started',
   InProgress = 'in_progress',
   Completed = 'completed',
 }
 
-export interface CourseSettings extends Pick<Tables<'courses'>, 'slug' | 'skill_group_id' | 'type'> {}
+export interface CourseInsert extends Pick<Tables<'courses'>, 'slug' | 'skill_group_id' | 'type'> {}
 
-export interface UpdateCourseOptions extends Partial<Tables<'courses'>> {
+export interface CourseUpdate extends Partial<Omit<Course, 'id'>> {
   id: number
 }
 
-export type LessonType = (typeof LESSON_TYPE)[number]
-
-export interface LessonContribution extends Entity<'contributions', never, Timestamp> {
-  user: User
-}
-
-export interface Lesson extends Entity<'lessons', 'title' | 'content', Timestamp> {
+export interface Lesson extends Entity<'lessons', Timestamp, 'title' | 'content'> {
   assessment?: Assessment
   completed: boolean
   contributions: LessonContribution[]
@@ -64,19 +50,32 @@ export interface Lesson extends Entity<'lessons', 'title' | 'content', Timestamp
   type: LessonType
 }
 
-export interface Question extends Entity<'questions', 'description' | 'explanation'> {
+export type LessonType = (typeof LESSON_TYPE)[number]
+
+export interface LessonContribution extends Entity<'contributions', Timestamp> {
+  user: User
+}
+
+export interface LessonUpsert extends Partial<Omit<Lesson, 'id'>> {
+  id?: number
+  course_id: number
+  sort_order: number
+  title: IntlRecord
+}
+
+export interface Question extends Entity<'questions'> {
   answered: boolean
   options: QuestionOption[]
 }
 
-export interface QuestionOption extends Entity<'question_options', 'content'> {
+export interface QuestionOption extends Entity<'question_options'> {
   isUserAnswer: boolean
 }
 
-export interface Evaluation extends Entity<'evaluations', 'description'> {
+export interface Evaluation extends Entity<'evaluations'> {
   userRating?: number
 }
 
-export interface Assessment extends Entity<'assessments', 'description'> {
+export interface Assessment extends Entity<'assessments'> {
   userRating?: number
 }

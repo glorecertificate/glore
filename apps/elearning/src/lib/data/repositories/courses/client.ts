@@ -4,44 +4,45 @@ import { createDatabase } from '../../supabase/client'
 import { getCurrentUser } from '../users/server'
 import { type UserAnswer, type UserAssessment, type UserEvaluation, type UserLesson } from '../users/types'
 import { createRepositoryRunner, expectList, expectSingle } from '../utils'
-import { DEFAULT_COURSE_TITLE } from './constants'
-import { courseQuery } from './queries'
-import { type Course, type CourseSettings, type SkillGroup, type UpdateCourseOptions } from './types'
+import { DEFAULT_COURSE } from './constants'
+import { courseQuery, lessonQuery } from './queries'
+import { type Course, type CourseInsert, type LessonUpsert, type SkillGroup } from './types'
 import { parseCourse } from './utils'
 
 const run = createRepositoryRunner(createDatabase)
 
-export const createCourse = async (
-  course: CourseSettings & {
-    title?: Course['title']
-  }
-): Promise<Course> =>
+export const createCourse = async (course: CourseInsert) =>
   run(async database => {
     const result = await database
       .from('courses')
-      .insert({ ...course, title: course.title ?? DEFAULT_COURSE_TITLE })
+      .insert({ ...DEFAULT_COURSE, ...course })
       .select(courseQuery)
       .single()
     return parseCourse(expectSingle(result))
   })
 
-export const updateCourse = async (course: UpdateCourseOptions): Promise<Course> =>
+export const updateCourse = async (id: number, update: Omit<Partial<Course>, 'id'>) =>
   run(async database => {
-    const { id, ...updates } = course
-    const result = await database.from('courses').update(updates).eq('id', id).select(courseQuery).single()
+    const result = await database.from('courses').update(update).eq('id', id).select(courseQuery).single()
     return parseCourse(expectSingle(result))
   })
 
-export const updateCourseSettings = async (id: number, settings: CourseSettings): Promise<Course> =>
+export const updateCourseSettings = async (id: number, data: CourseInsert) =>
   run(async database => {
-    const result = await database.from('courses').update(settings).eq('id', id).select(courseQuery).single()
+    const result = await database.from('courses').update(data).eq('id', id).select(courseQuery).single()
     return parseCourse(expectSingle(result))
   })
 
-export const deleteCourse = async (id: number): Promise<void> =>
+export const deleteCourse = async (id: number) =>
   run(async database => {
     const { error } = await database.from('courses').delete().eq('id', id)
     if (error) throw error
+  })
+
+export const upsertLessons = async (data: LessonUpsert[]) =>
+  run(async database => {
+    const result = await database.from('lessons').upsert(data).select(lessonQuery)
+    return serialize(expectList(result))
   })
 
 export const getSkillGroups = async (): Promise<SkillGroup[]> =>
@@ -108,7 +109,7 @@ export const reorderCourses = async (courses: Course[]): Promise<void> =>
     if (error) throw error
   })
 
-export const updateCourseIcon = async (id: number, icon: string | null): Promise<Course> =>
+export const updateCourseIcon = async (id: number, icon: string | null) =>
   run(async database => {
     const result = await database.from('courses').update({ icon }).eq('id', id).select(courseQuery).single()
     return parseCourse(expectSingle(result))

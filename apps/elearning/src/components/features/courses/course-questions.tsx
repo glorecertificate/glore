@@ -25,7 +25,7 @@ const CourseQuestion = ({
   const t = useTranslations('Courses')
 
   const isCorrectUserAnswer = useMemo(
-    () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
+    () => question.answered && question.options.some(option => option.isUserAnswer && option.is_correct),
     [question]
   )
 
@@ -33,7 +33,7 @@ const CourseQuestion = ({
     (option: QuestionOption) => () => {
       if (question.answered && !completed) return
       if (!question.answered) return onComplete(question, option)
-      if (option.isUserAnswer || !option.isCorrect) return
+      if (option.isUserAnswer || !option.is_correct) return
 
       toast.info(t('answerDisabled'), {
         duration: 1200,
@@ -61,7 +61,7 @@ const CourseQuestion = ({
         {question.options.map(option => (
           <Button className={optionClassName(option)} key={option.id} onClick={onOptionClick(option)} variant="outline">
             {t('trueAnswer')}
-            {option.isCorrect && <CheckCircleIcon className="size-4 text-success" />}
+            {option.is_correct && <CheckCircleIcon className="size-4 text-success" />}
           </Button>
         ))}
       </div>

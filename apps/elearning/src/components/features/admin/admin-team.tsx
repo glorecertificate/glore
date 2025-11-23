@@ -76,10 +76,10 @@ export const AdminTeam = () => {
         const matchesSearch =
           user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.lastName?.toLowerCase().includes(searchTerm.toLowerCase())
+          user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
 
-        const userRole = user.isAdmin ? 'admin' : user.isEditor ? 'editor' : null
+        const userRole = user.is_admin ? 'admin' : user.is_editor ? 'editor' : null
         const matchesRole = !selectedRole || userRole === selectedRole
 
         return matchesSearch && matchesRole
@@ -101,18 +101,18 @@ export const AdminTeam = () => {
   }, [])
 
   const getDisplayName = useCallback((user: User) => {
-    if (user.firstName && user.lastName) {
-      return `${user.firstName} ${user.lastName}`
+    if (user.first_name && user.last_name) {
+      return `${user.first_name} ${user.last_name}`
     }
-    if (user.firstName) return user.firstName
+    if (user.first_name) return user.first_name
     if (user.username) return `@${user.username}`
     return user.email
   }, [])
 
   const getRoleLabel = useCallback(
     (user: User) => {
-      if (user.isAdmin) return t('roleAdmin')
-      if (user.isEditor) return t('roleEditor')
+      if (user.is_admin) return t('roleAdmin')
+      if (user.is_editor) return t('roleEditor')
       return t('roleUser')
     },
     [t]
@@ -235,7 +235,7 @@ export const AdminTeam = () => {
                   <TableCell className="font-medium">{getDisplayName(user)}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{getRoleLabel(user)}</TableCell>
-                  <TableCell>{formatDate(user.createdAt)}</TableCell>
+                  <TableCell>{formatDate(user.created_at)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

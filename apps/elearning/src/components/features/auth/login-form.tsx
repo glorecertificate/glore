@@ -25,7 +25,7 @@ import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessag
 import { Input } from '@/components/ui/input'
 import { ExternalLink } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
-import { DatabaseError, findUserEmail, login, PASSWORD_REGEX } from '@/lib/data'
+import { DatabaseError, findUserEmail, isValidUsername, login, PASSWORD_REGEX } from '@/lib/data'
 import { APP_URL } from '@/lib/metadata'
 import { type AuthView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
@@ -51,6 +51,9 @@ export const LoginForm = ({
           .string()
           .nonempty(t('userRequired'))
           .min(5, {
+            message: t('userTooShort'),
+          })
+          .refine(isValidUsername, {
             message: t('userInvalid'),
           }),
         password: z
@@ -171,15 +174,7 @@ export const LoginForm = ({
                     </Button>
                   </div>
                   <FormControl>
-                    <PasswordInput
-                      autoFocus={!!defaultUsername}
-                      disabled={loading}
-                      placeholder={t('passwordLabel')}
-                      srHide={t('hidePassword')}
-                      srShow={t('showPassword')}
-                      variant="floating"
-                      {...field}
-                    />
+                    <PasswordInput autoFocus={!!defaultUsername} disabled={loading} variant="floating" {...field} />
                   </FormControl>
                   {passwordError && (
                     <p className="text-destructive text-sm leading-[normal]">
@@ -193,7 +188,6 @@ export const LoginForm = ({
           <Button
             className="w-full [&_svg]:size-4"
             disabled={defaultFormDisabled(form)}
-            disabledCursor
             disabledTitle={t('insertCredentials')}
             loading={loading}
             type="submit"

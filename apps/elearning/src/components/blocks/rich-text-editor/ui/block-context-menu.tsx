@@ -21,7 +21,7 @@ import {
 import { useDevice } from '@/hooks/use-device'
 
 export const BlockContextMenu = ({ children }: { children: React.ReactNode }) => {
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
   const { api, editor } = useEditorPlugin(BlockMenuPlugin)
   const [value, setValue] = useState<'askAI' | null>(null)
   const { isTouch } = useDevice()

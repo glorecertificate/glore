@@ -1,4 +1,5 @@
 import { type SignInWithPasswordCredentials, type UserAttributes } from '@supabase/supabase-js'
+import { type Locale } from 'next-intl'
 
 import { cookieStore } from '@/lib/storage'
 import { createDatabase, DatabaseError } from '../../supabase'
@@ -29,11 +30,12 @@ export const logout = async () => {
   return true
 }
 
-export const resetPassword = async (email: string) => {
+export const resetPassword = async (email: string, locale?: Locale) => {
   const database = createDatabase()
-  const { error } = await database.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + RESET_PASSWORD_REDIRECT,
-  })
+  const localeParam = locale ? `?locale=${locale}` : ''
+  const redirectTo = `${window.location.origin}${RESET_PASSWORD_REDIRECT}${localeParam}`
+
+  const { error } = await database.auth.resetPasswordForEmail(email, { redirectTo })
   if (error) throw new DatabaseError({ code: 'NETWORK_ERROR' })
 
   return true

@@ -16,8 +16,23 @@ export const config: ProxyConfig = {
   ],
 }
 
+const verifyRequest = async (request: NextRequest) => {
+  try {
+    const userCookie = request.cookies.get(`${cookieStore.config.prefix ?? ''}user`)
+    if (!userCookie?.value) throw new Error()
+    const user = JSON.parse(await decodeAsync(userCookie.value))
+    if (!user) throw new Error()
+    return true
+  } catch {
+    const db = await getProxyDatabase(request)
+    const { error } = await db.auth.getUser()
+    return !error
+  }
+}
+
 export const proxy: NextProxy = async request => {
   const isValid = await verifyRequest(request)
+  const isAuthPath = Object.values(AuthRoute).some(route => request.nextUrl.pathname.startsWith(route))
 
   const response = NextResponse.next({
     request: {
@@ -25,38 +40,16 @@ export const proxy: NextProxy = async request => {
     },
   })
 
-  try {
-    await setLocale(request, response)
-
-    if (!isValid) {
-      return isAuthPath(request) ? response : NextResponse.redirect(new URL('/login', request.url))
-    }
-
-    return isAuthPath(request) ? NextResponse.redirect(new URL('/', request.url)) : response
-  } catch {
-    return response
-  }
-}
-
-const verifyRequest = async (request: NextRequest) => {
-  try {
-    const userCookie = request.cookies.get(`${cookieStore.config.prefix ?? ''}user`)
-    const user = JSON.parse(await decodeAsync(userCookie?.value ?? 'null'))
-    if (!user) throw Error
-    return true
-  } catch {
-    const db = await getProxyDatabase(request)
-    const { error } = await db.auth.getUser()
-    if (error) return false
-    return true
-  }
-}
-
-const isAuthPath = (request: NextRequest) =>
-  Object.values(AuthRoute).some(route => request.nextUrl.pathname.startsWith(route))
-
-const setLocale = async (request: NextRequest, response: NextResponse) => {
   const locale = await getLocale()
   const lang = new URL(request.url).searchParams.get('lang')
   if (lang && lang !== locale) response.headers.append('Set-Cookie', `NEXT_LOCALE=${lang}`)
+
+  try {
+    if (isAuthPath) {
+      return isValid ? NextResponse.redirect(new URL('/', request.url)) : response
+    }
+    return isValid ? response : NextResponse.redirect(new URL('/login', request.url))
+  } catch {
+    return response
+  }
 }

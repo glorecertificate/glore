@@ -1,38 +1,32 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-
 import { GloreIcon } from '@/components/icons/glore'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Link } from '@/components/ui/link'
 import { SIDEBAR_KEYBOARD_SHORTCUT, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useHeader } from '@/hooks/use-header'
 import { usePathname } from '@/hooks/use-pathname'
+import { PortalContainer } from '@/hooks/use-portal'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 
-export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'header'>) => {
+export const AppHeader = ({ children, className, ...props }: React.ComponentProps<'header'>) => {
   const pathname = usePathname()
-  const t = useTranslations('Common')
-
-  const { hasShadow, header } = useHeader()
   const { scrolled } = useScroll()
-  const { open } = useSidebar()
-
-  const sidebarAction = open ? t('sidebarClose') : t('sidebarOpen')
+  const { action, open } = useSidebar()
 
   return (
     <header
       className={cn(
         'sticky top-0 z-5 ml-px min-h-12 shrink-0 gap-2 bg-linear-to-tr from-background to-background/90 transition-[width,height] ease-linear',
-        hasShadow && scrolled && 'border-b',
+        scrolled && 'border-b',
         className
       )}
       {...props}
     >
       <div className="flex w-full items-center justify-between gap-2 p-4">
-        <div className="flex h-10 grow items-center gap-1">
+        <div className="flex h-10 grow items-center gap-3">
           <Tooltip delayDuration={600} disableHoverableContent>
             <TooltipTrigger asChild>
               <SidebarTrigger
@@ -42,12 +36,14 @@ export const AppHeader = ({ className, ...props }: React.ComponentPropsWithRef<'
                 )}
               />
             </TooltipTrigger>
-            <TooltipContent side="right">
-              <p className="font-medium text-xs">{sidebarAction}</p>
+            <TooltipContent showArrow side="right">
+              <p className="font-medium text-xs">{action}</p>
               <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
-          {header && <Breadcrumb className="flex h-full items-center">{header}</Breadcrumb>}
+          <Breadcrumb className="flex h-full grow items-center" id={PortalContainer.Breadcrumb}>
+            <Skeleton className="h-5 w-64" />
+          </Breadcrumb>
         </div>
         <Link className={cn(pathname === '/' && 'pointer-events-none')} href="/">
           <GloreIcon className="mr-2 w-18 transition-[width,height]" height={200} />

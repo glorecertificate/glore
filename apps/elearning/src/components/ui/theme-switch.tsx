@@ -43,7 +43,7 @@ export const ThemeSwitchButton = ({
   const content = (
     <Button
       className={cn(
-        'inline-flex size-[26px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-transparent px-1.5 font-medium text-sm transition-all',
+        'size-[26px] rounded-full border border-transparent px-1.5',
         active && 'cursor-default border-border bg-accent/80 text-accent-foreground dark:bg-accent/50',
         isFirst && '-ml-px',
         isLast && '-mr-px',
@@ -56,7 +56,7 @@ export const ThemeSwitchButton = ({
       {...props}
     >
       <div className="relative z-10 flex items-center gap-1.5">
-        <Icon className={cn('size-3.5', active && 'text-foreground')} />
+        <Icon className={cn('size-3.5 transition-none', active && 'text-foreground')} />
         <span className="sr-only">{children}</span>
       </div>
     </Button>
@@ -67,7 +67,9 @@ export const ThemeSwitchButton = ({
   return (
     <Tooltip>
       <TooltipTrigger asChild>{content}</TooltipTrigger>
-      <TooltipContent {...tooltipProps}>{label}</TooltipContent>
+      <TooltipContent showArrow {...tooltipProps}>
+        {label}
+      </TooltipContent>
     </Tooltip>
   )
 }

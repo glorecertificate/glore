@@ -26,12 +26,12 @@ export interface IconPickerProps extends ButtonProps {
   defaultOpen?: boolean
   defaultValue?: IconName
   iconsList?: IconData[]
-  labels?: boolean
   modal?: boolean
   onOpenChange?: (open: boolean) => void
   onValueChange?: (value: IconName) => void
   open?: boolean
   searchable?: boolean
+  showLabels?: boolean
   tooltips?: boolean
   value?: IconName
 }
@@ -78,13 +78,13 @@ export const IconPicker = ({
   defaultOpen,
   defaultValue,
   iconsList,
-  labels,
   loading,
   modal = false,
   onOpenChange,
   onValueChange,
   open,
   searchable = true,
+  showLabels,
   tooltips,
   value,
   ...props
@@ -389,7 +389,7 @@ export const IconPicker = ({
         {children ?? (
           <Button
             className={cn(
-              'bg-muted/50 transition-colors hover:bg-muted! hover:text-accent-foreground has-[>svg]:animate-none data-[state=open]:cursor-default! data-[state=open]:bg-muted!',
+              'has-[>svg]:animate-none data-[state=open]:cursor-default!',
               (loading || iconName) && 'animate-pulse',
               className
             )}
@@ -399,15 +399,20 @@ export const IconPicker = ({
             {iconName && (
               <>
                 <DynamicIcon name={iconName} />
-                {labels && t('updateIcon')}
+                {showLabels && t('updateIcon')}
               </>
             )}
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-64 rounded-lg border bg-popover p-3">
+      <PopoverContent className="w-64 rounded-lg border bg-card p-3">
         {searchable && (
-          <Input className="mb-2" onChange={handleSearchChange} placeholder={t('searchIcons')} value={search} />
+          <Input
+            className="mb-2 rounded-lg"
+            onChange={handleSearchChange}
+            placeholder={t('searchIcons')}
+            value={search}
+          />
         )}
         {categorized && search.trim() === '' && (
           <div className="scrollbar-hide mt-2 flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>

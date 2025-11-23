@@ -53,7 +53,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useCookies } from '@/hooks/use-cookies'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { type Course, DEFAULT_COURSE_TITLE, updateCourse } from '@/lib/data'
+import { type Course, updateCourse } from '@/lib/data'
 import { type LocaleItem } from '@/lib/intl'
 import { route } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
@@ -85,16 +85,21 @@ const CourseCardLanguage = ({
     setLanguage(value)
   }, [active, setLanguage, value])
 
-  const button = (
-    <Button
-      className={cn('text-base leading-none', active ? 'pointer-events-none cursor-default' : 'opacity-50', className)}
-      onClick={handleClick}
-      size="text"
-      variant="transparent"
-      {...props}
-    >
-      {icon}
-    </Button>
+  // biome-ignore lint: exhaustive-deps
+  const button = useMemo(
+    () => (
+      <Button
+        className={cn('relative text-base', active && 'pointer-events-none cursor-default', className)}
+        onClick={handleClick}
+        size="text"
+        variant="transparent"
+        {...props}
+      >
+        <span className={cn(!active && 'opacity-50')}>{icon}</span>
+        {published && <div className="absolute bottom-0 size-1 rounded-full bg-success" />}
+      </Button>
+    ),
+    [active, className, handleClick, icon]
   )
 
   if (!showState) return button
@@ -103,11 +108,10 @@ const CourseCardLanguage = ({
     <div className="flex flex-col items-center gap-0">
       <Tooltip delayDuration={250}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
-        <TooltipContent arrow={false} sideOffset={2} size="sm">
+        <TooltipContent sideOffset={2} size="sm">
           {t(published ? 'previewIn' : 'previewDraftIn', { lang: displayLabel })}
         </TooltipContent>
       </Tooltip>
-      {showState && <div className={cn('size-1 rounded-full', published ? 'bg-success' : 'bg-muted-foreground/50')} />}
     </div>
   )
 }
@@ -146,7 +150,7 @@ export const CourseCard = ({
   const updateIcon = useCallback(
     async (icon: IconName | null) => {
       await setCourse({ id: course.id, icon })
-      await updateCourse({ id: course.id, icon })
+      await updateCourse(course.id, { icon })
     },
     [course.id, setCourse]
   )
@@ -164,7 +168,7 @@ export const CourseCard = ({
                   {
                     ...item,
                     active: item.value === language,
-                    published: course.languages.includes(item.value),
+                    published: !!course.languages && course.languages.includes(item.value),
                     setLanguage: updateLanguage,
                   },
                 ]
@@ -176,7 +180,6 @@ export const CourseCard = ({
   )
 
   const title = localize(course.title, language)
-  const isDefaultTitle = title === localize(DEFAULT_COURSE_TITLE, language)
 
   const description = useMemo(() => {
     const translation = localize(course.description, language)
@@ -189,9 +192,9 @@ export const CourseCard = ({
         {courseDescription}
         <Tooltip>
           <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
-            {'(more)'}
+            {t('cardDescriptionMore')}
           </TooltipTrigger>
-          <TooltipContent arrow={false} className="max-w-[300px] text-sm" side="top" sideOffset={4}>
+          <TooltipContent className="max-w-[300px] text-sm" side="top" sideOffset={4}>
             {translation}
           </TooltipContent>
         </Tooltip>
@@ -199,7 +202,7 @@ export const CourseCard = ({
     ) : (
       courseDescription
     )
-  }, [course.description, language, localize])
+  }, [course.description, language, localize, t])
 
   const lessonsMessage =
     course.lessons.length > 0
@@ -207,7 +210,7 @@ export const CourseCard = ({
       : t('noLessonsCreated')
 
   const createdOn = t('createdOnBy', {
-    date: f.relativeTime(new Date(course.createdAt), Date.now()),
+    date: f.relativeTime(new Date(course.created_at), Date.now()),
   })
 
   const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
@@ -221,7 +224,7 @@ export const CourseCard = ({
 
   const archiveCourse = useCallback(async () => {
     try {
-      await updateCourse({ id: course.id, archived_at: new Date().toISOString() })
+      await updateCourse(course.id, { archived_at: new Date().toISOString() })
       toast.success(t('courseArchived'))
     } catch (e) {
       console.error(e)
@@ -231,7 +234,7 @@ export const CourseCard = ({
 
   const unarchiveCourse = useCallback(async () => {
     try {
-      await updateCourse({ id: course.id, archived_at: null })
+      await updateCourse(course.id, { archived_at: null })
       toast.success(t('courseUnarchived'))
     } catch (e) {
       console.error(e)
@@ -251,27 +254,24 @@ export const CourseCard = ({
 
   useEffect(() => {
     if (activeLanguages.includes(language)) return
-    updateLanguage(course.languages.includes(locale) ? locale : activeLanguages[0])
-  }, [activeLanguages, course.languages.includes, language, locale, updateLanguage, course.languages])
+    updateLanguage(course.languages?.includes(locale) ? locale : activeLanguages[0])
+  }, [activeLanguages, course.languages, language, locale, updateLanguage])
 
   return (
     <Card className="min-h-80">
       <CardHeader className="gap-4">
         <IconPicker
-          className="size-8 shrink-0 rounded-full stroke-muted-foreground/80"
+          className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
           onValueChange={updateIcon}
           title={course.icon ? t('updateIcon') : t('addIcon')}
           value={(course.icon as IconName) ?? undefined}
           variant="ghost"
         />
         <div className="flex grow flex-col gap-3">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-2">
             <div className="flex">
               <Link
-                className={cn(
-                  'font-medium leading-[normal] transition-none',
-                  (isDefaultTitle || !title) && 'text-muted-foreground/50'
-                )}
+                className={cn('font-medium leading-[normal] transition-none')}
                 href={coursePath}
                 title={t('viewCourse')}
               >
@@ -285,7 +285,7 @@ export const CourseCard = ({
                   <TooltipTrigger asChild>
                     <LinkIcon className="size-2.5 cursor-help" />
                   </TooltipTrigger>
-                  <TooltipContent arrow={false} side="top" sideOffset={2} size="xs">
+                  <TooltipContent side="top" sideOffset={2} size="xs">
                     {t('courseSlug')}
                   </TooltipContent>
                 </Tooltip>
@@ -295,7 +295,7 @@ export const CourseCard = ({
               </div>
             )}
           </div>
-          {course.skillGroup && <Badge size="sm">{localize(course.skillGroup.name, language)}</Badge>}
+          {course.skillGroup && <Badge>{localize(course.skillGroup.name, language)}</Badge>}
         </div>
       </CardHeader>
       <CardContent className="mb-0.5">
@@ -341,9 +341,9 @@ export const CourseCard = ({
                       size="text"
                       variant="ghost"
                     >
-                      <Avatar className="size-3.5 rounded-full">
-                        {course.creator.avatarUrl && (
-                          <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
+                      <Avatar className="size-3.5 rounded-full border">
+                        {course.creator.avatar_url && (
+                          <AvatarImage className="rounded-full" src={course.creator.avatar_url} />
                         )}
                         <AvatarFallback className="text-[7px]">{user.initials}</AvatarFallback>
                       </Avatar>
@@ -365,8 +365,8 @@ export const CourseCard = ({
                 {course.contributors.map(user => (
                   <HoverCard closeDelay={50} key={user.id} openDelay={300}>
                     <HoverCardTrigger asChild>
-                      <Avatar className="size-3.5 rounded-full ring-2 ring-background transition-all duration-200 ease-in-out">
-                        {user.avatarUrl && <AvatarImage className="rounded-full" src={user.avatarUrl} />}
+                      <Avatar className="size-3.5 rounded-full border ring-background transition-all duration-200 ease-in-out">
+                        {user.avatar_url && <AvatarImage className="rounded-full" src={user.avatar_url} />}
                         <AvatarFallback className="text-[7px]">{user.initials}</AvatarFallback>
                       </Avatar>
                     </HoverCardTrigger>
@@ -388,12 +388,12 @@ export const CourseCard = ({
                 {course.lessons.length} {t('lessons', { count: course.lessons.length })}
               </span>
               <span>
-                {course.completion}
+                {course.progress}
                 {'% '}
                 {t('completed').toLowerCase()}
               </span>
             </div>
-            <Progress className="h-1.5" value={course.completion} />
+            <Progress className="h-1.5" value={course.progress} />
           </div>
         )}
         {user.canEdit ? (
@@ -409,7 +409,7 @@ export const CourseCard = ({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuGroup>
-                  {course.archivedAt ? (
+                  {course.archived_at ? (
                     <AlertDialog>
                       <AlertDialogTrigger className="w-full">
                         <DropdownMenuItem onSelect={e => e.preventDefault()}>

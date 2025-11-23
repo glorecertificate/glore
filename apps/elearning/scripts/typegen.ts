@@ -84,8 +84,6 @@ try {
     }
   )
 
-  execSync(`./node_modules/.bin/biome check --fix ${outputs.supabase}`, { stdio: 'ignore' })
-
   logger.success('Database types generated successfully', logOptions)
 } catch (e) {
   logger.error('Failed to generate Supabase types', logOptions)

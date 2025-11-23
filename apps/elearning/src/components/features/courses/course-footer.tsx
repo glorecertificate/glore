@@ -25,27 +25,24 @@ import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
 export const CourseFooter = () => {
-  const { course, moveNext, movePrevious, step } = useCourse()
+  const { currentLesson, moveNext, movePrevious } = useCourse()
   const { courses } = useSession()
   const t = useTranslations('Courses')
 
-  const lesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
-  const isFirstLesson = useMemo(() => step === 0, [step])
-  const isLastLesson = useMemo(() => step === (course.lessons?.length ?? 0) - 1, [course.lessons?.length, step])
-
   const canProceed = useMemo(() => {
-    if (!lesson) return false
-    if (lesson.type === 'reading' || lesson.completed) return true
-    if (lesson.type === 'questions') return lesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
-    if (lesson.type === 'evaluations') return lesson.evaluations?.every(e => !!e.userRating)
-    if (lesson.type === 'assessment') return !!lesson.assessment?.userRating
+    if (!currentLesson) return false
+    if (currentLesson.type === 'reading' || currentLesson.completed) return true
+    if (currentLesson.type === 'questions')
+      return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
+    if (currentLesson.type === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
+    if (currentLesson.type === 'assessment') return !!currentLesson.assessment?.userRating
     return false
-  }, [lesson])
+  }, [currentLesson])
 
   const nextTooltip = useMemo(() => {
-    if (!lesson) return
-    if (!canProceed) return t('replyToProceed', { type: lesson.type })
-  }, [canProceed, lesson, t])
+    if (!currentLesson.type) return
+    if (!canProceed) return t('replyToProceed', { type: currentLesson.type })
+  }, [canProceed, currentLesson, t])
 
   const completedCount = useMemo(() => courses.filter(m => m.completed).length, [courses])
 
@@ -65,19 +62,19 @@ export const CourseFooter = () => {
   )
 
   return (
-    <div className={cn('mt-6 flex', isFirstLesson ? 'justify-end' : 'justify-between')}>
-      {!isFirstLesson && (
-        <Button className="gap-1" disabled={isFirstLesson} onClick={movePrevious} variant="outline">
+    <div className={cn('mt-6 flex', currentLesson.isFirst ? 'justify-end' : 'justify-between')}>
+      {!currentLesson.isFirst && (
+        <Button className="gap-1" disabled={currentLesson.isFirst} onClick={movePrevious} variant="outline">
           <ArrowLeftIcon className="size-4" />
           {t('previous')}
         </Button>
       )}
 
-      {isLastLesson ? (
+      {currentLesson.isLast ? (
         canProceed ? (
           <Dialog>
             <DialogTrigger asChild>
-              {status === 'completed' ? null : (
+              {currentLesson.completed ? null : (
                 <ConfettiButton
                   className={cn('gap-1')}
                   disabled={!canProceed}
@@ -127,7 +124,7 @@ export const CourseFooter = () => {
                 {t('completeCourse')}
               </Button>
             </TooltipTrigger>
-            <TooltipContent arrow={false}>{nextTooltip}</TooltipContent>
+            <TooltipContent>{nextTooltip}</TooltipContent>
           </Tooltip>
         )
       ) : canProceed ? (
@@ -141,7 +138,7 @@ export const CourseFooter = () => {
               {t('next')}
             </Button>
           </TooltipTrigger>
-          <TooltipContent arrow={false}>{nextTooltip}</TooltipContent>
+          <TooltipContent>{nextTooltip}</TooltipContent>
         </Tooltip>
       )}
     </div>

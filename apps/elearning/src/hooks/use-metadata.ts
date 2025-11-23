@@ -1,148 +1,125 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+'use client'
 
-import { type Locale, useTranslations } from 'next-intl'
+import { useCallback, useEffect } from 'react'
+
+import { useLocale } from 'next-intl'
 
 import metadata from '@config/metadata'
 
-import { useIntl } from '@/hooks/use-intl'
 import { usePWA } from '@/hooks/use-pwa'
-import { LOCALES, type Namespace, type NamespaceKey } from '@/lib/intl'
+import { LOCALES } from '@/lib/intl'
 import { apiRoute } from '@/lib/navigation'
 
-const OG_TITLE_SELECTORS = ['meta[property="og:title"]', 'meta[name="twitter:title"]'] as const
-const DESCRIPTION_SELECTOR = 'meta[name="description"]' as const
-const OG_DESCRIPTION_SELECTORS = [
-  'meta[property="og:description"]',
-  'meta[name="twitter:description"]',
-  'meta[itemprop="description"]',
-] as const
-const OG_LOCALE_SELECTOR = 'meta[property="og:locale"]' as const
-const OG_ALTERNATE_LOCALE_SELECTOR = 'meta[property="og:locale:alternate"]' as const
-const IMAGE_SELECTORS = ['meta[property="og:image"]', 'meta[name="twitter:image"]', 'meta[itemprop="image"]'] as const
-const MANIFEST_SELECTOR = 'link[rel="manifest"]'
+const TITLE_SELECTORS = ['[property="og:title"]', '[name="twitter:title"]']
+const DESCRIPTION_SELECTORS = [
+  '[name="description"]',
+  '[property="og:description"]',
+  '[name="twitter:description"]',
+  '[itemprop="description"]',
+]
+const LOCALE_SELECTOR = '[property="og:locale"]'
+const ALTERNATE_LOCALE_SELECTOR = '[property="og:locale:alternate"]'
+const IMAGE_SELECTORS = ['[property="og:image"]', '[name="twitter:image"]', '[itemprop="image"]']
+const MANIFEST_SELECTOR = '[rel="manifest"]'
 const MANIFEST_ROUTE = apiRoute('/api/manifest')
 
-export const useMetadata = <T extends Namespace = never>({
-  delay = 200,
-  fullTitle = false,
-  ogDescription = false,
-  ogTitle = false,
-  ...options
-}: {
-  namespace?: T
-  titleKey?: NamespaceKey<T>
-  descriptionKey?: NamespaceKey<T>
-  image?: string
-  /** @default false */
-  fullTitle?: boolean
-  /** @default false */
-  ogTitle?: boolean
-  /** @default false */
-  ogDescription?: boolean
-  /** @default 200 */
+const getMetaContent = (selector: string | string[]) => {
+  if (typeof document === 'undefined') return
+  for (const attribute of Array.isArray(selector) ? selector : [selector]) {
+    const element = document.querySelector<HTMLMetaElement>(attribute)
+    if (element) return element.content
+  }
+}
+
+const updateMetaContent = (selector: string | string[], value: string) => {
+  if (typeof document === 'undefined') return
+  for (const attribute of Array.isArray(selector) ? selector : [selector]) {
+    const element = document.querySelector<HTMLMetaElement>(attribute)
+    if (element) element.content = value
+  }
+}
+
+const updateLinkSelector = (selector: string | string[], value: string) => {
+  if (typeof document === 'undefined') return
+  for (const attribute of Array.isArray(selector) ? selector : [selector]) {
+    const element = document.querySelector<HTMLLinkElement>(attribute)
+    if (element) element.href = value
+  }
+}
+
+export interface UseMetadataOptions {
+  /**
+   * Whether to show the application name in the document title.
+   * @default true
+   */
+  applicationName?: boolean | 'full'
+  /**
+   * Delay in milliseconds before updating the metadata.
+   * @default 100
+   */
   delay?: number
-} = {}) => {
-  const { locale } = useIntl()
-  const t = useTranslations(options.namespace)
-  const tMeta = useTranslations('Metadata')
+  /**
+   * Description for the metadata.
+   */
+  description?: string
+  /**
+   * Image URL for the metadata.
+   */
+  image?: string
+  /**
+   * Title for the metadata.
+   */
+  title?: string
+}
+
+export const useMetadata = ({ applicationName = true, delay = 100, ...options }: UseMetadataOptions) => {
+  const locale = useLocale()
   const { displayMode } = usePWA()
 
-  const initialTitleKey = options.titleKey
-  const initialDescriptionKey = options.descriptionKey
-  const initialImage = options.image
-
-  const [titleKey, setTitleKey] = useState<NamespaceKey<T> | undefined>(initialTitleKey)
-  const [descriptionKey, setDescriptionKey] = useState<NamespaceKey<T> | undefined>(initialDescriptionKey)
-
-  const getMetaContent = useCallback((selectors: readonly string[]) => {
-    if (typeof document === 'undefined') return
-    for (const selector of selectors) {
-      const element = document.querySelector<HTMLMetaElement>(selector)
-      if (element) return element.content
-    }
-    return
-  }, [])
-
-  const updateMetaSelectors = useCallback((selectors: readonly string[], value: string) => {
-    for (const selector of selectors) {
-      const element = document.querySelector<HTMLMetaElement>(selector)
-      if (!element) continue
-      element.content = value
-    }
-  }, [])
-
-  const updateLinkSelectors = useCallback((selectors: readonly string[], value: string) => {
-    for (const selector of selectors) {
-      const element = document.querySelector<HTMLLinkElement>(selector)
-      if (!element) continue
-      element.href = value
-    }
-  }, [])
-
-  const [title, description] = useMemo(
-    // @ts-expect-error
-    () => [titleKey ? t(titleKey) : undefined, descriptionKey ? t(descriptionKey) : tMeta('description')],
-    [t, titleKey, descriptionKey, tMeta]
-  )
-
-  const image = useMemo(() => getMetaContent(IMAGE_SELECTORS), [getMetaContent])
-
-  const updateTitle = useCallback(() => {
-    if (!title) return
-    const content =
-      displayMode === 'browser'
-        ? `${title} ${metadata.separator} ${fullTitle ? metadata.name : metadata.shortName}`
-        : title
-    document.title = content
-    if (!ogTitle) return
-    updateMetaSelectors(OG_TITLE_SELECTORS, content)
-  }, [displayMode, fullTitle, ogTitle, title, updateMetaSelectors])
-
-  const updateDescription = useCallback(() => {
-    if (!description) return
-    updateMetaSelectors([DESCRIPTION_SELECTOR], description)
-    if (!ogDescription) return
-    updateMetaSelectors(OG_DESCRIPTION_SELECTORS, description)
-  }, [description, ogDescription, updateMetaSelectors])
-
-  const setLanguage = useCallback(
-    (language: Locale) => {
-      const html = document.querySelector('html')!
-      html.setAttribute('lang', language)
-      updateMetaSelectors([OG_LOCALE_SELECTOR], language)
-      updateLinkSelectors([MANIFEST_SELECTOR], `${MANIFEST_ROUTE}?locale=${language}`)
-      updateMetaSelectors([OG_ALTERNATE_LOCALE_SELECTOR], LOCALES.filter(l => l !== language)[0])
+  const setTitle = useCallback(
+    (title: string) => {
+      const content =
+        displayMode === 'browser' && applicationName
+          ? `${title} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+          : title
+      document.title = content
+      updateMetaContent(TITLE_SELECTORS, content)
     },
-    [updateLinkSelectors, updateMetaSelectors]
+    [applicationName, displayMode]
   )
 
-  const setImage = useCallback((image: string) => updateMetaSelectors(IMAGE_SELECTORS, image), [updateMetaSelectors])
+  const setDescription = useCallback((description: string) => {
+    updateMetaContent(DESCRIPTION_SELECTORS, description)
+  }, [])
+
+  const setImage = useCallback((image: string) => updateMetaContent(IMAGE_SELECTORS, image), [])
 
   useEffect(() => {
-    if (initialTitleKey) setTitleKey(initialTitleKey)
-    if (initialDescriptionKey) setDescriptionKey(initialDescriptionKey)
-    if (initialImage) setImage(initialImage)
-  }, [setImage, initialDescriptionKey, initialImage, initialTitleKey])
-
-  useEffect(() => {
-    setLanguage(locale)
+    if (!(options.title || options.description || options.image)) return
 
     const id = setTimeout(() => {
-      updateTitle()
-      updateDescription()
+      if (options.title) setTitle(options.title)
+      if (options.description) setDescription(options.description)
+      if (options.image) setImage(options.image)
     }, delay)
 
     return () => clearTimeout(id)
-  }, [locale, delay, setLanguage, updateDescription, updateTitle])
+  }, [delay, options.title, options.description, options.image, setTitle, setDescription, setImage])
+
+  useEffect(() => {
+    const html = document.querySelector('html')!
+    html.setAttribute('lang', locale)
+    updateMetaContent(LOCALE_SELECTOR, locale)
+    updateLinkSelector(MANIFEST_SELECTOR, `${MANIFEST_ROUTE}?locale=${locale}`)
+    updateMetaContent(ALTERNATE_LOCALE_SELECTOR, LOCALES.filter(l => l !== locale)[0])
+  }, [locale])
 
   return {
-    title,
-    titleKey,
-    setTitleKey,
-    description,
-    descriptionKey,
-    setDescriptionKey,
-    image,
+    description: getMetaContent(DESCRIPTION_SELECTORS),
+    image: getMetaContent(IMAGE_SELECTORS),
+    setDescription,
     setImage,
+    setTitle,
+    title: typeof document === 'undefined' ? undefined : document.title,
   }
 }

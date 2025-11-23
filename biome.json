@@ -1,16 +1,7 @@
 {
   "root": true,
   "files": {
-    "includes": [
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.json",
-      "!.next",
-      "!.turbo",
-      "!.vercel",
-      "!dist",
-      "!node_modules"
-    ],
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "!.next", "!.turbo", "!.vercel", "!dist", "!node_modules"],
     "ignoreUnknown": true
   },
   "vcs": {
@@ -203,13 +194,7 @@
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [
-              ":NODE:",
-              ":BLANK_LINE:",
-              ":PACKAGE:",
-              ":BLANK_LINE:",
-              [":ALIAS:", ":PATH:"]
-            ],
+            "groups": [":NODE:", ":BLANK_LINE:", ":PACKAGE:", ":BLANK_LINE:", [":ALIAS:", ":PATH:"]],
             "identifierOrder": "lexicographic"
           }
         },
@@ -221,19 +206,27 @@
   "javascript": {
     "formatter": {
       "arrowParentheses": "asNeeded",
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
       "quoteStyle": "single",
+      "indentStyle": "space",
+      "lineWidth": 120,
       "semicolons": "asNeeded",
       "trailingCommas": "es5"
+    },
+    "parser": {
+      "jsxEverywhere": false
     }
   },
   "json": {
     "formatter": {
-      "lineWidth": 80,
+      "enabled": true,
       "indentStyle": "space",
-      "indentWidth": 2,
       "trailingCommas": "none"
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space"
     }
   },
   "overrides": [

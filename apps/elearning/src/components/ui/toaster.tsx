@@ -11,7 +11,7 @@ export interface ToasterProps extends Omit<SonnerProps, 'closeButton'> {
 
 export const Toaster = ({
   className,
-  closeButton,
+  closeButton = false,
   duration = 2000,
   hotkey = ['Escape'],
   position = 'top-right',
@@ -21,9 +21,9 @@ export const Toaster = ({
 
   return (
     <Sonner
-      className={cn('group', className)}
       closeButton={!!closeButton}
       duration={duration}
+      hotkey={hotkey}
       position={position}
       style={
         {
@@ -35,14 +35,14 @@ export const Toaster = ({
       theme={theme}
       toastOptions={{
         classNames: {
-          toast:
-            'group toast w-max! shadow-xs! shadow-muted group-[.toaster]:border-border group-[.toaster]:bg-background group-[.toaster]:text-foreground',
+          toast: cn('group/toast w-max! bg-background text-foreground shadow-none!', className),
+          icon: 'group-data-[type=info]/toast:text-info! group-data-[type=success]/toast:text-success! group-data-[type=error]/toast:text-destructive!',
           title: 'font-normal!',
-          description: 'group-[.toast]:text-muted-foreground group-[.toast]:text-base',
-          actionButton: 'group-[.toast]:bg-brand-secondary group-[.toast]:text-brand-secondary-foreground',
-          cancelButton: 'group-[.toast]:bg-muted group-[.toast]:text-muted-foreground',
+          description: 'text-muted-foreground text-base',
+          actionButton: 'bg-brand-secondary text-brand-secondary-foreground',
+          cancelButton: 'bg-muted text-muted-foreground',
           closeButton: cn(
-            'group-data-[type=info]:border-blue-100! group-data-[type=info]:hover:bg-blue-100/80!',
+            'group-data-[type=info]/toast:border-blue-100! group-data-[type=info]/toast:hover:bg-blue-100/80!',
             closeButton === 'hover' && 'opacity-0 group-hover:opacity-100'
           ),
         },

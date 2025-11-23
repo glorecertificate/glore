@@ -7,4 +7,6 @@ const SUPABASE_ENV = 'supabase/functions/.env'
 
 env.loadEnvConfig('.')
 
-execSync(`dotenv -e ${resolve(SUPABASE_ENV)} -- lt --port ${process.env.PORT}`, { stdio: 'inherit' })
+execSync(`dotenv -e ${resolve(SUPABASE_ENV)} -- lt --port ${process.env.PORT}`, {
+  stdio: 'inherit',
+})

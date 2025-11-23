@@ -24,7 +24,7 @@ import {
 
 export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => {
   const editor = useEditorRef()
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   const [open, setOpen] = useState(false)
 
@@ -100,7 +100,7 @@ export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
 
 export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => {
   const editor = useEditorRef()
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
   const [open, setOpen] = useState(false)
 
   const pressed = useEditorSelector(
@@ -192,7 +192,7 @@ export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
 export const TodoListToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const state = useIndentTodoToolBarButtonState({ nodeType: 'todo' })
   const { props: buttonProps } = useIndentTodoToolBarButton(state)
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   return (
     <ToolbarButton {...props} {...buttonProps} tooltip={t('todoList')}>

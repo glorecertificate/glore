@@ -41,13 +41,7 @@ export const useIntl = () => {
   )
 
   const localize = useCallback(
-    (record?: IntlRecord | Json, locale: Locale = context.locale) => {
-      if (typeof record === 'object' && !Array.isArray(record) && record !== null) {
-        return localizeFn(record as IntlRecord, locale)
-      }
-      console.warn('Invalid intl record:', record)
-      return ''
-    },
+    (record?: IntlRecord | Json, locale: Locale = context.locale) => localizeFn(record as IntlRecord, locale),
     [context.locale]
   )
 

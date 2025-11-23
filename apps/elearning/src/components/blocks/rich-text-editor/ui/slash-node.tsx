@@ -51,7 +51,7 @@ interface Group {
 
 export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement>) => {
   const { editor, element } = props
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
 
   const groups = useMemo<Group[]>(
     () => [

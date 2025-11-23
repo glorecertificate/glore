@@ -1,13 +1,12 @@
 import { organizationQuery } from '../organizations/queries'
-import { TIMESTAMPS } from '../utils'
 
 export const baseUserQuery = `
   id,
   email,
   phone,
   username,
-  firstName:first_name,
-  lastName:last_name,
+  first_name,
+  last_name,
   bio,
   birthday,
   sex,
@@ -16,10 +15,11 @@ export const baseUserQuery = `
   city,
   languages,
   locale,
-  avatarUrl:avatar_url,
-  isAdmin:is_admin,
-  isEditor:is_editor,
-  ${TIMESTAMPS}
+  avatar_url,
+  is_admin,
+  is_editor,
+  created_at,
+  updated_at
 `
 
 export const userQuery = `
@@ -36,6 +36,6 @@ export const userQuery = `
     id,
     name,
     emoji,
-    iconUrl:icon_url
+    icon_url
   )
 `

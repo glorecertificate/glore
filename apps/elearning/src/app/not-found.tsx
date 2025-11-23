@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 
 import { ErrorView } from '@/components/layout/error-view'
-import { SuspenseLayout } from '@/components/layout/suspense-layout'
+import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { getCurrentUser } from '@/lib/data/server'
@@ -12,12 +12,12 @@ export default async () => {
   const message = user ? t('backToHome') : t('accessApp')
 
   return (
-    <SuspenseLayout size="full">
+    <SuspenseLoader size="full">
       <ErrorView className="min-h-screen" type="not-found">
         <Button asChild size="lg" variant="outline">
           <Link href="/">{message}</Link>
         </Button>
       </ErrorView>
-    </SuspenseLayout>
+    </SuspenseLoader>
   )
 }

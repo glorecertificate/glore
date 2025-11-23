@@ -3,6 +3,8 @@ import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'nex
 import config from '@config/i18n'
 import type messages from '@config/translations/en'
 
+import { type Json } from '../../supabase/types'
+
 type Locale = keyof typeof config.locales
 type Messages = typeof messages
 type Formats = typeof config.formats
@@ -42,8 +44,10 @@ export const LOCALE_ITEMS: LocaleItem[] = Object.entries(config.locales).map(([v
 
 export const INTL_PLACEHOLDER = LOCALES.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {} as IntlRecord)
 
-export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) => {
-  if (!record) return ''
+export const localize = (record: IntlRecord | Json, locale: Locale, fallback?: Locale) => {
+  if (typeof record !== 'object' || Array.isArray(record) || record === null) {
+    return ''
+  }
   if (Object.keys(record).includes(locale)) return record[locale] as string
   return fallback && Object.keys(record).includes(fallback) ? (record[fallback] as string) : ''
 }
@@ -55,5 +59,11 @@ export const localizeDate = (
 ): string => {
   const date = typeof input === 'object' ? input : new Date(input)
   if (type === 'short') return new Intl.DateTimeFormat(locale).format(date)
-  return new Date(date).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
+  return new Date(date).toLocaleDateString(locale, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
 }
+
+export const getAlternateLocales = (locale: Locale) => LOCALES.filter(l => l !== locale)

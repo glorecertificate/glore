@@ -1,22 +1,22 @@
 import { courseQuery } from '../courses/queries'
 import { organizationQuery } from '../organizations/queries'
 import { baseUserQuery } from '../users/queries'
-import { TIMESTAMPS } from '../utils'
 
 export const certificateQuery = `
   id,
   handle,
   language,
-  activityStartDate:activity_start_date,
-  activityEndDate:activity_end_date,
-  activityDuration:activity_duration,
-  activityLocation:activity_location,
-  activityDescription:activity_description,
-  organizationRating:organization_rating,
-  reviewerComment:reviewer_comment,
-  documentUrl:document_url,
-  issuedAt:issued_at,
-  ${TIMESTAMPS},
+  activity_start_date,
+  activity_end_date,
+  activity_duration,
+  activity_location,
+  activity_description,
+  organization_rating,
+  reviewer_comment,
+  document_url,
+  issued_at,
+  created_at,
+  updated_at,
   skills:courses (
     ${courseQuery}
   ),

@@ -36,7 +36,7 @@ import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
 
 export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor')
 
   const [open, setOpen] = useState(false)
 

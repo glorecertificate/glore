@@ -23,7 +23,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { useHeader } from '@/hooks/use-header'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { updateUser } from '@/lib/data'
@@ -34,8 +33,6 @@ export const UserSettings = () => {
   const { user, setUser } = useSession()
   const { localeItems } = useIntl()
 
-  useHeader(null, { shadow: false })
-
   const formSchema = useMemo(
     () =>
       z.object({
@@ -44,8 +41,8 @@ export const UserSettings = () => {
           .min(3, { message: t('usernameInvalid') })
           .optional()
           .or(z.literal('')),
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
+        first_name: z.string().optional(),
+        last_name: z.string().optional(),
         bio: z.string().optional(),
         phone: z.string().optional(),
         birthday: z.string().optional(),
@@ -62,8 +59,8 @@ export const UserSettings = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: user.username || '',
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
       bio: user.bio || '',
       phone: user.phone || '',
       birthday: user.birthday || '',
@@ -75,17 +72,17 @@ export const UserSettings = () => {
     },
   })
 
-  const generateUsername = useCallback((firstName: string, lastName: string) => {
+  const generateUsername = useCallback((first_name: string, last_name: string) => {
     const parts = []
-    if (firstName) parts.push(firstName.toLowerCase().replace(/\s+/g, ''))
-    if (lastName) parts.push(lastName.toLowerCase().replace(/\s+/g, ''))
+    if (first_name) parts.push(first_name.toLowerCase().replace(/\s+/g, ''))
+    if (last_name) parts.push(last_name.toLowerCase().replace(/\s+/g, ''))
     return parts.join('.')
   }, [])
 
   useEffect(() => {
     const subscription = form.watch((value, { name }) => {
-      if (name === 'firstName' || name === 'lastName') {
-        const username = generateUsername(value.firstName || '', value.lastName || '')
+      if (name === 'first_name' || name === 'last_name') {
+        const username = generateUsername(value.first_name || '', value.last_name || '')
         if (username) {
           form.setValue('username', username, { shouldValidate: false })
         }
@@ -99,8 +96,8 @@ export const UserSettings = () => {
       try {
         const updates: Partial<{
           username: string
-          firstName: string
-          lastName: string
+          first_name: string
+          last_name: string
           bio: string
           birthday: string
           sex: string
@@ -112,8 +109,8 @@ export const UserSettings = () => {
         }> = {}
 
         if (schema.username !== user.username) updates.username = schema.username || undefined
-        if (schema.firstName !== user.firstName) updates.firstName = schema.firstName || undefined
-        if (schema.lastName !== user.lastName) updates.lastName = schema.lastName || undefined
+        if (schema.first_name !== user.first_name) updates.first_name = schema.first_name || undefined
+        if (schema.last_name !== user.last_name) updates.last_name = schema.last_name || undefined
         if (schema.bio !== user.bio) updates.bio = schema.bio || undefined
         if (schema.phone !== user.phone) updates.phone = schema.phone || undefined
         if (schema.birthday !== user.birthday) updates.birthday = schema.birthday || undefined
@@ -127,8 +124,8 @@ export const UserSettings = () => {
         setUser?.(updatedUser)
         form.reset({
           username: updatedUser.username || '',
-          firstName: updatedUser.firstName || '',
-          lastName: updatedUser.lastName || '',
+          first_name: updatedUser.first_name || '',
+          last_name: updatedUser.last_name || '',
           bio: updatedUser.bio || '',
           phone: updatedUser.phone || '',
           birthday: updatedUser.birthday || '',
@@ -171,7 +168,7 @@ export const UserSettings = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="first_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('firstName')}</FormLabel>
@@ -189,7 +186,7 @@ export const UserSettings = () => {
 
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>{t('lastName')}</FormLabel>

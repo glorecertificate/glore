@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { PlaceholderPlugin } from '@platejs/media/react'
 import { AudioLinesIcon, FileUpIcon, FilmIcon, ImageIcon, LinkIcon } from 'lucide-react'
@@ -31,39 +31,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { ToolbarSplitButton, ToolbarSplitButtonPrimary, ToolbarSplitButtonSecondary } from '@/components/ui/toolbar'
 
-const MEDIA_CONFIG: Record<
-  string,
-  {
-    accept: string[]
-    icon: React.ReactNode
-    title: string
-    tooltip: string
-  }
-> = {
-  [KEYS.audio]: {
-    accept: ['audio/*'],
-    icon: <AudioLinesIcon className="size-4" />,
-    title: 'Insert Audio',
-    tooltip: 'Audio',
-  },
-  [KEYS.file]: {
-    accept: ['*'],
-    icon: <FileUpIcon className="size-4" />,
-    title: 'Insert File',
-    tooltip: 'File',
-  },
-  [KEYS.img]: {
-    accept: ['image/*'],
-    icon: <ImageIcon className="size-4" />,
-    title: 'Insert Image',
-    tooltip: 'Image',
-  },
-  [KEYS.video]: {
-    accept: ['video/*'],
-    icon: <FilmIcon className="size-4" />,
-    title: 'Insert Video',
-    tooltip: 'Video',
-  },
+interface MediaConfig {
+  accept: string[]
+  icon: React.ReactNode
+  label: string
 }
 
 export const MediaToolbarButton = ({
@@ -74,10 +45,36 @@ export const MediaToolbarButton = ({
   nodeType: string
   tooltip?: string
 }) => {
-  const currentConfig = MEDIA_CONFIG[nodeType]
-
   const editor = useEditorRef()
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.media')
+
+  const mediaConfig = useMemo<Record<string, MediaConfig>>(
+    () => ({
+      [KEYS.audio]: {
+        accept: ['audio/*'],
+        icon: <AudioLinesIcon className="size-4" />,
+        label: t('audio'),
+      },
+      [KEYS.file]: {
+        accept: ['*'],
+        icon: <FileUpIcon className="size-4" />,
+        label: t('file'),
+      },
+      [KEYS.img]: {
+        accept: ['image/*'],
+        icon: <ImageIcon className="size-4" />,
+        label: t('image'),
+      },
+      [KEYS.video]: {
+        accept: ['video/*'],
+        icon: <FilmIcon className="size-4" />,
+        label: t('video'),
+      },
+    }),
+    [t]
+  )
+
+  const currentConfig = mediaConfig[nodeType]
 
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -94,9 +91,7 @@ export const MediaToolbarButton = ({
   return (
     <>
       <ToolbarSplitButton
-        onClick={() => {
-          openFilePicker()
-        }}
+        onClick={openFilePicker}
         onKeyDown={e => {
           if (e.key === 'ArrowDown') {
             e.preventDefault()
@@ -111,16 +106,15 @@ export const MediaToolbarButton = ({
           <DropdownMenuTrigger asChild>
             <ToolbarSplitButtonSecondary />
           </DropdownMenuTrigger>
-
           <DropdownMenuContent align="start" alignOffset={-32} onClick={e => e.stopPropagation()}>
             <DropdownMenuGroup>
-              <DropdownMenuItem onSelect={() => openFilePicker()}>
+              <DropdownMenuItem onSelect={openFilePicker}>
                 {currentConfig.icon}
-                {t('imageUpload')}
+                {t('upload')} {currentConfig.label.toLowerCase()}
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setDialogOpen(true)}>
                 <LinkIcon />
-                {t('imageInsertUrl')}
+                {nodeType === KEYS.video ? t('embedYoutubeVideo') : t('insertUrl')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -146,19 +140,21 @@ const MediaUrlDialogContent = ({
   nodeType,
   setOpen,
 }: {
-  currentConfig: (typeof MEDIA_CONFIG)[string]
+  currentConfig: MediaConfig
   nodeType: string
   setOpen: (value: boolean) => void
 }) => {
   const editor = useEditorRef()
-  const t = useTranslations('Editor')
+  const t = useTranslations('Components.RichTextEditor.media')
 
   const [url, setUrl] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const embedMedia = useCallback(() => {
-    if (!isUrl(url)) return toast.error(t('common.invalidUrl'))
+    if (!isUrl(url)) return toast.error(t('invalidUrl'))
 
     setOpen(false)
+
     editor.tf.insertNodes({
       children: [{ text: '' }],
       name: nodeType === KEYS.file ? url.split('/').pop() : undefined,
@@ -167,44 +163,47 @@ const MediaUrlDialogContent = ({
     })
   }, [url, editor, nodeType, setOpen, t])
 
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current?.focus()
+    })
+  }, [])
+
   return (
     <>
       <AlertDialogHeader>
-        <AlertDialogTitle>{currentConfig.title}</AlertDialogTitle>
+        <AlertDialogTitle>{t('insertUrl')}</AlertDialogTitle>
+        <AlertDialogDescription>
+          {t('insertUrlDescription', { type: currentConfig.label.toLowerCase() })}
+        </AlertDialogDescription>
       </AlertDialogHeader>
 
-      <AlertDialogDescription className="group relative w-full">
-        <label
-          className={
-            '-translate-y-1/2 absolute top-1/2 block cursor-text px-1 text-muted-foreground/70 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:font-medium group-focus-within:text-foreground group-focus-within:text-xs has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground has-[+input:not(:placeholder-shown)]:text-xs'
-          }
-          htmlFor="url"
-        >
-          <span className="inline-flex bg-background px-2">{t('common.url')}</span>
-        </label>
-        <Input
-          autoFocus
-          className="w-full"
-          id="url"
-          onChange={e => setUrl(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') embedMedia()
-          }}
-          placeholder=""
-          type="url"
-          value={url}
-        />
-      </AlertDialogDescription>
-
+      {/* <div className="group/input-url relative"> */}
+      <Input
+        autoFocus
+        className="peer w-full"
+        icon={LinkIcon}
+        id="url"
+        onChange={e => setUrl(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'Enter') embedMedia()
+        }}
+        placeholder={t('url')}
+        ref={inputRef}
+        type="url"
+        value={url}
+        variant="floating"
+      />
       <AlertDialogFooter>
-        <AlertDialogCancel>{t('actions.cancel')}</AlertDialogCancel>
+        <AlertDialogCancel>{t('actionCancel')}</AlertDialogCancel>
         <AlertDialogAction
           onClick={e => {
             e.preventDefault()
             embedMedia()
           }}
+          variant="brand"
         >
-          {t('actions.insert')}
+          {t('actionInsert')}
         </AlertDialogAction>
       </AlertDialogFooter>
     </>

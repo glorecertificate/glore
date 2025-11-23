@@ -72,44 +72,115 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
 import { useSession } from '@/hooks/use-session'
-import { logout, type User, type UserOrganization } from '@/lib/data'
+import { logout, type UserOrganization } from '@/lib/data'
 import { APP_NAME } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
 
-interface SidebarItemProps<I extends Icon = Icon> extends SidebarMenuButtonProps {
-  className?: string
-  icon?: I
-  iconProps?: React.ComponentProps<I>
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+interface SidebarItemProps extends SidebarMenuButtonProps {
+  icon?: Icon
   label: string
   route: AppRoutes
   subItem?: boolean
 }
 
-const SidebarOrgs = ({
-  currentOrg,
-  orgs,
-  setOrg,
-}: {
-  currentOrg: UserOrganization
-  orgs: UserOrganization[]
-  setOrg: (org: UserOrganization) => void
-}) => {
-  const router = useRouter()
+const AppSidebarItem = ({
+  asChild = false,
+  className,
+  icon: Icon,
+  label,
+  onClick,
+  route,
+  subItem,
+}: SidebarItemProps) => {
+  const { activePath, setActivePath } = useSidebar()
+
+  const Comp = useMemo(() => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem), [asChild, subItem])
+  const isActivePath = route === activePath
+
+  const isActive = useMemo(() => {
+    if (isActivePath || subItem) return isActivePath
+    if (route === '/') return activePath === '/'
+    return activePath.startsWith(route)
+  }, [isActivePath, subItem, route, activePath])
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      setActivePath(route)
+      onClick?.(e)
+    },
+    [onClick, route, setActivePath]
+  )
+
+  return (
+    <Comp>
+      <SidebarMenuButton
+        asChild
+        className={cn(
+          cn(
+            subItem &&
+              'border-transparent border-l-2 py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border',
+            className
+          ),
+          isActivePath && 'pointer-events-none'
+        )}
+        isActive={isActive}
+        onClick={handleClick}
+        tooltip={label}
+      >
+        <Link href={route} progress="primary">
+          {route === '/' ? (
+            <DashboardIcon className="size-4" colored />
+          ) : Icon ? (
+            <Icon className={cn('text-muted-foreground', isActive && 'text-sidebar-accent-foreground')} />
+          ) : null}
+          {label}
+        </Link>
+      </SidebarMenuButton>
+    </Comp>
+  )
+}
+
+const AppSidebarCollapsible = ({ children, icon, label, route }: SidebarItemProps) => {
+  const { activePath } = useSidebar()
+  const [open, setOpen] = useState(activePath.startsWith(route))
+
+  return (
+    <Collapsible asChild open={open}>
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <AppSidebarItem asChild icon={icon} label={label} onClick={() => !open && setOpen(true)} route={route} />
+        </CollapsibleTrigger>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuAction
+            className={cn('cursor-pointer data-[state=open]:rotate-90')}
+            onClick={() => setOpen(open => !open)}
+          >
+            <ChevronRightIcon className="stroke-foreground/64" />
+          </SidebarMenuAction>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>{children}</SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  )
+}
+
+const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) => {
+  const { setOrganization, user } = useSession()
   const cookies = useCookies()
+  const router = useRouter()
   const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Navigation')
-
-  const getOrgInitials = useCallback((org: UserOrganization) => org.name.slice(0, 2).toUpperCase(), [])
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
       cookies.set('org', org.id)
       router.push('/')
       setActivePath('/')
-      setTimeout(() => setOrg(org), 200)
+      setTimeout(() => setOrganization(org), 200)
     },
-    [cookies, router, setOrg, setActivePath]
+    [cookies, router, setActivePath, setOrganization]
   )
 
   return (
@@ -127,19 +198,21 @@ const SidebarOrgs = ({
               <Avatar
                 className={cn(
                   'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
-                  !open && 'ml-8 size-8 text-xs',
-                  !currentOrg.avatarUrl && 'border'
+                  !open && 'size-8 text-xs',
+                  !organization.avatar_url && 'border'
                 )}
               >
-                {currentOrg.avatarUrl ? (
-                  <AvatarImage alt={currentOrg.name} src={currentOrg.avatarUrl} />
+                {organization.avatar_url ? (
+                  <AvatarImage alt={organization.name} src={organization.avatar_url} />
                 ) : (
-                  <span className="text-muted-foreground">{getOrgInitials(currentOrg)}</span>
+                  <span className="text-muted-foreground">{organization.shortName}</span>
                 )}
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate font-semibold">{currentOrg.name}</span>
-                <span className="truncate font-normal text-muted-foreground text-xs">{titleize(currentOrg.role)}</span>
+                <span className="truncate font-semibold">{organization.name}</span>
+                <span className="truncate font-normal text-muted-foreground text-xs">
+                  {titleize(organization.role)}
+                </span>
               </div>
               <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
             </SidebarMenuButton>
@@ -151,16 +224,16 @@ const SidebarOrgs = ({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">{t('organizations')}</DropdownMenuLabel>
-            {orgs.map(org => (
+            {user.organizations.map(org => (
               <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
-                  {org.avatarUrl && <AvatarImage alt={org.avatarUrl} src={org.avatarUrl} />}
-                  <AvatarFallback className="text-muted-foreground">{getOrgInitials(org)}</AvatarFallback>
+                  {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
+                  <AvatarFallback className="text-muted-foreground">{org.shortName}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="flex items-center truncate font-semibold">
                     {org.name}
-                    {org.id === currentOrg.id && (
+                    {org.id === organization.id && (
                       <span className="mt-[1.5px] ml-1.5 inline-block size-[7px] rounded-full bg-green-500" />
                     )}
                   </span>
@@ -182,113 +255,7 @@ const SidebarOrgs = ({
   )
 }
 
-const SidebarNavItem = <I extends Icon>({
-  asChild = false,
-  className,
-  icon: Icon,
-  iconProps,
-  label,
-  onClick,
-  route,
-  subItem,
-}: SidebarItemProps<I>) => {
-  const { setActivePath, activePath } = useSidebar()
-
-  const Wrapper = useMemo(
-    () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
-    [asChild, subItem]
-  )
-
-  const isActivePath = useMemo(() => route === activePath, [activePath, route])
-
-  const active = useMemo(() => {
-    if (isActivePath || subItem) return isActivePath
-    if (route === '/') return activePath === '/'
-    return activePath.startsWith(route)
-  }, [isActivePath, subItem, route, activePath])
-
-  const buttonClassName = useMemo(() => {
-    if (!subItem) return className
-    return cn(
-      `
-        border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/70
-        hover:text-sidebar-foreground
-        data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border
-      `,
-      className
-    )
-  }, [className, subItem])
-
-  const content = useMemo(() => {
-    const { className: iconClassName, ...iconRest } = iconProps ?? {}
-    const IconComponent = Icon as React.ComponentType<React.SVGProps<SVGSVGElement>>
-    const iconElement = Icon ? (
-      <IconComponent {...iconRest} className={cn('size-4 text-muted-foreground', iconClassName)} />
-    ) : null
-
-    const inner = (
-      <>
-        {iconElement}
-        <span>{label}</span>
-      </>
-    )
-    return isActivePath ? <span>{inner}</span> : <Link href={route}>{inner}</Link>
-  }, [Icon, iconProps, isActivePath, label, route])
-
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      onClick?.(e)
-      if (isActivePath) return
-      setActivePath(route)
-    },
-    [isActivePath, onClick, route, setActivePath]
-  )
-
-  return (
-    <Wrapper>
-      <SidebarMenuButton
-        active={active}
-        asChild
-        className={cn(buttonClassName, isActivePath && 'cursor-default')}
-        onClick={handleClick}
-        tooltip={label}
-      >
-        {content}
-      </SidebarMenuButton>
-    </Wrapper>
-  )
-}
-
-const SidebarNavCollapsible = <I extends Icon>({ children, icon, label, route }: SidebarItemProps<I>) => {
-  const { activePath } = useSidebar()
-  const [open, setOpen] = useState(activePath.startsWith(route))
-
-  const toggleCollapsible = useCallback(() => setOpen(open => !open), [])
-
-  const handleClick = useCallback(() => {
-    if (!open) setOpen(true)
-  }, [open])
-
-  return (
-    <Collapsible asChild open={open}>
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarNavItem asChild icon={icon} label={label} onClick={handleClick} route={route} />
-        </CollapsibleTrigger>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuAction className={cn('cursor-pointer data-[state=open]:rotate-90')} onClick={toggleCollapsible}>
-            <ChevronRightIcon className="stroke-foreground/64" />
-          </SidebarMenuAction>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub>{children}</SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuItem>
-    </Collapsible>
-  )
-}
-
-const SidebarNav = () => {
+const AppSidebarMain = () => {
   const { user } = useSession()
   const t = useTranslations('Navigation')
 
@@ -297,21 +264,22 @@ const SidebarNav = () => {
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4">
-        <SidebarNavItem icon={DashboardIcon} iconProps={{ colored: true }} label={t('dashboard')} route="/" />
-        <SidebarNavItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
-        {showCertificates && <SidebarNavItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
-        <SidebarNavCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
-          <SidebarNavItem label={t('docsIntro')} route="/docs/intro" subItem />
-          <SidebarNavItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
-          <SidebarNavItem label={t('docsFaq')} route="/docs/faq" subItem />
-        </SidebarNavCollapsible>
-        {user.isAdmin && <SidebarNavItem icon={CogIcon} label={t('admin')} route="/admin" />}
+        <AppSidebarItem label={t('dashboard')} route="/" />
+        <AppSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
+        {showCertificates && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
+        <AppSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
+          <AppSidebarItem label={t('docsIntro')} route="/docs/intro" subItem />
+          <AppSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
+          <AppSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
+        </AppSidebarCollapsible>
+        {user.is_admin && <AppSidebarItem icon={CogIcon} label={t('admin')} route="/admin" />}
       </SidebarMenu>
     </SidebarGroup>
   )
 }
 
-const SidebarUser = ({ organization, user }: { organization?: UserOrganization; user: User }) => {
+const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) => {
+  const { user } = useSession()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Navigation')
@@ -339,7 +307,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
       return
     }
 
-    await sleep(500)
+    await sleep(200)
     redirect('/login')
   }, [onLinkClick, t])
 
@@ -350,36 +318,37 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-popover aria-expanded:border-transparent',
-                open ? 'overflow-hidden shadow-inner' : 'overflow-visible'
+                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-accent/50',
+                'overflow-hidden shadow-inner'
               )}
               size="lg"
+              variant="outline"
             >
               <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
                 <Avatar
                   className={cn(
                     'aspect-square size-8 rounded-lg border',
                     !open && 'text-xs',
-                    !user.avatarUrl && 'border'
+                    !user.avatar_url && 'border'
                   )}
                 >
-                  {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
+                  {user.avatar_url && <AvatarImage src={user.avatar_url} />}
                   <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                 </Avatar>
-                {organization?.avatarUrl && (
+                {organization?.avatar_url && (
                   <Image
                     className="-right-1 -bottom-1 absolute rounded-full object-cover"
                     height={14}
-                    src={organization.avatarUrl}
+                    src={organization.avatar_url}
                     width={14}
                   />
                 )}
               </div>
               <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
                 <span className="flex items-center gap-1 font-semibold">
-                  {user.firstName}
-                  {user.isAdmin && (
-                    <Tooltip disableHoverableContent>
+                  {user.first_name}
+                  {user.is_admin && (
+                    <Tooltip>
                       <TooltipTrigger
                         asChild
                         className="group-aria-expanded/sidebar-user:pointer-events-none!"
@@ -392,8 +361,8 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                       </TooltipContent>
                     </Tooltip>
                   )}
-                  {user.isEditor && (
-                    <Tooltip disableHoverableContent>
+                  {user.is_editor && (
+                    <Tooltip>
                       <TooltipTrigger
                         asChild
                         className="group-aria-expanded/sidebar-user:pointer-events-none!"
@@ -407,7 +376,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                     </Tooltip>
                   )}
                 </span>
-                <span className="truncate font-normal text-muted-foreground text-xs">{user.username}</span>
+                <span className="truncate font-normal text-muted-foreground text-xs">{user.email}</span>
               </div>
               <Button
                 asChild
@@ -425,7 +394,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="start"
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-68 rounded-lg pt-2"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-64 rounded-lg pt-2"
             side="top"
             sideOffset={4}
           >
@@ -476,6 +445,7 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
                   <AlertDialogFooter>
                     <AlertDialogCancel disabled={isLoggingOut}>{t('logoutCancel')}</AlertDialogCancel>
                     <Button
+                      className="transition-none"
                       loading={isLoggingOut}
                       loadingText={t('logoutLoading')}
                       onClick={onLogoutClick}
@@ -494,31 +464,17 @@ const SidebarUser = ({ organization, user }: { organization?: UserOrganization; 
   )
 }
 
-export const AppSidebar = ({
-  defaultOpen,
-  ...props
-}: React.ComponentProps<typeof Sidebar> & {
-  defaultOpen?: boolean
-}) => {
-  const { organization, setUser, user } = useSession()
-
-  const setCurrentOrg = useCallback(
-    (org: UserOrganization) => {
-      setUser(prev => ({ ...prev, current_org: org }))
-    },
-    [setUser]
-  )
+export const AppSidebar = () => {
+  const { organization } = useSession()
 
   return (
-    <Sidebar className="overflow-hidden" collapsible="icon" {...props}>
-      <SidebarHeader>
-        {organization && <SidebarOrgs currentOrg={organization} orgs={user.organizations} setOrg={setCurrentOrg} />}
-      </SidebarHeader>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>{organization && <AppSidebarOrgs organization={organization} />}</SidebarHeader>
       <SidebarContent>
-        <SidebarNav />
+        <AppSidebarMain />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarUser organization={organization} user={user} />
+        <AppSidebarUser organization={organization} />
       </SidebarFooter>
       <SidebarRail tabIndex={-1} />
     </Sidebar>

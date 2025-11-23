@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
-import { GripVerticalIcon, PlusIcon } from 'lucide-react'
+import { ArchiveIcon, GripVerticalIcon, PlusIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { pluck } from '@glore/utils/pluck'
@@ -15,10 +15,9 @@ import {
   type CourseListSortDirection,
   type CourseListSortType,
 } from '@/components/features/courses/course-list-sort'
-import { CourseListTab } from '@/components/features/courses/course-list-tab'
+import { type SessionCourse } from '@/components/features/courses/course-provider'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
 import { NoResultsIllustration } from '@/components/illustrations/no-results'
-import { type SessionCourse } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
   MultiSelect,
@@ -28,13 +27,48 @@ import {
   MultiSelectTrigger,
 } from '@/components/ui/multi-select'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
-import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
 import { type Course, reorderCourses } from '@/lib/data'
 import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
+
+const CourseListTab = ({ count, value }: { active: boolean; count: number; value: CourseListView }) => {
+  const t = useTranslations('Courses')
+
+  const archiveTooltip = useMemo(() => {
+    if (value !== 'archived') return null
+    if (count === 0) return t('archive')
+    return (
+      <span className="flex items-center gap-1">
+        {t('archive')}
+        <small className="text-background/70 leading-0">{count}</small>
+      </span>
+    )
+  }, [count, t, value])
+
+  if (value === 'archived')
+    return (
+      <TabsTrigger className="rounded-xl p-0" effect="text-stroke" value={value}>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <span className="inline-block px-3.5">
+              <ArchiveIcon />
+            </span>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={10}>{archiveTooltip}</TooltipContent>
+        </Tooltip>
+      </TabsTrigger>
+    )
+
+  return (
+    <TabsTrigger className="rounded-xl" count={count} effect="text-stroke" value={value}>
+      {t(value)}
+    </TabsTrigger>
+  )
+}
 
 export const CourseList = ({
   defaultCourseLanguage,
@@ -64,6 +98,7 @@ export const CourseList = ({
   const [activeLanguages, setActiveLanguages] = useState<Locale[]>(defaultLanguages ?? [...locales])
   const [sortDirection, setSortDirection] = useState<CourseListSortDirection | null>(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const activeGroupItems = groups.filter(group => activeGroups.includes(group.value))
   const activeLanguageItems = localeItems.filter(item => activeLanguages.includes(item.value))
@@ -77,7 +112,7 @@ export const CourseList = ({
     : [...Object.values(CourseListLearnerView)]
 
   const courses = useMemo<Record<SnakeToCamel<CourseListView>, SessionCourse[]>>(() => {
-    const all = sessionCourses.filter(course => !course.archivedAt)
+    const all = sessionCourses.filter(course => !course.archived_at)
 
     if (user.canEdit)
       return {
@@ -88,7 +123,7 @@ export const CourseList = ({
           return published.length > 0 && published.length < activeLanguages.length
         }),
         draft: all.filter(course => activeLanguages.every(lang => !course.languages?.includes(lang))),
-        archived: sessionCourses.filter(course => course.archivedAt),
+        archived: sessionCourses.filter(course => course.archived_at),
         notStarted: [],
         inProgress: [],
         completed: [],
@@ -99,10 +134,10 @@ export const CourseList = ({
       published: [],
       partial: [],
       draft: [],
-      archived: sessionCourses.filter(course => course.archivedAt),
-      notStarted: all.filter(course => course.progress === 'not_started'),
-      inProgress: all.filter(course => course.progress === 'in_progress'),
-      completed: all.filter(course => course.progress === 'completed'),
+      archived: sessionCourses.filter(course => course.archived_at),
+      notStarted: all.filter(course => course.progressStatus === 'not_started'),
+      inProgress: all.filter(course => course.progressStatus === 'in_progress'),
+      completed: all.filter(course => course.progressStatus === 'completed'),
     }
   }, [sessionCourses, user.canEdit, activeLanguages])
 
@@ -124,8 +159,8 @@ export const CourseList = ({
               return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
             }
             case 'progress': {
-              if (a.completion == null || b.completion == null) return 0
-              return sortDirection === 'asc' ? a.completion - b.completion : b.completion - a.completion
+              if (a.progress == null || b.progress == null) return 0
+              return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
             }
             case 'skillGroup': {
               if (!(a.skillGroup?.name && b.skillGroup?.name)) return 0
@@ -135,24 +170,24 @@ export const CourseList = ({
               return sortDirection === 'asc' ? skillA.localeCompare(skillB) : skillB.localeCompare(skillA)
             }
             case 'creationDate': {
-              if (!(a.createdAt && b.createdAt)) return 0
+              if (!(a.created_at && b.created_at)) return 0
               return sortDirection === 'asc'
-                ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-                : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                ? new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+                : new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
             }
             case 'lastUpdated': {
-              if (!(a.updatedAt && b.updatedAt)) return 0
+              if (!(a.updated_at && b.updated_at)) return 0
               return sortDirection === 'asc'
-                ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
-                : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+                ? new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
+                : new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
             }
             case 'type': {
               if (!(a.type && b.type)) return 0
               return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
             }
             default:
-              if (a.sortOrder == null || b.sortOrder == null) return 0
-              return a.sortOrder - b.sortOrder
+              if (a.sort_order == null || b.sort_order == null) return 0
+              return a.sort_order - b.sort_order
           }
         }) as (Course & { language: Locale })[],
     [activeLanguages, activeSort, activeTab, courses, defaultCourseLanguage, locale, localize, sortDirection]
@@ -197,19 +232,21 @@ export const CourseList = ({
 
   const onTabChange = useCallback(
     (value: string) => {
+      setLoading(true)
       const tab = value as CourseListView
       setActiveTab(tab)
       cookies.set('course_list_view', tab)
+      setLoading(false)
     },
     [cookies.set]
   )
 
   const onLanguagesChange = useCallback(
     (selected: string[]) => {
-      const lanaguages = selected as Locale[]
-      setActiveLanguages(lanaguages)
-      cookies.set('course_list_locales', lanaguages)
-      if (activeTab === 'partial' && (lanaguages.length === 1 || courses.partial.length === 0)) {
+      const languages = selected as Locale[]
+      setActiveLanguages(languages)
+      cookies.set('course_list_locales', languages)
+      if (activeTab === 'partial' && (languages.length === 1 || courses.partial.length === 0)) {
         setActiveTab('all')
       }
     },
@@ -231,15 +268,15 @@ export const CourseList = ({
       setCourses(prev => {
         const reordered = orderedCourses.map(course => {
           const previousCourse = new Map(prev.map(course => [course.id, course])).get(course.id)
-          const sortOrder = nextOrders.get(course.id)
+          const sort_order = nextOrders.get(course.id)
 
           if (!previousCourse) {
             const { language: _language, ...rest } = course as Course & { language?: Locale }
-            return sortOrder ? { ...rest, sortOrder } : rest
+            return sort_order ? { ...rest, sort_order } : rest
           }
 
-          if (!sortOrder || previousCourse.sortOrder === sortOrder) return previousCourse
-          return { ...previousCourse, sortOrder }
+          if (!sort_order || previousCourse.sort_order === sort_order) return previousCourse
+          return { ...previousCourse, sort_order }
         })
 
         const untouched = prev.filter(course => !nextOrders.has(course.id))
@@ -250,6 +287,8 @@ export const CourseList = ({
     },
     [setCourses]
   )
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <>
@@ -271,7 +310,7 @@ export const CourseList = ({
                 <Tooltip delayDuration={0}>
                   <TooltipTrigger asChild>
                     <Button
-                      className="size-8 rounded-full text-[13px]"
+                      className="size-8 rounded-full text-[13px] hover:scale-105 focus:scale-105"
                       onClick={() => setCreateModalOpen(true)}
                       size="icon"
                       variant="brand"
@@ -279,9 +318,7 @@ export const CourseList = ({
                       <PlusIcon className="size-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent arrow={false} sideOffset={2}>
-                    {t('createCourse')}
-                  </TooltipContent>
+                  <TooltipContent sideOffset={2}>{t('createCourse')}</TooltipContent>
                 </Tooltip>
               )}
             </div>
@@ -297,7 +334,14 @@ export const CourseList = ({
             <MultiSelect onValueChange={onGroupChange} options={groupOptions} value={activeGroups}>
               <MultiSelectTrigger>
                 {activeGroupItems.map(item => (
-                  <MultiSelectBadge key={item.value} {...item} />
+                  <MultiSelectBadge
+                    className="py-1 font-medium text-xs"
+                    key={item.value}
+                    label={t('skillGroup').toLowerCase()}
+                    value={item.value}
+                  >
+                    {item.label}
+                  </MultiSelectBadge>
                 ))}
               </MultiSelectTrigger>
               <MultiSelectContent align="start">
@@ -308,8 +352,8 @@ export const CourseList = ({
             </MultiSelect>
             <MultiSelect onValueChange={onLanguagesChange} options={locales} value={activeLanguages}>
               <MultiSelectTrigger>
-                {activeLanguageItems.map(({ displayLabel, icon, ...item }) => (
-                  <MultiSelectBadge key={item.value} size="md" {...item}>
+                {activeLanguageItems.map(({ displayLabel, icon, label, ...item }) => (
+                  <MultiSelectBadge className="gap-0 py-0 text-sm" key={item.value} label={displayLabel} {...item}>
                     {icon && <span className="mr-1 inline-block">{icon}</span>}
                   </MultiSelectBadge>
                 ))}
@@ -342,47 +386,49 @@ export const CourseList = ({
               </div>
             </div>
           ) : user.canEdit ? (
-            <Sortable
-              getItemValue={item => item.id}
-              onValueChange={setOrder}
-              orientation="mixed"
-              value={displayedCourses}
-            >
-              <SortableContent className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {displayedCourses.map(course => (
-                  <SortableItem className="group/sortable-item relative" key={course.slug} value={course.id}>
-                    <CourseCard
-                      activeLanguages={activeLanguages}
-                      course={course}
-                      key={course.slug}
-                      showState={activeTab !== 'archived'}
-                    />
-                    {canDrag ? (
-                      <SortableItemHandle
-                        className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
-                        title={t('reorderCourse')}
-                      >
-                        <GripVerticalIcon className="size-4 text-muted-foreground" />
-                      </SortableItemHandle>
-                    ) : (
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger asChild>
-                          <SortableItemHandle
-                            className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-50"
-                            disabled
-                          >
-                            <GripVerticalIcon className="size-4 text-muted-foreground" />
-                          </SortableItemHandle>
-                        </TooltipTrigger>
-                        <TooltipContent arrow={false} sideOffset={10}>
-                          {t('reorderDisabled')}
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                  </SortableItem>
-                ))}
-              </SortableContent>
-            </Sortable>
+            loading ? (
+              'Loading...'
+            ) : (
+              <Sortable
+                getItemValue={item => item.id}
+                onValueChange={setOrder}
+                orientation="mixed"
+                value={displayedCourses}
+              >
+                <SortableContent className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                  {displayedCourses.map(course => (
+                    <SortableItem className="group/sortable-item relative" key={course.slug} value={course.id}>
+                      <CourseCard
+                        activeLanguages={activeLanguages}
+                        course={course}
+                        key={course.slug}
+                        showState={activeTab !== 'archived'}
+                      />
+                      {canDrag ? (
+                        <SortableItemHandle
+                          className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
+                          title={t('reorderCourse')}
+                        >
+                          <GripVerticalIcon className="size-4 text-muted-foreground" />
+                        </SortableItemHandle>
+                      ) : (
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger asChild>
+                            <SortableItemHandle
+                              className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-50"
+                              disabled
+                            >
+                              <GripVerticalIcon className="size-4 text-muted-foreground" />
+                            </SortableItemHandle>
+                          </TooltipTrigger>
+                          <TooltipContent sideOffset={10}>{t('reorderDisabled')}</TooltipContent>
+                        </Tooltip>
+                      )}
+                    </SortableItem>
+                  ))}
+                </SortableContent>
+              </Sortable>
+            )
           ) : (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               {displayedCourses.map(course => (

@@ -5,39 +5,32 @@ import { useCallback, useId, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type PostgrestError } from '@supabase/supabase-js'
-import { Link2Icon } from 'lucide-react'
+import { Link2Icon, RotateCcwIcon, Trash2Icon } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { type Enums } from 'supabase/types'
 import z from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { Form, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form'
+import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useCourse } from '@/hooks/use-course'
 import { useIntl } from '@/hooks/use-intl'
 import { useSession } from '@/hooks/use-session'
-import { COURSE_SLUG_REGEX, COURSE_TYPES, type Course } from '@/lib/data'
-import { cn } from '@/lib/utils'
+import { COURSE_SLUG_REGEX, COURSE_TYPES } from '@/lib/data'
 
-interface CourseSettingsProps {
-  course?: Partial<Course>
-}
-
-export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) => {
+export const CourseSettings = () => {
   const router = useRouter()
-
   const { localize } = useIntl()
   const { createCourse, skillGroups, updateCourseSettings } = useSession()
+  const { course: initialCourse } = useCourse()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
-
-  const isNew = useMemo(() => !initialCourse, [initialCourse])
 
   const formSchema = useMemo(
     () =>
@@ -52,10 +45,9 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    mode: 'onChange',
     defaultValues: {
       type: initialCourse?.type ?? 'intro',
-      skill_group_id: initialCourse?.skillGroup?.id ?? null,
+      skill_group_id: initialCourse?.skillGroup?.id ?? undefined,
       icon: initialCourse?.icon ?? '',
       slug: initialCourse?.slug ?? '',
     },
@@ -64,23 +56,27 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
 
   const slugId = useId()
   const slugPrefix = `${window.location.origin}/courses/`
+  const isNew = !initialCourse
+  const isIntro = form.getValues('type') === 'intro'
 
   const disabled = useMemo(
-    () => !form.formState.isDirty || form.formState.isSubmitting || !form.formState.isValid,
+    () => !(form.formState.isValid && form.formState.isDirty) || form.formState.isSubmitting,
     [form.formState, form]
   )
 
   const submitMessage = useMemo(() => {
     if (!form.formState.isDirty) return tCommon('noChangesToSave')
     if (form.formState.isSubmitting) return isNew ? t('creatingCourse') : t('savingChange')
-    if (!form.formState.isValid) return // tCommon('fixErrorsToContinue')
     return isNew ? t('createCourse') : t('saveChanges')
   }, [form.formState, isNew, t, tCommon])
 
   const onSlugChange = useCallback(
     (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target
-      const slug = value.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+        .replace(/-+/g, '-')
       onChange(slug)
     },
     []
@@ -105,17 +101,18 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
     () => async (schema: z.infer<typeof formSchema>) => {
       try {
         if (!initialCourse?.id) return
-
         const course = await updateCourseSettings(initialCourse.id, schema)
         toast.success(t('courseSettingsUpdated'))
-        router.replace(`/courses/${course.slug}`)
+        if (course.slug !== initialCourse.slug) {
+          router.replace(`/courses/${course.slug}`)
+        }
       } catch (e) {
         const error = e as PostgrestError
         console.error(error.message, error)
         toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
       }
     },
-    [initialCourse?.id, router, t, updateCourseSettings]
+    [initialCourse?.id, initialCourse?.slug, router, t, updateCourseSettings]
   )
 
   const onSubmit = useCallback(
@@ -129,24 +126,104 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
         <div className="space-y-6">
           <FormField
             control={form.control}
-            name="type"
+            name="icon"
             render={({ field }) => (
               <FormItem className="space-y-1">
                 <div className="flex flex-col space-y-1">
-                  <FormLabel className="text-[15px]">{t('courseType')}</FormLabel>
-                  <FormDescription>{t('courseTypeDescription')}</FormDescription>
+                  <FormLabel className="text-[15px]">{t('icon')}</FormLabel>
+                  <FormDescription>{t('iconDescription')}</FormDescription>
                 </div>
-                <div className="space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <IconPicker
+                    className="w-fit justify-start py-5 font-normal [&>svg]:size-4.5!"
+                    defaultValue={field.value as IconName | undefined}
+                    onValueChange={field.onChange}
+                    variant="outline"
+                  />
+                  <div className="flex items-center gap-0.5">
+                    {field.value && (
+                      <Button
+                        className="size-7 hover:bg-destructive/15! hover:text-destructive-accent focus:bg-destructive/15! focus:text-destructive-accent"
+                        disabled={form.formState.isSubmitting}
+                        onClick={() => field.onChange(null)}
+                        size="xs"
+                        title={t('removeIcon')}
+                        variant="ghost"
+                      >
+                        <Trash2Icon className="size-3.5" />
+                      </Button>
+                    )}
+                    {field.value && initialCourse?.icon && field.value !== initialCourse.icon && (
+                      <Button
+                        className="size-7 hover:bg-destructive/15! hover:text-warning-accent focus:bg-warning/15! focus:text-warning-accent"
+                        disabled={form.formState.isSubmitting}
+                        onClick={() => field.onChange(initialCourse.icon)}
+                        size="xs"
+                        title={t('resetIcon')}
+                        variant="ghost"
+                      >
+                        <RotateCcwIcon className="size-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field: { onChange, ...field } }) => (
+              <FormItem className="space-y-1">
+                <div className="flex flex-col space-y-1">
+                  <Label className="text-[15px]">{t('courseSlug')}</Label>
+                  <FormDescription>{t('courseSlugDescription')}</FormDescription>
+                </div>
+                <div className="space-y-1.5">
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <InputGroupText className="text-muted-foreground/80">{slugPrefix}</InputGroupText>
+                    </InputGroupAddon>
+                    <InputGroupAddon align="inline-end">
+                      <Link2Icon className="cursor-default" />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      className="pl-0.5!"
+                      disabled={form.formState.isSubmitting}
+                      id={slugId}
+                      onChange={onSlugChange(onChange)}
+                      {...field}
+                    />
+                  </InputGroup>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel className="text-[15px]">{t('courseType')}</FormLabel>
+                <div className="space-y-1.5">
                   <Tabs
-                    onValueChange={value => form.setValue('type', value as Enums<'course_type'>)}
-                    value={field.value}
+                    onValueChange={(value: string) => {
+                      form.setValue('skill_group_id', null)
+                      field.onChange(value)
+                    }}
+                    {...field}
                   >
-                    <TabsList className="grid grid-cols-2">
-                      <TabsTrigger value="intro">{t('courseTypeIntroductory')}</TabsTrigger>
-                      <TabsTrigger value="skill">{t('courseTypeSoftSkill')}</TabsTrigger>
+                    <TabsList className="grid min-w-1/3 grid-cols-2">
+                      <TabsTrigger className="h-7" size="sm" value="intro">
+                        {t('courseTypeIntroductory')}
+                      </TabsTrigger>
+                      <TabsTrigger className="h-7" size="sm" value="skill">
+                        {t('courseTypeSoftSkill')}
+                      </TabsTrigger>
                     </TabsList>
                   </Tabs>
-                  <p className="text-xs">
+                  <p className="text-muted-foreground text-xs">
                     {field.value === 'intro'
                       ? t('courseTypeIntroductoryDescription')
                       : t('courseTypeSoftSkillDescription')}
@@ -159,18 +236,16 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
             control={form.control}
             name="skill_group_id"
             render={({ field }) => (
-              <FormItem
-                className={cn('space-y-1', form.getValues('type') === 'intro' && 'pointer-events-none opacity-50')}
-              >
+              <FormItem className="space-y-1">
                 <div className="flex flex-col space-y-1">
                   <FormLabel className="text-[15px]">{t('skillGroup')}</FormLabel>
                   <FormDescription>{t('skillGroupDescription')}</FormDescription>
                 </div>
                 <Select
                   onValueChange={value => form.setValue('skill_group_id', Number(value))}
-                  value={String(field.value)}
+                  value={field.value ? String(field.value) : undefined}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="w-fit" disabled={isIntro}>
                     <SelectValue placeholder={t('selectSkillGroup')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -184,60 +259,12 @@ export const CourseSettings = ({ course: initialCourse }: CourseSettingsProps) =
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="icon"
-            render={({ field }) => (
-              <FormItem
-                className={cn('space-y-1', form.getValues('type') === 'intro' && 'pointer-events-none opacity-50')}
-              >
-                <div className="flex flex-col space-y-1">
-                  <FormLabel className="text-[15px]">{t('icon')}</FormLabel>
-                  <FormDescription>{t('iconDescription')}</FormDescription>
-                </div>
-                <IconPicker
-                  className="w-fit justify-start"
-                  defaultValue={field.value as IconName | undefined}
-                  onValueChange={field.onChange}
-                  tooltips={false}
-                />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="slug"
-            render={({ field: { onChange, ...field } }) => (
-              <FormItem className="space-y-1">
-                <div className="flex flex-col space-y-1">
-                  <Label className="text-[15px]">{t('courseSlug')}</Label>
-                  <FormDescription>{t('courseSlugDescription')}</FormDescription>
-                </div>
-                <InputGroup>
-                  <InputGroupAddon>
-                    <InputGroupText className="text-muted-foreground/80">{slugPrefix}</InputGroupText>
-                  </InputGroupAddon>
-                  <InputGroupAddon align="inline-end">
-                    <Link2Icon className="cursor-default" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    className="pl-0.5!"
-                    disabled={form.formState.isSubmitting}
-                    id={slugId}
-                    onChange={onSlugChange(onChange)}
-                    {...field}
-                  />
-                </InputGroup>
-              </FormItem>
-            )}
-          />
         </div>
         <div>
-          <p className="text-right text-muted-foreground text-xs">{form.formState.errors.slug?.message}</p>
           <Button
             className="w-full [&_svg]:size-4"
             disabled={disabled}
-            disabledCursor
+            effect="gooeyLeft"
             loading={form.formState.isSubmitting}
             type="submit"
             variant="brand"

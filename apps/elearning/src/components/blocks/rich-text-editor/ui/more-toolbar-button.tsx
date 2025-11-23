@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import { KeyboardIcon, MoreHorizontalIcon, SubscriptIcon, SuperscriptIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { KEYS } from 'platejs'
 import { useEditorRef } from 'platejs/react'
 
@@ -18,6 +19,8 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 
 export const MoreToolbarButton = (props: DropdownMenuProps) => {
   const editor = useEditorRef()
+  const t = useTranslations('Components.RichTextEditor.actions')
+
   const [open, setOpen] = useState(false)
 
   return (
@@ -41,7 +44,7 @@ export const MoreToolbarButton = (props: DropdownMenuProps) => {
             }}
           >
             <KeyboardIcon />
-            {'Keyboard input'}
+            {t('keyboardInput')}
           </DropdownMenuItem>
 
           <DropdownMenuItem
@@ -53,7 +56,7 @@ export const MoreToolbarButton = (props: DropdownMenuProps) => {
             }}
           >
             <SuperscriptIcon />
-            {'Superscript'}
+            {t('superscript')}
             {/* (⌘+,) */}
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -65,7 +68,7 @@ export const MoreToolbarButton = (props: DropdownMenuProps) => {
             }}
           >
             <SubscriptIcon />
-            {'Subscript'}
+            {t('subscript')}
             {/* (⌘+.) */}
           </DropdownMenuItem>
         </DropdownMenuGroup>

@@ -25,7 +25,7 @@ import { TurnIntoToolbarButton } from '@/components/blocks/rich-text-editor/ui/t
 import { ToolbarGroup } from '@/components/ui/toolbar'
 
 export const FixedToolbarButtons = () => {
-  const t = useTranslations('Editor.blocks')
+  const t = useTranslations('Components.RichTextEditor.blocks')
   const [readOnly] = usePlateState('readOnly')
 
   return (

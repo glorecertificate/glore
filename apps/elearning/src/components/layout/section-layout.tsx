@@ -2,7 +2,7 @@
 
 import { InfoIcon } from 'lucide-react'
 
-import { type IconName } from '@/components/icons/dynamic'
+import type { IconName } from '@/components/icons/dynamic'
 import { BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePortal } from '@/hooks/use-portal'

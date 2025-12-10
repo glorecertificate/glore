@@ -1,4 +1,4 @@
-import { type NextConfig } from 'next'
+import type { NextConfig } from 'next'
 import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 
 import bundleAnalyzer from '@next/bundle-analyzer'
@@ -10,6 +10,7 @@ const INTL_REQUEST_CONFIG = './src/i18n.ts'
 export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
   const nextConfig = {
     ...defaultConfig,
+    cacheComponents: true,
     experimental: {
       turbopackFileSystemCacheForDev: true,
     },
@@ -21,7 +22,7 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
             value: 'public, max-age=3600',
           },
         ],
-        source: '/api/manifest',
+        source: '/api/v1/manifest',
       },
     ],
     images: {

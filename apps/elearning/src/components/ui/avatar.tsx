@@ -1,45 +1,31 @@
 'use client'
 
-import { Fallback, Image, Root } from '@radix-ui/react-avatar'
-import { HoverCardContent } from '@radix-ui/react-hover-card'
+import * as AvatarPrimitive from '@radix-ui/react-avatar'
 
-// import { type FileWithPath } from 'react-dropzone'
-
-import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { cn } from '@/lib/utils'
 
-export interface AvatarProps extends React.ComponentProps<typeof Root> {}
+export interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {}
 
-export const Avatar = ({ className, ...props }: AvatarProps) => (
-  <Root className={cn('relative flex size-8 shrink-0 overflow-hidden', className)} data-slot="avatar" {...props} />
+export const Avatar = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) => (
+  <AvatarPrimitive.Root
+    className={cn('relative flex size-8 shrink-0 overflow-hidden', className)}
+    data-slot="avatar"
+    {...props}
+  />
 )
 
-export interface AvatarImageProps extends React.ComponentProps<typeof Image> {}
-
-export const AvatarImage = ({ className, ...props }: AvatarImageProps) => (
-  <Image className={cn('aspect-square size-full', className)} data-slot="avatar-image" {...props} />
+export const AvatarImage = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) => (
+  <AvatarPrimitive.Image className={cn('aspect-square size-full', className)} data-slot="avatar-image" {...props} />
 )
 
-export interface AvatarFallbackProps extends React.ComponentProps<typeof Fallback> {}
-
-export const AvatarFallback = ({ className, ...props }: AvatarFallbackProps) => (
-  <Fallback
+export const AvatarFallback = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) => (
+  <AvatarPrimitive.Fallback
     className={cn('pointer-events-none flex size-full items-center justify-center bg-muted', className)}
     data-slot="avatar-fallback"
     {...props}
   />
 )
-
-export interface AvatarStackProps<
-  T extends {
-    url?: string
-    placeholder?: string
-  },
-> extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
-  avatarProps?: AvatarProps
-  avatars: T[]
-  content?: (props: T) => React.ReactNode
-}
 
 export const AvatarStack = <
   T extends {
@@ -51,7 +37,11 @@ export const AvatarStack = <
   className,
   content,
   ...props
-}: AvatarStackProps<T>) => {
+}: Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> & {
+  avatarProps?: AvatarProps
+  avatars: T[]
+  content?: (props: T) => React.ReactNode
+}) => {
   const { className: avatarClassName, ...avatarProps } = props.avatarProps ?? {}
 
   return (
@@ -78,26 +68,3 @@ export const AvatarStack = <
     </div>
   )
 }
-
-// export const AvatarUploader = () => {
-//   const [selectedFile, setSelectedFile] = useState<FileWithPreview | null>(null)
-
-//   const onDrop = useCallback(
-//     (acceptedFiles: FileWithPath[]) => {
-//       const file = acceptedFiles[0]
-//       if (!file) {
-//         alert('Selected image is too large!')
-//         return
-//       }
-
-//       const fileWithPreview = Object.assign(file, {
-//         preview: URL.createObjectURL(file),
-//       })
-
-//       setSelectedFile(fileWithPreview)
-//       setDialogOpen(true)
-//     },
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//     []
-//   )
-// }

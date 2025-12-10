@@ -10,7 +10,7 @@
     "lib": ["dom", "dom.asynciterable", "dom.iterable", "esnext"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "noEmit": false,
+    "noEmit": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,

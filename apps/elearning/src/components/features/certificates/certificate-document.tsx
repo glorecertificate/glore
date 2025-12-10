@@ -2,56 +2,31 @@
 
 import { useMemo } from 'react'
 
-import {
-  AwardIcon,
-  BuildingIcon,
-  CalendarIcon,
-  ClockIcon,
-  PrinterIcon,
-  ShareIcon,
-  UserIcon,
-  ViewIcon,
-} from 'lucide-react'
+import { BuildingIcon, CalendarIcon, ClockIcon, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { type Certificate } from '@/lib/data'
+import { useI18n } from '@/hooks/use-i18n'
+import type { Certificate } from '@/lib/db/schema'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
-  const { localize, localizeDate } = useIntl()
+  const { localizeDate } = useI18n()
   const t = useTranslations()
 
   const isIssued = useMemo(() => !!certificate.issued_at, [certificate])
-
-  // const renderStarRating = useCallback(
-  //   (rating: number) => (
-  //     <div className="flex items-center">
-  //       {[1, 2, 3, 4, 5].map(i => (
-  //         <StarIcon
-  //           className={cn('size-5', i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300')}
-  //           key={i}
-  //         />
-  //       ))}
-  //     </div>
-  //   ),
-  //   [],
-  // )
 
   return (
     <Card className="mx-auto max-w-4xl">
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle className="text-2xl">
-              {t('Certificates.title')} {localize(certificate.organization.description)}
-            </CardTitle>
+            <CardTitle className="text-2xl">{t('Certificates.title')}</CardTitle>
             {certificate.issued_at && (
               <CardDescription>
                 {t('Certificates.issuedOn')} {localizeDate(certificate.issued_at)}
@@ -158,12 +133,12 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         <div className="py-4">
           <h3 className="mb-3 font-medium">{t('Common.skills')}</h3>
           <div className="flex flex-wrap gap-2">
-            {certificate.skills.map(skill => (
+            {/* {certificate.skills.map(skill => (
               <Badge className="px-3 py-1" key={skill.id}>
                 <AwardIcon className="mr-1 size-3.5" />
                 {localize(skill.title)}
               </Badge>
-            ))}
+            ))} */}
           </div>
         </div>
       </CardContent>

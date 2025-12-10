@@ -1,7 +1,7 @@
 'use client'
 
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
-import { type VariantProps } from 'class-variance-authority'
+import type { VariantProps } from 'class-variance-authority'
 
 import { Spinner } from '@/components/icons/spinner'
 import { type Button, buttonVariants } from '@/components/ui/button'

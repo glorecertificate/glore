@@ -7,33 +7,36 @@ import { useLocale } from 'next-intl'
 import metadata from '@config/metadata'
 
 import { usePWA } from '@/hooks/use-pwa'
-import { LOCALES } from '@/lib/intl'
-import { apiRoute } from '@/lib/navigation'
+import { i18n } from '@/lib/i18n'
+import { route } from '@/lib/navigation'
 
-const TITLE_SELECTORS = ['[property="og:title"]', '[name="twitter:title"]']
-const DESCRIPTION_SELECTORS = [
-  '[name="description"]',
-  '[property="og:description"]',
-  '[name="twitter:description"]',
-  '[itemprop="description"]',
-]
-const LOCALE_SELECTOR = '[property="og:locale"]'
-const ALTERNATE_LOCALE_SELECTOR = '[property="og:locale:alternate"]'
-const IMAGE_SELECTORS = ['[property="og:image"]', '[name="twitter:image"]', '[itemprop="image"]']
-const MANIFEST_SELECTOR = '[rel="manifest"]'
-const MANIFEST_ROUTE = apiRoute('/api/manifest')
+const metaSelectors = {
+  title: ['[property="og:title"]', '[name="twitter:title"]'],
+  description: [
+    '[name="description"]',
+    '[property="og:description"]',
+    '[name="twitter:description"]',
+    '[itemprop="description"]',
+  ],
+  locale: '[property="og:locale"]',
+  alternateLocale: '[property="og:locale:alternate"]',
+  image: ['[property="og:image"]', '[name="twitter:image"]', '[itemprop="image"]'],
+  manifest: '[rel="manifest"]',
+}
 
-const getMetaContent = (selector: string | string[]) => {
+const getMetaContent = (selector: keyof typeof metaSelectors) => {
   if (typeof document === 'undefined') return
-  for (const attribute of Array.isArray(selector) ? selector : [selector]) {
+  const selectors = metaSelectors[selector]
+  for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
     if (element) return element.content
   }
 }
 
-const updateMetaContent = (selector: string | string[], value: string) => {
+const updateMetaContent = (selector: keyof typeof metaSelectors, value: string) => {
   if (typeof document === 'undefined') return
-  for (const attribute of Array.isArray(selector) ? selector : [selector]) {
+  const selectors = metaSelectors[selector]
+  for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
     if (element) element.content = value
   }
@@ -72,9 +75,16 @@ export interface UseMetadataOptions {
   title?: string
 }
 
+/**
+ * Hook to manage and update metadata title, description, and image.
+ */
 export const useMetadata = ({ applicationName = true, delay = 100, ...options }: UseMetadataOptions) => {
   const locale = useLocale()
   const { displayMode } = usePWA()
+
+  const title = typeof document === 'undefined' ? undefined : document.title
+  const description = getMetaContent('description')
+  const image = getMetaContent('image')
 
   const setTitle = useCallback(
     (title: string) => {
@@ -83,43 +93,45 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
           ? `${title} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
           : title
       document.title = content
-      updateMetaContent(TITLE_SELECTORS, content)
+      updateMetaContent('title', content)
     },
     [applicationName, displayMode]
   )
 
   const setDescription = useCallback((description: string) => {
-    updateMetaContent(DESCRIPTION_SELECTORS, description)
+    updateMetaContent('description', description)
   }, [])
 
-  const setImage = useCallback((image: string) => updateMetaContent(IMAGE_SELECTORS, image), [])
+  const setImage = useCallback((image: string) => updateMetaContent('image', image), [])
 
   useEffect(() => {
     if (!(options.title || options.description || options.image)) return
 
-    const id = setTimeout(() => {
+    const timeout = setTimeout(() => {
       if (options.title) setTitle(options.title)
       if (options.description) setDescription(options.description)
       if (options.image) setImage(options.image)
     }, delay)
 
-    return () => clearTimeout(id)
+    return () => {
+      clearTimeout(timeout)
+    }
   }, [delay, options.title, options.description, options.image, setTitle, setDescription, setImage])
 
   useEffect(() => {
     const html = document.querySelector('html')!
     html.setAttribute('lang', locale)
-    updateMetaContent(LOCALE_SELECTOR, locale)
-    updateLinkSelector(MANIFEST_SELECTOR, `${MANIFEST_ROUTE}?locale=${locale}`)
-    updateMetaContent(ALTERNATE_LOCALE_SELECTOR, LOCALES.filter(l => l !== locale)[0])
+    updateMetaContent('locale', locale)
+    updateLinkSelector('manifest', `${route('/api/v1/manifest', { searchParams: { locale } })}`)
+    updateMetaContent('alternateLocale', i18n.locales.filter(l => l !== locale)[0])
   }, [locale])
 
   return {
-    description: getMetaContent(DESCRIPTION_SELECTORS),
-    image: getMetaContent(IMAGE_SELECTORS),
+    description,
+    image,
     setDescription,
     setImage,
     setTitle,
-    title: typeof document === 'undefined' ? undefined : document.title,
+    title,
   }
 }

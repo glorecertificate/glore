@@ -3,7 +3,7 @@
 import { useDraggable } from '@platejs/dnd'
 import { Image, ImagePlugin, useMediaState } from '@platejs/media/react'
 import { ResizableProvider, useResizableValue } from '@platejs/resizable'
-import { type TImageElement } from 'platejs'
+import type { TImageElement } from 'platejs'
 import { PlateElement, type PlateElementProps, withHOC } from 'platejs/react'
 
 import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'

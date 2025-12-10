@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
 export type SpinnerProps = IconProps<VariantProps<typeof spinnerVariants>>

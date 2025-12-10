@@ -1,4 +1,4 @@
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 
 export const GloreIcon = ({ height, width, ...props }: IconProps) => (
   <svg viewBox="0 0 1176 372" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" {...props}>

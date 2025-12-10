@@ -1,7 +1,7 @@
 'use client'
 
 import { getLinkAttributes } from '@platejs/link'
-import { type TLinkElement } from 'platejs'
+import type { TLinkElement } from 'platejs'
 import { PlateElement, type PlateElementProps } from 'platejs/react'
 
 export const LinkElement = (props: PlateElementProps<TLinkElement>) => (

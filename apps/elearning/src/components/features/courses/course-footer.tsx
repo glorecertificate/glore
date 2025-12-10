@@ -7,6 +7,8 @@ import { useTranslations } from 'next-intl'
 
 import config from '@config/app'
 
+import { useCourse } from '@/components/features/courses/course-provider'
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import {
@@ -20,8 +22,6 @@ import {
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCourse } from '@/hooks/use-course'
-import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
 export const CourseFooter = () => {
@@ -55,7 +55,7 @@ export const CourseFooter = () => {
     () =>
       completedCount < 3
         ? t('completedMessage')
-        : completedCount === config.minSkills
+        : completedCount === config.app.minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
     [completedCount, t]
@@ -104,12 +104,12 @@ export const CourseFooter = () => {
                     <Link href="/courses">{t('backTo')}</Link>
                   </Button>
                 )}
-                {completedCount === config.minSkills && (
+                {completedCount === config.app.minSkills && (
                   <Button asChild variant="brand-secondary">
                     <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 )}
-                {completedCount > config.minSkills && (
+                {completedCount > config.app.minSkills && (
                   <Button asChild variant="outline">
                     <Link href="/certificates">{t('goToCertificate')}</Link>
                   </Button>

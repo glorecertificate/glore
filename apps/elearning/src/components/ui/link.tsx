@@ -6,57 +6,74 @@ import { startTransition, useCallback } from 'react'
 
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { type Any, type Enum, type HTTPUrl, type MailToUrl } from '@glore/utils/types'
+import type { Any } from '@glore/utils/types'
 
 import { type ProgressBarProps, useProgressBar } from '@/components/ui/progress-bar'
-import { type ExternalRoute } from '@/lib/navigation'
+import { INTERNAL_URL_REGEX } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-export interface LinkProps<T> extends NextLinkProps<T>, VariantProps<typeof linkVariants> {
-  className?: string
-  /** @default true */
-  progress?: boolean | Exclude<ProgressBarProps['variant'], undefined | null>
+export interface LinkProps<T, V extends boolean>
+  extends Omit<NextLinkProps<T>, 'href'>,
+    VariantProps<typeof linkVariants> {
+  /**
+   * The destination URL.
+   */
+  href: V extends true ? NextLinkProps<T>['href'] : string
+  /**
+   * Enable progress bar on internal navigation.
+   * @default true
+   */
+  progress?: boolean | ProgressBarProps['variant']
+  /**
+   * Statically validate the `href` prop before rendering the link.
+   */
+  validate?: V
 }
 
-export const Link = <T,>({ className, onClick, progress, variant, ...props }: LinkProps<T>) => {
+export const Link = <T, V extends boolean = true>({
+  className,
+  href,
+  onClick,
+  progress = true,
+  variant,
+  validate,
+  ...props
+}: LinkProps<T, V>) => {
   const progressBar = useProgressBar()
   const router = useRouter()
 
   const onLinkClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (progress === false) return onClick?.(e)
-
       e.preventDefault()
 
       const colorVariant = typeof progress === 'string' ? progress : variant
-
       if (colorVariant && colorVariant !== 'underlined') progressBar.colorize(colorVariant)
       if (progressBar.state !== 'in-progress') progressBar.start()
 
       startTransition(() => {
-        router.push(props.href as Any)
+        router.push(href as Any)
         progressBar.done()
       })
 
       onClick?.(e)
     },
-    [onClick, progress, progressBar, props.href, router, variant]
+    [href, onClick, progress, progressBar, router, variant]
   )
 
-  return <NextLink className={cn(linkVariants({ variant }), className)} onClick={onLinkClick} {...props} />
+  if (INTERNAL_URL_REGEX.test(href.toString()))
+    return (
+      <NextLink
+        className={cn(linkVariants({ variant }), className)}
+        href={href as NextLinkProps<T>['href']}
+        onClick={onLinkClick}
+        {...props}
+      />
+    )
+
+  return <a className={cn(linkVariants({ variant }), className)} href={href.toString()} onClick={onClick} {...props} />
 }
 
-export interface ExternalLinkProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof linkVariants> {
-  href: Enum<ExternalRoute> | HTTPUrl | MailToUrl
-}
-
-export const ExternalLink = ({ className, variant, ...props }: ExternalLinkProps) => (
-  <a className={cn(linkVariants({ variant }), className)} {...props} />
-)
-
-export const linkVariants = cva('no-underline transition-all', {
+const linkVariants = cva('cursor-pointer no-underline transition-all', {
   defaultVariants: {
     variant: null,
   },

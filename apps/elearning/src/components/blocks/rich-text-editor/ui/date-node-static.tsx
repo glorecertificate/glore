@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl'
-import { SlateElement, type SlateElementProps, type TDateElement } from 'platejs'
+import type { TDateElement } from 'platejs'
+import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 export const DateElementStatic = (props: SlateElementProps<TDateElement>) => {
   const { element } = props

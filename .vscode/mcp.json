@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
+    },
+    "com.supabase/mcp": {
+      "command": "npx",
+      "args": ["@supabase/mcp-server-supabase@0.5.9", "--project-ref", "${input:project-ref}"],
+      "envFile": "${workspaceFolder}/.env"
+    }
+  },
+  "inputs": [
+    {
+      "id": "project-ref",
+      "type": "promptString",
+      "description": "Supabase project reference ID"
+    }
+  ]
+}

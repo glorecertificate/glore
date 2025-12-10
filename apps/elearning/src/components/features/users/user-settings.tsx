@@ -8,30 +8,24 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { type Any } from '@glore/utils/types'
+import type { Any } from '@glore/utils/types'
 
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
-import {
-  defaultFormDisabled,
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { updateUser } from '@/lib/data'
+import { useI18n } from '@/hooks/use-i18n'
+import { updateUser } from '@/lib/actions/user'
+import type { DatabaseUpdate } from '@/lib/db/types'
+import { isFormDisabled } from '@/lib/forms'
 
 export const UserSettings = () => {
   const tGlobal = useTranslations()
-  const t = useTranslations('Settings')
+  const t = useTranslations('Users')
   const { user, setUser } = useSession()
-  const { localeItems } = useIntl()
+  const { localeItems } = useI18n()
 
   const formSchema = useMemo(
     () =>
@@ -94,19 +88,7 @@ export const UserSettings = () => {
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       try {
-        const updates: Partial<{
-          username: string
-          first_name: string
-          last_name: string
-          bio: string
-          birthday: string
-          sex: string
-          pronouns: string
-          country: string
-          city: string
-          locale: string
-          phone: string
-        }> = {}
+        const updates: DatabaseUpdate<'users'> = {}
 
         if (schema.username !== user.username) updates.username = schema.username || undefined
         if (schema.first_name !== user.first_name) updates.first_name = schema.first_name || undefined
@@ -120,20 +102,20 @@ export const UserSettings = () => {
         if (schema.country !== user.country) updates.country = schema.country || undefined
         if (schema.locale !== user.locale) updates.locale = schema.locale || undefined
 
-        const updatedUser = (await updateUser(updates)) as unknown as typeof user
+        const updatedUser = await updateUser(user.id, updates)
         setUser?.(updatedUser)
         form.reset({
-          username: updatedUser.username || '',
-          first_name: updatedUser.first_name || '',
-          last_name: updatedUser.last_name || '',
-          bio: updatedUser.bio || '',
-          phone: updatedUser.phone || '',
-          birthday: updatedUser.birthday || '',
-          sex: updatedUser.sex || '',
-          pronouns: updatedUser.pronouns || '',
-          city: updatedUser.city || '',
-          country: updatedUser.country || '',
-          locale: updatedUser.locale || '',
+          username: updatedUser.username ?? '',
+          first_name: updatedUser.first_name ?? '',
+          last_name: updatedUser.last_name ?? '',
+          bio: updatedUser.bio ?? '',
+          phone: updatedUser.phone ?? '',
+          birthday: updatedUser.birthday ?? '',
+          sex: updatedUser.sex ?? '',
+          pronouns: updatedUser.pronouns ?? '',
+          city: updatedUser.city ?? '',
+          country: updatedUser.country ?? '',
+          locale: updatedUser.locale ?? '',
         })
         toast.success(t('profileUpdated'))
       } catch (error) {
@@ -151,7 +133,7 @@ export const UserSettings = () => {
 
   const translateCountry = useCallback(
     (country: string) => {
-      const key = `Countries.${country}` as Any
+      const key = `Locale.Countries.${country}` as Any
       return tGlobal.has?.(key) ? tGlobal(key) : country.toUpperCase()
     },
     [tGlobal]
@@ -404,12 +386,7 @@ export const UserSettings = () => {
           <Button disabled={form.formState.isSubmitting} onClick={() => form.reset()} type="button" variant="outline">
             {t('cancel')}
           </Button>
-          <Button
-            disabled={defaultFormDisabled(form)}
-            loading={form.formState.isSubmitting}
-            type="submit"
-            variant="brand"
-          >
+          <Button disabled={isFormDisabled(form)} loading={form.formState.isSubmitting} type="submit" variant="brand">
             {t('saveChanges')}
           </Button>
         </div>

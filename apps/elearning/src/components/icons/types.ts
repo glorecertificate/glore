@@ -1,4 +1,4 @@
-import { type AnyRecord } from '@glore/utils/types'
+import type { AnyRecord } from '@glore/utils/types'
 
 /**
  * Icon component definition.

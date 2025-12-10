@@ -1,4 +1,4 @@
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 
 export const Outlook = (props: IconProps) => (
   <svg

@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
 
-import { getCurrentUser } from '@/lib/data/server'
+import { getCurrentUser } from '@/lib/actions/user'
 import { intlMetadata } from '@/lib/metadata'
 
 export const meatdata = intlMetadata({
-  title: 'Navigation.certificates',
+  title: 'Layout.certificates',
 })
 
 export default async ({ children }: LayoutProps<'/certificates'>) => {

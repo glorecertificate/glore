@@ -1,26 +1,25 @@
-import { type Metadata } from 'next'
-import { type AppRoutes } from 'next/types/routes'
+import type { Metadata } from 'next'
+import type { AppRouteHandlerRoutes, AppRoutes } from 'next/types/routes'
 
-import { type Locale } from 'next-intl'
+import type { Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
-import metadata from '@config/metadata'
-import { type Any, type HTTPUrl } from '@glore/utils/types'
+import metadataConfig from '@config/metadata'
+import type { Any } from '@glore/utils/types'
 
-import { getAlternateLocales, LOCALES, type MessageKey } from '@/lib/intl'
-import { apiRoute } from '@/lib/navigation'
-import { publicAsset } from '@/lib/storage'
+import { publicAsset } from '@/lib/assets'
+import { i18n, type MessageKey } from '@/lib/i18n'
 
-export const APP_NAME = metadata.shortName
-export const APP_URL = process.env.APP_URL as HTTPUrl
+export const APP_URL = process.env.APP_URL
+export const MANIFEST_ROUTE = '/api/v1/manifest' satisfies AppRouteHandlerRoutes
 
-export const METADATA = {
+export const metadata = {
   metadataBase: APP_URL,
-  applicationName: metadata.shortName,
-  category: metadata.category,
-  authors: metadata.authors,
-  creator: metadata.authors[0].name,
-  keywords: metadata.keywords,
+  applicationName: metadataConfig.shortName,
+  category: metadataConfig.category,
+  authors: metadataConfig.authors,
+  creator: metadataConfig.authors[0].name,
+  keywords: metadataConfig.keywords,
   robots: {
     index: true,
     follow: true,
@@ -33,17 +32,17 @@ export const METADATA = {
   },
   alternates: {
     canonical: APP_URL,
-    languages: LOCALES.reduce(
+    languages: i18n.locales.reduce(
       (languages, lang) => ({ ...languages, [lang]: `${APP_URL}?lang=${lang}` }),
       {} as Record<Locale, string>
     ),
   },
   openGraph: {
     type: 'website',
-    emails: metadata.email,
+    emails: metadataConfig.email,
     images: [publicAsset('open-graph.png')],
-    phoneNumbers: metadata.phone,
-    siteName: metadata.name,
+    phoneNumbers: metadataConfig.phone,
+    siteName: metadataConfig.name,
     ttl: 60,
   },
   icons: [
@@ -64,28 +63,23 @@ export const METADATA = {
   ],
   appleWebApp: {
     capable: true,
-    title: metadata.shortName,
+    title: metadataConfig.shortName,
     statusBarStyle: 'black-translucent',
     startupImage: publicAsset('web-app-screenshot-narrow.png'),
   },
 } as const satisfies Metadata
 
-/**
- * Options for generating metadata.
- *
- * @template Translate - Boolean indicating whether to translate title and description.
- */
-export interface MetadataOptions<Translate extends boolean = true> {
+export interface MetadataOptions<T extends boolean> {
   applicationName?: boolean | 'full'
-  description?: Translate extends true ? MessageKey : string
+  description?: T extends true ? MessageKey : string
   image?: string
-  translate?: Translate
+  translate?: T
   separator?: string
-  title?: Translate extends true ? MessageKey : string
+  title?: T extends true ? MessageKey : string
 }
 
 /**
- * Translates and merges the provided options with the defaults and returns a generator function.
+ * Translates and merges the provided values with the default metadata and returns a generator function.
  */
 export const intlMetadata =
   <R extends AppRoutes, Translate extends boolean = true>(options: MetadataOptions<Translate> = {}) =>
@@ -93,9 +87,9 @@ export const intlMetadata =
     await createIntlMetadata<Translate>(options)
 
 /**
- * Translates and merges asynchronously the provided values with the defaults.
+ * Translates and merges asynchronously the provided values with the default metadata.
  *
- * When `translate` is set to `true` (default behavior), title and description must be valid translation keys.
+ * When `translate` is set to `true` (default), title and description must be valid translation keys.
  */
 export const createIntlMetadata = async <Translate extends boolean = true>(
   options: MetadataOptions<Translate> = {}
@@ -104,31 +98,31 @@ export const createIntlMetadata = async <Translate extends boolean = true>(
     applicationName = true,
     description: userDescription,
     image,
-    separator = metadata.separator,
+    separator = metadataConfig.separator,
     title: userTitle,
     translate = true,
   } = options
 
-  const locale = await getLocale()
-  const alternateLocale = getAlternateLocales(locale)
   const tMeta = await getTranslations('Metadata')
   const t = translate ? await getTranslations() : (key: string) => key
+  const locale = await getLocale()
+  const alternateLocale = i18n.locales.filter(key => key !== locale)
 
   const pageTitle = userTitle ? (translate ? t(userTitle as Any) : userTitle) : undefined
   const title = pageTitle
     ? applicationName
-      ? `${pageTitle} ${separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+      ? `${pageTitle} ${separator} ${applicationName === 'full' ? metadataConfig.name : metadataConfig.shortName}`
       : pageTitle
     : tMeta('title')
   const description = userDescription ? (translate ? t(userDescription as Any) : userDescription) : tMeta('description')
 
-  const { openGraph, ...defaultMetadata } = METADATA
+  const { openGraph, ...defaultMetadata } = metadata
 
   return {
     ...defaultMetadata,
     title,
     description,
-    manifest: `${apiRoute('/api/manifest')}?locale=${locale}`,
+    manifest: `${'/api/v1/manifest' satisfies AppRouteHandlerRoutes}?locale=${locale}`,
     openGraph: {
       ...openGraph,
       title,

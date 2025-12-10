@@ -6,8 +6,10 @@ import { ChevronDownIcon, EyeIcon, HistoryIcon, Settings2Icon } from 'lucide-rea
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useCourse } from '@/components/features/courses/course-provider'
 import { CourseSettings } from '@/components/features/courses/course-settings'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
+import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -22,15 +24,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Progress } from '@/components/ui/progress'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCourse } from '@/hooks/use-course'
-import { useIntl } from '@/hooks/use-intl'
+import { useI18n } from '@/hooks/use-i18n'
 import { useScroll } from '@/hooks/use-scroll'
-import { useSession } from '@/hooks/use-session'
+import { localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
   const { course, currentState, saveCourse, settingsOpen, setSettingsOpen, state, step } = useCourse()
-  const { localeItems, localize } = useIntl()
+  const { localeItems, localize } = useI18n()
   const { scrolled } = useScroll()
   const { user } = useSession()
   const t = useTranslations('Courses')
@@ -176,18 +177,16 @@ export const CourseHeader = () => {
 }
 
 export const CourseHeaderMobile = () => {
-  const { course, language, setStep, step } = useCourse()
-  const { localize } = useIntl()
+  const { course, lessons, currentLesson, language, setStep, step } = useCourse()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
-  const currentLesson = useMemo(() => course.lessons?.[step], [course.lessons, step])
   const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
 
   const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
 
   const isCurrentLesson = useCallback((index: number) => index === step, [step])
-  const isCompletedLesson = useCallback((index: number) => !!course.lessons?.[index].completed, [course.lessons])
+  const isCompletedLesson = useCallback((index: number) => lessons[index].completed, [lessons])
 
   return (
     <div className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}>
@@ -210,8 +209,8 @@ export const CourseHeaderMobile = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {course.lessons ? (
-            course.lessons.map((lesson, index) => (
+          {lessons.length > 0 ? (
+            lessons.map((lesson, index) => (
               <DropdownMenuItem className="flex justify-between py-2" key={lesson.id} onClick={() => setStep(index)}>
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>

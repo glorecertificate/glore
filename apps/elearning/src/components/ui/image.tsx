@@ -1,7 +1,7 @@
 'use client'
 
-import { type ImageLoader } from 'next/dist/client/image-component'
-import { type OnLoadingComplete, type PlaceholderValue, type StaticImport } from 'next/dist/shared/lib/get-img-props'
+import type { ImageLoader } from 'next/dist/client/image-component'
+import type { OnLoadingComplete, PlaceholderValue, StaticImport } from 'next/dist/shared/lib/get-img-props'
 import NextImage from 'next/image'
 import { useMemo } from 'react'
 

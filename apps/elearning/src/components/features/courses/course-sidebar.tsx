@@ -5,23 +5,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ArcherContainer, ArcherElement } from 'react-archer'
-import { type RelationType } from 'react-archer/lib/types'
+import type { RelationType } from 'react-archer/lib/types'
 
 import { debounce } from '@glore/utils/debounce'
 
+import { type SessionLesson, useCourse } from '@/components/features/courses/course-provider'
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCourse } from '@/hooks/use-course'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { DEFAULT_LESSON, type Lesson } from '@/lib/data'
+import { localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: Partial<Lesson> }) => {
+const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: SessionLesson }) => {
   const { course, language, setLesson, setStep, step } = useCourse()
-  const { localize } = useIntl()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
@@ -53,19 +51,18 @@ const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: Partial
     ]
   }, [index, step])
 
-  const commitTitle = useMemo(() => {
-    const nextTitle =
-      typeof lesson.title === 'object' && lesson.title !== null ? (lesson.title as Record<string, string>) : {}
-
-    return debounce((value: string) => {
-      setLesson({
-        title: {
-          ...nextTitle,
-          [language]: value,
-        },
-      })
-    }, 250)
-  }, [language, lesson.title, setLesson])
+  const commitTitle = useMemo(
+    () =>
+      debounce((value: string) => {
+        setLesson({
+          title: {
+            ...lesson.title,
+            [language]: value,
+          },
+        })
+      }, 250),
+    [language, lesson.title, setLesson]
+  )
 
   const onTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -128,15 +125,15 @@ const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: Partial
 }
 
 export const CourseSidebar = () => {
-  const { course, setCourse } = useCourse()
+  const { course, defaultLesson, setCourse } = useCourse()
   const t = useTranslations('Courses')
 
   const addLesson = useCallback(() => {
     setCourse(course => ({
       ...course,
-      lessons: [...course.lessons, DEFAULT_LESSON],
+      lessons: [...course.lessons, defaultLesson],
     }))
-  }, [setCourse])
+  }, [defaultLesson, setCourse])
 
   return (
     <div className="hidden md:block">

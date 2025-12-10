@@ -2,8 +2,8 @@
   "extends": "//",
   "linter": {
     "domains": {
-      "next": "all",
-      "react": "all"
+      "react": "all",
+      "next": "all"
     },
     "rules": {
       "complexity": {
@@ -15,12 +15,13 @@
           "options": {
             "patterns": [
               {
-                "group": ["../*"],
+                "group": ["../**"],
                 "message": "Parent imports are not allowed. Use path aliases instead."
               },
               {
-                "group": ["@/lib/*/**", "!@/lib/*/server", "!@/lib/services/*"],
-                "message": "Deep imports from lib are not allowed. Import from the root of the module instead."
+                "group": ["next/navigation"],
+                "importNamePattern": "usePathname",
+                "message": "Import from @/hooks/use-pathname instead."
               },
               {
                 "group": ["@udecode/cn"],
@@ -72,31 +73,11 @@
       }
     },
     {
-      "includes": ["src/components/ui/**"],
+      "includes": ["src/components/**"],
       "linter": {
         "rules": {
           "performance": {
             "noNamespaceImport": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/lib/*/**"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noRestrictedImports": {
-              "level": "error",
-              "options": {
-                "patterns": [
-                  {
-                    "group": ["@/lib/*/**", "!@/lib/*/server", "!@/lib/services/*"],
-                    "message": "Deep imports from lib are not allowed. Import from the root or use an absolute path if inside the current lib"
-                  }
-                ]
-              }
-            }
           }
         }
       }

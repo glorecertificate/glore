@@ -5,8 +5,9 @@ import { useState } from 'react'
 import { MarkdownPlugin } from '@platejs/markdown'
 import { ArrowUpToLineIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { type Descendant, getEditorDOMFromHtmlString } from 'platejs'
+import type { Descendant } from 'platejs'
 import { useEditorRef } from 'platejs/react'
+import { getEditorDOMFromHtmlString } from 'platejs/static'
 import { useFilePicker } from 'use-file-picker'
 
 import {

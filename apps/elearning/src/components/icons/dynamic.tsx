@@ -1,6 +1,6 @@
 import { DynamicIcon as LucideDynamic, type IconName as LucideIcon } from 'lucide-react/dynamic'
 
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
 export type IconName = LucideIcon

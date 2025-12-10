@@ -17,7 +17,8 @@ import { type Locale, useFormatter, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { UserCard } from '@/components/features/users/user-card'
-import { type IconName } from '@/components/icons/dynamic'
+import type { IconName } from '@/components/icons/dynamic'
+import { useSession } from '@/components/providers/session-provider'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,14 +52,12 @@ import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { type Course, updateCourse } from '@/lib/data'
-import { type LocaleItem } from '@/lib/intl'
-import { route } from '@/lib/navigation'
+import { useI18n } from '@/hooks/use-i18n'
+import type { Course } from '@/lib/db/schema'
+import { i18n, localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-interface LanguageItem extends LocaleItem {
+type LanguageItem = (typeof i18n.localeItems)[number] & {
   active: boolean
   published: boolean
   setLanguage: (value: Locale) => void
@@ -128,8 +127,8 @@ export const CourseCard = ({
   showState?: boolean
 }) => {
   const cookies = useCookies()
-  const { locale, localeItems, locales, localize } = useIntl()
-  const { deleteCourse: deleteSessionCourse, setCourse, user } = useSession()
+  const { locale, localeItems } = useI18n()
+  const { deleteCourse: deleteSessionCourse, updateCourse, user } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
   const f = useFormatter()
@@ -149,13 +148,12 @@ export const CourseCard = ({
 
   const updateIcon = useCallback(
     async (icon: IconName | null) => {
-      await setCourse({ id: course.id, icon })
       await updateCourse(course.id, { icon })
     },
-    [course.id, setCourse]
+    [course.id, updateCourse]
   )
 
-  const coursePath = route('/courses/[slug]', { slug: course.slug }, { lang: language })
+  const coursePath = `/courses/${course.slug}?lang=${language}` as const
 
   const languageItems = useMemo(
     () =>
@@ -175,8 +173,8 @@ export const CourseCard = ({
               : items,
           [] as LanguageItem[]
         )
-        .sort((a, b) => locales.indexOf(a.value) - locales.indexOf(b.value)),
-    [activeLanguages, course.languages, language, localeItems, locales, updateLanguage]
+        .sort((a, b) => i18n.locales.indexOf(a.value) - i18n.locales.indexOf(b.value)),
+    [activeLanguages, course.languages, language, localeItems, updateLanguage]
   )
 
   const title = localize(course.title, language)
@@ -202,7 +200,7 @@ export const CourseCard = ({
     ) : (
       courseDescription
     )
-  }, [course.description, language, localize, t])
+  }, [course.description, language, t])
 
   const lessonsMessage =
     course.lessons.length > 0
@@ -230,7 +228,7 @@ export const CourseCard = ({
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t])
+  }, [course.id, t, updateCourse])
 
   const unarchiveCourse = useCallback(async () => {
     try {
@@ -240,7 +238,7 @@ export const CourseCard = ({
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t])
+  }, [course.id, t, updateCourse])
 
   const deleteCourse = useCallback(async () => {
     try {

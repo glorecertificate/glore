@@ -9,11 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
-export interface PasswordInputProps extends Omit<InputProps, 'type'> {
-  hideLabel?: string
-  showLabel?: string
-}
-
 export const PasswordInput = ({
   className,
   disabled,
@@ -21,7 +16,10 @@ export const PasswordInput = ({
   placeholder,
   showLabel,
   ...props
-}: PasswordInputProps) => {
+}: Omit<InputProps, 'type'> & {
+  hideLabel?: string
+  showLabel?: string
+}) => {
   const t = useTranslations('Components.PasswordInput')
 
   const [passwordVisible, setPasswordVisible] = useState(false)

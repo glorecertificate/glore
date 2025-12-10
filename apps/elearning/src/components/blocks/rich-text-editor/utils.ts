@@ -8,8 +8,8 @@ import { insertAudioPlaceholder, insertFilePlaceholder, insertMedia, insertVideo
 import { SuggestionPlugin } from '@platejs/suggestion/react'
 import { TablePlugin } from '@platejs/table/react'
 import { insertToc } from '@platejs/toc'
-import { isHotkey as isHotkeyBase, KEYS, type NodeEntry, type Path, PathApi, type TElement } from 'platejs'
-import { type HotkeysOptions, type PlateEditor } from 'platejs/react'
+import { isHotkey as isPlateHotkey, KEYS, type NodeEntry, type Path, PathApi, type TElement } from 'platejs'
+import type { HotkeysOptions, PlateEditor } from 'platejs/react'
 
 const ACTION_THREE_COLUMNS = 'action_three_columns'
 
@@ -125,7 +125,7 @@ export const getBlockType = (block: TElement) => {
   return KEYS.ul
 }
 
-export const isHotkey = isHotkeyBase as <T extends React.KeyboardEvent>(
+export const isHotkey = isPlateHotkey as <T extends React.KeyboardEvent>(
   hotkey: string | readonly string[],
   options?: HotkeysOptions
 ) => (event: T) => boolean

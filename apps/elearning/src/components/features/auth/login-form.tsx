@@ -9,8 +9,10 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { type Enum } from '@glore/utils/types'
+import config from '@config/app'
+import type { Enum } from '@glore/utils/types'
 
+import type { AuthView } from '@/components/features/auth/types'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -21,13 +23,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { ExternalLink } from '@/components/ui/link'
+import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
-import { DatabaseError, findUserEmail, isValidUsername, login, PASSWORD_REGEX } from '@/lib/data'
-import { APP_URL } from '@/lib/metadata'
-import { type AuthView } from '@/lib/navigation'
+import { login } from '@/lib/actions/auth'
+import { findUserEmail } from '@/lib/actions/user'
+import { PASSWORD_REGEX } from '@/lib/constants'
+import { SupabaseError } from '@/lib/db/utils'
+import { isFormDisabled, isValidUsername } from '@/lib/forms'
 import { cn } from '@/lib/utils'
 
 export const LoginForm = ({
@@ -86,7 +90,7 @@ export const LoginForm = ({
         email = await findUserEmail(username)
       } catch (e) {
         setLoading(false)
-        const error = e as DatabaseError
+        const error = e as SupabaseError
         if (error.code === 'PGRST116') {
           form.setError('username', { message: t('userNotFound') })
           return form.setFocus('username')
@@ -96,11 +100,11 @@ export const LoginForm = ({
       }
 
       try {
-        if (!PASSWORD_REGEX.test(password)) throw new DatabaseError({ code: '28P01' })
+        if (!PASSWORD_REGEX.test(password)) throw new SupabaseError({ code: '28P01' })
         await login({ email, password })
       } catch (e) {
         setLoading(false)
-        const error = e as DatabaseError
+        const error = e as SupabaseError
         if (error.code === '28P01') {
           form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
           return
@@ -187,7 +191,7 @@ export const LoginForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={defaultFormDisabled(form)}
+            disabled={isFormDisabled(form)}
             disabledTitle={t('insertCredentials')}
             loading={loading}
             type="submit"
@@ -224,9 +228,9 @@ export const LoginForm = ({
               p: content => <p>{content}</p>,
               b: content => <span className="font-medium">{content}</span>,
               link: content => (
-                <ExternalLink className="font-medium" href={APP_URL} variant="underlined">
+                <Link className="font-medium" href={config.urls.website} validate={false} variant="underlined">
                   {content}
-                </ExternalLink>
+                </Link>
               ),
             })}
           </div>

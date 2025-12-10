@@ -1,15 +1,17 @@
+'use client'
+
 import { useCallback } from 'react'
 
-type PossibleRef<T> = React.Ref<T> | undefined
-
-const setRef = <T>(ref: PossibleRef<T>, value: T) => {
+const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
   if (typeof ref === 'function') return ref(value)
   if (ref !== null && ref !== undefined) ref.current = value
 }
 
-const composeRefs =
-  <T>(...refs: PossibleRef<T>[]): React.RefCallback<T> =>
-  node => {
+/**
+ * Custom hook to compose multiple refs. Accepts callback refs and {@link React.RefObject} refs.
+ */
+export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> =>
+  useCallback(node => {
     let hasCleanup = false
 
     const cleanups = refs.map(ref => {
@@ -32,12 +34,5 @@ const composeRefs =
         }
       }
     }
-  }
-
-/**
- * Custom hook to compose multiple refs. Accepts callback refs and `RefObject`(s).
- */
-export const useComposedRefs = <T>(...refs: PossibleRef<T>[]): React.RefCallback<T> => {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: memoize all values
-  return useCallback(composeRefs(...refs), refs)
-}
+    // biome-ignore lint: correctness/useExhaustiveDependencies
+  }, refs)

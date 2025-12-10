@@ -1,0 +1,7 @@
+{
+  "extends": "@glore/tsconfig",
+  "include": ["src"],
+  "compilerOptions": {
+    "types": ["node"]
+  }
+}

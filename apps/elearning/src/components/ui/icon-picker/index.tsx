@@ -6,9 +6,8 @@ import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual'
 import Fuse from 'fuse.js'
 import { DynamicIcon, dynamicIconImports, type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
-import { useDebounceValue } from 'usehooks-ts'
 
-import { type Any } from '@glore/utils/types'
+import type { Any } from '@glore/utils/types'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,16 +15,17 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDebounce } from '@/hooks/use-debounce'
 import { cn } from '@/lib/utils'
-import { type iconsData } from './data'
+import type { iconsData } from './data'
 
-export type IconData = (typeof iconsData)[number]
+type IconsData = (typeof iconsData)[number]
 
 export interface IconPickerProps extends ButtonProps {
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName
-  iconsList?: IconData[]
+  iconsList?: IconsData[]
   modal?: boolean
   onOpenChange?: (open: boolean) => void
   onValueChange?: (value: IconName) => void
@@ -50,7 +50,7 @@ const IconsColumnSkeleton = () => (
 )
 
 export const useIconsData = () => {
-  const [icons, setIcons] = useState<IconData[]>([])
+  const [icons, setIcons] = useState<IconsData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export const useIconsData = () => {
       setIsLoading(true)
       const { iconsData } = await import('./data')
       if (isMounted) {
-        setIcons(iconsData.filter((icon: IconData) => icon.name in dynamicIconImports))
+        setIcons(iconsData.filter((icon: IconsData) => icon.name in dynamicIconImports))
         setIsLoading(false)
       }
     }
@@ -68,6 +68,7 @@ export const useIconsData = () => {
       isMounted = false
     }
   }, [])
+
   return { icons, isLoading }
 }
 
@@ -89,10 +90,11 @@ export const IconPicker = ({
   value,
   ...props
 }: IconPickerProps) => {
-  const t = useTranslations('Icons')
+  const t = useTranslations('Components.IconPicker')
   const { icons } = useIconsData()
 
-  const [search, setSearch] = useDebounceValue('', 100)
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 100)
   const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [isPopoverVisible, setIsPopoverVisible] = useState(false)
@@ -112,20 +114,20 @@ export const IconPicker = ({
   )
 
   const filteredIcons = useMemo(() => {
-    if (search.trim() === '') {
+    if (debouncedSearch.trim() === '') {
       return iconsToUse
     }
 
-    const results = fuseInstance.search(search.toLowerCase().trim())
+    const results = fuseInstance.search(debouncedSearch.toLowerCase().trim())
     return results.map(result => result.item)
-  }, [search, iconsToUse, fuseInstance])
+  }, [debouncedSearch, iconsToUse, fuseInstance])
 
   const categorizedIcons = useMemo(() => {
-    if (!categorized || search.trim() !== '') {
+    if (!categorized || debouncedSearch.trim() !== '') {
       return [{ name: 'All Icons', icons: filteredIcons }]
     }
 
-    const categories = new Map<string, IconData[]>()
+    const categories = new Map<string, IconsData[]>()
 
     for (const icon of filteredIcons) {
       if (icon.categories && icon.categories.length > 0) {
@@ -147,14 +149,14 @@ export const IconPicker = ({
     return Array.from(categories.entries())
       .map(([name, icons]) => ({ name: t(`categories.${name}` as Any), icons }))
       .sort((a, b) => a.name.localeCompare(b.name))
-  }, [filteredIcons, categorized, search, t])
+  }, [filteredIcons, categorized, debouncedSearch, t])
 
   const virtualItems = useMemo(() => {
     const items: Array<{
       type: 'category' | 'row'
       categoryIndex: number
       rowIndex?: number
-      icons?: IconData[]
+      icons?: IconsData[]
     }> = []
 
     for (const [categoryIndex, category] of categorizedIcons.entries()) {
@@ -228,7 +230,7 @@ export const IconPicker = ({
         }, 1)
       }
     },
-    [open, onOpenChange, setSearch, virtualizer]
+    [open, onOpenChange, virtualizer]
   )
 
   const handleIconClick = useCallback(
@@ -237,7 +239,7 @@ export const IconPicker = ({
       setIsOpen(false)
       setSearch('')
     },
-    [handleValueChange, setSearch]
+    [handleValueChange]
   )
 
   const handleSearchChange = useCallback(
@@ -250,7 +252,7 @@ export const IconPicker = ({
 
       virtualizer.scrollToOffset(0)
     },
-    [setSearch, virtualizer]
+    [virtualizer]
   )
 
   const scrollToCategory = useCallback(
@@ -268,7 +270,7 @@ export const IconPicker = ({
   )
 
   const categoryButtons = useMemo(() => {
-    if (!categorized || search.trim() !== '') return null
+    if (!categorized || debouncedSearch.trim() !== '') return null
 
     return categorizedIcons.map(category => (
       <Button
@@ -284,10 +286,10 @@ export const IconPicker = ({
         {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
       </Button>
     ))
-  }, [categorizedIcons, scrollToCategory, categorized, search])
+  }, [categorizedIcons, scrollToCategory, categorized, debouncedSearch])
 
   const renderIcon = useCallback(
-    (icon: IconData) => {
+    (icon: IconsData) => {
       if (!tooltips) {
         return (
           <Button key={icon.name} onClick={() => handleIconClick(icon.name as IconName)} variant="outline">
@@ -414,7 +416,7 @@ export const IconPicker = ({
             value={search}
           />
         )}
-        {categorized && search.trim() === '' && (
+        {categorized && debouncedSearch.trim() === '' && (
           <div className="scrollbar-hide mt-2 flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
         )}
         <div className="max-h-60 overflow-auto" ref={parentRef} style={{ scrollbarWidth: 'thin' }}>

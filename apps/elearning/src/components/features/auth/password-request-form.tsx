@@ -8,14 +8,17 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
 
-import { type Enum } from '@glore/utils/types'
+import type { Enum } from '@glore/utils/types'
 
+import type { AuthView } from '@/components/features/auth/types'
 import { Button } from '@/components/ui/button'
-import { defaultFormDisabled, Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useCookies } from '@/hooks/use-cookies'
-import { type DatabaseError, findUserEmail, isValidUsername, resetPassword } from '@/lib/data'
-import { type AuthView } from '@/lib/navigation'
+import { requestPasswordReset } from '@/lib/actions/auth'
+import { findUserEmail } from '@/lib/actions/user'
+import type { SupabaseError } from '@/lib/db/utils'
+import { isFormDisabled, isValidUsername } from '@/lib/forms'
 import { cn } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
@@ -65,16 +68,16 @@ export const PasswordRequestForm = ({
       try {
         email = await findUserEmail(username)
       } catch (e) {
-        const error = e as DatabaseError
+        const error = e as SupabaseError
         if (error.code === 'PGRST116')
           return form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
         return toast.error(t('networkError'))
       }
 
       try {
-        await resetPassword(email, locale)
+        await requestPasswordReset(email, locale)
       } catch (e) {
-        const error = e as DatabaseError
+        const error = e as SupabaseError
         console.error(error.message)
         return toast.error(t('networkError'))
       }
@@ -123,7 +126,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!defaultUsername && defaultFormDisabled(form)}
+            disabled={!defaultUsername && isFormDisabled(form)}
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

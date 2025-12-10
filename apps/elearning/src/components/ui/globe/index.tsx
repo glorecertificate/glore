@@ -1,4 +1,4 @@
-// biome-ignore-all lint/correctness/useExhaustiveDependencies: manual deps
+// biome-ignore-all lint/correctness/useExhaustiveDependencies: exhaustive-deps
 'use client'
 
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'

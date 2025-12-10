@@ -1,4 +1,4 @@
-import { SlateElement, type SlateElementProps } from 'platejs'
+import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 import { cn } from '@/lib/utils'
 

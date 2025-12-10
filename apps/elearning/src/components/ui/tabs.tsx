@@ -2,34 +2,26 @@
 
 import { useMemo } from 'react'
 
-import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
+import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-export interface TabsProps extends React.ComponentProps<typeof Root> {}
-
-export const Tabs = ({ className, ...props }: TabsProps) => (
-  <Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
+export const Tabs = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) => (
+  <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
 )
 
-export interface TabsListProps extends React.ComponentProps<typeof List> {}
-
-export const TabsList = ({ className, ...props }: TabsListProps) => (
-  <List
+export const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) => (
+  <TabsPrimitive.List
     className={cn('inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5', className)}
     data-slot="tabs-list"
     {...props}
   />
 )
 
-export interface TabsTriggerProps
-  extends Omit<React.ComponentProps<typeof Trigger>, 'color'>,
-    VariantProps<typeof tabsTrigger> {
-  badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof tabsTriggerBadge>
-  count?: number
-  showZeroCount?: boolean
-}
+export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) => (
+  <TabsPrimitive.Content className={cn('flex-1 outline-none', className)} data-slot="tabs-content" {...props} />
+)
 
 export const TabsTrigger = ({
   badgeProps,
@@ -41,25 +33,34 @@ export const TabsTrigger = ({
   size,
   variant,
   ...props
-}: TabsTriggerProps) => {
+}: Omit<React.ComponentProps<typeof TabsPrimitive.Trigger>, keyof VariantProps<typeof tabsTriggerVariants>> &
+  VariantProps<typeof tabsTriggerVariants> & {
+    badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof tabsTriggerBadgeVariants>
+    count?: number
+    showZeroCount?: boolean
+  }) => {
   const showCount = useMemo(() => count !== undefined && (showZeroCount || count > 0), [count, showZeroCount])
   const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
 
   return (
-    <Trigger className={cn(tabsTrigger({ effect, size, variant }), className)} data-slot="tabs-trigger" {...props}>
+    <TabsPrimitive.Trigger
+      className={cn(tabsTriggerVariants({ effect, size, variant }), className)}
+      data-slot="tabs-trigger"
+      {...props}
+    >
       {showCount ? (
         <span className="flex items-center gap-1 leading-0" {...badgeRest}>
           {children}
-          <span className={cn(tabsTriggerBadge({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
+          <span className={cn(tabsTriggerBadgeVariants({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
         </span>
       ) : (
         children
       )}
-    </Trigger>
+    </TabsPrimitive.Trigger>
   )
 }
 
-export const tabsTrigger = cva(
+const tabsTriggerVariants = cva(
   `
     group/tabs-trigger
     leading-0 inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm whitespace-nowrap select-none
@@ -111,7 +112,7 @@ export const tabsTrigger = cva(
   }
 )
 
-export const tabsTriggerBadge = cva('text-stroke-0', {
+export const tabsTriggerBadgeVariants = cva('text-stroke-0', {
   defaultVariants: {
     variant: 'default',
     size: 'md',
@@ -133,9 +134,3 @@ export const tabsTriggerBadge = cva('text-stroke-0', {
     },
   },
 })
-
-export interface TabsContentProps extends React.ComponentProps<typeof Content> {}
-
-export const TabsContent = ({ className, ...props }: TabsContentProps) => (
-  <Content className={cn('flex-1 outline-none', className)} data-slot="tabs-content" {...props} />
-)

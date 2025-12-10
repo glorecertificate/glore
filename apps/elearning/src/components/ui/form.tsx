@@ -9,16 +9,14 @@ import {
   type FieldPath,
   type FieldValues,
   FormProvider,
-  type UseFormReturn,
   useFormContext,
   useFormState,
 } from 'react-hook-form'
 
-import { Label, type LabelProps } from '@/components/ui/label'
+import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
-export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFormReturn<T>) =>
-  !formState.isDirty || Object.keys(formState.errors).length > 0
+export const Form = FormProvider
 
 interface FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
@@ -79,7 +77,7 @@ export const FormItem = ({ className, ...props }: React.ComponentProps<'div'>) =
   )
 }
 
-export const FormLabel = ({ className, ...props }: LabelProps) => {
+export const FormLabel = ({ className, ...props }: React.ComponentProps<typeof Label>) => {
   const { error, formItemId } = useFormField()
 
   return (
@@ -137,5 +135,3 @@ export const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>) 
     </p>
   )
 }
-
-export const Form = FormProvider

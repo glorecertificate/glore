@@ -24,7 +24,7 @@ Deno.serve(async request => {
     if (isDevelopment) headers.set('Bypass-Tunnel-Reminder', 'true')
 
     try {
-      await fetch(`${appUrl}/api/auth/email`, {
+      await fetch(`${appUrl}/api/v1/auth/email`, {
         method: 'POST',
         headers,
         body: JSON.stringify(data),

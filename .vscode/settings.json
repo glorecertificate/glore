@@ -21,8 +21,8 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "i18n-ally.annotationInPlace": false,
   "i18n-ally.enabledFrameworks": ["next-intl"],
+  "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./apps/elearning/config/translations"],
   "i18n-ally.namespace": true,
   "json.schemas": [

@@ -1,4 +1,4 @@
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
 export const DashboardIcon = ({

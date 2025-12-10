@@ -4,7 +4,7 @@ import { ErrorView } from '@/components/layout/error-view'
 import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { getCurrentUser } from '@/lib/data/server'
+import { getCurrentUser } from '@/lib/actions/user'
 
 export default async () => {
   const user = await getCurrentUser()

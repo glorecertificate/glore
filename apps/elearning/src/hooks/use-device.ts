@@ -5,9 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 const MOBILE_BREAKPOINT = 768
 
 /**
- * Hook to detect the device type based on the window width.
- *
- * Returns the device type and booleans for simplified checks.
+ * Hook to detect the device type based on window width.
  */
 export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {
   const detectSize = useCallback(() => {

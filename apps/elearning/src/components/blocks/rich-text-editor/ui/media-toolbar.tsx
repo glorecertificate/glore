@@ -11,7 +11,7 @@ import {
 import { cva } from 'class-variance-authority'
 import { LinkIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { type WithRequiredKey } from 'platejs'
+import type { WithRequiredKey } from 'platejs'
 import {
   useEditorRef,
   useEditorSelector,

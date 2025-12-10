@@ -1,13 +1,9 @@
 'use client'
 
-import { Toaster as Sonner, type ToasterProps as SonnerProps } from 'sonner'
+import { Toaster as Sonner } from 'sonner'
 
 import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
-
-export interface ToasterProps extends Omit<SonnerProps, 'closeButton'> {
-  closeButton?: boolean | 'hover'
-}
 
 export const Toaster = ({
   className,
@@ -16,7 +12,9 @@ export const Toaster = ({
   hotkey = ['Escape'],
   position = 'top-right',
   ...props
-}: ToasterProps) => {
+}: Omit<React.ComponentProps<typeof Sonner>, 'closeButton'> & {
+  closeButton?: boolean | 'hover'
+}) => {
   const { theme } = useTheme()
 
   return (

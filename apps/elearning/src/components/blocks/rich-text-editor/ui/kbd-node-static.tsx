@@ -1,4 +1,4 @@
-import { SlateLeaf, type SlateLeafProps } from 'platejs'
+import { SlateLeaf, type SlateLeafProps } from 'platejs/static'
 
 export const KbdLeafStatic = (props: SlateLeafProps) => (
   <SlateLeaf

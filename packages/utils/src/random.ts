@@ -1,4 +1,4 @@
-import { type Any } from './types'
+import type { Any } from './types'
 
 /**
  * Generates a random integer between `min` and `max`, inclusive.

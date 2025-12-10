@@ -35,7 +35,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Slot } from '@radix-ui/react-slot'
-import * as ReactDOM from 'react-dom'
+import { createPortal } from 'react-dom'
 
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { cn } from '@/lib/utils'
@@ -480,7 +480,7 @@ export const SortableOverlay = (props: SortableOverlayProps) => {
 
   if (!container) return null
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <DragOverlay
       className={cn(!context.flatCursor && 'cursor-grabbing')}
       dropAnimation={dropAnimation}

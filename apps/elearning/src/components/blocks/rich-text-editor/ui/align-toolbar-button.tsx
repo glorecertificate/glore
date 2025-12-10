@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { type Alignment } from '@platejs/basic-styles'
+import type { Alignment } from '@platejs/basic-styles'
 import { TextAlignPlugin } from '@platejs/basic-styles/react'
 import { AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'

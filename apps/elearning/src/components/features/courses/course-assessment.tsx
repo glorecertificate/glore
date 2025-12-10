@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
-import { useIntl } from '@/hooks/use-intl'
-import { type Assessment } from '@/lib/data'
+import { useI18n } from '@/hooks/use-i18n'
+import type { Assessment } from '@/lib/db/schema'
 
 export const CourseAssessment = ({
   assessment,
@@ -18,14 +18,17 @@ export const CourseAssessment = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
   completed: boolean
-  assessment: Assessment
+  assessment: Required<Assessment>
   onValueChange: (rating: number) => void
   title?: string
 }) => {
-  const { localize } = useIntl()
+  const { localize } = useI18n()
   const t = useTranslations('Courses')
 
-  const description = useMemo(() => localize(assessment.description), [assessment.description, localize])
+  const description = useMemo(
+    () => (assessment.description ? localize(assessment.description) : ''),
+    [assessment.description, localize]
+  )
 
   const onChange = useCallback(
     (value: string) => {

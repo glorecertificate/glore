@@ -6,9 +6,9 @@ import { getLocale } from 'next-intl/server'
 
 import { decodeAsync } from '@glore/utils/encode'
 
-import { getProxyDatabase } from '@/lib/data/server'
+import { getSupabaseProxyClient } from '@/lib/db/server'
 import { AuthRoute } from '@/lib/navigation'
-import { cookieStore } from '@/lib/storage'
+import { cookiesConfig } from '@/lib/storage'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -18,14 +18,14 @@ export const config: ProxyConfig = {
 
 const verifyRequest = async (request: NextRequest) => {
   try {
-    const userCookie = request.cookies.get(`${cookieStore.config.prefix ?? ''}user`)
+    const userCookie = request.cookies.get(`${cookiesConfig.prefix ?? ''}user`)
     if (!userCookie?.value) throw new Error()
     const user = JSON.parse(await decodeAsync(userCookie.value))
     if (!user) throw new Error()
     return true
   } catch {
-    const db = await getProxyDatabase(request)
-    const { error } = await db.auth.getUser()
+    const supabase = await getSupabaseProxyClient(request)
+    const { error } = await supabase.auth.getUser()
     return !error
   }
 }

@@ -7,8 +7,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Markdown } from '@/components/ui/markdown'
-import { useIntl } from '@/hooks/use-intl'
-import { type Question, type QuestionOption } from '@/lib/data'
+import { useI18n } from '@/hooks/use-i18n'
+import type { Question, QuestionOption } from '@/lib/db/schema'
 import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({
@@ -21,7 +21,7 @@ const CourseQuestion = ({
   question: Question
   title?: string
 }) => {
-  const { localize } = useIntl()
+  const { localize } = useI18n()
   const t = useTranslations('Courses')
 
   const isCorrectUserAnswer = useMemo(
@@ -81,7 +81,9 @@ const CourseQuestion = ({
               </div>
               <div>
                 <p className="font-medium">{isCorrectUserAnswer ? t('correctAnswerTitle') : t('wrongAnswerTitle')}</p>
-                <p className="mt-1 text-[15px] text-foreground/80">{localize(question.explanation)}</p>
+                {question.explanation && (
+                  <p className="mt-1 text-[15px] text-foreground/80">{localize(question.explanation)}</p>
+                )}
               </div>
             </div>
           </CardContent>

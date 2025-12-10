@@ -2,7 +2,6 @@
   "display": "@glore/tsconfig/react",
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
     "types": ["react"]
   }
 }

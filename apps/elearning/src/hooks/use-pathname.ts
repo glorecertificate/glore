@@ -1,10 +1,10 @@
 'use client'
 
+// biome-ignore lint: style/noRestrictedImports
 import { usePathname as useNextPathname } from 'next/navigation'
-import { type AppRoutes } from 'next/types/routes'
+import type { AppRoutes } from 'next/types/routes'
 
 /**
- * Typed version of Next.js's `usePathname` hook that returns
- * the current pathname as an {@link AppRoutes}.
+ * Typed-safe version of `usePathname` returning the current pathname as {@link AppRoutes}.
  */
 export const usePathname = useNextPathname as () => AppRoutes

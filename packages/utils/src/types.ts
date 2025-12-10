@@ -138,26 +138,31 @@ export type CamelToSnakeRecord<T extends AnyRecord> = {
 export type Email = `${string}@${string}.${string}`
 
 /**
- * URL type.
+ * HTTP URL type.
  */
-export type HTTPUrl = `http${string}`
+export type HTTPUrl = `http://${string}` | `https://${string}`
 
 /**
  * Mail URL type.
  */
-export type MailToUrl = `mailto:${string}`
+export type MailUrl = `mailto:${string}`
 
 /**
  * Message URL type.
  *
- * The URL scheme opens a new message in the user's default email application.
+ * The `message` URI scheme opens a new message in the default mail application.
  */
-export type MessageUrl = `message:${string}`
+export type MessageUrl = `message://${string}`
 
 /**
  * Telephone URL type.
  */
 export type TelUrl = `tel:${string}`
+
+/**
+ * Any URL type.
+ */
+export type AnyUrl = HTTPUrl | MailUrl | MessageUrl | TelUrl
 
 /**
  * RGB color type.
@@ -199,3 +204,21 @@ export type DeepPartial<T> = T extends (infer U)[]
           [K in keyof T]?: DeepPartial<T[K]>
         }
       : T
+
+/**
+ * HTTP methods enum.
+ */
+export enum HttpMethod {
+  GET = 'GET',
+  HEAD = 'HEAD',
+  OPTIONS = 'OPTIONS',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+  PATCH = 'PATCH',
+}
+
+/**
+ * Type utility to make specific keys of a type T optional.
+ */
+export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>

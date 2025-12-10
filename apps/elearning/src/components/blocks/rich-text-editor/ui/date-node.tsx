@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { type TDateElement } from 'platejs'
+import type { TDateElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly } from 'platejs/react'
 
 import { Calendar } from '@/components/blocks/rich-text-editor/ui/calendar'

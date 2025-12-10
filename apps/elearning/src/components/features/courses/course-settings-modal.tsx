@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
-import { type PostgrestError } from '@supabase/supabase-js'
+import type { PostgrestError } from '@supabase/supabase-js'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -22,10 +23,11 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { COURSE_SLUG_REGEX, type Course, getSkillGroups, type SkillGroup } from '@/lib/data'
-import { type Enums } from '../../../../supabase/types'
+import { useI18n } from '@/hooks/use-i18n'
+import { listSkillGroups } from '@/lib/actions/course'
+import { SLUG_REGEX } from '@/lib/constants'
+import type { Course, SkillGroup } from '@/lib/db/schema'
+import type { Enums } from '@/lib/db/types'
 
 interface CourseSettingsModalProps {
   course?: Partial<Course>
@@ -35,7 +37,7 @@ interface CourseSettingsModalProps {
 
 export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettingsModalProps) => {
   const router = useRouter()
-  const { localize } = useIntl()
+  const { localize } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
 
@@ -73,7 +75,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
       e.preventDefault()
       setIsCreating(true)
 
-      if (!COURSE_SLUG_REGEX.test(slug)) {
+      if (!SLUG_REGEX.test(slug)) {
         toast.error(t('invalidSlugFormat'))
         setIsCreating(false)
         return
@@ -106,7 +108,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
       setIsLoadingGroups(true)
 
       try {
-        setSkillGroups(await getSkillGroups())
+        setSkillGroups(await listSkillGroups())
       } catch (e) {
         console.error(e)
         toast.error(t('failedToLoadSkillGroups'))
@@ -154,7 +156,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
                   <SelectContent>
                     {skillGroups.map(group => (
                       <SelectItem key={group.id} value={group.id.toString()}>
-                        {localize(group.name as Record<string, string>)}
+                        {localize(group.name)}
                       </SelectItem>
                     ))}
                   </SelectContent>

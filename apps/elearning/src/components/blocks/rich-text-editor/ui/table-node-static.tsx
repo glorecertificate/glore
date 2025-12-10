@@ -1,5 +1,6 @@
 import { BaseTablePlugin } from '@platejs/table'
-import { SlateElement, type SlateElementProps, type TTableCellElement, type TTableElement } from 'platejs'
+import type { TTableCellElement, TTableElement } from 'platejs'
+import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 import { cn } from '@/lib/utils'
 

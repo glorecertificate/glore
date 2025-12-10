@@ -1,4 +1,4 @@
-import { type CamelToSnake, type SnakeToCamel } from './types'
+import type { CamelToSnake, SnakeToCamel } from './types'
 
 const SNAKE_TO_CAMEL_REGEX = /[\s_.\\/-]+/
 const CAMEL_TO_SNAKE_REGEX = /([a-z0-9])([A-Z])/g

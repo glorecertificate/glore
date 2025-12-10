@@ -82,7 +82,7 @@ const useAIChatItems = () => {
         const ancestorNode = editor.api.block({ highest: true })
         if (!ancestorNode) return
         const isEmpty = NodeApi.string(ancestorNode[0]).trim().length === 0
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           mode: 'insert',
           prompt: isEmpty ? t('ai.continueEmptyWritingPrompt') : t('ai.continueWritingPrompt'),
         })
@@ -103,7 +103,7 @@ const useAIChatItems = () => {
       label: t('ai.emojify'),
       value: 'emojify',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({ prompt: t('ai.emojifyPrompt') })
+        void editor.getApi(AIChatPlugin).aiChat.submit('', { prompt: t('ai.emojifyPrompt') })
       },
     },
     explain: {
@@ -111,7 +111,7 @@ const useAIChatItems = () => {
       label: t('ai.explain'),
       value: 'explain',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: {
             default: `${t('ai.explain')} {editor}`,
             selecting: t('ai.explain'),
@@ -124,7 +124,7 @@ const useAIChatItems = () => {
       label: t('ai.fixGrammar'),
       value: 'fixSpelling',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.fixGrammarPrompt'),
         })
       },
@@ -134,7 +134,7 @@ const useAIChatItems = () => {
       label: t('ai.improveWriting'),
       value: 'improveWriting',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.improveWritingPrompt'),
         })
       },
@@ -152,7 +152,7 @@ const useAIChatItems = () => {
       label: t('ai.makeLonger'),
       value: 'makeLonger',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.makeLongerPrompt'),
         })
       },
@@ -162,7 +162,7 @@ const useAIChatItems = () => {
       label: t('ai.makeShorter'),
       value: 'makeShorter',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.makeShorterPrompt'),
         })
       },
@@ -180,7 +180,7 @@ const useAIChatItems = () => {
       label: t('ai.simplifyLanguage'),
       value: 'simplifyLanguage',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.simplifyLanguagePrompt'),
         })
       },
@@ -190,7 +190,7 @@ const useAIChatItems = () => {
       label: t('ai.summarize'),
       value: 'summarize',
       onSelect: ({ editor }) => {
-        void editor.getApi(AIChatPlugin).aiChat.submit({
+        void editor.getApi(AIChatPlugin).aiChat.submit('', {
           mode: 'insert',
           prompt: {
             default: `${t('ai.summarizePrompt')} {editor}`,
@@ -224,13 +224,15 @@ export const AIMenu = () => {
   const isSelecting = useIsSelecting() as boolean
 
   const [value, setValue] = useState('')
+  const [input, setInput] = useState('')
 
   const chat = useChat()
 
-  const { input, messages, setInput, status } = chat
+  const { messages, status } = chat
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null)
 
-  const content = useLastAssistantMessage()?.content
+  const lastMessage = useLastAssistantMessage()
+  const content = lastMessage?.parts?.find(p => p.type === 'text')?.text
 
   const placeholder = useMemo(
     () => (messages?.length ? t('placeholders.askAIEdit') : t('placeholders.askAI')),
@@ -338,7 +340,7 @@ export const AIMenu = () => {
                 }
                 if (isHotkey('enter')(e) && !e.shiftKey && !value) {
                   e.preventDefault()
-                  void api.aiChat.submit()
+                  void api.aiChat.submit('')
                 }
               }}
               onValueChange={setInput}

@@ -29,7 +29,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { getTeamMembers, type User } from '@/lib/data'
+import { getTeamMembers } from '@/lib/actions/user'
+import type { User } from '@/lib/db/schema'
 
 export const AdminTeam = () => {
   const t = useTranslations('Admin.team')
@@ -51,7 +52,7 @@ export const AdminTeam = () => {
   useEffect(() => void loadTeamMembers(), [loadTeamMembers])
 
   const inviteTeamMember = useCallback(async (email: string, role: 'admin' | 'editor') => {
-    const response = await fetch('/api/admin/team', {
+    const response = await fetch('/api/v1/admin/team', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

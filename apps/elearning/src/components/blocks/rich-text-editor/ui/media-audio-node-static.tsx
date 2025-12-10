@@ -1,4 +1,5 @@
-import { SlateElement, type SlateElementProps, type TAudioElement } from 'platejs'
+import type { TAudioElement } from 'platejs'
+import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 export const AudioElementStatic = (props: SlateElementProps<TAudioElement>) => (
   <SlateElement {...props} className="mb-1">

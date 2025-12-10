@@ -1,4 +1,4 @@
-import { type IconProps } from '@/components/icons/types'
+import type { IconProps } from '@/components/icons/types'
 
 export const GmailIcon = (props: IconProps) => (
   <svg viewBox="52 42 88 66" xmlns="http://www.w3.org/2000/svg" {...props}>

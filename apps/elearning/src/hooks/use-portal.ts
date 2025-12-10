@@ -4,10 +4,10 @@ import { type ReactPortal, useCallback, useEffect, useState } from 'react'
 
 import { createPortal } from 'react-dom'
 
-import { type Enum } from '@glore/utils/types'
+import config from '@config/metadata'
 
-export enum PortalContainer {
-  Breadcrumb = 'breadcrumb',
+export const portalContainers = {
+  breadcrumb: `${config.slug}-breadcrumb`,
 }
 
 export interface Portal {
@@ -15,7 +15,10 @@ export interface Portal {
   remove: () => void
 }
 
-export const usePortal = (container: Enum<PortalContainer>) => {
+/**
+ * Hook to create and manage a React portal within a specified container element.
+ */
+export const usePortal = (container: keyof typeof portalContainers) => {
   const [portal, setPortal] = useState<Portal>({
     render: () => null,
     remove: () => {},

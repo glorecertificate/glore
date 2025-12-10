@@ -3,7 +3,7 @@
 import { useMediaState } from '@platejs/media/react'
 import { ResizableProvider } from '@platejs/resizable'
 import { FileUpIcon } from 'lucide-react'
-import { type TFileElement } from 'platejs'
+import type { TFileElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly, withHOC } from 'platejs/react'
 
 import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'

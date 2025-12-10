@@ -1,13 +1,15 @@
 'use client'
 
+import config from '@config/app'
+
 import { GloreIcon } from '@/components/icons/glore'
 import { Breadcrumb } from '@/components/ui/breadcrumb'
 import { Link } from '@/components/ui/link'
-import { SIDEBAR_KEYBOARD_SHORTCUT, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
+import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePathname } from '@/hooks/use-pathname'
-import { PortalContainer } from '@/hooks/use-portal'
+import { portalContainers } from '@/hooks/use-portal'
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 
@@ -38,10 +40,10 @@ export const AppHeader = ({ children, className, ...props }: React.ComponentProp
             </TooltipTrigger>
             <TooltipContent showArrow side="right">
               <p className="font-medium text-xs">{action}</p>
-              <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${SIDEBAR_KEYBOARD_SHORTCUT.toUpperCase()}`}</p>
+              <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${config.shortcuts.sidebar.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
-          <Breadcrumb className="flex h-full grow items-center" id={PortalContainer.Breadcrumb}>
+          <Breadcrumb className="flex h-full grow items-center" id={portalContainers.breadcrumb}>
             <Skeleton className="h-5 w-64" />
           </Breadcrumb>
         </div>

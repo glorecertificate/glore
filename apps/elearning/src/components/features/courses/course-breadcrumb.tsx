@@ -1,59 +1,67 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { type IconName } from 'lucide-react/dynamic'
+import type { IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
-import { debounce } from '@glore/utils/debounce'
-
+import { useCourse } from '@/components/features/courses/course-provider'
 import { DynamicIcon } from '@/components/icons/dynamic'
+import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCourse } from '@/hooks/use-course'
-import { useIntl } from '@/hooks/use-intl'
 import { usePortal } from '@/hooks/use-portal'
-import { useSession } from '@/hooks/use-session'
+import { localize } from '@/lib/i18n'
 
 export const CourseBreadcrumb = () => {
   const Breadcrumb = usePortal('breadcrumb')
+  const t = useTranslations('Courses')
+
   const { user } = useSession()
   const { course, language, setCourse, setSettingsOpen } = useCourse()
-  const { localize } = useIntl()
-  const t = useTranslations('Courses')
 
   const title = localize(course.title, language)
   const [draftTitle, setDraftTitle] = useState(title)
+  const [titleFocused, setTitleFocused] = useState(false)
 
   useEffect(() => {
     setDraftTitle(title)
   }, [title])
 
-  const commitTitle = useMemo(
-    () =>
-      debounce((value: string) => {
-        setCourse(currentCourse => ({
-          ...currentCourse,
-          title: {
-            ...currentCourse.title,
-            [language]: value,
-          },
-        }))
-      }, 250),
-    [language, setCourse]
-  )
-
   const onTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      setDraftTitle(value)
-      commitTitle(value)
+      const { value } = e.target
+      if (value.length > 100) {
+        toast.warning(t('titleTooLong'), { duration: 4000 })
+      }
+      setDraftTitle(value.slice(0, 100))
     },
-    [commitTitle]
+    [t]
+  )
+
+  const onTitleFocus = useCallback(() => {
+    setTitleFocused(true)
+  }, [])
+
+  const onTitleBlur = useCallback(
+    (e: React.FocusEvent<HTMLInputElement>) => {
+      setTitleFocused(false)
+      if (e.target.value.trim() === title) return
+      if (e.target.value.trim() === '') return setDraftTitle(title)
+      setCourse(currentCourse => ({
+        ...currentCourse,
+        title: {
+          ...currentCourse.title,
+          [language]: e.target.value,
+        },
+      }))
+    },
+    [language, setCourse, title]
   )
 
   return (
@@ -88,13 +96,22 @@ export const CourseBreadcrumb = () => {
             </Tooltip>
           )}
           {user.canEdit ? (
-            <Tooltip>
+            <Tooltip delayDuration={200}>
               <TooltipTrigger asChild>
-                <InlineInput className="h-8 w-min px-1" onChange={onTitleChange} value={draftTitle} />
+                <InlineInput
+                  className="px-1 py-0.5"
+                  defaultValue={title}
+                  onBlur={onTitleBlur}
+                  onChange={onTitleChange}
+                  onFocus={onTitleFocus}
+                  value={draftTitle}
+                />
               </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={4}>
-                {t('renameCourse')}
-              </TooltipContent>
+              {!titleFocused && (
+                <TooltipContent side="bottom" sideOffset={4} size="sm">
+                  {t('renameCourse')}
+                </TooltipContent>
+              )}
             </Tooltip>
           ) : (
             title

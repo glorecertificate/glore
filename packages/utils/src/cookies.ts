@@ -1,8 +1,8 @@
-import { type ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
+import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'
 
 import { decodeAsync, encodeAsync } from './encode'
 import { capitalize } from './string'
-import { type Any, type AnyRecord } from './types'
+import type { Any, AnyRecord } from './types'
 
 /**
  * Options to define a cookie store, passed to {@link defineCookies} and {@link defineServerCookies}.

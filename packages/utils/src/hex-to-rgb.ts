@@ -1,4 +1,4 @@
-import { type Rgb } from './types'
+import type { Rgb } from './types'
 
 /**
  * Converts a hex color string to an array of RGB values.

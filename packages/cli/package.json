@@ -1,0 +1,30 @@
+{
+  "name": "@glore/cli",
+  "description": "The GloRe command line interface.",
+  "type": "module",
+  "bin": {
+    "glore": "./src/cli.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:",
+    "@commander-js/extra-typings": "^14.0.0",
+    "@glore/tsconfig": "workspace:^",
+    "@glore/utils": "workspace:^",
+    "@lingual/i18n-check": "^0.8.15",
+    "@next/env": "^16.0.8",
+    "@size-limit/preset-app": "^12.0.0",
+    "@types/node": "catalog:",
+    "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
+    "localtunnel": "^2.0.2",
+    "next": "catalog:",
+    "react-email": "^5.0.6",
+    "size-limit": "^12.0.0",
+    "supabase": "catalog:",
+    "typescript": "catalog:"
+  }
+}

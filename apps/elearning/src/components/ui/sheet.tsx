@@ -1,26 +1,28 @@
 'use client'
 
-import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { XIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-export const Sheet = ({ ...props }: React.ComponentProps<typeof Root>) => <Root data-slot="sheet" {...props} />
-
-export const SheetTrigger = ({ ...props }: React.ComponentProps<typeof Trigger>) => (
-  <Trigger data-slot="sheet-trigger" {...props} />
+export const Sheet = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) => (
+  <DialogPrimitive.Root data-slot="sheet" {...props} />
 )
 
-export const SheetClose = ({ ...props }: React.ComponentProps<typeof Close>) => (
-  <Close data-slot="sheet-close" {...props} />
+export const SheetTrigger = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) => (
+  <DialogPrimitive.Trigger data-slot="sheet-trigger" {...props} />
 )
 
-export const SheetPortal = ({ ...props }: React.ComponentProps<typeof Portal>) => (
-  <Portal data-slot="sheet-portal" {...props} />
+export const SheetClose = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) => (
+  <DialogPrimitive.Close data-slot="sheet-close" {...props} />
 )
 
-export const SheetOverlay = ({ className, ...props }: React.ComponentProps<typeof Overlay>) => (
-  <Overlay
+export const SheetPortal = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) => (
+  <DialogPrimitive.Portal data-slot="sheet-portal" {...props} />
+)
+
+export const SheetOverlay = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) => (
+  <DialogPrimitive.Overlay
     className={cn(
       'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=open]:animate-in',
       className
@@ -36,13 +38,13 @@ export const SheetContent = ({
   closeSrText = 'Close',
   side = 'right',
   ...props
-}: React.ComponentProps<typeof Content> & {
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
   closeSrText?: string
   side?: 'top' | 'right' | 'bottom' | 'left'
 }) => (
   <SheetPortal>
     <SheetOverlay />
-    <Content
+    <DialogPrimitive.Content
       className={cn(
         'fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:duration-300 data-[state=open]:duration-500',
         side === 'right' &&
@@ -59,15 +61,15 @@ export const SheetContent = ({
       {...props}
     >
       {children}
-      <Close
+      <DialogPrimitive.Close
         className={
           'absolute top-4 right-4 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-brand'
         }
       >
         <XIcon className="size-4" />
         <span className="sr-only">{closeSrText}</span>
-      </Close>
-    </Content>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
   </SheetPortal>
 )
 
@@ -79,8 +81,8 @@ export const SheetFooter = ({ className, ...props }: React.ComponentProps<'div'>
   <div className={cn('mt-auto flex flex-col gap-2 p-4', className)} data-slot="sheet-footer" {...props} />
 )
 
-export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof Title>) => (
-  <Title
+export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
+  <DialogPrimitive.Title
     className={cn('font-semibold text-foreground', className)}
     data-slot="sheet-title"
     suppressHydrationWarning
@@ -88,6 +90,10 @@ export const SheetTitle = ({ className, ...props }: React.ComponentProps<typeof 
   />
 )
 
-export const SheetDescription = ({ className, ...props }: React.ComponentProps<typeof Description>) => (
-  <Description className={cn('text-muted-foreground text-sm', className)} data-slot="sheet-description" {...props} />
+export const SheetDescription = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>) => (
+  <DialogPrimitive.Description
+    className={cn('text-muted-foreground text-sm', className)}
+    data-slot="sheet-description"
+    {...props}
+  />
 )

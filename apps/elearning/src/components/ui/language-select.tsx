@@ -13,14 +13,9 @@ import {
   type SelectTriggerProps,
 } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useIntl } from '@/hooks/use-intl'
-import { LOCALES, type LocaleItem } from '@/lib/intl'
+import { useI18n } from '@/hooks/use-i18n'
+import { i18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
-
-interface LanguageSelectItem extends LocaleItem {
-  badge?: React.ReactNode
-  status?: string | null
-}
 
 export interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'> {
   addLanguage?: (locale: Locale) => void
@@ -35,6 +30,11 @@ export interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'
   values?: Locale[]
 }
 
+type LanguageSelectItem = (typeof i18n.localeItems)[number] & {
+  badge?: React.ReactNode
+  status?: string | null
+}
+
 export const LanguageSelect = ({
   addLanguage,
   className,
@@ -43,10 +43,10 @@ export const LanguageSelect = ({
   onChange,
   status,
   value,
-  values = LOCALES,
+  values = i18n.locales,
   ...props
 }: LanguageSelectProps) => {
-  const { locale, localeItems, setLocale } = useIntl()
+  const { locale, localeItems, setLocale } = useI18n()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 

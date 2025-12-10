@@ -15,14 +15,15 @@ export enum PWADisplayMode {
  * Hook to determine the PWA display mode and related properties.
  */
 export const usePWA = () => {
-  const displayMode = useMemo<`${PWADisplayMode}` | undefined>(() => {
+  const displayMode = useMemo<PWADisplayMode | undefined>(() => {
     if (typeof window === 'undefined') return
-    if (document.referrer.startsWith('android-app://')) return 'twa'
-    if (window.matchMedia('(display-mode: browser)').matches) return 'browser'
-    if (window.matchMedia('(display-mode: standalone)').matches) return 'standalone'
-    if (window.matchMedia('(display-mode: minimal-ui)').matches) return 'minimal-ui'
-    if (window.matchMedia('(display-mode: fullscreen)').matches) return 'fullscreen'
-    if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return 'window-controls-overlay'
+    if (document.referrer.startsWith('android-app://')) return PWADisplayMode.TWA
+    if (window.matchMedia('(display-mode: browser)').matches) return PWADisplayMode.Browser
+    if (window.matchMedia('(display-mode: standalone)').matches) return PWADisplayMode.Standalone
+    if (window.matchMedia('(display-mode: minimal-ui)').matches) return PWADisplayMode.MinimalUI
+    if (window.matchMedia('(display-mode: fullscreen)').matches) return PWADisplayMode.Fullscreen
+    if (window.matchMedia('(display-mode: window-controls-overlay)').matches)
+      return PWADisplayMode.WindowControlsOverlay
   }, [])
 
   return {

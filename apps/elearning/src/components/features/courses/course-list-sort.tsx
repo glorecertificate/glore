@@ -5,6 +5,8 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import type { CourseListView } from '@/components/features/courses/types'
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -14,8 +16,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useSession } from '@/hooks/use-session'
-import { type CourseListView } from '@/lib/navigation'
 import { cn } from '@/lib/utils'
 
 const EDITOR_SORTS = ['name', 'type', 'skillGroup', 'name', 'creationDate', 'lastUpdated'] as const

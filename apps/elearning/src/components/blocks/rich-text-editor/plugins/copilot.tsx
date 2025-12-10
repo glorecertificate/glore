@@ -1,3 +1,5 @@
+import type { AppRouteHandlerRoutes } from 'next/types/routes'
+
 import { CopilotPlugin } from '@platejs/ai/react'
 import { serializeMd, stripMarkdown } from '@platejs/markdown'
 
@@ -9,7 +11,7 @@ export const CopilotKit = [
   CopilotPlugin.configure(({ api }) => ({
     options: {
       completeOptions: {
-        api: '/api/ai/copilot',
+        api: '/api/v1/ai/copilot' satisfies AppRouteHandlerRoutes,
         body: {
           system: `
             You are an advanced AI writing assistant, similar to VSCode Copilot but for general text. Your task is to predict and generate the next part of the text based on the given context.

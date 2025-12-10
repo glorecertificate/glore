@@ -1,5 +1,18 @@
 {
-  "sidebarShortcutKey": "s",
-  "minSkills": 3,
-  "minSkillRating": 3
+  "app": {
+    "minSkills": 3,
+    "minRating": 3,
+    "defaultLessonTitle": {
+      "en": "New Course",
+      "es": "Nuevo Curso",
+      "it": "Nuovo Corso"
+    }
+  },
+  "shortcuts": {
+    "sidebar": "s"
+  },
+  "urls": {
+    "website": "https://glorecertificate.net",
+    "googleMaps": "https://maps.google.com"
+  }
 }

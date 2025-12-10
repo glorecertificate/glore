@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect, useRouter } from 'next/navigation'
-import { type AppRoutes } from 'next/types/routes'
+import type { AppRoutes } from 'next/types/routes'
 import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
@@ -27,7 +27,8 @@ import { sleep } from '@glore/utils/sleep'
 import { titleize } from '@glore/utils/string'
 
 import { DashboardIcon } from '@/components/icons/dashboard'
-import { type Icon } from '@/components/icons/types'
+import type { Icon } from '@/components/icons/types'
+import { useSession } from '@/components/providers/session-provider'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -71,9 +72,9 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
-import { useSession } from '@/hooks/use-session'
-import { logout, type UserOrganization } from '@/lib/data'
-import { APP_NAME } from '@/lib/metadata'
+import { logout } from '@/lib/actions/auth'
+import type { UserOrganization } from '@/lib/db/schema'
+import { metadata } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps extends SidebarMenuButtonProps {
@@ -171,7 +172,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
   const cookies = useCookies()
   const router = useRouter()
   const { isMobile, open, setActivePath } = useSidebar()
-  const t = useTranslations('Navigation')
+  const t = useTranslations('Layout')
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
@@ -257,7 +258,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
 
 const AppSidebarMain = () => {
   const { user } = useSession()
-  const t = useTranslations('Navigation')
+  const t = useTranslations('Layout')
 
   const showCertificates = useMemo(() => !user.canEdit, [user.canEdit])
 
@@ -282,7 +283,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
   const { user } = useSession()
   const { open, openMobile, setOpenMobile } = useSidebar()
   const tCommon = useTranslations('Common')
-  const t = useTranslations('Navigation')
+  const t = useTranslations('Layout')
 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -381,7 +382,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
               <Button
                 asChild
                 className={cn(
-                  'ml-auto flex size-6 items-center justify-center border border-transparent hover:border-border',
+                  'ml-auto flex size-6 items-center justify-center border border-transparent transition-none hover:border-border',
                   !open && 'invisible'
                 )}
                 variant="ghost"
@@ -451,7 +452,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
                       onClick={onLogoutClick}
                       variant="destructive"
                     >
-                      {t('logoutConfirm', { app: APP_NAME })}
+                      {t('logoutConfirm', { app: metadata.applicationName })}
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>

@@ -1,14 +1,14 @@
 'use client'
 
-import { type Locale } from 'next-intl'
+import type { Locale } from 'next-intl'
 
 import { CourseBreadcrumb } from '@/components/features/courses/course-breadcrumb'
 import { CourseContent } from '@/components/features/courses/course-content'
 import { CourseFooter } from '@/components/features/courses/course-footer'
 import { CourseHeader, CourseHeaderMobile } from '@/components/features/courses/course-header'
+import { useCourse } from '@/components/features/courses/course-provider'
 import { CourseSidebar } from '@/components/features/courses/course-sidebar'
 import { Tabs } from '@/components/ui/tabs'
-import { useCourse } from '@/hooks/use-course'
 
 export const CourseView = () => {
   const { course, language, setLanguage } = useCourse()

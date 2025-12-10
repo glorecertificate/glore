@@ -5,18 +5,19 @@ import { getTranslations } from 'next-intl/server'
 import { CourseList } from '@/components/features/courses/course-list'
 import { SectionLayout } from '@/components/layout/section-layout'
 import { intlMetadata } from '@/lib/metadata'
-import { serverCookies } from '@/lib/storage/server'
+import { getCookies } from '@/lib/storage'
 
 export const generateMetadata = intlMetadata({
-  title: 'Navigation.courses',
+  title: 'Layout.courses',
 })
 
 export default async () => {
-  const { get } = await serverCookies()
+  const { get } = await getCookies()
   const courseLanguages = get('course_locale')
   const languages = get('course_list_locales')
   const groups = get('course_list_groups')
-  const tab = get('course_list_view')
+  // const tab = get('course_list_view')
+  const tab = 'all'
   const user = get('user')
   if (!user) redirect('/login')
 

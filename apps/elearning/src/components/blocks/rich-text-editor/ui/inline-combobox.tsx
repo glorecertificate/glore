@@ -29,7 +29,7 @@ import {
 import { filterWords } from '@platejs/combobox'
 import { type UseComboboxInputResult, useComboboxInput, useHTMLInputCursorState } from '@platejs/combobox/react'
 import { cva } from 'class-variance-authority'
-import { type Point, type TElement } from 'platejs'
+import type { Point, TElement } from 'platejs'
 import { useComposedRef, useEditorRef } from 'platejs/react'
 
 import { cn } from '@/lib/utils'

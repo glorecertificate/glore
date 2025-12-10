@@ -1,4 +1,4 @@
-import { type AnyRecord, type CamelToSnakeRecord } from './types'
+import type { AnyRecord, CamelToSnakeRecord } from './types'
 
 /**
  * Recursively converts all keys of a record from camel case to snake case.

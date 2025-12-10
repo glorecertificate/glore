@@ -1,11 +1,13 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { type Icon } from '@/components/icons/types'
+import type { Icon } from '@/components/icons/types'
 import { Label } from '@/components/ui/label'
 import { useMounted } from '@/hooks/use-mounted'
 import { cn } from '@/lib/utils'
 
-export interface InputProps extends Omit<React.ComponentProps<'input'>, 'size'>, VariantProps<typeof inputVariants> {
+export interface InputProps
+  extends Omit<React.ComponentProps<'input'>, keyof VariantProps<typeof inputVariants>>,
+    VariantProps<typeof inputVariants> {
   defaultOpen?: boolean
   icon?: Icon
   open?: boolean

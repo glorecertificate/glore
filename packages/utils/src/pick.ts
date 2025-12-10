@@ -1,4 +1,4 @@
-import { type AnyRecord } from './types'
+import type { AnyRecord } from './types'
 
 const pickRecord = <T extends AnyRecord, K extends keyof T>(record: T, ...keys: K[] | K[][]): Pick<T, K> =>
   keys.flat().reduce((item, key) => (key in record ? { ...item, [key]: record[key] } : item), {} as Pick<T, K>)

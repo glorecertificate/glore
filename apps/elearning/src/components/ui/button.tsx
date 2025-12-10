@@ -6,12 +6,11 @@ import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { Spinner } from '@/components/icons/spinner'
-import { type Icon } from '@/components/icons/types'
+import type { Icon } from '@/components/icons/types'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'>,
-    React.RefAttributes<HTMLButtonElement>,
+  extends Omit<React.ComponentProps<'button'>, keyof VariantProps<typeof buttonVariants>>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   /** @default 'default' */

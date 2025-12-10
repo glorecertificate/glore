@@ -5,25 +5,25 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
+import { parseAsString, useQueryState } from 'nuqs'
 
 import themeConfig from '@config/theme'
 import { rgbRecord } from '@glore/utils/hex-to-rgb'
 import { snakeToCamel } from '@glore/utils/string'
-import { type Enum } from '@glore/utils/types'
+import type { Enum } from '@glore/utils/types'
 
-import { EmailClientsFooter } from '@/components/features/auth/email-clients-footer'
+import { EmailActionFooter } from '@/components/features/auth/email-action-footer'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
+import type { AuthView } from '@/components/features/auth/types'
 import { GloreIcon } from '@/components/icons/glore'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { useMetadata } from '@/hooks/use-metadata'
-import { useSearchParams } from '@/hooks/use-search-params'
 import { useTheme } from '@/hooks/use-theme'
-import { EMAIL_REGEX } from '@/lib/data'
-import { type AuthView } from '@/lib/navigation'
+import { EMAIL_REGEX } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 interface AuthFlowProps {
@@ -33,7 +33,8 @@ interface AuthFlowProps {
 }
 
 export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps) => {
-  const searchParams = useSearchParams()
+  const [, setResetToken] = useQueryState('resetToken', parseAsString)
+
   const { resolvedTheme } = useTheme()
   const t = useTranslations('Auth')
 
@@ -42,7 +43,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
   const [username, setUsername] = useState(defaultUsername)
 
   useMetadata({
-    applicationName: 'full',
+    applicationName: view === 'login' ? false : 'full',
     title: t(snakeToCamel(`${view}_meta_title`)),
   })
 
@@ -73,7 +74,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
           />
         )
       case 'email_sent':
-        return <EmailClientsFooter />
+        return <EmailActionFooter />
       case 'password_reset':
         return <PasswordResetForm setErrored={setErrored} setView={setView} token={token} />
       case 'password_updated':
@@ -125,9 +126,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
 
   // biome-ignore lint: exhaustive-deps
   useEffect(() => {
-    if (defaultView === 'invalid_token' && searchParams.has('resetToken')) {
-      searchParams.delete('resetToken')
-    }
+    setResetToken(null)
   }, [])
 
   const ref = useRef<HTMLDivElement>(null)

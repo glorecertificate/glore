@@ -1,11 +1,11 @@
 import { snakeToCamel } from '@glore/utils/string'
-import { type Enum } from '@glore/utils/types'
+import type { Enum } from '@glore/utils/types'
 
 import { AuthFlow } from '@/components/features/auth/auth-flow'
+import type { AuthView } from '@/components/features/auth/types'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { createIntlMetadata } from '@/lib/metadata'
-import { type AuthView } from '@/lib/navigation'
-import { serverCookies } from '@/lib/storage/server'
+import { getCookies } from '@/lib/storage'
 
 const TOKEN_HASH_REGEX = /^pkce_[a-f0-9]{56}$/
 
@@ -27,7 +27,7 @@ export const generateMetadata = async (props: PageProps<'/login'>) => {
 export default async (props: PageProps<'/login'>) => {
   const { token, view } = await resolvePageData(props)
 
-  const cookies = await serverCookies()
+  const cookies = await getCookies()
   const username = cookies.get('login_user')
   const theme = cookies.get('theme')
 

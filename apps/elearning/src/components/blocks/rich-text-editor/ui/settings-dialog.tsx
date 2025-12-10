@@ -1,9 +1,10 @@
 'use client'
 
+import type { AppRouteHandlerRoutes } from 'next/types/routes'
 import { useState } from 'react'
 
 import { CopilotPlugin } from '@platejs/ai/react'
-import { type ChatRequestOptions } from 'ai'
+import type { ChatRequestOptions } from 'ai'
 import {
   CheckIcon,
   ChevronsUpDownIcon,
@@ -67,7 +68,7 @@ export const SettingsIconDialog = () => {
 
     editor.setOption(aiChatPlugin, 'chatOptions', {
       ...options.chatOptions,
-      api: '/api/ai/command',
+      api: '/api/v1/ai/command' satisfies AppRouteHandlerRoutes,
       body: {
         ...options.chatOptions.body,
         apiKey: tempKeys.openai,

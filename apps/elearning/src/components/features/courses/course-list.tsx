@@ -7,7 +7,7 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { pluck } from '@glore/utils/pluck'
 import { snakeToCamel } from '@glore/utils/string'
-import { type SnakeToCamel } from '@glore/utils/types'
+import type { SnakeToCamel } from '@glore/utils/types'
 
 import { CourseCard } from '@/components/features/courses/course-card'
 import {
@@ -15,9 +15,10 @@ import {
   type CourseListSortDirection,
   type CourseListSortType,
 } from '@/components/features/courses/course-list-sort'
-import { type SessionCourse } from '@/components/features/courses/course-provider'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
+import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/components/features/courses/types'
 import { NoResultsIllustration } from '@/components/illustrations/no-results'
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
   MultiSelect,
@@ -30,10 +31,10 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/c
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useCookies } from '@/hooks/use-cookies'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { type Course, reorderCourses } from '@/lib/data'
-import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/lib/navigation'
+import { useI18n } from '@/hooks/use-i18n'
+import { reorderCourses } from '@/lib/actions/course'
+import type { Course } from '@/lib/db/schema'
+import { i18n } from '@/lib/i18n'
 
 const CourseListTab = ({ count, value }: { active: boolean; count: number; value: CourseListView }) => {
   const t = useTranslations('Courses')
@@ -83,7 +84,7 @@ export const CourseList = ({
 }) => {
   const cookies = useCookies()
   const { user, courses: sessionCourses, setCourses, skillGroups } = useSession()
-  const { locale, localeItems, locales, localize } = useIntl()
+  const { locale, localeItems, localize } = useI18n()
   const t = useTranslations('Courses')
 
   const groups = skillGroups.map(group => ({
@@ -95,14 +96,14 @@ export const CourseList = ({
   const [activeTab, setActiveTab] = useState<CourseListView>(defaultTab)
   const [activeSort, setActiveSort] = useState<CourseListSortType | null>(null)
   const [activeGroups, setActiveGroups] = useState(defaultGroups ?? [...groupOptions])
-  const [activeLanguages, setActiveLanguages] = useState<Locale[]>(defaultLanguages ?? [...locales])
+  const [activeLanguages, setActiveLanguages] = useState<Locale[]>(defaultLanguages ?? [...i18n.locales])
   const [sortDirection, setSortDirection] = useState<CourseListSortDirection | null>(null)
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const activeGroupItems = groups.filter(group => activeGroups.includes(group.value))
   const activeLanguageItems = localeItems.filter(item => activeLanguages.includes(item.value))
-  const hasFilters = activeLanguages.length !== locales.length
+  const hasFilters = activeLanguages.length !== i18n.locales.length
   const canDrag = activeTab === 'all' && activeSort === null
 
   const tabs = user.canEdit
@@ -111,7 +112,7 @@ export const CourseList = ({
       : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
     : [...Object.values(CourseListLearnerView)]
 
-  const courses = useMemo<Record<SnakeToCamel<CourseListView>, SessionCourse[]>>(() => {
+  const courses = useMemo<Record<SnakeToCamel<CourseListView>, Course[]>>(() => {
     const all = sessionCourses.filter(course => !course.archived_at)
 
     if (user.canEdit)
@@ -189,7 +190,7 @@ export const CourseList = ({
               if (a.sort_order == null || b.sort_order == null) return 0
               return a.sort_order - b.sort_order
           }
-        }) as (Course & { language: Locale })[],
+        }),
     [activeLanguages, activeSort, activeTab, courses, defaultCourseLanguage, locale, localize, sortDirection]
   )
 
@@ -230,16 +231,12 @@ export const CourseList = ({
     }
   }, [activeTab, enhanceEmptyListMessage, t])
 
-  const onTabChange = useCallback(
-    (value: string) => {
-      setLoading(true)
-      const tab = value as CourseListView
-      setActiveTab(tab)
-      cookies.set('course_list_view', tab)
-      setLoading(false)
-    },
-    [cookies.set]
-  )
+  const onTabChange = useCallback((value: string) => {
+    setLoading(true)
+    setActiveTab(value as CourseListView)
+    // cookies.set('course_list_view', tab)
+    setLoading(false)
+  }, [])
 
   const onLanguagesChange = useCallback(
     (selected: string[]) => {
@@ -350,7 +347,7 @@ export const CourseList = ({
                 ))}
               </MultiSelectContent>
             </MultiSelect>
-            <MultiSelect onValueChange={onLanguagesChange} options={locales} value={activeLanguages}>
+            <MultiSelect onValueChange={onLanguagesChange} options={i18n.locales} value={activeLanguages}>
               <MultiSelectTrigger>
                 {activeLanguageItems.map(({ displayLabel, icon, label, ...item }) => (
                   <MultiSelectBadge className="gap-0 py-0 text-sm" key={item.value} label={displayLabel} {...item}>

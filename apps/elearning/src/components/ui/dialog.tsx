@@ -6,8 +6,6 @@ import { XIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
-export type DialogPortalScope = 'global' | 'session'
-
 export const Dialog = (props: React.ComponentProps<typeof DialogPrimitive.Root>) => (
   <DialogPrimitive.Root data-slot="dialog" {...props} />
 )

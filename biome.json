@@ -150,9 +150,9 @@
           "fix": "safe"
         },
         "useImportType": {
-          "level": "error",
+          "level": "on",
           "options": {
-            "style": "inlineType"
+            "style": "auto"
           }
         },
         "useSelfClosingElements": "error",

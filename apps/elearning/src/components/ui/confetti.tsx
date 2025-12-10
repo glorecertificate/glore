@@ -1,37 +1,36 @@
 'use client'
 
-import {
-  createContext,
-  forwardRef,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-} from 'react'
+import { createContext, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 
 import canvasConfetti, { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
+
+import type { Any } from '@glore/utils/types'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 
 export const confetti = canvasConfetti
 
-interface ConfettiContext {
+const ConfettiContext = createContext<{
   fire: (options?: Options) => void
-}
+} | null>(null)
 
-const ConfettiContext = createContext<ConfettiContext>({} as ConfettiContext)
-
-export interface ConfettiProps extends React.ComponentPropsWithRef<'canvas'> {
-  children?: ReactNode
+export interface ConfettiProps extends React.ComponentProps<'canvas'> {
   globalOptions?: GlobalOptions
-  manualstart?: boolean
+  manual?: boolean
   options?: Options
 }
 
-export const Confetti = forwardRef<ConfettiContext | null, ConfettiProps>((props, ref) => {
-  const { children, globalOptions = { resize: true, useWorker: true }, manualstart = false, options, ...rest } = props
+export const Confetti = ({
+  children,
+  globalOptions = {
+    resize: true,
+    useWorker: true,
+  },
+  manual = false,
+  options,
+  ref,
+  ...props
+}: ConfettiProps) => {
   const instanceRef = useRef<CreateTypes | null>(null)
 
   const canvasRef = useCallback(
@@ -68,21 +67,21 @@ export const Confetti = forwardRef<ConfettiContext | null, ConfettiProps>((props
     [fire]
   )
 
-  useImperativeHandle(ref, () => contextValue, [contextValue])
+  useImperativeHandle(ref, () => contextValue as Any, [contextValue])
 
   useEffect(() => {
-    if (!manualstart) {
+    if (!manual) {
       void (async () => await fire())()
     }
-  }, [manualstart, fire])
+  }, [manual, fire])
 
   return (
     <ConfettiContext.Provider value={contextValue}>
-      <canvas ref={canvasRef} {...rest} />
+      <canvas ref={canvasRef} {...props} />
       {children}
     </ConfettiContext.Provider>
   )
-})
+}
 
 export interface ConfettiButtonProps extends Omit<ButtonProps, 'effect'> {
   children?: React.ReactNode

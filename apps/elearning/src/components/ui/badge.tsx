@@ -1,22 +1,25 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
-export interface BadgeProps extends Omit<React.ComponentProps<'span'>, 'color'>, VariantProps<typeof badge> {
-  asChild?: boolean
+export const Badge = ({
+  asChild = false,
+  className,
+  size,
+  variant,
+  ...props
+}: Omit<React.ComponentProps<'span'>, 'color'> &
+  VariantProps<typeof badgeVariants> & {
+    asChild?: boolean
+  }) => {
+  const Component = asChild ? Slot : 'span'
+  return <Component className={cn(badgeVariants({ size, variant }), className)} data-slot="badge" {...props} />
 }
 
-export const Badge = ({ asChild = false, className, size, variant, ...props }: BadgeProps) => {
-  const Component = useMemo(() => (asChild ? Slot : 'span'), [asChild])
-  return <Component className={cn(badge({ size, variant }), className)} data-slot="badge" {...props} />
-}
-
-export const badge = cva(
+const badgeVariants = cva(
   `
     inline-flex w-fit shrink-0 cursor-default items-center justify-center overflow-hidden rounded-md
     whitespace-nowrap transition-[color] select-none

@@ -29,7 +29,7 @@ export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li
   />
 )
 
-export const BreadcrumbLink = <T,>({ className, ...props }: LinkProps<T>) => (
+export const BreadcrumbLink = <T, V extends boolean>({ className, ...props }: LinkProps<T, V>) => (
   <BreadcrumbItem>
     <Button asChild className={cn('h-8 px-2 text-muted-foreground', className)} variant="ghost">
       <Link {...props} />

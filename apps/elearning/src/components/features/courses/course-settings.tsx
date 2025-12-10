@@ -4,14 +4,16 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useId, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type PostgrestError } from '@supabase/supabase-js'
+import type { PostgrestError } from '@supabase/supabase-js'
 import { Link2Icon, RotateCcwIcon, Trash2Icon } from 'lucide-react'
-import { type IconName } from 'lucide-react/dynamic'
+import type { IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
 
+import { useCourse } from '@/components/features/courses/course-provider'
+import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { IconPicker } from '@/components/ui/icon-picker'
@@ -19,14 +21,13 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useCourse } from '@/hooks/use-course'
-import { useIntl } from '@/hooks/use-intl'
-import { useSession } from '@/hooks/use-session'
-import { COURSE_SLUG_REGEX, COURSE_TYPES } from '@/lib/data'
+import { useI18n } from '@/hooks/use-i18n'
+import { SLUG_REGEX } from '@/lib/constants'
+import type { Enums } from '@/lib/db/types'
 
 export const CourseSettings = () => {
   const router = useRouter()
-  const { localize } = useIntl()
+  const { localize } = useI18n()
   const { createCourse, skillGroups, updateCourseSettings } = useSession()
   const { course: initialCourse } = useCourse()
   const tCommon = useTranslations('Common')
@@ -35,10 +36,10 @@ export const CourseSettings = () => {
   const formSchema = useMemo(
     () =>
       z.object({
-        type: z.enum(COURSE_TYPES),
+        type: z.enum<Enums<'course_type'>[]>(['intro', 'skill']),
         skill_group_id: z.number().nullable(),
         icon: z.string().optional(),
-        slug: z.string().regex(COURSE_SLUG_REGEX, t('invalidSlugFormat')).min(5, t('courseSlugTooShort')),
+        slug: z.string().regex(SLUG_REGEX, t('invalidSlugFormat')).min(5, t('courseSlugTooShort')),
       }),
     [t]
   )
@@ -251,7 +252,7 @@ export const CourseSettings = () => {
                   <SelectContent>
                     {skillGroups.map(group => (
                       <SelectItem key={group.id} value={group.id.toString()}>
-                        {localize(group.name as Record<string, string>)}
+                        {localize(group.name)}
                       </SelectItem>
                     ))}
                   </SelectContent>

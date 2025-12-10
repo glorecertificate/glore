@@ -1,6 +1,6 @@
 import { BlockSelectionPlugin } from '@platejs/selection/react'
 import { getPluginTypes, KEYS } from 'platejs'
-import { type PlateElementProps } from 'platejs/react'
+import type { PlateElementProps } from 'platejs/react'
 
 import { BlockSelection } from '@/components/blocks/rich-text-editor/ui/block-selection'
 

@@ -5,7 +5,7 @@ import { useCallback } from 'react'
 import { useTheme as useNextTheme } from 'next-themes'
 
 import { useCookies } from '@/hooks/use-cookies'
-import { type ResolvedTheme, type Theme } from '@/lib/theme'
+import type { ResolvedTheme, Theme } from '@/lib/types'
 
 const TRANSITION_CLASS = 'theme-transition'
 

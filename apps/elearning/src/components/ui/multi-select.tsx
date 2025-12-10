@@ -7,29 +7,14 @@ import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { Badge, type BadgeProps } from '@/components/ui/badge'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  type CommandItemProps,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  type PopoverContentProps,
-  type PopoverProps,
-  PopoverTrigger,
-  type PopoverTriggerProps,
-} from '@/components/ui/popover'
+import { Badge } from '@/components/ui/badge'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
-interface MultiSelectContext {
+const MultiSelectContext = createContext<{
   disabled: boolean
   loading: boolean
   open: boolean
@@ -43,9 +28,7 @@ interface MultiSelectContext {
     delay: number
   }
   value: string[]
-}
-
-const MultiSelectContext = createContext<MultiSelectContext | null>(null)
+} | null>(null)
 
 const useMultiSelect = () => {
   const context = useContext(MultiSelectContext)
@@ -53,7 +36,7 @@ const useMultiSelect = () => {
   return context
 }
 
-export interface MultiSelectProps extends PopoverProps {
+export interface MultiSelectProps extends React.ComponentProps<typeof Popover> {
   disabled?: boolean
   entity?: string
   loading?: boolean
@@ -130,7 +113,7 @@ export const MultiSelect = ({
   )
 }
 
-export interface MultiSelectBadgeProps extends BadgeProps {
+export interface MultiSelectBadgeProps extends React.ComponentProps<typeof Badge> {
   disabled?: boolean
   disabledMessage?: string
   label?: string
@@ -208,12 +191,16 @@ export const MultiSelectBadge = ({
   )
 }
 
-export interface MultiSelectItemProps extends CommandItemProps {
+export const MultiSelectItem = ({
+  children,
+  className,
+  label,
+  value,
+  ...props
+}: React.ComponentProps<typeof CommandItem> & {
   label?: string
   value: string
-}
-
-export const MultiSelectItem = ({ children, className, label, value, ...props }: MultiSelectItemProps) => {
+}) => {
   const { selectOption, validation, value: rootValue } = useMultiSelect()
   const selected = rootValue.includes(value)
 
@@ -233,10 +220,6 @@ export const MultiSelectItem = ({ children, className, label, value, ...props }:
   )
 }
 
-export interface MultiSelectTriggerProps extends PopoverTriggerProps {
-  placeholder?: React.ReactNode
-}
-
 export const MultiSelectTrigger = ({
   children,
   disabled: triggerDisabled,
@@ -244,7 +227,10 @@ export const MultiSelectTrigger = ({
   onClick,
   placeholder,
   ...props
-}: MultiSelectTriggerProps) => {
+}: React.ComponentProps<typeof PopoverTrigger> & {
+  disabled?: boolean
+  placeholder?: string
+}) => {
   const { disabled: rootDisabled, open, setOpen, value } = useMultiSelect()
   const disabled = rootDisabled || triggerDisabled
 
@@ -304,14 +290,6 @@ export const MultiSelectTrigger = ({
   )
 }
 
-export interface MultiSelectContentProps extends PopoverContentProps {
-  enableSearch?: boolean
-  /** @default true */
-  enableSelectAll?: boolean
-  searchPlaceholder?: string
-  selectAllLabel?: string
-}
-
 export const MultiSelectContent = ({
   children,
   className,
@@ -320,7 +298,13 @@ export const MultiSelectContent = ({
   searchPlaceholder,
   selectAllLabel,
   ...props
-}: MultiSelectContentProps) => {
+}: React.ComponentProps<typeof PopoverContent> & {
+  enableSearch?: boolean
+  /** @default true */
+  enableSelectAll?: boolean
+  searchPlaceholder?: string
+  selectAllLabel?: string
+}) => {
   const t = useTranslations('Common')
   const { loading, options, resetOptions, value } = useMultiSelect()
 

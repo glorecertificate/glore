@@ -5,9 +5,10 @@ import { useCallback } from 'react'
 import { RichTextEditor } from '@/components/blocks/rich-text-editor'
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
+import { useCourse } from '@/components/features/courses/course-provider'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
-import { useCourse } from '@/hooks/use-course'
-import { type Question, type QuestionOption, submitAnswers } from '@/lib/data'
+import { submitAnswers } from '@/lib/actions/course'
+import type { Question, QuestionOption } from '@/lib/db/schema'
 import { cn } from '@/lib/utils'
 
 export const CourseContent = () => {
@@ -47,11 +48,11 @@ export const CourseContent = () => {
     (id: number, rating: number) => {
       setCourse(({ lessons, ...course }) => ({
         ...course,
-        lessons: lessons?.map(({ evaluations, ...lesson }, i) =>
+        lessons: lessons?.map((lesson, i) =>
           i === step - 1
             ? {
                 ...lesson,
-                evaluations: evaluations?.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
+                evaluations: lesson.evaluations?.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
               }
             : lesson
         ),

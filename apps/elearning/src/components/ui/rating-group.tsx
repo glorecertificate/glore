@@ -4,12 +4,15 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
-import { RadioGroup, RadioGroupItem, type RadioGroupProps } from '@/components/ui/radio-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 
 export interface RatingGroupProps
-  extends Omit<RadioGroupProps, 'color' | 'disabled' | 'id' | 'value'>,
-    VariantProps<typeof ratingGroup> {
+  extends Omit<
+      React.ComponentProps<typeof RadioGroup>,
+      'id' | 'value' | keyof VariantProps<typeof ratingGroupVariants>
+    >,
+    VariantProps<typeof ratingGroupVariants> {
   disabledToast?: string
   id: string | number
   label?: string | ((n: number) => string)
@@ -26,7 +29,7 @@ export const RatingGroup = ({
   value,
   ...props
 }: RatingGroupProps) => {
-  const labelStyles = useMemo(() => ratingGroup({ color, disabled }), [color, disabled])
+  const labelStyles = useMemo(() => ratingGroupVariants({ color, disabled }), [color, disabled])
 
   const handleClick = useCallback(
     (rating: number) => () => {
@@ -55,7 +58,7 @@ export const RatingGroup = ({
   )
 }
 
-export const ratingGroup = cva('flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]', {
+const ratingGroupVariants = cva('flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]', {
   defaultVariants: {
     color: 'default',
     disabled: false,

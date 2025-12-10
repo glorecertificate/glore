@@ -1,7 +1,9 @@
 'use client'
 
-import { streamInsertChunk, withAIBatch } from '@platejs/ai'
-import { AIChatPlugin, AIPlugin, useChatChunk } from '@platejs/ai/react'
+import type { AppRouteHandlerRoutes } from 'next/types/routes'
+
+import { withAIBatch } from '@platejs/ai'
+import { AIChatPlugin, AIPlugin, streamInsertChunk, useChatChunk } from '@platejs/ai/react'
 import { KEYS, PathApi } from 'platejs'
 import { usePluginOption } from 'platejs/react'
 
@@ -18,14 +20,14 @@ interface AiTemplateOptions {
 export const aiChatPlugin = AIChatPlugin.extend({
   options: {
     chatOptions: {
-      api: '/api/ai/command',
+      api: '/api/v1/ai/command' satisfies AppRouteHandlerRoutes,
       body: {},
     },
     promptTemplate: ({ isBlockSelecting, isSelecting }: AiTemplateOptions) =>
       isBlockSelecting
         ? PROMPT_TEMPLATES.userBlockSelecting
         : isSelecting
-          ? PROMPT_TEMPLATES.userSelecting
+          ? PROMPT_TEMPLATES.userQuerying
           : PROMPT_TEMPLATES.userDefault,
     systemTemplate: ({ isBlockSelecting, isSelecting }: AiTemplateOptions) =>
       isBlockSelecting
@@ -145,7 +147,7 @@ const userDefault = `[Reminder]
 CRITICAL: NEVER write [Block].
 </Reminder>
 {prompt}`
-const userSelecting = `[Reminder]
+const userQuerying = `[Reminder]
 If this is a question, provide a helpful and concise answer about <Selection>.
 If this is an instruction, provide ONLY the text to replace <Selection>. No explanations.
 Ensure it fits seamlessly within [Block]. If [Block] is empty, write ONE random sentence.
@@ -167,5 +169,5 @@ export const PROMPT_TEMPLATES = {
   systemSelecting,
   userBlockSelecting,
   userDefault,
-  userSelecting,
+  userQuerying,
 }

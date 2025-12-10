@@ -1,11 +1,10 @@
 {
   "extends": "@glore/tsconfig/nextjs",
-  "include": ["**/*.ts", "**/*.tsx", ".next/types"],
+  "include": [".next/types", "*.ts", "src", "supabase/functions"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "paths": {
       "next/types/*": ["./.next/types/*"],
-      "supabase/types": ["./supabase/types.ts"],
       "@/*": ["./src/*"],
       "@config/*": ["./config/*.json"]
     },

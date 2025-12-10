@@ -1,13 +1,15 @@
+'use client'
+
 import { useCallback, useMemo, useState } from 'react'
 
 import { generateReactHelpers } from '@uploadthing/react'
 import { toast } from 'sonner'
-import { type ClientUploadedFileData, type FileRouter, type UploadFilesOptions } from 'uploadthing/types'
+import type { ClientUploadedFileData, FileRouter, UploadFilesOptions } from 'uploadthing/types'
 import { ZodError } from 'zod'
 
 export type UploadedFile<T = unknown> = ClientUploadedFileData<T>
 
-interface UseFileUploadProps<T extends FileRouter = FileRouter>
+interface UseFileUploadOptions<T extends FileRouter = FileRouter>
   extends Pick<UploadFilesOptions<T['editorUploader']>, 'headers' | 'skipPolling'> {
   onUploadComplete?: (file: UploadedFile) => void
   onUploadError?: (error: unknown) => void
@@ -22,7 +24,7 @@ export const useFileUpload = <T extends FileRouter = FileRouter>({
   onUploadComplete,
   onUploadError,
   headers,
-}: UseFileUploadProps = {}) => {
+}: UseFileUploadOptions = {}) => {
   const [uploadedFile, setUploadedFile] = useState<UploadedFile>()
   const [uploadingFile, setUploadingFile] = useState<File>()
   const [progress, setProgress] = useState<number>(0)

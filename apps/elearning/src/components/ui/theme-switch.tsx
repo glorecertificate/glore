@@ -3,12 +3,12 @@
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type Icon } from '@/components/icons/types'
+import type { Icon } from '@/components/icons/types'
 import { Button, type ButtonProps } from '@/components/ui/button'
-import { Tooltip, TooltipContent, type TooltipContentProps, TooltipTrigger } from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
-import { type Theme } from '@/lib/theme'
+import type { Theme } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {
@@ -18,12 +18,7 @@ export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'titl
   isLast: boolean
   label: string
   title: string
-  tooltip?: boolean | TooltipContentProps
-}
-
-export interface ThemeSwitchProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultTheme?: Theme
-  tooltip?: boolean | TooltipContentProps
+  tooltip?: boolean | React.ComponentProps<typeof TooltipContent>
 }
 
 export const ThemeSwitchButton = ({
@@ -74,10 +69,15 @@ export const ThemeSwitchButton = ({
   )
 }
 
+export interface ThemeSwitchProps extends React.HTMLAttributes<HTMLDivElement> {
+  defaultTheme?: Theme
+  tooltip?: boolean | React.ComponentProps<typeof TooltipContent>
+}
+
 export const ThemeSwitch = ({ className, defaultTheme, tooltip, ...props }: ThemeSwitchProps) => {
   const mounted = useMounted()
   const { setTheme, theme } = useTheme()
-  const t = useTranslations('Theme')
+  const t = useTranslations('Components.ThemeSwitch')
 
   const items = [
     {

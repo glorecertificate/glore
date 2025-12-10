@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority'
-import { SlateElement, type SlateElementProps } from 'platejs'
+import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 const headingVariants = cva('relative mb-1', {
   variants: {

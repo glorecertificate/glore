@@ -3,24 +3,25 @@ import { useCallback, useMemo } from 'react'
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
-import { type Any } from '@glore/utils/types'
+import config from '@config/app'
+import type { Any } from '@glore/utils/types'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { ExternalLink } from '@/components/ui/link'
+import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useIntl } from '@/hooks/use-intl'
-import { type User } from '@/lib/data'
-import { mapsUrl } from '@/lib/navigation'
+import { useI18n } from '@/hooks/use-i18n'
+import type { User } from '@/lib/db/schema'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
-  const { locale } = useIntl()
-  const t = useTranslations()
+  const { locale } = useI18n()
+  const tCommon = useTranslations('Common')
+  const t = useTranslations('Users')
   const format = useFormatter()
 
   const resolveCountryLabel = useCallback(
     (country: string | null | undefined) => {
       if (!country) return ''
-      const key = `Countries.${country}` as Any
+      const key = `Locale.Countries.${country}` as Any
       return t.has?.(key) ? t(key) : country.toUpperCase()
     },
     [t]
@@ -43,19 +44,23 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
     return locations.filter(Boolean).join(', ')
   }, [resolveCountryLabel, user.city, user.country])
 
-  const locationUrl = useMemo(() => (location ? mapsUrl(location) : undefined), [location])
+  const locationUrl = useMemo(() => {
+    if (!location) return
+    const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
+    return `${config.urls.googleMaps}/search/${searchQuery}`
+  }, [location])
 
   const languages = useMemo(() => {
     if (!user.languages?.length) return
     const langs = user.languages.map((lang: string) => resolveLanguageLabel(lang))
     const list = locale === 'en' ? langs : langs.map((lang: string) => lang.toLowerCase())
     const formatted = String(format.list(list))
-    return t('User.speaks', { languages: formatted })
+    return t('speaks', { languages: formatted })
   }, [format, locale, resolveLanguageLabel, t, user.languages])
 
   const contactTitle = useMemo(() => {
     if (!user.first_name) return
-    return t('User.contact', { user: user.first_name })
+    return t('contact', { user: user.first_name })
   }, [t, user.first_name])
 
   const isVisible = useCallback(
@@ -83,7 +88,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
                   <ShieldUserIcon className="size-3.5" />
                 </TooltipTrigger>
                 <TooltipContent size="sm">
-                  <span className="text-xs">{t('User.admin')}</span>
+                  <span className="text-xs">{t('admin')}</span>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -93,7 +98,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
                   <PencilIcon className="size-3" />
                 </TooltipTrigger>
                 <TooltipContent size="sm">
-                  <span className="text-xs">{t('User.editor')}</span>
+                  <span className="text-xs">{t('editor')}</span>
                 </TooltipContent>
               </Tooltip>
             )}
@@ -105,9 +110,15 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
             <div className="flex items-center gap-1.5">
               <MapPinIcon className="size-3.5" />
               {locationUrl ? (
-                <ExternalLink className="text-xs" href={locationUrl} target="_blank" title={t('Common.showOnMaps')}>
+                <Link
+                  className="text-xs"
+                  href={locationUrl}
+                  target="_blank"
+                  title={tCommon('showOnMaps')}
+                  validate={false}
+                >
                   {location}
-                </ExternalLink>
+                </Link>
               ) : (
                 <span className="wrap-break-word max-w-44">{location}</span>
               )}
@@ -122,9 +133,9 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
           {isVisible('email') && (
             <div className="flex items-center gap-1.5">
               <MailIcon className="size-3.5" />
-              <ExternalLink className="text-xs" href={`mailto:${user.email}`} title={contactTitle} variant="underlined">
+              <Link className="text-xs" href={`mailto:${user.email}`} title={contactTitle} variant="underlined">
                 {user.email}
-              </ExternalLink>
+              </Link>
             </div>
           )}
         </div>

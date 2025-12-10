@@ -1,13 +1,14 @@
 import { notFound } from 'next/navigation'
 
-import { type Locale } from 'next-intl'
+import type { Locale } from 'next-intl'
 import { getLocale } from 'next-intl/server'
 
 import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseProvider } from '@/components/features/courses/course-provider'
 import { CourseView } from '@/components/features/courses/course-view'
-import { enrollUser, findCourse, getCurrentUser } from '@/lib/data/server'
-import { LOCALES, localize } from '@/lib/intl'
+import { enrollUser, findCourse } from '@/lib/actions/course'
+import { getCurrentUser } from '@/lib/actions/user'
+import { i18n, localize } from '@/lib/i18n'
 import { createIntlMetadata } from '@/lib/metadata'
 
 const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
@@ -28,7 +29,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
 
   const locale = await getLocale()
   const { lang } = await searchParams
-  const language = typeof lang === 'string' && LOCALES.includes(lang as Locale) ? (lang as Locale) : locale
+  const language = typeof lang === 'string' && i18n.locales.includes(lang as Locale) ? (lang as Locale) : locale
 
   return { course, language, locale, step, user }
 }

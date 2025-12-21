@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { throttle } from '@glore/utils/throttle'
+
 const getScroll = () =>
   typeof window === 'undefined'
     ? 0
@@ -16,10 +18,10 @@ export const useScroll = () => {
   const [scroll, setScroll] = useState(getScroll())
   const scrolled = useMemo(() => scroll > 0, [scroll])
 
-  const handleScroll = useCallback(() => {
-    const scroll = getScroll()
-    setScroll(scroll)
-  }, [])
+  const handleScroll = useCallback(
+    throttle(() => setScroll(getScroll()), 100),
+    []
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') return

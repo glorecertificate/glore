@@ -1,25 +1,25 @@
 import type { Metadata } from 'next'
-import type { AppRouteHandlerRoutes, AppRoutes } from 'next/types/routes'
 
 import type { Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
-import metadataConfig from '@config/metadata'
-import type { Any } from '@glore/utils/types'
+import type { Any, HttpUrl } from '@glore/utils/types'
 
-import { publicAsset } from '@/lib/assets'
+import { metadata as config } from '@static/config'
 import { i18n, type MessageKey } from '@/lib/i18n'
+import { publicAsset } from '@/lib/storage'
 
-export const APP_URL = process.env.APP_URL
-export const MANIFEST_ROUTE = '/api/v1/manifest' satisfies AppRouteHandlerRoutes
+export const APP_URL = process.env.APP_URL as HttpUrl
+export const WEBSITE_URL = config.website as HttpUrl
+export const MANIFEST_URL = '/api/v1/manifest'
 
 export const metadata = {
   metadataBase: APP_URL,
-  applicationName: metadataConfig.shortName,
-  category: metadataConfig.category,
-  authors: metadataConfig.authors,
-  creator: metadataConfig.authors[0].name,
-  keywords: metadataConfig.keywords,
+  applicationName: config.shortName,
+  category: config.category,
+  authors: config.authors,
+  creator: config.authors[0].name,
+  keywords: config.keywords,
   robots: {
     index: true,
     follow: true,
@@ -39,10 +39,10 @@ export const metadata = {
   },
   openGraph: {
     type: 'website',
-    emails: metadataConfig.email,
+    emails: config.email,
     images: [publicAsset('open-graph.png')],
-    phoneNumbers: metadataConfig.phone,
-    siteName: metadataConfig.name,
+    phoneNumbers: config.phone,
+    siteName: config.name,
     ttl: 60,
   },
   icons: [
@@ -63,11 +63,11 @@ export const metadata = {
   ],
   appleWebApp: {
     capable: true,
-    title: metadataConfig.shortName,
+    title: config.shortName,
     statusBarStyle: 'black-translucent',
     startupImage: publicAsset('web-app-screenshot-narrow.png'),
   },
-} as const satisfies Metadata
+} satisfies Metadata
 
 export interface MetadataOptions<T extends boolean> {
   applicationName?: boolean | 'full'
@@ -79,42 +79,34 @@ export interface MetadataOptions<T extends boolean> {
 }
 
 /**
- * Translates and merges the provided values with the default metadata and returns a generator function.
- */
-export const intlMetadata =
-  <R extends AppRoutes, Translate extends boolean = true>(options: MetadataOptions<Translate> = {}) =>
-  async (_: PageProps<R>) =>
-    await createIntlMetadata<Translate>(options)
-
-/**
- * Translates and merges asynchronously the provided values with the default metadata.
+ * Asynchronously translates and merges the provided values with the default metadata.
  *
- * When `translate` is set to `true` (default), title and description must be valid translation keys.
+ * When `translate` is set to `true` (default behavior), title and description must be valid translation keys.
  */
-export const createIntlMetadata = async <Translate extends boolean = true>(
+export const intlMetadata = async <Translate extends boolean = true>(
   options: MetadataOptions<Translate> = {}
 ): Promise<Metadata> => {
   const {
     applicationName = true,
     description: userDescription,
     image,
-    separator = metadataConfig.separator,
+    separator = config.separator,
     title: userTitle,
     translate = true,
   } = options
 
-  const tMeta = await getTranslations('Metadata')
-  const t = translate ? await getTranslations() : (key: string) => key
+  const tMetadata = await getTranslations('Metadata')
+  const t = translate ? await getTranslations() : (key: Any) => key
   const locale = await getLocale()
   const alternateLocale = i18n.locales.filter(key => key !== locale)
 
-  const pageTitle = userTitle ? (translate ? t(userTitle as Any) : userTitle) : undefined
+  const pageTitle = userTitle ? (translate ? t(userTitle) : userTitle) : undefined
   const title = pageTitle
     ? applicationName
-      ? `${pageTitle} ${separator} ${applicationName === 'full' ? metadataConfig.name : metadataConfig.shortName}`
+      ? `${pageTitle} ${separator} ${applicationName === 'full' ? config.name : config.shortName}`
       : pageTitle
-    : tMeta('title')
-  const description = userDescription ? (translate ? t(userDescription as Any) : userDescription) : tMeta('description')
+    : tMetadata('title')
+  const description = userDescription ? (translate ? t(userDescription) : userDescription) : tMetadata('description')
 
   const { openGraph, ...defaultMetadata } = metadata
 
@@ -122,12 +114,12 @@ export const createIntlMetadata = async <Translate extends boolean = true>(
     ...defaultMetadata,
     title,
     description,
-    manifest: `${'/api/v1/manifest' satisfies AppRouteHandlerRoutes}?locale=${locale}`,
+    manifest: `${MANIFEST_URL}?locale=${locale}`,
     openGraph: {
       ...openGraph,
+      ...(image ? { images: image } : {}),
       title,
       description,
-      ...(image ? { images: image } : {}),
       locale,
       alternateLocale,
     },

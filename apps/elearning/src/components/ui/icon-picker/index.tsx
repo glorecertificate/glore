@@ -17,15 +17,18 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDebounce } from '@/hooks/use-debounce'
 import { cn } from '@/lib/utils'
-import type { iconsData } from './data'
 
-type IconsData = (typeof iconsData)[number]
+interface IconData {
+  name: string
+  categories: string[]
+  tags: string[]
+}
 
 export interface IconPickerProps extends ButtonProps {
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName
-  iconsList?: IconsData[]
+  iconsList?: IconData[]
   modal?: boolean
   onOpenChange?: (open: boolean) => void
   onValueChange?: (value: IconName) => void
@@ -49,17 +52,17 @@ const IconsColumnSkeleton = () => (
   </div>
 )
 
-export const useIconsData = () => {
-  const [icons, setIcons] = useState<IconsData[]>([])
+export const useIconData = () => {
+  const [icons, setIcons] = useState<IconData[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     let isMounted = true
     const loadIcons = async () => {
       setIsLoading(true)
-      const { iconsData } = await import('./data')
+      const data = (await import('./data')).default
       if (isMounted) {
-        setIcons(iconsData.filter((icon: IconsData) => icon.name in dynamicIconImports))
+        setIcons(data.filter((icon: IconData) => icon.name in dynamicIconImports))
         setIsLoading(false)
       }
     }
@@ -91,7 +94,7 @@ export const IconPicker = ({
   ...props
 }: IconPickerProps) => {
   const t = useTranslations('Components.IconPicker')
-  const { icons } = useIconsData()
+  const { icons } = useIconData()
 
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 100)
@@ -127,7 +130,7 @@ export const IconPicker = ({
       return [{ name: 'All Icons', icons: filteredIcons }]
     }
 
-    const categories = new Map<string, IconsData[]>()
+    const categories = new Map<string, IconData[]>()
 
     for (const icon of filteredIcons) {
       if (icon.categories && icon.categories.length > 0) {
@@ -156,7 +159,7 @@ export const IconPicker = ({
       type: 'category' | 'row'
       categoryIndex: number
       rowIndex?: number
-      icons?: IconsData[]
+      icons?: IconData[]
     }> = []
 
     for (const [categoryIndex, category] of categorizedIcons.entries()) {
@@ -289,7 +292,7 @@ export const IconPicker = ({
   }, [categorizedIcons, scrollToCategory, categorized, debouncedSearch])
 
   const renderIcon = useCallback(
-    (icon: IconsData) => {
+    (icon: IconData) => {
       if (!tooltips) {
         return (
           <Button key={icon.name} onClick={() => handleIconClick(icon.name as IconName)} variant="outline">

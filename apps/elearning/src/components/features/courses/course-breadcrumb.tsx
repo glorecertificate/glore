@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { useCourse } from '@/components/features/courses/course-provider'
-import { DynamicIcon } from '@/components/icons/dynamic'
+import { DynamicIcon } from '@/components/graphics/dynamic-icon'
 import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'

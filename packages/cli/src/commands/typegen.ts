@@ -29,9 +29,9 @@ export const typegen = new Command('typegen')
 
         writeFileSync(global, content, 'utf-8')
 
-        logger.success('Global types generated successfully', cli.logOptions)
+        logger.success('Global types generated successfully', cli.logs)
       } catch {
-        logger.error('Failed to write global types', cli.logOptions)
+        logger.error('Failed to write global types', cli.logs)
       }
     }
 
@@ -68,9 +68,9 @@ export {}`
 
         writeFileSync(env, content, 'utf-8')
 
-        logger.success('Env types generated successfully', cli.logOptions)
+        logger.success('Env types generated successfully', cli.logs)
       } catch {
-        logger.error('Failed to write env.d.ts', cli.logOptions)
+        logger.error('Failed to write env.d.ts', cli.logs)
       }
     }
 
@@ -78,9 +78,9 @@ export {}`
       try {
         logger.inline('Generating route types...')
         execSync(`${cli.bin('next')} typegen`, { stdio: 'ignore' })
-        logger.success('Route types generated successfully', cli.logOptions)
+        logger.success('Route types generated successfully', cli.logs)
       } catch (e) {
-        logger.error('Failed to generate route types', cli.logOptions)
+        logger.error('Failed to generate route types', cli.logs)
         if (e instanceof Error) logger.red(e.message)
         process.exit(1)
       }
@@ -100,9 +100,9 @@ export {}`
           stdio: 'ignore',
         })
 
-        logger.success('Database types generated successfully', cli.logOptions)
+        logger.success('Database types generated successfully', cli.logs)
       } catch (e) {
-        logger.error('Failed to generate Supabase types', cli.logOptions)
+        logger.error('Failed to generate Supabase types', cli.logs)
         if (e instanceof Error) logger.red(e.message)
         process.exit(1)
       }

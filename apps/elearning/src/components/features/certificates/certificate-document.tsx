@@ -11,8 +11,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
+import type { Certificate } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import type { Certificate } from '@/lib/db/schema'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()

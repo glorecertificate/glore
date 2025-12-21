@@ -1,44 +1,27 @@
 'use client'
 
+import { startTransition, useCallback } from 'react'
 import NextLink, { type LinkProps as NextLinkProps } from 'next/link'
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback } from 'react'
+import type { AppRoutes } from 'next/types/routes'
 
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import type { Any } from '@glore/utils/types'
-
-import { type ProgressBarProps, useProgressBar } from '@/components/ui/progress-bar'
-import { INTERNAL_URL_REGEX } from '@/lib/constants'
+import { type ProgressBarVariant, useProgressBar } from '@/components/ui/progress-bar'
 import { cn } from '@/lib/utils'
 
-export interface LinkProps<T, V extends boolean>
-  extends Omit<NextLinkProps<T>, 'href'>,
+export interface LinkProps<T>
+  extends Omit<React.ComponentProps<typeof NextLink>, 'href'>,
+    NextLinkProps<T>,
     VariantProps<typeof linkVariants> {
-  /**
-   * The destination URL.
-   */
-  href: V extends true ? NextLinkProps<T>['href'] : string
   /**
    * Enable progress bar on internal navigation.
    * @default true
    */
-  progress?: boolean | ProgressBarProps['variant']
-  /**
-   * Statically validate the `href` prop before rendering the link.
-   */
-  validate?: V
+  progress?: boolean | ProgressBarVariant
 }
 
-export const Link = <T, V extends boolean = true>({
-  className,
-  href,
-  onClick,
-  progress = true,
-  variant,
-  validate,
-  ...props
-}: LinkProps<T, V>) => {
+export const Link = <T,>({ className, href, onClick, progress = true, variant, ...props }: LinkProps<T>) => {
   const progressBar = useProgressBar()
   const router = useRouter()
 
@@ -47,11 +30,11 @@ export const Link = <T, V extends boolean = true>({
       e.preventDefault()
 
       const colorVariant = typeof progress === 'string' ? progress : variant
-      if (colorVariant && colorVariant !== 'underlined') progressBar.colorize(colorVariant)
+      if (colorVariant) progressBar.colorize(colorVariant)
       if (progressBar.state !== 'in-progress') progressBar.start()
 
       startTransition(() => {
-        router.push(href as Any)
+        router.push(href as AppRoutes)
         progressBar.done()
       })
 
@@ -60,17 +43,7 @@ export const Link = <T, V extends boolean = true>({
     [href, onClick, progress, progressBar, router, variant]
   )
 
-  if (INTERNAL_URL_REGEX.test(href.toString()))
-    return (
-      <NextLink
-        className={cn(linkVariants({ variant }), className)}
-        href={href as NextLinkProps<T>['href']}
-        onClick={onLinkClick}
-        {...props}
-      />
-    )
-
-  return <a className={cn(linkVariants({ variant }), className)} href={href.toString()} onClick={onClick} {...props} />
+  return <NextLink className={cn(linkVariants({ variant }), className)} href={href} onClick={onLinkClick} {...props} />
 }
 
 const linkVariants = cva('cursor-pointer no-underline transition-all', {

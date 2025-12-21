@@ -10,8 +10,6 @@ import { email } from './commands/email'
 import { typegen } from './commands/typegen'
 import { cli } from './config'
 
-import 'dotenv/config'
-
 program.name(cli.name).description(cli.description).usage('<command> [options]')
 program.addCommand(build)
 program.addCommand(check)

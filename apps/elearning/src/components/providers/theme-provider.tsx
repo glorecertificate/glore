@@ -1,21 +1,14 @@
 'use client'
 
-import * as NextTheme from 'next-themes'
+import { ThemeProvider as Provider, type ThemeProviderProps as ProviderProps } from 'next-themes'
 
-import theme from '@config/theme'
-
+import { theme } from '@static/config'
 import type { Theme } from '@/lib/types'
 
-export interface ThemeProviderProps extends NextTheme.ThemeProviderProps {
+export interface ThemeProviderProps extends ProviderProps {
   themes?: Theme[]
 }
 
 export const ThemeProvider = (props: ThemeProviderProps) => (
-  <NextTheme.ThemeProvider
-    attribute="class"
-    enableColorScheme
-    enableSystem
-    themes={Object.keys(theme.modes)}
-    {...props}
-  />
+  <Provider attribute="class" enableColorScheme enableSystem themes={Object.keys(theme.modes)} {...props} />
 )

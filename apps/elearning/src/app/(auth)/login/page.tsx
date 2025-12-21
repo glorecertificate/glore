@@ -1,42 +1,59 @@
-import { snakeToCamel } from '@glore/utils/string'
+import { Suspense } from 'react'
+
+import { createLoader, parseAsString } from 'nuqs/server'
+
+import { toCamelCase } from '@glore/utils/to-camel-case'
 import type { Enum } from '@glore/utils/types'
 
-import { AuthFlow } from '@/components/features/auth/auth-flow'
-import type { AuthView } from '@/components/features/auth/types'
+import { cookies } from '@/actions/cookies'
+import { AuthFlow, type AuthView } from '@/components/features/auth/auth-flow'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
-import { createIntlMetadata } from '@/lib/metadata'
-import { getCookies } from '@/lib/storage'
+import { intlMetadata } from '@/lib/metadata'
 
 const TOKEN_HASH_REGEX = /^pkce_[a-f0-9]{56}$/
 
+export const loadSearchParams = createLoader({
+  resetToken: parseAsString,
+})
+
 const resolvePageData = async ({ searchParams }: PageProps<'/login'>) => {
-  const { resetToken } = await searchParams
-  const token = Array.isArray(resetToken) ? undefined : resetToken
-  const view: Enum<AuthView> = token ? (TOKEN_HASH_REGEX.test(token) ? 'password_reset' : 'invalid_token') : 'login'
-  return { token, view }
+  const { resetToken } = await loadSearchParams(searchParams)
+  const view: Enum<AuthView> = resetToken
+    ? TOKEN_HASH_REGEX.test(resetToken)
+      ? 'password_reset'
+      : 'invalid_token'
+    : 'login'
+  return { resetToken, view }
 }
 
 export const generateMetadata = async (props: PageProps<'/login'>) => {
   const { view } = await resolvePageData(props)
 
-  return createIntlMetadata({
-    title: `Auth.${snakeToCamel(`${view}_title`)}`,
+  return intlMetadata({
+    applicationName: false,
+    title: `Auth.${toCamelCase(`${view}_title`)}`,
   })
 }
 
-export default async (props: PageProps<'/login'>) => {
-  const { token, view } = await resolvePageData(props)
+const LoginPage = async (props: PageProps<'/login'>) => {
+  const { resetToken, view } = await resolvePageData(props)
 
-  const cookies = await getCookies()
-  const username = cookies.get('login_user')
-  const theme = cookies.get('theme')
+  const { get } = await cookies()
+  const username = await get('login_user')
+  const theme = await get('theme')
 
   return (
     <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
-      <AuthFlow defaultUsername={username} defaultView={view} token={token} />
+      <AuthFlow defaultUsername={username} defaultView={view} resetToken={resetToken} />
       <div className="flex justify-end">
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
       </div>
     </div>
   )
 }
+
+export default async (props: PageProps<'/login'>) => (
+  <Suspense fallback={null}>
+    <LoginPage {...props} />
+  </Suspense>
+)

@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import type { CourseListView } from '@/components/features/courses/types'
+import type { CourseListView } from '@/components/features/courses/course-list'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {

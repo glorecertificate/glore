@@ -1,48 +1,50 @@
-import { redirect } from 'next/navigation'
-
+import { cookies } from '@/actions/cookies'
+import { listCourses, listSkillGroups } from '@/actions/course'
+import { getCurrentUser } from '@/actions/user'
 import { AppHeader } from '@/components/layout/app-header'
-import { AppMain } from '@/components/layout/app-main'
 import { AppSidebar } from '@/components/layout/app-sidebar'
-import { RouteListener } from '@/components/layout/route-listener'
 import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { listCourses, listSkillGroups } from '@/lib/actions/course'
-import { getCurrentUser } from '@/lib/actions/user'
-import { getCookies } from '@/lib/storage'
 
-export default async ({ children }: LayoutProps<'/'>) => {
-  const cookies = await getCookies()
+const CoreLayout = async ({
+  breadcrumb,
+  children,
+  organizationId,
+}: LayoutProps<'/'> & {
+  organizationId?: number
+}) => {
   const user = await getCurrentUser()
-
-  if (!user) {
-    cookies.reset()
-    redirect('/login')
-  }
-
-  const org = cookies.get('org')
-  const sidebarOpen = cookies.get('sidebar_open')
-  const sidebarWidth = cookies.get('sidebar_width')
-
+  const organization = organizationId
+    ? user.organizations.find(({ id }) => id === organizationId)
+    : user.organizations[0]
   const courses = await listCourses()
   const skillGroups = await listSkillGroups()
 
-  const organization = org ? user.organizations.find(({ id }) => id === org) : user.organizations?.[0]
+  return (
+    <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
+      <AppSidebar />
+      <SidebarInset>
+        <AppHeader breadcrumb={breadcrumb} />
+        <main className="mx-auto flex size-full min-h-[calc(100vh-72px)] max-w-350 flex-col px-8">
+          <SuspenseLoader size="full">{children}</SuspenseLoader>
+        </main>
+      </SidebarInset>
+    </SessionProvider>
+  )
+}
+
+export default async (props: LayoutProps<'/'>) => {
+  const { get } = await cookies()
+  const organizationId = get('org')
+  const sidebarOpen = get('sidebar_open')
+  const sidebarWidth = get('sidebar_width')
 
   return (
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
       <ProgressBar />
-      <SessionProvider courses={courses} organization={organization} skillGroups={skillGroups} user={user}>
-        <AppSidebar />
-        <SidebarInset>
-          <AppHeader />
-          <SuspenseLoader size="full">
-            <AppMain>{children}</AppMain>
-          </SuspenseLoader>
-        </SidebarInset>
-      </SessionProvider>
-      <RouteListener />
+      <CoreLayout organizationId={organizationId} {...props} />
     </SidebarProvider>
   )
 }

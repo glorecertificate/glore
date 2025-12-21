@@ -1,36 +1,42 @@
 import type { Locale } from 'next-intl'
 
-import metadata from '@config/metadata'
-import { type CookiesConfig, defineServerCookies } from '@glore/utils/cookies'
+import type { Enum } from '@glore/utils/types'
 
-import type { Course, User } from '@/lib/db/schema'
+import type { CourseListView } from '@/components/features/courses/course-list'
+import type { Course } from '@/db/queries'
 import type { Theme } from '@/lib/types'
+
+export type RequestCookies = Awaited<ReturnType<typeof import('next/headers').cookies>>
 
 export interface Cookies {
   course_list_groups: string[]
-  course_list_locales: Locale[]
-  course_locale: Record<Course['slug'], Locale>
-  course_reset: boolean
+  course_list_language_filter: Locale[]
+  course_list_tab: CourseListView
+  courses_language: Record<Course['slug'], Locale>
   email: string
   login_user: string
-  NEXT_LOCALE: Locale
   org: number
   sidebar_open: boolean
   sidebar_width: string
   theme: Theme
-  user: User
 }
 
-export type Cookie = keyof Cookies
-
-export const cookiesConfig: CookiesConfig<Cookies> = {
-  expires: 60 * 60 * 24 * 30,
-  prefix: `${metadata.slug}_`,
-  resets: ['course_list_locales'], // , 'course_list_view'],
+export enum PublicAsset {
+  Robots = 'robots.txt',
+  Favicon = 'favicon.ico',
+  Favicon96 = 'favicon-96x96.png',
+  AppleIcon = 'apple-icon.png',
+  WebAppIcon192 = 'web-app-icon-192x192.png',
+  WebAppIcon512 = 'web-app-icon-512x512.png',
+  WebAppScreenshotNarrow = 'web-app-screenshot-narrow.png',
+  WebAppScreenshotWide = 'web-app-screenshot-wide.png',
+  OpenGraph = 'open-graph.png',
 }
 
-export const getCookies = async () => {
-  'use server'
-  const { cookies } = await import('next/headers')
-  return defineServerCookies<Cookies>(cookies, cookiesConfig)()
+export enum StorageAsset {
+  EmailLogo = 'email/logo.png',
 }
+
+export const publicAsset = (path: Enum<PublicAsset>) => `/${path}`
+
+export const storageAsset = (path: Enum<StorageAsset>) => `${process.env.STORAGE_URL}/${path}`

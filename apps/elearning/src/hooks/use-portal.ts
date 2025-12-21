@@ -4,11 +4,9 @@ import { type ReactPortal, useCallback, useEffect, useState } from 'react'
 
 import { createPortal } from 'react-dom'
 
-import config from '@config/metadata'
+import { sleep } from '@glore/utils/sleep'
 
-export const portalContainers = {
-  breadcrumb: `${config.slug}-breadcrumb`,
-}
+const MAX_RETRIES = 10
 
 export interface Portal {
   render: (props: React.PropsWithChildren) => ReactPortal | null
@@ -18,7 +16,9 @@ export interface Portal {
 /**
  * Hook to create and manage a React portal within a specified container element.
  */
-export const usePortal = (container: keyof typeof portalContainers) => {
+export const usePortal = (name: string) => {
+  const [retry, setRetry] = useState(0)
+
   const [portal, setPortal] = useState<Portal>({
     render: () => null,
     remove: () => {},
@@ -36,16 +36,31 @@ export const usePortal = (container: keyof typeof portalContainers) => {
     []
   )
 
-  // biome-ignore lint: exhaustive-deps
-  useEffect(() => {
-    const element = document.getElementById(container)
-    if (!element) throw new Error(`Portal container #${container} not found`)
+  const findElement = useCallback(async () => {
+    const element = document.querySelector<HTMLElement>(`[data-portal="${name}"]`)
+
+    if (!element) {
+      setRetry(prev => prev + 1)
+      if (retry < MAX_RETRIES) {
+        await sleep(50)
+        return findElement()
+      }
+      throw new Error(`Can't find element [data-portal="${name}"]`)
+    }
+    return element
+  }, [name, retry])
+
+  const onMount = useCallback(async () => {
+    const element = await findElement()
     element.innerHTML = ''
     portal.remove()
     const newPortal = create(element)
     setPortal(newPortal)
     return () => newPortal.remove()
-  }, [])
+  }, [create, findElement, portal])
+
+  // biome-ignore lint/correctness: useExhaustiveDependencies
+  useEffect(() => void onMount(), [])
 
   return portal.render
 }

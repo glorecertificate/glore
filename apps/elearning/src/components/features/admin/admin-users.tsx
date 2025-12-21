@@ -231,7 +231,7 @@ export const AdminUsers = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">
+              <TableHead className="w-12.5">
                 <Checkbox />
               </TableHead>
               <TableHead>{'Name'}</TableHead>
@@ -298,7 +298,7 @@ export const AdminUsers = () => {
       </div>
 
       <Dialog onOpenChange={setIsAddUserOpen} open={isAddUserOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-125">
           <DialogHeader>
             <DialogTitle>{'Add New User'}</DialogTitle>
             <DialogDescription>

@@ -4,29 +4,40 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 
 import type { Locale } from 'next-intl'
 
-import config from '@config/app'
 import type { PartialKeys } from '@glore/utils/types'
 
-import type { CourseLanguageStatus, LessonType } from '@/components/features/courses/types'
+import config from '@static/config'
+import { updateCourse, upsertLessons } from '@/actions/course'
+import type { Course, Lesson } from '@/db/queries'
+import type { TableInsert, TableUpdate } from '@/db/types'
 import { useMetadata } from '@/hooks/use-metadata'
-import { updateCourse, upsertLessons } from '@/lib/actions/course'
-import type { Course, Lesson } from '@/lib/db/schema'
-import type { DatabaseInsert, DatabaseUpdate } from '@/lib/db/types'
 import { i18n } from '@/lib/i18n'
-import type { SetStateAction } from '@/lib/types'
 
 export type SessionLesson = PartialKeys<Lesson, 'id' | 'created_at' | 'updated_at'> & { type: LessonType }
 export type SessionCourse = Omit<Course, 'lessons'> & { lessons: SessionLesson[] }
+
+export interface CourseLanguageStatus {
+  canSave: boolean
+  hasContent: boolean
+  hasContentUpdates: boolean
+  hasTitle: boolean
+  hasTitleUpdates: boolean
+  hasUpdates: boolean
+  isFullfilled: boolean
+  published: boolean
+}
+
+export type LessonType = 'reading' | 'assessment' | 'evaluations' | 'questions'
 
 export const CourseContext = createContext<{
   course: SessionCourse
   initialCourse: Course
   language: Locale
-  setCourse: SetStateAction<SessionCourse>
-  setInitialCourse: SetStateAction<Course>
-  setLanguage: SetStateAction<Locale>
-  setSettingsOpen: SetStateAction<boolean>
-  setStep: SetStateAction<number>
+  setCourse: React.Dispatch<React.SetStateAction<SessionCourse>>
+  setInitialCourse: React.Dispatch<React.SetStateAction<Course>>
+  setLanguage: React.Dispatch<React.SetStateAction<Locale>>
+  setSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setStep: React.Dispatch<React.SetStateAction<number>>
   settingsOpen: boolean
   step: number
 } | null>(null)
@@ -104,7 +115,7 @@ export const useCourse = () => {
 
   const defaultLesson = useMemo<SessionLesson>(
     () => ({
-      title: config.app.defaultLessonTitle,
+      title: config.i18n.messages.defaultCourseTitle,
       sort_order: lessons.length + 1,
       content: i18n.placeholder,
       assessment: undefined,
@@ -179,16 +190,16 @@ export const useCourse = () => {
   const saveCourse = useCallback(async () => {
     const { id, lessons, ...courseData } = course
 
-    const lessonsPayload: DatabaseInsert<'lessons'>[] = []
+    const lessonsPayload: TableInsert<'lessons'>[] = []
 
     for (const lesson of lessons) {
       const attributes = Object.keys(lesson) as Array<keyof Lesson>
       const initialLesson = initialCourse.lessons.find(({ id }) => id === lesson.id)
-      const lessonUpdates: DatabaseUpdate<'lessons'> = {}
+      const lessonUpdates: TableUpdate<'lessons'> = {}
 
       for (const attribute of attributes) {
         if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
-          lessonUpdates[attribute as keyof DatabaseUpdate<'lessons'>] = lesson[attribute] as never
+          lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
         }
       }
 
@@ -232,7 +243,7 @@ export const useCourse = () => {
   }, [defaultLesson, lessons, setCourse])
 
   const setLesson = useCallback(
-    (data: DatabaseUpdate<'lessons'>) => {
+    (data: TableUpdate<'lessons'>) => {
       setCourse(course => ({
         ...course,
         lessons:

@@ -10,22 +10,22 @@ import { z } from 'zod'
 
 import type { Any } from '@glore/utils/types'
 
+import { updateUser } from '@/actions/user'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import type { TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
-import { updateUser } from '@/lib/actions/user'
-import type { DatabaseUpdate } from '@/lib/db/types'
-import { isFormDisabled } from '@/lib/forms'
+import { defaultFormDisabled } from '@/lib/utils'
 
 export const UserSettings = () => {
-  const tGlobal = useTranslations()
-  const t = useTranslations('Users')
   const { user, setUser } = useSession()
   const { localeItems } = useI18n()
+  const tGlobal = useTranslations()
+  const t = useTranslations('Users')
 
   const formSchema = useMemo(
     () =>
@@ -66,6 +66,8 @@ export const UserSettings = () => {
     },
   })
 
+  const disabled = defaultFormDisabled(form)
+
   const generateUsername = useCallback((first_name: string, last_name: string) => {
     const parts = []
     if (first_name) parts.push(first_name.toLowerCase().replace(/\s+/g, ''))
@@ -88,7 +90,7 @@ export const UserSettings = () => {
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       try {
-        const updates: DatabaseUpdate<'users'> = {}
+        const updates: TableUpdate<'users'> = {}
 
         if (schema.username !== user.username) updates.username = schema.username || undefined
         if (schema.first_name !== user.first_name) updates.first_name = schema.first_name || undefined
@@ -102,20 +104,20 @@ export const UserSettings = () => {
         if (schema.country !== user.country) updates.country = schema.country || undefined
         if (schema.locale !== user.locale) updates.locale = schema.locale || undefined
 
-        const updatedUser = await updateUser(user.id, updates)
-        setUser?.(updatedUser)
+        const data = await updateUser(user.id, updates)
+        setUser?.(data)
         form.reset({
-          username: updatedUser.username ?? '',
-          first_name: updatedUser.first_name ?? '',
-          last_name: updatedUser.last_name ?? '',
-          bio: updatedUser.bio ?? '',
-          phone: updatedUser.phone ?? '',
-          birthday: updatedUser.birthday ?? '',
-          sex: updatedUser.sex ?? '',
-          pronouns: updatedUser.pronouns ?? '',
-          city: updatedUser.city ?? '',
-          country: updatedUser.country ?? '',
-          locale: updatedUser.locale ?? '',
+          username: data.username ?? '',
+          first_name: data.first_name ?? '',
+          last_name: data.last_name ?? '',
+          bio: data.bio ?? '',
+          phone: data.phone ?? '',
+          birthday: data.birthday ?? '',
+          sex: data.sex ?? '',
+          pronouns: data.pronouns ?? '',
+          city: data.city ?? '',
+          country: data.country ?? '',
+          locale: data.locale ?? '',
         })
         toast.success(t('profileUpdated'))
       } catch (error) {
@@ -291,7 +293,7 @@ export const UserSettings = () => {
                     <FormLabel>{t('bio')}</FormLabel>
                     <FormControl>
                       <Textarea
-                        className="min-h-[100px] resize-none"
+                        className="min-h-25 resize-none"
                         disabled={form.formState.isSubmitting}
                         placeholder={t('bioPlaceholder')}
                         {...field}
@@ -386,7 +388,7 @@ export const UserSettings = () => {
           <Button disabled={form.formState.isSubmitting} onClick={() => form.reset()} type="button" variant="outline">
             {t('cancel')}
           </Button>
-          <Button disabled={isFormDisabled(form)} loading={form.formState.isSubmitting} type="submit" variant="brand">
+          <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
             {t('saveChanges')}
           </Button>
         </div>

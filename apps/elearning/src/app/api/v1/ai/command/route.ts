@@ -128,7 +128,7 @@ export const POST = async (request: NextRequest) => {
         delayInMs: () => (isInCodeBlock || isInTable ? 100 : 30),
       }),
       maxOutputTokens: 2048,
-      messages: convertToModelMessages(messages),
+      messages: await convertToModelMessages(messages),
       model: openai(process.env.OPENAI_MODEL ?? 'gpt-5'),
       system,
     })

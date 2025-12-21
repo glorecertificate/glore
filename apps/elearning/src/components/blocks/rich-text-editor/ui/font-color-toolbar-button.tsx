@@ -7,7 +7,7 @@ import { EraserIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEditorRef, useEditorSelector } from 'platejs/react'
 
-import { FontColorIcon } from '@/components/icons/font-color'
+import { FontColorIcon } from '@/components/graphics/font-color-icon'
 import { buttonVariants } from '@/components/ui/button'
 import {
   DropdownMenu,

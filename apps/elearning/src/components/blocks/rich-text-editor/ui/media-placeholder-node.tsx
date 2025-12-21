@@ -184,6 +184,7 @@ export const ImageProgress = ({
 
   return (
     <div className={cn('relative', className)} contentEditable={false}>
+      {/* biome-ignore lint/performance: noImgElement */}
       <img alt={file.name} className="h-auto w-full rounded-sm object-cover" ref={imageRef} src={objectUrl} />
       {progress < 100 && (
         <div className="absolute right-1 bottom-1 flex items-center space-x-2 rounded-full bg-black/50 px-1 py-0.5">

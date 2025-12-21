@@ -1,29 +1,28 @@
 'use client'
 
-import type { AppRoutes } from 'next/types/routes'
 import { createContext, startTransition, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import type { AppRoutes } from 'next/types/routes'
 
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { PanelLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import config from '@config/app'
-
+import config from '@static/config'
+import { setCookie } from '@/actions/cookies'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
 import { useDevice } from '@/hooks/use-device'
 import { usePathname } from '@/hooks/use-pathname'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_WIDTH = '16rem'
 export const MIN_SIDEBAR_WIDTH = '14rem'
-export const MAX_SIDEBAR_WIDTH = '22rem'
+export const MAX_SIDEBAR_WIDTH = '20rem'
 export const SIDEBAR_WIDTH_MOBILE = '18rem'
 export const SIDEBAR_WIDTH_ICON = '3rem'
 
@@ -60,7 +59,7 @@ export const useSidebarResize = ({
   expandThreshold = 0.2,
   isCollapsed = false,
   isNested = false,
-  maxResizeWidth = '24rem',
+  maxResizeWidth = '22rem',
   minResizeWidth = '14rem',
   onResize,
   onToggle,
@@ -81,8 +80,6 @@ export const useSidebarResize = ({
   onToggle?: () => void
   setIsDraggingRail?: (isDragging: boolean) => void
 }) => {
-  const cookies = useCookies()
-
   const dragRef = useRef<HTMLButtonElement>(null)
   const startWidth = useRef(0)
   const startX = useRef(0)
@@ -324,7 +321,7 @@ export const useSidebarResize = ({
     ]
   )
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = useCallback(async () => {
     if (!isInteractingWithRail.current) return
 
     flushResize({ syncState: true })
@@ -333,7 +330,6 @@ export const useSidebarResize = ({
       onToggle()
     }
 
-    cookies.set('sidebar_width', latestWidth.current)
     isDragging.current = false
     isInteractingWithRail.current = false
     lastWidth.current = 0
@@ -348,7 +344,9 @@ export const useSidebarResize = ({
     railRect.current = null
     shouldRestoreRail.current = false
     setIsDraggingRail(false)
-  }, [onToggle, enableToggle, setIsDraggingRail, cookies.set, flushResize])
+
+    await setCookie('sidebar_width', latestWidth.current)
+  }, [onToggle, enableToggle, setIsDraggingRail, flushResize])
 
   useEffect(() => {
     document.addEventListener('mousemove', onMouseMove)
@@ -408,7 +406,6 @@ export const SidebarProvider = ({
   onOpenChange?: (open: boolean) => void
   open?: boolean
 }) => {
-  const cookies = useCookies()
   const { isMobile } = useDevice()
   const pathname = usePathname()
   const t = useTranslations('Components.Sidebar')
@@ -446,9 +443,9 @@ export const SidebarProvider = ({
       const openState = typeof value === 'function' ? value(open) : value
       const openFn = setOpenProp ?? _setOpen
       openFn(openState)
-      cookies.set('sidebar_open', openState)
+      setCookie('sidebar_open', openState)
     },
-    [setOpenProp, open, cookies.set]
+    [setOpenProp, open]
   )
 
   const handleSetWidth = useCallback(
@@ -470,7 +467,7 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === config.shortcuts.sidebar && (event.metaKey || event.ctrlKey)) {
+      if (event.key === config.app.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleSidebar()
       }
@@ -478,6 +475,11 @@ export const SidebarProvider = ({
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [toggleSidebar])
+
+  useEffect(() => {
+    setActivePath(pathname)
+    window.scrollTo(0, 0)
+  }, [pathname])
 
   const contextValue = useMemo<SidebarContext>(
     () => ({
@@ -684,7 +686,7 @@ export const SidebarRail = ({
     <button
       aria-label={action}
       className={cn(
-        '-translate-x-1/2 group-data-[side=left]:-right-4 absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-sidebar-border group-data-[side=right]:left-0 sm:flex',
+        'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex',
         'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
         '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
         'group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full',
@@ -784,7 +786,7 @@ export const SidebarGroupAction = ({
     <Comp
       className={cn(
         'absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
-        'after:-inset-2 after:absolute md:after:hidden',
+        'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
         className
       )}
@@ -855,7 +857,7 @@ export const SidebarMenuButton = ({
 export const sidebarMenuButtonVariants = cva(
   `
     peer/menu-button 
-    flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50
+    flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50
     text-foreground/90 ring-sidebar-ring
     hover:bg-sidebar-accent hover:text-foreground
     data-[active=true]:bg-sidebar-accent data-[active=true]:text-bw! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-foreground
@@ -898,7 +900,7 @@ export const SidebarMenuAction = ({
     <Comp
       className={cn(
         'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
-        'after:-inset-2 after:absolute md:after:hidden',
+        'after:absolute after:-inset-2 md:after:hidden',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',
@@ -988,7 +990,7 @@ export const SidebarMenuSubButton = ({
   return (
     <Comp
       className={cn(
-        '-translate-x-px flex h-7 min-w-0 items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
+        'flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
         'data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',

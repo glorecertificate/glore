@@ -65,7 +65,7 @@ export const TooltipContent = ({
 
 const tooltipContentVariants = cva(
   `
-    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95 cursor-default
+    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95 cursor-default transition-none
     data-[side=bottom]:slide-in-from-top-2
     data-[side=left]:slide-in-from-right-2
     data-[side=right]:slide-in-from-left-2
@@ -85,7 +85,7 @@ const tooltipContentVariants = cva(
         destructive: 'bg-destructive/95 text-destructive-foreground',
       },
       size: {
-        xs: 'px-[7px] py-[3.5px] text-[10.5px]',
+        xs: 'px-1.75 py-[3.5px] text-[10.5px]',
         sm: 'px-2 py-1 text-[11px]',
         md: 'px-3 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',

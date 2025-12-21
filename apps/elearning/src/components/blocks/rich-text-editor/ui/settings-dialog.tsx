@@ -1,7 +1,7 @@
 'use client'
 
-import type { AppRouteHandlerRoutes } from 'next/types/routes'
 import { useState } from 'react'
+import type { AppRouteHandlerRoutes } from 'next/types/routes'
 
 import { CopilotPlugin } from '@platejs/ai/react'
 import type { ChatRequestOptions } from 'ai'
@@ -98,7 +98,7 @@ export const SettingsIconDialog = () => {
       <div className="flex items-center justify-between">
         <label
           className={
-            '-translate-y-1/2 absolute top-1/2 block cursor-text px-1 text-muted-foreground/70 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:font-medium group-focus-within:text-foreground group-focus-within:text-xs has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground has-[+input:not(:placeholder-shown)]:text-xs'
+            'absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-muted-foreground/70 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:font-medium group-focus-within:text-foreground group-focus-within:text-xs has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground has-[+input:not(:placeholder-shown)]:text-xs'
           }
           htmlFor={label}
         >
@@ -179,7 +179,7 @@ export const SettingsIconDialog = () => {
               <div className="group relative">
                 <label
                   className={
-                    '-translate-y-1/2 absolute start-1 top-0 z-10 block bg-background px-2 font-medium text-foreground text-xs group-has-disabled:opacity-50'
+                    'absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 font-medium text-foreground text-xs group-has-disabled:opacity-50'
                   }
                   htmlFor="select-model"
                 >

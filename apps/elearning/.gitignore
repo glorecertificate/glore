@@ -1,4 +1,4 @@
 *.d.ts
 *.d.json.ts
-/supabase/.*/
-/supabase/types.ts
+/supabase/*
+!/supabase/functions/

@@ -6,8 +6,8 @@ import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
+import type { Evaluation } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import type { Evaluation } from '@/lib/db/schema'
 
 export const CourseEvaluations = ({
   completed,

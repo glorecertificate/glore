@@ -7,17 +7,16 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { parseAsString, useQueryState } from 'nuqs'
 
-import themeConfig from '@config/theme'
-import { rgbRecord } from '@glore/utils/hex-to-rgb'
-import { snakeToCamel } from '@glore/utils/string'
+import { hexToRgbRecord } from '@glore/utils/hex-to-rgb'
+import { toCamelCase } from '@glore/utils/to-camel-case'
 import type { Enum } from '@glore/utils/types'
 
+import { theme } from '@static/config'
 import { EmailActionFooter } from '@/components/features/auth/email-action-footer'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
-import type { AuthView } from '@/components/features/auth/types'
-import { GloreIcon } from '@/components/icons/glore'
+import { GloreLogo } from '@/components/graphics/glore-logo'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -26,13 +25,23 @@ import { useTheme } from '@/hooks/use-theme'
 import { EMAIL_REGEX } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+export enum AuthView {
+  Login = 'login',
+  PasswordRequest = 'password_request',
+  EmailSent = 'email_sent',
+  PasswordReset = 'password_reset',
+  PasswordUpdated = 'password_updated',
+  InvalidToken = 'invalid_token',
+  InvalidPasswordReset = 'invalid_password_reset',
+}
+
 interface AuthFlowProps {
   defaultUsername?: string
   defaultView: Enum<AuthView>
-  token?: string
+  resetToken: string | null
 }
 
-export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps) => {
+export const AuthFlow = ({ defaultUsername, defaultView, resetToken }: AuthFlowProps) => {
   const [, setResetToken] = useQueryState('resetToken', parseAsString)
 
   const { resolvedTheme } = useTheme()
@@ -44,14 +53,14 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
 
   useMetadata({
     applicationName: view === 'login' ? false : 'full',
-    title: t(snakeToCamel(`${view}_meta_title`)),
+    title: t(toCamelCase(`${view}_meta_title`)),
   })
 
-  const title = view ? t(snakeToCamel(`${view}_title`)) : null
+  const title = view ? t(toCamelCase(`${view}_title`)) : null
 
   const message = useMemo(() => {
     if (!view) return null
-    if (view !== 'email_sent') return t(snakeToCamel(`${view}_message`))
+    if (view !== 'email_sent') return t(toCamelCase(`${view}_message`))
     return t.rich('emailSentMessage', {
       email: () =>
         username && EMAIL_REGEX.test(username) ? <span className="font-medium">{` ${username} `}</span> : null,
@@ -76,7 +85,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
       case 'email_sent':
         return <EmailActionFooter />
       case 'password_reset':
-        return <PasswordResetForm setErrored={setErrored} setView={setView} token={token} />
+        return <PasswordResetForm setErrored={setErrored} setView={setView} token={resetToken} />
       case 'password_updated':
         return (
           <Button
@@ -122,7 +131,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
       default:
         return null
     }
-  }, [t, token, username, view])
+  }, [resetToken, t, username, view])
 
   // biome-ignore lint: exhaustive-deps
   useEffect(() => {
@@ -153,7 +162,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
   const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
 
   const globeColorOptions = useMemo<GlobeColorOptions>(() => {
-    const colors = rgbRecord(themeConfig.colors[resolvedTheme ?? 'light'])
+    const colors = hexToRgbRecord(theme.colors[resolvedTheme ?? 'light'])
     const options = { glowColor: colors.background } as GlobeColorOptions
 
     if (errored || view === 'invalid_token' || view === 'invalid_password_reset')
@@ -198,7 +207,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
     <>
       <div className="flex justify-between gap-2">
         <div title={view === 'login' ? undefined : t('goToLogin')}>
-          <GloreIcon
+          <GloreLogo
             className={cn(
               'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
               view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
@@ -213,7 +222,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
       </div>
       <div className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-md">
-          <div className="flex min-h-[550px] flex-col gap-8" ref={ref} style={containerStyle}>
+          <div className="flex min-h-137.5 flex-col gap-8" ref={ref} style={containerStyle}>
             <div className="flex flex-col gap-8">
               <Globe
                 className="mx-auto size-56"
@@ -239,7 +248,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, token }: AuthFlowProps)
             <AnimatePresence mode="wait">
               <motion.div
                 animate={{ opacity: 1, y: 0 }}
-                className="mx-auto flex w-full max-w-[352px] flex-col gap-0"
+                className="mx-auto flex w-full max-w-88 flex-col gap-0"
                 exit={{ opacity: 0, y: -8 }}
                 initial={{ opacity: 0, y: 8 }}
                 key={`content-${view}`}

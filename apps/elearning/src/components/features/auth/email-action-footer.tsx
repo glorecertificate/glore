@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl'
 
-import { AppleMailIcon } from '@/components/icons/apple-mail'
-import { GmailIcon } from '@/components/icons/gmail'
-import { OutlookIcon } from '@/components/icons/outlook'
+import { AppleMailIcon } from '@/components/graphics/apple-mail-icon'
+import { GmailLogo } from '@/components/graphics/gmail-logo'
+import { OutlookLogoIcon } from '@/components/graphics/outlook-logo'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
@@ -14,7 +14,7 @@ export const EmailActionFooter = () => {
       <Button
         asChild
         className="justify-center"
-        icon={GmailIcon}
+        icon={GmailLogo}
         iconPlacement="left"
         size="lg"
         title={`${t('open')} Gmail`}
@@ -27,14 +27,14 @@ export const EmailActionFooter = () => {
       <Button
         asChild
         className="justify-center"
-        icon={OutlookIcon}
+        icon={OutlookLogoIcon}
         iconPlacement="left"
         size="lg"
-        title={`${t('open')} Outlook`}
+        title={`${t('open')} OutlookLogo`}
         variant="outline"
       >
         <Link href="https://outlook.office.com/mail" target="_blank">
-          {'Outlook'}
+          {'OutlookLogo'}
         </Link>
       </Button>
       <Button

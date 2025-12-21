@@ -5,8 +5,9 @@
     "allowArbitraryExtensions": true,
     "paths": {
       "next/types/*": ["./.next/types/*"],
-      "@/*": ["./src/*"],
-      "@config/*": ["./config/*.json"]
+      "@static/*": ["./static/*.json"],
+      "@static/translations/*": ["./static/translations/*.json"],
+      "@/*": ["./src/*"]
     },
     "plugins": [{ "name": "next" }],
     "types": ["deno"]

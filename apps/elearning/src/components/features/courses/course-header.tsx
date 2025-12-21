@@ -57,7 +57,7 @@ export const CourseHeader = () => {
   return (
     <div
       className={cn(
-        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-[72px] md:flex',
+        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-18 md:flex',
         scrolled && 'border-b'
       )}
     >
@@ -189,7 +189,7 @@ export const CourseHeaderMobile = () => {
   const isCompletedLesson = useCallback((index: number) => lessons[index].completed, [lessons])
 
   return (
-    <div className={cn('sticky top-[72px] flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}>
+    <div className={cn('sticky top-18 flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="w-full justify-between py-6" variant="outline">
@@ -233,7 +233,7 @@ export const CourseHeaderMobile = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       {course.progressStatus !== 'completed' && (
-        <div className="flex items-center justify-end gap-2 bg-background md:top-[72px]">
+        <div className="flex items-center justify-end gap-2 bg-background md:top-18">
           <span className="text-sm">
             {course.progress}
             {'%'}

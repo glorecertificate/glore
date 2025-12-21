@@ -6,9 +6,11 @@ import { ArchiveIcon, GripVerticalIcon, PlusIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { pluck } from '@glore/utils/pluck'
-import { snakeToCamel } from '@glore/utils/string'
-import type { SnakeToCamel } from '@glore/utils/types'
+import { type CamelCase, toCamelCase } from '@glore/utils/to-camel-case'
+import type { Enum } from '@glore/utils/types'
 
+import { setCookie } from '@/actions/cookies'
+import { reorderCourses } from '@/actions/course'
 import { CourseCard } from '@/components/features/courses/course-card'
 import {
   CourseListSort,
@@ -16,8 +18,7 @@ import {
   type CourseListSortType,
 } from '@/components/features/courses/course-list-sort'
 import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
-import { CourseListEditorView, CourseListLearnerView, type CourseListView } from '@/components/features/courses/types'
-import { NoResultsIllustration } from '@/components/illustrations/no-results'
+import { NoResultsGraphic } from '@/components/graphics/no-results-graphic'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
@@ -30,11 +31,26 @@ import {
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
+import type { Course } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import { reorderCourses } from '@/lib/actions/course'
-import type { Course } from '@/lib/db/schema'
 import { i18n } from '@/lib/i18n'
+
+export enum CourseListEditorView {
+  All = 'all',
+  Published = 'published',
+  Partial = 'partial',
+  Draft = 'draft',
+  Archived = 'archived',
+}
+
+export enum CourseListLearnerView {
+  All = 'all',
+  NotStarted = 'not_started',
+  InProgress = 'in_progress',
+  Completed = 'completed',
+}
+
+export type CourseListView = Enum<CourseListEditorView | CourseListLearnerView>
 
 const CourseListTab = ({ count, value }: { active: boolean; count: number; value: CourseListView }) => {
   const t = useTranslations('Courses')
@@ -82,7 +98,6 @@ export const CourseList = ({
   defaultGroups?: string[]
   defaultTab?: CourseListView
 }) => {
-  const cookies = useCookies()
   const { user, courses: sessionCourses, setCourses, skillGroups } = useSession()
   const { locale, localeItems, localize } = useI18n()
   const t = useTranslations('Courses')
@@ -112,7 +127,7 @@ export const CourseList = ({
       : Object.values(CourseListEditorView).filter(tab => tab !== CourseListEditorView.Partial)
     : [...Object.values(CourseListLearnerView)]
 
-  const courses = useMemo<Record<SnakeToCamel<CourseListView>, Course[]>>(() => {
+  const courses = useMemo<Record<CamelCase<CourseListView>, Course[]>>(() => {
     const all = sessionCourses.filter(course => !course.archived_at)
 
     if (user.canEdit)
@@ -144,7 +159,7 @@ export const CourseList = ({
 
   const displayedCourses = useMemo(
     () =>
-      courses[snakeToCamel(activeTab)]
+      courses[toCamelCase(activeTab)]
         .map(course => {
           const cookieLanguage = defaultCourseLanguage?.[String(course.id)]
           if (cookieLanguage && activeLanguages.includes(cookieLanguage)) return { ...course, language: cookieLanguage }
@@ -239,24 +254,21 @@ export const CourseList = ({
   }, [])
 
   const onLanguagesChange = useCallback(
-    (selected: string[]) => {
+    async (selected: string[]) => {
       const languages = selected as Locale[]
       setActiveLanguages(languages)
-      cookies.set('course_list_locales', languages)
       if (activeTab === 'partial' && (languages.length === 1 || courses.partial.length === 0)) {
         setActiveTab('all')
       }
+      await setCookie('course_list_language_filter', languages)
     },
-    [activeTab, courses.partial.length, cookies.set]
+    [activeTab, courses.partial.length]
   )
 
-  const onGroupChange = useCallback(
-    (selected: string[]) => {
-      setActiveGroups(selected)
-      cookies.set('course_list_groups', selected)
-    },
-    [cookies.set]
-  )
+  const onGroupChange = useCallback(async (selected: string[]) => {
+    setActiveGroups(selected)
+    await setCookie('course_list_groups', selected)
+  }, [])
 
   const setOrder = useCallback(
     async (orderedCourses: Course[]) => {
@@ -293,11 +305,11 @@ export const CourseList = ({
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-3">
-              <TabsList className="h-[38px] w-full rounded-xl sm:w-fit">
+              <TabsList className="h-9.5 w-full rounded-xl sm:w-fit">
                 {tabs.map(tab => (
                   <CourseListTab
                     active={tab === activeTab}
-                    count={courses[snakeToCamel(tab)].length}
+                    count={courses[toCamelCase(tab)].length}
                     key={tab}
                     value={tab}
                   />
@@ -368,7 +380,7 @@ export const CourseList = ({
         <TabsContent className="grow space-y-4" value={activeTab}>
           {displayedCourses.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
-              <NoResultsIllustration className="w-64" />
+              <NoResultsGraphic className="w-64" />
               <div className="flex flex-col items-center gap-1">
                 <h3 className="font-medium text-xl">{emptyListTitle}</h3>
                 <p className="mt-1 text-muted-foreground">

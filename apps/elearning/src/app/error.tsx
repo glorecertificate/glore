@@ -1,11 +1,11 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { useTranslations } from 'next-intl'
 
-import { GloreIcon } from '@/components/icons/glore'
+import { GloreLogo } from '@/components/graphics/glore-logo'
 import { type ErrorProps, ErrorView } from '@/components/layout/error-view'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
@@ -28,7 +28,7 @@ export default ({ error }: ErrorProps) => {
       header={
         <header className="flex h-16 w-full items-center justify-center px-4">
           <Link href="/" title={t('backToHome')}>
-            <GloreIcon className="mt-8 h-8" />
+            <GloreLogo className="mt-8 h-8" />
           </Link>
         </header>
       }

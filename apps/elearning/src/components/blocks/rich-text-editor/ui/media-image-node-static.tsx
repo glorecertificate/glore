@@ -9,7 +9,8 @@ export const ImageElementStatic = (props: SlateElementProps<TImageElement & TCap
   return (
     <SlateElement {...props} className="py-2.5">
       <figure className="group relative m-0 inline-block" style={{ width }}>
-        <div className="relative min-w-[92px] max-w-full" style={{ textAlign: align }}>
+        <div className="relative min-w-23 max-w-full" style={{ textAlign: align }}>
+          {/* biome-ignore lint/performance: noImgElement */}
           <img
             alt={props.attributes.alt as string}
             className={cn('w-full max-w-full cursor-default object-cover px-0', 'rounded-sm')}

@@ -1,32 +1,34 @@
 import './globals.css'
 
+import { Suspense } from 'react'
 import Script from 'next/script'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { getLocale, getMessages, getTranslations } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-import metadata from '@config/metadata'
-
+import config from '@static/config'
+import { getLocaleCookie } from '@/actions/cookies'
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
-import { publicAsset } from '@/lib/assets'
+import { i18n } from '@/lib/i18n'
 import { intlMetadata } from '@/lib/metadata'
+import { publicAsset } from '@/lib/storage'
 
-export const generateMetadata = intlMetadata()
+export const generateMetadata = () => intlMetadata()
 
-export default async ({ children }: LayoutProps<'/'>) => {
-  const locale = await getLocale()
+const RootLayout = async ({ children }: LayoutProps<'/'>) => {
+  const locale = await getLocaleCookie()
   const messages = await getMessages({ locale })
   const t = await getTranslations('Metadata')
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: metadata.name,
+    name: config.metadata.name,
     description: t('description'),
     image: publicAsset('open-graph.png'),
   }
@@ -53,3 +55,15 @@ export default async ({ children }: LayoutProps<'/'>) => {
     </html>
   )
 }
+
+export default async (props: LayoutProps<'/'>) => (
+  <Suspense
+    fallback={
+      <html lang={i18n.defaultLocale}>
+        <body />
+      </html>
+    }
+  >
+    <RootLayout {...props} />
+  </Suspense>
+)

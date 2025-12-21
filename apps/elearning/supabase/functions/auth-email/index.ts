@@ -1,9 +1,7 @@
 import { Webhook } from 'standardwebhooks'
 
 const WH_SECRET = Deno.env.get('AUTH_EMAIL_HOOK_SECRET')
-
-const LT_DOMAIN = 'loca.lt'
-const LT_SUBDOMAIN = Deno.env.get('SUBDOMAIN')
+const LOCAL_TUNNEL_URL = Deno.env.get('LOCAL_TUNNEL_URL')
 
 Deno.serve(async request => {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 })
@@ -20,7 +18,7 @@ Deno.serve(async request => {
     const data = webhook.verify(payload, requestHeaders) as { email_data: { redirect_to: string } }
     const isDevelopment = new URL(data.email_data.redirect_to).hostname === 'localhost'
 
-    const appUrl = isDevelopment ? `https://${LT_SUBDOMAIN}.${LT_DOMAIN}` : new URL(data.email_data.redirect_to).origin
+    const appUrl = isDevelopment ? LOCAL_TUNNEL_URL : new URL(data.email_data.redirect_to).origin
     if (isDevelopment) headers.set('Bypass-Tunnel-Reminder', 'true')
 
     try {

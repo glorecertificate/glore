@@ -102,7 +102,7 @@
     --warning-accent: oklch(0.751 0.177 85.872);
     --warning-foreground: oklch(0.145 0 0);
     --destructive: oklch(0.577 0.245 27.325);
-    --destructive-accent: oklch(67.932% 0.19223 22.692);
+    --destructive-accent: oklch(61.686% 0.22392 24.91);
     --destructive-foreground: oklch(0.985 0 0);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
@@ -203,7 +203,7 @@
 
   html.theme-transition,
   html.theme-transition :where(*, *::before, *::after) {
-    @apply duration-300 transition-colors motion-reduce:transition-none;
+    @apply duration-250 transition-colors motion-reduce:transition-none;
   }
   html.theme-view-transition {
     view-transition-name: theme;

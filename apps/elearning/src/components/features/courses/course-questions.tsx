@@ -7,8 +7,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Markdown } from '@/components/ui/markdown'
+import type { Question, QuestionOption } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import type { Question, QuestionOption } from '@/lib/db/schema'
 import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({

@@ -55,7 +55,7 @@ export const MediaPreviewDialog = () => {
             className={cn('mx-auto block max-h-[calc(100vh-4rem)] w-auto object-contain transition-transform')}
           />
           <div
-            className="-translate-x-1/2 absolute bottom-0 left-1/2 z-40 flex w-fit justify-center gap-4 p-2 text-center text-white"
+            className="absolute bottom-0 left-1/2 z-40 flex w-fit -translate-x-1/2 justify-center gap-4 p-2 text-center text-white"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex gap-1">

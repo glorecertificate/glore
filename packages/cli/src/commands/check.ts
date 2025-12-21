@@ -1,104 +1,190 @@
 #!/usr/bin/env tsx
 
-import { execSync } from 'node:child_process'
+import { type SpawnSyncReturns, execSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 import { logger } from '@glore/utils/logger'
 import { Argument, Command, Option } from 'commander'
 
 import { cli } from '../config'
+import { exitProcess } from '../utils'
 
-const ARGS = ['i18n-unused', 'i18n', 'lint', 'size', 'types'] as const
-const I18N_OPTIONS = ['invalid', 'missing', 'unused'] as const
+const CHECK_ARGS = ['i18n', 'i18n-unused', 'lint', 'size', 'types'] as const
+const DEFAULT_CHECK_ARGS = ['types', 'lint', 'i18n', 'size'] as const
+
+const I18N_OPTIONS = ['invalidKeys', 'missingKeys', 'unused'] as const
+const DEFAULT_I18N_OPTIONS = ['invalidKeys', 'missingKeys'] as const
 
 export const check = new Command('check')
   .description('Check the project against different validations')
-  .addArgument(new Argument('[checks...]', 'checks to run').choices(ARGS))
-  .addOption(new Option('-i, --i18n <checks...>', 'i18n checks to run').choices(I18N_OPTIONS))
-  .option('-g, --i18n-ignore <keys...>', 'i18n keys to ignore during checks')
+  .addArgument(new Argument('[checks...]', 'checks to run').choices(CHECK_ARGS))
   .option('-m, --messages <path>', 'path to the translations directory', './messages')
-  .option('-s, --size-limit <limit>', 'limit for bundle size checks express in kilobytes', '200')
+  .addOption(new Option('-i, --i18n <checks...>', 'i18n checks to run').choices(I18N_OPTIONS))
+  .option('--i18n-ignore <keys...>', 'i18n keys to ignore during checks')
   .option(
     '-t, --tsconfig <path>',
     'path to the tsconfig file',
     process.env.NODE_ENV === 'production' ? 'tsconfig.build.json' : 'tsconfig.json'
   )
-  .action((args, { i18n = ['invalidKeys', 'missingKeys'], i18nIgnore = [], messages, sizeLimit, tsconfig }) => {
-    const checks = args && args.length > 0 ? args : ARGS
+  .option('-b, --build', 'build the project before running checks', false)
+  .option('--typegen', 'generate types before running checks', false)
+  .action(async (args, { build, i18n = DEFAULT_I18N_OPTIONS, i18nIgnore = [], messages, tsconfig, typegen }) => {
+    const checks = args && args.length > 0 ? args : DEFAULT_CHECK_ARGS
+    const i18nCmd = `${cli.bin('i18n-check')} --source en --locales ${messages} --ignore ${i18nIgnore.map(key => `"${key}"`).join(' ')} --format next-intl --unused src`
+    const i18nUnusedCmd = `${i18nCmd} --only unused`
 
-    if (checks.includes('types')) {
-      try {
-        logger.inline('Checking validity of types...')
-        execSync(`${cli.bin('tsc')} -p ${tsconfig} --noEmit`, { stdio: 'ignore' })
-        logger.success('Type check passed successfully', cli.logOptions)
-      } catch {
-        logger.error('Type check failed', cli.logOptions)
-        logger.red('Run tsc to see a detailed report.', cli.logOptions)
-        process.exit(1)
-      }
-    }
+    for (const check of checks) {
+      const isSingleArg = checks.length === 1
 
-    if (checks.includes('lint')) {
-      try {
-        logger.inline('Running lint and format checks...')
-        execSync(`${cli.bin('biome')} check`, { stdio: 'ignore' })
-        logger.success('All files are properly linted and formatted', cli.logOptions)
-      } catch {
-        logger.error('Found linting issues', cli.logOptions)
-        logger("Run 'biome check --fix' to apply safe fixes and see a detailed report.", cli.logOptions)
-        process.exit(1)
-      }
-    }
+      switch (check) {
+        case 'types':
+          {
+            const typesCmd = `${cli.bin('tsc')} -p ${tsconfig} --noEmit`
 
-    const i18nCommand = `${cli.bin('i18n-check')} -s en -l ${messages} -i ${i18nIgnore.map(k => `"${k}"`).join(' ')} -f next-intl -u src`
+            if (typegen) {
+              if (!isSingleArg) logger.inline('Generating application types...')
+              execSync(`${cli.name} typegen`, { stdio: 'ignore' })
+            }
 
-    if (checks.includes('size')) {
-      logger.inline('Checking bundle size...')
-      if (!existsSync('./.next/bundle')) {
-        logger.error('Missing bundle, build the project to run size checks', cli.logOptions)
-        process.exit(1)
-      }
-      try {
-        execSync(`${cli.bin('size-limit')} ./next/bundle --limit ${sizeLimit} kB`, { stdio: 'ignore' })
-      } catch {
-        logger.error(`The bundle size exceeds the limit of ${sizeLimit} kB`, cli.logOptions)
-        logger.red('Run size-limit to see a detailed report.', cli.logOptions)
-        process.exit(1)
-      }
-      logger.success(`The bundle size is within ${sizeLimit} kB`, cli.logOptions)
-    }
+            if (isSingleArg) {
+              execSync(typesCmd, { stdio: 'inherit' })
+              return
+            }
 
-    if (checks.includes('i18n')) {
-      logger.inline('Checking translation files...')
-      let hasWarnings = false
+            try {
+              logger.inline('Checking validity of types...', { clearLine: typegen })
+              execSync(typesCmd)
+              logger.success('Type check passed successfully', cli.logs)
+            } catch (e) {
+              const error = e as SpawnSyncReturns<Buffer>
+              logger.error('Type check failed with the following errors:', cli.logs)
+              logger(error.stdout.toString(), cli.logs)
+              exitProcess(`Run '${cli.name} check types' to see a detailed report.`)
+            }
+          }
+          break
+        case 'lint': {
+          const lintCmd = `${cli.bin('biome')} check`
 
-      try {
-        execSync(`${i18nCommand} -o ${i18n.map(only => (only === 'unused' ? only : `${only}Keys`)).join(' ')}`)
-      } catch (e) {
-        const error = e as { stdout: Buffer }
-        logger.error('Found issues in translation files', cli.logOptions)
-        if (error.stdout) logger.red(error.stdout.toString().replace(/!/g, ''), cli.logOptions)
-        process.exit(1)
-      }
+          if (isSingleArg) {
+            execSync(lintCmd, { stdio: 'inherit' })
+            return
+          }
 
-      try {
-        execSync(`${i18nCommand} -o unused`)
-      } catch {
-        logger.warn('Found unused keys in translation files', cli.logOptions)
-        logger.yellow("Run 'pnpm check i18n-unused' to see a detailed report.", cli.logOptions)
-        hasWarnings = true
-      }
+          try {
+            logger.inline('Running lint and format checks...')
+            execSync(lintCmd, { stdio: 'ignore' })
+            logger.success('All files are properly linted and formatted', cli.logs)
+          } catch (e) {
+            const error = e as SpawnSyncReturns<Buffer>
+            logger.error('Found linting issues:', cli.logs)
+            logger(error.stdout.toString(), cli.logs)
+            exitProcess(`Run '${cli.name} check lint' to apply safe fixes and see a detailed report.`)
+          }
+          break
+        }
+        case 'i18n':
+          {
+            const only = i18n.map(only => (only === 'unused' ? only : `${only}Keys`)).join(' ')
+            const i18nOnlyCmd = `${i18nCmd}${only ? ` --only ${only}` : ''}`
 
-      if (!hasWarnings) {
-        logger.success('All translations are valid and in use', cli.logOptions)
-      }
-    }
+            if (isSingleArg) {
+              execSync(i18nOnlyCmd, { stdio: 'inherit' })
+              execSync(i18nUnusedCmd, { stdio: 'inherit' })
+              return
+            }
 
-    if (checks.includes('i18n-unused')) {
-      try {
-        execSync(`${i18nCommand} -o unused`, { stdio: 'inherit' })
-      } catch {
-        process.exit(1)
+            logger.inline('Checking translation files...')
+
+            let hasWarnings = false
+
+            try {
+              execSync(i18nOnlyCmd, { stdio: 'ignore' })
+            } catch (e) {
+              const error = e as { stdout: Buffer }
+              logger.error('Found issues in translation files', cli.logs)
+              exitProcess(error.stdout.toString().replace(/!/g, ''), { break: false })
+            }
+
+            try {
+              execSync(i18nUnusedCmd, { stdio: 'ignore' })
+            } catch {
+              logger.warn('Found unused keys in translation files', cli.logs)
+              logger.yellow(`Run '${cli} check i18n-unused' to see a detailed report.`, cli.logs)
+              hasWarnings = true
+            }
+
+            if (!hasWarnings) {
+              logger.success('All translations are valid and in use', cli.logs)
+            }
+          }
+          break
+        case 'i18n-unused':
+          {
+            try {
+              execSync(i18nUnusedCmd, { stdio: 'inherit' })
+            } catch {
+              process.exit(1)
+            }
+          }
+          break
+        case 'size':
+          {
+            let sizeLimit: {
+              path: string
+              limit: number
+            }
+
+            if (!isSingleArg) logger.inline('Running size check...')
+
+            try {
+              if (!existsSync(resolve(process.cwd(), 'node_modules/@size-limit/preset-app'))) {
+                throw new Error('Missing preset, install @size-limit/preset-app to run the check.')
+              }
+              try {
+                const pkg = await import(resolve(process.cwd(), 'package.json'))
+                sizeLimit = pkg['size-limit']?.[0]
+              } catch {
+                throw new Error('Missing size-limit configuration in package.json.')
+              }
+              if (!(sizeLimit.path && sizeLimit.limit)) {
+                throw new Error('Invalid size-limit configuration.')
+              }
+              if (!(build || existsSync(resolve(process.cwd(), sizeLimit.path)))) {
+                throw new Error('Build directory not found, run the build command first or use the --build option.')
+              }
+            } catch (e) {
+              const error = e as Error
+              if (isSingleArg) throw error
+              logger.error('Size check failed', cli.logs)
+              exitProcess(error.message)
+            }
+
+            if (build) {
+              if (!isSingleArg) logger.inline('Building the project...', { clearLine: true })
+
+              try {
+                execSync(`${cli.name} build`, { stdio: 'ignore' })
+              } catch (e) {
+                if (isSingleArg) throw e
+                exitProcess('Build failed, cannot run size check.')
+              }
+            }
+
+            try {
+              execSync(`${cli.bin('size-limit')}`, { stdio: isSingleArg ? 'inherit' : 'ignore' })
+            } catch (error) {
+              if (isSingleArg) throw error
+              logger.error(`The build size exceeds the limit of ${sizeLimit!.limit}`, cli.logs)
+              exitProcess(`Run '${cli.name} check size' to see a detailed report.`)
+            }
+
+            if (!isSingleArg) logger.success(`The build size is within ${sizeLimit!.limit}`, cli.logs)
+          }
+          break
+        default:
+          exitProcess(`Unknown check: '${check}'`)
       }
     }
   })

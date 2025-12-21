@@ -39,7 +39,7 @@ export const HoverCardContent = ({
       {arrow && (
         <>
           <HoverCardPrimitive.Arrow
-            className={cn('h-2 fill-popover stroke-2 stroke-border', side === 'top' && '-m-0.5 z-0')}
+            className={cn('h-2 fill-popover stroke-2 stroke-border', side === 'top' && 'z-0 -m-0.5')}
           />
           <div className="absolute bottom-0 left-2 h-1 w-[calc(100%-16px)] rounded-[inherit] bg-popover" />
         </>

@@ -80,7 +80,7 @@
       },
       "nursery": {
         "noImportCycles": "off",
-        "noUselessUndefined": "error",
+        "noUselessUndefined": "off",
         "useConsistentArrowReturn": "error",
         "useSortedClasses": {
           "level": "error",
@@ -221,12 +221,6 @@
       "enabled": true,
       "indentStyle": "space",
       "trailingCommas": "none"
-    }
-  },
-  "css": {
-    "formatter": {
-      "enabled": true,
-      "indentStyle": "space"
     }
   },
   "overrides": [

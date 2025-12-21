@@ -1,13 +1,13 @@
 import { getTranslations } from 'next-intl/server'
 
+import { getAuthUser } from '@/actions/auth'
 import { ErrorView } from '@/components/layout/error-view'
 import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { getCurrentUser } from '@/lib/actions/user'
 
 export default async () => {
-  const user = await getCurrentUser()
+  const user = await getAuthUser()
   const t = await getTranslations('Common')
   const message = user ? t('backToHome') : t('accessApp')
 

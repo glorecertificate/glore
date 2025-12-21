@@ -217,7 +217,7 @@ export const AdminOrganizations = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">
+              <TableHead className="w-12.5">
                 <Checkbox />
               </TableHead>
               <TableHead>{'Name'}</TableHead>

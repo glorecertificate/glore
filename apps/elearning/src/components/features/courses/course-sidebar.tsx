@@ -137,7 +137,7 @@ export const CourseSidebar = () => {
 
   return (
     <div className="hidden md:block">
-      <div className="sticky top-[120px] space-y-2 pr-2">
+      <div className="sticky top-30 space-y-2 pr-2">
         <ArcherContainer>
           {course.lessons.map((lesson, i) => (
             <CourseSidebarLesson index={i} key={lesson.id ?? i} lesson={lesson} />
@@ -162,11 +162,11 @@ export const CourseSidebar = () => {
 
 export const CourseSidebarSkeleton = () => (
   <div className="hidden md:block">
-    <div className="sticky top-[120px] space-y-4 pr-2">
+    <div className="sticky top-30 space-y-4 pr-2">
       {[...Array(5)].map((_, i) => (
         <div className="relative" key={i}>
           <div className="mb-4 flex items-center pl-12">
-            <div className="-translate-y-1/2 absolute top-1/2 left-6">
+            <div className="absolute top-1/2 left-6 -translate-y-1/2">
               <Skeleton className="flex h-6 w-6 items-center justify-center rounded-full" />
             </div>
             <div className="flex-1 space-y-2">

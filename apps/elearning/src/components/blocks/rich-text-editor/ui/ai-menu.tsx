@@ -458,7 +458,7 @@ export const AILoadingBar = () => {
   return (
     <div
       className={cn(
-        '-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-muted-foreground text-sm shadow-md transition-all duration-300'
+        'absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-muted-foreground text-sm shadow-md transition-all duration-300'
       )}
     >
       <span className="size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />

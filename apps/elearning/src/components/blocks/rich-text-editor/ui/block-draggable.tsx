@@ -140,7 +140,7 @@ const Gutter = ({ children, className, ...props }: React.ComponentProps<'div'>) 
     <div
       {...props}
       className={cn(
-        'slate-gutterLeft group/gutter-left -translate-x-full absolute top-0 z-50 flex h-full cursor-text group-hover/container:opacity-100 sm:opacity-0',
+        'slate-gutterLeft group/gutter-left absolute top-0 z-50 flex h-full -translate-x-full cursor-text group-hover/container:opacity-100 sm:opacity-0',
         isSelectionAreaVisible && 'hidden',
         !selected && 'opacity-0',
         className

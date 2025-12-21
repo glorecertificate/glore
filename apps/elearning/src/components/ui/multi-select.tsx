@@ -66,7 +66,7 @@ export const MultiSelect = ({
   const [open, setOpen] = useState(false)
   const [selectTime, setSelectTime] = useState<number | null>(null)
 
-  const validation = { count: 1, message: t('selectAtLeastOneItem'), delay: 500, ...validate }
+  const validation = { count: 1, message: t('selectAtLeastOne'), delay: 500, ...validate }
 
   const unselectOption = useCallback(
     (option: string) => {
@@ -167,7 +167,7 @@ export const MultiSelectBadge = ({
         {children ?? label}
         <span
           className={cn(
-            'translate-x-[3px] rounded-full p-[1.5px] transition-all',
+            'translate-x-0.75 rounded-full p-[1.5px] transition-all',
             !disabled &&
               'group-hover/multi-select-badge:border-destructive-accent group-hover/multi-select-badge:bg-destructive/75 group-hover/multi-select-badge:text-destructive-foreground'
           )}

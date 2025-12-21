@@ -44,7 +44,7 @@ export const PasswordInput = ({
         {...props}
       />
       <Button
-        className="-translate-y-1/2 absolute top-1/2 right-1.5 size-6 rounded-full p-0 has-[>svg]:px-3"
+        className="absolute top-1/2 right-1.5 size-6 -translate-y-1/2 rounded-full p-0 has-[>svg]:px-3"
         disabled={disabled}
         onClick={togglePassword}
         size="sm"

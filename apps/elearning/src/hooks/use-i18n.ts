@@ -21,7 +21,7 @@ export const useI18n = () => {
     () =>
       i18n.localeItems.map(item => {
         const label = t(item.value)
-        const displayLabel = i18n.titleCaseLocales.includes(locale) ? label : label.toLowerCase()
+        const displayLabel = i18n.titleizedLocales.includes(locale) ? label : label.toLowerCase()
         return { ...item, label, displayLabel }
       }),
     [locale, t]

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const MOBILE_BREAKPOINT = 768
 
@@ -8,35 +8,30 @@ const MOBILE_BREAKPOINT = 768
  * Hook to detect the device type based on window width.
  */
 export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {
-  const detectSize = useCallback(() => {
+  const detectType = useCallback(() => {
     if (typeof window === 'undefined') return
     return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
   }, [breakpoint])
 
-  const [size, setSize] = useState<'mobile' | 'desktop' | undefined>(detectSize())
+  const [deviceType, setDeviceType] = useState<'mobile' | 'desktop' | undefined>(detectType())
   const [isTouch, setIsTouch] = useState(false)
 
-  const isMobile = useMemo(() => size === 'mobile', [size])
-  const isDesktop = useMemo(() => size === 'desktop', [size])
-
-  const onResize = useCallback(() => {
-    setSize(detectSize())
+  const handleResize = useCallback(() => {
+    setDeviceType(detectType())
     setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0)
-  }, [detectSize])
+  }, [detectType])
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    handleResize()
+    mql.addEventListener('change', handleResize)
+    return () => mql.removeEventListener('change', handleResize)
+  }, [handleResize])
 
-    onResize()
-
-    mql.addEventListener('change', onResize)
-    mql.addEventListener('resize', onResize)
-
-    return () => {
-      mql.removeEventListener('change', onResize)
-      mql.removeEventListener('resize', onResize)
-    }
-  }, [onResize])
-
-  return { size, isMobile, isDesktop, isTouch }
+  return {
+    deviceType,
+    isMobile: deviceType === 'mobile',
+    isDesktop: deviceType === 'desktop',
+    isTouch,
+  }
 }

@@ -2,9 +2,9 @@
 
 import { createContext, useCallback, useContext, useState } from 'react'
 
-import * as actions from '@/lib/actions/course'
-import type { Course, SkillGroup, User, UserOrganization } from '@/lib/db/schema'
-import type { DatabaseInsert, DatabaseUpdate } from '@/lib/db/types'
+import { createCourse, deleteCourse, updateCourse } from '@/actions/course'
+import type { Course, SkillGroup, User, UserOrganization } from '@/db/queries'
+import type { TableInsert, TableUpdate } from '@/db/types'
 
 export interface SessionContext {
   courses: Course[]
@@ -64,36 +64,40 @@ export const useSession = () => {
     [context.setCourses]
   )
 
-  const createCourse = useCallback(
-    async (data: DatabaseInsert<'courses'>) => {
-      const course = await actions.createCourse(data)
-      setCourse(course)
-      return course
+  const addCourse = useCallback(
+    async (coursesLanguage: TableInsert<'courses'>) => {
+      const { data, error } = await createCourse(coursesLanguage)
+      if (error) throw error
+      setCourse(data)
+      return data
     },
     [setCourse]
   )
 
-  const updateCourse = useCallback(
-    async (id: number, data: DatabaseUpdate<'courses'>) => {
-      const course = await actions.updateCourse(id, data)
-      setCourse(course)
-      return course
+  const editCourse = useCallback(
+    async (id: number, course: TableUpdate<'courses'>) => {
+      const { data, error } = await updateCourse(id, course)
+      if (error) throw error
+      setCourse(data)
+      return data
     },
     [setCourse]
   )
 
-  const updateCourseSettings = useCallback(
-    async (id: number, data: Pick<Course, 'type'>) => {
-      const course = await actions.updateCourse(id, data)
-      setCourse(course)
-      return course
+  const editCourseSettings = useCallback(
+    async (id: number, settings: Pick<Course, 'type'>) => {
+      const { data, error } = await updateCourse(id, settings)
+      if (error) throw error
+      setCourse(data)
+      return data
     },
     [setCourse]
   )
 
-  const deleteCourse = useCallback(
+  const removeCourse = useCallback(
     async (id: number) => {
-      await actions.deleteCourse(id)
+      const { error } = await deleteCourse(id)
+      if (error) throw error
       context.setCourses(courses => courses.filter(course => course.id !== id))
     },
     [context.setCourses]
@@ -101,10 +105,10 @@ export const useSession = () => {
 
   return {
     ...context,
-    createCourse,
-    deleteCourse,
     setCourse,
-    updateCourse,
-    updateCourseSettings,
+    addCourse,
+    editCourse,
+    editCourseSettings,
+    removeCourse,
   }
 }

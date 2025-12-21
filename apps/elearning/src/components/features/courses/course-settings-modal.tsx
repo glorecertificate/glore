@@ -1,13 +1,13 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-import type { PostgrestError } from '@supabase/supabase-js'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { listSkillGroups } from '@/actions/course'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import {
@@ -23,11 +23,11 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import type { Course, SkillGroup } from '@/db/queries'
+import type { Enums } from '@/db/types'
+import { postgrestError } from '@/db/utils'
 import { useI18n } from '@/hooks/use-i18n'
-import { listSkillGroups } from '@/lib/actions/course'
 import { SLUG_REGEX } from '@/lib/constants'
-import type { Course, SkillGroup } from '@/lib/db/schema'
-import type { Enums } from '@/lib/db/types'
 
 interface CourseSettingsModalProps {
   course?: Partial<Course>
@@ -41,7 +41,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
 
-  const { createCourse } = useSession()
+  const { addCourse } = useSession()
 
   const [type, setType] = useState<Enums<'course_type'>>(course?.type ?? 'intro')
   const [slug, setSlug] = useState(course?.slug ?? '')
@@ -82,19 +82,19 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
       }
 
       try {
-        const course = await createCourse({ slug, type, skill_group_id: skillGroupId })
+        const course = await addCourse({ slug, type, skill_group_id: skillGroupId })
         handleOpenChange(false)
         toast.success(t('courseCreated'))
         router.push(`/courses/${course.slug}`)
       } catch (e) {
-        const error = e as PostgrestError
+        const error = postgrestError(e)
         console.error(error.message, error)
         toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
       } finally {
         setIsCreating(false)
       }
     },
-    [createCourse, handleOpenChange, router, skillGroupId, slug, t, type]
+    [addCourse, handleOpenChange, router, skillGroupId, slug, t, type]
   )
 
   const handleTypeChange = useCallback(
@@ -121,7 +121,7 @@ export const CourseSettingsModal = ({ course, open, onOpenChange }: CourseSettin
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-125">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{t('newCourse')}</DialogTitle>

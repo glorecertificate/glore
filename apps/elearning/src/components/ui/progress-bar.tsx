@@ -9,7 +9,6 @@ import { random } from '@glore/utils/random'
 import { cn } from '@/lib/utils'
 
 export type ProgressBarState = 'initial' | 'in-progress' | 'complete'
-
 export type ProgressBarVariant = VariantProps<typeof progressBarVariants>['variant']
 
 interface ProgressBarContext {
@@ -216,6 +215,7 @@ export const progressBarVariants = cva('fixed z-50 h-1 transition-all duration-3
       success: 'bg-success',
       transparent: 'bg-transparent',
       muted: 'bg-muted-foreground',
+      underlined: 'bg-foreground/30',
     },
   },
 })

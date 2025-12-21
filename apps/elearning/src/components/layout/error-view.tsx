@@ -4,10 +4,9 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import metadata from '@config/metadata'
-
-import { ErrorIllustration } from '@/components/illustrations/error'
-import { NotFoundIllustration } from '@/components/illustrations/not-found'
+import { metadata } from '@static/config'
+import { ErrorGraphic } from '@/components/graphics/error-graphic'
+import { NotFoundGraphic } from '@/components/graphics/not-found-graphic'
 import { useDevice } from '@/hooks/use-device'
 import { cn } from '@/lib/utils'
 
@@ -37,9 +36,9 @@ export const ErrorView = ({
   const ErrorImage = useMemo(
     () =>
       type === 'not-found' ? (
-        <NotFoundIllustration className="mb-8" width={isMobile ? 320 : 360} />
+        <NotFoundGraphic className="mb-8" width={isMobile ? 320 : 360} />
       ) : (
-        <ErrorIllustration width={isMobile ? 160 : 180} />
+        <ErrorGraphic width={isMobile ? 160 : 180} />
       ),
     [isMobile, type]
   )

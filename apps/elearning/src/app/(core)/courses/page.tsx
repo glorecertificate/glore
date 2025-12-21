@@ -1,37 +1,25 @@
-import { redirect } from 'next/navigation'
-
-import { getTranslations } from 'next-intl/server'
-
+import { cookies } from '@/actions/cookies'
 import { CourseList } from '@/components/features/courses/course-list'
-import { SectionLayout } from '@/components/layout/section-layout'
 import { intlMetadata } from '@/lib/metadata'
-import { getCookies } from '@/lib/storage'
 
-export const generateMetadata = intlMetadata({
-  title: 'Layout.courses',
-})
+export const generateMetadata = () =>
+  intlMetadata({
+    title: 'Layout.courses',
+  })
 
 export default async () => {
-  const { get } = await getCookies()
-  const courseLanguages = get('course_locale')
-  const languages = get('course_list_locales')
-  const groups = get('course_list_groups')
-  // const tab = get('course_list_view')
-  const tab = 'all'
-  const user = get('user')
-  if (!user) redirect('/login')
-
-  const t = await getTranslations('Courses')
-  const description = user.is_admin ? t('descriptionAdmin') : user.is_editor ? t('descriptionEditor') : t('description')
+  const { get } = await cookies()
+  const coursesLanguage = await get('courses_language')
+  const languageFilter = await get('course_list_language_filter')
+  const groups = await get('course_list_groups')
+  const tab = await get('course_list_tab')
 
   return (
-    <SectionLayout className="gap-4" description={description} title={t('title')}>
-      <CourseList
-        defaultCourseLanguage={courseLanguages}
-        defaultGroups={groups}
-        defaultLanguages={languages}
-        defaultTab={tab}
-      />
-    </SectionLayout>
+    <CourseList
+      defaultCourseLanguage={coursesLanguage}
+      defaultGroups={groups}
+      defaultLanguages={languageFilter}
+      defaultTab={tab}
+    />
   )
 }

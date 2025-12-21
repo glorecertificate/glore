@@ -5,7 +5,7 @@ export const ToggleElementStatic = (props: SlateElementProps) => (
   <SlateElement {...props} className="pl-6">
     <div
       className={
-        '-left-0.5 absolute top-0 size-6 cursor-pointer select-none items-center justify-center rounded-md p-px text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4'
+        'absolute top-0 -left-0.5 size-6 cursor-pointer select-none items-center justify-center rounded-md p-px text-muted-foreground transition-colors hover:bg-accent [&_svg]:size-4'
       }
       contentEditable={false}
     >

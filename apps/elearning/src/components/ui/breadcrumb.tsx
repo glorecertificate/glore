@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Link, type LinkProps } from '@/components/ui/link'
 import { cn } from '@/lib/utils'
 
-export const Breadcrumb = ({ ...props }: React.ComponentProps<'nav'>) => (
-  <nav aria-label="breadcrumb" data-slot="breadcrumb" {...props} />
+export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>) => (
+  <nav aria-label="breadcrumb" className={cn('flex h-full grow items-center')} data-slot="breadcrumb" {...props} />
 )
 
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
@@ -29,7 +29,7 @@ export const BreadcrumbItem = ({ className, ...props }: React.ComponentProps<'li
   />
 )
 
-export const BreadcrumbLink = <T, V extends boolean>({ className, ...props }: LinkProps<T, V>) => (
+export const BreadcrumbLink = <T,>({ className, ...props }: LinkProps<T>) => (
   <BreadcrumbItem>
     <Button asChild className={cn('h-8 px-2 text-muted-foreground', className)} variant="ghost">
       <Link {...props} />

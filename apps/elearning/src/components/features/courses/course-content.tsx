@@ -2,13 +2,13 @@
 
 import { useCallback } from 'react'
 
+import { submitAnswers } from '@/actions/course'
 import { RichTextEditor } from '@/components/blocks/rich-text-editor'
 import { CourseAssessment } from '@/components/features/courses/course-assessment'
 import { CourseEvaluations } from '@/components/features/courses/course-evaluations'
 import { useCourse } from '@/components/features/courses/course-provider'
 import { CourseQuestions } from '@/components/features/courses/course-questions'
-import { submitAnswers } from '@/lib/actions/course'
-import type { Question, QuestionOption } from '@/lib/db/schema'
+import type { Question, QuestionOption } from '@/db/queries'
 import { cn } from '@/lib/utils'
 
 export const CourseContent = () => {

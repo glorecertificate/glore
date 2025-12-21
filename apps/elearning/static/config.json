@@ -1,0 +1,94 @@
+{
+  "metadata": {
+    "name": "GloRe Certificate",
+    "shortName": "GloRe",
+    "version": "0.5.0",
+    "slug": "glore",
+    "separator": "-",
+    "keywords": ["glore", "certificate", "elearning", "soft skills"],
+    "url": "https://elearning.glorecertificate.net",
+    "website": "https://glorecertificate.net",
+    "email": "info@glorecertificate.net",
+    "phone": "+390256568779",
+    "category": "E-Learning",
+    "themeColor": "#fefefe",
+    "authors": [
+      {
+        "name": "Gabriele Canepa",
+        "url": "https://gabrielecanepa.com"
+      }
+    ]
+  },
+  "app": {
+    "minSkills": 3,
+    "minRating": 3,
+    "mapsUrl": "https://maps.google.com/search",
+    "sidebarShortcut": "s"
+  },
+  "i18n": {
+    "locales": {
+      "en": {
+        "name": "English",
+        "flag": "🇬🇧"
+      },
+      "es": {
+        "name": "Español",
+        "flag": "🇪🇸"
+      },
+      "it": {
+        "name": "Italiano",
+        "flag": "🇮🇹"
+      }
+    },
+    "defaultLocale": "en",
+    "titleizedLocales": ["en"],
+    "messages": {
+      "defaultCourseTitle": {
+        "en": "New Course",
+        "es": "Nuevo Curso",
+        "it": "Nuovo Corso"
+      }
+    }
+  },
+  "theme": {
+    "modes": {
+      "system": true,
+      "light": true,
+      "dark": true
+    },
+    "defaultMode": "system",
+    "mobileBreakpoint": 768,
+    "colors": {
+      "light": {
+        "background": "#fefefe",
+        "foreground": "#0a0a0a",
+        "accent": "#f6f7f8",
+        "muted": "#ebebeb",
+        "neutral": "#e5e5e5",
+        "primary": "#f5f5f5",
+        "secondary": "#171717",
+        "brand": "#3bb5da",
+        "brandSecondary": "#a1a356",
+        "brandTertiary": "#004b88",
+        "success": "#009100",
+        "warning": "#eeb100",
+        "destructive": "#e7000b"
+      },
+      "dark": {
+        "background": "#0a0a0a",
+        "foreground": "#fafafa",
+        "accent": "#404040",
+        "muted": "#262626",
+        "neutral": "#a1a1a1",
+        "primary": "#262626",
+        "secondary": "#e5e5e5",
+        "brand": "#00a5ac",
+        "brandSecondary": "#a1a356",
+        "brandTertiary": "#004b88",
+        "success": "#009100",
+        "warning": "#eeb100",
+        "destructive": "#e7000b"
+      }
+    }
+  }
+}

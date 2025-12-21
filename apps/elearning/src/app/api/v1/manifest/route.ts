@@ -4,10 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 import type { Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
-import metadata from '@config/metadata'
-
-import { publicAsset } from '@/lib/assets'
+import { metadata } from '@static/config'
 import { i18n } from '@/lib/i18n'
+import { publicAsset } from '@/lib/storage'
 
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)

@@ -1,6 +1,6 @@
 'use client'
 
-// biome-ignore lint: style/noRestrictedImports
+// biome-ignore lint/style: noRestrictedImports
 import { usePathname as useNextPathname } from 'next/navigation'
 import type { AppRoutes } from 'next/types/routes'
 

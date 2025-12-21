@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
 
-import { getCurrentUser } from '@/lib/actions/user'
+import { getCurrentUser } from '@/actions/user'
 import { intlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = intlMetadata({
-  title: 'Layout.admin',
-})
+export const generateMetadata = () =>
+  intlMetadata({
+    title: 'Layout.admin',
+  })
 
 export default async ({ children }: LayoutProps<'/admin'>) => {
   const user = await getCurrentUser()

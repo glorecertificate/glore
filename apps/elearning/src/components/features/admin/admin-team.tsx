@@ -6,7 +6,8 @@ import { CheckIcon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon, Us
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { Spinner } from '@/components/icons/spinner'
+import { getTeamMembers } from '@/actions/user'
+import { Spinner } from '@/components/graphics/spinner'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -29,8 +30,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { getTeamMembers } from '@/lib/actions/user'
-import type { User } from '@/lib/db/schema'
+import type { User } from '@/db/queries'
 
 export const AdminTeam = () => {
   const t = useTranslations('Admin.team')
@@ -44,10 +44,15 @@ export const AdminTeam = () => {
   const [submitting, setSubmitting] = useState(false)
 
   const loadTeamMembers = useCallback(async () => {
-    const users = await getTeamMembers()
+    const { error } = await getTeamMembers()
+    if (error) {
+      toast.error(t('errorLoading'))
+      setLoading(false)
+      return
+    }
     setUsers(users)
     setLoading(false)
-  }, [])
+  }, [t, users])
 
   useEffect(() => void loadTeamMembers(), [loadTeamMembers])
 
@@ -204,7 +209,7 @@ export const AdminTeam = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[50px]">
+              <TableHead className="w-12.5">
                 <Checkbox />
               </TableHead>
               <TableHead>{t('tableHeaderName')}</TableHead>
@@ -260,7 +265,7 @@ export const AdminTeam = () => {
       </div>
 
       <Dialog onOpenChange={setIsAddUserOpen} open={isAddUserOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-125">
           <DialogHeader>
             <DialogTitle>{t('dialogTitle')}</DialogTitle>
             <DialogDescription>{t('dialogDescription')}</DialogDescription>

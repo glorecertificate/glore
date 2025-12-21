@@ -2,14 +2,14 @@
 
 import { NextResponse } from 'next/server'
 
-import { getSupabaseClient } from '@/lib/db/server'
+import { getDatabase } from '@/db/server'
 
 interface HealthStatus {
   database: boolean
 }
 
 export const GET = async () => {
-  const supabase = await getSupabaseClient()
-  const { error, status } = await supabase.from('users').select('').limit(1)
+  const db = await getDatabase()
+  const { error, status } = await db.from('users').select('').limit(1)
   return NextResponse.json<HealthStatus>({ database: !error }, { status })
 }

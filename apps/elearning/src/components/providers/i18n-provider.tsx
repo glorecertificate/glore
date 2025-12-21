@@ -4,9 +4,8 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { IntlProvider, type Locale, type Messages } from 'next-intl'
 
-import { useCookies } from '@/hooks/use-cookies'
+import { setLocaleCookie } from '@/actions/cookies'
 import { i18n } from '@/lib/i18n'
-import type { Cookie } from '@/lib/storage'
 
 export const I18nContext = createContext<{
   locale: Locale
@@ -15,16 +14,12 @@ export const I18nContext = createContext<{
 
 export interface I18nProviderProps
   extends React.PropsWithChildren<{
-    /** @default "NEXT_LOCALE" */
-    cookie?: Cookie
     locale?: Locale
     messages?: Messages
     timezone?: string
   }> {}
 
-export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', messages, timezone, ...props }: I18nProviderProps) => {
-  const cookies = useCookies()
-
+export const I18nProvider = ({ children, messages, timezone, ...props }: I18nProviderProps) => {
   const [locale, setLocaleState] = useState<Locale>(props.locale ?? i18n.defaultLocale)
   const timeZone = useMemo(() => timezone ?? Intl.DateTimeFormat(locale).resolvedOptions().timeZone, [locale, timezone])
 
@@ -35,7 +30,7 @@ export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', messages, timez
   const setMessages = useCallback(
     async (locale: Locale) => {
       if (messageStore[locale]) return
-      const { default: messages } = (await import(`@config/translations/${locale}`)) as {
+      const { default: messages } = (await import(`@static/translations/${locale}`)) as {
         default: Messages
       }
       setMessagesStore(prev => ({ ...prev, [locale]: messages }))
@@ -47,15 +42,15 @@ export const I18nProvider = ({ children, cookie = 'NEXT_LOCALE', messages, timez
     async (locale: Locale) => {
       await setMessages(locale)
       setLocaleState(locale)
-      if (cookie) cookies.set(cookie, locale)
+      await setLocaleCookie(locale)
     },
-    [cookie, cookies, setMessages]
+    [setMessages]
   )
 
   // biome-ignore lint: correctness/useExhaustiveDependencies
   useEffect(() => {
     void setMessages(locale)
-  }, [locale])
+  }, [])
 
   return (
     <I18nContext.Provider value={{ locale, setLocale }}>

@@ -1,16 +1,15 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useCallback, useId, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { PostgrestError } from '@supabase/supabase-js'
 import { Link2Icon, RotateCcwIcon, Trash2Icon } from 'lucide-react'
 import type { IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import z from 'zod'
+import { z } from 'zod'
 
 import { useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
@@ -21,14 +20,15 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import type { Enums } from '@/db/types'
+import { postgrestError } from '@/db/utils'
 import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
-import type { Enums } from '@/lib/db/types'
 
 export const CourseSettings = () => {
   const router = useRouter()
   const { localize } = useI18n()
-  const { createCourse, skillGroups, updateCourseSettings } = useSession()
+  const { addCourse, skillGroups, editCourseSettings } = useSession()
   const { course: initialCourse } = useCourse()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
@@ -86,34 +86,34 @@ export const CourseSettings = () => {
   const createSettings = useMemo(
     () => async (schema: z.infer<typeof formSchema>) => {
       try {
-        const course = await createCourse(schema)
+        const course = await addCourse(schema)
         toast.success(t('courseCreated'))
         router.push(`/courses/${course.slug}`)
       } catch (e) {
-        const error = e as PostgrestError
+        const error = postgrestError(e)
         console.error(error.message, error)
         toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
       }
     },
-    [createCourse, router, t]
+    [addCourse, router, t]
   )
 
   const updateSettings = useMemo(
     () => async (schema: z.infer<typeof formSchema>) => {
       try {
         if (!initialCourse?.id) return
-        const course = await updateCourseSettings(initialCourse.id, schema)
+        const course = await editCourseSettings(initialCourse.id, schema)
         toast.success(t('courseSettingsUpdated'))
         if (course.slug !== initialCourse.slug) {
           router.replace(`/courses/${course.slug}`)
         }
       } catch (e) {
-        const error = e as PostgrestError
+        const error = postgrestError(e)
         console.error(error.message, error)
         toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
       }
     },
-    [initialCourse?.id, initialCourse?.slug, router, t, updateCourseSettings]
+    [initialCourse?.id, initialCourse?.slug, router, t, editCourseSettings]
   )
 
   const onSubmit = useCallback(

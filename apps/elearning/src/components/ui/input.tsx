@@ -1,8 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import type { Icon } from '@/components/icons/types'
 import { Label } from '@/components/ui/label'
 import { useMounted } from '@/hooks/use-mounted'
+import type { Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface InputProps
@@ -49,16 +49,16 @@ export const Input = ({
       />
       <Label
         className={cn(
-          'peer-placeholder-shown:-translate-y-2 peer-focus:-translate-y-5 peer-[:not(:placeholder-shown)]:-translate-y-5 absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-[18.5px] peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive peer-focus:peer-aria-invalid:text-destructive peer-placeholder-shown:peer-aria-invalid:text-destructive/60',
+          'absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-[18.5px] peer-placeholder-shown:-translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:-translate-y-5 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:-translate-y-5 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive peer-focus:peer-aria-invalid:text-destructive peer-placeholder-shown:peer-aria-invalid:text-destructive/60',
           (open || (defaultOpen && !mounted)) &&
-            'peer-placeholder-shown:-translate-y-5 peer-placeholder-shown:top-2 peer-placeholder-shown:scale-95 peer-placeholder-shown:bg-background peer-focus:text-foreground peer-aria-invalid:text-destructive'
+            'peer-placeholder-shown:top-2 peer-placeholder-shown:-translate-y-5 peer-placeholder-shown:scale-95 peer-placeholder-shown:bg-background peer-focus:text-foreground peer-aria-invalid:text-destructive'
         )}
         htmlFor={id}
       >
         {placeholder}
       </Label>
       {Icon && (
-        <Icon className="-translate-y-1/2 absolute top-1/2 right-3 size-4 text-muted-foreground peer-focus/input:text-foreground" />
+        <Icon className="absolute top-1/2 right-3 size-4 -translate-y-1/2 text-muted-foreground peer-focus/input:text-foreground" />
       )}
     </div>
   )

@@ -5,8 +5,8 @@ import { useCallback, useMemo } from 'react'
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { Spinner } from '@/components/icons/spinner'
-import type { Icon } from '@/components/icons/types'
+import { Spinner } from '@/components/graphics/spinner'
+import type { Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps
@@ -44,10 +44,10 @@ export const Button = ({
   variant,
   ...props
 }: ButtonProps) => {
-  const Component = useMemo(() => (asChild ? Slot : 'button'), [asChild])
-  const hasLeftIcon = useMemo(() => !loading && iconPlacement === 'left', [loading, iconPlacement])
-  const hasRightIcon = useMemo(() => !loading && iconPlacement === 'right', [loading, iconPlacement])
-  const isDisabled = useMemo(() => disabled || loading, [disabled, loading])
+  const Component = asChild ? Slot : 'button'
+  const hasLeftIcon = !loading && iconPlacement === 'left'
+  const hasRightIcon = !loading && iconPlacement === 'right'
+  const isDisabled = disabled || loading
   const buttonTitle = useMemo(
     () => (loading ? loadingTitle : disabled ? disabledTitle : title),
     [loading, loadingTitle, disabled, disabledTitle, title]
@@ -217,7 +217,7 @@ export const buttonVariants = cva(
           'outline',
         ],
         disabled: false,
-        className: 'shadow-xs transition-shadow [:active,[data-pressed]]:shadow-none',
+        className: 'shadow-xs transition-all [:active,[data-pressed]]:shadow-none',
       },
       {
         variant: 'primary',

@@ -19,14 +19,29 @@
                 "message": "Parent imports are not allowed. Use path aliases instead."
               },
               {
+                "group": ["next/headers"],
+                "importNamePattern": "cookies",
+                "message": "Import from '@/actions/cookies' instead."
+              },
+              {
                 "group": ["next/navigation"],
                 "importNamePattern": "usePathname",
-                "message": "Import from @/hooks/use-pathname instead."
+                "message": "Import from '@/hooks/use-pathname' instead."
+              },
+              {
+                "group": ["next/router"],
+                "importNamePattern": "useRouter",
+                "message": "Import from 'next/navigation' instead."
               },
               {
                 "group": ["@udecode/cn"],
                 "importNamePattern": "cn",
-                "message": "Import from @/lib/utils instead."
+                "message": "Import from '@/lib/utils' instead."
+              },
+              {
+                "group": ["zod"],
+                "importNamePattern": "default",
+                "message": "Use the z named import instead."
               }
             ]
           }
@@ -43,12 +58,16 @@
             "groups": [
               ":NODE:",
               ":BLANK_LINE:",
-              ["next", "next/**", "react", "react/**"],
+              "react",
+              "react/**",
+              "next",
+              "next/**",
               ":BLANK_LINE:",
-              [":PACKAGE:", "!@config/**", "!@glore/**"],
+              [":PACKAGE:", "!@glore/**", "!@static/**"],
               ":BLANK_LINE:",
-              ["@config/**", "@glore/**"],
+              ["@glore/**"],
               ":BLANK_LINE:",
+              "@static/**",
               [":ALIAS:", ":PATH:"]
             ]
           }
@@ -63,7 +82,7 @@
   },
   "overrides": [
     {
-      "includes": ["scripts/**"],
+      "includes": ["src/actions/cookies.ts", "src/db/types.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -73,21 +92,11 @@
       }
     },
     {
-      "includes": ["src/components/**"],
+      "includes": ["src/components/ui/**"],
       "linter": {
         "rules": {
           "performance": {
             "noNamespaceImport": "off"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["src/components/blocks/**"],
-      "linter": {
-        "rules": {
-          "performance": {
-            "noImgElement": "off"
           }
         }
       }

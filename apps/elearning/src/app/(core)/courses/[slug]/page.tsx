@@ -1,23 +1,27 @@
 import { notFound } from 'next/navigation'
 
-import type { Locale } from 'next-intl'
 import { getLocale } from 'next-intl/server'
+import { createSearchParamsCache, parseAsStringEnum } from 'nuqs/server'
 
+import { findCourse } from '@/actions/course'
+import { getCurrentUser } from '@/actions/user'
 import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseProvider } from '@/components/features/courses/course-provider'
 import { CourseView } from '@/components/features/courses/course-view'
-import { enrollUser, findCourse } from '@/lib/actions/course'
-import { getCurrentUser } from '@/lib/actions/user'
 import { i18n, localize } from '@/lib/i18n'
-import { createIntlMetadata } from '@/lib/metadata'
+import { intlMetadata } from '@/lib/metadata'
+
+const { parse } = createSearchParamsCache({
+  lang: parseAsStringEnum(i18n.locales),
+})
 
 const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
-  const { slug } = (await params) ?? {}
-  if (!slug) return notFound()
+  const search = await parse(searchParams)
+  const { slug } = await params
 
   const user = await getCurrentUser()
   const course = await findCourse(slug)
-  if (!(course && user)) return notFound()
+  if (!course) return notFound()
 
   let step = course.lessons.length || 1
   if (user.isLearner) {
@@ -27,36 +31,30 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
     }
   }
 
-  const locale = await getLocale()
-  const { lang } = await searchParams
-  const language = typeof lang === 'string' && i18n.locales.includes(lang as Locale) ? (lang as Locale) : locale
+  const language = search.lang || (await getLocale())
 
-  return { course, language, locale, step, user }
+  return { course, language, step, user }
 }
 
 export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, locale, user } = await resolvePageData(props)
-  if (!(course && user)) return createIntlMetadata()
+  const { course, language, user } = await resolvePageData(props)
+  if (!(course && user)) return intlMetadata()
 
-  return createIntlMetadata({
-    title: localize(course.title, locale),
-    description: localize(course.description, locale),
+  return intlMetadata({
+    title: localize(course.title, language),
+    description: localize(course.description, language),
     translate: false,
   })
 }
 
 export default async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, language, locale, step, user } = await resolvePageData(props)
-
-  if (user.isLearner && !course.enrolled) {
-    await enrollUser(course.id, locale)
-  }
+  const { course, language, step, user } = await resolvePageData(props)
 
   return (
-    <RichTextEditorProvider readOnly={!user.canEdit}>
-      <CourseProvider course={course} language={language} step={step}>
+    <CourseProvider course={course} language={language} step={step}>
+      <RichTextEditorProvider readOnly={!user.canEdit}>
         <CourseView />
-      </CourseProvider>
-    </RichTextEditorProvider>
+      </RichTextEditorProvider>
+    </CourseProvider>
   )
 }

@@ -4,11 +4,10 @@ import { useCallback, useEffect } from 'react'
 
 import { useLocale } from 'next-intl'
 
-import metadata from '@config/metadata'
-
+import { metadata } from '@static/config'
 import { usePWA } from '@/hooks/use-pwa'
 import { i18n } from '@/lib/i18n'
-import { route } from '@/lib/navigation'
+import { MANIFEST_URL } from '@/lib/metadata'
 
 const metaSelectors = {
   title: ['[property="og:title"]', '[name="twitter:title"]'],
@@ -122,7 +121,7 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
     const html = document.querySelector('html')!
     html.setAttribute('lang', locale)
     updateMetaContent('locale', locale)
-    updateLinkSelector('manifest', `${route('/api/v1/manifest', { searchParams: { locale } })}`)
+    updateLinkSelector('manifest', `${MANIFEST_URL}?locale=${locale}`)
     updateMetaContent('alternateLocale', i18n.locales.filter(l => l !== locale)[0])
   }, [locale])
 

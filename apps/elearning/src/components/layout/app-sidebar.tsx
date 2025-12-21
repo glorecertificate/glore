@@ -1,8 +1,8 @@
 'use client'
 
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { redirect, useRouter } from 'next/navigation'
 import type { AppRoutes } from 'next/types/routes'
-import { Fragment, useCallback, useMemo, useState } from 'react'
 
 import {
   AwardIcon,
@@ -24,10 +24,11 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { sleep } from '@glore/utils/sleep'
-import { titleize } from '@glore/utils/string'
+import { titleize } from '@glore/utils/titleize'
 
-import { DashboardIcon } from '@/components/icons/dashboard'
-import type { Icon } from '@/components/icons/types'
+import { logout } from '@/actions/auth'
+import { setCookie } from '@/actions/cookies'
+import { DashboardIcon } from '@/components/graphics/dashboard-icon'
 import { useSession } from '@/components/providers/session-provider'
 import {
   AlertDialog,
@@ -71,10 +72,9 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
-import { logout } from '@/lib/actions/auth'
-import type { UserOrganization } from '@/lib/db/schema'
+import type { UserOrganization } from '@/db/queries'
 import { metadata } from '@/lib/metadata'
+import type { Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface SidebarItemProps extends SidebarMenuButtonProps {
@@ -95,7 +95,11 @@ const AppSidebarItem = ({
 }: SidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
 
-  const Comp = useMemo(() => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem), [asChild, subItem])
+  const Component = useMemo(
+    () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
+    [asChild, subItem]
+  )
+
   const isActivePath = route === activePath
 
   const isActive = useMemo(() => {
@@ -113,13 +117,14 @@ const AppSidebarItem = ({
   )
 
   return (
-    <Comp>
+    <Component>
       <SidebarMenuButton
         asChild
         className={cn(
           cn(
+            subItem ? 'text-[13px]' : 'py-4 font-medium',
             subItem &&
-              'border-transparent border-l-2 py-1.5 text-[13px] text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border',
+              'border-transparent border-l-2 py-1.5 text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border',
             className
           ),
           isActivePath && 'pointer-events-none'
@@ -128,7 +133,7 @@ const AppSidebarItem = ({
         onClick={handleClick}
         tooltip={label}
       >
-        <Link href={route} progress="primary">
+        <Link href={route} prefetch progress="primary">
           {route === '/' ? (
             <DashboardIcon className="size-4" colored />
           ) : Icon ? (
@@ -137,7 +142,7 @@ const AppSidebarItem = ({
           {label}
         </Link>
       </SidebarMenuButton>
-    </Comp>
+    </Component>
   )
 }
 
@@ -169,19 +174,20 @@ const AppSidebarCollapsible = ({ children, icon, label, route }: SidebarItemProp
 
 const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) => {
   const { setOrganization, user } = useSession()
-  const cookies = useCookies()
   const router = useRouter()
   const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Layout')
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
-      cookies.set('org', org.id)
-      router.push('/')
       setActivePath('/')
-      setTimeout(() => setOrganization(org), 200)
+      setTimeout(async () => {
+        setOrganization(org)
+        await setCookie('org', org.id)
+      }, 200)
+      router.push('/')
     },
-    [cookies, router, setActivePath, setOrganization]
+    [router, setActivePath, setOrganization]
   )
 
   return (
@@ -235,7 +241,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
                   <span className="flex items-center truncate font-semibold">
                     {org.name}
                     {org.id === organization.id && (
-                      <span className="mt-[1.5px] ml-1.5 inline-block size-[7px] rounded-full bg-green-500" />
+                      <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
                     )}
                   </span>
                   <span className="truncate font-normal text-muted-foreground text-xs">{titleize(org.role)}</span>
@@ -264,7 +270,7 @@ const AppSidebarMain = () => {
 
   return (
     <SidebarGroup>
-      <SidebarMenu className="mt-4">
+      <SidebarMenu className="mt-4 gap-3">
         <AppSidebarItem label={t('dashboard')} route="/" />
         <AppSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
         {showCertificates && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
@@ -285,8 +291,8 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
+  const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const onLinkClick = useCallback(() => {
     if (openMobile) {
@@ -297,20 +303,28 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
   const onLogoutClick = useCallback(async () => {
     setLogoutDialogOpen(true)
 
-    setIsLoggingOut(true)
+    setLoggingOut(true)
     onLinkClick()
 
     try {
       await logout()
     } catch {
       toast.error(t('logoutFailed'))
-      setIsLoggingOut(false)
+      setLoggingOut(false)
       return
     }
 
-    await sleep(200)
+    await sleep(500)
     redirect('/login')
   }, [onLinkClick, t])
+
+  useEffect(
+    () => () => {
+      setLoggingOut(false)
+      setLogoutDialogOpen(false)
+    },
+    []
+  )
 
   return (
     <SidebarMenu>
@@ -319,8 +333,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user rounded-lg border bg-popover py-7 shadow-sm transition-all duration-150 hover:bg-accent/50',
-                'overflow-hidden shadow-inner'
+                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-inner transition-all duration-150 hover:bg-accent/50'
               )}
               size="lg"
               variant="outline"
@@ -338,7 +351,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
                 </Avatar>
                 {organization?.avatar_url && (
                   <Image
-                    className="-right-1 -bottom-1 absolute rounded-full object-cover"
+                    className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
                     src={organization.avatar_url}
                     width={14}
@@ -444,10 +457,10 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
                     <AlertDialogDescription>{t('logoutConfirmMessage')}</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel disabled={isLoggingOut}>{t('logoutCancel')}</AlertDialogCancel>
+                    <AlertDialogCancel disabled={loggingOut}>{t('logoutCancel')}</AlertDialogCancel>
                     <Button
-                      className="transition-none"
-                      loading={isLoggingOut}
+                      className="transition-colors"
+                      loading={loggingOut}
                       loadingText={t('logoutLoading')}
                       onClick={onLogoutClick}
                       variant="destructive"

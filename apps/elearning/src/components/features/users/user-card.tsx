@@ -3,14 +3,14 @@ import { useCallback, useMemo } from 'react'
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
-import config from '@config/app'
-import type { Any } from '@glore/utils/types'
+import type { Any, HttpUrl } from '@glore/utils/types'
 
+import config from '@static/config'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import type { User } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import type { User } from '@/lib/db/schema'
 
 export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
   const { locale } = useI18n()
@@ -47,7 +47,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const locationUrl = useMemo(() => {
     if (!location) return
     const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
-    return `${config.urls.googleMaps}/search/${searchQuery}`
+    return `${config.app.mapsUrl}/${searchQuery}` as HttpUrl
   }, [location])
 
   const languages = useMemo(() => {
@@ -110,13 +110,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
             <div className="flex items-center gap-1.5">
               <MapPinIcon className="size-3.5" />
               {locationUrl ? (
-                <Link
-                  className="text-xs"
-                  href={locationUrl}
-                  target="_blank"
-                  title={tCommon('showOnMaps')}
-                  validate={false}
-                >
+                <Link className="text-xs" href={locationUrl} target="_blank" title={tCommon('showOnMaps')}>
                   {location}
                 </Link>
               ) : (

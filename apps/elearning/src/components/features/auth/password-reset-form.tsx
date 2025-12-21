@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import type { PostgrestError } from '@supabase/supabase-js'
 import { useTranslations } from 'next-intl'
 import { parseAsString, useQueryState } from 'nuqs'
 import { useForm } from 'react-hook-form'
@@ -11,26 +10,27 @@ import { z } from 'zod'
 
 import type { Enum } from '@glore/utils/types'
 
-import type { AuthView } from '@/components/features/auth/types'
+import { logout } from '@/actions/auth'
+import type { AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
-import { useCookies } from '@/hooks/use-cookies'
-import { logout, updateAuthUser, verifyAuthUser } from '@/lib/actions/auth'
+import { postgrestError } from '@/db/utils'
+import { useDatabase } from '@/hooks/use-database'
 import { PASSWORD_REGEX } from '@/lib/constants'
-import { isFormDisabled } from '@/lib/forms'
+import { defaultFormDisabled } from '@/lib/utils'
 
 export const PasswordResetForm = ({
   setErrored,
   setView,
   token,
 }: {
-  setErrored: (hasErrors: boolean) => void
+  setErrored: (errored: boolean) => void
   setView: (view: Enum<AuthView>) => void
   token?: string | null
 }) => {
+  const db = useDatabase()
   const [, setResetToken] = useQueryState('resetToken', parseAsString)
-  const cookies = useCookies()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -56,38 +56,43 @@ export const PasswordResetForm = ({
     },
   })
 
+  const disabled = defaultFormDisabled(form)
+  const errored = Object.keys(form.formState.errors).length > 0
+
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       const password = schema.password.trim()
 
       try {
         if (!token) throw new Error()
-        await verifyAuthUser({ type: 'email', token_hash: token })
-        await updateAuthUser({ password })
+
+        const verify = await db.auth.verifyOtp({ type: 'email', token_hash: token })
+        if (verify.error) throw verify.error
+
+        const user = await db.auth.updateUser({ password })
+        if (user.error) throw user.error
+
         setView('password_updated')
         setResetToken(null)
       } catch (e) {
-        const error = e as PostgrestError
+        const error = postgrestError(e)
         if (error.code === 'same_password') {
           form.setError('password', { message: t('passwordSameAsOld') })
-          return form.setFocus('password')
+          form.setFocus('password')
+          return
         }
         setView('invalid_password_reset')
-        cookies.delete('user')
         setResetToken(null)
-        return
       } finally {
         await logout()
       }
     },
-    [cookies.delete, form, setResetToken, setView, t, token]
+    [db, form, setResetToken, setView, token, t]
   )
 
-  const hasErrors = Object.keys(form.formState.errors).length > 0
-
   useEffect(() => {
-    setErrored(hasErrors)
-  }, [hasErrors, setErrored])
+    setErrored(errored)
+  }, [errored, setErrored])
 
   return (
     <>
@@ -109,7 +114,7 @@ export const PasswordResetForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={isFormDisabled(form)}
+            disabled={disabled}
             disabledTitle={t('insertNewPassword')}
             loading={form.formState.isSubmitting}
             type="submit"

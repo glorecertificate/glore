@@ -45,7 +45,7 @@ export const AvatarStack = <
   const { className: avatarClassName, ...avatarProps } = props.avatarProps ?? {}
 
   return (
-    <div className={cn('-space-x-0.5 flex hover:space-x-1', className)} {...props}>
+    <div className={cn('flex -space-x-0.5 hover:space-x-1', className)} {...props}>
       {avatars.map((avatar, i) => (
         <HoverCard closeDelay={50} key={i} openDelay={300}>
           <HoverCardTrigger asChild>

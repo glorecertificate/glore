@@ -5,8 +5,7 @@ import { useMemo } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import config from '@config/app'
-
+import config from '@static/config'
 import { useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'

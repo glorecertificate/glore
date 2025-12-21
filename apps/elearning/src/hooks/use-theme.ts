@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { useCookies } from '@/hooks/use-cookies'
+import { setCookie } from '@/actions/cookies'
 import type { ResolvedTheme, Theme } from '@/lib/types'
 
 const TRANSITION_CLASS = 'theme-transition'
@@ -15,8 +15,6 @@ let transitionTimeout: number | undefined
  * Extends the hook from `next-themes` to add cookie support and view transitions.
  */
 export const useTheme = () => {
-  const cookies = useCookies()
-
   const {
     setTheme: setNextTheme,
     resolvedTheme: resolvedNextTheme,
@@ -25,11 +23,11 @@ export const useTheme = () => {
   } = useNextTheme()
 
   const applyTheme = useCallback(
-    (theme: Theme) => {
+    async (theme: Theme) => {
       setNextTheme(theme)
-      cookies.set('theme', theme)
+      await setCookie('theme', theme)
     },
-    [cookies.set, setNextTheme]
+    [setNextTheme]
   )
 
   const setTheme = useCallback(

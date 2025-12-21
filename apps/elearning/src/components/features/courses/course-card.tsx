@@ -13,11 +13,12 @@ import {
   Trash2Icon,
   UserPenIcon,
 } from 'lucide-react'
+import type { IconName } from 'lucide-react/dynamic'
 import { type Locale, useFormatter, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { getCookie, setCookie } from '@/actions/cookies'
 import { UserCard } from '@/components/features/users/user-card'
-import type { IconName } from '@/components/icons/dynamic'
 import { useSession } from '@/components/providers/session-provider'
 import {
   AlertDialog,
@@ -51,9 +52,8 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
+import type { Course } from '@/db/queries'
 import { useI18n } from '@/hooks/use-i18n'
-import type { Course } from '@/lib/db/schema'
 import { i18n, localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
@@ -105,7 +105,7 @@ const CourseCardLanguage = ({
 
   return (
     <div className="flex flex-col items-center gap-0">
-      <Tooltip delayDuration={250}>
+      <Tooltip delayDuration={500}>
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent sideOffset={2} size="sm">
           {t(published ? 'previewIn' : 'previewDraftIn', { lang: displayLabel })}
@@ -126,9 +126,8 @@ export const CourseCard = ({
   }
   showState?: boolean
 }) => {
-  const cookies = useCookies()
   const { locale, localeItems } = useI18n()
-  const { deleteCourse: deleteSessionCourse, updateCourse, user } = useSession()
+  const { removeCourse, editCourse, user } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
   const f = useFormatter()
@@ -136,21 +135,23 @@ export const CourseCard = ({
   const [language, setLanguage] = useState(course.language)
 
   const updateLanguage = useCallback(
-    (value: Locale) => {
+    async (value: Locale) => {
       if (value === language) return
       setLanguage(value)
-      const languageCookie = cookies.get('course_locale') || {}
-      languageCookie[course.slug] = value
-      cookies.set('course_locale', languageCookie)
+      const languageCookie = await getCookie('courses_language')
+      if (languageCookie) {
+        languageCookie[course.slug] = value
+        await setCookie('courses_language', languageCookie)
+      }
     },
-    [cookies, course.slug, language]
+    [course.slug, language]
   )
 
   const updateIcon = useCallback(
     async (icon: IconName | null) => {
-      await updateCourse(course.id, { icon })
+      await editCourse(course.id, { icon })
     },
-    [course.id, updateCourse]
+    [course.id, editCourse]
   )
 
   const coursePath = `/courses/${course.slug}?lang=${language}` as const
@@ -192,7 +193,7 @@ export const CourseCard = ({
           <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
             {t('cardDescriptionMore')}
           </TooltipTrigger>
-          <TooltipContent className="max-w-[300px] text-sm" side="top" sideOffset={4}>
+          <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
             {translation}
           </TooltipContent>
         </Tooltip>
@@ -222,33 +223,33 @@ export const CourseCard = ({
 
   const archiveCourse = useCallback(async () => {
     try {
-      await updateCourse(course.id, { archived_at: new Date().toISOString() })
+      await editCourse(course.id, { archived_at: new Date().toISOString() })
       toast.success(t('courseArchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, updateCourse])
+  }, [course.id, t, editCourse])
 
   const unarchiveCourse = useCallback(async () => {
     try {
-      await updateCourse(course.id, { archived_at: null })
+      await editCourse(course.id, { archived_at: null })
       toast.success(t('courseUnarchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, updateCourse])
+  }, [course.id, t, editCourse])
 
   const deleteCourse = useCallback(async () => {
     try {
-      await deleteSessionCourse(course.id)
+      await removeCourse(course.id)
       toast.success(t('courseDeleted'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseDeletedError'))
     }
-  }, [course.id, t, deleteSessionCourse])
+  }, [course.id, t, removeCourse])
 
   useEffect(() => {
     if (activeLanguages.includes(language)) return
@@ -359,7 +360,7 @@ export const CourseCard = ({
             <Edit3Icon className="size-3.5 text-muted-foreground" />
             <div className="flex items-center gap-1.5">
               <span>{t('writtenBy')}</span>
-              <div className="-space-x-0.5 flex hover:space-x-1">
+              <div className="flex -space-x-0.5 hover:space-x-1">
                 {course.contributors.map(user => (
                   <HoverCard closeDelay={50} key={user.id} openDelay={300}>
                     <HoverCardTrigger asChild>

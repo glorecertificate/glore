@@ -1,11 +1,31 @@
 import type { createTranslator, NamespaceKeys, NestedKeyOf } from 'next-intl'
 
-import config from '@config/i18n'
-import type messages from '@config/translations/en'
+import config from '@static/config'
+import type messages from '@static/translations/en'
 
-type Locale = keyof typeof config.locales
+type Locale = keyof typeof config.i18n.locales
 type Messages = typeof messages
-type Formats = typeof config.formats
+
+interface Formats {
+  dateTime: {
+    short: {
+      day: 'numeric'
+      month: 'short'
+      year: 'numeric'
+    }
+  }
+  list: {
+    enumeration: {
+      style: 'long'
+      type: 'conjunction'
+    }
+  }
+  number: {
+    precise: {
+      maximumFractionDigits: 5
+    }
+  }
+}
 
 declare module 'next-intl' {
   interface AppConfig {
@@ -22,16 +42,20 @@ export type MessageKey = Exclude<NestedKeyOf<Messages>, keyof Messages>
 export type IntlRecord = Record<Locale, string>
 
 export const i18n = {
-  locales: Object.keys(config.locales) as Locale[],
-  defaultLocale: config.defaultLocale as Locale,
-  titleCaseLocales: Object.freeze(config.titleCaseLocales) as Locale[],
-  localeItems: Object.entries(config.locales).map(([locale, { flag, name }]) => ({
+  cookie: 'NEXT_LOCALE',
+  locales: Object.keys(config.i18n.locales) as Locale[],
+  defaultLocale: config.i18n.defaultLocale as Locale,
+  titleizedLocales: Object.freeze(config.i18n.titleizedLocales) as Locale[],
+  localeItems: Object.entries(config.i18n.locales).map(([locale, { flag, name }]) => ({
     displayLabel: name,
     icon: flag,
     label: name,
     value: locale as Locale,
   })),
-  placeholder: Object.keys(config.locales).reduce((record, locale) => ({ ...record, [locale]: '' }), {} as IntlRecord),
+  placeholder: Object.keys(config.i18n.locales).reduce(
+    (record, locale) => ({ ...record, [locale]: '' }),
+    {} as IntlRecord
+  ),
 } as const
 
 export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) => {
@@ -48,3 +72,5 @@ export const localizeDate = (input: Date | string | number, locale: Locale, form
         month: 'long',
         year: 'numeric',
       })
+
+export const isValidLocale = (value: string): value is Locale => i18n.locales.includes(value as Locale)

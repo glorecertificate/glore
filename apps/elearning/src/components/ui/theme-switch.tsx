@@ -3,12 +3,11 @@
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import type { Icon } from '@/components/icons/types'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
-import type { Theme } from '@/lib/types'
+import type { Icon, Theme } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {
@@ -38,7 +37,7 @@ export const ThemeSwitchButton = ({
   const content = (
     <Button
       className={cn(
-        'size-[26px] rounded-full border border-transparent px-1.5',
+        'size-6.5 rounded-full border border-transparent px-1.5',
         active && 'cursor-default border-border bg-accent/80 text-accent-foreground dark:bg-accent/50',
         isFirst && '-ml-px',
         isLast && '-mr-px',
@@ -57,7 +56,7 @@ export const ThemeSwitchButton = ({
     </Button>
   )
 
-  if (!tooltip) return content
+  if (!tooltip || active) return content
 
   return (
     <Tooltip>

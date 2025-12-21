@@ -1,5 +1,0 @@
-export * from './queries/certificate'
-export * from './queries/course'
-export * from './queries/lesson'
-export * from './queries/organization'
-export * from './queries/user'

@@ -4,16 +4,13 @@ import { PHASE_DEVELOPMENT_SERVER } from 'next/constants'
 import bundleAnalyzer from '@next/bundle-analyzer'
 import nextIntl from 'next-intl/plugin'
 
-const INTL_MESSAGES = './config/translations/en.json'
-const INTL_REQUEST_CONFIG = './src/i18n.ts'
-
 export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig }) => {
+  const tsconfigPath = phase === PHASE_DEVELOPMENT_SERVER ? 'tsconfig.json' : 'tsconfig.build.json'
+
   const nextConfig = {
     ...defaultConfig,
     cacheComponents: true,
-    experimental: {
-      turbopackFileSystemCacheForDev: true,
-    },
+    reactStrictMode: true,
     headers: () => [
       {
         headers: [
@@ -26,14 +23,12 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
       },
     ],
     images: {
-      remotePatterns: [new URL(process.env.SUPABASE_URL)],
+      remotePatterns: [new URL(process.env.STORAGE_URL)],
     },
-    reactStrictMode: true,
-    trailingSlash: false,
-    typedRoutes: true,
     typescript: {
-      tsconfigPath: phase === PHASE_DEVELOPMENT_SERVER ? 'tsconfig.json' : 'tsconfig.build.json',
+      tsconfigPath,
     },
+    typedRoutes: true,
   } satisfies NextConfig
 
   const plugins = [
@@ -41,9 +36,9 @@ export default (phase: string, { defaultConfig }: { defaultConfig: NextConfig })
       enabled: process.env.ANALYZE === 'true',
     }),
     nextIntl({
-      requestConfig: INTL_REQUEST_CONFIG,
+      requestConfig: './src/middleware/i18n.ts',
       experimental: {
-        createMessagesDeclaration: INTL_MESSAGES,
+        createMessagesDeclaration: './static/translations/en.json',
       },
     }),
   ]

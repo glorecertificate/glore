@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react'
 
-import { Spinner } from '@/components/icons/spinner'
+import { Spinner } from '@/components/graphics/spinner'
 import { cn } from '@/lib/utils'
 
 export interface SuspenseLoaderProps extends Partial<React.SuspenseProps>, React.HTMLAttributes<HTMLDivElement> {

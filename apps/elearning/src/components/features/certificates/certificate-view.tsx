@@ -5,11 +5,11 @@
 
 // import { useTranslations } from 'next-intl'
 
-// import config from '@config/app'
+// import config from '@static/config'
 
 // import { CertificateDocument } from '@/components/features/certificates/certificate-document'
-// import { CertificateIllustration } from '@/components/illustrations/certificate'
-// import { NoAccessIllustration } from '@/components/illustrations/no-access'
+// import { CertificateGraphic } from '@/components/illustrations/certificate'
+// import { NoAccessGraphic } from '@/components/illustrations/no-access'
 // import { useSession } from '@/components/providers/session-provider'
 // import { Button } from '@/components/ui/button'
 // import { Link } from '@/components/ui/link'
@@ -83,9 +83,9 @@
 //         ) : (
 //           <div className="mx-auto max-w-xl py-12 text-center">
 //             {canRequestCertificate ? (
-//               <CertificateIllustration className="mx-auto mb-6" width={300} />
+//               <CertificateGraphic className="mx-auto mb-6" width={300} />
 //             ) : (
-//               <NoAccessIllustration className="mx-auto mb-0" width={220} />
+//               <NoAccessGraphic className="mx-auto mb-0" width={220} />
 //             )}
 //             <h2 className="mb-2 font-bold text-lg">{noCertificateTitle}</h2>
 //             <p className="mb-5 text-muted-foreground">{noCertificateMessage}</p>

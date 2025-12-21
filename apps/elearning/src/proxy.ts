@@ -1,14 +1,9 @@
-'use server'
+import 'server-only'
 
-import { type NextProxy, type NextRequest, NextResponse, type ProxyConfig } from 'next/server'
+import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
-import { getLocale } from 'next-intl/server'
-
-import { decodeAsync } from '@glore/utils/encode'
-
-import { getSupabaseProxyClient } from '@/lib/db/server'
-import { AuthRoute } from '@/lib/navigation'
-import { cookiesConfig } from '@/lib/storage'
+import { i18n } from '@/lib/i18n'
+import { verifyAuthUser } from '@/middleware/auth'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -16,40 +11,20 @@ export const config: ProxyConfig = {
   ],
 }
 
-const verifyRequest = async (request: NextRequest) => {
-  try {
-    const userCookie = request.cookies.get(`${cookiesConfig.prefix ?? ''}user`)
-    if (!userCookie?.value) throw new Error()
-    const user = JSON.parse(await decodeAsync(userCookie.value))
-    if (!user) throw new Error()
-    return true
-  } catch {
-    const supabase = await getSupabaseProxyClient(request)
-    const { error } = await supabase.auth.getUser()
-    return !error
-  }
-}
-
 export const proxy: NextProxy = async request => {
-  const isValid = await verifyRequest(request)
-  const isAuthPath = Object.values(AuthRoute).some(route => request.nextUrl.pathname.startsWith(route))
+  const { headers, nextUrl } = request
 
-  const response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
+  const response = NextResponse.next({ request: { headers } })
 
-  const locale = await getLocale()
-  const lang = new URL(request.url).searchParams.get('lang')
-  if (lang && lang !== locale) response.headers.append('Set-Cookie', `NEXT_LOCALE=${lang}`)
+  const locale = nextUrl.searchParams.get('locale') ?? nextUrl.searchParams.get('lang')
+  if (locale) response.cookies.set(i18n.cookie, locale)
 
   try {
-    if (isAuthPath) {
-      return isValid ? NextResponse.redirect(new URL('/', request.url)) : response
-    }
-    return isValid ? response : NextResponse.redirect(new URL('/login', request.url))
+    await verifyAuthUser(request)
+    if (request.nextUrl.pathname !== '/login') return response
+    return NextResponse.redirect(new URL('/', request.url))
   } catch {
-    return response
+    if (request.nextUrl.pathname === '/login') return response
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 }

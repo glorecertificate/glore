@@ -6,20 +6,19 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useLocale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import z from 'zod'
+import { z } from 'zod'
 
 import type { Enum } from '@glore/utils/types'
 
-import type { AuthView } from '@/components/features/auth/types'
+import { setCookie } from '@/actions/cookies'
+import { findUserEmail } from '@/actions/user'
+import type { AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useCookies } from '@/hooks/use-cookies'
-import { requestPasswordReset } from '@/lib/actions/auth'
-import { findUserEmail } from '@/lib/actions/user'
-import type { SupabaseError } from '@/lib/db/utils'
-import { isFormDisabled, isValidUsername } from '@/lib/forms'
-import { cn } from '@/lib/utils'
+import { postgrestError } from '@/db/utils'
+import { useDatabase } from '@/hooks/use-database'
+import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
   defaultUsername,
@@ -32,7 +31,7 @@ export const PasswordRequestForm = ({
   setUsername: (name?: string) => void
   setView: (view: Enum<AuthView>) => void
 }) => {
-  const cookies = useCookies()
+  const db = useDatabase()
   const locale = useLocale()
   const t = useTranslations('Auth')
 
@@ -60,6 +59,8 @@ export const PasswordRequestForm = ({
     },
   })
 
+  const disabled = defaultFormDisabled(form)
+
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       const username = schema.username.trim()
@@ -68,24 +69,25 @@ export const PasswordRequestForm = ({
       try {
         email = await findUserEmail(username)
       } catch (e) {
-        const error = e as SupabaseError
-        if (error.code === 'PGRST116')
-          return form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
-        return toast.error(t('networkError'))
+        const error = postgrestError(e)
+        if (error.code !== 'PGRST116') return toast.error(t('networkError'))
+        return form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
       }
 
       try {
-        await requestPasswordReset(email, locale)
+        const localeParam = locale ? `?locale=${locale}` : ''
+        const redirectTo = `${window.location.origin}${localeParam}`
+        const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo })
+        if (error) throw error
       } catch (e) {
-        const error = e as SupabaseError
-        console.error(error.message)
+        console.error('Error requesting password reset', e)
         return toast.error(t('networkError'))
       }
 
       setView('email_sent')
-      cookies.set('login_user', username)
+      await setCookie('login_user', username)
     },
-    [cookies, form, locale, setView, t]
+    [db, form, locale, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
@@ -126,7 +128,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!defaultUsername && isFormDisabled(form)}
+            disabled={!defaultUsername && disabled}
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

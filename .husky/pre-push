@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+commitlint --from origin/main --to HEAD --verbose
+pnpm run build
+pnpm run check

@@ -1,12 +1,5 @@
 {
-  "include": [
-    ".next/dev/types/**/*.ts",
-    ".next/types/**/*.ts",
-    "scripts/**/*.ts",
-    "src/**/*.ts",
-    "supabase/functions/**/*.ts",
-    "*.ts"
-  ],
+  "include": [".next/dev/types/**/*.ts", ".next/types/**/*.ts", "scripts", "src", "supabase/functions", "*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,

@@ -6,11 +6,7 @@ export default {
   rules: {
     'body-max-line-length': [RuleConfigSeverity.Disabled],
     'footer-max-line-length': [RuleConfigSeverity.Error, 'always', 120],
-    'scope-enum': [
-      RuleConfigSeverity.Error,
-      'always',
-      ['deps', 'deps-dev', 'dev', 'infra', 'release', 'security', 'ui'],
-    ],
+    'scope-enum': [RuleConfigSeverity.Error, 'always', ['deps', 'deps-dev', 'dev', 'release', 'security']],
     'subject-case': [RuleConfigSeverity.Error, 'always', 'sentence-case'],
   },
 } satisfies UserConfig

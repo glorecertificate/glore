@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+case "$(cat "$1")" in
+  "[tmp]"*|\#*)
+    exit 0
+    ;;
+  *)
+    commitlint --edit "$1"
+    biome check --fix --unsafe --no-errors-on-unmatched
+    git add . >/dev/null
+    ;;
+esac

@@ -27,14 +27,16 @@ Be direct, rational, and unfiltered. Prioritize correctness → clarity → brev
 
 ```sh
 pnpm install      # Install dependencies
-pnpm dev          # Start Next.js dev server
+pnpm dev          # Start all dev servers
+pnpm dev:app      # Start Next.js dev server
+pnpm dev:edge     # Start Supabase edge functions (localtunnel)
+pnpm dev:email    # Preview email templates
 pnpm build        # Production build
+pnpm start        # Start production server
 pnpm lint         # Check with Biome
 pnpm lint:fix     # Auto-fix lint issues
 pnpm check        # Type-check + translations validation
 pnpm typegen      # Generate Supabase types → supabase/types.ts
-pnpm edge         # Start Supabase edge functions (localtunnel)
-pnpm email        # Preview email templates
 ```
 
 ## Project Structure
@@ -144,7 +146,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 **Patterns:**
 - Server Components by default, `'use client'` only for interactivity
 - Use `cn()` from `@/lib/utils` for conditional classes
-- Accessibility (a11y) is non-negotiable
+- Accessibility (a11y) first
 
 ### Internationalization
 
@@ -153,17 +155,17 @@ Use [next-intl](https://next-intl.dev/docs):
 ```tsx
 import { getTranslations } from 'next-intl/server'
 
-export default async function Page() {
+export const Page = () => {
   const t = await getTranslations('Dashboard')
   return <h1>{t('title')}</h1>
 }
 ```
 
-Translations live in `config/translations/{locale}.json`.
+**Translations** live in `config/translations/{locale}.json`, user-facing strings must be ALWAYS localized.
 
 ## Skills
 
-Reference `.github/skills/` for specialized guidance:
+Reference `.claude/skills/` or `.github/skills/` for specialized guidance:
 
 | Skill | Use When |
 |-------|----------|
@@ -193,15 +195,18 @@ const users = new Map<string, User>()
 ### React & Next.js
 
 ```tsx
-// ✅ Default to Server Components
-async function Page() {
+// ✅ Default to Server Components and arrow functions
+const Content: React.FC<{ data: DataType }> = ({ data }) => {
+  return <div>{data.value}</div>
+}
+export default async () => {
   const data = await fetchData()
-  return <Display data={data} />
+  return <Content data={data} />
 }
 
 // ✅ 'use client' only when necessary
 'use client'
-function InteractiveWidget() {
+const InteractiveWidget = () => {
   const [state, setState] = useState(false)
   return <button onClick={() => setState(!state)} />
 }
@@ -227,7 +232,7 @@ Optional body (one sentence, max 20 words, ends with period).
 
 **Types**: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`
 
-**Scopes**: `app`, `db`, `ui`, `deps`, `deps-dev`, `infra`, `release`
+**Scopes**: `deps`, `deps-dev`, `dev`, `release`, `security`
 
 ## Boundaries
 
@@ -240,7 +245,7 @@ Optional body (one sentence, max 20 words, ends with period).
 - Use `@/` path alias for internal imports
 - Reference `supabase/types.ts` for database schema
 
-### ⚠️ Ask First
+### ⚠️ Ask First (unless requested)
 
 - Adding new dependencies
 - Modifying database schema

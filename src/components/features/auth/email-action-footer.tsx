@@ -30,7 +30,7 @@ export const EmailActionFooter = () => {
         icon={OutlookLogoIcon}
         iconPlacement="left"
         size="lg"
-        title={`${t('open')} OutlookLogo`}
+        title={`${t('open')} Outlook`}
         variant="outline"
       >
         <Link href="https://outlook.office.com/mail" target="_blank">

@@ -1,11 +1,13 @@
-# See https://help.github.com/articles/ignoring-files for more about ignoring files.
-
-.next/
-.turbo/
-.vercel/
-node_modules/
-private/
+.husky
+.next
+.turbo
+.vercel
+node_modules
+private
+supabase/*
+!supabase/functions
 .DS_Store
+*.d.ts
 *.d.json.ts
 *.tsbuildinfo
 .env

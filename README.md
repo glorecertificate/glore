@@ -5,7 +5,6 @@
   <a href="https://github.com/glorecertificate/glore/releases"><img src="https://img.shields.io/github/package-json/v/glorecertificate/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
   <a href="https://github.com/glorecertificate/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
   <a href="https://github.com/glorecertificate/glore/deployments/Preview"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Preview?logo=vercel&label=Preview&labelColor=%2324292e"></a>
-  <a href="https://github.com/glorecertificate/glore/actions/workflows/ci.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
 </div>
 <br>
@@ -40,8 +39,8 @@ Switch to the project directory, copy the example env files and fill in the requ
 
 ```sh
 cd glore
-cp .env.example .env # CLIs
-cp apps/elearning/.env.example apps/elearning/.env
+cp .env.example .env
+cp .env.local.example .env.local
 ```
 
 ### Running the application

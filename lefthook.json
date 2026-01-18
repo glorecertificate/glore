@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/lefthook/schema.json",
+  "commit-msg": {
+    "commands": {
+      "lint-commit": {
+        "run": "commitlint --edit {1}",
+        "priority": 1
+      },
+      "check": {
+        "run": "biome check --no-errors-on-unmatched {staged_files}",
+        "priority": 2
+      }
+    }
+  },
+  "pre-push": {
+    "commands": {
+      "lint-commits": {
+        "run": "commitlint --from origin/main --verbose",
+        "priority": 1
+      },
+      "typegen": {
+        "run": "pnpm run typegen",
+        "priority": 2
+      },
+      "check": {
+        "run": "pnpm run check",
+        "priority": 3
+      }
+    }
+  }
+}

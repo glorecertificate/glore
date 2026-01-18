@@ -1,4 +1,0 @@
-*.d.ts
-*.d.json.ts
-/supabase/*
-!/supabase/functions/

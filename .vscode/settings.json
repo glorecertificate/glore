@@ -16,27 +16,20 @@
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
-  "editor.tabSize": 2,
   "eslint.enable": false,
   "files.associations": {
     "*.css": "tailwindcss"
   },
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.localesPaths": ["./apps/elearning/static/translations"],
+  "i18n-ally.localesPaths": ["./config/translations"],
   "i18n-ally.namespace": true,
-  "json.schemas": [
-    {
-      "fileMatch": ["biome.json"],
-      "url": "./node_modules/@biomejs/biome/configuration_schema.json"
-    }
-  ],
   "prettier.enable": false,
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"]
   ],
-  "tailwindCSS.experimental.configFile": "./apps/elearning/src/app/globals.css",
+  "tailwindCSS.experimental.configFile": "./src/app/globals.css",
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   },

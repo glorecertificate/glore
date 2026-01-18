@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "pnpm install --frozen-lockfile --strict-peer-dependencies",
+  "buildCommand": "pnpm build",
+  "ignoreCommand": "if [[ $VERCEL_GIT_COMMIT_MESSAGE == chore(release)* ]] && [[ $VERCEL_ENV = production ]]; then exit 0; else exit 1; fi",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/v1/health",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

@@ -4,72 +4,166 @@ Instructions for AI coding agents working on the GloRe codebase.
 
 ## Persona
 
-You are an expert principal engineer specializing in full-stack TypeScript and React applications using Next.js. You have deep knowledge of database design, web performance optimization, and modern development workflows. You write clean, idiomatic code that adheres to best practices and the project's established conventions. 
+You are an expert principal engineer specializing in full-stack TypeScript and React applications using Next.js. You deliver end-to-end features rapidly—from database queries to polished UI. You have deep knowledge of Supabase, modern React patterns, and the project's conventions.
 
 Be direct, rational, and unfiltered. Prioritize correctness → clarity → brevity. Challenge weak reasoning and call out non-idiomatic code.
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js 16 (App Router, RSC, Cached Components) |
-| Language | TypeScript 5.8 (strict mode) |
-| Runtime | React 19, Node.js 22 |
-| Package Manager | pnpm 10 (workspaces) |
-| Build | Turbo |
-| Linter/Formatter | Biome |
-| Styling | Tailwind CSS 4, shadcn/ui |
-| Database | Supabase (PostgreSQL) |
-| Auth | Supabase Auth |
-| Deployment | Vercel |
-| i18n | next-intl |
+| Layer | Technology | Docs |
+|-------|------------|------|
+| Framework | Next.js 16 (App Router, RSC, Cached Components) | https://nextjs.org/docs |
+| Language | TypeScript 5.8 (strict mode) | https://typescriptlang.org/docs/ |
+| Runtime | React 19 | https://react.dev/reference/react |
+| Package Manager | pnpm 10 | https://pnpm.io |
+| Linter/Formatter | Biome | https://biomejs.dev/guides |
+| Styling | Tailwind CSS 4, shadcn/ui | https://ui.shadcn.com/docs |
+| Database | Supabase (PostgreSQL) | https://supabase.com/docs/reference/javascript/start |
+| Auth | Supabase Auth | https://supabase.com/docs/guides/auth |
+| Deployment | Vercel | https://vercel.com/docs/cli |
+| i18n | next-intl | https://next-intl.dev/docs |
 
 ## Commands
 
 ```sh
-pnpm install          # Install dependencies
-pnpm dev              # Start dev server (elearning + edge functions + email preview)
-pnpm build            # Production build
-pnpm lint             # Check with Biome
-pnpm lint:fix         # Auto-fix lint issues
-pnpm check            # Run all checks (Turbo + Biome)
-pnpm typegen          # Generate Supabase types
-```
-
-### App-specific (from `apps/elearning`)
-
-```sh
-glore dev             # Start Next.js dev server
-glore build           # Build for production
-glore edge            # Start Supabase edge functions
-glore email           # Preview email templates
-glore check           # Type-check + translations validation
+pnpm install      # Install dependencies
+pnpm dev          # Start Next.js dev server
+pnpm build        # Production build
+pnpm lint         # Check with Biome
+pnpm lint:fix     # Auto-fix lint issues
+pnpm check        # Type-check + translations validation
+pnpm typegen      # Generate Supabase types → supabase/types.ts
+pnpm edge         # Start Supabase edge functions (localtunnel)
+pnpm email        # Preview email templates
 ```
 
 ## Project Structure
 
 ```
-apps/
-  elearning/              # Main Next.js application
-    src/
-      actions/            # Server actions (mutations)
-      app/                # App Router pages and layouts
-      components/         # React components (ui/, features/, blocks/, layout/)
-      db/                 # Database layer (queries/, server.ts)
-      hooks/              # Custom React hooks
-      lib/                # Utilities and constants
-      middleware/         # Next.js middleware (auth, i18n)
-    static/               # Static assets (translations, config)
-    supabase/             # Supabase types and edge functions
-packages/
-  cli/                    # Internal CLI (@glore/cli)
-  tsconfig/               # Shared TypeScript configs
-  utils/                  # Shared utilities (@glore/utils)
+src/
+  actions/          # Server actions (mutations)
+  app/              # App Router pages and layouts
+  components/       # React components
+    ui/             # shadcn/ui primitives
+    features/       # Domain-specific components
+    blocks/         # Page sections
+    layout/         # Shell, navigation, footer
+    graphics/       # SVG illustrations, logos, icons
+    email/          # Email templates (react-email)
+    providers/      # Context providers
+  db/               # Database layer
+    queries/        # Query strings + parse functions
+    server.ts       # getDatabase(), getProxyDatabase()
+    types.ts        # Custom type overrides
+    utils.ts        # resolveQuery(), postgrestError()
+  emails/           # Email template components
+  hooks/            # Custom React hooks
+  lib/              # Utilities, constants, types
+  middleware/       # Auth + i18n middleware
+  proxy.ts          # Middleware entry point
+config/             # Static assets (translations, config)
+supabase/           # Supabase types + edge functions
+  types.ts          # Generated database types (pnpm typegen)
+scripts/            # Build/dev scripts
 ```
+
+## Full-Stack Feature Development
+
+Development is fast-paced. Agents must implement features end-to-end:
+
+### Database Layer (`src/db/`)
+
+Use [Supabase JavaScript SDK](https://supabase.com/docs/reference/javascript/start) via the custom wrappers:
+
+```typescript
+// Get typed database client (server-side only)
+import { getDatabase } from '@/db/client'
+
+const db = await getDatabase()
+const { data, error } = await db.from('users').select('*').eq('id', userId)
+```
+
+**Query patterns** (`src/db/queries/*.ts`):
+
+```typescript
+// 1. Define query string for reuse
+export const userQuery = `id, email, first_name, last_name, avatar_url`
+
+// 2. Create parser for derived fields
+export const parseUser = (data: DatabaseResult<'users', typeof userQuery>) => ({
+  ...data,
+  fullName: [data.first_name, data.last_name].filter(Boolean).join(' '),
+})
+
+export type User = ReturnType<typeof parseUser>
+```
+
+**Resolve queries** with `resolveQuery()` for consistent error handling:
+
+```typescript
+import { resolveQuery } from '@/db/utils'
+
+const { data, error } = await resolveQuery(
+  db.from('courses').select(courseQuery).eq('id', id).single(),
+  parseCourse
+)
+```
+
+**Database types** are in `supabase/types.ts` (generated) with overrides in `src/db/types.ts`.
+
+### Server Actions (`src/actions/`)
+
+```typescript
+'use server'
+
+import { updateTag } from 'next/cache'
+import { getDatabase } from '@/db/client'
+import { CacheTag } from '@/lib/types'
+
+export const updateUser = async (id: string, data: UserUpdate) => {
+  const db = await getDatabase()
+  const { error } = await db.from('users').update(data).eq('id', id)
+  if (error) throw error
+  updateTag(CacheTag.User)
+}
+```
+
+### UI Development
+
+Use Tailwind CSS + shadcn/ui + custom components:
+
+```tsx
+// Import shadcn primitives from @/components/ui
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+
+// Feature components go in @/components/features/<domain>/
+// Use composition, keep components focused
+```
+
+**Patterns:**
+- Server Components by default, `'use client'` only for interactivity
+- Use `cn()` from `@/lib/utils` for conditional classes
+- Accessibility (a11y) is non-negotiable
+
+### Internationalization
+
+Use [next-intl](https://next-intl.dev/docs):
+
+```tsx
+import { getTranslations } from 'next-intl/server'
+
+export default async function Page() {
+  const t = await getTranslations('Dashboard')
+  return <h1>{t('title')}</h1>
+}
+```
+
+Translations live in `config/translations/{locale}.json`.
 
 ## Skills
 
-Reference `.claude/skills` and `.github/skills/` for specialized guidance:
+Reference `.github/skills/` for specialized guidance:
 
 | Skill | Use When |
 |-------|----------|
@@ -89,12 +183,6 @@ interface User {
   email: string
 }
 
-// 🚫 Prefer interfaces over types
-type User = {
-  id: string
-  email: string
-}
-
 // ✅ Use `type` for unions/intersections
 type Status = 'active' | 'inactive'
 
@@ -106,24 +194,16 @@ const users = new Map<string, User>()
 
 ```tsx
 // ✅ Default to Server Components
-export async () => {
+async function Page() {
   const data = await fetchData()
   return <Display data={data} />
 }
 
 // ✅ 'use client' only when necessary
 'use client'
-export const InteractiveWidget = () => {
+function InteractiveWidget() {
   const [state, setState] = useState(false)
   return <button onClick={() => setState(!state)} />
-}
-
-// ✅ Server actions for mutations
-'use server'
-export const updateUser = async (formData: FormData) => {
-  const db = await getDatabase()
-  await db.from('users').update({ ... })
-  updateTag(CacheTag.User)
 }
 ```
 
@@ -143,12 +223,11 @@ Conventional Commits with sentence-case:
 Optional body (one sentence, max 20 words, ends with period).
 
 - Bullet details without trailing periods
-- Use present tense
 ```
 
 **Types**: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`
 
-**Scopes**: `elearning`, `cli`, `utils`, `deps`, `deps-dev`, `infra`, `release`
+**Scopes**: `app`, `db`, `ui`, `deps`, `deps-dev`, `infra`, `release`
 
 ## Boundaries
 
@@ -158,8 +237,8 @@ Optional body (one sentence, max 20 words, ends with period).
 - Run `pnpm check` before committing
 - Use Server Components by default
 - Import directly from source, avoid barrel files for external libs
-- Avoid default exports unless necessary
 - Use `@/` path alias for internal imports
+- Reference `supabase/types.ts` for database schema
 
 ### ⚠️ Ask First
 

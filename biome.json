@@ -1,7 +1,7 @@
 {
-  "root": true,
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "!.next", "!.turbo", "!.vercel", "!dist", "!node_modules"],
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "!.next", "!node_modules", "!.vercel"],
     "ignoreUnknown": true
   },
   "vcs": {
@@ -22,7 +22,9 @@
   },
   "linter": {
     "domains": {
-      "project": "recommended"
+      "project": "recommended",
+      "react": "all",
+      "next": "all"
     },
     "rules": {
       "recommended": true,
@@ -35,6 +37,7 @@
         "useSemanticElements": "off"
       },
       "complexity": {
+        "noBannedTypes": "off",
         "noForEach": "error",
         "noImportantStyles": "off",
         "noUselessStringConcat": "error",
@@ -71,7 +74,10 @@
             "ignoreRestSiblings": true
           }
         },
-        "useExhaustiveDependencies": "error",
+        "useExhaustiveDependencies": {
+          "level": "error",
+          "fix": "safe"
+        },
         "useParseIntRadix": {
           "level": "error",
           "fix": "safe"
@@ -107,8 +113,33 @@
           "options": {
             "patterns": [
               {
-                "group": ["../*"],
+                "group": ["../**"],
                 "message": "Parent imports are not allowed. Use path aliases instead."
+              },
+              {
+                "group": ["next/headers"],
+                "importNamePattern": "cookies",
+                "message": "Import from '@/actions/cookies' instead."
+              },
+              {
+                "group": ["next/navigation"],
+                "importNamePattern": "usePathname",
+                "message": "Import from '@/hooks/use-pathname' instead."
+              },
+              {
+                "group": ["next/router"],
+                "importNamePattern": "useRouter",
+                "message": "Import from 'next/navigation' instead."
+              },
+              {
+                "group": ["@udecode/cn"],
+                "importNamePattern": "cn",
+                "message": "Import from '@/lib/utils' instead."
+              },
+              {
+                "group": ["zod"],
+                "importNamePattern": "default",
+                "message": "Use the z named import instead."
               }
             ]
           }
@@ -152,7 +183,7 @@
         "useImportType": {
           "level": "on",
           "options": {
-            "style": "auto"
+            "style": "inlineType"
           }
         },
         "useSelfClosingElements": "error",
@@ -194,13 +225,29 @@
         "organizeImports": {
           "level": "on",
           "options": {
-            "groups": [":NODE:", ":BLANK_LINE:", ":PACKAGE:", ":BLANK_LINE:", [":ALIAS:", ":PATH:"]],
-            "identifierOrder": "lexicographic"
+            "groups": [
+              ":NODE:",
+              ":BLANK_LINE:",
+              "react",
+              "react/**",
+              "next",
+              "next/**",
+              ":BLANK_LINE:",
+              [":PACKAGE:", "!@config/**"],
+              ":BLANK_LINE:",
+              "@config/**",
+              [":ALIAS:", ":PATH:"]
+            ]
           }
         },
         "useSortedAttributes": "on",
         "useSortedProperties": "on"
       }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
     }
   },
   "javascript": {
@@ -235,11 +282,31 @@
       }
     },
     {
-      "includes": ["packages/**"],
+      "includes": ["src/actions/cookies.ts", "src/db/client.ts", "src/db/types.ts"],
       "linter": {
         "rules": {
           "style": {
             "noRestrictedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/lib/types.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noNamespaceImport": "off"
           }
         }
       }

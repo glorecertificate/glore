@@ -1,7 +1,0 @@
-{
-  "display": "@glore/tsconfig/react",
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "types": ["react"]
-  }
-}

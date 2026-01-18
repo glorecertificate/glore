@@ -1,14 +1,14 @@
-import type { Config } from 'release-it'
+import { type Config } from 'release-it'
 
 export default {
   git: {
     commitMessage: 'chore(release): v${version}',
     push: true,
+    pushArgs: ['--follow-tags', '--no-verify'],
     requireBranch: 'main',
+    requireCleanWorkingDir: true,
     requireUpstream: true,
     tagName: 'v${version}',
-    pushArgs: ['--follow-tags', '--force'],
-    requireCleanWorkingDir: true,
   },
   github: {
     release: true,
@@ -19,7 +19,10 @@ export default {
   },
   plugins: {
     '@release-it/bumper': {
-      out: ['./apps/*/config/metadata.json'],
+      out: {
+        file: './config/app.json',
+        path: 'metadata.version',
+      },
     },
     '@release-it/conventional-changelog': {
       header: '# Changelog',
@@ -42,5 +45,8 @@ export default {
         ].map(type => ({ ...type, hidden: false })),
       },
     },
+  },
+  hooks: {
+    'before:release': 'biome format --fix && git add .',
   },
 } satisfies Config

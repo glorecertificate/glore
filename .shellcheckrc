@@ -1,4 +1,0 @@
-# https://shellcheck.net
-external-sources=true
-disable=SC1091
-disable=SC2155

@@ -2,7 +2,7 @@
   "metadata": {
     "name": "GloRe Certificate",
     "shortName": "GloRe",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "slug": "glore",
     "separator": "-",
     "keywords": ["glore", "certificate", "elearning", "soft skills"],

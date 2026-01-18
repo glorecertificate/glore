@@ -6,6 +6,14 @@ import { type Theme } from '@/lib/types'
 
 export const COOKIE_PREFIX = process.env.COOKIE_PREFIX ?? ''
 
+export const COOKIE_OPTIONS = {
+  httpOnly: true,
+  maxAge: 60 * 60 * 24 * 7,
+  path: '/',
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production',
+} as const
+
 export interface Cookies {
   courseListGroups: string[]
   courseListLanguage: Locale[]
@@ -21,13 +29,13 @@ export interface Cookies {
 
 export type CookieName = keyof Cookies
 export type CookieValue<T> = T extends CookieName ? Cookies[T] | undefined : undefined
+export type CookieOptions = Omit<CookieInit, 'name' | 'value'>
 
 export const parseCookieValue = <T extends CookieName>(value?: string | undefined, fallback?: CookieValue<T>) => {
   try {
-    if (!value) throw Error
-    value = JSON.parse(value)
+    if (!value) throw Error()
+    return JSON.parse(value)
   } catch {
-    value = fallback as string
+    return (value ?? fallback) as CookieValue<T>
   }
-  return value as CookieValue<T>
 }

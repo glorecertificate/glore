@@ -5,7 +5,6 @@ import { AppHeader } from '@/components/layout/app-header'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SuspenseLoader } from '@/components/layout/suspense-loader'
 import { SessionProvider } from '@/components/providers/session-provider'
-import { ProgressBar } from '@/components/ui/progress-bar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
 const CoreLayout = async ({
@@ -43,7 +42,6 @@ export default async (props: LayoutProps<'/'>) => {
 
   return (
     <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
-      <ProgressBar />
       <CoreLayout organizationId={organizationId} {...props} />
     </SidebarProvider>
   )

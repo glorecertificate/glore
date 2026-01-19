@@ -78,7 +78,7 @@ export const CourseListSort = ({
           {icon}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
+      <DropdownMenuContent align="end">
         <DropdownMenuLabel>{t('sortBy')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {(Object.entries(options) as [CourseListSortType, string][]).map(
@@ -92,15 +92,16 @@ export const CourseListSort = ({
                 onSelect={e => e.preventDefault()}
               >
                 <span className={cn('text-foreground/90', value === option && 'text-foreground')}>{label}</span>
-                {value === option && (
-                  <Button
-                    className="size-5 group-hover/sort-menu-item:[&>svg]:text-foreground"
-                    size="icon"
-                    variant="ghost"
-                  >
-                    <ArrowIcon className="size-3.5 transition-all" />
-                  </Button>
-                )}
+                <Button
+                  className={cn(
+                    'size-5 opacity-0 group-hover/sort-menu-item:[&>svg]:text-foreground',
+                    value === option && 'opacity-100'
+                  )}
+                  size="icon"
+                  variant="ghost"
+                >
+                  <ArrowIcon className="size-3.5 transition-all" />
+                </Button>
               </DropdownMenuItem>
             )
         )}

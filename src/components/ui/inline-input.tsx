@@ -62,11 +62,11 @@ export const InlineInput = ({
     <input
       autoComplete="off"
       className={cn(inlineInputVariants({ size }), className)}
-      defaultValue={value ?? defaultValue}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       ref={composedRefs}
       spellCheck={false}
+      value={value}
       {...props}
     />
   )

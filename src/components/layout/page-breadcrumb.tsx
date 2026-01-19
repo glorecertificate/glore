@@ -10,27 +10,24 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { usePathname } from '@/hooks/use-pathname'
 import { type MessageKey } from '@/lib/i18n'
 
-export const AppBreadcrumb = ({
-  title,
-  description,
+export const PageBreadcrumb = ({
   children,
+  description,
+  title,
   ...props
 }: React.ComponentProps<typeof Breadcrumb> & {
-  title?: React.ReactNode
   description?: React.ReactNode
+  title?: React.ReactNode
 }) => {
   const pathname = usePathname()
   const t = useTranslations('Layout')
 
   const [titleKey, descriptionKey] = useMemo(() => {
-    const key =
-      pathname === '/'
-        ? 'dashboard'
-        : pathname
-            .split('/')
-            .filter(Boolean)
-            .map((part, i) => (i === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
-            .join('')
+    const key = pathname
+      .split('/')
+      .filter(Boolean)
+      .map((part, i) => (i === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)))
+      .join('')
     return [key, `${key}Description`] as MessageKey<'Layout'>[]
   }, [pathname])
 
@@ -38,10 +35,10 @@ export const AppBreadcrumb = ({
   const breadcrumbDescription = description ?? (t.has(descriptionKey) ? t(descriptionKey) : null)
 
   return (
-    <Breadcrumb data-portal="breadcrumb" {...props}>
+    <Breadcrumb {...props}>
       {children ?? (
-        <BreadcrumbList className="sm:gap-1">
-          <BreadcrumbItem className="flex items-center gap-1.5 text-base text-foreground leading-[inherit]">
+        <BreadcrumbList>
+          <BreadcrumbItem className="flex cursor-default items-center gap-1.5 text-[15px] text-foreground leading-[inherit]">
             {breadcrumbTitle}
             {breadcrumbDescription && (
               <Tooltip>

@@ -1,3 +1,5 @@
+import { PageHeader } from '@/components/layout/page-header'
+import { PageMain } from '@/components/layout/page-main'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -6,4 +8,11 @@ export const generateMetadata = () =>
     title: 'about',
   })
 
-export default () => <h1>{'About'}</h1>
+export default () => (
+  <>
+    <PageHeader />
+    <PageMain>
+      <h1>{'about'}</h1>
+    </PageMain>
+  </>
+)

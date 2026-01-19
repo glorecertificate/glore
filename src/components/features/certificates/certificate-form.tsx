@@ -19,20 +19,20 @@
 //     [user.certificates, organization?.id]
 //   )
 //   const hasEnoughCourses = useMemo(
-//     () => courses.filter(course => course.completed).length >= config.app.minSkills,
+//     () => courses.filter(course => course.completed).length >= config.settings.minSkills,
 //     [courses]
 //   )
 //   const validCourses = useMemo(
 //     () =>
 //       courses.filter(course =>
 //         course.lessons?.find(
-//           lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.app.minRating
+//           lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.settings.minRating
 //         )
 //       ),
 //     [courses]
 //   )
 //   const canRequestCertificate = useMemo(
-//     () => hasEnoughCourses && validCourses.length >= config.app.minSkills,
+//     () => hasEnoughCourses && validCourses.length >= config.settings.minSkills,
 //     [hasEnoughCourses, validCourses.length]
 //   )
 

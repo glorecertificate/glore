@@ -1,5 +1,7 @@
 import { cookies } from '@/actions/cookies'
 import { CourseList } from '@/components/features/courses/course-list'
+import { PageHeader } from '@/components/layout/page-header'
+import { PageMain } from '@/components/layout/page-main'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -10,17 +12,24 @@ export const generateMetadata = () =>
 
 export default async () => {
   const { get } = await cookies()
-  const coursesLanguage = await get('courseLanguage')
-  const languageFilter = await get('courseListLanguage')
-  const groups = await get('courseListGroups')
-  const tab = await get('courseListTab')
+  const [courseLanguage, languages, groups, tab] = await Promise.all([
+    get('courseLanguage'),
+    get('courseListLanguage'),
+    get('courseListGroups'),
+    get('courseListTab'),
+  ])
 
   return (
-    <CourseList
-      defaultCourseLanguage={coursesLanguage}
-      defaultGroups={groups}
-      defaultLanguages={languageFilter}
-      defaultTab={tab}
-    />
+    <>
+      <PageHeader />
+      <PageMain>
+        <CourseList
+          defaultCourseLanguage={courseLanguage}
+          defaultGroups={groups}
+          defaultLanguages={languages}
+          defaultTab={tab}
+        />
+      </PageMain>
+    </>
   )
 }

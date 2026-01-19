@@ -1,4 +1,6 @@
-export const AppleMailIcon = (props: React.SVGProps<SVGSVGElement>) => (
+import { type IconProps } from '@/lib/types'
+
+export const AppleMailIcon = (props: IconProps) => (
   <svg
     enableBackground="new 0 0 100 100"
     viewBox="0 0 100 100"

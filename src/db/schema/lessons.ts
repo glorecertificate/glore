@@ -1,5 +1,5 @@
+import { parseUser, userQuery } from '@/db/schema/users'
 import { type DatabaseResult } from '@/db/types'
-import { parseUser, userQuery } from './users'
 
 export type Lesson = ReturnType<typeof parseLesson>
 export type Assessment = Exclude<Lesson['assessment'], undefined>
@@ -50,7 +50,7 @@ export const lessonQuery = `
       ${userQuery}
     )
   )
-`
+` as const
 
 export const parseLesson = ({ user_lessons = [], ...lesson }: DatabaseResult<'lessons', typeof lessonQuery>) => {
   const assessment = lesson.assessment

@@ -1,12 +1,9 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
+import { type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export const Spinner = ({
-  className,
-  colored,
-  ...props
-}: React.SVGProps<SVGSVGElement> & VariantProps<typeof spinnerVariants>) => (
+export const Spinner = ({ className, colored, ...props }: IconProps<VariantProps<typeof spinnerVariants>>) => (
   <svg
     className={cn(spinnerVariants({ colored, ...props }), className)}
     strokeLinecap="round"

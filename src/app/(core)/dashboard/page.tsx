@@ -5,14 +5,14 @@ import { intlMetadata } from '@/lib/metadata'
 export const generateMetadata = () =>
   intlMetadata({
     namespace: 'Layout',
-    title: 'docsFaq',
+    title: 'dashboard',
   })
 
 export default () => (
   <>
     <PageHeader />
     <PageMain>
-      <h1>{'Docs FAQs'}</h1>
+      <h1>{'Dashboard Page'}</h1>
     </PageMain>
   </>
 )

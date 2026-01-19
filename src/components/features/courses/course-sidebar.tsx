@@ -2,22 +2,31 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { PlusIcon } from 'lucide-react'
+import { CheckIcon, LoaderCircleIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { ArcherContainer, ArcherElement } from 'react-archer'
-import { type RelationType } from 'react-archer/lib/types'
 
-import { type SessionLesson, useCourse } from '@/components/features/courses/course-provider'
+import { getLessonType, useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Skeleton } from '@/components/ui/skeleton'
+import {
+  Stepper,
+  StepperDescription,
+  StepperIndicator,
+  StepperItem,
+  StepperNav,
+  StepperSeparator,
+  StepperTitle,
+  StepperTrigger,
+} from '@/components/ui/stepper'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { type Lesson } from '@/db/schema/lessons'
 import { localize } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
-const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: SessionLesson }) => {
-  const { course, language, setLesson, setStep, step } = useCourse()
+const CourseSidebarItem = ({ lesson, step }: { lesson: Lesson; step: number }) => {
+  const { course, language, setLesson, setStep, step: courseStep } = useCourse()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
@@ -28,26 +37,11 @@ const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: Session
     setDraftTitle(title)
   }, [title])
 
-  const isCurrent = index === step - 1
-  const isPast = index < step - 1
-  const isFuture = index > step - 1
-  const isCompleted = !!course.lessons[index].completed
-  const isReachable = isCurrent || isPast || (isFuture && !!course.lessons[index - 1]?.completed)
-
-  const archerRelations = useMemo<RelationType[]>(() => {
-    if (index > step) return []
-    return [
-      {
-        sourceAnchor: 'bottom',
-        targetAnchor: 'top',
-        style: {
-          strokeColor: 'var(--brand)',
-          endMarker: false,
-        },
-        targetId: `${index + 1}`,
-      },
-    ]
-  }, [index, step])
+  const isCurrent = step === courseStep
+  const isPast = step < courseStep
+  const isFuture = step > courseStep
+  const isCompleted = user.canEdit || !!course.lessons[step - 1].completed
+  const isReachable = user.canEdit || isCurrent || isPast || (isFuture && !!course.lessons[step - 2]?.completed)
 
   const commitTitle = useMemo(
     () =>
@@ -73,86 +67,94 @@ const CourseSidebarLesson = ({ index, lesson }: { index: number; lesson: Session
 
   const onLessonClick = useCallback(() => {
     if (isCurrent || !isReachable) return
-    setStep(index + 1)
-  }, [isCurrent, isReachable, index, setStep])
+    setStep(step)
+  }, [isCurrent, isReachable, setStep, step])
 
   return (
-    <div
-      className={cn(
-        'group/course-step relative mb-4 flex cursor-pointer items-center rounded-md p-3 pl-12',
-        isCurrent && 'cursor-default bg-accent/50 dark:bg-accent/30',
-        isReachable && !isCurrent && 'hover:bg-accent/40 dark:hover:bg-accent/20',
-        !isReachable && 'cursor-not-allowed text-muted-foreground'
-      )}
-      onClick={onLessonClick}
-      title={isReachable ? undefined : t('completeLessonsToProceed')}
-    >
-      <div
+    <StepperItem className="relative w-full" loading={user.canEdit ? false : undefined} step={step}>
+      <StepperTrigger
         className={cn(
-          '-translate-1/2 absolute top-1/2 left-6 z-10 flex size-5.5 items-center justify-center rounded-full transition-colors',
-          isCurrent || isPast
-            ? 'bg-brand text-brand-foreground'
-            : 'border border-input bg-background shadow-xs group-hover/course-step:bg-accent/20 dark:bg-input/30'
+          'flex w-full cursor-pointer items-center rounded-md p-3',
+          isCurrent && 'cursor-default bg-accent/50 dark:bg-accent/30',
+          isReachable && !isCurrent && 'hover:bg-accent/40 dark:hover:bg-accent/20',
+          !isReachable && 'cursor-not-allowed text-muted-foreground'
         )}
+        onClick={onLessonClick}
+        title={isReachable ? undefined : t('completeLessonsToProceed')}
       >
-        <ArcherElement id={String(index)} key={lesson.id} relations={archerRelations}>
-          <span className="text-xs">{index + 1}</span>
-        </ArcherElement>
-      </div>
-      <div className={cn('flex-1 opacity-85', isCurrent && 'opacity-100')}>
-        <span className="relative inline-block font-medium text-sm">
-          {user.canEdit && isCurrent ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                {/* <span className={cn('cursor-text', !title && 'text-muted-foreground/50')}>{title}</span> */}
-                <InlineInput onChange={onTitleChange} value={draftTitle} />
-              </TooltipTrigger>
-              <TooltipContent align="start" sideOffset={6} size="sm">
-                {t('renameLesson')}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <span>{title}</span>
+        <StepperIndicator
+          className={cn(
+            user.isLearner &&
+              'data-[state=active]:bg-primary data-[state=completed]:bg-success data-[state=active]:text-primary-foreground data-[state=completed]:text-foreground data-[state=inactive]:text-foreground/50'
           )}
-          {user.isLearner && isCompleted && <span className="ml-1 text-success text-xs">{' ✔︎'}</span>}
-        </span>
-        {lesson.type && <p className="text-xs opacity-80">{t('lessonType', { type: lesson.type })}</p>}
-      </div>
-    </div>
+        >
+          {step}
+        </StepperIndicator>
+        <div className={cn('mt-0.5 flex-1 text-left opacity-85', isCurrent && '-mt-0.5 opacity-100')}>
+          <StepperTitle>
+            {user.canEdit && isCurrent ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InlineInput className="-mb-1.25 -ml-1.25" onChange={onTitleChange} value={draftTitle} />
+                </TooltipTrigger>
+                <TooltipContent sideOffset={6} size="sm">
+                  {t('renameLesson')}
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              title
+            )}
+            {user.isLearner && isCompleted && <span className="ml-1 text-success text-xs">{' ✔︎'}</span>}
+          </StepperTitle>
+          <StepperDescription>{t('lessonType', { type: getLessonType(lesson) })}</StepperDescription>
+        </div>
+      </StepperTrigger>
+
+      <StepperSeparator
+        className={cn(
+          'absolute inset-y-0 top-10 left-6 -order-1 m-0 h-[calc(100%-2rem)] -translate-x-1/2',
+          user.isLearner && 'group-data-[state=completed]/step:bg-success'
+        )}
+      />
+    </StepperItem>
   )
 }
 
-export const CourseSidebar = () => {
-  const { course, defaultLesson, setCourse } = useCourse()
+export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
+  const { addLesson, course, step, setStep } = useCourse()
+  const { user } = useSession()
   const t = useTranslations('Courses')
 
-  const addLesson = useCallback(() => {
-    setCourse(course => ({
-      ...course,
-      lessons: [...course.lessons, defaultLesson],
-    }))
-  }, [defaultLesson, setCourse])
-
   return (
-    <div className="hidden md:block">
-      <div className="sticky top-30 space-y-2 pr-2">
-        <ArcherContainer>
-          {course.lessons.map((lesson, i) => (
-            <CourseSidebarLesson index={i} key={lesson.id ?? i} lesson={lesson} />
+    <div {...props}>
+      <Stepper
+        className="sticky top-30 flex items-center gap-10 space-y-2 pr-2"
+        defaultValue={step}
+        indicators={{
+          completed: user.isLearner ? <CheckIcon className="size-4" /> : undefined,
+          loading: <LoaderCircleIcon className="size-4 animate-spin" />,
+        }}
+        onValueChange={setStep}
+        orientation="vertical"
+        value={step}
+      >
+        <StepperNav className="w-full items-start gap-4">
+          {course.lessons.map((lesson, index) => (
+            <CourseSidebarItem key={lesson.id ?? index + 1} lesson={lesson} step={index + 1} />
           ))}
-        </ArcherContainer>
-        <div className="flex h-16 items-center pl-3">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button className="size-6 rounded-full" onClick={addLesson}>
-                <PlusIcon className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" sideOffset={8}>
-              {t('addLesson')}
-            </TooltipContent>
-          </Tooltip>
-        </div>
+        </StepperNav>
+      </Stepper>
+      <div className="flex h-16 items-center pl-3">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button className="size-6 rounded-full" onClick={() => addLesson()}>
+              <PlusIcon className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" sideOffset={8}>
+            {t('addLesson')}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </div>
   )

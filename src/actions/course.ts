@@ -3,87 +3,126 @@
 import 'server-only'
 
 import { cache } from 'react'
-
-import { type Locale } from 'next-intl'
+import { cacheTag, revalidateTag } from 'next/cache'
 
 import { getAuthUser } from '@/actions/auth'
 import { getDatabase } from '@/db/client'
-import { type Course, courseQuery, parseCourse } from '@/db/queries'
-import { type TableInsert, type TableUpdate } from '@/db/types'
+import { type Course, courseQuery, parseCourse } from '@/db/schema/courses'
+import { type DatabaseQuery, type DatabaseSingleQuery, type TableInsert, type TableUpdate } from '@/db/types'
 import { resolveQuery } from '@/db/utils'
+import { CacheTag } from '@/lib/cache'
+
+const fetchCourse = async (slug: string, query: DatabaseSingleQuery<'courses', typeof courseQuery>) => {
+  'use cache'
+  cacheTag(`${CacheTag.Course}-${slug}`)
+
+  return await resolveQuery(query, parseCourse)
+}
+
+const fetchCourses = async (query: DatabaseQuery<'courses', typeof courseQuery>) => {
+  'use cache'
+  cacheTag(CacheTag.Courses)
+
+  return await resolveQuery(query, parseCourse)
+}
+
+const fetchSkillGroups = async (query: DatabaseQuery<'skill_groups', 'id, name'>) => {
+  'use cache'
+  cacheTag(CacheTag.SkillGroups)
+
+  return await resolveQuery(query)
+}
 
 export const findCourse = cache(async (slug: string) => {
   const db = await getDatabase()
-
   const query = db.from('courses').select(courseQuery).eq('slug', slug).single()
-  const { data, error } = await resolveQuery(query, parseCourse)
-  if (error) return null
 
+  const { data, error } = await fetchCourse(slug, query)
+  if (error || !data) return null
   return data
 })
 
 export const listCourses = cache(async () => {
   const db = await getDatabase()
-
   const query = db.from('courses').select(courseQuery)
-  const { data, error } = await resolveQuery(query, parseCourse)
+
+  const { data, error } = await fetchCourses(query)
   if (error) throw error
 
   return data
 })
 
-export const createCourse = async (data: TableInsert<'courses'>) => {
+export const createCourse = async (course: TableInsert<'courses'>) => {
   const db = await getDatabase()
+  const query = db.from('courses').insert(course).select(courseQuery).single()
 
-  const query = db.from('courses').insert(data).select(courseQuery).single()
-  return resolveQuery(query, parseCourse)
+  const { data, error } = await resolveQuery(query, parseCourse)
+  if (error) throw error
+
+  revalidateTag(CacheTag.Courses, 'max')
+  return data
 }
 
-export const updateCourse = async (id: number, data: TableUpdate<'courses'>) => {
+export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   const db = await getDatabase()
-  const query = db.from('courses').update(data).eq('id', id).select(courseQuery).single()
+  const query = db.from('courses').update(course).eq('id', id).select(courseQuery).single()
 
-  return resolveQuery(query, parseCourse)
+  const { data, error } = await resolveQuery(query, parseCourse)
+  if (error) throw error
+
+  revalidateTag(`${CacheTag.Course}-${data.slug}`, 'max')
+  revalidateTag(CacheTag.Courses, 'max')
+  return data
 }
 
 export const deleteCourse = async (id: number) => {
   const db = await getDatabase()
-  return await db.from('courses').delete().eq('id', id)
+  await db.from('courses').delete().eq('id', id)
+  revalidateTag(CacheTag.Courses, 'max')
 }
 
 export const listSkillGroups = cache(async () => {
   const db = await getDatabase()
   const query = db.from('skill_groups').select('id, name').order('name')
-  const { data, error } = await resolveQuery(query)
+
+  const { data, error } = await fetchSkillGroups(query)
   if (error) throw error
+
   return data
 })
 
-export const enrollUser = async (courseId: number, locale: Locale) => {
+export const upsertLessons = async (lessons: TableInsert<'lessons'>[]) => {
   const db = await getDatabase()
-  const user = await getAuthUser()
-  const query = db.from('user_courses').insert({ course_id: courseId, locale, user_id: user.id }).select().single()
-  return resolveQuery(query)
-}
+  const query = db.from('lessons').upsert(lessons).select()
 
-export const upsertLessons = async (data: TableInsert<'lessons'>[]) => {
-  const db = await getDatabase()
-  const query = db.from('lessons').upsert(data).select()
-  return resolveQuery(query)
+  const { data, error } = await resolveQuery(query)
+  if (error) throw error
+
+  revalidateTag(CacheTag.Courses, 'max')
+  return data
 }
 
 export const reorderCourses = async (courses: Course[]) => {
   const db = await getDatabase()
-  const updates = courses.map(({ id, slug }, i) => ({ id, slug, sort_order: i + 1 }))
-  return db.from('courses').upsert(updates)
+  const sorted = courses.map(({ id, slug }, i) => ({ id, slug, sort_order: i + 1 }))
+  const query = db.from('courses').upsert(sorted)
+
+  const { data, error } = await resolveQuery(query)
+  if (error) throw error
+
+  revalidateTag(CacheTag.Courses, 'max')
+  return data
 }
 
 export const submitAnswers = async (answers: { id: number }[]) => {
-  const db = await getDatabase()
   const user = await getAuthUser()
+  if (!user) throw new Error('Unauthorized')
+
+  const db = await getDatabase()
   const query = db
     .from('user_answers')
     .insert(answers.map(({ id }) => ({ option_id: id, user_id: user.id })))
     .select('id')
+
   return resolveQuery(query)
 }

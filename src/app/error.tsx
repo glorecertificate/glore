@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation'
 
 import { useTranslations } from 'next-intl'
 
-import { GloreLogo } from '@/components/graphics/glore-logo'
-import { type ErrorProps, ErrorView } from '@/components/layout/error-view'
+import { GloreLogo } from '@/components/icons/_glore-logo'
+import { ErrorPage, type ErrorProps } from '@/components/layout/error-page'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { usePathname } from '@/hooks/use-pathname'
+import { APP_ROOT } from '@/lib/constants'
 
 export default ({ error }: ErrorProps) => {
   const pathname = usePathname()
@@ -23,11 +24,11 @@ export default ({ error }: ErrorProps) => {
   const canGoBack = document.referrer?.startsWith(window.location.origin) && document.referrer !== window.location.href
 
   return (
-    <ErrorView
+    <ErrorPage
       className="min-h-[calc(100vh-4rem)]"
       header={
         <header className="flex h-16 w-full items-center justify-center px-4">
-          <Link href="/" title={t('backToHome')}>
+          <Link href={APP_ROOT} title={t('backToHome')}>
             <GloreLogo className="mt-8 h-8" />
           </Link>
         </header>
@@ -38,7 +39,7 @@ export default ({ error }: ErrorProps) => {
           {t('backToPrevious')}
         </Button>
       ) : (
-        pathname !== '/' && (
+        pathname !== APP_ROOT && (
           <Button asChild size="lg" variant="outline">
             {t('backToHome')}
           </Button>
@@ -47,6 +48,6 @@ export default ({ error }: ErrorProps) => {
       <Button onClick={() => window.location.reload()} size="lg" variant="outline">
         {t('refreshPage')}
       </Button>
-    </ErrorView>
+    </ErrorPage>
   )
 }

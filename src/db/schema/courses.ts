@@ -1,7 +1,7 @@
+import { lessonQuery, parseLesson } from '@/db/schema/lessons'
+import { parseUser, userQuery } from '@/db/schema/users'
 import { type DatabaseResult } from '@/db/types'
 import { i18n } from '@/lib/i18n'
-import { lessonQuery, parseLesson } from './lessons'
-import { parseUser, userQuery } from './users'
 
 export type Course = ReturnType<typeof parseCourse>
 export type SkillGroup = Exclude<Course['skillGroup'], null>
@@ -29,7 +29,7 @@ export const courseQuery = `
     ${lessonQuery}
   ),
   user_courses(count)
-`
+` as const
 
 export const parseCourse = (data: DatabaseResult<'courses', typeof courseQuery>) => {
   const { creator: courseCreator, lessons: courseLessons, skill_group, user_courses, ...course } = data

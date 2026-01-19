@@ -1,25 +1,29 @@
 'use client'
 
 import { app } from '@config/app'
-import { GloreLogo } from '@/components/graphics/glore-logo'
+import { GloreLogo } from '@/components/icons/_glore-logo'
+import { PageBreadcrumb } from '@/components/layout/page-breadcrumb'
 import { Link } from '@/components/ui/link'
 import { SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePathname } from '@/hooks/use-pathname'
 import { useScroll } from '@/hooks/use-scroll'
+import { APP_ROOT } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-export const AppHeader = ({
-  breadcrumb,
+export const PageHeader = ({
   children,
   className,
+  description,
+  title,
   ...props
 }: React.ComponentProps<'header'> & {
-  breadcrumb: React.ReactNode
+  description?: React.ReactNode
+  title?: React.ReactNode
 }) => {
   const pathname = usePathname()
   const { scrolled } = useScroll()
-  const { action, open } = useSidebar()
+  const { action } = useSidebar()
 
   return (
     <header
@@ -34,21 +38,16 @@ export const AppHeader = ({
         <div className="flex h-10 grow items-center gap-3">
           <Tooltip delayDuration={600} disableHoverableContent>
             <TooltipTrigger asChild>
-              <SidebarTrigger
-                className={cn(
-                  '-ml-1 [&_svg]:size-4.5 [&_svg]:stroke-foreground/64 [&_svg]:text-foreground/64',
-                  open && '[&_svg]:size-5'
-                )}
-              />
+              <SidebarTrigger className="-ml-1" />
             </TooltipTrigger>
             <TooltipContent showArrow side="right">
               <p className="font-medium text-xs">{action}</p>
               <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${app.sidebarShortcut.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
-          {breadcrumb}
+          {children ?? <PageBreadcrumb description={description} title={title} />}
         </div>
-        <Link className={cn(pathname === '/' && 'pointer-events-none')} href="/">
+        <Link className={cn(pathname === APP_ROOT && 'pointer-events-none')} href={APP_ROOT}>
           <GloreLogo className="mr-2 w-18 transition-[width,height]" height={200} />
         </Link>
       </div>

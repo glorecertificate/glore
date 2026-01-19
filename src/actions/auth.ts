@@ -9,6 +9,7 @@ import { type SignInWithPasswordCredentials, type UserAttributes } from '@supaba
 
 import { getDatabase } from '@/db/client'
 import { CacheTag } from '@/lib/cache'
+import { APP_ROOT } from '@/lib/constants'
 
 export const login = async (credentials: SignInWithPasswordCredentials) => {
   const db = await getDatabase()
@@ -17,7 +18,7 @@ export const login = async (credentials: SignInWithPasswordCredentials) => {
   if (error) throw error
 
   updateTag(CacheTag.AuthUser)
-  redirect('/')
+  redirect(APP_ROOT)
 }
 
 export const logout = async () => {
@@ -34,7 +35,7 @@ export const getAuthUser = async () => {
   const db = await getDatabase()
 
   const { data, error } = await db.auth.getUser()
-  if (error) throw error
+  if (error) return null
 
   return data.user
 }

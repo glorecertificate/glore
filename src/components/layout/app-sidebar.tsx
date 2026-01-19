@@ -25,7 +25,7 @@ import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import { setCookie } from '@/actions/cookies'
-import { DashboardIcon } from '@/components/graphics/dashboard-icon'
+import { DashboardIcon } from '@/components/icons/dashboard-icon'
 import { useSession } from '@/components/providers/session-provider'
 import {
   AlertDialog,
@@ -69,7 +69,8 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type UserOrganization } from '@/db/queries'
+import { type UserOrganization } from '@/db/schema/users'
+import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { metadata } from '@/lib/metadata'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'
@@ -101,7 +102,7 @@ const AppSidebarItem = ({
 
   const isActive = useMemo(() => {
     if (isActivePath || subItem) return isActivePath
-    if (route === '/') return activePath === '/'
+    if (route === APP_ROOT) return activePath === APP_ROOT
     return activePath.startsWith(route)
   }, [isActivePath, subItem, route, activePath])
 
@@ -130,8 +131,8 @@ const AppSidebarItem = ({
         onClick={handleClick}
         tooltip={label}
       >
-        <Link href={route} prefetch progress="primary">
-          {route === '/' ? (
+        <Link href={route} prefetch>
+          {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
           ) : Icon ? (
             <Icon className={cn('text-muted-foreground', isActive && 'text-sidebar-accent-foreground')} />
@@ -177,12 +178,12 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
 
   const onOrgSelect = useCallback(
     (org: UserOrganization) => {
-      setActivePath('/')
+      setActivePath(APP_ROOT)
       setTimeout(async () => {
         setOrganization(org)
         await setCookie('org', org.id)
       }, 200)
-      router.push('/')
+      router.push(APP_ROOT)
     },
     [router, setActivePath, setOrganization]
   )
@@ -209,7 +210,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
                 {organization.avatar_url ? (
                   <AvatarImage alt={organization.name} src={organization.avatar_url} />
                 ) : (
-                  <span className="text-muted-foreground">{organization.shortName}</span>
+                  <span className="text-muted-foreground">{organization.name.slice(0, 2).toUpperCase()}</span>
                 )}
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
@@ -232,7 +233,9 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
               <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
                   {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
-                  <AvatarFallback className="text-muted-foreground">{org.shortName}</AvatarFallback>
+                  <AvatarFallback className="text-muted-foreground">
+                    {org.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="flex items-center truncate font-semibold">
@@ -268,7 +271,7 @@ const AppSidebarMain = () => {
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4 gap-3">
-        <AppSidebarItem label={t('dashboard')} route="/" />
+        <AppSidebarItem label={t('dashboard')} route="/dashboard" />
         <AppSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
         {showCertificates && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
         <AppSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
@@ -312,7 +315,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
     }
 
     await sleep(500)
-    redirect('/login')
+    redirect(AUTH_ROOT)
   }, [onLinkClick, t])
 
   useEffect(

@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { postgrestError } from '@/db/utils'
-import { PASSWORD_REGEX } from '@/lib/constants'
+import { APP_ROOT, PASSWORD_REGEX } from '@/lib/constants'
 import { type Enum } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
@@ -105,7 +105,7 @@ export const LoginForm = ({
         return toast.error(t('networkError'))
       }
 
-      redirect('/')
+      redirect(APP_ROOT)
     },
     [form, t]
   )

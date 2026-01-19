@@ -3,8 +3,8 @@
 import * as AlertDialogPrimitive from '@radix-ui/react-alert-dialog'
 import { type VariantProps } from 'class-variance-authority'
 
-import { Spinner } from '@/components/graphics/spinner'
 import { type Button, buttonVariants } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
 export const AlertDialog = (props: React.ComponentProps<typeof AlertDialogPrimitive.Root>) => (

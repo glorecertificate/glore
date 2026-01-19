@@ -1,20 +1,30 @@
 'use client'
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import { useSearchParams } from 'next/navigation'
 
 import { type Locale } from 'next-intl'
+import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 
 import config from '@config/app'
-import { updateCourse, upsertLessons } from '@/actions/course'
-import { type Course, type Lesson, type TableInsert, type TableUpdate } from '@/db/types'
-import { useMetadata } from '@/hooks/use-metadata'
+import { upsertLessons } from '@/actions/course'
+import { useSession } from '@/components/providers/session-provider'
+import { type Course } from '@/db/schema/courses'
+import { type Lesson } from '@/db/schema/lessons'
+import { type TableInsert, type TableUpdate } from '@/db/types'
+import { COURSE_LANGUAGE_PARAM, COURSE_STEP_PARAM } from '@/lib/constants'
 import { i18n } from '@/lib/i18n'
-import { type PartialKeys } from '@/lib/types'
 
-export type SessionLesson = PartialKeys<Lesson, 'id' | 'created_at' | 'updated_at'> & { type: LessonType }
-export type SessionCourse = Omit<Course, 'lessons'> & { lessons: SessionLesson[] }
-
-export interface CourseLanguageStatus {
+export interface CourseState {
   canSave: boolean
   hasContent: boolean
   hasContentUpdates: boolean
@@ -25,82 +35,82 @@ export interface CourseLanguageStatus {
   published: boolean
 }
 
-export type LessonType = 'reading' | 'assessment' | 'evaluations' | 'questions'
-
 export const CourseContext = createContext<{
-  course: SessionCourse
-  initialCourse: Course
+  addLesson: (values?: TableUpdate<'lessons'>) => Lesson
+  course: Course
+  currentLesson: Lesson
+  currentState: CourseState
+  defaultLesson: Partial<Lesson>
+  editCourse: (payload: TableUpdate<'courses'>) => Promise<Course>
   language: Locale
-  setCourse: React.Dispatch<React.SetStateAction<SessionCourse>>
-  setInitialCourse: React.Dispatch<React.SetStateAction<Course>>
-  setLanguage: React.Dispatch<React.SetStateAction<Locale>>
-  setSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setStep: React.Dispatch<React.SetStateAction<number>>
-  settingsOpen: boolean
+  lessons: Lesson[]
+  next: () => void
+  previous: () => void
+  saveCourse: () => Promise<void>
+  setCourse: Dispatch<SetStateAction<Course>>
+  setLanguage: Dispatch<SetStateAction<Locale>>
+  setLesson: (data: TableUpdate<'lessons'>) => void
+  setStep: Dispatch<SetStateAction<number>>
+  state: Record<Locale, CourseState>
   step: number
 } | null>(null)
 
-export const CourseProvider = ({
-  children,
-  ...props
-}: React.PropsWithChildren<{
-  course: Course
-  language: Locale
-  step: number
-}>) => {
-  const [initialCourse, setInitialCourse] = useState(structuredClone(props.course))
-  const [course, setCourse] = useState(props.course as SessionCourse)
-  const [language, setLanguage] = useState(props.language)
-  const [step, setStep] = useState(props.step)
-  const [settingsOpen, setSettingsOpen] = useState(false)
+const languageParamParser = parseAsStringEnum(i18n.locales).withOptions({
+  history: 'push',
+  shallow: true,
+  clearOnDefault: false,
+})
 
-  return (
-    <CourseContext.Provider
-      value={{
-        course,
-        initialCourse,
-        language,
-        setCourse,
-        setInitialCourse,
-        setLanguage,
-        setSettingsOpen,
-        setStep,
-        settingsOpen,
-        step,
-      }}
-    >
-      {children}
-    </CourseContext.Provider>
-  )
-}
+const stepParamParser = parseAsInteger.withOptions({
+  history: 'push',
+  shallow: true,
+  clearOnDefault: false,
+})
 
-const getLessonType = (lesson: SessionLesson): LessonType => {
+export const getLessonType = (lesson: Lesson) => {
   if (lesson.questions && lesson.questions.length > 0) return 'questions'
   if (lesson.evaluations && lesson.evaluations.length > 0) return 'evaluations'
   if (lesson.assessment) return 'assessment'
   return 'reading'
 }
 
-export const useCourse = () => {
-  const context = useContext(CourseContext)
-  if (!context) throw new Error('useCourse must be used within a CourseProvider')
+export const CourseProvider = ({
+  children,
+  value,
+  ...props
+}: React.ProviderProps<{
+  course: Course
+  language: Locale
+  step: number
+}>) => {
+  const searchParams = useSearchParams()
 
-  const {
-    course,
-    initialCourse,
-    language,
-    setCourse,
-    setInitialCourse,
-    setLanguage,
-    setSettingsOpen,
-    setStep,
-    settingsOpen,
-    step,
-  } = context
+  const { editSessionCourse } = useSession()
 
-  useMetadata({
-    title: course.title[language],
-  })
+  const [, setLanguage] = useQueryState(COURSE_LANGUAGE_PARAM, languageParamParser.withDefault(value.language))
+  const language = useMemo(() => {
+    const param = searchParams.get(COURSE_LANGUAGE_PARAM) as Locale
+    if (param && i18n.locales.includes(param)) return param
+    return i18n.locales.includes(value.language) ? value.language : i18n.defaultLocale
+  }, [searchParams, value.language])
+
+  useEffect(() => {
+    setLanguage(language)
+  }, [language, setLanguage])
+
+  const [, setStep] = useQueryState(COURSE_STEP_PARAM, stepParamParser.withDefault(value.step))
+  const step = useMemo(() => {
+    const param = searchParams.get(COURSE_STEP_PARAM)
+    if (param) return Number(param)
+    return value.step
+  }, [searchParams, value.step])
+
+  useEffect(() => {
+    setStep(step)
+  }, [setStep, step])
+
+  const [initialCourse, setInitialCourse] = useState(structuredClone(value.course))
+  const [course, setCourse] = useState(value.course as Course)
 
   const lessons = useMemo(
     () =>
@@ -111,7 +121,7 @@ export const useCourse = () => {
     [course.lessons]
   )
 
-  const defaultLesson = useMemo<SessionLesson>(
+  const defaultLesson = useMemo(
     () => ({
       title: config.i18n.messages.defaultCourseTitle,
       sort_order: lessons.length + 1,
@@ -175,15 +185,26 @@ export const useCourse = () => {
               hasUpdates,
               isFullfilled,
               canSave,
-            } satisfies CourseLanguageStatus,
+            } satisfies CourseState,
           }
         },
-        {} as Record<Locale, CourseLanguageStatus>
+        {} as Record<Locale, CourseState>
       ),
     [course, initialCourse, lessons]
   )
 
   const currentState = useMemo(() => state[language], [language, state])
+
+  const editCourse = useCallback(
+    async (payload: TableUpdate<'courses'>) => {
+      setCourse(prev => {
+        const languages = payload.languages ?? prev.languages ?? []
+        return { ...prev, ...payload, languages }
+      })
+      return await editSessionCourse(course.id, payload)
+    },
+    [course.id, editSessionCourse]
+  )
 
   const saveCourse = useCallback(async () => {
     const { id, lessons, ...courseData } = course
@@ -227,44 +248,50 @@ export const useCourse = () => {
     }
 
     if (Object.keys(coursePayload).length > 0) {
-      await updateCourse(id, coursePayload)
+      await editSessionCourse(id, coursePayload)
     }
 
     setInitialCourse(course as Course)
-  }, [course, defaultLesson, initialCourse, setInitialCourse])
+  }, [course, defaultLesson.title, editSessionCourse, initialCourse])
 
-  const addLesson = useCallback(() => {
-    setCourse(course => ({
-      ...course,
-      lessons: [...lessons, defaultLesson],
-    }))
-  }, [defaultLesson, lessons, setCourse])
+  const addLesson = useCallback(
+    (values: TableUpdate<'lessons'> = {}) => {
+      const lesson: Lesson = {
+        ...defaultLesson,
+        ...values,
+        id: Date.now(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+      setCourse(course => ({
+        ...course,
+        lessons: [...lessons, lesson],
+      }))
+      setStep(course.lessons.length + 1)
+      return lesson
+    },
+    [course.lessons.length, defaultLesson, lessons, setStep]
+  )
 
   const setLesson = useCallback(
     (data: TableUpdate<'lessons'>) => {
+      if (lessons.length === 0) {
+        return addLesson(data)
+      }
       setCourse(course => ({
         ...course,
-        lessons:
-          lessons.length === 0
-            ? [
-                {
-                  ...defaultLesson,
-                  ...data,
-                },
-              ]
-            : lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, ...data } : lesson)),
+        lessons: lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, ...data } : lesson)),
       }))
     },
-    [defaultLesson, lessons, setCourse, step]
+    [addLesson, lessons.length, lessons.map, step]
   )
 
-  const movePrevious = useCallback(() => {
+  const previous = useCallback(() => {
     if (step === 1) return
     setStep(i => i - 1)
   }, [setStep, step])
 
-  const moveNext = useCallback(() => {
-    // let currentLesson = lesson
+  const next = useCallback(() => {
     const index = step - 1
     const isLastLesson = step === lessons.length
 
@@ -277,50 +304,38 @@ export const useCourse = () => {
       progressStatus: isLastLesson ? 'completed' : course.progressStatus,
       completed: isLastLesson,
     }))
+  }, [course.progress, lessons.length, lessons?.map, setStep, step])
 
-    // if (currentLesson.id) await completeLesson(currentLesson.id)
+  return (
+    <CourseContext.Provider
+      value={{
+        addLesson,
+        course,
+        currentLesson,
+        currentState,
+        defaultLesson,
+        editCourse,
+        language,
+        lessons,
+        next,
+        previous,
+        saveCourse,
+        setCourse,
+        setLanguage,
+        setLesson,
+        setStep,
+        state,
+        step,
+      }}
+      {...props}
+    >
+      {children}
+    </CourseContext.Provider>
+  )
+}
 
-    // switch (currentLesson?.type) {
-    //   case 'questions': {
-    //     const options = currentLesson.questions?.flatMap(q => q.options.filter(o => o.isUserAnswer).map(o => ({ id: o.id })))
-    //     if (!options || options.length === 0) return
-    //     await submitAnswers(options)
-    //     break
-    //   }
-    //   case 'evaluations': {
-    //     if (!currentLesson.evaluations) return
-    //     await submitEvaluations(currentLesson.evaluations.map(e => ({ id: e.id, value: e.userRating! })))
-    //     break
-    //   }
-    //   case 'assessment': {
-    //     const id = currentLesson.assessment?.id
-    //     const value = currentLesson.assessment?.userRating
-    //     if (!(id && value)) return
-    //     await submitAssessment(id, value)
-    //   }
-    // }
-
-    setCourse(course)
-  }, [course, lessons, setCourse, setStep, step])
-
-  return {
-    addLesson,
-    course,
-    currentLesson,
-    currentState,
-    defaultLesson,
-    language,
-    lessons,
-    moveNext,
-    movePrevious,
-    saveCourse,
-    setCourse,
-    setLanguage,
-    setLesson,
-    setSettingsOpen,
-    setStep,
-    settingsOpen,
-    state,
-    step,
-  }
+export const useCourse = () => {
+  const context = useContext(CourseContext)
+  if (!context) throw new Error('useCourse must be used within a CourseProvider')
+  return context
 }

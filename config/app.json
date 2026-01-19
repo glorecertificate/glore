@@ -4,7 +4,7 @@
     "shortName": "GloRe",
     "version": "0.5.1",
     "slug": "glore",
-    "separator": "-",
+    "separator": "·",
     "keywords": ["glore", "certificate", "elearning", "soft skills"],
     "url": "https://elearning.glorecertificate.net",
     "website": "https://glorecertificate.net",
@@ -19,7 +19,7 @@
       }
     ]
   },
-  "app": {
+  "settings": {
     "minSkills": 3,
     "minRating": 3,
     "mapsUrl": "https://maps.google.com/search",

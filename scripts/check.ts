@@ -53,7 +53,7 @@ const check = async () => {
             const error = e as SpawnSyncReturns<Buffer>
             logger.error('Type checks failed with the following errors.', { clearLine: true })
             logger(error.stdout.toString())
-            logger.error(`Run 'pnpm check types' to see a detailed report.`)
+            logger.red('Run `pnpm check types` to see a detailed report.')
             process.exit(1)
           }
         }

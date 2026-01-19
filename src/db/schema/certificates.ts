@@ -1,6 +1,6 @@
+import { organizationQuery } from '@/db/schema/organizations'
+import { baseUserQuery } from '@/db/schema/users'
 import { type DatabaseResult } from '@/db/types'
-import { organizationQuery } from './organizations'
-import { baseUserQuery } from './users'
 
 export const certificateQuery = `
   id,
@@ -23,6 +23,6 @@ export const certificateQuery = `
   reviewer:users!user_id (
     ${baseUserQuery}
   )
-`
+` as const
 
 export type Certificate = DatabaseResult<'certificates', typeof certificateQuery>

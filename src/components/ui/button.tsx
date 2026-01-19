@@ -5,7 +5,7 @@ import { useCallback, useMemo } from 'react'
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 
-import { Spinner } from '@/components/graphics/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -64,7 +64,7 @@ export const Button = ({
   return (
     <Component
       className={cn(
-        buttonVariants({ variant, disabled: isDisabled, size, effect }),
+        buttonVariants({ effect, size, variant }),
         isDisabled ? (disabledCursor === 'not-allowed' ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer',
         loading && 'cursor-wait',
         type === 'submit' ? 'transition-colors' : 'transition-all',
@@ -118,12 +118,11 @@ export const Button = ({
 
 export const buttonVariants = cva(
   `
-    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap outline-none
+    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap outline-none transition-all
     focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
-    aria-invalid:border-destructive aria-invalid:ring-destructive/20
-    dark:aria-invalid:ring-destructive/40
-    [&_svg]:pointer-events-none [&_svg]:shrink-0
-    [&_svg:not([class*='size-'])]:size-4
+    disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0
+    aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40
+    [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4
   `,
   {
     defaultVariants: {
@@ -133,16 +132,23 @@ export const buttonVariants = cva(
     },
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground',
-        secondary: 'bg-secondary text-secondary-foreground',
-        destructive: 'bg-destructive text-destructive-foreground',
-        warning: 'bg-warning text-warning-foreground',
-        success: 'bg-success text-success-foreground',
-        brand: 'bg-brand text-brand-foreground',
-        'brand-secondary': 'bg-brand-secondary text-brand-secondary-foreground',
-        'brand-tertiary': 'bg-brand-tertiary text-brand-tertiary-foreground',
-        outline: 'border border-input bg-background dark:bg-input/30',
-        ghost: '',
+        primary: 'bg-primary text-primary-foreground not-disabled:hover:bg-primary/90',
+        secondary: 'bg-secondary text-secondary-foreground not-disabled:hover:bg-secondary/80',
+        destructive:
+          'bg-destructive text-destructive-foreground not-disabled:hover:bg-destructive-accent not-disabled:focus-visible:ring-destructive/20 not-disabled:dark:focus-visible:ring-destructive/40',
+        warning:
+          'bg-warning text-warning-foreground not-disabled:hover:bg-warning-accent not-disabled:focus-visible:ring-warning/20 not-disabled:dark:focus-visible:ring-warning/40',
+        success:
+          'bg-success text-success-foreground not-disabled:hover:bg-success-accent not-disabled:focus-visible:ring-success/20 not-disabled:dark:focus-visible:ring-success/40',
+        brand:
+          'bg-brand text-brand-foreground not-disabled:hover:bg-brand-accent not-disabled:focus-visible:ring-brand/20 not-disabled:dark:focus-visible:ring-brand/40',
+        'brand-secondary':
+          'bg-brand-secondary text-brand-secondary-foreground not-disabled:hover:bg-brand-secondary-accent not-disabled:focus-visible:ring-brand-secondary/20 not-disabled:dark:focus-visible:ring-brand-secondary/40',
+        'brand-tertiary':
+          'bg-brand-tertiary text-brand-tertiary-foreground not-disabled:hover:bg-brand-tertiary-accent not-disabled:focus-visible:ring-brand-tertiary/20 not-disabled:dark:focus-visible:ring-brand-tertiary/40',
+        outline:
+          'border border-input bg-background text-foreground not-disabled:hover:bg-accent/80 dark:bg-input/30 not-disabled:dark:hover:bg-input/50',
+        ghost: 'text-foreground not-disabled:hover:bg-accent/80 dark:not-disabled:hover:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
         transparent: 'bg-transparent text-current',
       },
@@ -153,9 +159,6 @@ export const buttonVariants = cva(
         lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
         icon: 'size-9',
         text: 'h-auto p-0',
-      },
-      disabled: {
-        true: 'opacity-50',
       },
       effect: {
         expandIcon: 'group relative gap-0',
@@ -216,61 +219,7 @@ export const buttonVariants = cva(
           'brand-tertiary',
           'outline',
         ],
-        disabled: false,
-        className: 'shadow-xs transition-all [:active,[data-pressed]]:shadow-none',
-      },
-      {
-        variant: 'primary',
-        disabled: false,
-        className: 'hover:bg-primary/90',
-      },
-      {
-        variant: 'secondary',
-        disabled: false,
-        className: 'hover:bg-secondary/80',
-      },
-      {
-        variant: 'destructive',
-        disabled: false,
-        className:
-          'hover:bg-destructive-accent focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
-      },
-      {
-        variant: 'warning',
-        disabled: false,
-        className: 'hover:bg-warning-accent focus-visible:ring-warning/20 dark:focus-visible:ring-warning/40',
-      },
-      {
-        variant: 'success',
-        disabled: false,
-        className: 'hover:bg-success-accent focus-visible:ring-success/20 dark:focus-visible:ring-success/40',
-      },
-      {
-        variant: 'brand',
-        disabled: false,
-        className: 'hover:bg-brand-accent focus-visible:ring-brand/20 dark:focus-visible:ring-brand/40',
-      },
-      {
-        variant: 'brand-secondary',
-        disabled: false,
-        className:
-          'hover:bg-brand-secondary-accent focus-visible:ring-brand-secondary/20 dark:focus-visible:ring-brand-secondary/40',
-      },
-      {
-        variant: 'brand-tertiary',
-        disabled: false,
-        className:
-          'hover:bg-brand-tertiary-accent focus-visible:ring-brand-tertiary/20 dark:focus-visible:ring-brand-tertiary/40',
-      },
-      {
-        variant: 'outline',
-        disabled: false,
-        className: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-input/50',
-      },
-      {
-        variant: 'ghost',
-        disabled: false,
-        className: 'hover:bg-accent/80 hover:text-accent-foreground dark:hover:bg-accent/50',
+        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
       },
     ],
   }

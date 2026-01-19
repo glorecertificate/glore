@@ -1,4 +1,6 @@
-export const OutlookLogo = (props: React.SVGProps<SVGSVGElement>) => (
+import { type IconProps } from '@/lib/types'
+
+export const OutlookIcon = (props: IconProps) => (
   <svg
     enableBackground="new 0 0 1831.085 1703.335"
     viewBox="0 0 1831.085 1703.335"
@@ -98,4 +100,4 @@ export const OutlookLogo = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-export const OutlookLogoIcon = OutlookLogo
+export const OutlookIconIcon = OutlookIcon

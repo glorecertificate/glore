@@ -1,23 +1,22 @@
 import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { ErrorView } from '@/components/layout/error-view'
-import { SuspenseLoader } from '@/components/layout/suspense-loader'
+import { ErrorPage } from '@/components/layout/error-page'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
+import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 
 export default async () => {
   const user = await getAuthUser()
   const t = await getTranslations('Common')
   const message = user ? t('backToHome') : t('accessApp')
+  const link = user ? APP_ROOT : AUTH_ROOT
 
   return (
-    <SuspenseLoader size="full">
-      <ErrorView className="min-h-screen" type="not-found">
-        <Button asChild size="lg" variant="outline">
-          <Link href="/">{message}</Link>
-        </Button>
-      </ErrorView>
-    </SuspenseLoader>
+    <ErrorPage className="min-h-screen" type="not-found">
+      <Button asChild size="lg" variant="outline">
+        <Link href={link}>{message}</Link>
+      </Button>
+    </ErrorPage>
   )
 }

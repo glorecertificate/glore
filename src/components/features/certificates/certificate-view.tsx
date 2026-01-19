@@ -24,20 +24,20 @@
 //   )
 
 //   const hasEnoughCourses = useMemo(
-//     () => courses.filter(course => course.completed).length >= config.app.minSkills,
+//     () => courses.filter(course => course.completed).length >= config.settings.minSkills,
 //     [courses]
 //   )
 //   const validCourses = useMemo(
 //     () =>
 //       courses.filter(course =>
 //         course.lessons?.find(
-//           lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.app.minRating
+//           lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.settings.minRating
 //         )
 //       ),
 //     [courses]
 //   )
 //   const canRequestCertificate = useMemo(
-//     () => hasEnoughCourses && validCourses.length >= config.app.minSkills,
+//     () => hasEnoughCourses && validCourses.length >= config.settings.minSkills,
 //     [hasEnoughCourses, validCourses.length]
 //   )
 
@@ -55,8 +55,8 @@
 //       canRequestCertificate
 //         ? t('requestCertificateMessage')
 //         : hasEnoughCourses
-//           ? t('invalidCoursesMessage', { rating: String(config.app.minRating) })
-//           : t('missingCoursesMessage', { count: String(config.app.minSkills) }),
+//           ? t('invalidCoursesMessage', { rating: String(config.settings.minRating) })
+//           : t('missingCoursesMessage', { count: String(config.settings.minSkills) }),
 //     [canRequestCertificate, hasEnoughCourses, t]
 //   )
 //   const noCertificateLabel = useMemo(

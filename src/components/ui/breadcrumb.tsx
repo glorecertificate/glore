@@ -13,7 +13,7 @@ export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>)
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
   <ol
     className={cn(
-      'wrap-break-word flex flex-wrap items-center gap-0.5 text-muted-foreground text-sm sm:gap-2.5',
+      'wrap-break-word flex flex-wrap items-center gap-0.5 text-muted-foreground text-sm sm:gap-3',
       className
     )}
     data-slot="breadcrumb-list"

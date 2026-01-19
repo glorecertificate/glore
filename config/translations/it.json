@@ -32,7 +32,6 @@
     "removeItem": "Rimuovi elemento",
     "searchItems": "Cerca...",
     "selectAll": "Seleziona tutto",
-    "selectAtLeastOneItem": "È necessario selezionare almeno un elemento",
     "share": "Condividere",
     "showOnMaps": "Mostra su Google Maps",
     "skills": "Competenze",
@@ -42,7 +41,10 @@
     "theme": "Tema",
     "unarchive": "Annulla l'archiviazione",
     "underReview": "In revisione",
-    "verified": "Verificato"
+    "verified": "Verificato",
+    "comingSoonMessage": "Questa funzionalità sarà presto disponibile. Rimani connesso! 🚀",
+    "item": "Articolo",
+    "selectAtLeastOne": "Devi selezionare almeno un {item}"
   },
   "Locale": {
     "Countries": {
@@ -125,7 +127,8 @@
         "weather": "Meteo"
       },
       "searchIcons": "Cerca un'icona...",
-      "updateIcon": "Aggiorna icona"
+      "updateIcon": "Aggiorna icona",
+      "noIconsFound": "Nessuna icona trovata"
     },
     "RichTextEditor": {
       "actions": {
@@ -555,6 +558,8 @@
     "passwordUpdatedMessage": "Ora puoi accedere a con la tua nuova password.",
     "passwordUpdatedMetaTitle": "Password aggiornata",
     "passwordUpdatedTitle": "La tua password è stata aggiornata",
+    "resendEmail": "Invia un'altra email",
+    "resendTimer": "Invia un'altra email tra {seconds}s",
     "signupDialogMessage": "<p>Al momento, puoi registrarti a GloRe solo con un invito dalla tua organizzazione.</p><p>Se l'organizzazione fa parte della rete GloRe e desideri accedere come volontario, tutor o coordinatore, chiedi a un referente di mandarti un invito.</p><p>Per ulteriori informazioni, visita il <link>nostro sito web</link>.</p>",
     "signupDialogTitle": "Accedi al network di GloRe",
     "signupMessage": "Non hai un account? Scopri <link>come iscriverti</link>",
@@ -615,7 +620,7 @@
     "courseSlugDescription": "Indirizzo web del corso, deve essere univoco e descrittivo.",
     "courseSlugPlaceholder": "slug-del-corso",
     "courseSlugTaken": "Questo slug URL è già in uso. \nPer favore scegline un altro.",
-    "courseSlugTooShort": "Lo slug deve essere lungo almeno 5 caratteri",
+    "courseSlugTooShort": "Lo slug deve essere lungo almeno {min} caratteri",
     "courseTitle": "Titolo",
     "courseTitlePlaceholder": "Nuovo corso",
     "courseType": "Tipo di corso",
@@ -685,7 +690,7 @@
     "localeNotPublished": "Non pubblicato in",
     "localePublished": "Pubblicato in",
     "name": "Nome",
-    "newCourse": "Nuovo corso",
+    "newCourse": "Crea un nuovo corso",
     "newCourseDescription": "Inserisci le informazioni di base per creare un nuovo corso. \nPuoi aggiungere contenuti e traduzioni in un secondo momento.",
     "newLesson": "Nuova lezione",
     "next": "Prossimo",
@@ -723,7 +728,7 @@
     "renameCourse": "Rinomina corso",
     "renameLesson": "Rinomina lezione",
     "reorderCourse": "Riordina i corsi",
-    "reorderDisabled": "Vai alla sezione principale per riodinare i corsi",
+    "reorderDisabled": "Rimuovi tutti i filtri e ordinamenti per riarrangiare",
     "replyToProceed": "Completa {type, select, questions {il quiz} skill_evaluation {l'autovalutazione} subskill_evaluations {tutte le autovalutazioni} other {}} per procedere",
     "requestCertificate": "Richiedi certificato",
     "resetIcon": "Reimposta icona",
@@ -747,7 +752,7 @@
     "settingsTitle": "Impostazioni del corso",
     "skillEvaluationSubtitle": "Come valuteresti le tue competenze generali in quest'area?",
     "skillEvaluationTitle": "Valutazione del corso",
-    "skillGroup": "Gruppo",
+    "skillGroup": "Gruppo di skill",
     "skillGroupDescription": "Gruppo di skill a cui appartiene questo corso.",
     "softSkillNotice": "Per i corsi di soft skill, il titolo e la descrizione verranno utilizzati anche per descrivere la competenza stessa.",
     "softSkillNoticeTitle": "Stai modificando una soft skill",
@@ -778,7 +783,11 @@
     "writtenBy": "Scritto da",
     "wrongAnswerMessage": "Ma non ti preoccupare, puoi sempre rivedere il materiale del corso.",
     "wrongAnswerTitle": "Sbagliato",
-    "titleTooLong": "Il titolo non può superare i 100 caratteri"
+    "titleTooLong": "Il titolo non può superare i 100 caratteri",
+    "language": "Lingua",
+    "courseUpdateFailed": "Impossibile aggiornare il corso",
+    "courseSettingsDescription": "Gestisci le impostazioni globali di questo corso.",
+    "courseTypeDescription": "Specifica se il corso è introduttivo o focalizzato sulla verifica di una soft skill."
   },
   "Certificates": {
     "alreadyHave": "Hai già un certificato con questa organizzazione",

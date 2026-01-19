@@ -85,14 +85,13 @@
         "useUniqueElementIds": "off"
       },
       "nursery": {
-        "noImportCycles": "off",
-        "noUselessUndefined": "off",
+        "noJsxLiterals": "error",
         "useConsistentArrowReturn": "error",
         "useSortedClasses": {
           "level": "error",
           "fix": "safe",
           "options": {
-            "functions": ["clsx", "cn", "cva"]
+            "functions": ["cn", "cva"]
           }
         }
       },
@@ -292,7 +291,7 @@
       }
     },
     {
-      "includes": ["src/lib/types.ts"],
+      "includes": ["src/lib/types.ts", "supabase/functions/**"],
       "linter": {
         "rules": {
           "suspicious": {

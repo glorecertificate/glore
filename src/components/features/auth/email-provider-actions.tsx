@@ -1,12 +1,12 @@
 import { useTranslations } from 'next-intl'
 
-import { AppleMailIcon } from '@/components/graphics/apple-mail-icon'
-import { GmailLogo } from '@/components/graphics/gmail-logo'
-import { OutlookLogoIcon } from '@/components/graphics/outlook-logo'
+import { AppleMailIcon } from '@/components/icons/apple-mail-icon'
+import { GmailIcon } from '@/components/icons/gmail-icon'
+import { OutlookIconIcon } from '@/components/icons/outlook-icon'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
-export const EmailActionFooter = () => {
+export const EmailProviderActions = () => {
   const t = useTranslations('Common')
 
   return (
@@ -14,7 +14,7 @@ export const EmailActionFooter = () => {
       <Button
         asChild
         className="justify-center"
-        icon={GmailLogo}
+        icon={GmailIcon}
         iconPlacement="left"
         size="lg"
         title={`${t('open')} Gmail`}
@@ -27,14 +27,14 @@ export const EmailActionFooter = () => {
       <Button
         asChild
         className="justify-center"
-        icon={OutlookLogoIcon}
+        icon={OutlookIconIcon}
         iconPlacement="left"
         size="lg"
         title={`${t('open')} Outlook`}
         variant="outline"
       >
         <Link href="https://outlook.office.com/mail" target="_blank">
-          {'OutlookLogo'}
+          {'Outlook'}
         </Link>
       </Button>
       <Button

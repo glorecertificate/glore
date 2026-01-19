@@ -467,7 +467,7 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === config.app.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
+      if (event.key === config.settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleSidebar()
       }
@@ -640,7 +640,7 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
       variant="ghost"
       {...props}
     >
-      <PanelLeftIcon />
+      <PanelLeftIcon className="size-4.5! text-foreground/64" />
       <span className="sr-only">{action}</span>
     </Button>
   )
@@ -704,8 +704,8 @@ export const SidebarRail = ({
   )
 }
 
-export const SidebarInset = ({ className, ...props }: React.ComponentProps<'main'>) => (
-  <main
+export const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>) => (
+  <div
     className={cn(
       'relative flex min-h-svh flex-1 flex-col bg-background',
       'peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm',

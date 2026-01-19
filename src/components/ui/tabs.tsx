@@ -106,7 +106,7 @@ const tabsTriggerVariants = cva(
       },
       effect: {
         grayscale: 'data-[state=inactive]:grayscale-80 data-[state=inactive]:*:opacity-60',
-        'text-stroke': 'data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground',
+        'text-stroke': 'data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground',
       },
     },
   }

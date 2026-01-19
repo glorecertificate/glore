@@ -4,10 +4,11 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual'
 import Fuse from 'fuse.js'
-import { DynamicIcon, dynamicIconImports, type IconName } from 'lucide-react/dynamic'
+import { dynamicIconImports, type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
@@ -27,6 +28,7 @@ export interface IconPickerProps extends ButtonProps {
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName
+  fallback?: React.ReactNode
   iconsList?: IconData[]
   modal?: boolean
   onOpenChange?: (open: boolean) => void
@@ -80,6 +82,7 @@ export const IconPicker = ({
   className,
   defaultOpen,
   defaultValue,
+  fallback,
   iconsList,
   loading,
   modal = false,
@@ -319,7 +322,7 @@ export const IconPicker = ({
 
   const renderVirtualContent = useCallback(() => {
     if (filteredIcons.length === 0) {
-      return <div className="text-center text-gray-500">No icon found</div>
+      return <div className="text-center text-gray-500">{t('noIconsFound')}</div>
     }
 
     return (
@@ -343,24 +346,26 @@ export const IconPicker = ({
             transform: `translateY(${virtualItem.start}px)`,
           }
 
-          if (item.type === 'category') {
+          if (item.type === 'row')
+            return (
+              <div data-index={virtualItem.index} key={virtualItem.key} style={itemStyle}>
+                <div className="grid w-full grid-cols-5 gap-2">{item.icons!.map(renderIcon)}</div>
+              </div>
+            )
+
+          if (categorized)
             return (
               <div className="top-0 z-10" key={virtualItem.key} style={itemStyle}>
                 <h3 className="font-medium text-sm capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
                 <Separator className="my-1.5" />
               </div>
             )
-          }
 
-          return (
-            <div data-index={virtualItem.index} key={virtualItem.key} style={itemStyle}>
-              <div className="grid w-full grid-cols-5 gap-2">{item.icons!.map(renderIcon)}</div>
-            </div>
-          )
+          return null
         })}
       </div>
     )
-  }, [virtualizer, virtualItems, categorizedIcons, filteredIcons, renderIcon])
+  }, [virtualizer, virtualItems, categorizedIcons, filteredIcons, renderIcon, t, categorized])
 
   useEffect(() => {
     if (isPopoverVisible) {
@@ -392,17 +397,13 @@ export const IconPicker = ({
       <PopoverTrigger asChild>
         {children ?? (
           <Button
-            className={cn(
-              'has-[>svg]:animate-none data-[state=open]:cursor-default!',
-              (loading || iconName) && 'animate-pulse',
-              className
-            )}
+            className={cn('has-[>svg]:animate-none', isOpen && 'cursor-default', loading && 'animate-pulse', className)}
             variant="ghost"
             {...props}
           >
             {iconName && (
               <>
-                <DynamicIcon name={iconName} />
+                <DynamicIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
                 {showLabels && t('updateIcon')}
               </>
             )}
@@ -421,7 +422,11 @@ export const IconPicker = ({
         {categorized && debouncedSearch.trim() === '' && (
           <div className="scrollbar-hide mt-2 flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
         )}
-        <div className="max-h-60 overflow-auto" ref={parentRef} style={{ scrollbarWidth: 'thin' }}>
+        <div
+          className={cn('max-h-60 overflow-auto', !categorized && '-mt-6')}
+          ref={parentRef}
+          style={{ scrollbarWidth: 'thin' }}
+        >
           {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
         </div>
       </PopoverContent>

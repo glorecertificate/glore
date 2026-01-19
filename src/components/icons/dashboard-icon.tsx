@@ -1,11 +1,12 @@
+import { type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export const DashboardIcon = ({
   colored,
   ...props
-}: React.SVGProps<SVGSVGElement> & {
+}: IconProps<{
   colored?: boolean
-}) => (
+}>) => (
   <svg fill="none" height="39" viewBox="0 0 32 39" width="32" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       className={cn('fill-muted-foreground', colored && 'fill-brand-secondary')}

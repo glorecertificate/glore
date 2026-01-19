@@ -12,6 +12,7 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
     ...defaultConfig,
     reactStrictMode: true,
     cacheComponents: true,
+    trailingSlash: false,
     headers: () => [
       {
         headers: [
@@ -21,6 +22,13 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
           },
         ],
         source: '/api/v1/manifest',
+      },
+    ],
+    redirects: () => [
+      {
+        source: '/',
+        destination: '/dashboard',
+        permanent: true,
       },
     ],
     images: {

@@ -1,9 +1,11 @@
+import { type IconProps } from '@/lib/types'
+
 export const FontColorIcon = ({
   color,
   ...props
-}: React.SVGProps<SVGSVGElement> & {
+}: IconProps<{
   color: string
-}) => (
+}>) => (
   <svg
     aria-hidden="true"
     fill="none"

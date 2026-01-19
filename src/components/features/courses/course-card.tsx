@@ -52,7 +52,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type Course } from '@/db/queries'
+import { type Course } from '@/db/schema/courses'
 import { useI18n } from '@/hooks/use-i18n'
 import { i18n, localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -127,7 +127,7 @@ export const CourseCard = ({
   showState?: boolean
 }) => {
   const { locale, localeItems } = useI18n()
-  const { removeCourse, editCourse, user } = useSession()
+  const { removeCourse, editSessionCourse, user } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
   const f = useFormatter()
@@ -147,14 +147,16 @@ export const CourseCard = ({
     [course.slug, language]
   )
 
-  const updateIcon = useCallback(
-    async (icon: IconName | null) => {
-      await editCourse(course.id, { icon })
-    },
-    [course.id, editCourse]
-  )
-
   const coursePath = `/courses/${course.slug}?lang=${language}` as const
+  const title = localize(course.title, language)
+  const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
+  const lessonsMessage =
+    course.lessons.length > 0
+      ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
+      : t('noLessonsCreated')
+  const createdOn = t('createdOnBy', {
+    date: f.relativeTime(new Date(course.created_at), Date.now()),
+  })
 
   const languageItems = useMemo(
     () =>
@@ -177,8 +179,6 @@ export const CourseCard = ({
         .sort((a, b) => i18n.locales.indexOf(a.value) - i18n.locales.indexOf(b.value)),
     [activeLanguages, course.languages, language, localeItems, updateLanguage]
   )
-
-  const title = localize(course.title, language)
 
   const description = useMemo(() => {
     const translation = localize(course.description, language)
@@ -203,17 +203,6 @@ export const CourseCard = ({
     )
   }, [course.description, language, t])
 
-  const lessonsMessage =
-    course.lessons.length > 0
-      ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
-      : t('noLessonsCreated')
-
-  const createdOn = t('createdOnBy', {
-    date: f.relativeTime(new Date(course.created_at), Date.now()),
-  })
-
-  const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
-
   const action = useMemo(() => {
     if (user.canEdit) return t('editCourse')
     if (!course.enrolled) return t('startCourse')
@@ -223,23 +212,23 @@ export const CourseCard = ({
 
   const archiveCourse = useCallback(async () => {
     try {
-      await editCourse(course.id, { archived_at: new Date().toISOString() })
+      await editSessionCourse(course.id, { archived_at: new Date().toISOString() })
       toast.success(t('courseArchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, editCourse])
+  }, [course.id, t, editSessionCourse])
 
   const unarchiveCourse = useCallback(async () => {
     try {
-      await editCourse(course.id, { archived_at: null })
+      await editSessionCourse(course.id, { archived_at: null })
       toast.success(t('courseUnarchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, editCourse])
+  }, [course.id, t, editSessionCourse])
 
   const deleteCourse = useCallback(async () => {
     try {
@@ -261,7 +250,7 @@ export const CourseCard = ({
       <CardHeader className="gap-4">
         <IconPicker
           className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
-          onValueChange={updateIcon}
+          onValueChange={icon => editSessionCourse(course.id, { icon })}
           title={course.icon ? t('updateIcon') : t('addIcon')}
           value={(course.icon as IconName) ?? undefined}
           variant="ghost"
@@ -272,6 +261,7 @@ export const CourseCard = ({
               <Link
                 className={cn('font-medium leading-[normal] transition-none')}
                 href={coursePath}
+                prefetch
                 title={t('viewCourse')}
               >
                 {title ?? t('noTitle')}

@@ -7,7 +7,7 @@ import config from '@config/app'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type User } from '@/db/queries'
+import { type User } from '@/db/schema/users'
 import { useI18n } from '@/hooks/use-i18n'
 import { type Any, type HttpUrl } from '@/lib/types'
 
@@ -46,7 +46,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const locationUrl = useMemo(() => {
     if (!location) return
     const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
-    return `${config.app.mapsUrl}/${searchQuery}` as HttpUrl
+    return `${config.settings.mapsUrl}/${searchQuery}` as HttpUrl
   }, [location])
 
   const languages = useMemo(() => {

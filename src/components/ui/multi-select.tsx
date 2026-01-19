@@ -5,7 +5,7 @@ import { createContext, useCallback, useContext, useMemo, useState } from 'react
 import { CommandSeparator } from 'cmdk'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
+import { type ToastT, toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
@@ -17,16 +17,12 @@ import { cn } from '@/lib/utils'
 const MultiSelectContext = createContext<{
   disabled: boolean
   loading: boolean
+  min: number
   open: boolean
   options: string[]
   resetOptions: () => void
   selectOption: (option: string) => void
   setOpen: (open: boolean) => void
-  validation: {
-    count: number
-    message: string
-    delay: number
-  }
   value: string[]
 } | null>(null)
 
@@ -36,53 +32,40 @@ const useMultiSelect = () => {
   return context
 }
 
-export interface MultiSelectProps extends React.ComponentProps<typeof Popover> {
-  disabled?: boolean
-  entity?: string
-  loading?: boolean
-  options: string[]
-  onValueChange: (selected: string[]) => void
-  validation?: {
-    count?: number
-    message?: string
-    delay?: number
-  }
-  value: string[]
-}
-
 export const MultiSelect = ({
   children,
   disabled,
-  entity,
+  label,
   loading,
-  onValueChange,
+  min = 1,
+  onChange,
   options,
-  validation: validate,
+  toast: toastOptions,
   value,
   ...props
-}: MultiSelectProps) => {
+}: React.ComponentProps<typeof Popover> & {
+  disabled?: boolean
+  label?: string
+  loading?: boolean
+  min?: number
+  onChange: (selected: string[]) => void
+  options: string[]
+  toast?: ToastT
+  value: string[]
+}) => {
   const t = useTranslations('Common')
 
   const [open, setOpen] = useState(false)
   const [selectTime, setSelectTime] = useState<number | null>(null)
 
-  const validation = {
-    count: 1,
-    message: t('selectAtLeastOne', {
-      item: entity ?? t('item'),
-    }),
-    delay: 500,
-    ...validate,
-  }
-
   const unselectOption = useCallback(
     (option: string) => {
-      if (value.length > validation.count) return onValueChange(value.filter(v => v !== option))
+      if (value.length > min) return onChange(value.filter(v => v !== option))
       if (selectTime && Date.now() - selectTime < 2000) return
-      toast.info(validation.message)
+      toast.info(t('selectAtLeastOne', { item: (label ?? t('item')).toLowerCase() }), toastOptions)
       setSelectTime(Date.now())
     },
-    [onValueChange, selectTime, validation.count, validation.message, value.length, value.filter]
+    [label, min, onChange, selectTime, t, toastOptions, value]
   )
 
   const selectOption = useCallback(
@@ -90,26 +73,26 @@ export const MultiSelect = ({
       if (value.includes(option)) return unselectOption(option)
       const selected = options.find(o => o === option)
       if (!selected) return
-      onValueChange([...value, selected])
+      onChange([...value, selected])
     },
-    [onValueChange, options, unselectOption, value]
+    [onChange, options, unselectOption, value]
   )
 
   const resetOptions = useCallback(() => {
-    onValueChange(options)
-  }, [options, onValueChange])
+    onChange(options)
+  }, [options, onChange])
 
   return (
     <MultiSelectContext.Provider
       value={{
         disabled: !!disabled,
         loading: !!loading,
+        min,
         open,
         options,
         resetOptions,
         selectOption,
         setOpen,
-        validation,
         value,
       }}
     >
@@ -118,14 +101,6 @@ export const MultiSelect = ({
       </Popover>
     </MultiSelectContext.Provider>
   )
-}
-
-export interface MultiSelectBadgeProps extends React.ComponentProps<typeof Badge> {
-  disabled?: boolean
-  disabledMessage?: string
-  label?: string
-  tooltipDelay?: number
-  value: string
 }
 
 export const MultiSelectBadge = ({
@@ -137,7 +112,13 @@ export const MultiSelectBadge = ({
   tooltipDelay = 500,
   value,
   ...props
-}: MultiSelectBadgeProps) => {
+}: React.ComponentProps<typeof Badge> & {
+  disabled?: boolean
+  disabledMessage?: string
+  label?: string
+  tooltipDelay?: number
+  value: string
+}) => {
   const t = useTranslations('Common')
   const { disabled: rootDisabled, selectOption } = useMultiSelect()
   const disabled = rootDisabled || badgeDisabled
@@ -208,14 +189,14 @@ export const MultiSelectItem = ({
   label?: string
   value: string
 }) => {
-  const { selectOption, validation, value: rootValue } = useMultiSelect()
+  const { min, selectOption, value: rootValue } = useMultiSelect()
   const selected = rootValue.includes(value)
 
   return (
     <CommandItem
       className={cn(
         'group/item w-full pr-6',
-        selected ? (rootValue.length === validation.count ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer'
+        selected ? (rootValue.length === min ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer'
       )}
       onSelect={() => selectOption(value)}
       value={value}

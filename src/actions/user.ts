@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation'
 import { type UserResponse } from '@supabase/supabase-js'
 
 import { getDatabase } from '@/db/client'
-import { parseUser, userQuery } from '@/db/queries'
+import { parseUser, userQuery } from '@/db/schema/users'
 import { type DatabaseQuery, type DatabaseSingleQuery, type TableUpdate } from '@/db/types'
 import { resolveQuery } from '@/db/utils'
 import { CacheTag } from '@/lib/cache'

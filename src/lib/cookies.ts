@@ -1,7 +1,7 @@
 import { type Locale } from 'next-intl'
 
 import { type CourseListView } from '@/components/features/courses/course-list'
-import { type Course } from '@/db/queries'
+import { type Course } from '@/db/schema/courses'
 import { type Theme } from '@/lib/types'
 
 export const COOKIE_PREFIX = process.env.COOKIE_PREFIX ?? ''
@@ -31,7 +31,7 @@ export type CookieName = keyof Cookies
 export type CookieValue<T> = T extends CookieName ? Cookies[T] | undefined : undefined
 export type CookieOptions = Omit<CookieInit, 'name' | 'value'>
 
-export const parseCookieValue = <T extends CookieName>(value?: string | undefined, fallback?: CookieValue<T>) => {
+export const parseCookie = <T extends CookieName>(value?: string | undefined, fallback?: CookieValue<T>) => {
   try {
     if (!value) throw Error()
     return JSON.parse(value)
@@ -39,3 +39,13 @@ export const parseCookieValue = <T extends CookieName>(value?: string | undefine
     return (value ?? fallback) as CookieValue<T>
   }
 }
+
+export const stringifyCookie = <T extends CookieName>(value: CookieValue<T>) =>
+  typeof value === 'string' ? value : JSON.stringify(value)
+
+export const cookieOptions = ({ domain, expires, ...options }: CookieOptions = {}) => ({
+  ...COOKIE_OPTIONS,
+  domain: domain || undefined,
+  expires: expires || undefined,
+  ...options,
+})

@@ -1,6 +1,7 @@
+import { type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export const ErrorGraphic = ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
+export const ErrorIcon = ({ className, ...props }: IconProps) => (
   <svg
     className={cn('fill-destructive', className)}
     preserveAspectRatio="xMidYMid meet"

@@ -2,7 +2,7 @@ import 'server-only'
 
 import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
-import { i18n } from '@/lib/i18n'
+import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { verifyAuthUser } from '@/middleware/auth'
 
 export const config: ProxyConfig = {
@@ -12,19 +12,15 @@ export const config: ProxyConfig = {
 }
 
 export const proxy: NextProxy = async request => {
-  const { headers, nextUrl } = request
-
+  const { headers } = request
   const response = NextResponse.next({ request: { headers } })
-
-  const locale = nextUrl.searchParams.get('locale') ?? nextUrl.searchParams.get('lang')
-  if (locale) response.cookies.set(i18n.cookie, locale)
 
   try {
     await verifyAuthUser(request)
-    if (request.nextUrl.pathname !== '/login') return response
-    return NextResponse.redirect(new URL('/', request.url))
+    if (request.nextUrl.pathname !== AUTH_ROOT) return response
+    return NextResponse.redirect(new URL(APP_ROOT, request.url))
   } catch {
-    if (request.nextUrl.pathname === '/login') return response
-    return NextResponse.redirect(new URL('/login', request.url))
+    if (request.nextUrl.pathname === AUTH_ROOT) return response
+    return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
   }
 }

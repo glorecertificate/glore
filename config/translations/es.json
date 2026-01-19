@@ -32,7 +32,6 @@
     "removeItem": "Quitar elemento",
     "searchItems": "Buscar...",
     "selectAll": "Seleccionar todo",
-    "selectAtLeastOneItem": "Debes seleccionar al menos un elemento",
     "share": "Compartir",
     "showOnMaps": "Mostrar en Google Maps",
     "skills": "Habilidades",
@@ -42,7 +41,10 @@
     "theme": "Tema",
     "unarchive": "Desarchivar",
     "underReview": "Bajo revisión",
-    "verified": "Verificado"
+    "verified": "Verificado",
+    "selectAtLeastOne": "Debes seleccionar al menos un {item}",
+    "comingSoonMessage": "Esta característica estará disponible próximamente. \n¡Manténganse al tanto! \n🚀",
+    "item": "Artículo"
   },
   "Locale": {
     "Countries": {
@@ -125,7 +127,8 @@
         "weather": "Clima"
       },
       "searchIcons": "Busque un icono...",
-      "updateIcon": "Actualizar icono"
+      "updateIcon": "Actualizar icono",
+      "noIconsFound": "No se encontraron iconos"
     },
     "RichTextEditor": {
       "actions": {
@@ -555,6 +558,8 @@
     "passwordUpdatedMessage": "Ahora puedes iniciar sesión con tu nueva contraseña.",
     "passwordUpdatedMetaTitle": "Contraseña actualizada",
     "passwordUpdatedTitle": "Tu contraseña ha sido actualizada",
+    "resendEmail": "Enviar otro correo",
+    "resendTimer": "Enviar otro correo en {seconds}s",
     "signupDialogMessage": "<p>Actualmente, puedes registrarte en GloRe solo con una invitación de tu organización.</p><p>Si tu organización es parte de la red GloRe y deseas obtener acceso como voluntario, tutor o coordinador, pide a un representante que te envíe una invitación.</p><p>Para más información, visita <link>nuestro sito web</link>.</p>",
     "signupDialogTitle": "Regístrate en GloRe",
     "signupMessage": "¿No tienes una cuenta? Descubre <link>cómo inscribirte</link>",
@@ -615,7 +620,7 @@
     "courseSlugDescription": "Dirección URL del curso, debe ser única y descriptiva.",
     "courseSlugPlaceholder": "slug-del-curso",
     "courseSlugTaken": "Este slug de URL ya está en uso. \nPor favor elige otro.",
-    "courseSlugTooShort": "El slug debe tener al menos 5 caracteres",
+    "courseSlugTooShort": "El slug debe tener al menos {min} caracteres",
     "courseTitle": "Título",
     "courseTitlePlaceholder": "Nuevo curso",
     "courseType": "Tipo de curso",
@@ -685,7 +690,7 @@
     "localeNotPublished": "No publicado en",
     "localePublished": "Publicado en",
     "name": "Nombre",
-    "newCourse": "Nuevo curso",
+    "newCourse": "Creas un nuevo curso",
     "newCourseDescription": "Complete la información básica para crear un nuevo curso. \nPuedes agregar contenido y traducciones más tarde.",
     "newLesson": "Nueva lección",
     "next": "Próximo",
@@ -723,7 +728,7 @@
     "renameCourse": "Editar título",
     "renameLesson": "Cambiar titulo",
     "reorderCourse": "Reordenar los cursos",
-    "reorderDisabled": "Ir a la pestaña principal para reordenar los cursos.",
+    "reorderDisabled": "Eliminar todos los filtros y tipos para reorganizar",
     "replyToProceed": "Completa {type, select, questions {el cuestionario} skill_evaluation {la autoevaluación} subskill_evaluations {todas las autoevaluaciónes} other {}} para continuar",
     "requestCertificate": "Requerir certificado",
     "resetIcon": "Restableces el icono",
@@ -738,7 +743,6 @@
     "saveDraftSuccess": "Curso actualizado exitosamente",
     "saveDraftTitleRequired": "Se requiere un título para guardar el curso",
     "savingChange": "Guardando cambios",
-    "selectAtLeastOneCategory": "Debes seleccionar al menos una categoría",
     "selectCourseType": "Por favor seleccione un tipo de curso",
     "selectLanguage": "Seleccione un idioma",
     "selectLanguages": "Seleccionar idiomas",
@@ -779,7 +783,11 @@
     "writtenBy": "Escrito por",
     "wrongAnswerMessage": "No te preocupes, siempre puedes revisar el material nuevamente.",
     "wrongAnswerTitle": "Incorrecto",
-    "titleTooLong": "El título no puede exceder 100 caracteres"
+    "titleTooLong": "El título no puede exceder 100 caracteres",
+    "language": "Idioma",
+    "courseUpdateFailed": "No se pudo actualizar el curso",
+    "courseSettingsDescription": "Administras la configuración global de este curso.",
+    "courseTypeDescription": "Si el curso es una introducción o está enfocado a verificar una habilidad blanda."
   },
   "Certificates": {
     "alreadyHave": "Ya tiene un certificado con esta organización",

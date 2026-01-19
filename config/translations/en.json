@@ -12,6 +12,7 @@
     "backToPrevious": "Go back",
     "cancel": "Cancel",
     "clearSort": "Clear sort",
+    "comingSoonMessage": "This feature is coming soon. Stay tuned! 🚀",
     "completed": "Completed",
     "continue": "Continue",
     "delete": "Delete",
@@ -126,7 +127,8 @@
         "weather": "Weather"
       },
       "searchIcons": "Search for an icon...",
-      "updateIcon": "Update icon"
+      "updateIcon": "Update icon",
+      "noIconsFound": "No icons found"
     },
     "PasswordInput": {
       "label": "Password",
@@ -556,6 +558,8 @@
     "passwordUpdatedMessage": "You can now log in to the GloRe Network with your new password.",
     "passwordUpdatedMetaTitle": "Password updated",
     "passwordUpdatedTitle": "Your password has been updated",
+    "resendEmail": "Send another email",
+    "resendTimer": "Send another email in {seconds}s",
     "signupDialogMessage": "<p>Currently, you can sign up to GloRe only with an invitation from your organization.</p><p>If your organization is part of the GloRe network and you want to get access as a volunteer, tutor or coordinator, ask a representative to send you an invitation.</p><p>For more information, please <link>visit our website</link>.</p>",
     "signupDialogTitle": "Access the GloRe Network ",
     "signupMessage": "Don't have an account? See <link>how to sign up</link>",
@@ -616,7 +620,7 @@
     "courseSlugDescription": "URL address of the course, must be unique and descriptive.",
     "courseSlugPlaceholder": "course-url-slug",
     "courseSlugTaken": "This URL slug is already in use. Please choose another one.",
-    "courseSlugTooShort": "The slug must be at least 5 characters long",
+    "courseSlugTooShort": "The slug must be at least {min} characters long",
     "courseTitle": "Title",
     "courseTitlePlaceholder": "New course",
     "courseType": "Type of course",
@@ -686,7 +690,7 @@
     "localeNotPublished": "Not published in",
     "localePublished": "Published in",
     "name": "Name",
-    "newCourse": "New course",
+    "newCourse": "Create a new course",
     "newCourseDescription": "Fill in the basic information to create a new course. You can add content and translations later.",
     "newLesson": "New lesson",
     "next": "Next",
@@ -724,7 +728,7 @@
     "renameCourse": "Rename course",
     "renameLesson": "Rename lesson",
     "reorderCourse": "Reorder the courses",
-    "reorderDisabled": "Remove all filters or sorts to reorder",
+    "reorderDisabled": "Remove all filters and sorts to rearrange",
     "replyToProceed": "Complete {type, select, questions {the quiz} skill_evaluation {the evaluation} subskill_evaluations {all evaluations} other {}} to proceed",
     "requestCertificate": "Request certificate",
     "resetIcon": "Reset icon",
@@ -735,7 +739,7 @@
     "saveChanges": "Save changes",
     "saveDraft": "Save draft",
     "saveDraftError": "An error occurred while saving the course, please try again",
-    "saveDraftNoChanges": "No changes",
+    "saveDraftNoChanges": "Nothing to save",
     "saveDraftSuccess": "Course updated successfully",
     "saveDraftTitleRequired": "A title is required to save the course",
     "savingChange": "Saving changes",
@@ -779,7 +783,11 @@
     "writtenBy": "Written by",
     "wrongAnswerMessage": "Don't worry, you can always review the material again.",
     "wrongAnswerTitle": "Incorrect",
-    "titleTooLong": "The title cannot exceed 100 characters"
+    "titleTooLong": "The title cannot exceed 100 characters",
+    "language": "Language",
+    "courseUpdateFailed": "Failed to update course",
+    "courseSettingsDescription": "Manage the global settings of this course.",
+    "courseTypeDescription": "Whether the course is an introduction or is focused on verifying a soft skill."
   },
   "Certificates": {
     "alreadyHave": "You already have a certificate with this organization",

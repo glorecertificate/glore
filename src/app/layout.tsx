@@ -10,9 +10,9 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import config from '@config/app'
 import { getLocaleCookie } from '@/actions/cookies'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import { ProgressBarProvider } from '@/components/ui/progress-bar'
 import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
@@ -26,16 +26,15 @@ export const generateMetadata = async () => {
   return {
     ...metadata,
     title: {
-      default: `${config.metadata.name}`,
-      template: `%s - ${config.metadata.shortName}`,
-      absolute: t('title'),
+      default: config.metadata.name,
+      template: `%s ${config.metadata.separator} ${config.metadata.name}`,
     },
     description: t('description'),
     keywords: t('keywords'),
   }
 }
 
-const RootLayout = async ({ children }: LayoutProps<'/'>) => {
+const Layout = async ({ children }: LayoutProps<'/'>) => {
   const locale = await getLocaleCookie()
   const messages = await getMessages({ locale })
   const t = await getTranslations('Metadata')
@@ -54,15 +53,13 @@ const RootLayout = async ({ children }: LayoutProps<'/'>) => {
         <NuqsAdapter>
           <I18nProvider locale={locale} messages={messages}>
             <ThemeProvider>
-              <ProgressBarProvider>
-                {children}
-                <Toaster />
-              </ProgressBarProvider>
+              {children}
+              <Toaster />
             </ThemeProvider>
           </I18nProvider>
         </NuqsAdapter>
-        <Analytics />
-        <SpeedInsights />
+        <Analytics debug={false} />
+        <SpeedInsights debug={false} />
         <Script id="jsonLd" type="application/ld+json">
           {JSON.stringify(jsonLd)}
         </Script>
@@ -71,14 +68,16 @@ const RootLayout = async ({ children }: LayoutProps<'/'>) => {
   )
 }
 
+const LayoutFallback = () => (
+  <html lang={i18n.defaultLocale}>
+    <body>
+      <LoadingFallback size="full" />
+    </body>
+  </html>
+)
+
 export default async (props: LayoutProps<'/'>) => (
-  <Suspense
-    fallback={
-      <html lang={i18n.defaultLocale}>
-        <body />
-      </html>
-    }
-  >
-    <RootLayout {...props} />
+  <Suspense fallback={<LayoutFallback />}>
+    <Layout {...props} />
   </Suspense>
 )

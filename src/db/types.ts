@@ -5,6 +5,7 @@ import {
   type PostgrestFilterBuilder,
 } from '@supabase/postgrest-js'
 import { type EmailOtpType, type SupabaseClient, type User } from '@supabase/supabase-js'
+import { type IconName } from 'lucide-react/dynamic'
 import { type MergeDeep } from 'type-fest'
 
 import { type IntlRecord } from '@/lib/i18n'
@@ -36,6 +37,7 @@ export type Database = MergeDeep<
         courses: TableOverrides<{
           description: IntlRecord
           title: IntlRecord
+          icon: IconName
         }>
         evaluations: TableOverrides<{
           description: IntlRecord
@@ -111,5 +113,3 @@ export interface DatabaseHookPayload {
   }
   user: User
 }
-
-export type * from './queries'

@@ -1,5 +1,11 @@
 #!/usr/bin/env sh
 
-commitlint --from origin/main --to HEAD --verbose
-pnpm run build
+MAIN_BRANCH=main
+
+commitlint --from origin/$MAIN_BRANCH --to HEAD --verbose
+
+if [ "$(git rev-parse --abbrev-ref HEAD)" = $MAIN_BRANCH ]; then
+  pnpm run build
+fi
+
 pnpm run check

@@ -2,28 +2,26 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import { type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { useCourse } from '@/components/features/courses/course-provider'
-import { DynamicIcon } from '@/components/graphics/dynamic-icon'
 import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
-import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
+import { DynamicIcon } from '@/components/ui/dynamic-icon'
+import { IconPicker } from '@/components/ui/icon-picker'
 import { InlineInput } from '@/components/ui/inline-input'
+import { Link } from '@/components/ui/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { usePortal } from '@/hooks/use-portal'
 import { localize } from '@/lib/i18n'
 
 export const CourseBreadcrumb = () => {
-  const Breadcrumb = usePortal('breadcrumb')
   const t = useTranslations('Courses')
-
   const { user } = useSession()
-  const { course, language, setCourse, setSettingsOpen } = useCourse()
+  const { course, editCourse, language, setCourse } = useCourse()
 
   const title = localize(course.title, language)
   const [draftTitle, setDraftTitle] = useState(title)
@@ -66,57 +64,67 @@ export const CourseBreadcrumb = () => {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="grow sm:gap-1.5">
-        <BreadcrumbLink href="/courses" title={t('backToAll')} variant="link">
-          {t('courses')}
-        </BreadcrumbLink>
+      <BreadcrumbList className="grow">
+        <BreadcrumbItem>
+          <Button
+            asChild
+            className="flex h-8 items-center gap-1.5 text-[15px] text-muted-foreground/80 leading-[inherit] hover:text-foreground! dark:text-foreground/80"
+            size="text"
+            title={t('backToAll')}
+            variant="transparent"
+          >
+            <Link href="/courses">{t('courses')}</Link>
+          </Button>
+        </BreadcrumbItem>
+
         <BreadcrumbSeparator />
-        <BreadcrumbItem className="grow gap-2 pr-6 text-foreground/80">
-          {course.icon && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="p-0"
-                  disabled={!user.canEdit}
-                  onClick={() => setSettingsOpen(true)}
-                  size="text"
-                  variant="ghost"
-                >
-                  <DynamicIcon
-                    className="size-4.5 shrink-0 text-muted-foreground/80 dark:text-foreground/80"
-                    name={course.icon as IconName}
-                  >
-                    <Skeleton className="size-4.5 shrink-0" />
-                  </DynamicIcon>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" sideOffset={4}>
-                {t('updateIcon')}
-              </TooltipContent>
-            </Tooltip>
-          )}
+
+        <BreadcrumbItem className="grow gap-2 pr-6">
           {user.canEdit ? (
-            <Tooltip delayDuration={200}>
-              <TooltipTrigger asChild>
-                <InlineInput
-                  className="px-1 py-0.5"
-                  defaultValue={title}
-                  onBlur={onTitleBlur}
-                  onChange={onTitleChange}
-                  onFocus={onTitleFocus}
-                  value={draftTitle}
-                />
-              </TooltipTrigger>
-              {!titleFocused && (
-                <TooltipContent side="bottom" sideOffset={4} size="sm">
-                  {t('renameCourse')}
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <IconPicker
+                    categorized={false}
+                    className="h-4 w-4 shrink-0 text-muted-foreground/80 hover:text-foreground! dark:text-foreground/80 dark:hover:text-foreground! [&>svg]:size-4.5!"
+                    defaultValue={course.icon}
+                    fallback={<Skeleton className="h-4 w-4 rounded-md bg-foreground/15" />}
+                    onValueChange={icon => editCourse({ icon })}
+                    size="text"
+                    variant="transparent"
+                  />
+                </TooltipTrigger>
+                <TooltipContent side="bottom" sideOffset={8} size="sm">
+                  {t('updateIcon')}
                 </TooltipContent>
-              )}
-            </Tooltip>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InlineInput
+                    className="px-1 py-0.5 text-[14.5px] hover:text-foreground focus:text-foreground"
+                    defaultValue={title}
+                    onBlur={onTitleBlur}
+                    onChange={onTitleChange}
+                    onFocus={onTitleFocus}
+                    value={draftTitle}
+                  />
+                </TooltipTrigger>
+                {!titleFocused && (
+                  <TooltipContent side="bottom" sideOffset={2} size="sm">
+                    {t('renameCourse')}
+                  </TooltipContent>
+                )}
+              </Tooltip>
+
+              {course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
+            </>
           ) : (
-            title
+            <>
+              <DynamicIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon} />
+              {title}
+            </>
           )}
-          {user.canEdit && course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

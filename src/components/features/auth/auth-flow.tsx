@@ -12,7 +12,7 @@ import { EmailActionFooter } from '@/components/features/auth/email-action-foote
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
-import { GloreLogo } from '@/components/graphics/glore-logo'
+import { GloreLogo } from '@/components/icons/_glore-logo'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -20,7 +20,7 @@ import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
 import { EMAIL_REGEX } from '@/lib/constants'
 import { type Enum } from '@/lib/types'
-import { cn, hexToRgb, toCamelCase } from '@/lib/utils'
+import { camelize, cn, hexToRgb } from '@/lib/utils'
 
 export enum AuthView {
   Login = 'login',
@@ -50,14 +50,14 @@ export const AuthFlow = ({ defaultUsername, defaultView, resetToken }: AuthFlowP
 
   useMetadata({
     applicationName: view === 'login' ? false : 'full',
-    title: t(toCamelCase(`${view}_meta_title`)),
+    title: t(camelize(`${view}_meta_title`)),
   })
 
-  const title = view ? t(toCamelCase(`${view}_title`)) : null
+  const title = view ? t(camelize(`${view}_title`)) : null
 
   const message = useMemo(() => {
     if (!view) return null
-    if (view !== 'email_sent') return t(toCamelCase(`${view}_message`))
+    if (view !== 'email_sent') return t(camelize(`${view}_message`))
     return t.rich('emailSentMessage', {
       email: () =>
         username && EMAIL_REGEX.test(username) ? <span className="font-medium">{` ${username} `}</span> : null,

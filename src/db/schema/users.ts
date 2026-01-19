@@ -1,5 +1,5 @@
+import { organizationQuery } from '@/db/schema/organizations'
 import { type DatabaseResult } from '@/db/types'
-import { organizationQuery, parseOrganization } from './organizations'
 
 export type User = ReturnType<typeof parseUser>
 export type UserOrganization = User['organizations'][number]
@@ -24,7 +24,7 @@ export const baseUserQuery = `
   is_editor,
   created_at,
   updated_at
-`
+` as const
 
 export const userQuery = `
   ${baseUserQuery},
@@ -42,7 +42,7 @@ export const userQuery = `
     emoji,
     icon_url
   )
-`
+` as const
 
 export const parseUser = (data: DatabaseResult<'users', typeof userQuery>) => {
   const { memberships, ...user } = data
@@ -64,10 +64,7 @@ export const parseUser = (data: DatabaseResult<'users', typeof userQuery>) => {
     fullName,
     initials,
     isLearner: !(user.is_admin || user.is_editor),
-    organizations: memberships.map(({ organization, role }) => ({
-      ...parseOrganization(organization),
-      role,
-    })),
+    organizations: memberships.map(({ organization, role }) => ({ ...organization, role })),
     shortName,
   }
 }

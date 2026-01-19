@@ -2,15 +2,15 @@
 
 import { Suspense } from 'react'
 
-import { Spinner } from '@/components/graphics/spinner'
+import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
-export interface SuspenseLoaderProps extends Partial<React.SuspenseProps>, React.HTMLAttributes<HTMLDivElement> {
+export interface LoadingFallbackProps extends Partial<React.SuspenseProps>, React.HTMLAttributes<HTMLDivElement> {
   loader?: boolean
   size?: 'auto' | 'full'
 }
 
-export const SuspenseLoader = ({ className, fallback, loader = true, size, ...props }: SuspenseLoaderProps) => (
+export const LoadingFallback = ({ className, fallback, loader = true, size, ...props }: LoadingFallbackProps) => (
   <Suspense
     fallback={
       <div

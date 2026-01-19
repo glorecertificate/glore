@@ -7,7 +7,6 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { getTeamMembers } from '@/actions/user'
-import { Spinner } from '@/components/graphics/spinner'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -29,8 +28,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { type User } from '@/db/queries'
+import { type User } from '@/db/schema/users'
 
 export const AdminTeam = () => {
   const t = useTranslations('Admin.team')

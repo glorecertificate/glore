@@ -1,6 +1,6 @@
 import { type DatabaseResult } from '@/db/types'
 
-export type Organization = ReturnType<typeof parseOrganization>
+export type Organization = DatabaseResult<'organizations', typeof organizationQuery>
 
 export const organizationQuery = `
   id,
@@ -20,9 +20,4 @@ export const organizationQuery = `
   approved_at,
   created_at,
   updated_at
-`
-
-export const parseOrganization = (data: DatabaseResult<'organizations', typeof organizationQuery>) => ({
-  ...data,
-  shortName: data.name.slice(0, 2).toUpperCase(),
-})
+` as const

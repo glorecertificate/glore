@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import config from '@config/app'
-import { useCourse } from '@/components/features/courses/course-provider'
+import { getLessonType, useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -24,24 +24,26 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils'
 
 export const CourseFooter = () => {
-  const { currentLesson, moveNext, movePrevious } = useCourse()
-  const { courses } = useSession()
   const t = useTranslations('Courses')
+  const { courses } = useSession()
+  const { course, currentLesson, next, previous } = useCourse()
+  const lessonType = getLessonType(currentLesson)
+  const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
+  const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
   const canProceed = useMemo(() => {
     if (!currentLesson) return false
-    if (currentLesson.type === 'reading' || currentLesson.completed) return true
-    if (currentLesson.type === 'questions')
-      return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
-    if (currentLesson.type === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
-    if (currentLesson.type === 'assessment') return !!currentLesson.assessment?.userRating
+    if (lessonType === 'reading' || currentLesson.completed) return true
+    if (lessonType === 'questions') return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
+    if (lessonType === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
+    if (lessonType === 'assessment') return !!currentLesson.assessment?.userRating
     return false
-  }, [currentLesson])
+  }, [currentLesson, lessonType])
 
   const nextTooltip = useMemo(() => {
-    if (!currentLesson.type) return
-    if (!canProceed) return t('replyToProceed', { type: currentLesson.type })
-  }, [canProceed, currentLesson, t])
+    if (!lessonType) return
+    if (!canProceed) return t('replyToProceed', { type: lessonType })
+  }, [canProceed, t, lessonType])
 
   const completedCount = useMemo(() => courses.filter(m => m.completed).length, [courses])
 
@@ -54,22 +56,22 @@ export const CourseFooter = () => {
     () =>
       completedCount < 3
         ? t('completedMessage')
-        : completedCount === config.app.minSkills
+        : completedCount === config.settings.minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
     [completedCount, t]
   )
 
   return (
-    <div className={cn('mt-6 flex', currentLesson.isFirst ? 'justify-end' : 'justify-between')}>
-      {!currentLesson.isFirst && (
-        <Button className="gap-1" disabled={currentLesson.isFirst} onClick={movePrevious} variant="outline">
+    <div className={cn('mt-6 flex', isFirst ? 'justify-end' : 'justify-between')}>
+      {!isFirst && (
+        <Button className="gap-1" disabled={isFirst} onClick={previous} variant="outline">
           <ArrowLeftIcon className="size-4" />
           {t('previous')}
         </Button>
       )}
 
-      {currentLesson.isLast ? (
+      {isLast ? (
         canProceed ? (
           <Dialog>
             <DialogTrigger asChild>
@@ -78,7 +80,7 @@ export const CourseFooter = () => {
                   className={cn('gap-1')}
                   disabled={!canProceed}
                   effect="fireworks"
-                  onClick={moveNext}
+                  onClick={next}
                   options={{ zIndex: 100 }}
                   variant="outline"
                 >
@@ -103,12 +105,12 @@ export const CourseFooter = () => {
                     <Link href="/courses">{t('backTo')}</Link>
                   </Button>
                 )}
-                {completedCount === config.app.minSkills && (
+                {completedCount === config.settings.minSkills && (
                   <Button asChild variant="brand-secondary">
                     <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 )}
-                {completedCount > config.app.minSkills && (
+                {completedCount > config.settings.minSkills && (
                   <Button asChild variant="outline">
                     <Link href="/certificates">{t('goToCertificate')}</Link>
                   </Button>
@@ -127,7 +129,7 @@ export const CourseFooter = () => {
           </Tooltip>
         )
       ) : canProceed ? (
-        <Button className="gap-1" onClick={() => moveNext()} title={t('proceedToNextLesson')} variant="outline">
+        <Button className="gap-1" onClick={() => next()} title={t('proceedToNextLesson')} variant="outline">
           {t('next')}
         </Button>
       ) : (

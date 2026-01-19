@@ -1,14 +1,15 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
-import { ChevronDownIcon, EyeIcon, HistoryIcon, Settings2Icon } from 'lucide-react'
+import { ChevronDownIcon, EyeIcon, HistoryIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
+import { type z } from 'zod'
 
-import { useCourse } from '@/components/features/courses/course-provider'
-import { CourseSettings } from '@/components/features/courses/course-settings'
-import { CourseSettingsModal } from '@/components/features/courses/course-settings-modal'
+import { getLessonType, useCourse } from '@/components/features/courses/course-provider'
+import { CourseSettings, type courseSettingsSchema } from '@/components/features/courses/course-settings'
 import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,22 +25,46 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Progress } from '@/components/ui/progress'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { type Lesson } from '@/db/schema/lessons'
+import { postgrestError } from '@/db/utils'
 import { useI18n } from '@/hooks/use-i18n'
 import { useScroll } from '@/hooks/use-scroll'
 import { localize } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
-  const { course, currentState, saveCourse, settingsOpen, setSettingsOpen, state, step } = useCourse()
-  const { localeItems, localize } = useI18n()
+  const router = useRouter()
   const { scrolled } = useScroll()
-  const { user } = useSession()
+
+  const { localeItems } = useI18n()
+  const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
+
+  const { user } = useSession()
+  const { course, currentState, editCourse, saveCourse, state, step } = useCourse()
 
   const [loading, setLoading] = useState(false)
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
   const saveLanguageMessage = currentState.canSave ? t('saveDraftTitleRequired') : t('saveDraftNoChanges')
+
+  const updateSettings = useMemo(
+    () => async (schema: z.infer<typeof courseSettingsSchema>) => {
+      try {
+        const { slug } = await editCourse(schema)
+        toast.success(t('courseSettingsUpdated'))
+        if (slug !== course.slug) {
+          router.replace(`/courses/${slug}`)
+        }
+      } catch (e) {
+        console.error(e)
+        const error = postgrestError(e)
+        console.error(error.message, error)
+        toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseUpdateFailed'))
+      }
+    },
+    [course.slug, editCourse, router.replace, t]
+  )
 
   const handleSave = useCallback(async () => {
     if (!currentState.canSave) return toast.error(saveLanguageMessage)
@@ -65,25 +90,28 @@ export const CourseHeader = () => {
         <>
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5">
-              <Dialog onOpenChange={setSettingsOpen} open={settingsOpen}>
+              <Dialog>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <DialogTrigger asChild>
                       <Button size="xs" variant="outline">
-                        <Settings2Icon className="size-4" />
+                        <SettingsIcon className="size-4" />
                       </Button>
                     </DialogTrigger>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-72 text-center">{t('settings')}</TooltipContent>
+                  <TooltipContent className="max-w-72 text-center" sideOffset={6}>
+                    {t('settings')}
+                  </TooltipContent>
                 </Tooltip>
                 <DialogContent className="gap-6 p-8" size="lg">
                   <DialogHeader>
-                    <DialogTitle className="text-xl">{t('settingsTitle')}</DialogTitle>
-                    <DialogDescription className="text-base text-muted-foreground">
-                      {localize(course.title)}
-                    </DialogDescription>
+                    <DialogTitle className="flex items-center gap-2">
+                      <SettingsIcon className="size-5" />
+                      {t('settings')}
+                    </DialogTitle>
+                    <DialogDescription />
                   </DialogHeader>
-                  <CourseSettings />
+                  <CourseSettings course={course} onSubmit={updateSettings} />
                 </DialogContent>
               </Dialog>
               <Dialog>
@@ -95,15 +123,17 @@ export const CourseHeader = () => {
                       </Button>
                     </DialogTrigger>
                   </TooltipTrigger>
-                  <TooltipContent className="max-w-72 text-center">{t('history')}</TooltipContent>
+                  <TooltipContent className="max-w-72 text-center" sideOffset={6}>
+                    {t('history')}
+                  </TooltipContent>
                 </Tooltip>
                 <DialogContent size="lg">
-                  <DialogTitle>
-                    <Settings2Icon />
-                    {t('settings')}
-                  </DialogTitle>
+                  <DialogHeader className="flex-row items-center gap-2">
+                    <HistoryIcon className="size-5" />
+                    <DialogTitle>{t('history')}</DialogTitle>
+                  </DialogHeader>
                   <DialogDescription className="mb-4 text-muted-foreground text-sm">
-                    {t('description')}
+                    {tCommon('comingSoonMessage')}
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -124,17 +154,22 @@ export const CourseHeader = () => {
             </TabsList>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              className="transition-none"
-              disabled={!currentState.canSave}
-              loading={loading}
-              onClick={handleSave}
-              variant="outline"
-            >
-              {t(currentState.hasUpdates ? 'saveDraft' : 'saveDraftNoChanges')}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  className="transition-none"
+                  disabled={!currentState.canSave}
+                  loading={loading}
+                  onClick={handleSave}
+                  variant="outline"
+                >
+                  <SaveIcon />
+                  {t('saveDraft')}
+                </Button>
+              </TooltipTrigger>
+              {!currentState.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
+            </Tooltip>
           </div>
-          <CourseSettingsModal onOpenChange={() => {}} open={false} />
         </>
       ) : (
         <>
@@ -176,20 +211,19 @@ export const CourseHeader = () => {
   )
 }
 
-export const CourseHeaderMobile = () => {
+export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { course, lessons, currentLesson, language, setStep, step } = useCourse()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
   const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
 
-  const formatLessonType = useCallback((type: string) => t('lessonType', { type }), [t])
-
+  const lessonType = useCallback((lesson: Lesson) => t('lessonType', { type: getLessonType(lesson) }), [t])
   const isCurrentLesson = useCallback((index: number) => index === step, [step])
   const isCompletedLesson = useCallback((index: number) => lessons[index].completed, [lessons])
 
   return (
-    <div className={cn('sticky top-18 flex flex-col gap-4 bg-background pb-4 md:hidden', scrolled && 'border-b')}>
+    <div className={cn('flex flex-col gap-4 bg-background pb-4', scrolled && 'border-b', className)} {...props}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="w-full justify-between py-6" variant="outline">
@@ -197,9 +231,7 @@ export const CourseHeaderMobile = () => {
               {currentLesson ? (
                 <>
                   <span className="font-medium">{localize(currentLesson.title, language)}</span>
-                  {currentLesson.type && (
-                    <span className="text-muted-foreground text-xs">{formatLessonType(currentLesson.type)}</span>
-                  )}
+                  <span className="text-muted-foreground text-xs">{lessonType(currentLesson)}</span>
                 </>
               ) : (
                 <span className="font-medium">{'No lessons'}</span>
@@ -211,15 +243,17 @@ export const CourseHeaderMobile = () => {
         <DropdownMenuContent>
           {lessons.length > 0 ? (
             lessons.map((lesson, index) => (
-              <DropdownMenuItem className="flex justify-between py-2" key={lesson.id} onClick={() => setStep(index)}>
+              <DropdownMenuItem
+                className="flex justify-between py-2"
+                key={lesson.id}
+                onClick={() => setStep(index + 1)}
+              >
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
                     {localize(lesson.title, language)}{' '}
                     {isCompletedLesson(index) && <span className="ml-1 text-success text-xs">{'✔︎'}</span>}
                   </span>
-                  {lesson.type && (
-                    <span className="text-muted-foreground text-xs">{formatLessonType(lesson.type)}</span>
-                  )}
+                  <span className="text-muted-foreground text-xs">{lessonType(lesson)}</span>
                 </div>
               </DropdownMenuItem>
             ))

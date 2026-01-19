@@ -7,7 +7,7 @@ import { AuthFlow, type AuthView } from '@/components/features/auth/auth-flow'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { intlMetadata } from '@/lib/metadata'
 import { type Enum } from '@/lib/types'
-import { toCamelCase } from '@/lib/utils'
+import { camelize } from '@/lib/utils'
 
 const TOKEN_HASH_REGEX = /^pkce_[a-f0-9]{56}$/
 
@@ -30,7 +30,7 @@ export const generateMetadata = async (props: PageProps<'/login'>) => {
 
   return intlMetadata({
     namespace: 'Auth',
-    title: toCamelCase(`${view}_title`),
+    title: camelize(`${view}_title`),
   })
 }
 

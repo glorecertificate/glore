@@ -41,28 +41,6 @@ export const mailer = {
   },
 }
 
-export const getEmailTranslations = async <T extends `Email.${EmailTemplate | 'common'}`>(
-  namespace: T,
-  locale = i18n.defaultLocale
-) =>
-  createTranslator({
-    namespace,
-    locale,
-    messages: await import(`@config/translations/${locale}`),
-  })
-
-export const emailPreviewProps = <T extends EmailTemplate>(props?: Omit<EmailTemplateOptions<T>, 'to'>) => ({
-  ...mailer.preview,
-  ...props,
-})
-
-export const authEmailPreviewProps = <T extends Replace<Extract<EmailTemplate, `auth/${string}`>, 'auth/'>>(
-  props?: Omit<EmailTemplateOptions<`auth/${T}`>, 'to' | keyof AuthEmailProps>
-) => ({
-  ...mailer.preview,
-  ...props,
-})
-
 export type EmailTemplate = 'auth/recovery'
 
 export type EmailTemplateOptions<T extends EmailTemplate> = {
@@ -84,9 +62,31 @@ export interface EmailOptions {
 }
 
 export interface EmailProps extends EmailOptions {
-  locale: Locale
+  locale?: Locale
 }
 
 export interface AuthEmailProps extends EmailProps {
   data: DatabaseHookPayload['email_data']
 }
+
+export const getEmailTranslations = async <T extends `Email.${EmailTemplate | 'common'}`>(
+  namespace: T,
+  locale = i18n.defaultLocale
+) =>
+  createTranslator({
+    namespace,
+    locale,
+    messages: await import(`@config/translations/${locale}`),
+  })
+
+export const emailPreviewProps = <T extends EmailTemplate>(props?: Omit<EmailTemplateOptions<T>, 'to'>) => ({
+  ...mailer.preview,
+  ...props,
+})
+
+export const authEmailPreviewProps = <T extends Replace<Extract<EmailTemplate, `auth/${string}`>, 'auth/'>>(
+  props?: Omit<EmailTemplateOptions<`auth/${T}`>, 'to' | keyof AuthEmailProps>
+) => ({
+  ...mailer.preview,
+  ...props,
+})

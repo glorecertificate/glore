@@ -1,6 +1,6 @@
 'use client'
 
-import { app } from '@config/app'
+import { settings } from '@config/app'
 import { GloreLogo } from '@/components/icons/_glore-logo'
 import { PageBreadcrumb } from '@/components/layout/page-breadcrumb'
 import { Link } from '@/components/ui/link'
@@ -42,7 +42,7 @@ export const PageHeader = ({
             </TooltipTrigger>
             <TooltipContent showArrow side="right">
               <p className="font-medium text-xs">{action}</p>
-              <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${app.sidebarShortcut.toUpperCase()}`}</p>
+              <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${settings.sidebarShortcut.toUpperCase()}`}</p>
             </TooltipContent>
           </Tooltip>
           {children ?? <PageBreadcrumb description={description} title={title} />}

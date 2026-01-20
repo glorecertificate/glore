@@ -22,7 +22,7 @@ export const sendEmail = async <T extends EmailTemplate>(
   }: EmailTemplateOptions<T>
 ) => {
   const client = new SMTPClient({ ...mailer.smtp, ...smtp })
-  const component = (await import(`@/components/emails/templates/${template}`)).default
+  const component = (await import(`@/emails/${template}`)).default
   const t = await getEmailTranslations(`Email.${template}`, locale)
 
   const sender = from ?? process.env.SMTP_SENDER

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLocale, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -15,22 +15,20 @@ import { type AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { postgrestError } from '@/db/utils'
 import { type Enum } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
-  defaultUsername,
   setErrored,
   setUsername,
   setView,
+  username,
 }: {
-  defaultUsername?: string
   setErrored: (hasErrors: boolean) => void
   setUsername: (name?: string) => void
   setView: (view: Enum<AuthView>) => void
+  username?: string
 }) => {
-  const locale = useLocale()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -53,7 +51,7 @@ export const PasswordRequestForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: defaultUsername ?? '',
+      username: username ?? '',
     },
   })
 
@@ -62,29 +60,27 @@ export const PasswordRequestForm = ({
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       const username = schema.username.trim()
-      let email: string
+      const { data, error: emailError } = await findUserEmail(username)
 
-      try {
-        email = await findUserEmail(username)
-      } catch (e) {
-        const error = postgrestError(e)
-        if (error.code !== 'PGRST116') return toast.error(t('networkError'))
-        return form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+      if (emailError) {
+        emailError.code === 'PGRST116'
+          ? form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+          : toast.error(t('networkError'))
+        return
       }
 
-      try {
-        const localeParam = locale ? `?locale=${locale}` : ''
-        const redirectTo = `${window.location.origin}${localeParam}`
-        await resetPassword(email, { redirectTo })
-      } catch (e) {
-        console.error('Error requesting password reset', e)
-        return toast.error(t('networkError'))
+      const { error } = await resetPassword(data.email, { redirectTo: window.location.origin })
+      if (error) {
+        toast.error(t('networkError'))
+        console.error('Reset password error:', error)
+        return
       }
 
       setView('email_sent')
+      setUsername(username)
       await setCookie('loginUser', username)
     },
-    [form.setError, locale, setView, t]
+    [form, setUsername, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
@@ -125,7 +121,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!defaultUsername && disabled}
+            disabled={!username && disabled}
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

@@ -286,10 +286,12 @@ const AppSidebarMain = () => {
 }
 
 const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) => {
-  const { user } = useSession()
-  const { open, openMobile, setOpenMobile } = useSidebar()
+  const router = useRouter()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
+
+  const { open, openMobile, setOpenMobile } = useSidebar()
+  const { user } = useSession()
 
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
@@ -308,6 +310,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
 
     try {
       await logout()
+      router.push(AUTH_ROOT)
     } catch {
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
@@ -316,7 +319,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
 
     await sleep(500)
     redirect(AUTH_ROOT)
-  }, [onLinkClick, t])
+  }, [onLinkClick, t, router.push])
 
   useEffect(
     () => () => {

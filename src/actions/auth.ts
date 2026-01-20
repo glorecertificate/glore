@@ -2,23 +2,26 @@
 
 import 'server-only'
 
-import { updateTag } from 'next/cache'
-import { redirect } from 'next/navigation'
+import { cacheTag, revalidateTag } from 'next/cache'
 
-import { type SignInWithPasswordCredentials, type UserAttributes } from '@supabase/supabase-js'
+import { type SignInWithPasswordCredentials, type UserAttributes, type UserResponse } from '@supabase/supabase-js'
 
 import { getDatabase } from '@/db/client'
 import { CacheTag } from '@/lib/cache'
-import { APP_ROOT } from '@/lib/constants'
+
+const fetchAuthUser = async (query: Promise<UserResponse>) => {
+  'use cache'
+  cacheTag(CacheTag.AuthUser)
+
+  const { data, error } = await query
+  if (error) return null
+
+  return data.user
+}
 
 export const login = async (credentials: SignInWithPasswordCredentials) => {
   const db = await getDatabase()
-
-  const { error } = await db.auth.signInWithPassword(credentials)
-  if (error) throw error
-
-  updateTag(CacheTag.AuthUser)
-  redirect(APP_ROOT)
+  return await db.auth.signInWithPassword(credentials)
 }
 
 export const logout = async () => {
@@ -26,18 +29,12 @@ export const logout = async () => {
 
   const { error } = await db.auth.signOut()
   if (error) throw error
-
-  updateTag(CacheTag.AuthUser)
-  redirect('/login')
 }
 
 export const getAuthUser = async () => {
   const db = await getDatabase()
-
-  const { data, error } = await db.auth.getUser()
-  if (error) return null
-
-  return data.user
+  const query = db.auth.getUser()
+  return await fetchAuthUser(query)
 }
 
 export const updateAuthUser = async (attributes: UserAttributes) => {
@@ -46,6 +43,7 @@ export const updateAuthUser = async (attributes: UserAttributes) => {
   const { data, error } = await db.auth.updateUser(attributes)
   if (error) throw error
 
+  revalidateTag(CacheTag.AuthUser, 'max')
   return data.user
 }
 
@@ -56,17 +54,14 @@ export const resetPassword = async (
   }
 ) => {
   const db = await getDatabase()
-
-  const { error } = await db.auth.resetPasswordForEmail(email, options)
-  if (error) throw error
+  return await db.auth.resetPasswordForEmail(email, options)
 }
 
 export const updatePassword = async (token: string, password: string) => {
   const db = await getDatabase()
 
   const { error: verifyError } = await db.auth.verifyOtp({ type: 'email', token_hash: token })
-  if (verifyError) throw verifyError
+  if (verifyError) return { data: null, error: verifyError }
 
-  const { error } = await db.auth.updateUser({ password })
-  if (error) throw error
+  return await db.auth.updateUser({ password })
 }

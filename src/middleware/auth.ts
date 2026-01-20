@@ -13,9 +13,9 @@ export const verifyAuthUser = unstable_cache(
     if (error) throw error
     return true
   },
-  [CacheTag.AuthUser],
+  [CacheTag.AuthUserStatus],
   {
     revalidate: 3600,
-    tags: [CacheTag.AuthUser],
+    tags: [CacheTag.AuthUserStatus],
   }
 )

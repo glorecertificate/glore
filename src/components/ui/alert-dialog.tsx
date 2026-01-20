@@ -113,7 +113,7 @@ export const AlertDialogAction = ({
     <AlertDialogPrimitive.Action
       className={cn(
         'cursor-pointer',
-        buttonVariants({ variant, disabled: isDisabled, size, effect }),
+        buttonVariants({ variant, size, effect }),
         isDisabled && 'cursor-not-allowed',
         className
       )}
@@ -143,7 +143,7 @@ export const AlertDialogCancel = ({
   <AlertDialogPrimitive.Cancel
     className={cn(
       'cursor-pointer',
-      buttonVariants({ variant, disabled, size, effect }),
+      buttonVariants({ variant, size, effect }),
       disabled && 'cursor-not-allowed',
       className
     )}

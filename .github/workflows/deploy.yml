@@ -1,4 +1,4 @@
-name: Deploy Release
+name: Deploy
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Deploy to Vercel
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -31,5 +31,4 @@ jobs:
         run: |
           pnpm install -D --frozen-lockfile --ignore-scripts --strict-peer-dependencies
           echo ./node_modules/.bin >> $GITHUB_PATH
-      - name: Deploy to Vercel
-        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}

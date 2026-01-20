@@ -147,7 +147,7 @@ export const buttonVariants = cva(
         'brand-tertiary':
           'bg-brand-tertiary text-brand-tertiary-foreground not-disabled:hover:bg-brand-tertiary-accent not-disabled:focus-visible:ring-brand-tertiary/20 not-disabled:dark:focus-visible:ring-brand-tertiary/40',
         outline:
-          'border border-input bg-background text-foreground not-disabled:hover:bg-accent/80 dark:bg-input/30 not-disabled:dark:hover:bg-input/50',
+          'border border-input bg-background text-foreground not-disabled:hover:bg-accent/60 dark:bg-input/30 not-disabled:dark:hover:bg-input/50',
         ghost: 'text-foreground not-disabled:hover:bg-accent/80 dark:not-disabled:hover:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
         transparent: 'bg-transparent text-current',
@@ -217,7 +217,6 @@ export const buttonVariants = cva(
           'brand',
           'brand-secondary',
           'brand-tertiary',
-          'outline',
         ],
         className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
       },

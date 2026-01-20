@@ -1,17 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
-import { parseAsString, useQueryState } from 'nuqs'
 
 import { theme } from '@config/app'
-import { EmailActionFooter } from '@/components/features/auth/email-action-footer'
+import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
+import { ResendEmailButton } from '@/components/features/auth/resend-email-button'
 import { GloreLogo } from '@/components/icons/_glore-logo'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
@@ -32,21 +32,20 @@ export enum AuthView {
   InvalidPasswordReset = 'invalid_password_reset',
 }
 
-interface AuthFlowProps {
-  defaultUsername?: string
-  defaultView: Enum<AuthView>
+export const AuthFlow = ({
+  resetToken,
+  ...value
+}: {
   resetToken: string | null
-}
-
-export const AuthFlow = ({ defaultUsername, defaultView, resetToken }: AuthFlowProps) => {
-  const [, setResetToken] = useQueryState('resetToken', parseAsString)
-
-  const { resolvedTheme } = useTheme()
+  username?: string
+  view: Enum<AuthView>
+}) => {
   const t = useTranslations('Auth')
+  const { resolvedTheme } = useTheme()
 
-  const [view, setView] = useState(defaultView)
+  const [view, setView] = useState(value.view)
+  const [username, setUsername] = useState(value.username)
   const [errored, setErrored] = useState(false)
-  const [username, setUsername] = useState(defaultUsername)
 
   useMetadata({
     applicationName: view === 'login' ? false : 'full',
@@ -60,29 +59,32 @@ export const AuthFlow = ({ defaultUsername, defaultView, resetToken }: AuthFlowP
     if (view !== 'email_sent') return t(camelize(`${view}_message`))
     return t.rich('emailSentMessage', {
       email: () =>
-        username && EMAIL_REGEX.test(username) ? <span className="font-medium">{` ${username} `}</span> : null,
+        username && EMAIL_REGEX.test(username) ? <span className="text-brand">{` ${username} `}</span> : null,
     })
   }, [username, t, view])
 
   const content = useMemo(() => {
     switch (view) {
       case 'login':
-        return (
-          <LoginForm defaultUsername={username} setErrored={setErrored} setUsername={setUsername} setView={setView} />
-        )
+        return <LoginForm setErrored={setErrored} setUsername={setUsername} setView={setView} username={username} />
       case 'password_request':
         return (
           <PasswordRequestForm
-            defaultUsername={username}
             setErrored={setErrored}
             setUsername={setUsername}
             setView={setView}
+            username={username}
           />
         )
       case 'email_sent':
-        return <EmailActionFooter />
+        return (
+          <div className="flex flex-col gap-6">
+            <EmailProviderActions />
+            <ResendEmailButton username={username} />
+          </div>
+        )
       case 'password_reset':
-        return <PasswordResetForm setErrored={setErrored} setView={setView} token={resetToken} />
+        return <PasswordResetForm resetToken={resetToken} setErrored={setErrored} setView={setView} />
       case 'password_updated':
         return (
           <Button
@@ -128,12 +130,7 @@ export const AuthFlow = ({ defaultUsername, defaultView, resetToken }: AuthFlowP
       default:
         return null
     }
-  }, [resetToken, t, username, view])
-
-  // biome-ignore lint: exhaustive-deps
-  useEffect(() => {
-    setResetToken(null)
-  }, [])
+  }, [t, username, view, resetToken])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()

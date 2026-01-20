@@ -20,7 +20,7 @@ const I18N_IGNORES = [
   'Email.*',
   'Locale.Countries.*',
   'Locale.Languages.*',
-  'Metadata.pwaDescription',
+  'Metadata.*',
 ] satisfies I18nIgnore[]
 
 const args = process.argv.slice(2)
@@ -37,7 +37,7 @@ const check = async () => {
         {
           const typesCmd = `tsc -p ${process.env.NODE_ENV === 'production' ? 'tsconfig.build.json' : 'tsconfig.json'} --noEmit`
 
-          if (!isSingleArg) logger.inline('Generating application types...')
+          if (!isSingleArg) logger.inline('Checking validity of types...')
           execSync('pnpm run typegen', { stdio: 'ignore' })
 
           if (isSingleArg) {
@@ -46,7 +46,6 @@ const check = async () => {
           }
 
           try {
-            logger.inline('Checking validity of types...', { clearLine: true })
             execSync(typesCmd)
             logger.success('Type checks passed successfully', { clearLine: true })
           } catch (e) {
@@ -157,8 +156,6 @@ const check = async () => {
             logger.red(`${error.message}\n`)
             process.exit(1)
           }
-
-          if (!isSingleArg) logger.inline('Building the project...', { clearLine: true })
 
           try {
             execSync('size-limit', { stdio: isSingleArg ? 'inherit' : 'ignore' })

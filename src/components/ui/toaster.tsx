@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 export const Toaster = ({
   className,
   closeButton = false,
-  duration = 2000,
+  duration = 2500,
   hotkey = ['Escape'],
   position = 'top-right',
   ...props

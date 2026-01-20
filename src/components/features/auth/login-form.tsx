@@ -17,21 +17,20 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
-import { postgrestError } from '@/db/utils'
 import { APP_ROOT, PASSWORD_REGEX } from '@/lib/constants'
 import { type Enum } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
 export const LoginForm = ({
-  defaultUsername,
   setErrored,
   setUsername,
   setView,
+  username,
 }: {
-  defaultUsername?: string
   setErrored: (hasErrors: boolean) => void
   setUsername: (username?: string) => void
   setView: (view: Enum<AuthView>) => void
+  username?: string
 }) => {
   const t = useTranslations('Auth')
   const [loading, setLoading] = useState(false)
@@ -61,12 +60,30 @@ export const LoginForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: defaultUsername ?? '',
+      username: username ?? '',
       password: '',
     },
   })
 
   const disabled = defaultFormDisabled(form)
+  const hasErrors = Object.keys(form.formState.errors).length > 0
+  const passwordError = form.formState.errors.password
+
+  const setPasswordInvalid = useCallback(() => {
+    form.setError(
+      'password',
+      {
+        message: t('passwordInvalid'),
+        type: 'validate',
+      },
+      { shouldFocus: true }
+    )
+  }, [form, t])
+
+  const setPasswordReset = useCallback(() => {
+    setUsername(form.getValues('username'))
+    setView('password_request')
+  }, [form, setUsername, setView])
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
@@ -74,58 +91,42 @@ export const LoginForm = ({
 
       const username = schema.username.trim()
       const password = schema.password.trim()
-      let email: string
 
-      try {
-        email = await findUserEmail(username)
-      } catch (e) {
-        const error = postgrestError(e)
+      const { data, error } = await findUserEmail(username)
+      if (error) {
         setLoading(false)
         if (error.code === 'PGRST116') {
           form.setError('username', { message: t('userNotFound') })
           return form.setFocus('username')
         }
-        console.error(e)
+        console.error(error)
         return toast.error(t('networkError'))
       }
 
-      try {
-        if (!PASSWORD_REGEX.test(password)) {
-          throw postgrestError({ code: '28P01', message: 'Invalid password format' })
-        }
-        await login({ email, password })
-      } catch (e) {
+      if (!PASSWORD_REGEX.test(password)) {
+        return setPasswordInvalid()
+      }
+
+      const { error: loginError } = await login({ email: data.email, password })
+      if (loginError) {
         setLoading(false)
-        const error = postgrestError(e)
-        if (error.code === '28P01') {
-          form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
-          return
+        if (loginError.code === '28P01') {
+          return setPasswordInvalid()
         }
-        console.error(e)
+        console.error(loginError)
         return toast.error(t('networkError'))
       }
 
       redirect(APP_ROOT)
     },
-    [form, t]
+    [form, t, setPasswordInvalid]
   )
-
-  const setPasswordReset = useCallback(() => {
-    setUsername(form.getValues('username'))
-    setView('password_request')
-  }, [form, setUsername, setView])
-
-  const hasErrors = Object.keys(form.formState.errors).length > 0
-  const passwordError = form.formState.errors.password
 
   useEffect(() => {
     setErrored(hasErrors)
   }, [hasErrors, setErrored])
 
-  useEffect(
-    () => (defaultUsername ? form.setFocus('password') : form.setFocus('username')),
-    [defaultUsername, form.setFocus]
-  )
+  useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus])
 
   return (
     <>
@@ -139,7 +140,7 @@ export const LoginForm = ({
                 <FormItem>
                   <FormControl>
                     <Input
-                      autoFocus={!defaultUsername}
+                      autoFocus={!username}
                       defaultOpen
                       disabled={loading}
                       placeholder={t('userLabel')}
@@ -169,7 +170,7 @@ export const LoginForm = ({
                     </Button>
                   </div>
                   <FormControl>
-                    <PasswordInput autoFocus={!!defaultUsername} disabled={loading} variant="floating" {...field} />
+                    <PasswordInput autoFocus={!!username} disabled={loading} variant="floating" {...field} />
                   </FormControl>
                   {passwordError && (
                     <p className="text-destructive text-sm leading-[normal]">

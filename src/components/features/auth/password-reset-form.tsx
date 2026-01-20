@@ -13,22 +13,21 @@ import { type AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
-import { postgrestError } from '@/db/utils'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { type Enum } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 
 export const PasswordResetForm = ({
+  resetToken,
   setErrored,
   setView,
-  token,
 }: {
+  resetToken: string | null
   setErrored: (errored: boolean) => void
   setView: (view: Enum<AuthView>) => void
-  token?: string | null
 }) => {
-  const [, setResetToken] = useQueryState('resetToken', parseAsString)
   const t = useTranslations('Auth')
+  const [, setToken] = useQueryState('resetToken', parseAsString)
 
   const formSchema = useMemo(
     () =>
@@ -58,27 +57,29 @@ export const PasswordResetForm = ({
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      const password = schema.password.trim()
+      if (!resetToken) return setView('invalid_token')
 
-      try {
-        if (!token) throw new Error()
-        await updatePassword(token, password)
-        setView('password_updated')
-        setResetToken(null)
-      } catch (e) {
-        const error = postgrestError(e)
+      const { error } = await updatePassword(resetToken, schema.password.trim())
+
+      console.log({ error })
+
+      if (error) {
         if (error.code === 'same_password') {
           form.setError('password', { message: t('passwordSameAsOld') })
           form.setFocus('password')
           return
         }
         setView('invalid_password_reset')
-        setResetToken(null)
-      } finally {
+        setToken(null)
         await logout()
+        return
       }
+
+      setView('password_updated')
+      setToken(null)
+      await logout()
     },
-    [form, setResetToken, setView, token, t]
+    [form, setToken, setView, t, resetToken]
   )
 
   useEffect(() => {
@@ -116,7 +117,14 @@ export const PasswordResetForm = ({
         </form>
       </Form>
       <div className="mt-2 flex w-full justify-end">
-        <Button onClick={() => setView('login')} size="text" variant="link">
+        <Button
+          onClick={() => {
+            setToken(null)
+            setView('login')
+          }}
+          size="text"
+          variant="link"
+        >
           {t('skipAndLogin')}
         </Button>
       </div>

@@ -1,5 +1,6 @@
 export enum CacheTag {
   AuthUser = 'auth-user',
+  AuthUserStatus = 'auth-user-status',
   Course = 'course',
   Courses = 'courses',
   SkillGroups = 'skill-groups',

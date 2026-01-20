@@ -12,15 +12,22 @@ export const config: ProxyConfig = {
 }
 
 export const proxy: NextProxy = async request => {
-  const { headers } = request
+  const { headers, nextUrl } = request
   const response = NextResponse.next({ request: { headers } })
 
   try {
     await verifyAuthUser(request)
-    if (request.nextUrl.pathname !== AUTH_ROOT) return response
-    return NextResponse.redirect(new URL(APP_ROOT, request.url))
+
+    if (nextUrl.pathname === AUTH_ROOT) {
+      return NextResponse.redirect(new URL(APP_ROOT, request.url))
+    }
+
+    return response
   } catch {
-    if (request.nextUrl.pathname === AUTH_ROOT) return response
-    return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
+    if (nextUrl.pathname === AUTH_ROOT) return response
+
+    const url = new URL(AUTH_ROOT, request.url)
+    url.search = nextUrl.search
+    return NextResponse.redirect(url)
   }
 }

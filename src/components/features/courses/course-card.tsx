@@ -18,6 +18,7 @@ import { type Locale, useFormatter, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { getCookie, setCookie } from '@/actions/cookies'
+import { deleteCourse as deleteCourseAction, updateCourse } from '@/actions/course'
 import { UserCard } from '@/components/features/users/user-card'
 import { useSession } from '@/components/providers/session-provider'
 import {
@@ -127,7 +128,7 @@ export const CourseCard = ({
   showState?: boolean
 }) => {
   const { locale, localeItems } = useI18n()
-  const { removeCourse, editSessionCourse, user } = useSession()
+  const { user } = useSession()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
   const f = useFormatter()
@@ -212,33 +213,33 @@ export const CourseCard = ({
 
   const archiveCourse = useCallback(async () => {
     try {
-      await editSessionCourse(course.id, { archived_at: new Date().toISOString() })
+      await updateCourse(course.id, { archived_at: new Date().toISOString() })
       toast.success(t('courseArchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, editSessionCourse])
+  }, [course.id, t])
 
   const unarchiveCourse = useCallback(async () => {
     try {
-      await editSessionCourse(course.id, { archived_at: null })
+      await updateCourse(course.id, { archived_at: null })
       toast.success(t('courseUnarchived'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, t, editSessionCourse])
+  }, [course.id, t])
 
   const deleteCourse = useCallback(async () => {
     try {
-      await removeCourse(course.id)
+      await deleteCourseAction(course.id)
       toast.success(t('courseDeleted'))
     } catch (e) {
       console.error(e)
       toast.error(t('courseDeletedError'))
     }
-  }, [course.id, t, removeCourse])
+  }, [course.id, t])
 
   useEffect(() => {
     if (activeLanguages.includes(language)) return
@@ -249,8 +250,9 @@ export const CourseCard = ({
     <Card className="min-h-80">
       <CardHeader className="gap-4">
         <IconPicker
+          categorized={false}
           className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
-          onValueChange={icon => editSessionCourse(course.id, { icon })}
+          onValueChange={icon => updateCourse(course.id, { icon })}
           title={course.icon ? t('updateIcon') : t('addIcon')}
           value={(course.icon as IconName) ?? undefined}
           variant="ghost"

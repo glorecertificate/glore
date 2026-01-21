@@ -41,10 +41,11 @@ export const mailer = {
   },
 }
 
-export type EmailTemplate = 'auth/recovery'
+export type EmailTemplate = 'auth/recovery' | 'auth/invite'
 
 export type EmailTemplateOptions<T extends EmailTemplate> = {
   'auth/recovery': AuthEmailProps
+  'auth/invite': AuthEmailProps
 }[T]
 
 export interface EmailOptions {

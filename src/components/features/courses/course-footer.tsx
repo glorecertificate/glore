@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import config from '@config/app'
-import { getLessonType, useCourse } from '@/components/features/courses/course-provider'
+import { useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -27,23 +27,27 @@ export const CourseFooter = () => {
   const t = useTranslations('Courses')
   const { courses } = useSession()
   const { course, currentLesson, next, previous } = useCourse()
-  const lessonType = getLessonType(currentLesson)
+
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
   const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
   const canProceed = useMemo(() => {
     if (!currentLesson) return false
-    if (lessonType === 'reading' || currentLesson.completed) return true
-    if (lessonType === 'questions') return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
-    if (lessonType === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
-    if (lessonType === 'assessment') return !!currentLesson.assessment?.userRating
+    if (currentLesson.type === 'reading' || currentLesson.completed) return true
+    if (currentLesson.type === 'questions')
+      return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
+    if (currentLesson.type === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
+    if (currentLesson.type === 'assessment') return !!currentLesson.assessment?.userRating
     return false
-  }, [currentLesson, lessonType])
+  }, [currentLesson])
 
   const nextTooltip = useMemo(() => {
-    if (!lessonType) return
-    if (!canProceed) return t('replyToProceed', { type: lessonType })
-  }, [canProceed, t, lessonType])
+    if (!currentLesson.type) return
+    if (!canProceed)
+      return t('replyToProceed', {
+        type: currentLesson.type,
+      })
+  }, [canProceed, t, currentLesson.type])
 
   const completedCount = useMemo(() => courses.filter(m => m.completed).length, [courses])
 

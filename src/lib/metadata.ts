@@ -88,24 +88,27 @@ export interface IntlMetadata<T extends Namespace> extends Omit<Metadata, 'title
   description?: MessageKey<T>
 }
 
-export const intlMetadata =
-  <T extends Namespace>({ namespace, title, description, ...metadata }: IntlMetadata<T> = {}) =>
-  async () => {
-    const { getTranslations } = await import('next-intl/server')
-    const t: Any = await getTranslations(namespace)
+export const intlMetadata = async <T extends Namespace>({
+  namespace,
+  title,
+  description,
+  ...metadata
+}: IntlMetadata<T> = {}) => {
+  const { getTranslations } = await import('next-intl/server')
+  const t: Any = await getTranslations(namespace)
 
-    return {
-      ...metadata,
-      title:
-        typeof title === 'object'
-          ? {
-              default: title?.default ? t(title.default) : undefined,
-              template: title?.template ? t(title.template) : undefined,
-              absolute: title?.absolute ? t(title.absolute) : undefined,
-            }
-          : title
-            ? t(title)
-            : undefined,
-      description: description ? t(description) : undefined,
-    }
+  return {
+    ...metadata,
+    title:
+      typeof title === 'object'
+        ? {
+            default: title?.default ? t(title.default) : undefined,
+            template: title?.template ? t(title.template) : undefined,
+            absolute: title?.absolute ? t(title.absolute) : undefined,
+          }
+        : title
+          ? t(title)
+          : undefined,
+    description: description ? t(description) : undefined,
   }
+}

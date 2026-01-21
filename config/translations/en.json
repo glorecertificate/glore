@@ -12,7 +12,7 @@
     "backToPrevious": "Go back",
     "cancel": "Cancel",
     "clearSort": "Clear sort",
-    "comingSoonMessage": "This feature is coming soon. Stay tuned! 🚀",
+    "comingSoonFeature": "This feature is coming soon. Stay tuned! 🚀",
     "completed": "Completed",
     "continue": "Continue",
     "delete": "Delete",
@@ -44,7 +44,8 @@
     "theme": "Theme",
     "unarchive": "Unarchive",
     "underReview": "Under review",
-    "verified": "Verified"
+    "verified": "Verified",
+    "comingSoonPage": "This page is currently under construction, come back soon for updates! 🏗️"
   },
   "Locale": {
     "Countries": {
@@ -787,7 +788,9 @@
     "language": "Language",
     "courseUpdateFailed": "Failed to update course",
     "courseSettingsDescription": "Manage the global settings of this course.",
-    "courseTypeDescription": "Whether the course is an introduction or is focused on verifying a soft skill."
+    "courseTypeDescription": "Whether the course is an introduction or is focused on verifying a soft skill.",
+    "removeLesson": "Remove lesson",
+    "courseMustHaveAtLeastOneLesson": "A course must have at least one lesson"
   },
   "Certificates": {
     "alreadyHave": "You already have a certificate with this organization",
@@ -851,7 +854,8 @@
     "usernameInvalid": "Username must be at least 3 characters",
     "usernamePlaceholder": "Choose a username",
     "notFound": "User not found",
-    "unauthenticated": "User unauthenticated"
+    "unauthenticated": "User unauthenticated",
+    "email": "Email"
   },
   "Admin": {
     "team": {

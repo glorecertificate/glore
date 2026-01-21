@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/actions/auth'
 import { getDatabase } from '@/db/client'
 import { parseUser, userQuery } from '@/db/schema/users'
-import { type DatabaseQuery, type DatabaseSingleQuery, type TableUpdate } from '@/db/types'
+import { type DatabaseSingleQuery, type TableUpdate } from '@/db/types'
 import { resolveQuery } from '@/db/utils'
 import { CacheTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -29,13 +29,6 @@ const fetchUserEmail = async (query: DatabaseSingleQuery<'users', 'email'>) => {
   cacheTag(CacheTag.UserEmail)
 
   return await resolveQuery(query)
-}
-
-const fetchTeamMembers = async (query: DatabaseQuery<'users', typeof userQuery>) => {
-  'use cache'
-  cacheTag(CacheTag.User)
-
-  return await resolveQuery(query, parseUser)
 }
 
 export const getCurrentUser = cache(async () => {
@@ -69,10 +62,4 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>) => {
 
   updateTag(CacheTag.User)
   return user
-}
-
-export const getTeamMembers = async () => {
-  const db = await getDatabase()
-  const query = db.from('users').select(userQuery).or('is_admin.eq.true,is_editor.eq.true')
-  return await fetchTeamMembers(query)
 }

@@ -128,6 +128,15 @@ export const LoginForm = ({
 
   useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus])
 
+  // biome-ignore lint/correctness: Run on unmount only
+  useEffect(
+    () => () => {
+      setLoading(false)
+      setErrored(false)
+    },
+    []
+  )
+
   return (
     <>
       <Form {...form}>

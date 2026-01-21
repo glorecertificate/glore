@@ -5,7 +5,6 @@ import { useCallback, useState } from 'react'
 import { AdminCertificates } from '@/components/features/admin/admin-certificates'
 import { AdminOrganizations } from '@/components/features/admin/admin-organizations'
 import { AdminOverview } from '@/components/features/admin/admin-overview'
-import { AdminTeam } from '@/components/features/admin/admin-team'
 import { AdminUsers } from '@/components/features/admin/admin-users'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
@@ -47,9 +46,9 @@ export const AdminDashboard = () => {
           <AdminOrganizations />
         </TabsContent>
 
-        <TabsContent className="space-y-4" value="team">
+        {/* <TabsContent className="space-y-4" value="team">
           <AdminTeam />
-        </TabsContent>
+        </TabsContent> */}
       </Tabs>
     </div>
   )

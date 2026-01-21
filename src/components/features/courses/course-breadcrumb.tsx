@@ -17,11 +17,12 @@ import { Link } from '@/components/ui/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { localize } from '@/lib/i18n'
+import { cn } from '@/lib/utils'
 
 export const CourseBreadcrumb = () => {
   const t = useTranslations('Courses')
   const { user } = useSession()
-  const { course, editCourse, language, setCourse } = useCourse()
+  const { course, currentLanguageState, editCourse, language, setCourse } = useCourse()
 
   const title = localize(course.title, language)
   const [draftTitle, setDraftTitle] = useState(title)
@@ -32,10 +33,10 @@ export const CourseBreadcrumb = () => {
   }, [title])
 
   const onTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const { value } = e.target
       if (value.length > 100) {
-        toast.warning(t('titleTooLong'), { duration: 4000 })
+        toast.warning(t('titleTooLong'))
       }
       setDraftTitle(value.slice(0, 100))
     },
@@ -47,7 +48,7 @@ export const CourseBreadcrumb = () => {
   }, [])
 
   const onTitleBlur = useCallback(
-    (e: React.FocusEvent<HTMLInputElement>) => {
+    (e: React.FocusEvent<HTMLTextAreaElement>) => {
       setTitleFocused(false)
       if (e.target.value.trim() === title) return
       if (e.target.value.trim() === '') return setDraftTitle(title)
@@ -80,7 +81,7 @@ export const CourseBreadcrumb = () => {
         <BreadcrumbSeparator />
 
         <BreadcrumbItem className="grow gap-2 pr-6">
-          {user.canEdit ? (
+          {user.canEdit && !course.archived_at ? (
             <>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -102,11 +103,18 @@ export const CourseBreadcrumb = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <InlineInput
-                    className="px-1 py-0.5 text-[14.5px] hover:text-foreground focus:text-foreground"
+                    autoWidth
+                    className={cn(
+                      'px-1 py-0.5 text-[14.5px] text-foreground/90 hover:text-foreground focus:text-foreground',
+                      !titleFocused &&
+                        currentLanguageState.hasTitleUpdates &&
+                        'decoration-2 decoration-warning decoration-dotted underline-offset-4'
+                    )}
                     defaultValue={title}
                     onBlur={onTitleBlur}
                     onChange={onTitleChange}
                     onFocus={onTitleFocus}
+                    rows={1}
                     value={draftTitle}
                   />
                 </TooltipTrigger>
@@ -116,13 +124,12 @@ export const CourseBreadcrumb = () => {
                   </TooltipContent>
                 )}
               </Tooltip>
-
-              {course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
             </>
           ) : (
             <>
               <DynamicIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon} />
               {title}
+              {course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
             </>
           )}
         </BreadcrumbItem>

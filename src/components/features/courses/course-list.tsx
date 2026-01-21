@@ -1,23 +1,22 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { startTransition, useCallback, useMemo, useOptimistic, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { ArchiveIcon, CircleFadingPlusIcon, GripVerticalIcon, PlusIcon } from 'lucide-react'
+import { ArchiveIcon, BookDashedIcon, GripVerticalIcon, PlusIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { type CamelCase } from 'type-fest'
-import { type z } from 'zod'
 
 import { setCookie } from '@/actions/cookies'
-import { reorderCourses } from '@/actions/course'
+import { initializeCourse, reorderCourses } from '@/actions/course'
 import { CourseCard } from '@/components/features/courses/course-card'
 import {
   CourseListSort,
   type CourseListSortDirection,
   type CourseListSortType,
 } from '@/components/features/courses/course-list-sort'
-import { CourseSettings, type courseSettingsSchema } from '@/components/features/courses/course-settings'
+import { CourseSettings, type CourseSettingsForm } from '@/components/features/courses/course-settings'
 import { NoResultsGraphic } from '@/components/icons/_no-results-graphic'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
@@ -40,7 +39,6 @@ import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/c
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/schema/courses'
-import { type TableInsert } from '@/db/types'
 import { postgrestError } from '@/db/utils'
 import { useI18n } from '@/hooks/use-i18n'
 import { i18n } from '@/lib/i18n'
@@ -114,7 +112,9 @@ export const CourseList = ({
   const { locale, localeItems, localize } = useI18n()
   const t = useTranslations('Courses')
 
-  const { user, courses: sessionCourses, setCourses, addCourse, skillGroups } = useSession()
+  const { user, courses: sessionCourses, skillGroups } = useSession()
+
+  const [optimisticCourses, setOptimisticCourses] = useOptimistic(sessionCourses, (_, newOrder: Course[]) => newOrder)
 
   const groups = skillGroups.map(group => ({
     label: localize(group.name),
@@ -139,7 +139,7 @@ export const CourseList = ({
     : [...Object.values(CourseListLearnerView)]
 
   const courses = useMemo<Record<CamelCase<CourseListView>, Course[]>>(() => {
-    const all = sessionCourses.filter(course => !course.archived_at)
+    const all = optimisticCourses.filter(course => !course.archived_at)
 
     if (user.canEdit)
       return {
@@ -150,7 +150,7 @@ export const CourseList = ({
           return published.length > 0 && published.length < activeLanguages.length
         }),
         draft: all.filter(course => activeLanguages.every(lang => !course.languages?.includes(lang))),
-        archived: sessionCourses.filter(course => course.archived_at),
+        archived: optimisticCourses.filter(course => course.archived_at),
         notStarted: [],
         inProgress: [],
         completed: [],
@@ -161,12 +161,12 @@ export const CourseList = ({
       published: [],
       partial: [],
       draft: [],
-      archived: sessionCourses.filter(course => course.archived_at),
+      archived: optimisticCourses.filter(course => course.archived_at),
       notStarted: all.filter(course => course.progressStatus === 'not_started'),
       inProgress: all.filter(course => course.progressStatus === 'in_progress'),
       completed: all.filter(course => course.progressStatus === 'completed'),
     }
-  }, [sessionCourses, user.canEdit, activeLanguages])
+  }, [user.canEdit, activeLanguages, optimisticCourses.filter])
 
   const visibleCourses = useMemo(
     () =>
@@ -275,45 +275,41 @@ export const CourseList = ({
   }, [])
 
   const setOrder = useCallback(
-    async (orderedCourses: Course[]) => {
-      const nextOrders = new Map(orderedCourses.map((course, index) => [course.id, index + 1]))
+    (orderedCourses: Course[]) => {
+      const optimisticallyOrdered = orderedCourses.map((course, index) => ({
+        ...course,
+        sort_order: index + 1,
+      }))
 
-      setCourses(prev => {
-        const reordered = orderedCourses.map(course => {
-          const previousCourse = new Map(prev.map(course => [course.id, course])).get(course.id)
-          const sort_order = nextOrders.get(course.id)
-
-          if (!previousCourse) {
-            const { language: _language, ...rest } = course as Course & { language?: Locale }
-            return sort_order ? { ...rest, sort_order } : rest
-          }
-
-          if (!sort_order || previousCourse.sort_order === sort_order) return previousCourse
-          return { ...previousCourse, sort_order }
-        })
-
-        const untouched = prev.filter(course => !nextOrders.has(course.id))
-        return [...reordered, ...untouched]
+      startTransition(async () => {
+        setOptimisticCourses(optimisticallyOrdered)
+        await reorderCourses(orderedCourses)
       })
-
-      await reorderCourses(orderedCourses)
     },
-    [setCourses]
+    [setOptimisticCourses]
   )
 
   const createCourse = useMemo(
-    () => async (schema: z.infer<typeof courseSettingsSchema>) => {
+    () => async (form: CourseSettingsForm) => {
       try {
-        const course = await addCourse(schema as TableInsert<'courses'>)
-        toast.success(t('courseCreated'), { duration: 4000 })
+        const course = await initializeCourse({
+          ...form.getValues(),
+          sort_order: sessionCourses.length + 1,
+        })
         router.push(`/courses/${course.slug}`)
+        toast.success(t('courseCreated'), { duration: 4000 })
       } catch (e) {
         const error = postgrestError(e)
-        console.error(error.message, error)
-        toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseCreationFailed'))
+        console.error(error.message)
+        if (error.code === '23505') {
+          form.setError('slug', { message: t('courseSlugTaken') })
+          form.setFocus('slug')
+          return
+        }
+        toast.error(t('courseCreationFailed'))
       }
     },
-    [addCourse, t, router.push]
+    [sessionCourses.length, t, router.push]
   )
 
   return (
@@ -350,7 +346,7 @@ export const CourseList = ({
                 <DialogContent className="gap-6 p-8" size="lg">
                   <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                      <CircleFadingPlusIcon className="size-5" />
+                      <BookDashedIcon className="size-5" />
                       {t('newCourse')}
                     </DialogTitle>
                     <DialogDescription>{t('newCourseDescription')}</DialogDescription>

@@ -87,14 +87,16 @@ export const pluck = <T extends AnyRecord, K extends keyof T>(array: T[], key: K
 /*
   Functions
 */
-export const debounce = <T>(callback: (...args: T[]) => void, delay = 500) => {
+export const debounce = <T extends unknown[]>(callback: (...args: T) => void, delay = 500) => {
   let timer: ReturnType<typeof setTimeout>
-  return (...args: T[]) => {
+  const debounced = (...args: T) => {
     clearTimeout(timer)
     timer = setTimeout(() => {
       callback(...args)
     }, delay)
   }
+  debounced.cancel = () => clearTimeout(timer)
+  return debounced
 }
 
 export const throttle = <F extends AnyFunction>(callback: F, limit: number): F => {

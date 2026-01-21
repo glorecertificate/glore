@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -8,11 +8,15 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { uploadAvatar } from '@/actions/storage'
 import { updateUser } from '@/actions/user'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
+import { LanguageSelect } from '@/components/ui/language-select'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { type TableUpdate } from '@/db/types'
@@ -21,10 +25,13 @@ import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 
 export const UserSettings = () => {
-  const { user, setUser } = useSession()
-  const { localeItems } = useI18n()
+  const { user } = useSession()
+  const { setLocale } = useI18n()
   const tGlobal = useTranslations()
   const t = useTranslations('Users')
+
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar_url)
 
   const formSchema = useMemo(
     () =>
@@ -44,6 +51,7 @@ export const UserSettings = () => {
         city: z.string().optional(),
         country: z.string().optional(),
         locale: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
+        email: z.string().email().optional(), // Read only display usually
       }),
     [t]
   )
@@ -62,10 +70,11 @@ export const UserSettings = () => {
       city: user.city || '',
       country: user.country || '',
       locale: user.locale || '',
+      email: user.email || '',
     },
   })
 
-  const disabled = defaultFormDisabled(form)
+  const disabled = defaultFormDisabled(form) && !avatarFile
 
   const generateUsername = useCallback((first_name: string, last_name: string) => {
     const parts = []
@@ -78,53 +87,77 @@ export const UserSettings = () => {
     const subscription = form.watch((value, { name }) => {
       if (name === 'first_name' || name === 'last_name') {
         const username = generateUsername(value.first_name || '', value.last_name || '')
-        if (username) {
+        if (username && !user.username) {
           form.setValue('username', username, { shouldValidate: false })
         }
       }
     })
     return () => subscription.unsubscribe()
-  }, [form, generateUsername])
+  }, [form, generateUsername, user.username])
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       try {
         const updates: TableUpdate<'users'> = {}
+        const fields = [
+          'username',
+          'first_name',
+          'last_name',
+          'bio',
+          'phone',
+          'birthday',
+          'sex',
+          'pronouns',
+          'city',
+          'country',
+          'locale',
+        ] as const
 
-        if (schema.username !== user.username) updates.username = schema.username || undefined
-        if (schema.first_name !== user.first_name) updates.first_name = schema.first_name || undefined
-        if (schema.last_name !== user.last_name) updates.last_name = schema.last_name || undefined
-        if (schema.bio !== user.bio) updates.bio = schema.bio || undefined
-        if (schema.phone !== user.phone) updates.phone = schema.phone || undefined
-        if (schema.birthday !== user.birthday) updates.birthday = schema.birthday || undefined
-        if (schema.sex !== user.sex) updates.sex = schema.sex || undefined
-        if (schema.pronouns !== user.pronouns) updates.pronouns = schema.pronouns || undefined
-        if (schema.city !== user.city) updates.city = schema.city || undefined
-        if (schema.country !== user.country) updates.country = schema.country || undefined
-        if (schema.locale !== user.locale) updates.locale = schema.locale || undefined
+        for (const key of fields) {
+          if (schema[key] !== user[key]) {
+            // @ts-expect-error key is valid
+            updates[key] = schema[key] || null
+          }
+        }
 
-        const data = await updateUser(user.id, updates)
-        setUser?.(data)
-        form.reset({
-          username: data.username ?? '',
-          first_name: data.first_name ?? '',
-          last_name: data.last_name ?? '',
-          bio: data.bio ?? '',
-          phone: data.phone ?? '',
-          birthday: data.birthday ?? '',
-          sex: data.sex ?? '',
-          pronouns: data.pronouns ?? '',
-          city: data.city ?? '',
-          country: data.country ?? '',
-          locale: data.locale ?? '',
-        })
-        toast.success(t('profileUpdated'))
+        if (avatarFile) {
+          const formData = new FormData()
+          formData.append('file', avatarFile)
+          const publicUrl = await uploadAvatar(formData)
+          updates.avatar_url = publicUrl
+        }
+
+        if (Object.keys(updates).length > 0) {
+          const data = await updateUser(user.id, updates)
+
+          if (updates.locale && updates.locale !== user.locale) {
+            setLocale(updates.locale as Any)
+          }
+
+          form.reset({
+            username: data.username ?? '',
+            first_name: data.first_name ?? '',
+            last_name: data.last_name ?? '',
+            bio: data.bio ?? '',
+            phone: data.phone ?? '',
+            birthday: data.birthday ?? '',
+            sex: data.sex ?? '',
+            pronouns: data.pronouns ?? '',
+            city: data.city ?? '',
+            country: data.country ?? '',
+            locale: data.locale ?? '',
+            email: data.email ?? '',
+          })
+          setAvatarFile(null)
+          setAvatarPreview(data.avatar_url)
+          toast.success(t('profileUpdated'))
+        }
       } catch (error) {
         console.error(error)
         toast.error(t('profileUpdateError'))
       }
     },
-    [form, t, user, setUser]
+    [form, t, user, avatarFile, setLocale]
   )
 
   const countries = useMemo(
@@ -142,120 +175,147 @@ export const UserSettings = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
-          <div>
-            <h3 className="mb-4 font-semibold text-lg">{t('personalInfo')}</h3>
-
-            <div className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="first_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('firstName')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={form.formState.isSubmitting}
-                          placeholder={t('firstNamePlaceholder')}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="last_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('lastName')}</FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={form.formState.isSubmitting}
-                          placeholder={t('lastNamePlaceholder')}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('username')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        className="bg-muted/50"
-                        disabled
-                        placeholder={t('usernamePlaceholder')}
-                        readOnly
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="birthday"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('birthday')}</FormLabel>
-                      <FormControl>
-                        <Input disabled={form.formState.isSubmitting} type="date" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="sex"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('sex')}</FormLabel>
-                      <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+      <form className="mx-auto max-w-5xl" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid gap-6 lg:grid-cols-3 lg:gap-10">
+          <div className="space-y-6 lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('personalInfo')}</CardTitle>
+                <CardDescription>{'Manage your personal details.'}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="first_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('firstName')}</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder={t('selectSex')} />
-                          </SelectTrigger>
+                          <Input
+                            disabled={form.formState.isSubmitting}
+                            placeholder={t('firstNamePlaceholder')}
+                            {...field}
+                          />
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="female">{t('female')}</SelectItem>
-                          <SelectItem value="male">{t('male')}</SelectItem>
-                          <SelectItem value="non-binary">{t('nonBinary')}</SelectItem>
-                          <SelectItem value="unspecified">{t('unspecified')}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-              <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('lastName')}</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={form.formState.isSubmitting}
+                            placeholder={t('lastNamePlaceholder')}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="birthday"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('birthday')}</FormLabel>
+                        <FormControl>
+                          <Input disabled={form.formState.isSubmitting} type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="sex"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('sex')}</FormLabel>
+                        <Select
+                          disabled={form.formState.isSubmitting}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('selectSex')} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="female">{t('female')}</SelectItem>
+                            <SelectItem value="male">{t('male')}</SelectItem>
+                            <SelectItem value="non-binary">{t('nonBinary')}</SelectItem>
+                            <SelectItem value="unspecified">{t('unspecified')}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="pronouns"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('pronouns')}</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={form.formState.isSubmitting}
+                            placeholder={t('pronounsPlaceholder')}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('phone')}</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={form.formState.isSubmitting}
+                            placeholder={t('phonePlaceholder')}
+                            type="tel"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <FormField
                   control={form.control}
-                  name="pronouns"
+                  name="bio"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t('pronouns')}</FormLabel>
+                      <FormLabel>{t('bio')}</FormLabel>
                       <FormControl>
-                        <Input
+                        <Textarea
+                          className="min-h-32 resize-none"
                           disabled={form.formState.isSubmitting}
-                          placeholder={t('pronounsPlaceholder')}
+                          placeholder={t('bioPlaceholder')}
                           {...field}
                         />
                       </FormControl>
@@ -263,133 +323,161 @@ export const UserSettings = () => {
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
 
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('location')}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('city')}</FormLabel>
+                        <FormControl>
+                          <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('country')}</FormLabel>
+                        <Select
+                          disabled={form.formState.isSubmitting}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('countryPlaceholder')} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {countries.map(country => (
+                              <SelectItem key={country} value={country}>
+                                {translateCountry(country)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('preferences')}</CardTitle>
+              </CardHeader>
+              <CardContent>
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="locale"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t('phone')}</FormLabel>
+                    <FormItem className="max-w-xs">
+                      <FormLabel>{t('locale')}</FormLabel>
                       <FormControl>
-                        <Input
+                        <LanguageSelect
+                          controlled
                           disabled={form.formState.isSubmitting}
-                          placeholder={t('phonePlaceholder')}
-                          type="tel"
-                          {...field}
+                          onChange={field.onChange}
+                          value={field.value as Any}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
+              </CardContent>
+            </Card>
 
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('bio')}</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        className="min-h-25 resize-none"
-                        disabled={form.formState.isSubmitting}
-                        placeholder={t('bioPlaceholder')}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="flex justify-end gap-3">
+              <Button
+                disabled={form.formState.isSubmitting}
+                onClick={() => form.reset()}
+                type="button"
+                variant="outline"
+              >
+                {t('cancel')}
+              </Button>
+              <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
+                {t('saveChanges')}
+              </Button>
             </div>
           </div>
 
-          <div>
-            <h3 className="mb-4 font-semibold text-lg">{t('location')}</h3>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{'Profile Picture'}</CardTitle>
+                <CardDescription>{'Update your profile picture.'}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex justify-center py-6">
+                <ImageCropper
+                  disabled={form.formState.isSubmitting}
+                  onChange={file => {
+                    setAvatarFile(file)
+                    setAvatarPreview(URL.createObjectURL(file))
+                  }}
+                  onRemove={() => {
+                    setAvatarFile(null)
+                    setAvatarPreview(user.avatar_url)
+                  }}
+                  value={avatarPreview}
+                />
+              </CardContent>
+            </Card>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="city"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('city')}</FormLabel>
-                    <FormControl>
-                      <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('country')}</FormLabel>
-                    <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">{'Account'}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('email')}</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder={t('countryPlaceholder')} />
-                        </SelectTrigger>
+                        <Input {...field} className="bg-muted" disabled readOnly />
                       </FormControl>
-                      <SelectContent>
-                        {countries.map(country => (
-                          <SelectItem key={country} value={country}>
-                            {translateCountry(country)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                      <FormDescription>{'Contact support to change email.'}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('username')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} className="bg-muted/50" placeholder={t('usernamePlaceholder')} readOnly />
+                      </FormControl>
+                      <FormDescription>{'Username is auto-generated.'}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
           </div>
-
-          <div>
-            <h3 className="mb-4 font-semibold text-lg">{t('preferences')}</h3>
-
-            <FormField
-              control={form.control}
-              name="locale"
-              render={({ field }) => (
-                <FormItem className="max-w-xs">
-                  <FormLabel>{t('locale')}</FormLabel>
-                  <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('selectLocale')} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {localeItems.map(item => (
-                        <SelectItem key={item.value} value={item.value}>
-                          <span className="flex items-center gap-2">
-                            <span className="text-base">{item.icon}</span>
-                            <span>{item.label}</span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end gap-3">
-          <Button disabled={form.formState.isSubmitting} onClick={() => form.reset()} type="button" variant="outline">
-            {t('cancel')}
-          </Button>
-          <Button disabled={disabled} loading={form.formState.isSubmitting} type="submit" variant="brand">
-            {t('saveChanges')}
-          </Button>
         </div>
       </form>
     </Form>

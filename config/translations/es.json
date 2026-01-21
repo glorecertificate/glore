@@ -43,8 +43,9 @@
     "underReview": "Bajo revisión",
     "verified": "Verificado",
     "selectAtLeastOne": "Debes seleccionar al menos un {item}",
-    "comingSoonMessage": "Esta característica estará disponible próximamente. \n¡Manténganse al tanto! \n🚀",
-    "item": "Artículo"
+    "comingSoonFeature": "Esta característica estará disponible próximamente. \n¡Manténganse al tanto! \n🚀",
+    "item": "Artículo",
+    "comingSoonPage": "Esta página está actualmente en construcción, ¡vuelve pronto para recibir actualizaciones! \n🏗️"
   },
   "Locale": {
     "Countries": {
@@ -787,7 +788,9 @@
     "language": "Idioma",
     "courseUpdateFailed": "No se pudo actualizar el curso",
     "courseSettingsDescription": "Administras la configuración global de este curso.",
-    "courseTypeDescription": "Si el curso es una introducción o está enfocado a verificar una habilidad blanda."
+    "courseTypeDescription": "Si el curso es una introducción o está enfocado a verificar una habilidad blanda.",
+    "removeLesson": "Eliminar lección",
+    "courseMustHaveAtLeastOneLesson": "Un curso debe tener al menos una lección"
   },
   "Certificates": {
     "alreadyHave": "Ya tiene un certificado con esta organización",
@@ -851,7 +854,8 @@
     "usernameInvalid": "El nombre de usuario debe tener al menos 3 caracteres",
     "usernamePlaceholder": "Elige un nombre de usuario",
     "notFound": "Usuario no encontrado",
-    "unauthenticated": "Usuario no autenticado"
+    "unauthenticated": "Usuario no autenticado",
+    "email": "Email"
   },
   "Admin": {
     "team": {

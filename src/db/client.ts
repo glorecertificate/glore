@@ -6,14 +6,16 @@ import { cookies } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 
 import { type Database } from '@/db/types'
 import { noop } from '@/lib/utils'
 
 const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!(SUPABASE_URL && SUPABASE_ANON_KEY)) {
+if (!(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_SERVICE_ROLE_KEY)) {
   throw new Error('Missing Supabase environment variables')
 }
 
@@ -34,6 +36,14 @@ export const getDatabase = async (callback = noop) => {
     },
   })
 }
+
+export const getServiceDatabase = async () =>
+  await createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
 
 export const getProxyDatabase = async (request: NextRequest, callback = noop) =>
   createServerClient<Database, 'public'>(SUPABASE_URL, SUPABASE_ANON_KEY, {

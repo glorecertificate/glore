@@ -1,10 +1,16 @@
 'use client'
 
-import { useId, useMemo } from 'react'
+import { useEffect, useId, useMemo, useRef } from 'react'
 
 import { useTranslations } from 'next-intl'
-import { type AnyPluginConfig, KEYS } from 'platejs'
-import { BlockPlaceholderPlugin, type CreatePlateEditorOptions, Plate, usePlateEditor } from 'platejs/react'
+import { type AnyPluginConfig, KEYS, type Value } from 'platejs'
+import {
+  BlockPlaceholderPlugin,
+  type CreatePlateEditorOptions,
+  Plate,
+  type PlateProps,
+  usePlateEditor,
+} from 'platejs/react'
 
 import { AIKit } from '@/components/blocks/rich-text-editor/plugins/ai'
 import { AlignKit } from '@/components/blocks/rich-text-editor/plugins/align'
@@ -68,9 +74,18 @@ export type RichTextEditorPlugin = keyof typeof PLUGINS
 export interface RichTextEditorProviderProps
   extends React.PropsWithChildren<Omit<CreatePlateEditorOptions, 'plugins'>> {
   exclude?: RichTextEditorPlugin | RichTextEditorPlugin[]
+  onChange?: PlateProps['onChange']
+  version?: string
 }
 
-export const RichTextEditorProvider = ({ children, exclude = [], id, ...props }: RichTextEditorProviderProps) => {
+export const RichTextEditorProvider = ({
+  children,
+  exclude = [],
+  id,
+  onChange,
+  version,
+  ...props
+}: RichTextEditorProviderProps) => {
   const randomId = useId()
   const t = useTranslations('Components.RichTextEditor.placeholders')
 
@@ -101,5 +116,23 @@ export const RichTextEditorProvider = ({ children, exclude = [], id, ...props }:
     [plugins, id]
   )
 
-  return <Plate editor={editor}>{children}</Plate>
+  const prevVersionRef = useRef(version)
+
+  useEffect(() => {
+    if (version && version !== prevVersionRef.current && editor) {
+      editor.children = (props.value || []) as Value
+      editor.history.undos = []
+      editor.history.redos = []
+      editor.operations = []
+      // @ts-expect-error
+      editor.onChange()
+      prevVersionRef.current = version
+    }
+  }, [editor, props.value, version])
+
+  return (
+    <Plate editor={editor} onChange={onChange}>
+      {children}
+    </Plate>
+  )
 }

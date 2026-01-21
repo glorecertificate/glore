@@ -232,7 +232,7 @@ export const AuthFlow = ({
                   exit={{ opacity: 0, y: -8 }}
                   initial={{ opacity: 0, y: 8 }}
                   key={`heading-${view}`}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
                 >
                   {title && <h1 className="font-bold text-3xl">{title}</h1>}
                   {message && <p className="text-muted-foreground">{message}</p>}
@@ -246,7 +246,7 @@ export const AuthFlow = ({
                 exit={{ opacity: 0, y: -8 }}
                 initial={{ opacity: 0, y: 8 }}
                 key={`content-${view}`}
-                transition={{ duration: 0.2, ease: 'easeOut' }}
+                transition={{ duration: 0.15, ease: 'easeOut' }}
               >
                 {content}
               </motion.div>

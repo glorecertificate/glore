@@ -13,7 +13,7 @@ Be direct, rational, and unfiltered. Prioritize correctness → clarity → brev
 | Layer | Technology | Docs |
 |-------|------------|------|
 | Framework | Next.js 16 (App Router, RSC, Cached Components) | https://nextjs.org/docs |
-| Language | TypeScript 5.8 (strict mode) | https://typescriptlang.org/docs/ |
+| Language | TypeScript 5.9 (strict mode) | https://typescriptlang.org/docs/ |
 | Runtime | React 19 | https://react.dev/reference/react |
 | Package Manager | pnpm 10 | https://pnpm.io |
 | Linter/Formatter | Biome | https://biomejs.dev/guides |
@@ -27,10 +27,8 @@ Be direct, rational, and unfiltered. Prioritize correctness → clarity → brev
 
 ```sh
 pnpm install      # Install dependencies
-pnpm dev          # Start all dev servers
-pnpm dev:app      # Start Next.js dev server
-pnpm dev:edge     # Start Supabase edge functions (localtunnel)
-pnpm dev:email    # Preview email templates
+pnpm dev          # Start Next.js dev server
+pnpm email        # Preview email templates
 pnpm build        # Production build
 pnpm start        # Start production server
 pnpm lint         # Check with Biome
@@ -54,8 +52,8 @@ src/
     email/          # Email templates (react-email)
     providers/      # Context providers
   db/               # Database layer
-    queries/        # Query strings + parse functions
-    server.ts       # getDatabase(), getProxyDatabase()
+    schema/         # Query strings + parse functions
+    client.ts       # getDatabase(), getProxyDatabase()
     types.ts        # Custom type overrides
     utils.ts        # resolveQuery(), postgrestError()
   emails/           # Email template components
@@ -85,7 +83,7 @@ const db = await getDatabase()
 const { data, error } = await db.from('users').select('*').eq('id', userId)
 ```
 
-**Query patterns** (`src/db/queries/*.ts`):
+**Query patterns** (`src/db/schema/*.ts`):
 
 ```typescript
 // 1. Define query string for reuse
@@ -118,9 +116,11 @@ const { data, error } = await resolveQuery(
 ```typescript
 'use server'
 
+import 'server-only'
+
 import { updateTag } from 'next/cache'
 import { getDatabase } from '@/db/client'
-import { CacheTag } from '@/lib/types'
+import { CacheTag } from '@/lib/cache'
 
 export const updateUser = async (id: string, data: UserUpdate) => {
   const db = await getDatabase()
@@ -214,7 +214,7 @@ const InteractiveWidget = () => {
 
 ### File Patterns
 
-- **Database queries**: `src/db/queries/*.ts` with `*Query` strings and `parse*` functions
+- **Database queries**: `src/db/schema/*.ts` with `*Query` strings and `parse*` functions
 - **Server actions**: `src/actions/*.ts` with `'use server'` directive
 - **Components**: One component per file, named exports preferred
 
@@ -238,6 +238,10 @@ Optional body (one sentence, max 20 words, ends with period).
 
 ### ✅ Always
 
+- Use named imports (no `React.useCallback`, import `useCallback` from `react`)
+- Use arrow functions (const func = () => {})
+- Return early (avoid `if..else`)
+- Use `for..of` or `map`/`reduce` (avoid `forEach`)
 - Use existing patterns from the codebase
 - Run `pnpm check` before committing
 - Use Server Components by default
@@ -255,7 +259,7 @@ Optional body (one sentence, max 20 words, ends with period).
 ### 🚫 Never
 
 - Commit secrets, API keys, or `.env` files
-- Use `any` type or disable TypeScript checks
+- Use `any` type, `@ts-expect-error`, or bypass TypeScript validations
 - Modify `node_modules/`, `.next/`, or generated files
 - Remove failing tests without fixing the underlying issue
 - Use deprecated React patterns or Next.js APIs

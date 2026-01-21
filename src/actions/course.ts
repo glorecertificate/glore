@@ -6,8 +6,10 @@ import { cache } from 'react'
 import { cacheTag, revalidateTag } from 'next/cache'
 
 import { getAuthUser } from '@/actions/auth'
+import { defaultCourse, defaultLesson } from '@/components/features/courses/course-provider'
 import { getDatabase } from '@/db/client'
 import { type Course, courseQuery, parseCourse } from '@/db/schema/courses'
+import { lessonQuery, parseLesson } from '@/db/schema/lessons'
 import { type DatabaseQuery, type DatabaseSingleQuery, type TableInsert, type TableUpdate } from '@/db/types'
 import { resolveQuery } from '@/db/utils'
 import { CacheTag } from '@/lib/cache'
@@ -52,15 +54,32 @@ export const listCourses = cache(async () => {
   return data
 })
 
+export const initializeCourse = async (course: TableInsert<'courses'>) => {
+  const { data, error } = await createCourse({
+    ...defaultCourse,
+    ...course,
+  })
+  if (error) throw error
+
+  const { data: lessons, error: lessonsError } = await upsertLessons([
+    {
+      ...defaultLesson,
+      course_id: data.id,
+      sort_order: 1,
+    },
+  ])
+  if (lessonsError) throw lessonsError
+
+  return { ...data, lessons }
+}
+
 export const createCourse = async (course: TableInsert<'courses'>) => {
   const db = await getDatabase()
   const query = db.from('courses').insert(course).select(courseQuery).single()
 
-  const { data, error } = await resolveQuery(query, parseCourse)
-  if (error) throw error
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return data
+  const response = await resolveQuery(query, parseCourse)
+  if (!response.error) revalidateTag(CacheTag.Courses, 'max')
+  return response
 }
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
@@ -93,13 +112,11 @@ export const listSkillGroups = cache(async () => {
 
 export const upsertLessons = async (lessons: TableInsert<'lessons'>[]) => {
   const db = await getDatabase()
-  const query = db.from('lessons').upsert(lessons).select()
+  const query = db.from('lessons').upsert(lessons).select(lessonQuery)
 
-  const { data, error } = await resolveQuery(query)
-  if (error) throw error
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return data
+  const response = await resolveQuery(query, parseLesson)
+  if (response.error) revalidateTag(CacheTag.Courses, 'max')
+  return response
 }
 
 export const reorderCourses = async (courses: Course[]) => {

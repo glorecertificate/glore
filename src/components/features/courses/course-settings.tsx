@@ -5,7 +5,7 @@ import { useCallback, useId, useMemo } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
+import { type UseFormReturn, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { useSession } from '@/components/providers/session-provider'
@@ -21,6 +21,8 @@ import { type Enums } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
 
+export type CourseSettingsForm = UseFormReturn<z.infer<typeof courseSettingsSchema>>
+
 export const courseSettingsSchema = z.object({
   type: z.enum<Enums<'course_type'>[]>(['intro', 'skill']),
   skill_group_id: z.number().nullable(),
@@ -32,7 +34,7 @@ export const CourseSettings = ({
   onSubmit,
 }: {
   course?: Course
-  onSubmit: (data: z.infer<typeof courseSettingsSchema>) => Promise<void>
+  onSubmit: (form: UseFormReturn<z.infer<typeof courseSettingsSchema>>) => Promise<void>
 }) => {
   const { localize } = useI18n()
   const tCommon = useTranslations('Common')
@@ -96,7 +98,7 @@ export const CourseSettings = ({
 
   return (
     <Form {...form}>
-      <form className="grid gap-10" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="grid gap-10" onSubmit={form.handleSubmit(() => onSubmit(form))}>
         <div className="space-y-6">
           <FormField
             control={form.control}

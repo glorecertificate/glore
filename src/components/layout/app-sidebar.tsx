@@ -286,7 +286,6 @@ const AppSidebarMain = () => {
 }
 
 const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) => {
-  const router = useRouter()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
@@ -295,8 +294,10 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
 
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const onLinkClick = useCallback(() => {
+    setMenuOpen(false)
     if (openMobile) {
       setOpenMobile(false)
     }
@@ -304,22 +305,20 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
 
   const onLogoutClick = useCallback(async () => {
     setLogoutDialogOpen(true)
-
     setLoggingOut(true)
-    onLinkClick()
 
     try {
       await logout()
-      router.push(AUTH_ROOT)
     } catch {
       toast.error(t('logoutFailed'))
       setLoggingOut(false)
       return
     }
 
-    await sleep(500)
+    await sleep(1000)
+    setTimeout(() => setMenuOpen(false), 1000)
     redirect(AUTH_ROOT)
-  }, [onLinkClick, t, router.push])
+  }, [t])
 
   useEffect(
     () => () => {
@@ -332,11 +331,11 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-inner transition-all duration-150 hover:bg-accent/50'
+                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-xs transition-all duration-150 hover:bg-accent/50 data-[state=open]:shadow-inner'
               )}
               size="lg"
               variant="outline"

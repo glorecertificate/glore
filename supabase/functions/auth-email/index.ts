@@ -1,11 +1,11 @@
 import { Webhook } from 'standardwebhooks'
 
-const APP_URL = Deno.env.get('APP_URL')
+const REDIRECT_URL = Deno.env.get('REDIRECT_BASE_URL')
 const WH_SECRET = Deno.env.get('AUTH_EMAIL_HOOK_SECRET')
 
 Deno.serve(async request => {
   if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 })
-  if (!APP_URL) return new Response('Missing APP_URL environment variable', { status: 500 })
+  if (!REDIRECT_URL) return new Response('Missing REDIRECT_BASE_URL environment variable', { status: 500 })
   if (!WH_SECRET) return new Response('Missing AUTH_EMAIL_HOOK_SECRET environment variable', { status: 500 })
 
   const payload = await request.text()
@@ -19,7 +19,7 @@ Deno.serve(async request => {
         redirect_to: string
       }
     }
-    const url = `${APP_URL}/api/v1/auth/email`
+    const url = `${REDIRECT_URL}/api/v1/auth/email`
 
     const response = await fetch(url, {
       method: 'POST',

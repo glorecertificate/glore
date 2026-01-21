@@ -1,19 +1,31 @@
-import { AdminDashboard } from '@/components/features/admin/admin-dashboard'
+import { Suspense } from 'react'
+
+import { getTeamMembers } from '@/actions/admin'
+import { AdminTeam } from '@/components/features/admin/admin-team'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
   intlMetadata({
-    namespace: 'Layout',
-    title: 'admin',
+    namespace: 'Admin.team',
+    title: 'title',
   })
 
-export default () => (
+const AdminTeamPage = async () => {
+  const { data, error } = await getTeamMembers()
+  if (error) throw error
+  return <AdminTeam users={data} />
+}
+
+export default async () => (
   <>
     <PageHeader />
     <PageMain>
-      <AdminDashboard />
+      <Suspense fallback={<LoadingFallback />}>
+        <AdminTeamPage />
+      </Suspense>
     </PageMain>
   </>
 )

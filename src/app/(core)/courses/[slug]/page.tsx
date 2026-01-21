@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
@@ -25,7 +25,8 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   const course = await findCourse(slug)
   if (!course) return notFound()
 
-  const { [COURSE_LANGUAGE_PARAM]: languageParam, [COURSE_STEP_PARAM]: stepParam } = await parse(searchParams)
+  const resolvedSearchParams = await searchParams
+  const { [COURSE_LANGUAGE_PARAM]: languageParam, [COURSE_STEP_PARAM]: stepParam } = await parse(resolvedSearchParams)
   const language = languageParam ?? (await getLocale())
 
   const user = await getCurrentUser()
@@ -33,11 +34,26 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   let step = stepParam
   if (user.isLearner) {
     const max = course.lessons.findIndex(lesson => !lesson.completed)
-    if (max !== -1 && step - 1 > max) {
-      step = max + 1
-    }
+    if (max !== -1 && step - 1 > max) step = max + 1
   }
   step = step > 0 && step <= course.lessons.length ? step : 1
+
+  if (stepParam !== step) {
+    const params = new URLSearchParams()
+
+    for (const [key, value] of Object.entries(resolvedSearchParams)) {
+      if (Array.isArray(value)) {
+        for (const v of value) {
+          params.append(key, v)
+        }
+        continue
+      }
+      if (value) params.set(key, value)
+    }
+
+    params.set(COURSE_STEP_PARAM, step.toString())
+    redirect('/courses/$slug?$newParams.toString()')
+  }
 
   return { course, language, step, user }
 }

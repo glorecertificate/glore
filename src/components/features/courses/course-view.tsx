@@ -1,5 +1,7 @@
 'use client'
 
+import { useCallback, useEffect } from 'react'
+
 import { type Locale } from 'next-intl'
 
 import { CourseContent } from '@/components/features/courses/course-content'
@@ -13,12 +15,23 @@ import { useMetadata } from '@/hooks/use-metadata'
 const COURSE_SIDEBAR_WIDTH = '18rem'
 
 export const CourseView = () => {
-  const { course, language, setLanguage } = useCourse()
+  const { course, currentLanguageState, language, setLanguage } = useCourse()
   const hasFooter = course.lessons && course.lessons.length > 1
 
   useMetadata({
     title: course.title[language],
   })
+
+  const handleBeforeUnload = useCallback(() => {
+    if (currentLanguageState.hasUpdates) {
+      confirm('You have unsaved changes. Are you sure you want to leave?')
+    }
+  }, [currentLanguageState.hasUpdates])
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [handleBeforeUnload])
 
   return (
     <Tabs className="pt-2" onValueChange={v => setLanguage(v as Locale)} value={language}>

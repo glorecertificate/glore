@@ -1,15 +1,14 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { ChevronDownIcon, EyeIcon, HistoryIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { type z } from 'zod'
 
-import { getLessonType, useCourse } from '@/components/features/courses/course-provider'
-import { CourseSettings, type courseSettingsSchema } from '@/components/features/courses/course-settings'
+import { useCourse } from '@/components/features/courses/course-provider'
+import { CourseSettings, type CourseSettingsForm } from '@/components/features/courses/course-settings'
 import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,6 +33,7 @@ import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { scrolled } = useScroll()
 
   const { localeItems } = useI18n()
@@ -41,33 +41,38 @@ export const CourseHeader = () => {
   const t = useTranslations('Courses')
 
   const { user } = useSession()
-  const { course, currentState, editCourse, saveCourse, state, step } = useCourse()
+  const { course, currentLanguageState, editCourse, saveCourse, state, step } = useCourse()
 
   const [loading, setLoading] = useState(false)
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
-  const saveLanguageMessage = currentState.canSave ? t('saveDraftTitleRequired') : t('saveDraftNoChanges')
+  const saveLanguageMessage = currentLanguageState.canSave ? t('saveDraftTitleRequired') : t('saveDraftNoChanges')
 
-  const updateSettings = useMemo(
-    () => async (schema: z.infer<typeof courseSettingsSchema>) => {
+  const updateSettings = useCallback(
+    async (form: CourseSettingsForm) => {
       try {
-        const { slug } = await editCourse(schema)
+        const currentSlug = course.slug
+        const { slug } = await editCourse(form.getValues())
         toast.success(t('courseSettingsUpdated'))
-        if (slug !== course.slug) {
-          router.replace(`/courses/${slug}`)
+        if (slug !== currentSlug) {
+          router.replace(`/courses/${slug}?${searchParams.toString()}`)
         }
       } catch (e) {
-        console.error(e)
         const error = postgrestError(e)
-        console.error(error.message, error)
-        toast.error(error.code === '23505' ? t('courseSlugTaken') : t('courseUpdateFailed'))
+        console.error(error.message)
+        if (error.code === '23505') {
+          form.setError('slug', { message: t('courseSlugTaken') })
+          form.setFocus('slug')
+          return
+        }
+        toast.error(t('courseCreationFailed'))
       }
     },
-    [course.slug, editCourse, router.replace, t]
+    [course.slug, editCourse, router.replace, t, searchParams.toString]
   )
 
   const handleSave = useCallback(async () => {
-    if (!currentState.canSave) return toast.error(saveLanguageMessage)
+    if (!currentLanguageState.canSave) return toast.error(saveLanguageMessage)
 
     try {
       setLoading(true)
@@ -77,7 +82,7 @@ export const CourseHeader = () => {
     } catch {
       toast.error(t('saveDraftError'))
     }
-  }, [currentState.canSave, saveCourse, saveLanguageMessage, t])
+  }, [currentLanguageState.canSave, saveCourse, saveLanguageMessage, t])
 
   return (
     <div
@@ -133,7 +138,7 @@ export const CourseHeader = () => {
                     <DialogTitle>{t('history')}</DialogTitle>
                   </DialogHeader>
                   <DialogDescription className="mb-4 text-muted-foreground text-sm">
-                    {tCommon('comingSoonMessage')}
+                    {tCommon('comingSoonFeature')}
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
@@ -158,7 +163,7 @@ export const CourseHeader = () => {
               <TooltipTrigger asChild>
                 <Button
                   className="transition-none"
-                  disabled={!currentState.canSave}
+                  disabled={!currentLanguageState.canSave}
                   loading={loading}
                   onClick={handleSave}
                   variant="outline"
@@ -167,7 +172,7 @@ export const CourseHeader = () => {
                   {t('saveDraft')}
                 </Button>
               </TooltipTrigger>
-              {!currentState.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
+              {!currentLanguageState.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
             </Tooltip>
           </div>
         </>
@@ -218,7 +223,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
 
   const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
 
-  const lessonType = useCallback((lesson: Lesson) => t('lessonType', { type: getLessonType(lesson) }), [t])
+  const lessonType = useCallback((lesson: Lesson) => t('lessonType', { type: lesson.type }), [t])
   const isCurrentLesson = useCallback((index: number) => index === step, [step])
   const isCompletedLesson = useCallback((index: number) => lessons[index].completed, [lessons])
 

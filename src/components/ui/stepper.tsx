@@ -205,8 +205,9 @@ export const StepperTrigger = ({
   className,
   children,
   tabIndex,
+  onKeyDown,
   ...props
-}: React.ComponentProps<'button'> & {
+}: React.ComponentProps<'div'> & {
   asChild?: boolean
 }) => {
   const { state, isLoading } = useStepItem()
@@ -218,17 +219,23 @@ export const StepperTrigger = ({
   const id = `stepper-tab-${step}`
   const panelId = `stepper-panel-${step}`
 
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const buttonRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (buttonRef.current) {
-      registerTrigger(buttonRef.current)
+      registerTrigger(buttonRef.current as unknown as HTMLButtonElement)
     }
   }, [registerTrigger])
 
-  const myIdx = useMemo(() => (buttonRef.current ? triggerNodes.indexOf(buttonRef.current) : -1), [triggerNodes])
+  const myIdx = useMemo(
+    () => (buttonRef.current ? triggerNodes.indexOf(buttonRef.current as unknown as HTMLButtonElement) : -1),
+    [triggerNodes]
+  )
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(e)
+    if (e.isDefaultPrevented()) return
+
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowDown':
@@ -265,17 +272,17 @@ export const StepperTrigger = ({
   }
 
   return (
-    <button
+    <div
       aria-controls={panelId}
+      aria-disabled={isDisabled}
       aria-selected={selected}
       className={cn(
-        'inline-flex cursor-pointer items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-60',
+        'inline-flex cursor-pointer items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-60',
         className
       )}
       data-loading={isLoading}
       data-slot="stepper-trigger"
       data-state={state}
-      disabled={isDisabled}
       id={id}
       onClick={() => setActiveStep(step)}
       onKeyDown={handleKeyDown}
@@ -285,7 +292,7 @@ export const StepperTrigger = ({
       {...props}
     >
       {children}
-    </button>
+    </div>
   )
 }
 

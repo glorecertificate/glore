@@ -3,11 +3,13 @@
 import 'server-only'
 
 import { cacheTag, revalidateTag } from 'next/cache'
+import { redirect } from 'next/navigation'
 
 import { type SignInWithPasswordCredentials, type UserAttributes, type UserResponse } from '@supabase/supabase-js'
 
 import { getDatabase } from '@/db/client'
 import { CacheTag } from '@/lib/cache'
+import { APP_ROOT } from '@/lib/constants'
 
 const fetchAuthUser = async (query: Promise<UserResponse>) => {
   'use cache'
@@ -21,7 +23,12 @@ const fetchAuthUser = async (query: Promise<UserResponse>) => {
 
 export const login = async (credentials: SignInWithPasswordCredentials) => {
   const db = await getDatabase()
-  return await db.auth.signInWithPassword(credentials)
+  const { error } = await db.auth.signInWithPassword(credentials)
+
+  if (error) return { data: { user: null, session: null }, error }
+
+  revalidateTag(CacheTag.AuthUser, 'max')
+  redirect(APP_ROOT)
 }
 
 export const logout = async () => {
@@ -29,6 +36,8 @@ export const logout = async () => {
 
   const { error } = await db.auth.signOut()
   if (error) throw error
+
+  revalidateTag(CacheTag.AuthUserStatus, 'max')
 }
 
 export const getAuthUser = async () => {

@@ -15,7 +15,7 @@ const { parse } = createSearchParamsCache({
   resetToken: parseAsString,
 })
 
-const resolvePageData = async ({ searchParams }: PageProps<'/login'>) => {
+const resolveLoginData = async ({ searchParams }: PageProps<'/login'>) => {
   const { resetToken } = await parse(searchParams)
 
   const view: Enum<AuthView> = resetToken
@@ -28,7 +28,7 @@ const resolvePageData = async ({ searchParams }: PageProps<'/login'>) => {
 }
 
 export const generateMetadata = async (props: PageProps<'/login'>) => {
-  const { view } = await resolvePageData(props)
+  const { view } = await resolveLoginData(props)
 
   return intlMetadata({
     namespace: 'Auth',
@@ -37,11 +37,10 @@ export const generateMetadata = async (props: PageProps<'/login'>) => {
 }
 
 const LoginPage = async (props: PageProps<'/login'>) => {
-  const { resetToken, view } = await resolvePageData(props)
-
   const { get } = await cookies()
   const username = await get('loginUser')
   const theme = await get('theme')
+  const { resetToken, view } = await resolveLoginData(props)
 
   return (
     <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">

@@ -1,12 +1,13 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { CheckIcon, DownloadIcon, FilterIcon, MoreHorizontalIcon, SearchIcon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { getTeamMembers } from '@/actions/user'
+import { inviteTeamMember } from '@/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -28,53 +29,18 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Spinner } from '@/components/ui/spinner'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { type User } from '@/db/schema/users'
 
-export const AdminTeam = () => {
+export const AdminTeam = ({ users }: { users: User[] }) => {
   const t = useTranslations('Admin.team')
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
   const [isAddUserOpen, setIsAddUserOpen] = useState(false)
   const [selectedRole, setSelectedRole] = useState<string | undefined>()
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteRole, setInviteRole] = useState<'admin' | 'editor'>('editor')
   const [submitting, setSubmitting] = useState(false)
-
-  const loadTeamMembers = useCallback(async () => {
-    const { error } = await getTeamMembers()
-    if (error) {
-      toast.error(t('errorLoading'))
-      setLoading(false)
-      return
-    }
-    setUsers(users)
-    setLoading(false)
-  }, [t, users])
-
-  useEffect(() => void loadTeamMembers(), [loadTeamMembers])
-
-  const inviteTeamMember = useCallback(async (email: string, role: 'admin' | 'editor') => {
-    const response = await fetch('/api/v1/admin/team', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        role,
-        redirectTo: `${window.location.origin}/welcome`,
-      }),
-    })
-
-    if (!response.ok) {
-      const error = await response.json()
-      throw new Error(error.error || 'Failed to invite user')
-    }
-
-    const data = await response.json()
-    return data.user
-  }, [])
 
   const filteredUsers = useMemo(
     () =>
@@ -137,19 +103,28 @@ export const AdminTeam = () => {
 
     try {
       setSubmitting(true)
-      await inviteTeamMember(inviteEmail, inviteRole)
+      const { error } = await inviteTeamMember(
+        inviteEmail,
+        inviteRole,
+        `${window.location.origin}/auth/callback?next=/admin`
+      )
+
+      if (error) {
+        throw new Error(error)
+      }
+
       toast.success(t('inviteSuccess'))
       setIsAddUserOpen(false)
       setInviteEmail('')
       setInviteRole('editor')
-      await loadTeamMembers()
+      router.refresh()
     } catch (error) {
       console.error(error)
       toast.error(error instanceof Error ? error.message : t('errorInviting'))
     } finally {
       setSubmitting(false)
     }
-  }, [inviteEmail, inviteTeamMember, inviteRole, loadTeamMembers, t])
+  }, [inviteEmail, inviteRole, router, t])
 
   return (
     <div className="space-y-4">
@@ -220,13 +195,7 @@ export const AdminTeam = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell className="h-24 text-center" colSpan={6}>
-                  <Spinner className="size-4" />
-                </TableCell>
-              </TableRow>
-            ) : filteredUsers.length === 0 ? (
+            {filteredUsers.length === 0 ? (
               <TableRow>
                 <TableCell className="h-24 text-center" colSpan={6}>
                   {t('noUsers')}

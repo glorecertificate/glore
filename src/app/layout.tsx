@@ -68,16 +68,16 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
   )
 }
 
-const LayoutFallback = () => (
-  <html lang={i18n.defaultLocale}>
-    <body>
-      <LoadingFallback size="full" />
-    </body>
-  </html>
-)
-
 export default async (props: LayoutProps<'/'>) => (
-  <Suspense fallback={<LayoutFallback />}>
+  <Suspense
+    fallback={
+      <html lang={i18n.defaultLocale}>
+        <body>
+          <LoadingFallback size="full" />
+        </body>
+      </html>
+    }
+  >
     <Layout {...props} />
   </Suspense>
 )

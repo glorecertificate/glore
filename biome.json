@@ -309,6 +309,16 @@
           }
         }
       }
+    },
+    {
+      "includes": ["src/components/ui/image-cropper.tsx"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noImgElement": "off"
+          }
+        }
+      }
     }
   ]
 }

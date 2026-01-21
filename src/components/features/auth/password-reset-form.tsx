@@ -61,8 +61,6 @@ export const PasswordResetForm = ({
 
       const { error } = await updatePassword(resetToken, schema.password.trim())
 
-      console.log({ error })
-
       if (error) {
         if (error.code === 'same_password') {
           form.setError('password', { message: t('passwordSameAsOld') })

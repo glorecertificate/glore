@@ -47,6 +47,11 @@
         "en": "New Course",
         "es": "Nuevo Curso",
         "it": "Nuovo Corso"
+      },
+      "defaultLessonTitle": {
+        "en": "Untitled lesson",
+        "es": "Lección sin título",
+        "it": "Lezione senza titolo"
       }
     }
   },

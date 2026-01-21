@@ -322,12 +322,12 @@ export const IconPicker = ({
 
   const renderVirtualContent = useCallback(() => {
     if (filteredIcons.length === 0) {
-      return <div className="text-center text-gray-500">{t('noIconsFound')}</div>
+      return <p className="pt-1 text-muted-foreground text-sm">{t('noIconsFound')}</p>
     }
 
     return (
       <div
-        className="relative w-full overscroll-contain"
+        className={cn('relative w-full overscroll-contain', !categorized && '-mt-6')}
         style={{
           height: `${virtualizer.getTotalSize()}px`,
         }}
@@ -423,9 +423,9 @@ export const IconPicker = ({
           <div className="scrollbar-hide mt-2 flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
         )}
         <div
-          className={cn('max-h-60 overflow-auto', !categorized && '-mt-6')}
+          className="max-h-60 overflow-auto"
           ref={parentRef}
-          style={{ scrollbarWidth: 'thin' }}
+          style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--color-brand)' }}
         >
           {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
         </div>

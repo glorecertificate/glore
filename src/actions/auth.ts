@@ -1,5 +1,3 @@
-'use server'
-
 import 'server-only'
 
 import { cacheTag, revalidateTag } from 'next/cache'

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { type Value } from 'platejs'
 
@@ -16,12 +16,19 @@ import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
 const CourseEditor = ({ initialValue, onChange }: { initialValue: Value; onChange: (value: Value) => void }) => {
+  const [editorValue] = useState(initialValue)
+  const onChangeRef = useRef(onChange)
+
+  useEffect(() => {
+    onChangeRef.current = onChange
+  })
+
   const debouncedOnChange = useMemo(
     () =>
       debounce((value: Value) => {
-        onChange(value)
+        onChangeRef.current(value)
       }, 500),
-    [onChange]
+    []
   )
 
   useEffect(
@@ -31,15 +38,18 @@ const CourseEditor = ({ initialValue, onChange }: { initialValue: Value; onChang
     [debouncedOnChange]
   )
 
-  return (
-    <RichTextEditorProvider
-      onChange={newValue => {
-        debouncedOnChange(newValue.value ?? newValue)
-      }}
-      value={initialValue}
-    >
-      <RichTextEditor variant="fullWidth" />
-    </RichTextEditorProvider>
+  return useMemo(
+    () => (
+      <RichTextEditorProvider
+        onChange={newValue => {
+          debouncedOnChange(newValue.value ?? newValue)
+        }}
+        value={editorValue}
+      >
+        <RichTextEditor autoFocus variant="fullWidth" />
+      </RichTextEditorProvider>
+    ),
+    [debouncedOnChange, editorValue]
   )
 }
 

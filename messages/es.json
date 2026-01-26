@@ -790,7 +790,10 @@
     "courseSettingsDescription": "Administras la configuración global de este curso.",
     "courseTypeDescription": "Si el curso es una introducción o está enfocado a verificar una habilidad blanda.",
     "removeLesson": "Eliminar lección",
-    "courseMustHaveAtLeastOneLesson": "Un curso debe tener al menos una lección"
+    "courseMustHaveAtLeastOneLesson": "Un curso debe tener al menos una lección",
+    "publishError": "El curso no se puede publicar. \nPor favor complete todos los campos requeridos.",
+    "publishSuccess": "Curso publicado exitosamente",
+    "publishDisabledMessage": "El curso no se puede publicar. \nPor favor complete todos los campos requeridos."
   },
   "Certificates": {
     "alreadyHave": "Ya tiene un certificado con esta organización",
@@ -887,8 +890,7 @@
       "tableHeaderName": "Nombre",
       "tableHeaderRole": "Rol",
       "title": "Gestión de Equipo",
-      "viewDetails": "Ver Detalles",
-      "errorLoading": "No se pudieron cargar los usuarios, actualice la página"
+      "viewDetails": "Ver Detalles"
     }
   },
   "Email": {

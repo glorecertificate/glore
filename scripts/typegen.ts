@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { execSync } from 'node:child_process'
 import { writeFileSync } from 'node:fs'
 

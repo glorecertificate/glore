@@ -1,9 +1,10 @@
-import { metadata } from '@config/app'
-import { EmailButton } from '@/components/email/button'
-import { EmailLayout, EmailRow, EmailSection } from '@/components/email/layout'
-import { EmailLink } from '@/components/email/link'
-import { EmailText } from '@/components/email/text'
-import { type AuthEmailProps, authEmailPreviewProps, getEmailTranslations } from '@/lib/mailer'
+import metadata from '@config/metadata'
+import { EmailButton } from '@/email/components/button'
+import { EmailLayout, EmailRow, EmailSection } from '@/email/components/layout'
+import { EmailLink } from '@/email/components/link'
+import { EmailText } from '@/email/components/text'
+import { type AuthEmailProps } from '@/email/types'
+import { authEmailPreviewProps, getEmailTranslations } from '@/email/utils'
 
 const AuthRecoveryEmail = async ({ data, locale, username, ...props }: AuthEmailProps) => {
   const tCommon = await getEmailTranslations('Email.common', locale)

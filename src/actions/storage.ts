@@ -5,6 +5,8 @@ import 'server-only'
 import { getAuthUser } from '@/actions/auth'
 import { getDatabase } from '@/db/client'
 
+const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL
+
 export const uploadAvatar = async (formData: FormData) => {
   const file = formData.get('file') as File
   if (!file) throw new Error('No file uploaded')
@@ -20,9 +22,5 @@ export const uploadAvatar = async (formData: FormData) => {
   const { data, error } = await db.storage.from('avatars').upload(fileName, file, { upsert: true })
   if (error) throw error
 
-  const {
-    data: { publicUrl },
-  } = db.storage.from('avatars').getPublicUrl(data.path)
-
-  return publicUrl
+  return `${STORAGE_URL}/avatars/${data.path}`
 }

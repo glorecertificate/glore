@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
-import config from '@config/app'
+import settings from '@config/settings'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -46,7 +46,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const locationUrl = useMemo(() => {
     if (!location) return
     const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
-    return `${config.settings.mapsUrl}/${searchQuery}` as HttpUrl
+    return `${settings.mapsUrl}/${searchQuery}` as HttpUrl
   }, [location])
 
   const languages = useMemo(() => {

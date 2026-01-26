@@ -5,8 +5,10 @@ import { createElement } from 'react'
 import { pretty, render, toPlainText } from '@react-email/render'
 import { type MessageAttachment, SMTPClient } from 'emailjs'
 
+import { mailer } from '@/email/config'
+import { type EmailTemplate, type EmailTemplateOptions } from '@/email/types'
+import { getEmailTranslations } from '@/email/utils'
 import { i18n } from '@/lib/i18n'
-import { type EmailTemplate, type EmailTemplateOptions, getEmailTranslations, mailer } from '@/lib/mailer'
 
 export const sendEmail = async <T extends EmailTemplate>(
   template: T,
@@ -22,7 +24,7 @@ export const sendEmail = async <T extends EmailTemplate>(
   }: EmailTemplateOptions<T>
 ) => {
   const client = new SMTPClient({ ...mailer.smtp, ...smtp })
-  const component = (await import(`@/emails/${template}`)).default
+  const component = (await import(`@/email/templates/${template}`)).default
   const t = await getEmailTranslations(`Email.${template}`, locale)
 
   const sender = from ?? process.env.SMTP_SENDER

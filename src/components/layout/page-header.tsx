@@ -1,6 +1,6 @@
 'use client'
 
-import { settings } from '@config/app'
+import settings from '@config/settings'
 import { GloreLogo } from '@/components/icons/_glore-logo'
 import { PageBreadcrumb } from '@/components/layout/page-breadcrumb'
 import { Link } from '@/components/ui/link'

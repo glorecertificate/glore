@@ -1,11 +1,22 @@
+import type messages from '@messages/en'
 import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'next-intl'
 
-import config from '@config/app'
-import type messages from '@config/translations/en'
+import config from '@config/i18n'
 
-type Locale = keyof typeof config.i18n.locales
+export const LOCALE_COOKIE = 'NEXT_LOCALE'
+export const DEFAULT_LOCALE = config.defaultLocale as Locale
+export const LOCALES = Object.keys(config.locales) as Locale[]
+
+declare module 'next-intl' {
+  interface AppConfig {
+    Locale: Locale
+    Messages: Messages
+    Formats: Formats
+  }
+}
+
+type Locale = keyof typeof config.locales
 type Messages = typeof messages
-
 interface Formats {
   dateTime: {
     short: {
@@ -27,38 +38,24 @@ interface Formats {
   }
 }
 
-declare module 'next-intl' {
-  interface AppConfig {
-    Locale: Locale
-    Messages: Messages
-    Formats: Formats
-  }
-}
-
 export type Translator<NestedKey extends Namespace = never> = ReturnType<typeof createTranslator<Messages, NestedKey>>
 export type Namespace = NamespaceKeys<Messages, NestedKeyOf<Messages>>
 export type MessageKey<T extends Namespace> = T extends Namespace
-  ? Parameters<
-      ReturnType<T extends Namespace ? typeof createTranslator<Messages, T> : typeof createTranslator<Messages>>
-    >[0]
+  ? Parameters<ReturnType<typeof createTranslator<Messages, T>>>[0]
   : Exclude<NestedKeyOf<Messages>, keyof Messages>
-export type IntlRecord = Record<Locale, string>
+export type IntlRecord<T = string> = Record<Locale, T>
 
 export const i18n = {
   cookie: 'NEXT_LOCALE',
-  locales: Object.keys(config.i18n.locales) as Locale[],
-  defaultLocale: config.i18n.defaultLocale as Locale,
-  titleizedLocales: Object.freeze(config.i18n.titleizedLocales) as Locale[],
-  localeItems: Object.entries(config.i18n.locales).map(([locale, { flag, name }]) => ({
+  locales: Object.keys(config.locales) as Locale[],
+  defaultLocale: config.defaultLocale as Locale,
+  titleizedLocales: Object.freeze(config.titleizedLocales) as Locale[],
+  localeItems: Object.entries(config.locales).map(([locale, { flag, name }]) => ({
     displayLabel: name,
     icon: flag,
     label: name,
     value: locale as Locale,
   })),
-  placeholder: Object.keys(config.i18n.locales).reduce(
-    (record, locale) => ({ ...record, [locale]: '' }),
-    {} as IntlRecord
-  ),
 } as const
 
 export const localize = (record: IntlRecord, locale: Locale, fallback?: Locale) => {
@@ -75,5 +72,3 @@ export const localizeDate = (input: Date | string | number, locale: Locale, form
         month: 'long',
         year: 'numeric',
       })
-
-export const isValidLocale = (value: string): value is Locale => i18n.locales.includes(value as Locale)

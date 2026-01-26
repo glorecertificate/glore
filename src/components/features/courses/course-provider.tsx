@@ -5,7 +5,7 @@ import { createContext, type Dispatch, type SetStateAction, useCallback, useCont
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 
-import config from '@config/app'
+import config from '@config/i18n'
 import { updateCourse, upsertLessons } from '@/actions/course'
 import { type Course } from '@/db/schema/courses'
 import { type Lesson } from '@/db/schema/lessons'
@@ -37,7 +37,7 @@ export const CourseContext = createContext<{
   next: () => void
   previous: () => void
   removeLesson: (lessonId: number) => void
-  saveCourse: () => Promise<void>
+  saveCourse: (options?: { languages?: Locale[] }) => Promise<void>
   setCourse: Dispatch<SetStateAction<Course>>
   setLanguage: Dispatch<SetStateAction<Locale>>
   setLesson: (data: TableUpdate<'lessons'>) => void
@@ -59,13 +59,13 @@ const stepParamParser = parseAsInteger.withOptions({
 })
 
 export const defaultCourse: Partial<Course> = {
-  title: config.i18n.messages.defaultCourseTitle,
+  title: config.messages.defaultCourseTitle,
   icon: 'book-dashed',
 }
 
 export const defaultLesson: Partial<Lesson> = {
-  title: config.i18n.messages.defaultLessonTitle,
-  content: i18n.placeholder,
+  title: config.messages.defaultLessonTitle,
+  // content: i18n.placeholder,
   type: 'reading',
   questions: [],
   evaluations: [],
@@ -169,56 +169,67 @@ export const CourseProvider = ({
     [course.id]
   )
 
-  const saveCourse = useCallback(async () => {
-    const { id, lessons, ...courseData } = course
+  const saveCourse = useCallback(
+    async ({ languages }: { languages?: Locale[] } = {}) => {
+      const { id, lessons, ...courseData } = course
+      let updatedCourse = course
 
-    const lessonsPayload: TableInsert<'lessons'>[] = []
+      const lessonsPayload: TableInsert<'lessons'>[] = []
 
-    for (const lesson of lessons) {
-      const attributes = Object.keys(lesson) as Array<keyof Lesson>
-      const initialLesson = initialCourse.lessons.find(({ id }) => id === lesson.id)
-      const lessonUpdates: TableUpdate<'lessons'> = {}
+      for (const lesson of lessons) {
+        const attributes = Object.keys(lesson) as Array<keyof Lesson>
+        const initialLesson = initialCourse.lessons.find(({ id }) => id === lesson.id)
+        const lessonUpdates: TableUpdate<'lessons'> = {}
 
-      for (const attribute of attributes) {
-        if (attribute === 'type') continue
+        for (const attribute of attributes) {
+          if (attribute === 'type') continue
 
-        if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
-          lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
+          if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
+            lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
+          }
+        }
+
+        if (Object.keys(lessonUpdates).length > 0) {
+          lessonsPayload.push({
+            ...lessonUpdates,
+            id: lesson.id,
+            title: lesson.title ?? defaultLesson.title,
+            course_id: id,
+            sort_order: lesson.sort_order ?? lessons.indexOf(lesson) + 1,
+          })
         }
       }
 
-      if (Object.keys(lessonUpdates).length > 0) {
-        lessonsPayload.push({
-          ...lessonUpdates,
-          id: lesson.id,
-          title: lesson.title ?? defaultLesson.title,
-          course_id: id,
-          sort_order: lesson.sort_order ?? lessons.indexOf(lesson) + 1,
-        })
+      if (lessonsPayload.length > 0) {
+        const { error } = await upsertLessons(lessonsPayload)
+        if (error) throw error
       }
-    }
 
-    if (lessonsPayload.length > 0) {
-      const { error } = await upsertLessons(lessonsPayload)
-      if (error) throw error
-    }
+      const coursePayload: Partial<Course> = {}
 
-    const coursePayload: Partial<Course> = {}
+      for (const attribute in courseData) {
+        const key = attribute as keyof typeof courseData
 
-    for (const attribute in courseData) {
-      const key = attribute as keyof typeof courseData
-
-      if (JSON.stringify(courseData[key]) !== JSON.stringify(initialCourse[key])) {
-        coursePayload[key] = courseData[key] as never
+        if (JSON.stringify(courseData[key]) !== JSON.stringify(initialCourse[key])) {
+          coursePayload[key] = courseData[key] as never
+        }
       }
-    }
 
-    if (Object.keys(coursePayload).length > 0) {
-      await updateCourse(id, coursePayload)
-    }
+      if (languages) {
+        const newLanguages = Array.from(new Set([...(course.languages ?? []), ...languages]))
+        coursePayload.languages = newLanguages
+        updatedCourse = { ...course, languages: newLanguages }
+      }
 
-    setInitialCourse(course as Course)
-  }, [course, initialCourse])
+      if (Object.keys(coursePayload).length > 0) {
+        await updateCourse(id, coursePayload)
+      }
+
+      setCourse(updatedCourse)
+      setInitialCourse(updatedCourse)
+    },
+    [course, initialCourse]
+  )
 
   const addLesson = useCallback(
     (values: TableUpdate<'lessons'> = {}) => {

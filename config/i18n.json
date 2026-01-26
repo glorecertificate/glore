@@ -1,0 +1,30 @@
+{
+  "locales": {
+    "en": {
+      "name": "English",
+      "flag": "🇬🇧"
+    },
+    "es": {
+      "name": "Español",
+      "flag": "🇪🇸"
+    },
+    "it": {
+      "name": "Italiano",
+      "flag": "🇮🇹"
+    }
+  },
+  "defaultLocale": "en",
+  "titleizedLocales": ["en"],
+  "messages": {
+    "defaultCourseTitle": {
+      "en": "New Course",
+      "es": "Nuevo Curso",
+      "it": "Nuovo Corso"
+    },
+    "defaultLessonTitle": {
+      "en": "Untitled lesson",
+      "es": "Lección sin título",
+      "it": "Lezione senza titolo"
+    }
+  }
+}

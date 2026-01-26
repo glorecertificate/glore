@@ -58,12 +58,19 @@ export const initializeCourse = async (course: TableInsert<'courses'>) => {
   const { data, error } = await createCourse({
     ...defaultCourse,
     ...course,
+    icon: 'book',
+    title: {
+      en: 'New Course',
+      es: 'Nuevo Curso',
+      it: 'Nuovo Corso',
+    },
   })
   if (error) throw error
 
   const { data: lessons, error: lessonsError } = await upsertLessons([
     {
       ...defaultLesson,
+      title: { en: 'Untitled lesson', es: 'Lección sin título', it: 'Lezione senza titolo' },
       course_id: data.id,
       sort_order: 1,
     },

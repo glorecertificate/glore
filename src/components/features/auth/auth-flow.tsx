@@ -6,7 +6,7 @@ import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
-import { theme } from '@config/app'
+import theme from '@config/theme'
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'

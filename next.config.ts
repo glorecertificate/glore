@@ -40,14 +40,15 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
     typedRoutes: true,
     experimental: {
       turbopackFileSystemCacheForDev: true,
+      typedEnv: false,
     },
   } satisfies NextConfig
 
   const plugins = [
     nextIntl({
-      requestConfig: './src/middleware/i18n.ts',
+      requestConfig: './src/i18n.ts',
       experimental: {
-        createMessagesDeclaration: './config/translations/en.json',
+        createMessagesDeclaration: './messages/en.json',
       },
     }),
   ]

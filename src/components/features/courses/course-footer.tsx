@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import config from '@config/app'
+import settings from '@config/settings'
 import { useCourse } from '@/components/features/courses/course-provider'
 import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
@@ -60,7 +60,7 @@ export const CourseFooter = () => {
     () =>
       completedCount < 3
         ? t('completedMessage')
-        : completedCount === config.settings.minSkills
+        : completedCount === settings.minSkills
           ? t('completedRequestCertificate')
           : t('completeIncludeInCertificate'),
     [completedCount, t]
@@ -109,12 +109,12 @@ export const CourseFooter = () => {
                     <Link href="/courses">{t('backTo')}</Link>
                   </Button>
                 )}
-                {completedCount === config.settings.minSkills && (
+                {completedCount === settings.minSkills && (
                   <Button asChild variant="brand-secondary">
                     <Link href="/certificates/new">{t('requestCertificate')}</Link>
                   </Button>
                 )}
-                {completedCount > config.settings.minSkills && (
+                {completedCount > settings.minSkills && (
                   <Button asChild variant="outline">
                     <Link href="/certificates">{t('goToCertificate')}</Link>
                   </Button>

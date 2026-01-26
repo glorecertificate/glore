@@ -123,9 +123,10 @@ const AppSidebarItem = ({
             subItem ? 'text-[13px]' : 'py-4 font-medium',
             subItem &&
               'border-transparent border-l-2 py-1.5 text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border',
+            isActive && 'cursor-default',
+            isActivePath && 'pointer-events-none',
             className
-          ),
-          isActivePath && 'pointer-events-none'
+          )
         )}
         isActive={isActive}
         onClick={handleClick}

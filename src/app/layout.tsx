@@ -8,7 +8,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-import config from '@config/app'
+import config from '@config/metadata'
 import { getLocaleCookie } from '@/actions/cookies'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n-provider'
@@ -16,7 +16,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
-import { publicAsset } from '@/lib/storage'
+import { PublicAsset } from '@/lib/storage'
 
 export { viewport } from '@/lib/metadata'
 
@@ -26,8 +26,8 @@ export const generateMetadata = async () => {
   return {
     ...metadata,
     title: {
-      default: config.metadata.name,
-      template: `%s ${config.metadata.separator} ${config.metadata.name}`,
+      default: config.name,
+      template: `%s ${config.separator} ${config.name}`,
     },
     description: t('description'),
     keywords: t('keywords'),
@@ -42,16 +42,16 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: config.metadata.name,
+    name: config.name,
     description: t('description'),
-    image: publicAsset('og-image.png'),
+    image: PublicAsset.OpenGraphImage,
   }
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <NuqsAdapter>
-          <I18nProvider locale={locale} messages={messages}>
+          <I18nProvider value={{ locale, messages }}>
             <ThemeProvider>
               {children}
               <Toaster />

@@ -50,7 +50,7 @@ export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFor
   !formState.isDirty || Object.keys(formState.errors).length > 0
 
 /*  
-  Primitives
+  Strings
 */
 export const titleize = (input: string) =>
   input
@@ -68,11 +68,19 @@ export const camelize = <T extends string>(input: T) =>
     })
     .join('') as CamelCase<T>
 
+/*
+  Numbers
+*/
 export const random = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min
 
 /*
   Objects
 */
+export const keys = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
+
+export const pluck = <T extends AnyRecord, K extends keyof T>(array: T[], key: K): T[K][] =>
+  array.map(item => item[key])
+
 export const omit = <T extends AnyRecord, K extends keyof T>(record: T, keys: K | K[]) => {
   const object = { ...record }
   for (const key of [keys].flat()) {
@@ -81,14 +89,11 @@ export const omit = <T extends AnyRecord, K extends keyof T>(record: T, keys: K 
   return object
 }
 
-export const pluck = <T extends AnyRecord, K extends keyof T>(array: T[], key: K): T[K][] =>
-  array.map(item => item[key])
-
 /*
   Functions
 */
 export const debounce = <T extends unknown[]>(callback: (...args: T) => void, delay = 500) => {
-  let timer: ReturnType<typeof setTimeout>
+  let timer: NodeJS.Timeout
   const debounced = (...args: T) => {
     clearTimeout(timer)
     timer = setTimeout(() => {

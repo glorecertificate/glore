@@ -1,5 +1,6 @@
 'use client'
 
+import * as React from 'react'
 import {
   Children,
   createContext,
@@ -163,20 +164,15 @@ export const Stepper = ({
   )
 }
 
-export const StepperItem = ({
-  step,
-  completed = false,
-  disabled = false,
-  loading = false,
-  className,
-  children,
-  ...props
-}: React.ComponentProps<'div'> & {
-  step: number
-  completed?: boolean
-  disabled?: boolean
-  loading?: boolean
-}) => {
+export const StepperItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<'div'> & {
+    step: number
+    completed?: boolean
+    disabled?: boolean
+    loading?: boolean
+  }
+>(({ step, completed = false, disabled = false, loading = false, className, children, ...props }, ref) => {
   const { activeStep } = useStepper()
 
   const state: StepState = completed || step < activeStep ? 'completed' : activeStep === step ? 'active' : 'inactive'
@@ -191,6 +187,7 @@ export const StepperItem = ({
         )}
         data-slot="stepper-item"
         data-state={state}
+        ref={ref}
         {...(isLoading ? { 'data-loading': true } : {})}
         {...props}
       >
@@ -198,7 +195,8 @@ export const StepperItem = ({
       </div>
     </StepItemContext.Provider>
   )
-}
+})
+StepperItem.displayName = 'StepperItem'
 
 export const StepperTrigger = ({
   asChild = false,
@@ -360,7 +358,7 @@ export const StepperDescription = ({ children, className }: React.ComponentProps
   )
 }
 
-export const StepperNav = ({ children, className }: React.ComponentProps<'nav'>) => {
+export const StepperNav = React.forwardRef<HTMLElement, React.ComponentProps<'nav'>>(({ children, className }, ref) => {
   const { activeStep, orientation } = useStepper()
 
   return (
@@ -372,11 +370,13 @@ export const StepperNav = ({ children, className }: React.ComponentProps<'nav'>)
       data-orientation={orientation}
       data-slot="stepper-nav"
       data-state={activeStep}
+      ref={ref}
     >
       {children}
     </nav>
   )
-}
+})
+StepperNav.displayName = 'StepperNav'
 
 export const StepperPanel = ({ children, className }: React.ComponentProps<'div'>) => {
   const { activeStep } = useStepper()

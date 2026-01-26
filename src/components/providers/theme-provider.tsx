@@ -2,7 +2,7 @@
 
 import { ThemeProvider as Provider, type ThemeProviderProps as ProviderProps } from 'next-themes'
 
-import { theme } from '@config/app'
+import theme from '@config/theme'
 import { type Theme } from '@/lib/types'
 
 export interface ThemeProviderProps extends ProviderProps {

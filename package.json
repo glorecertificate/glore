@@ -19,7 +19,7 @@
     "format": "biome format",
     "check": "tsx ./scripts/check.ts",
     "deploy:preview": "vercel build && vercel --prebuilt",
-    "deploy:production": "vercel build && vercel --prebuilt --prod",
+    "deploy:prod": "vercel build && vercel --prebuilt --prod",
     "analyze": "next experimental-analyze",
     "bump": "corepack use pnpm@latest && pnpm update -rLi",
     "release": "dotenv release-it -- --config release.config.ts"

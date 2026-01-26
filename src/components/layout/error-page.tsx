@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import { metadata } from '@config/app'
+import metadata from '@config/metadata'
 import { NotFoundGraphic } from '@/components/icons/_not-found-graphic'
 import { ErrorIcon } from '@/components/icons/error-icon'
 import { useDevice } from '@/hooks/use-device'

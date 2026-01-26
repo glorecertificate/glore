@@ -4,7 +4,7 @@ import { useCallback, useEffect } from 'react'
 
 import { useLocale } from 'next-intl'
 
-import { metadata } from '@config/app'
+import metadata from '@config/metadata'
 import { usePWA } from '@/hooks/use-pwa'
 import { i18n } from '@/lib/i18n'
 import { MANIFEST_URL } from '@/lib/metadata'

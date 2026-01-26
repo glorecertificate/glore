@@ -1,5 +1,3 @@
-'use server'
-
 import 'server-only'
 
 import { cookies as nextCookies } from 'next/headers'

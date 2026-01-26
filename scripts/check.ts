@@ -4,9 +4,9 @@ import { execSync, type SpawnSyncReturns } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
+import type messages from '@messages/en'
 import { type NestedKeyOf } from 'next-intl'
 
-import type messages from '@config/translations/en'
 import { logger } from './logger'
 
 type I18nIgnore = NestedKeyOf<typeof messages> | `${NestedKeyOf<typeof messages>}.*`
@@ -25,7 +25,7 @@ const I18N_IGNORES = [
 
 const args = process.argv.slice(2)
 const checks = args && args.length > 0 ? args : DEFAULT_CHECK_ARGS
-const i18nCmd = `i18n-check --source en --locales ./config/translations --format next-intl --unused src --ignore ${I18N_IGNORES.join(' ')}`
+const i18nCmd = `i18n-check --source en --locales ./messages --format next-intl --unused src --ignore ${I18N_IGNORES.join(' ')}`
 const i18nUnusedCmd = `${i18nCmd} --only unused`
 
 const check = async () => {

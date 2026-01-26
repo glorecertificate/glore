@@ -4,9 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
-import { metadata } from '@config/app'
+import metadata from '@config/metadata'
 import { i18n } from '@/lib/i18n'
-import { publicAsset } from '@/lib/storage'
+import { PublicAsset } from '@/lib/storage'
 
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)
@@ -25,27 +25,27 @@ export const GET = async (request: NextRequest) => {
       {
         purpose: 'any',
         sizes: '192x192',
-        src: publicAsset('web-app-icon-192x192.png'),
+        src: PublicAsset.WebAppIcon192,
         type: 'image/png',
       },
       {
         purpose: 'any',
         sizes: '512x512',
-        src: publicAsset('web-app-icon-512x512.png'),
+        src: PublicAsset.WebAppIcon512,
         type: 'image/png',
       },
     ],
     screenshots: [
       {
         form_factor: 'wide',
-        src: publicAsset('web-app-screenshot-wide.png'),
+        src: PublicAsset.WebAppScreenshotWide,
         sizes: '1280x720',
         type: 'image/png',
         label: metadata.name,
       },
       {
         form_factor: 'narrow',
-        src: publicAsset('web-app-screenshot-narrow.png'),
+        src: PublicAsset.WebAppScreenshotNarrow,
         sizes: '720x1280',
         type: 'image/png',
         label: metadata.name,

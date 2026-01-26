@@ -1,10 +1,12 @@
+# TODO: Test onlyBuiltDependencies
+
 ignoredBuiltDependencies:
+
+onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'
   - esbuild
   - msgpackr-extract
   - msw
   - sharp
-
-onlyBuiltDependencies:
   - supabase

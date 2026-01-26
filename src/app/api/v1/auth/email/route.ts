@@ -5,7 +5,7 @@ import { type Locale } from 'next-intl'
 import { sendEmail } from '@/actions/email'
 import { findUser } from '@/actions/user'
 import { type DatabaseHookPayload } from '@/db/types'
-import { type EmailTemplate } from '@/lib/mailer'
+import { type EmailTemplate } from '@/email/types'
 
 export const POST = async (request: NextRequest) => {
   const input = (await request.json()) as DatabaseHookPayload

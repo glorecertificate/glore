@@ -1,5 +1,13 @@
 {
-  "include": [".next/dev/types/**/*.ts", ".next/types/**/*.ts", "scripts", "src", "supabase/functions", "*.ts"],
+  "include": [
+    ".next/dev/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "scripts",
+    "src",
+    "supabase/functions",
+    "*.ts",
+    "src/email"
+  ],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
@@ -21,7 +29,7 @@
     "paths": {
       "next/types/*": ["./.next/types/*"],
       "@config/*": ["./config/*.json"],
-      "@config/translations/*": ["./config/translations/*.json"],
+      "@messages/*": ["./messages/*.json"],
       "@/*": ["./src/*"]
     },
     "plugins": [

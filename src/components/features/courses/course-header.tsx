@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-import { ChevronDownIcon, EyeIcon, HistoryIcon, SaveIcon, SettingsIcon } from 'lucide-react'
+import { ChevronDownIcon, EyeIcon, GlobeIcon, HistoryIcon, SaveIcon, SettingsIcon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -41,7 +41,7 @@ export const CourseHeader = () => {
   const t = useTranslations('Courses')
 
   const { user } = useSession()
-  const { course, currentLanguageState, editCourse, saveCourse, state, step } = useCourse()
+  const { course, currentLanguageState, editCourse, saveCourse, state, step, language } = useCourse()
 
   const [loading, setLoading] = useState(false)
 
@@ -83,6 +83,23 @@ export const CourseHeader = () => {
       toast.error(t('saveDraftError'))
     }
   }, [currentLanguageState.canSave, saveCourse, saveLanguageMessage, t])
+
+  const handlePublish = useCallback(async () => {
+    if (!currentLanguageState.isFullfilled) {
+      toast.error(t('publishError'))
+      return
+    }
+
+    try {
+      setLoading(true)
+      await saveCourse({ languages: [language] })
+      // Message: Course published successfully
+      toast.success(t('publishSuccess'))
+      setLoading(false)
+    } catch {
+      toast.error(t('publishError'))
+    }
+  }, [currentLanguageState.isFullfilled, saveCourse, language, t])
 
   return (
     <div
@@ -174,6 +191,27 @@ export const CourseHeader = () => {
               </TooltipTrigger>
               {!currentLanguageState.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
             </Tooltip>
+            {currentLanguageState.published ? (
+              <Button disabled variant="outline">
+                <GlobeIcon className="size-4" />
+                {t('published')}
+              </Button>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    className="transition-none"
+                    disabled={!currentLanguageState.isFullfilled}
+                    loading={loading}
+                    onClick={handlePublish}
+                  >
+                    <UploadCloudIcon className="size-4" />
+                    {t('publish')}
+                  </Button>
+                </TooltipTrigger>
+                {!currentLanguageState.isFullfilled && <TooltipContent>{t('publishDisabledMessage')}</TooltipContent>}
+              </Tooltip>
+            )}
           </div>
         </>
       ) : (

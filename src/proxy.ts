@@ -2,8 +2,8 @@ import 'server-only'
 
 import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
+import { getProxyDatabase } from '@/db/client'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
-import { verifyAuthUser } from '@/middleware/auth'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -16,7 +16,9 @@ export const proxy: NextProxy = async request => {
   const response = NextResponse.next({ request: { headers } })
 
   try {
-    await verifyAuthUser(request)
+    const db = await getProxyDatabase(request)
+    const { error } = await db.auth.getUser()
+    if (error) throw error
 
     if (nextUrl.pathname === AUTH_ROOT) {
       return NextResponse.redirect(new URL(APP_ROOT, request.url))

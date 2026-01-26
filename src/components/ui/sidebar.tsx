@@ -8,7 +8,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { PanelLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import config from '@config/app'
+import settings from '@config/settings'
 import { setCookie } from '@/actions/cookies'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
@@ -467,7 +467,7 @@ export const SidebarProvider = ({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === config.settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
+      if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleSidebar()
       }

@@ -790,7 +790,10 @@
     "courseSettingsDescription": "Gestisci le impostazioni globali di questo corso.",
     "courseTypeDescription": "Specifica se il corso è introduttivo o focalizzato sulla verifica di una soft skill.",
     "removeLesson": "Rimuovi lezione",
-    "courseMustHaveAtLeastOneLesson": "Un corso deve avere almeno una lezione"
+    "courseMustHaveAtLeastOneLesson": "Un corso deve avere almeno una lezione",
+    "publishError": "Il corso non può essere pubblicato. \nSi prega di completare tutti i campi obbligatori.",
+    "publishSuccess": "Corso pubblicato con successo",
+    "publishDisabledMessage": "Il corso non può essere pubblicato. \nSi prega di completare tutti i campi obbligatori."
   },
   "Certificates": {
     "alreadyHave": "Hai già un certificato con questa organizzazione",
@@ -887,8 +890,7 @@
       "tableHeaderName": "Nome",
       "tableHeaderRole": "Ruolo",
       "title": "Gestione Team",
-      "viewDetails": "Vedi Dettagli",
-      "errorLoading": "Impossibile caricare gli utenti, aggiorna la pagina"
+      "viewDetails": "Vedi Dettagli"
     }
   },
   "Email": {

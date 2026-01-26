@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="https://ikfajxrqxstqmedpnzzs.supabase.co/storage/v1/object/public/metadata/logo.svg" alt="" width="200">
+    <img src="./public/logo.svg" alt="" width="80">
   </h1>
   <a href="https://github.com/glorecertificate/glore/releases"><img src="https://img.shields.io/github/package-json/v/glorecertificate/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
   <a href="https://github.com/glorecertificate/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>
@@ -15,7 +15,7 @@ Visit our website to find out how to sign up to the [e-learning platform](https:
 
 ## About
 
-GloRe is a monorepository including a <a href="https://nextjs.org">Next.js</a> application backed by <a href="https://supabase.com">Supabase</a> and different utility packages.
+GloRe is a single-package  <a href="https://nextjs.org">Next.js</a> application backed by <a href="https://supabase.com">Supabase</a> and different utility packages.
 
 The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href="https://ui.shadcn.com">shadcn/ui</a> components for building user interfaces.
 
@@ -35,20 +35,18 @@ gh repo clone glorecertificate/glore
 git clone https://github.com/glorecertificate/glore.git
 ```
 
-Switch to the project directory, copy the example env files and fill in the required values to gain access to the services used throughout the project:
+Switch to the project directory, copy the example env file and fill in the required values to gain access to the services used throughout the project:
 
 ```sh
 cd glore
 cp .env.example .env
-cp .env.local.example .env.local
 ```
 
 ### Running the application
 
-Navigate to the project directory, activate pnpm using Corepack and install the project dependencies:
+Activate pnpm using Corepack and install the project dependencies:
 
 ```sh
-cd glore
 corepack enable
 corepack install
 pnpm install
@@ -60,25 +58,15 @@ Run a development server with:
 pnpm dev
 ```
 
-This command will start the Next.js application and the mail development server. By default, you can access the application at [http://localhost:8080](http://localhost:8080) and the mail server at [http://localhost:8081](http://localhost:8081).
-
-### Contributing
-
-To develop new features or bug fixes, create a new branch starting from `main` prefixed with `feat/` or `fix/` and specify a descriptive name that indicates the purpose of your changes:
-
-```sh
-git checkout -b feat/awesome-feature
-# or
-git checkout -b fix/bug-in-awesome-feature
-```
-
-Once you are done, push the branch, make sure that all checks are passing and create a new pull request.
+This command will start the Next.js application and the mail development server. By default, you can access the application at [http://localhost:3030](http://localhost:3030) and the mail server at [http://localhost:3031](http://localhost:3031).
 
 ## Deployment
 
-The project is hosted on [Vercel](https://vercel.com).
+The application is hosted on [Vercel](https://vercel.com).
 
-To deploy the project, you must set up a Vercel account and connect it to GitHub. After linking the repository to a project, you can start deploying by pushing changes to any branch, and Vercel will automatically build and deploy a preview for you.
+To deploy it, you must set up a Vercel account and create a new project specifying the required environment variables.
+
+By connecting the project to GitHub, Vercel will automatically create preview deployments for each push and pull request.
 
 Alternatively, you can create a new preview deployment by running:
 
@@ -96,12 +84,12 @@ Once set up, run the following command to start an interactive release:
 pnpm release
 ```
 
-When the release is created, a new production deployment will be automatically triggered. 
+Once the release is created, a new production deployment will be automatically triggered. 
 
 To manually deploy to production without a release, use the command:
 
 ```sh
-pnpm deploy:production
+pnpm deploy:prod
 ```
 
 ## License

@@ -183,7 +183,7 @@
         "askAI": "Ask AI",
         "changeToCasual": "Make casual",
         "changeToFormal": "Make formal",
-        "continueEmptyWritingPrompt": "[Document]{editor}[/Document]Start writing a new paragraph AFTER [Document] ONLY ONE SENTENCE",
+        "continueEmptyWritingPrompt": "Start writing a new paragraph AFTER the last one. ONLY ONE SENTENCE",
         "continueWriting": "Continue writing",
         "continueWritingPrompt": "Continue writing AFTER [Block] ONLY ONE SENTENCE. DONT REPEAT THE TEXT.",
         "discard": "Discard",
@@ -790,7 +790,10 @@
     "courseSettingsDescription": "Manage the global settings of this course.",
     "courseTypeDescription": "Whether the course is an introduction or is focused on verifying a soft skill.",
     "removeLesson": "Remove lesson",
-    "courseMustHaveAtLeastOneLesson": "A course must have at least one lesson"
+    "courseMustHaveAtLeastOneLesson": "A course must have at least one lesson",
+    "publishError": "The course cannot be published. Please complete all required fields.",
+    "publishSuccess": "Course published successfully",
+    "publishDisabledMessage": "The course cannot be published. Please complete all required fields."
   },
   "Certificates": {
     "alreadyHave": "You already have a certificate with this organization",
@@ -867,7 +870,6 @@
       "dialogTitle": "Invite Team Member",
       "editUser": "Edit User",
       "emailLabel": "Email",
-      "errorLoading": "Failed to load users, please refresh the page",
       "errorInvalidInput": "Please provide a valid email and role",
       "errorInviting": "Failed to send invitation",
       "export": "Export",

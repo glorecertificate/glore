@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 import { stdout } from 'node:process'
 
 export interface LoggerOptions {

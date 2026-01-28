@@ -1,5 +1,5 @@
-import metadata from '@config/metadata'
-import theme from '@config/theme'
+import metadata from '~/config/metadata.json'
+import theme from '~/config/theme.json'
 
 export const mailer = {
   smtp: {

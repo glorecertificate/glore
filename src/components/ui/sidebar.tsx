@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, startTransition, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { type AppRoutes } from 'next/types/routes'
 
 import { Slot } from '@radix-ui/react-slot'
@@ -8,16 +9,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { PanelLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import settings from '@config/settings'
-import { setCookie } from '@/actions/cookies'
+import settings from '~/config/settings.json'
+
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useCookies } from '@/hooks/use-cookies'
 import { useDevice } from '@/hooks/use-device'
-import { usePathname } from '@/hooks/use-pathname'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_WIDTH = '16rem'
@@ -321,7 +322,7 @@ export const useSidebarResize = ({
     ]
   )
 
-  const handleMouseUp = useCallback(async () => {
+  const handleMouseUp = useCallback(() => {
     if (!isInteractingWithRail.current) return
 
     flushResize({ syncState: true })
@@ -344,8 +345,6 @@ export const useSidebarResize = ({
     railRect.current = null
     shouldRestoreRail.current = false
     setIsDraggingRail(false)
-
-    await setCookie('sidebarWidth', latestWidth.current)
   }, [onToggle, enableToggle, setIsDraggingRail, flushResize])
 
   useEffect(() => {
@@ -406,6 +405,7 @@ export const SidebarProvider = ({
   onOpenChange?: (open: boolean) => void
   open?: boolean
 }) => {
+  const cookies = useCookies()
   const { isMobile } = useDevice()
   const pathname = usePathname()
   const t = useTranslations('Components.Sidebar')
@@ -443,9 +443,9 @@ export const SidebarProvider = ({
       const openState = typeof value === 'function' ? value(open) : value
       const openFn = setOpenProp ?? _setOpen
       openFn(openState)
-      setCookie('sidebarOpen', openState)
+      cookies.set('sidebarOpen', openState)
     },
-    [setOpenProp, open]
+    [setOpenProp, open, cookies.set]
   )
 
   const handleSetWidth = useCallback(
@@ -454,10 +454,11 @@ export const SidebarProvider = ({
       if (options?.syncState ?? true) {
         startTransition(() => {
           setWidth(value)
+          cookies.set('sidebarWidth', value)
         })
       }
     },
-    [applyWidth]
+    [applyWidth, cookies.set]
   )
 
   const toggleSidebar = useCallback(

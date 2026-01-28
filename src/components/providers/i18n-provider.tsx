@@ -4,30 +4,16 @@ import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { IntlProvider, type Locale, type Messages } from 'next-intl'
 
-import i18nConfig from '@config/i18n'
 import { setLocaleCookie } from '@/actions/cookies'
-import { i18n } from '@/lib/i18n'
+import { type IntlRecord, i18n, type LocaleItem, localizeRecord } from '@/lib/i18n'
 
-export const I18nContext = createContext<{
-  locale: Locale
-  localeItems: Array<{
-    displayLabel: string
-    icon: string
-    label: string
-    value: Locale
-  }>
-  setLocale: (locale: Locale) => Promise<void>
-} | null>(null)
-
-export const I18nProvider = ({
-  children,
-  value,
-  ...props
-}: React.ProviderProps<{
+interface I18nContextValue {
   locale?: Locale
   messages?: Messages
   timeZone?: string
-}>) => {
+}
+
+const useI18nContext = (value: I18nContextValue) => {
   const [locale, setLocaleState] = useState<Locale>(value.locale ?? i18n.defaultLocale)
   const timeZone = value.timeZone ?? Intl.DateTimeFormat(locale).resolvedOptions().timeZone
 
@@ -35,13 +21,14 @@ export const I18nProvider = ({
     value.messages ? { [locale]: value.messages } : {}
   )
 
-  const localeItems = useMemo(
+  const messages = messageStore[locale]
+
+  const localeItems = useMemo<LocaleItem[]>(
     () =>
-      Object.entries(i18nConfig.locales).map(([item, { flag: icon, name }]) => {
-        const value = item as Locale
-        const label = messageStore[locale]?.Locale.Languages?.[value] ?? name
-        const displayLabel = i18nConfig.titleizedLocales.includes(value) ? label : label.toLowerCase()
-        return { displayLabel, icon, label, value }
+      i18n.localeItems.map(item => {
+        const label = messageStore[locale]?.Locale.Languages?.[item.value] ?? item.label
+        const displayLabel = i18n.titleCaseLocales.includes(item.value) ? label : label.toLowerCase()
+        return { ...item, label, displayLabel }
       }),
     [locale, messageStore[locale]]
   )
@@ -49,7 +36,7 @@ export const I18nProvider = ({
   const setMessages = useCallback(
     async (locale: Locale) => {
       if (messageStore[locale]) return
-      const { default: messages } = (await import(`@messages/${locale}`)) as { default: Messages }
+      const { default: messages } = (await import(`~/messages/${locale}`)) as { default: Messages }
       setMessagesStore(prev => ({ ...prev, [locale]: messages }))
     },
     [messageStore]
@@ -64,14 +51,27 @@ export const I18nProvider = ({
     [setMessages]
   )
 
-  // biome-ignore lint/correctness: Run on mount
+  const localize = useCallback(
+    <T,>(record: IntlRecord<T>, fallback?: Locale) => localizeRecord(record, locale, fallback),
+    [locale]
+  )
+
+  // biome-ignore lint/correctness: Run on mount only
   useEffect(() => {
     void setMessages(locale)
   }, [])
 
+  return { locale, localeItems, messages, timeZone, setLocale, localize }
+}
+
+export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>, 'messages' | 'timeZone'> | null>(null)
+
+export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<I18nContextValue>) => {
+  const { locale, messages, timeZone, ...providerValue } = useI18nContext(value)
+
   return (
-    <I18nContext.Provider value={{ locale, localeItems, setLocale }} {...props}>
-      <IntlProvider locale={locale} messages={messageStore[locale]} timeZone={timeZone}>
+    <I18nContext.Provider value={{ ...providerValue, locale }} {...props}>
+      <IntlProvider locale={locale} messages={messages} timeZone={timeZone}>
         {children}
       </IntlProvider>
     </I18nContext.Provider>

@@ -4,10 +4,10 @@ import { useCallback } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { setCookie } from '@/actions/cookies'
-import { type ResolvedTheme, type Theme } from '@/lib/types'
+import { type ResolvedTheme, type Theme } from '@/components/providers/theme-provider'
+import { useCookies } from '@/hooks/use-cookies'
 
-const TRANSITION_CLASS = 'theme-transition'
+const THEME_TRANSITION_CLASS = 'theme-transition'
 
 let transitionTimeout: number | undefined
 
@@ -15,19 +15,18 @@ let transitionTimeout: number | undefined
  * Extends the hook from `next-themes` to add cookie support and view transitions.
  */
 export const useTheme = () => {
-  const {
-    setTheme: setNextTheme,
-    resolvedTheme: resolvedNextTheme,
-    theme: nextTheme,
-    themes: nextThemes,
-  } = useNextTheme()
+  const cookies = useCookies()
+  const nextTheme = useNextTheme()
+  const theme = nextTheme.theme as Theme
+  const themes = nextTheme.themes as Theme[]
+  const resolvedTheme = nextTheme.resolvedTheme as ResolvedTheme
 
   const applyTheme = useCallback(
-    async (theme: Theme) => {
-      setNextTheme(theme)
-      await setCookie('theme', theme)
+    (theme: Theme) => {
+      nextTheme.setTheme(theme)
+      cookies.set('theme', theme)
     },
-    [setNextTheme]
+    [nextTheme.setTheme, cookies.set]
   )
 
   const setTheme = useCallback(
@@ -44,18 +43,18 @@ export const useTheme = () => {
       }
 
       if (!prefersReducedMotion && typeof doc.startViewTransition === 'function') {
-        root.classList.add(`${TRANSITION_CLASS}-view`)
+        root.classList.add(`${THEME_TRANSITION_CLASS}-view`)
 
         const transition = doc.startViewTransition(() => {
           applyTheme(theme)
         })
         transition?.finished.finally(() => {
-          root.classList.remove(`${TRANSITION_CLASS}-view`)
+          root.classList.remove(`${THEME_TRANSITION_CLASS}-view`)
         })
         return
       }
 
-      root.classList.add(TRANSITION_CLASS)
+      root.classList.add(THEME_TRANSITION_CLASS)
 
       if (transitionTimeout) {
         window.clearTimeout(transitionTimeout)
@@ -64,20 +63,18 @@ export const useTheme = () => {
       applyTheme(theme)
 
       transitionTimeout = window.setTimeout(() => {
-        root.classList.remove(TRANSITION_CLASS)
+        root.classList.remove(THEME_TRANSITION_CLASS)
       }, 250)
     },
     [applyTheme]
   )
 
-  const resolvedTheme = resolvedNextTheme as ResolvedTheme
-
   return {
+    theme,
+    themes,
+    resolvedTheme,
     isDarkMode: resolvedTheme === 'dark',
     isLightMode: resolvedTheme === 'light',
-    resolvedTheme,
     setTheme,
-    theme: nextTheme as Theme,
-    themes: nextThemes as Theme[],
   }
 }

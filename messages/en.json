@@ -769,7 +769,7 @@
     "subskillEvaluationsSubtitle": "Give a score from 1 to 5 to {count, plural, =1 {the following statement} other {each of the following statements}}.",
     "subskillEvaluationsTitle": "Self-assessment",
     "syncErrorMessage": "A synchronization error occurred, please refresh the page",
-    "title": "Learning courses",
+    "title": "GloRe Courses",
     "trueAnswer": "True",
     "type": "Type",
     "unpublish": "Unpublish",
@@ -793,7 +793,11 @@
     "courseMustHaveAtLeastOneLesson": "A course must have at least one lesson",
     "publishError": "The course cannot be published. Please complete all required fields.",
     "publishSuccess": "Course published successfully",
-    "publishDisabledMessage": "The course cannot be published. Please complete all required fields."
+    "publishDisabledMessage": "The course cannot be published. Please complete all required fields.",
+    "unarchive": "Unarchive",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "delete": "Delete"
   },
   "Certificates": {
     "alreadyHave": "You already have a certificate with this organization",

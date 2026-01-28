@@ -5,7 +5,7 @@
 
 // import { useTranslations } from 'next-intl'
 
-// import config from '@config/config'
+// import config from '~/config/config'
 
 // import { CertificateDocument } from '@/components/features/certificates/certificate-document'
 // import { CertificateGraphic } from '@/components/illustrations/certificate'

@@ -5,9 +5,9 @@ import { useMemo } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import settings from '@config/settings'
-import { useCourse } from '@/components/features/courses/course-provider'
-import { useSession } from '@/components/providers/session-provider'
+import settings from '~/config/settings.json'
+
+import { useCourse } from '@/components/features/courses/course-context'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import {
@@ -25,7 +25,6 @@ import { cn } from '@/lib/utils'
 
 export const CourseFooter = () => {
   const t = useTranslations('Courses')
-  const { courses } = useSession()
   const { course, currentLesson, next, previous } = useCourse()
 
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
@@ -42,29 +41,20 @@ export const CourseFooter = () => {
   }, [currentLesson])
 
   const nextTooltip = useMemo(() => {
-    if (!currentLesson.type) return
-    if (!canProceed)
-      return t('replyToProceed', {
-        type: currentLesson.type,
-      })
-  }, [canProceed, t, currentLesson.type])
+    if (currentLesson.type && !canProceed) {
+      return t('replyToProceed', { type: currentLesson.type })
+    }
+  }, [canProceed, currentLesson.type, t])
 
-  const completedCount = useMemo(() => courses.filter(m => m.completed).length, [courses])
-
-  const completedTitle = useMemo(
-    () => (completedCount === courses.length ? t('completedTitleAll') : t('completedTitle', { count: completedCount })),
-    [completedCount, courses.length, t]
-  )
-
-  const completedMessage = useMemo(
-    () =>
-      completedCount < 3
-        ? t('completedMessage')
-        : completedCount === settings.minSkills
-          ? t('completedRequestCertificate')
-          : t('completeIncludeInCertificate'),
-    [completedCount, t]
-  )
+  const completedCount = course.lessons.filter(({ completed }) => completed).length
+  const completedTitle =
+    completedCount === course.lessons.length ? t('completedTitleAll') : t('completedTitle', { count: completedCount })
+  const completedMessage =
+    completedCount < 3
+      ? t('completedMessage')
+      : completedCount === settings.minSkills
+        ? t('completedRequestCertificate')
+        : t('completeIncludeInCertificate')
 
   return (
     <div className={cn('mt-6 flex', isFirst ? 'justify-end' : 'justify-between')}>

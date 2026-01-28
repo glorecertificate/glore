@@ -27,14 +27,12 @@ export async function resolveQuery<T, R>(
 }
 
 /**
- * Normalizes an unknown error into a {@link PostgrestError}.
+ * Normalizes an unknown error or error message into a {@link PostgrestError}.
  */
 export const postgrestError = (e: unknown) => {
-  const error = e as ConstructorParameters<typeof PostgrestError>[0] | undefined
-  return new PostgrestError({
-    code: error?.code ?? 'UNKNOWN',
-    message: error?.message ?? 'An unknown error occurred',
-    details: error?.details ?? '',
-    hint: error?.hint ?? '',
-  })
+  if (e instanceof PostgrestError) return e
+  const context = { code: 'UNKNOWN', details: '', hint: '', message: 'An unknown error occurred' }
+  if (e instanceof Error && e.message) context.message = e.message
+  if (typeof e === 'string') context.message = e
+  return new PostgrestError(context)
 }

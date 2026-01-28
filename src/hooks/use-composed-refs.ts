@@ -8,7 +8,7 @@ const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
 }
 
 /**
- * Custom hook to compose multiple refs. Accepts callback refs and {@link React.RefObject} refs.
+ * Composes multiple refs, accepts callback refs and {@link React.RefObject}.
  */
 export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> =>
   useCallback(node => {

@@ -1,6 +1,6 @@
 import { type IconProps } from '@/lib/types'
 
-export const AppleMailIcon = (props: IconProps) => (
+export const AppleMail = (props: IconProps) => (
   <svg
     enableBackground="new 0 0 100 100"
     viewBox="0 0 100 100"
@@ -30,3 +30,5 @@ export const AppleMailIcon = (props: IconProps) => (
     />
   </svg>
 )
+
+export const AppleMailIcon = AppleMail

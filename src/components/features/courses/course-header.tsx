@@ -7,9 +7,8 @@ import { ChevronDownIcon, EyeIcon, GlobeIcon, HistoryIcon, SaveIcon, SettingsIco
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { useCourse } from '@/components/features/courses/course-provider'
+import { useCourse } from '@/components/features/courses/course-context'
 import { CourseSettings, type CourseSettingsForm } from '@/components/features/courses/course-settings'
-import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -24,11 +23,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Progress } from '@/components/ui/progress'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type Lesson } from '@/db/schema/lessons'
-import { postgrestError } from '@/db/utils'
+import { postgrestError } from '@/db/helpers'
+import { type Lesson } from '@/db/queries/lesson'
 import { useI18n } from '@/hooks/use-i18n'
 import { useScroll } from '@/hooks/use-scroll'
-import { localize } from '@/lib/i18n'
+import { useSession } from '@/hooks/use-session'
+import { localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
@@ -41,12 +41,12 @@ export const CourseHeader = () => {
   const t = useTranslations('Courses')
 
   const { user } = useSession()
-  const { course, currentLanguageState, editCourse, saveCourse, state, step, language } = useCourse()
+  const { course, language, languageStatus, status, step, editCourse, saveCourse } = useCourse()
 
   const [loading, setLoading] = useState(false)
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
-  const saveLanguageMessage = currentLanguageState.canSave ? t('saveDraftTitleRequired') : t('saveDraftNoChanges')
+  const saveLanguageMessage = languageStatus.canSave ? t('saveDraftTitleRequired') : t('saveDraftNoChanges')
 
   const updateSettings = useCallback(
     async (form: CourseSettingsForm) => {
@@ -72,7 +72,7 @@ export const CourseHeader = () => {
   )
 
   const handleSave = useCallback(async () => {
-    if (!currentLanguageState.canSave) return toast.error(saveLanguageMessage)
+    if (!languageStatus.canSave) return toast.error(saveLanguageMessage)
 
     try {
       setLoading(true)
@@ -82,10 +82,10 @@ export const CourseHeader = () => {
     } catch {
       toast.error(t('saveDraftError'))
     }
-  }, [currentLanguageState.canSave, saveCourse, saveLanguageMessage, t])
+  }, [languageStatus.canSave, saveCourse, saveLanguageMessage, t])
 
   const handlePublish = useCallback(async () => {
-    if (!currentLanguageState.isFullfilled) {
+    if (!languageStatus.isFullfilled) {
       toast.error(t('publishError'))
       return
     }
@@ -99,7 +99,7 @@ export const CourseHeader = () => {
     } catch {
       toast.error(t('publishError'))
     }
-  }, [currentLanguageState.isFullfilled, saveCourse, language, t])
+  }, [languageStatus.isFullfilled, saveCourse, language, t])
 
   return (
     <div
@@ -163,12 +163,12 @@ export const CourseHeader = () => {
             <TabsList className="h-8 w-full sm:w-fit">
               {localeItems.map(({ label, icon, value }) => (
                 <TabsTrigger
-                  className={cn('relative flex', state[value].hasUpdates && 'text-yellow-600!')}
+                  className={cn('relative flex', status[value].hasUpdates && 'text-yellow-600!')}
                   key={value}
                   size="sm"
                   value={value}
                 >
-                  <span className="group-data-[state=inactive]/tabs-trigger:opacity-60 group-data-[state=inactive]/tabs-trigger:grayscale-40">
+                  <span className="group-data-[status=inactive]/tabs-trigger:opacity-60 group-data-[status=inactive]/tabs-trigger:grayscale-40">
                     {label} {icon}
                   </span>
                 </TabsTrigger>
@@ -180,7 +180,7 @@ export const CourseHeader = () => {
               <TooltipTrigger asChild>
                 <Button
                   className="transition-none"
-                  disabled={!currentLanguageState.canSave}
+                  disabled={!languageStatus.canSave}
                   loading={loading}
                   onClick={handleSave}
                   variant="outline"
@@ -189,9 +189,9 @@ export const CourseHeader = () => {
                   {t('saveDraft')}
                 </Button>
               </TooltipTrigger>
-              {!currentLanguageState.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
+              {!languageStatus.hasUpdates && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
             </Tooltip>
-            {currentLanguageState.published ? (
+            {languageStatus.published ? (
               <Button disabled variant="outline">
                 <GlobeIcon className="size-4" />
                 {t('published')}
@@ -201,7 +201,7 @@ export const CourseHeader = () => {
                 <TooltipTrigger asChild>
                   <Button
                     className="transition-none"
-                    disabled={!currentLanguageState.isFullfilled}
+                    disabled={!languageStatus.isFullfilled}
                     loading={loading}
                     onClick={handlePublish}
                   >
@@ -209,7 +209,7 @@ export const CourseHeader = () => {
                     {t('publish')}
                   </Button>
                 </TooltipTrigger>
-                {!currentLanguageState.isFullfilled && <TooltipContent>{t('publishDisabledMessage')}</TooltipContent>}
+                {!languageStatus.isFullfilled && <TooltipContent>{t('publishDisabledMessage')}</TooltipContent>}
               </Tooltip>
             )}
           </div>
@@ -255,7 +255,7 @@ export const CourseHeader = () => {
 }
 
 export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps<'div'>) => {
-  const { course, lessons, currentLesson, language, setStep, step } = useCourse()
+  const { course, currentLesson, language, setStep, step } = useCourse()
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
@@ -263,7 +263,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
 
   const lessonType = useCallback((lesson: Lesson) => t('lessonType', { type: lesson.type }), [t])
   const isCurrentLesson = useCallback((index: number) => index === step, [step])
-  const isCompletedLesson = useCallback((index: number) => lessons[index].completed, [lessons])
+  const isCompletedLesson = useCallback((index: number) => course.lessons[index].completed, [course.lessons])
 
   return (
     <div className={cn('flex flex-col gap-4 bg-background pb-4', scrolled && 'border-b', className)} {...props}>
@@ -273,7 +273,9 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
             <div className="flex flex-col items-start">
               {currentLesson ? (
                 <>
-                  <span className="font-medium">{localize(currentLesson.title, language)}</span>
+                  {currentLesson.title && (
+                    <span className="font-medium">{localizeRecord(currentLesson.title, language)}</span>
+                  )}
                   <span className="text-muted-foreground text-xs">{lessonType(currentLesson)}</span>
                 </>
               ) : (
@@ -284,8 +286,8 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {lessons.length > 0 ? (
-            lessons.map((lesson, index) => (
+          {course.lessons.length > 0 ? (
+            course.lessons.map((lesson, index) => (
               <DropdownMenuItem
                 className="flex justify-between py-2"
                 key={lesson.id}
@@ -293,7 +295,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
               >
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
-                    {localize(lesson.title, language)}{' '}
+                    {lesson.title && localizeRecord(lesson.title, language)}{' '}
                     {isCompletedLesson(index) && <span className="ml-1 text-success text-xs">{'✔︎'}</span>}
                   </span>
                   <span className="text-muted-foreground text-xs">{lessonType(lesson)}</span>

@@ -1,4 +1,5 @@
-import metadata from '@config/metadata'
+import metadata from '~/config/metadata.json'
+
 import { EmailButton } from '@/email/components/button'
 import { EmailLayout, EmailRow, EmailSection } from '@/email/components/layout'
 import { EmailLink } from '@/email/components/link'

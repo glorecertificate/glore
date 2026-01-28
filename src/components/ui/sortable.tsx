@@ -142,16 +142,13 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
 
   const items = useMemo(() => value.map(item => getItemValue(item)), [value, getItemValue])
 
-  const onDragStart = useCallback(
-    (event: DragStartEvent) => {
-      sortableProps.onDragStart?.(event)
+  const onDragStart = useCallback((event: DragStartEvent) => {
+    sortableProps.onDragStart?.(event)
 
-      if (event.activatorEvent.defaultPrevented) return
+    if (event.activatorEvent.defaultPrevented) return
 
-      setActiveId(event.active.id)
-    },
-    [sortableProps.onDragStart]
-  )
+    setActiveId(event.active.id)
+  }, [])
 
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -172,19 +169,16 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
       }
       setActiveId(null)
     },
-    [value, onValueChange, onMove, getItemValue, sortableProps.onDragEnd]
+    [value, onValueChange, onMove, getItemValue]
   )
 
-  const onDragCancel = useCallback(
-    (event: DragEndEvent) => {
-      sortableProps.onDragCancel?.(event)
+  const onDragCancel = useCallback((event: DragEndEvent) => {
+    sortableProps.onDragCancel?.(event)
 
-      if (event.activatorEvent.defaultPrevented) return
+    if (event.activatorEvent.defaultPrevented) return
 
-      setActiveId(null)
-    },
-    [sortableProps.onDragCancel]
-  )
+    setActiveId(null)
+  }, [])
 
   const announcements: Announcements = useMemo(
     () => ({

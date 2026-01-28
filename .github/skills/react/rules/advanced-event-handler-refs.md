@@ -25,6 +25,7 @@ function useWindowEvent(event: string, handler: () => void) {
 ```tsx
 function useWindowEvent(event: string, handler: () => void) {
   const handlerRef = useRef(handler)
+
   useEffect(() => {
     handlerRef.current = handler
   }, [handler])

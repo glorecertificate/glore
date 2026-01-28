@@ -2,13 +2,13 @@
 
 import { ThemeProvider as Provider, type ThemeProviderProps as ProviderProps } from 'next-themes'
 
-import theme from '@config/theme'
-import { type Theme } from '@/lib/types'
+import theme from '~/config/theme.json'
 
-export interface ThemeProviderProps extends ProviderProps {
-  themes?: Theme[]
-}
+export type Theme = keyof typeof theme.modes
+export type ResolvedTheme = Exclude<Theme, 'system'>
 
-export const ThemeProvider = (props: ThemeProviderProps) => (
-  <Provider attribute="class" enableColorScheme enableSystem themes={Object.keys(theme.modes)} {...props} />
-)
+export const ThemeProvider = (
+  props: ProviderProps & {
+    themes?: Theme[]
+  }
+) => <Provider attribute="class" enableColorScheme enableSystem themes={Object.keys(theme.modes)} {...props} />

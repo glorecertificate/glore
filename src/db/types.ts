@@ -14,13 +14,14 @@ import { type Enums, type Database as SupabaseDatabase } from '../../supabase/ty
 
 export type { Enums }
 export type DatabaseClient = SupabaseClient<Database, 'public'>
-export type DatabaseSchema = Database['public']
-export type TableName = keyof DatabaseSchema['Tables']
-export type TableRow<T extends TableName> = DatabaseSchema['Tables'][T]['Row']
-export type TableRelations<T extends TableName> = DatabaseSchema['Tables'][T]['Relationships']
-export type TableInsert<T extends TableName> = DatabaseSchema['Tables'][T]['Insert']
-export type TableUpdate<T extends TableName> = DatabaseSchema['Tables'][T]['Update']
-interface TableOverrides<T extends AnyRecord> {
+export type PublicSchema = Database['public']
+export type TableName = keyof PublicSchema['Tables']
+export type TableRow<T extends TableName> = PublicSchema['Tables'][T]['Row']
+export type TableRelations<T extends TableName> = PublicSchema['Tables'][T]['Relationships']
+export type TableInsert<T extends TableName> = PublicSchema['Tables'][T]['Insert']
+export type TableUpdate<T extends TableName> = PublicSchema['Tables'][T]['Update']
+
+interface Overrides<T extends AnyRecord> {
   Row: { [K in keyof T]: T[K] }
   Insert: { [K in keyof T]?: T[K] }
   Update: { [K in keyof T]?: T[K] }
@@ -31,35 +32,35 @@ export type Database = MergeDeep<
   {
     public: {
       Tables: {
-        assessments: TableOverrides<{
+        assessments: Overrides<{
           description: IntlRecord
         }>
-        courses: TableOverrides<{
-          description: IntlRecord
+        courses: Overrides<{
           title: IntlRecord
+          description: IntlRecord
           icon: IconName
         }>
-        evaluations: TableOverrides<{
+        evaluations: Overrides<{
           description: IntlRecord
         }>
-        lessons: TableOverrides<{
-          content: IntlRecord | null
+        lessons: Overrides<{
           title: IntlRecord
+          content: IntlRecord | null
         }>
-        organizations: TableOverrides<{
+        organizations: Overrides<{
           description: IntlRecord | null
         }>
-        question_options: TableOverrides<{
+        question_options: Overrides<{
           content: IntlRecord
         }>
-        questions: TableOverrides<{
+        questions: Overrides<{
           description: IntlRecord
           explanation: IntlRecord | null
         }>
-        regions: TableOverrides<{
+        regions: Overrides<{
           name: IntlRecord
         }>
-        skill_groups: TableOverrides<{
+        skill_groups: Overrides<{
           name: IntlRecord
         }>
       }
@@ -78,7 +79,7 @@ export type DatabaseQuery<
   Method = unknown,
 > = PostgrestFilterBuilder<
   PostgrestClientOptions,
-  DatabaseSchema,
+  PublicSchema,
   TableRow<Table>,
   DatabaseResult<Table, Query>[],
   Relation,
@@ -92,7 +93,7 @@ export type DatabaseSingleQuery<Table extends TableName, Query extends string = 
 >
 
 export type DatabaseResult<Table extends TableName, Query extends string = '*', Relation = Table> = GetResult<
-  DatabaseSchema,
+  PublicSchema,
   TableRow<Table>,
   Relation,
   TableRelations<Table>,

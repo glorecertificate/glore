@@ -6,7 +6,13 @@
     "src",
     "supabase/functions",
     "*.ts",
-    "src/email"
+    "src/email",
+    "private/use-portal.ts",
+    "private/public/_certificate-graphic.tsx",
+    "private/public/_glore-logo.tsx",
+    "private/public/_no-access-graphic.tsx",
+    "private/public/_no-results-graphic.tsx",
+    "private/public/_not-found-graphic.tsx"
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {
@@ -28,8 +34,8 @@
     "noUnusedParameters": true,
     "paths": {
       "next/types/*": ["./.next/types/*"],
-      "@config/*": ["./config/*.json"],
-      "@messages/*": ["./messages/*.json"],
+      "~/config/*": ["./config/*"],
+      "~/messages/*": ["./messages/*"],
       "@/*": ["./src/*"]
     },
     "plugins": [

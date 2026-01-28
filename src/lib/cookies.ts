@@ -1,8 +1,9 @@
 import { type Locale } from 'next-intl'
 
-import { type CourseListView } from '@/components/features/courses/course-list'
-import { type Course } from '@/db/schema/courses'
-import { type Theme } from '@/lib/types'
+import { type CourseListTab } from '@/components/features/courses/course-list/course-list-context'
+import { type Theme } from '@/components/providers/theme-provider'
+import { type Course } from '@/db/queries/course'
+import { i18n } from '@/lib/i18n'
 
 export const COOKIE_PREFIX = process.env.COOKIE_PREFIX ?? ''
 
@@ -15,10 +16,11 @@ export const COOKIE_OPTIONS = {
 } as const
 
 export interface Cookies {
+  [i18n.cookie]: Locale
   courseListGroups: string[]
   courseListLanguage: Locale[]
-  courseListTab: CourseListView
-  courseLanguage: Record<Course['slug'], Locale>
+  courseListTab: CourseListTab
+  courseLanguages: Record<Course['slug'], Locale>
   email: string
   loginUser: string
   org: number
@@ -29,23 +31,12 @@ export interface Cookies {
 
 export type CookieName = keyof Cookies
 export type CookieValue<T> = T extends CookieName ? Cookies[T] | undefined : undefined
-export type CookieOptions = Omit<CookieInit, 'name' | 'value'>
-
-export const parseCookie = <T extends CookieName>(value?: string | undefined, fallback?: CookieValue<T>) => {
-  try {
-    if (!value) throw Error()
-    return JSON.parse(value)
-  } catch {
-    return (value ?? fallback) as CookieValue<T>
-  }
+export type CookieOptions<T = {}> = T & {
+  prefix?: string | false
 }
 
-export const stringifyCookie = <T extends CookieName>(value: CookieValue<T>) =>
-  typeof value === 'string' ? value : JSON.stringify(value)
+export const prefixCookieName = (name: CookieName, prefix: string | false = COOKIE_PREFIX) =>
+  prefix === false ? name : `${prefix}${name}`
 
-export const cookieOptions = ({ domain, expires, ...options }: CookieOptions = {}) => ({
-  ...COOKIE_OPTIONS,
-  domain: domain || undefined,
-  expires: expires || undefined,
-  ...options,
-})
+export const unprefixCookieName = (name: string, prefix: string | false = COOKIE_PREFIX) =>
+  prefix === false ? name : name.replace(prefix, '')

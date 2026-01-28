@@ -5,18 +5,16 @@ import { useMemo } from 'react'
 import { BuildingIcon, CalendarIcon, ClockIcon, PrinterIcon, ShareIcon, UserIcon, ViewIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { useSession } from '@/components/providers/session-provider'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
-import { type Certificate } from '@/db/schema/certificates'
-import { useI18n } from '@/hooks/use-i18n'
+import { type Certificate } from '@/db/queries/certificate'
+import { useSession } from '@/hooks/use-session'
 
 export const CertificateDocument = ({ certificate }: { certificate: Certificate }) => {
   const { user } = useSession()
-  const { localizeDate } = useI18n()
   const t = useTranslations()
 
   const isIssued = useMemo(() => !!certificate.issued_at, [certificate])
@@ -27,11 +25,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
         <div className="flex items-start justify-between">
           <div>
             <CardTitle className="text-2xl">{t('Certificates.title')}</CardTitle>
-            {certificate.issued_at && (
-              <CardDescription>
-                {t('Certificates.issuedOn')} {localizeDate(certificate.issued_at)}
-              </CardDescription>
-            )}
+            {certificate.issued_at && <CardDescription>{t('Certificates.issuedOn')}</CardDescription>}
           </div>
           <div className="flex items-center space-x-2">
             {isIssued ? (
@@ -96,7 +90,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.startDate')}</h3>
-              <p>{localizeDate(certificate.activity_start_date, 'short')}</p>
+              <p>{certificate.activity_start_date}</p>
             </div>
           </div>
 
@@ -104,7 +98,7 @@ export const CertificateDocument = ({ certificate }: { certificate: Certificate 
             <CalendarIcon className="mt-0.5 size-5 text-muted-foreground" />
             <div>
               <h3 className="font-medium">{t('Common.endDate')}</h3>
-              <p>{localizeDate(certificate.activity_end_date, 'short')}</p>
+              <p>{certificate.activity_end_date}</p>
             </div>
           </div>
 

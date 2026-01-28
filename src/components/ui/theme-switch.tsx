@@ -3,11 +3,12 @@
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { type Theme } from '@/components/providers/theme-provider'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useMounted } from '@/hooks/use-mounted'
 import { useTheme } from '@/hooks/use-theme'
-import { type Icon, type Theme } from '@/lib/types'
+import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {

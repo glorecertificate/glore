@@ -21,7 +21,7 @@ const getDisplayMode = () => {
 }
 
 /**
- * Hook to determine the PWA display mode and related properties.
+ * Determines the progressive web application display.
  */
 export const usePWA = () => {
   const [displayMode, setDisplayMode] = useState<PWADisplayMode | undefined>(undefined)

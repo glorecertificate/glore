@@ -1,41 +1,41 @@
 #!/usr/bin/env tsx
 
 import { execSync } from 'node:child_process'
-import { writeFileSync } from 'node:fs'
+import { readdirSync, writeFileSync } from 'node:fs'
 
 import { loadEnvConfig } from '@next/env'
 
 import { logger } from './logger'
 
-const ARGS = ['env', 'global', 'routes', 'supabase'] as const
-const SUPABASE_PROJECT_REGEX = /https:\/\/([a-z0-9]+)\.supabase\.co/
+const ARGS = ['global', 'routes', 'database'] as const
+const GLOBAL_DTS = './global.d.ts'
+
+const SUPABASE_REGEX = /https:\/\/([a-z0-9]+)\.supabase\.co/
 
 const args = process.argv.slice(2)
 const types = args && args.length > 0 ? args : ARGS
+
+const listPublicDir = (dir = '') => {
+  const files: string[] = []
+
+  for (const dirent of readdirSync(`./public${dir ? `/${dir}` : ''}`, { withFileTypes: true })) {
+    if (dirent.name.startsWith('.')) continue
+    if (dirent.isDirectory()) {
+      files.push(...listPublicDir(dirent.name))
+      continue
+    }
+    files.push(dir ? `${dir}/${dirent.name}` : dirent.name)
+  }
+
+  return files
+}
 
 if (types.includes('global')) {
   try {
     logger.inline('Generating global types...')
 
-    const content = `declare module 'lucide-react' {
-  export * from 'lucide-react/dist/lucide-react.suffixed'
-}`
-
-    writeFileSync('./global.d.ts', content, 'utf-8')
-
-    logger.success('Global types generated successfully', { clearLine: true })
-  } catch {
-    logger.error('Failed to write global types', { clearLine: true })
-  }
-}
-
-if (types.includes('env')) {
-  try {
-    logger.inline('Generating environment types...')
-
     const lines = []
     const keys = new Set()
-
     const { loadedEnvFiles } = loadEnvConfig('.')
 
     for (const { env, path } of loadedEnvFiles) {
@@ -57,14 +57,23 @@ if (types.includes('env')) {
 ${lines.join('\n')}
     }
   }
+
+  type PublicFile = ${listPublicDir()
+    .map(file => `'${file}'`)
+    .join(' | ')}
 }
+
+declare module 'lucide-react' {
+  export * from 'lucide-react/dist/lucide-react.suffixed'
+}
+
 export {}`
 
-    writeFileSync('./env.d.ts', content, 'utf-8')
+    writeFileSync(GLOBAL_DTS, content, 'utf-8')
 
-    logger.success('Env types generated successfully', { clearLine: true })
-  } catch {
-    logger.error('Failed to write env.d.ts', { clearLine: true })
+    logger.success('Global types generated successfully', { clearLine: true })
+  } catch (_e) {
+    logger.error(`Failed to write ${GLOBAL_DTS}`, { clearLine: true })
   }
 }
 
@@ -80,17 +89,14 @@ if (types.includes('routes')) {
   }
 }
 
-if (types.includes('supabase')) {
+if (types.includes('database')) {
   try {
     logger.inline('Generating database types...')
 
-    const supabaseProjectID = process.env.SUPABASE_URL?.match(SUPABASE_PROJECT_REGEX)?.[1]
+    const projectID = process.env.SUPABASE_URL?.match(SUPABASE_REGEX)?.[1]
+    if (!projectID) throw new Error('SUPABASE_URL is not valid')
 
-    if (!supabaseProjectID) {
-      throw new Error('SUPABASE_URL is not defined or invalid')
-    }
-
-    execSync(`supabase gen types typescript --project-id ${supabaseProjectID} > ./supabase/types.ts`, {
+    execSync(`supabase gen types typescript --project-id ${projectID} > ./supabase/types.ts`, {
       stdio: 'ignore',
     })
 

@@ -7,8 +7,7 @@ import { type Locale, useTranslations } from 'next-intl'
 import { type Value } from 'platejs'
 import { toast } from 'sonner'
 
-import { useCourse } from '@/components/features/courses/course-provider'
-import { useSession } from '@/components/providers/session-provider'
+import { useCourse } from '@/components/features/courses/course-context'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -24,9 +23,10 @@ import {
   StepperTrigger,
 } from '@/components/ui/stepper'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type Course } from '@/db/schema/courses'
-import { type Lesson } from '@/db/schema/lessons'
-import { type IntlRecord, localize } from '@/lib/i18n'
+import { type Course } from '@/db/queries/course'
+import { type Lesson } from '@/db/queries/lesson'
+import { useSession } from '@/hooks/use-session'
+import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
 const MAX_LESSON_TITLE_LENGTH = 120
@@ -83,7 +83,7 @@ const CourseSidebarItem = memo(
       const { user } = useSession()
       const t = useTranslations('Courses')
 
-      const title = localize(lesson.title, language)
+      const title = lesson.title ? localizeRecord(lesson.title, language) : t('untitledLesson')
       const [draftTitle, setDraftTitle] = useState(title)
       const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -205,7 +205,7 @@ const CourseSidebarItem = memo(
                           className="absolute -top-2 -right-1 rounded-full p-px opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground group-hover:opacity-100 peer-focus:opacity-0"
                           onClick={e => {
                             e.stopPropagation()
-                            isSingleLesson ? toast.error(t('courseMustHaveAtLeastOneLesson')) : onRemove(lesson.id)
+                            isSingleLesson ? toast.error(t('courseMustHaveAtLeastOneLesson')) : onRemove(lesson.id!)
                           }}
                           size="text"
                           variant="transparent"
@@ -240,13 +240,13 @@ const CourseSidebarItem = memo(
 )
 
 export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
-  const { addLesson, initialCourse, language, lessons, removeLesson, setCourse, setLesson, setStep, step } = useCourse()
+  const { course, courseRef, language, step, setCourse, setLesson, setStep, addLesson, removeLesson } = useCourse()
   const { user } = useSession()
   const t = useTranslations('Courses')
 
   const onReorder = useCallback(
     (newLessons: Lesson[]) => {
-      const currentLessonId = lessons[step - 1]?.id
+      const currentLessonId = course.lessons[step - 1]?.id
 
       const updatedLessons = newLessons.map((lesson, index) => ({
         ...lesson,
@@ -261,12 +261,12 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
         }
       }
     },
-    [lessons, setCourse, setStep, step]
+    [setCourse, setStep, step, course.lessons[step - 1]?.id]
   )
 
   return (
     <div {...props}>
-      <Sortable getItemValue={lesson => lesson.id} onValueChange={onReorder} value={lessons}>
+      <Sortable getItemValue={lesson => lesson.id!} onValueChange={onReorder} value={course.lessons}>
         <Stepper
           className="sticky top-30 flex items-center gap-10 space-y-2 pr-2"
           defaultValue={step}
@@ -280,28 +280,28 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
         >
           <SortableContent asChild>
             <StepperNav className="w-full items-start gap-4">
-              {lessons.map((lesson, index) => {
+              {course.lessons.map((lesson, index) => {
                 const itemStep = index + 1
                 const isCurrent = step === itemStep
                 const isPast = itemStep < step
                 const isFuture = itemStep > step
                 const isCompleted = user.canEdit || !!lesson.completed
-                const previousCompleted = index > 0 ? !!lessons[index - 1].completed : true
+                const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
                 const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
 
                 return (
-                  <SortableItem className="group/sortable relative w-full" key={lesson.id} value={lesson.id}>
+                  <SortableItem className="group/sortable relative w-full" key={lesson.id} value={lesson.id!}>
                     {user.canEdit && (
                       <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
                         <GripVerticalIcon className="size-4" />
                       </SortableItemHandle>
                     )}
                     <CourseSidebarItem
-                      initialCourse={initialCourse}
+                      initialCourse={courseRef.current}
                       isCompleted={isCompleted}
                       isCurrent={isCurrent}
                       isReachable={isReachable}
-                      isSingleLesson={lessons.length === 1}
+                      isSingleLesson={course.lessons.length === 1}
                       language={language}
                       lesson={lesson}
                       onRemove={removeLesson}
@@ -316,26 +316,26 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </SortableContent>
           <SortableOverlay>
             {({ value }) => {
-              const lesson = lessons.find(l => l.id === value)
+              const lesson = course.lessons.find(({ id }) => id === value)
               if (!lesson) return null
 
-              const index = lessons.indexOf(lesson)
+              const index = course.lessons.indexOf(lesson)
               const itemStep = index + 1
               const isCurrent = step === itemStep
               const isPast = itemStep < step
               const isFuture = itemStep > step
               const isCompleted = user.canEdit || !!lesson.completed
-              const previousCompleted = index > 0 ? !!lessons[index - 1].completed : true
+              const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
               const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
 
               return (
                 <div className="group/sortable relative w-full">
                   <CourseSidebarItem
-                    initialCourse={initialCourse}
+                    initialCourse={courseRef.current}
                     isCompleted={isCompleted}
                     isCurrent={isCurrent}
                     isReachable={isReachable}
-                    isSingleLesson={lessons.length === 1}
+                    isSingleLesson={course.lessons.length === 1}
                     language={language}
                     lesson={lesson}
                     onRemove={removeLesson}

@@ -19,6 +19,12 @@ if (!(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_SERVICE_ROLE_KEY)) {
   throw new Error('Missing Supabase environment variables')
 }
 
+/**
+ * Returns a Supabase client for server components and actions.
+ * Handles cookie management for authenticated sessions.
+ *
+ * @see {@link https://supabase.com/docs/guides/auth/server-side/nextjs|Supabase Docs}
+ */
 export const getDatabase = async (callback = noop) => {
   const { getAll, set } = await cookies()
 
@@ -37,14 +43,40 @@ export const getDatabase = async (callback = noop) => {
   })
 }
 
-export const getServiceDatabase = async () =>
-  await createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+/**
+ * Returns a Supabase client for public access (no cookies management).
+ * Ideal for static generation and cached functions.
+ *
+ * @see {@link https://supabase.com/docs/reference/javascript/initializing|Supabase Docs}
+ */
+export const getPublicDatabase = async () =>
+  await createClient<Database, 'public'>(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
     },
   })
 
+/**
+ * Returns a Supabase admin client that bypasses RLS policies.
+ * **Use with caution** and for administrative tasks only.
+ *
+ * @see {@link https://supabase.com/docs/reference/javascript/initializing|Supabase Docs}
+ */
+export const getServiceDatabase = async () =>
+  await createClient<Database, 'public'>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+
+/**
+ * Returns a Supabase client to be used in Next.js middleware requests.
+ * Manages request/response cookies for session refresh.
+ *
+ * @see {@link https://supabase.com/docs/guides/auth/server-side/nextjs|Supabase Docs}
+ */
 export const getProxyDatabase = async (request: NextRequest, callback = noop) =>
   createServerClient<Database, 'public'>(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {

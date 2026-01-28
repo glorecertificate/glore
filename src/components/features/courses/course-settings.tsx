@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useId, useMemo } from 'react'
+import { use, useCallback, useId, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link2Icon } from 'lucide-react'
@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { type UseFormReturn, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { useSession } from '@/components/providers/session-provider'
+import { listSkillGroups } from '@/actions/course'
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/components/ui/input-group'
@@ -16,10 +16,36 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type Course } from '@/db/schema/courses'
+import { type Course } from '@/db/queries/course'
 import { type Enums } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
+import { cn } from '@/lib/utils'
+
+// const addCourse = useMemo(
+//   () => async (data: TableInsert<'courses'>) => {
+//     try {
+//       const course = await createCourse({
+//         ...data,
+//         sort_order: courseList.all.length + 1,
+//       })
+//       router.push(`/courses/${data.slug}`)
+//       toast.success(t('courseCreated'), { duration: 4000 })
+//     } catch (e) {
+//       const error = postgrestError(e)
+//       console.error(error.message)
+//       if (error.code !== '23505') {
+//         toast.error(t('courseCreationFailed'))
+//         return
+//       }
+//       form.setError('slug', { message: t('courseSlugTaken') })
+//       form.setFocus('slug')
+//     }
+//   },
+//   [router.push, t, courseList['all'].length, createCourse]
+// )
+
+const MIN_SLUG_LENGTH = 3
 
 export type CourseSettingsForm = UseFormReturn<z.infer<typeof courseSettingsSchema>>
 
@@ -30,24 +56,26 @@ export const courseSettingsSchema = z.object({
 })
 
 export const CourseSettings = ({
+  className,
   course,
   onSubmit,
-}: {
+  ...props
+}: Omit<React.ComponentProps<'form'>, 'onSubmit'> & {
   course?: Course
   onSubmit: (form: UseFormReturn<z.infer<typeof courseSettingsSchema>>) => Promise<void>
 }) => {
+  const skillGroups = use(listSkillGroups())
+
   const { localize } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
-
-  const { skillGroups } = useSession()
 
   const formSchema = useMemo(
     () =>
       courseSettingsSchema.extend({
         slug: courseSettingsSchema.shape.slug
           .regex(SLUG_REGEX, t('invalidSlugFormat'))
-          .min(3, t('courseSlugTooShort', { min: 3 })),
+          .min(MIN_SLUG_LENGTH, t('courseSlugTooShort', { min: String(MIN_SLUG_LENGTH) })),
       }),
     [t]
   )
@@ -56,7 +84,7 @@ export const CourseSettings = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: course?.type ?? 'intro',
-      skill_group_id: course?.skillGroup?.id ?? null,
+      skill_group_id: course?.skill_group?.id ?? null,
       slug: course?.slug ?? '',
     },
   })
@@ -98,7 +126,7 @@ export const CourseSettings = ({
 
   return (
     <Form {...form}>
-      <form className="grid gap-10" onSubmit={form.handleSubmit(() => onSubmit(form))}>
+      <form className={cn('grid gap-10', className)} onSubmit={form.handleSubmit(() => onSubmit(form))} {...props}>
         <div className="space-y-6">
           <FormField
             control={form.control}

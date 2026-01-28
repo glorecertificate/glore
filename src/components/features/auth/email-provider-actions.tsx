@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl'
 
-import { AppleMailIcon } from '@/components/icons/apple-mail-icon'
-import { GmailIcon } from '@/components/icons/gmail-icon'
-import { OutlookIconIcon } from '@/components/icons/outlook-icon'
+import { AppleMailIcon } from '@/components/icons/apple-mail'
+import { GmailIcon } from '@/components/icons/gmail'
+import { OutlookIconIcon } from '@/components/icons/outlook'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 

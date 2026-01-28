@@ -12,7 +12,8 @@ import {
   Tailwind,
 } from '@react-email/components'
 
-import metadata from '@config/metadata'
+import metadata from '~/config/metadata.json'
+
 import { mailer } from '@/email/config'
 import { type EmailProps } from '@/email/types'
 import { getEmailTranslations } from '@/email/utils'

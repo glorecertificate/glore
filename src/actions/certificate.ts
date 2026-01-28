@@ -3,8 +3,8 @@ import 'server-only'
 import { cache } from 'react'
 
 import { getDatabase } from '@/db/client'
-import { certificateQuery } from '@/db/schema/certificates'
-import { resolveQuery } from '@/db/utils'
+import { resolveQuery } from '@/db/helpers'
+import { certificateQuery } from '@/db/queries/certificate'
 
 export const findCertificate = cache(async (id: number) => {
   const db = await getDatabase()

@@ -1,8 +1,11 @@
+import { type AppRoutes } from 'next/types/routes'
+
 import { type LucideProps } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 
-export type Theme = 'system' | 'light' | 'dark'
-export type ResolvedTheme = Exclude<Theme, 'system'>
+declare module 'next/navigation' {
+  function usePathname(): AppRoutes
+}
 
 export type Icon<T = {}> = (props: IconProps<T>) => React.ReactNode
 export type IconProps<T = {}> = React.ComponentProps<'svg'> & LucideProps & T

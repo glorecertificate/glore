@@ -4,8 +4,9 @@ import { execSync, type SpawnSyncReturns } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-import type messages from '@messages/en'
 import { type NestedKeyOf } from 'next-intl'
+
+import type messages from '~/messages/en.json'
 
 import { logger } from './logger'
 

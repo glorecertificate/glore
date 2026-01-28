@@ -6,17 +6,18 @@ import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
-import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-import config from '@config/metadata'
+import config from '~/config/metadata.json'
+
 import { getLocaleCookie } from '@/actions/cookies'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n-provider'
+import { SearchParamsProvider } from '@/components/providers/search-params-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
-import { PublicAsset } from '@/lib/storage'
+import { publicFile } from '@/lib/storage'
 
 export { viewport } from '@/lib/metadata'
 
@@ -44,20 +45,20 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
     '@type': 'Page',
     name: config.name,
     description: t('description'),
-    image: PublicAsset.OpenGraphImage,
+    image: publicFile('og-image.png'),
   }
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <NuqsAdapter>
+        <SearchParamsProvider>
           <I18nProvider value={{ locale, messages }}>
             <ThemeProvider>
               {children}
               <Toaster />
             </ThemeProvider>
           </I18nProvider>
-        </NuqsAdapter>
+        </SearchParamsProvider>
         <Analytics debug={false} />
         <SpeedInsights debug={false} />
         <Script id="jsonLd" type="application/ld+json">

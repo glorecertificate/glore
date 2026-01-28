@@ -6,13 +6,14 @@ import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
-import theme from '@config/theme'
+import theme from '~/config/theme.json'
+
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
 import { ResendEmailButton } from '@/components/features/auth/resend-email-button'
-import { GloreLogo } from '@/components/icons/_glore-logo'
+import { GloreIcon } from '@/components/icons/glore'
 import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
@@ -201,7 +202,7 @@ export const AuthFlow = ({
     <>
       <div className="flex justify-between gap-2">
         <div title={view === 'login' ? undefined : t('goToLogin')}>
-          <GloreLogo
+          <GloreIcon
             className={cn(
               'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
               view === 'login' ? 'pointer-events-none' : 'cursor-pointer'

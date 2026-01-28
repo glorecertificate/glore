@@ -1,15 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import { useTranslations } from 'next-intl'
 
-import { GloreLogo } from '@/components/icons/_glore-logo'
+import { GloreIcon } from '@/components/icons/glore'
 import { ErrorPage, type ErrorProps } from '@/components/layout/error-page'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { usePathname } from '@/hooks/use-pathname'
 import { APP_ROOT } from '@/lib/constants'
 
 export default ({ error }: ErrorProps) => {
@@ -29,7 +28,7 @@ export default ({ error }: ErrorProps) => {
       header={
         <header className="flex h-16 w-full items-center justify-center px-4">
           <Link href={APP_ROOT} title={t('backToHome')}>
-            <GloreLogo className="mt-8 h-8" />
+            <GloreIcon className="mt-8 h-8" />
           </Link>
         </header>
       }

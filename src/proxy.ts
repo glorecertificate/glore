@@ -17,8 +17,19 @@ export const proxy: NextProxy = async request => {
 
   try {
     const db = await getProxyDatabase(request)
-    const { error } = await db.auth.getUser()
-    if (error) throw error
+
+    const { data } = await db.auth.getSession()
+    const { expires_at } = data.session ?? {}
+    const expired = !expires_at || expires_at * 1000 < Date.now() + 60 * 1000
+
+    if (expired) {
+      const { error } = await db.auth.getUser()
+
+      if (error) {
+        await db.auth.signOut()
+        return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
+      }
+    }
 
     if (nextUrl.pathname === AUTH_ROOT) {
       return NextResponse.redirect(new URL(APP_ROOT, request.url))

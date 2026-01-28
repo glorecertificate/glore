@@ -24,6 +24,12 @@
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./messages"],
   "i18n-ally.namespace": true,
+  "json.schemas": [
+    {
+      "fileMatch": ["biome.json"],
+      "url": "./node_modules/@biomejs/biome/configuration_schema.json"
+    }
+  ],
   "prettier.enable": false,
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
@@ -34,5 +40,6 @@
     "svg": "html"
   },
   "typescript.preferences.autoImportFileExcludePatterns": ["lucide-react"],
-  "typescript.tsdk": "./node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "postman.settings.dotenv-detection-notification-visibility": false
 }

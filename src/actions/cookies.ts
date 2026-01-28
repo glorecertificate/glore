@@ -1,6 +1,6 @@
-import 'server-only'
+'use server'
 
-import { cookies as nextCookies } from 'next/headers'
+import 'server-only'
 
 import { type Locale } from 'next-intl'
 
@@ -10,47 +10,78 @@ import {
   type CookieName,
   type CookieOptions,
   type CookieValue,
-  cookieOptions,
-  parseCookie,
-  stringifyCookie,
+  prefixCookieName,
 } from '@/lib/cookies'
 import { i18n } from '@/lib/i18n'
 
 export const cookies = async () => {
-  const { get, set, delete: deleteCookie } = await nextCookies()
+  const { cookies } = await import('next/headers')
+  const { get, set, delete: deleteCookie } = await cookies()
 
   return {
-    get: <T extends CookieName>(name: T, fallback?: CookieValue<T>) =>
-      parseCookie(get(`${COOKIE_PREFIX}${name}`)?.value, fallback),
-    set: <T extends CookieName>(name: T, value: CookieValue<T>, options?: CookieOptions) =>
-      set(`${COOKIE_PREFIX}${name}`, stringifyCookie(value), cookieOptions(options)),
-    delete: (name: CookieName) => deleteCookie(`${COOKIE_PREFIX}${name}`),
+    get: <T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) => {
+      const { fallback, prefix = COOKIE_PREFIX } = options ?? {}
+      const value = get(prefixCookieName(name, prefix))?.value
+
+      try {
+        if (!value) throw Error()
+        return JSON.parse(value) as CookieValue<T>
+      } catch {
+        return (value ?? fallback) as CookieValue<T>
+      }
+    },
+    set: <T extends CookieName>(
+      name: T,
+      value: CookieValue<T>,
+      options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
+    ) => {
+      const { domain, expires, prefix = COOKIE_PREFIX, ...cookieOptions } = options ?? {}
+      const cookieName = prefixCookieName(name, prefix)
+      const cookieValue = typeof value === 'string' ? value : JSON.stringify(value)
+
+      set(cookieName, cookieValue, {
+        ...COOKIE_OPTIONS,
+        ...cookieOptions,
+        domain: domain ?? undefined,
+        expires: expires ?? undefined,
+      })
+    },
+    delete: (name: CookieName, options?: CookieOptions) => {
+      const { prefix = COOKIE_PREFIX } = options ?? {}
+      deleteCookie(prefixCookieName(name, prefix))
+    },
   }
 }
 
-export const getCookie = async <T extends CookieName>(name: T, fallback?: CookieValue<T>) => {
+export const getCookie = async <T extends CookieName>(
+  name: T,
+  options?: CookieOptions<{
+    fallback?: CookieValue<T>
+  }>
+) => {
   const { get } = await cookies()
-  return get(name, fallback)
+  return get(name, options)
 }
 
-export const setCookie = async <T extends CookieName>(name: T, value: CookieValue<T>, options?: CookieOptions) => {
+export const setCookie = async <T extends CookieName>(
+  name: T,
+  value: CookieValue<T>,
+  options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
+) => {
   const { set } = await cookies()
   set(name, value, options)
 }
 
-export const deleteCookie = async (name: CookieName) => {
+export const deleteCookie = async (name: CookieName, options?: CookieOptions) => {
   const { delete: deleteCookie } = await cookies()
-  deleteCookie(name)
+  deleteCookie(name, options)
 }
 
 export const getLocaleCookie = async () => {
-  const { get } = await nextCookies()
-  const value = get(i18n.cookie)?.value as Locale
-  if (!(value && i18n.locales.includes(value))) return
-  return value
+  const value = await getCookie(i18n.cookie, { prefix: false })
+  if (value && i18n.locales.includes(value)) {
+    return value
+  }
 }
 
-export const setLocaleCookie = async (locale: Locale) => {
-  const { set } = await nextCookies()
-  set(i18n.cookie, locale, COOKIE_OPTIONS)
-}
+export const setLocaleCookie = async (locale: Locale) => await setCookie(i18n.cookie, locale)

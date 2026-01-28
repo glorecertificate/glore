@@ -7,8 +7,8 @@ import Fuse from 'fuse.js'
 import { dynamicIconImports, type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Button, type ButtonProps } from '@/components/ui/button'
-import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
@@ -40,7 +40,7 @@ export interface IconPickerProps extends ButtonProps {
   value?: IconName
 }
 
-const IconRenderer = memo(({ name }: { name: IconName }) => <DynamicIcon name={name} />)
+const IconRenderer = memo(({ name }: { name: IconName }) => <LucideIcon name={name} />)
 
 const IconsColumnSkeleton = () => (
   <div className="flex w-full flex-col gap-2">
@@ -403,7 +403,7 @@ export const IconPicker = ({
           >
             {iconName && (
               <>
-                <DynamicIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
+                <LucideIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
                 {showLabels && t('updateIcon')}
               </>
             )}

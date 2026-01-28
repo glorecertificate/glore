@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react'
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
-import settings from '@config/settings'
+import settings from '~/config/settings.json'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type User } from '@/db/schema/users'
+import { type User } from '@/db/queries/user'
 import { useI18n } from '@/hooks/use-i18n'
 import { type Any, type HttpUrl } from '@/lib/types'
 
@@ -74,19 +75,19 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   return (
     <div className="flex items-start gap-3">
       <Avatar className="size-7 rounded-full object-cover shadow-sm">
-        {user.avatar_url && <AvatarImage alt={user.fullName ?? ''} src={user.avatar_url} />}
+        {user.avatar_url && <AvatarImage alt={`${user.first_name} ${user.last_name}`} src={user.avatar_url} />}
         <AvatarFallback className="font-semibold text-muted-foreground text-xs">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1">
-            <h4 className="font-semibold text-sm leading-none">{user.fullName}</h4>
+            <h4 className="font-semibold text-sm leading-none">{`${user.first_name} ${user.last_name}`}</h4>
             {isVisible('is_admin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">
                   <ShieldUserIcon className="size-3.5" />
                 </TooltipTrigger>
-                <TooltipContent size="sm">
+                <TooltipContent sideOffset={8} size="sm">
                   <span className="text-xs">{t('admin')}</span>
                 </TooltipContent>
               </Tooltip>
@@ -96,7 +97,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
                 <TooltipTrigger asChild pointerEvents="auto">
                   <PencilIcon className="size-3" />
                 </TooltipTrigger>
-                <TooltipContent size="sm">
+                <TooltipContent sideOffset={8} size="sm">
                   <span className="text-xs">{t('editor')}</span>
                 </TooltipContent>
               </Tooltip>

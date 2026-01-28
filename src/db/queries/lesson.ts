@@ -1,4 +1,4 @@
-import { parseUser, userQuery } from '@/db/schema/users'
+import { parseUser, userQuery } from '@/db/queries/user'
 import { type DatabaseResult } from '@/db/types'
 
 export type Lesson = ReturnType<typeof parseLesson>
@@ -53,7 +53,7 @@ export const lessonQuery = `
   )
 ` as const
 
-export const parseLesson = ({ user_lessons = [], ...lesson }: DatabaseResult<'lessons', typeof lessonQuery>) => {
+export const parseLesson = (lesson: Partial<DatabaseResult<'lessons', typeof lessonQuery>>) => {
   const assessment = lesson.assessment
     ? {
         ...lesson.assessment,
@@ -61,19 +61,21 @@ export const parseLesson = ({ user_lessons = [], ...lesson }: DatabaseResult<'le
       }
     : undefined
 
-  const questions = lesson.questions.map(({ options, ...question }) => ({
-    ...question,
-    answered: options.some(option => (option.user_answers ?? []).length > 0),
-    options: options.map(({ user_answers, ...option }) => ({
-      ...option,
-      isUserAnswer: user_answers.length > 0,
-    })),
-  }))
+  const questions =
+    lesson.questions?.map(({ options, ...question }) => ({
+      ...question,
+      answered: options.some(option => (option.user_answers ?? []).length > 0),
+      options: options.map(({ user_answers, ...option }) => ({
+        ...option,
+        isUserAnswer: user_answers.length > 0,
+      })),
+    })) ?? []
 
-  const evaluations = lesson.evaluations.map(({ user_evaluations, ...evaluation }) => ({
-    ...evaluation,
-    userRating: user_evaluations[0]?.value,
-  }))
+  const evaluations =
+    lesson.evaluations?.map(({ user_evaluations, ...evaluation }) => ({
+      ...evaluation,
+      userRating: user_evaluations[0]?.value,
+    })) ?? []
 
   let type: LessonType = 'reading'
   if (questions.length > 0) type = 'questions'
@@ -83,12 +85,13 @@ export const parseLesson = ({ user_lessons = [], ...lesson }: DatabaseResult<'le
   return {
     ...lesson,
     type,
-    completed: user_lessons.length > 0,
+    completed: (lesson.user_lessons ?? []).length > 0,
     assessment,
-    contributions: lesson.contributions.map(contribution => ({
-      ...contribution,
-      user: parseUser(contribution.user),
-    })),
+    contributions:
+      lesson.contributions?.map(contribution => ({
+        ...contribution,
+        user: parseUser(contribution.user),
+      })) ?? [],
     evaluations,
     questions,
   }

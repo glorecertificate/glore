@@ -4,7 +4,8 @@ import { useCallback, useEffect } from 'react'
 
 import { useLocale } from 'next-intl'
 
-import metadata from '@config/metadata'
+import metadata from '~/config/metadata.json'
+
 import { usePWA } from '@/hooks/use-pwa'
 import { i18n } from '@/lib/i18n'
 import { MANIFEST_URL } from '@/lib/metadata'
@@ -75,7 +76,7 @@ export interface UseMetadataOptions {
 }
 
 /**
- * Hook to manage and update metadata title, description, and image.
+ * Manage and update metadata title, description, and image.
  */
 export const useMetadata = ({ applicationName = true, delay = 100, ...options }: UseMetadataOptions) => {
   const locale = useLocale()

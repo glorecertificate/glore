@@ -8,9 +8,9 @@ import { redirect } from 'next/navigation'
 
 import { getAuthUser } from '@/actions/auth'
 import { getDatabase } from '@/db/client'
-import { parseUser, userQuery } from '@/db/schema/users'
+import { resolveQuery } from '@/db/helpers'
+import { parseUser, userQuery } from '@/db/queries/user'
 import { type DatabaseSingleQuery, type TableUpdate } from '@/db/types'
-import { resolveQuery } from '@/db/utils'
 import { CacheTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
 
@@ -18,10 +18,7 @@ const fetchUser = async (query: DatabaseSingleQuery<'users', typeof userQuery>) 
   'use cache'
   cacheTag(CacheTag.User)
 
-  const { data, error } = await resolveQuery(query, parseUser)
-  if (error) throw error
-
-  return data
+  return await resolveQuery(query, parseUser)
 }
 
 const fetchUserEmail = async (query: DatabaseSingleQuery<'users', 'email'>) => {
@@ -41,7 +38,10 @@ export const findUser = async (id: string) => {
   const db = await getDatabase()
 
   const query = db.from('users').select(userQuery).eq('id', id).single()
-  return await fetchUser(query)
+  const { data, error } = await fetchUser(query)
+  if (error || !data) throw error || new Error('User not found')
+
+  return data
 }
 
 export const findUserEmail = async (username: string) => {
@@ -58,8 +58,9 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>) => {
   const db = await getDatabase()
 
   const query = db.from('users').update(values).eq('id', id).select(userQuery).single()
-  const user = await fetchUser(query)
+  const { data, error } = await fetchUser(query)
+  if (error || !data) throw error || new Error('Failed to update user')
 
   updateTag(CacheTag.User)
-  return user
+  return data
 }

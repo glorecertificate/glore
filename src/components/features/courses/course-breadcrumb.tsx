@@ -5,26 +5,26 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { useCourse } from '@/components/features/courses/course-provider'
-import { useSession } from '@/components/providers/session-provider'
+import { useCourse } from '@/components/features/courses/course-context'
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { DynamicIcon } from '@/components/ui/dynamic-icon'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Link } from '@/components/ui/link'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { localize } from '@/lib/i18n'
+import { useSession } from '@/hooks/use-session'
+import { localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseBreadcrumb = () => {
   const t = useTranslations('Courses')
   const { user } = useSession()
-  const { course, currentLanguageState, editCourse, language, setCourse } = useCourse()
+  const { course, languageStatus, language, editCourse, setCourse } = useCourse()
 
-  const title = localize(course.title, language)
+  const title = localizeRecord(course.title, language)
   const [draftTitle, setDraftTitle] = useState(title)
   const [titleFocused, setTitleFocused] = useState(false)
 
@@ -107,7 +107,7 @@ export const CourseBreadcrumb = () => {
                     className={cn(
                       'px-1 py-0.5 text-[14.5px] text-foreground/90 hover:text-foreground focus:text-foreground',
                       !titleFocused &&
-                        currentLanguageState.hasTitleUpdates &&
+                        languageStatus.hasTitleUpdates &&
                         'decoration-2 decoration-warning decoration-dotted underline-offset-4'
                     )}
                     defaultValue={title}
@@ -127,7 +127,7 @@ export const CourseBreadcrumb = () => {
             </>
           ) : (
             <>
-              <DynamicIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon} />
+              <LucideIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon} />
               {title}
               {course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
             </>

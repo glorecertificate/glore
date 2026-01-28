@@ -5,7 +5,7 @@ impactDescription: prevents effect re-runs
 tags: advanced, hooks, useLatest, refs, optimization
 ---
 
-## useLatest for Stable Callback Refs
+## `useLatest` for Stable Callback Refs
 
 Access latest values in callbacks without adding them to dependency arrays. Prevents effect re-runs while avoiding stale closures.
 
@@ -14,9 +14,11 @@ Access latest values in callbacks without adding them to dependency arrays. Prev
 ```typescript
 function useLatest<T>(value: T) {
   const ref = useRef(value)
+
   useEffect(() => {
     ref.current = value
   }, [value])
+
   return ref
 }
 ```
@@ -38,8 +40,8 @@ function SearchInput({ onSearch }: { onSearch: (q: string) => void }) {
 
 ```tsx
 function SearchInput({ onSearch }: { onSearch: (q: string) => void }) {
-  const [query, setQuery] = useState('')
   const onSearchRef = useLatest(onSearch)
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     const timeout = setTimeout(() => onSearchRef.current(query), 300)

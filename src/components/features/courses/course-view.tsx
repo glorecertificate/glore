@@ -5,9 +5,9 @@ import { useCallback, useEffect } from 'react'
 import { type Locale } from 'next-intl'
 
 import { CourseContent } from '@/components/features/courses/course-content'
+import { useCourse } from '@/components/features/courses/course-context'
 import { CourseFooter } from '@/components/features/courses/course-footer'
 import { CourseHeader, CourseHeaderMobile } from '@/components/features/courses/course-header'
-import { useCourse } from '@/components/features/courses/course-provider'
 import { CourseSidebar } from '@/components/features/courses/course-sidebar'
 import { Tabs } from '@/components/ui/tabs'
 import { useMetadata } from '@/hooks/use-metadata'
@@ -15,7 +15,7 @@ import { useMetadata } from '@/hooks/use-metadata'
 const COURSE_SIDEBAR_WIDTH = '18rem'
 
 export const CourseView = () => {
-  const { course, currentLanguageState, language, setLanguage } = useCourse()
+  const { course, language, languageStatus, setLanguage } = useCourse()
   const hasFooter = course.lessons && course.lessons.length > 1
 
   useMetadata({
@@ -23,10 +23,10 @@ export const CourseView = () => {
   })
 
   const handleBeforeUnload = useCallback(() => {
-    if (currentLanguageState.hasUpdates) {
+    if (languageStatus.hasUpdates) {
       confirm('You have unsaved changes. Are you sure you want to leave?')
     }
-  }, [currentLanguageState.hasUpdates])
+  }, [languageStatus.hasUpdates])
 
   useEffect(() => {
     window.addEventListener('beforeunload', handleBeforeUnload)

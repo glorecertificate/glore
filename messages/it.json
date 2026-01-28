@@ -769,7 +769,7 @@
     "subskillEvaluationsSubtitle": "Assegna un punteggio da 1 a 5 {count, plural, =1 {alla seguente affermazione} other {a ciascuna delle seguenti affermazioni}}.",
     "subskillEvaluationsTitle": "Autovalutazione",
     "syncErrorMessage": "Si è verificato un errore di sincronizzazione, aggiorna la pagina",
-    "title": "Corsi di apprendimento",
+    "title": "Corsi GloRe",
     "trueAnswer": "Vero",
     "type": "Tipo",
     "unpublish": "Sospendi pubblicazione",
@@ -793,7 +793,11 @@
     "courseMustHaveAtLeastOneLesson": "Un corso deve avere almeno una lezione",
     "publishError": "Il corso non può essere pubblicato. \nSi prega di completare tutti i campi obbligatori.",
     "publishSuccess": "Corso pubblicato con successo",
-    "publishDisabledMessage": "Il corso non può essere pubblicato. \nSi prega di completare tutti i campi obbligatori."
+    "publishDisabledMessage": "Il corso non può essere pubblicato. \nSi prega di completare tutti i campi obbligatori.",
+    "unarchive": "Annulla archiviazione",
+    "cancel": "Cancella",
+    "continue": "Continuare",
+    "delete": "Eliminare"
   },
   "Certificates": {
     "alreadyHave": "Hai già un certificato con questa organizzazione",

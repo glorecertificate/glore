@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 /**
- * Debounces a value for a specified delay or 500ms by default.
+ * Debounces a value for a specified delay, or 500ms by default.
  */
 export const useDebounce = <T>(value: T, delay = 500) => {
   const [debounced, setDebounced] = useState(value)

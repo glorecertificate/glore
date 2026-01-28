@@ -60,7 +60,7 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
       size="lg"
       variant="primary"
     >
-      {timeLeft > 0 ? t('resendTimer', { seconds: timeLeft }) : t('resendEmail')}
+      {timeLeft > 0 ? t('resendTimer', { seconds: String(timeLeft) }) : t('resendEmail')}
     </Button>
   )
 }

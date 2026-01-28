@@ -4,10 +4,12 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import metadata from '@config/metadata'
-import { NotFoundGraphic } from '@/components/icons/_not-found-graphic'
-import { ErrorIcon } from '@/components/icons/error-icon'
+import metadata from '~/config/metadata.json'
+
+import { ErrorIcon } from '@/components/icons/error'
+import { Image } from '@/components/ui/image'
 import { useDevice } from '@/hooks/use-device'
+import { publicFile } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 export interface ErrorProps {
@@ -36,7 +38,7 @@ export const ErrorPage = ({
   const ErrorImage = useMemo(
     () =>
       type === 'not-found' ? (
-        <NotFoundGraphic className="mb-8" width={isMobile ? 320 : 360} />
+        <Image className="mb-8" src={publicFile('assets/not-found.svg')} width={isMobile ? 320 : 360} />
       ) : (
         <ErrorIcon width={isMobile ? 160 : 180} />
       ),

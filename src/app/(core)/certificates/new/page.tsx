@@ -6,7 +6,7 @@
 // import { useTranslations } from 'next-intl'
 // import { toast } from 'sonner'
 
-// import config from '@config/config'
+// import config from '~/config/config'
 
 // import { useSession } from '@/components/providers/session-provider'
 

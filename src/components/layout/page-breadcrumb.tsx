@@ -1,13 +1,13 @@
 'use client'
 
 import { useMemo } from 'react'
+import { usePathname } from 'next/navigation'
 
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { usePathname } from '@/hooks/use-pathname'
 import { type MessageKey } from '@/lib/i18n'
 
 export const PageBreadcrumb = ({

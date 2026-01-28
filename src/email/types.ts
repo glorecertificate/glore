@@ -43,7 +43,7 @@ export const getEmailTranslations = async <T extends `Email.${EmailTemplate | 'c
   createTranslator({
     namespace,
     locale,
-    messages: await import(`@messages/${locale}`),
+    messages: await import(`~/messages/${locale}`),
   })
 
 export const emailPreviewProps = <T extends EmailTemplate>(props?: Omit<EmailTemplateOptions<T>, 'to'>) => ({

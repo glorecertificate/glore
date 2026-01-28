@@ -31,6 +31,7 @@ export async function GET(request: Request) {
     configPromise,
     fetchData(session.user.id)
   ])
+  
   return Response.json({ data, config })
 }
 ```

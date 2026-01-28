@@ -1,6 +1,6 @@
 <div align="center">
   <h1>
-    <img src="./public/logo.svg" alt="" width="80">
+    <img src="public/icon.png" alt="" width="80">
   </h1>
   <a href="https://github.com/glorecertificate/glore/releases"><img src="https://img.shields.io/github/package-json/v/glorecertificate/glore?labelColor=24292e&color=5cb9d2&style=flat"></a>
   <a href="https://github.com/glorecertificate/glore/deployments/Production"><img src="https://img.shields.io/github/deployments/glorecertificate/glore/Production?logo=vercel&label=Production&labelColor=%2324292e"></a>

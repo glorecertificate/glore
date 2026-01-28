@@ -3,8 +3,17 @@ export const AUTH_ROOT = '/login'
 export const APP_ROOT = '/dashboard'
 
 /* Params */
-export const COURSE_STEP_PARAM = 'lesson'
-export const COURSE_LANGUAGE_PARAM = 'lang'
+export const COURSE_LIST_PARAMS = {
+  LANGUAGES: 'lang',
+  SKILL_GROUPS: 'groups',
+  SORT_DIRECTION: 'dir',
+  SORT: 'sort',
+  TAB: 'tab',
+} as const
+export const COURSE_PARAMS = {
+  STEP: 'lesson',
+  LANGUAGE: 'lang',
+} as const
 
 /* Validation */
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

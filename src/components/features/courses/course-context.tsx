@@ -1,19 +1,26 @@
 'use client'
 
-import { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 
-import config from '@config/i18n'
+import { messages } from '~/config/i18n.json'
+
 import { updateCourse, upsertLessons } from '@/actions/course'
-import { type Course } from '@/db/schema/courses'
-import { type Lesson } from '@/db/schema/lessons'
+import { type Course } from '@/db/queries/course'
+import { type Lesson, parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { COURSE_LANGUAGE_PARAM, COURSE_STEP_PARAM } from '@/lib/constants'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 
-export interface CourseState {
+interface CourseProviderOptions {
+  course: Course
+  language: Locale
+  step: number
+}
+
+export interface CourseStatus {
   canSave: boolean
   hasContent: boolean
   hasContentUpdates: boolean
@@ -24,93 +31,49 @@ export interface CourseState {
   published: boolean
 }
 
-export const CourseContext = createContext<{
-  addLesson: (values?: TableUpdate<'lessons'>) => Lesson
-  course: Course
-  currentLesson: Lesson
-  currentLanguageState: CourseState
-  defaultLesson: Partial<Lesson>
-  editCourse: (payload: TableUpdate<'courses'>) => Promise<Course>
-  initialCourse: Course
-  language: Locale
-  lessons: Lesson[]
-  next: () => void
-  previous: () => void
-  removeLesson: (lessonId: number) => void
-  saveCourse: (options?: { languages?: Locale[] }) => Promise<void>
-  setCourse: Dispatch<SetStateAction<Course>>
-  setLanguage: Dispatch<SetStateAction<Locale>>
-  setLesson: (data: TableUpdate<'lessons'>) => void
-  setStep: Dispatch<SetStateAction<number>>
-  state: Record<Locale, CourseState>
-  step: number
-} | null>(null)
-
-const languageParamParser = parseAsStringEnum(i18n.locales).withOptions({
+const paramOptions = {
+  clearOnDefault: false,
   history: 'push',
   shallow: true,
-  clearOnDefault: false,
-})
+} as const
 
-const stepParamParser = parseAsInteger.withOptions({
-  history: 'replace',
-  shallow: true,
-  clearOnDefault: false,
-})
+const defaultLessonContent = {}
 
-export const defaultCourse: Partial<Course> = {
-  title: config.messages.defaultCourseTitle,
-  icon: 'book-dashed',
-}
+const useCourseProvider = (options: CourseProviderOptions) => {
+  const [language, setLanguage] = useQueryState(
+    COURSE_LANGUAGE_PARAM,
+    parseAsStringEnum(i18n.locales).withOptions(paramOptions).withDefault(options.language)
+  )
 
-export const defaultLesson: Partial<Lesson> = {
-  title: config.messages.defaultLessonTitle,
-  // content: i18n.placeholder,
-  type: 'reading',
-  questions: [],
-  evaluations: [],
-  contributions: [],
-}
+  const [step, setStep] = useQueryState(
+    COURSE_STEP_PARAM,
+    parseAsInteger.withOptions(paramOptions).withDefault(options.step)
+  )
 
-export const CourseProvider = ({
-  children,
-  value,
-  ...props
-}: React.ProviderProps<{
-  course: Course
-  language: Locale
-  step: number
-}>) => {
-  const [language, setLanguage] = useQueryState(COURSE_LANGUAGE_PARAM, languageParamParser.withDefault(value.language))
-
-  const [step, setStep] = useQueryState(COURSE_STEP_PARAM, stepParamParser.withDefault(value.step))
-
-  const [initialCourse, setInitialCourse] = useState(structuredClone(value.course))
-  const [course, setCourse] = useState(value.course as Course)
-
-  const lessons = useMemo(() => course.lessons, [course.lessons])
+  const courseRef = useRef(structuredClone(options.course))
+  const [course, setCourse] = useState(options.course)
 
   const currentLesson = useMemo(
     () => ({
-      ...lessons[step - 1],
+      ...course.lessons[step - 1],
       isFirst: step === 1,
-      isLast: step === lessons.length,
+      isLast: step === course.lessons.length,
     }),
-    [lessons, step]
+    [course.lessons, step]
   )
 
-  const state = useMemo(
+  const status = useMemo(
     () =>
       i18n.locales.reduce(
         (courseState, locale) => {
           const published = !!course.languages?.includes(locale)
 
-          const initialTitle = initialCourse.title[locale]
+          const initialTitle = courseRef.current.title[locale]
           const title = course.title[locale]
           const hasTitle = !!title && title.trim().length > 0
           const hasTitleUpdates = hasTitle && initialTitle !== title
 
-          const hasContent = lessons.every(lesson => {
+          const hasContent = course.lessons.every(lesson => {
             const content = (lesson.content as IntlRecord)?.[locale]
             const hasText =
               Array.isArray(content) &&
@@ -120,8 +83,8 @@ export const CourseProvider = ({
 
             return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
           })
-          const hasContentUpdates = lessons.some((lesson, i) => {
-            const initialLesson = initialCourse.lessons[i] || {}
+          const hasContentUpdates = course.lessons.some((lesson, i) => {
+            const initialLesson = courseRef.current.lessons[i] || {}
             const initialLessonData = {
               title: initialLesson.title?.[locale],
               content: (initialLesson.content as IntlRecord)?.[locale],
@@ -148,15 +111,15 @@ export const CourseProvider = ({
               hasUpdates,
               isFullfilled,
               canSave,
-            } satisfies CourseState,
+            } satisfies CourseStatus,
           }
         },
-        {} as Record<Locale, CourseState>
+        {} as Record<Locale, CourseStatus>
       ),
-    [course, initialCourse, lessons]
+    [course.languages, course.lessons, course.title]
   )
 
-  const currentLanguageState = useMemo(() => state[language], [language, state])
+  const languageStatus = useMemo(() => status[language], [status, language])
 
   const editCourse = useCallback(
     async (payload: TableUpdate<'courses'>) => {
@@ -178,12 +141,10 @@ export const CourseProvider = ({
 
       for (const lesson of lessons) {
         const attributes = Object.keys(lesson) as Array<keyof Lesson>
-        const initialLesson = initialCourse.lessons.find(({ id }) => id === lesson.id)
+        const initialLesson = courseRef.current.lessons.find(({ id }) => id === lesson.id)
         const lessonUpdates: TableUpdate<'lessons'> = {}
 
         for (const attribute of attributes) {
-          if (attribute === 'type') continue
-
           if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
             lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
           }
@@ -193,7 +154,7 @@ export const CourseProvider = ({
           lessonsPayload.push({
             ...lessonUpdates,
             id: lesson.id,
-            title: lesson.title ?? defaultLesson.title,
+            title: lesson.title,
             course_id: id,
             sort_order: lesson.sort_order ?? lessons.indexOf(lesson) + 1,
           })
@@ -201,8 +162,7 @@ export const CourseProvider = ({
       }
 
       if (lessonsPayload.length > 0) {
-        const { error } = await upsertLessons(lessonsPayload)
-        if (error) throw error
+        await upsertLessons(lessonsPayload)
       }
 
       const coursePayload: Partial<Course> = {}
@@ -210,7 +170,7 @@ export const CourseProvider = ({
       for (const attribute in courseData) {
         const key = attribute as keyof typeof courseData
 
-        if (JSON.stringify(courseData[key]) !== JSON.stringify(initialCourse[key])) {
+        if (JSON.stringify(courseData[key]) !== JSON.stringify(courseRef.current[key])) {
           coursePayload[key] = courseData[key] as never
         }
       }
@@ -226,35 +186,66 @@ export const CourseProvider = ({
       }
 
       setCourse(updatedCourse)
-      setInitialCourse(updatedCourse)
+      courseRef.current = structuredClone(updatedCourse)
     },
-    [course, initialCourse]
+    [course]
   )
 
   const addLesson = useCallback(
     (values: TableUpdate<'lessons'> = {}) => {
       const lesson = {
-        ...defaultLesson,
-        ...values,
         id: Date.now(),
-        sort_order: lessons.length + 1,
+        title: messages.defaultLessonTitle,
+        content: i18n.locales.reduce(
+          (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
+          {} as IntlRecord
+        ),
+        sort_order: course.lessons.length + 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      } as Lesson
-
-      setCourse(course => ({ ...course, lessons: [...lessons, lesson] }))
+        assessment: null,
+        user_lessons: [],
+        questions: [],
+        evaluations: [],
+        contributions: [],
+        ...values,
+      }
+      setCourse(({ lessons, ...course }) => ({
+        ...course,
+        lessons: [
+          ...lessons,
+          parseLesson({
+            id: Date.now(),
+            title: messages.defaultLessonTitle,
+            content: i18n.locales.reduce(
+              (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
+              {} as IntlRecord
+            ),
+            sort_order: lessons.length + 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            assessment: null,
+            user_lessons: [],
+            questions: [],
+            evaluations: [],
+            contributions: [],
+            ...values,
+          }),
+        ],
+      }))
       setStep(course.lessons.length + 1)
       return lesson
     },
-    [course.lessons.length, lessons, setStep]
+    [course.lessons, setStep]
   )
 
   const setLesson = useCallback(
     (data: TableUpdate<'lessons'>) => {
-      if (lessons.length === 0) {
-        return addLesson(data)
+      if (course.lessons.length === 0) {
+        addLesson(data)
+        return
       }
-      setCourse(course => ({
+      setCourse(({ lessons, ...course }) => ({
         ...course,
         lessons: lessons.map((lesson, i) => {
           if (data.id && lesson.id === data.id) return { ...lesson, ...data }
@@ -263,14 +254,14 @@ export const CourseProvider = ({
         }),
       }))
     },
-    [addLesson, lessons, step]
+    [addLesson, course.lessons, step]
   )
 
   const removeLesson = useCallback(
     (lessonId: number) => {
       setCourse(course => ({
         ...course,
-        lessons: lessons
+        lessons: course.lessons
           .filter(lesson => lesson.id !== lessonId)
           .map((lesson, i) => ({ ...lesson, sort_order: i + 1 })),
       }))
@@ -278,40 +269,30 @@ export const CourseProvider = ({
         setStep(i => i - 1)
       }
     },
-    [lessons, setStep, step]
+    [setStep, step]
   )
 
   const previous = useCallback(() => {
-    if (step === 1) return
-    setStep(i => i - 1)
+    if (step > 1) {
+      setStep(i => i - 1)
+    }
   }, [setStep, step])
 
   const next = useCallback(() => {
-    const index = step - 1
-    const isLastLesson = step === lessons.length
+    if (step < course.lessons.length) {
+      setStep(i => i + 1)
+    }
+  }, [course.lessons, setStep, step])
 
-    if (!isLastLesson) setStep(i => i + 1)
-    if (course.progress === 100) return
-
-    setCourse(course => ({
-      ...course,
-      lessons: lessons?.map((s, i) => (i === index ? { ...s, completed: true } : s)),
-      progressStatus: isLastLesson ? 'completed' : course.progressStatus,
-      completed: isLastLesson,
-    }))
-  }, [course.progress, lessons.length, lessons?.map, setStep, step])
-
-  const contextValue = useMemo(
+  return useMemo(
     () => ({
       addLesson,
       course,
+      courseRef,
       currentLesson,
-      currentLanguageState,
-      defaultLesson,
       editCourse,
-      initialCourse,
       language,
-      lessons,
+      languageStatus,
       next,
       previous,
       removeLesson,
@@ -320,18 +301,16 @@ export const CourseProvider = ({
       setLanguage,
       setLesson,
       setStep,
-      state,
+      status,
       step,
     }),
     [
       addLesson,
       course,
       currentLesson,
-      currentLanguageState,
       editCourse,
-      initialCourse,
       language,
-      lessons,
+      languageStatus,
       next,
       previous,
       removeLesson,
@@ -339,13 +318,19 @@ export const CourseProvider = ({
       setLanguage,
       setLesson,
       setStep,
-      state,
+      status,
       step,
     ]
   )
+}
+
+export const CourseContext = createContext<ReturnType<typeof useCourseProvider> | null>(null)
+
+export const CourseProvider = ({ children, value, ...props }: React.ProviderProps<CourseProviderOptions>) => {
+  const providerValue = useCourseProvider(value)
 
   return (
-    <CourseContext.Provider value={contextValue} {...props}>
+    <CourseContext.Provider value={providerValue} {...props}>
       {children}
     </CourseContext.Provider>
   )

@@ -9,12 +9,12 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { resetPassword } from '@/actions/auth'
-import { setCookie } from '@/actions/cookies'
 import { findUserEmail } from '@/actions/user'
 import { type AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useCookies } from '@/hooks/use-cookies'
 import { type Enum } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
@@ -29,6 +29,7 @@ export const PasswordRequestForm = ({
   setView: (view: Enum<AuthView>) => void
   username?: string
 }) => {
+  const cookies = useCookies()
   const t = useTranslations('Auth')
 
   const formSchema = useMemo(
@@ -78,9 +79,9 @@ export const PasswordRequestForm = ({
 
       setView('email_sent')
       setUsername(username)
-      await setCookie('loginUser', username)
+      cookies.set('loginUser', username)
     },
-    [form, setUsername, setView, t]
+    [form, setUsername, setView, t, cookies.set]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

@@ -45,7 +45,6 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
         <div className="flex flex-col gap-3">
           {t.rich('signupDialogMessage', {
             p: content => <p>{content}</p>,
-            b: content => <span className="font-medium">{content}</span>,
             link: content => (
               <Link className="font-medium" href={WEBSITE_URL} variant="underlined">
                 {content}

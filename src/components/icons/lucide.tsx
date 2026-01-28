@@ -1,9 +1,9 @@
-import { DynamicIcon as LucideDynamic } from 'lucide-react/dynamic'
+import { DynamicIcon } from 'lucide-react/dynamic'
 
 import { type IconName, type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export const DynamicIcon = ({
+export const LucideIcon = ({
   className,
   fallback,
   ...props
@@ -12,7 +12,7 @@ export const DynamicIcon = ({
   fallback?: React.ReactNode
 }>) => (
   <>
-    <LucideDynamic className={cn('peer', className)} {...props} />
+    <DynamicIcon className={cn('peer', className)} {...props} />
     {fallback && <span className="peer-has-[*]:hidden">{fallback}</span>}
   </>
 )

@@ -1,23 +1,17 @@
 import { type Metadata, type Viewport } from 'next'
+import { type AppRouteHandlerRoutes } from 'next/types/routes'
 
-import { type Locale } from 'next-intl'
+import config from '~/config/metadata.json'
 
-import config from '@config/metadata'
 import { i18n, type MessageKey, type Namespace } from '@/lib/i18n'
-import { PublicAsset } from '@/lib/storage'
+import { publicFile } from '@/lib/storage'
 import { type Any, type HttpUrl } from '@/lib/types'
 
 export const APP_URL = process.env.APP_URL as HttpUrl
 export const WEBSITE_URL = config.website as HttpUrl
-export const MANIFEST_URL = '/api/v1/manifest'
+export const MANIFEST_URL = '/api/v1/manifest' satisfies AppRouteHandlerRoutes
 
-export const viewport: Viewport = {
-  themeColor: '#efefef',
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-}
+const languages = i18n.locales.reduce((a, l) => ({ ...a, [l]: `${APP_URL}?lang=${l}` }), {})
 
 export const metadata = {
   metadataBase: APP_URL,
@@ -38,18 +32,12 @@ export const metadata = {
   },
   alternates: {
     canonical: APP_URL,
-    languages: i18n.locales.reduce(
-      (languages, language) => ({
-        ...languages,
-        [language]: `${APP_URL}?lang=${language}`,
-      }),
-      {} as Record<Locale, string>
-    ),
+    languages,
   },
   openGraph: {
     type: 'website',
     emails: config.email,
-    images: [PublicAsset.OpenGraphImage],
+    images: [publicFile('og-image.png')],
     phoneNumbers: config.phone,
     siteName: config.name,
     ttl: 60,
@@ -58,26 +46,34 @@ export const metadata = {
   icons: [
     {
       rel: 'shortcut icon',
-      url: PublicAsset.Favicon,
+      url: publicFile('favicon.ico'),
     },
     {
       sizes: '96x96',
       type: 'image/png',
-      url: PublicAsset.Favicon96,
+      url: publicFile('favicon-96x96.png'),
     },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: PublicAsset.AppleIcon,
+      url: publicFile('apple-icon.png'),
     },
   ],
   appleWebApp: {
     capable: true,
     title: config.shortName,
     statusBarStyle: 'black-translucent',
-    startupImage: PublicAsset.WebAppScreenshotNarrow,
+    startupImage: publicFile('web-app-screenshot-narrow.png'),
   },
 } satisfies Metadata
+
+export const viewport: Viewport = {
+  themeColor: '#efefef',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const intlMetadata = async <T extends Namespace>({
   namespace,

@@ -11,7 +11,7 @@ const getScroll = () => {
 }
 
 /**
- * Hook to track the current scroll position of the window.
+ * Tracks the current scroll position of the window.
  */
 export const useScroll = () => {
   const [scroll, setScroll] = useState(getScroll())

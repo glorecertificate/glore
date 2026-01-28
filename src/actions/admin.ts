@@ -6,9 +6,9 @@ import { cacheTag, revalidateTag } from 'next/cache'
 
 import { getCurrentUser } from '@/actions/user'
 import { getDatabase, getServiceDatabase } from '@/db/client'
-import { parseUser, userQuery } from '@/db/schema/users'
+import { resolveQuery } from '@/db/helpers'
+import { parseUser, userQuery } from '@/db/queries/user'
 import { type DatabaseQuery } from '@/db/types'
-import { resolveQuery } from '@/db/utils'
 import { CacheTag } from '@/lib/cache'
 
 const fetchTeamMembers = async (query: DatabaseQuery<'users', typeof userQuery>) => {

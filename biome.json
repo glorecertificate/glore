@@ -1,5 +1,4 @@
 {
-  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "includes": ["**/*.ts", "**/*.tsx", "**/*.json", "!.next", "!node_modules", "!.vercel"],
     "ignoreUnknown": true
@@ -121,11 +120,6 @@
                 "message": "Import from '@/actions/cookies' instead."
               },
               {
-                "group": ["next/navigation"],
-                "importNamePattern": "usePathname",
-                "message": "Import from '@/hooks/use-pathname' instead."
-              },
-              {
                 "group": ["next/router"],
                 "importNamePattern": "useRouter",
                 "message": "Import from 'next/navigation' instead."
@@ -232,9 +226,10 @@
               "next",
               "next/**",
               ":BLANK_LINE:",
-              [":PACKAGE:", "!@config/**"],
+              ":PACKAGE:",
               ":BLANK_LINE:",
-              "@config/**",
+              "~/**",
+              ":BLANK_LINE:",
               [":ALIAS:", ":PATH:"]
             ]
           }

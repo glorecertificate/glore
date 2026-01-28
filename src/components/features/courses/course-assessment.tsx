@@ -1,12 +1,12 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
-import { type Assessment } from '@/db/schema/lessons'
+import { type Assessment } from '@/db/queries/lesson'
 import { useI18n } from '@/hooks/use-i18n'
 
 export const CourseAssessment = ({
@@ -17,23 +17,22 @@ export const CourseAssessment = ({
   title,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
+  assessment: Exclude<Assessment, null>
   completed: boolean
-  assessment: Required<Assessment>
   onValueChange: (rating: number) => void
   title?: string
 }) => {
-  const { localize } = useI18n()
   const t = useTranslations('Courses')
+  const { localize } = useI18n()
 
-  const description = useMemo(
-    () => (assessment.description ? localize(assessment.description) : ''),
-    [assessment.description, localize]
-  )
+  const description = assessment.description ? localize(assessment.description) : ''
+  const rating = assessment.user_assessments?.[0]?.value || 0
 
   const onChange = useCallback(
     (value: string) => {
-      if (completed) return
-      onValueChange(Number(value))
+      if (!completed) {
+        onValueChange(Number(value))
+      }
     },
     [completed, onValueChange]
   )
@@ -55,7 +54,7 @@ export const CourseAssessment = ({
             disabledToast={t('ratingDisabled')}
             id={assessment.id}
             onValueChange={onChange}
-            value={assessment.userRating}
+            value={rating}
           />
         </div>
       </div>

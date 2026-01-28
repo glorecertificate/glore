@@ -16,9 +16,9 @@ interface UseFileUploadOptions<T extends FileRouter = FileRouter>
 }
 
 /**
- * Hook to manage file uploads using UploadThing.
+ * Provides methods to upload files via UploadThing, track progress, and handle completion
  *
- * It provides methods to upload files, track progress, and handle completion or errors.
+ * @see {@link https://docs.uploadthing.com|UploadThing Docs}
  */
 export const useFileUpload = <T extends FileRouter = FileRouter>({
   onUploadComplete,

@@ -3,16 +3,16 @@ import { notFound, redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
-import { findCourse } from '@/actions/course'
+import { getCourse } from '@/actions/course'
 import { getCurrentUser } from '@/actions/user'
 import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseBreadcrumb } from '@/components/features/courses/course-breadcrumb'
-import { CourseProvider } from '@/components/features/courses/course-provider'
+import { CourseProvider } from '@/components/features/courses/course-context'
 import { CourseView } from '@/components/features/courses/course-view'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 import { COURSE_LANGUAGE_PARAM, COURSE_STEP_PARAM } from '@/lib/constants'
-import { i18n, localize } from '@/lib/i18n'
+import { i18n, localizeRecord } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
   [COURSE_LANGUAGE_PARAM]: parseAsStringEnum(i18n.locales),
@@ -22,7 +22,7 @@ const { parse } = createSearchParamsCache({
 const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
   const { slug } = await params
 
-  const course = await findCourse(slug)
+  const course = await getCourse(slug)
   if (!course) return notFound()
 
   const resolvedSearchParams = await searchParams
@@ -32,8 +32,8 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   const user = await getCurrentUser()
 
   let step = stepParam
-  if (user.isLearner) {
-    const max = course.lessons.findIndex(lesson => !lesson.completed)
+  if (!user.canEdit) {
+    const max = course.lessons.findIndex(lesson => !lesson)
     if (max !== -1 && step - 1 > max) step = max + 1
   }
   step = step > 0 && step <= course.lessons.length ? step : 1
@@ -63,8 +63,8 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
   if (!(course && user)) return
 
   return {
-    title: localize(course.title, language),
-    description: localize(course.description, language),
+    title: localizeRecord(course.title, language),
+    description: localizeRecord(course.description, language),
   }
 }
 

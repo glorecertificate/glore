@@ -10,7 +10,6 @@ import { z } from 'zod'
 
 import { uploadAvatar } from '@/actions/storage'
 import { updateUser } from '@/actions/user'
-import { useSession } from '@/components/providers/session-provider'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -21,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { type TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
+import { useSession } from '@/hooks/use-session'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 

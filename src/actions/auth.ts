@@ -1,3 +1,5 @@
+'use server'
+
 import 'server-only'
 
 import { cacheTag, revalidateTag } from 'next/cache'
@@ -23,7 +25,14 @@ export const login = async (credentials: SignInWithPasswordCredentials) => {
   const db = await getDatabase()
   const { error } = await db.auth.signInWithPassword(credentials)
 
-  if (error) return { data: { user: null, session: null }, error }
+  if (error)
+    return {
+      data: {
+        user: null,
+        session: null,
+      },
+      error,
+    }
 
   revalidateTag(CacheTag.AuthUser, 'max')
   redirect(APP_ROOT)

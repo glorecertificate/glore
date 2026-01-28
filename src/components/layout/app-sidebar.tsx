@@ -24,9 +24,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
-import { setCookie } from '@/actions/cookies'
-import { DashboardIcon } from '@/components/icons/dashboard-icon'
-import { useSession } from '@/components/providers/session-provider'
+import { DashboardIcon } from '@/components/icons/dashboard'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -69,9 +67,10 @@ import {
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type UserOrganization } from '@/db/schema/users'
+import { type UserOrganization } from '@/db/queries/user'
+import { useCookies } from '@/hooks/use-cookies'
+import { useSession } from '@/hooks/use-session'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
-import { metadata } from '@/lib/metadata'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'
 
@@ -172,21 +171,28 @@ const AppSidebarCollapsible = ({ children, icon, label, route }: SidebarItemProp
 }
 
 const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) => {
-  const { setOrganization, user } = useSession()
   const router = useRouter()
   const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Layout')
 
-  const onOrgSelect = useCallback(
-    (org: UserOrganization) => {
+  const cookies = useCookies()
+  const { setOrganization, user } = useSession()
+
+  const membership = useMemo(
+    () => user.memberships.find(membership => membership.organization.id === organization.id),
+    [user.memberships, organization.id]
+  )
+
+  const selectOrganization = useCallback(
+    (id: number) => {
       setActivePath(APP_ROOT)
-      setTimeout(async () => {
-        setOrganization(org)
-        await setCookie('org', org.id)
+      setTimeout(() => {
+        setOrganization(id)
+        cookies.set('org', id)
       }, 200)
       router.push(APP_ROOT)
     },
-    [router, setActivePath, setOrganization]
+    [router, setActivePath, setOrganization, cookies.set]
   )
 
   return (
@@ -216,9 +222,11 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
               </Avatar>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-semibold">{organization.name}</span>
-                <span className="truncate font-normal text-muted-foreground text-xs">
-                  {titleize(organization.role)}
-                </span>
+                {membership?.role && (
+                  <span className="truncate font-normal text-muted-foreground text-xs">
+                    {titleize(membership.role)}
+                  </span>
+                )}
               </div>
               <ChevronsUpDownIcon className="ml-auto size-4 stroke-foreground/64" />
             </SidebarMenuButton>
@@ -230,22 +238,20 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">{t('organizations')}</DropdownMenuLabel>
-            {user.organizations.map(org => (
-              <DropdownMenuItem className="gap-2 p-2" key={org.id} onClick={onOrgSelect.bind(null, org)}>
+            {user.memberships.map(({ organization: { id, avatar_url, name }, role }) => (
+              <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
-                  {org.avatar_url && <AvatarImage alt={org.avatar_url} src={org.avatar_url} />}
-                  <AvatarFallback className="text-muted-foreground">
-                    {org.name.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
+                  {avatar_url && <AvatarImage alt={name} src={avatar_url} />}
+                  <AvatarFallback className="text-muted-foreground">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="flex items-center truncate font-semibold">
-                    {org.name}
-                    {org.id === organization.id && (
+                    {name}
+                    {id === organization.id && (
                       <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
                     )}
                   </span>
-                  <span className="truncate font-normal text-muted-foreground text-xs">{titleize(org.role)}</span>
+                  <span className="truncate font-normal text-muted-foreground text-xs">{titleize(role)}</span>
                 </div>
               </DropdownMenuItem>
             ))}
@@ -267,14 +273,12 @@ const AppSidebarMain = () => {
   const { user } = useSession()
   const t = useTranslations('Layout')
 
-  const showCertificates = useMemo(() => !user.canEdit, [user.canEdit])
-
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4 gap-3">
         <AppSidebarItem label={t('dashboard')} route="/dashboard" />
         <AppSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
-        {showCertificates && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
+        {!user.canEdit && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
         <AppSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
           <AppSidebarItem label={t('docsIntro')} route="/docs/intro" subItem />
           <AppSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
@@ -286,7 +290,7 @@ const AppSidebarMain = () => {
   )
 }
 
-const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) => {
+const AppSidebarUser = ({ organization }: { organization: UserOrganization | null }) => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
 
@@ -468,7 +472,7 @@ const AppSidebarUser = ({ organization }: { organization?: UserOrganization }) =
                       onClick={onLogoutClick}
                       variant="destructive"
                     >
-                      {t('logoutConfirm', { app: metadata.applicationName })}
+                      {t('logoutConfirm')}
                     </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>

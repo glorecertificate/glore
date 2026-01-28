@@ -18,7 +18,11 @@ export const LoadingFallback = ({
 
   return (
     <div
-      className={cn('flex items-center justify-center', size === 'full' && 'h-full min-h-svh pb-8', className)}
+      className={cn(
+        'flex cursor-wait items-center justify-center',
+        size === 'full' && 'h-full min-h-svh pb-8',
+        className
+      )}
       {...props}
     >
       {spinner && <Spinner size="lg" variant={variant} {...spinnerProps} />}

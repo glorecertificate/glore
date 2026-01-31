@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 
 import { GloreIcon } from '@/components/icons/glore'
-import { ErrorPage, type ErrorProps } from '@/components/layout/error-page'
+import { ErrorFallback, type ErrorProps } from '@/components/layout/error-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { APP_ROOT } from '@/lib/constants'
@@ -23,7 +23,7 @@ export default ({ error }: ErrorProps) => {
   const canGoBack = document.referrer?.startsWith(window.location.origin) && document.referrer !== window.location.href
 
   return (
-    <ErrorPage
+    <ErrorFallback
       className="min-h-[calc(100vh-4rem)]"
       header={
         <header className="flex h-16 w-full items-center justify-center px-4">
@@ -47,6 +47,6 @@ export default ({ error }: ErrorProps) => {
       <Button onClick={() => window.location.reload()} size="lg" variant="outline">
         {t('refreshPage')}
       </Button>
-    </ErrorPage>
+    </ErrorFallback>
   )
 }

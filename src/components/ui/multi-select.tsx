@@ -16,6 +16,7 @@ import { cn } from '@/lib/utils'
 
 const MultiSelectContext = createContext<{
   disabled: boolean
+  label?: string
   loading: boolean
   min: number
   open: boolean
@@ -37,7 +38,7 @@ export const MultiSelect = ({
   disabled,
   label,
   loading,
-  min = 1,
+  min = 0,
   onChange,
   options,
   toast: toastOptions,
@@ -53,7 +54,7 @@ export const MultiSelect = ({
   toast?: ToastT
   value: string[]
 }) => {
-  const t = useTranslations('Common')
+  const t = useTranslations('Components.MultiSelect')
 
   const [open, setOpen] = useState(false)
   const [selectTime, setSelectTime] = useState<number | null>(null)
@@ -86,6 +87,7 @@ export const MultiSelect = ({
     <MultiSelectContext.Provider
       value={{
         disabled: !!disabled,
+        label,
         loading: !!loading,
         min,
         open,
@@ -103,121 +105,19 @@ export const MultiSelect = ({
   )
 }
 
-export const MultiSelectBadge = ({
-  children,
-  className,
-  disabled: badgeDisabled,
-  disabledMessage,
-  label,
-  tooltipDelay = 500,
-  value,
-  ...props
-}: React.ComponentProps<typeof Badge> & {
-  disabled?: boolean
-  disabledMessage?: string
-  label?: string
-  tooltipDelay?: number
-  value: string
-}) => {
-  const t = useTranslations('Common')
-  const { disabled: rootDisabled, selectOption } = useMultiSelect()
-  const disabled = rootDisabled || badgeDisabled
-
-  const title = useMemo(() => {
-    if (disabled) return
-    if (!label) return t('removeItem')
-    return `${t('remove')} ${label}`
-  }, [disabled, label, t])
-
-  const onKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (disabled || e.key !== 'Enter') return
-      selectOption(value)
-    },
-    [disabled, selectOption, value]
-  )
-
-  const badge = (
-    <Badge
-      asChild
-      className={cn(
-        'group/multi-select-badge gap-0.5 px-2',
-        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
-        className
-      )}
-      onClick={() => selectOption(value)}
-      onKeyDown={onKeyDown}
-      tabIndex={0}
-      title={title}
-      {...props}
-    >
-      <span>
-        {children ?? label}
-        <span
-          className={cn(
-            'translate-x-0.75 rounded-full p-[1.5px] transition-all',
-            !disabled &&
-              'group-hover/multi-select-badge:border-destructive-accent group-hover/multi-select-badge:bg-destructive/75 group-hover/multi-select-badge:text-destructive-foreground'
-          )}
-          role="button"
-        >
-          <XIcon className={cn('size-2', !disabled && 'group-hover/multi-select-badge:stroke-white')} />
-        </span>
-      </span>
-    </Badge>
-  )
-
-  if (!(disabled && disabledMessage)) return badge
-
-  return (
-    <Tooltip delayDuration={tooltipDelay} disableHoverableContent>
-      <TooltipTrigger asChild>{badge}</TooltipTrigger>
-      <TooltipContent align="center" className="text-[11px]" side="top">
-        {disabledMessage}
-      </TooltipContent>
-    </Tooltip>
-  )
-}
-
-export const MultiSelectItem = ({
-  children,
-  className,
-  label,
-  value,
-  ...props
-}: React.ComponentProps<typeof CommandItem> & {
-  label?: string
-  value: string
-}) => {
-  const { min, selectOption, value: rootValue } = useMultiSelect()
-  const selected = rootValue.includes(value)
-
-  return (
-    <CommandItem
-      className={cn(
-        'group/item w-full pr-6',
-        selected ? (rootValue.length === min ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer'
-      )}
-      onSelect={() => selectOption(value)}
-      value={value}
-      {...props}
-    >
-      <CheckIcon className={cn('size-4', selected ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30')} />
-      <div className="flex items-center gap-1.5">{children ?? label}</div>
-    </CommandItem>
-  )
-}
-
 export const MultiSelectTrigger = ({
   children,
   disabled: triggerDisabled,
   className,
   onClick,
   placeholder,
+  position = 'end',
   ...props
 }: React.ComponentProps<typeof PopoverTrigger> & {
   disabled?: boolean
   placeholder?: string
+  /** @default 'start' */
+  position?: 'start' | 'end'
 }) => {
   const { disabled: rootDisabled, open, setOpen, value } = useMultiSelect()
   const disabled = rootDisabled || triggerDisabled
@@ -251,9 +151,9 @@ export const MultiSelectTrigger = ({
       onClick={onTriggerClick}
       {...props}
     >
-      <div className="flex flex-1 justify-between overflow-hidden">
+      <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
         <div
-          className="flex flex-1 gap-1 overflow-x-auto px-3 py-2"
+          className="flex flex-1 gap-1 overflow-x-auto px-2 py-2"
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: 'hsl(var(--border)) transparent',
@@ -264,7 +164,7 @@ export const MultiSelectTrigger = ({
         <hr className="mx-0.5 my-auto h-6 border-border border-l" />
         <span
           className={cn(
-            'mx-1.5 my-auto h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+            'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             open && 'cursor-default bg-accent/50'
           )}
           onClick={openDropdown}
@@ -275,6 +175,141 @@ export const MultiSelectTrigger = ({
         </span>
       </div>
     </PopoverTrigger>
+  )
+}
+
+export const MultiSelectBadge = ({
+  children,
+  className,
+  disabled: badgeDisabled,
+  disabledMessage,
+  label,
+  tooltipDelay = 500,
+  value,
+  ...props
+}: React.ComponentProps<typeof Badge> & {
+  disabled?: boolean
+  disabledMessage?: string
+  label?: string
+  tooltipDelay?: number
+  value: string
+}) => {
+  const t = useTranslations('Components.MultiSelect')
+  const { disabled: rootDisabled, label: rootLabel, selectOption } = useMultiSelect()
+  const disabled = rootDisabled || badgeDisabled
+
+  const title = useMemo(() => {
+    if (disabled) return
+    if (!(label || rootLabel)) return t('removeItem')
+    return `${t('remove')} ${label ?? rootLabel}`
+  }, [disabled, label, rootLabel, t])
+
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (disabled || e.key !== 'Enter') return
+      selectOption(value)
+    },
+    [disabled, selectOption, value]
+  )
+
+  const badge = (
+    <Badge
+      asChild
+      className={cn(
+        'group/multi-select-badge gap-0.5 px-2',
+        disabled ? 'cursor-not-allowed' : 'cursor-pointer',
+        className
+      )}
+      onClick={() => selectOption(value)}
+      onKeyDown={onKeyDown}
+      tabIndex={0}
+      title={title}
+      {...props}
+    >
+      <span>
+        {children ?? label}
+        <span
+          className={cn(
+            'translate-x-0.75 rounded-full p-[1.5px] transition-all',
+            !disabled && [
+              'group-hover/multi-select-badge:border-destructive-accent group-hover/multi-select-badge:bg-destructive/75 group-hover/multi-select-badge:text-destructive-foreground',
+              'group-focus/multi-select-badge:border-destructive-accent group-focus/multi-select-badge:bg-destructive/75 group-focus/multi-select-badge:text-destructive-foreground',
+            ]
+          )}
+          role="button"
+        >
+          <XIcon className={cn('size-2', !disabled && 'group-hover/multi-select-badge:stroke-white')} />
+        </span>
+      </span>
+    </Badge>
+  )
+
+  if (!(disabled && disabledMessage)) return badge
+
+  return (
+    <Tooltip delayDuration={tooltipDelay} disableHoverableContent>
+      <TooltipTrigger asChild>{badge}</TooltipTrigger>
+      <TooltipContent align="center" className="text-[11px]" side="top">
+        {disabledMessage}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+export const MultiSelectBadgeCount = ({ children, className, ...props }: React.ComponentProps<typeof Badge>) => {
+  const t = useTranslations('Components.MultiSelect')
+  const { open, setOpen } = useMultiSelect()
+
+  const onSelect = useCallback(() => {
+    if (open) return
+    setOpen(true)
+  }, [open, setOpen])
+
+  return (
+    <Badge
+      className={cn('cursor-pointer gap-0.5 px-2', className)}
+      onClick={onSelect}
+      onKeyDown={e => {
+        if (e.key === 'Enter') {
+          onSelect()
+        }
+      }}
+      tabIndex={0}
+      title={t('seeAllSelected')}
+      {...props}
+    >
+      {children}
+    </Badge>
+  )
+}
+
+export const MultiSelectItem = ({
+  children,
+  className,
+  label,
+  value,
+  ...props
+}: React.ComponentProps<typeof CommandItem> & {
+  label?: string
+  value: string
+}) => {
+  const { min, selectOption, value: rootValue } = useMultiSelect()
+  const selected = rootValue.includes(value)
+
+  return (
+    <CommandItem
+      className={cn(
+        'group/item w-full pr-6',
+        selected ? (rootValue.length === min ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer',
+        className
+      )}
+      onSelect={() => selectOption(value)}
+      value={value}
+      {...props}
+    >
+      <CheckIcon className={cn('size-4', selected ? 'opacity-100' : 'opacity-0 group-hover/item:opacity-30')} />
+      <div className="flex items-center gap-1.5">{children ?? label}</div>
+    </CommandItem>
   )
 }
 

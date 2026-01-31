@@ -1,11 +1,12 @@
 import { publicFile } from '@/lib/storage'
+import { type IconProps } from '@/lib/types'
 
-export const GloreIcon = ({ height, width, ...props }: React.SVGProps<SVGSVGElement>) => (
+export const GloreIcon = ({ height, width, ...props }: IconProps) => (
   <svg viewBox="0 0 1176 372" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" {...props}>
     <pattern height="1" id="4b703" patternContentUnits="objectBoundingBox" width="1">
       <image
         height="225"
-        href={publicFile('icon.png')}
+        href={publicFile('/icon.png')}
         preserveAspectRatio="none"
         transform="matrix(.00445119 0 0 .00405119 0.02 0)"
         width="225"

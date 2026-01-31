@@ -7,6 +7,7 @@ import { cacheTag, updateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { getAuthUser } from '@/actions/auth'
+import { sendEmail } from '@/actions/email'
 import { getDatabase } from '@/db/client'
 import { resolveQuery } from '@/db/helpers'
 import { parseUser, userQuery } from '@/db/queries/user'
@@ -47,14 +48,18 @@ export const findUser = async (id: string) => {
 export const findUserEmail = async (username: string) => {
   const db = await getDatabase()
 
-  const query = db.from('users').select('email').or(`email.eq.${username},username.eq.${username}`).single()
+  const query = db
+    .from('users')
+    .select('email')
+    .or(`email.eq."${username.replaceAll('"', '')}",username.eq."${username.replaceAll('"', '')}"`)
+    .single()
   const response = await fetchUserEmail(query)
 
   updateTag(CacheTag.UserEmail)
   return response
 }
 
-export const updateUser = async (id: string, values: TableUpdate<'users'>) => {
+export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
   const db = await getDatabase()
 
   const query = db.from('users').update(values).eq('id', id).select(userQuery).single()
@@ -62,5 +67,27 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>) => {
   if (error || !data) throw error || new Error('Failed to update user')
 
   updateTag(CacheTag.User)
+
+  if (values.email && previousEmail && values.email !== previousEmail) {
+    const emailProps = {
+      username: data.first_name ?? undefined,
+      locale: data.locale ?? undefined,
+      newEmail: values.email,
+      oldEmail: previousEmail,
+    }
+
+    sendEmail('account/email-changed', {
+      ...emailProps,
+      to: values.email,
+      variant: 'new',
+    }).catch(console.error)
+
+    sendEmail('account/email-changed', {
+      ...emailProps,
+      to: previousEmail,
+      variant: 'old',
+    }).catch(console.error)
+  }
+
   return data
 }

@@ -17,8 +17,9 @@ import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { useCookies } from '@/hooks/use-cookies'
 import { useDevice } from '@/hooks/use-device'
+import { toPx, useSidebarResize } from '@/hooks/use-sidebar-resize'
+import { type CookieName, prefixCookieName } from '@/lib/cookies'
 import { cn } from '@/lib/utils'
 
 export const SIDEBAR_WIDTH = '16rem'
@@ -27,342 +28,10 @@ export const MAX_SIDEBAR_WIDTH = '20rem'
 export const SIDEBAR_WIDTH_MOBILE = '18rem'
 export const SIDEBAR_WIDTH_ICON = '3rem'
 
-const parseWidth = (width: string) => {
-  const unit = width.endsWith('rem') ? 'rem' : 'px'
-  const value = Number.parseFloat(width)
-  return { value, unit }
-}
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 
-const toPx = (width: string) => {
-  const { value, unit } = parseWidth(width)
-  return unit === 'rem' ? value * 16 : value
-}
-
-const formatWidth = (value: number, unit: string) => {
-  if (unit === 'rem') {
-    const precise = Number.parseFloat(value.toFixed(3))
-    return `${precise}${unit}`
-  }
-  return `${Math.round(value)}${unit}`
-}
-
-/**
- * Hook for handling resizable sidebars, working for both sidebar (left side) and artifacts (right side) panels.
- * Supports VS Code-like continuous drag to collapse/expand.
- */
-export const useSidebarResize = ({
-  autoCollapseThreshold = 1.5,
-  currentWidth,
-  direction = 'right',
-  enableAutoCollapse = true,
-  enableDrag = true,
-  enableToggle = true,
-  expandThreshold = 0.2,
-  isCollapsed = false,
-  isNested = false,
-  maxResizeWidth = '22rem',
-  minResizeWidth = '14rem',
-  onResize,
-  onToggle,
-  setIsDraggingRail = () => {},
-}: {
-  autoCollapseThreshold?: number
-  currentWidth: string
-  direction?: 'left' | 'right'
-  enableAutoCollapse?: boolean
-  enableDrag?: boolean
-  enableToggle?: boolean
-  expandThreshold?: number
-  isCollapsed?: boolean
-  isNested?: boolean
-  maxResizeWidth?: string
-  minResizeWidth?: string
-  onResize: (width: string, options?: { syncState?: boolean }) => void
-  onToggle?: () => void
-  setIsDraggingRail?: (isDragging: boolean) => void
-}) => {
-  const dragRef = useRef<HTMLButtonElement>(null)
-  const startWidth = useRef(0)
-  const startX = useRef(0)
-  const isDragging = useRef(false)
-  const isInteractingWithRail = useRef(false)
-  const lastWidth = useRef(0)
-  const lastLoggedWidth = useRef(0)
-  const dragStartPoint = useRef(0)
-  const lastDragDirection = useRef<'expand' | 'collapse' | null>(null)
-  const lastTogglePoint = useRef(0)
-  const lastToggleWidth = useRef(0)
-  const toggleCooldown = useRef(false)
-  const lastToggleTime = useRef(0)
-  const dragDistanceFromToggle = useRef(0)
-  const dragOffset = useRef(0)
-  const railRect = useRef<DOMRect | null>(null)
-  const autoCollapseThresholdPx = useRef(0)
-  const resizeAnimationFrame = useRef<number | null>(null)
-  const pendingWidth = useRef<string | null>(null)
-  const latestWidth = useRef(currentWidth)
-  const shouldRestoreRail = useRef(false)
-
-  const minWidthPx = useMemo(() => toPx(minResizeWidth), [minResizeWidth])
-  const maxWidthPx = useMemo(() => toPx(maxResizeWidth), [maxResizeWidth])
-
-  const isIncreasingWidth = useCallback(
-    (currentX: number, referenceX: number): boolean =>
-      direction === 'left' ? currentX < referenceX : currentX > referenceX,
-    [direction]
-  )
-
-  const calculateWidth = useCallback(
-    (e: MouseEvent, initialX: number, initialWidth: number, currentRailRect: DOMRect | null) => {
-      if (isNested && currentRailRect) {
-        const deltaX = e.clientX - initialX
-        return direction === 'left' ? initialWidth - deltaX : initialWidth + deltaX
-      }
-      if (direction === 'left') {
-        return window.innerWidth - e.clientX
-      }
-      return e.clientX
-    },
-    [direction, isNested]
-  )
-
-  useEffect(() => {
-    autoCollapseThresholdPx.current = enableAutoCollapse ? minWidthPx * autoCollapseThreshold : 0
-  }, [minWidthPx, enableAutoCollapse, autoCollapseThreshold])
-
-  useEffect(() => {
-    latestWidth.current = currentWidth
-  }, [currentWidth])
-
-  const commitResize = useCallback(
-    (width: string, options?: { syncState?: boolean }) => {
-      latestWidth.current = width
-      onResize(width, options)
-    },
-    [onResize]
-  )
-
-  const flushResize = useCallback(
-    (options?: { syncState?: boolean }) => {
-      if (resizeAnimationFrame.current !== null) {
-        if (typeof cancelAnimationFrame === 'function') {
-          cancelAnimationFrame(resizeAnimationFrame.current)
-        }
-        resizeAnimationFrame.current = null
-      }
-      const widthToCommit = pendingWidth.current ?? latestWidth.current
-      pendingWidth.current = null
-      if (widthToCommit) {
-        commitResize(widthToCommit, options)
-      }
-    },
-    [commitResize]
-  )
-
-  const scheduleResize = useCallback(
-    (width: string) => {
-      pendingWidth.current = width
-      latestWidth.current = width
-      if (typeof requestAnimationFrame !== 'function') {
-        commitResize(width, { syncState: false })
-        pendingWidth.current = null
-        return
-      }
-      if (resizeAnimationFrame.current !== null) return
-      resizeAnimationFrame.current = requestAnimationFrame(() => {
-        resizeAnimationFrame.current = null
-        if (pendingWidth.current !== null) {
-          commitResize(pendingWidth.current, { syncState: false })
-          pendingWidth.current = null
-        }
-      })
-    },
-    [commitResize]
-  )
-
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent) => {
-      isInteractingWithRail.current = true
-      if (!enableDrag) return
-
-      const currentWidthPx = isCollapsed ? 0 : toPx(currentWidth)
-      startWidth.current = currentWidthPx
-      startX.current = e.clientX
-      dragStartPoint.current = e.clientX
-      lastWidth.current = currentWidthPx
-      lastLoggedWidth.current = currentWidthPx
-      lastTogglePoint.current = e.clientX
-      lastToggleWidth.current = currentWidthPx
-      lastDragDirection.current = null
-      toggleCooldown.current = false
-      lastToggleTime.current = 0
-      dragDistanceFromToggle.current = 0
-      dragOffset.current = 0
-      railRect.current = isNested && dragRef.current ? dragRef.current.getBoundingClientRect() : null
-
-      e.preventDefault()
-    },
-    [enableDrag, isCollapsed, currentWidth, isNested]
-  )
-
-  const onMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!isInteractingWithRail.current) return
-
-      const deltaX = Math.abs(e.clientX - startX.current)
-
-      if (!isDragging.current && deltaX > 5) {
-        isDragging.current = true
-        setIsDraggingRail(true)
-      }
-
-      if (shouldRestoreRail.current && isDragging.current) {
-        shouldRestoreRail.current = false
-        setIsDraggingRail(true)
-      }
-
-      if (isDragging.current) {
-        const { unit } = parseWidth(currentWidth)
-
-        let currentRailRect = railRect.current
-        if (isNested && dragRef.current) {
-          currentRailRect = dragRef.current.getBoundingClientRect()
-        }
-
-        const currentDragDirection = isIncreasingWidth(e.clientX, lastTogglePoint.current) ? 'expand' : 'collapse'
-
-        if (lastDragDirection.current !== currentDragDirection) {
-          lastDragDirection.current = currentDragDirection
-        }
-
-        dragDistanceFromToggle.current = Math.abs(e.clientX - lastTogglePoint.current)
-
-        const now = Date.now()
-        if (toggleCooldown.current && now - lastToggleTime.current > 200) {
-          toggleCooldown.current = false
-        }
-
-        if (!toggleCooldown.current) {
-          if (enableAutoCollapse && onToggle && !isCollapsed) {
-            const currentDragWidth = calculateWidth(e, startX.current, startWidth.current, currentRailRect)
-
-            let shouldCollapse = false
-
-            if (autoCollapseThreshold <= 1.0) {
-              shouldCollapse = currentDragWidth <= minWidthPx * autoCollapseThreshold
-            }
-            if (autoCollapseThreshold > 1.0 && currentDragWidth <= minWidthPx) {
-              const extraDragNeeded = minWidthPx * (autoCollapseThreshold - 1.0)
-              const distanceBeyondMin = minWidthPx - currentDragWidth
-              shouldCollapse = distanceBeyondMin >= extraDragNeeded
-            }
-
-            if (currentDragDirection === 'collapse' && shouldCollapse) {
-              flushResize()
-              shouldRestoreRail.current = true
-              setIsDraggingRail(false)
-              onToggle()
-              lastTogglePoint.current = e.clientX
-              lastToggleWidth.current = 0
-              toggleCooldown.current = true
-              lastToggleTime.current = now
-              return
-            }
-          }
-
-          if (
-            onToggle &&
-            isCollapsed &&
-            currentDragDirection === 'expand' &&
-            dragDistanceFromToggle.current > minWidthPx * expandThreshold
-          ) {
-            flushResize()
-            onToggle()
-
-            const initialWidth = calculateWidth(e, startX.current, startWidth.current, currentRailRect)
-            const clampedWidth = Math.max(minWidthPx, Math.min(maxWidthPx, initialWidth))
-
-            const formattedWidth = formatWidth(unit === 'rem' ? clampedWidth / 16 : clampedWidth, unit)
-            scheduleResize(formattedWidth)
-
-            lastTogglePoint.current = e.clientX
-            lastToggleWidth.current = clampedWidth
-            toggleCooldown.current = true
-            lastToggleTime.current = now
-            return
-          }
-        }
-
-        if (isCollapsed) return
-
-        const newWidthPx = calculateWidth(e, startX.current, startWidth.current, currentRailRect)
-        const clampedWidthPx = Math.max(minWidthPx, Math.min(maxWidthPx, newWidthPx))
-        const newWidth = unit === 'rem' ? clampedWidthPx / 16 : clampedWidthPx
-        const formattedWidth = formatWidth(newWidth, unit)
-        scheduleResize(formattedWidth)
-
-        lastWidth.current = clampedWidthPx
-      }
-    },
-    [
-      onToggle,
-      isCollapsed,
-      currentWidth,
-      minWidthPx,
-      maxWidthPx,
-      isIncreasingWidth,
-      calculateWidth,
-      isNested,
-      enableAutoCollapse,
-      autoCollapseThreshold,
-      expandThreshold,
-      setIsDraggingRail,
-      flushResize,
-      scheduleResize,
-    ]
-  )
-
-  const handleMouseUp = useCallback(() => {
-    if (!isInteractingWithRail.current) return
-
-    flushResize({ syncState: true })
-
-    if (!isDragging.current && onToggle && enableToggle) {
-      onToggle()
-    }
-
-    isDragging.current = false
-    isInteractingWithRail.current = false
-    lastWidth.current = 0
-    lastLoggedWidth.current = 0
-    lastDragDirection.current = null
-    lastTogglePoint.current = 0
-    lastToggleWidth.current = 0
-    toggleCooldown.current = false
-    lastToggleTime.current = 0
-    dragDistanceFromToggle.current = 0
-    dragOffset.current = 0
-    railRect.current = null
-    shouldRestoreRail.current = false
-    setIsDraggingRail(false)
-  }, [onToggle, enableToggle, setIsDraggingRail, flushResize])
-
-  useEffect(() => {
-    document.addEventListener('mousemove', onMouseMove)
-    document.addEventListener('mouseup', handleMouseUp)
-
-    return () => {
-      document.removeEventListener('mousemove', onMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-      flushResize()
-    }
-  }, [flushResize, handleMouseUp, onMouseMove])
-
-  return {
-    dragRef,
-    isDragging,
-    onMouseDown,
-  }
+const setSidebarCookie = (name: CookieName, value: string) => {
+  document.cookie = `${prefixCookieName(name)}=${value}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`
 }
 
 interface SidebarContext {
@@ -405,7 +74,6 @@ export const SidebarProvider = ({
   onOpenChange?: (open: boolean) => void
   open?: boolean
 }) => {
-  const cookies = useCookies()
   const { isMobile } = useDevice()
   const pathname = usePathname()
   const t = useTranslations('Components.Sidebar')
@@ -418,35 +86,30 @@ export const SidebarProvider = ({
   const [_open, _setOpen] = useState(defaultOpen)
   const open = openProp ?? _open
 
-  const widthValueRef = useRef(defaultWidth)
+  const openRef = useRef(open)
+  const setOpenPropRef = useRef(setOpenProp)
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   const state = open ? 'expanded' : 'collapsed'
   const action = open ? t('close') : t('open')
 
+  useEffect(() => {
+    openRef.current = open
+    setOpenPropRef.current = setOpenProp
+  })
+
   const applyWidth = useCallback((value: string) => {
-    widthValueRef.current = value
-    if (typeof document !== 'undefined') {
-      document.documentElement.style.setProperty('--sidebar-width', value)
-    }
+    document.documentElement.style.setProperty('--sidebar-width', value)
     if (wrapperRef.current) {
       wrapperRef.current.style.setProperty('--sidebar-width', value)
     }
   }, [])
 
-  useEffect(() => {
-    applyWidth(widthValueRef.current)
-  }, [applyWidth])
-
-  const setOpen = useCallback(
-    (value: boolean | ((value: boolean) => boolean)) => {
-      const openState = typeof value === 'function' ? value(open) : value
-      const openFn = setOpenProp ?? _setOpen
-      openFn(openState)
-      cookies.set('sidebarOpen', openState)
-    },
-    [setOpenProp, open, cookies.set]
-  )
+  const setOpen = useCallback((value: boolean | ((value: boolean) => boolean)) => {
+    const openState = typeof value === 'function' ? value(openRef.current) : value
+    ;(setOpenPropRef.current ?? _setOpen)(openState)
+    setSidebarCookie('sidebarOpen', String(openState))
+  }, [])
 
   const handleSetWidth = useCallback(
     (value: string, options?: { syncState?: boolean }) => {
@@ -454,11 +117,11 @@ export const SidebarProvider = ({
       if (options?.syncState ?? true) {
         startTransition(() => {
           setWidth(value)
-          cookies.set('sidebarWidth', value)
+          setSidebarCookie('sidebarWidth', value)
         })
       }
     },
-    [applyWidth, cookies.set]
+    [applyWidth]
   )
 
   const toggleSidebar = useCallback(
@@ -522,7 +185,7 @@ export const SidebarProvider = ({
           ref={wrapperRef}
           style={
             {
-              '--sidebar-width': defaultWidth,
+              '--sidebar-width': width,
               '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
               ...style,
             } as React.CSSProperties
@@ -657,6 +320,16 @@ export const SidebarRail = ({
 }) => {
   const { action, setIsDraggingRail, setWidth, state, toggleSidebar, width } = useSidebar()
 
+  const railCursor = useMemo(() => {
+    if (state === 'collapsed') return 'e-resize'
+    const currentPx = toPx(width)
+    const minPx = toPx(MIN_SIDEBAR_WIDTH)
+    const maxPx = toPx(MAX_SIDEBAR_WIDTH)
+    if (currentPx <= minPx + 1) return 'e-resize'
+    if (currentPx >= maxPx - 1) return 'w-resize'
+    return 'ew-resize'
+  }, [state, width])
+
   const { dragRef, onMouseDown } = useSidebarResize({
     currentWidth: width,
     direction: 'right',
@@ -688,8 +361,6 @@ export const SidebarRail = ({
       aria-label={action}
       className={cn(
         'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex',
-        'in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize',
-        '[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize',
         'group-data-[collapsible=offcanvas]:translate-x-0 hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:after:left-full',
         '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
         '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
@@ -698,6 +369,7 @@ export const SidebarRail = ({
       data-sidebar="rail"
       onMouseDown={onMouseDown}
       ref={combinedRef}
+      style={{ cursor: railCursor }}
       tabIndex={-1}
       title={action}
       {...props}
@@ -809,30 +481,27 @@ export const SidebarMenuItem = ({ className, ...props }: React.ComponentProps<'l
   <li className={cn('group/menu-item relative', className)} data-sidebar="menu-item" {...props} />
 )
 
-export interface SidebarMenuButtonProps
-  extends React.ComponentProps<'button'>,
-    VariantProps<typeof sidebarMenuButtonVariants> {
-  asChild?: boolean
-  isActive?: boolean
-  tooltip?: string | React.ComponentProps<typeof TooltipContent>
-}
-
 export const SidebarMenuButton = ({
+  active = false,
   asChild = false,
-  isActive = false,
-  variant = 'default',
+  className,
   size = 'default',
   tooltip,
-  className,
+  variant = 'default',
   ...props
-}: SidebarMenuButtonProps) => {
-  const Comp = asChild ? Slot : 'button'
+}: React.ComponentProps<'button'> &
+  VariantProps<typeof sidebarMenuButtonVariants> & {
+    active?: boolean
+    asChild?: boolean
+    tooltip?: string | React.ComponentProps<typeof TooltipContent>
+  }) => {
+  const Component = asChild ? Slot : 'button'
   const { isMobile, state } = useSidebar()
 
   const button = (
-    <Comp
+    <Component
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-      data-active={isActive}
+      data-active={active || undefined}
       data-sidebar="menu-button"
       data-size={size}
       {...props}
@@ -858,10 +527,10 @@ export const SidebarMenuButton = ({
 export const sidebarMenuButtonVariants = cva(
   `
     peer/menu-button 
-    flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-hidden transition-[width,height,padding] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50
-    text-foreground/90 ring-sidebar-ring
+    flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left outline-hidden transition-[width,height,padding,color,background-color] disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50
+    text-foreground/75 ring-sidebar-ring
     hover:bg-sidebar-accent hover:text-foreground
-    data-[active=true]:bg-sidebar-accent data-[active=true]:text-bw! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-foreground
+    data-active:bg-sidebar-accent data-active:text-bw! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-foreground
     focus-visible:ring-2
     group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>svg]:size-4 [&>svg]:shrink-0
     [&>span:last-child]:truncate
@@ -895,10 +564,10 @@ export const SidebarMenuAction = ({
   asChild?: boolean
   showOnHover?: boolean
 }) => {
-  const Comp = asChild ? Slot : 'button'
+  const Component = asChild ? Slot : 'button'
 
   return (
-    <Comp
+    <Component
       className={cn(
         'absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-hidden ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0',
         'after:absolute after:-inset-2 md:after:hidden',
@@ -907,7 +576,7 @@ export const SidebarMenuAction = ({
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
-          'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0',
+          'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-active/menu-button:text-sidebar-accent-foreground md:opacity-0',
         className
       )}
       data-sidebar="menu-action"
@@ -920,7 +589,7 @@ export const SidebarMenuBadge = ({ className, ...props }: React.ComponentProps<'
   <div
     className={cn(
       'pointer-events-none absolute right-1 flex h-5 min-w-5 select-none items-center justify-center rounded-md px-1 font-medium text-sidebar-foreground text-xs tabular-nums',
-      'peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground',
+      'peer-hover/menu-button:text-sidebar-accent-foreground peer-data-active/menu-button:text-sidebar-accent-foreground',
       'peer-data-[size=sm]/menu-button:top-1',
       'peer-data-[size=default]/menu-button:top-1.5',
       'peer-data-[size=lg]/menu-button:top-2.5',
@@ -976,29 +645,29 @@ export const SidebarMenuSub = ({ className, ...props }: React.ComponentProps<'ul
 export const SidebarMenuSubItem = ({ ...props }: React.ComponentProps<'li'>) => <li {...props} />
 
 export const SidebarMenuSubButton = ({
+  active,
   asChild = false,
-  size = 'md',
-  isActive,
   className,
+  size = 'md',
   ...props
 }: React.ComponentProps<'a'> & {
+  active?: boolean
   asChild?: boolean
   size?: 'sm' | 'md'
-  isActive?: boolean
 }) => {
-  const Comp = asChild ? Slot : 'a'
+  const Component = asChild ? Slot : 'a'
 
   return (
-    <Comp
+    <Component
       className={cn(
         'flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-hidden ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground',
-        'data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground',
+        'data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground',
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',
         'group-data-[collapsible=icon]:hidden',
         className
       )}
-      data-active={isActive}
+      data-active={active || undefined}
       data-sidebar="menu-sub-button"
       data-size={size}
       {...props}

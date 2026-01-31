@@ -203,9 +203,10 @@
 
   html.theme-transition,
   html.theme-transition :where(*, *::before, *::after) {
-    @apply duration-250 transition-colors motion-reduce:transition-none;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, outline-color;
+    @apply duration-250 motion-reduce:transition-none;
   }
-  html.theme-view-transition {
+  html.theme-transition-view {
     view-transition-name: theme;
   }
   ::view-transition-old(theme),

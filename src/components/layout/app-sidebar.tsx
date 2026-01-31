@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { redirect, useRouter } from 'next/navigation'
+import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type AppRoutes } from 'next/types/routes'
 
 import {
@@ -58,7 +58,6 @@ import {
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
-  type SidebarMenuButtonProps,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
@@ -74,7 +73,7 @@ import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'
 
-interface SidebarItemProps extends SidebarMenuButtonProps {
+interface AppSidebarItemProps extends React.ComponentProps<typeof SidebarMenuButton> {
   icon?: Icon
   label: string
   route: AppRoutes
@@ -89,15 +88,16 @@ const AppSidebarItem = ({
   onClick,
   route,
   subItem,
-}: SidebarItemProps) => {
+}: AppSidebarItemProps) => {
   const { activePath, setActivePath } = useSidebar()
+  const searchParams = useSearchParams()
 
   const Component = useMemo(
     () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
     [asChild, subItem]
   )
 
-  const isActivePath = route === activePath
+  const isActivePath = useMemo(() => route === activePath && searchParams.size === 0, [route, activePath, searchParams])
 
   const isActive = useMemo(() => {
     if (isActivePath || subItem) return isActivePath
@@ -116,18 +116,15 @@ const AppSidebarItem = ({
   return (
     <Component>
       <SidebarMenuButton
+        active={isActive}
         asChild
         className={cn(
-          cn(
-            subItem ? 'text-[13px]' : 'py-4 font-medium',
-            subItem &&
-              'border-transparent border-l-2 py-1.5 text-sidebar-foreground/70 hover:text-sidebar-foreground data-[active=true]:rounded-l-none data-[active=true]:border-sidebar-border',
-            isActive && 'cursor-default',
-            isActivePath && 'pointer-events-none',
-            className
-          )
+          subItem
+            ? 'border-transparent border-l-2 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-border/50 data-active:font-medium data-active:text-sidebar-foreground'
+            : 'py-3 font-medium data-active:shadow-[inset_3px_0_0_var(--color-primary)]',
+          isActivePath && 'pointer-events-none',
+          className
         )}
-        isActive={isActive}
         onClick={handleClick}
         tooltip={label}
       >
@@ -135,7 +132,7 @@ const AppSidebarItem = ({
           {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
           ) : Icon ? (
-            <Icon className={cn('text-muted-foreground', isActive && 'text-sidebar-accent-foreground')} />
+            <Icon className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-foreground/80')} />
           ) : null}
           {label}
         </Link>
@@ -144,7 +141,7 @@ const AppSidebarItem = ({
   )
 }
 
-const AppSidebarCollapsible = ({ children, icon, label, route }: SidebarItemProps) => {
+const AppSidebarCollapsible = ({ children, icon, label, route }: AppSidebarItemProps) => {
   const { activePath } = useSidebar()
   const [open, setOpen] = useState(activePath.startsWith(route))
 
@@ -156,10 +153,10 @@ const AppSidebarCollapsible = ({ children, icon, label, route }: SidebarItemProp
         </CollapsibleTrigger>
         <CollapsibleTrigger asChild>
           <SidebarMenuAction
-            className={cn('cursor-pointer data-[state=open]:rotate-90')}
+            className="cursor-pointer data-[state=open]:rotate-90"
             onClick={() => setOpen(open => !open)}
           >
-            <ChevronRightIcon className="stroke-foreground/64" />
+            <ChevronRightIcon className="text-foreground/64" />
           </SidebarMenuAction>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -192,7 +189,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
       }, 200)
       router.push(APP_ROOT)
     },
-    [router, setActivePath, setOrganization, cookies.set]
+    [router, setActivePath, setOrganization, cookies.set, cookies]
   )
 
   return (
@@ -290,6 +287,34 @@ const AppSidebarMain = () => {
   )
 }
 
+const AppSidebarUserItem = ({
+  children,
+  href,
+  icon: Icon,
+  onClick,
+}: React.PropsWithChildren<{
+  href: AppRoutes
+  icon: Icon
+  onClick: () => void
+}>) => {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  return (
+    <Link href={href} onClick={onClick}>
+      <DropdownMenuItem
+        className={cn(
+          pathname === href && 'bg-accent/50',
+          href === pathname && searchParams.size === 0 && 'pointer-events-none'
+        )}
+      >
+        <Icon />
+        {children}
+      </DropdownMenuItem>
+    </Link>
+  )
+}
+
 const AppSidebarUser = ({ organization }: { organization: UserOrganization | null }) => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('Layout')
@@ -320,7 +345,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
       return
     }
 
-    await sleep(1000)
+    await sleep(500)
     setTimeout(() => setMenuOpen(false), 1000)
     redirect(AUTH_ROOT)
   }, [t])
@@ -340,19 +365,13 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-xs transition-all duration-150 hover:bg-accent/50 data-[state=open]:shadow-inner'
+                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-xs transition-all duration-150 hover:bg-accent/50 data-[state=open]:bg-accent/50 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
               )}
               size="lg"
               variant="outline"
             >
-              <div className={cn('relative overflow-visible transition-all duration-150', open ? 'ml-0' : 'ml-8')}>
-                <Avatar
-                  className={cn(
-                    'aspect-square size-8 rounded-lg border',
-                    !open && 'text-xs',
-                    !user.avatar_url && 'border'
-                  )}
-                >
+              <div className="relative ml-0 overflow-visible transition-all duration-150">
+                <Avatar className={cn('aspect-square size-8 rounded-lg border', !user.avatar_url && 'border')}>
                   {user.avatar_url && <AvatarImage src={user.avatar_url} />}
                   <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                 </Avatar>
@@ -377,7 +396,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
                       >
                         <ShieldUserIcon className="size-3" />
                       </TooltipTrigger>
-                      <TooltipContent sideOffset={3}>
+                      <TooltipContent sideOffset={6} size="sm">
                         <span className="text-xs">{t('adminUser')}</span>
                       </TooltipContent>
                     </Tooltip>
@@ -391,7 +410,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
                       >
                         <PencilIcon className="size-3" />
                       </TooltipTrigger>
-                      <TooltipContent>
+                      <TooltipContent sideOffset={6} size="sm">
                         <span className="text-xs">{t('editorUser')}</span>
                       </TooltipContent>
                     </Tooltip>
@@ -420,12 +439,9 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <Link href="/settings" onClick={onLinkClick}>
-                <DropdownMenuItem>
-                  <SettingsIcon />
-                  {t('settings')}
-                </DropdownMenuItem>
-              </Link>
+              <AppSidebarUserItem href="/settings" icon={SettingsIcon} onClick={onLinkClick}>
+                {t('settings')}
+              </AppSidebarUserItem>
               <DropdownMenuItem as="div" className="justify-between" variant="flat">
                 <span className="flex items-center gap-2">
                   <PaletteIcon />
@@ -436,18 +452,12 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <Link href="/help" onClick={onLinkClick}>
-                <DropdownMenuItem>
-                  <HelpCircleIcon />
-                  {t('help')}
-                </DropdownMenuItem>
-              </Link>
-              <Link href="/about" onClick={onLinkClick}>
-                <DropdownMenuItem>
-                  <InfoIcon />
-                  {t('about')}
-                </DropdownMenuItem>
-              </Link>
+              <AppSidebarUserItem href="/help" icon={HelpCircleIcon} onClick={onLinkClick}>
+                {t('help')}
+              </AppSidebarUserItem>
+              <AppSidebarUserItem href="/about" icon={InfoIcon} onClick={onLinkClick}>
+                {t('about')}
+              </AppSidebarUserItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup className="p-1">

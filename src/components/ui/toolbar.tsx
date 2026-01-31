@@ -99,7 +99,7 @@ export const ToolbarButton = ({
         <TooltipTrigger asChild {...tooltipTriggerProps}>
           {content}
         </TooltipTrigger>
-        <TooltipContent sideOffset={4} {...tooltipContentProps}>
+        <TooltipContent sideOffset={5} {...tooltipContentProps}>
           {tooltip}
         </TooltipContent>
       </Tooltip>

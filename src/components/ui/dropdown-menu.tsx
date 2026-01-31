@@ -1,5 +1,7 @@
 'use client'
 
+import type React from 'react'
+
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react'
 
@@ -45,43 +47,37 @@ export const DropdownMenuItemIndicator = (props: React.ComponentProps<typeof Dro
   <DropdownMenuPrimitive.ItemIndicator data-slot="dropdown-menu-item-indicator" {...props} />
 )
 
-export interface DropdownMenuItemProps extends React.ComponentProps<typeof DropdownMenuPrimitive.Item> {
-  active?: boolean
-  as?: React.ElementType
-  inset?: boolean
-  variant?: 'default' | 'destructive' | 'flat'
-}
-
-export const DropdownMenuItem = ({
+export const DropdownMenuItem = <T extends React.ElementType = typeof DropdownMenuPrimitive.Item>({
   active,
   className,
-  as,
+  as: Component = DropdownMenuPrimitive.Item,
   inset,
   variant = 'default',
   ...props
-}: DropdownMenuItemProps) => {
-  const Component = as || DropdownMenuPrimitive.Item
-
-  return (
-    <Component
-      className={cn(
-        'relative flex select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden',
-        'data-disabled:pointer-events-none data-inset:pl-8 data-[variant=destructive]:text-destructive data-disabled:opacity-50',
-        "[&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[variant=destructive]:*:[svg]:text-destructive!",
-        variant !== 'flat' && [
-          'cursor-pointer focus:bg-accent/50 focus:text-accent-foreground',
-          'data-[variant=destructive]:focus:bg-destructive/5 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
-        ],
-        active && 'bg-accent shadow-xs hover:bg-accent! dark:shadow-sm',
-        className
-      )}
-      data-inset={inset}
-      data-slot="dropdown-menu-item"
-      data-variant={variant}
-      {...props}
-    />
-  )
-}
+}: React.ComponentProps<T> & {
+  active?: boolean
+  as?: T
+  inset?: boolean
+  variant?: 'default' | 'destructive' | 'flat'
+}) => (
+  <Component
+    className={cn(
+      'relative flex select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden',
+      'data-disabled:pointer-events-none data-inset:pl-8 data-[variant=destructive]:text-destructive data-disabled:opacity-50',
+      "[&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 data-[variant=destructive]:*:[svg]:text-destructive!",
+      variant !== 'flat' && [
+        'cursor-pointer focus:bg-accent/50 focus:text-accent-foreground',
+        'data-[variant=destructive]:focus:bg-destructive/5 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20',
+      ],
+      active && 'bg-accent shadow-xs hover:bg-accent! dark:shadow-sm',
+      className
+    )}
+    data-inset={inset}
+    data-slot="dropdown-menu-item"
+    data-variant={variant}
+    {...props}
+  />
+)
 
 export const DropdownMenuCheckboxItem = ({
   checked,

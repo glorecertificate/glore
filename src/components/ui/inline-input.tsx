@@ -10,15 +10,15 @@ import { cn } from '@/lib/utils'
 const NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
 export interface InlineInputProps
-  extends Omit<React.ComponentProps<'textarea'>, 'size'>,
+  extends Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'>,
     VariantProps<typeof inlineInputVariants> {
   /**
    * When true, the input width adapts to the content.
    */
   autoWidth?: boolean
-
   /**
    * When true, resets the value to `defaultValue` on blur.
+   *
    * @default true
    */
   keepFilled?: boolean
@@ -51,6 +51,7 @@ export const InlineInput = ({
       const computed = window.getComputedStyle(ref.current)
       const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d')
+
       if (context) {
         context.font = computed.font
         const text =
@@ -58,18 +59,14 @@ export const InlineInput = ({
         const metrics = context.measureText(text)
         const paddingX = Number.parseFloat(computed.paddingLeft) + Number.parseFloat(computed.paddingRight)
         const borderX = Number.parseFloat(computed.borderLeftWidth) + Number.parseFloat(computed.borderRightWidth)
-        ref.current.style.width = `${Math.ceil(metrics.width + paddingX + borderX + 8)}px`
+        ref.current.style.width = `${Math.ceil(metrics.width + paddingX + borderX)}px`
       }
-      // Ensure single line height
-      ref.current.style.height = `${ref.current.scrollHeight}px`
-    } else {
-      ref.current.style.height = `${ref.current.scrollHeight}px`
     }
+
+    ref.current.style.height = `${ref.current.scrollHeight}px`
   }, [autoWidth, defaultValue, value])
 
-  useLayoutEffect(() => {
-    adjustSize()
-  }, [adjustSize])
+  useLayoutEffect(adjustSize, [adjustSize])
 
   const handleBlur = useCallback(
     (e: React.FocusEvent<HTMLTextAreaElement>) => {
@@ -78,7 +75,7 @@ export const InlineInput = ({
       if (keepFilled && empty) {
         if (value !== undefined && onChange) {
           e.target.value = staticValue.toString()
-          onChange(e as unknown as React.ChangeEvent<HTMLTextAreaElement>)
+          onChange(e)
         } else if (ref.current) {
           ref.current.value = staticValue.toString()
         }

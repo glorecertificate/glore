@@ -45,7 +45,7 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
     '@type': 'Page',
     name: config.name,
     description: t('description'),
-    image: publicFile('og-image.png'),
+    image: publicFile('/og-image.png'),
   }
 
   return (

@@ -1,5 +1,6 @@
 import { parseUser, userQuery } from '@/db/queries/user'
 import { type DatabaseResult } from '@/db/types'
+import { type IntlRecord } from '@/lib/i18n'
 
 export type Lesson = ReturnType<typeof parseLesson>
 export type LessonType = 'questions' | 'evaluations' | 'assessment' | 'reading'
@@ -95,4 +96,13 @@ export const parseLesson = (lesson: Partial<DatabaseResult<'lessons', typeof les
     evaluations,
     questions,
   }
+}
+
+export const DEFAULT_LESSON = {
+  title: {
+    en: 'New lesson',
+    es: 'Nueva lección',
+    it: 'Nuova lezione',
+  } satisfies IntlRecord,
+  content: null as IntlRecord | null,
 }

@@ -5,6 +5,8 @@ import { COOKIE_OPTIONS, type CookieName, type CookieOptions, type CookieValue, 
  */
 export const useCookies = () => ({
   get<T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) {
+    if (typeof document === 'undefined') return options?.fallback as CookieValue<T>
+
     const cookieKey = prefixCookieName(name, options?.prefix)
     const chunks = decodeURIComponent(document.cookie).split(';')
     let value: CookieValue<T> | string | undefined
@@ -30,6 +32,8 @@ export const useCookies = () => ({
     value: CookieValue<T>,
     options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
   ) {
+    if (typeof document === 'undefined') return
+
     const { prefix, ...params } = { ...COOKIE_OPTIONS, ...options }
     const serializedValue = typeof value === 'string' ? value : JSON.stringify(value)
     const args = [`${prefixCookieName(name, prefix)}=${serializedValue}`]
@@ -43,12 +47,16 @@ export const useCookies = () => ({
     document.cookie = args.join('; ')
   },
   delete(names: CookieName | CookieName[], options?: CookieOptions) {
+    if (typeof document === 'undefined') return
+
     for (const name of [names].flat()) {
       if (!this.has(name, options)) return
       document.cookie = `${prefixCookieName(name, options?.prefix)}=;`
     }
   },
   has(name: CookieName, options?: CookieOptions) {
+    if (typeof document === 'undefined') return false
+
     return document.cookie.split(';').some(key => key.trim().startsWith(`${prefixCookieName(name, options?.prefix)}=`))
   },
 })

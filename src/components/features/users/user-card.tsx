@@ -21,7 +21,7 @@ export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: Use
   const resolveCountryLabel = useCallback(
     (country: string | null | undefined) => {
       if (!country) return ''
-      const key = `Locale.Countries.${country}` as Any
+      const key = `Intl.Countries.${country}` as Any
       return t.has?.(key) ? t(key) : country.toUpperCase()
     },
     [t]

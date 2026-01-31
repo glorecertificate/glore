@@ -3,13 +3,11 @@ import { Suspense } from 'react'
 import { createSearchParamsCache, parseAsString } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
-import { AuthFlow, type AuthView } from '@/components/features/auth/auth-flow'
+import { AuthFlow, AuthView } from '@/components/features/auth/auth-flow'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { SUPABASE_TOKEN_HASH_REGEX } from '@/lib/constants'
 import { intlMetadata } from '@/lib/metadata'
-import { type Enum } from '@/lib/types'
 import { camelize } from '@/lib/utils'
-
-const TOKEN_HASH_REGEX = /^pkce_[a-f0-9]*$/
 
 const { parse } = createSearchParamsCache({
   resetToken: parseAsString,
@@ -18,11 +16,11 @@ const { parse } = createSearchParamsCache({
 const resolveLoginData = async ({ searchParams }: PageProps<'/login'>) => {
   const { resetToken } = await parse(searchParams)
 
-  const view: Enum<AuthView> = resetToken
-    ? TOKEN_HASH_REGEX.test(resetToken)
-      ? 'password_reset'
-      : 'invalid_token'
-    : 'login'
+  const view = resetToken
+    ? SUPABASE_TOKEN_HASH_REGEX.test(resetToken)
+      ? AuthView.PasswordReset
+      : AuthView.InvalidToken
+    : AuthView.Login
 
   return { resetToken, view }
 }

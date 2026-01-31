@@ -7,9 +7,11 @@ import { useDropzone } from 'react-dropzone'
 import ReactCrop, { type Crop, centerCrop, makeAspectCrop, type PixelCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
+import { useTranslations } from 'next-intl'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogClose, DialogContent, DialogFooter } from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 
 const getCroppedImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
   const canvas = document.createElement('canvas')
@@ -57,16 +59,21 @@ const getCroppedImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob
 
 export const ImageCropper = ({
   disabled,
+  fallback,
   onChange,
   onRemove,
   value,
 }: {
   disabled?: boolean
-  onChange?: (file: File) => void
+  fallback?: React.ReactNode
+  onChange?: (file: File) => Promise<void> | void
   onRemove?: () => void
   value?: string | null
 }) => {
+  const t = useTranslations('Components.ImageCropper')
+
   const [open, setOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [crop, setCrop] = useState<Crop>()
@@ -98,13 +105,16 @@ export const ImageCropper = ({
   const handleCrop = useCallback(async () => {
     if (imageRef.current && completedCrop?.width && completedCrop?.height && selectedFile) {
       try {
+        setSaving(true)
         const blob = await getCroppedImage(imageRef.current, completedCrop)
         const file = new File([blob], selectedFile.name, { type: 'image/png' })
-        onChange?.(file)
+        await onChange?.(file)
         setOpen(false)
         setPreviewUrl(null)
       } catch (e) {
         console.error(e)
+      } finally {
+        setSaving(false)
       }
     }
   }, [completedCrop, onChange, selectedFile])
@@ -113,9 +123,9 @@ export const ImageCropper = ({
     <>
       <div className="flex items-center gap-4">
         <div className="group relative">
-          <Avatar className="h-24 w-24 cursor-pointer rounded-xl ring-2 ring-border ring-offset-2 transition-opacity hover:opacity-90">
+          <Avatar className="h-24 w-24 cursor-pointer rounded-xl border transition-opacity hover:opacity-50">
             <AvatarImage className="object-cover" src={value || undefined} />
-            <AvatarFallback className="text-lg">{'?'}</AvatarFallback>
+            <AvatarFallback className="text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
           </Avatar>
           <div {...getRootProps()} className="absolute inset-0 z-10 cursor-pointer rounded-xl" />
           <input {...getInputProps()} />
@@ -124,7 +134,7 @@ export const ImageCropper = ({
         <div className="flex flex-col gap-2">
           <Button size="sm" type="button" variant="outline" {...getRootProps()} className="w-fit" disabled={disabled}>
             <UploadCloudIcon className="mr-2 h-4 w-4" />
-            {'Change Avatar'}
+            {value ? t('changeAvatar') : t('uploadAvatar')}
           </Button>
 
           {value && onRemove && (
@@ -137,7 +147,7 @@ export const ImageCropper = ({
               variant="ghost"
             >
               <Trash2Icon className="mr-2 h-4 w-4" />
-              {'Remove'}
+              {t('remove')}
             </Button>
           )}
         </div>
@@ -153,7 +163,8 @@ export const ImageCropper = ({
         }}
         open={open}
       >
-        <DialogContent className="sm:max-w-md">
+        <DialogTitle className="hidden" />
+        <DialogContent aria-describedby={undefined} className="sm:max-w-md">
           <div className="mt-4">
             {previewUrl && (
               <ReactCrop
@@ -175,12 +186,12 @@ export const ImageCropper = ({
           </div>
           <DialogFooter className="sm:justify-between">
             <DialogClose asChild>
-              <Button type="button" variant="ghost">
-                {'Cancel'}
+              <Button disabled={saving} type="button" variant="ghost">
+                {t('cancel')}
               </Button>
             </DialogClose>
-            <Button onClick={handleCrop} type="button">
-              {'Save Avatar'}
+            <Button disabled={saving} loading={saving} onClick={handleCrop} type="button">
+              {t('saveAvatar')}
             </Button>
           </DialogFooter>
         </DialogContent>

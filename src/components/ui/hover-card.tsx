@@ -15,6 +15,7 @@ export const HoverCardTrigger = (props: React.ComponentProps<typeof HoverCardPri
 export const HoverCardContent = ({
   align = 'center',
   arrow = true,
+  arrowClassName,
   children,
   className,
   side,
@@ -22,6 +23,7 @@ export const HoverCardContent = ({
   ...props
 }: React.ComponentProps<typeof HoverCardPrimitive.Content> & {
   arrow?: boolean
+  arrowClassName?: string
 }) => (
   <HoverCardPrimitive.Portal data-slot="hover-card-portal">
     <HoverCardPrimitive.Content
@@ -37,12 +39,7 @@ export const HoverCardContent = ({
     >
       {children}
       {arrow && (
-        <>
-          <HoverCardPrimitive.Arrow
-            className={cn('h-2 fill-popover stroke-2 stroke-border', side === 'top' && 'z-0 -m-0.5')}
-          />
-          <div className="absolute bottom-0 left-2 h-1 w-[calc(100%-16px)] rounded-[inherit] bg-popover" />
-        </>
+        <HoverCardPrimitive.Arrow className={cn('-mt-px fill-popover stroke-[1px] stroke-border', arrowClassName)} />
       )}
     </HoverCardPrimitive.Content>
   </HoverCardPrimitive.Portal>

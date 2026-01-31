@@ -29,7 +29,7 @@ export const FixedToolbarButtons = () => {
   const [readOnly] = usePlateState('readOnly')
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full flex-wrap gap-2 lg:gap-1">
       {!readOnly && (
         <>
           <ToolbarGroup>

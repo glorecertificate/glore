@@ -6,7 +6,7 @@ case "$(cat "$1")" in
     ;;
   *)
     commitlint --edit "$1"
-    biome check --fix --unsafe --no-errors-on-unmatched
+    biome check --fix --no-errors-on-unmatched
     git add . >/dev/null
     ;;
 esac

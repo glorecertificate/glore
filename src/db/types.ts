@@ -40,6 +40,15 @@ export type Database = MergeDeep<
           description: IntlRecord
           icon: IconName
         }>
+        doc_articles: Overrides<{
+          title: IntlRecord
+          content: IntlRecord
+          excerpt: IntlRecord
+        }>
+        doc_categories: Overrides<{
+          title: IntlRecord
+          description: IntlRecord
+        }>
         evaluations: Overrides<{
           description: IntlRecord
         }>

@@ -29,7 +29,7 @@ export const TabsTrigger = ({
   className,
   count = 0,
   effect,
-  showZeroCount = false,
+  showZero = false,
   size,
   variant,
   ...props
@@ -37,9 +37,9 @@ export const TabsTrigger = ({
   VariantProps<typeof tabsTriggerVariants> & {
     badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof tabsTriggerBadgeVariants>
     count?: number
-    showZeroCount?: boolean
+    showZero?: boolean
   }) => {
-  const showCount = useMemo(() => count !== undefined && (showZeroCount || count > 0), [count, showZeroCount])
+  const showCount = useMemo(() => count !== undefined && (showZero || count > 0), [count, showZero])
   const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
 
   return (
@@ -49,7 +49,7 @@ export const TabsTrigger = ({
       {...props}
     >
       {showCount ? (
-        <span className="flex items-center gap-1 leading-0" {...badgeRest}>
+        <span className="flex items-center gap-1" {...badgeRest}>
           {children}
           <span className={cn(tabsTriggerBadgeVariants({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
         </span>
@@ -77,7 +77,7 @@ const tabsTriggerVariants = cva(
     variants: {
       variant: {
         default: `
-          text-muted-foreground border
+          text-muted-foreground/90 border
           focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring
           data-[state=active]:bg-background data-[state=active]:text-foreground
           dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
@@ -100,13 +100,13 @@ const tabsTriggerVariants = cva(
         `,
       },
       size: {
-        sm: 'gap-1 px-4 text-[13.5px] text-sm',
+        sm: 'gap-1 px-3 text-sm',
         md: 'px-4 text-sm',
         lg: 'px-6 py-3 text-lg',
       },
       effect: {
         grayscale: 'data-[state=inactive]:grayscale-80 data-[state=inactive]:*:opacity-60',
-        'text-stroke': 'data-[state=active]:text-stroke-0.25 data-[state=active]:text-stroke-foreground',
+        'text-stroke': 'font-normal data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground',
       },
     },
   }

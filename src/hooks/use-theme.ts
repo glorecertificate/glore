@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
@@ -16,6 +16,9 @@ let transitionTimeout: number | undefined
  */
 export const useTheme = () => {
   const cookies = useCookies()
+  const cookiesRef = useRef(cookies)
+  cookiesRef.current = cookies
+
   const nextTheme = useNextTheme()
   const theme = nextTheme.theme as Theme
   const themes = nextTheme.themes as Theme[]
@@ -24,9 +27,9 @@ export const useTheme = () => {
   const applyTheme = useCallback(
     (theme: Theme) => {
       nextTheme.setTheme(theme)
-      cookies.set('theme', theme)
+      cookiesRef.current.set('theme', theme)
     },
-    [nextTheme.setTheme, cookies.set]
+    [nextTheme.setTheme, nextTheme]
   )
 
   const setTheme = useCallback(

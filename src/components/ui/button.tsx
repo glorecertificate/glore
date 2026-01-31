@@ -20,6 +20,7 @@ export interface ButtonProps
   /** @default 'left' */
   iconPlacement?: 'left' | 'right'
   loading?: boolean
+  loadingSpinner?: React.ComponentProps<typeof Spinner>['size']
   loadingText?: string
   loadingTitle?: string
 }
@@ -35,6 +36,7 @@ export const Button = ({
   icon: Icon,
   iconPlacement = 'left',
   loading = false,
+  loadingSpinner,
   loadingText,
   loadingTitle,
   onClick,
@@ -92,7 +94,7 @@ export const Button = ({
       <Slottable>
         {loading ? (
           <>
-            <Spinner />
+            <Spinner size={loadingSpinner} />
             {loadingText ? <span>{loadingText}</span> : children}
           </>
         ) : (

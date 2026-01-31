@@ -59,7 +59,7 @@ ${lines.join('\n')}
   }
 
   type PublicFile = ${listPublicDir()
-    .map(file => `'${file}'`)
+    .map(file => `'/${file}'`)
     .join(' | ')}
 }
 

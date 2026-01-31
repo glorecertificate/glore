@@ -39,7 +39,7 @@ export const sendEmail = async <T extends EmailTemplate>(
     subject: emailSubject,
     to,
     ...options,
-  } satisfies EmailTemplateOptions<T>
+  }
 
   const html = await pretty(await render(createElement(component, props)))
   const text = toPlainText(html)

@@ -39,6 +39,7 @@ const badgeVariants = cva(
         muted: 'bg-muted text-muted-foreground',
         outline: 'border border-input bg-background shadow-xs dark:bg-input/30',
         ghost: 'bg-transparent text-foreground',
+        brand: 'bg-brand text-white shadow-xs',
       },
       size: {
         sm: 'gap-0.5 px-2 py-0.5 text-[11px]',

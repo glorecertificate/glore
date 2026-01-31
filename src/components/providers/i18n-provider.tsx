@@ -1,8 +1,8 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { IntlProvider, type Locale, type Messages } from 'next-intl'
+import { type Locale, type Messages, NextIntlClientProvider } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
 import { type IntlRecord, i18n, type LocaleItem, localizeRecord } from '@/lib/i18n'
@@ -20,27 +20,26 @@ const useI18nContext = (value: I18nContextValue) => {
   const [messageStore, setMessagesStore] = useState<Partial<Record<Locale, Messages>>>(
     value.messages ? { [locale]: value.messages } : {}
   )
+  const messageStoreRef = useRef(messageStore)
+  messageStoreRef.current = messageStore
 
-  const messages = messageStore[locale]
+  const messages = useMemo(() => messageStore[locale], [locale, messageStore])
 
   const localeItems = useMemo<LocaleItem[]>(
     () =>
       i18n.localeItems.map(item => {
-        const label = messageStore[locale]?.Locale.Languages?.[item.value] ?? item.label
-        const displayLabel = i18n.titleCaseLocales.includes(item.value) ? label : label.toLowerCase()
+        const label = messageStore[locale]?.Intl.Languages?.[item.value] ?? item.label
+        const displayLabel = i18n.titleCaseLocales.includes(locale) ? label : label.toLowerCase()
         return { ...item, label, displayLabel }
       }),
-    [locale, messageStore[locale]]
+    [locale, messageStore]
   )
 
-  const setMessages = useCallback(
-    async (locale: Locale) => {
-      if (messageStore[locale]) return
-      const { default: messages } = (await import(`~/messages/${locale}`)) as { default: Messages }
-      setMessagesStore(prev => ({ ...prev, [locale]: messages }))
-    },
-    [messageStore]
-  )
+  const setMessages = useCallback(async (locale: Locale) => {
+    if (messageStoreRef.current[locale]) return
+    const { default: messages } = (await import(`~/messages/${locale}`)) as { default: Messages }
+    setMessagesStore(prev => ({ ...prev, [locale]: messages }))
+  }, [])
 
   const setLocale = useCallback(
     async (locale: Locale) => {
@@ -71,9 +70,9 @@ export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<
 
   return (
     <I18nContext.Provider value={{ ...providerValue, locale }} {...props}>
-      <IntlProvider locale={locale} messages={messages} timeZone={timeZone}>
+      <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
         {children}
-      </IntlProvider>
+      </NextIntlClientProvider>
     </I18nContext.Provider>
   )
 }

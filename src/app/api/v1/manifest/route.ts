@@ -11,7 +11,7 @@ import { publicFile } from '@/lib/storage'
 
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)
-  const locale = (url.searchParams.get('locale') ?? i18n.defaultLocale) as Locale
+  const locale = (url.searchParams.get('/locale') ?? i18n.defaultLocale) as Locale
   const t = await getTranslations({ namespace: 'Metadata', locale })
 
   const manifest: MetadataRoute.Manifest = {
@@ -26,27 +26,27 @@ export const GET = async (request: NextRequest) => {
       {
         purpose: 'any',
         sizes: '192x192',
-        src: publicFile('assets/certificate.svg'),
+        src: publicFile('/assets/certificate.svg'),
         type: 'image/png',
       },
       {
         purpose: 'any',
         sizes: '512x512',
-        src: publicFile('web-app-icon-512x512.png'),
+        src: publicFile('/web-app-icon-512x512.png'),
         type: 'image/png',
       },
     ],
     screenshots: [
       {
         form_factor: 'wide',
-        src: publicFile('web-app-screenshot-wide.png'),
+        src: publicFile('/web-app-screenshot-wide.png'),
         sizes: '1280x720',
         type: 'image/png',
         label: metadata.name,
       },
       {
         form_factor: 'narrow',
-        src: publicFile('web-app-screenshot-narrow.png'),
+        src: publicFile('/web-app-screenshot-narrow.png'),
         sizes: '720x1280',
         type: 'image/png',
         label: metadata.name,

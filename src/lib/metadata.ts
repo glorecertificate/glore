@@ -37,7 +37,7 @@ export const metadata = {
   openGraph: {
     type: 'website',
     emails: config.email,
-    images: [publicFile('og-image.png')],
+    images: [publicFile('/og-image.png')],
     phoneNumbers: config.phone,
     siteName: config.name,
     ttl: 60,
@@ -46,24 +46,24 @@ export const metadata = {
   icons: [
     {
       rel: 'shortcut icon',
-      url: publicFile('favicon.ico'),
+      url: publicFile('/favicon.ico'),
     },
     {
       sizes: '96x96',
       type: 'image/png',
-      url: publicFile('favicon-96x96.png'),
+      url: publicFile('/favicon-96x96.png'),
     },
     {
       rel: 'apple-touch-icon',
       sizes: '180x180',
-      url: publicFile('apple-icon.png'),
+      url: publicFile('/apple-icon.png'),
     },
   ],
   appleWebApp: {
     capable: true,
     title: config.shortName,
     statusBarStyle: 'black-translucent',
-    startupImage: publicFile('web-app-screenshot-narrow.png'),
+    startupImage: publicFile('/web-app-screenshot-narrow.png'),
   },
 } satisfies Metadata
 

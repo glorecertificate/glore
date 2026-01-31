@@ -1,5 +1,7 @@
-export type StorageFile = 'email/logo.png'
+export const STORAGE_URL = process.env.NEXT_PUBLIC_STORAGE_URL
 
-export const storageFile = (file: StorageFile) => `${process.env.NEXT_PUBLIC_STORAGE_URL}/${file}`
+export type StorageFile = '/email/logo.png'
 
-export const publicFile = (file: PublicFile) => `/${file}`
+export const storageFile = (file: StorageFile) => `${STORAGE_URL}${file}`
+
+export const publicFile = (file: PublicFile) => file

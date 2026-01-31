@@ -1,10 +1,14 @@
 'use client'
 
-import { createContext, startTransition, useCallback, useContext, useMemo, useOptimistic } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import { createCourse as createCourseAction } from '@/actions/course'
+import {
+  createCourse as createCourseAction,
+  deleteCourse as deleteCouseAction,
+  updateCourse as updateCourseAction,
+} from '@/actions/course'
 import { type Course, type SkillGroup } from '@/db/queries/course'
-import { type TableInsert } from '@/db/types'
+import { type TableInsert, type TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
 
 export interface CoursesContextValue {
@@ -15,11 +19,7 @@ export interface CoursesContextValue {
 const useCoursesContext = (value: CoursesContextValue) => {
   const { localize } = useI18n()
 
-  const [courses, setCourses] = useOptimistic(
-    value.courses,
-    (courses: Course[], action: React.SetStateAction<Course[]>) =>
-      typeof action === 'function' ? action(courses) : action
-  )
+  const [courses, setCourses] = useState(value.courses)
 
   const skillGroups = useMemo(
     () =>
@@ -31,20 +31,55 @@ const useCoursesContext = (value: CoursesContextValue) => {
     [localize, value.skillGroups]
   )
 
-  const createCourse = useCallback(
-    (data: TableInsert<'courses'>) => {
-      const payload = { sort_order: courses.length + 1, ...data }
-
-      startTransition(async () => {
-        setCourses(prev => [...prev, { id: 0, ...payload } as Course])
-        const course = await createCourseAction(payload)
-        setCourses(prev => prev.map(c => (c.id === 0 ? course : c)))
-      })
-    },
-    [courses.length, setCourses]
+  const setCourse = useCallback(
+    (handler: React.SetStateAction<Course>) =>
+      setCourses(prev =>
+        prev.map(course => {
+          const data = typeof handler === 'function' ? handler(course) : handler
+          return course.id === data.id ? { ...course, ...data } : course
+        })
+      ),
+    []
   )
 
-  return useMemo(() => ({ courses, skillGroups, createCourse }), [courses, createCourse, skillGroups])
+  const createCourse = useCallback(
+    async (payload: TableInsert<'courses'>) => {
+      const { data, error } = await createCourseAction({
+        ...payload,
+        sort_order: courses.length + 1,
+      })
+      if (error) throw error
+      setCourses(prev => [...prev, data])
+      return data
+    },
+    [courses.length]
+  )
+
+  const updateCourse = useCallback(async (id: number, payload: TableUpdate<'courses'>) => {
+    setCourses(prev => prev.map(course => (course.id === id ? ({ ...course, ...payload } as Course) : course)))
+    const { error, data } = await updateCourseAction(id, payload)
+    if (error) throw error
+    return data
+  }, [])
+
+  const deleteCourse = useCallback(async (id: number) => {
+    const { error } = await deleteCouseAction(id)
+    if (error) throw error
+    setCourses(prev => prev.filter(c => c.id !== id))
+  }, [])
+
+  return useMemo(
+    () => ({
+      courses,
+      skillGroups,
+      setCourses,
+      setCourse,
+      createCourse,
+      updateCourse,
+      deleteCourse,
+    }),
+    [courses, createCourse, deleteCourse, setCourse, skillGroups, updateCourse]
+  )
 }
 
 const CoursesContext = createContext<ReturnType<typeof useCoursesContext> | null>(null)

@@ -1,3 +1,9 @@
+interface IconPickerData {
+  name: string
+  categories: string[]
+  tags: string[]
+}
+
 export default [
   {
     name: 'a-arrow-down',
@@ -13836,8 +13842,4 @@ export default [
     categories: ['accessibility', 'layout', 'design', 'text', 'photography'],
     tags: ['magnifying glass', 'plus'],
   },
-] satisfies Array<{
-  name: string
-  categories: string[]
-  tags: string[]
-}>
+] as IconPickerData[]

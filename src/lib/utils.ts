@@ -2,7 +2,6 @@ import { cx } from 'class-variance-authority'
 import { type ClassValue } from 'class-variance-authority/types'
 import { type FieldValues, type UseFormReturn } from 'react-hook-form'
 import { extendTailwindMerge } from 'tailwind-merge'
-import { type CamelCase } from 'type-fest'
 
 import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
 import { type Any, type AnyFunction, type AnyRecord, type Rgb } from '@/lib/types'
@@ -10,23 +9,21 @@ import { type Any, type AnyFunction, type AnyRecord, type Rgb } from '@/lib/type
 /*
   Environment
 */
-export const isSSR = () => typeof window === 'undefined'
 export const isProduction = process.env.NODE_ENV === 'production'
 
 /*
   Theme
 */
-export const cn = (...inputs: ClassValue[]) =>
-  extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
-    extend: {
-      classGroups: {
-        'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
-        'text-stroke-color': [{ 'text-stroke': [(n: string) => !Number(n)] }],
-      },
+const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
+  extend: {
+    classGroups: {
+      'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
+      'text-stroke-color': [{ 'text-stroke': [(n: string) => !Number(n)] }],
     },
-  })(cx(inputs))
+  },
+})
 
-export const tw = (raw: TemplateStringsArray, ...values: string[]) => cn(String.raw({ raw }, ...values))
+export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
 
 export const hexToRgb = <T extends AnyRecord>(record: T) =>
   Object.entries(record).reduce(
@@ -76,7 +73,7 @@ export const random = (min: number, max: number): number => Math.floor(Math.rand
 /*
   Objects
 */
-export const keys = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
+export const keysOf = <T extends AnyRecord>(record: T) => Object.keys(record) as (keyof T)[]
 
 export const pluck = <T extends AnyRecord, K extends keyof T>(array: T[], key: K): T[K][] =>
   array.map(item => item[key])
@@ -133,3 +130,12 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
 export const noop = () => {
   /**/
 }
+
+/*
+  Types
+*/
+export type CamelCase<S extends string> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<CamelCase<U>>}`
+  : S extends `${infer T}-${infer U}`
+    ? `${T}${Capitalize<CamelCase<U>>}`
+    : S

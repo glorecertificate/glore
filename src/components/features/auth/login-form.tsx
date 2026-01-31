@@ -126,7 +126,7 @@ export const LoginForm = ({
     setErrored(hasErrors)
   }, [hasErrors, setErrored])
 
-  useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus])
+  useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus, form])
 
   // biome-ignore lint/correctness: Run on unmount only
   useEffect(

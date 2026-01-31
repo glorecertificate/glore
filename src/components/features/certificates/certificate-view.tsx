@@ -7,7 +7,7 @@
 
 // import config from '~/config/config'
 
-// import { CertificateDocument } from '@/components/features/certificates/certificate-document'
+// import { CertificateDocument } from '@/components/features/certificates/document'
 // import { CertificateGraphic } from '@/components/illustrations/certificate'
 // import { NoAccessGraphic } from '@/components/illustrations/no-access'
 // import { useSession } from '@/components/providers/session-provider'

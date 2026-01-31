@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
@@ -12,9 +12,15 @@ export interface SessionContextValue {
 
 const useSessionContext = (value: SessionContextValue) => {
   const cookies = useCookies()
+  const cookiesRef = useRef(cookies)
+  cookiesRef.current = cookies
 
   const [user, setUser] = useState(value.user)
   const [organizationId, setOrganizationId] = useState(value.organizationId)
+
+  useEffect(() => {
+    setUser(value.user)
+  }, [value.user])
 
   const organization = useMemo(
     () => user.organizations.find(({ id }) => id === organizationId) ?? null,
@@ -22,27 +28,32 @@ const useSessionContext = (value: SessionContextValue) => {
   )
   const role = organization?.role ?? null
 
-  const setOrganization = (id: number) => {
+  const setOrganization = useCallback((id: number) => {
     setOrganizationId(id)
-    cookies.set('org', id)
-  }
+    cookiesRef.current.set('org', id)
+  }, [])
 
-  return {
-    user: useMemo(
-      () => ({
-        ...user,
-        role,
-        isLearner: role === 'learner',
-        isTutor: role === 'tutor',
-        isRepresentative: role === 'representative',
-        isVolunteer: role === 'volunteer',
-      }),
-      [user, role]
-    ),
-    setUser,
-    organization,
-    setOrganization,
-  }
+  const sessionUser = useMemo(
+    () => ({
+      ...user,
+      role,
+      isLearner: role === 'learner',
+      isTutor: role === 'tutor',
+      isRepresentative: role === 'representative',
+      isVolunteer: role === 'volunteer',
+    }),
+    [user, role]
+  )
+
+  return useMemo(
+    () => ({
+      user: sessionUser,
+      setUser,
+      organization,
+      setOrganization,
+    }),
+    [sessionUser, organization, setOrganization]
+  )
 }
 
 export const SessionContext = createContext<ReturnType<typeof useSessionContext> | null>(null)

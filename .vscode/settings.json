@@ -1,4 +1,7 @@
 {
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
   "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
@@ -11,11 +14,15 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "biome.enable": true,
+  "biome.enabled": true,
   "editor.codeActionsOnSave": {
+    "source.action.useSortedAttributes.biome": "explicit",
+    "source.biome": "explicit",
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
   },
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.tabSize": 2,
   "eslint.enable": false,
   "files.associations": {
     "*.css": "tailwindcss"
@@ -24,22 +31,20 @@
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./messages"],
   "i18n-ally.namespace": true,
-  "json.schemas": [
-    {
-      "fileMatch": ["biome.json"],
-      "url": "./node_modules/@biomejs/biome/configuration_schema.json"
-    }
-  ],
   "prettier.enable": false,
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-    ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"]
+    ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+    ["(?:\\w+)?[Cc]lassName\\s*=\\s*[{]?[`'\"]([^`'\"]*)[`'\"][}]?"],
+    ["fill=['\"]([^'\"]*)"],
+    ["stroke=['\"]([^'\"]*)"]
   ],
   "tailwindCSS.experimental.configFile": "./src/app/globals.css",
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   },
-  "typescript.preferences.autoImportFileExcludePatterns": ["lucide-react"],
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "postman.settings.dotenv-detection-notification-visibility": false
+  "typescript.tsserver.maxTsServerMemory": 6144,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false
 }

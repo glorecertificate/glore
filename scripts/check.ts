@@ -12,15 +12,15 @@ import { logger } from './logger'
 
 type I18nIgnore = NestedKeyOf<typeof messages> | `${NestedKeyOf<typeof messages>}.*`
 
-const DEFAULT_CHECK_ARGS = ['types', 'lint', 'i18n', 'size'] as const
+const DEFAULT_CHECK_ARGS = ['types', 'lint', 'knip', 'i18n', 'size'] as const
 const I18N_OPTIONS = ['invalidKeys', 'missingKeys', 'unused'] as const
 const I18N_IGNORES = [
   'Auth.*',
   'Certificates.*',
   'Components.*',
   'Email.*',
-  'Locale.Countries.*',
-  'Locale.Languages.*',
+  'Intl.Countries.*',
+  'Intl.Languages.*',
   'Metadata.*',
 ] satisfies I18nIgnore[]
 
@@ -30,6 +30,8 @@ const i18nCmd = `i18n-check --source en --locales ./messages --format next-intl 
 const i18nUnusedCmd = `${i18nCmd} --only unused`
 
 const check = async () => {
+  let hasErrors = false
+
   for (const check of checks) {
     const isSingleArg = checks.length === 1
 
@@ -42,8 +44,11 @@ const check = async () => {
           execSync('pnpm run typegen', { stdio: 'ignore' })
 
           if (isSingleArg) {
-            execSync(typesCmd, { stdio: 'inherit' })
-            process.exit(0)
+            try {
+              execSync(typesCmd, { stdio: 'inherit' })
+            } catch {
+              process.exit(1)
+            }
           }
 
           try {
@@ -63,8 +68,11 @@ const check = async () => {
         const lintCmd = 'biome check'
 
         if (isSingleArg) {
-          execSync(lintCmd, { stdio: 'inherit' })
-          process.exit(0)
+          try {
+            execSync(lintCmd, { stdio: 'inherit' })
+          } catch {
+            process.exit(1)
+          }
         }
 
         try {
@@ -72,9 +80,33 @@ const check = async () => {
           execSync(lintCmd, { stdio: 'ignore' })
           logger.success('All files are properly linted and formatted', { clearLine: true })
         } catch {
-          logger.error('Found linting issues', { clearLine: true })
-          logger.red(`Run 'pnpm check lint' to apply safe fixes and see a detailed report.\n`)
-          process.exit(1)
+          logger.error('Found linting issues. Run `pnpm check lint` to apply safe fixes and see a detailed report.', {
+            clearLine: true,
+          })
+          hasErrors = true
+        }
+        break
+      }
+
+      case 'knip': {
+        const knipCmd = 'knip'
+
+        if (isSingleArg) {
+          try {
+            execSync(knipCmd, { stdio: 'inherit' })
+          } catch {
+            process.exit(1)
+          }
+        }
+
+        try {
+          logger.inline('Checking for unused files and dependencies...')
+          execSync(knipCmd, { stdio: 'ignore' })
+          logger.success('No unused files or dependencies found', { clearLine: true })
+        } catch {
+          logger.error('Found unused files or dependencies. Run `pnpm check knip` to see a detailed report.', {
+            clearLine: true,
+          })
         }
         break
       }
@@ -85,9 +117,12 @@ const check = async () => {
           const i18nOnlyCmd = `${i18nCmd}${only ? ` --only ${only}` : ''}`
 
           if (isSingleArg) {
-            execSync(i18nOnlyCmd, { stdio: 'inherit' })
-            execSync(i18nUnusedCmd, { stdio: 'inherit' })
-            process.exit(0)
+            try {
+              execSync(i18nOnlyCmd, { stdio: 'inherit' })
+              execSync(i18nUnusedCmd, { stdio: 'inherit' })
+            } catch {
+              process.exit(1)
+            }
           }
 
           logger.inline('Checking translation files...')
@@ -97,16 +132,21 @@ const check = async () => {
           try {
             execSync(i18nOnlyCmd, { stdio: 'ignore' })
           } catch {
-            logger.error('Found issues in translation files', { clearLine: true, newline: true })
-            logger.red(`Run 'pnpm check i18n' to see a detailed report.\n`)
-            process.exit(1)
+            logger.error('Found issues in translation files. Run `pnpm check i18n` to see a detailed report.', {
+              clearLine: true,
+              newline: true,
+            })
+            hasErrors = true
+            break
           }
 
           try {
             execSync(i18nUnusedCmd, { stdio: 'ignore' })
           } catch {
-            logger.warn('Found unused keys in translation files', { clearLine: true })
-            logger.yellow(`Run 'pnpm check i18n-unused' to see a detailed report.`)
+            logger.warn(
+              'Found unused keys in translation files. Run `pnpm check i18n-unused` to see a detailed report.',
+              { clearLine: true }
+            )
             hasWarnings = true
           }
 
@@ -125,6 +165,7 @@ const check = async () => {
           }
         }
         break
+
       case 'size':
         {
           let sizeLimit: {
@@ -148,23 +189,23 @@ const check = async () => {
               throw new Error('Invalid size-limit configuration.')
             }
             if (!existsSync(resolve(process.cwd(), sizeLimit.path))) {
-              throw new Error("Build folder not found, run 'pnpm build' to proceed.")
+              throw new Error('Build folder not found, run `pnpm build` before checking the size.')
             }
           } catch (e) {
             const error = e as Error
-            if (isSingleArg) throw error
-            logger.error('Size check failed', { clearLine: true })
-            logger.red(`${error.message}\n`)
-            process.exit(1)
+            logger.error(`Size check failed. ${error.message}`, { clearLine: !isSingleArg })
+            break
           }
 
           try {
             execSync('size-limit', { stdio: isSingleArg ? 'inherit' : 'ignore' })
           } catch (error) {
             if (isSingleArg) throw error
-            logger.error(`The build size exceeds the limit of ${sizeLimit!.limit}`, { clearLine: true })
-            logger.error(`Run 'pnpm check size' to see a detailed report.\n`)
-            process.exit(1)
+            logger.error(
+              `The build size exceeds the limit of ${sizeLimit!.limit}. Run \`pnpm check size\` to see a detailed report.`,
+              { clearLine: true }
+            )
+            break
           }
 
           if (!isSingleArg) logger.success(`The build size is within ${sizeLimit!.limit}`, { clearLine: true })
@@ -172,9 +213,13 @@ const check = async () => {
         break
 
       default:
-        logger.error(`Unknown check: '${check}'`, { clearLine: true })
+        logger.red(`\nUnknown check: '${check}'`)
         process.exit(1)
     }
+  }
+
+  if (hasErrors) {
+    process.exit(1)
   }
 }
 

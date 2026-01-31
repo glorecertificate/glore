@@ -22,10 +22,10 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
   }, [])
 
   return (
-    <div className="relative">
+    <>
       <Toolbar
         className={cn(
-          'scrollbar-hide sticky top-0 left-0 w-full justify-between overflow-x-auto rounded-t-lg border border-border border-b-0 bg-input/30 p-1 backdrop-blur-sm supports-backdrop-blur:bg-background/60',
+          'scrollbar-hide sticky top-0 left-0 w-full justify-between overflow-x-hidden rounded-t-lg border border-border border-b-0 bg-input/30 p-1 backdrop-blur-sm supports-backdrop-blur:bg-background/60',
           readOnly && 'hidden',
           className
         )}
@@ -43,6 +43,6 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
             )}
           </div>
         ))}
-    </div>
+    </>
   )
 }

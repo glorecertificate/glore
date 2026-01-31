@@ -32,7 +32,7 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
       },
     ],
     images: {
-      remotePatterns: [new URL(process.env.NEXT_PUBLIC_STORAGE_URL)],
+      remotePatterns: [new URL(process.env.NEXT_PUBLIC_STORAGE_URL!)],
     },
     typescript: {
       tsconfigPath,
@@ -40,7 +40,6 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
     typedRoutes: true,
     experimental: {
       turbopackFileSystemCacheForDev: true,
-      typedEnv: false,
     },
   } satisfies NextConfig
 
@@ -48,7 +47,12 @@ export default (phase: PHASE_TYPE, { defaultConfig }: { defaultConfig: NextConfi
     nextIntl({
       requestConfig: './src/i18n.ts',
       experimental: {
-        createMessagesDeclaration: './messages/en.json',
+        messages: {
+          path: './messages',
+          locales: 'infer',
+          format: 'json',
+          precompile: true,
+        },
       },
     }),
   ]

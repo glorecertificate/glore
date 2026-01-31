@@ -81,7 +81,7 @@ export const PasswordRequestForm = ({
       setUsername(username)
       cookies.set('loginUser', username)
     },
-    [form, setUsername, setView, t, cookies.set]
+    [form, setUsername, setView, t, cookies.set, cookies]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

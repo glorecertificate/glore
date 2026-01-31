@@ -23,6 +23,7 @@ export const baseUserQuery = `
   avatar_url,
   is_admin,
   is_editor,
+  onboarded_at,
   created_at,
   updated_at
 ` as const
@@ -46,7 +47,6 @@ export const userQuery = `
 
 export const parseUser = (user: DatabaseResult<'users', typeof userQuery>) => ({
   ...user,
-  /* Computed */
   canEdit: Boolean(user.is_admin || user.is_editor),
   organizations: user.memberships.map(({ organization, role }) => ({ ...organization, role })),
   shortName: `${user.first_name} ${user.last_name ? `${user.last_name.trim().charAt(0).toUpperCase()}.` : ''}`,

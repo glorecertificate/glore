@@ -33,8 +33,8 @@ export const Toaster = ({
       theme={theme}
       toastOptions={{
         classNames: {
-          toast: cn('group/toast w-max! bg-background text-foreground shadow-none!', className),
-          icon: 'group-data-[type=info]/toast:text-info! group-data-[type=success]/toast:text-success! group-data-[type=error]/toast:text-destructive!',
+          toast: cn('group/toast items-start! w-max! bg-background text-foreground shadow-none!', className),
+          icon: 'group-data-[type=info]/toast:text-info! mt-0.5 group-data-[type=success]/toast:text-success! group-data-[type=error]/toast:text-destructive!',
           title: 'font-normal!',
           description: 'text-muted-foreground text-base',
           actionButton: 'bg-brand-secondary text-brand-secondary-foreground',

@@ -1,11 +1,9 @@
 import { type Locale } from 'next-intl'
 
-import { type CourseListTab } from '@/components/features/courses/course-list/course-list-context'
 import { type Theme } from '@/components/providers/theme-provider'
-import { type Course } from '@/db/queries/course'
 import { i18n } from '@/lib/i18n'
 
-export const COOKIE_PREFIX = process.env.COOKIE_PREFIX ?? ''
+export const COOKIE_PREFIX = process.env.NEXT_PUBLIC_COOKIE_PREFIX ?? ''
 
 export const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -17,10 +15,8 @@ export const COOKIE_OPTIONS = {
 
 export interface Cookies {
   [i18n.cookie]: Locale
-  courseListGroups: string[]
-  courseListLanguage: Locale[]
-  courseListTab: CourseListTab
-  courseLanguages: Record<Course['slug'], Locale>
+  courseListLanguages: Record<number, Locale>
+  courseListParams: string
   email: string
   loginUser: string
   org: number

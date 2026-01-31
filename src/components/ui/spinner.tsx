@@ -42,10 +42,10 @@ const spinnerVariants = cva('animate-spin', {
     size: {
       default: '',
       xs: 'size-3',
-      sm: 'size-4',
-      md: 'size-5',
-      lg: 'size-6',
-      xl: 'size-7.5',
+      sm: 'size-3.5',
+      md: 'size-4',
+      lg: 'size-5',
+      xl: 'size-6',
     },
     speed: {
       default: 'duration-950',

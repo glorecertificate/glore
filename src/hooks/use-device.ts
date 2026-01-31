@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-const MOBILE_BREAKPOINT = 768
+import theme from '~/config/theme.json'
 
 /**
  * Detects the device type based on the window width.
  */
-export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {
+export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
   const detectType = useCallback(() => {
     if (typeof window === 'undefined') return
     return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
@@ -18,15 +18,15 @@ export const useDevice = (breakpoint = MOBILE_BREAKPOINT) => {
 
   const handleResize = useCallback(() => {
     setDeviceType(detectType())
-    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.maxTouchPoints > 0)
+    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0)
   }, [detectType])
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const mql = window.matchMedia(`(max-width: ${breakpoint - 1}px)`)
     handleResize()
     mql.addEventListener('change', handleResize)
     return () => mql.removeEventListener('change', handleResize)
-  }, [handleResize])
+  }, [breakpoint, handleResize])
 
   return {
     deviceType,

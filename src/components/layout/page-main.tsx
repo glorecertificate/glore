@@ -1,5 +1,7 @@
+import { cn } from '@/lib/utils'
+
 export const PageMain = ({ children, className, ...props }: React.ComponentProps<'main'>) => (
-  <main className="mx-auto flex size-full min-h-[calc(100vh-72px)] max-w-380 flex-col px-8" {...props}>
+  <main className={cn('mx-auto flex size-full min-h-[calc(100vh-72px)] max-w-380 flex-col px-8', className)} {...props}>
     {children}
   </main>
 )

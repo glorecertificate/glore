@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 
 import { type SignInWithPasswordCredentials, type UserAttributes, type UserResponse } from '@supabase/supabase-js'
 
+import { sendEmail } from '@/actions/email'
 import { getDatabase } from '@/db/client'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT } from '@/lib/constants'
@@ -80,4 +81,30 @@ export const updatePassword = async (token: string, password: string) => {
   if (verifyError) return { data: null, error: verifyError }
 
   return await db.auth.updateUser({ password })
+}
+
+export const changePassword = async (currentPassword: string, newPassword: string) => {
+  const db = await getDatabase()
+
+  const {
+    data: { user },
+  } = await db.auth.getUser()
+  if (!user?.email) throw new Error('User not found')
+
+  const { error: signInError } = await db.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  })
+  if (signInError) return { error: signInError }
+
+  const { data, error } = await db.auth.updateUser({ password: newPassword })
+  if (error) return { error }
+
+  sendEmail('account/password-changed', {
+    to: user.email,
+    username: user.user_metadata?.first_name ?? undefined,
+    locale: user.user_metadata?.locale ?? undefined,
+  })
+
+  return { data: data.user }
 }

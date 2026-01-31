@@ -1,20 +1,6 @@
 {
-  "include": [
-    ".next/dev/types/**/*.ts",
-    ".next/types/**/*.ts",
-    "scripts",
-    "src",
-    "supabase/functions",
-    "*.ts",
-    "src/email",
-    "private/use-portal.ts",
-    "private/public/_certificate-graphic.tsx",
-    "private/public/_glore-logo.tsx",
-    "private/public/_no-access-graphic.tsx",
-    "private/public/_no-results-graphic.tsx",
-    "private/public/_not-found-graphic.tsx"
-  ],
-  "exclude": ["node_modules"],
+  "include": [".next/dev/types/**/*.ts", ".next/types/**/*.ts", "src", "*.ts"],
+  "exclude": ["node_modules", "private", "supabase/functions"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "allowJs": false,
@@ -38,11 +24,7 @@
       "~/messages/*": ["./messages/*"],
       "@/*": ["./src/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -52,6 +34,7 @@
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
     "target": "esnext",
-    "types": ["deno", "next", "node", "react", "react-dom"]
+    "tsBuildInfoFile": ".next/.tsbuildinfo",
+    "types": ["next", "node", "react", "react-dom"]
   }
 }

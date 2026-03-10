@@ -1,9 +1,14 @@
 #!/usr/bin/env sh
 
-commitlint --from origin/main --to HEAD --verbose
+set -e
 
-if [ "$(git rev-parse --abbrev-ref HEAD)" = main ]; then
-  pnpm run build
+DEFAULT_BRANCH="main"
+
+./node_modules/.bin/commitlint --from origin/main --to HEAD --verbose
+./node_modules/.bin/oxlint
+./node_modules/.bin/oxfmt --check
+
+if [ "$(git rev-parse --abbrev-ref HEAD)" = $DEFAULT_BRANCH ]; then
+  ./node_modules/.bin/next build
+  ./node_modules/.bin/size-limit
 fi
-
-pnpm run check types lint size

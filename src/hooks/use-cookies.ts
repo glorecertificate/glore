@@ -4,6 +4,14 @@ import { COOKIE_OPTIONS, type CookieName, type CookieOptions, type CookieValue, 
  * Returns a custom cookie store providing methods to manage cookies in the browser.
  */
 export const useCookies = () => ({
+  delete(names: CookieName | CookieName[], options?: CookieOptions) {
+    if (typeof document === 'undefined') return
+
+    for (const name of [names].flat()) {
+      if (!this.has(name, options)) return
+      document.cookie = `${prefixCookieName(name, options?.prefix)}=;`
+    }
+  },
   get<T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) {
     if (typeof document === 'undefined') return options?.fallback as CookieValue<T>
 
@@ -27,6 +35,11 @@ export const useCookies = () => ({
 
     return (value ?? options?.fallback) as CookieValue<T>
   },
+  has(name: CookieName, options?: CookieOptions) {
+    if (typeof document === 'undefined') return false
+
+    return document.cookie.split(';').some(key => key.trim().startsWith(`${prefixCookieName(name, options?.prefix)}=`))
+  },
   set<T extends CookieName>(
     name: T,
     value: CookieValue<T>,
@@ -45,18 +58,5 @@ export const useCookies = () => ({
     }
 
     document.cookie = args.join('; ')
-  },
-  delete(names: CookieName | CookieName[], options?: CookieOptions) {
-    if (typeof document === 'undefined') return
-
-    for (const name of [names].flat()) {
-      if (!this.has(name, options)) return
-      document.cookie = `${prefixCookieName(name, options?.prefix)}=;`
-    }
-  },
-  has(name: CookieName, options?: CookieOptions) {
-    if (typeof document === 'undefined') return false
-
-    return document.cookie.split(';').some(key => key.trim().startsWith(`${prefixCookieName(name, options?.prefix)}=`))
   },
 })

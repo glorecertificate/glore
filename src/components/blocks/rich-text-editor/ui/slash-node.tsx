@@ -61,10 +61,10 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
           {
             focusEditor: false,
             icon: <SparklesIcon />,
-            value: 'AI',
             onSelect: editor => {
               editor.getApi(AIChatPlugin).aiChat.show()
             },
+            value: 'AI',
           },
         ],
       },
@@ -157,28 +157,28 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
             icon: <TableOfContentsIcon />,
             keywords: ['toc'],
             label: t('tableOfContents'),
-            value: KEYS.toc,
             onSelect: (editor, value) => {
               insertBlock(editor, value)
             },
+            value: KEYS.toc,
           },
           {
             icon: <Columns3Icon />,
             label: t('threeColumns'),
-            value: 'action_three_columns',
             onSelect: (editor, value) => {
               insertBlock(editor, value)
             },
+            value: 'action_three_columns',
           },
           {
             focusEditor: true,
             icon: <CalendarIcon />,
             keywords: ['time'],
             label: t('date'),
-            value: KEYS.date,
             onSelect: (editor, value) => {
               insertInlineElement(editor, value)
             },
+            value: KEYS.date,
           },
         ],
       },
@@ -192,7 +192,7 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          <InlineComboboxEmpty>{'No results'}</InlineComboboxEmpty>
+          <InlineComboboxEmpty>No results</InlineComboboxEmpty>
 
           {groups.map(({ group, items }) => (
             <InlineComboboxGroup key={group}>

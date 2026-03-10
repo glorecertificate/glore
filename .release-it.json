@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/release-it/schema/release-it.json",
+  "git": {
+    "commitMessage": "chore(release): v${version}",
+    "push": true,
+    "pushArgs": ["--follow-tags", "--no-verify"],
+    "requireBranch": "main",
+    "requireCleanWorkingDir": true,
+    "requireUpstream": true,
+    "tagName": "v${version}"
+  },
+  "github": {
+    "release": true,
+    "releaseName": "v${version}"
+  },
+  "hooks": {
+    "before:release": "./node_modules/.bin/oxfmt && git add ."
+  },
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": {
+        "file": "./config/metadata.json",
+        "path": "version"
+      }
+    },
+    "@release-it/conventional-changelog": {
+      "header": "# Changelog",
+      "ignoreRecommendedBump": true,
+      "infile": "CHANGELOG.md",
+      "preset": {
+        "name": "conventionalcommits",
+        "types": [
+          { "section": "Features", "type": "feat" },
+          { "section": "Bug Fixes", "type": "fix" },
+          { "section": "Chore", "type": "chore", "hidden": false },
+          { "section": "Performance", "type": "perf", "hidden": false },
+          { "section": "Build", "scopes": ["deps", "dev-deps"], "type": "build", "hidden": false },
+          { "section": "CI", "type": "ci", "hidden": false },
+          { "section": "Docs", "type": "docs", "hidden": false },
+          { "section": "Other", "type": "refactor", "hidden": false },
+          { "section": "Other", "type": "revert", "hidden": false },
+          { "section": "Other", "type": "style", "hidden": false }
+        ]
+      }
+    }
+  }
+}

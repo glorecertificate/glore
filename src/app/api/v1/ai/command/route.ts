@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createOpenAI } from '@ai-sdk/openai'
 import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
-import { convertToModelMessages, streamText, type TextStreamPart, type ToolSet } from 'ai'
+import { type TextStreamPart, type ToolSet, convertToModelMessages, streamText } from 'ai'
 
 const CHUNKING_REGEXPS = {
   line: /\n+/m,
@@ -31,28 +31,36 @@ const smoothStream = <TOOLS extends ToolSet>({
   if (typeof chunking === 'function') {
     detectChunk = buffer => {
       const match = chunking(buffer)
-      if (!match) return null
-      if (match.length === 0) throw new Error('Chunking function must return a non-empty string.')
+      if (!match) {
+        return null
+      }
+      if (match.length === 0) {
+        throw new Error('Chunking function must return a non-empty string.')
+      }
 
-      if (!buffer.startsWith(match))
+      if (!buffer.startsWith(match)) {
         throw new Error(
           `Chunking function must return a match that is a prefix of the buffer. Received: "${match}" expected to start with "${buffer}"`
         )
+      }
 
       return match
     }
   } else {
     const chunkingRegex = typeof chunking === 'string' ? CHUNKING_REGEXPS[chunking] : chunking
 
-    if (!chunkingRegex)
+    if (!chunkingRegex) {
       throw new InvalidArgumentError({
         argument: 'chunking',
         message: `Chunking must be "word" or "line" or a RegExp. Received: ${chunking}`,
       })
+    }
 
     detectChunk = buffer => {
       const match = chunkingRegex.exec(buffer)
-      if (!match) return null
+      if (!match) {
+        return null
+      }
       return buffer.slice(0, match.index) + match?.[0]
     }
   }
@@ -107,21 +115,40 @@ export const POST = async (request: NextRequest) => {
     const result = streamText({
       experimental_transform: smoothStream({
         chunking: buffer => {
-          if (CODE_BLOCK_REGEX.test(buffer)) isInCodeBlock = true
-          else if (isInCodeBlock && buffer.includes('```')) isInCodeBlock = false
-          if (buffer.includes('http')) isInLink = true
-          else if (buffer.includes('https')) isInLink = true
-          else if (buffer.includes('\n') && isInLink) isInLink = false
-          if (buffer.includes('*') || buffer.includes('-')) isInList = true
-          else if (buffer.includes('\n') && isInList) isInList = false
-          if (!isInTable && buffer.includes('|')) isInTable = true
-          else if (isInTable && buffer.includes('\n\n')) isInTable = false
+          if (CODE_BLOCK_REGEX.test(buffer)) {
+            isInCodeBlock = true
+          } else if (isInCodeBlock && buffer.includes('```')) {
+            isInCodeBlock = false
+          }
+          if (buffer.includes('http')) {
+            isInLink = true
+          } else if (buffer.includes('https')) {
+            isInLink = true
+          } else if (buffer.includes('\n') && isInLink) {
+            isInLink = false
+          }
+          if (buffer.includes('*') || buffer.includes('-')) {
+            isInList = true
+          } else if (buffer.includes('\n') && isInList) {
+            isInList = false
+          }
+          if (!isInTable && buffer.includes('|')) {
+            isInTable = true
+          } else if (isInTable && buffer.includes('\n\n')) {
+            isInTable = false
+          }
 
           let match: RegExpExecArray | null
-          if (isInCodeBlock || isInTable || isInLink) match = CHUNKING_REGEXPS.line.exec(buffer)
-          else if (isInList) match = CHUNKING_REGEXPS.list.exec(buffer)
-          else match = CHUNKING_REGEXPS.word.exec(buffer)
-          if (!match) return null
+          if (isInCodeBlock || isInTable || isInLink) {
+            match = CHUNKING_REGEXPS.line.exec(buffer)
+          } else if (isInList) {
+            match = CHUNKING_REGEXPS.list.exec(buffer)
+          } else {
+            match = CHUNKING_REGEXPS.word.exec(buffer)
+          }
+          if (!match) {
+            return null
+          }
 
           return buffer.slice(0, match.index) + match?.[0]
         },

@@ -3,7 +3,6 @@
 import { useCallback, useId, useMemo } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type PostgrestError } from '@supabase/postgrest-js'
 import { Link2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
@@ -17,7 +16,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { postgrestError } from '@/db/helpers'
+import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course } from '@/db/queries/course'
 import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
@@ -25,7 +24,7 @@ import { cn } from '@/lib/utils'
 
 export const courseSettingsSchema = z.object({
   type: z.enum(COURSE_TYPES),
-  skill_group_id: z.number().nullable(),
+  skillGroupId: z.number().nullable(),
   slug: z.string(),
 })
 
@@ -39,7 +38,7 @@ export const CourseSettings = ({
 }: Omit<React.ComponentProps<'form'>, 'onError' | 'onSubmit'> & {
   course?: Course
   disabled?: boolean
-  onError?: (error: PostgrestError) => void
+  onError?: (error: { code: string; message: string }) => void
   onSuccess?: (course: Course) => void
 }) => {
   const { skillGroups, createCourse, updateCourse } = useCourses()
@@ -61,7 +60,7 @@ export const CourseSettings = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       type: course?.type ?? 'intro',
-      skill_group_id: course?.skill_group?.id ?? null,
+      skillGroupId: course?.skillGroup?.id ?? null,
       slug: course?.slug ?? '',
     },
   })
@@ -79,8 +78,8 @@ export const CourseSettings = ({
       disabledProp ||
       !(form.formState.isValid && form.formState.isDirty) ||
       form.formState.isSubmitting ||
-      (form.getValues('type') === 'skill' && !form.getValues('skill_group_id')),
-    [disabledProp, form.formState, form.getValues, form]
+      (form.getValues('type') === 'skill' && !form.getValues('skillGroupId')),
+    [disabledProp, form]
   )
 
   const submitMessage = useMemo(() => {
@@ -109,7 +108,7 @@ export const CourseSettings = ({
         const data = course ? await updateCourse(course.id, schema) : await createCourse(schema)
         onSuccess?.(data)
       } catch (e) {
-        const error = postgrestError(e)
+        const error = queryError(e)
         console.error(error.code)
         if (error.code === '23505') {
           form.setError('slug', { message: t('courseSlugTaken') })
@@ -119,7 +118,7 @@ export const CourseSettings = ({
         onError?.(error)
       }
     },
-    [course, createCourse, form.setError, form.setFocus, onError, onSuccess, t, updateCourse, form]
+    [course, createCourse, form, onError, onSuccess, t, updateCourse]
   )
 
   return (
@@ -138,7 +137,7 @@ export const CourseSettings = ({
                 <div className="space-y-1.5">
                   <Tabs
                     onValueChange={(value: string) => {
-                      form.setValue('skill_group_id', null)
+                      form.setValue('skillGroupId', null)
                       field.onChange(value)
                     }}
                     {...field}
@@ -151,7 +150,7 @@ export const CourseSettings = ({
                       ))}
                     </TabsList>
                   </Tabs>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-xs text-muted-foreground">
                     {t(`courseTypeDescription-${form.getValues('type')}`)}
                   </p>
                 </div>
@@ -161,7 +160,7 @@ export const CourseSettings = ({
           {form.getValues('type') === 'skill' && (
             <FormField
               control={form.control}
-              name="skill_group_id"
+              name="skillGroupId"
               render={({ field }) => (
                 <FormItem className="space-y-1">
                   <div className="flex flex-col space-y-1">
@@ -169,7 +168,7 @@ export const CourseSettings = ({
                     <FormDescription>{t('skillGroupDescription')}</FormDescription>
                   </div>
                   <Select
-                    onValueChange={value => form.setValue('skill_group_id', value ? Number(value) : null)}
+                    onValueChange={value => form.setValue('skillGroupId', value ? Number(value) : null)}
                     value={field.value ? String(field.value) : undefined}
                   >
                     <SelectTrigger className="w-fit" disabled={isIntro}>
@@ -243,7 +242,7 @@ export const CourseSettings = ({
               ))}
             </TooltipContent>
           ) : (
-            !(isIntro || form.getValues('skill_group_id')) && (
+            !(isIntro || form.getValues('skillGroupId')) && (
               <TooltipContent side="top" sideOffset={8} size="sm">
                 {t('selectSkillGroupToSave')}
               </TooltipContent>

@@ -1,62 +1,43 @@
+import { eq } from 'drizzle-orm'
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { getDatabase, getServiceDatabase } from '@/db/client'
-import { APP_ROOT, AUTH_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
+import { db } from '@/db/client'
+import { teamInvitations, users } from '@/db/schema'
+import { APP_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 
 export const GET = async (request: NextRequest) => {
   const token = request.nextUrl.searchParams.get('token')
-  if (!token) return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
+  if (!token) return NextResponse.redirect(new URL('/onboarding/error', request.url))
 
-  const serviceDb = await getServiceDatabase()
-
-  const { data: invitation, error } = await serviceDb
-    .from('team_invitations')
-    .select('id, user_id, email, expires_at, accepted_at')
-    .eq('token', token)
-    .single()
-
-  if (error || !invitation) {
-    const url = new URL('/onboarding/error', request.url)
-    return NextResponse.redirect(url)
-  }
-
-  if (invitation.accepted_at || new Date(invitation.expires_at) < new Date()) {
-    const url = new URL('/onboarding/error', request.url)
-    return NextResponse.redirect(url)
-  }
-
-  const { error: confirmError } = await serviceDb.auth.admin.updateUserById(invitation.user_id, {
-    email_confirm: true,
+  const invitation = await db.query.teamInvitations.findFirst({
+    columns: { id: true, userId: true, email: true, expiresAt: true, acceptedAt: true },
+    where: eq(teamInvitations.token, token),
   })
-  if (confirmError) {
-    const url = new URL('/onboarding/error', request.url)
-    return NextResponse.redirect(url)
+
+  if (!invitation) {
+    return NextResponse.redirect(new URL('/onboarding/error', request.url))
   }
 
-  const { data: linkData, error: linkError } = await serviceDb.auth.admin.generateLink({
-    type: 'magiclink',
-    email: invitation.email,
+  if (invitation.acceptedAt || new Date(invitation.expiresAt) < new Date()) {
+    return NextResponse.redirect(new URL('/onboarding/error', request.url))
+  }
+
+  // Verify the invited user exists in the database
+  const user = await db.query.users.findFirst({
+    columns: { id: true, onboardedAt: true },
+    where: eq(users.id, invitation.userId),
   })
-  if (linkError || !linkData) {
-    const url = new URL('/onboarding/error', request.url)
-    return NextResponse.redirect(url)
+
+  if (!user) {
+    return NextResponse.redirect(new URL('/onboarding/error', request.url))
   }
 
-  const sessionDb = await getDatabase()
-  const { error: otpError } = await sessionDb.auth.verifyOtp({
-    type: 'magiclink',
-    token_hash: linkData.properties.hashed_token,
-  })
-  if (otpError) {
-    const url = new URL('/onboarding/error', request.url)
-    return NextResponse.redirect(url)
-  }
+  await db
+    .update(teamInvitations)
+    .set({ acceptedAt: new Date().toISOString() })
+    .where(eq(teamInvitations.id, invitation.id))
 
-  await serviceDb.from('team_invitations').update({ accepted_at: new Date().toISOString() }).eq('id', invitation.id)
-
-  const { data: profile } = await serviceDb.from('users').select('onboarded_at').eq('id', invitation.user_id).single()
-
-  if (profile?.onboarded_at) {
+  if (user.onboardedAt) {
     return NextResponse.redirect(new URL(APP_ROOT, request.url))
   }
 

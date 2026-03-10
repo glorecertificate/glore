@@ -13,7 +13,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  type DropdownMenuItemProps,
   type DropdownMenuProps,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -474,7 +473,7 @@ export const FontColorToolbarButton = ({
   tooltip?: string
 } & DropdownMenuProps) => {
   const editor = useEditorRef()
-  const selectionDefined = useEditorSelector(editor => !!editor.selection, [])
+  const selectionDefined = useEditorSelector(editor => Boolean(editor.selection), [])
   const color = useEditorSelector(editor => editor.api.mark(nodeType) as string, [nodeType])
   const { colors, customColors } = useColors()
 
@@ -671,7 +670,9 @@ const ColorInput = ({ children, className, value = '#000000', ...props }: React.
   return (
     <div className="flex flex-col items-center">
       {Children.map(children, child => {
-        if (!child) return child
+        if (!child) {
+          return child
+        }
 
         return cloneElement(
           child as React.ReactElement<{
@@ -713,22 +714,26 @@ const ColorDropdownMenuItem = ({
   value: string
   updateColor: (color: string) => void
   name?: string
-} & DropdownMenuItemProps) => (
-  <DropdownMenuItem
-    className={cn(
-      'my-1 flex size-5 rounded-full border p-0 shadow-2xs transition-all hover:scale-110',
-      isBrightColor ? 'border-muted' : 'border-transparent',
-      isSelected && 'border-foreground',
-      className
-    )}
-    onSelect={e => {
-      e.preventDefault()
-      updateColor(value)
-    }}
-    style={{ backgroundColor: value }}
-    {...props}
-  />
-)
+} & React.ComponentProps<typeof DropdownMenuItem>) => {
+  const bgStyle = useMemo(() => ({ backgroundColor: value }), [value])
+
+  return (
+    <DropdownMenuItem
+      className={cn(
+        'my-1 flex size-5 rounded-full border p-0 shadow-2xs transition-all hover:scale-110',
+        isBrightColor ? 'border-muted' : 'border-transparent',
+        isSelected && 'border-foreground',
+        className
+      )}
+      onSelect={e => {
+        e.preventDefault()
+        updateColor(value)
+      }}
+      style={bgStyle}
+      {...props}
+    />
+  )
+}
 
 export const ColorDropdownMenuItems = ({
   className,

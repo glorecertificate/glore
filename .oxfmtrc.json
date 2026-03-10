@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "arrowParens": "avoid",
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "sortImports": {
+    "groups": [
+      ["side_effect", "side_effect_style", "style"],
+      "builtin",
+      "react",
+      "external",
+      "internal",
+      ["index", "sibling", "parent"],
+      "unknown"
+    ],
+    "customGroups": [
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react/**", "next", "next/**"]
+      }
+    ],
+    "internalPattern": ["~/", "@/"],
+    "sortSideEffects": true,
+    "newlinesBetween": true
+  },
+  "sortTailwindcss": {
+    "stylesheet": "./src/app/globals.css",
+    "functions": ["clsx", "cn", "cva"]
+  }
+}

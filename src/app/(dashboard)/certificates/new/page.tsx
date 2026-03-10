@@ -1,54 +1,54 @@
 // 'use client'
 
-// import { redirect } from 'next/navigation'
-// import { useEffect, useMemo } from 'react'
+// Import { redirect } from 'next/navigation'
+// Import { useEffect, useMemo } from 'react'
 
-// import { useTranslations } from 'next-intl'
-// import { toast } from 'sonner'
+// Import { useTranslations } from 'next-intl'
+// Import { toast } from 'sonner'
 
-// import config from '~/config/config'
+// Import config from '~/config/config'
 
-// import { useSession } from '@/components/providers/session-provider'
+// Import { useSession } from '@/components/providers/session-provider'
 
-// export default () => {
-//   const { courses, organization, user } = useSession()
-//   const t = useTranslations('Certificates')
+// Export default () => {
+//   Const { courses, organization, user } = useSession()
+//   Const t = useTranslations('Certificates')
 
-//   const certificate = useMemo(
+//   Const certificate = useMemo(
 //     () => user.certificates?.find(certificate => certificate.organization.id === organization?.id),
 //     [user.certificates, organization?.id]
 //   )
-//   const hasEnoughCourses = useMemo(
+//   Const hasEnoughCourses = useMemo(
 //     () => courses.filter(course => course.completed).length >= config.settings.minSkills,
 //     [courses]
 //   )
-//   const validCourses = useMemo(
+//   Const validCourses = useMemo(
 //     () =>
-//       courses.filter(course =>
-//         course.lessons?.find(
-//           lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.settings.minRating
+//       Courses.filter(course =>
+//         Course.lessons?.find(
+//           Lesson => lesson.type === 'assessment' && (lesson.assessment?.userRating || 0) >= config.settings.minRating
 //         )
 //       ),
 //     [courses]
 //   )
-//   const canRequestCertificate = useMemo(
+//   Const canRequestCertificate = useMemo(
 //     () => hasEnoughCourses && validCourses.length >= config.settings.minSkills,
 //     [hasEnoughCourses, validCourses.length]
 //   )
 
-//   const toastMessage = useMemo(() => {
-//     if (certificate) return t('alreadyHave')
-//     if (!canRequestCertificate) return t('cantRequest')
-//     return null
+//   Const toastMessage = useMemo(() => {
+//     If (certificate) return t('alreadyHave')
+//     If (!canRequestCertificate) return t('cantRequest')
+//     Return null
 //   }, [canRequestCertificate, certificate, t])
 
-//   useEffect(() => {
-//     if (!toastMessage) return
-//     toast.error(toastMessage)
-//     redirect('/certificates')
+//   UseEffect(() => {
+//     If (!toastMessage) return
+//     Toast.error(toastMessage)
+//     Redirect('/certificates')
 //   })
 
-//   return <p>{'New certificate'}</p>
+//   Return <p>{'New certificate'}</p>
 // }
 
 export default () => null

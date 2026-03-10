@@ -47,7 +47,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
   const archiveCourse = useCallback(async () => {
     setIsArchiving(true)
     try {
-      const { error } = await updateCourseAction(course.id, { archived_at: new Date().toISOString() })
+      const { error } = await updateCourseAction(course.id, { archivedAt: new Date().toISOString() })
       if (error) throw error
       setArchiveDialogOpen(false)
       toast.success(t('courseArchived'))
@@ -55,7 +55,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       setTimeout(
         () =>
           setCourses(prev =>
-            prev.map(c => (c.id === course.id ? ({ ...c, archived_at: new Date().toISOString() } as Course) : c))
+            prev.map(c => (c.id === course.id ? ({ ...c, archivedAt: new Date().toISOString() } as Course) : c))
           ),
         200
       )
@@ -69,13 +69,13 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
   const unarchiveCourse = useCallback(async () => {
     setIsArchiving(true)
     try {
-      const { error } = await updateCourseAction(course.id, { archived_at: null })
+      const { error } = await updateCourseAction(course.id, { archivedAt: null })
       if (error) throw error
       setArchiveDialogOpen(false)
       toast.success(t('courseUnarchived'))
       onRemove()
       setTimeout(
-        () => setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, archived_at: null } as Course) : c))),
+        () => setCourses(prev => prev.map(c => (c.id === course.id ? ({ ...c, archivedAt: null } as Course) : c))),
         200
       )
     } catch (e) {
@@ -110,7 +110,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuGroup>
-          {course.archived_at ? (
+          {course.archivedAt ? (
             <AlertDialog onOpenChange={setArchiveDialogOpen} open={archiveDialogOpen}>
               <AlertDialogTrigger className="w-full">
                 <DropdownMenuItem onSelect={e => e.preventDefault()}>

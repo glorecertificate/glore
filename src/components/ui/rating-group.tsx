@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 import { toast } from 'sonner'
 
 import { Label } from '@/components/ui/label'
@@ -8,10 +8,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 
 export interface RatingGroupProps
-  extends Omit<
-      React.ComponentProps<typeof RadioGroup>,
-      'id' | 'value' | keyof VariantProps<typeof ratingGroupVariants>
-    >,
+  extends
+    Omit<React.ComponentProps<typeof RadioGroup>, 'id' | 'value' | keyof VariantProps<typeof ratingGroupVariants>>,
     VariantProps<typeof ratingGroupVariants> {
   disabledToast?: string
   id: string | number
@@ -33,7 +31,9 @@ export const RatingGroup = ({
 
   const handleClick = useCallback(
     (rating: number) => () => {
-      if (!(disabled && disabledToast) || value === rating) return
+      if (!(disabled && disabledToast) || value === rating) {
+        return
+      }
       toast.info(disabledToast, {
         duration: 1200,
       })
@@ -50,7 +50,7 @@ export const RatingGroup = ({
             {rating}
           </Label>
           {label && (
-            <span className="text-muted-foreground text-xs">{typeof label === 'function' ? label(rating) : label}</span>
+            <span className="text-xs text-muted-foreground">{typeof label === 'function' ? label(rating) : label}</span>
           )}
         </div>
       ))}
@@ -59,25 +59,6 @@ export const RatingGroup = ({
 }
 
 const ratingGroupVariants = cva('flex size-10 cursor-pointer items-center justify-center rounded-full border-[1.5px]', {
-  defaultVariants: {
-    color: 'default',
-    disabled: false,
-  },
-  variants: {
-    color: {
-      default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
-      brand:
-        'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
-      'brand-secondary': `
-          peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary
-          peer-data-[state=checked]:text-brand-secondary-foreground
-        `,
-    },
-    disabled: {
-      true: 'cursor-default opacity-100',
-      false: 'hover:cursor-pointer',
-    },
-  },
   compoundVariants: [
     {
       disabled: false,
@@ -95,4 +76,20 @@ const ratingGroupVariants = cva('flex size-10 cursor-pointer items-center justif
       className: 'hover:border-brand-secondary-accent',
     },
   ],
+  defaultVariants: {
+    color: 'default',
+    disabled: false,
+  },
+  variants: {
+    color: {
+      default: 'peer-data-[state=checked]:bg-muted peer-data-[state=checked]:text-muted-foreground',
+      brand:
+        'peer-data-[state=checked]:border-brand peer-data-[state=checked]:bg-brand peer-data-[state=checked]:text-brand-foreground',
+      'brand-secondary': `peer-data-[state=checked]:border-brand-secondary peer-data-[state=checked]:bg-brand-secondary peer-data-[state=checked]:text-brand-secondary-foreground`,
+    },
+    disabled: {
+      true: 'cursor-default opacity-100',
+      false: 'hover:cursor-pointer',
+    },
+  },
 })

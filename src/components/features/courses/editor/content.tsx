@@ -22,12 +22,16 @@ const CourseEditor = memo(
     initialValue,
     onChange,
     version,
+    flushRef,
   }: {
     initialValue: Value
     onChange: (value: Value) => void
     version: string
+    flushRef: React.RefObject<(() => void) | null>
   }) => {
     const onChangeRef = useRef(onChange)
+    const latestValueRef = useRef(initialValue)
+    const appliedRef = useRef(true)
 
     useEffect(() => {
       onChangeRef.current = onChange
@@ -37,9 +41,30 @@ const CourseEditor = memo(
       () =>
         debounce((value: Value) => {
           onChangeRef.current(value)
+          appliedRef.current = true
         }, 500),
       []
     )
+
+    useEffect(() => {
+      latestValueRef.current = initialValue
+      appliedRef.current = true
+      return () => {
+        debouncedOnChange.cancel()
+      }
+    }, [debouncedOnChange, initialValue])
+
+    useEffect(() => {
+      flushRef.current = () => {
+        debouncedOnChange.cancel()
+        if (!appliedRef.current) {
+          onChangeRef.current(latestValueRef.current)
+        }
+      }
+      return () => {
+        flushRef.current = null
+      }
+    }, [flushRef, debouncedOnChange])
 
     useEffect(
       () => () => {
@@ -50,7 +75,10 @@ const CourseEditor = memo(
 
     const handleChange = useCallback(
       (newValue: { value?: Value }) => {
-        debouncedOnChange(newValue.value ?? (newValue as unknown as Value))
+        const value = newValue.value ?? (newValue as unknown as Value)
+        latestValueRef.current = value
+        appliedRef.current = false
+        debouncedOnChange(value)
       },
       [debouncedOnChange]
     )
@@ -65,10 +93,10 @@ const CourseEditor = memo(
 )
 
 export const CourseContent = () => {
-  const { course, currentLesson, language, setCourse, setLesson, step } = useCourse()
+  const { contentFlushRef, course, currentLesson, language, setCourse, setLesson, step } = useCourse()
   const { user } = useSession()
 
-  const canEdit = user.canEdit && !course.archived_at
+  const canEdit = user.canEdit && !course.archivedAt
   const currentLessonRef = useRef(currentLesson)
   currentLessonRef.current = currentLesson
 
@@ -145,13 +173,21 @@ export const CourseContent = () => {
     [language, setLesson]
   )
 
-  const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
+  const initialContent = useMemo(
+    () => currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }],
+    [currentLesson.content, language]
+  )
   const editorVersion = `${step}-${language}`
 
   return (
     <>
-      <CourseEditor initialValue={initialContent as Value} onChange={onContentChange} version={editorVersion} />
-      <LessonExtras className="mt-8" />
+      <CourseEditor
+        flushRef={contentFlushRef}
+        initialValue={initialContent as Value}
+        onChange={onContentChange}
+        version={editorVersion}
+      />
+      {canEdit && <LessonExtras className="mt-4" />}
       {!canEdit && currentLesson?.type === 'questions' && currentLesson.questions && (
         <CourseQuestions
           className={cn('mt-8 border-t-2 pt-6')}

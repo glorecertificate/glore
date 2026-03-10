@@ -1,7 +1,7 @@
 'use client'
 
-import { memo, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { memo, useEffect, useRef, useTransition } from 'react'
 
 import { FilePlusCornerIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -29,7 +29,9 @@ export const CourseListDialog = memo(({ children, ...props }: React.ComponentPro
 
   useEffect(
     () => () => {
-      if (toastIdRef.current !== undefined) toast.dismiss(toastIdRef.current)
+      if (toastIdRef.current !== undefined) {
+        toast.dismiss(toastIdRef.current)
+      }
     },
     []
   )
@@ -67,7 +69,7 @@ export const CourseListDialog = memo(({ children, ...props }: React.ComponentPro
             toastIdRef.current = toast.success(
               <div className="flex flex-col gap-1">
                 <p className="font-medium">{t('courseCreated')}</p>
-                <p className="flex items-center gap-1 text-muted-foreground leading-[normal]">
+                <p className="flex items-center gap-1 leading-[normal] text-muted-foreground">
                   {t('redirectingToCourse')}
                   <Spinner className="mt-0.5 size-3" />
                 </p>

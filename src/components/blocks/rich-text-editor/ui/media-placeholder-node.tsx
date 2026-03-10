@@ -79,7 +79,9 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
   })
 
   useEffect(() => {
-    if (!uploadedFile) return
+    if (!uploadedFile) {
+      return
+    }
 
     const path = editor.api.findPath(element)
 
@@ -91,7 +93,7 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
         initialHeight: imageRef.current?.height,
         initialWidth: imageRef.current?.width,
         isUpload: true,
-        name: element.mediaType === KEYS.file ? uploadedFile.name : '',
+        name: element.mediaType === KEYS.file ? (uploadingFile?.name ?? '') : '',
         placeholderId: element.id as string,
         type: element.mediaType,
         url: uploadedFile.url,
@@ -103,19 +105,31 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
     })
 
     api.placeholder.removeUploadingFile(element.id as string)
-  }, [uploadedFile, element.id, api.placeholder.removeUploadingFile, editor, element, api.placeholder])
+  }, [
+    uploadedFile,
+    uploadingFile?.name,
+    element.id,
+    api.placeholder.removeUploadingFile,
+    editor,
+    element,
+    api.placeholder,
+  ])
 
   // React dev mode will call useEffect twice
   const isReplaced = useRef(false)
 
   /** Paste and drop */
   useEffect(() => {
-    if (isReplaced.current) return
+    if (isReplaced.current) {
+      return
+    }
 
     isReplaced.current = true
     const currentFiles = api.placeholder.getUploadingFile(element.id as string)
 
-    if (!currentFiles) return
+    if (!currentFiles) {
+      return
+    }
 
     replaceCurrentPlaceholder(currentFiles)
   }, [api.placeholder.getUploadingFile, element.id, replaceCurrentPlaceholder, api.placeholder])
@@ -125,23 +139,22 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
       {!(loading && isImage) && (
         <div
           className={cn(
-            'flex cursor-pointer select-none items-center rounded-sm bg-muted p-3 pr-9 hover:bg-primary/10'
+            'flex cursor-pointer items-center rounded-sm bg-muted p-3 pr-9 select-none hover:bg-primary/10'
           )}
           contentEditable={false}
           onClick={() => !loading && openFilePicker()}
         >
           <div className="relative mr-3 flex text-muted-foreground/80 [&_svg]:size-6">{currentContent.icon}</div>
-          <div className="whitespace-nowrap text-muted-foreground text-sm">
+          <div className="text-sm whitespace-nowrap text-muted-foreground">
             <div>{loading ? uploadingFile?.name : currentContent.content}</div>
 
             {loading && !isImage && (
               <div className="mt-1 flex items-center gap-1.5">
                 <div>{formatBytes(uploadingFile?.size ?? 0)}</div>
-                <div>{'–'}</div>
+                <div>–</div>
                 <div className="flex items-center">
                   <Loader2Icon className="mr-1 size-3.5 animate-spin text-muted-foreground" />
-                  {progress ?? 0}
-                  {'%'}
+                  {progress ?? 0}%
                 </div>
               </div>
             )}
@@ -184,15 +197,11 @@ export const ImageProgress = ({
 
   return (
     <div className={cn('relative', className)} contentEditable={false}>
-      {/* biome-ignore lint/performance: noImgElement */}
       <img alt={file.name} className="h-auto w-full rounded-sm object-cover" ref={imageRef} src={objectUrl} />
       {progress < 100 && (
         <div className="absolute right-1 bottom-1 flex items-center space-x-2 rounded-full bg-black/50 px-1 py-0.5">
           <Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
-          <span className="font-medium text-white text-xs">
-            {Math.round(progress)}
-            {'%'}
-          </span>
+          <span className="text-xs font-medium text-white">{Math.round(progress)}%</span>
         </div>
       )}
     </div>
@@ -211,7 +220,9 @@ const formatBytes = (
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
   const accurateSizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB']
 
-  if (bytes === 0) return '0 Byte'
+  if (bytes === 0) {
+    return '0 Byte'
+  }
 
   const i = Math.floor(Math.log(bytes) / Math.log(1024))
 

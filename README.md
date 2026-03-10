@@ -15,7 +15,7 @@ Visit our website to find out how to sign up to the [e-learning platform](https:
 
 ## About
 
-GloRe is a single-package  <a href="https://nextjs.org">Next.js</a> application backed by <a href="https://supabase.com">Supabase</a> and different utility packages.
+GloRe is a single-package <a href="https://nextjs.org">Next.js</a> application backed by <a href="https://neon.tech">Neon</a> Serverless Postgres, <a href="https://orm.drizzle.team">Drizzle ORM</a>, and different utility packages.
 
 The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href="https://ui.shadcn.com">shadcn/ui</a> components for building user interfaces.
 
@@ -84,7 +84,7 @@ Once set up, run the following command to start an interactive release:
 pnpm release
 ```
 
-Once the release is created, a new production deployment will be automatically triggered. 
+Once the release is created, a new production deployment will be automatically triggered.
 
 To manually deploy to production without a release, use the command:
 

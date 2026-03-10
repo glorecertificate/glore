@@ -17,76 +17,76 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 const organizations = [
   {
-    id: '1',
-    name: 'Community Helpers Association',
-    type: 'Non-profit',
-    status: 'Verified',
-    region: 'North America',
-    members: 42,
     created: '2022-03-15',
-  },
-  {
-    id: '2',
-    name: 'Urban Outreach Initiative',
-    type: 'NGO',
-    status: 'Verified',
-    region: 'Europe',
-    members: 28,
-    created: '2022-05-22',
-  },
-  {
-    id: '3',
-    name: 'Volunteer Leaders Network',
-    type: 'Non-profit',
-    status: 'Pending',
-    region: 'Asia',
-    members: 15,
-    created: '2022-07-08',
-  },
-  {
-    id: '4',
-    name: 'Global Volunteer Alliance',
-    type: 'International',
-    status: 'Verified',
-    region: 'Global',
-    members: 156,
-    created: '2021-11-30',
-  },
-  {
-    id: '5',
-    name: 'Local Impact Group',
-    type: 'Community',
-    status: 'Verified',
+    id: '1',
+    members: 42,
+    name: 'Community Helpers Association',
     region: 'North America',
-    members: 34,
-    created: '2023-01-12',
-  },
-  {
-    id: '6',
-    name: 'Youth Empowerment Coalition',
-    type: 'Non-profit',
-    status: 'Suspended',
-    region: 'Africa',
-    members: 19,
-    created: '2022-09-05',
-  },
-  {
-    id: '7',
-    name: 'Environmental Action Team',
-    type: 'NGO',
     status: 'Verified',
-    region: 'South America',
-    members: 27,
-    created: '2022-12-18',
+    type: 'Non-profit',
   },
   {
-    id: '8',
-    name: 'Disaster Relief Network',
-    type: 'International',
+    created: '2022-05-22',
+    id: '2',
+    members: 28,
+    name: 'Urban Outreach Initiative',
+    region: 'Europe',
+    status: 'Verified',
+    type: 'NGO',
+  },
+  {
+    created: '2022-07-08',
+    id: '3',
+    members: 15,
+    name: 'Volunteer Leaders Network',
+    region: 'Asia',
     status: 'Pending',
+    type: 'Non-profit',
+  },
+  {
+    created: '2021-11-30',
+    id: '4',
+    members: 156,
+    name: 'Global Volunteer Alliance',
     region: 'Global',
-    members: 89,
+    status: 'Verified',
+    type: 'International',
+  },
+  {
+    created: '2023-01-12',
+    id: '5',
+    members: 34,
+    name: 'Local Impact Group',
+    region: 'North America',
+    status: 'Verified',
+    type: 'Community',
+  },
+  {
+    created: '2022-09-05',
+    id: '6',
+    members: 19,
+    name: 'Youth Empowerment Coalition',
+    region: 'Africa',
+    status: 'Suspended',
+    type: 'Non-profit',
+  },
+  {
+    created: '2022-12-18',
+    id: '7',
+    members: 27,
+    name: 'Environmental Action Team',
+    region: 'South America',
+    status: 'Verified',
+    type: 'NGO',
+  },
+  {
     created: '2023-02-28',
+    id: '8',
+    members: 89,
+    name: 'Disaster Relief Network',
+    region: 'Global',
+    status: 'Pending',
+    type: 'International',
   },
 ]
 
@@ -115,24 +115,24 @@ export const AdminOrganizations = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     }).format(date)
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-3xl tracking-tight">{'Organizations Management'}</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Organizations Management</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
             <DownloadIcon className="mr-2 size-4" />
-            {'Export'}
+            Export
           </Button>
           <Button>
             <Building2Icon className="mr-2 size-4" />
-            {'Add Organization'}
+            Add Organization
           </Button>
         </div>
       </div>
@@ -154,17 +154,17 @@ export const AdminOrganizations = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <FilterIcon className="mr-2 size-4" />
-                {'Type'}
+                Type
                 {selectedType && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'FilterIcon by Type'}</DropdownMenuLabel>
+              <DropdownMenuLabel>FilterIcon by Type</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedType('Non-profit')}>{'Non-profit'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedType('NGO')}>{'NGO'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedType('International')}>{'International'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedType('Community')}>{'Community'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedType('Non-profit')}>Non-profit</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedType('NGO')}>NGO</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedType('International')}>International</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedType('Community')}>Community</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -172,16 +172,16 @@ export const AdminOrganizations = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <FilterIcon className="mr-2 size-4" />
-                {'Status'}
+                Status
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>FilterIcon by Status</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedStatus('Verified')}>{'Verified'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Pending')}>{'Pending'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Suspended')}>{'Suspended'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Verified')}>Verified</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Pending')}>Pending</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Suspended')}>Suspended</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -189,25 +189,25 @@ export const AdminOrganizations = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <FilterIcon className="mr-2 size-4" />
-                {'Region'}
+                Region
                 {selectedRegion && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'FilterIcon by Region'}</DropdownMenuLabel>
+              <DropdownMenuLabel>FilterIcon by Region</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedRegion('North America')}>{'North America'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Europe')}>{'Europe'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Asia')}>{'Asia'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('South America')}>{'South America'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Africa')}>{'Africa'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedRegion('Global')}>{'Global'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('North America')}>North America</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('Europe')}>Europe</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('Asia')}>Asia</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('South America')}>South America</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('Africa')}>Africa</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedRegion('Global')}>Global</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {(selectedType || selectedStatus || selectedRegion) && (
             <Button onClick={clearFilterIcons} size="sm" variant="ghost">
-              {'Clear FilterIcons'}
+              Clear FilterIcons
             </Button>
           )}
         </div>
@@ -220,12 +220,12 @@ export const AdminOrganizations = () => {
               <TableHead className="w-12.5">
                 <Checkbox />
               </TableHead>
-              <TableHead>{'Name'}</TableHead>
-              <TableHead>{'Type'}</TableHead>
-              <TableHead>{'Status'}</TableHead>
-              <TableHead>{'Region'}</TableHead>
-              <TableHead>{'Members'}</TableHead>
-              <TableHead>{'Created'}</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Region</TableHead>
+              <TableHead>Members</TableHead>
+              <TableHead>Created</TableHead>
               <TableHead className="w-20" />
             </TableRow>
           </TableHeader>
@@ -233,7 +233,7 @@ export const AdminOrganizations = () => {
             {filteredOrganizations.length === 0 ? (
               <TableRow>
                 <TableCell className="h-24 text-center" colSpan={8}>
-                  {'No organizations found.'}
+                  No organizations found.
                 </TableCell>
               </TableRow>
             ) : (
@@ -269,10 +269,10 @@ export const AdminOrganizations = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>{'View Details'}</DropdownMenuItem>
-                        <DropdownMenuItem>{'Edit Organization'}</DropdownMenuItem>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit Organization</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">{'Delete Organization'}</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">Delete Organization</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

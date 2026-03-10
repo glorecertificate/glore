@@ -56,17 +56,21 @@ export const BlockContextMenu = ({ children }: { children: React.ReactNode }) =>
     <ContextMenu
       modal={false}
       onOpenChange={open => {
-        if (open) return
+        if (open) {
+          return
+        }
         setTimeout(() => api.blockMenu.hide(), 0)
       }}
     >
       <ContextMenuTrigger
         asChild
         onContextMenu={event => {
-          const dataset = (event.target as HTMLElement).dataset
+          const { dataset } = event.target as HTMLElement
           const disabled = dataset?.slateEditor === 'true' || readOnly
 
-          if (disabled) return event.preventDefault()
+          if (disabled) {
+            return event.preventDefault()
+          }
 
           api.blockMenu.show(BLOCK_CONTEXT_MENU_ID, { x: event.clientX, y: event.clientY })
         }}

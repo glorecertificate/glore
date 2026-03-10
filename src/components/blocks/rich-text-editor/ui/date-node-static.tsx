@@ -23,9 +23,15 @@ export const DateElementStatic = (props: SlateElementProps<TDateElement>) => {
             const isTomorrow =
               new Date(today.setDate(today.getDate() + 2)).toDateString() === elementDate.toDateString()
 
-            if (isToday) return 'Today'
-            if (isYesterday) return 'Yesterday'
-            if (isTomorrow) return 'Tomorrow'
+            if (isToday) {
+              return 'Today'
+            }
+            if (isYesterday) {
+              return 'Yesterday'
+            }
+            if (isTomorrow) {
+              return 'Tomorrow'
+            }
 
             return elementDate.toLocaleDateString(undefined, {
               day: 'numeric',

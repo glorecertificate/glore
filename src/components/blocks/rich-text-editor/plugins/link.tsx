@@ -6,8 +6,8 @@ import { LinkFloatingToolbar } from '@/components/blocks/rich-text-editor/ui/lin
 export const LinkKit = [
   LinkPlugin.configure({
     render: {
-      node: LinkElement,
       afterEditable: () => <LinkFloatingToolbar />,
+      node: LinkElement,
     },
   }),
 ]

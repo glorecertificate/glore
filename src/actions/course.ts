@@ -3,184 +3,280 @@
 import 'server-only'
 
 import { cache } from 'react'
+import { eq, inArray } from 'drizzle-orm'
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 
 import { getAuthUser } from '@/actions/auth'
-import { getDatabase, getPublicDatabase } from '@/db/client'
-import { type Course, courseQuery, parseCourse } from '@/db/queries/course'
-import { DEFAULT_LESSON, lessonQuery, parseLesson } from '@/db/queries/lesson'
+import { db } from '@/db/client'
+import { safeQuery } from '@/db/helpers'
+import { type Course, parseCourse } from '@/db/queries/course'
+import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
+import { assessments, courses, evaluations, lessons, questions, skillGroups, userAnswers } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 
-export const getCourse = cache(async (slug: string) => {
+const courseWith = {
+  skillGroup: { columns: { id: true, name: true } },
+  creator: {
+    with: {
+      memberships: { with: { organization: true } },
+      regions: { columns: { id: true, name: true, icon: true } },
+    },
+  },
+  lessons: {
+    with: {
+      contributions: { with: { user: { with: { memberships: { with: { organization: true } }, regions: { columns: { id: true, name: true, icon: true } } } } } },
+      questions: { with: { options: { with: { userAnswers: true } } } },
+      evaluations: { with: { userEvaluations: true } },
+      assessments: { with: { userAssessments: true } },
+      userLessons: true,
+    },
+  },
+  userCourses: { columns: { id: true } },
+} as const
+
+const fetchCourse = cache(async (slug: string) => {
   'use cache'
   cacheTag(`${CacheTag.Course}-${slug}`)
 
-  const db = await getPublicDatabase()
-
-  const { data, error } = await db.from('courses').select(courseQuery).eq('slug', slug).single()
-  if (error) return { error }
-
-  return { data: parseCourse(data) }
+  return await safeQuery(async () => {
+    const course = await db.query.courses.findFirst({
+      where: eq(courses.slug, slug),
+      with: courseWith,
+    })
+    if (!course) throw new Error('Course not found')
+    return parseCourse({
+      ...course,
+      lessons: course.lessons.map(lesson => ({
+        ...lesson,
+        assessment: lesson.assessments[0] ?? null,
+      })),
+    })
+  })
 })
 
-export const listCourses = cache(async () => {
+const fetchCourses = cache(async () => {
   'use cache'
   cacheTag(CacheTag.Courses)
 
-  const db = await getPublicDatabase()
-
-  const { data, error } = await db.from('courses').select(courseQuery)
-  if (error) return { error }
-
-  return { data: data.map(parseCourse) }
+  return await safeQuery(async () => {
+    const result = await db.query.courses.findMany({ with: courseWith })
+    return result.map(course =>
+      parseCourse({
+        ...course,
+        lessons: course.lessons.map(lesson => ({
+          ...lesson,
+          assessment: lesson.assessments[0] ?? null,
+        })),
+      }),
+    )
+  })
 })
+
+export const getCourse = async (slug: string, { cache = true }: { cache?: boolean } = {}) => {
+  if (!cache) {
+    return await safeQuery(async () => {
+      const course = await db.query.courses.findFirst({
+        where: eq(courses.slug, slug),
+        with: courseWith,
+      })
+      if (!course) throw new Error('Course not found')
+      return parseCourse({
+        ...course,
+        lessons: course.lessons.map(lesson => ({
+          ...lesson,
+          assessment: lesson.assessments[0] ?? null,
+        })),
+      })
+    })
+  }
+  return await fetchCourse(slug)
+}
+
+export const listCourses = async ({ cache = true }: { cache?: boolean } = {}) => {
+  if (!cache) {
+    return await safeQuery(async () => {
+      const result = await db.query.courses.findMany({ with: courseWith })
+      return result.map(course =>
+        parseCourse({
+          ...course,
+          lessons: course.lessons.map(lesson => ({
+            ...lesson,
+            assessment: lesson.assessments[0] ?? null,
+          })),
+        }),
+      )
+    })
+  }
+  return await fetchCourses()
+}
 
 export const listSkillGroups = cache(async () => {
   'use cache'
   cacheTag(CacheTag.SkillGroups)
   cacheLife('max')
 
-  const db = await getPublicDatabase()
-  return await db.from('skill_groups').select('id, name').order('name')
+  return await db.query.skillGroups.findMany({
+    columns: { id: true, name: true },
+    orderBy: skillGroups.name,
+  })
 })
 
-export const createCourse = async (course: TableInsert<'courses'>) => {
-  const db = await getDatabase()
+export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
+  const authUser = await getAuthUser()
+  if (!authUser) throw new Error('Not authenticated')
 
-  const { data, error } = await db.from('courses').insert(course).select(courseQuery).single()
-  if (error) return { error }
+  const [created] = await db.insert(courses).values({ ...course, creatorId: authUser.id }).returning()
+  if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create course' } }
 
   const { data: lesson, error: lessonError } = await createLesson({
-    course_id: data.id,
-    sort_order: 1,
+    courseId: created.id,
+    sortOrder: 1,
     title: DEFAULT_LESSON.title,
     content: DEFAULT_LESSON.content,
   })
   if (lessonError) {
-    await db.from('courses').delete().eq('id', data.id)
+    await db.delete(courses).where(eq(courses.id, created.id))
     return { error: lessonError }
   }
 
   revalidateTag(CacheTag.Courses, 'max')
-  return { data: { ...parseCourse(data), lessons: [lesson] } }
+
+  const full = await db.query.courses.findFirst({
+    where: eq(courses.id, created.id),
+    with: courseWith,
+  })
+  if (!full) return { error: { code: 'NOT_FOUND', message: 'Course not found after creation' } }
+
+  return {
+    data: {
+      ...parseCourse({
+        ...full,
+        lessons: full.lessons.map(l => ({ ...l, assessment: l.assessments[0] ?? null })),
+      }),
+      lessons: [lesson],
+    },
+  }
 }
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
-  const db = await getDatabase()
-
-  const { data, error } = await db.from('courses').update(course).eq('id', id).select(courseQuery).single()
-  if (error) return { error }
+  await db.update(courses).set(course).where(eq(courses.id, id))
 
   revalidateTag(CacheTag.Courses, 'max')
-  revalidateTag(`${CacheTag.Course}-${data.slug}`, 'max')
-  return { data: parseCourse(data) }
+
+  const updated = await db.query.courses.findFirst({
+    where: eq(courses.id, id),
+    with: courseWith,
+  })
+  if (!updated) return { error: { code: 'NOT_FOUND', message: 'Course not found' } }
+
+  return {
+    data: parseCourse({
+      ...updated,
+      lessons: updated.lessons.map(l => ({ ...l, assessment: l.assessments[0] ?? null })),
+    }),
+  }
 }
 
 export const deleteCourse = async (id: number) => {
-  const db = await getDatabase()
-
-  const { error } = await db.from('courses').delete().eq('id', id)
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data: true }
+  try {
+    await db.delete(courses).where(eq(courses.id, id))
+    revalidateTag(CacheTag.Courses, 'max')
+    return { data: true, error: null }
+  } catch (e) {
+    return { data: null, error: { code: 'DELETE_FAILED', message: e instanceof Error ? e.message : 'Failed to delete course' } }
+  }
 }
 
 export const createLesson = async (lesson: TableInsert<'lessons'>) => {
-  const db = await getDatabase()
+  const [created] = await db.insert(lessons).values(lesson).returning()
+  if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create lesson' } }
 
-  const { data, error } = await db.from('lessons').insert(lesson).select(lessonQuery).single()
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data: parseLesson(data) }
+  return { data: parseLesson(created) }
 }
 
-export const upsertLessons = async (lessons: TableInsert<'lessons'>[]) => {
-  const db = await getDatabase()
+export const upsertLessons = async (values: TableInsert<'lessons'>[]) => {
+  const result = await db
+    .insert(lessons)
+    .values(values)
+    .onConflictDoUpdate({
+      target: lessons.id,
+      set: {
+        title: values[0]?.title,
+        content: values[0]?.content,
+        sortOrder: values[0]?.sortOrder,
+      },
+    })
+    .returning()
 
-  const { data, error } = await db.from('lessons').upsert(lessons).select(lessonQuery)
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data: data.map(parseLesson) }
+  return { data: result.map(parseLesson) }
 }
 
-export const reorderCourses = async (courses: Course[]) => {
-  const db = await getDatabase()
+export const reorderCourses = async (items: Course[]) => {
+  for (const [i, { id }] of items.entries()) {
+    await db.update(courses).set({ sortOrder: i + 1 }).where(eq(courses.id, id))
+  }
 
-  const { data, error } = await db.from('courses').upsert(
-    courses.map(({ id, slug, type }, i) => ({
-      id,
-      slug,
-      type,
-      sort_order: i + 1,
-    }))
-  )
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data }
-}
-
-export const upsertQuestions = async (questions: TableInsert<'questions'>[]) => {
-  const db = await getDatabase()
-
-  const { data, error } = await db.from('questions').upsert(questions).select('id, description, explanation')
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data }
-}
-
-export const deleteQuestions = async (ids: number[]) => {
-  const db = await getDatabase()
-
-  const { error } = await db.from('questions').delete().in('id', ids)
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
   return { data: true }
 }
 
-export const upsertEvaluations = async (evaluations: TableInsert<'evaluations'>[]) => {
-  const db = await getDatabase()
+export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
+  const result = await db
+    .insert(questions)
+    .values(values)
+    .onConflictDoUpdate({
+      target: questions.id,
+      set: {
+        description: values[0]?.description,
+        explanation: values[0]?.explanation,
+      },
+    })
+    .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
 
-  const { data, error } = await db.from('evaluations').upsert(evaluations).select('id, description')
-  if (error) return { error }
+  return { data: result }
+}
 
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data }
+export const deleteQuestions = async (ids: number[]) => {
+  await db.delete(questions).where(inArray(questions.id, ids))
+  return { data: true }
+}
+
+export const upsertEvaluations = async (values: TableInsert<'evaluations'>[]) => {
+  const result = await db
+    .insert(evaluations)
+    .values(values)
+    .onConflictDoUpdate({
+      target: evaluations.id,
+      set: {
+        description: values[0]?.description,
+      },
+    })
+    .returning({ id: evaluations.id, description: evaluations.description })
+
+  return { data: result }
 }
 
 export const deleteEvaluations = async (ids: number[]) => {
-  const db = await getDatabase()
-
-  const { error } = await db.from('evaluations').delete().in('id', ids)
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
+  await db.delete(evaluations).where(inArray(evaluations.id, ids))
   return { data: true }
 }
 
 export const upsertAssessment = async (assessment: TableInsert<'assessments'>) => {
-  const db = await getDatabase()
+  const [result] = await db
+    .insert(assessments)
+    .values(assessment)
+    .onConflictDoUpdate({
+      target: assessments.id,
+      set: { description: assessment.description },
+    })
+    .returning({ id: assessments.id, description: assessments.description })
+  if (!result) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
 
-  const { data, error } = await db.from('assessments').upsert(assessment).select('id, description').single()
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
-  return { data }
+  return { data: result }
 }
 
 export const deleteAssessment = async (id: number) => {
-  const db = await getDatabase()
-
-  const { error } = await db.from('assessments').delete().eq('id', id)
-  if (error) return { error }
-
-  revalidateTag(CacheTag.Courses, 'max')
+  await db.delete(assessments).where(eq(assessments.id, id))
   return { data: true }
 }
 
@@ -188,10 +284,10 @@ export const submitAnswers = async (options: { id: number }[]) => {
   const user = await getAuthUser()
   if (!user) return { error: new Error('Unauthorized') }
 
-  const db = await getDatabase()
+  const result = await db
+    .insert(userAnswers)
+    .values(options.map(({ id }) => ({ optionId: id, userId: user.id })))
+    .returning({ id: userAnswers.id })
 
-  return await db
-    .from('user_answers')
-    .insert(options.map(({ id }) => ({ option_id: id, user_id: user.id })))
-    .select('id')
+  return { data: result }
 }

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 
-import { flip, offset, type UseVirtualFloatingOptions } from '@platejs/floating'
+import { type UseVirtualFloatingOptions, flip, offset } from '@platejs/floating'
 import { getLinkAttributes } from '@platejs/link'
 import {
   FloatingLinkUrlInput,
@@ -15,7 +15,7 @@ import {
 import { cva } from 'class-variance-authority'
 import { ExternalLinkIcon, LinkIcon, TextIcon, UnlinkIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { KEYS, type TLinkElement } from 'platejs'
+import { KEYS } from 'platejs'
 import { useEditorRef, useEditorSelection, useFormInputProps, usePluginOption } from 'platejs/react'
 
 import { buttonVariants } from '@/components/ui/button'
@@ -26,12 +26,7 @@ const popoverVariants = cva(
 )
 
 const inputVariants = cva(
-  `
-    flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
-    placeholder:text-muted-foreground
-    focus-visible:ring-transparent focus-visible:outline-none
-    md:text-sm
-  `
+  `flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm`
 )
 
 export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarState }) => {
@@ -74,7 +69,9 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
     preventDefaultOnEnterKeydown: true,
   })
 
-  if (hidden) return null
+  if (hidden) {
+    return null
+  }
 
   const input = (
     <div className="flex w-[330px] flex-col" {...inputProps}>
@@ -139,7 +136,7 @@ const LinkOpenButton = () => {
   const _selection = useEditorSelection() as string | undefined
 
   const attributes = useMemo(() => {
-    const entry = editor.api.node<TLinkElement>({
+    const entry = editor.api.node({
       match: { type: editor.getType(KEYS.link) },
     })
     if (!entry) {

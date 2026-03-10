@@ -227,7 +227,7 @@ const TablePicker = () => {
 
   return (
     <div
-      className="flex! m-0 flex-col p-0"
+      className="m-0 flex! flex-col p-0"
       onClick={() => {
         tf.insert.table(tablePicker.size, { select: true })
         editor.tf.focus()
@@ -237,7 +237,7 @@ const TablePicker = () => {
         {tablePicker.grid.map((rows, rowIndex) =>
           rows.map((value, columIndex) => (
             <div
-              className={cn('col-span-1 size-3 border border-solid bg-secondary', !!value && 'border-current')}
+              className={cn('col-span-1 size-3 border border-solid bg-secondary', Boolean(value) && 'border-current')}
               key={`(${rowIndex},${columIndex})`}
               onMouseMove={() => {
                 onCellMove(rowIndex, columIndex)
@@ -247,7 +247,7 @@ const TablePicker = () => {
         )}
       </div>
 
-      <div className="text-center text-current text-xs">
+      <div className="text-center text-xs text-current">
         {tablePicker.size.rowCount}
         {' x '}
         {tablePicker.size.colCount}

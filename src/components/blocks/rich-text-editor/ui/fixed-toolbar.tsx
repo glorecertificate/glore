@@ -12,12 +12,16 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
   const [readOnly] = usePlateState('readOnly')
 
   const canScrollLeft = useMemo(() => {
-    if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) return false
+    if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) {
+      return false
+    }
     return ref.current.scrollLeft > 0
   }, [])
 
   const canScrollRight = useMemo(() => {
-    if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) return false
+    if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) {
+      return false
+    }
     return ref.current.scrollWidth > ref.current.clientWidth + ref.current.scrollLeft
   }, [])
 
@@ -25,7 +29,7 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
     <>
       <Toolbar
         className={cn(
-          'scrollbar-hide sticky top-0 left-0 w-full justify-between overflow-x-hidden rounded-t-lg border border-border border-b-0 bg-input/30 p-1 backdrop-blur-sm supports-backdrop-blur:bg-background/60',
+          'sticky top-0 left-0 scrollbar-hide w-full justify-between overflow-x-hidden rounded-t-lg border border-b-0 border-border bg-input/30 p-1 backdrop-blur-sm supports-backdrop-blur:bg-background/60',
           readOnly && 'hidden',
           className
         )}

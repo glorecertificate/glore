@@ -9,12 +9,11 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { logout, updatePassword } from '@/actions/auth'
-import { type AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
 import { PASSWORD_REGEX } from '@/lib/constants'
-import { type Enum } from '@/lib/types'
+import { AuthView } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 
 export const PasswordResetForm = ({
@@ -24,7 +23,7 @@ export const PasswordResetForm = ({
 }: {
   resetToken: string | null
   setErrored: (errored: boolean) => void
-  setView: (view: Enum<AuthView>) => void
+  setView: (view: AuthView) => void
 }) => {
   const t = useTranslations('Auth')
   const [, setToken] = useQueryState('resetToken', parseAsString)
@@ -46,10 +45,10 @@ export const PasswordResetForm = ({
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       password: '',
     },
+    resolver: zodResolver(formSchema),
   })
 
   const disabled = defaultFormDisabled(form)
@@ -57,7 +56,9 @@ export const PasswordResetForm = ({
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      if (!resetToken) return setView('invalid_token')
+      if (!resetToken) {
+        return setView('invalid_token')
+      }
 
       const { error } = await updatePassword(resetToken, schema.password.trim())
 

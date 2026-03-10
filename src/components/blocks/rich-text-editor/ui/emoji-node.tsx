@@ -29,7 +29,9 @@ export const EmojiInputElement = (props: PlateElementProps) => {
   const isPending = value !== debouncedValue
 
   const filteredEmojis = useMemo(() => {
-    if (debouncedValue.trim().length === 0) return []
+    if (debouncedValue.trim().length === 0) {
+      return []
+    }
     return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(COLON_REGEX, '')).get()
   }, [data, debouncedValue])
 

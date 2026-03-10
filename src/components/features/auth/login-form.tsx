@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { redirect } from 'next/navigation'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -11,14 +11,13 @@ import { z } from 'zod'
 
 import { login } from '@/actions/auth'
 import { findUserEmail } from '@/actions/user'
-import { type AuthView } from '@/components/features/auth/auth-flow'
 import { SignupDialog } from '@/components/features/auth/signup-dialog'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { APP_ROOT, PASSWORD_REGEX } from '@/lib/constants'
-import { type Enum } from '@/lib/types'
+import { AuthView } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
 export const LoginForm = ({
@@ -29,7 +28,7 @@ export const LoginForm = ({
 }: {
   setErrored: (hasErrors: boolean) => void
   setUsername: (username?: string) => void
-  setView: (view: Enum<AuthView>) => void
+  setView: (view: AuthView) => void
   username?: string
 }) => {
   const t = useTranslations('Auth')
@@ -38,6 +37,12 @@ export const LoginForm = ({
   const formSchema = useMemo(
     () =>
       z.object({
+        password: z
+          .string()
+          .nonempty(t('passwordRequired'))
+          .min(8, {
+            message: t('passwordTooShort'),
+          }),
         username: z
           .string()
           .nonempty(t('userRequired'))
@@ -47,22 +52,16 @@ export const LoginForm = ({
           .refine(isValidUsername, {
             message: t('userInvalid'),
           }),
-        password: z
-          .string()
-          .nonempty(t('passwordRequired'))
-          .min(8, {
-            message: t('passwordTooShort'),
-          }),
       }),
     [t]
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       username: username ?? '',
       password: '',
     },
+    resolver: zodResolver(formSchema),
   })
 
   const disabled = defaultFormDisabled(form)
@@ -103,6 +102,12 @@ export const LoginForm = ({
         return toast.error(t('networkError'))
       }
 
+      if (!data) {
+        setLoading(false)
+        form.setError('username', { message: t('userNotFound') })
+        return form.setFocus('username')
+      }
+
       if (!PASSWORD_REGEX.test(password)) {
         return setPasswordInvalid()
       }
@@ -128,13 +133,12 @@ export const LoginForm = ({
 
   useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus, form])
 
-  // biome-ignore lint/correctness: Run on unmount only
   useEffect(
     () => () => {
       setLoading(false)
       setErrored(false)
     },
-    []
+    [setErrored]
   )
 
   return (
@@ -179,10 +183,10 @@ export const LoginForm = ({
                     </Button>
                   </div>
                   <FormControl>
-                    <PasswordInput autoFocus={!!username} disabled={loading} variant="floating" {...field} />
+                    <PasswordInput autoFocus={Boolean(username)} disabled={loading} variant="floating" {...field} />
                   </FormControl>
                   {passwordError && (
-                    <p className="text-destructive text-sm leading-[normal]">
+                    <p className="text-sm leading-[normal] text-destructive">
                       {passwordError.type === 'validate' ? t('passwordInvalid') : passwordError.message}
                     </p>
                   )}

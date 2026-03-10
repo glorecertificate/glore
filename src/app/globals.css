@@ -1,7 +1,7 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@plugin "tailwindcss-animate";
-@plugin "tailwind-scrollbar-hide";
+@plugin 'tailwindcss-animate';
+@plugin 'tailwind-scrollbar-hide';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -189,7 +189,7 @@
 }
 
 @utility text-stroke-* {
-  -webkit-text-stroke-width: --value(number)px;
+  -webkit-text-stroke-width: --value(number) px;
   -webkit-text-stroke-color: --value(--color-*);
 }
 
@@ -198,12 +198,13 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply overflow-x-hidden bg-background text-foreground;
   }
 
   html.theme-transition,
   html.theme-transition :where(*, *::before, *::after) {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, outline-color;
+    transition-property:
+      color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, outline-color;
     @apply duration-250 motion-reduce:transition-none;
   }
   html.theme-transition-view {

@@ -1,27 +1,12 @@
-import { organizationQuery } from '@/db/queries/organization'
-import { baseUserQuery } from '@/db/queries/user'
-import { type DatabaseResult } from '@/db/types'
+import { type InferSelectModel } from 'drizzle-orm'
 
-export type Certificate = DatabaseResult<'certificates', typeof certificateQuery>
+import { type certificates, type organizations, type users } from '@/db/schema'
 
-export const certificateQuery = `
-  id,
-  handle,
-  language,
-  activity_start_date,
-  activity_end_date,
-  activity_duration,
-  activity_location,
-  activity_description,
-  reviewer_comment,
-  document_url,
-  issued_at,
-  created_at,
-  updated_at,
-  organization:organizations (
-    ${organizationQuery}
-  ),
-  reviewer:users!user_id (
-    ${baseUserQuery}
-  )
-` as const
+type CertificateRow = InferSelectModel<typeof certificates>
+type OrganizationRow = InferSelectModel<typeof organizations>
+type ReviewerRow = InferSelectModel<typeof users>
+
+export interface Certificate extends CertificateRow {
+  organization: OrganizationRow
+  reviewer: ReviewerRow | null
+}

@@ -21,7 +21,7 @@ export const useUserSettingsTab = () => {
     history: 'push',
     startTransition,
   })
-  return { tab, setTab }
+  return { setTab, tab }
 }
 
 export const UserSettingsTabs = memo((props: React.ComponentProps<typeof Tabs>) => {

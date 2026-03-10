@@ -52,14 +52,13 @@ interface AIChatItem {
   value: string
 }
 
-interface MenuStateItems
-  extends Record<
-    EditorChatState,
-    {
-      items: ReturnType<typeof useAIChatItems>[keyof ReturnType<typeof useAIChatItems>][]
-      heading?: string
-    }[]
-  > {}
+interface MenuStateItems extends Record<
+  EditorChatState,
+  {
+    items: ReturnType<typeof useAIChatItems>[keyof ReturnType<typeof useAIChatItems>][]
+    heading?: string
+  }[]
+> {}
 
 const useAIChatItems = () => {
   const t = useTranslations('Components.RichTextEditor')
@@ -68,16 +67,15 @@ const useAIChatItems = () => {
     accept: {
       icon: <CheckIcon />,
       label: t('ai.accept'),
-      value: 'accept',
       onSelect: ({ editor }) => {
         editor.getTransforms(AIChatPlugin).aiChat.accept()
         editor.tf.focus({ edge: 'end' })
       },
+      value: 'accept',
     },
     continueWrite: {
       icon: <PenLineIcon />,
       label: t('ai.continueWriting'),
-      value: 'continueWrite',
       onSelect: ({ editor }) => {
         const ancestorNode = editor.api.block({ highest: true })
         if (!ancestorNode) return
@@ -87,29 +85,29 @@ const useAIChatItems = () => {
           prompt: isEmpty ? t('ai.continueEmptyWritingPrompt') : t('ai.continueWritingPrompt'),
         })
       },
+      value: 'continueWrite',
     },
     discard: {
       icon: <XIcon />,
       label: t('ai.discard'),
-      shortcut: 'Escape',
-      value: 'discard',
       onSelect: ({ editor }) => {
         editor.getTransforms(AIPlugin).ai.undo()
         editor.getApi(AIChatPlugin).aiChat.hide()
       },
+      shortcut: 'Escape',
+      value: 'discard',
     },
     emojify: {
       icon: <SmileIcon />,
       label: t('ai.emojify'),
-      value: 'emojify',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', { prompt: t('ai.emojifyPrompt') })
       },
+      value: 'emojify',
     },
     explain: {
       icon: <BadgeHelpIcon />,
       label: t('ai.explain'),
-      value: 'explain',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: {
@@ -118,77 +116,77 @@ const useAIChatItems = () => {
           },
         })
       },
+      value: 'explain',
     },
     fixSpelling: {
       icon: <CheckIcon />,
       label: t('ai.fixGrammar'),
-      value: 'fixSpelling',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.fixGrammarPrompt'),
         })
       },
+      value: 'fixSpelling',
     },
     improveWriting: {
       icon: <WandIcon />,
       label: t('ai.improveWriting'),
-      value: 'improveWriting',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.improveWritingPrompt'),
         })
       },
+      value: 'improveWriting',
     },
     insertBelow: {
       icon: <ListEndIcon />,
       label: t('ai.insertBelow'),
-      value: 'insertBelow',
       onSelect: ({ aiEditor, editor }) => {
         void editor.getTransforms(AIChatPlugin).aiChat.insertBelow(aiEditor)
       },
+      value: 'insertBelow',
     },
     makeLonger: {
       icon: <ListPlusIcon />,
       label: t('ai.makeLonger'),
-      value: 'makeLonger',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.makeLongerPrompt'),
         })
       },
+      value: 'makeLonger',
     },
     makeShorter: {
       icon: <ListMinusIcon />,
       label: t('ai.makeShorter'),
-      value: 'makeShorter',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.makeShorterPrompt'),
         })
       },
+      value: 'makeShorter',
     },
     replace: {
       icon: <CheckIcon />,
       label: t('ai.replace'),
-      value: 'replace',
       onSelect: ({ aiEditor, editor }) => {
         void editor.getTransforms(AIChatPlugin).aiChat.replaceSelection(aiEditor)
       },
+      value: 'replace',
     },
     simplifyLanguage: {
       icon: <FeatherIcon />,
       label: t('ai.simplifyLanguage'),
-      value: 'simplifyLanguage',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           prompt: t('ai.simplifyLanguagePrompt'),
         })
       },
+      value: 'simplifyLanguage',
     },
     summarize: {
       icon: <AlbumIcon />,
       label: t('ai.summarize'),
-      value: 'summarize',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.submit('', {
           mode: 'insert',
@@ -198,14 +196,15 @@ const useAIChatItems = () => {
           },
         })
       },
+      value: 'summarize',
     },
     tryAgain: {
       icon: <CornerUpLeftIcon />,
       label: t('ai.tryAgain'),
-      value: 'tryAgain',
       onSelect: ({ editor }) => {
         void editor.getApi(AIChatPlugin).aiChat.reload()
       },
+      value: 'tryAgain',
     },
   } satisfies Record<string, AIChatItem>
 }
@@ -240,10 +239,14 @@ export const AIMenu = () => {
   )
 
   useEffect(() => {
-    if (!streaming) return
+    if (!streaming) {
+      return
+    }
     const anchor = api.aiChat.node({ anchor: true })
     setTimeout(() => {
-      if (!anchor?.[0]) return
+      if (!anchor?.[0]) {
+        return
+      }
       const anchorDom = editor.api.toDOMNode(anchor[0])!
       setAnchorElement(anchorDom)
     }, 0)
@@ -251,7 +254,9 @@ export const AIMenu = () => {
 
   const setOpen = useCallback(
     (open: boolean) => {
-      if (open) return api.aiChat.show()
+      if (open) {
+        return api.aiChat.show()
+      }
       api.aiChat.hide()
     },
     [api]
@@ -269,7 +274,9 @@ export const AIMenu = () => {
     chat,
     onOpenBlockSelection: (blocks: NodeEntry[]) => {
       const block = blocks.at(-1)?.[0]
-      if (!block) return
+      if (!block) {
+        return
+      }
       show(editor.api.toDOMNode(block)!)
     },
     onOpenChange: open => {
@@ -289,7 +296,9 @@ export const AIMenu = () => {
     },
     onOpenSelection: () => {
       const block = editor.api.blocks().at(-1)?.[0]
-      if (!block) return
+      if (!block) {
+        return
+      }
       show(editor.api.toDOMNode(block)!)
     },
   })
@@ -300,11 +309,16 @@ export const AIMenu = () => {
 
   const isLoading = status === 'streaming' || status === 'submitted'
 
-  if (isLoading && mode === 'insert') return null
+  const anchorVirtualRef = useMemo(() => ({ current: anchorElement! }), [anchorElement])
+  const popoverStyle = useMemo(() => ({ width: anchorElement?.offsetWidth }), [anchorElement])
+
+  if (isLoading && mode === 'insert') {
+    return null
+  }
 
   return (
     <Popover modal={false} onOpenChange={setOpen} open={open}>
-      <PopoverAnchor virtualRef={{ current: anchorElement! }} />
+      <PopoverAnchor virtualRef={anchorVirtualRef} />
 
       <PopoverContent
         align="center"
@@ -314,15 +328,13 @@ export const AIMenu = () => {
           api.aiChat.hide()
         }}
         side="bottom"
-        style={{
-          width: anchorElement?.offsetWidth,
-        }}
+        style={popoverStyle}
       >
         <Command className="w-full rounded-lg border shadow-md" onValueChange={setValue} value={value}>
           {mode === 'chat' && isSelecting && content && <AIChatEditor content={content} />}
 
           {isLoading ? (
-            <div className="flex grow select-none items-center gap-2 p-2 text-muted-foreground text-sm">
+            <div className="flex grow items-center gap-2 p-2 text-sm text-muted-foreground select-none">
               <Loader2Icon className="size-4 animate-spin" />
               {messages.length > 1 ? t('ai.editing') : t('ai.thinking')}
             </div>
@@ -330,7 +342,7 @@ export const AIMenu = () => {
             <CommandPrimitive.Input
               autoFocus
               className={cn(
-                'flex h-9 w-full min-w-0 border-input border-b bg-transparent px-3 py-1 text-base outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:ring-transparent aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40'
+                'flex h-9 w-full min-w-0 border-b border-input bg-transparent px-3 py-1 text-base transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:ring-transparent aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40'
               )}
               data-plate-focus
               onKeyDown={e => {
@@ -415,7 +427,7 @@ export const AIMenuItems = ({ setValue }: { setValue: (value: string) => void })
     if (menuGroups.length > 0 && menuGroups[0].items.length > 0) {
       setValue(menuGroups[0].items[0].value)
     }
-  }, [setValue, menuGroups.length, menuGroups[0].items.length, menuGroups[0].items[0].value])
+  }, [setValue, menuGroups])
 
   return (
     <>
@@ -453,12 +465,14 @@ export const AILoadingBar = () => {
 
   const visible = isLoading && mode === 'insert'
 
-  if (!visible) return null
+  if (!visible) {
+    return null
+  }
 
   return (
     <div
       className={cn(
-        'absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-muted-foreground text-sm shadow-md transition-all duration-300'
+        'absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-sm text-muted-foreground shadow-md transition-all duration-300'
       )}
     >
       <span className="size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />

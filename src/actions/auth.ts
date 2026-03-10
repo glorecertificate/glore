@@ -3,108 +3,125 @@
 import 'server-only'
 
 import { cacheTag, revalidateTag } from 'next/cache'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { type SignInWithPasswordCredentials, type UserAttributes, type UserResponse } from '@supabase/supabase-js'
-
-import { sendEmail } from '@/actions/email'
-import { getDatabase } from '@/db/client'
+import { auth } from '@/lib/auth/server'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT } from '@/lib/constants'
 
-const fetchAuthUser = async (query: Promise<UserResponse>) => {
+const fetchAuthUser = async () => {
   'use cache'
   cacheTag(CacheTag.AuthUser)
 
-  const { data, error } = await query
-  if (error) return null
-
-  return data.user
+  const session = await auth.api.getSession({ headers: await headers() })
+  return session?.user ?? null
 }
 
-export const login = async (credentials: SignInWithPasswordCredentials) => {
-  const db = await getDatabase()
-  const { error } = await db.auth.signInWithPassword(credentials)
-
-  if (error)
-    return {
-      data: {
-        user: null,
-        session: null,
+export const login = async (credentials: { email: string; password: string }) => {
+  try {
+    const result = await auth.api.signInEmail({
+      body: {
+        email: credentials.email,
+        password: credentials.password,
       },
-      error,
+    })
+    if (!result?.user) {
+      return {
+        data: { user: null, session: null },
+        error: { code: 'AUTH_ERROR', message: 'Login failed' },
+      }
     }
+  } catch (e) {
+    return {
+      data: { user: null, session: null },
+      error: { code: 'AUTH_ERROR', message: e instanceof Error ? e.message : 'Login failed' },
+    }
+  }
 
   revalidateTag(CacheTag.AuthUser, 'max')
   redirect(APP_ROOT)
 }
 
 export const logout = async () => {
-  const db = await getDatabase()
-
-  const { error } = await db.auth.signOut()
-  if (error) throw error
-
+  await auth.api.signOut({ headers: await headers() })
   revalidateTag(CacheTag.AuthUserStatus, 'max')
 }
 
-export const getAuthUser = async () => {
-  const db = await getDatabase()
-  const query = db.auth.getUser()
-  return await fetchAuthUser(query)
-}
+export const getAuthUser = async () => await fetchAuthUser()
 
-export const updateAuthUser = async (attributes: UserAttributes) => {
-  const db = await getDatabase()
+export const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) throw new Error('Not authenticated')
 
-  const { data, error } = await db.auth.updateUser(attributes)
-  if (error) throw error
+  await auth.api.updateUser({
+    body: attributes,
+    headers: await headers(),
+  })
 
   revalidateTag(CacheTag.AuthUser, 'max')
-  return data.user
+  return session.user
 }
 
-export const resetPassword = async (
-  email: string,
-  options?: {
-    redirectTo?: string
+export const setAuthPassword = async (newPassword: string) => {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) throw new Error('Not authenticated')
+
+  await auth.api.setPassword({
+    body: { newPassword },
+    headers: await headers(),
+  })
+}
+
+export const resetPassword = async (email: string, _options?: { redirectTo?: string }) => {
+  try {
+    await auth.api.resetPassword({
+      body: {
+        email,
+        redirectTo: _options?.redirectTo ?? `${process.env.APP_URL}/login`,
+      },
+    })
+    return { data: {}, error: null }
+  } catch (e) {
+    return {
+      data: null,
+      error: { code: 'AUTH_ERROR', message: e instanceof Error ? e.message : 'Failed to send reset email' },
+    }
   }
-) => {
-  const db = await getDatabase()
-  return await db.auth.resetPasswordForEmail(email, options)
 }
 
 export const updatePassword = async (token: string, password: string) => {
-  const db = await getDatabase()
-
-  const { error: verifyError } = await db.auth.verifyOtp({ type: 'email', token_hash: token })
-  if (verifyError) return { data: null, error: verifyError }
-
-  return await db.auth.updateUser({ password })
+  try {
+    await auth.api.resetPassword({
+      body: {
+        newPassword: password,
+        token,
+      },
+    })
+    return { data: {}, error: null }
+  } catch (e) {
+    return {
+      data: null,
+      error: {
+        code: e instanceof Error && 'code' in e ? (e as { code: string }).code : 'AUTH_ERROR',
+        message: e instanceof Error ? e.message : 'Failed to update password',
+      },
+    }
+  }
 }
 
 export const changePassword = async (currentPassword: string, newPassword: string) => {
-  const db = await getDatabase()
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user) throw new Error('User not found')
 
-  const {
-    data: { user },
-  } = await db.auth.getUser()
-  if (!user?.email) throw new Error('User not found')
+  try {
+    await auth.api.changePassword({
+      body: { currentPassword, newPassword },
+      headers: await headers(),
+    })
+  } catch (e) {
+    return { error: { code: 'AUTH_ERROR', message: e instanceof Error ? e.message : 'Invalid current password' } }
+  }
 
-  const { error: signInError } = await db.auth.signInWithPassword({
-    email: user.email,
-    password: currentPassword,
-  })
-  if (signInError) return { error: signInError }
-
-  const { data, error } = await db.auth.updateUser({ password: newPassword })
-  if (error) return { error }
-
-  sendEmail('account/password-changed', {
-    to: user.email,
-    username: user.user_metadata?.first_name ?? undefined,
-    locale: user.user_metadata?.locale ?? undefined,
-  })
-
-  return { data: data.user }
+  return { data: session.user }
 }

@@ -15,15 +15,15 @@ import {
   MultiSelectTrigger,
 } from '@/components/ui/multi-select'
 import { COURSE_TYPES } from '@/db/queries/course'
-import { type Enums } from '@/db/types'
+import { type EnumType } from '@/db/types'
 import { cn } from '@/lib/utils'
 
 export const courseTypeVariants = cva('', {
   variants: {
     type: {
       intro: 'bg-blue-500/15 text-blue-700 dark:text-blue-400',
-      skill: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
       learner: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
+      skill: 'bg-amber-500/15 text-amber-700 dark:text-amber-400',
     },
   },
 })
@@ -36,8 +36,8 @@ export const CourseListTypeSelect = memo(
     const typeItems = useMemo(
       () =>
         COURSE_TYPES.map(type => ({
-          value: type,
           label: t(`courseType-${type}`),
+          value: type,
         })),
       [t]
     )
@@ -46,7 +46,7 @@ export const CourseListTypeSelect = memo(
       <MultiSelect
         label={t('courseType')}
         min={1}
-        onChange={values => setActiveTypes(values as Enums<'course_type'>[])}
+        onChange={values => setActiveTypes(values as EnumType<'course_type'>[])}
         options={COURSE_TYPES}
         value={activeTypes}
         {...props}
@@ -56,7 +56,7 @@ export const CourseListTypeSelect = memo(
             .filter(type => activeTypes.includes(type.value))
             .map(({ label, value }) => (
               <MultiSelectBadge
-                className={cn('py-1 font-medium text-xs', courseTypeVariants({ type: value }))}
+                className={cn('py-1 text-xs font-medium', courseTypeVariants({ type: value }))}
                 key={value}
                 label={t('courseType').toLowerCase()}
                 value={value}

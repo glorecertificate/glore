@@ -15,11 +15,13 @@ export const generateMetadata = () =>
 
 const AdminTeamPage = async () => {
   const { data, error } = await getTeamMembers()
-  if (error) throw error
+  if (error) {
+    throw error
+  }
   return <AdminTeam users={data} />
 }
 
-export default async () => (
+export default () => (
   <>
     <PageHeader namespace="Admin.team" titleKey="title" />
     <PageMain>

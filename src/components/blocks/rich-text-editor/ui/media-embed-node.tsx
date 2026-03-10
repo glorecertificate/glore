@@ -1,21 +1,25 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import { parseTwitterUrl, parseVideoUrl } from '@platejs/media'
 import { MediaEmbedPlugin, useMediaState } from '@platejs/media/react'
 import { ResizableProvider, useResizableValue } from '@platejs/resizable'
 import { type TMediaEmbedElement } from 'platejs'
 import { PlateElement, type PlateElementProps, withHOC } from 'platejs/react'
 import LiteYouTubeEmbed from 'react-lite-youtube-embed'
-import { Tweet } from 'react-tweet'
 
 import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
 import { MediaToolbar } from '@/components/blocks/rich-text-editor/ui/media-toolbar'
 import {
-  mediaResizeHandleVariants,
   Resizable,
   ResizeHandle,
+  mediaResizeHandleVariants,
 } from '@/components/blocks/rich-text-editor/ui/resize-handle'
 import { cn } from '@/lib/utils'
+
+const leftResizeOptions = { direction: 'left' } as const
+const rightResizeOptions = { direction: 'right' } as const
 
 export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElementProps<TMediaEmbedElement>) => {
   const {
@@ -25,7 +29,6 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
     isTweet,
     isVideo,
     isYoutube,
-    readOnly,
     selected,
   } = useMediaState({
     urlParsers: [parseTwitterUrl, parseVideoUrl],
@@ -33,23 +36,18 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
   const width = useResizableValue('width')
   const provider = embed?.provider
 
+  const resizableOptions = useMemo(
+    () => ({ align, maxWidth: isTweet ? 550 : '100%', minWidth: isTweet ? 300 : 100 }),
+    [align, isTweet]
+  )
+  const captionStyle = useMemo(() => ({ width: width as string }), [width])
+
   return (
     <MediaToolbar plugin={MediaEmbedPlugin}>
       <PlateElement className="py-2.5" {...props}>
         <figure className="group relative m-0 w-full cursor-default" contentEditable={false}>
-          <Resizable
-            align={align}
-            options={{
-              align,
-              maxWidth: isTweet ? 550 : '100%',
-              minWidth: isTweet ? 300 : 100,
-            }}
-          >
-            <ResizeHandle
-              className={mediaResizeHandleVariants({ direction: 'left' })}
-              options={{ direction: 'left' }}
-            />
-
+          <Resizable align={align} options={resizableOptions}>
+            <ResizeHandle className={mediaResizeHandleVariants({ direction: 'left' })} options={leftResizeOptions} />
             {isVideo ? (
               isYoutube ? (
                 <LiteYouTubeEmbed
@@ -58,36 +56,16 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
                   wrapperClass={cn(
                     'rounded-sm',
                     focused && selected && 'ring-2 ring-ring ring-offset-2',
-                    'relative block cursor-pointer bg-black bg-center bg-cover contain-content',
-                    `
-                      [&.lyt-activated]:before:absolute [&.lyt-activated]:before:top-0 [&.lyt-activated]:before:h-[60px]
-                      [&.lyt-activated]:before:w-full [&.lyt-activated]:before:bg-top [&.lyt-activated]:before:bg-repeat-x
-                      [&.lyt-activated]:before:pb-[50px] [&.lyt-activated]:before:[transition:all_0.2s_cubic-bezier(0,_0,_0.2,_1)]
-                    `,
-                    `
-                      [&.lyt-activated]:before:bg-[url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)]
-                    `,
+                    'relative block cursor-pointer bg-black bg-cover bg-center contain-content',
+                    `[&.lyt-activated]:before:absolute [&.lyt-activated]:before:top-0 [&.lyt-activated]:before:h-15 [&.lyt-activated]:before:w-full [&.lyt-activated]:before:bg-top [&.lyt-activated]:before:bg-repeat-x [&.lyt-activated]:before:pb-12.5 [&.lyt-activated]:before:[transition:all_0.2s_cubic-bezier(0,_0,_0.2,_1)]`,
+                    `[&.lyt-activated]:before:bg-[url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==)]`,
                     'after:block after:pb-(--aspect-ratio) after:content-[""]',
                     '[&_>_iframe]:absolute [&_>_iframe]:top-0 [&_>_iframe]:left-0 [&_>_iframe]:size-full',
-                    `
-                      [&_>_.lty-playbtn]:z-1 [&_>_.lty-playbtn]:h-[46px] [&_>_.lty-playbtn]:w-[70px] [&_>_.lty-playbtn]:rounded-[14%]
-                      [&_>_.lty-playbtn]:bg-[#212121] [&_>_.lty-playbtn]:opacity-80
-                      [&_>_.lty-playbtn]:[transition:all_0.2s_cubic-bezier(0,_0,_0.2,_1)]
-                    `,
+                    `[&_>_.lty-playbtn]:z-1 [&_>_.lty-playbtn]:h-11.5 [&_>_.lty-playbtn]:w-17.5 [&_>_.lty-playbtn]:rounded-[14%] [&_>_.lty-playbtn]:bg-[#212121] [&_>_.lty-playbtn]:opacity-80 [&_>_.lty-playbtn]:[transition:all_0.2s_cubic-bezier(0,_0,_0.2,_1)]`,
                     '[&:hover_>_.lty-playbtn]:bg-[red] [&:hover_>_.lty-playbtn]:opacity-100',
-                    `
-                      [&_>_.lty-playbtn]:before:border-y-[11px] [&_>_.lty-playbtn]:before:border-r-0
-                      [&_>_.lty-playbtn]:before:border-l-[19px] [&_>_.lty-playbtn]:before:border-[transparent_transparent_transparent_#fff]
-                      [&_>_.lty-playbtn]:before:content-[""]
-                    `,
-                    `
-                      [&_>_.lty-playbtn]:absolute [&_>_.lty-playbtn]:top-1/2 [&_>_.lty-playbtn]:left-1/2
-                      [&_>_.lty-playbtn]:[transform:translate3d(-50%,-50%,0)]
-                    `,
-                    `
-                      [&_>_.lty-playbtn]:before:absolute [&_>_.lty-playbtn]:before:top-1/2 [&_>_.lty-playbtn]:before:left-1/2
-                      [&_>_.lty-playbtn]:before:[transform:translate3d(-50%,-50%,0)]
-                    `,
+                    `[&_>_.lty-playbtn]:before:border-y-[11px] [&_>_.lty-playbtn]:before:border-r-0 [&_>_.lty-playbtn]:before:border-l-19 [&_>_.lty-playbtn]:before:border-[transparent_transparent_transparent_#fff] [&_>_.lty-playbtn]:before:content-[""]`,
+                    `[&_>_.lty-playbtn]:absolute [&_>_.lty-playbtn]:top-1/2 [&_>_.lty-playbtn]:left-1/2 [&_>_.lty-playbtn]:[transform:translate3d(-50%,-50%,0)]`,
+                    `[&_>_.lty-playbtn]:before:absolute [&_>_.lty-playbtn]:before:top-1/2 [&_>_.lty-playbtn]:before:left-1/2 [&_>_.lty-playbtn]:before:[transform:translate3d(-50%,-50%,0)]`,
                     '[&.lyt-activated]:cursor-[unset]',
                     '[&.lyt-activated]:before:pointer-events-none [&.lyt-activated]:before:opacity-0',
                     '[&.lyt-activated_>_.lty-playbtn]:pointer-events-none [&.lyt-activated_>_.lty-playbtn]:opacity-0!'
@@ -109,33 +87,17 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
                       isVideo && 'border-0',
                       focused && selected && 'ring-2 ring-ring ring-offset-2'
                     )}
+                    sandbox=""
                     src={embed?.url}
                     title="embed"
                   />
                 </div>
               )
             ) : null}
-
-            {isTweet && (
-              <div
-                className={cn(
-                  '[&_.react-tweet-theme]:my-0',
-                  !readOnly &&
-                    selected &&
-                    '[&_.react-tweet-theme]:ring-2 [&_.react-tweet-theme]:ring-ring [&_.react-tweet-theme]:ring-offset-2'
-                )}
-              >
-                <Tweet apiUrl="" id={embed?.id} />
-              </div>
-            )}
-
-            <ResizeHandle
-              className={mediaResizeHandleVariants({ direction: 'right' })}
-              options={{ direction: 'right' }}
-            />
+            <ResizeHandle className={mediaResizeHandleVariants({ direction: 'right' })} options={rightResizeOptions} />
           </Resizable>
 
-          <Caption align={align} style={{ width: width as string }}>
+          <Caption align={align} style={captionStyle}>
             <CaptionTextarea placeholder="Write a caption..." />
           </Caption>
         </figure>

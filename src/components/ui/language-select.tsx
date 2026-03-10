@@ -64,7 +64,9 @@ export const LanguageSelect = ({
 
   const onValueChange = useCallback(
     (locale: Locale) => {
-      if (!controlled) startTransition(() => setLocale(locale))
+      if (!controlled) {
+        startTransition(() => setLocale(locale))
+      }
       onChange?.(locale)
     },
     [controlled, onChange, setLocale]
@@ -102,7 +104,7 @@ export const LanguageSelect = ({
               </span>
               <span className="flex items-center gap-1 [&_svg]:size-2">
                 {item.badge}
-                <span className="text-muted-foreground text-xs">{item.status}</span>
+                <span className="text-xs text-muted-foreground">{item.status}</span>
               </span>
             </div>
           </SelectItem>

@@ -11,6 +11,8 @@ export const metadata = () =>
 
 export default async ({ children }: LayoutProps<'/certificates'>) => {
   const user = await getCurrentUser()
-  if (user.canEdit) return notFound()
+  if (user.canEdit) {
+    return notFound()
+  }
   return children
 }

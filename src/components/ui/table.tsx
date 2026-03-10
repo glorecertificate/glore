@@ -35,7 +35,7 @@ export const TableRow = ({ className, ...props }: React.ComponentProps<'tr'>) =>
 export const TableHead = ({ className, ...props }: React.ComponentProps<'th'>) => (
   <th
     className={cn(
-      'h-10 whitespace-nowrap px-2 text-left align-middle font-medium text-foreground [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
+      'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
       className
     )}
     data-slot="table-head"
@@ -46,7 +46,7 @@ export const TableHead = ({ className, ...props }: React.ComponentProps<'th'>) =
 export const TableCell = ({ className, ...props }: React.ComponentProps<'td'>) => (
   <td
     className={cn(
-      'whitespace-nowrap p-2 align-middle [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
+      'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 *:[[role=checkbox]]:translate-y-0.5',
       className
     )}
     data-slot="table-cell"
@@ -55,5 +55,5 @@ export const TableCell = ({ className, ...props }: React.ComponentProps<'td'>) =
 )
 
 export const TableCaption = ({ className, ...props }: React.ComponentProps<'caption'>) => (
-  <caption className={cn('mt-4 text-muted-foreground text-sm', className)} data-slot="table-caption" {...props} />
+  <caption className={cn('mt-4 text-sm text-muted-foreground', className)} data-slot="table-caption" {...props} />
 )

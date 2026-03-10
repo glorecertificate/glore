@@ -6,7 +6,7 @@ import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin } from '@platejs/selection/react'
 import { GripVerticalIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { isType, KEYS, type TElement } from 'platejs'
+import { KEYS, type NodeEntry, type TElement, isType } from 'platejs'
 import {
   MemoizedChildren,
   type PlateEditor,
@@ -27,8 +27,12 @@ export const BlockDraggable: RenderNodeWrapper = props => {
   const { editor, element, path } = props
 
   const enabled = useMemo(() => {
-    if (editor.dom.readOnly) return false
-    if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) return true
+    if (editor.dom.readOnly) {
+      return false
+    }
+    if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
+      return true
+    }
     if (path.length === 3 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       const block = editor.api.some({
         at: path,
@@ -36,7 +40,9 @@ export const BlockDraggable: RenderNodeWrapper = props => {
           type: editor.getType(KEYS.column),
         },
       })
-      if (block) return true
+      if (block) {
+        return true
+      }
     }
     if (path.length === 4 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       const block = editor.api.some({
@@ -45,12 +51,16 @@ export const BlockDraggable: RenderNodeWrapper = props => {
           type: editor.getType(KEYS.table),
         },
       })
-      if (block) return true
+      if (block) {
+        return true
+      }
     }
     return false
   }, [editor, element, path])
 
-  if (!enabled) return
+  if (!enabled) {
+    return
+  }
 
   return props => <Draggable {...props} />
 }
@@ -62,8 +72,10 @@ const Draggable = (props: PlateElementProps) => {
   const { handleRef, isDragging, nodeRef, previewRef } = useDraggable({
     element,
     onDropHandler: (_, { dragItem }) => {
-      const id = (dragItem as { id: string[] | string }).id
-      if (blockSelectionApi) blockSelectionApi.add(id)
+      const { id } = dragItem as { id: string[] | string }
+      if (blockSelectionApi) {
+        blockSelectionApi.add(id)
+      }
       resetPreview()
     },
   })
@@ -80,17 +92,24 @@ const Draggable = (props: PlateElementProps) => {
   }, [previewRef])
 
   useEffect(() => {
-    if (isDragging) return
+    if (isDragging) {
+      return
+    }
     resetPreview()
   }, [isDragging, resetPreview])
 
   const [dragButtonTop, setDragButtonTop] = useState(0)
 
+  const dragButtonStyle = useMemo(() => ({ top: `${dragButtonTop + 3}px` }), [dragButtonTop])
+  const previewStyle = useMemo(() => ({ top: `${-previewTop}px` }), [previewTop])
+
   return (
     <div
       className={cn('group/container relative', isDragging && 'opacity-50')}
       onMouseEnter={() => {
-        if (isDragging) return
+        if (isDragging) {
+          return
+        }
         setDragButtonTop(calcDragButtonTop(editor, element))
       }}
     >
@@ -107,7 +126,7 @@ const Draggable = (props: PlateElementProps) => {
                 className="absolute left-0 h-6 w-full p-0"
                 data-plate-prevent-deselect
                 ref={handleRef}
-                style={{ top: `${dragButtonTop + 3}px` }}
+                style={dragButtonStyle}
                 variant="ghost"
               >
                 <DragHandle isDragging={isDragging} previewRef={previewRef} setPreviewTop={setPreviewTop} />
@@ -121,7 +140,7 @@ const Draggable = (props: PlateElementProps) => {
         className={cn('absolute left-0 hidden w-full')}
         contentEditable={false}
         ref={previewRef}
-        style={{ top: `${-previewTop}px` }}
+        style={previewStyle}
       />
 
       <div className="slate-blockWrapper flow-root" ref={nodeRef}>
@@ -174,7 +193,9 @@ const DragHandle = memo(
           editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
         }}
         onMouseDown={e => {
-          if (e.button !== 0 || e.shiftKey) return
+          if (e.button !== 0 || e.shiftKey) {
+            return
+          }
 
           const elements = createDragPreviewElements(editor, { currentBlock: element })
           previewRef.current?.append(...elements)
@@ -182,13 +203,15 @@ const DragHandle = memo(
           editor.setOption(DndPlugin, 'multiplePreviewRef', previewRef)
         }}
         onMouseEnter={() => {
-          if (isDragging) return
+          if (isDragging) {
+            return
+          }
           const blockSelection = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes({ sort: true })
           const selectedBlocks = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
-          const ids = selectedBlocks.map(block => block[0].id as string)
+          const ids = selectedBlocks.map((block: NodeEntry<TElement>) => block[0].id as string)
           if (ids.length > 1 && ids.includes(element.id as string)) {
             const previewTop = calculatePreviewTop(editor, {
-              blocks: selectedBlocks.map(block => block[0]),
+              blocks: selectedBlocks.map((block: NodeEntry<TElement>) => block[0]),
               element,
             })
             setPreviewTop(previewTop)
@@ -207,7 +230,9 @@ const DragHandle = memo(
 const DropLine = memo(({ className, ...props }: React.ComponentProps<'div'>) => {
   const { dropLine } = useDropLine()
 
-  if (!dropLine) return null
+  if (!dropLine) {
+    return null
+  }
 
   return (
     <div
@@ -230,9 +255,9 @@ const createDragPreviewElements = (
 
   const selectionNodes = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
 
-  const includes = selectionNodes.some(([node]) => node.id === currentBlock.id)
+  const includes = selectionNodes.some(([node]: NodeEntry<TElement>) => node.id === currentBlock.id)
 
-  const sortedNodes = includes ? selectionNodes.map(([node]) => node) : [currentBlock]
+  const sortedNodes = includes ? selectionNodes.map(([node]: NodeEntry<TElement>) => node) : [currentBlock]
 
   if (blockSelection.length === 0) {
     editor.tf.blur()
@@ -283,9 +308,9 @@ const createDragPreviewElements = (
     elements.push(wrapper)
   }
 
-  sortedNodes.forEach((node, index) => {
-    resolveElement(node, index)
-  })
+  for (const [index, node] of sortedNodes.entries()) {
+    resolveElement(node as TElement, index)
+  }
 
   editor.setOption(DndPlugin, 'draggingId', ids)
 

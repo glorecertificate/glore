@@ -6,8 +6,6 @@ import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 
-import theme from '~/config/theme.json'
-
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
@@ -20,18 +18,14 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
 import { EMAIL_REGEX } from '@/lib/constants'
-import { type Enum } from '@/lib/types'
+import { AuthView, type Enum } from '@/lib/types'
 import { camelize, cn, hexToRgb } from '@/lib/utils'
+import theme from '~/config/theme.json'
 
-export enum AuthView {
-  Login = 'login',
-  PasswordRequest = 'password_request',
-  EmailSent = 'email_sent',
-  PasswordReset = 'password_reset',
-  PasswordUpdated = 'password_updated',
-  InvalidToken = 'invalid_token',
-  InvalidPasswordReset = 'invalid_password_reset',
-}
+const motionAnimate = { opacity: 1, y: 0 }
+const motionExit = { opacity: 0, y: -8 }
+const motionInitial = { opacity: 0, y: 8 }
+const motionTransition = { duration: 0.15, ease: 'easeOut' } as const
 
 export const AuthFlow = ({
   resetToken,
@@ -56,8 +50,12 @@ export const AuthFlow = ({
   const title = view ? t(camelize(`${view}_title`)) : null
 
   const message = useMemo(() => {
-    if (!view) return null
-    if (view !== 'email_sent') return t(camelize(`${view}_message`))
+    if (!view) {
+      return null
+    }
+    if (view !== 'email_sent') {
+      return t(camelize(`${view}_message`))
+    }
     return t.rich('emailSentMessage', {
       email: () =>
         username && EMAIL_REGEX.test(username) ? <span className="text-brand">{` ${username} `}</span> : null,
@@ -137,7 +135,7 @@ export const AuthFlow = ({
   const [height, setHeight] = useState<number>()
 
   const updateHeight = useCallback((element: HTMLDivElement) => {
-    const height = element.getBoundingClientRect().height
+    const { height } = element.getBoundingClientRect()
     if (height === 0) return
     setHeight(height)
   }, [])
@@ -149,9 +147,9 @@ export const AuthFlow = ({
     if (!element) return
     updateHeight(element)
 
-    const ro = new ResizeObserver(() => updateHeight(element))
-    ro.observe(element)
-    return () => ro.disconnect()
+    const observer = new ResizeObserver(() => updateHeight(element))
+    observer.observe(element)
+    return () => observer.disconnect()
   }, [view, updateHeight])
 
   const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
@@ -160,12 +158,13 @@ export const AuthFlow = ({
     const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
     const options = { glowColor: colors.background } as GlobeColorOptions
 
-    if (errored || view === 'invalid_token' || view === 'invalid_password_reset')
+    if (errored || view === 'invalid_token' || view === 'invalid_password_reset') {
       return {
         ...options,
         baseColor: colors.destructive,
         markerColor: colors.destructive,
       }
+    }
 
     switch (view) {
       case 'login':
@@ -198,6 +197,8 @@ export const AuthFlow = ({
     }
   }, [errored, resolvedTheme, view])
 
+  const globeOffset = useMemo(() => [36, -32] as [number, number], [])
+
   return (
     <>
       <div className="flex justify-between gap-2">
@@ -221,33 +222,33 @@ export const AuthFlow = ({
             <div className="flex flex-col gap-8">
               <Globe
                 className="mx-auto size-56"
-                offset={[36, -32]}
+                offset={globeOffset}
                 scale={1.3}
                 transitionDuration={200}
                 {...globeColorOptions}
               />
               <AnimatePresence mode="wait">
                 <motion.div
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={motionAnimate}
                   className="flex flex-col gap-2 text-center"
-                  exit={{ opacity: 0, y: -8 }}
-                  initial={{ opacity: 0, y: 8 }}
+                  exit={motionExit}
+                  initial={motionInitial}
                   key={`heading-${view}`}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  transition={motionTransition}
                 >
-                  {title && <h1 className="font-bold text-3xl">{title}</h1>}
+                  {title && <h1 className="text-3xl font-bold">{title}</h1>}
                   {message && <p className="text-muted-foreground">{message}</p>}
                 </motion.div>
               </AnimatePresence>
             </div>
             <AnimatePresence mode="wait">
               <motion.div
-                animate={{ opacity: 1, y: 0 }}
+                animate={motionAnimate}
                 className="mx-auto flex w-full max-w-88 flex-col gap-0"
-                exit={{ opacity: 0, y: -8 }}
-                initial={{ opacity: 0, y: 8 }}
+                exit={motionExit}
+                initial={motionInitial}
                 key={`content-${view}`}
-                transition={{ duration: 0.15, ease: 'easeOut' }}
+                transition={motionTransition}
               >
                 {content}
               </motion.div>

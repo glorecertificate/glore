@@ -29,7 +29,7 @@ export const HoverCardContent = ({
     <HoverCardPrimitive.Content
       align={align}
       className={cn(
-        'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 relative z-50 origin-(--radix-hover-card-content-transform-origin) rounded-lg border bg-popover p-3.5 text-popover-foreground shadow-xs outline-hidden data-[state=closed]:animate-out data-[state=open]:animate-in',
+        'relative z-50 origin-(--radix-hover-card-content-transform-origin) rounded-lg border bg-popover p-3.5 text-popover-foreground shadow-xs outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         className
       )}
       data-slot="hover-card-content"
@@ -39,7 +39,7 @@ export const HoverCardContent = ({
     >
       {children}
       {arrow && (
-        <HoverCardPrimitive.Arrow className={cn('-mt-px fill-popover stroke-[1px] stroke-border', arrowClassName)} />
+        <HoverCardPrimitive.Arrow className={cn('-mt-px fill-popover stroke-border stroke-[1px]', arrowClassName)} />
       )}
     </HoverCardPrimitive.Content>
   </HoverCardPrimitive.Portal>

@@ -5,8 +5,6 @@ import { useMemo } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import settings from '~/config/settings.json'
-
 import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -21,22 +19,36 @@ import {
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
+import settings from '~/config/app.json'
+
+const confettiOptions = { zIndex: 100 }
 
 export const CourseFooter = () => {
   const t = useTranslations('Courses')
   const { course, currentLesson, next, previous } = useCourse()
+  const { user } = useSession()
 
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
   const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
   const canProceed = useMemo(() => {
-    if (!currentLesson) return false
-    if (currentLesson.type === 'reading' || currentLesson.completed) return true
-    if (currentLesson.type === 'questions')
+    if (!currentLesson) {
+      return false
+    }
+    if (currentLesson.type === 'reading' || currentLesson.completed) {
+      return true
+    }
+    if (currentLesson.type === 'questions') {
       return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
-    if (currentLesson.type === 'evaluations') return currentLesson.evaluations?.every(e => !!e.userRating)
-    if (currentLesson.type === 'assessment') return !!currentLesson.assessment?.userRating
+    }
+    if (currentLesson.type === 'evaluations') {
+      return currentLesson.evaluations?.every(e => !!e.userRating)
+    }
+    if (currentLesson.type === 'assessment') {
+      return !!currentLesson.assessment?.userRating
+    }
     return false
   }, [currentLesson])
 
@@ -66,7 +78,7 @@ export const CourseFooter = () => {
       )}
 
       {isLast ? (
-        canProceed ? (
+        user.canEdit ? null : canProceed ? (
           <Dialog>
             <DialogTrigger asChild>
               {currentLesson.completed ? null : (
@@ -75,7 +87,7 @@ export const CourseFooter = () => {
                   disabled={!canProceed}
                   effect="fireworks"
                   onClick={next}
-                  options={{ zIndex: 100 }}
+                  options={confettiOptions}
                   variant="outline"
                 >
                   {t('completeCourse')}
@@ -84,7 +96,7 @@ export const CourseFooter = () => {
             </DialogTrigger>
             <DialogContent className="px-8 sm:max-w-xl">
               <DialogHeader>
-                <DialogTitle className="mt-3 flex gap-2 font-medium text-lg">
+                <DialogTitle className="mt-3 flex gap-2 text-lg font-medium">
                   {completedTitle}
                   {' 🎉'}
                 </DialogTitle>

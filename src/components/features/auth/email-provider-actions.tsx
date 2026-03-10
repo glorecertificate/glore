@@ -21,7 +21,7 @@ export const EmailProviderActions = () => {
         variant="outline"
       >
         <Link href="https://mail.google.com" target="_blank">
-          {'Gmail'}
+          Gmail
         </Link>
       </Button>
       <Button
@@ -34,7 +34,7 @@ export const EmailProviderActions = () => {
         variant="outline"
       >
         <Link href="https://outlook.office.com/mail" target="_blank">
-          {'Outlook'}
+          Outlook
         </Link>
       </Button>
       <Button
@@ -46,7 +46,7 @@ export const EmailProviderActions = () => {
         title={t('openDefaultEmailClient')}
         variant="outline"
       >
-        <Link href="message://">{'Mail'}</Link>
+        <Link href="message://">Mail</Link>
       </Button>
     </div>
   )

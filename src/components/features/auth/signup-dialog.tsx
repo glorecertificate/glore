@@ -21,7 +21,7 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
 
   return (
     <Dialog>
-      <div className="mt-2 text-center text-muted-foreground text-sm">
+      <div className="mt-2 text-center text-sm text-muted-foreground">
         {t.rich('signupMessage', {
           link: content => (
             <DialogTrigger asChild>
@@ -44,12 +44,12 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
         </DialogHeader>
         <div className="flex flex-col gap-3">
           {t.rich('signupDialogMessage', {
-            p: content => <p>{content}</p>,
             link: content => (
               <Link className="font-medium" href={WEBSITE_URL} variant="underlined">
                 {content}
               </Link>
             ),
+            p: content => <p>{content}</p>,
           })}
         </div>
         <DialogFooter>

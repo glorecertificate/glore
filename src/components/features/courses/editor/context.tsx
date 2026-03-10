@@ -4,8 +4,7 @@ import { createContext, memo, useCallback, useContext, useMemo, useRef, useState
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
-
-import { messages } from '~/config/i18n.json'
+import { flushSync } from 'react-dom'
 
 import {
   deleteAssessment,
@@ -22,6 +21,7 @@ import { type Course } from '@/db/queries/course'
 import { type Lesson, parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { type IntlRecord, i18n } from '@/lib/i18n'
+import { messages } from '~/config/i18n.json'
 
 interface CourseProviderOptions {
   course: Course
@@ -60,8 +60,9 @@ const normalizeContent = (content: unknown): unknown => {
     Array.isArray(content[0].children) &&
     content[0].children.length === 1 &&
     content[0].children[0].text === ''
-  )
+  ) {
     return null
+  }
   return content
 }
 
@@ -74,11 +75,11 @@ const ensureLesson = (course: Course): Course => {
       (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
       {} as IntlRecord
     ),
-    sort_order: 1,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
+    sortOrder: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
     assessment: null,
-    user_lessons: [],
+    userLessons: [],
     questions: [],
     evaluations: [],
     contributions: [],
@@ -103,6 +104,8 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   // Stable ref to current course for callbacks that shouldn't re-create on every edit
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
+
+  const contentFlushRef = useRef<(() => void) | null>(null)
 
   const currentLesson = useMemo(
     () => ({
@@ -170,13 +173,10 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
             const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
             const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord)?.[locale]
-            if (
+            return (
               JSON.stringify({ id: initialLesson.assessment?.id, d: initialAssessmentDesc }) !==
               JSON.stringify({ id: lesson.assessment?.id, d: currentAssessmentDesc })
             )
-              return true
-
-            return false
           })
 
           const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates
@@ -206,11 +206,14 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const hasAnyUpdates = useMemo(() => Object.values(status).some(s => s.hasUpdates), [status])
 
   const editCourse = useCallback(async (payload: TableUpdate<'courses'>) => {
-    setCourse(prev => ({
-      ...prev,
-      ...payload,
-      languages: payload.languages ?? prev.languages,
-    }))
+    setCourse(
+      prev =>
+        ({
+          ...prev,
+          ...payload,
+          languages: payload.languages ?? prev.languages,
+        }) as Course
+    )
     const result = await updateCourse(courseSnapshotRef.current.id, payload)
     if (result && !('error' in result)) {
       courseRef.current = { ...courseRef.current, ...payload } as Course
@@ -220,20 +223,25 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   const saveCourse = useCallback(
     async ({ languages }: { languages?: Locale[] } = {}) => {
+      if (contentFlushRef.current) {
+        flushSync(() => {
+          contentFlushRef.current?.()
+        })
+      }
+
       const current = courseSnapshotRef.current
       const { id, lessons, ...courseData } = current
-      let updatedCourse = current
 
       const lessonsPayload: TableInsert<'lessons'>[] = []
       const lessonOnlyKeys = new Set([
         'title',
         'content',
-        'sort_order',
-        'course_id',
+        'sortOrder',
+        'courseId',
         'id',
-        'created_at',
-        'updated_at',
-        'deleted_at',
+        'createdAt',
+        'updatedAt',
+        'deletedAt',
       ])
 
       for (const lesson of lessons) {
@@ -253,14 +261,15 @@ const useCourseProvider = (options: CourseProviderOptions) => {
             ...lessonUpdates,
             id: lesson.id,
             title: lesson.title,
-            course_id: id,
-            sort_order: lesson.sort_order ?? lessons.indexOf(lesson) + 1,
-          })
+            courseId: id,
+            sortOrder: lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
+          } as TableInsert<'lessons'>)
         }
       }
 
       if (lessonsPayload.length > 0) {
-        await upsertLessons(lessonsPayload)
+        const result = await upsertLessons(lessonsPayload)
+        if (result && 'error' in result) throw result.error
       }
 
       for (const lesson of lessons) {
@@ -278,7 +287,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           })
           .map(q => ({
             id: initialQuestionIds.has(q.id) ? q.id : undefined,
-            lesson_id: lesson.id,
+            lessonId: lesson.id,
             description: q.description as IntlRecord,
             explanation: q.explanation as IntlRecord | null,
           }))
@@ -298,7 +307,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           })
           .map(e => ({
             id: initialEvalIds.has(e.id) ? e.id : undefined,
-            lesson_id: lesson.id,
+            lessonId: lesson.id,
             description: e.description as IntlRecord,
           }))
 
@@ -316,7 +325,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           if (descriptionChanged && lesson.assessment) {
             await upsertAssessment({
               id: hadAssessment ? lesson.assessment.id : undefined,
-              lesson_id: lesson.id,
+              lessonId: lesson.id,
               description: lesson.assessment.description as IntlRecord,
             } as TableInsert<'assessments'>)
           }
@@ -325,27 +334,31 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         }
       }
 
-      const coursePayload: Partial<Course> = {}
+      const courseDbKeys = new Set(['title', 'description', 'icon', 'type', 'slug', 'sortOrder', 'archivedAt'])
+      const coursePayload: Record<string, unknown> = {}
 
       for (const attribute in courseData) {
+        if (!courseDbKeys.has(attribute)) continue
         const key = attribute as keyof typeof courseData
-
         if (JSON.stringify(courseData[key]) !== JSON.stringify(courseRef.current[key])) {
-          coursePayload[key] = courseData[key] as never
+          coursePayload[key] = courseData[key]
         }
       }
 
       if (languages) {
         coursePayload.languages = languages
-        updatedCourse = { ...current, languages }
       }
 
-      if (Object.keys(coursePayload).length > 0) {
-        await updateCourse(id, coursePayload)
-      }
+      // Always call updateCourse to revalidate the individual course cache
+      await updateCourse(id, {
+        ...coursePayload,
+        updatedAt: new Date().toISOString(),
+      } as TableUpdate<'courses'>)
 
-      setCourse(updatedCourse)
-      courseRef.current = structuredClone(updatedCourse)
+      if (languages) {
+        setCourse(prev => ({ ...prev, languages }))
+      }
+      courseRef.current = structuredClone(languages ? { ...current, languages } : current)
     },
     [] // Stable — reads from refs
   )
@@ -359,10 +372,10 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
           {} as IntlRecord
         ),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         assessment: null,
-        user_lessons: [],
+        userLessons: [],
         questions: [],
         evaluations: [],
         contributions: [],
@@ -373,7 +386,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           ...prev.lessons,
           parseLesson({
             ...lessonData,
-            sort_order: prev.lessons.length + 1,
+            sortOrder: prev.lessons.length + 1,
           }),
         ]
         return { ...prev, lessons }
@@ -382,13 +395,13 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         setStep(prev.lessons.length)
         return prev
       })
-      return parseLesson({ ...lessonData, sort_order: 0 })
+      return parseLesson({ ...lessonData, sortOrder: 0 })
     },
     [setStep]
   )
 
   const setLesson = useCallback(
-    (data: TableUpdate<'lessons'>) => {
+    (data: TableUpdate<'lessons'> & { id?: number }) => {
       setCourse(prev => {
         if (prev.lessons.length === 0) {
           addLesson(data)
@@ -413,7 +426,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         ...course,
         lessons: course.lessons
           .filter(lesson => lesson.id !== lessonId)
-          .map((lesson, i) => ({ ...lesson, sort_order: i + 1 })),
+          .map((lesson, i) => ({ ...lesson, sortOrder: i + 1 })),
       }))
       if (step > 1) {
         setStep(i => i - 1)
@@ -440,6 +453,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   return useMemo(
     () => ({
       addLesson,
+      contentFlushRef,
       course,
       courseRef,
       currentLesson,

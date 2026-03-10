@@ -3,8 +3,12 @@
 import { useCallback } from 'react'
 
 const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
-  if (typeof ref === 'function') return ref(value)
-  if (ref !== null && ref !== undefined) ref.current = value
+  if (typeof ref === 'function') {
+    return ref(value)
+  }
+  if (ref !== null && ref !== undefined) {
+    ref.current = value
+  }
 }
 
 /**
@@ -34,5 +38,5 @@ export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React
         }
       }
     }
-    // biome-ignore lint: correctness/useExhaustiveDependencies
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, refs)

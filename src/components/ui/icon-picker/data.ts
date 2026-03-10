@@ -6,28 +6,28 @@ interface IconPickerData {
 
 export default [
   {
-    name: 'a-arrow-down',
     categories: ['text', 'design'],
+    name: 'a-arrow-down',
     tags: ['letter', 'font size', 'text', 'formatting', 'smaller'],
   },
   {
-    name: 'a-arrow-up',
     categories: ['text', 'design'],
+    name: 'a-arrow-up',
     tags: ['letter', 'font size', 'text', 'formatting', 'larger', 'bigger'],
   },
   {
-    name: 'a-large-small',
     categories: ['text', 'design'],
+    name: 'a-large-small',
     tags: ['letter', 'font size', 'text', 'formatting'],
   },
   {
-    name: 'accessibility',
     categories: ['accessibility', 'medical'],
+    name: 'accessibility',
     tags: ['disability', 'disabled', 'dda', 'wheelchair'],
   },
   {
-    name: 'activity',
     categories: ['medical', 'account', 'social', 'science', 'multimedia'],
+    name: 'activity',
     tags: [
       'pulse',
       'action',
@@ -59,163 +59,163 @@ export default [
     ],
   },
   {
-    name: 'air-vent',
     categories: ['home'],
+    name: 'air-vent',
     tags: ['air conditioner', 'ac', 'central air', 'cooling', 'climate-control'],
   },
   {
-    name: 'airplay',
     categories: ['multimedia', 'connectivity', 'devices', 'brands'],
+    name: 'airplay',
     tags: ['stream', 'cast', 'mirroring', 'screen', 'monitor', 'macos', 'osx'],
   },
   {
-    name: 'alarm-clock-check',
     categories: ['devices', 'notifications', 'time'],
+    name: 'alarm-clock-check',
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'alarm-clock-minus',
     categories: ['devices', 'notifications', 'time'],
+    name: 'alarm-clock-minus',
     tags: ['remove'],
   },
   {
-    name: 'alarm-clock-off',
     categories: ['devices', 'notifications', 'time'],
+    name: 'alarm-clock-off',
     tags: ['morning', 'turn-off'],
   },
   {
-    name: 'alarm-clock-plus',
     categories: ['devices', 'notifications', 'time'],
+    name: 'alarm-clock-plus',
     tags: ['add'],
   },
   {
-    name: 'alarm-clock',
     categories: ['devices', 'notifications', 'time'],
+    name: 'alarm-clock',
     tags: ['morning'],
   },
   {
-    name: 'alarm-smoke',
     categories: ['home', 'devices', 'travel'],
+    name: 'alarm-smoke',
     tags: ['fire', 'alert', 'warning', 'detector', 'carbon monoxide', 'safety', 'equipment', 'amenities'],
   },
   {
-    name: 'album',
     categories: ['photography', 'multimedia'],
+    name: 'album',
     tags: ['photo', 'book'],
   },
   {
+    categories: ['layout'],
     name: 'align-center-horizontal',
-    categories: ['layout'],
     tags: ['items', 'flex', 'justify'],
   },
   {
+    categories: ['layout'],
     name: 'align-center-vertical',
-    categories: ['layout'],
     tags: ['items', 'flex', 'justify'],
   },
   {
-    name: 'align-end-horizontal',
     categories: ['layout'],
+    name: 'align-end-horizontal',
     tags: ['items', 'bottom', 'flex', 'justify'],
   },
   {
-    name: 'align-end-vertical',
     categories: ['layout'],
+    name: 'align-end-vertical',
     tags: ['items', 'right', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-distribute-center',
     categories: ['layout'],
+    name: 'align-horizontal-distribute-center',
     tags: ['items', 'flex', 'justify', 'space', 'evenly', 'around'],
   },
   {
-    name: 'align-horizontal-distribute-end',
     categories: ['layout'],
+    name: 'align-horizontal-distribute-end',
     tags: ['right', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-distribute-start',
     categories: ['layout'],
+    name: 'align-horizontal-distribute-start',
     tags: ['left', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-justify-center',
     categories: ['layout'],
+    name: 'align-horizontal-justify-center',
     tags: ['center', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-justify-end',
     categories: ['layout'],
+    name: 'align-horizontal-justify-end',
     tags: ['right', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-justify-start',
     categories: ['layout'],
+    name: 'align-horizontal-justify-start',
     tags: ['left', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-horizontal-space-around',
     categories: ['layout'],
+    name: 'align-horizontal-space-around',
     tags: ['center', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
-    name: 'align-horizontal-space-between',
     categories: ['layout'],
+    name: 'align-horizontal-space-between',
     tags: ['around', 'items', 'bottom', 'flex', 'justify'],
   },
   {
-    name: 'align-start-horizontal',
     categories: ['layout'],
+    name: 'align-start-horizontal',
     tags: ['top', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-start-vertical',
     categories: ['layout'],
+    name: 'align-start-vertical',
     tags: ['left', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-vertical-distribute-center',
     categories: ['layout'],
+    name: 'align-vertical-distribute-center',
     tags: ['items', 'flex', 'justify', 'space', 'evenly', 'around'],
   },
   {
-    name: 'align-vertical-distribute-end',
     categories: ['layout'],
+    name: 'align-vertical-distribute-end',
     tags: ['bottom', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-vertical-distribute-start',
     categories: ['layout'],
+    name: 'align-vertical-distribute-start',
     tags: ['top', 'items', 'flex', 'justify'],
   },
   {
-    name: 'align-vertical-justify-center',
     categories: ['layout'],
+    name: 'align-vertical-justify-center',
     tags: ['center', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
-    name: 'align-vertical-justify-end',
     categories: ['layout'],
+    name: 'align-vertical-justify-end',
     tags: ['bottom', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
-    name: 'align-vertical-justify-start',
     categories: ['layout'],
+    name: 'align-vertical-justify-start',
     tags: ['top', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
+    categories: ['layout'],
     name: 'align-vertical-space-around',
-    categories: ['layout'],
     tags: ['center', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
+    categories: ['layout'],
     name: 'align-vertical-space-between',
-    categories: ['layout'],
     tags: ['center', 'items', 'flex', 'justify', 'distribute', 'between'],
   },
   {
-    name: 'ambulance',
     categories: ['medical', 'transportation'],
+    name: 'ambulance',
     tags: [
       'ambulance',
       'emergency',
@@ -230,38 +230,38 @@ export default [
     ],
   },
   {
-    name: 'ampersand',
     categories: ['text', 'development'],
+    name: 'ampersand',
     tags: ['and', 'typography', 'operator', 'join', 'concatenate', 'code', '&'],
   },
   {
-    name: 'ampersands',
     categories: ['text', 'development'],
+    name: 'ampersands',
     tags: ['and', 'operator', 'then', 'code', '&&'],
   },
   {
-    name: 'amphora',
     categories: ['food-beverage', 'gaming'],
+    name: 'amphora',
     tags: ['pottery', 'artifact', 'artefact', 'vase', 'ceramics', 'clay', 'archaeology', 'museum', 'wine', 'oil'],
   },
   {
-    name: 'anchor',
     categories: ['transportation', 'text'],
+    name: 'anchor',
     tags: ['ship'],
   },
   {
-    name: 'angry',
     categories: ['emoji'],
+    name: 'angry',
     tags: ['emoji', 'anger', 'face', 'emotion'],
   },
   {
-    name: 'annoyed',
     categories: ['emoji'],
+    name: 'annoyed',
     tags: ['emoji', 'nuisance', 'face', 'emotion'],
   },
   {
-    name: 'antenna',
     categories: ['devices', 'multimedia', 'communication'],
+    name: 'antenna',
     tags: [
       'signal',
       'connection',
@@ -284,28 +284,28 @@ export default [
     ],
   },
   {
-    name: 'anvil',
     categories: ['buildings', 'tools', 'gaming'],
+    name: 'anvil',
     tags: ['metal', 'iron', 'alloy', 'materials', 'heavy', 'weight', 'blacksmith', 'forge', 'acme'],
   },
   {
-    name: 'aperture',
     categories: ['photography'],
+    name: 'aperture',
     tags: ['camera', 'photo', 'pictures', 'shutter', 'exposure'],
   },
   {
-    name: 'app-window-mac',
     categories: ['layout', 'design', 'development', 'files'],
+    name: 'app-window-mac',
     tags: ['application', 'menu bar', 'pane', 'preferences', 'macos', 'osx', 'executable'],
   },
   {
-    name: 'app-window',
     categories: ['layout', 'design', 'development', 'files'],
+    name: 'app-window',
     tags: ['application', 'menu bar', 'pane', 'executable'],
   },
   {
-    name: 'apple',
     categories: ['food-beverage'],
+    name: 'apple',
     tags: [
       'fruit',
       'food',
@@ -332,58 +332,58 @@ export default [
     ],
   },
   {
-    name: 'archive-restore',
     categories: ['files', 'mail'],
+    name: 'archive-restore',
     tags: ['unarchive', 'index', 'backup', 'box', 'storage', 'records'],
   },
   {
-    name: 'archive-x',
     categories: ['files', 'mail'],
+    name: 'archive-x',
     tags: ['index', 'backup', 'box', 'storage', 'records', 'junk'],
   },
   {
-    name: 'archive',
     categories: ['files', 'mail'],
+    name: 'archive',
     tags: ['index', 'backup', 'box', 'storage', 'records'],
   },
   {
-    name: 'armchair',
     categories: ['home'],
+    name: 'armchair',
     tags: ['sofa', 'furniture', 'leisure', 'lounge', 'loveseat', 'couch'],
   },
   {
-    name: 'arrow-big-down-dash',
     categories: ['arrows', 'navigation', 'gaming', 'files'],
+    name: 'arrow-big-down-dash',
     tags: ['backwards', 'reverse', 'slow', 'direction', 'south', 'download'],
   },
   {
-    name: 'arrow-big-down',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'arrow-big-down',
     tags: ['backwards', 'reverse', 'direction', 'south'],
   },
   {
-    name: 'arrow-big-left-dash',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'arrow-big-left-dash',
     tags: ['previous', 'back', 'direction', 'west', 'turn', 'corner'],
   },
   {
-    name: 'arrow-big-left',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'arrow-big-left',
     tags: ['previous', 'back', 'direction', 'west', 'indicate turn'],
   },
   {
-    name: 'arrow-big-right-dash',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'arrow-big-right-dash',
     tags: ['next', 'forward', 'direction', 'east', 'turn', 'corner'],
   },
   {
-    name: 'arrow-big-right',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'arrow-big-right',
     tags: ['next', 'forward', 'direction', 'east', 'indicate turn'],
   },
   {
-    name: 'arrow-big-up-dash',
     categories: ['arrows', 'navigation', 'text', 'development', 'gaming'],
+    name: 'arrow-big-up-dash',
     tags: [
       'caps lock',
       'capitals',
@@ -399,23 +399,23 @@ export default [
     ],
   },
   {
-    name: 'arrow-big-up',
     categories: ['arrows', 'navigation', 'text', 'development', 'gaming'],
+    name: 'arrow-big-up',
     tags: ['shift', 'keyboard', 'button', 'mac', 'capitalize', 'capitalise', 'forward', 'direction', 'north'],
   },
   {
+    categories: ['text', 'layout', 'arrows'],
     name: 'arrow-down-0-1',
-    categories: ['text', 'layout', 'arrows'],
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling', 'numerical'],
   },
   {
+    categories: ['text', 'layout', 'arrows'],
     name: 'arrow-down-1-0',
-    categories: ['text', 'layout', 'arrows'],
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling', 'numerical'],
   },
   {
-    name: 'arrow-down-a-z',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-down-a-z',
     tags: [
       'filter',
       'sort',
@@ -429,33 +429,33 @@ export default [
     ],
   },
   {
-    name: 'arrow-down-from-line',
     categories: ['arrows', 'navigation', 'files'],
+    name: 'arrow-down-from-line',
     tags: ['backwards', 'reverse', 'direction', 'south', 'download', 'expand', 'fold', 'vertical'],
   },
   {
-    name: 'arrow-down-left',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-down-left',
     tags: ['direction', 'south-west', 'diagonal'],
   },
   {
-    name: 'arrow-down-narrow-wide',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-down-narrow-wide',
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling'],
   },
   {
-    name: 'arrow-down-right',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-down-right',
     tags: ['direction', 'south-east', 'diagonal'],
   },
   {
-    name: 'arrow-down-to-dot',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-down-to-dot',
     tags: ['direction', 'south', 'waypoint', 'location', 'step', 'into'],
   },
   {
-    name: 'arrow-down-to-line',
     categories: ['arrows', 'navigation', 'files', 'development'],
+    name: 'arrow-down-to-line',
     tags: [
       'behind',
       'direction',
@@ -471,8 +471,8 @@ export default [
     ],
   },
   {
-    name: 'arrow-down-up',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-down-up',
     tags: [
       'bidirectional',
       'two-way',
@@ -490,13 +490,13 @@ export default [
     ],
   },
   {
-    name: 'arrow-down-wide-narrow',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-down-wide-narrow',
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling'],
   },
   {
-    name: 'arrow-down-z-a',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-down-z-a',
     tags: [
       'filter',
       'sort',
@@ -511,43 +511,43 @@ export default [
     ],
   },
   {
-    name: 'arrow-down',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-down',
     tags: ['backwards', 'reverse', 'direction', 'south'],
   },
   {
-    name: 'arrow-left-from-line',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-left-from-line',
     tags: ['previous', 'back', 'direction', 'west', 'expand', 'fold', 'horizontal', '<-|'],
   },
   {
-    name: 'arrow-left-right',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-left-right',
     tags: ['bidirectional', 'two-way', '2-way', 'swap', 'switch', 'transaction', 'reorder', 'move', '<-', '->'],
   },
   {
-    name: 'arrow-left-to-line',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-left-to-line',
     tags: ['previous', 'back', 'direction', 'west', 'collapse', 'fold', 'horizontal', '|<-'],
   },
   {
-    name: 'arrow-left',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-left',
     tags: ['previous', 'back', 'direction', 'west', '<-'],
   },
   {
-    name: 'arrow-right-from-line',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-right-from-line',
     tags: ['next', 'forward', 'direction', 'east', 'export', 'expand', 'fold', 'horizontal', '|->'],
   },
   {
-    name: 'arrow-right-left',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-right-left',
     tags: ['bidirectional', 'two-way', '2-way', 'swap', 'switch', 'transaction', 'reorder', 'move', '<-', '->'],
   },
   {
-    name: 'arrow-right-to-line',
     categories: ['arrows', 'navigation', 'development'],
+    name: 'arrow-right-to-line',
     tags: [
       'next',
       'forward',
@@ -564,23 +564,23 @@ export default [
     ],
   },
   {
-    name: 'arrow-right',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-right',
     tags: ['forward', 'next', 'direction', 'east', '->'],
   },
   {
+    categories: ['text', 'layout', 'arrows'],
     name: 'arrow-up-0-1',
-    categories: ['text', 'layout', 'arrows'],
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling', 'numerical'],
   },
   {
+    categories: ['text', 'layout', 'arrows'],
     name: 'arrow-up-1-0',
-    categories: ['text', 'layout', 'arrows'],
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling', 'numerical'],
   },
   {
-    name: 'arrow-up-a-z',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-up-a-z',
     tags: [
       'filter',
       'sort',
@@ -594,8 +594,8 @@ export default [
     ],
   },
   {
-    name: 'arrow-up-down',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-up-down',
     tags: [
       'bidirectional',
       'two-way',
@@ -611,43 +611,43 @@ export default [
     ],
   },
   {
-    name: 'arrow-up-from-dot',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-up-from-dot',
     tags: ['direction', 'north', 'step', 'out'],
   },
   {
-    name: 'arrow-up-from-line',
     categories: ['arrows', 'navigation', 'files', 'development'],
+    name: 'arrow-up-from-line',
     tags: ['forward', 'direction', 'north', 'upload', 'git', 'version control', 'push', 'expand', 'fold', 'vertical'],
   },
   {
-    name: 'arrow-up-left',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-up-left',
     tags: ['direction', 'north-west', 'diagonal'],
   },
   {
-    name: 'arrow-up-narrow-wide',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-up-narrow-wide',
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling'],
   },
   {
-    name: 'arrow-up-right',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-up-right',
     tags: ['direction', 'north-east', 'diagonal'],
   },
   {
-    name: 'arrow-up-to-line',
     categories: ['arrows', 'navigation', 'files'],
+    name: 'arrow-up-to-line',
     tags: ['forward', 'direction', 'north', 'upload', 'collapse', 'fold', 'vertical'],
   },
   {
-    name: 'arrow-up-wide-narrow',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-up-wide-narrow',
     tags: ['filter', 'sort', 'ascending', 'descending', 'increasing', 'decreasing', 'rising', 'falling'],
   },
   {
-    name: 'arrow-up-z-a',
     categories: ['text', 'layout', 'arrows'],
+    name: 'arrow-up-z-a',
     tags: [
       'filter',
       'sort',
@@ -662,33 +662,33 @@ export default [
     ],
   },
   {
-    name: 'arrow-up',
     categories: ['arrows', 'navigation'],
+    name: 'arrow-up',
     tags: ['forward', 'direction', 'north'],
   },
   {
-    name: 'arrows-up-from-line',
     categories: ['arrows', 'transportation', 'mail'],
+    name: 'arrows-up-from-line',
     tags: ['direction', 'orientation', 'this way up', 'vertical', 'package', 'box', 'fragile', 'postage', 'shipping'],
   },
   {
-    name: 'asterisk',
     categories: ['text', 'math', 'development'],
+    name: 'asterisk',
     tags: ['reference', 'times', 'multiply', 'multiplication', 'operator', 'code', 'glob pattern', 'wildcard', '*'],
   },
   {
-    name: 'at-sign',
     categories: ['text', 'account'],
+    name: 'at-sign',
     tags: ['mention', 'at', 'email', 'message', '@'],
   },
   {
-    name: 'atom',
     categories: ['science'],
+    name: 'atom',
     tags: ['atomic', 'nuclear', 'physics', 'particle', 'element', 'molecule', 'electricity', 'energy', 'chemistry'],
   },
   {
-    name: 'audio-lines',
     categories: ['multimedia', 'communication'],
+    name: 'audio-lines',
     tags: [
       'graphic equaliser',
       'sound',
@@ -716,8 +716,8 @@ export default [
     ],
   },
   {
-    name: 'audio-waveform',
     categories: ['multimedia', 'communication'],
+    name: 'audio-waveform',
     tags: [
       'sound',
       'noise',
@@ -744,13 +744,13 @@ export default [
     ],
   },
   {
-    name: 'award',
     categories: ['account', 'sports', 'gaming'],
+    name: 'award',
     tags: ['achievement', 'badge', 'rosette', 'prize', 'winner'],
   },
   {
-    name: 'axe',
     categories: ['tools', 'gaming'],
+    name: 'axe',
     tags: [
       'hatchet',
       'weapon',
@@ -767,28 +767,28 @@ export default [
     ],
   },
   {
-    name: 'axis-3d',
     categories: ['design'],
+    name: 'axis-3d',
     tags: ['gizmo', 'coordinates'],
   },
   {
-    name: 'baby',
     categories: ['accessibility', 'people'],
+    name: 'baby',
     tags: ['child', 'childproof', 'children'],
   },
   {
-    name: 'backpack',
     categories: ['gaming', 'photography', 'travel'],
+    name: 'backpack',
     tags: ['bag', 'hiking', 'travel', 'camping', 'school', 'childhood'],
   },
   {
-    name: 'badge-alert',
     categories: ['account', 'social'],
+    name: 'badge-alert',
     tags: ['check', 'verified', 'unverified', 'security', 'safety', 'issue'],
   },
   {
-    name: 'badge-cent',
     categories: ['shopping', 'finance'],
+    name: 'badge-cent',
     tags: [
       'discount',
       'offer',
@@ -810,13 +810,13 @@ export default [
     ],
   },
   {
-    name: 'badge-check',
     categories: ['social'],
+    name: 'badge-check',
     tags: ['verified', 'check'],
   },
   {
-    name: 'badge-dollar-sign',
     categories: ['shopping', 'finance'],
+    name: 'badge-dollar-sign',
     tags: [
       'discount',
       'offer',
@@ -835,8 +835,8 @@ export default [
     ],
   },
   {
-    name: 'badge-euro',
     categories: ['shopping', 'finance'],
+    name: 'badge-euro',
     tags: [
       'discount',
       'offer',
@@ -854,8 +854,8 @@ export default [
     ],
   },
   {
-    name: 'badge-indian-rupee',
     categories: ['shopping', 'finance'],
+    name: 'badge-indian-rupee',
     tags: [
       'discount',
       'offer',
@@ -874,13 +874,13 @@ export default [
     ],
   },
   {
-    name: 'badge-info',
     categories: ['account', 'accessibility', 'social'],
+    name: 'badge-info',
     tags: ['verified', 'unverified', 'help'],
   },
   {
-    name: 'badge-japanese-yen',
     categories: ['shopping', 'finance'],
+    name: 'badge-japanese-yen',
     tags: [
       'discount',
       'offer',
@@ -899,23 +899,23 @@ export default [
     ],
   },
   {
-    name: 'badge-minus',
     categories: ['social'],
+    name: 'badge-minus',
     tags: ['verified', 'unverified', 'delete', 'remove', 'erase'],
   },
   {
-    name: 'badge-percent',
     categories: ['social', 'finance', 'shopping', 'math'],
+    name: 'badge-percent',
     tags: ['verified', 'unverified', 'sale', 'discount', 'offer', 'marketing', 'sticker', 'price tag'],
   },
   {
-    name: 'badge-plus',
     categories: ['social'],
+    name: 'badge-plus',
     tags: ['verified', 'unverified', 'add', 'create', 'new'],
   },
   {
-    name: 'badge-pound-sterling',
     categories: ['shopping', 'finance'],
+    name: 'badge-pound-sterling',
     tags: [
       'discount',
       'offer',
@@ -935,13 +935,13 @@ export default [
     ],
   },
   {
-    name: 'badge-question-mark',
     categories: ['accessibility', 'social', 'shapes'],
+    name: 'badge-question-mark',
     tags: ['verified', 'unverified', 'help'],
   },
   {
-    name: 'badge-russian-ruble',
     categories: ['shopping', 'finance'],
+    name: 'badge-russian-ruble',
     tags: [
       'discount',
       'offer',
@@ -960,8 +960,8 @@ export default [
     ],
   },
   {
-    name: 'badge-swiss-franc',
     categories: ['shopping', 'finance'],
+    name: 'badge-swiss-franc',
     tags: [
       'discount',
       'offer',
@@ -980,8 +980,8 @@ export default [
     ],
   },
   {
-    name: 'badge-turkish-lira',
     categories: ['shopping', 'finance'],
+    name: 'badge-turkish-lira',
     tags: [
       'discount',
       'offer',
@@ -1000,23 +1000,23 @@ export default [
     ],
   },
   {
-    name: 'badge-x',
     categories: ['social'],
+    name: 'badge-x',
     tags: ['verified', 'unverified', 'lost', 'delete', 'remove'],
   },
   {
-    name: 'badge',
     categories: ['account', 'social', 'shapes'],
+    name: 'badge',
     tags: ['check', 'verified', 'unverified'],
   },
   {
-    name: 'baggage-claim',
     categories: ['transportation', 'travel'],
+    name: 'baggage-claim',
     tags: ['baggage', 'luggage', 'travel', 'cart', 'trolley', 'suitcase'],
   },
   {
-    name: 'ban',
     categories: ['account'],
+    name: 'ban',
     tags: [
       'cancel',
       'no',
@@ -1035,13 +1035,13 @@ export default [
     ],
   },
   {
-    name: 'banana',
     categories: ['food-beverage'],
+    name: 'banana',
     tags: ['fruit', 'food'],
   },
   {
-    name: 'bandage',
     categories: ['medical'],
+    name: 'bandage',
     tags: [
       'plaster',
       'band-aid',
@@ -1061,8 +1061,8 @@ export default [
     ],
   },
   {
-    name: 'banknote-arrow-down',
     categories: ['finance'],
+    name: 'banknote-arrow-down',
     tags: [
       'bill',
       'currency',
@@ -1083,8 +1083,8 @@ export default [
     ],
   },
   {
-    name: 'banknote-arrow-up',
     categories: ['finance'],
+    name: 'banknote-arrow-up',
     tags: [
       'bill',
       'currency',
@@ -1105,8 +1105,8 @@ export default [
     ],
   },
   {
-    name: 'banknote-x',
     categories: ['finance'],
+    name: 'banknote-x',
     tags: [
       'bill',
       'currency',
@@ -1127,13 +1127,13 @@ export default [
     ],
   },
   {
-    name: 'banknote',
     categories: ['finance'],
+    name: 'banknote',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'barcode',
     categories: ['shopping'],
+    name: 'barcode',
     tags: [
       'scan',
       'checkout',
@@ -1149,8 +1149,8 @@ export default [
     ],
   },
   {
-    name: 'barrel',
     categories: ['food-beverage', 'navigation'],
+    name: 'barrel',
     tags: [
       'keg',
       'drum',
@@ -1173,38 +1173,38 @@ export default [
     ],
   },
   {
-    name: 'baseline',
     categories: ['text'],
+    name: 'baseline',
     tags: ['text', 'format', 'color'],
   },
   {
-    name: 'bath',
     categories: ['travel'],
+    name: 'bath',
     tags: ['amenities', 'services', 'bathroom', 'shower'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'battery-charging',
-    categories: ['connectivity', 'devices'],
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'battery-full',
-    categories: ['connectivity', 'devices'],
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'battery-low',
-    categories: ['connectivity', 'devices'],
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'battery-medium',
-    categories: ['connectivity', 'devices'],
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
   {
-    name: 'battery-plus',
     categories: ['devices'],
+    name: 'battery-plus',
     tags: [
       'power',
       'electricity',
@@ -1223,68 +1223,68 @@ export default [
     ],
   },
   {
-    name: 'battery-warning',
     categories: ['connectivity', 'devices'],
+    name: 'battery-warning',
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge', 'exclamation mark'],
   },
   {
-    name: 'battery',
     categories: ['connectivity', 'devices'],
+    name: 'battery',
     tags: ['power', 'electricity', 'energy', 'accumulator', 'charge'],
   },
   {
-    name: 'beaker',
     categories: ['science', 'gaming'],
+    name: 'beaker',
     tags: ['cup', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
-    name: 'bean-off',
     categories: ['food-beverage'],
+    name: 'bean-off',
     tags: ['soy free', 'legume', 'soy', 'food', 'seed', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'bean',
     categories: ['food-beverage'],
+    name: 'bean',
     tags: ['legume', 'soy', 'food', 'seed'],
   },
   {
+    categories: ['home'],
     name: 'bed-double',
-    categories: ['home'],
     tags: ['sleep', 'hotel', 'furniture'],
   },
   {
+    categories: ['home'],
     name: 'bed-single',
-    categories: ['home'],
     tags: ['sleep', 'hotel', 'furniture'],
   },
   {
+    categories: ['home'],
     name: 'bed',
-    categories: ['home'],
     tags: ['sleep', 'hotel', 'furniture'],
   },
   {
-    name: 'beef',
     categories: ['food-beverage'],
+    name: 'beef',
     tags: ['food', 'dish', 'restaurant', 'course', 'meal', 'meat', 'bbq', 'steak'],
   },
   {
+    categories: ['food-beverage'],
     name: 'beer-off',
-    categories: ['food-beverage'],
     tags: ['alcohol', 'bar', 'beverage', 'brewery', 'drink'],
   },
   {
+    categories: ['food-beverage'],
     name: 'beer',
-    categories: ['food-beverage'],
     tags: ['alcohol', 'bar', 'beverage', 'brewery', 'drink'],
   },
   {
-    name: 'bell-dot',
     categories: ['account', 'notifications'],
+    name: 'bell-dot',
     tags: ['alarm', 'notification', 'sound', 'reminder', 'unread'],
   },
   {
-    name: 'bell-electric',
     categories: ['devices', 'notifications', 'home'],
+    name: 'bell-electric',
     tags: [
       'fire alarm',
       'flames',
@@ -1308,33 +1308,33 @@ export default [
     ],
   },
   {
-    name: 'bell-minus',
     categories: ['notifications'],
+    name: 'bell-minus',
     tags: ['alarm', 'notification', 'silent', 'reminder', 'delete', 'remove', 'erase'],
   },
   {
-    name: 'bell-off',
     categories: ['notifications'],
+    name: 'bell-off',
     tags: ['alarm', 'notification', 'silent', 'reminder'],
   },
   {
-    name: 'bell-plus',
     categories: ['notifications'],
+    name: 'bell-plus',
     tags: ['notification', 'silent', 'reminder', 'add', 'create', 'new'],
   },
   {
-    name: 'bell-ring',
     categories: ['notifications'],
+    name: 'bell-ring',
     tags: ['alarm', 'notification', 'sound', 'reminder'],
   },
   {
-    name: 'bell',
     categories: ['account', 'notifications'],
+    name: 'bell',
     tags: ['alarm', 'notification', 'sound', 'reminder'],
   },
   {
-    name: 'between-horizontal-end',
     categories: ['layout', 'design', 'tools'],
+    name: 'between-horizontal-end',
     tags: [
       'insert',
       'add',
@@ -1360,8 +1360,8 @@ export default [
     ],
   },
   {
-    name: 'between-horizontal-start',
     categories: ['layout', 'design', 'tools'],
+    name: 'between-horizontal-start',
     tags: [
       'insert',
       'add',
@@ -1387,8 +1387,8 @@ export default [
     ],
   },
   {
-    name: 'between-vertical-end',
     categories: ['layout', 'design', 'tools'],
+    name: 'between-vertical-end',
     tags: [
       'insert',
       'add',
@@ -1411,8 +1411,8 @@ export default [
     ],
   },
   {
-    name: 'between-vertical-start',
     categories: ['layout', 'design', 'tools'],
+    name: 'between-vertical-start',
     tags: [
       'insert',
       'add',
@@ -1435,23 +1435,23 @@ export default [
     ],
   },
   {
-    name: 'biceps-flexed',
     categories: ['emoji'],
+    name: 'biceps-flexed',
     tags: ['arm', 'muscle', 'strong', 'working out', 'athletic', 'toned', 'muscular', 'forelimb', 'curled'],
   },
   {
-    name: 'bike',
     categories: ['transportation'],
+    name: 'bike',
     tags: ['bicycle', 'transport', 'trip'],
   },
   {
-    name: 'binary',
     categories: ['text', 'development'],
+    name: 'binary',
     tags: ['code', 'digits', 'computer', 'zero', 'one', 'boolean'],
   },
   {
-    name: 'binoculars',
     categories: ['navigation', 'nature', 'photography', 'science', 'travel', 'development'],
+    name: 'binoculars',
     tags: [
       'field glasses',
       'lorgnette',
@@ -1474,28 +1474,28 @@ export default [
     ],
   },
   {
-    name: 'biohazard',
     categories: ['science'],
+    name: 'biohazard',
     tags: ['fallout', 'waste', 'biology', 'chemistry', 'chemical', 'element'],
   },
   {
-    name: 'bird',
     categories: ['animals'],
+    name: 'bird',
     tags: ['peace', 'freedom', 'wing', 'avian', 'tweet'],
   },
   {
-    name: 'birdhouse',
     categories: ['nature', 'animals', 'navigation', 'home'],
+    name: 'birdhouse',
     tags: ['birdhouse', 'bird', 'garden', 'home', 'house', 'woodwork'],
   },
   {
-    name: 'bitcoin',
     categories: ['brands', 'development', 'finance'],
+    name: 'bitcoin',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'blend',
     categories: ['design', 'photography', 'tools', 'development'],
+    name: 'blend',
     tags: [
       'mode',
       'overlay',
@@ -1518,13 +1518,13 @@ export default [
     ],
   },
   {
-    name: 'blinds',
     categories: ['home'],
+    name: 'blinds',
     tags: ['shades', 'screen', 'curtain', 'shutter', 'roller blind', 'window', 'lighting', 'household', 'home'],
   },
   {
-    name: 'blocks',
     categories: ['development', 'layout', 'shapes'],
+    name: 'blocks',
     tags: [
       'addon',
       'plugin',
@@ -1542,33 +1542,33 @@ export default [
     ],
   },
   {
-    name: 'bluetooth-connected',
     categories: ['connectivity', 'devices'],
+    name: 'bluetooth-connected',
     tags: ['paired'],
   },
   {
-    name: 'bluetooth-off',
     categories: ['connectivity', 'devices'],
+    name: 'bluetooth-off',
     tags: ['lost'],
   },
   {
-    name: 'bluetooth-searching',
     categories: ['connectivity', 'devices'],
+    name: 'bluetooth-searching',
     tags: ['pairing'],
   },
   {
-    name: 'bluetooth',
     categories: ['connectivity', 'devices'],
+    name: 'bluetooth',
     tags: ['wireless'],
   },
   {
-    name: 'bold',
     categories: ['text'],
+    name: 'bold',
     tags: ['text', 'strong', 'format'],
   },
   {
-    name: 'bolt',
     categories: ['tools', 'home'],
+    name: 'bolt',
     tags: [
       'nut',
       'screw',
@@ -1585,18 +1585,18 @@ export default [
     ],
   },
   {
-    name: 'bomb',
     categories: ['security', 'tools'],
+    name: 'bomb',
     tags: ['fatal', 'error', 'crash', 'blockbuster', 'mine', 'explosion', 'explode', 'explosive'],
   },
   {
-    name: 'bone',
     categories: ['animals', 'medical', 'gaming'],
+    name: 'bone',
     tags: ['health', 'skeleton', 'skull', 'death', 'pets', 'dog'],
   },
   {
-    name: 'book-a',
     categories: ['text', 'gaming'],
+    name: 'book-a',
     tags: [
       'dictionary',
       'define',
@@ -1639,8 +1639,8 @@ export default [
     ],
   },
   {
-    name: 'book-alert',
     categories: ['text', 'development', 'gaming'],
+    name: 'book-alert',
     tags: [
       'reading',
       'paperback',
@@ -1678,8 +1678,8 @@ export default [
     ],
   },
   {
-    name: 'book-audio',
     categories: ['multimedia', 'text'],
+    name: 'book-audio',
     tags: [
       'audiobook',
       'reading',
@@ -1698,8 +1698,8 @@ export default [
     ],
   },
   {
-    name: 'book-check',
     categories: ['text', 'development', 'gaming'],
+    name: 'book-check',
     tags: [
       'read',
       'booklet',
@@ -1741,8 +1741,8 @@ export default [
     ],
   },
   {
-    name: 'book-copy',
     categories: ['development', 'text', 'gaming'],
+    name: 'book-copy',
     tags: [
       'code',
       'coding',
@@ -1781,8 +1781,8 @@ export default [
     ],
   },
   {
-    name: 'book-dashed',
     categories: ['development'],
+    name: 'book-dashed',
     tags: [
       'code',
       'coding',
@@ -1802,13 +1802,13 @@ export default [
     ],
   },
   {
-    name: 'book-down',
     categories: ['development'],
+    name: 'book-down',
     tags: ['code', 'coding', 'version control', 'git', 'repository', 'pull'],
   },
   {
-    name: 'book-headphones',
     categories: ['multimedia', 'text'],
+    name: 'book-headphones',
     tags: [
       'audiobook',
       'reading',
@@ -1827,8 +1827,8 @@ export default [
     ],
   },
   {
-    name: 'book-heart',
     categories: ['social', 'text', 'gaming'],
+    name: 'book-heart',
     tags: [
       'diary',
       'romance',
@@ -1866,8 +1866,8 @@ export default [
     ],
   },
   {
-    name: 'book-image',
     categories: ['photography', 'text', 'multimedia', 'files', 'social', 'shopping', 'travel'],
+    name: 'book-image',
     tags: [
       'images',
       'pictures',
@@ -1884,8 +1884,8 @@ export default [
     ],
   },
   {
-    name: 'book-key',
     categories: ['development', 'security', 'gaming'],
+    name: 'book-key',
     tags: [
       'code',
       'coding',
@@ -1903,13 +1903,13 @@ export default [
     ],
   },
   {
-    name: 'book-lock',
     categories: ['development', 'security', 'gaming'],
+    name: 'book-lock',
     tags: ['code', 'coding', 'version control', 'git', 'repository', 'private', 'secret', 'hidden', 'knowledge'],
   },
   {
-    name: 'book-marked',
     categories: ['text', 'development', 'gaming'],
+    name: 'book-marked',
     tags: [
       'dictionary',
       'reading',
@@ -1953,8 +1953,8 @@ export default [
     ],
   },
   {
-    name: 'book-minus',
     categories: ['development', 'text', 'gaming'],
+    name: 'book-minus',
     tags: [
       'code',
       'coding',
@@ -1975,8 +1975,8 @@ export default [
     ],
   },
   {
-    name: 'book-open-check',
     categories: ['text', 'development', 'gaming'],
+    name: 'book-open-check',
     tags: [
       'read',
       'pages',
@@ -2019,8 +2019,8 @@ export default [
     ],
   },
   {
-    name: 'book-open-text',
     categories: ['text', 'development'],
+    name: 'book-open-text',
     tags: [
       'reading',
       'pages',
@@ -2054,8 +2054,8 @@ export default [
     ],
   },
   {
-    name: 'book-open',
     categories: ['text', 'development', 'gaming'],
+    name: 'book-open',
     tags: [
       'reading',
       'pages',
@@ -2092,8 +2092,8 @@ export default [
     ],
   },
   {
-    name: 'book-plus',
     categories: ['development', 'text', 'gaming'],
+    name: 'book-plus',
     tags: [
       'code',
       'coding',
@@ -2119,8 +2119,8 @@ export default [
     ],
   },
   {
-    name: 'book-text',
     categories: ['text', 'gaming'],
+    name: 'book-text',
     tags: [
       'reading',
       'booklet',
@@ -2153,8 +2153,8 @@ export default [
     ],
   },
   {
-    name: 'book-type',
     categories: ['text', 'design', 'gaming'],
+    name: 'book-type',
     tags: [
       'thesaurus',
       'synonym',
@@ -2193,18 +2193,18 @@ export default [
     ],
   },
   {
-    name: 'book-up-2',
     categories: ['development'],
+    name: 'book-up-2',
     tags: ['code', 'coding', 'version control', 'git', 'repository', 'push', 'force'],
   },
   {
-    name: 'book-up',
     categories: ['development'],
+    name: 'book-up',
     tags: ['code', 'coding', 'version control', 'git', 'repository', 'push'],
   },
   {
-    name: 'book-user',
     categories: ['account', 'connectivity', 'communication', 'social'],
+    name: 'book-user',
     tags: [
       'person',
       'people',
@@ -2221,8 +2221,8 @@ export default [
     ],
   },
   {
-    name: 'book-x',
     categories: ['text', 'gaming'],
+    name: 'book-x',
     tags: [
       'code',
       'coding',
@@ -2252,8 +2252,8 @@ export default [
     ],
   },
   {
-    name: 'book',
     categories: ['text', 'development', 'gaming'],
+    name: 'book',
     tags: [
       'reading',
       'paperback',
@@ -2287,53 +2287,53 @@ export default [
     ],
   },
   {
-    name: 'bookmark-check',
     categories: ['account'],
+    name: 'bookmark-check',
     tags: ['read', 'finished', 'complete', 'clip', 'marker', 'tag', 'task', 'todo'],
   },
   {
-    name: 'bookmark-minus',
     categories: ['account'],
+    name: 'bookmark-minus',
     tags: ['delete', 'remove'],
   },
   {
-    name: 'bookmark-plus',
     categories: ['account'],
+    name: 'bookmark-plus',
     tags: ['add'],
   },
   {
-    name: 'bookmark-x',
     categories: ['account'],
+    name: 'bookmark-x',
     tags: ['read', 'clip', 'marker', 'tag', 'cancel', 'close', 'delete', 'remove', 'clear'],
   },
   {
-    name: 'bookmark',
     categories: ['account'],
+    name: 'bookmark',
     tags: ['read', 'clip', 'marker', 'tag'],
   },
   {
-    name: 'boom-box',
     categories: ['devices', 'multimedia', 'social'],
+    name: 'boom-box',
     tags: ['radio', 'speakers', 'audio', 'music', 'sound', 'broadcast', 'live', 'frequency'],
   },
   {
+    categories: ['development', 'social'],
     name: 'bot-message-square',
-    categories: ['development', 'social'],
     tags: ['robot', 'ai', 'chat', 'assistant'],
   },
   {
+    categories: ['development', 'social'],
     name: 'bot-off',
-    categories: ['development', 'social'],
     tags: ['robot', 'ai', 'chat', 'assistant'],
   },
   {
+    categories: ['development', 'social'],
     name: 'bot',
-    categories: ['development', 'social'],
     tags: ['robot', 'ai', 'chat', 'assistant'],
   },
   {
-    name: 'bottle-wine',
     categories: ['food-beverage'],
+    name: 'bottle-wine',
     tags: [
       'alcohol',
       'drink',
@@ -2358,43 +2358,43 @@ export default [
     ],
   },
   {
-    name: 'bow-arrow',
     categories: ['gaming', 'tools'],
+    name: 'bow-arrow',
     tags: ['archer', 'archery', 'game', 'war', 'weapon'],
   },
   {
-    name: 'box',
     categories: ['shapes', 'gaming', 'development', 'math'],
+    name: 'box',
     tags: ['cube', 'package', 'container', 'storage', 'geometry', '3d', 'isometric'],
   },
   {
-    name: 'boxes',
     categories: ['shapes', 'gaming', 'development'],
+    name: 'boxes',
     tags: ['cubes', 'packages', 'parts', 'group', 'units', 'collection', 'cluster', 'geometry'],
   },
   {
-    name: 'braces',
     categories: ['development', 'files'],
+    name: 'braces',
     tags: ['json', 'code', 'token', 'curly brackets', 'data', '{', '}'],
   },
   {
-    name: 'brackets',
     categories: ['development', 'files'],
+    name: 'brackets',
     tags: ['code', 'token', 'array', 'list', 'square', '[', ']'],
   },
   {
+    categories: ['science', 'development'],
     name: 'brain-circuit',
-    categories: ['science', 'development'],
     tags: ['mind', 'intellect', 'artificial intelligence', 'ai', 'deep learning', 'machine learning', 'computing'],
   },
   {
+    categories: ['science', 'development'],
     name: 'brain-cog',
-    categories: ['science', 'development'],
     tags: ['mind', 'intellect', 'artificial intelligence', 'ai', 'deep learning', 'machine learning', 'computing'],
   },
   {
-    name: 'brain',
     categories: ['medical', 'science'],
+    name: 'brain',
     tags: [
       'medical',
       'mind',
@@ -2413,8 +2413,8 @@ export default [
     ],
   },
   {
-    name: 'brick-wall-fire',
     categories: ['security', 'home', 'connectivity'],
+    name: 'brick-wall-fire',
     tags: [
       'firewall',
       'security',
@@ -2440,8 +2440,8 @@ export default [
     ],
   },
   {
-    name: 'brick-wall-shield',
     categories: ['security', 'home', 'connectivity'],
+    name: 'brick-wall-shield',
     tags: [
       'firewall',
       'security',
@@ -2500,8 +2500,8 @@ export default [
     ],
   },
   {
-    name: 'brick-wall',
     categories: ['buildings', 'home'],
+    name: 'brick-wall',
     tags: [
       'bricks',
       'mortar',
@@ -2516,33 +2516,33 @@ export default [
     ],
   },
   {
-    name: 'briefcase-business',
     categories: ['transportation'],
+    name: 'briefcase-business',
     tags: ['work', 'bag', 'baggage', 'folder', 'portfolio'],
   },
   {
-    name: 'briefcase-conveyor-belt',
     categories: ['travel', 'transportation'],
+    name: 'briefcase-conveyor-belt',
     tags: ['baggage', 'luggage', 'travel', 'suitcase', 'conveyor', 'carousel'],
   },
   {
-    name: 'briefcase-medical',
     categories: ['medical', 'transportation'],
+    name: 'briefcase-medical',
     tags: ['doctor', 'medicine', 'first aid'],
   },
   {
-    name: 'briefcase',
     categories: ['transportation'],
+    name: 'briefcase',
     tags: ['work', 'bag', 'baggage', 'folder'],
   },
   {
-    name: 'bring-to-front',
     categories: ['design', 'layout'],
+    name: 'bring-to-front',
     tags: ['bring', 'send', 'move', 'over', 'forward', 'front', 'overlap', 'layer', 'order'],
   },
   {
-    name: 'brush-cleaning',
     categories: ['home', 'tools', 'design'],
+    name: 'brush-cleaning',
     tags: [
       'cleaning',
       'utensil',
@@ -2578,13 +2578,13 @@ export default [
     ],
   },
   {
-    name: 'brush',
     categories: ['text', 'design', 'tools'],
+    name: 'brush',
     tags: ['clean', 'sweep', 'refactor', 'remove', 'draw', 'paint', 'color', 'artist'],
   },
   {
-    name: 'bubbles',
     categories: ['weather'],
+    name: 'bubbles',
     tags: [
       'water',
       'cleaning',
@@ -2609,18 +2609,18 @@ export default [
     ],
   },
   {
-    name: 'bug-off',
     categories: ['development', 'animals'],
+    name: 'bug-off',
     tags: ['issue', 'fixed', 'resolved', 'testing', 'debug', 'code', 'insect', 'kill', 'exterminate', 'pest control'],
   },
   {
-    name: 'bug-play',
     categories: ['development', 'animals'],
+    name: 'bug-play',
     tags: ['issue', 'testing', 'debug', 'reproduce', 'code', 'insect'],
   },
   {
-    name: 'bug',
     categories: ['development', 'animals'],
+    name: 'bug',
     tags: [
       'issue',
       'error',
@@ -2636,33 +2636,33 @@ export default [
     ],
   },
   {
-    name: 'building-2',
     categories: ['account', 'buildings'],
+    name: 'building-2',
     tags: ['business', 'company', 'enterprise', 'skyscraper', 'organisation', 'organization', 'city'],
   },
   {
-    name: 'building',
     categories: ['account', 'buildings'],
+    name: 'building',
     tags: ['organisation', 'organization'],
   },
   {
-    name: 'bus-front',
     categories: ['transportation'],
+    name: 'bus-front',
     tags: ['coach', 'vehicle', 'trip', 'road'],
   },
   {
-    name: 'bus',
     categories: ['transportation'],
+    name: 'bus',
     tags: ['bus', 'vehicle', 'transport', 'trip'],
   },
   {
-    name: 'cable-car',
     categories: ['transportation', 'travel'],
+    name: 'cable-car',
     tags: ['ski lift', 'winter holiday', 'alpine', 'resort', 'mountains'],
   },
   {
-    name: 'cable',
     categories: ['connectivity', 'devices', 'multimedia'],
+    name: 'cable',
     tags: [
       'cord',
       'wire',
@@ -2696,8 +2696,8 @@ export default [
     ],
   },
   {
-    name: 'cake-slice',
     categories: ['food-beverage', 'social'],
+    name: 'cake-slice',
     tags: [
       'birthday',
       'birthdate',
@@ -2715,8 +2715,8 @@ export default [
     ],
   },
   {
-    name: 'cake',
     categories: ['food-beverage', 'social', 'account'],
+    name: 'cake',
     tags: [
       'birthday',
       'birthdate',
@@ -2732,18 +2732,18 @@ export default [
     ],
   },
   {
-    name: 'calculator',
     categories: ['math', 'devices'],
+    name: 'calculator',
     tags: ['count', 'calculating machine'],
   },
   {
-    name: 'calendar-1',
     categories: ['time'],
+    name: 'calendar-1',
     tags: ['date', 'month', 'year', 'event', 'single', 'singular', 'once', '1', 'first'],
   },
   {
+    categories: ['time'],
     name: 'calendar-arrow-down',
-    categories: ['time'],
     tags: [
       'date',
       'month',
@@ -2760,8 +2760,8 @@ export default [
     ],
   },
   {
+    categories: ['time'],
     name: 'calendar-arrow-up',
-    categories: ['time'],
     tags: [
       'date',
       'month',
@@ -2778,8 +2778,8 @@ export default [
     ],
   },
   {
+    categories: ['time'],
     name: 'calendar-check-2',
-    categories: ['time'],
     tags: [
       'date',
       'day',
@@ -2797,8 +2797,8 @@ export default [
     ],
   },
   {
+    categories: ['time'],
     name: 'calendar-check',
-    categories: ['time'],
     tags: [
       'date',
       'day',
@@ -2816,68 +2816,68 @@ export default [
     ],
   },
   {
-    name: 'calendar-clock',
     categories: ['time'],
+    name: 'calendar-clock',
     tags: ['date', 'day', 'month', 'year', 'event', 'clock', 'hour'],
   },
   {
-    name: 'calendar-cog',
     categories: ['time'],
+    name: 'calendar-cog',
     tags: ['date', 'day', 'month', 'year', 'events', 'settings', 'gear', 'cog'],
   },
   {
-    name: 'calendar-days',
     categories: ['time'],
+    name: 'calendar-days',
     tags: ['date', 'month', 'year', 'event'],
   },
   {
-    name: 'calendar-fold',
     categories: ['time', 'files'],
+    name: 'calendar-fold',
     tags: ['date', 'month', 'year', 'event', 'birthday', 'birthdate', 'ics'],
   },
   {
-    name: 'calendar-heart',
     categories: ['time'],
+    name: 'calendar-heart',
     tags: ['date', 'month', 'year', 'event', 'heart', 'favourite', 'subscribe', 'valentines day'],
   },
   {
+    categories: ['time'],
     name: 'calendar-minus-2',
-    categories: ['time'],
     tags: ['date', 'day', 'month', 'year', 'event', 'delete', 'remove'],
   },
   {
+    categories: ['time'],
     name: 'calendar-minus',
-    categories: ['time'],
     tags: ['date', 'day', 'month', 'year', 'event', 'delete', 'remove'],
   },
   {
+    categories: ['time'],
     name: 'calendar-off',
-    categories: ['time'],
     tags: ['date', 'day', 'month', 'year', 'event', 'delete', 'remove'],
   },
   {
+    categories: ['time'],
     name: 'calendar-plus-2',
-    categories: ['time'],
     tags: ['date', 'day', 'month', 'year', 'event', 'add', 'subscribe', 'create', 'new'],
   },
   {
+    categories: ['time'],
     name: 'calendar-plus',
-    categories: ['time'],
     tags: ['date', 'day', 'month', 'year', 'event', 'add', 'subscribe', 'create', 'new'],
   },
   {
-    name: 'calendar-range',
     categories: ['time'],
+    name: 'calendar-range',
     tags: ['date', 'day', 'month', 'year', 'event', 'range', 'period'],
   },
   {
-    name: 'calendar-search',
     categories: ['time'],
+    name: 'calendar-search',
     tags: ['date', 'day', 'month', 'year', 'events', 'search', 'lens'],
   },
   {
-    name: 'calendar-sync',
     categories: ['arrows', 'time'],
+    name: 'calendar-sync',
     tags: [
       'repeat',
       'refresh',
@@ -2897,28 +2897,28 @@ export default [
     ],
   },
   {
-    name: 'calendar-x-2',
     categories: ['time'],
+    name: 'calendar-x-2',
     tags: ['date', 'day', 'month', 'year', 'event', 'remove'],
   },
   {
-    name: 'calendar-x',
     categories: ['time'],
+    name: 'calendar-x',
     tags: ['date', 'day', 'month', 'year', 'event', 'remove', 'busy'],
   },
   {
-    name: 'calendar',
     categories: ['time'],
+    name: 'calendar',
     tags: ['date', 'month', 'year', 'event', 'birthday', 'birthdate'],
   },
   {
-    name: 'camera-off',
     categories: ['photography', 'devices', 'communication'],
+    name: 'camera-off',
     tags: ['photo', 'webcam', 'video'],
   },
   {
-    name: 'camera',
     categories: ['photography', 'devices', 'communication'],
+    name: 'camera',
     tags: [
       'photography',
       'lens',
@@ -2935,58 +2935,58 @@ export default [
     ],
   },
   {
-    name: 'candy-cane',
     categories: ['food-beverage'],
+    name: 'candy-cane',
     tags: ['sugar', 'food', 'sweet', 'christmas', 'xmas'],
   },
   {
-    name: 'candy-off',
     categories: ['food-beverage'],
+    name: 'candy-off',
     tags: ['sugar free', 'food', 'sweet', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'candy',
     categories: ['food-beverage'],
+    name: 'candy',
     tags: ['sugar', 'food', 'sweet'],
   },
   {
-    name: 'cannabis',
     categories: ['nature'],
+    name: 'cannabis',
     tags: ['cannabis', 'weed', 'leaf'],
   },
   {
+    categories: ['multimedia'],
     name: 'captions-off',
-    categories: ['multimedia'],
     tags: ['closed captions', 'subtitles', 'subhead', 'transcription', 'transcribe', 'dialogue', 'accessibility'],
   },
   {
+    categories: ['multimedia'],
     name: 'captions',
-    categories: ['multimedia'],
     tags: ['closed captions', 'subtitles', 'subhead', 'transcription', 'transcribe', 'dialogue', 'accessibility'],
   },
   {
-    name: 'car-front',
     categories: ['transportation'],
+    name: 'car-front',
     tags: ['vehicle', 'drive', 'trip', 'journey'],
   },
   {
-    name: 'car-taxi-front',
     categories: ['transportation'],
+    name: 'car-taxi-front',
     tags: ['cab', 'vehicle', 'drive', 'trip', 'journey'],
   },
   {
-    name: 'car',
     categories: ['transportation'],
+    name: 'car',
     tags: ['vehicle', 'drive', 'trip', 'journey'],
   },
   {
-    name: 'caravan',
     categories: ['transportation', 'travel', 'nature'],
+    name: 'caravan',
     tags: ['trailer', 'tow', 'camping', 'campsite', 'mobile home', 'holiday', 'nomadic', 'wilderness', 'outdoors'],
   },
   {
-    name: 'card-sim',
     categories: ['connectivity', 'communication', 'multimedia', 'devices'],
+    name: 'card-sim',
     tags: [
       'cellphone',
       'smartphone',
@@ -3011,83 +3011,83 @@ export default [
     ],
   },
   {
-    name: 'carrot',
     categories: ['food-beverage'],
+    name: 'carrot',
     tags: ['vegetable', 'food', 'eat'],
   },
   {
+    categories: ['text', 'development'],
     name: 'case-lower',
-    categories: ['text', 'development'],
     tags: ['text', 'letters', 'characters', 'font', 'typography'],
   },
   {
-    name: 'case-sensitive',
     categories: ['text'],
+    name: 'case-sensitive',
     tags: ['text', 'letters', 'characters', 'font', 'typography'],
   },
   {
-    name: 'case-upper',
     categories: ['text', 'development'],
+    name: 'case-upper',
     tags: ['text', 'letters', 'characters', 'font', 'typography'],
   },
   {
-    name: 'cassette-tape',
     categories: ['connectivity', 'devices', 'multimedia', 'communication', 'files'],
+    name: 'cassette-tape',
     tags: ['audio', 'music', 'recording', 'play'],
   },
   {
-    name: 'cast',
     categories: ['devices', 'connectivity'],
+    name: 'cast',
     tags: ['chromecast', 'airplay', 'screen'],
   },
   {
-    name: 'castle',
     categories: ['buildings', 'gaming'],
+    name: 'castle',
     tags: ['fortress', 'stronghold', 'palace', 'chateau', 'building'],
   },
   {
-    name: 'cat',
     categories: ['animals'],
+    name: 'cat',
     tags: ['animal', 'pet', 'kitten', 'feline'],
   },
   {
-    name: 'cctv',
     categories: ['security', 'devices', 'communication', 'connectivity', 'photography'],
+    name: 'cctv',
     tags: ['camera', 'surveillance', 'recording', 'film', 'videotape', 'crime', 'watching'],
   },
   {
-    name: 'chart-area',
     categories: ['charts'],
+    name: 'chart-area',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'area'],
   },
   {
-    name: 'chart-bar-big',
     categories: ['charts'],
+    name: 'chart-bar-big',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-bar-decreasing',
     categories: ['charts'],
+    name: 'chart-bar-decreasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending down'],
   },
   {
-    name: 'chart-bar-increasing',
     categories: ['charts'],
+    name: 'chart-bar-increasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending up'],
   },
   {
-    name: 'chart-bar-stacked',
     categories: ['charts'],
+    name: 'chart-bar-stacked',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'multivariate', 'categorical', 'comparison'],
   },
   {
-    name: 'chart-bar',
     categories: ['charts'],
+    name: 'chart-bar',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-candlestick',
     categories: ['charts', 'finance'],
+    name: 'chart-candlestick',
     tags: [
       'trading',
       'trader',
@@ -3111,43 +3111,43 @@ export default [
     ],
   },
   {
-    name: 'chart-column-big',
     categories: ['charts'],
+    name: 'chart-column-big',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-column-decreasing',
     categories: ['charts'],
+    name: 'chart-column-decreasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending down'],
   },
   {
-    name: 'chart-column-increasing',
     categories: ['charts'],
+    name: 'chart-column-increasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending up'],
   },
   {
-    name: 'chart-column-stacked',
     categories: ['charts'],
+    name: 'chart-column-stacked',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'multivariate', 'categorical', 'comparison'],
   },
   {
-    name: 'chart-column',
     categories: ['charts'],
+    name: 'chart-column',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-gantt',
     categories: ['charts'],
+    name: 'chart-gantt',
     tags: ['diagram', 'graph', 'timeline', 'planning'],
   },
   {
-    name: 'chart-line',
     categories: ['charts'],
+    name: 'chart-line',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-network',
     categories: ['charts'],
+    name: 'chart-network',
     tags: [
       'statistics',
       'analytics',
@@ -3162,28 +3162,28 @@ export default [
     ],
   },
   {
-    name: 'chart-no-axes-column-decreasing',
     categories: ['charts'],
+    name: 'chart-no-axes-column-decreasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending down'],
   },
   {
-    name: 'chart-no-axes-column-increasing',
     categories: ['charts'],
+    name: 'chart-no-axes-column-increasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending up'],
   },
   {
-    name: 'chart-no-axes-column',
     categories: ['charts'],
+    name: 'chart-no-axes-column',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-no-axes-combined',
     categories: ['charts'],
+    name: 'chart-no-axes-combined',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'trending up'],
   },
   {
-    name: 'chart-no-axes-gantt',
     categories: ['charts', 'time', 'development', 'design'],
+    name: 'chart-no-axes-gantt',
     tags: [
       'projects',
       'manage',
@@ -3205,18 +3205,18 @@ export default [
     ],
   },
   {
-    name: 'chart-pie',
     categories: ['charts', 'files'],
+    name: 'chart-pie',
     tags: ['statistics', 'analytics', 'diagram', 'presentation'],
   },
   {
-    name: 'chart-scatter',
     categories: ['charts'],
+    name: 'chart-scatter',
     tags: ['statistics', 'analytics', 'diagram', 'graph'],
   },
   {
-    name: 'chart-spline',
     categories: ['charts'],
+    name: 'chart-spline',
     tags: [
       'statistics',
       'analytics',
@@ -3232,53 +3232,53 @@ export default [
     ],
   },
   {
-    name: 'check-check',
     categories: ['notifications'],
+    name: 'check-check',
     tags: ['done', 'received', 'double', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['notifications'],
     name: 'check-line',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['notifications'],
     name: 'check',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'chef-hat',
     categories: ['food-beverage'],
+    name: 'chef-hat',
     tags: ['cooking', 'food', 'kitchen', 'restaurant'],
   },
   {
-    name: 'cherry',
     categories: ['food-beverage'],
+    name: 'cherry',
     tags: ['fruit', 'food'],
   },
   {
-    name: 'chevron-down',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'chevron-down',
     tags: ['backwards', 'reverse', 'slow', 'dropdown'],
   },
   {
-    name: 'chevron-first',
     categories: ['arrows', 'multimedia'],
+    name: 'chevron-first',
     tags: ['previous', 'music'],
   },
   {
-    name: 'chevron-last',
     categories: ['arrows', 'multimedia'],
+    name: 'chevron-last',
     tags: ['skip', 'next', 'music'],
   },
   {
-    name: 'chevron-left',
     categories: ['arrows', 'navigation'],
+    name: 'chevron-left',
     tags: ['back', 'previous', 'less than', 'fewer', 'menu', '<'],
   },
   {
-    name: 'chevron-right',
     categories: ['arrows', 'navigation', 'math', 'development'],
+    name: 'chevron-right',
     tags: [
       'forward',
       'next',
@@ -3295,8 +3295,8 @@ export default [
     ],
   },
   {
-    name: 'chevron-up',
     categories: ['arrows', 'navigation', 'math', 'gaming'],
+    name: 'chevron-up',
     tags: [
       'caret',
       'keyboard',
@@ -3313,18 +3313,18 @@ export default [
     ],
   },
   {
-    name: 'chevrons-down-up',
     categories: ['arrows'],
+    name: 'chevrons-down-up',
     tags: ['collapse', 'fold', 'vertical'],
   },
   {
-    name: 'chevrons-down',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'chevrons-down',
     tags: ['backwards', 'reverse', 'slower'],
   },
   {
-    name: 'chevrons-left-right-ellipsis',
     categories: ['communication', 'devices', 'multimedia', 'gaming'],
+    name: 'chevrons-left-right-ellipsis',
     tags: [
       'internet',
       'network',
@@ -3354,153 +3354,153 @@ export default [
     ],
   },
   {
-    name: 'chevrons-left-right',
     categories: ['arrows'],
+    name: 'chevrons-left-right',
     tags: ['expand', 'horizontal', 'unfold'],
   },
   {
-    name: 'chevrons-left',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'chevrons-left',
     tags: ['turn', 'corner'],
   },
   {
-    name: 'chevrons-right-left',
     categories: ['arrows'],
+    name: 'chevrons-right-left',
     tags: ['collapse', 'fold', 'horizontal'],
   },
   {
-    name: 'chevrons-right',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'chevrons-right',
     tags: ['turn', 'corner'],
   },
   {
-    name: 'chevrons-up-down',
     categories: ['arrows'],
+    name: 'chevrons-up-down',
     tags: ['expand', 'unfold', 'vertical'],
   },
   {
-    name: 'chevrons-up',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'chevrons-up',
     tags: ['forward', 'ahead', 'faster', 'speed', 'boost'],
   },
   {
-    name: 'chromium',
     categories: ['brands'],
+    name: 'chromium',
     tags: ['browser', 'logo'],
   },
   {
-    name: 'church',
     categories: ['buildings', 'navigation'],
+    name: 'church',
     tags: ['temple', 'building'],
   },
   {
-    name: 'cigarette-off',
     categories: ['travel', 'transportation', 'medical'],
+    name: 'cigarette-off',
     tags: ['smoking', 'no-smoking'],
   },
   {
-    name: 'cigarette',
     categories: ['travel', 'transportation', 'medical'],
+    name: 'cigarette',
     tags: ['smoking'],
   },
   {
-    name: 'circle-alert',
     categories: ['notifications'],
+    name: 'circle-alert',
     tags: ['warning', 'alert', 'danger', 'exclamation mark'],
   },
   {
-    name: 'circle-arrow-down',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'circle-arrow-down',
     tags: ['backwards', 'reverse', 'direction', 'south', 'sign', 'button'],
   },
   {
-    name: 'circle-arrow-left',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'circle-arrow-left',
     tags: ['previous', 'back', 'direction', 'west', 'sign', 'turn', 'button', '<-'],
   },
   {
-    name: 'circle-arrow-out-down-left',
     categories: ['arrows', 'navigation'],
+    name: 'circle-arrow-out-down-left',
     tags: ['outwards', 'direction', 'south-west', 'diagonal'],
   },
   {
-    name: 'circle-arrow-out-down-right',
     categories: ['arrows', 'navigation'],
+    name: 'circle-arrow-out-down-right',
     tags: ['outwards', 'direction', 'south-east', 'diagonal'],
   },
   {
-    name: 'circle-arrow-out-up-left',
     categories: ['arrows', 'navigation', 'development'],
+    name: 'circle-arrow-out-up-left',
     tags: ['outwards', 'direction', 'north-west', 'diagonal', 'keyboard', 'button', 'escape'],
   },
   {
-    name: 'circle-arrow-out-up-right',
     categories: ['arrows', 'navigation'],
+    name: 'circle-arrow-out-up-right',
     tags: ['outwards', 'direction', 'north-east', 'diagonal'],
   },
   {
-    name: 'circle-arrow-right',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'circle-arrow-right',
     tags: ['next', 'forward', 'direction', 'east', 'sign', 'turn', 'button', '->'],
   },
   {
-    name: 'circle-arrow-up',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'circle-arrow-up',
     tags: ['forward', 'direction', 'north', 'sign', 'button'],
   },
   {
+    categories: ['notifications'],
     name: 'circle-check-big',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['notifications'],
     name: 'circle-check',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'circle-chevron-down',
     categories: ['arrows', 'navigation'],
+    name: 'circle-chevron-down',
     tags: ['back', 'menu'],
   },
   {
-    name: 'circle-chevron-left',
     categories: ['arrows', 'navigation'],
+    name: 'circle-chevron-left',
     tags: ['back', 'previous', 'less than', 'fewer', 'menu', '<'],
   },
   {
-    name: 'circle-chevron-right',
     categories: ['arrows', 'navigation'],
+    name: 'circle-chevron-right',
     tags: ['back', 'more than', 'greater', 'menu', '>'],
   },
   {
-    name: 'circle-chevron-up',
     categories: ['arrows', 'navigation'],
+    name: 'circle-chevron-up',
     tags: ['caret', 'ahead', 'menu', '^'],
   },
   {
-    name: 'circle-dashed',
     categories: ['development', 'shapes'],
+    name: 'circle-dashed',
     tags: ['pending', 'dot', 'progress', 'issue', 'draft', 'code', 'coding', 'version control'],
   },
   {
-    name: 'circle-divide',
     categories: ['math'],
+    name: 'circle-divide',
     tags: ['calculate', 'math', '÷', '/'],
   },
   {
-    name: 'circle-dollar-sign',
     categories: ['finance'],
+    name: 'circle-dollar-sign',
     tags: ['monetization', 'marketing', 'currency', 'money', 'payment'],
   },
   {
-    name: 'circle-dot-dashed',
     categories: ['development', 'shapes'],
+    name: 'circle-dot-dashed',
     tags: ['pending', 'dot', 'progress', 'issue', 'draft', 'code', 'coding', 'version control'],
   },
   {
-    name: 'circle-dot',
     categories: ['development', 'shapes'],
+    name: 'circle-dot',
     tags: [
       'pending',
       'dot',
@@ -3515,8 +3515,8 @@ export default [
     ],
   },
   {
-    name: 'circle-ellipsis',
     categories: ['layout', 'development'],
+    name: 'circle-ellipsis',
     tags: [
       'ellipsis',
       'et cetera',
@@ -3542,28 +3542,28 @@ export default [
     ],
   },
   {
-    name: 'circle-equal',
     categories: ['math'],
+    name: 'circle-equal',
     tags: ['calculate', 'shape', '='],
   },
   {
-    name: 'circle-fading-arrow-up',
     categories: ['arrows', 'development'],
+    name: 'circle-fading-arrow-up',
     tags: ['north', 'up', 'upgrade', 'improve', 'circle', 'button'],
   },
   {
-    name: 'circle-fading-plus',
     categories: ['communication', 'social'],
+    name: 'circle-fading-plus',
     tags: ['stories', 'social media', 'instagram', 'facebook', 'meta', 'snapchat', 'sharing', 'content'],
   },
   {
-    name: 'circle-gauge',
     categories: ['transportation', 'sports', 'science'],
+    name: 'circle-gauge',
     tags: ['dashboard', 'dial', 'meter', 'speed', 'pressure', 'measure', 'level'],
   },
   {
-    name: 'circle-minus',
     categories: ['math'],
+    name: 'circle-minus',
     tags: [
       'subtract',
       'remove',
@@ -3580,8 +3580,8 @@ export default [
     ],
   },
   {
-    name: 'circle-off',
     categories: ['shapes'],
+    name: 'circle-off',
     tags: [
       'diameter',
       'zero',
@@ -3603,33 +3603,33 @@ export default [
     ],
   },
   {
-    name: 'circle-parking-off',
     categories: ['transportation', 'navigation'],
+    name: 'circle-parking-off',
     tags: ['parking lot', 'car park', 'no parking'],
   },
   {
-    name: 'circle-parking',
     categories: ['transportation', 'navigation'],
+    name: 'circle-parking',
     tags: ['parking lot', 'car park'],
   },
   {
-    name: 'circle-pause',
     categories: ['multimedia'],
+    name: 'circle-pause',
     tags: ['music', 'audio', 'stop'],
   },
   {
-    name: 'circle-percent',
     categories: ['social', 'finance', 'shopping', 'math'],
+    name: 'circle-percent',
     tags: ['verified', 'unverified', 'sale', 'discount', 'offer', 'marketing', 'sticker', 'price tag'],
   },
   {
-    name: 'circle-play',
     categories: ['multimedia'],
+    name: 'circle-play',
     tags: ['music', 'start', 'run'],
   },
   {
-    name: 'circle-plus',
     categories: ['math', 'development', 'cursors', 'gaming'],
+    name: 'circle-plus',
     tags: [
       'add',
       'new',
@@ -3655,13 +3655,13 @@ export default [
     ],
   },
   {
-    name: 'circle-pound-sterling',
     categories: ['finance'],
+    name: 'circle-pound-sterling',
     tags: ['monetization', 'coin', 'penny', 'marketing', 'currency', 'money', 'payment', 'british', 'gbp', '£'],
   },
   {
-    name: 'circle-power',
     categories: ['connectivity'],
+    name: 'circle-power',
     tags: [
       'on',
       'off',
@@ -3678,13 +3678,13 @@ export default [
     ],
   },
   {
-    name: 'circle-question-mark',
     categories: ['accessibility', 'text', 'notifications'],
+    name: 'circle-question-mark',
     tags: ['question mark'],
   },
   {
-    name: 'circle-slash-2',
     categories: ['shapes', 'math', 'development'],
+    name: 'circle-slash-2',
     tags: [
       'diameter',
       'zero',
@@ -3707,8 +3707,8 @@ export default [
     ],
   },
   {
-    name: 'circle-slash',
     categories: ['development', 'math'],
+    name: 'circle-slash',
     tags: [
       'diameter',
       'zero',
@@ -3734,13 +3734,13 @@ export default [
     ],
   },
   {
-    name: 'circle-small',
     categories: ['shapes', 'medical'],
+    name: 'circle-small',
     tags: ['shape', 'bullet', 'gender', 'genderless'],
   },
   {
-    name: 'circle-star',
     categories: ['sports', 'gaming'],
+    name: 'circle-star',
     tags: [
       'badge',
       'medal',
@@ -3758,23 +3758,23 @@ export default [
     ],
   },
   {
-    name: 'circle-stop',
     categories: ['multimedia'],
+    name: 'circle-stop',
     tags: ['media', 'music'],
   },
   {
+    categories: ['account'],
     name: 'circle-user-round',
-    categories: ['account'],
     tags: ['person', 'account', 'contact'],
   },
   {
+    categories: ['account'],
     name: 'circle-user',
-    categories: ['account'],
     tags: ['person', 'account', 'contact'],
   },
   {
-    name: 'circle-x',
     categories: ['math', 'development'],
+    name: 'circle-x',
     tags: [
       'cancel',
       'close',
@@ -3793,33 +3793,33 @@ export default [
     ],
   },
   {
-    name: 'circle',
     categories: ['shapes'],
+    name: 'circle',
     tags: ['off', 'zero', 'record', 'shape'],
   },
   {
-    name: 'circuit-board',
     categories: ['science', 'development'],
+    name: 'circuit-board',
     tags: ['computing', 'electricity', 'electronics'],
   },
   {
-    name: 'citrus',
     categories: ['food-beverage'],
+    name: 'citrus',
     tags: ['lemon', 'orange', 'grapefruit', 'fruit'],
   },
   {
-    name: 'clapperboard',
     categories: ['multimedia'],
+    name: 'clapperboard',
     tags: ['movie', 'film', 'video', 'camera', 'cinema', 'cut', 'action', 'television', 'tv', 'show', 'entertainment'],
   },
   {
-    name: 'clipboard-check',
     categories: ['text'],
+    name: 'clipboard-check',
     tags: ['copied', 'pasted', 'done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'clipboard-clock',
     categories: ['time', 'text'],
+    name: 'clipboard-clock',
     tags: [
       'copy',
       'paste',
@@ -3842,123 +3842,123 @@ export default [
     ],
   },
   {
-    name: 'clipboard-copy',
     categories: ['text', 'arrows'],
+    name: 'clipboard-copy',
     tags: ['copy', 'paste'],
   },
   {
-    name: 'clipboard-list',
     categories: ['text'],
+    name: 'clipboard-list',
     tags: ['copy', 'paste', 'tasks'],
   },
   {
-    name: 'clipboard-minus',
     categories: ['text', 'medical'],
+    name: 'clipboard-minus',
     tags: ['copy', 'delete', 'remove', 'erase', 'document', 'medical', 'report', 'doctor'],
   },
   {
-    name: 'clipboard-paste',
     categories: ['text', 'arrows'],
+    name: 'clipboard-paste',
     tags: ['copy', 'paste'],
   },
   {
-    name: 'clipboard-pen-line',
     categories: ['text'],
+    name: 'clipboard-pen-line',
     tags: ['paste'],
   },
   {
-    name: 'clipboard-pen',
     categories: ['text'],
+    name: 'clipboard-pen',
     tags: ['paste', 'signature'],
   },
   {
-    name: 'clipboard-plus',
     categories: ['text', 'medical'],
+    name: 'clipboard-plus',
     tags: ['copy', 'paste', 'add', 'create', 'new', 'document', 'medical', 'report', 'doctor'],
   },
   {
-    name: 'clipboard-type',
     categories: ['text'],
+    name: 'clipboard-type',
     tags: ['paste', 'format', 'text'],
   },
   {
-    name: 'clipboard-x',
     categories: ['text'],
+    name: 'clipboard-x',
     tags: ['copy', 'paste', 'discard', 'remove'],
   },
   {
-    name: 'clipboard',
     categories: ['text'],
+    name: 'clipboard',
     tags: ['copy', 'paste'],
   },
   {
+    categories: ['time'],
     name: 'clock-1',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-10',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-11',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
-    name: 'clock-12',
     categories: ['time'],
+    name: 'clock-12',
     tags: ['time', 'watch', 'alarm', 'noon', 'midnight'],
   },
   {
+    categories: ['time'],
     name: 'clock-2',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-3',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-4',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-5',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-6',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-7',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-8',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
+    categories: ['time'],
     name: 'clock-9',
-    categories: ['time'],
     tags: ['time', 'watch', 'alarm'],
   },
   {
-    name: 'clock-alert',
     categories: ['time'],
+    name: 'clock-alert',
     tags: ['time', 'watch', 'alarm', 'warning', 'wrong'],
   },
   {
+    categories: ['time'],
     name: 'clock-arrow-down',
-    categories: ['time'],
     tags: [
       'time',
       'watch',
@@ -3974,8 +3974,8 @@ export default [
     ],
   },
   {
+    categories: ['time'],
     name: 'clock-arrow-up',
-    categories: ['time'],
     tags: [
       'time',
       'watch',
@@ -3991,23 +3991,23 @@ export default [
     ],
   },
   {
-    name: 'clock-fading',
     categories: ['time'],
+    name: 'clock-fading',
     tags: ['time', 'watch', 'alarm'],
   },
   {
-    name: 'clock-plus',
     categories: ['time'],
+    name: 'clock-plus',
     tags: ['time', 'watch', 'alarm', 'add', 'create', 'new'],
   },
   {
-    name: 'clock',
     categories: ['time'],
+    name: 'clock',
     tags: ['time', 'watch', 'alarm'],
   },
   {
-    name: 'closed-caption',
     categories: ['accessibility', 'multimedia'],
+    name: 'closed-caption',
     tags: [
       'tv',
       'movie',
@@ -4022,138 +4022,138 @@ export default [
     ],
   },
   {
-    name: 'cloud-alert',
     categories: ['development'],
+    name: 'cloud-alert',
     tags: ['weather', 'danger', 'warning', 'alert', 'error', 'sync', 'network', 'exclamation'],
   },
   {
-    name: 'cloud-check',
     categories: ['development'],
+    name: 'cloud-check',
     tags: ['sync', 'network', 'success', 'done', 'completed', 'saved', 'persisted'],
   },
   {
-    name: 'cloud-cog',
     categories: ['development'],
+    name: 'cloud-cog',
     tags: ['computing', 'ai', 'cluster', 'network'],
   },
   {
-    name: 'cloud-download',
     categories: ['arrows', 'files'],
+    name: 'cloud-download',
     tags: ['import'],
   },
   {
-    name: 'cloud-drizzle',
     categories: ['weather'],
+    name: 'cloud-drizzle',
     tags: ['weather', 'shower'],
   },
   {
-    name: 'cloud-fog',
     categories: ['weather'],
+    name: 'cloud-fog',
     tags: ['weather', 'mist'],
   },
   {
-    name: 'cloud-hail',
     categories: ['weather'],
+    name: 'cloud-hail',
     tags: ['weather', 'rainfall'],
   },
   {
-    name: 'cloud-lightning',
     categories: ['weather'],
+    name: 'cloud-lightning',
     tags: ['weather', 'bolt'],
   },
   {
-    name: 'cloud-moon-rain',
     categories: ['weather'],
+    name: 'cloud-moon-rain',
     tags: ['weather', 'partly', 'night', 'rainfall'],
   },
   {
-    name: 'cloud-moon',
     categories: ['weather'],
+    name: 'cloud-moon',
     tags: ['weather', 'night'],
   },
   {
-    name: 'cloud-off',
     categories: ['connectivity', 'weather'],
+    name: 'cloud-off',
     tags: ['disconnect'],
   },
   {
+    categories: ['weather'],
     name: 'cloud-rain-wind',
-    categories: ['weather'],
     tags: ['weather', 'rainfall'],
   },
   {
+    categories: ['weather'],
     name: 'cloud-rain',
-    categories: ['weather'],
     tags: ['weather', 'rainfall'],
   },
   {
-    name: 'cloud-snow',
     categories: ['weather'],
+    name: 'cloud-snow',
     tags: ['weather', 'blizzard'],
   },
   {
-    name: 'cloud-sun-rain',
     categories: ['weather'],
+    name: 'cloud-sun-rain',
     tags: ['weather', 'partly', 'rainfall'],
   },
   {
-    name: 'cloud-sun',
     categories: ['weather'],
+    name: 'cloud-sun',
     tags: ['weather', 'partly'],
   },
   {
-    name: 'cloud-upload',
     categories: ['arrows', 'files'],
+    name: 'cloud-upload',
     tags: ['file'],
   },
   {
-    name: 'cloud',
     categories: ['weather'],
+    name: 'cloud',
     tags: ['weather'],
   },
   {
-    name: 'cloudy',
     categories: ['weather'],
+    name: 'cloudy',
     tags: ['weather', 'clouds'],
   },
   {
-    name: 'clover',
     categories: ['gaming'],
+    name: 'clover',
     tags: ['leaf', 'luck', 'plant'],
   },
   {
-    name: 'club',
     categories: ['shapes', 'gaming'],
+    name: 'club',
     tags: ['shape', 'suit', 'playing', 'cards'],
   },
   {
+    categories: ['text', 'development'],
     name: 'code-xml',
-    categories: ['text', 'development'],
     tags: ['source', 'programming', 'html', 'xml'],
   },
   {
+    categories: ['text', 'development'],
     name: 'code',
-    categories: ['text', 'development'],
     tags: ['source', 'programming', 'html', 'xml'],
   },
   {
+    categories: ['brands', 'development'],
     name: 'codepen',
-    categories: ['brands', 'development'],
     tags: ['logo'],
   },
   {
+    categories: ['brands', 'development'],
     name: 'codesandbox',
-    categories: ['brands', 'development'],
     tags: ['logo'],
   },
   {
-    name: 'coffee',
     categories: ['food-beverage'],
+    name: 'coffee',
     tags: ['drink', 'cup', 'mug', 'tea', 'cafe', 'hot', 'beverage'],
   },
   {
-    name: 'cog',
     categories: ['account'],
+    name: 'cog',
     tags: [
       'computing',
       'settings',
@@ -4170,13 +4170,13 @@ export default [
     ],
   },
   {
-    name: 'coins',
     categories: ['gaming'],
+    name: 'coins',
     tags: ['money', 'cash', 'finance', 'gamble'],
   },
   {
-    name: 'columns-2',
     categories: ['layout', 'design', 'text'],
+    name: 'columns-2',
     tags: [
       'lines',
       'list',
@@ -4203,13 +4203,13 @@ export default [
     ],
   },
   {
-    name: 'columns-3-cog',
     categories: ['layout', 'design'],
+    name: 'columns-3-cog',
     tags: ['columns', 'settings', 'customize', 'table', 'grid', 'adjust', 'configuration', 'panel', 'layout'],
   },
   {
-    name: 'columns-3',
     categories: ['layout', 'design', 'text'],
+    name: 'columns-3',
     tags: [
       'lines',
       'list',
@@ -4237,8 +4237,8 @@ export default [
     ],
   },
   {
-    name: 'columns-4',
     categories: ['layout', 'design', 'text', 'security'],
+    name: 'columns-4',
     tags: [
       'lines',
       'list',
@@ -4279,73 +4279,73 @@ export default [
     ],
   },
   {
-    name: 'combine',
     categories: ['development', 'files'],
+    name: 'combine',
     tags: ['cubes', 'packages', 'parts', 'units', 'collection', 'cluster', 'combine', 'gather', 'merge'],
   },
   {
-    name: 'command',
     categories: ['development'],
+    name: 'command',
     tags: ['keyboard', 'key', 'mac', 'cmd', 'button'],
   },
   {
-    name: 'compass',
     categories: ['navigation', 'travel'],
+    name: 'compass',
     tags: ['direction', 'north', 'east', 'south', 'west', 'safari', 'browser'],
   },
   {
-    name: 'component',
     categories: ['design', 'development'],
+    name: 'component',
     tags: ['design', 'element', 'group', 'module', 'part', 'symbol'],
   },
   {
-    name: 'computer',
     categories: ['devices', 'development', 'gaming'],
+    name: 'computer',
     tags: ['pc', 'chassis', 'codespaces', 'github'],
   },
   {
-    name: 'concierge-bell',
     categories: ['travel'],
+    name: 'concierge-bell',
     tags: ['reception', 'bell', 'porter'],
   },
   {
-    name: 'cone',
     categories: ['shapes', 'math'],
+    name: 'cone',
     tags: ['conical', 'triangle', 'triangular', 'geometry', 'filter', 'funnel', 'hopper', 'spotlight', 'searchlight'],
   },
   {
-    name: 'construction',
     categories: ['development'],
+    name: 'construction',
     tags: ['roadwork', 'maintenance', 'blockade', 'barricade'],
   },
   {
+    categories: ['account', 'connectivity', 'communication', 'social'],
     name: 'contact-round',
-    categories: ['account', 'connectivity', 'communication', 'social'],
     tags: ['user', 'person', 'family', 'friend', 'acquaintance', 'listing', 'networking'],
   },
   {
+    categories: ['account', 'connectivity', 'communication', 'social'],
     name: 'contact',
-    categories: ['account', 'connectivity', 'communication', 'social'],
     tags: ['user', 'person', 'family', 'friend', 'acquaintance', 'listing', 'networking'],
   },
   {
-    name: 'container',
     categories: ['development', 'transportation', 'mail'],
+    name: 'container',
     tags: ['storage', 'shipping', 'freight', 'supply chain', 'docker', 'environment', 'devops', 'code', 'coding'],
   },
   {
-    name: 'contrast',
     categories: ['photography', 'accessibility', 'design'],
+    name: 'contrast',
     tags: ['display', 'accessibility'],
   },
   {
-    name: 'cookie',
     categories: ['account', 'food-beverage'],
+    name: 'cookie',
     tags: ['biscuit', 'privacy', 'legal', 'food'],
   },
   {
-    name: 'cooking-pot',
     categories: ['food-beverage', 'home'],
+    name: 'cooking-pot',
     tags: [
       'pod',
       'cooking',
@@ -4362,23 +4362,23 @@ export default [
     ],
   },
   {
-    name: 'copy-check',
     categories: ['text', 'notifications'],
+    name: 'copy-check',
     tags: ['clone', 'duplicate', 'done', 'multiple'],
   },
   {
-    name: 'copy-minus',
     categories: ['text', 'math'],
+    name: 'copy-minus',
     tags: ['clone', 'duplicate', 'remove', 'delete', 'collapse', 'subtract', 'multiple', '-'],
   },
   {
-    name: 'copy-plus',
     categories: ['text', 'math'],
+    name: 'copy-plus',
     tags: ['clone', 'duplicate', 'add', 'multiple', 'expand', '+'],
   },
   {
-    name: 'copy-slash',
     categories: ['text', 'development', 'math'],
+    name: 'copy-slash',
     tags: [
       'clone',
       'duplicate',
@@ -4398,68 +4398,68 @@ export default [
     ],
   },
   {
-    name: 'copy-x',
     categories: ['notifications', 'math'],
+    name: 'copy-x',
     tags: ['cancel', 'close', 'delete', 'remove', 'clear', 'multiple', 'multiply', 'multiplication', 'times'],
   },
   {
-    name: 'copy',
     categories: ['text'],
+    name: 'copy',
     tags: ['clone', 'duplicate', 'multiple'],
   },
   {
-    name: 'copyleft',
     categories: ['text'],
+    name: 'copyleft',
     tags: ['licence'],
   },
   {
-    name: 'copyright',
     categories: ['text'],
+    name: 'copyright',
     tags: ['licence', 'license'],
   },
   {
-    name: 'corner-down-left',
     categories: ['arrows'],
+    name: 'corner-down-left',
     tags: ['arrow', 'return'],
   },
   {
-    name: 'corner-down-right',
     categories: ['arrows', 'text', 'development'],
+    name: 'corner-down-right',
     tags: ['arrow', 'indent', 'tab'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-left-down',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-left-up',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-right-down',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-right-up',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-up-left',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'corner-up-right',
-    categories: ['arrows'],
     tags: ['arrow'],
   },
   {
-    name: 'cpu',
     categories: ['devices'],
+    name: 'cpu',
     tags: [
       'processor',
       'cores',
@@ -4475,83 +4475,83 @@ export default [
     ],
   },
   {
-    name: 'creative-commons',
     categories: ['text'],
+    name: 'creative-commons',
     tags: ['licence', 'license'],
   },
   {
-    name: 'credit-card',
     categories: ['account', 'finance'],
+    name: 'credit-card',
     tags: ['bank', 'purchase', 'payment', 'cc'],
   },
   {
-    name: 'croissant',
     categories: ['food-beverage'],
+    name: 'croissant',
     tags: ['bakery', 'cooking', 'food', 'pastry'],
   },
   {
-    name: 'crop',
     categories: ['photography', 'design'],
+    name: 'crop',
     tags: ['photo', 'image'],
   },
   {
-    name: 'cross',
     categories: ['shapes'],
+    name: 'cross',
     tags: ['healthcare', 'first aid'],
   },
   {
-    name: 'crosshair',
     categories: ['photography'],
+    name: 'crosshair',
     tags: ['aim', 'target'],
   },
   {
-    name: 'crown',
     categories: ['gaming'],
+    name: 'crown',
     tags: ['diadem', 'tiara', 'circlet', 'corona', 'king', 'ruler', 'winner', 'favourite'],
   },
   {
-    name: 'cuboid',
     categories: ['shapes', 'math', 'buildings'],
+    name: 'cuboid',
     tags: ['brick', 'block', 'container', 'storage', 'geometry', 'rectangular', 'hexahedron'],
   },
   {
-    name: 'cup-soda',
     categories: ['food-beverage'],
+    name: 'cup-soda',
     tags: ['beverage', 'cup', 'drink', 'soda', 'straw', 'water'],
   },
   {
-    name: 'currency',
     categories: ['finance'],
+    name: 'currency',
     tags: ['finance', 'money'],
   },
   {
-    name: 'cylinder',
     categories: ['shapes', 'design', 'math'],
+    name: 'cylinder',
     tags: ['shape', 'elliptical', 'geometry', 'container', 'storage', 'tin', 'pot'],
   },
   {
-    name: 'dam',
     categories: ['buildings', 'sustainability'],
+    name: 'dam',
     tags: ['electricity', 'energy', 'water'],
   },
   {
-    name: 'database-backup',
     categories: ['devices', 'arrows', 'design', 'development', 'photography'],
+    name: 'database-backup',
     tags: ['storage', 'memory', 'bytes', 'servers', 'backup', 'timemachine', 'rotate', 'arrow', 'left'],
   },
   {
-    name: 'database-zap',
     categories: ['devices', 'development'],
+    name: 'database-zap',
     tags: ['cache busting', 'storage', 'memory', 'bytes', 'servers', 'power', 'crash'],
   },
   {
-    name: 'database',
     categories: ['devices', 'development'],
+    name: 'database',
     tags: ['storage', 'memory', 'container', 'tin', 'pot', 'bytes', 'servers'],
   },
   {
-    name: 'decimals-arrow-left',
     categories: ['design', 'text', 'arrows', 'math'],
+    name: 'decimals-arrow-left',
     tags: [
       'numerical',
       'decimal',
@@ -4567,8 +4567,8 @@ export default [
     ],
   },
   {
-    name: 'decimals-arrow-right',
     categories: ['design', 'text', 'arrows', 'math'],
+    name: 'decimals-arrow-right',
     tags: [
       'numerical',
       'decimal',
@@ -4583,13 +4583,13 @@ export default [
     ],
   },
   {
-    name: 'delete',
     categories: ['text', 'arrows'],
+    name: 'delete',
     tags: ['backspace', 'remove'],
   },
   {
-    name: 'dessert',
     categories: ['food-beverage'],
+    name: 'dessert',
     tags: [
       'pudding',
       'christmas',
@@ -4610,13 +4610,13 @@ export default [
     ],
   },
   {
-    name: 'diameter',
     categories: ['shapes', 'math', 'design', 'tools'],
+    name: 'diameter',
     tags: ['shape', 'circle', 'geometry', 'trigonometry', 'width', 'height', 'size', 'calculate', 'measure'],
   },
   {
-    name: 'diamond-minus',
     categories: ['multimedia', 'photography', 'tools', 'devices'],
+    name: 'diamond-minus',
     tags: [
       'keyframe',
       'subtract',
@@ -4644,13 +4644,13 @@ export default [
     ],
   },
   {
-    name: 'diamond-percent',
     categories: ['social', 'finance', 'shopping', 'math'],
+    name: 'diamond-percent',
     tags: ['verified', 'unverified', 'sale', 'discount', 'offer', 'marketing', 'sticker', 'price tag'],
   },
   {
-    name: 'diamond-plus',
     categories: ['multimedia', 'photography', 'tools', 'devices'],
+    name: 'diamond-plus',
     tags: [
       'keyframe',
       'add',
@@ -4673,63 +4673,63 @@ export default [
     ],
   },
   {
-    name: 'diamond',
     categories: ['shapes', 'gaming'],
+    name: 'diamond',
     tags: ['square', 'rectangle', 'oblique', 'rhombus', 'shape', 'suit', 'playing', 'cards'],
   },
   {
-    name: 'dice-1',
     categories: ['gaming'],
+    name: 'dice-1',
     tags: ['dice', 'random', 'tabletop', '1', 'board', 'game'],
   },
   {
-    name: 'dice-2',
     categories: ['gaming'],
+    name: 'dice-2',
     tags: ['dice', 'random', 'tabletop', '2', 'board', 'game'],
   },
   {
-    name: 'dice-3',
     categories: ['gaming'],
+    name: 'dice-3',
     tags: ['dice', 'random', 'tabletop', '3', 'board', 'game'],
   },
   {
-    name: 'dice-4',
     categories: ['gaming'],
+    name: 'dice-4',
     tags: ['dice', 'random', 'tabletop', '4', 'board', 'game'],
   },
   {
-    name: 'dice-5',
     categories: ['gaming'],
+    name: 'dice-5',
     tags: ['dice', 'random', 'tabletop', '5', 'board', 'game'],
   },
   {
-    name: 'dice-6',
     categories: ['gaming'],
+    name: 'dice-6',
     tags: ['dice', 'random', 'tabletop', '6', 'board', 'game'],
   },
   {
-    name: 'dices',
     categories: ['gaming'],
+    name: 'dices',
     tags: ['dice', 'random', 'tabletop', 'board', 'game'],
   },
   {
-    name: 'diff',
     categories: ['development', 'files'],
+    name: 'diff',
     tags: ['patch', 'difference', 'compare', 'plus', 'minus', 'plus-minus', 'math'],
   },
   {
+    categories: ['devices', 'multimedia'],
     name: 'disc-2',
-    categories: ['devices', 'multimedia'],
     tags: ['album', 'music', 'vinyl', 'record', 'cd', 'dvd', 'format', 'dj', 'spin', 'rotate', 'rpm'],
   },
   {
+    categories: ['devices', 'multimedia'],
     name: 'disc-3',
-    categories: ['devices', 'multimedia'],
     tags: ['album', 'music', 'vinyl', 'record', 'cd', 'dvd', 'format', 'dj', 'spin', 'rotate', 'rpm'],
   },
   {
+    categories: ['devices', 'multimedia'],
     name: 'disc-album',
-    categories: ['devices', 'multimedia'],
     tags: [
       'album',
       'music',
@@ -4752,8 +4752,8 @@ export default [
     ],
   },
   {
+    categories: ['devices', 'multimedia'],
     name: 'disc',
-    categories: ['devices', 'multimedia'],
     tags: [
       'album',
       'music',
@@ -4776,38 +4776,38 @@ export default [
     ],
   },
   {
-    name: 'divide',
     categories: ['math', 'development'],
+    name: 'divide',
     tags: ['calculate', 'math', 'division', 'operator', 'code', '÷', '/'],
   },
   {
-    name: 'dna-off',
     categories: ['medical', 'food-beverage'],
+    name: 'dna-off',
     tags: ['gene', 'gmo free', 'helix', 'heredity', 'chromosome', 'nucleic acid'],
   },
   {
-    name: 'dna',
     categories: ['medical'],
+    name: 'dna',
     tags: ['gene', 'gmo', 'helix', 'heredity', 'chromosome', 'nucleic acid'],
   },
   {
-    name: 'dock',
     categories: ['layout', 'design', 'development', 'files'],
+    name: 'dock',
     tags: ['desktop', 'applications', 'launch', 'home', 'menu bar', 'bottom', 'line', 'macos', 'osx'],
   },
   {
-    name: 'dog',
     categories: ['animals'],
+    name: 'dog',
     tags: ['animal', 'pet', 'puppy', 'hound', 'canine'],
   },
   {
-    name: 'dollar-sign',
     categories: ['finance'],
+    name: 'dollar-sign',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'donut',
     categories: ['food-beverage'],
+    name: 'donut',
     tags: [
       'doughnut',
       'sprinkles',
@@ -4824,23 +4824,23 @@ export default [
     ],
   },
   {
-    name: 'door-closed-locked',
     categories: ['home', 'travel', 'security'],
+    name: 'door-closed-locked',
     tags: ['entrance', 'entry', 'exit', 'ingress', 'egress', 'gate', 'gateway', 'emergency exit', 'lock'],
   },
   {
+    categories: ['home', 'travel', 'security'],
     name: 'door-closed',
-    categories: ['home', 'travel', 'security'],
     tags: ['entrance', 'entry', 'exit', 'ingress', 'egress', 'gate', 'gateway', 'emergency exit'],
   },
   {
+    categories: ['home', 'travel', 'security'],
     name: 'door-open',
-    categories: ['home', 'travel', 'security'],
     tags: ['entrance', 'entry', 'exit', 'ingress', 'egress', 'gate', 'gateway', 'emergency exit'],
   },
   {
-    name: 'dot',
     categories: ['shapes', 'text'],
+    name: 'dot',
     tags: [
       'interpunct',
       'interpoint',
@@ -4861,13 +4861,13 @@ export default [
     ],
   },
   {
-    name: 'download',
     categories: ['arrows', 'files'],
+    name: 'download',
     tags: ['import', 'export', 'save'],
   },
   {
-    name: 'drafting-compass',
     categories: ['math', 'design', 'tools'],
+    name: 'drafting-compass',
     tags: [
       'geometry',
       'trigonometry',
@@ -4883,43 +4883,43 @@ export default [
     ],
   },
   {
-    name: 'drama',
     categories: ['multimedia'],
+    name: 'drama',
     tags: ['drama', 'masks', 'theater', 'theatre', 'entertainment', 'show'],
   },
   {
-    name: 'dribbble',
     categories: ['brands', 'social', 'design'],
+    name: 'dribbble',
     tags: ['design', 'social'],
   },
   {
-    name: 'drill',
     categories: ['tools', 'home', 'devices'],
+    name: 'drill',
     tags: ['power', 'bit', 'head', 'hole', 'diy', 'toolbox', 'build', 'construction'],
   },
   {
-    name: 'drone',
     categories: ['transportation', 'devices'],
+    name: 'drone',
     tags: ['quadcopter', 'uav', 'aerial', 'flight', 'flying', 'technology', 'airborne', 'robotics'],
   },
   {
+    categories: ['weather', 'gaming'],
     name: 'droplet-off',
-    categories: ['weather', 'gaming'],
     tags: ['water', 'weather', 'liquid', 'fluid', 'wet', 'moisture', 'damp', 'bead', 'globule'],
   },
   {
+    categories: ['weather', 'gaming'],
     name: 'droplet',
-    categories: ['weather', 'gaming'],
     tags: ['water', 'weather', 'liquid', 'fluid', 'wet', 'moisture', 'damp', 'bead', 'globule'],
   },
   {
-    name: 'droplets',
     categories: ['weather'],
+    name: 'droplets',
     tags: ['water', 'weather', 'liquid', 'fluid', 'wet', 'moisture', 'damp', 'bead', 'globule'],
   },
   {
-    name: 'drum',
     categories: ['multimedia', 'devices'],
+    name: 'drum',
     tags: [
       'drummer',
       'kit',
@@ -4942,28 +4942,28 @@ export default [
     ],
   },
   {
-    name: 'drumstick',
     categories: ['food-beverage'],
+    name: 'drumstick',
     tags: ['food', 'chicken', 'meat'],
   },
   {
-    name: 'dumbbell',
     categories: ['navigation', 'sports'],
+    name: 'dumbbell',
     tags: ['barbell', 'weight', 'workout', 'gym'],
   },
   {
-    name: 'ear-off',
     categories: ['medical', 'accessibility'],
+    name: 'ear-off',
     tags: ['hearing', 'hard of hearing', 'hearing loss', 'deafness', 'noise', 'silence', 'audio', 'accessibility'],
   },
   {
-    name: 'ear',
     categories: ['medical', 'accessibility'],
+    name: 'ear',
     tags: ['hearing', 'noise', 'audio', 'accessibility'],
   },
   {
-    name: 'earth-lock',
     categories: ['security', 'development', 'devices'],
+    name: 'earth-lock',
     tags: [
       'vpn',
       'private',
@@ -4978,13 +4978,13 @@ export default [
     ],
   },
   {
-    name: 'earth',
     categories: ['navigation'],
+    name: 'earth',
     tags: ['world', 'browser', 'language', 'translate', 'globe'],
   },
   {
-    name: 'eclipse',
     categories: ['science', 'design', 'development', 'accessibility', 'photography'],
+    name: 'eclipse',
     tags: [
       'lunar',
       'solar',
@@ -5012,18 +5012,18 @@ export default [
     ],
   },
   {
-    name: 'egg-fried',
     categories: ['food-beverage'],
+    name: 'egg-fried',
     tags: ['food', 'breakfast'],
   },
   {
-    name: 'egg-off',
     categories: ['food-beverage'],
+    name: 'egg-off',
     tags: ['egg free', 'vegan', 'hatched', 'bad egg'],
   },
   {
-    name: 'egg',
     categories: ['food-beverage', 'animals'],
+    name: 'egg',
     tags: [
       'bird',
       'chicken',
@@ -5040,13 +5040,13 @@ export default [
     ],
   },
   {
-    name: 'ellipsis-vertical',
     categories: ['layout'],
+    name: 'ellipsis-vertical',
     tags: ['menu', 'options', 'spread', 'more', 'further', 'extra', 'overflow', 'dots', '…', '...'],
   },
   {
-    name: 'ellipsis',
     categories: ['layout', 'development'],
+    name: 'ellipsis',
     tags: [
       'et cetera',
       'etc',
@@ -5072,28 +5072,28 @@ export default [
     ],
   },
   {
-    name: 'equal-approximately',
     categories: ['math'],
+    name: 'equal-approximately',
     tags: ['about', 'calculate', 'math', 'operater'],
   },
   {
-    name: 'equal-not',
     categories: ['math', 'development'],
+    name: 'equal-not',
     tags: ['calculate', 'off', 'math', 'operator', 'code', '≠'],
   },
   {
-    name: 'equal',
     categories: ['math', 'development'],
+    name: 'equal',
     tags: ['calculate', 'math', 'operator', 'assignment', 'code', '='],
   },
   {
-    name: 'eraser',
     categories: ['text'],
+    name: 'eraser',
     tags: ['pencil', 'drawing', 'undo', 'delete', 'clear', 'trash', 'remove'],
   },
   {
-    name: 'ethernet-port',
     categories: ['communication', 'devices', 'multimedia', 'gaming'],
+    name: 'ethernet-port',
     tags: [
       'internet',
       'network',
@@ -5123,13 +5123,13 @@ export default [
     ],
   },
   {
-    name: 'euro',
     categories: ['finance'],
+    name: 'euro',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'ev-charger',
     categories: ['transportation', 'navigation'],
+    name: 'ev-charger',
     tags: [
       'electric',
       'charger',
@@ -5146,28 +5146,28 @@ export default [
     ],
   },
   {
-    name: 'expand',
     categories: ['text', 'arrows'],
+    name: 'expand',
     tags: ['scale', 'fullscreen', 'maximize', 'minimize', 'contract'],
   },
   {
-    name: 'external-link',
     categories: ['arrows', 'text', 'social'],
+    name: 'external-link',
     tags: ['outbound', 'open', 'share'],
   },
   {
+    categories: ['accessibility', 'photography', 'design', 'security'],
     name: 'eye-closed',
-    categories: ['accessibility', 'photography', 'design', 'security'],
     tags: ['view', 'watch', 'see', 'hide', 'conceal', 'mask', 'hidden', 'visibility', 'vision'],
   },
   {
+    categories: ['accessibility', 'photography', 'design', 'security'],
     name: 'eye-off',
-    categories: ['accessibility', 'photography', 'design', 'security'],
     tags: ['view', 'watch', 'see', 'hide', 'conceal', 'mask', 'hidden', 'visibility', 'vision'],
   },
   {
-    name: 'eye',
     categories: ['accessibility', 'photography', 'design', 'security'],
+    name: 'eye',
     tags: [
       'view',
       'watch',
@@ -5184,38 +5184,38 @@ export default [
     ],
   },
   {
-    name: 'facebook',
     categories: ['social', 'brands'],
+    name: 'facebook',
     tags: ['logo', 'social'],
   },
   {
-    name: 'factory',
     categories: ['buildings'],
+    name: 'factory',
     tags: ['building', 'business', 'energy', 'industry', 'manufacture', 'sector'],
   },
   {
-    name: 'fan',
     categories: ['home'],
+    name: 'fan',
     tags: ['air', 'cooler', 'ventilation', 'ventilator', 'blower'],
   },
   {
-    name: 'fast-forward',
     categories: ['multimedia', 'arrows'],
+    name: 'fast-forward',
     tags: ['music'],
   },
   {
-    name: 'feather',
     categories: ['gaming'],
+    name: 'feather',
     tags: ['logo'],
   },
   {
-    name: 'fence',
     categories: ['home', 'buildings'],
+    name: 'fence',
     tags: ['picket', 'panels', 'woodwork', 'diy', 'materials', 'suburban', 'garden', 'property', 'territory'],
   },
   {
-    name: 'ferris-wheel',
     categories: ['navigation'],
+    name: 'ferris-wheel',
     tags: [
       'big wheel',
       'daisy wheel',
@@ -5228,168 +5228,168 @@ export default [
     ],
   },
   {
-    name: 'figma',
     categories: ['brands', 'design'],
+    name: 'figma',
     tags: ['logo', 'design', 'tool'],
   },
   {
-    name: 'file-archive',
     categories: ['files'],
+    name: 'file-archive',
     tags: ['zip', 'package', 'archive'],
   },
   {
+    categories: ['files'],
     name: 'file-audio-2',
-    categories: ['files'],
     tags: ['music', 'audio', 'sound', 'headphones'],
   },
   {
+    categories: ['files'],
     name: 'file-audio',
-    categories: ['files'],
     tags: ['music', 'audio', 'sound', 'headphones'],
   },
   {
-    name: 'file-axis-3d',
     categories: ['design', 'files'],
+    name: 'file-axis-3d',
     tags: ['model', '3d', 'axis', 'coordinates'],
   },
   {
+    categories: ['files'],
     name: 'file-badge-2',
-    categories: ['files'],
     tags: ['award', 'achievement', 'badge', 'rosette', 'prize', 'winner'],
   },
   {
+    categories: ['files'],
     name: 'file-badge',
-    categories: ['files'],
     tags: ['award', 'achievement', 'badge', 'rosette', 'prize', 'winner'],
   },
   {
-    name: 'file-box',
     categories: ['files'],
+    name: 'file-box',
     tags: ['box', 'package', 'model'],
   },
   {
-    name: 'file-chart-column-increasing',
     categories: ['files'],
+    name: 'file-chart-column-increasing',
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'presentation', 'trending up'],
   },
   {
+    categories: ['files'],
     name: 'file-chart-column',
-    categories: ['files'],
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'presentation'],
   },
   {
+    categories: ['files'],
     name: 'file-chart-line',
-    categories: ['files'],
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'presentation'],
   },
   {
+    categories: ['files'],
     name: 'file-chart-pie',
-    categories: ['files'],
     tags: ['statistics', 'analytics', 'diagram', 'graph', 'presentation'],
   },
   {
+    categories: ['files'],
     name: 'file-check-2',
-    categories: ['files'],
     tags: ['done', 'document', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['files'],
     name: 'file-check',
-    categories: ['files'],
     tags: ['done', 'document', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'file-clock',
     categories: ['files', 'time'],
+    name: 'file-clock',
     tags: ['history', 'log', 'clock'],
   },
   {
-    name: 'file-code-2',
     categories: ['files', 'development'],
+    name: 'file-code-2',
     tags: ['script', 'document', 'html', 'xml', 'property list', 'plist'],
   },
   {
-    name: 'file-code',
     categories: ['files', 'development'],
+    name: 'file-code',
     tags: ['script', 'document', 'gist', 'html', 'xml', 'property list', 'plist'],
   },
   {
-    name: 'file-cog',
     categories: ['files'],
+    name: 'file-cog',
     tags: ['executable', 'settings', 'cog', 'edit', 'gear'],
   },
   {
-    name: 'file-diff',
     categories: ['files', 'development'],
+    name: 'file-diff',
     tags: ['diff', 'patch'],
   },
   {
-    name: 'file-digit',
     categories: ['files', 'development'],
+    name: 'file-digit',
     tags: ['number', 'document'],
   },
   {
-    name: 'file-down',
     categories: ['files', 'arrows'],
+    name: 'file-down',
     tags: ['download', 'import', 'export'],
   },
   {
-    name: 'file-heart',
     categories: ['files'],
+    name: 'file-heart',
     tags: ['heart', 'favourite', 'bookmark', 'quick link'],
   },
   {
-    name: 'file-image',
     categories: ['files'],
+    name: 'file-image',
     tags: ['image', 'graphics', 'photo', 'picture'],
   },
   {
-    name: 'file-input',
     categories: ['files', 'arrows'],
+    name: 'file-input',
     tags: ['document'],
   },
   {
+    categories: ['files', 'development'],
     name: 'file-json-2',
-    categories: ['files', 'development'],
     tags: ['code', 'json', 'curly braces', 'curly brackets'],
   },
   {
+    categories: ['files', 'development'],
     name: 'file-json',
-    categories: ['files', 'development'],
     tags: ['code', 'json', 'curly braces', 'curly brackets'],
   },
   {
+    categories: ['files', 'security'],
     name: 'file-key-2',
-    categories: ['files', 'security'],
     tags: ['key', 'private', 'public', 'security'],
   },
   {
+    categories: ['files', 'security'],
     name: 'file-key',
-    categories: ['files', 'security'],
     tags: ['key', 'private', 'public', 'security'],
   },
   {
+    categories: ['files', 'security'],
     name: 'file-lock-2',
-    categories: ['files', 'security'],
     tags: ['lock', 'password', 'security'],
   },
   {
+    categories: ['files', 'security'],
     name: 'file-lock',
-    categories: ['files', 'security'],
     tags: ['lock', 'password', 'security'],
   },
   {
-    name: 'file-minus-2',
     categories: ['files'],
+    name: 'file-minus-2',
     tags: ['document'],
   },
   {
-    name: 'file-minus',
     categories: ['files'],
+    name: 'file-minus',
     tags: ['delete', 'remove', 'erase', 'document'],
   },
   {
-    name: 'file-music',
     categories: ['files', 'multimedia'],
+    name: 'file-music',
     tags: [
       'audio',
       'sound',
@@ -5408,58 +5408,58 @@ export default [
     ],
   },
   {
-    name: 'file-output',
     categories: ['files', 'arrows'],
+    name: 'file-output',
     tags: ['document'],
   },
   {
-    name: 'file-pen-line',
     categories: ['files'],
+    name: 'file-pen-line',
     tags: ['edit'],
   },
   {
-    name: 'file-pen',
     categories: ['files'],
+    name: 'file-pen',
     tags: ['signature'],
   },
   {
-    name: 'file-play',
     categories: ['files'],
+    name: 'file-play',
     tags: ['movie', 'video', 'film'],
   },
   {
+    categories: ['files'],
     name: 'file-plus-2',
-    categories: ['files'],
     tags: ['add', 'create', 'new', 'document'],
   },
   {
+    categories: ['files'],
     name: 'file-plus',
-    categories: ['files'],
     tags: ['add', 'create', 'new', 'document'],
   },
   {
-    name: 'file-question-mark',
     categories: ['files'],
+    name: 'file-question-mark',
     tags: ['readme', 'help', 'question'],
   },
   {
-    name: 'file-scan',
     categories: ['files'],
+    name: 'file-scan',
     tags: ['scan', 'code', 'qr-code'],
   },
   {
+    categories: ['files'],
     name: 'file-search-2',
-    categories: ['files'],
     tags: ['lost', 'document', 'find', 'browser', 'lens'],
   },
   {
+    categories: ['files'],
     name: 'file-search',
-    categories: ['files'],
     tags: ['lost', 'document', 'find', 'browser', 'lens'],
   },
   {
-    name: 'file-sliders',
     categories: ['files', 'development'],
+    name: 'file-sliders',
     tags: [
       'cogged',
       'gear',
@@ -5476,48 +5476,48 @@ export default [
     ],
   },
   {
-    name: 'file-spreadsheet',
     categories: ['files'],
+    name: 'file-spreadsheet',
     tags: ['spreadsheet', 'sheet', 'table'],
   },
   {
-    name: 'file-stack',
     categories: ['files', 'development'],
+    name: 'file-stack',
     tags: ['versions', 'multiple', 'copy', 'documents', 'revisions', 'version control', 'history'],
   },
   {
-    name: 'file-symlink',
     categories: ['files'],
+    name: 'file-symlink',
     tags: ['symlink', 'symbolic', 'link'],
   },
   {
-    name: 'file-terminal',
     categories: ['files', 'development'],
+    name: 'file-terminal',
     tags: ['terminal', 'bash', 'script', 'executable'],
   },
   {
-    name: 'file-text',
     categories: ['files', 'text'],
+    name: 'file-text',
     tags: ['data', 'txt', 'pdf', 'document'],
   },
   {
+    categories: ['files', 'text'],
     name: 'file-type-2',
-    categories: ['files', 'text'],
     tags: ['font', 'text', 'typography', 'type'],
   },
   {
+    categories: ['files', 'text'],
     name: 'file-type',
-    categories: ['files', 'text'],
     tags: ['font', 'text', 'typography', 'type'],
   },
   {
-    name: 'file-up',
     categories: ['files', 'arrows'],
+    name: 'file-up',
     tags: ['upload', 'import', 'export'],
   },
   {
-    name: 'file-user',
     categories: ['account', 'files'],
+    name: 'file-user',
     tags: [
       'person',
       'personal information',
@@ -5534,58 +5534,58 @@ export default [
     ],
   },
   {
-    name: 'file-video-camera',
     categories: ['files'],
+    name: 'file-video-camera',
     tags: ['movie', 'video', 'film'],
   },
   {
+    categories: ['files'],
     name: 'file-volume-2',
-    categories: ['files'],
     tags: ['audio', 'music', 'volume'],
   },
   {
+    categories: ['files'],
     name: 'file-volume',
-    categories: ['files'],
     tags: ['audio', 'music', 'volume'],
   },
   {
-    name: 'file-warning',
     categories: ['files', 'notifications'],
+    name: 'file-warning',
     tags: ['hidden', 'warning', 'alert', 'danger', 'protected', 'exclamation mark'],
   },
   {
+    categories: ['files'],
     name: 'file-x-2',
-    categories: ['files'],
     tags: ['lost', 'delete', 'remove', 'document'],
   },
   {
+    categories: ['files'],
     name: 'file-x',
-    categories: ['files'],
     tags: ['lost', 'delete', 'remove', 'document'],
   },
   {
-    name: 'file',
     categories: ['files'],
+    name: 'file',
     tags: ['document'],
   },
   {
-    name: 'files',
     categories: ['files'],
+    name: 'files',
     tags: ['multiple', 'copy', 'documents'],
   },
   {
-    name: 'film',
     categories: ['photography', 'multimedia'],
+    name: 'film',
     tags: ['movie', 'video', 'reel', 'camera', 'cinema', 'entertainment'],
   },
   {
-    name: 'fingerprint',
     categories: ['account', 'security', 'medical', 'devices'],
+    name: 'fingerprint',
     tags: ['2fa', 'authentication', 'biometric', 'identity', 'security'],
   },
   {
-    name: 'fire-extinguisher',
     categories: ['home', 'tools', 'travel'],
+    name: 'fire-extinguisher',
     tags: [
       'flames',
       'smoke',
@@ -5609,8 +5609,8 @@ export default [
     ],
   },
   {
-    name: 'fish-off',
     categories: ['food-beverage', 'animals'],
+    name: 'fish-off',
     tags: [
       'food',
       'dish',
@@ -5628,18 +5628,18 @@ export default [
     ],
   },
   {
+    categories: ['food-beverage', 'animals'],
     name: 'fish-symbol',
-    categories: ['food-beverage', 'animals'],
     tags: ['dish', 'restaurant', 'course', 'meal', 'seafood', 'pet', 'sea', 'marine'],
   },
   {
+    categories: ['food-beverage', 'animals'],
     name: 'fish',
-    categories: ['food-beverage', 'animals'],
     tags: ['dish', 'restaurant', 'course', 'meal', 'seafood', 'pet', 'sea', 'marine'],
   },
   {
-    name: 'flag-off',
     categories: ['account', 'social'],
+    name: 'flag-off',
     tags: [
       'unflag',
       'unmark',
@@ -5656,18 +5656,18 @@ export default [
     ],
   },
   {
+    categories: ['development', 'navigation'],
     name: 'flag-triangle-left',
-    categories: ['development', 'navigation'],
     tags: ['report', 'timeline', 'marker', 'pin'],
   },
   {
+    categories: ['development', 'navigation'],
     name: 'flag-triangle-right',
-    categories: ['development', 'navigation'],
     tags: ['report', 'timeline', 'marker', 'pin'],
   },
   {
-    name: 'flag',
     categories: ['account', 'social'],
+    name: 'flag',
     tags: [
       'report',
       'marker',
@@ -5682,13 +5682,13 @@ export default [
     ],
   },
   {
-    name: 'flame-kindling',
     categories: ['nature', 'social', 'gaming'],
+    name: 'flame-kindling',
     tags: ['campfire', 'camping', 'wilderness', 'outdoors', 'lit', 'warmth', 'wood', 'twigs', 'sticks'],
   },
   {
-    name: 'flame',
     categories: ['weather', 'social', 'gaming'],
+    name: 'flame',
     tags: [
       'heat',
       'burn',
@@ -5712,108 +5712,108 @@ export default [
     ],
   },
   {
+    categories: ['photography', 'devices'],
     name: 'flashlight-off',
-    categories: ['photography', 'devices'],
     tags: ['torch'],
   },
   {
+    categories: ['photography', 'devices'],
     name: 'flashlight',
-    categories: ['photography', 'devices'],
     tags: ['torch'],
   },
   {
-    name: 'flask-conical-off',
     categories: ['science', 'gaming'],
+    name: 'flask-conical-off',
     tags: ['beaker', 'erlenmeyer', 'non toxic', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
-    name: 'flask-conical',
     categories: ['science', 'gaming'],
+    name: 'flask-conical',
     tags: ['beaker', 'erlenmeyer', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
-    name: 'flask-round',
     categories: ['science', 'gaming'],
+    name: 'flask-round',
     tags: ['beaker', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
+    categories: ['design', 'photography'],
     name: 'flip-horizontal-2',
-    categories: ['design', 'photography'],
     tags: ['reflect', 'mirror', 'alignment', 'dashed'],
   },
   {
+    categories: ['design', 'photography'],
     name: 'flip-horizontal',
-    categories: ['design', 'photography'],
     tags: ['reflect', 'mirror', 'alignment', 'dashed'],
   },
   {
+    categories: ['design', 'photography'],
     name: 'flip-vertical-2',
-    categories: ['design', 'photography'],
     tags: ['reflect', 'mirror', 'alignment', 'dashed'],
   },
   {
+    categories: ['design', 'photography'],
     name: 'flip-vertical',
-    categories: ['design', 'photography'],
     tags: ['reflect', 'mirror', 'alignment', 'dashed'],
   },
   {
-    name: 'flower-2',
     categories: ['nature', 'sustainability', 'seasons'],
+    name: 'flower-2',
     tags: ['sustainability', 'nature', 'plant'],
   },
   {
-    name: 'flower',
     categories: ['nature', 'gaming', 'sustainability'],
+    name: 'flower',
     tags: ['sustainability', 'nature', 'plant', 'spring'],
   },
   {
-    name: 'focus',
     categories: ['photography'],
+    name: 'focus',
     tags: ['camera', 'lens', 'photo', 'dashed'],
   },
   {
+    categories: ['arrows', 'layout'],
     name: 'fold-horizontal',
-    categories: ['arrows', 'layout'],
     tags: ['arrow', 'collapse', 'fold', 'vertical', 'dashed'],
   },
   {
+    categories: ['arrows', 'layout'],
     name: 'fold-vertical',
-    categories: ['arrows', 'layout'],
     tags: ['arrow', 'collapse', 'fold', 'vertical', 'dashed'],
   },
   {
-    name: 'folder-archive',
     categories: ['files'],
+    name: 'folder-archive',
     tags: ['archive', 'zip', 'package'],
   },
   {
-    name: 'folder-check',
     categories: ['files'],
+    name: 'folder-check',
     tags: ['done', 'directory', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'folder-clock',
     categories: ['files', 'time'],
+    name: 'folder-clock',
     tags: ['history', 'directory', 'clock'],
   },
   {
-    name: 'folder-closed',
     categories: ['files'],
+    name: 'folder-closed',
     tags: ['directory', 'closed'],
   },
   {
-    name: 'folder-code',
     categories: ['files', 'development'],
+    name: 'folder-code',
     tags: ['directory', 'coding', 'develop', 'software'],
   },
   {
-    name: 'folder-cog',
     categories: ['files'],
+    name: 'folder-cog',
     tags: ['directory', 'settings', 'control', 'preferences', 'cog', 'edit', 'gear'],
   },
   {
-    name: 'folder-dot',
     categories: ['files', 'development'],
+    name: 'folder-dot',
     tags: [
       'directory',
       'root',
@@ -5835,33 +5835,33 @@ export default [
     ],
   },
   {
-    name: 'folder-down',
     categories: ['files', 'arrows'],
+    name: 'folder-down',
     tags: ['directory', 'download', 'import', 'export'],
   },
   {
+    categories: ['files'],
     name: 'folder-git-2',
-    categories: ['files'],
     tags: ['directory', 'root', 'project', 'git', 'repo'],
   },
   {
+    categories: ['files'],
     name: 'folder-git',
-    categories: ['files'],
     tags: ['directory', 'root', 'project', 'git', 'repo'],
   },
   {
-    name: 'folder-heart',
     categories: ['files'],
+    name: 'folder-heart',
     tags: ['directory', 'heart', 'favourite', 'bookmark', 'quick link'],
   },
   {
-    name: 'folder-input',
     categories: ['files', 'arrows'],
+    name: 'folder-input',
     tags: ['directory', 'import', 'export'],
   },
   {
-    name: 'folder-kanban',
     categories: ['charts', 'development', 'design', 'files'],
+    name: 'folder-kanban',
     tags: [
       'projects',
       'manage',
@@ -5883,153 +5883,153 @@ export default [
     ],
   },
   {
-    name: 'folder-key',
     categories: ['files', 'security'],
+    name: 'folder-key',
     tags: ['directory', 'key', 'private', 'security', 'protected'],
   },
   {
-    name: 'folder-lock',
     categories: ['files', 'security'],
+    name: 'folder-lock',
     tags: ['directory', 'lock', 'private', 'security', 'protected'],
   },
   {
-    name: 'folder-minus',
     categories: ['files'],
+    name: 'folder-minus',
     tags: ['directory', 'remove', 'delete'],
   },
   {
-    name: 'folder-open-dot',
     categories: ['files', 'development'],
+    name: 'folder-open-dot',
     tags: ['directory', 'root', 'project', 'active', 'current', 'pinned'],
   },
   {
-    name: 'folder-open',
     categories: ['files'],
+    name: 'folder-open',
     tags: ['directory'],
   },
   {
-    name: 'folder-output',
     categories: ['files', 'arrows'],
+    name: 'folder-output',
     tags: ['directory', 'import', 'export'],
   },
   {
-    name: 'folder-pen',
     categories: ['files'],
+    name: 'folder-pen',
     tags: ['directory', 'rename'],
   },
   {
-    name: 'folder-plus',
     categories: ['files'],
+    name: 'folder-plus',
     tags: ['directory', 'add', 'create', 'new'],
   },
   {
-    name: 'folder-root',
     categories: ['files', 'development'],
+    name: 'folder-root',
     tags: ['directory', 'root', 'project', 'git', 'repo'],
   },
   {
+    categories: ['files'],
     name: 'folder-search-2',
-    categories: ['files'],
     tags: ['directory', 'search', 'find', 'lost', 'browser', 'lens'],
   },
   {
+    categories: ['files'],
     name: 'folder-search',
-    categories: ['files'],
     tags: ['directory', 'search', 'find', 'lost', 'browser', 'lens'],
   },
   {
-    name: 'folder-symlink',
     categories: ['files'],
+    name: 'folder-symlink',
     tags: ['directory', 'symlink', 'symbolic', 'link'],
   },
   {
-    name: 'folder-sync',
     categories: ['files', 'arrows'],
+    name: 'folder-sync',
     tags: ['directory', 'synchronize', 'synchronise', 'refresh', 'reconnect', 'transfer', 'backup'],
   },
   {
-    name: 'folder-tree',
     categories: ['files'],
+    name: 'folder-tree',
     tags: ['directory', 'tree', 'browser'],
   },
   {
-    name: 'folder-up',
     categories: ['files', 'arrows'],
+    name: 'folder-up',
     tags: ['directory', 'upload', 'import', 'export'],
   },
   {
-    name: 'folder-x',
     categories: ['files'],
+    name: 'folder-x',
     tags: ['directory', 'remove', 'delete'],
   },
   {
-    name: 'folder',
     categories: ['files'],
+    name: 'folder',
     tags: ['directory'],
   },
   {
-    name: 'folders',
     categories: ['files'],
+    name: 'folders',
     tags: ['multiple', 'copy', 'directories'],
   },
   {
-    name: 'footprints',
     categories: ['navigation'],
+    name: 'footprints',
     tags: ['steps', 'walking', 'foot', 'feet', 'trail', 'shoe'],
   },
   {
-    name: 'forklift',
     categories: ['transportation'],
+    name: 'forklift',
     tags: ['vehicle', 'transport', 'logistics'],
   },
   {
-    name: 'forward',
     categories: ['mail'],
+    name: 'forward',
     tags: ['send', 'share', 'email'],
   },
   {
-    name: 'frame',
     categories: ['design', 'photography'],
+    name: 'frame',
     tags: ['logo', 'design', 'tool'],
   },
   {
-    name: 'framer',
     categories: ['brands', 'design'],
+    name: 'framer',
     tags: ['logo', 'design', 'tool'],
   },
   {
-    name: 'frown',
     categories: ['emoji', 'account'],
+    name: 'frown',
     tags: ['emoji', 'face', 'bad', 'sad', 'emotion'],
   },
   {
-    name: 'fuel',
     categories: ['transportation', 'navigation'],
+    name: 'fuel',
     tags: ['filling-station', 'gas', 'petrol', 'tank'],
   },
   {
-    name: 'fullscreen',
     categories: ['layout', 'multimedia', 'design', 'photography'],
+    name: 'fullscreen',
     tags: ['expand', 'zoom', 'preview', 'focus', 'camera', 'lens', 'image'],
   },
   {
-    name: 'funnel-plus',
     categories: ['layout'],
+    name: 'funnel-plus',
     tags: ['filter', 'hopper', 'add', 'create', 'new'],
   },
   {
-    name: 'funnel-x',
     categories: ['layout'],
+    name: 'funnel-x',
     tags: ['filter', 'hopper', 'remove', 'delete'],
   },
   {
-    name: 'funnel',
     categories: ['layout'],
+    name: 'funnel',
     tags: ['filter', 'hopper'],
   },
   {
-    name: 'gallery-horizontal-end',
     categories: ['layout', 'design', 'development', 'photography', 'multimedia', 'files'],
+    name: 'gallery-horizontal-end',
     tags: [
       'carousel',
       'pictures',
@@ -6045,18 +6045,18 @@ export default [
     ],
   },
   {
-    name: 'gallery-horizontal',
     categories: ['layout', 'design', 'development', 'photography', 'multimedia'],
+    name: 'gallery-horizontal',
     tags: ['carousel', 'pictures', 'images', 'scroll', 'swipe', 'album', 'portfolio'],
   },
   {
-    name: 'gallery-thumbnails',
     categories: ['layout', 'design', 'development', 'photography', 'multimedia'],
+    name: 'gallery-thumbnails',
     tags: ['carousel', 'pictures', 'images', 'album', 'portfolio', 'preview'],
   },
   {
-    name: 'gallery-vertical-end',
     categories: ['layout', 'design', 'development', 'photography', 'multimedia', 'files'],
+    name: 'gallery-vertical-end',
     tags: [
       'carousel',
       'pictures',
@@ -6072,18 +6072,18 @@ export default [
     ],
   },
   {
-    name: 'gallery-vertical',
     categories: ['layout', 'design', 'development', 'photography', 'multimedia'],
+    name: 'gallery-vertical',
     tags: ['carousel', 'pictures', 'images', 'scroll', 'swipe', 'album', 'portfolio'],
   },
   {
-    name: 'gamepad-2',
     categories: ['gaming', 'devices'],
+    name: 'gamepad-2',
     tags: ['console'],
   },
   {
-    name: 'gamepad-directional',
     categories: ['gaming', 'devices'],
+    name: 'gamepad-directional',
     tags: [
       'direction',
       'arrow',
@@ -6099,18 +6099,18 @@ export default [
     ],
   },
   {
-    name: 'gamepad',
     categories: ['gaming', 'devices'],
+    name: 'gamepad',
     tags: ['console'],
   },
   {
-    name: 'gauge',
     categories: ['transportation', 'sports', 'science'],
+    name: 'gauge',
     tags: ['dashboard', 'dial', 'meter', 'speed', 'pressure', 'measure', 'level'],
   },
   {
-    name: 'gavel',
     categories: ['navigation', 'tools'],
+    name: 'gavel',
     tags: [
       'justice',
       'law',
@@ -6126,8 +6126,8 @@ export default [
     ],
   },
   {
-    name: 'gem',
     categories: ['gaming', 'development', 'finance'],
+    name: 'gem',
     tags: [
       'diamond',
       'crystal',
@@ -6145,118 +6145,118 @@ export default [
     ],
   },
   {
-    name: 'georgian-lari',
     categories: ['finance'],
+    name: 'georgian-lari',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'ghost',
     categories: ['gaming'],
+    name: 'ghost',
     tags: ['pac-man', 'spooky'],
   },
   {
-    name: 'gift',
     categories: ['gaming', 'account'],
+    name: 'gift',
     tags: ['present', 'box', 'birthday', 'party'],
   },
   {
-    name: 'git-branch-plus',
     categories: ['development'],
+    name: 'git-branch-plus',
     tags: ['add', 'create', '+'],
   },
   {
+    categories: ['development'],
     name: 'git-branch',
-    categories: ['development'],
     tags: ['code', 'version control'],
   },
   {
+    categories: ['development', 'navigation'],
     name: 'git-commit-horizontal',
-    categories: ['development', 'navigation'],
     tags: ['code', 'version control', 'waypoint', 'stop', 'station'],
   },
   {
+    categories: ['development', 'navigation'],
     name: 'git-commit-vertical',
-    categories: ['development', 'navigation'],
     tags: ['code', 'version control', 'waypoint', 'stop', 'station'],
   },
   {
-    name: 'git-compare-arrows',
     categories: ['development', 'arrows'],
+    name: 'git-compare-arrows',
     tags: ['code', 'version control', 'diff'],
   },
   {
+    categories: ['development'],
     name: 'git-compare',
-    categories: ['development'],
     tags: ['code', 'version control', 'diff'],
   },
   {
-    name: 'git-fork',
     categories: ['development'],
+    name: 'git-fork',
     tags: ['code', 'version control'],
   },
   {
-    name: 'git-graph',
     categories: ['development'],
+    name: 'git-graph',
     tags: ['code', 'version control', 'commit graph', 'commits', 'gitlens'],
   },
   {
-    name: 'git-merge',
     categories: ['development'],
+    name: 'git-merge',
     tags: ['code', 'version control'],
   },
   {
-    name: 'git-pull-request-arrow',
     categories: ['development', 'arrows'],
+    name: 'git-pull-request-arrow',
     tags: ['code', 'version control', 'open'],
   },
   {
-    name: 'git-pull-request-closed',
     categories: ['development'],
+    name: 'git-pull-request-closed',
     tags: ['code', 'version control', 'rejected', 'closed', 'cancelled', 'x'],
   },
   {
-    name: 'git-pull-request-create-arrow',
     categories: ['development', 'arrows'],
+    name: 'git-pull-request-create-arrow',
     tags: ['code', 'version control', 'open', 'plus', 'add', '+'],
   },
   {
+    categories: ['development'],
     name: 'git-pull-request-create',
-    categories: ['development'],
     tags: ['code', 'version control', 'open', 'plus', 'add', '+'],
   },
   {
-    name: 'git-pull-request-draft',
     categories: ['development'],
+    name: 'git-pull-request-draft',
     tags: ['code', 'version control', 'open', 'draft', 'dashed'],
   },
   {
-    name: 'git-pull-request',
     categories: ['development'],
+    name: 'git-pull-request',
     tags: ['code', 'version control', 'open'],
   },
   {
+    categories: ['brands', 'development'],
     name: 'github',
-    categories: ['brands', 'development'],
     tags: ['logo', 'version control'],
   },
   {
+    categories: ['brands', 'development'],
     name: 'gitlab',
-    categories: ['brands', 'development'],
     tags: ['logo', 'version control'],
   },
   {
-    name: 'glass-water',
     categories: ['food-beverage'],
+    name: 'glass-water',
     tags: ['beverage', 'drink', 'glass', 'water'],
   },
   {
-    name: 'glasses',
     categories: ['accessibility'],
+    name: 'glasses',
     tags: ['glasses', 'spectacles'],
   },
   {
-    name: 'globe-lock',
     categories: ['security', 'development', 'devices'],
+    name: 'globe-lock',
     tags: [
       'vpn',
       'private',
@@ -6271,18 +6271,18 @@ export default [
     ],
   },
   {
-    name: 'globe',
     categories: ['navigation'],
+    name: 'globe',
     tags: ['world', 'browser', 'language', 'translate'],
   },
   {
-    name: 'goal',
     categories: ['gaming'],
+    name: 'goal',
     tags: ['flag', 'bullseye'],
   },
   {
-    name: 'gpu',
     categories: ['devices', 'gaming'],
+    name: 'gpu',
     tags: [
       'processor',
       'cores',
@@ -6301,8 +6301,8 @@ export default [
     ],
   },
   {
-    name: 'graduation-cap',
     categories: ['buildings'],
+    name: 'graduation-cap',
     tags: [
       'school',
       'university',
@@ -6320,13 +6320,13 @@ export default [
     ],
   },
   {
-    name: 'grape',
     categories: ['food-beverage'],
+    name: 'grape',
     tags: ['fruit', 'wine', 'food'],
   },
   {
+    categories: ['text', 'layout', 'math'],
     name: 'grid-2x2-check',
-    categories: ['text', 'layout', 'math'],
     tags: [
       'table',
       'rows',
@@ -6347,8 +6347,8 @@ export default [
     ],
   },
   {
+    categories: ['text', 'layout', 'math'],
     name: 'grid-2x2-plus',
-    categories: ['text', 'layout', 'math'],
     tags: [
       'table',
       'rows',
@@ -6369,8 +6369,8 @@ export default [
     ],
   },
   {
+    categories: ['text', 'layout', 'math'],
     name: 'grid-2x2-x',
-    categories: ['text', 'layout', 'math'],
     tags: [
       'table',
       'rows',
@@ -6391,8 +6391,8 @@ export default [
     ],
   },
   {
-    name: 'grid-2x2',
     categories: ['text', 'layout', 'design', 'math'],
+    name: 'grid-2x2',
     tags: [
       'table',
       'rows',
@@ -6414,8 +6414,8 @@ export default [
     ],
   },
   {
-    name: 'grid-3x2',
     categories: ['text', 'math', 'layout', 'design'],
+    name: 'grid-3x2',
     tags: [
       'table',
       'rows',
@@ -6436,33 +6436,33 @@ export default [
     ],
   },
   {
-    name: 'grid-3x3',
     categories: ['text', 'layout', 'design'],
+    name: 'grid-3x3',
     tags: ['table', 'rows', 'columns'],
   },
   {
+    categories: ['layout'],
     name: 'grip-horizontal',
-    categories: ['layout'],
     tags: ['grab', 'dots', 'handle', 'move', 'drag'],
   },
   {
+    categories: ['layout'],
     name: 'grip-vertical',
-    categories: ['layout'],
     tags: ['grab', 'dots', 'handle', 'move', 'drag'],
   },
   {
+    categories: ['layout'],
     name: 'grip',
-    categories: ['layout'],
     tags: ['grab', 'dots', 'handle', 'move', 'drag'],
   },
   {
-    name: 'group',
     categories: ['files'],
+    name: 'group',
     tags: ['cubes', 'packages', 'parts', 'units', 'collection', 'cluster', 'gather', 'dashed'],
   },
   {
-    name: 'guitar',
     categories: ['multimedia'],
+    name: 'guitar',
     tags: [
       'acoustic',
       'instrument',
@@ -6483,13 +6483,13 @@ export default [
     ],
   },
   {
-    name: 'ham',
     categories: ['food-beverage'],
+    name: 'ham',
     tags: ['food', 'pork', 'pig', 'meat', 'bone', 'hock', 'knuckle', 'gammon', 'cured'],
   },
   {
-    name: 'hamburger',
     categories: ['food-beverage'],
+    name: 'hamburger',
     tags: [
       'burger',
       'cheeseburger',
@@ -6525,13 +6525,13 @@ export default [
     ],
   },
   {
-    name: 'hammer',
     categories: ['tools', 'home'],
+    name: 'hammer',
     tags: ['mallet', 'nails', 'diy', 'toolbox', 'build', 'construction'],
   },
   {
-    name: 'hand-coins',
     categories: ['finance', 'account'],
+    name: 'hand-coins',
     tags: [
       'savings',
       'banking',
@@ -6550,8 +6550,8 @@ export default [
     ],
   },
   {
-    name: 'hand-fist',
     categories: ['social', 'emoji', 'communication', 'sports'],
+    name: 'hand-fist',
     tags: [
       'clench',
       'strength',
@@ -6568,28 +6568,28 @@ export default [
     ],
   },
   {
-    name: 'hand-grab',
     categories: ['cursors', 'design', 'layout'],
+    name: 'hand-grab',
     tags: ['hand'],
   },
   {
-    name: 'hand-heart',
     categories: ['social'],
+    name: 'hand-heart',
     tags: ['love', 'like', 'emotion'],
   },
   {
-    name: 'hand-helping',
     categories: ['emoji'],
+    name: 'hand-helping',
     tags: ['agreement', 'help', 'proposal', 'charity', 'begging', 'terms'],
   },
   {
-    name: 'hand-metal',
     categories: ['emoji', 'multimedia'],
+    name: 'hand-metal',
     tags: ['rock'],
   },
   {
-    name: 'hand-platter',
     categories: ['food-beverage', 'people'],
+    name: 'hand-platter',
     tags: [
       'waiter',
       'waitress',
@@ -6604,48 +6604,48 @@ export default [
     ],
   },
   {
-    name: 'hand',
     categories: ['cursors', 'accessibility'],
+    name: 'hand',
     tags: ['wave', 'move', 'mouse', 'grab'],
   },
   {
-    name: 'handbag',
     categories: ['shopping', 'transportation'],
+    name: 'handbag',
     tags: ['bag', 'baggage', 'carry', 'clutch', 'fashion', 'luggage', 'purse', 'tote', 'travel'],
   },
   {
-    name: 'handshake',
     categories: ['account', 'social', 'communication', 'finance', 'security'],
+    name: 'handshake',
     tags: ['agreement', 'partnership', 'deal', 'business', 'assistance', 'cooperation', 'friendship', 'union', 'terms'],
   },
   {
+    categories: ['development', 'devices', 'arrows', 'files'],
     name: 'hard-drive-download',
-    categories: ['development', 'devices', 'arrows', 'files'],
     tags: ['computer', 'server', 'memory', 'data', 'ssd', 'disk', 'hard disk', 'save'],
   },
   {
+    categories: ['development', 'devices', 'arrows', 'files'],
     name: 'hard-drive-upload',
-    categories: ['development', 'devices', 'arrows', 'files'],
     tags: ['computer', 'server', 'memory', 'data', 'ssd', 'disk', 'hard disk', 'save'],
   },
   {
-    name: 'hard-drive',
     categories: ['development', 'devices'],
+    name: 'hard-drive',
     tags: ['computer', 'server', 'memory', 'data', 'ssd', 'disk', 'hard disk'],
   },
   {
-    name: 'hard-hat',
     categories: ['tools'],
+    name: 'hard-hat',
     tags: ['helmet', 'construction', 'safety', 'savety'],
   },
   {
-    name: 'hash',
     categories: ['text', 'social'],
+    name: 'hash',
     tags: ['hashtag', 'number', 'pound'],
   },
   {
-    name: 'hat-glasses',
     categories: ['social', 'account', 'security'],
+    name: 'hat-glasses',
     tags: [
       'incognito',
       'disguise',
@@ -6674,13 +6674,13 @@ export default [
     ],
   },
   {
-    name: 'haze',
     categories: ['weather'],
+    name: 'haze',
     tags: ['mist', 'fog'],
   },
   {
-    name: 'hdmi-port',
     categories: ['devices', 'multimedia', 'gaming'],
+    name: 'hdmi-port',
     tags: [
       'socket',
       'plug',
@@ -6700,53 +6700,53 @@ export default [
     ],
   },
   {
-    name: 'heading-1',
     categories: ['text'],
+    name: 'heading-1',
     tags: ['h1', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading-2',
     categories: ['text'],
+    name: 'heading-2',
     tags: ['h2', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading-3',
     categories: ['text'],
+    name: 'heading-3',
     tags: ['h3', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading-4',
     categories: ['text'],
+    name: 'heading-4',
     tags: ['h4', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading-5',
     categories: ['text'],
+    name: 'heading-5',
     tags: ['h5', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading-6',
     categories: ['text'],
+    name: 'heading-6',
     tags: ['h6', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'heading',
     categories: ['text'],
+    name: 'heading',
     tags: ['h1', 'html', 'markup', 'markdown'],
   },
   {
-    name: 'headphone-off',
     categories: ['multimedia', 'connectivity', 'communication', 'devices', 'gaming'],
+    name: 'headphone-off',
     tags: ['music', 'audio', 'sound', 'mute', 'off'],
   },
   {
-    name: 'headphones',
     categories: ['multimedia', 'connectivity', 'devices', 'files', 'gaming'],
+    name: 'headphones',
     tags: ['music', 'audio', 'sound'],
   },
   {
-    name: 'headset',
     categories: ['multimedia', 'connectivity', 'devices', 'files', 'gaming'],
+    name: 'headset',
     tags: [
       'music',
       'audio',
@@ -6763,73 +6763,73 @@ export default [
     ],
   },
   {
-    name: 'heart-crack',
     categories: ['emoji'],
+    name: 'heart-crack',
     tags: ['heartbreak', 'sadness', 'emotion'],
   },
   {
-    name: 'heart-handshake',
     categories: ['emoji', 'account', 'security'],
+    name: 'heart-handshake',
     tags: ['agreement', 'charity', 'help', 'deal', 'terms', 'emotion', 'together', 'handshake'],
   },
   {
-    name: 'heart-minus',
     categories: ['medical', 'account', 'multimedia', 'gaming', 'social'],
+    name: 'heart-minus',
     tags: ['unlike', 'unfavorite', 'remove', 'damage', 'ui & ux'],
   },
   {
-    name: 'heart-off',
     categories: ['social', 'multimedia'],
+    name: 'heart-off',
     tags: ['unlike', 'dislike', 'hate', 'emotion'],
   },
   {
-    name: 'heart-plus',
     categories: ['medical', 'account', 'multimedia', 'gaming', 'social'],
+    name: 'heart-plus',
     tags: ['plus', 'like', 'favorite', 'add', 'health', 'support'],
   },
   {
-    name: 'heart-pulse',
     categories: ['medical'],
+    name: 'heart-pulse',
     tags: ['heartbeat', 'pulse', 'health', 'medical', 'blood pressure', 'cardiac', 'systole', 'diastole'],
   },
   {
-    name: 'heart',
     categories: ['medical', 'social', 'multimedia', 'emoji', 'gaming', 'shapes'],
+    name: 'heart',
     tags: ['like', 'love', 'emotion', 'suit', 'playing', 'cards'],
   },
   {
-    name: 'heater',
     categories: ['home', 'devices', 'travel'],
+    name: 'heater',
     tags: ['heating', 'warmth', 'comfort', 'fire', 'stove', 'electric', 'electronics', 'amenities'],
   },
   {
-    name: 'hexagon',
     categories: ['shapes', 'brands', 'development'],
+    name: 'hexagon',
     tags: ['shape', 'node.js', 'logo'],
   },
   {
-    name: 'highlighter',
     categories: ['text', 'design'],
+    name: 'highlighter',
     tags: ['mark', 'text'],
   },
   {
-    name: 'history',
     categories: ['arrows', 'time'],
+    name: 'history',
     tags: ['time', 'redo', 'undo', 'rewind', 'timeline', 'version', 'time machine', 'backup', 'rotate', 'ccw'],
   },
   {
-    name: 'hop-off',
     categories: ['food-beverage'],
+    name: 'hop-off',
     tags: ['beer', 'brewery', 'drink', 'hop free', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'hop',
     categories: ['food-beverage'],
+    name: 'hop',
     tags: ['beer', 'brewery', 'drink'],
   },
   {
-    name: 'hospital',
     categories: ['medical', 'buildings', 'navigation', 'travel'],
+    name: 'hospital',
     tags: [
       'infirmary',
       'sanatorium',
@@ -6845,168 +6845,168 @@ export default [
     ],
   },
   {
-    name: 'hotel',
     categories: ['buildings', 'navigation', 'travel'],
+    name: 'hotel',
     tags: ['building', 'hostel', 'motel', 'inn'],
   },
   {
-    name: 'hourglass',
     categories: ['time', 'gaming'],
+    name: 'hourglass',
     tags: ['timer', 'time', 'sandglass'],
   },
   {
-    name: 'house-heart',
     categories: ['home', 'buildings', 'medical'],
+    name: 'house-heart',
     tags: ['home sweet home', 'abode', 'building', 'residence', 'healthy living', 'lifestyle'],
   },
   {
-    name: 'house-plug',
     categories: ['buildings', 'home', 'sustainability'],
+    name: 'house-plug',
     tags: ['home', 'living', 'building', 'residence', 'architecture', 'autarky', 'energy'],
   },
   {
-    name: 'house-plus',
     categories: ['buildings', 'medical'],
+    name: 'house-plus',
     tags: ['home', 'living', 'medical', 'new', 'addition', 'building', 'residence', 'architecture'],
   },
   {
-    name: 'house-wifi',
     categories: ['home', 'buildings', 'connectivity'],
+    name: 'house-wifi',
     tags: ['home', 'living', 'building', 'wifi', 'connectivity'],
   },
   {
-    name: 'house',
     categories: ['buildings', 'home'],
+    name: 'house',
     tags: ['home', 'living', 'building', 'residence', 'architecture'],
   },
   {
-    name: 'ice-cream-bowl',
     categories: ['food-beverage'],
+    name: 'ice-cream-bowl',
     tags: ['gelato', 'food', 'dessert', 'dish', 'restaurant', 'course', 'meal'],
   },
   {
-    name: 'ice-cream-cone',
     categories: ['food-beverage'],
+    name: 'ice-cream-cone',
     tags: ['gelato', 'food'],
   },
   {
-    name: 'id-card-lanyard',
     categories: ['security', 'account'],
+    name: 'id-card-lanyard',
     tags: ['id-card', 'id-card-lanyard', 'identity', 'employee', 'gate-pass', 'badge'],
   },
   {
-    name: 'id-card',
     categories: ['security', 'account'],
+    name: 'id-card',
     tags: ['card', 'badge', 'identity', 'authentication', 'secure'],
   },
   {
-    name: 'image-down',
     categories: ['photography', 'text', 'multimedia', 'files'],
+    name: 'image-down',
     tags: ['picture', 'photo', 'download', 'save', 'export'],
   },
   {
-    name: 'image-minus',
     categories: ['photography', 'multimedia', 'files'],
+    name: 'image-minus',
     tags: ['remove', 'delete'],
   },
   {
-    name: 'image-off',
     categories: ['photography', 'multimedia', 'files'],
+    name: 'image-off',
     tags: ['picture', 'photo'],
   },
   {
-    name: 'image-play',
     categories: ['photography', 'text', 'multimedia', 'files'],
+    name: 'image-play',
     tags: ['picture', 'gif', 'photo'],
   },
   {
-    name: 'image-plus',
     categories: ['photography', 'multimedia', 'files'],
+    name: 'image-plus',
     tags: ['add', 'create', 'picture'],
   },
   {
-    name: 'image-up',
     categories: ['photography', 'text', 'multimedia', 'files'],
+    name: 'image-up',
     tags: ['picture', 'photo', 'upload', 'import'],
   },
   {
-    name: 'image-upscale',
     categories: ['photography', 'multimedia'],
+    name: 'image-upscale',
     tags: ['resize', 'picture', 'sharpen', 'increase'],
   },
   {
-    name: 'image',
     categories: ['photography', 'text', 'multimedia', 'files'],
+    name: 'image',
     tags: ['picture', 'photo'],
   },
   {
-    name: 'images',
     categories: ['photography', 'text', 'multimedia', 'files'],
+    name: 'images',
     tags: ['picture', 'photo', 'multiple', 'copy', 'gallery', 'album', 'collection', 'slideshow', 'showcase'],
   },
   {
-    name: 'import',
     categories: ['arrows', 'files'],
+    name: 'import',
     tags: ['save'],
   },
   {
-    name: 'inbox',
     categories: ['account', 'mail'],
+    name: 'inbox',
     tags: ['email'],
   },
   {
-    name: 'indian-rupee',
     categories: ['finance'],
+    name: 'indian-rupee',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'infinity',
     categories: ['multimedia'],
+    name: 'infinity',
     tags: ['unlimited', 'forever', 'loop', 'math'],
   },
   {
-    name: 'info',
     categories: ['accessibility', 'notifications'],
+    name: 'info',
     tags: ['help'],
   },
   {
-    name: 'inspection-panel',
     categories: ['tools'],
+    name: 'inspection-panel',
     tags: ['access', 'cover', 'tile', 'metal', 'materials', 'screws'],
   },
   {
-    name: 'instagram',
     categories: ['brands', 'social', 'photography'],
+    name: 'instagram',
     tags: ['logo', 'camera', 'social'],
   },
   {
-    name: 'italic',
     categories: ['text'],
+    name: 'italic',
     tags: ['oblique', 'text', 'format'],
   },
   {
-    name: 'iteration-ccw',
     categories: ['arrows', 'design'],
+    name: 'iteration-ccw',
     tags: ['arrow', 'right'],
   },
   {
-    name: 'iteration-cw',
     categories: ['arrows', 'design'],
+    name: 'iteration-cw',
     tags: ['arrow', 'left'],
   },
   {
-    name: 'japanese-yen',
     categories: ['finance'],
+    name: 'japanese-yen',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'joystick',
     categories: ['gaming', 'devices'],
+    name: 'joystick',
     tags: ['game', 'console', 'control stick'],
   },
   {
-    name: 'kanban',
     categories: ['charts', 'development', 'design'],
+    name: 'kanban',
     tags: [
       'projects',
       'manage',
@@ -7025,8 +7025,8 @@ export default [
     ],
   },
   {
-    name: 'kayak',
     categories: ['transportation'],
+    name: 'kayak',
     tags: [
       'kayak',
       'boat',
@@ -7042,23 +7042,23 @@ export default [
     ],
   },
   {
-    name: 'key-round',
     categories: ['security', 'account'],
+    name: 'key-round',
     tags: ['password', 'login', 'authentication', 'secure', 'unlock'],
   },
   {
-    name: 'key-square',
     categories: ['security', 'account'],
+    name: 'key-square',
     tags: ['password', 'login', 'authentication', 'secure', 'unlock', 'car key'],
   },
   {
-    name: 'key',
     categories: ['security', 'account'],
+    name: 'key',
     tags: ['password', 'login', 'authentication', 'secure', 'unlock', 'keychain', 'key ring', 'fob'],
   },
   {
-    name: 'keyboard-music',
     categories: ['multimedia', 'devices'],
+    name: 'keyboard-music',
     tags: [
       'music',
       'audio',
@@ -7085,48 +7085,48 @@ export default [
     ],
   },
   {
-    name: 'keyboard-off',
     categories: ['devices', 'text', 'development'],
+    name: 'keyboard-off',
     tags: ['unkeys', 'layout', 'spell', 'settings', 'mouse'],
   },
   {
-    name: 'keyboard',
     categories: ['text', 'devices', 'development'],
+    name: 'keyboard',
     tags: ['layout', 'spell', 'settings', 'mouse'],
   },
   {
-    name: 'lamp-ceiling',
     categories: ['home'],
+    name: 'lamp-ceiling',
     tags: ['lighting', 'household', 'home', 'furniture'],
   },
   {
-    name: 'lamp-desk',
     categories: ['home'],
+    name: 'lamp-desk',
     tags: ['lighting', 'household', 'office', 'desk', 'home', 'furniture'],
   },
   {
-    name: 'lamp-floor',
     categories: ['home'],
+    name: 'lamp-floor',
     tags: ['lighting', 'household', 'floor', 'home', 'furniture'],
   },
   {
+    categories: ['home'],
     name: 'lamp-wall-down',
-    categories: ['home'],
     tags: ['lighting', 'household', 'wall', 'home', 'furniture'],
   },
   {
+    categories: ['home'],
     name: 'lamp-wall-up',
-    categories: ['home'],
     tags: ['lighting', 'household', 'wall', 'home', 'furniture'],
   },
   {
-    name: 'lamp',
     categories: ['home'],
+    name: 'lamp',
     tags: ['lighting', 'household', 'home', 'furniture'],
   },
   {
-    name: 'land-plot',
     categories: ['design', 'tools', 'math', 'sports', 'gaming'],
+    name: 'land-plot',
     tags: [
       'area',
       'surface',
@@ -7145,8 +7145,8 @@ export default [
     ],
   },
   {
-    name: 'landmark',
     categories: ['finance', 'navigation', 'buildings'],
+    name: 'landmark',
     tags: [
       'bank',
       'building',
@@ -7168,98 +7168,98 @@ export default [
     ],
   },
   {
-    name: 'languages',
     categories: ['text'],
+    name: 'languages',
     tags: ['translate'],
   },
   {
-    name: 'laptop-minimal-check',
     categories: ['devices', 'notifications'],
+    name: 'laptop-minimal-check',
     tags: ['computer', 'screen', 'remote', 'success', 'done', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['devices'],
     name: 'laptop-minimal',
-    categories: ['devices'],
     tags: ['computer', 'screen', 'remote'],
   },
   {
+    categories: ['devices'],
     name: 'laptop',
-    categories: ['devices'],
     tags: ['computer', 'screen', 'remote'],
   },
   {
-    name: 'lasso-select',
     categories: ['arrows', 'design', 'cursors'],
+    name: 'lasso-select',
     tags: ['select', 'cursor'],
   },
   {
-    name: 'lasso',
     categories: ['design', 'cursors'],
+    name: 'lasso',
     tags: ['select', 'cursor'],
   },
   {
-    name: 'laugh',
     categories: ['emoji'],
+    name: 'laugh',
     tags: ['emoji', 'face', 'happy', 'good', 'emotion'],
   },
   {
-    name: 'layers-2',
     categories: ['design', 'layout'],
+    name: 'layers-2',
     tags: ['stack', 'pile', 'pages', 'sheets', 'paperwork', 'copies', 'copy', 'duplicate', 'double', 'shortcuts'],
   },
   {
-    name: 'layers',
     categories: ['design', 'layout'],
+    name: 'layers',
     tags: ['stack', 'pile', 'pages', 'sheets', 'paperwork', 'copies', 'copy'],
   },
   {
-    name: 'layout-dashboard',
     categories: ['design', 'layout'],
+    name: 'layout-dashboard',
     tags: ['masonry', 'brick'],
   },
   {
-    name: 'layout-grid',
     categories: ['design', 'layout'],
+    name: 'layout-grid',
     tags: ['app', 'home', 'start'],
   },
   {
-    name: 'layout-list',
     categories: ['design', 'layout', 'photography', 'text'],
+    name: 'layout-list',
     tags: ['todo', 'tasks', 'items', 'pending', 'image', 'photo'],
   },
   {
-    name: 'layout-panel-left',
     categories: ['design', 'layout'],
+    name: 'layout-panel-left',
     tags: ['app', 'home', 'start', 'grid'],
   },
   {
-    name: 'layout-panel-top',
     categories: ['layout'],
+    name: 'layout-panel-top',
     tags: ['window', 'webpage', 'block', 'section', 'grid', 'template', 'structure'],
   },
   {
-    name: 'layout-template',
     categories: ['layout'],
+    name: 'layout-template',
     tags: ['window', 'webpage', 'block', 'section'],
   },
   {
-    name: 'leaf',
     categories: ['nature', 'sustainability', 'seasons'],
+    name: 'leaf',
     tags: ['sustainability', 'nature', 'energy', 'plant', 'autumn'],
   },
   {
-    name: 'leafy-green',
     categories: ['food-beverage', 'emoji', 'sustainability'],
+    name: 'leafy-green',
     tags: ['salad', 'lettuce', 'vegetable', 'chard', 'cabbage', 'bok choy'],
   },
   {
-    name: 'lectern',
     categories: ['communication', 'multimedia'],
+    name: 'lectern',
     tags: ['pulpit', 'podium', 'stand'],
   },
   {
+    categories: ['text', 'photography', 'multimedia', 'navigation', 'development'],
     name: 'library-big',
-    categories: ['text', 'photography', 'multimedia', 'navigation', 'development'],
     tags: [
       'books',
       'reading',
@@ -7287,8 +7287,8 @@ export default [
     ],
   },
   {
+    categories: ['text', 'photography', 'multimedia', 'navigation', 'development'],
     name: 'library',
-    categories: ['text', 'photography', 'multimedia', 'navigation', 'development'],
     tags: [
       'books',
       'reading',
@@ -7316,8 +7316,8 @@ export default [
     ],
   },
   {
-    name: 'life-buoy',
     categories: ['accessibility', 'medical'],
+    name: 'life-buoy',
     tags: [
       'preserver',
       'life belt',
@@ -7333,23 +7333,23 @@ export default [
     ],
   },
   {
-    name: 'ligature',
     categories: ['text'],
+    name: 'ligature',
     tags: ['text', 'font', 'typography', 'alternates', 'alternatives'],
   },
   {
-    name: 'lightbulb-off',
     categories: ['photography'],
+    name: 'lightbulb-off',
     tags: ['lights'],
   },
   {
-    name: 'lightbulb',
     categories: ['photography'],
+    name: 'lightbulb',
     tags: ['idea', 'bright', 'lights'],
   },
   {
-    name: 'line-squiggle',
     categories: ['shapes', 'math', 'design'],
+    name: 'line-squiggle',
     tags: [
       'line',
       'snakes',
@@ -7367,38 +7367,38 @@ export default [
     ],
   },
   {
-    name: 'link-2-off',
     categories: ['text'],
+    name: 'link-2-off',
     tags: ['unchain', 'chain'],
   },
   {
+    categories: ['text', 'account'],
     name: 'link-2',
-    categories: ['text', 'account'],
     tags: ['chain', 'url'],
   },
   {
+    categories: ['text', 'account'],
     name: 'link',
-    categories: ['text', 'account'],
     tags: ['chain', 'url'],
   },
   {
-    name: 'linkedin',
     categories: ['social', 'brands'],
+    name: 'linkedin',
     tags: ['logo', 'social media', 'social'],
   },
   {
-    name: 'list-check',
     categories: ['text'],
+    name: 'list-check',
     tags: ['done', 'check', 'tick', 'complete', 'list', 'to-do', 'bom'],
   },
   {
-    name: 'list-checks',
     categories: ['text'],
+    name: 'list-checks',
     tags: ['todo', 'done', 'check', 'tick', 'complete', 'tasks', 'items', 'pending'],
   },
   {
+    categories: ['text', 'arrows'],
     name: 'list-chevrons-down-up',
-    categories: ['text', 'arrows'],
     tags: [
       'options',
       'items',
@@ -7418,8 +7418,8 @@ export default [
     ],
   },
   {
+    categories: ['text', 'arrows'],
     name: 'list-chevrons-up-down',
-    categories: ['text', 'arrows'],
     tags: [
       'options',
       'items',
@@ -7439,8 +7439,8 @@ export default [
     ],
   },
   {
-    name: 'list-collapse',
     categories: ['text'],
+    name: 'list-collapse',
     tags: [
       'items',
       'collapse',
@@ -7458,168 +7458,168 @@ export default [
     ],
   },
   {
-    name: 'list-end',
     categories: ['multimedia', 'text'],
+    name: 'list-end',
     tags: ['queue', 'bottom', 'end', 'playlist'],
   },
   {
-    name: 'list-filter-plus',
     categories: ['text', 'layout'],
+    name: 'list-filter-plus',
     tags: ['filter', 'plus', 'options', 'add'],
   },
   {
-    name: 'list-filter',
     categories: ['text'],
+    name: 'list-filter',
     tags: ['options'],
   },
   {
+    categories: ['text', 'development'],
     name: 'list-indent-decrease',
-    categories: ['text', 'development'],
     tags: ['text', 'tab'],
   },
   {
+    categories: ['text', 'development'],
     name: 'list-indent-increase',
-    categories: ['text', 'development'],
     tags: ['text', 'tab'],
   },
   {
-    name: 'list-minus',
     categories: ['multimedia', 'text'],
+    name: 'list-minus',
     tags: ['playlist', 'remove', 'song', 'subtract', 'delete', 'unqueue'],
   },
   {
-    name: 'list-music',
     categories: ['multimedia'],
+    name: 'list-music',
     tags: ['playlist', 'queue', 'music', 'audio', 'playback'],
   },
   {
-    name: 'list-ordered',
     categories: ['text'],
+    name: 'list-ordered',
     tags: ['number', 'order', 'queue'],
   },
   {
-    name: 'list-plus',
     categories: ['multimedia', 'text'],
+    name: 'list-plus',
     tags: ['playlist', 'add', 'song', 'track', 'new'],
   },
   {
-    name: 'list-restart',
     categories: ['multimedia', 'text'],
+    name: 'list-restart',
     tags: ['reset', 'refresh', 'reload', 'playlist', 'replay'],
   },
   {
-    name: 'list-start',
     categories: ['multimedia', 'text'],
+    name: 'list-start',
     tags: ['queue', 'top', 'start', 'next', 'playlist'],
   },
   {
-    name: 'list-todo',
     categories: ['text'],
+    name: 'list-todo',
     tags: ['todo', 'done', 'check', 'tick', 'complete', 'tasks', 'items', 'pending'],
   },
   {
-    name: 'list-tree',
     categories: ['files', 'text', 'layout'],
+    name: 'list-tree',
     tags: ['tree', 'browser'],
   },
   {
-    name: 'list-video',
     categories: ['multimedia'],
+    name: 'list-video',
     tags: ['playlist', 'video', 'playback'],
   },
   {
-    name: 'list-x',
     categories: ['multimedia', 'text'],
+    name: 'list-x',
     tags: ['playlist', 'subtract', 'remove', 'delete', 'unqueue'],
   },
   {
-    name: 'list',
     categories: ['text'],
+    name: 'list',
     tags: ['options'],
   },
   {
-    name: 'loader-circle',
     categories: ['cursors', 'multimedia', 'layout'],
+    name: 'loader-circle',
     tags: ['loading', 'wait', 'busy', 'progress', 'spinner', 'spinning', 'throbber', 'circle'],
   },
   {
-    name: 'loader-pinwheel',
     categories: ['cursors', 'design'],
+    name: 'loader-pinwheel',
     tags: ['loading', 'wait', 'busy', 'progress', 'throbber', 'spinner', 'spinning', 'beach ball', 'frozen', 'freeze'],
   },
   {
-    name: 'loader',
     categories: ['cursors', 'multimedia', 'layout', 'design'],
+    name: 'loader',
     tags: ['loading', 'wait', 'busy', 'progress', 'spinner', 'spinning', 'throbber'],
   },
   {
+    categories: ['navigation'],
     name: 'locate-fixed',
-    categories: ['navigation'],
     tags: ['map', 'gps', 'location', 'cross'],
   },
   {
+    categories: ['navigation'],
     name: 'locate-off',
-    categories: ['navigation'],
     tags: ['map', 'gps', 'location', 'cross'],
   },
   {
+    categories: ['navigation'],
     name: 'locate',
-    categories: ['navigation'],
     tags: ['map', 'gps', 'location', 'cross'],
   },
   {
+    categories: ['security'],
     name: 'lock-keyhole-open',
-    categories: ['security'],
     tags: ['security'],
   },
   {
+    categories: ['security'],
     name: 'lock-keyhole',
-    categories: ['security'],
     tags: ['security', 'password', 'secure', 'admin'],
   },
   {
-    name: 'lock-open',
     categories: ['security'],
+    name: 'lock-open',
     tags: ['security'],
   },
   {
-    name: 'lock',
     categories: ['security'],
+    name: 'lock',
     tags: ['security', 'password', 'secure', 'admin'],
   },
   {
-    name: 'log-in',
     categories: ['arrows', 'account'],
+    name: 'log-in',
     tags: ['sign in', 'arrow', 'enter', 'auth'],
   },
   {
-    name: 'log-out',
     categories: ['arrows', 'account'],
+    name: 'log-out',
     tags: ['sign out', 'arrow', 'exit', 'auth'],
   },
   {
-    name: 'logs',
     categories: ['text'],
+    name: 'logs',
     tags: ['options', 'list', 'menu', 'order', 'queue', 'tasks', 'logs'],
   },
   {
-    name: 'lollipop',
     categories: ['food-beverage'],
+    name: 'lollipop',
     tags: ['lolly', 'candy', 'sugar', 'food', 'sweet', 'dessert', 'spiral'],
   },
   {
-    name: 'luggage',
     categories: ['travel', 'transportation'],
+    name: 'luggage',
     tags: ['baggage', 'luggage', 'travel', 'suitcase'],
   },
   {
-    name: 'magnet',
     categories: ['design'],
+    name: 'magnet',
     tags: ['horseshoe', 'lock', 'science', 'snap'],
   },
   {
-    name: 'mail-check',
     categories: ['mail'],
+    name: 'mail-check',
     tags: [
       'email',
       'message',
@@ -7636,73 +7636,73 @@ export default [
     ],
   },
   {
-    name: 'mail-minus',
     categories: ['mail'],
+    name: 'mail-minus',
     tags: ['email', 'message', 'letter', 'remove', 'delete'],
   },
   {
-    name: 'mail-open',
     categories: ['mail'],
+    name: 'mail-open',
     tags: ['email', 'message', 'letter', 'read'],
   },
   {
-    name: 'mail-plus',
     categories: ['mail'],
+    name: 'mail-plus',
     tags: ['email', 'message', 'letter', 'add', 'create', 'new', 'compose'],
   },
   {
-    name: 'mail-question-mark',
     categories: ['mail'],
+    name: 'mail-question-mark',
     tags: ['email', 'message', 'letter', 'delivery', 'undelivered'],
   },
   {
-    name: 'mail-search',
     categories: ['mail'],
+    name: 'mail-search',
     tags: ['email', 'message', 'letter', 'search', 'lens'],
   },
   {
-    name: 'mail-warning',
     categories: ['mail'],
+    name: 'mail-warning',
     tags: ['email', 'message', 'letter', 'delivery error', 'exclamation mark'],
   },
   {
-    name: 'mail-x',
     categories: ['mail'],
+    name: 'mail-x',
     tags: ['email', 'message', 'letter', 'remove', 'delete'],
   },
   {
-    name: 'mail',
     categories: ['text', 'account', 'mail'],
+    name: 'mail',
     tags: ['email', 'message', 'letter', 'unread'],
   },
   {
-    name: 'mailbox',
     categories: ['mail'],
+    name: 'mailbox',
     tags: ['emails', 'messages', 'letters', 'mailing list', 'newsletter'],
   },
   {
-    name: 'mails',
     categories: ['mail'],
+    name: 'mails',
     tags: ['emails', 'messages', 'letters', 'multiple', 'mailing list', 'newsletter', 'copy'],
   },
   {
-    name: 'map-minus',
     categories: ['navigation', 'travel'],
+    name: 'map-minus',
     tags: ['location', 'navigation', 'travel', 'drop', 'delete', 'remove', 'erase'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-check-inside',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'done', 'tick', 'complete', 'task', 'added'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-check',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'done', 'tick', 'complete', 'task', 'added'],
   },
   {
-    name: 'map-pin-house',
     categories: ['navigation', 'travel', 'account'],
+    name: 'map-pin-house',
     tags: [
       'location',
       'waypoint',
@@ -7725,98 +7725,98 @@ export default [
     ],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-minus-inside',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'delete', 'remove', 'erase'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-minus',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'delete', 'remove', 'erase'],
   },
   {
-    name: 'map-pin-off',
     categories: ['navigation', 'travel'],
+    name: 'map-pin-off',
     tags: ['location', 'waypoint', 'marker', 'remove'],
   },
   {
-    name: 'map-pin-pen',
     categories: ['navigation', 'travel', 'account'],
+    name: 'map-pin-pen',
     tags: ['location', 'waypoint', 'marker', 'drop', 'edit'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-plus-inside',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'add', 'create', 'new'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-plus',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'add', 'create', 'new'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-x-inside',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'delete', 'remove', 'erase'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin-x',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop', 'delete', 'remove', 'erase'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pin',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop'],
   },
   {
+    categories: ['navigation', 'travel', 'account'],
     name: 'map-pinned',
-    categories: ['navigation', 'travel', 'account'],
     tags: ['location', 'waypoint', 'marker', 'drop'],
   },
   {
-    name: 'map-plus',
     categories: ['navigation'],
+    name: 'map-plus',
     tags: ['location', 'navigation', 'travel', 'new', 'add', 'create'],
   },
   {
-    name: 'map',
     categories: ['text', 'navigation'],
+    name: 'map',
     tags: ['location', 'navigation', 'travel'],
   },
   {
-    name: 'mars-stroke',
     categories: ['medical'],
+    name: 'mars-stroke',
     tags: ['gender', 'androgyne', 'transgender'],
   },
   {
-    name: 'mars',
     categories: ['medical'],
+    name: 'mars',
     tags: ['gender', 'sex', 'male', 'masculine', 'man', 'boy'],
   },
   {
-    name: 'martini',
     categories: ['food-beverage'],
+    name: 'martini',
     tags: ['cocktail', 'alcohol', 'beverage', 'bar', 'drink', 'glass'],
   },
   {
-    name: 'maximize-2',
     categories: ['arrows', 'layout', 'design'],
+    name: 'maximize-2',
     tags: ['fullscreen', 'arrows', 'expand'],
   },
   {
-    name: 'maximize',
     categories: ['layout', 'design'],
+    name: 'maximize',
     tags: ['fullscreen', 'expand', 'dashed'],
   },
   {
-    name: 'medal',
     categories: ['sports', 'gaming'],
+    name: 'medal',
     tags: ['prize', 'sports', 'winner', 'trophy', 'award', 'achievement'],
   },
   {
-    name: 'megaphone-off',
     categories: ['multimedia', 'notifications'],
+    name: 'megaphone-off',
     tags: [
       'advertisement',
       'announcement',
@@ -7830,43 +7830,43 @@ export default [
     ],
   },
   {
-    name: 'megaphone',
     categories: ['multimedia', 'notifications'],
+    name: 'megaphone',
     tags: ['advertisement', 'announcement', 'attention', 'alert', 'loudspeaker', 'megaphone', 'notification'],
   },
   {
-    name: 'meh',
     categories: ['emoji'],
+    name: 'meh',
     tags: ['emoji', 'face', 'neutral', 'emotion'],
   },
   {
-    name: 'memory-stick',
     categories: ['devices', 'gaming'],
+    name: 'memory-stick',
     tags: ['ram', 'random access', 'technology', 'computer', 'chip', 'circuit', 'specs', 'capacity', 'gigabytes', 'gb'],
   },
   {
-    name: 'menu',
     categories: ['layout', 'account'],
+    name: 'menu',
     tags: ['bars', 'navigation', 'hamburger', 'options'],
   },
   {
-    name: 'merge',
     categories: ['development', 'arrows'],
+    name: 'merge',
     tags: ['combine', 'join', 'unite'],
   },
   {
-    name: 'message-circle-code',
     categories: ['development', 'social'],
+    name: 'message-circle-code',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'code review', 'coding'],
   },
   {
-    name: 'message-circle-dashed',
     categories: ['social'],
+    name: 'message-circle-dashed',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'draft'],
   },
   {
-    name: 'message-circle-heart',
     categories: ['social'],
+    name: 'message-circle-heart',
     tags: [
       'comment',
       'chat',
@@ -7884,8 +7884,8 @@ export default [
     ],
   },
   {
-    name: 'message-circle-more',
     categories: ['social'],
+    name: 'message-circle-more',
     tags: [
       'comment',
       'chat',
@@ -7904,8 +7904,8 @@ export default [
     ],
   },
   {
-    name: 'message-circle-off',
     categories: ['social'],
+    name: 'message-circle-off',
     tags: [
       'comment',
       'chat',
@@ -7924,23 +7924,23 @@ export default [
     ],
   },
   {
-    name: 'message-circle-plus',
     categories: ['social'],
+    name: 'message-circle-plus',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'add'],
   },
   {
-    name: 'message-circle-question-mark',
     categories: ['social'],
+    name: 'message-circle-question-mark',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'help'],
   },
   {
-    name: 'message-circle-reply',
     categories: ['social'],
+    name: 'message-circle-reply',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'reply', 'response'],
   },
   {
-    name: 'message-circle-warning',
     categories: ['social', 'notifications'],
+    name: 'message-circle-warning',
     tags: [
       'comment',
       'chat',
@@ -7959,8 +7959,8 @@ export default [
     ],
   },
   {
-    name: 'message-circle-x',
     categories: ['account', 'social'],
+    name: 'message-circle-x',
     tags: [
       'comment',
       'chat',
@@ -7979,23 +7979,23 @@ export default [
     ],
   },
   {
-    name: 'message-circle',
     categories: ['social'],
+    name: 'message-circle',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble'],
   },
   {
-    name: 'message-square-code',
     categories: ['development', 'social'],
+    name: 'message-square-code',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'code review', 'coding'],
   },
   {
-    name: 'message-square-dashed',
     categories: ['social'],
+    name: 'message-square-dashed',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'draft'],
   },
   {
-    name: 'message-square-diff',
     categories: ['development', 'files', 'social'],
+    name: 'message-square-diff',
     tags: [
       'comment',
       'chat',
@@ -8017,13 +8017,13 @@ export default [
     ],
   },
   {
-    name: 'message-square-dot',
     categories: ['social', 'notifications'],
+    name: 'message-square-dot',
     tags: ['unread', 'unresolved', 'comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble'],
   },
   {
-    name: 'message-square-heart',
     categories: ['social'],
+    name: 'message-square-heart',
     tags: [
       'comment',
       'chat',
@@ -8041,13 +8041,13 @@ export default [
     ],
   },
   {
-    name: 'message-square-lock',
     categories: ['social'],
+    name: 'message-square-lock',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'secure', 'encrypted'],
   },
   {
-    name: 'message-square-more',
     categories: ['social'],
+    name: 'message-square-more',
     tags: [
       'comment',
       'chat',
@@ -8066,8 +8066,8 @@ export default [
     ],
   },
   {
-    name: 'message-square-off',
     categories: ['social'],
+    name: 'message-square-off',
     tags: [
       'comment',
       'chat',
@@ -8086,13 +8086,13 @@ export default [
     ],
   },
   {
-    name: 'message-square-plus',
     categories: ['social'],
+    name: 'message-square-plus',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'add'],
   },
   {
-    name: 'message-square-quote',
     categories: ['social', 'text'],
+    name: 'message-square-quote',
     tags: [
       'comment',
       'chat',
@@ -8108,23 +8108,23 @@ export default [
     ],
   },
   {
-    name: 'message-square-reply',
     categories: ['social'],
+    name: 'message-square-reply',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'reply', 'response'],
   },
   {
-    name: 'message-square-share',
     categories: ['social'],
+    name: 'message-square-share',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble', 'network', 'forward'],
   },
   {
-    name: 'message-square-text',
     categories: ['social'],
+    name: 'message-square-text',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble'],
   },
   {
-    name: 'message-square-warning',
     categories: ['social', 'notifications'],
+    name: 'message-square-warning',
     tags: [
       'comment',
       'chat',
@@ -8143,8 +8143,8 @@ export default [
     ],
   },
   {
-    name: 'message-square-x',
     categories: ['social'],
+    name: 'message-square-x',
     tags: [
       'comment',
       'chat',
@@ -8163,13 +8163,13 @@ export default [
     ],
   },
   {
-    name: 'message-square',
     categories: ['social'],
+    name: 'message-square',
     tags: ['comment', 'chat', 'conversation', 'dialog', 'feedback', 'speech bubble'],
   },
   {
-    name: 'messages-square',
     categories: ['social'],
+    name: 'messages-square',
     tags: [
       'comment',
       'chat',
@@ -8185,23 +8185,23 @@ export default [
     ],
   },
   {
-    name: 'mic-off',
     categories: ['devices', 'communication', 'connectivity', 'multimedia'],
+    name: 'mic-off',
     tags: ['record', 'sound', 'mute', 'microphone'],
   },
   {
-    name: 'mic-vocal',
     categories: ['devices', 'multimedia'],
+    name: 'mic-vocal',
     tags: ['lyrics', 'voice', 'listen', 'sound', 'music', 'radio', 'podcast', 'karaoke', 'singing', 'microphone'],
   },
   {
-    name: 'mic',
     categories: ['devices', 'communication', 'connectivity', 'multimedia'],
+    name: 'mic',
     tags: ['record', 'sound', 'listen', 'radio', 'podcast', 'microphone'],
   },
   {
-    name: 'microchip',
     categories: ['devices'],
+    name: 'microchip',
     tags: [
       'processor',
       'cores',
@@ -8218,43 +8218,43 @@ export default [
     ],
   },
   {
-    name: 'microscope',
     categories: ['science', 'medical'],
+    name: 'microscope',
     tags: ['medical', 'education', 'science', 'imaging', 'research'],
   },
   {
-    name: 'microwave',
     categories: ['food-beverage', 'home'],
+    name: 'microwave',
     tags: ['oven', 'cooker', 'toaster oven', 'bake'],
   },
   {
-    name: 'milestone',
     categories: ['arrows', 'navigation', 'development', 'gaming'],
+    name: 'milestone',
     tags: ['signpost', 'direction', 'right', 'east', 'forward', 'version control', 'waypoint'],
   },
   {
-    name: 'milk-off',
     categories: ['food-beverage'],
+    name: 'milk-off',
     tags: ['lactose free', 'bottle', 'beverage', 'drink', 'water', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'milk',
     categories: ['food-beverage'],
+    name: 'milk',
     tags: ['lactose', 'bottle', 'beverage', 'drink', 'water', 'diet'],
   },
   {
-    name: 'minimize-2',
     categories: ['arrows', 'layout', 'design'],
+    name: 'minimize-2',
     tags: ['exit fullscreen', 'arrows', 'close', 'shrink'],
   },
   {
-    name: 'minimize',
     categories: ['layout', 'design'],
+    name: 'minimize',
     tags: ['exit fullscreen', 'close', 'shrink'],
   },
   {
-    name: 'minus',
     categories: ['math', 'development', 'text', 'tools'],
+    name: 'minus',
     tags: [
       'subtract',
       'remove',
@@ -8281,13 +8281,13 @@ export default [
     ],
   },
   {
-    name: 'monitor-check',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-check',
     tags: ['tv', 'screen', 'display', 'desktop', 'running', 'active', 'virtual machine', 'vm'],
   },
   {
-    name: 'monitor-cloud',
     categories: ['connectivity', 'devices', 'development'],
+    name: 'monitor-cloud',
     tags: [
       'virtual machine',
       'virtual desktop',
@@ -8307,8 +8307,8 @@ export default [
     ],
   },
   {
-    name: 'monitor-cog',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-cog',
     tags: [
       'tv',
       'screen',
@@ -8329,23 +8329,23 @@ export default [
     ],
   },
   {
-    name: 'monitor-dot',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-dot',
     tags: ['tv', 'screen', 'display', 'desktop', 'running', 'active', 'virtual machine', 'vm'],
   },
   {
-    name: 'monitor-down',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-down',
     tags: ['tv', 'screen', 'display', 'desktop', 'download'],
   },
   {
-    name: 'monitor-off',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-off',
     tags: ['share'],
   },
   {
-    name: 'monitor-pause',
     categories: ['connectivity', 'devices', 'multimedia'],
+    name: 'monitor-pause',
     tags: [
       'tv',
       'screen',
@@ -8362,8 +8362,8 @@ export default [
     ],
   },
   {
-    name: 'monitor-play',
     categories: ['connectivity', 'devices', 'multimedia'],
+    name: 'monitor-play',
     tags: [
       'tv',
       'screen',
@@ -8380,28 +8380,28 @@ export default [
     ],
   },
   {
-    name: 'monitor-smartphone',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-smartphone',
     tags: ['smartphone', 'phone', 'cellphone', 'device', 'mobile', 'desktop', 'monitor', 'responsive', 'screens'],
   },
   {
-    name: 'monitor-speaker',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-speaker',
     tags: ['devices', 'connect', 'cast'],
   },
   {
-    name: 'monitor-stop',
     categories: ['connectivity', 'devices', 'multimedia'],
+    name: 'monitor-stop',
     tags: ['tv', 'screen', 'display', 'desktop', 'video', 'movie', 'film', 'stop', 'shutdown', 'virtual machine', 'vm'],
   },
   {
-    name: 'monitor-up',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-up',
     tags: ['tv', 'screen', 'display', 'upload', 'connect', 'remote', 'screen share'],
   },
   {
-    name: 'monitor-x',
     categories: ['connectivity', 'devices'],
+    name: 'monitor-x',
     tags: [
       'tv',
       'screen',
@@ -8417,23 +8417,23 @@ export default [
     ],
   },
   {
-    name: 'monitor',
     categories: ['connectivity', 'devices'],
+    name: 'monitor',
     tags: ['tv', 'screen', 'display', 'virtual machine', 'vm'],
   },
   {
-    name: 'moon-star',
     categories: ['accessibility', 'weather'],
+    name: 'moon-star',
     tags: ['dark', 'night', 'star'],
   },
   {
-    name: 'moon',
     categories: ['accessibility'],
+    name: 'moon',
     tags: ['dark', 'night'],
   },
   {
-    name: 'motorbike',
     categories: ['transportation'],
+    name: 'motorbike',
     tags: [
       'moto',
       'motorcycle',
@@ -8449,178 +8449,178 @@ export default [
     ],
   },
   {
-    name: 'mountain-snow',
     categories: ['nature'],
+    name: 'mountain-snow',
     tags: ['alpine', 'climb', 'snow'],
   },
   {
-    name: 'mountain',
     categories: ['nature', 'gaming'],
+    name: 'mountain',
     tags: ['climb', 'hike', 'rock'],
   },
   {
-    name: 'mouse-off',
     categories: ['devices'],
+    name: 'mouse-off',
     tags: ['device', 'scroll', 'click', 'disabled'],
   },
   {
-    name: 'mouse-pointer-2',
     categories: ['arrows', 'cursors'],
+    name: 'mouse-pointer-2',
     tags: ['click', 'select'],
   },
   {
-    name: 'mouse-pointer-ban',
     categories: ['arrows', 'cursors'],
+    name: 'mouse-pointer-ban',
     tags: ['wait', 'busy', 'loading', 'blocked', 'frozen', 'freeze'],
   },
   {
+    categories: ['arrows', 'cursors'],
     name: 'mouse-pointer-click',
-    categories: ['arrows', 'cursors'],
     tags: ['click', 'select'],
   },
   {
+    categories: ['arrows', 'cursors'],
     name: 'mouse-pointer',
-    categories: ['arrows', 'cursors'],
     tags: ['click', 'select'],
   },
   {
-    name: 'mouse',
     categories: ['devices'],
+    name: 'mouse',
     tags: ['device', 'scroll', 'click'],
   },
   {
-    name: 'move-3d',
     categories: ['design'],
+    name: 'move-3d',
     tags: ['arrows', 'axis', 'gizmo', 'coordinates', 'transform', 'translate'],
   },
   {
+    categories: ['arrows', 'cursors'],
     name: 'move-diagonal-2',
-    categories: ['arrows', 'cursors'],
     tags: ['double', 'arrow'],
   },
   {
+    categories: ['arrows', 'cursors'],
     name: 'move-diagonal',
-    categories: ['arrows', 'cursors'],
     tags: ['double', 'arrow'],
   },
   {
+    categories: ['arrows'],
     name: 'move-down-left',
-    categories: ['arrows'],
     tags: ['arrow', 'direction'],
   },
   {
+    categories: ['arrows'],
     name: 'move-down-right',
-    categories: ['arrows'],
     tags: ['arrow', 'direction'],
   },
   {
-    name: 'move-down',
     categories: ['arrows'],
+    name: 'move-down',
     tags: ['arrow', 'direction', 'downwards', 'south'],
   },
   {
-    name: 'move-horizontal',
     categories: ['arrows', 'cursors'],
+    name: 'move-horizontal',
     tags: ['double', 'arrow'],
   },
   {
-    name: 'move-left',
     categories: ['arrows'],
+    name: 'move-left',
     tags: ['arrow', 'direction', 'back', 'west'],
   },
   {
-    name: 'move-right',
     categories: ['arrows'],
+    name: 'move-right',
     tags: ['arrow', 'direction', 'trend flat', 'east'],
   },
   {
+    categories: ['arrows'],
     name: 'move-up-left',
-    categories: ['arrows'],
     tags: ['arrow', 'direction'],
   },
   {
+    categories: ['arrows'],
     name: 'move-up-right',
-    categories: ['arrows'],
     tags: ['arrow', 'direction'],
   },
   {
-    name: 'move-up',
     categories: ['arrows'],
+    name: 'move-up',
     tags: ['arrow', 'direction', 'upwards', 'north'],
   },
   {
-    name: 'move-vertical',
     categories: ['arrows', 'cursors'],
+    name: 'move-vertical',
     tags: ['double', 'arrow'],
   },
   {
-    name: 'move',
     categories: ['arrows', 'cursors'],
+    name: 'move',
     tags: ['arrows'],
   },
   {
-    name: 'music-2',
     categories: ['multimedia', 'files'],
+    name: 'music-2',
     tags: ['quaver', 'eighth note', 'note'],
   },
   {
-    name: 'music-3',
     categories: ['multimedia', 'files'],
+    name: 'music-3',
     tags: ['crotchet', 'minim', 'quarter note', 'half note', 'note'],
   },
   {
-    name: 'music-4',
     categories: ['multimedia', 'files'],
+    name: 'music-4',
     tags: ['semiquaver', 'sixteenth note', 'note'],
   },
   {
-    name: 'music',
     categories: ['multimedia', 'files'],
+    name: 'music',
     tags: ['note', 'quaver', 'eighth note'],
   },
   {
+    categories: ['navigation'],
     name: 'navigation-2-off',
-    categories: ['navigation'],
     tags: ['location', 'travel'],
   },
   {
+    categories: ['navigation'],
     name: 'navigation-2',
-    categories: ['navigation'],
     tags: ['location', 'travel'],
   },
   {
+    categories: ['navigation'],
     name: 'navigation-off',
-    categories: ['navigation'],
     tags: ['location', 'travel'],
   },
   {
+    categories: ['navigation'],
     name: 'navigation',
-    categories: ['navigation'],
     tags: ['location', 'travel'],
   },
   {
-    name: 'network',
     categories: ['development'],
+    name: 'network',
     tags: ['tree'],
   },
   {
-    name: 'newspaper',
     categories: ['multimedia', 'communication'],
+    name: 'newspaper',
     tags: ['news', 'feed', 'home', 'magazine', 'article', 'headline'],
   },
   {
-    name: 'nfc',
     categories: ['communication', 'finance', 'devices'],
+    name: 'nfc',
     tags: ['contactless', 'payment', 'near-field communication'],
   },
   {
-    name: 'non-binary',
     categories: ['medical'],
+    name: 'non-binary',
     tags: ['gender', 'nonbinary', 'enby'],
   },
   {
-    name: 'notebook-pen',
     categories: ['text', 'social'],
+    name: 'notebook-pen',
     tags: [
       'pencil',
       'notepad',
@@ -8650,8 +8650,8 @@ export default [
     ],
   },
   {
-    name: 'notebook-tabs',
     categories: ['account', 'communication', 'social'],
+    name: 'notebook-tabs',
     tags: [
       'notepad',
       'notes',
@@ -8676,8 +8676,8 @@ export default [
     ],
   },
   {
-    name: 'notebook-text',
     categories: ['text', 'social'],
+    name: 'notebook-text',
     tags: [
       'notepad',
       'notes',
@@ -8707,8 +8707,8 @@ export default [
     ],
   },
   {
-    name: 'notebook',
     categories: ['text', 'communication', 'social', 'design'],
+    name: 'notebook',
     tags: [
       'notepad',
       'notes',
@@ -8739,8 +8739,8 @@ export default [
     ],
   },
   {
-    name: 'notepad-text-dashed',
     categories: ['text', 'social'],
+    name: 'notepad-text-dashed',
     tags: [
       'notebook',
       'notes',
@@ -8758,8 +8758,8 @@ export default [
     ],
   },
   {
-    name: 'notepad-text',
     categories: ['text', 'social'],
+    name: 'notepad-text',
     tags: [
       'notebook',
       'notes',
@@ -8789,43 +8789,43 @@ export default [
     ],
   },
   {
-    name: 'nut-off',
     categories: ['food-beverage'],
+    name: 'nut-off',
     tags: ['hazelnut', 'acorn', 'food', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'nut',
     categories: ['food-beverage'],
+    name: 'nut',
     tags: ['hazelnut', 'acorn', 'food', 'diet'],
   },
   {
-    name: 'octagon-alert',
     categories: ['notifications', 'shapes'],
+    name: 'octagon-alert',
     tags: ['warning', 'alert', 'danger', 'exclamation mark'],
   },
   {
-    name: 'octagon-minus',
     categories: ['transportation'],
+    name: 'octagon-minus',
     tags: ['stop', 'forbidden', 'subtract', 'remove', 'decrease', 'reduce', '-', 'traffic', 'halt', 'restricted'],
   },
   {
-    name: 'octagon-pause',
     categories: ['multimedia', 'shapes'],
+    name: 'octagon-pause',
     tags: ['music', 'audio', 'stop'],
   },
   {
-    name: 'octagon-x',
     categories: ['math', 'notifications'],
+    name: 'octagon-x',
     tags: ['delete', 'stop', 'alert', 'warning', 'times', 'clear', 'math'],
   },
   {
-    name: 'octagon',
     categories: ['shapes'],
+    name: 'octagon',
     tags: ['stop', 'shape'],
   },
   {
-    name: 'omega',
     categories: ['math', 'development', 'text', 'science'],
+    name: 'omega',
     tags: [
       'greek',
       'symbol',
@@ -8843,58 +8843,58 @@ export default [
     ],
   },
   {
-    name: 'option',
     categories: ['development'],
+    name: 'option',
     tags: ['keyboard', 'key', 'mac', 'alt', 'button'],
   },
   {
-    name: 'orbit',
     categories: ['science'],
+    name: 'orbit',
     tags: ['planet', 'space', 'physics', 'satellites', 'moons'],
   },
   {
-    name: 'origami',
     categories: ['animals', 'design'],
+    name: 'origami',
     tags: ['paper', 'bird'],
   },
   {
-    name: 'package-2',
     categories: ['files', 'development'],
+    name: 'package-2',
     tags: ['box', 'container', 'storage', 'sealed', 'packed', 'unopened', 'undelivered', 'archive', 'zip'],
   },
   {
-    name: 'package-check',
     categories: ['development'],
+    name: 'package-check',
     tags: ['confirm', 'verified', 'done', 'todo', 'tick', 'complete', 'task', 'delivered'],
   },
   {
-    name: 'package-minus',
     categories: ['development'],
+    name: 'package-minus',
     tags: ['delete', 'remove'],
   },
   {
-    name: 'package-open',
     categories: ['files', 'development'],
+    name: 'package-open',
     tags: ['box', 'container', 'storage', 'unpack', 'unarchive', 'unzip', 'opened', 'delivered'],
   },
   {
-    name: 'package-plus',
     categories: ['development'],
+    name: 'package-plus',
     tags: ['new', 'add', 'create'],
   },
   {
-    name: 'package-search',
     categories: ['files', 'development'],
+    name: 'package-search',
     tags: ['find', 'product process', 'lens'],
   },
   {
-    name: 'package-x',
     categories: ['development'],
+    name: 'package-x',
     tags: ['delete', 'remove'],
   },
   {
-    name: 'package',
     categories: ['files', 'development'],
+    name: 'package',
     tags: [
       'box',
       'container',
@@ -8910,73 +8910,73 @@ export default [
     ],
   },
   {
-    name: 'paint-bucket',
     categories: ['design', 'tools'],
+    name: 'paint-bucket',
     tags: ['fill', 'paint', 'bucket', 'color', 'colour'],
   },
   {
-    name: 'paint-roller',
     categories: ['text', 'design', 'home', 'tools'],
+    name: 'paint-roller',
     tags: ['brush', 'color', 'colour', 'decoration', 'diy'],
   },
   {
+    categories: ['text', 'design', 'photography', 'home', 'tools'],
     name: 'paintbrush-vertical',
-    categories: ['text', 'design', 'photography', 'home', 'tools'],
     tags: ['brush', 'paintbrush', 'design', 'color', 'colour', 'decoration', 'diy'],
   },
   {
+    categories: ['text', 'design', 'photography', 'home', 'tools'],
     name: 'paintbrush',
-    categories: ['text', 'design', 'photography', 'home', 'tools'],
     tags: ['brush', 'paintbrush', 'design', 'color', 'colour', 'decoration', 'diy'],
   },
   {
-    name: 'palette',
     categories: ['text', 'design', 'photography'],
+    name: 'palette',
     tags: ['colors', 'colours', 'theme', 'scheme', 'paint', 'watercolor', 'watercolour', 'artist'],
   },
   {
-    name: 'panda',
     categories: ['animals'],
+    name: 'panda',
     tags: ['animal', 'wildlife', 'bear', 'zoo', 'bamboo'],
   },
   {
-    name: 'panel-bottom-close',
     categories: ['layout', 'arrows'],
+    name: 'panel-bottom-close',
     tags: ['drawer', 'dock', 'hide', 'chevron', 'down'],
   },
   {
-    name: 'panel-bottom-dashed',
     categories: ['layout'],
+    name: 'panel-bottom-dashed',
     tags: ['drawer', 'dock', 'show', 'reveal', 'padding', 'margin', 'guide', 'layout', 'bleed'],
   },
   {
-    name: 'panel-bottom-open',
     categories: ['layout', 'arrows'],
+    name: 'panel-bottom-open',
     tags: ['drawer', 'dock', 'show', 'reveal', 'chevron', 'up'],
   },
   {
-    name: 'panel-bottom',
     categories: ['layout'],
+    name: 'panel-bottom',
     tags: ['drawer', 'dock'],
   },
   {
-    name: 'panel-left-close',
     categories: ['layout', 'arrows'],
+    name: 'panel-left-close',
     tags: ['primary', 'drawer', 'hide', 'chevron', '<'],
   },
   {
-    name: 'panel-left-dashed',
     categories: ['layout'],
+    name: 'panel-left-dashed',
     tags: ['sidebar', 'primary', 'drawer', 'show', 'reveal', 'padding', 'margin', 'guide', 'layout', 'bleed'],
   },
   {
-    name: 'panel-left-open',
     categories: ['layout', 'arrows'],
+    name: 'panel-left-open',
     tags: ['primary', 'drawer', 'show', 'reveal', 'chevron', 'right', '>'],
   },
   {
-    name: 'panel-left-right-dashed',
     categories: ['layout'],
+    name: 'panel-left-right-dashed',
     tags: [
       'sidebar',
       'primary',
@@ -8992,33 +8992,33 @@ export default [
     ],
   },
   {
-    name: 'panel-left',
     categories: ['layout'],
+    name: 'panel-left',
     tags: ['primary', 'drawer'],
   },
   {
-    name: 'panel-right-close',
     categories: ['layout', 'arrows'],
+    name: 'panel-right-close',
     tags: ['sidebar', 'secondary', 'drawer', 'hide', 'chevron', '>'],
   },
   {
-    name: 'panel-right-dashed',
     categories: ['layout'],
+    name: 'panel-right-dashed',
     tags: ['sidebar', 'secondary', 'drawer', 'show', 'reveal', 'padding', 'margin', 'guide', 'layout', 'bleed'],
   },
   {
-    name: 'panel-right-open',
     categories: ['layout', 'arrows'],
+    name: 'panel-right-open',
     tags: ['sidebar', 'secondary', 'drawer', 'show', 'reveal', 'chevron', 'left', '<'],
   },
   {
-    name: 'panel-right',
     categories: ['layout'],
+    name: 'panel-right',
     tags: ['sidebar', 'secondary', 'drawer'],
   },
   {
-    name: 'panel-top-bottom-dashed',
     categories: ['layout'],
+    name: 'panel-top-bottom-dashed',
     tags: [
       'sidebar',
       'primary',
@@ -9034,48 +9034,48 @@ export default [
     ],
   },
   {
-    name: 'panel-top-close',
     categories: ['layout', 'arrows'],
+    name: 'panel-top-close',
     tags: ['menu bar', 'drawer', 'hide', 'chevron', 'up'],
   },
   {
-    name: 'panel-top-dashed',
     categories: ['layout'],
+    name: 'panel-top-dashed',
     tags: ['menu bar', 'drawer', 'show', 'reveal', 'padding', 'margin', 'guide', 'layout', 'bleed'],
   },
   {
-    name: 'panel-top-open',
     categories: ['layout', 'arrows'],
+    name: 'panel-top-open',
     tags: ['menu bar', 'drawer', 'show', 'reveal', 'chevron', 'down'],
   },
   {
-    name: 'panel-top',
     categories: ['layout', 'design', 'development'],
+    name: 'panel-top',
     tags: ['drawer', 'browser', 'webpage'],
   },
   {
-    name: 'panels-left-bottom',
     categories: ['layout'],
+    name: 'panels-left-bottom',
     tags: ['drawers', 'sidebar', 'primary'],
   },
   {
-    name: 'panels-right-bottom',
     categories: ['layout'],
+    name: 'panels-right-bottom',
     tags: ['drawers', 'sidebar', 'secondary'],
   },
   {
-    name: 'panels-top-left',
     categories: ['layout', 'design', 'development'],
+    name: 'panels-top-left',
     tags: ['menu bar', 'sidebar', 'primary', 'drawers', 'window', 'webpage', 'projects', 'overview'],
   },
   {
-    name: 'paperclip',
     categories: ['text', 'design', 'files', 'mail'],
+    name: 'paperclip',
     tags: ['attachment', 'file'],
   },
   {
-    name: 'parentheses',
     categories: ['development', 'files', 'math'],
+    name: 'parentheses',
     tags: [
       'code',
       'token',
@@ -9095,13 +9095,13 @@ export default [
     ],
   },
   {
-    name: 'parking-meter',
     categories: ['transportation', 'navigation'],
+    name: 'parking-meter',
     tags: ['driving', 'car park', 'pay', 'sidewalk', 'pavement'],
   },
   {
-    name: 'party-popper',
     categories: ['emoji'],
+    name: 'party-popper',
     tags: [
       'emoji',
       'congratulations',
@@ -9117,23 +9117,23 @@ export default [
     ],
   },
   {
-    name: 'pause',
     categories: ['multimedia'],
+    name: 'pause',
     tags: ['music', 'stop'],
   },
   {
-    name: 'paw-print',
     categories: ['animals'],
+    name: 'paw-print',
     tags: ['pets', 'vets', 'veterinarian', 'domesticated', 'cat', 'dog', 'bear'],
   },
   {
-    name: 'pc-case',
     categories: ['devices', 'gaming'],
+    name: 'pc-case',
     tags: ['computer', 'chassis'],
   },
   {
-    name: 'pen-line',
     categories: ['text', 'design', 'tools'],
+    name: 'pen-line',
     tags: [
       'pencil',
       'change',
@@ -9150,8 +9150,8 @@ export default [
     ],
   },
   {
-    name: 'pen-off',
     categories: ['text', 'design', 'tools'],
+    name: 'pen-off',
     tags: [
       'disabled',
       'inactive',
@@ -9176,13 +9176,13 @@ export default [
     ],
   },
   {
-    name: 'pen-tool',
     categories: ['text', 'design', 'cursors'],
+    name: 'pen-tool',
     tags: ['vector', 'drawing', 'path'],
   },
   {
-    name: 'pen',
     categories: ['text', 'design', 'tools'],
+    name: 'pen',
     tags: [
       'pencil',
       'change',
@@ -9199,8 +9199,8 @@ export default [
     ],
   },
   {
-    name: 'pencil-line',
     categories: ['text', 'design', 'tools'],
+    name: 'pencil-line',
     tags: [
       'pencil',
       'change',
@@ -9219,8 +9219,8 @@ export default [
     ],
   },
   {
-    name: 'pencil-off',
     categories: ['design', 'cursors', 'tools', 'text'],
+    name: 'pencil-off',
     tags: [
       'disabled',
       'inactive',
@@ -9243,8 +9243,8 @@ export default [
     ],
   },
   {
-    name: 'pencil-ruler',
     categories: ['tools', 'design', 'layout', 'text'],
+    name: 'pencil-ruler',
     tags: [
       'edit',
       'create',
@@ -9276,73 +9276,73 @@ export default [
     ],
   },
   {
-    name: 'pencil',
     categories: ['design', 'cursors', 'tools', 'text'],
+    name: 'pencil',
     tags: ['rubber', 'edit', 'create', 'draw', 'sketch', 'draft', 'writer', 'writing', 'stationery', 'artist'],
   },
   {
-    name: 'pentagon',
     categories: ['shapes'],
+    name: 'pentagon',
     tags: ['shape'],
   },
   {
-    name: 'percent',
     categories: ['math', 'development', 'finance', 'shopping'],
+    name: 'percent',
     tags: ['percentage', 'modulo', 'modulus', 'remainder', '%', 'sale', 'discount', 'offer', 'marketing'],
   },
   {
-    name: 'person-standing',
     categories: ['accessibility', 'people'],
+    name: 'person-standing',
     tags: ['people', 'human', 'accessibility', 'stick figure'],
   },
   {
-    name: 'philippine-peso',
     categories: ['finance'],
+    name: 'philippine-peso',
     tags: ['currency', 'peso', 'money', 'php'],
   },
   {
-    name: 'phone-call',
     categories: ['connectivity', 'devices', 'communication'],
+    name: 'phone-call',
     tags: ['ring'],
   },
   {
+    categories: ['arrows', 'connectivity', 'devices', 'communication'],
     name: 'phone-forwarded',
-    categories: ['arrows', 'connectivity', 'devices', 'communication'],
     tags: ['call'],
   },
   {
+    categories: ['arrows', 'connectivity', 'devices', 'communication'],
     name: 'phone-incoming',
-    categories: ['arrows', 'connectivity', 'devices', 'communication'],
     tags: ['call'],
   },
   {
+    categories: ['connectivity', 'devices', 'communication'],
     name: 'phone-missed',
-    categories: ['connectivity', 'devices', 'communication'],
     tags: ['call'],
   },
   {
-    name: 'phone-off',
     categories: ['connectivity', 'devices', 'communication'],
+    name: 'phone-off',
     tags: ['call', 'mute'],
   },
   {
-    name: 'phone-outgoing',
     categories: ['arrows', 'connectivity', 'devices', 'communication'],
+    name: 'phone-outgoing',
     tags: ['call'],
   },
   {
-    name: 'phone',
     categories: ['text', 'connectivity', 'devices', 'communication'],
+    name: 'phone',
     tags: ['call'],
   },
   {
-    name: 'pi',
     categories: ['development', 'math'],
+    name: 'pi',
     tags: ['constant', 'code', 'coding', 'programming', 'symbol', 'trigonometry', 'geometry', 'formula'],
   },
   {
-    name: 'piano',
     categories: ['multimedia', 'devices'],
+    name: 'piano',
     tags: [
       'music',
       'audio',
@@ -9361,8 +9361,8 @@ export default [
     ],
   },
   {
-    name: 'pickaxe',
     categories: ['tools', 'gaming'],
+    name: 'pickaxe',
     tags: [
       'mining',
       'mine',
@@ -9378,38 +9378,38 @@ export default [
     ],
   },
   {
+    categories: ['multimedia'],
     name: 'picture-in-picture-2',
-    categories: ['multimedia'],
     tags: ['display', 'play', 'video', 'pop out', 'always on top', 'window', 'inset', 'multitask'],
   },
   {
+    categories: ['multimedia'],
     name: 'picture-in-picture',
-    categories: ['multimedia'],
     tags: ['display', 'play', 'video', 'pop out', 'always on top', 'window', 'inset', 'multitask'],
   },
   {
-    name: 'piggy-bank',
     categories: ['finance'],
+    name: 'piggy-bank',
     tags: ['money', 'savings'],
   },
   {
+    categories: ['text'],
     name: 'pilcrow-left',
-    categories: ['text'],
     tags: ['direction', 'paragraph', 'mark', 'paraph', 'blind', 'typography', 'type', 'text', 'prose', 'symbol'],
   },
   {
+    categories: ['text'],
     name: 'pilcrow-right',
-    categories: ['text'],
     tags: ['direction', 'paragraph', 'mark', 'paraph', 'blind', 'typography', 'type', 'text', 'prose', 'symbol'],
   },
   {
-    name: 'pilcrow',
     categories: ['text'],
+    name: 'pilcrow',
     tags: ['paragraph', 'mark', 'paraph', 'blind', 'typography', 'type', 'text', 'prose', 'symbol'],
   },
   {
-    name: 'pill-bottle',
     categories: ['medical'],
+    name: 'pill-bottle',
     tags: [
       'medicine',
       'medication',
@@ -9426,68 +9426,68 @@ export default [
     ],
   },
   {
-    name: 'pill',
     categories: ['medical'],
+    name: 'pill',
     tags: ['medicine', 'medication', 'drug', 'prescription', 'tablet', 'pharmacy'],
   },
   {
-    name: 'pin-off',
     categories: ['navigation'],
+    name: 'pin-off',
     tags: ['unpin', 'map', 'unlock', 'unfix', 'unsave', 'remove'],
   },
   {
-    name: 'pin',
     categories: ['navigation', 'account'],
+    name: 'pin',
     tags: ['save', 'map', 'lock', 'fix'],
   },
   {
-    name: 'pipette',
     categories: ['text', 'design', 'science'],
+    name: 'pipette',
     tags: ['eye dropper', 'color picker', 'lab', 'chemistry'],
   },
   {
-    name: 'pizza',
     categories: ['food-beverage'],
+    name: 'pizza',
     tags: ['pie', 'quiche', 'food'],
   },
   {
-    name: 'plane-landing',
     categories: ['transportation', 'travel'],
+    name: 'plane-landing',
     tags: ['arrival', 'plane', 'trip', 'airplane', 'landing'],
   },
   {
-    name: 'plane-takeoff',
     categories: ['transportation', 'travel'],
+    name: 'plane-takeoff',
     tags: ['departure', 'plane', 'trip', 'airplane', 'takeoff'],
   },
   {
-    name: 'plane',
     categories: ['transportation', 'travel'],
+    name: 'plane',
     tags: ['plane', 'trip', 'airplane'],
   },
   {
-    name: 'play',
     categories: ['arrows', 'multimedia'],
+    name: 'play',
     tags: ['music', 'audio', 'video', 'start', 'run'],
   },
   {
-    name: 'plug-2',
     categories: ['devices', 'development'],
+    name: 'plug-2',
     tags: ['electricity', 'energy', 'socket', 'outlet'],
   },
   {
-    name: 'plug-zap',
     categories: ['devices'],
+    name: 'plug-zap',
     tags: ['electricity', 'energy', 'electronics', 'charge', 'charging', 'battery', 'connect'],
   },
   {
-    name: 'plug',
     categories: ['devices', 'development'],
+    name: 'plug',
     tags: ['electricity', 'energy', 'electronics', 'socket', 'outlet'],
   },
   {
-    name: 'plus',
     categories: ['math', 'tools', 'development', 'text', 'cursors', 'gaming'],
+    name: 'plus',
     tags: [
       'add',
       'new',
@@ -9509,53 +9509,53 @@ export default [
     ],
   },
   {
-    name: 'pocket-knife',
     categories: ['tools'],
+    name: 'pocket-knife',
     tags: ['swiss army knife', 'penknife', 'multi-tool', 'multitask', 'blade', 'cutter', 'gadget', 'corkscrew'],
   },
   {
-    name: 'pocket',
     categories: ['brands'],
+    name: 'pocket',
     tags: ['logo', 'save'],
   },
   {
-    name: 'podcast',
     categories: ['multimedia', 'social'],
+    name: 'podcast',
     tags: ['audio', 'music', 'mic', 'talk', 'voice', 'subscribe', 'subscription', 'stream'],
   },
   {
+    categories: ['cursors'],
     name: 'pointer-off',
-    categories: ['cursors'],
     tags: ['mouse'],
   },
   {
+    categories: ['cursors'],
     name: 'pointer',
-    categories: ['cursors'],
     tags: ['mouse'],
   },
   {
-    name: 'popcorn',
     categories: ['food-beverage', 'multimedia'],
+    name: 'popcorn',
     tags: ['cinema', 'movies', 'films', 'salted', 'sweet', 'sugar', 'candy', 'snack'],
   },
   {
-    name: 'popsicle',
     categories: ['food-beverage'],
+    name: 'popsicle',
     tags: ['ice lolly', 'ice cream', 'sweet', 'food'],
   },
   {
-    name: 'pound-sterling',
     categories: ['finance'],
+    name: 'pound-sterling',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'power-off',
     categories: ['connectivity'],
+    name: 'power-off',
     tags: ['on', 'off', 'device', 'switch'],
   },
   {
-    name: 'power',
     categories: ['connectivity'],
+    name: 'power',
     tags: [
       'on',
       'off',
@@ -9572,8 +9572,8 @@ export default [
     ],
   },
   {
-    name: 'presentation',
     categories: ['multimedia', 'photography', 'devices', 'communication', 'design'],
+    name: 'presentation',
     tags: [
       'screen',
       'whiteboard',
@@ -9592,18 +9592,18 @@ export default [
     ],
   },
   {
-    name: 'printer-check',
     categories: ['devices'],
+    name: 'printer-check',
     tags: ['fax', 'office', 'device', 'success', 'printed'],
   },
   {
-    name: 'printer',
     categories: ['devices'],
+    name: 'printer',
     tags: ['fax', 'office', 'device'],
   },
   {
-    name: 'projector',
     categories: ['multimedia', 'photography', 'devices', 'communication'],
+    name: 'projector',
     tags: [
       'cinema',
       'film',
@@ -9618,8 +9618,8 @@ export default [
     ],
   },
   {
-    name: 'proportions',
     categories: ['layout', 'design', 'photography', 'devices'],
+    name: 'proportions',
     tags: [
       'screens',
       'sizes',
@@ -9642,13 +9642,13 @@ export default [
     ],
   },
   {
-    name: 'puzzle',
     categories: ['development', 'gaming'],
+    name: 'puzzle',
     tags: ['component', 'module', 'part', 'piece'],
   },
   {
-    name: 'pyramid',
     categories: ['shapes', 'math', 'travel'],
+    name: 'pyramid',
     tags: [
       'prism',
       'triangle',
@@ -9663,73 +9663,73 @@ export default [
     ],
   },
   {
-    name: 'qr-code',
     categories: ['development', 'social'],
+    name: 'qr-code',
     tags: ['barcode', 'scan', 'link', 'url', 'information', 'digital'],
   },
   {
-    name: 'quote',
     categories: ['text'],
+    name: 'quote',
     tags: ['quotation'],
   },
   {
-    name: 'rabbit',
     categories: ['animals'],
+    name: 'rabbit',
     tags: ['animal', 'rodent', 'pet', 'pest', 'bunny', 'hare', 'fast', 'speed', 'hop'],
   },
   {
-    name: 'radar',
     categories: ['navigation', 'security', 'communication'],
+    name: 'radar',
     tags: ['scan', 'sonar', 'detect', 'find', 'locate'],
   },
   {
-    name: 'radiation',
     categories: ['science'],
+    name: 'radiation',
     tags: ['radioactive', 'nuclear', 'fallout', 'waste', 'atomic', 'physics', 'particle', 'element', 'molecule'],
   },
   {
-    name: 'radical',
     categories: ['development', 'math'],
+    name: 'radical',
     tags: ['calculate', 'formula', 'math', 'operator', 'root', 'square', 'symbol'],
   },
   {
-    name: 'radio-receiver',
     categories: ['devices'],
+    name: 'radio-receiver',
     tags: ['device', 'music', 'connect'],
   },
   {
+    categories: ['devices', 'multimedia', 'social'],
     name: 'radio-tower',
-    categories: ['devices', 'multimedia', 'social'],
     tags: ['signal', 'broadcast', 'connectivity', 'live', 'frequency'],
   },
   {
+    categories: ['devices', 'multimedia', 'social'],
     name: 'radio',
-    categories: ['devices', 'multimedia', 'social'],
     tags: ['signal', 'broadcast', 'connectivity', 'live', 'frequency'],
   },
   {
-    name: 'radius',
     categories: ['shapes', 'math', 'design', 'tools'],
+    name: 'radius',
     tags: ['shape', 'circle', 'geometry', 'trigonometry', 'radii', 'calculate', 'measure', 'size'],
   },
   {
-    name: 'rail-symbol',
     categories: ['transportation', 'navigation'],
+    name: 'rail-symbol',
     tags: ['railway', 'train', 'track', 'line'],
   },
   {
-    name: 'rainbow',
     categories: ['weather'],
+    name: 'rainbow',
     tags: ['colors', 'colours', 'spectrum', 'light', 'prism', 'arc', 'clear', 'sunshine'],
   },
   {
-    name: 'rat',
     categories: ['animals'],
+    name: 'rat',
     tags: ['mouse', 'mice', 'gerbil', 'rodent', 'pet', 'pest', 'plague', 'disease'],
   },
   {
-    name: 'ratio',
     categories: ['layout', 'design', 'photography'],
+    name: 'ratio',
     tags: [
       'screens',
       'sizes',
@@ -9753,43 +9753,43 @@ export default [
     ],
   },
   {
-    name: 'receipt-cent',
     categories: ['finance', 'travel'],
+    name: 'receipt-cent',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'cents', 'dollar', 'usd', '$', '¢'],
   },
   {
-    name: 'receipt-euro',
     categories: ['finance', 'travel'],
+    name: 'receipt-euro',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', '€'],
   },
   {
-    name: 'receipt-indian-rupee',
     categories: ['finance', 'travel'],
+    name: 'receipt-indian-rupee',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'inr', '₹'],
   },
   {
-    name: 'receipt-japanese-yen',
     categories: ['finance', 'travel'],
+    name: 'receipt-japanese-yen',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'jpy', '¥'],
   },
   {
-    name: 'receipt-pound-sterling',
     categories: ['finance', 'travel'],
+    name: 'receipt-pound-sterling',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'british', 'currency', 'gbp', '£'],
   },
   {
-    name: 'receipt-russian-ruble',
     categories: ['finance', 'travel'],
+    name: 'receipt-russian-ruble',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'rub', '₽'],
   },
   {
-    name: 'receipt-swiss-franc',
     categories: ['finance', 'travel'],
+    name: 'receipt-swiss-franc',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'chf', '₣'],
   },
   {
-    name: 'receipt-text',
     categories: ['finance', 'travel'],
+    name: 'receipt-text',
     tags: [
       'bill',
       'voucher',
@@ -9804,23 +9804,23 @@ export default [
     ],
   },
   {
-    name: 'receipt-turkish-lira',
     categories: ['finance', 'travel'],
+    name: 'receipt-turkish-lira',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'try', '₺'],
   },
   {
-    name: 'receipt',
     categories: ['finance', 'travel'],
+    name: 'receipt',
     tags: ['bill', 'voucher', 'slip', 'check', 'counterfoil', 'currency', 'dollar', 'usd', '$'],
   },
   {
-    name: 'rectangle-circle',
     categories: ['development', 'text'],
+    name: 'rectangle-circle',
     tags: ['compose', 'keyboard', 'key', 'button'],
   },
   {
-    name: 'rectangle-ellipsis',
     categories: ['text', 'development'],
+    name: 'rectangle-ellipsis',
     tags: [
       'login',
       'password',
@@ -9852,43 +9852,43 @@ export default [
     ],
   },
   {
-    name: 'rectangle-goggles',
     categories: ['devices', 'gaming', 'multimedia', 'connectivity'],
+    name: 'rectangle-goggles',
     tags: ['vr', 'virtual', 'augmented', 'reality', 'headset', 'goggles'],
   },
   {
-    name: 'rectangle-horizontal',
     categories: ['shapes', 'design'],
+    name: 'rectangle-horizontal',
     tags: ['rectangle', 'aspect ratio', '16:9', 'horizontal', 'shape'],
   },
   {
-    name: 'rectangle-vertical',
     categories: ['shapes', 'design'],
+    name: 'rectangle-vertical',
     tags: ['rectangle', 'aspect ratio', '9:16', 'vertical', 'shape'],
   },
   {
-    name: 'recycle',
     categories: ['sustainability'],
+    name: 'recycle',
     tags: ['sustainability', 'salvage', 'arrows'],
   },
   {
-    name: 'redo-2',
     categories: ['text', 'arrows'],
+    name: 'redo-2',
     tags: ['undo', 'rerun', 'history'],
   },
   {
-    name: 'redo-dot',
     categories: ['text', 'arrows'],
+    name: 'redo-dot',
     tags: ['redo', 'history', 'step', 'over', 'forward'],
   },
   {
-    name: 'redo',
     categories: ['text', 'arrows'],
+    name: 'redo',
     tags: ['undo', 'rerun', 'history'],
   },
   {
-    name: 'refresh-ccw-dot',
     categories: ['arrows', 'development'],
+    name: 'refresh-ccw-dot',
     tags: [
       'arrows',
       'rotate',
@@ -9904,13 +9904,13 @@ export default [
     ],
   },
   {
-    name: 'refresh-ccw',
     categories: ['arrows'],
+    name: 'refresh-ccw',
     tags: ['arrows', 'rotate', 'reload', 'rerun', 'synchronise', 'synchronize', 'circular', 'cycle'],
   },
   {
-    name: 'refresh-cw-off',
     categories: ['arrows'],
+    name: 'refresh-cw-off',
     tags: [
       'rotate',
       'reload',
@@ -9929,88 +9929,88 @@ export default [
     ],
   },
   {
-    name: 'refresh-cw',
     categories: ['arrows'],
+    name: 'refresh-cw',
     tags: ['rotate', 'reload', 'rerun', 'synchronise', 'synchronize', 'arrows', 'circular', 'cycle'],
   },
   {
-    name: 'refrigerator',
     categories: ['food-beverage', 'home'],
+    name: 'refrigerator',
     tags: ['frigerator', 'fridge', 'freezer', 'cooler', 'icebox', 'chiller', 'cold storage'],
   },
   {
-    name: 'regex',
     categories: ['text', 'development'],
+    name: 'regex',
     tags: ['search', 'text', 'code'],
   },
   {
-    name: 'remove-formatting',
     categories: ['text'],
+    name: 'remove-formatting',
     tags: ['text', 'font', 'typography', 'format', 'x', 'remove', 'delete', 'times', 'clear'],
   },
   {
-    name: 'repeat-1',
     categories: ['multimedia'],
+    name: 'repeat-1',
     tags: ['replay'],
   },
   {
-    name: 'repeat-2',
     categories: ['arrows', 'social', 'multimedia'],
+    name: 'repeat-2',
     tags: ['arrows', 'retweet', 'repost', 'share', 'repeat', 'loop'],
   },
   {
-    name: 'repeat',
     categories: ['arrows', 'multimedia'],
+    name: 'repeat',
     tags: ['loop', 'arrows'],
   },
   {
+    categories: ['text'],
     name: 'replace-all',
-    categories: ['text'],
     tags: ['search', 'substitute', 'swap', 'change'],
   },
   {
+    categories: ['text'],
     name: 'replace',
-    categories: ['text'],
     tags: ['search', 'substitute', 'swap', 'change'],
   },
   {
+    categories: ['mail'],
     name: 'reply-all',
-    categories: ['mail'],
     tags: ['email'],
   },
   {
+    categories: ['mail'],
     name: 'reply',
-    categories: ['mail'],
     tags: ['email'],
   },
   {
-    name: 'rewind',
     categories: ['arrows', 'multimedia'],
+    name: 'rewind',
     tags: ['music'],
   },
   {
-    name: 'ribbon',
     categories: ['social', 'medical', 'emoji'],
+    name: 'ribbon',
     tags: ['awareness', 'strip', 'band', 'tape', 'strap', 'cordon'],
   },
   {
-    name: 'rocket',
     categories: ['gaming', 'development'],
+    name: 'rocket',
     tags: ['release', 'boost', 'launch', 'space', 'version'],
   },
   {
-    name: 'rocking-chair',
     categories: ['home'],
+    name: 'rocking-chair',
     tags: ['chair', 'furniture', 'seat'],
   },
   {
-    name: 'roller-coaster',
     categories: ['navigation'],
+    name: 'roller-coaster',
     tags: ['attraction', 'entertainment', 'amusement park', 'theme park', 'funfair'],
   },
   {
-    name: 'rose',
     categories: ['nature', 'seasons', 'sustainability', 'home', 'social'],
+    name: 'rose',
     tags: [
       'roses',
       'thorns',
@@ -10036,23 +10036,23 @@ export default [
     ],
   },
   {
-    name: 'rotate-3d',
     categories: ['design'],
+    name: 'rotate-3d',
     tags: ['gizmo', 'transform', 'orientation', 'orbit', 'axis'],
   },
   {
-    name: 'rotate-ccw-key',
     categories: ['security', 'account'],
+    name: 'rotate-ccw-key',
     tags: ['password', 'key', 'refresh', 'change'],
   },
   {
-    name: 'rotate-ccw-square',
     categories: ['layout', 'design', 'photography', 'tools', 'arrows'],
+    name: 'rotate-ccw-square',
     tags: ['left', 'counter-clockwise', 'rotate', 'image', '90', '45', 'degrees', '°'],
   },
   {
-    name: 'rotate-ccw',
     categories: ['arrows', 'design', 'photography'],
+    name: 'rotate-ccw',
     tags: [
       'arrow',
       'left',
@@ -10071,18 +10071,18 @@ export default [
     ],
   },
   {
-    name: 'rotate-cw-square',
     categories: ['layout', 'design', 'photography', 'tools', 'arrows'],
+    name: 'rotate-cw-square',
     tags: ['right', 'clockwise', 'rotate', 'image', '90', '45', 'degrees', '°'],
   },
   {
-    name: 'rotate-cw',
     categories: ['arrows', 'design', 'photography'],
+    name: 'rotate-cw',
     tags: ['arrow', 'right', 'clockwise', 'refresh', 'reload', 'rerun', 'redo'],
   },
   {
-    name: 'route-off',
     categories: ['navigation'],
+    name: 'route-off',
     tags: [
       'path',
       'journey',
@@ -10098,18 +10098,18 @@ export default [
     ],
   },
   {
-    name: 'route',
     categories: ['navigation'],
+    name: 'route',
     tags: ['path', 'journey', 'planner', 'points', 'stops', 'stations'],
   },
   {
-    name: 'router',
     categories: ['development', 'devices', 'connectivity', 'home'],
+    name: 'router',
     tags: ['computer', 'server', 'cloud'],
   },
   {
-    name: 'rows-2',
     categories: ['layout', 'design', 'text'],
+    name: 'rows-2',
     tags: [
       'lines',
       'list',
@@ -10130,8 +10130,8 @@ export default [
     ],
   },
   {
-    name: 'rows-3',
     categories: ['layout', 'design', 'text'],
+    name: 'rows-3',
     tags: [
       'lines',
       'list',
@@ -10151,8 +10151,8 @@ export default [
     ],
   },
   {
-    name: 'rows-4',
     categories: ['layout', 'design', 'text'],
+    name: 'rows-4',
     tags: [
       'lines',
       'list',
@@ -10173,8 +10173,8 @@ export default [
     ],
   },
   {
-    name: 'rss',
     categories: ['development', 'social'],
+    name: 'rss',
     tags: [
       'feed',
       'subscribe',
@@ -10200,8 +10200,8 @@ export default [
     ],
   },
   {
+    categories: ['tools', 'design', 'layout'],
     name: 'ruler-dimension-line',
-    categories: ['tools', 'design', 'layout'],
     tags: [
       'measurements',
       'centimeters',
@@ -10225,8 +10225,8 @@ export default [
     ],
   },
   {
+    categories: ['tools', 'design', 'layout'],
     name: 'ruler',
-    categories: ['tools', 'design', 'layout'],
     tags: [
       'measurements',
       'centimeters',
@@ -10250,78 +10250,78 @@ export default [
     ],
   },
   {
-    name: 'russian-ruble',
     categories: ['finance'],
+    name: 'russian-ruble',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'sailboat',
     categories: ['transportation', 'travel'],
+    name: 'sailboat',
     tags: ['ship', 'boat', 'harbor', 'harbour', 'dock'],
   },
   {
-    name: 'salad',
     categories: ['food-beverage', 'emoji'],
+    name: 'salad',
     tags: ['food', 'vegetarian', 'dish', 'restaurant', 'course', 'meal', 'side', 'vegetables', 'health'],
   },
   {
-    name: 'sandwich',
     categories: ['food-beverage'],
+    name: 'sandwich',
     tags: ['food', 'snack', 'dish', 'restaurant', 'lunch', 'meal'],
   },
   {
-    name: 'satellite-dish',
     categories: ['connectivity', 'devices', 'multimedia'],
+    name: 'satellite-dish',
     tags: ['antenna', 'receiver', 'dish aerial', 'saucer'],
   },
   {
-    name: 'satellite',
     categories: ['connectivity', 'science'],
+    name: 'satellite',
     tags: ['space station', 'orbit', 'transmitter'],
   },
   {
-    name: 'saudi-riyal',
     categories: ['finance'],
+    name: 'saudi-riyal',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'save-all',
     categories: ['text', 'files'],
+    name: 'save-all',
     tags: ['floppy disks', 'copy'],
   },
   {
-    name: 'save-off',
     categories: ['text', 'files'],
+    name: 'save-off',
     tags: ['floppy disk', 'unsalvageable'],
   },
   {
-    name: 'save',
     categories: ['text', 'files'],
+    name: 'save',
     tags: ['floppy disk'],
   },
   {
-    name: 'scale-3d',
     categories: ['design'],
+    name: 'scale-3d',
     tags: ['gizmo', 'transform', 'size', 'axis'],
   },
   {
-    name: 'scale',
     categories: ['navigation'],
+    name: 'scale',
     tags: ['balance', 'legal', 'license', 'right', 'rule', 'law'],
   },
   {
-    name: 'scaling',
     categories: ['design'],
+    name: 'scaling',
     tags: ['scale', 'resize', 'design'],
   },
   {
-    name: 'scan-barcode',
     categories: ['shopping', 'devices'],
+    name: 'scan-barcode',
     tags: ['checkout', 'till', 'cart', 'transaction', 'purchase', 'buy', 'product', 'packaging', 'retail', 'consumer'],
   },
   {
-    name: 'scan-eye',
     categories: ['photography', 'multimedia', 'accessibility', 'security', 'devices', 'account'],
+    name: 'scan-eye',
     tags: [
       'preview',
       'zoom',
@@ -10343,18 +10343,18 @@ export default [
     ],
   },
   {
-    name: 'scan-face',
     categories: ['account', 'security', 'devices', 'social'],
+    name: 'scan-face',
     tags: ['face', 'biometric', 'identification', 'authentication', '2fa', 'access', 'login', 'dashed'],
   },
   {
-    name: 'scan-heart',
     categories: ['medical'],
+    name: 'scan-heart',
     tags: ['health', 'heart rate', 'pulse', 'monitoring', 'healthiness', 'screening', 'dashed'],
   },
   {
-    name: 'scan-line',
     categories: ['devices', 'shopping'],
+    name: 'scan-line',
     tags: [
       'checkout',
       'till',
@@ -10371,23 +10371,23 @@ export default [
     ],
   },
   {
-    name: 'scan-qr-code',
     categories: ['account', 'shopping', 'devices', 'security'],
+    name: 'scan-qr-code',
     tags: ['barcode', 'scan', 'qrcode', 'url', 'information', 'digital', 'scanner'],
   },
   {
-    name: 'scan-search',
     categories: ['photography', 'multimedia', 'accessibility'],
+    name: 'scan-search',
     tags: ['preview', 'zoom', 'expand', 'fullscreen', 'gallery', 'image', 'focus', 'lens'],
   },
   {
-    name: 'scan-text',
     categories: ['text', 'devices'],
+    name: 'scan-text',
     tags: ['recognition', 'read', 'translate', 'copy', 'lines'],
   },
   {
-    name: 'scan',
     categories: ['devices', 'shopping', 'security', 'social', 'gaming'],
+    name: 'scan',
     tags: [
       'qr-code',
       'barcode',
@@ -10410,8 +10410,8 @@ export default [
     ],
   },
   {
-    name: 'school',
     categories: ['buildings', 'navigation'],
+    name: 'school',
     tags: [
       'building',
       'education',
@@ -10439,28 +10439,28 @@ export default [
     ],
   },
   {
-    name: 'scissors-line-dashed',
     categories: ['design', 'tools'],
+    name: 'scissors-line-dashed',
     tags: ['cut here', 'along', 'snip', 'chop', 'stationery', 'crafts', 'instructions', 'diagram'],
   },
   {
-    name: 'scissors',
     categories: ['text', 'design', 'tools'],
+    name: 'scissors',
     tags: ['cut', 'snip', 'chop', 'stationery', 'crafts'],
   },
   {
-    name: 'screen-share-off',
     categories: ['connectivity', 'devices', 'communication'],
+    name: 'screen-share-off',
     tags: ['desktop', 'disconnect', 'monitor'],
   },
   {
-    name: 'screen-share',
     categories: ['connectivity', 'devices', 'communication'],
+    name: 'screen-share',
     tags: ['host', 'desktop', 'monitor'],
   },
   {
+    categories: ['gaming', 'development', 'text'],
     name: 'scroll-text',
-    categories: ['gaming', 'development', 'text'],
     tags: [
       'paper',
       'log',
@@ -10477,8 +10477,8 @@ export default [
     ],
   },
   {
+    categories: ['gaming', 'development', 'text'],
     name: 'scroll',
-    categories: ['gaming', 'development', 'text'],
     tags: [
       'paper',
       'log',
@@ -10495,93 +10495,93 @@ export default [
     ],
   },
   {
-    name: 'search-check',
     categories: ['text', 'social'],
+    name: 'search-check',
     tags: ['find', 'scan', 'magnifier', 'magnifying glass', 'found', 'correct', 'complete', 'tick', 'lens'],
   },
   {
-    name: 'search-code',
     categories: ['text', 'social', 'development'],
+    name: 'search-code',
     tags: ['find', 'scan', 'magnifier', 'magnifying glass', 'grep', 'chevrons', '<>', 'lens'],
   },
   {
-    name: 'search-slash',
     categories: ['text', 'social'],
+    name: 'search-slash',
     tags: ['find', 'scan', 'magnifier', 'magnifying glass', 'stop', 'clear', 'cancel', 'abort', '/', 'lens'],
   },
   {
-    name: 'search-x',
     categories: ['text', 'social'],
+    name: 'search-x',
     tags: ['find', 'scan', 'magnifier', 'magnifying glass', 'stop', 'clear', 'cancel', 'abort', 'lens'],
   },
   {
-    name: 'search',
     categories: ['text', 'social'],
+    name: 'search',
     tags: ['find', 'scan', 'magnifier', 'magnifying glass', 'lens'],
   },
   {
-    name: 'section',
     categories: ['text'],
+    name: 'section',
     tags: ['mark', 'typography', 'punctuation', 'legal', 'type', 'text', 'prose', 'symbol'],
   },
   {
-    name: 'send-horizontal',
     categories: ['mail', 'communication', 'connectivity'],
+    name: 'send-horizontal',
     tags: ['email', 'message', 'mail', 'paper airplane', 'paper aeroplane', 'submit'],
   },
   {
-    name: 'send-to-back',
     categories: ['design', 'layout'],
+    name: 'send-to-back',
     tags: ['bring', 'send', 'move', 'under', 'back', 'backwards', 'overlap', 'layer', 'order'],
   },
   {
-    name: 'send',
     categories: ['mail', 'communication', 'connectivity'],
+    name: 'send',
     tags: ['email', 'message', 'mail', 'paper airplane', 'paper aeroplane', 'submit'],
   },
   {
+    categories: ['text', 'arrows', 'layout'],
     name: 'separator-horizontal',
-    categories: ['text', 'arrows', 'layout'],
     tags: ['move', 'split'],
   },
   {
+    categories: ['text', 'arrows', 'layout'],
     name: 'separator-vertical',
-    categories: ['text', 'arrows', 'layout'],
     tags: ['move', 'split'],
   },
   {
-    name: 'server-cog',
     categories: ['development', 'devices'],
+    name: 'server-cog',
     tags: ['cloud', 'storage', 'computing', 'cog', 'gear'],
   },
   {
-    name: 'server-crash',
     categories: ['development', 'devices'],
+    name: 'server-crash',
     tags: ['cloud', 'storage', 'problem', 'error'],
   },
   {
+    categories: ['development', 'devices'],
     name: 'server-off',
-    categories: ['development', 'devices'],
     tags: ['cloud', 'storage'],
   },
   {
+    categories: ['development', 'devices'],
     name: 'server',
-    categories: ['development', 'devices'],
     tags: ['cloud', 'storage'],
   },
   {
-    name: 'settings-2',
     categories: ['account'],
+    name: 'settings-2',
     tags: ['cog', 'edit', 'gear', 'preferences', 'slider'],
   },
   {
-    name: 'settings',
     categories: ['account'],
+    name: 'settings',
     tags: ['cog', 'edit', 'gear', 'preferences'],
   },
   {
-    name: 'shapes',
     categories: ['shapes', 'gaming'],
+    name: 'shapes',
     tags: [
       'triangle',
       'equilateral',
@@ -10596,23 +10596,23 @@ export default [
     ],
   },
   {
+    categories: ['account', 'social'],
     name: 'share-2',
-    categories: ['account', 'social'],
     tags: ['network', 'connections'],
   },
   {
+    categories: ['account', 'social'],
     name: 'share',
-    categories: ['account', 'social'],
     tags: ['network', 'connections'],
   },
   {
-    name: 'sheet',
     categories: ['text', 'files'],
+    name: 'sheet',
     tags: ['spreadsheets', 'table', 'excel'],
   },
   {
-    name: 'shell',
     categories: ['animals', 'development', 'nature', 'science', 'travel', 'food-beverage', 'home'],
+    name: 'shell',
     tags: [
       'beach',
       'sand',
@@ -10643,8 +10643,8 @@ export default [
     ],
   },
   {
-    name: 'shield-alert',
     categories: ['account', 'security', 'development', 'notifications', 'gaming'],
+    name: 'shield-alert',
     tags: [
       'unshielded',
       'cybersecurity',
@@ -10713,8 +10713,8 @@ export default [
     ],
   },
   {
-    name: 'shield-ban',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-ban',
     tags: [
       'unshielded',
       'cybersecurity',
@@ -10777,8 +10777,8 @@ export default [
     ],
   },
   {
-    name: 'shield-check',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-check',
     tags: [
       'cybersecurity',
       'secured',
@@ -10836,8 +10836,8 @@ export default [
     ],
   },
   {
-    name: 'shield-ellipsis',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-ellipsis',
     tags: [
       'cybersecurity',
       'securing',
@@ -10869,8 +10869,8 @@ export default [
     ],
   },
   {
-    name: 'shield-half',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-half',
     tags: [
       'cybersecurity',
       'secure',
@@ -10929,8 +10929,8 @@ export default [
     ],
   },
   {
-    name: 'shield-minus',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-minus',
     tags: [
       'unshield',
       'cybersecurity',
@@ -10963,8 +10963,8 @@ export default [
     ],
   },
   {
-    name: 'shield-off',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-off',
     tags: [
       'unshielded',
       'cybersecurity',
@@ -11014,8 +11014,8 @@ export default [
     ],
   },
   {
-    name: 'shield-plus',
     categories: ['account', 'security', 'development', 'gaming', 'medical'],
+    name: 'shield-plus',
     tags: [
       'cybersecurity',
       'secure',
@@ -11061,8 +11061,8 @@ export default [
     ],
   },
   {
-    name: 'shield-question-mark',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-question-mark',
     tags: [
       'unshielded',
       'cybersecurity',
@@ -11111,13 +11111,13 @@ export default [
     ],
   },
   {
-    name: 'shield-user',
     categories: ['account', 'security', 'development'],
+    name: 'shield-user',
     tags: ['shield', 'user', 'admin', 'protection', 'protected', 'safety', 'guard'],
   },
   {
-    name: 'shield-x',
     categories: ['account', 'security', 'development', 'gaming'],
+    name: 'shield-x',
     tags: [
       'unshielded',
       'cybersecurity',
@@ -11182,8 +11182,8 @@ export default [
     ],
   },
   {
-    name: 'shield',
     categories: ['account', 'security', 'development', 'gaming', 'shapes'],
+    name: 'shield',
     tags: [
       'cybersecurity',
       'secure',
@@ -11230,8 +11230,8 @@ export default [
     ],
   },
   {
-    name: 'ship-wheel',
     categories: ['transportation', 'navigation', 'travel'],
+    name: 'ship-wheel',
     tags: [
       'steering',
       'rudder',
@@ -11250,8 +11250,8 @@ export default [
     ],
   },
   {
-    name: 'ship',
     categories: ['transportation', 'navigation', 'travel'],
+    name: 'ship',
     tags: [
       'boat',
       'knots',
@@ -11269,38 +11269,38 @@ export default [
     ],
   },
   {
-    name: 'shirt',
     categories: ['shopping'],
+    name: 'shirt',
     tags: ['t-shirt', 'shopping', 'store', 'clothing', 'clothes'],
   },
   {
-    name: 'shopping-bag',
     categories: ['shopping'],
+    name: 'shopping-bag',
     tags: ['ecommerce', 'cart', 'purchase', 'store'],
   },
   {
-    name: 'shopping-basket',
     categories: ['shopping'],
+    name: 'shopping-basket',
     tags: ['cart', 'e-commerce', 'store', 'purchase', 'products', 'items', 'ingredients'],
   },
   {
-    name: 'shopping-cart',
     categories: ['shopping'],
+    name: 'shopping-cart',
     tags: ['trolley', 'cart', 'basket', 'e-commerce', 'store', 'purchase', 'products', 'items', 'ingredients'],
   },
   {
-    name: 'shovel',
     categories: ['nature', 'tools', 'gaming'],
+    name: 'shovel',
     tags: ['dig', 'spade', 'treasure'],
   },
   {
-    name: 'shower-head',
     categories: ['home', 'travel'],
+    name: 'shower-head',
     tags: ['shower', 'bath', 'bathroom', 'amenities', 'services'],
   },
   {
-    name: 'shredder',
     categories: ['mail', 'files'],
+    name: 'shredder',
     tags: [
       'file',
       'paper',
@@ -11325,8 +11325,8 @@ export default [
     ],
   },
   {
-    name: 'shrimp',
     categories: ['animals'],
+    name: 'shrimp',
     tags: [
       'seafood',
       'shellfish',
@@ -11341,53 +11341,53 @@ export default [
     ],
   },
   {
-    name: 'shrink',
     categories: ['layout', 'arrows'],
+    name: 'shrink',
     tags: ['scale', 'fullscreen'],
   },
   {
-    name: 'shrub',
     categories: ['nature'],
+    name: 'shrub',
     tags: ['forest', 'undergrowth', 'park', 'nature'],
   },
   {
-    name: 'shuffle',
     categories: ['multimedia', 'arrows'],
+    name: 'shuffle',
     tags: ['music', 'random', 'reorder'],
   },
   {
-    name: 'sigma',
     categories: ['text', 'math', 'science'],
+    name: 'sigma',
     tags: ['sum', 'calculate', 'formula', 'math', 'enumeration', 'enumerate'],
   },
   {
+    categories: ['connectivity'],
     name: 'signal-high',
-    categories: ['connectivity'],
     tags: ['connection', 'wireless', 'gsm', 'phone', '2g', '3g', '4g', '5g'],
   },
   {
+    categories: ['connectivity'],
     name: 'signal-low',
-    categories: ['connectivity'],
     tags: ['connection', 'wireless', 'gsm', 'phone', '2g', '3g', '4g', '5g'],
   },
   {
+    categories: ['connectivity'],
     name: 'signal-medium',
-    categories: ['connectivity'],
     tags: ['connection', 'wireless', 'gsm', 'phone', '2g', '3g', '4g', '5g'],
   },
   {
-    name: 'signal-zero',
     categories: ['connectivity'],
+    name: 'signal-zero',
     tags: ['connection', 'wireless', 'gsm', 'phone', '2g', '3g', '4g', '5g', 'lost'],
   },
   {
-    name: 'signal',
     categories: ['connectivity'],
+    name: 'signal',
     tags: ['connection', 'wireless', 'gsm', 'phone', '2g', '3g', '4g', '5g'],
   },
   {
-    name: 'signature',
     categories: ['text'],
+    name: 'signature',
     tags: [
       'text',
       'format',
@@ -11412,173 +11412,173 @@ export default [
     ],
   },
   {
+    categories: ['arrows', 'navigation', 'development', 'gaming'],
     name: 'signpost-big',
-    categories: ['arrows', 'navigation', 'development', 'gaming'],
     tags: ['bidirectional', 'left', 'right', 'east', 'west'],
   },
   {
+    categories: ['arrows', 'navigation', 'development', 'gaming'],
     name: 'signpost',
-    categories: ['arrows', 'navigation', 'development', 'gaming'],
     tags: ['bidirectional', 'left', 'right', 'east', 'west'],
   },
   {
-    name: 'siren',
     categories: ['medical'],
+    name: 'siren',
     tags: ['police', 'ambulance', 'emergency', 'security', 'alert', 'alarm', 'light'],
   },
   {
-    name: 'skip-back',
     categories: ['multimedia', 'arrows'],
+    name: 'skip-back',
     tags: ['arrow', 'previous', 'music'],
   },
   {
-    name: 'skip-forward',
     categories: ['multimedia', 'arrows'],
+    name: 'skip-forward',
     tags: ['arrow', 'skip', 'next', 'music'],
   },
   {
-    name: 'skull',
     categories: ['gaming'],
+    name: 'skull',
     tags: ['death', 'danger', 'bone'],
   },
   {
-    name: 'slack',
     categories: ['account', 'social', 'brands', 'development'],
+    name: 'slack',
     tags: ['logo'],
   },
   {
-    name: 'slash',
     categories: ['development', 'math'],
+    name: 'slash',
     tags: ['divide', 'division', 'or', '/'],
   },
   {
-    name: 'slice',
     categories: ['design'],
+    name: 'slice',
     tags: ['cutter', 'scalpel', 'knife'],
   },
   {
-    name: 'sliders-horizontal',
     categories: ['account'],
+    name: 'sliders-horizontal',
     tags: ['settings', 'filters', 'controls'],
   },
   {
-    name: 'sliders-vertical',
     categories: ['account'],
+    name: 'sliders-vertical',
     tags: ['settings', 'controls'],
   },
   {
-    name: 'smartphone-charging',
     categories: ['connectivity', 'devices'],
+    name: 'smartphone-charging',
     tags: ['phone', 'cellphone', 'device', 'power', 'screen'],
   },
   {
-    name: 'smartphone-nfc',
     categories: ['communication', 'finance', 'devices'],
+    name: 'smartphone-nfc',
     tags: ['contactless', 'payment', 'near-field communication', 'screen'],
   },
   {
-    name: 'smartphone',
     categories: ['connectivity', 'devices'],
+    name: 'smartphone',
     tags: ['phone', 'cellphone', 'device', 'screen'],
   },
   {
-    name: 'smile-plus',
     categories: ['emoji', 'social', 'notifications', 'communication'],
+    name: 'smile-plus',
     tags: ['emoji', 'face', 'happy', 'good', 'emotion', 'react', 'reaction', 'add'],
   },
   {
-    name: 'smile',
     categories: ['emoji', 'account'],
+    name: 'smile',
     tags: ['emoji', 'face', 'happy', 'good', 'emotion'],
   },
   {
-    name: 'snail',
     categories: ['animals', 'food-beverage'],
+    name: 'snail',
     tags: ['animal', 'insect', 'slow', 'speed', 'delicacy', 'spiral'],
   },
   {
-    name: 'snowflake',
     categories: ['weather', 'seasons'],
+    name: 'snowflake',
     tags: ['cold', 'weather', 'freeze', 'snow', 'winter'],
   },
   {
-    name: 'soap-dispenser-droplet',
     categories: ['home', 'travel'],
+    name: 'soap-dispenser-droplet',
     tags: ['wash', 'bath', 'water', 'liquid', 'fluid', 'wet', 'moisture', 'damp', 'bead', 'globule'],
   },
   {
-    name: 'sofa',
     categories: ['home'],
+    name: 'sofa',
     tags: ['armchair', 'furniture', 'leisure', 'lounge', 'loveseat', 'couch'],
   },
   {
-    name: 'soup',
     categories: ['food-beverage'],
+    name: 'soup',
     tags: ['food', 'dish', 'restaurant', 'course', 'meal', 'bowl', 'starter'],
   },
   {
-    name: 'space',
     categories: ['text'],
+    name: 'space',
     tags: ['text', 'selection', 'letters', 'characters', 'font', 'typography'],
   },
   {
-    name: 'spade',
     categories: ['shapes', 'gaming'],
+    name: 'spade',
     tags: ['shape', 'suit', 'playing', 'cards'],
   },
   {
-    name: 'sparkle',
     categories: ['shapes'],
+    name: 'sparkle',
     tags: ['star', 'effect', 'filter', 'night', 'magic', 'shiny', 'glitter', 'twinkle', 'celebration'],
   },
   {
-    name: 'sparkles',
     categories: ['cursors', 'multimedia', 'gaming', 'weather'],
+    name: 'sparkles',
     tags: ['stars', 'effect', 'filter', 'night', 'magic'],
   },
   {
-    name: 'speaker',
     categories: ['multimedia', 'devices'],
+    name: 'speaker',
     tags: ['sound', 'audio', 'music', 'tweeter', 'subwoofer', 'bass', 'production', 'producer', 'dj'],
   },
   {
-    name: 'speech',
     categories: ['accessibility', 'communication'],
+    name: 'speech',
     tags: ['disability', 'disabled', 'dda', 'human', 'accessibility', 'people', 'sound'],
   },
   {
+    categories: ['text', 'development'],
     name: 'spell-check-2',
-    categories: ['text', 'development'],
     tags: ['spelling', 'error', 'mistake', 'oversight', 'typo', 'correction', 'code', 'linter', 'a'],
   },
   {
+    categories: ['text', 'development'],
     name: 'spell-check',
-    categories: ['text', 'development'],
     tags: ['spelling', 'error', 'mistake', 'oversight', 'typo', 'correction', 'code', 'linter', 'a'],
   },
   {
-    name: 'spline-pointer',
     categories: ['arrows', 'cursors', 'design', 'tools'],
+    name: 'spline-pointer',
     tags: ['path', 'tool', 'curve', 'node', 'click', 'pointer', 'target', 'vector'],
   },
   {
-    name: 'spline',
     categories: ['design'],
+    name: 'spline',
     tags: ['path', 'pen', 'tool', 'shape', 'curve', 'draw'],
   },
   {
-    name: 'split',
     categories: ['development', 'arrows'],
+    name: 'split',
     tags: ['break', 'disband', 'divide', 'separate', 'branch', 'disunite'],
   },
   {
-    name: 'spool',
     categories: ['communication', 'tools', 'social'],
+    name: 'spool',
     tags: ['bobbin', 'spindle', 'yarn', 'thread', 'string', 'sewing', 'needlework'],
   },
   {
-    name: 'spotlight',
     categories: ['devices', 'photography', 'multimedia', 'communication'],
+    name: 'spotlight',
     tags: [
       'winner',
       'soapbox',
@@ -11605,18 +11605,18 @@ export default [
     ],
   },
   {
-    name: 'spray-can',
     categories: ['design', 'tools'],
+    name: 'spray-can',
     tags: ['paint', 'color', 'graffiti', 'decoration', 'aerosol', 'deodorant', 'shaving foam', 'air freshener'],
   },
   {
-    name: 'sprout',
     categories: ['nature', 'gaming', 'sustainability'],
+    name: 'sprout',
     tags: ['eco', 'green', 'growth', 'leaf', 'nature', 'plant', 'seed', 'spring', 'sustainability'],
   },
   {
-    name: 'square-activity',
     categories: ['medical', 'social', 'science', 'multimedia'],
+    name: 'square-activity',
     tags: [
       'pulse',
       'action',
@@ -11648,78 +11648,78 @@ export default [
     ],
   },
   {
-    name: 'square-arrow-down-left',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'square-arrow-down-left',
     tags: ['direction', 'south-west', 'diagonal', 'sign', 'turn', 'keyboard', 'button'],
   },
   {
-    name: 'square-arrow-down-right',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'square-arrow-down-right',
     tags: ['direction', 'south-east', 'diagonal', 'sign', 'turn', 'keyboard', 'button'],
   },
   {
-    name: 'square-arrow-down',
     categories: ['arrows', 'navigation', 'gaming'],
+    name: 'square-arrow-down',
     tags: ['backwards', 'reverse', 'direction', 'south', 'sign', 'keyboard', 'button'],
   },
   {
-    name: 'square-arrow-left',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-left',
     tags: ['previous', 'back', 'direction', 'west', 'sign', 'keyboard', 'button', '<-'],
   },
   {
-    name: 'square-arrow-out-down-left',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-out-down-left',
     tags: ['outwards', 'direction', 'south-west', 'diagonal'],
   },
   {
-    name: 'square-arrow-out-down-right',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-out-down-right',
     tags: ['outwards', 'direction', 'south-east', 'diagonal'],
   },
   {
-    name: 'square-arrow-out-up-left',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-out-up-left',
     tags: ['outwards', 'direction', 'north-west', 'diagonal'],
   },
   {
-    name: 'square-arrow-out-up-right',
     categories: ['arrows', 'navigation', 'social'],
+    name: 'square-arrow-out-up-right',
     tags: ['outwards', 'direction', 'north-east', 'diagonal', 'share', 'open', 'external', 'link'],
   },
   {
-    name: 'square-arrow-right',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-right',
     tags: ['next', 'forward', 'direction', 'west', 'sign', 'keyboard', 'button', '->'],
   },
   {
-    name: 'square-arrow-up-left',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-up-left',
     tags: ['direction', 'north-west', 'diagonal', 'sign', 'keyboard', 'button'],
   },
   {
-    name: 'square-arrow-up-right',
     categories: ['arrows', 'navigation', 'social'],
+    name: 'square-arrow-up-right',
     tags: ['direction', 'north-east', 'diagonal', 'sign', 'keyboard', 'button', 'share'],
   },
   {
-    name: 'square-arrow-up',
     categories: ['arrows', 'navigation'],
+    name: 'square-arrow-up',
     tags: ['forward', 'direction', 'north', 'sign', 'keyboard', 'button'],
   },
   {
-    name: 'square-asterisk',
     categories: ['text', 'security', 'math', 'development'],
+    name: 'square-asterisk',
     tags: ['password', 'secret', 'access', 'key', 'multiply', 'multiplication', 'glob pattern', 'wildcard', '*'],
   },
   {
-    name: 'square-bottom-dashed-scissors',
     categories: ['text', 'design', 'tools', 'files', 'development'],
+    name: 'square-bottom-dashed-scissors',
     tags: ['cut', 'snippet', 'chop', 'stationery', 'crafts'],
   },
   {
-    name: 'square-chart-gantt',
     categories: ['charts', 'time', 'development', 'design'],
+    name: 'square-chart-gantt',
     tags: [
       'projects',
       'manage',
@@ -11743,28 +11743,28 @@ export default [
     ],
   },
   {
+    categories: ['notifications'],
     name: 'square-check-big',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
+    categories: ['notifications'],
     name: 'square-check',
-    categories: ['notifications'],
     tags: ['done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'square-chevron-down',
     categories: ['arrows', 'navigation'],
+    name: 'square-chevron-down',
     tags: ['back', 'menu', 'panel'],
   },
   {
-    name: 'square-chevron-left',
     categories: ['arrows', 'navigation'],
+    name: 'square-chevron-left',
     tags: ['back', 'previous', 'less than', 'fewer', 'menu', 'panel', 'button', 'keyboard', '<'],
   },
   {
-    name: 'square-chevron-right',
     categories: ['arrows', 'navigation', 'development'],
+    name: 'square-chevron-right',
     tags: [
       'forward',
       'next',
@@ -11783,8 +11783,8 @@ export default [
     ],
   },
   {
-    name: 'square-chevron-up',
     categories: ['arrows', 'navigation', 'math'],
+    name: 'square-chevron-up',
     tags: [
       'caret',
       'keyboard',
@@ -11802,23 +11802,23 @@ export default [
     ],
   },
   {
-    name: 'square-code',
     categories: ['text', 'development'],
+    name: 'square-code',
     tags: ['gist', 'source', 'programming', 'html', 'xml', 'coding'],
   },
   {
+    categories: ['development', 'files'],
     name: 'square-dashed-bottom-code',
-    categories: ['development', 'files'],
     tags: ['rectangle', 'aspect ratio', '1:1', 'shape', 'snippet', 'code', 'coding'],
   },
   {
+    categories: ['development', 'files'],
     name: 'square-dashed-bottom',
-    categories: ['development', 'files'],
     tags: ['rectangle', 'aspect ratio', '1:1', 'shape', 'snippet', 'code', 'coding'],
   },
   {
-    name: 'square-dashed-kanban',
     categories: ['charts', 'development', 'design'],
+    name: 'square-dashed-kanban',
     tags: [
       'projects',
       'manage',
@@ -11840,13 +11840,13 @@ export default [
     ],
   },
   {
-    name: 'square-dashed-mouse-pointer',
     categories: ['arrows', 'cursors', 'development', 'tools'],
+    name: 'square-dashed-mouse-pointer',
     tags: ['inspector', 'element', 'mouse', 'click', 'pointer', 'box', 'browser', 'selector', 'target', 'dom', 'node'],
   },
   {
-    name: 'square-dashed-top-solid',
     categories: ['design', 'development', 'layout'],
+    name: 'square-dashed-top-solid',
     tags: [
       'square',
       'border',
@@ -11864,33 +11864,33 @@ export default [
     ],
   },
   {
-    name: 'square-dashed',
     categories: ['text', 'design'],
+    name: 'square-dashed',
     tags: ['selection', 'square', 'rectangular', 'marquee', 'tool', 'dashed', 'box'],
   },
   {
-    name: 'square-divide',
     categories: ['math'],
+    name: 'square-divide',
     tags: ['calculate', 'math', '÷', '/'],
   },
   {
-    name: 'square-dot',
     categories: ['development'],
+    name: 'square-dot',
     tags: ['git', 'diff', 'modified', '.'],
   },
   {
-    name: 'square-equal',
     categories: ['math'],
+    name: 'square-equal',
     tags: ['calculate', '='],
   },
   {
-    name: 'square-function',
     categories: ['development', 'math'],
+    name: 'square-function',
     tags: ['programming', 'code', 'automation', 'math'],
   },
   {
-    name: 'square-kanban',
     categories: ['charts', 'development', 'design'],
+    name: 'square-kanban',
     tags: [
       'projects',
       'manage',
@@ -11911,8 +11911,8 @@ export default [
     ],
   },
   {
-    name: 'square-library',
     categories: ['text', 'photography', 'multimedia', 'navigation', 'development'],
+    name: 'square-library',
     tags: [
       'books',
       'reading',
@@ -11940,18 +11940,18 @@ export default [
     ],
   },
   {
-    name: 'square-m',
     categories: ['transportation', 'navigation'],
+    name: 'square-m',
     tags: ['metro', 'subway', 'underground', 'track', 'line'],
   },
   {
-    name: 'square-menu',
     categories: ['layout'],
+    name: 'square-menu',
     tags: ['bars', 'navigation', 'hamburger', 'options', 'menu bar', 'panel'],
   },
   {
-    name: 'square-minus',
     categories: ['math', 'development', 'text', 'tools', 'devices'],
+    name: 'square-minus',
     tags: [
       'subtract',
       'remove',
@@ -11978,28 +11978,28 @@ export default [
     ],
   },
   {
-    name: 'square-mouse-pointer',
     categories: ['arrows', 'cursors', 'development', 'tools'],
+    name: 'square-mouse-pointer',
     tags: ['inspector', 'element', 'mouse', 'click', 'pointer', 'box', 'browser', 'selector', 'target', 'dom', 'node'],
   },
   {
-    name: 'square-parking-off',
     categories: ['transportation', 'navigation'],
+    name: 'square-parking-off',
     tags: ['parking lot', 'car park', 'no parking'],
   },
   {
-    name: 'square-parking',
     categories: ['transportation', 'navigation'],
+    name: 'square-parking',
     tags: ['parking lot', 'car park'],
   },
   {
-    name: 'square-pause',
     categories: ['multimedia'],
+    name: 'square-pause',
     tags: ['music', 'audio', 'stop'],
   },
   {
-    name: 'square-pen',
     categories: ['text'],
+    name: 'square-pen',
     tags: [
       'pencil',
       'edit',
@@ -12019,28 +12019,28 @@ export default [
     ],
   },
   {
-    name: 'square-percent',
     categories: ['social', 'finance', 'shopping', 'math'],
+    name: 'square-percent',
     tags: ['verified', 'unverified', 'sale', 'discount', 'offer', 'marketing', 'sticker', 'price tag'],
   },
   {
-    name: 'square-pi',
     categories: ['development', 'math'],
+    name: 'square-pi',
     tags: ['constant', 'code', 'coding', 'programming', 'symbol', 'trigonometry', 'geometry', 'formula'],
   },
   {
-    name: 'square-pilcrow',
     categories: ['text'],
+    name: 'square-pilcrow',
     tags: ['paragraph', 'mark', 'paraph', 'blind', 'typography', 'type', 'text', 'prose', 'symbol'],
   },
   {
-    name: 'square-play',
     categories: ['arrows', 'multimedia'],
+    name: 'square-play',
     tags: ['music', 'audio', 'video', 'start', 'run'],
   },
   {
-    name: 'square-plus',
     categories: ['math', 'tools', 'development', 'text'],
+    name: 'square-plus',
     tags: [
       'add',
       'new',
@@ -12064,8 +12064,8 @@ export default [
     ],
   },
   {
-    name: 'square-power',
     categories: ['connectivity'],
+    name: 'square-power',
     tags: [
       'on',
       'off',
@@ -12082,53 +12082,53 @@ export default [
     ],
   },
   {
-    name: 'square-radical',
     categories: ['development', 'math'],
+    name: 'square-radical',
     tags: ['calculate', 'formula', 'math', 'operator', 'root', 'square', 'symbol'],
   },
   {
-    name: 'square-round-corner',
     categories: ['design', 'development', 'layout'],
+    name: 'square-round-corner',
     tags: ['border', 'radius', 'style', 'design', 'corner', 'layout', 'round', 'rounded'],
   },
   {
-    name: 'square-scissors',
     categories: ['text', 'design', 'tools', 'files', 'development'],
+    name: 'square-scissors',
     tags: ['cut', 'snippet', 'chop', 'stationery', 'crafts', 'toolbar', 'button'],
   },
   {
-    name: 'square-sigma',
     categories: ['text', 'math'],
+    name: 'square-sigma',
     tags: ['sum', 'calculate', 'formula', 'math', 'enumeration', 'enumerate'],
   },
   {
-    name: 'square-slash',
     categories: ['development', 'math'],
+    name: 'square-slash',
     tags: ['git', 'diff', 'ignored', 'divide', 'division', 'shortcut', 'or', '/'],
   },
   {
+    categories: ['layout'],
     name: 'square-split-horizontal',
-    categories: ['layout'],
     tags: ['split', 'divide'],
   },
   {
+    categories: ['layout'],
     name: 'square-split-vertical',
-    categories: ['layout'],
     tags: ['split', 'divide'],
   },
   {
-    name: 'square-square',
     categories: ['layout'],
+    name: 'square-square',
     tags: ['float', 'center', 'rectangle'],
   },
   {
-    name: 'square-stack',
     categories: ['text', 'files', 'development'],
+    name: 'square-stack',
     tags: ['versions', 'clone', 'copy', 'duplicate', 'multiple', 'revisions', 'version control', 'backup', 'history'],
   },
   {
-    name: 'square-star',
     categories: ['sports', 'gaming'],
+    name: 'square-star',
     tags: [
       'badge',
       'medal',
@@ -12146,113 +12146,113 @@ export default [
     ],
   },
   {
-    name: 'square-stop',
     categories: ['multimedia'],
+    name: 'square-stop',
     tags: ['media', 'music'],
   },
   {
-    name: 'square-terminal',
     categories: ['development'],
+    name: 'square-terminal',
     tags: ['code', 'command line', 'prompt', 'shell'],
   },
   {
+    categories: ['account'],
     name: 'square-user-round',
-    categories: ['account'],
     tags: ['person', 'account', 'contact'],
   },
   {
+    categories: ['account'],
     name: 'square-user',
-    categories: ['account'],
     tags: ['person', 'account', 'contact'],
   },
   {
-    name: 'square-x',
     categories: ['math', 'notifications'],
+    name: 'square-x',
     tags: ['cancel', 'close', 'delete', 'remove', 'times', 'clear', 'math', 'multiply', 'multiplication'],
   },
   {
-    name: 'square',
     categories: ['shapes', 'multimedia'],
+    name: 'square',
     tags: ['stop', 'playback', 'music', 'audio', 'video', 'rectangle', 'aspect ratio', '1:1', 'shape'],
   },
   {
-    name: 'squares-exclude',
     categories: ['design'],
+    name: 'squares-exclude',
     tags: ['square', 'pathfinder', 'path', 'exclude', 'invert', 'xor', 'shape', 'vector'],
   },
   {
-    name: 'squares-intersect',
     categories: ['design'],
+    name: 'squares-intersect',
     tags: ['square', 'pathfinder', 'path', 'intersect', 'shape', 'include', 'vector'],
   },
   {
-    name: 'squares-subtract',
     categories: ['design'],
+    name: 'squares-subtract',
     tags: ['square', 'pathfinder', 'path', 'minus', 'subtract', 'subtraction', 'shape', 'front', 'vector'],
   },
   {
-    name: 'squares-unite',
     categories: ['design'],
+    name: 'squares-unite',
     tags: ['square', 'pathfinder', 'path', 'unite', 'union', 'shape', 'merge', 'vector'],
   },
   {
-    name: 'squircle-dashed',
     categories: ['development', 'shapes', 'design'],
+    name: 'squircle-dashed',
     tags: ['shape', 'pending', 'progress', 'issue', 'draft', 'code', 'coding', 'version control'],
   },
   {
-    name: 'squircle',
     categories: ['shapes'],
+    name: 'squircle',
     tags: ['shape'],
   },
   {
-    name: 'squirrel',
     categories: ['animals'],
+    name: 'squirrel',
     tags: ['animal', 'rodent', 'pet', 'pest', 'nuts', 'retrieve', 'updates', 'storage', 'stash'],
   },
   {
-    name: 'stamp',
     categories: ['design', 'cursors', 'tools'],
+    name: 'stamp',
     tags: ['mark', 'print', 'clone', 'loyalty', 'library'],
   },
   {
-    name: 'star-half',
     categories: ['social', 'multimedia'],
+    name: 'star-half',
     tags: ['bookmark', 'favorite', 'like', 'review', 'rating'],
   },
   {
-    name: 'star-off',
     categories: ['multimedia', 'social'],
+    name: 'star-off',
     tags: ['dislike', 'unlike', 'remove', 'unrate'],
   },
   {
-    name: 'star',
     categories: ['account', 'social', 'shapes', 'multimedia', 'weather', 'emoji', 'gaming'],
+    name: 'star',
     tags: ['bookmark', 'favorite', 'like', 'review', 'rating'],
   },
   {
-    name: 'step-back',
     categories: ['multimedia', 'arrows'],
+    name: 'step-back',
     tags: ['arrow', 'previous', 'music', 'left', 'reverse'],
   },
   {
-    name: 'step-forward',
     categories: ['multimedia', 'arrows'],
+    name: 'step-forward',
     tags: ['arrow', 'next', 'music', 'right', 'continue'],
   },
   {
-    name: 'stethoscope',
     categories: ['science', 'medical'],
+    name: 'stethoscope',
     tags: ['phonendoscope', 'medical', 'heart', 'lungs', 'sound'],
   },
   {
-    name: 'sticker',
     categories: ['social'],
+    name: 'sticker',
     tags: ['reaction', 'emotion', 'smile', 'happy', 'feedback'],
   },
   {
-    name: 'sticky-note',
     categories: ['text', 'social'],
+    name: 'sticky-note',
     tags: [
       'post-it',
       'comment',
@@ -12273,73 +12273,73 @@ export default [
     ],
   },
   {
-    name: 'store',
     categories: ['buildings', 'navigation', 'shopping'],
+    name: 'store',
     tags: ['shop', 'supermarket', 'stand', 'boutique', 'building'],
   },
   {
+    categories: ['layout'],
     name: 'stretch-horizontal',
-    categories: ['layout'],
     tags: ['items', 'flex', 'justify', 'distribute'],
   },
   {
+    categories: ['layout'],
     name: 'stretch-vertical',
-    categories: ['layout'],
     tags: ['items', 'flex', 'justify', 'distribute'],
   },
   {
-    name: 'strikethrough',
     categories: ['text'],
+    name: 'strikethrough',
     tags: ['cross out', 'delete', 'remove', 'format'],
   },
   {
-    name: 'subscript',
     categories: ['text'],
+    name: 'subscript',
     tags: ['text'],
   },
   {
-    name: 'sun-dim',
     categories: ['accessibility', 'weather'],
+    name: 'sun-dim',
     tags: ['brightness', 'dim', 'low', 'brightness low'],
   },
   {
-    name: 'sun-medium',
     categories: ['accessibility', 'weather'],
+    name: 'sun-medium',
     tags: ['brightness', 'medium'],
   },
   {
-    name: 'sun-moon',
     categories: ['accessibility'],
+    name: 'sun-moon',
     tags: ['dark', 'light', 'moon', 'sun', 'brightness', 'theme', 'auto theme', 'system theme', 'appearance'],
   },
   {
-    name: 'sun-snow',
     categories: ['weather'],
+    name: 'sun-snow',
     tags: ['weather', 'air conditioning', 'temperature', 'hot', 'cold', 'seasons'],
   },
   {
-    name: 'sun',
     categories: ['accessibility', 'weather', 'seasons', 'sustainability'],
+    name: 'sun',
     tags: ['brightness', 'weather', 'light', 'summer'],
   },
   {
-    name: 'sunrise',
     categories: ['arrows', 'weather', 'time'],
+    name: 'sunrise',
     tags: ['weather', 'time', 'morning', 'day'],
   },
   {
-    name: 'sunset',
     categories: ['arrows', 'weather'],
+    name: 'sunset',
     tags: ['weather', 'time', 'evening', 'night'],
   },
   {
-    name: 'superscript',
     categories: ['text'],
+    name: 'superscript',
     tags: ['text', 'exponent'],
   },
   {
-    name: 'swatch-book',
     categories: ['design', 'home', 'photography'],
+    name: 'swatch-book',
     tags: [
       'colors',
       'colours',
@@ -12359,53 +12359,53 @@ export default [
     ],
   },
   {
-    name: 'swiss-franc',
     categories: ['finance'],
+    name: 'swiss-franc',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'switch-camera',
     categories: ['communication', 'devices'],
+    name: 'switch-camera',
     tags: ['photo', 'selfie', 'front', 'back'],
   },
   {
+    categories: ['gaming', 'tools'],
     name: 'sword',
-    categories: ['gaming', 'tools'],
     tags: ['battle', 'challenge', 'game', 'war', 'weapon'],
   },
   {
+    categories: ['gaming', 'tools'],
     name: 'swords',
-    categories: ['gaming', 'tools'],
     tags: ['battle', 'challenge', 'game', 'war', 'weapon'],
   },
   {
-    name: 'syringe',
     categories: ['science', 'medical'],
+    name: 'syringe',
     tags: ['medicine', 'medical', 'needle', 'pump', 'plunger', 'nozzle', 'blood'],
   },
   {
-    name: 'table-2',
     categories: ['text', 'files'],
+    name: 'table-2',
     tags: ['spreadsheet', 'grid'],
   },
   {
+    categories: ['text', 'files'],
     name: 'table-cells-merge',
-    categories: ['text', 'files'],
     tags: ['spreadsheet', 'grid', 'row'],
   },
   {
+    categories: ['text', 'files'],
     name: 'table-cells-split',
-    categories: ['text', 'files'],
     tags: ['spreadsheet', 'grid', 'row'],
   },
   {
-    name: 'table-columns-split',
     categories: ['text', 'files'],
+    name: 'table-columns-split',
     tags: ['spreadsheet', 'grid', 'cut', 'break', 'divide', 'separate', 'segment'],
   },
   {
-    name: 'table-of-contents',
     categories: ['text'],
+    name: 'table-of-contents',
     tags: [
       'toc',
       'outline',
@@ -12423,58 +12423,58 @@ export default [
     ],
   },
   {
-    name: 'table-properties',
     categories: ['text', 'development', 'files'],
+    name: 'table-properties',
     tags: ['property list', 'plist', 'spreadsheet', 'grid', 'dictionary', 'object', 'hash'],
   },
   {
-    name: 'table-rows-split',
     categories: ['text', 'files'],
+    name: 'table-rows-split',
     tags: ['spreadsheet', 'grid', 'cut', 'break', 'divide', 'separate', 'segment'],
   },
   {
-    name: 'table',
     categories: ['text', 'files'],
+    name: 'table',
     tags: ['spreadsheet', 'grid'],
   },
   {
-    name: 'tablet-smartphone',
     categories: ['devices', 'design', 'development', 'tools'],
+    name: 'tablet-smartphone',
     tags: ['responsive', 'screens', 'browser', 'testing', 'mobile'],
   },
   {
-    name: 'tablet',
     categories: ['devices'],
+    name: 'tablet',
     tags: ['device'],
   },
   {
-    name: 'tablets',
     categories: ['medical'],
+    name: 'tablets',
     tags: ['medicine', 'medication', 'drug', 'prescription', 'pills', 'pharmacy'],
   },
   {
-    name: 'tag',
     categories: ['account'],
+    name: 'tag',
     tags: ['label', 'badge', 'ticket', 'mark'],
   },
   {
-    name: 'tags',
     categories: ['account'],
+    name: 'tags',
     tags: ['labels', 'badges', 'tickets', 'marks', 'copy', 'multiple'],
   },
   {
-    name: 'tally-1',
     categories: ['math', 'gaming'],
+    name: 'tally-1',
     tags: ['count', 'score', 'enumerate', 'days', 'one', '1', 'first', 'bar', 'prison', 'cell', 'sentence'],
   },
   {
-    name: 'tally-2',
     categories: ['math', 'gaming'],
+    name: 'tally-2',
     tags: ['count', 'score', 'enumerate', 'days', 'two', '2', 'second', 'double', 'bars', 'prison', 'cell', 'sentence'],
   },
   {
-    name: 'tally-3',
     categories: ['math', 'gaming'],
+    name: 'tally-3',
     tags: [
       'count',
       'score',
@@ -12491,13 +12491,13 @@ export default [
     ],
   },
   {
-    name: 'tally-4',
     categories: ['math', 'gaming'],
+    name: 'tally-4',
     tags: ['count', 'score', 'enumerate', 'days', '4', 'fourth', 'quadruple', 'bars', 'prison', 'cell', 'sentence'],
   },
   {
-    name: 'tally-5',
     categories: ['math', 'gaming'],
+    name: 'tally-5',
     tags: [
       'count',
       'score',
@@ -12515,18 +12515,18 @@ export default [
     ],
   },
   {
-    name: 'tangent',
     categories: ['shapes', 'math', 'design', 'tools'],
+    name: 'tangent',
     tags: ['tangential', 'shape', 'circle', 'geometry', 'trigonometry', 'bezier curve'],
   },
   {
-    name: 'target',
     categories: ['brands', 'gaming'],
+    name: 'target',
     tags: ['logo', 'bullseye', 'deadline', 'projects', 'overview', 'work', 'productivity'],
   },
   {
-    name: 'telescope',
     categories: ['science', 'development', 'tools'],
+    name: 'telescope',
     tags: [
       'astronomy',
       'space',
@@ -12542,13 +12542,13 @@ export default [
     ],
   },
   {
-    name: 'tent-tree',
     categories: ['travel', 'nature'],
+    name: 'tent-tree',
     tags: ['camping', 'campsite', 'holiday', 'retreat', 'nomadic', 'wilderness', 'outdoors'],
   },
   {
-    name: 'tent',
     categories: ['travel', 'nature', 'sustainability'],
+    name: 'tent',
     tags: [
       'tipi',
       'teepee',
@@ -12566,113 +12566,113 @@ export default [
     ],
   },
   {
-    name: 'terminal',
     categories: ['development'],
+    name: 'terminal',
     tags: ['code', 'command line', 'prompt', 'shell'],
   },
   {
+    categories: ['science'],
     name: 'test-tube-diagonal',
-    categories: ['science'],
     tags: ['tube', 'vial', 'phial', 'flask', 'ampoule', 'ampule', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
+    categories: ['science'],
     name: 'test-tube',
-    categories: ['science'],
     tags: ['tube', 'vial', 'phial', 'flask', 'ampoule', 'ampule', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
-    name: 'test-tubes',
     categories: ['science'],
+    name: 'test-tubes',
     tags: ['tubes', 'vials', 'phials', 'flasks', 'ampoules', 'ampules', 'lab', 'chemistry', 'experiment', 'test'],
   },
   {
-    name: 'text-align-center',
     categories: ['text'],
+    name: 'text-align-center',
     tags: ['text', 'alignment', 'center'],
   },
   {
-    name: 'text-align-end',
     categories: ['text'],
+    name: 'text-align-end',
     tags: ['text', 'alignment', 'right'],
   },
   {
-    name: 'text-align-justify',
     categories: ['text'],
+    name: 'text-align-justify',
     tags: ['text', 'alignment', 'justified', 'menu', 'list'],
   },
   {
-    name: 'text-align-start',
     categories: ['text'],
+    name: 'text-align-start',
     tags: ['text', 'alignment', 'left', 'list'],
   },
   {
-    name: 'text-cursor-input',
     categories: ['text', 'layout'],
+    name: 'text-cursor-input',
     tags: ['select'],
   },
   {
-    name: 'text-cursor',
     categories: ['text', 'cursors'],
+    name: 'text-cursor',
     tags: ['select'],
   },
   {
-    name: 'text-initial',
     categories: ['text'],
+    name: 'text-initial',
     tags: ['drop cap', 'text', 'format', 'typography', 'letter', 'font size'],
   },
   {
-    name: 'text-quote',
     categories: ['text'],
+    name: 'text-quote',
     tags: ['blockquote', 'quotation', 'indent', 'reply', 'response'],
   },
   {
-    name: 'text-search',
     categories: ['text'],
+    name: 'text-search',
     tags: ['find', 'data', 'copy', 'txt', 'pdf', 'document', 'scan', 'magnifier', 'magnifying glass', 'lens'],
   },
   {
-    name: 'text-select',
     categories: ['text', 'cursors'],
+    name: 'text-select',
     tags: ['find', 'search', 'selection', 'dashed'],
   },
   {
-    name: 'text-wrap',
     categories: ['text', 'arrows'],
+    name: 'text-wrap',
     tags: ['words', 'lines', 'break', 'paragraph'],
   },
   {
-    name: 'theater',
     categories: ['buildings', 'social'],
+    name: 'theater',
     tags: ['theater', 'theatre', 'entertainment', 'podium', 'stage', 'musical'],
   },
   {
-    name: 'thermometer-snowflake',
     categories: ['weather'],
+    name: 'thermometer-snowflake',
     tags: ['temperature', 'celsius', 'fahrenheit', 'weather', 'cold', 'freeze', 'freezing'],
   },
   {
-    name: 'thermometer-sun',
     categories: ['weather'],
+    name: 'thermometer-sun',
     tags: ['temperature', 'celsius', 'fahrenheit', 'weather', 'warm', 'hot'],
   },
   {
-    name: 'thermometer',
     categories: ['weather'],
+    name: 'thermometer',
     tags: ['temperature', 'celsius', 'fahrenheit', 'weather'],
   },
   {
-    name: 'thumbs-down',
     categories: ['account', 'social', 'emoji'],
+    name: 'thumbs-down',
     tags: ['dislike', 'bad', 'emotion'],
   },
   {
-    name: 'thumbs-up',
     categories: ['account', 'social', 'emoji'],
+    name: 'thumbs-up',
     tags: ['like', 'good', 'emotion'],
   },
   {
-    name: 'ticket-check',
     categories: ['transportation'],
+    name: 'ticket-check',
     tags: [
       'entry',
       'pass',
@@ -12692,8 +12692,8 @@ export default [
     ],
   },
   {
-    name: 'ticket-minus',
     categories: ['transportation'],
+    name: 'ticket-minus',
     tags: [
       'entry',
       'pass',
@@ -12710,8 +12710,8 @@ export default [
     ],
   },
   {
-    name: 'ticket-percent',
     categories: ['transportation', 'shopping'],
+    name: 'ticket-percent',
     tags: [
       'discount',
       'reduced',
@@ -12728,13 +12728,13 @@ export default [
     ],
   },
   {
-    name: 'ticket-plus',
     categories: ['transportation'],
+    name: 'ticket-plus',
     tags: ['entry', 'pass', 'voucher', 'event', 'concert', 'show', 'book', 'purchase', 'add', '+'],
   },
   {
-    name: 'ticket-slash',
     categories: ['transportation'],
+    name: 'ticket-slash',
     tags: [
       'entry',
       'pass',
@@ -12766,8 +12766,8 @@ export default [
     ],
   },
   {
-    name: 'ticket-x',
     categories: ['transportation'],
+    name: 'ticket-x',
     tags: [
       'entry',
       'pass',
@@ -12796,13 +12796,13 @@ export default [
     ],
   },
   {
-    name: 'ticket',
     categories: ['account', 'transportation'],
+    name: 'ticket',
     tags: ['entry', 'pass', 'voucher', 'event', 'concert', 'show', 'perforated', 'dashed'],
   },
   {
-    name: 'tickets-plane',
     categories: ['transportation', 'travel'],
+    name: 'tickets-plane',
     tags: [
       'plane',
       'trip',
@@ -12819,53 +12819,53 @@ export default [
     ],
   },
   {
-    name: 'tickets',
     categories: ['travel', 'account', 'transportation'],
+    name: 'tickets',
     tags: ['trip', 'travel', 'pass', 'entry', 'voucher', 'event', 'concert', 'show', 'perforated', 'dashed'],
   },
   {
+    categories: ['time'],
     name: 'timer-off',
-    categories: ['time'],
     tags: ['time', 'timer', 'stopwatch'],
   },
   {
+    categories: ['time'],
     name: 'timer-reset',
-    categories: ['time'],
     tags: ['time', 'timer', 'stopwatch'],
   },
   {
+    categories: ['time'],
     name: 'timer',
-    categories: ['time'],
     tags: ['time', 'timer', 'stopwatch'],
   },
   {
+    categories: ['layout', 'account', 'development'],
     name: 'toggle-left',
-    categories: ['layout', 'account', 'development'],
     tags: ['on', 'off', 'switch', 'boolean'],
   },
   {
+    categories: ['layout', 'account', 'development'],
     name: 'toggle-right',
-    categories: ['layout', 'account', 'development'],
     tags: ['on', 'off', 'switch', 'boolean'],
   },
   {
-    name: 'toilet',
     categories: ['devices', 'home'],
+    name: 'toilet',
     tags: ['toilet', 'potty', 'bathroom', 'washroom'],
   },
   {
-    name: 'tool-case',
     categories: ['tools', 'development', 'home'],
+    name: 'tool-case',
     tags: ['tools', 'maintenance', 'repair'],
   },
   {
-    name: 'tornado',
     categories: ['weather'],
+    name: 'tornado',
     tags: ['weather', 'wind', 'storm', 'hurricane'],
   },
   {
-    name: 'torus',
     categories: ['shapes', 'design', 'tools', 'food-beverage'],
+    name: 'torus',
     tags: [
       'donut',
       'doughnut',
@@ -12882,68 +12882,68 @@ export default [
     ],
   },
   {
+    categories: ['devices'],
     name: 'touchpad-off',
-    categories: ['devices'],
     tags: ['trackpad', 'cursor'],
   },
   {
+    categories: ['devices'],
     name: 'touchpad',
-    categories: ['devices'],
     tags: ['trackpad', 'cursor'],
   },
   {
-    name: 'tower-control',
     categories: ['travel', 'transportation'],
+    name: 'tower-control',
     tags: ['airport', 'travel', 'tower', 'transportation', 'lighthouse'],
   },
   {
-    name: 'toy-brick',
     categories: ['gaming', 'development'],
+    name: 'toy-brick',
     tags: ['lego', 'block', 'addon', 'plugin', 'integration'],
   },
   {
-    name: 'tractor',
     categories: ['transportation', 'sustainability', 'food-beverage'],
+    name: 'tractor',
     tags: ['farming', 'farmer', 'ranch', 'harvest', 'equipment', 'vehicle'],
   },
   {
-    name: 'traffic-cone',
     categories: ['transportation'],
+    name: 'traffic-cone',
     tags: ['roadworks', 'tarmac', 'safety', 'block'],
   },
   {
-    name: 'train-front-tunnel',
     categories: ['transportation', 'navigation'],
+    name: 'train-front-tunnel',
     tags: ['railway', 'metro', 'subway', 'underground', 'speed', 'bullet', 'fast', 'track', 'line'],
   },
   {
-    name: 'train-front',
     categories: ['transportation'],
+    name: 'train-front',
     tags: ['railway', 'metro', 'subway', 'underground', 'high-speed', 'bullet', 'fast', 'track', 'line'],
   },
   {
-    name: 'train-track',
     categories: ['transportation', 'navigation'],
+    name: 'train-track',
     tags: ['railway', 'line'],
   },
   {
-    name: 'tram-front',
     categories: ['transportation'],
+    name: 'tram-front',
     tags: ['railway', 'metro', 'subway', 'underground', 'track', 'line', 'tourism'],
   },
   {
-    name: 'transgender',
     categories: ['medical', 'accessibility'],
+    name: 'transgender',
     tags: ['gender', 'inclusive'],
   },
   {
-    name: 'trash-2',
     categories: ['files', 'mail'],
+    name: 'trash-2',
     tags: ['garbage', 'delete', 'remove', 'bin'],
   },
   {
-    name: 'trash',
     categories: ['files', 'mail'],
+    name: 'trash',
     tags: [
       'empty',
       'deletion',
@@ -12962,38 +12962,38 @@ export default [
     ],
   },
   {
-    name: 'tree-deciduous',
     categories: ['nature', 'sustainability'],
+    name: 'tree-deciduous',
     tags: ['tree', 'forest', 'park', 'nature'],
   },
   {
-    name: 'tree-palm',
     categories: ['nature', 'sustainability'],
+    name: 'tree-palm',
     tags: ['vacation', 'leisure', 'island'],
   },
   {
-    name: 'tree-pine',
     categories: ['nature', 'sustainability'],
+    name: 'tree-pine',
     tags: ['tree', 'pine', 'forest', 'park', 'nature'],
   },
   {
-    name: 'trees',
     categories: ['nature', 'sustainability'],
+    name: 'trees',
     tags: ['tree', 'forest', 'park', 'nature'],
   },
   {
-    name: 'trello',
     categories: ['account', 'brands', 'development'],
+    name: 'trello',
     tags: ['logo', 'brand'],
   },
   {
-    name: 'trending-down',
     categories: ['charts', 'arrows'],
+    name: 'trending-down',
     tags: ['statistics'],
   },
   {
-    name: 'trending-up-down',
     categories: ['charts', 'arrows'],
+    name: 'trending-up-down',
     tags: [
       'arrows',
       'estimated',
@@ -13008,23 +13008,23 @@ export default [
     ],
   },
   {
-    name: 'trending-up',
     categories: ['charts', 'arrows'],
+    name: 'trending-up',
     tags: ['statistics'],
   },
   {
-    name: 'triangle-alert',
     categories: ['notifications', 'shapes', 'development'],
+    name: 'triangle-alert',
     tags: ['warning', 'alert', 'danger', 'exclamation mark', 'linter'],
   },
   {
-    name: 'triangle-dashed',
     categories: ['shapes'],
+    name: 'triangle-dashed',
     tags: ['equilateral', 'delta', 'shape', 'pyramid', 'hierarchy', 'dashed'],
   },
   {
-    name: 'triangle-right',
     categories: ['shapes', 'math'],
+    name: 'triangle-right',
     tags: [
       'volume',
       'controls',
@@ -13039,33 +13039,33 @@ export default [
     ],
   },
   {
-    name: 'triangle',
     categories: ['shapes'],
+    name: 'triangle',
     tags: ['equilateral', 'delta', 'shape', 'pyramid', 'hierarchy'],
   },
   {
-    name: 'trophy',
     categories: ['sports', 'gaming'],
+    name: 'trophy',
     tags: ['prize', 'sports', 'winner', 'achievement', 'award', 'champion', 'celebration', 'victory'],
   },
   {
-    name: 'truck-electric',
     categories: ['transportation'],
+    name: 'truck-electric',
     tags: ['delivery', 'van', 'shipping', 'haulage', 'lorry', 'electric'],
   },
   {
-    name: 'truck',
     categories: ['transportation'],
+    name: 'truck',
     tags: ['delivery', 'van', 'shipping', 'haulage', 'lorry'],
   },
   {
-    name: 'turkish-lira',
     categories: ['finance'],
+    name: 'turkish-lira',
     tags: ['currency', 'money', 'payment'],
   },
   {
-    name: 'turntable',
     categories: ['multimedia', 'home'],
+    name: 'turntable',
     tags: [
       'record player',
       'gramophone',
@@ -13086,13 +13086,13 @@ export default [
     ],
   },
   {
-    name: 'turtle',
     categories: ['animals'],
+    name: 'turtle',
     tags: ['animal', 'pet', 'tortoise', 'slow', 'speed'],
   },
   {
-    name: 'tv-minimal-play',
     categories: ['devices', 'multimedia'],
+    name: 'tv-minimal-play',
     tags: [
       'flatscreen',
       'television',
@@ -13121,8 +13121,8 @@ export default [
     ],
   },
   {
-    name: 'tv-minimal',
     categories: ['devices', 'multimedia'],
+    name: 'tv-minimal',
     tags: [
       'flatscreen',
       'television',
@@ -13145,8 +13145,8 @@ export default [
     ],
   },
   {
-    name: 'tv',
     categories: ['devices', 'multimedia', 'communication'],
+    name: 'tv',
     tags: [
       'television',
       'stream',
@@ -13180,203 +13180,203 @@ export default [
     ],
   },
   {
-    name: 'twitch',
     categories: ['brands', 'social', 'account', 'gaming'],
+    name: 'twitch',
     tags: ['logo', 'social'],
   },
   {
-    name: 'twitter',
     categories: ['brands', 'social', 'account'],
+    name: 'twitter',
     tags: ['logo', 'social'],
   },
   {
-    name: 'type-outline',
     categories: ['text'],
+    name: 'type-outline',
     tags: ['text', 'font', 'typography', 'silhouette', 'profile', 'contour', 'stroke', 'line'],
   },
   {
-    name: 'type',
     categories: ['text'],
+    name: 'type',
     tags: ['text', 'font', 'typography'],
   },
   {
-    name: 'umbrella-off',
     categories: ['weather'],
+    name: 'umbrella-off',
     tags: ['rain', 'weather', 'uncovered', 'uninsured', 'antivirus', 'unprotected', 'risky'],
   },
   {
-    name: 'umbrella',
     categories: ['weather'],
+    name: 'umbrella',
     tags: ['rain', 'weather'],
   },
   {
-    name: 'underline',
     categories: ['text'],
+    name: 'underline',
     tags: ['text', 'format'],
   },
   {
-    name: 'undo-2',
     categories: ['text', 'arrows'],
+    name: 'undo-2',
     tags: ['redo', 'rerun', 'history', 'back', 'return', 'reverse', 'revert', 'direction', 'u-turn'],
   },
   {
-    name: 'undo-dot',
     categories: ['text', 'arrows'],
+    name: 'undo-dot',
     tags: ['redo', 'history', 'step', 'back'],
   },
   {
-    name: 'undo',
     categories: ['text', 'arrows'],
+    name: 'undo',
     tags: ['redo', 'rerun', 'history'],
   },
   {
-    name: 'unfold-horizontal',
     categories: ['arrows', 'layout'],
+    name: 'unfold-horizontal',
     tags: ['arrow', 'collapse', 'fold', 'vertical', 'dashed'],
   },
   {
-    name: 'unfold-vertical',
     categories: ['arrows', 'layout'],
+    name: 'unfold-vertical',
     tags: ['arrow', 'expand', 'vertical', 'dashed'],
   },
   {
-    name: 'ungroup',
     categories: ['shapes', 'files'],
+    name: 'ungroup',
     tags: ['cubes', 'packages', 'parts', 'units', 'collection', 'cluster', 'separate'],
   },
   {
-    name: 'university',
     categories: ['buildings', 'navigation'],
+    name: 'university',
     tags: ['building', 'education', 'childhood', 'school', 'college', 'academy', 'institute'],
   },
   {
+    categories: ['text'],
     name: 'unlink-2',
-    categories: ['text'],
     tags: ['url', 'unchain'],
   },
   {
+    categories: ['text'],
     name: 'unlink',
-    categories: ['text'],
     tags: ['url', 'unchain'],
   },
   {
-    name: 'unplug',
     categories: ['devices', 'development'],
+    name: 'unplug',
     tags: ['electricity', 'energy', 'electronics', 'socket', 'outlet', 'disconnect'],
   },
   {
-    name: 'upload',
     categories: ['arrows', 'files'],
+    name: 'upload',
     tags: ['file'],
   },
   {
-    name: 'usb',
     categories: ['devices', 'multimedia', 'home'],
+    name: 'usb',
     tags: ['universal', 'serial', 'bus', 'controller', 'connector', 'interface'],
   },
   {
-    name: 'user-check',
     categories: ['account'],
+    name: 'user-check',
     tags: ['followed', 'subscribed', 'done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'user-cog',
     categories: ['account'],
+    name: 'user-cog',
     tags: ['settings', 'edit', 'cog', 'gear'],
   },
   {
-    name: 'user-lock',
     categories: ['account', 'security'],
+    name: 'user-lock',
     tags: ['person', 'lock', 'locked', 'account', 'secure'],
   },
   {
-    name: 'user-minus',
     categories: ['account'],
+    name: 'user-minus',
     tags: ['delete', 'remove', 'unfollow', 'unsubscribe'],
   },
   {
-    name: 'user-pen',
     categories: ['account'],
+    name: 'user-pen',
     tags: ['person', 'account', 'contact', 'profile', 'edit', 'change'],
   },
   {
-    name: 'user-plus',
     categories: ['account'],
+    name: 'user-plus',
     tags: ['new', 'add', 'create', 'follow', 'subscribe'],
   },
   {
-    name: 'user-round-check',
     categories: ['account'],
+    name: 'user-round-check',
     tags: ['followed', 'subscribed', 'done', 'todo', 'tick', 'complete', 'task'],
   },
   {
-    name: 'user-round-cog',
     categories: ['account'],
+    name: 'user-round-cog',
     tags: ['settings', 'edit', 'cog', 'gear'],
   },
   {
-    name: 'user-round-minus',
     categories: ['account'],
+    name: 'user-round-minus',
     tags: ['delete', 'remove', 'unfollow', 'unsubscribe'],
   },
   {
-    name: 'user-round-pen',
     categories: ['account'],
+    name: 'user-round-pen',
     tags: ['person', 'account', 'contact', 'profile', 'edit', 'change'],
   },
   {
-    name: 'user-round-plus',
     categories: ['account'],
+    name: 'user-round-plus',
     tags: ['new', 'add', 'create', 'follow', 'subscribe'],
   },
   {
-    name: 'user-round-search',
     categories: ['account', 'social'],
+    name: 'user-round-search',
     tags: ['person', 'account', 'contact', 'find', 'scan', 'magnifier', 'magnifying glass', 'lens'],
   },
   {
-    name: 'user-round-x',
     categories: ['account'],
+    name: 'user-round-x',
     tags: ['delete', 'remove', 'unfollow', 'unsubscribe', 'unavailable'],
   },
   {
-    name: 'user-round',
     categories: ['account'],
+    name: 'user-round',
     tags: ['person', 'account', 'contact'],
   },
   {
-    name: 'user-search',
     categories: ['account', 'social'],
+    name: 'user-search',
     tags: ['person', 'account', 'contact', 'find', 'scan', 'magnifier', 'magnifying glass', 'lens'],
   },
   {
-    name: 'user-star',
     categories: ['account'],
+    name: 'user-star',
     tags: ['person', 'account', 'favorite', 'contact', 'like', 'review', 'rating', 'admin'],
   },
   {
-    name: 'user-x',
     categories: ['account'],
+    name: 'user-x',
     tags: ['delete', 'remove', 'unfollow', 'unsubscribe', 'unavailable'],
   },
   {
-    name: 'user',
     categories: ['account'],
+    name: 'user',
     tags: ['person', 'account', 'contact'],
   },
   {
+    categories: ['account'],
     name: 'users-round',
-    categories: ['account'],
     tags: ['group', 'people'],
   },
   {
+    categories: ['account'],
     name: 'users',
-    categories: ['account'],
     tags: ['group', 'people'],
   },
   {
+    categories: ['food-beverage', 'travel', 'navigation'],
     name: 'utensils-crossed',
-    categories: ['food-beverage', 'travel', 'navigation'],
     tags: [
       'fork',
       'knife',
@@ -13393,8 +13393,8 @@ export default [
     ],
   },
   {
+    categories: ['food-beverage', 'travel', 'navigation'],
     name: 'utensils',
-    categories: ['food-beverage', 'travel', 'navigation'],
     tags: [
       'fork',
       'knife',
@@ -13411,13 +13411,13 @@ export default [
     ],
   },
   {
-    name: 'utility-pole',
     categories: ['buildings', 'home', 'sustainability'],
+    name: 'utility-pole',
     tags: ['electricity', 'energy', 'transmission line', 'telegraph pole', 'power lines', 'phone'],
   },
   {
-    name: 'variable',
     categories: ['development', 'math'],
+    name: 'variable',
     tags: [
       'code',
       'coding',
@@ -13435,8 +13435,8 @@ export default [
     ],
   },
   {
-    name: 'vault',
     categories: ['security', 'travel', 'home'],
+    name: 'vault',
     tags: [
       'safe',
       'lockbox',
@@ -13452,68 +13452,68 @@ export default [
     ],
   },
   {
-    name: 'vector-square',
     categories: ['shapes', 'math', 'design', 'tools'],
+    name: 'vector-square',
     tags: ['shape', 'geometry', 'art', 'width', 'height', 'size', 'calculate', 'measure', 'select', 'graphics', 'box'],
   },
   {
-    name: 'vegan',
     categories: ['food-beverage', 'sustainability'],
+    name: 'vegan',
     tags: ['vegetarian', 'fruitarian', 'herbivorous', 'animal rights', 'diet'],
   },
   {
-    name: 'venetian-mask',
     categories: ['account', 'gaming'],
+    name: 'venetian-mask',
     tags: ['mask', 'masquerade', 'impersonate', 'secret', 'incognito'],
   },
   {
-    name: 'venus-and-mars',
     categories: ['medical'],
+    name: 'venus-and-mars',
     tags: ['gender', 'sex', 'intersex', 'androgynous', 'hermaphrodite'],
   },
   {
-    name: 'venus',
     categories: ['medical'],
+    name: 'venus',
     tags: ['gender', 'sex', 'female', 'feminine', 'woman', 'girl'],
   },
   {
-    name: 'vibrate-off',
     categories: ['devices', 'connectivity', 'account'],
+    name: 'vibrate-off',
     tags: ['smartphone', 'notification', 'rumble', 'haptic feedback', 'notifications', 'screen'],
   },
   {
-    name: 'vibrate',
     categories: ['devices', 'connectivity', 'account', 'notifications'],
+    name: 'vibrate',
     tags: ['smartphone', 'notification', 'rumble', 'haptic feedback', 'screen'],
   },
   {
-    name: 'video-off',
     categories: ['devices', 'communication', 'connectivity', 'photography'],
+    name: 'video-off',
     tags: ['camera', 'movie', 'film'],
   },
   {
-    name: 'video',
     categories: ['devices', 'communication', 'connectivity', 'photography'],
+    name: 'video',
     tags: ['camera', 'movie', 'film', 'recording', 'motion picture', 'camcorder', 'reel'],
   },
   {
-    name: 'videotape',
     categories: ['devices', 'communication', 'connectivity', 'photography', 'files'],
+    name: 'videotape',
     tags: ['vhs', 'movie', 'film', 'recording', 'motion picture', 'showreel', 'cassette'],
   },
   {
-    name: 'view',
     categories: ['design', 'photography'],
+    name: 'view',
     tags: ['eye', 'look'],
   },
   {
-    name: 'voicemail',
     categories: ['connectivity', 'devices', 'social'],
+    name: 'voicemail',
     tags: ['phone', 'cassette', 'tape', 'reel', 'recording', 'audio'],
   },
   {
-    name: 'volleyball',
     categories: ['sports', 'gaming', 'travel'],
+    name: 'volleyball',
     tags: [
       'beach',
       'sand',
@@ -13540,53 +13540,53 @@ export default [
     ],
   },
   {
+    categories: ['connectivity', 'communication', 'multimedia'],
     name: 'volume-1',
-    categories: ['connectivity', 'communication', 'multimedia'],
     tags: ['music', 'sound', 'speaker'],
   },
   {
+    categories: ['connectivity', 'communication', 'multimedia'],
     name: 'volume-2',
-    categories: ['connectivity', 'communication', 'multimedia'],
     tags: ['music', 'sound', 'speaker'],
   },
   {
+    categories: ['connectivity', 'communication', 'multimedia'],
     name: 'volume-off',
-    categories: ['connectivity', 'communication', 'multimedia'],
     tags: ['music', 'sound', 'mute', 'speaker'],
   },
   {
+    categories: ['connectivity', 'communication', 'multimedia'],
     name: 'volume-x',
-    categories: ['connectivity', 'communication', 'multimedia'],
     tags: ['music', 'sound', 'mute', 'speaker'],
   },
   {
+    categories: ['connectivity', 'communication', 'multimedia'],
     name: 'volume',
-    categories: ['connectivity', 'communication', 'multimedia'],
     tags: ['music', 'sound', 'mute', 'speaker'],
   },
   {
-    name: 'vote',
     categories: ['social'],
+    name: 'vote',
     tags: ['vote', 'poll', 'ballot', 'political', 'social', 'check', 'tick'],
   },
   {
-    name: 'wallet-cards',
     categories: ['account', 'finance'],
+    name: 'wallet-cards',
     tags: ['money', 'finance', 'pocket', 'credit', 'purchase', 'payment', 'shopping', 'retail', 'consumer', 'cc'],
   },
   {
-    name: 'wallet-minimal',
     categories: ['account', 'finance'],
+    name: 'wallet-minimal',
     tags: ['finance', 'pocket'],
   },
   {
-    name: 'wallet',
     categories: ['account', 'finance'],
+    name: 'wallet',
     tags: ['money', 'finance', 'pocket'],
   },
   {
-    name: 'wallpaper',
     categories: ['account', 'devices'],
+    name: 'wallpaper',
     tags: [
       'background',
       'texture',
@@ -13602,43 +13602,43 @@ export default [
     ],
   },
   {
-    name: 'wand-sparkles',
     categories: ['design', 'gaming', 'cursors', 'photography'],
+    name: 'wand-sparkles',
     tags: ['magic', 'wizard', 'magician'],
   },
   {
-    name: 'wand',
     categories: ['design', 'gaming', 'cursors', 'photography'],
+    name: 'wand',
     tags: ['magic', 'selection'],
   },
   {
-    name: 'warehouse',
     categories: ['buildings', 'navigation'],
+    name: 'warehouse',
     tags: ['storage', 'storehouse', 'depot', 'depository', 'repository', 'stockroom', 'logistics', 'building'],
   },
   {
-    name: 'washing-machine',
     categories: ['home', 'devices', 'travel'],
+    name: 'washing-machine',
     tags: ['tumble dryer', 'amenities', 'electronics', 'cycle', 'clothes', 'rinse', 'spin', 'drum'],
   },
   {
-    name: 'watch',
     categories: ['time'],
+    name: 'watch',
     tags: ['clock', 'time'],
   },
   {
-    name: 'waves-ladder',
     categories: ['sports', 'home'],
+    name: 'waves-ladder',
     tags: ['swimming', 'water', 'pool', 'lifeguard', 'ocean', '🌊', '🏊‍♂️', '🏊‍♀️', '🏊', '🥽'],
   },
   {
-    name: 'waves',
     categories: ['weather', 'navigation', 'multimedia', 'sustainability'],
+    name: 'waves',
     tags: ['water', 'sea', 'sound', 'hertz', 'wavelength', 'vibrate'],
   },
   {
-    name: 'waypoints',
     categories: ['security', 'account', 'navigation', 'development', 'social'],
+    name: 'waypoints',
     tags: [
       'indirection',
       'vpn',
@@ -13658,43 +13658,43 @@ export default [
     ],
   },
   {
-    name: 'webcam',
     categories: ['connectivity', 'devices', 'communication'],
+    name: 'webcam',
     tags: ['camera', 'security'],
   },
   {
+    categories: ['development', 'social', 'account'],
     name: 'webhook-off',
-    categories: ['development', 'social', 'account'],
     tags: ['push api', 'interface', 'callback'],
   },
   {
+    categories: ['development', 'social', 'account'],
     name: 'webhook',
-    categories: ['development', 'social', 'account'],
     tags: ['push api', 'interface', 'callback'],
   },
   {
-    name: 'weight',
     categories: ['math'],
+    name: 'weight',
     tags: ['mass', 'heavy', 'lead', 'metal', 'measure', 'geometry', 'scales', 'balance'],
   },
   {
-    name: 'wheat-off',
     categories: ['food-beverage'],
+    name: 'wheat-off',
     tags: ['corn', 'cereal', 'grain', 'gluten free', 'allergy', 'intolerance', 'diet'],
   },
   {
-    name: 'wheat',
     categories: ['food-beverage'],
+    name: 'wheat',
     tags: ['corn', 'cereal', 'grain', 'gluten'],
   },
   {
-    name: 'whole-word',
     categories: ['text'],
+    name: 'whole-word',
     tags: ['text', 'selection', 'letters', 'characters', 'font', 'typography'],
   },
   {
-    name: 'wifi-cog',
     categories: ['connectivity', 'devices', 'files'],
+    name: 'wifi-cog',
     tags: [
       'connection',
       'signal',
@@ -13709,53 +13709,53 @@ export default [
     ],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'wifi-high',
-    categories: ['connectivity', 'devices'],
     tags: ['connection', 'signal', 'wireless'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'wifi-low',
-    categories: ['connectivity', 'devices'],
     tags: ['connection', 'signal', 'wireless'],
   },
   {
-    name: 'wifi-off',
     categories: ['connectivity', 'devices'],
+    name: 'wifi-off',
     tags: ['disabled'],
   },
   {
-    name: 'wifi-pen',
     categories: ['connectivity', 'devices'],
+    name: 'wifi-pen',
     tags: ['edit', 'wifi', 'pen', 'change', 'network'],
   },
   {
-    name: 'wifi-sync',
     categories: ['connectivity', 'devices'],
+    name: 'wifi-sync',
     tags: ['connection', 'signal', 'wireless', 'synchronize', 'reconnect', 'reset', 'restart'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'wifi-zero',
-    categories: ['connectivity', 'devices'],
     tags: ['connection', 'signal', 'wireless'],
   },
   {
+    categories: ['connectivity', 'devices'],
     name: 'wifi',
-    categories: ['connectivity', 'devices'],
     tags: ['connection', 'signal', 'wireless'],
   },
   {
-    name: 'wind-arrow-down',
     categories: ['weather', 'sustainability'],
+    name: 'wind-arrow-down',
     tags: ['weather', 'air', 'pressure', 'blow'],
   },
   {
-    name: 'wind',
     categories: ['weather', 'sustainability'],
+    name: 'wind',
     tags: ['weather', 'air', 'blow'],
   },
   {
-    name: 'wine-off',
     categories: ['food-beverage'],
+    name: 'wine-off',
     tags: [
       'alcohol',
       'beverage',
@@ -13770,18 +13770,18 @@ export default [
     ],
   },
   {
-    name: 'wine',
     categories: ['food-beverage'],
+    name: 'wine',
     tags: ['alcohol', 'beverage', 'bar', 'drink', 'glass', 'sommelier', 'vineyard', 'winery'],
   },
   {
-    name: 'workflow',
     categories: ['development'],
+    name: 'workflow',
     tags: ['action', 'continuous integration', 'ci', 'automation', 'devops', 'network', 'node', 'connection'],
   },
   {
-    name: 'worm',
     categories: ['animals', 'security'],
+    name: 'worm',
     tags: [
       'invertebrate',
       'grub',
@@ -13796,13 +13796,13 @@ export default [
     ],
   },
   {
-    name: 'wrench',
     categories: ['account', 'development', 'tools'],
+    name: 'wrench',
     tags: ['account', 'settings', 'spanner', 'diy', 'toolbox', 'build', 'construction'],
   },
   {
-    name: 'x',
     categories: ['notifications', 'math'],
+    name: 'x',
     tags: [
       'cancel',
       'close',
@@ -13818,28 +13818,28 @@ export default [
     ],
   },
   {
-    name: 'youtube',
     categories: ['multimedia', 'social', 'brands'],
+    name: 'youtube',
     tags: ['logo', 'social', 'video', 'play'],
   },
   {
+    categories: ['connectivity', 'devices', 'photography', 'weather'],
     name: 'zap-off',
-    categories: ['connectivity', 'devices', 'photography', 'weather'],
     tags: ['flash', 'camera', 'lightning', 'electricity', 'energy'],
   },
   {
+    categories: ['connectivity', 'devices', 'photography', 'weather'],
     name: 'zap',
-    categories: ['connectivity', 'devices', 'photography', 'weather'],
     tags: ['flash', 'camera', 'lightning', 'electricity', 'energy'],
   },
   {
-    name: 'zoom-in',
     categories: ['accessibility', 'layout', 'design', 'text', 'photography'],
+    name: 'zoom-in',
     tags: ['magnifying glass', 'plus'],
   },
   {
-    name: 'zoom-out',
     categories: ['accessibility', 'layout', 'design', 'text', 'photography'],
+    name: 'zoom-out',
     tags: ['magnifying glass', 'plus'],
   },
 ] as IconPickerData[]

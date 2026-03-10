@@ -1,30 +1,40 @@
-import { type AppRoutes } from 'next/types/routes'
+import { Route } from 'next'
 
 import { type LucideProps } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 
+import { AUTH_VIEWS } from '@/lib/constants'
+
+/*
+  Overrides
+*/
 declare module 'next/navigation' {
-  function usePathname(): AppRoutes
+  function usePathname(): Route
 }
 
-export type Icon<T = {}> = (props: IconProps<T>) => React.ReactNode
-export type IconProps<T = {}> = React.ComponentProps<'svg'> & LucideProps & T
-export type { IconName }
-
-export type Rgb = [number, number, number]
-
+/*
+  Utilities
+*/
 export type Any = any
 export type AnyRecord = Record<string | number | symbol, any>
 export type AnyFunction = (...args: any[]) => any
-
 export type Enum<T extends string> = T | `${T}`
-
-export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
-
+export type HttpUrl = `http://${string}` | `https://${string}`
 export type Replace<S extends string, From extends string, To extends string = ''> = From extends ''
   ? S
   : S extends `${infer A}${From}${infer B}`
     ? `${A}${To}${B}`
     : never
 
-export type HttpUrl = `http://${string}` | `https://${string}`
+/*
+  Theme
+*/
+export type Icon<T = {}> = (props: IconProps<T>) => React.ReactNode
+export type IconProps<T = {}> = React.ComponentProps<'svg'> & LucideProps & T
+export type { IconName }
+export type Rgb = [number, number, number]
+
+/*
+  Auth
+*/
+export type AuthView = (typeof AUTH_VIEWS)[number]

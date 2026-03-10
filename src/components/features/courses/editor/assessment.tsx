@@ -26,7 +26,7 @@ export const CourseAssessment = ({
   const { localize } = useI18n()
 
   const description = assessment.description ? localize(assessment.description) : ''
-  const rating = assessment.user_assessments?.[0]?.value || 0
+  const rating = assessment.userAssessments?.[0]?.value || 0
 
   const onChange = useCallback(
     (value: string) => {
@@ -39,7 +39,7 @@ export const CourseAssessment = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{title}</h3>}
+      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {
           count: 1,

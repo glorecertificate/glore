@@ -1,5 +1,5 @@
 import { Slot } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
@@ -29,7 +29,7 @@ export const ButtonGroupText = ({
   return (
     <Component
       className={cn(
-        "flex items-center gap-2 rounded-md border bg-muted px-4 font-medium text-sm shadow-xs [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
+        "flex items-center gap-2 rounded-md border bg-muted px-4 text-sm font-medium shadow-xs [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -53,6 +53,9 @@ export const ButtonGroupSeparator = ({
 const buttonGroupVariants = cva(
   "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-md [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1",
   {
+    defaultVariants: {
+      orientation: 'horizontal',
+    },
     variants: {
       orientation: {
         horizontal:
@@ -60,9 +63,6 @@ const buttonGroupVariants = cva(
         vertical:
           'flex-col [&>*:not(:first-child)]:rounded-t-none [&>*:not(:first-child)]:border-t-0 [&>*:not(:last-child)]:rounded-b-none',
       },
-    },
-    defaultVariants: {
-      orientation: 'horizontal',
     },
   }
 )

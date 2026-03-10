@@ -1,23 +1,5 @@
-import { type DatabaseResult } from '@/db/types'
+import { type InferSelectModel } from 'drizzle-orm'
 
-export type Organization = DatabaseResult<'organizations', typeof organizationQuery>
+import { type organizations } from '@/db/schema'
 
-export const organizationQuery = `
-  id,
-  handle,
-  name,
-  email,
-  description,
-  url,
-  phone,
-  country,
-  region,
-  postcode,
-  city,
-  address,
-  rating,
-  avatar_url,
-  approved_at,
-  created_at,
-  updated_at
-` as const
+export type Organization = InferSelectModel<typeof organizations>

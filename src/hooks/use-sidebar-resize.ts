@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from 'react'
 
 const parseWidth = (width: string) => {
   const unit = width.endsWith('rem') ? 'rem' : 'px'
-  return { value: Number.parseFloat(width), unit }
+  return { unit, value: Number.parseFloat(width) }
 }
 
 export const toPx = (width: string) => {
@@ -49,7 +49,9 @@ export const useSidebarResize = ({
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
-      if (!enableDrag) return
+      if (!enableDrag) {
+        return
+      }
       e.preventDefault()
 
       const { currentWidth, isCollapsed } = propsRef.current
@@ -66,12 +68,16 @@ export const useSidebarResize = ({
       const setDragging = (active: boolean) => {
         propsRef.current.setIsDraggingRail(active)
         const el = getSidebarEl()
-        if (el) el.dataset.dragging = String(active)
+        if (el) {
+          el.dataset.dragging = String(active)
+        }
       }
 
       const onMouseMove = (e: MouseEvent) => {
         if (!dragged) {
-          if (Math.abs(e.clientX - startX) <= 5) return
+          if (Math.abs(e.clientX - startX) <= 5) {
+            return
+          }
           dragged = true
           document.body.style.cursor = 'ew-resize'
           document.body.style.userSelect = 'none'
@@ -83,7 +89,9 @@ export const useSidebarResize = ({
         const canToggle = now - lastToggleTime > 200
 
         if (collapsed) {
-          if (!canToggle) return
+          if (!canToggle) {
+            return
+          }
           const expandDist = direction === 'left' ? referenceX - e.clientX : e.clientX - referenceX
           if (expandDist > minPx * 0.2) {
             collapsed = false
@@ -120,7 +128,9 @@ export const useSidebarResize = ({
         setDragging(false)
 
         if (!dragged) {
-          if (propsRef.current.enableToggle) propsRef.current.onToggle?.()
+          if (propsRef.current.enableToggle) {
+            propsRef.current.onToggle?.()
+          }
           return
         }
 

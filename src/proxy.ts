@@ -2,7 +2,11 @@ import 'server-only'
 
 import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
-import { getProxyDatabase } from '@/db/client'
+import { eq } from 'drizzle-orm'
+
+import { db } from '@/db/client'
+import { users } from '@/db/schema'
+import { auth } from '@/lib/auth/server'
 import { APP_ROOT, AUTH_ROOT, JOIN_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 
 export const config: ProxyConfig = {
@@ -12,21 +16,15 @@ export const config: ProxyConfig = {
 }
 
 export const proxy: NextProxy = async request => {
-  const { headers, nextUrl } = request
-  const response = NextResponse.next({ request: { headers } })
+  const { headers: reqHeaders, nextUrl } = request
+  const response = NextResponse.next({ request: { headers: reqHeaders } })
 
   const isPublicPath = nextUrl.pathname === AUTH_ROOT || nextUrl.pathname.startsWith(JOIN_ROOT)
 
   try {
-    const db = await getProxyDatabase(request)
+    const session = await auth.api.getSession({ headers: reqHeaders })
 
-    const {
-      data: { user },
-      error,
-    } = await db.auth.getUser()
-
-    if (error || !user) {
-      if (error) await db.auth.signOut()
+    if (!session?.user) {
       if (isPublicPath) return response
       return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
     }
@@ -35,8 +33,11 @@ export const proxy: NextProxy = async request => {
       return NextResponse.redirect(new URL(APP_ROOT, request.url))
     }
 
-    const { data: profile } = await db.from('users').select('onboarded_at').eq('id', user.id).single()
-    const onboardingComplete = !!profile?.onboarded_at
+    const profile = await db.query.users.findFirst({
+      columns: { onboardedAt: true },
+      where: eq(users.id, session.user.id),
+    })
+    const onboardingComplete = !!profile?.onboardedAt
     const isOnboardingPath = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
 
     if (!(onboardingComplete || isOnboardingPath)) {

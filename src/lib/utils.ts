@@ -17,8 +17,8 @@ export const isProduction = process.env.NODE_ENV === 'production'
 const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
   extend: {
     classGroups: {
-      'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
       'text-stroke-color': [{ 'text-stroke': [(n: string) => !Number(n)] }],
+      'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
     },
   },
 })
@@ -46,7 +46,7 @@ export const isValidUsername = (value: string) => EMAIL_REGEX.test(value) || USE
 export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFormReturn<T>) =>
   !formState.isDirty || Object.keys(formState.errors).length > 0
 
-/*  
+/*
   Strings
 */
 export const titleize = (input: string) =>
@@ -81,7 +81,9 @@ export const pluck = <T extends AnyRecord, K extends keyof T>(array: T[], key: K
 export const omit = <T extends AnyRecord, K extends keyof T>(record: T, keys: K | K[]) => {
   const object = { ...record }
   for (const key of [keys].flat()) {
-    if (key in object) delete object[key]
+    if (key in object) {
+      delete object[key]
+    }
   }
   return object
 }
@@ -91,13 +93,27 @@ export const omit = <T extends AnyRecord, K extends keyof T>(record: T, keys: K 
 */
 export const debounce = <T extends unknown[]>(callback: (...args: T) => void, delay = 500) => {
   let timer: NodeJS.Timeout
+  let lastArgs: T | null = null
   const debounced = (...args: T) => {
+    lastArgs = args
     clearTimeout(timer)
     timer = setTimeout(() => {
+      lastArgs = null
       callback(...args)
     }, delay)
   }
-  debounced.cancel = () => clearTimeout(timer)
+  debounced.cancel = () => {
+    clearTimeout(timer)
+    lastArgs = null
+  }
+  debounced.flush = () => {
+    if (lastArgs) {
+      clearTimeout(timer)
+      const args = lastArgs
+      lastArgs = null
+      callback(...args)
+    }
+  }
   return debounced
 }
 
@@ -105,7 +121,7 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
   let throttling: boolean
   let timeout: ReturnType<typeof setTimeout>
   let timestamp: number
-  return function (this: Any, ...args: Any[]) {
+  return function throttle(this: Any, ...args: Any[]) {
     if (!throttling) {
       callback.apply(this, args)
       timestamp = Date.now()

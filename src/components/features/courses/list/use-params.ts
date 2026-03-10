@@ -1,7 +1,7 @@
 'use client'
 
-import { startTransition, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { startTransition, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsArrayOf, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
@@ -18,7 +18,7 @@ import {
 } from '@/components/features/courses/list/params'
 import { useCourses } from '@/components/providers/courses-context'
 import { COURSE_TYPES, type Course } from '@/db/queries/course'
-import { type Enums } from '@/db/types'
+import { type EnumType } from '@/db/types'
 import { useCookies } from '@/hooks/use-cookies'
 import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
@@ -46,7 +46,7 @@ export const useCourseListTypes = () => {
     ...typesParser,
     ...paramsOptions,
   })
-  const setActiveTypes = useCallback((types: Enums<'course_type'>[] | null) => setTypesRaw(types), [setTypesRaw])
+  const setActiveTypes = useCallback((types: EnumType<'course_type'>[] | null) => setTypesRaw(types), [setTypesRaw])
   return { activeTypes, setActiveTypes }
 }
 
@@ -151,7 +151,7 @@ export const useCourseList = () => {
     }
 
     for (const course of courses) {
-      if (course.archived_at) {
+      if (course.archivedAt) {
         list.archived.push(course)
         continue
       }
@@ -204,7 +204,7 @@ export const useDisplayCourses = () => {
 
     if (activeSkillGroups.length < skillGroups.length) {
       values = values.filter(course => {
-        const courseSkillGroup = course.skill_group?.id.toString()
+        const courseSkillGroup = course.skillGroup?.id.toString()
         return courseSkillGroup ? activeSkillGroups.includes(courseSkillGroup) : false
       })
     }
@@ -218,35 +218,35 @@ export const useDisplayCourses = () => {
           return sortDirection === 'asc' ? titleA.localeCompare(titleB) : titleB.localeCompare(titleA)
         }
         case 'progress': {
-          if (a.progress == null || b.progress == null) return 0
+          if (a.progress === null || b.progress === null) return 0
           return sortDirection === 'asc' ? a.progress - b.progress : b.progress - a.progress
         }
         case 'skillGroup': {
-          if (!(a.skill_group?.name && b.skill_group?.name)) return 0
-          const skillA = localize(a.skill_group.name)
-          const skillB = localize(b.skill_group.name)
+          if (!(a.skillGroup?.name && b.skillGroup?.name)) return 0
+          const skillA = localize(a.skillGroup.name)
+          const skillB = localize(b.skillGroup.name)
           if (!(skillA && skillB)) return 0
           return sortDirection === 'asc' ? skillA.localeCompare(skillB) : skillB.localeCompare(skillA)
         }
         case 'creation': {
-          if (!(a.created_at && b.created_at)) return 0
+          if (!(a.createdAt && b.createdAt)) return 0
           return sortDirection === 'asc'
-            ? a.created_at.localeCompare(b.created_at)
-            : b.created_at.localeCompare(a.created_at)
+            ? a.createdAt.localeCompare(b.createdAt)
+            : b.createdAt.localeCompare(a.createdAt)
         }
         case 'update': {
-          if (!(a.updated_at && b.updated_at)) return 0
+          if (!(a.updatedAt && b.updatedAt)) return 0
           return sortDirection === 'asc'
-            ? a.updated_at.localeCompare(b.updated_at)
-            : b.updated_at.localeCompare(a.updated_at)
+            ? a.updatedAt.localeCompare(b.updatedAt)
+            : b.updatedAt.localeCompare(a.updatedAt)
         }
         case 'type': {
           if (!(a.type && b.type)) return 0
           return sortDirection === 'asc' ? a.type.localeCompare(b.type) : b.type.localeCompare(a.type)
         }
         default:
-          if (a.sort_order == null || b.sort_order == null) return 0
-          return a.sort_order - b.sort_order
+          if (a.sortOrder === null || b.sortOrder === null) return 0
+          return a.sortOrder - b.sortOrder
       }
     })
   }, [

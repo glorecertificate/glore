@@ -1,7 +1,9 @@
 'use client'
 
+import { useMemo } from 'react'
+
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 import { XIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -29,17 +31,21 @@ export const DialogOverlay = ({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay> & {
   opacity?: number
-}) => (
-  <DialogPrimitive.Overlay
-    className={cn(
-      'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=open]:animate-in',
-      className
-    )}
-    data-slot="dialog-overlay"
-    style={{ opacity, ...style }}
-    {...props}
-  />
-)
+}) => {
+  const overlayStyle = useMemo(() => ({ opacity, ...style }), [opacity, style])
+
+  return (
+    <DialogPrimitive.Overlay
+      className={cn(
+        'fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+        className
+      )}
+      data-slot="dialog-overlay"
+      style={overlayStyle}
+      {...props}
+    />
+  )
+}
 
 export const DialogContent = ({
   children,
@@ -65,33 +71,33 @@ export const DialogContent = ({
       >
         {children}
         {showClose && (
-          <DialogClose
-            className={`absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0`}
-          >
+          <DialogClose className="absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
             <XIcon />
-            <span className="sr-only">{'Close'}</span>
+            <span className="sr-only">Close</span>
           </DialogClose>
         )}
       </DialogPrimitive.Content>
     </>
   )
 
-  if (!portal) return content
+  if (!portal) {
+    return content
+  }
 
   return <DialogPortal data-slot="dialog-portal">{content}</DialogPortal>
 }
 
 const dialogContentVariants = cva(
-  'data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 translate-[-50%] fixed top-[50%] left-[50%] z-51 grid w-full max-w-[calc(100%-2rem)] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=open]:animate-in',
+  'fixed top-[50%] left-[50%] z-51 grid w-full max-w-[calc(100%-2rem)] translate-[-50%] gap-4 rounded-lg border bg-background p-6 shadow-lg duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
   {
+    defaultVariants: {
+      size: 'default',
+    },
     variants: {
       size: {
         default: 'sm:max-w-lg',
         lg: 'sm:max-w-2xl',
       },
-    },
-    defaultVariants: {
-      size: 'default',
     },
   }
 )
@@ -110,7 +116,7 @@ export const DialogFooter = ({ className, ...props }: React.ComponentProps<'div'
 
 export const DialogTitle = ({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) => (
   <DialogPrimitive.Title
-    className={cn('font-semibold text-lg leading-none', className)}
+    className={cn('text-lg leading-none font-semibold', className)}
     data-slot="dialog-title"
     {...props}
   />
@@ -121,7 +127,7 @@ export const DialogDescription = ({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Description>) => (
   <DialogPrimitive.Description
-    className={cn('text-muted-foreground text-sm', className)}
+    className={cn('text-sm text-muted-foreground', className)}
     data-slot="dialog-description"
     {...props}
   />

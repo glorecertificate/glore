@@ -15,7 +15,9 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (timeLeft === 0) return
+    if (timeLeft === 0) {
+      return
+    }
 
     const timer = setInterval(() => {
       setTimeLeft(prev => prev - 1)
@@ -25,13 +27,15 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
   }, [timeLeft])
 
   const handleResend = useCallback(async () => {
-    if (!username) return
+    if (!username) {
+      return
+    }
 
     setLoading(true)
     try {
       const { data, error: emailError } = await findUserEmail(username)
 
-      if (emailError) {
+      if (emailError || !data) {
         toast.error(t('networkError'))
         return
       }
@@ -49,7 +53,9 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
     }
   }, [username, t])
 
-  if (!username) return null
+  if (!username) {
+    return null
+  }
 
   return (
     <Button

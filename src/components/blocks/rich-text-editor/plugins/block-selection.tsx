@@ -1,5 +1,5 @@
 import { BlockSelectionPlugin } from '@platejs/selection/react'
-import { getPluginTypes, KEYS } from 'platejs'
+import { KEYS, getPluginTypes } from 'platejs'
 import { type PlateElementProps } from 'platejs/react'
 
 import { BlockSelection } from '@/components/blocks/rich-text-editor/ui/block-selection'
@@ -12,7 +12,9 @@ export const BlockSelectionKit = [
     },
     render: {
       belowRootNodes: props => {
-        if (!props.attributes.className?.includes('slate-selectable')) return null
+        if (!props.attributes.className?.includes('slate-selectable')) {
+          return null
+        }
         return <BlockSelection {...(props as unknown as PlateElementProps)} />
       },
     },

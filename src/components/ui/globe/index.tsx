@@ -1,4 +1,3 @@
-// biome-ignore-all lint/correctness/useExhaustiveDependencies: exhaustive-deps
 'use client'
 
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
@@ -7,6 +6,7 @@ import createGlobe, { type COBEOptions } from 'cobe'
 import { useSpring } from 'react-spring'
 
 import { cn, noop } from '@/lib/utils'
+
 import { MARKERS } from './data'
 
 export interface GlobeColorOptions extends Pick<GlobeOptions, 'baseColor' | 'glowColor'> {
@@ -126,29 +126,33 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const updateDrag = useCallback(
     (x: number, y: number) => {
-      if (!pointerRef.current) return
+      if (!pointerRef.current) {
+        return
+      }
       const deltaX = x - pointerRef.current.x
       const deltaY = y - pointerRef.current.y
       const targetTheta = clamp(baseRotationRef.current.theta + deltaY / THETA_SENSITIVITY, MIN_THETA, MAX_THETA)
 
       springApi.start({
+        immediate: true,
         phiDelta: deltaX / PHI_SENSITIVITY,
         thetaDelta: targetTheta - baseRotationRef.current.theta,
-        immediate: true,
       })
     },
     [springApi]
   )
 
   const endDrag = useCallback(() => {
-    if (!pointerRef.current) return
+    if (!pointerRef.current) {
+      return
+    }
 
     baseRotationRef.current.phi += phiDelta.get()
     baseRotationRef.current.theta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)
 
     pointerRef.current = null
     springApi.stop()
-    springApi.start({ phiDelta: 0, thetaDelta: 0, immediate: true })
+    springApi.start({ immediate: true, phiDelta: 0, thetaDelta: 0 })
 
     if (canvasRef.current) {
       canvasRef.current.style.cursor = 'grab'
@@ -157,7 +161,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     pointerRef.current = { x: e.clientX, y: e.clientY }
-    if (!canvasRef.current) return
+    if (!canvasRef.current) {
+      return
+    }
 
     canvasRef.current.style.cursor = 'grabbing'
     if (!canvasRef.current.hasPointerCapture?.(e.pointerId)) {
@@ -167,7 +173,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
-      if (!pointerRef.current) return
+      if (!pointerRef.current) {
+        return
+      }
       updateDrag(e.clientX, e.clientY)
     },
     [updateDrag]
@@ -195,7 +203,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
     const touch = e.touches[0]
-    if (!touch) return
+    if (!touch) {
+      return
+    }
 
     pointerRef.current = { x: touch.clientX, y: touch.clientY }
     if (canvasRef.current) {
@@ -206,7 +216,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   const onTouchMove = useCallback(
     (e: React.TouchEvent<HTMLCanvasElement>) => {
       const touch = e.touches[0]
-      if (!touch) return
+      if (!touch) {
+        return
+      }
 
       e.preventDefault()
       updateDrag(touch.clientX, touch.clientY)
@@ -219,12 +231,16 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   }, [endDrag])
 
   const onResize = useCallback(() => {
-    if (!canvasRef.current) return
-    width = canvasRef.current.offsetWidth
+    if (canvasRef.current) {
+      width = canvasRef.current.offsetWidth
+    }
+    // oxlint-disable-next-line
   }, [])
 
   useEffect(() => {
-    if (!canvasRef.current) return
+    if (!canvasRef.current) {
+      return
+    }
 
     window.addEventListener('resize', onResize)
     onResize()
@@ -245,7 +261,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
         state.width = width * 2
         state.height = width * 2
 
-        if (!paramsRef.current) return
+        if (!paramsRef.current) {
+          return
+        }
         if (!state.markers || state.baseColor?.some((n, i) => n !== paramsRef.current?.baseColor[i])) {
           state.markers = paramsRef.current.markers
         }
@@ -265,7 +283,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
     })
 
     setTimeout(() => {
-      if (!canvasRef.current) return
+      if (!canvasRef.current) {
+        return
+      }
       canvasRef.current.style.opacity = '1'
     })
 
@@ -273,6 +293,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
       globe.destroy()
       window.removeEventListener('resize', onResize)
     }
+    // oxlint-disable-next-line
   }, [])
 
   return (

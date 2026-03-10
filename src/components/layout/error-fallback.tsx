@@ -4,12 +4,11 @@ import { useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
-import metadata from '~/config/metadata.json'
-
 import { ErrorIcon } from '@/components/icons/error'
 import { Image } from '@/components/ui/image'
 import { publicFile } from '@/lib/storage'
 import { cn } from '@/lib/utils'
+import metadata from '~/config/metadata.json'
 
 export interface ErrorProps {
   error: { digest?: string } & Error
@@ -35,7 +34,9 @@ export const ErrorFallback = ({
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))
   const errorMessage = useMemo(() => {
-    if (message) return message
+    if (message) {
+      return message
+    }
     return type === 'not-found'
       ? t('notFoundMessage')
       : t.rich('errorMessage', {
@@ -64,7 +65,7 @@ export const ErrorFallback = ({
             <ErrorIcon className="w-40 sm:w-45" />
           )}
           <div className="text-center">
-            <h2 className="mb-4 font-bold text-3xl text-foreground tracking-tight">{errorTitle}</h2>
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">{errorTitle}</h2>
             <p className="mb-8 text-base text-foreground/75">{errorMessage}</p>
             <div className="flex justify-center gap-4">{children}</div>
           </div>

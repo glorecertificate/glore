@@ -41,8 +41,9 @@ const parseInitialContent = (content?: string | Value) => {
     Array.isArray(content[0].children) &&
     content[0].children.length === 1 &&
     content[0].children[0].text === ''
-  )
+  ) {
     return null
+  }
   return content as Value
 }
 
@@ -171,7 +172,7 @@ const CourseSidebarItem = memo(
               <StepperIndicator
                 className={cn(
                   user.isLearner &&
-                    'data-[state=active]:bg-primary data-[state=completed]:bg-success data-[state=active]:text-primary-foreground data-[state=completed]:text-foreground data-[state=inactive]:text-foreground/50'
+                    'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=completed]:bg-success data-[state=completed]:text-foreground data-[state=inactive]:text-foreground/50'
                 )}
               >
                 {step}
@@ -207,10 +208,13 @@ const CourseSidebarItem = memo(
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Button
-                          className="absolute -top-2 -right-1 rounded-full p-px opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground group-hover:opacity-100 peer-focus:opacity-0"
+                          className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground"
                           onClick={e => {
                             e.stopPropagation()
-                            isSingleLesson ? toast.error(t('courseMustHaveAtLeastOneLesson')) : onRemove(lesson.id!)
+                            if (isSingleLesson) {
+                              return toast.error(t('courseMustHaveAtLeastOneLesson'))
+                            }
+                            onRemove(lesson.id!)
                           }}
                           size="text"
                           variant="transparent"
@@ -226,7 +230,7 @@ const CourseSidebarItem = memo(
                 ) : (
                   title
                 )}
-                {user.isLearner && isCompleted && <span className="ml-1 text-success text-xs">{' ✔︎'}</span>}
+                {user.isLearner && isCompleted && <span className="ml-1 text-xs text-success">{' ✔︎'}</span>}
               </StepperTitle>
               <StepperDescription>{t('lessonType', { type: lesson.type })}</StepperDescription>
             </div>
@@ -251,11 +255,19 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
 
   const currentLessonId = course.lessons[step - 1]?.id
 
+  const indicators = useMemo(
+    () => ({
+      completed: user.isLearner ? <CheckIcon className="size-4" /> : undefined,
+      loading: <LoaderCircleIcon className="size-4 animate-spin" />,
+    }),
+    [user.isLearner]
+  )
+
   const onReorder = useCallback(
     (newLessons: Lesson[]) => {
       const updatedLessons = newLessons.map((lesson, index) => ({
         ...lesson,
-        sort_order: index + 1,
+        sortOrder: index + 1,
       }))
       setCourse(prev => ({ ...prev, lessons: updatedLessons }))
 
@@ -275,10 +287,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
         <Stepper
           className="sticky top-30 flex items-center gap-10 space-y-2 pr-2"
           defaultValue={step}
-          indicators={{
-            completed: user.isLearner ? <CheckIcon className="size-4" /> : undefined,
-            loading: <LoaderCircleIcon className="size-4 animate-spin" />,
-          }}
+          indicators={indicators}
           onValueChange={setStep}
           orientation="vertical"
           value={step}

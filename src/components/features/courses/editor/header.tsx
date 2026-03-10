@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useCallback, useMemo, useState } from 'react'
 
 import {
   CheckCircle2Icon,
@@ -105,17 +105,12 @@ const SaveAllDialog = ({
 
   return (
     <Dialog onOpenChange={handleOpenChange} open={open}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DialogTrigger asChild>
-            <Button disabled={!hasAnyChanges} size="xs" variant="outline">
-              <SaveAllIcon className="size-4" />
-            </Button>
-          </DialogTrigger>
-        </TooltipTrigger>
-        <TooltipContent sideOffset={6}>{hasAnyChanges ? t('saveAll') : t('saveDraftNoChanges')}</TooltipContent>
-      </Tooltip>
-
+      <DialogTrigger asChild>
+        <Button disabled={!hasAnyChanges} variant="outline">
+          <SaveAllIcon className="size-4" />
+          {t('saveAll')}
+        </Button>
+      </DialogTrigger>
       <DialogContent className="gap-5 p-6 sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -142,14 +137,14 @@ const SaveAllDialog = ({
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{item.icon}</span>
                   <div className="flex flex-col">
-                    <span className="font-medium text-sm">{item.label}</span>
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-sm font-medium">{item.label}</span>
+                    <span className="text-xs text-muted-foreground">
                       {localeStatus.hasUpdates ? t('hasChanges') : t('noChanges')}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <span className={cn('font-medium text-xs', isPublished ? 'text-success' : 'text-muted-foreground')}>
+                  <span className={cn('text-xs font-medium', isPublished ? 'text-success' : 'text-muted-foreground')}>
                     {isPublished ? t('published') : t('draft')}
                   </span>
                   <Tooltip>
@@ -174,7 +169,7 @@ const SaveAllDialog = ({
           })}
         </div>
 
-        <p className="text-muted-foreground text-xs leading-relaxed">{t('publishedInfo')}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{t('publishedInfo')}</p>
 
         <DialogFooter className="gap-2 sm:gap-0">
           <DialogClose asChild>
@@ -193,11 +188,9 @@ const SaveAllDialog = ({
 export const CourseHeader = () => {
   const router = useRouter()
   const { scrolled } = useScroll()
-
   const { localeItems } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
-
   const { user } = useSession()
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
 
@@ -206,12 +199,14 @@ export const CourseHeader = () => {
   const [savingPublished, setSavingPublished] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
 
+  const publishedLanguages = useMemo(() => course.languages ?? [], [course.languages])
   const progressColor = course.progress === 100 ? 'success' : 'default'
-
   const canSaveDraft = languageStatus.hasUpdates
 
   const handleSave = useCallback(async () => {
-    if (!canSaveDraft) return
+    if (!canSaveDraft) {
+      return
+    }
     try {
       setSavingDraft(true)
       await saveCourse()
@@ -224,12 +219,12 @@ export const CourseHeader = () => {
   }, [canSaveDraft, saveCourse, t])
 
   const handlePublish = useCallback(async () => {
-    if (!languageStatus.isFulfilled) return
+    if (!languageStatus.isFulfilled) {
+      return
+    }
     try {
       setPublishing(true)
-      const existing = course.languages ?? []
-      const merged = [...new Set([...existing, language])]
-      await saveCourse({ languages: merged })
+      await saveCourse({ languages: [...new Set([...(course.languages ?? []), language])] })
       toast.success(t('publishSuccess'))
     } catch {
       toast.error(t('publishError'))
@@ -239,7 +234,9 @@ export const CourseHeader = () => {
   }, [languageStatus.isFulfilled, saveCourse, course.languages, language, t])
 
   const handleSavePublished = useCallback(async () => {
-    if (!(languageStatus.isFulfilled && languageStatus.hasUpdates)) return
+    if (!(languageStatus.isFulfilled && languageStatus.hasUpdates)) {
+      return
+    }
     try {
       setSavingPublished(true)
       await saveCourse()
@@ -324,12 +321,11 @@ export const CourseHeader = () => {
                     <HistoryIcon className="size-5" />
                     <DialogTitle>{t('history')}</DialogTitle>
                   </DialogHeader>
-                  <DialogDescription className="mb-4 text-muted-foreground text-sm">
+                  <DialogDescription className="mb-4 text-sm text-muted-foreground">
                     {tCommon('comingSoonFeature')}
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
-              <SaveAllDialog onSave={handleSaveAll} publishedLanguages={course.languages ?? []} status={status} />
             </div>
             <TabsList className="h-8 w-full sm:w-fit">
               {localeItems.map(({ label, icon, value }) => (
@@ -347,6 +343,7 @@ export const CourseHeader = () => {
             </TabsList>
           </div>
           <div className="flex items-center gap-2">
+            <SaveAllDialog onSave={handleSaveAll} publishedLanguages={publishedLanguages} status={status} />
             {/* Save draft button — enabled only when there are changes */}
             <Tooltip>
               <TooltipTrigger asChild>
@@ -394,11 +391,11 @@ export const CourseHeader = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    className="transition-none"
                     disabled={!languageStatus.isFulfilled}
                     loading={publishing}
                     loadingSpinner="sm"
                     onClick={handlePublish}
+                    variant="brand"
                   >
                     <UploadCloudIcon className="size-4" />
                     {t('publish')}
@@ -414,7 +411,7 @@ export const CourseHeader = () => {
       ) : (
         <>
           <div className="flex h-full items-center gap-2">
-            <span className="pt-1 text-muted-foreground text-sm">
+            <span className="pt-1 text-sm text-muted-foreground">
               {t('lessonCount', {
                 count: String(step + 1),
                 total: String(course.lessons?.length || 0),
@@ -438,10 +435,7 @@ export const CourseHeader = () => {
                   </TooltipContent>
                 </Tooltip>
               )}
-              <span className="text-sm">
-                {course.progress}
-                {'%'}
-              </span>
+              <span className="text-sm">{course.progress}%</span>
               <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
             </>
           )}
@@ -473,10 +467,10 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                   {currentLesson.title && (
                     <span className="font-medium">{localizeRecord(currentLesson.title, language)}</span>
                   )}
-                  <span className="text-muted-foreground text-xs">{lessonType(currentLesson)}</span>
+                  <span className="text-xs text-muted-foreground">{lessonType(currentLesson)}</span>
                 </>
               ) : (
-                <span className="font-medium">{'No lessons'}</span>
+                <span className="font-medium">No lessons</span>
               )}
             </div>
             <ChevronDownIcon className="size-4 opacity-50" />
@@ -493,16 +487,16 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
                     {lesson.title && localizeRecord(lesson.title, language)}{' '}
-                    {isCompletedLesson(index) && <span className="ml-1 text-success text-xs">{'✔︎'}</span>}
+                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">✔︎</span>}
                   </span>
-                  <span className="text-muted-foreground text-xs">{lessonType(lesson)}</span>
+                  <span className="text-xs text-muted-foreground">{lessonType(lesson)}</span>
                 </div>
               </DropdownMenuItem>
             ))
           ) : (
             <DropdownMenuItem className="flex justify-between py-2">
               <div className="flex flex-col">
-                <span>{'Add lesson'}</span>
+                <span>Add lesson</span>
               </div>
             </DropdownMenuItem>
           )}
@@ -510,10 +504,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
       </DropdownMenu>
       {course.progressStatus !== 'completed' && (
         <div className="flex items-center justify-end gap-2 bg-background md:top-18">
-          <span className="text-sm">
-            {course.progress}
-            {'%'}
-          </span>
+          <span className="text-sm">{course.progress}%</span>
           <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
         </div>
       )}

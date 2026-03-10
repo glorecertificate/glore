@@ -29,7 +29,9 @@ const MultiSelectContext = createContext<{
 
 const useMultiSelect = () => {
   const context = useContext(MultiSelectContext)
-  if (!context) throw new Error('useMultiSelect must be used within a MultiSelectProvider')
+  if (!context) {
+    throw new Error('useMultiSelect must be used within a MultiSelectProvider')
+  }
   return context
 }
 
@@ -61,8 +63,12 @@ export const MultiSelect = ({
 
   const unselectOption = useCallback(
     (option: string) => {
-      if (value.length > min) return onChange(value.filter(v => v !== option))
-      if (selectTime && Date.now() - selectTime < 2000) return
+      if (value.length > min) {
+        return onChange(value.filter(v => v !== option))
+      }
+      if (selectTime && Date.now() - selectTime < 2000) {
+        return
+      }
       toast.info(t('selectAtLeastOne', { item: (label ?? t('item')).toLowerCase() }), toastOptions)
       setSelectTime(Date.now())
     },
@@ -71,9 +77,13 @@ export const MultiSelect = ({
 
   const selectOption = useCallback(
     (option: string) => {
-      if (value.includes(option)) return unselectOption(option)
+      if (value.includes(option)) {
+        return unselectOption(option)
+      }
       const selected = options.find(o => o === option)
-      if (!selected) return
+      if (!selected) {
+        return
+      }
       onChange([...value, selected])
     },
     [onChange, options, unselectOption, value]
@@ -83,26 +93,34 @@ export const MultiSelect = ({
     onChange(options)
   }, [options, onChange])
 
+  const contextValue = useMemo(
+    () => ({
+      disabled: Boolean(disabled),
+      label,
+      loading: Boolean(loading),
+      min,
+      open,
+      options,
+      resetOptions,
+      selectOption,
+      setOpen,
+      value,
+    }),
+    [disabled, label, loading, min, open, options, resetOptions, selectOption, value]
+  )
+
   return (
-    <MultiSelectContext.Provider
-      value={{
-        disabled: !!disabled,
-        label,
-        loading: !!loading,
-        min,
-        open,
-        options,
-        resetOptions,
-        selectOption,
-        setOpen,
-        value,
-      }}
-    >
+    <MultiSelectContext.Provider value={contextValue}>
       <Popover onOpenChange={setOpen} open={open} {...props}>
         {children}
       </Popover>
     </MultiSelectContext.Provider>
   )
+}
+
+const scrollbarStyle: React.CSSProperties = {
+  scrollbarColor: 'hsl(var(--border)) transparent',
+  scrollbarWidth: 'thin',
 }
 
 export const MultiSelectTrigger = ({
@@ -134,7 +152,9 @@ export const MultiSelectTrigger = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
       e.stopPropagation()
-      if (disabled) return
+      if (disabled) {
+        return
+      }
       onClick?.(e)
     },
     [disabled, onClick]
@@ -152,23 +172,16 @@ export const MultiSelectTrigger = ({
       {...props}
     >
       <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
-        <div
-          className="flex flex-1 gap-1 overflow-x-auto px-2 py-2"
-          style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'hsl(var(--border)) transparent',
-          }}
-        >
+        <div className="flex flex-1 gap-1 overflow-x-auto px-2 py-2" style={scrollbarStyle}>
           {value.length === 0 ? <span className="truncate text-muted-foreground">{placeholder}</span> : children}
         </div>
-        <hr className="mx-0.5 my-auto h-6 border-border border-l" />
+        <hr className="mx-0.5 my-auto h-6 border-l border-border" />
         <span
           className={cn(
             'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             open && 'cursor-default bg-accent/50'
           )}
           onClick={openDropdown}
-          role="button"
           tabIndex={0}
         >
           <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
@@ -184,6 +197,8 @@ export const MultiSelectBadge = ({
   disabled: badgeDisabled,
   disabledMessage,
   label,
+  onClick,
+  onKeyDown,
   tooltipDelay = 500,
   value,
   ...props
@@ -199,17 +214,30 @@ export const MultiSelectBadge = ({
   const disabled = rootDisabled || badgeDisabled
 
   const title = useMemo(() => {
-    if (disabled) return
-    if (!(label || rootLabel)) return t('removeItem')
+    if (disabled) {
+      return
+    }
+    if (!(label || rootLabel)) {
+      return t('removeItem')
+    }
     return `${t('remove')} ${label ?? rootLabel}`
   }, [disabled, label, rootLabel, t])
 
-  const onKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLSpanElement>) => {
       if (disabled || e.key !== 'Enter') return
       selectOption(value)
+      onKeyDown?.(e)
     },
-    [disabled, selectOption, value]
+    [disabled, onKeyDown, selectOption, value]
+  )
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      selectOption(value)
+      onClick?.(e)
+    },
+    [onClick, selectOption, value]
   )
 
   const badge = (
@@ -220,8 +248,8 @@ export const MultiSelectBadge = ({
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         className
       )}
-      onClick={() => selectOption(value)}
-      onKeyDown={onKeyDown}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
       title={title}
       {...props}
@@ -236,7 +264,6 @@ export const MultiSelectBadge = ({
               'group-focus/multi-select-badge:border-destructive-accent group-focus/multi-select-badge:bg-destructive/75 group-focus/multi-select-badge:text-destructive-foreground',
             ]
           )}
-          role="button"
         >
           <XIcon className={cn('size-2', !disabled && 'group-hover/multi-select-badge:stroke-white')} />
         </span>
@@ -244,7 +271,9 @@ export const MultiSelectBadge = ({
     </Badge>
   )
 
-  if (!(disabled && disabledMessage)) return badge
+  if (!(disabled && disabledMessage)) {
+    return badge
+  }
 
   return (
     <Tooltip delayDuration={tooltipDelay} disableHoverableContent>
@@ -260,20 +289,26 @@ export const MultiSelectBadgeCount = ({ children, className, ...props }: React.C
   const t = useTranslations('Components.MultiSelect')
   const { open, setOpen } = useMultiSelect()
 
-  const onSelect = useCallback(() => {
-    if (open) return
-    setOpen(true)
+  const toggleSelect = useCallback(() => {
+    if (!open) {
+      setOpen(true)
+    }
   }, [open, setOpen])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        toggleSelect()
+      }
+    },
+    [toggleSelect]
+  )
 
   return (
     <Badge
       className={cn('cursor-pointer gap-0.5 px-2', className)}
-      onClick={onSelect}
-      onKeyDown={e => {
-        if (e.key === 'Enter') {
-          onSelect()
-        }
-      }}
+      onClick={toggleSelect}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
       title={t('seeAllSelected')}
       {...props}
@@ -296,6 +331,8 @@ export const MultiSelectItem = ({
   const { min, selectOption, value: rootValue } = useMultiSelect()
   const selected = rootValue.includes(value)
 
+  const onSelect = useCallback(() => selectOption(value), [selectOption, value])
+
   return (
     <CommandItem
       className={cn(
@@ -303,7 +340,7 @@ export const MultiSelectItem = ({
         selected ? (rootValue.length === min ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer',
         className
       )}
-      onSelect={() => selectOption(value)}
+      onSelect={onSelect}
       value={value}
       {...props}
     >
@@ -344,7 +381,7 @@ export const MultiSelectContent = ({
                 ))}
               </div>
             ) : (
-              <div className="py-4 text-center text-muted-foreground text-sm">{'No items found.'}</div>
+              <div className="py-4 text-center text-sm text-muted-foreground">No items found.</div>
             )}
           </CommandEmpty>
           <CommandGroup>

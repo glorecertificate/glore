@@ -1,7 +1,6 @@
 'use client'
 
 import { memo, useCallback, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
 
 import {
   ArrowUpDownIcon,
@@ -20,7 +19,13 @@ import {
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { deleteTeamMember, inviteTeamMember, resendInvitation, updateTeamMemberRole } from '@/actions/admin'
+import {
+  deleteTeamMember,
+  getTeamMembers,
+  inviteTeamMember,
+  resendInvitation,
+  updateTeamMemberRole,
+} from '@/actions/admin'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,13 +61,13 @@ type TeamRole = 'admin' | 'editor'
 type TeamStatus = 'joined' | 'pending'
 type SortField = 'name' | 'role' | 'date'
 
-const getUserRole = (user: User): TeamRole => (user.is_admin ? 'admin' : 'editor')
+const getUserRole = (user: User): TeamRole => (user.isAdmin ? 'admin' : 'editor')
 
-const getUserStatus = (user: User): TeamStatus => (user.onboarded_at ? 'joined' : 'pending')
+const getUserStatus = (user: User): TeamStatus => (user.onboardedAt ? 'joined' : 'pending')
 
 const getDisplayName = (user: User) => {
-  if (user.first_name && user.last_name) return `${user.first_name} ${user.last_name}`
-  if (user.first_name) return user.first_name
+  if (user.firstName && user.lastName) return `${user.firstName} ${user.lastName}`
+  if (user.firstName) return user.firstName
   if (user.username) return `@${user.username}`
   return user.email
 }
@@ -90,7 +95,7 @@ const TeamMemberRow = memo(
       <div className="flex items-center justify-between rounded-lg border bg-card p-4 transition-colors hover:bg-accent/30">
         <div className="flex items-center gap-4">
           <Avatar className="size-10 rounded-full">
-            {user.avatar_url && <AvatarImage alt={getDisplayName(user)} src={user.avatar_url} />}
+            {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
             <AvatarFallback className="rounded-full bg-muted font-medium text-sm">
               {user.initials || <UserIcon className="size-4" />}
             </AvatarFallback>
@@ -337,12 +342,12 @@ const DeleteDialog = memo(
   }
 )
 
-export const AdminTeam = ({ users }: { users: User[] }) => {
+export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
   const t = useTranslations('Admin.team')
   const { locale } = useI18n()
   const { user: currentUser } = useSession()
-  const router = useRouter()
 
+  const [users, setUsers] = useState(initialUsers)
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
   const [sortBy, setSortBy] = useState<SortField>('name')
   const [filterRole, setFilterRole] = useState<TeamRole | 'all'>('all')
@@ -366,9 +371,14 @@ export const AdminTeam = ({ users }: { users: User[] }) => {
     return [...filtered].sort((a, b) => {
       if (sortBy === 'name') return getDisplayName(a).localeCompare(getDisplayName(b))
       if (sortBy === 'role') return getUserRole(a).localeCompare(getUserRole(b))
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
   }, [activeUsers, sortBy, filterRole, filterStatus])
+
+  const refreshTeam = useCallback(async () => {
+    const { data } = await getTeamMembers({ cache: false })
+    if (data) setUsers(data)
+  }, [])
 
   const handleInvite = useCallback(
     async (data: { firstName: string; lastName: string; email: string; role: TeamRole; locale: Locale }) => {
@@ -381,9 +391,9 @@ export const AdminTeam = ({ users }: { users: User[] }) => {
       }
 
       toast.success(t('inviteSuccess', { email: data.email }))
-      router.refresh()
+      refreshTeam()
     },
-    [t, router]
+    [t, refreshTeam]
   )
 
   const handleChangeRole = useCallback(
@@ -395,10 +405,10 @@ export const AdminTeam = ({ users }: { users: User[] }) => {
         return
       }
 
-      toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`) }))
-      router.refresh()
+      toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`).toLowerCase() }))
+      refreshTeam()
     },
-    [t, router]
+    [t, refreshTeam]
   )
 
   const handleResend = useCallback(

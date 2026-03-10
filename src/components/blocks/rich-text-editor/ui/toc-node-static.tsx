@@ -6,17 +6,13 @@ import { SlateElement, type SlateElementProps } from 'platejs/static'
 import { Button } from '@/components/ui/button'
 
 const headingItemVariants = cva(
-  `
-    block h-auto w-full cursor-pointer truncate rounded-none px-0.5 py-1.5 text-left font-medium text-muted-foreground underline
-    decoration-[0.5px] underline-offset-4
-    hover:bg-accent hover:text-muted-foreground
-  `,
+  `block h-auto w-full cursor-pointer truncate rounded-none px-0.5 py-1.5 text-left font-medium text-muted-foreground underline decoration-[0.5px] underline-offset-4 hover:bg-accent hover:text-muted-foreground`,
   {
     variants: {
       depth: {
         1: 'pl-0.5',
-        2: 'pl-[26px]',
-        3: 'pl-[50px]',
+        2: 'pl-6.5',
+        3: 'pl-12.5',
       },
     },
   }
@@ -42,7 +38,7 @@ export const TocElementStatic = (props: SlateElementProps) => {
             </Button>
           ))
         ) : (
-          <div className="text-gray-500 text-sm">{'Create a heading to display the table of contents.'}</div>
+          <div className="text-sm text-gray-500">Create a heading to display the table of contents.</div>
         )}
       </div>
       {props.children}
@@ -60,7 +56,9 @@ const headingDepth: Record<string, number> = {
 }
 
 const getHeadingList = (editor?: SlateEditor) => {
-  if (!editor) return []
+  if (!editor) {
+    return []
+  }
 
   const options = editor.getOptions(BaseTocPlugin)
 
@@ -70,12 +68,14 @@ const getHeadingList = (editor?: SlateEditor) => {
 
   const headingList: Heading[] = []
 
-  const values = editor.api.nodes<TElement>({
+  const values = editor.api.nodes({
     at: [],
-    match: n => isHeading(n),
+    match: (n: TElement) => isHeading(n),
   })
 
-  if (!values) return []
+  if (!values) {
+    return []
+  }
 
   Array.from(values, ([node, path]) => {
     const { type } = node
@@ -84,7 +84,7 @@ const getHeadingList = (editor?: SlateEditor) => {
     const id = node.id as string
 
     if (title) {
-      headingList.push({ id, depth, path, title, type })
+      headingList.push({ depth, id, path, title, type })
     }
 
     return null

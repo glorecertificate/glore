@@ -20,7 +20,6 @@ export const FileElement = withHOC(ResizableProvider, (props: PlateElementProps<
         download={name}
         href={unsafeUrl}
         rel="noopener noreferrer"
-        role="button"
         target="_blank"
       >
         <div className="flex items-center gap-1 p-1">

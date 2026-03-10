@@ -47,7 +47,7 @@ export const CourseListContentSkeleton = ({
 }: React.ComponentProps<'div'> & { count?: number }) => (
   <div
     className={cn(
-      'fade-in grid animate-in gap-6 duration-150 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
+      'grid gap-6 duration-150 animate-in fade-in md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
       className
     )}
     {...props}

@@ -1,6 +1,8 @@
 'use client'
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { useCallback } from 'react'
+
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Button } from '@/components/ui/button'
 import { Input, type InputProps } from '@/components/ui/input'
@@ -10,7 +12,7 @@ import { cn } from '@/lib/utils'
 export const InputGroup = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs outline-none transition-[color,box-shadow] dark:bg-input/30',
+      'group/input-group relative flex w-full items-center rounded-md border border-input shadow-xs transition-[color,box-shadow] outline-none dark:bg-input/30',
       'h-9 min-w-0 has-[>textarea]:h-auto',
       'has-[>[data-align=inline-start]]:[&>input]:pl-2',
       'has-[>[data-align=inline-end]]:[&>input]:pr-2',
@@ -27,28 +29,40 @@ export const InputGroup = ({ className, ...props }: React.ComponentProps<'div'>)
 )
 
 export const InputGroupAddon = ({
-  className,
   align = 'inline-start',
+  className,
+  onClick,
   ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) => (
-  <div
-    className={cn(inputGroupAddonVariants({ align }), className)}
-    data-align={align}
-    data-slot="input-group-addon"
-    onClick={e => {
-      if ((e.target as HTMLElement).closest('button')) {
+}: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) => {
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if ((event.target as HTMLElement).closest('button')) {
         return
       }
-      e.currentTarget.parentElement?.querySelector('input')?.focus()
-    }}
-    role="group"
-    {...props}
-  />
-)
+      event.currentTarget.parentElement?.querySelector('input')?.focus()
+      onClick?.(event)
+    },
+    [onClick]
+  )
+
+  return (
+    <div
+      className={cn(inputGroupAddonVariants({ align }), className)}
+      data-align={align}
+      data-slot="input-group-addon"
+      onClick={handleClick}
+      role="group"
+      {...props}
+    />
+  )
+}
 
 const inputGroupAddonVariants = cva(
-  "flex h-auto cursor-text select-none items-center justify-center gap-2 py-1.5 font-medium text-muted-foreground text-sm group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
+  "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] [&>svg:not([class*='size-'])]:size-4",
   {
+    defaultVariants: {
+      align: 'inline-start',
+    },
     variants: {
       align: {
         'inline-start': 'order-first pl-3 has-[>button]:ml-[-0.45rem] has-[>kbd]:ml-[-0.35rem]',
@@ -57,9 +71,6 @@ const inputGroupAddonVariants = cva(
           'order-first w-full justify-start px-3 pt-3 group-has-[>input]/input-group:pt-2.5 [.border-b]:pb-3',
         'block-end': 'order-last w-full justify-start px-3 pb-3 group-has-[>input]/input-group:pb-2.5 [.border-t]:pt-3',
       },
-    },
-    defaultVariants: {
-      align: 'inline-start',
     },
   }
 )
@@ -81,6 +92,9 @@ export const InputGroupButton = ({
 )
 
 const inputGroupButtonVariants = cva('flex items-center gap-2 text-sm shadow-none', {
+  defaultVariants: {
+    size: 'xs',
+  },
   variants: {
     size: {
       xs: "h-6 gap-1 rounded-[calc(var(--radius)-5px)] px-2 has-[>svg]:px-2 [&>svg:not([class*='size-'])]:size-3.5",
@@ -89,15 +103,12 @@ const inputGroupButtonVariants = cva('flex items-center gap-2 text-sm shadow-non
       'icon-sm': 'size-8 p-0 has-[>svg]:p-0',
     },
   },
-  defaultVariants: {
-    size: 'xs',
-  },
 })
 
 export const InputGroupText = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     className={cn(
-      "flex items-center gap-2 text-muted-foreground text-sm hover:cursor-default [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
+      "flex items-center gap-2 text-sm text-muted-foreground hover:cursor-default [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4",
       className
     )}
     {...props}

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "include": [".next/types/**/*.ts", "src", "*.d.ts"],
-  "compilerOptions": {
-    "plugins": [{ "name": "next" }],
-    "types": ["next", "node", "react", "react-dom"]
-  }
-}

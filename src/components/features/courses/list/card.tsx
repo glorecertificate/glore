@@ -88,7 +88,7 @@ export const CourseListCard = memo(
       course.lessons.length > 0
         ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
         : t('noLessonsCreated')
-    const createdOn = t('createdOnBy', { date: f.relativeTime(new Date(course.created_at), Date.now()) })
+    const createdOn = t('createdOnBy', { date: f.relativeTime(new Date(course.createdAt), Date.now()) })
 
     const languageItems = useMemo(
       () =>
@@ -104,7 +104,7 @@ export const CourseListCard = memo(
     )
 
     const description = useMemo(() => {
-      const translation = localizeRecord(course.description, language)
+      const translation = course.description ? localizeRecord(course.description, language) : undefined
       if (!translation) return
       const courseDescription = `${translation.split('.')[0]}.`
 
@@ -154,7 +154,7 @@ export const CourseListCard = memo(
                         categorized={false}
                         className="peer size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
                         onValueChange={updateCourseIcon}
-                        value={course.icon}
+                        value={(course.icon ?? undefined) as IconName | undefined}
                         variant="ghost"
                       />
                     </TooltipTrigger>
@@ -163,7 +163,7 @@ export const CourseListCard = memo(
                     </span>
                   </Tooltip>
                   <Link
-                    className={cn('font-medium leading-[normal] transition-none')}
+                    className={cn('leading-[normal] font-medium transition-none')}
                     href={coursePath}
                     prefetch
                     title={t('viewCourse')}
@@ -186,18 +186,20 @@ export const CourseListCard = memo(
                 <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
                   {t(`courseType-${course.type}`)}
                 </Badge>
-                {course.skill_group && <Badge>{localizeRecord(course.skill_group.name, language)}</Badge>}
+                {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
               </div>
             </div>
           ) : (
             <div className="flex grow flex-col gap-3">
               <div className="flex gap-2">
-                <LucideIcon
-                  className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
-                  name={course.icon}
-                />
+                {course.icon && (
+                  <LucideIcon
+                    className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
+                    name={course.icon as IconName}
+                  />
+                )}
                 <Link
-                  className={cn('font-medium leading-[normal] transition-none')}
+                  className={cn('leading-[normal] font-medium transition-none')}
                   href={coursePath}
                   prefetch
                   title={t('viewCourse')}
@@ -210,7 +212,7 @@ export const CourseListCard = memo(
                 <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
                   {t(`courseType-${course.type}`)}
                 </Badge>
-                {course.skill_group && <Badge>{localizeRecord(course.skill_group.name, language)}</Badge>}
+                {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
               </div>
             </div>
           )}
@@ -224,7 +226,7 @@ export const CourseListCard = memo(
           <div className="flex flex-col gap-2">
             {/* Drafts */}
             {user.canEdit && languageItems.length > 1 && (
-              <div className="flex items-center gap-2.5 font-normal text-muted-foreground text-xs">
+              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
                 <LanguagesIcon className="size-3.5 text-muted-foreground" />
                 <div className="flex items-center gap-2">
                   {languageItems.map(({ active, displayLabel, icon, published, value }) => (
@@ -258,32 +260,30 @@ export const CourseListCard = memo(
             )}
             <div
               className={cn(
-                'flex items-center gap-2.5 font-normal text-xs',
+                'flex items-center gap-2.5 text-xs font-normal',
                 course.lessons.length > 0
                   ? 'text-muted-foreground'
-                  : 'pointer-events-none select-none text-muted-foreground/50'
+                  : 'pointer-events-none text-muted-foreground/50 select-none'
               )}
             >
               <BookOpenIcon className="size-3.5 text-muted-foreground" />
               {lessonsMessage}
             </div>
             {user.canEdit && (
-              <div className="flex select-none items-center gap-2.5 font-normal text-muted-foreground text-xs">
+              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
                 <UserPenIcon className="size-3.5 text-muted-foreground" />
                 <div className="flex items-center gap-1.5">
                   <span suppressHydrationWarning>{createdOn}</span>
                   <HoverCard closeDelay={50} openDelay={300}>
                     <HoverCardTrigger asChild>
                       <Button
-                        className={
-                          'peer/user-card cursor-default gap-1 pr-0.5 font-normal text-muted-foreground text-xs data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50'
-                        }
+                        className="peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50"
                         size="text"
                         variant="ghost"
                       >
                         <Avatar className="size-4 rounded-full border">
-                          {course.creator.avatar_url && (
-                            <AvatarImage className="rounded-full" src={course.creator.avatar_url} />
+                          {course.creator.avatarUrl && (
+                            <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
                           )}
                           <AvatarFallback className="text-[7.5px]">{course.creator.initials}</AvatarFallback>
                         </Avatar>
@@ -297,7 +297,7 @@ export const CourseListCard = memo(
                 </div>
               </div>
             )}
-            <div className="flex select-none items-center gap-2.5 font-normal text-muted-foreground text-xs">
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
               <Edit3Icon className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-1.5">
                 <span>{t('writtenBy')}</span>
@@ -306,8 +306,8 @@ export const CourseListCard = memo(
                     <HoverCard closeDelay={50} key={contributor.id} openDelay={300}>
                       <HoverCardTrigger asChild>
                         <Avatar className="size-4 rounded-full border ring-background transition-all duration-200 ease-in-out">
-                          {contributor.avatar_url && (
-                            <AvatarImage className="rounded-full" src={contributor.avatar_url} />
+                          {contributor.avatarUrl && (
+                            <AvatarImage className="rounded-full" src={contributor.avatarUrl} />
                           )}
                           <AvatarFallback className="text-[7.5px]">{contributor.initials}</AvatarFallback>
                         </Avatar>
@@ -323,7 +323,7 @@ export const CourseListCard = memo(
           </div>
           {!user.canEdit && course.enrolled && (
             <div className="w-full">
-              <div className="mb-1 flex items-center justify-between text-muted-foreground text-sm">
+              <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
                 <span className="flex items-center">
                   {completedLessons}
                   {' / '}

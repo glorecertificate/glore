@@ -1,8 +1,7 @@
 'use server'
 
-import 'server-only'
-
 import { type Locale } from 'next-intl'
+import 'server-only'
 
 import {
   COOKIE_OPTIONS,
@@ -19,6 +18,10 @@ export const cookies = async () => {
   const { get, set, delete: deleteCookie } = await cookies()
 
   return {
+    delete: (name: CookieName, options?: CookieOptions) => {
+      const { prefix = COOKIE_PREFIX } = options ?? {}
+      deleteCookie(prefixCookieName(name, prefix))
+    },
     get: <T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) => {
       const { fallback, prefix = COOKIE_PREFIX } = options ?? {}
       const value = get(prefixCookieName(name, prefix))?.value
@@ -45,10 +48,6 @@ export const cookies = async () => {
         domain: domain ?? undefined,
         expires: expires ?? undefined,
       })
-    },
-    delete: (name: CookieName, options?: CookieOptions) => {
-      const { prefix = COOKIE_PREFIX } = options ?? {}
-      deleteCookie(prefixCookieName(name, prefix))
     },
   }
 }

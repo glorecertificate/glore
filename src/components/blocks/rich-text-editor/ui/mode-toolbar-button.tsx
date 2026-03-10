@@ -2,7 +2,6 @@
 
 import { useCallback, useMemo, useState } from 'react'
 
-import { SuggestionPlugin } from '@platejs/suggestion/react'
 import { CheckIcon, EyeIcon, PenIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useEditorRef, usePlateState } from 'platejs/react'
@@ -43,11 +42,13 @@ export const ModeToolbarButton = (props: DropdownMenuProps) => {
 
   const onValueChange = useCallback(
     (newValue: string) => {
-      if (newValue === 'viewing') return setReadOnly(true)
+      if (newValue === 'viewing') {
+        return setReadOnly(true)
+      }
       setReadOnly(false)
-      if (newValue === 'suggestion') return editor.setOption(SuggestionPlugin, 'isSuggesting', true)
-      editor.setOption(SuggestionPlugin, 'isSuggesting', false)
-      if (newValue === 'editing') editor.tf.focus()
+      if (newValue === 'editing') {
+        editor.tf.focus()
+      }
     },
     [editor, setReadOnly]
   )
@@ -61,7 +62,7 @@ export const ModeToolbarButton = (props: DropdownMenuProps) => {
         </ToolbarButton>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="start" className="min-w-[180px]">
+      <DropdownMenuContent align="start" className="min-w-45">
         <DropdownMenuRadioGroup onValueChange={onValueChange} value={value}>
           <DropdownMenuRadioItem className="pl-2 *:first:[span]:hidden *:[svg]:text-muted-foreground" value="editing">
             <Indicator />

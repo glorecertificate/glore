@@ -100,14 +100,14 @@ const ProfileForm = () => {
   const tGlobal = useTranslations()
   const t = useTranslations('Users')
 
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar_url)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
 
   const formSchema = useMemo(
     () =>
       z.object({
-        first_name: z.string().optional(),
-        last_name: z.string().optional(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
         bio: z.string().optional(),
         phone: z.string().optional(),
         birthday: z.string().optional(),
@@ -122,12 +122,12 @@ const ProfileForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: user.first_name ?? '',
-      last_name: user.last_name ?? '',
+      firstName: user.firstName ?? '',
+      lastName: user.lastName ?? '',
       bio: user.bio ?? '',
       phone: user.phone ?? '',
       birthday: user.birthday ?? '',
-      sex: user.sex ?? '',
+      sex: (user.sex ?? '') as '' | 'female' | 'male' | 'non-binary' | 'unspecified',
       pronouns: user.pronouns ?? '',
       city: user.city ?? '',
       country: user.country ?? '',
@@ -152,7 +152,7 @@ const ProfileForm = () => {
           toast.error(t('avatarUploadError'))
           return
         }
-        setAvatarPreview(data.avatar_url)
+        setAvatarPreview(data.avatarUrl)
         setUser(data)
         toast.success(t('avatarUploaded'))
       } catch (e) {
@@ -183,8 +183,8 @@ const ProfileForm = () => {
       try {
         const updates: TableUpdate<'users'> = {}
         const fields = [
-          'first_name',
-          'last_name',
+          'firstName',
+          'lastName',
           'bio',
           'phone',
           'birthday',
@@ -210,12 +210,12 @@ const ProfileForm = () => {
 
           setUser(data)
           form.reset({
-            first_name: data.first_name ?? '',
-            last_name: data.last_name ?? '',
+            firstName: data.firstName ?? '',
+            lastName: data.lastName ?? '',
             bio: data.bio ?? '',
             phone: data.phone ?? '',
             birthday: data.birthday ?? '',
-            sex: data.sex ?? '',
+            sex: (data.sex ?? '') as '' | 'female' | 'male' | 'non-binary' | 'unspecified',
             pronouns: data.pronouns ?? '',
             city: data.city ?? '',
             country: data.country ?? '',
@@ -262,7 +262,7 @@ const ProfileForm = () => {
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
-              name="first_name"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('firstName')}</FormLabel>
@@ -275,7 +275,7 @@ const ProfileForm = () => {
             />
             <FormField
               control={form.control}
-              name="last_name"
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>{t('lastName')}</FormLabel>
@@ -498,25 +498,25 @@ const AccountForm = () => {
   const accountForm = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
-      locale: user.locale ?? '',
+      locale: (user.locale ?? '') as '' | 'en' | 'es' | 'it',
       email: user.email ?? '',
       username: user.username ?? '',
     },
   })
 
-  const generateUsername = useCallback((first_name: string, last_name: string) => {
+  const generateUsername = useCallback((firstName: string, lastName: string) => {
     const parts = []
-    if (first_name) parts.push(first_name.toLowerCase().replace(/\s+/g, ''))
-    if (last_name) parts.push(last_name.toLowerCase().replace(/\s+/g, ''))
+    if (firstName) parts.push(firstName.toLowerCase().replace(/\s+/g, ''))
+    if (lastName) parts.push(lastName.toLowerCase().replace(/\s+/g, ''))
     return parts.join('.')
   }, [])
 
   useEffect(() => {
-    if (!user.username && user.first_name) {
-      const username = generateUsername(user.first_name ?? '', user.last_name ?? '')
+    if (!user.username && user.firstName) {
+      const username = generateUsername(user.firstName ?? '', user.lastName ?? '')
       if (username) accountForm.setValue('username', username, { shouldValidate: false })
     }
-  }, [accountForm, generateUsername, user.username, user.first_name, user.last_name])
+  }, [accountForm, generateUsername, user.username, user.firstName, user.lastName])
 
   const accountDisabled = defaultFormDisabled(accountForm)
 
@@ -543,7 +543,7 @@ const AccountForm = () => {
 
           setUser(data)
           accountForm.reset({
-            locale: data.locale ?? '',
+            locale: (data.locale ?? '') as '' | 'en' | 'es' | 'it',
             email: data.email ?? '',
             username: data.username ?? '',
           })

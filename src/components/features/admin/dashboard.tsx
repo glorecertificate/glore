@@ -22,11 +22,11 @@ export const AdminDashboard = () => {
       <Tabs defaultValue="overview" onValueChange={onTabChange} value={activeTab}>
         <div className="mb-6 flex items-center justify-between">
           <TabsList className="grid w-full max-w-3xl grid-cols-5">
-            <TabsTrigger value="overview">{'Overview'}</TabsTrigger>
-            <TabsTrigger value="team">{'Team'}</TabsTrigger>
-            <TabsTrigger value="certificates">{'Certificates'}</TabsTrigger>
-            <TabsTrigger value="users">{'Users'}</TabsTrigger>
-            <TabsTrigger value="organizations">{'Organizations'}</TabsTrigger>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="team">Team</TabsTrigger>
+            <TabsTrigger value="certificates">Certificates</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="organizations">Organizations</TabsTrigger>
           </TabsList>
         </div>
 

@@ -1,7 +1,5 @@
 'use client'
 
-import { type AppRouteHandlerRoutes } from 'next/types/routes'
-
 import { withAIBatch } from '@platejs/ai'
 import { AIChatPlugin, AIPlugin, streamInsertChunk, useChatChunk } from '@platejs/ai/react'
 import { KEYS, PathApi } from 'platejs'
@@ -19,10 +17,7 @@ interface AiTemplateOptions {
 
 export const aiChatPlugin = AIChatPlugin.extend({
   options: {
-    chatOptions: {
-      api: '/api/v1/ai/command' satisfies AppRouteHandlerRoutes,
-      body: {},
-    },
+    chatOptions: { api: '/api/v1/ai/command', body: {} },
     promptTemplate: ({ isBlockSelecting, isSelecting }: AiTemplateOptions) =>
       isBlockSelecting
         ? PROMPT_TEMPLATES.userBlockSelecting
@@ -36,11 +31,7 @@ export const aiChatPlugin = AIChatPlugin.extend({
           ? PROMPT_TEMPLATES.systemSelecting
           : PROMPT_TEMPLATES.systemDefault,
   },
-  render: {
-    afterContainer: AILoadingBar,
-    afterEditable: AIMenu,
-    node: AIAnchorElement,
-  },
+  render: { afterContainer: AILoadingBar, afterEditable: AIMenu, node: AIAnchorElement },
   shortcuts: { show: { keys: 'mod+j' } },
   useHooks: ({ editor, getOption }) => {
     const mode = usePluginOption({ key: KEYS.aiChat }, 'mode') as 'insert' | 'select' | 'block-select'
@@ -51,15 +42,7 @@ export const aiChatPlugin = AIChatPlugin.extend({
           const path = editor.selection?.focus.path.slice(0, 1)
 
           editor.tf.withoutSaving(() => {
-            editor.tf.insertNodes(
-              {
-                children: [{ text: '' }],
-                type: KEYS.aiChat,
-              },
-              {
-                at: PathApi.next(path!),
-              }
-            )
+            editor.tf.insertNodes({ children: [{ text: '' }], type: KEYS.aiChat }, { at: PathApi.next(path!) })
           })
           editor.setOption(AIChatPlugin, 'streaming', true)
         }
@@ -68,13 +51,11 @@ export const aiChatPlugin = AIChatPlugin.extend({
           withAIBatch(
             editor,
             () => {
-              if (!getOption('streaming')) return
+              if (!getOption('streaming')) {
+                return
+              }
               editor.tf.withScrolling(() => {
-                streamInsertChunk(editor, chunk, {
-                  textProps: {
-                    ai: true,
-                  },
-                })
+                streamInsertChunk(editor, chunk, { textProps: { ai: true } })
               })
             },
             { split: isFirst }

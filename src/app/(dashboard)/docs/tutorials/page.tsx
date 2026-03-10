@@ -12,7 +12,7 @@ export default () => (
   <>
     <PageHeader />
     <PageMain>
-      <h1>{'Docs Tutorials'}</h1>
+      <h1>Docs Tutorials</h1>
     </PageMain>
   </>
 )

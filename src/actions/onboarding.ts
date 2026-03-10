@@ -2,13 +2,15 @@
 
 import 'server-only'
 
+import { eq } from 'drizzle-orm'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { type Locale } from 'next-intl'
 
-import { getAuthUser, updateAuthUser } from '@/actions/auth'
-import { getDatabase } from '@/db/client'
+import { getAuthUser, setAuthPassword } from '@/actions/auth'
+import { db } from '@/db/client'
+import { users } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 
@@ -31,32 +33,28 @@ export const completeOnboarding = async ({
   if (!authUser) redirect(AUTH_ROOT)
 
   try {
-    await updateAuthUser({ password })
+    await setAuthPassword(password)
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Failed to set password' }
   }
-
-  const db = await getDatabase()
 
   const username = [firstName, lastName]
     .filter(Boolean)
     .map(part => part.toLowerCase().replace(/\s+/g, ''))
     .join('.')
 
-  const { error } = await db
-    .from('users')
-    .update({
-      first_name: firstName.trim(),
-      last_name: lastName.trim() || null,
+  await db
+    .update(users)
+    .set({
+      firstName: firstName.trim(),
+      lastName: lastName.trim() || null,
       username: username || null,
       birthday: birthday || null,
       phone: phone || null,
       locale: (locale as Locale) || null,
-      onboarded_at: new Date().toISOString(),
+      onboardedAt: new Date().toISOString(),
     })
-    .eq('id', authUser.id)
-
-  if (error) return { error: error.message }
+    .where(eq(users.id, authUser.id))
 
   revalidateTag(CacheTag.User, 'max')
   revalidateTag(CacheTag.AuthUser, 'max')

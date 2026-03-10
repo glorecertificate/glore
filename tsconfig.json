@@ -1,6 +1,5 @@
 {
-  "include": [".next/dev/types/**/*.ts", ".next/types/**/*.ts", "src", "*.ts"],
-  "exclude": ["node_modules", "private", "supabase/functions"],
+  "include": [".next/dev/types", ".next/types", "src", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "allowJs": false,
@@ -19,12 +18,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "next/types/*": ["./.next/types/*"],
       "~/config/*": ["./config/*"],
       "~/messages/*": ["./messages/*"],
       "@/*": ["./src/*"]
     },
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -36,5 +38,6 @@
     "target": "esnext",
     "tsBuildInfoFile": ".next/.tsbuildinfo",
     "types": ["next", "node", "react", "react-dom"]
-  }
+  },
+  "exclude": ["node_modules"]
 }

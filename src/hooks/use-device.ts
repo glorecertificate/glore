@@ -9,7 +9,9 @@ import theme from '~/config/theme.json'
  */
 export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
   const detectType = useCallback(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') {
+      return
+    }
     return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
   }, [breakpoint])
 
@@ -30,8 +32,8 @@ export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
 
   return {
     deviceType,
-    isMobile: deviceType === 'mobile',
     isDesktop: deviceType === 'desktop',
+    isMobile: deviceType === 'mobile',
     isTouch,
   }
 }

@@ -43,13 +43,13 @@ export const CourseListContent = memo(
         setCourses(prev => {
           const reordered = orderedCourses.map(course => {
             const previousCourse = new Map(prev.map(course => [course.id, course])).get(course.id)
-            const sort_order = next.get(course.id)
+            const sortOrder = next.get(course.id)
             if (!previousCourse) {
               const { language: _language, ...rest } = course as Course & { language?: Locale }
-              return sort_order ? { ...rest, sort_order } : rest
+              return sortOrder ? { ...rest, sortOrder } : rest
             }
-            if (!sort_order || previousCourse.sort_order === sort_order) return previousCourse
-            return { ...previousCourse, sort_order }
+            if (!sortOrder || previousCourse.sortOrder === sortOrder) return previousCourse
+            return { ...previousCourse, sortOrder }
           })
           const untouched = prev.filter(course => !next.has(course.id))
           return [...reordered, ...untouched]
@@ -93,7 +93,7 @@ export const CourseListContent = memo(
           <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
             <Image className="w-64" loading="eager" src={publicFile('/assets/no-results.svg')} />
             <div className="flex flex-col items-center gap-1">
-              <h3 className="font-medium text-xl">{emptyTitle}</h3>
+              <h3 className="text-xl font-medium">{emptyTitle}</h3>
               <p className="mt-1 text-muted-foreground">
                 {emptyMessage}
                 {hasFilters && (
@@ -125,7 +125,7 @@ export const CourseListContent = memo(
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
-                        className="absolute top-6 right-6 flex cursor-not-allowed items-center justify-center rounded-md p-1 opacity-0 transition-opacity hover:bg-muted group-hover/sortable-item:opacity-50 data-[state=delayed-open]:bg-muted data-[state=delayed-open]:opacity-50"
+                        className="absolute top-6 right-6 flex cursor-not-allowed items-center justify-center rounded-md p-1 opacity-0 transition-opacity group-hover/sortable-item:opacity-50 hover:bg-muted data-[state=delayed-open]:bg-muted data-[state=delayed-open]:opacity-50"
                         disabled
                         type="button"
                       >

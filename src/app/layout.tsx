@@ -1,13 +1,9 @@
-import './globals.css'
-
-import { Suspense } from 'react'
 import Script from 'next/script'
+import { Suspense } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
-
-import config from '~/config/metadata.json'
 
 import { getLocaleCookie } from '@/actions/cookies'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -18,6 +14,9 @@ import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
 import { publicFile } from '@/lib/storage'
+import config from '~/config/metadata.json'
+
+import './globals.css'
 
 export { viewport } from '@/lib/metadata'
 
@@ -26,33 +25,34 @@ export const generateMetadata = async () => {
 
   return {
     ...metadata,
+    description: t('description'),
+    keywords: t('keywords'),
     title: {
       default: config.name,
       template: `%s ${config.separator} ${config.name}`,
     },
-    description: t('description'),
-    keywords: t('keywords'),
   }
 }
 
 const Layout = async ({ children }: LayoutProps<'/'>) => {
+  const t = await getTranslations('Metadata')
   const locale = await getLocaleCookie()
   const messages = await getMessages({ locale })
-  const t = await getTranslations('Metadata')
+  const i18nContextValue = Object.freeze({ locale, messages })
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    name: config.name,
     description: t('description'),
     image: publicFile('/og-image.png'),
+    name: config.name,
   }
 
   return (
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <SearchParamsProvider>
-          <I18nProvider value={{ locale, messages }}>
+          <I18nProvider value={i18nContextValue}>
             <ThemeProvider>
               {children}
               <Toaster />
@@ -69,16 +69,16 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
   )
 }
 
-export default async (props: LayoutProps<'/'>) => (
-  <Suspense
-    fallback={
-      <html lang={i18n.defaultLocale}>
-        <body>
-          <LoadingFallback size="full" />
-        </body>
-      </html>
-    }
-  >
+const fallback = (
+  <html lang={i18n.defaultLocale}>
+    <body>
+      <LoadingFallback size="full" />
+    </body>
+  </html>
+)
+
+export default (props: LayoutProps<'/'>) => (
+  <Suspense fallback={fallback}>
     <Layout {...props} />
   </Suspense>
 )

@@ -1,5 +1,3 @@
-import { type AppRouteHandlerRoutes } from 'next/types/routes'
-
 import { CopilotPlugin } from '@platejs/ai/react'
 import { serializeMd, stripMarkdown } from '@platejs/markdown'
 
@@ -11,7 +9,7 @@ export const CopilotKit = [
   CopilotPlugin.configure(({ api }) => ({
     options: {
       completeOptions: {
-        api: '/api/v1/ai/copilot' satisfies AppRouteHandlerRoutes,
+        api: '/api/v1/ai/copilot',
         body: {
           system: `
             You are an advanced AI writing assistant, similar to VSCode Copilot but for general text. Your task is to predict and generate the next part of the text based on the given context.
@@ -30,21 +28,16 @@ export const CopilotKit = [
         onFinish: (_, completion) => {
           if (completion === '0') return
 
-          api.copilot.setBlockSuggestion({
-            text: stripMarkdown(completion),
-          })
+          api.copilot.setBlockSuggestion({ text: stripMarkdown(completion) })
         },
       },
       debounceDelay: 500,
-      renderGhostText: GhostText,
       getPrompt: ({ editor }) => {
         const contextEntry = editor.api.block({ highest: true })
 
         if (!contextEntry) return ''
 
-        const prompt = serializeMd(editor, {
-          value: [contextEntry[0]],
-        })
+        const prompt = serializeMd(editor, { value: [contextEntry[0]] })
 
         return `
           Continue the text up to the next punctuation mark:
@@ -53,20 +46,13 @@ export const CopilotKit = [
           """
         `
       },
+      renderGhostText: GhostText,
     },
     shortcuts: {
-      accept: {
-        keys: 'tab',
-      },
-      acceptNextWord: {
-        keys: 'mod+right',
-      },
-      reject: {
-        keys: 'escape',
-      },
-      triggerSuggestion: {
-        keys: 'ctrl+space',
-      },
+      accept: { keys: 'tab' },
+      acceptNextWord: { keys: 'mod+right' },
+      reject: { keys: 'escape' },
+      triggerSuggestion: { keys: 'ctrl+space' },
     },
   })),
 ]

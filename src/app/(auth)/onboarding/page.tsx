@@ -1,6 +1,7 @@
-import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
+import { desc, eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
@@ -8,7 +9,8 @@ import { getAuthUser } from '@/actions/auth'
 import { OnboardingForm } from '@/components/features/onboarding/onboarding-form'
 import { GloreIcon } from '@/components/icons/glore'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { getServiceDatabase } from '@/db/client'
+import { db } from '@/db/client'
+import { teamInvitations } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -22,14 +24,11 @@ const OnboardingPage = async () => {
   const user = await getAuthUser()
   if (!user?.email) redirect(AUTH_ROOT)
 
-  const db = await getServiceDatabase()
-  const { data: invitation } = await db
-    .from('team_invitations')
-    .select('first_name, last_name, locale')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single()
+  const invitation = await db.query.teamInvitations.findFirst({
+    where: eq(teamInvitations.userId, user.id),
+    columns: { firstName: true, lastName: true, locale: true },
+    orderBy: desc(teamInvitations.createdAt),
+  })
 
   const t = await getTranslations('Onboarding')
 
@@ -39,14 +38,14 @@ const OnboardingPage = async () => {
         <div className="flex flex-col items-center gap-8">
           <GloreIcon className="w-40" />
           <div className="space-y-2 text-center">
-            <h1 className="font-semibold text-2xl tracking-tight">{t('title')}</h1>
-            <p className="mt-2 text-muted-foreground text-sm">{t('description')}</p>
+            <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+            <p className="mt-2 text-sm text-muted-foreground">{t('description')}</p>
           </div>
         </div>
         <OnboardingForm
           email={user.email}
-          firstName={invitation?.first_name ?? ''}
-          lastName={invitation?.last_name ?? ''}
+          firstName={invitation?.firstName ?? ''}
+          lastName={invitation?.lastName ?? ''}
           locale={(invitation?.locale as Locale) ?? 'en'}
         />
       </div>

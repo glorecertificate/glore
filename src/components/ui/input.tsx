@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Label } from '@/components/ui/label'
 import { useMounted } from '@/hooks/use-mounted'
@@ -6,7 +6,8 @@ import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface InputProps
-  extends Omit<React.ComponentProps<'input'>, keyof VariantProps<typeof inputVariants>>,
+  extends
+    Omit<React.ComponentProps<'input'>, keyof VariantProps<typeof inputVariants>>,
     VariantProps<typeof inputVariants> {
   defaultOpen?: boolean
   icon?: Icon
@@ -27,7 +28,7 @@ export const Input = ({
 }: InputProps) => {
   const mounted = useMounted()
 
-  if (variant !== 'floating')
+  if (variant !== 'floating') {
     return (
       <input
         className={cn(inputVariants({ size, variant }), className)}
@@ -37,6 +38,7 @@ export const Input = ({
         {...props}
       />
     )
+  }
 
   return (
     <div className={cn('relative', disabled && 'cursor-not-allowed')}>
@@ -49,7 +51,7 @@ export const Input = ({
       />
       <Label
         className={cn(
-          'absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-[18.5px] peer-placeholder-shown:-translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:-translate-y-5 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:-translate-y-5 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive peer-focus:peer-aria-invalid:text-destructive peer-placeholder-shown:peer-aria-invalid:text-destructive/60',
+          'absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-[18.5px] peer-placeholder-shown:-translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:-translate-y-5 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-placeholder-shown:peer-aria-invalid:text-destructive/60 peer-focus:peer-aria-invalid:text-destructive peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:-translate-y-5 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive',
           (open || (defaultOpen && !mounted)) &&
             'peer-placeholder-shown:top-2 peer-placeholder-shown:-translate-y-5 peer-placeholder-shown:scale-95 peer-placeholder-shown:bg-background peer-focus:text-foreground peer-aria-invalid:text-destructive'
         )}
@@ -65,30 +67,22 @@ export const Input = ({
 }
 
 export const inputVariants = cva(
-  `
-    flex w-full min-w-0 bg-transparent transition-[color,box-shadow] outline-none rounded-md border border-input shadow-xs
-    focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30
-    disabled:pointer-events-none disabled:opacity-60
-    aria-invalid:border-destructive aria-invalid:ring-destructive/20
-    placeholder:text-muted-foreground
-    file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground
-    dark:bg-input/30 dark:aria-invalid:ring-destructive/40
-  `,
+  `flex w-full min-w-0 rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40`,
   {
     defaultVariants: {
-      variant: 'default',
       size: 'default',
+      variant: 'default',
     },
     variants: {
-      variant: {
-        default: '',
-        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
-        floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
-      },
       size: {
         sm: 'h-8 px-2.5 py-0.5 text-xs placeholder:text-xs',
         default: 'h-9 px-3 py-1 text-sm placeholder:text-sm',
         lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
+      },
+      variant: {
+        default: '',
+        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
+        floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
       },
     },
   }

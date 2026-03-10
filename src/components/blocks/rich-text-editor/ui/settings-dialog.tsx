@@ -1,7 +1,7 @@
 'use client'
 
+import { Route } from 'next'
 import { useState } from 'react'
-import { type AppRouteHandlerRoutes } from 'next/types/routes'
 
 import { CopilotPlugin } from '@platejs/ai/react'
 import { type ChatRequestOptions } from 'ai'
@@ -68,7 +68,7 @@ export const SettingsIconDialog = () => {
 
     editor.setOption(aiChatPlugin, 'chatOptions', {
       ...options.chatOptions,
-      api: '/api/v1/ai/command' satisfies AppRouteHandlerRoutes,
+      api: '/api/v1/ai/command' satisfies Route,
       body: {
         ...options.chatOptions.body,
         apiKey: tempKeys.openai,
@@ -97,9 +97,7 @@ export const SettingsIconDialog = () => {
     <div className="group relative">
       <div className="flex items-center justify-between">
         <label
-          className={
-            'absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-muted-foreground/70 text-sm transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:font-medium group-focus-within:text-foreground group-focus-within:text-xs has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground has-[+input:not(:placeholder-shown)]:text-xs'
-          }
+          className="absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-sm text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium group-focus-within:text-foreground has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:text-xs has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground"
           htmlFor={label}
         >
           <span className="inline-flex bg-background px-2">{label}</span>
@@ -159,8 +157,8 @@ export const SettingsIconDialog = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl">{'SettingsIcon'}</DialogTitle>
-          <DialogDescription>{'Configure your API keys and preferences.'}</DialogDescription>
+          <DialogTitle className="text-xl">SettingsIcon</DialogTitle>
+          <DialogDescription>Configure your API keys and preferences.</DialogDescription>
         </DialogHeader>
 
         <form className="space-y-10" onSubmit={handleSubmit}>
@@ -170,7 +168,7 @@ export const SettingsIconDialog = () => {
               <div className="size-8 rounded-full bg-purple-100 p-2 dark:bg-purple-900">
                 <Wand2Icon className="size-4 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-semibold">{'AI'}</h4>
+              <h4 className="font-semibold">AI</h4>
             </div>
 
             <div className="space-y-4">
@@ -178,17 +176,16 @@ export const SettingsIconDialog = () => {
 
               <div className="group relative">
                 <label
-                  className={
-                    'absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 font-medium text-foreground text-xs group-has-disabled:opacity-50'
-                  }
+                  className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 text-xs font-medium text-foreground group-has-disabled:opacity-50"
                   htmlFor="select-model"
                 >
-                  {'Model'}
+                  Model
                 </label>
                 <Popover onOpenChange={setOpenModel} open={openModel}>
                   <PopoverTrigger asChild id="select-model">
                     <Button
                       aria-expanded={openModel}
+                      aria-controls="settings-model-list"
                       className="w-full justify-between"
                       role="combobox"
                       size="lg"
@@ -201,7 +198,7 @@ export const SettingsIconDialog = () => {
                   <PopoverContent className="w-full p-0">
                     <Command>
                       <CommandInput placeholder="Search model..." />
-                      <CommandEmpty>{'No model found.'}</CommandEmpty>
+                      <CommandEmpty>No model found.</CommandEmpty>
                       <CommandList>
                         <CommandGroup>
                           {models.map(m => (
@@ -243,13 +240,11 @@ export const SettingsIconDialog = () => {
           </div> */}
 
           <Button className="w-full" size="lg" type="submit">
-            {'Save changes'}
+            Save changes
           </Button>
         </form>
 
-        <p className="text-muted-foreground text-sm">
-          {'Not stored anywhere. Used only for current session requests.'}
-        </p>
+        <p className="text-sm text-muted-foreground">Not stored anywhere. Used only for current session requests.</p>
       </DialogContent>
     </Dialog>
   )

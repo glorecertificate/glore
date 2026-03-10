@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { getCookie } from '@/actions/cookies'
 import { CourseListContent } from '@/components/features/courses/list/content'
@@ -18,7 +18,9 @@ export const generateMetadata = () =>
 export default async ({ searchParams }: PageProps<'/courses'>) => {
   if (Object.keys(await searchParams).length === 0) {
     const params = await getCookie('courseListParams')
-    if (params) redirect(`/courses?${params}`)
+    if (params) {
+      redirect(`/courses?${params}`)
+    }
   }
 
   return (

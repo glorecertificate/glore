@@ -25,15 +25,21 @@ const CourseQuestion = ({
   const t = useTranslations('Courses')
 
   const isCorrectUserAnswer = useMemo(
-    () => question.answered && question.options.some(option => option.isUserAnswer && option.is_correct),
+    () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
     [question]
   )
 
   const onOptionClick = useCallback(
     (option: QuestionOption) => () => {
-      if (question.answered && !completed) return
-      if (!question.answered) return onComplete(question, option)
-      if (option.isUserAnswer || !option.is_correct) return
+      if (question.answered && !completed) {
+        return
+      }
+      if (!question.answered) {
+        return onComplete(question, option)
+      }
+      if (option.isUserAnswer || !option.isCorrect) {
+        return
+      }
 
       toast.info(t('answerDisabled'), {
         duration: 1200,
@@ -61,7 +67,7 @@ const CourseQuestion = ({
         {question.options.map(option => (
           <Button className={optionClassName(option)} key={option.id} onClick={onOptionClick(option)} variant="outline">
             {t('trueAnswer')}
-            {option.is_correct && <CheckCircleIcon className="size-4 text-success" />}
+            {option.isCorrect && <CheckCircleIcon className="size-4 text-success" />}
           </Button>
         ))}
       </div>
@@ -109,7 +115,7 @@ export const CourseQuestions = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{t('questionsTitle')}</h3>}
+      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{t('questionsTitle')}</h3>}
       <p className="mb-4 font-medium">
         {t('questionsSubtitle', {
           count: questions.length,
@@ -121,7 +127,7 @@ export const CourseQuestions = ({
           <CourseQuestion completed={completed} key={question.id} onComplete={onComplete} question={question} />
         ))
       ) : (
-        <p className="text-muted-foreground">{'Admin.noQuestions'}</p>
+        <p className="text-muted-foreground">Admin.noQuestions</p>
       )}
     </div>
   )

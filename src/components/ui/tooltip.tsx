@@ -1,7 +1,7 @@
 'use client'
 
 import * as TooltipPrimitive from '@radix-ui/react-tooltip'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
@@ -64,31 +64,24 @@ export const TooltipContent = ({
 )
 
 const tooltipContentVariants = cva(
-  `
-    z-50 max-w-sm rounded-md animate-in fade-in-0 zoom-in-95 cursor-default transition-none
-    data-[side=bottom]:slide-in-from-top-2
-    data-[side=left]:slide-in-from-right-2
-    data-[side=right]:slide-in-from-left-2
-    data-[side=top]:slide-in-from-bottom-2
-    data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95
-  `,
+  `z-50 max-w-sm cursor-default rounded-md transition-none animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95`,
   {
     defaultVariants: {
-      variant: 'default',
       size: 'md',
+      variant: 'default',
     },
     variants: {
-      variant: {
-        default: 'bg-foreground/95 text-background',
-        success: 'bg-success-accent/95 text-success-foreground',
-        warning: 'bg-warning-accent/95 text-warning-foreground',
-        destructive: 'bg-destructive/95 text-destructive-foreground',
-      },
       size: {
         xs: 'px-1.75 py-[3.5px] text-[10.5px]',
         sm: 'px-2 py-1 text-[11px]',
         md: 'px-3 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',
+      },
+      variant: {
+        default: 'bg-foreground/95 text-background',
+        success: 'bg-success-accent/95 text-success-foreground',
+        warning: 'bg-warning-accent/95 text-warning-foreground',
+        destructive: 'bg-destructive/95 text-destructive-foreground',
       },
     },
   }
@@ -101,9 +94,9 @@ const tooltipArrowVariants = cva('z-50', {
   variants: {
     variant: {
       default: 'fill-foreground',
+      destructive: 'fill-destructive-accent',
       success: 'fill-success-accent',
       warning: 'fill-warning-accent',
-      destructive: 'fill-destructive-accent',
     },
   },
 })

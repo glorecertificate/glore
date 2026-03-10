@@ -39,13 +39,13 @@ export const OnboardingForm = ({
     () =>
       z
         .object({
+          birthday: z.string().min(1, { message: t('birthdayRequired') }),
+          confirmPassword: z.string().min(8),
           firstName: z.string().min(1),
           lastName: z.string(),
-          birthday: z.string().min(1, { message: t('birthdayRequired') }),
+          password: z.string().min(8).regex(PASSWORD_REGEX),
           phone: z.string().min(1, { message: t('phoneRequired') }),
           preferredLanguage: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
-          password: z.string().min(8).regex(PASSWORD_REGEX),
-          confirmPassword: z.string().min(8),
         })
         .refine(data => data.password === data.confirmPassword, {
           message: t('passwordMismatch'),
@@ -55,7 +55,6 @@ export const OnboardingForm = ({
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       firstName,
       lastName,
@@ -65,6 +64,7 @@ export const OnboardingForm = ({
       password: '',
       confirmPassword: '',
     },
+    resolver: zodResolver(formSchema),
   })
 
   const onSubmit = useCallback(
@@ -73,12 +73,12 @@ export const OnboardingForm = ({
         setSubmitting(true)
 
         const result = await completeOnboarding({
+          birthday: values.birthday,
           firstName: values.firstName,
           lastName: values.lastName,
-          birthday: values.birthday,
-          phone: values.phone,
           locale: (values.preferredLanguage as Locale) || undefined,
           password: values.password,
+          phone: values.phone,
         })
 
         if (result?.error) {
@@ -142,7 +142,7 @@ export const OnboardingForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t('birthdayLabel')} <span className="text-destructive">{'*'}</span>
+                  {t('birthdayLabel')} <span className="text-destructive">*</span>
                 </FormLabel>
                 <Popover onOpenChange={setCalendarOpen} open={calendarOpen}>
                   <PopoverTrigger asChild>
@@ -186,7 +186,7 @@ export const OnboardingForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t('phoneLabel')} <span className="text-destructive">{'*'}</span>
+                  {t('phoneLabel')} <span className="text-destructive">*</span>
                 </FormLabel>
                 <FormControl>
                   <Input disabled={submitting} placeholder={t('phonePlaceholder')} type="tel" {...field} />

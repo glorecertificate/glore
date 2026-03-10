@@ -1,8 +1,8 @@
 export const COURSE_LIST_PARAMS = {
   LANGUAGES: 'lang',
   SKILL_GROUPS: 'groups',
-  SORT_DIRECTION: 'dir',
   SORT: 'sort',
+  SORT_DIRECTION: 'dir',
   TAB: 'tab',
   TYPES: 'types',
 } as const

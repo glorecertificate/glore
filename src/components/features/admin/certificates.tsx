@@ -17,68 +17,68 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 const certifications = [
   {
+    created: '2022-04-10',
     id: '1',
-    title: 'Introduction to Volunteering',
+    issuedCount: 156,
     organization: 'Community Helpers Association',
     status: 'Active',
-    issuedCount: 156,
-    created: '2022-04-10',
+    title: 'Introduction to Volunteering',
   },
   {
+    created: '2022-06-15',
     id: '2',
-    title: 'Community Engagement Specialist',
+    issuedCount: 89,
     organization: 'Urban Outreach Initiative',
     status: 'Active',
-    issuedCount: 89,
-    created: '2022-06-15',
+    title: 'Community Engagement Specialist',
   },
   {
+    created: '2022-08-22',
     id: '3',
-    title: 'Project Management for Volunteers',
+    issuedCount: 112,
     organization: 'Volunteer Leaders Network',
     status: 'Active',
-    issuedCount: 112,
-    created: '2022-08-22',
+    title: 'Project Management for Volunteers',
   },
   {
+    created: '2022-10-05',
     id: '4',
-    title: 'Leadership in Volunteer Organizations',
+    issuedCount: 78,
     organization: 'Global Volunteer Alliance',
     status: 'Active',
-    issuedCount: 78,
-    created: '2022-10-05',
+    title: 'Leadership in Volunteer Organizations',
   },
   {
+    created: '2023-01-18',
     id: '5',
-    title: 'Fundraising Fundamentals',
+    issuedCount: 45,
     organization: 'Local Impact Group',
     status: 'Inactive',
-    issuedCount: 45,
-    created: '2023-01-18',
+    title: 'Fundraising Fundamentals',
   },
   {
+    created: '2023-03-09',
     id: '6',
-    title: 'Volunteer Coordination',
+    issuedCount: 67,
     organization: 'Youth Empowerment Coalition',
     status: 'Active',
-    issuedCount: 67,
-    created: '2023-03-09',
+    title: 'Volunteer Coordination',
   },
   {
+    created: '2023-05-27',
     id: '7',
-    title: 'Crisis Response Training',
+    issuedCount: 203,
     organization: 'Disaster Relief Network',
     status: 'Active',
-    issuedCount: 203,
-    created: '2023-05-27',
+    title: 'Crisis Response Training',
   },
   {
+    created: '2023-07-14',
     id: '8',
-    title: 'Environmental Advocacy',
+    issuedCount: 0,
     organization: 'Environmental Action Team',
     status: 'Draft',
-    issuedCount: 0,
-    created: '2023-07-14',
+    title: 'Environmental Advocacy',
   },
 ]
 
@@ -104,24 +104,24 @@ export const AdminCertificates = () => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     }).format(date)
   }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-3xl tracking-tight">{'Certifications Management'}</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Certifications Management</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline">
             <DownloadIcon className="mr-2 size-4" />
-            {'Export'}
+            Export
           </Button>
           <Button>
             <AwardIcon className="mr-2 size-4" />
-            {'Add Certification'}
+            Add Certification
           </Button>
         </div>
       </div>
@@ -143,12 +143,12 @@ export const AdminCertificates = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <FilterIcon className="mr-2 size-4" />
-                {'Organization'}
+                Organization
                 {selectedOrganization && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>{'FilterIcon by Organization'}</DropdownMenuLabel>
+              <DropdownMenuLabel>FilterIcon by Organization</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {[...new Set(certifications.map(cert => cert.organization))].map(org => (
                 <DropdownMenuItem key={org} onClick={() => setSelectedOrganization(org)}>
@@ -162,22 +162,22 @@ export const AdminCertificates = () => {
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
                 <FilterIcon className="mr-2 size-4" />
-                {'Status'}
+                Status
                 {selectedStatus && <span className="ml-1 size-2 rounded-full bg-brand-secondary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{'FilterIcon by Status'}</DropdownMenuLabel>
+              <DropdownMenuLabel>FilterIcon by Status</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>{'Active'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>{'Inactive'}</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSelectedStatus('Draft')}>{'Draft'}</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Active')}>Active</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Inactive')}>Inactive</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSelectedStatus('Draft')}>Draft</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {(selectedOrganization || selectedStatus) && (
             <Button onClick={clearFilterIcons} size="sm" variant="ghost">
-              {'Clear FilterIcons'}
+              Clear FilterIcons
             </Button>
           )}
         </div>
@@ -190,11 +190,11 @@ export const AdminCertificates = () => {
               <TableHead className="w-12.5">
                 <Checkbox />
               </TableHead>
-              <TableHead>{'Title'}</TableHead>
-              <TableHead>{'Organization'}</TableHead>
-              <TableHead>{'Status'}</TableHead>
-              <TableHead>{'Issued'}</TableHead>
-              <TableHead>{'Created'}</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Organization</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Issued</TableHead>
+              <TableHead>Created</TableHead>
               <TableHead className="w-20" />
             </TableRow>
           </TableHeader>
@@ -202,7 +202,7 @@ export const AdminCertificates = () => {
             {filteredCertifications.length === 0 ? (
               <TableRow>
                 <TableCell className="h-24 text-center" colSpan={7}>
-                  {'No certifications found.'}
+                  No certifications found.
                 </TableCell>
               </TableRow>
             ) : (
@@ -237,10 +237,10 @@ export const AdminCertificates = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>{'View Details'}</DropdownMenuItem>
-                        <DropdownMenuItem>{'Edit Certification'}</DropdownMenuItem>
+                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem>Edit Certification</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">{'Delete Certification'}</DropdownMenuItem>
+                        <DropdownMenuItem className="text-red-600">Delete Certification</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

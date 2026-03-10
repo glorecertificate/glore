@@ -53,6 +53,8 @@ export const CountrySelect = ({
         <Button
           className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
           role="combobox"
+          aria-controls="#"
+          aria-expanded={open}
           variant="outline"
         >
           {value ? (

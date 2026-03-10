@@ -5,6 +5,8 @@ import type React from 'react'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
+const emptySpinnerProps: React.ComponentProps<typeof Spinner> = {}
+
 export const LoadingFallback = ({
   className,
   size = 'auto',
@@ -14,7 +16,7 @@ export const LoadingFallback = ({
   size?: 'auto' | 'full'
   spinner?: boolean | React.ComponentProps<typeof Spinner>
 }) => {
-  const { variant = 'colored', ...spinnerProps } = typeof spinner === 'boolean' ? {} : spinner
+  const { variant = 'colored', ...spinnerProps } = typeof spinner === 'boolean' ? emptySpinnerProps : spinner
 
   return (
     <div

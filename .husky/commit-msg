@@ -1,12 +1,14 @@
 #!/usr/bin/env sh
 
+set -e
+
 case "$(cat "$1")" in
-  \#*|"[tmp]"*)
+  \#*)
     exit 0
     ;;
   *)
-    commitlint --edit "$1"
-    biome check --fix --no-errors-on-unmatched
-    git add . >/dev/null
+    ./node_modules/.bin/commitlint --edit "$1"
+    ./node_modules/.bin/oxlint
+    ./node_modules/.bin/oxfmt --check
     ;;
 esac

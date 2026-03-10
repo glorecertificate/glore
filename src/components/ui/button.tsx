@@ -3,14 +3,15 @@
 import { useCallback, useMemo } from 'react'
 
 import { Slot, Slottable } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Spinner } from '@/components/ui/spinner'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface ButtonProps
-  extends Omit<React.ComponentProps<'button'>, keyof VariantProps<typeof buttonVariants>>,
+  extends
+    Omit<React.ComponentProps<'button'>, keyof VariantProps<typeof buttonVariants>>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
   /** @default 'default' */
@@ -57,7 +58,9 @@ export const Button = ({
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (isDisabled) return
+      if (isDisabled) {
+        return
+      }
       return onClick?.(e)
     },
     [isDisabled, onClick]
@@ -81,11 +84,7 @@ export const Button = ({
       {Icon &&
         hasLeftIcon &&
         (effect === 'expandIcon' ? (
-          <div
-            className={
-              'w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-100 group-hover:w-4 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100'
-            }
-          >
+          <div className="w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-100 group-hover:w-4 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100">
             <Icon />
           </div>
         ) : (
@@ -104,11 +103,7 @@ export const Button = ({
       {Icon &&
         hasRightIcon &&
         (effect === 'expandIcon' ? (
-          <div
-            className={
-              'w-0 translate-x-full pl-0 opacity-0 transition-all duration-100 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100'
-            }
-          >
+          <div className="w-0 translate-x-full pl-0 opacity-0 transition-all duration-100 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
             <Icon />
           </div>
         ) : (
@@ -119,14 +114,23 @@ export const Button = ({
 }
 
 export const buttonVariants = cva(
-  `
-    inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap outline-none transition-all
-    focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50
-    disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0
-    aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40
-    [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4
-  `,
+  `inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
   {
+    compoundVariants: [
+      {
+        variant: [
+          'primary',
+          'secondary',
+          'destructive',
+          'warning',
+          'success',
+          'brand',
+          'brand-secondary',
+          'brand-tertiary',
+        ],
+        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
+      },
+    ],
     defaultVariants: {
       variant: 'primary',
       size: 'md',
@@ -165,63 +169,14 @@ export const buttonVariants = cva(
       effect: {
         expandIcon: 'group relative gap-0',
         ringHover: 'transition-all duration-300 hover:ring-2 hover:ring-brand-secondary/90 hover:ring-offset-2',
-        shine: `
-          relative overflow-hidden transition-[background-position_0s_ease]
-          before:absolute before:inset-0 before:animate-shine before:rounded-[inherit]
-          before:bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.5)_50%,transparent_75%,transparent_100%)] before:bg-length-[250%_250%,100%_100%]
-          before:bg-no-repeat
-        `,
-        shineHover: `
-          relative overflow-hidden
-          before:absolute before:inset-0 before:rounded-[inherit]
-          before:bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.5)_50%,transparent_75%,transparent_100%)] before:bg-length-[250%_250%,100%_100%]
-          before:bg-position-[200%_0,0_0] before:bg-no-repeat before:transition-[background-position_0s_ease] before:duration-1000
-          hover:before:bg-position-[-100%_0,0_0]
-        `,
-        gooeyRight: `
-          relative z-0 overflow-hidden from-white/40 transition-all duration-500
-          before:absolute before:inset-0 before:-z-10 before:translate-x-[150%] before:translate-y-[150%] before:scale-[2.5] before:rounded-[100%]
-          before:bg-linear-to-r before:transition-transform before:duration-1000
-          hover:before:translate-x-[0%] hover:before:translate-y-[0%]
-        `,
-        gooeyLeft: `
-          relative z-0 overflow-hidden from-white/40 transition-all duration-500
-          after:absolute after:inset-0 after:-z-10 after:translate-x-[-150%] after:translate-y-[150%] after:scale-[2.5] after:rounded-[100%]
-          after:bg-linear-to-l after:transition-transform after:duration-1000
-          hover:after:translate-x-[0%] hover:after:translate-y-[0%]
-        `,
-        underline: `
-          relative no-underline!
-          after:absolute after:bottom-2 after:h-px after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-brand-secondary after:transition-transform
-          after:duration-300 after:ease-in-out
-          hover:after:origin-bottom-right hover:after:scale-x-0
-        `,
-        hoverUnderline: `
-          relative no-underline!
-          after:absolute after:bottom-0 after:h-px after:w-[calc(100%-4px)] after:origin-bottom-right after:scale-x-0 after:bg-current/60
-          after:transition-transform after:duration-150 after:ease-in-out
-          hover:after:origin-bottom-left hover:after:scale-x-100
-        `,
-        gradientSlideShow: `
-          animate-gradient-flow bg-[linear-gradient(-45deg,var(--gradient-lime),var(--gradient-ocean),var(--gradient-wine),var(--gradient-rust))]
-          bg-size-[400%]
-        `,
+        shine: `before:bg-length-[250%_250%,100%_100%] relative overflow-hidden transition-[background-position_0s_ease] before:absolute before:inset-0 before:animate-shine before:rounded-[inherit] before:bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.5)_50%,transparent_75%,transparent_100%)] before:bg-no-repeat`,
+        shineHover: `before:bg-length-[250%_250%,100%_100%] relative overflow-hidden before:absolute before:inset-0 before:rounded-[inherit] before:bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.5)_50%,transparent_75%,transparent_100%)] before:bg-position-[200%_0,0_0] before:bg-no-repeat before:transition-[background-position_0s_ease] before:duration-1000 hover:before:bg-position-[-100%_0,0_0]`,
+        gooeyRight: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 before:absolute before:inset-0 before:-z-10 before:translate-x-[150%] before:translate-y-[150%] before:scale-[2.5] before:rounded-[100%] before:bg-linear-to-r before:transition-transform before:duration-1000 hover:before:translate-x-[0%] hover:before:translate-y-[0%]`,
+        gooeyLeft: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 after:absolute after:inset-0 after:-z-10 after:translate-x-[-150%] after:translate-y-[150%] after:scale-[2.5] after:rounded-[100%] after:bg-linear-to-l after:transition-transform after:duration-1000 hover:after:translate-x-[0%] hover:after:translate-y-[0%]`,
+        underline: `relative no-underline! after:absolute after:bottom-2 after:h-px after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-brand-secondary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-0`,
+        hoverUnderline: `relative no-underline! after:absolute after:bottom-0 after:h-px after:w-[calc(100%-4px)] after:origin-bottom-right after:scale-x-0 after:bg-current/60 after:transition-transform after:duration-150 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100`,
+        gradientSlideShow: `animate-gradient-flow bg-[linear-gradient(-45deg,var(--gradient-lime),var(--gradient-ocean),var(--gradient-wine),var(--gradient-rust))] bg-size-[400%]`,
       },
     },
-    compoundVariants: [
-      {
-        variant: [
-          'primary',
-          'secondary',
-          'destructive',
-          'warning',
-          'success',
-          'brand',
-          'brand-secondary',
-          'brand-tertiary',
-        ],
-        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
-      },
-    ],
   }
 )

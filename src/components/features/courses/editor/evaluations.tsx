@@ -26,7 +26,9 @@ export const CourseEvaluations = ({
 
   const onValueChange = useCallback(
     (id: number) => {
-      if (completed) return
+      if (completed) {
+        return
+      }
       return (value: string) => {
         onEvaluation(id, Number(value))
       }
@@ -36,7 +38,7 @@ export const CourseEvaluations = ({
 
   return (
     <div {...props}>
-      {title && <h3 className="mb-2 font-semibold text-2xl text-brand-accent">{title}</h3>}
+      {title && <h3 className="mb-2 text-2xl font-semibold text-brand-accent">{title}</h3>}
       <p className="mb-4 font-medium">
         {t('subskillEvaluationsSubtitle', {
           count: evaluations.length,

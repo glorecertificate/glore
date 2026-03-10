@@ -108,11 +108,15 @@ export const InlineCombobox = ({
   useEffect(() => {
     const path = editor.api.findPath(element)
 
-    if (!path) return
+    if (!path) {
+      return
+    }
 
     const point = editor.api.before(path)
 
-    if (!point) return
+    if (!point) {
+      return
+    }
 
     const pointRef = editor.api.pointRef(point)
     insertPoint.current = pointRef.current
@@ -125,7 +129,6 @@ export const InlineCombobox = ({
   const { props: inputProps, removeInput } = useComboboxInput({
     cancelInputOnBlur: true,
     cursorState,
-    ref: inputRef,
     onCancelInput: cause => {
       if (cause !== 'backspace') {
         editor.tf.insertText(trigger + value, {
@@ -139,6 +142,7 @@ export const InlineCombobox = ({
         })
       }
     },
+    ref: inputRef,
   })
 
   const [hasEmpty, setHasEmpty] = useState(false)
@@ -157,7 +161,7 @@ export const InlineCombobox = ({
   )
 
   const store = useComboboxStore({
-    // open: ,
+    // Open: ,
     setValue: newValue => startTransition(() => setValue(newValue)),
   })
 
@@ -224,10 +228,7 @@ export const InlineComboboxContent: typeof ComboboxPopover = ({ className, ...pr
 )
 
 const comboboxItemVariants = cva(
-  `
-    relative mx-1 flex h-7 items-center rounded-sm px-2 text-sm text-foreground outline-none select-none
-    [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
-  `,
+  `relative mx-1 flex h-7 items-center rounded-sm px-2 text-sm text-foreground outline-none select-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0`,
   {
     defaultVariants: {
       interactive: true,
@@ -235,11 +236,7 @@ const comboboxItemVariants = cva(
     variants: {
       interactive: {
         false: '',
-        true: `
-          cursor-pointer transition-colors
-          hover:bg-accent hover:text-accent-foreground
-          data-[active-item=true]:bg-accent data-[active-item=true]:text-accent-foreground
-        `,
+        true: `cursor-pointer transition-colors hover:bg-accent hover:text-accent-foreground data-[active-item=true]:bg-accent data-[active-item=true]:text-accent-foreground`,
       },
     },
   }
@@ -276,7 +273,9 @@ export const InlineComboboxItem = ({
     [filter, group, keywords, label, value, search]
   )
 
-  if (!visible) return null
+  if (!visible) {
+    return null
+  }
 
   return (
     <ComboboxItem
@@ -303,7 +302,9 @@ export const InlineComboboxEmpty = ({ children, className }: React.HTMLAttribute
     }
   }, [setHasEmpty])
 
-  if (items.length > 0) return null
+  if (items.length > 0) {
+    return null
+  }
 
   return <div className={cn(comboboxItemVariants({ interactive: false }), className)}>{children}</div>
 }
@@ -311,12 +312,12 @@ export const InlineComboboxEmpty = ({ children, className }: React.HTMLAttribute
 export const InlineComboboxRow = ComboboxRow
 
 export const InlineComboboxGroup = ({ className, ...props }: React.ComponentProps<typeof ComboboxGroup>) => (
-  <ComboboxGroup {...props} className={cn('hidden not-last:border-b py-1.5 [&:has([role=option])]:block', className)} />
+  <ComboboxGroup {...props} className={cn('hidden py-1.5 not-last:border-b [&:has([role=option])]:block', className)} />
 )
 
 export const InlineComboboxGroupLabel = ({ className, ...props }: React.ComponentProps<typeof ComboboxGroupLabel>) => (
   <ComboboxGroupLabel
     {...props}
-    className={cn('mt-1.5 mb-2 px-3 font-medium text-muted-foreground text-xs', className)}
+    className={cn('mt-1.5 mb-2 px-3 text-xs font-medium text-muted-foreground', className)}
   />
 )

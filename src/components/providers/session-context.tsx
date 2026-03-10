@@ -36,21 +36,22 @@ const useSessionContext = (value: SessionContextValue) => {
   const sessionUser = useMemo(
     () => ({
       ...user,
-      role,
       isLearner: role === 'learner',
-      isTutor: role === 'tutor',
+      isOrgAdmin: role === 'admin',
       isRepresentative: role === 'representative',
+      isTutor: role === 'tutor',
       isVolunteer: role === 'volunteer',
+      role,
     }),
     [user, role]
   )
 
   return useMemo(
     () => ({
-      user: sessionUser,
-      setUser,
       organization,
       setOrganization,
+      setUser,
+      user: sessionUser,
     }),
     [sessionUser, organization, setOrganization]
   )

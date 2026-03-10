@@ -24,17 +24,21 @@ export const DatePicker = ({ disabled, onChange, placeholder, value }: DatePicke
   const [open, setOpen] = useState(false)
 
   const selectedDate = useMemo(() => {
-    if (!value) return undefined
+    if (!value) {
+      return undefined
+    }
     const parsed = new Date(value)
     return Number.isNaN(parsed.getTime()) ? undefined : parsed
   }, [value])
 
   const formatted = useMemo(() => {
-    if (!selectedDate) return null
+    if (!selectedDate) {
+      return null
+    }
     return selectedDate.toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'long',
       day: 'numeric',
+      month: 'long',
+      year: 'numeric',
     })
   }, [selectedDate, locale])
 

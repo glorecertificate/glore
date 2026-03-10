@@ -16,7 +16,9 @@ const useUploadErrorToast = () => {
   const uploadError = usePluginOption(PlaceholderPlugin, 'error')
 
   useEffect(() => {
-    if (!uploadError) return
+    if (!uploadError) {
+      return
+    }
 
     const { code, data } = uploadError
 

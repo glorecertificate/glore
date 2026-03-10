@@ -2,54 +2,62 @@
 
 import 'server-only'
 
-import { updateTag } from 'next/cache'
+import { del, put } from '@vercel/blob'
+import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { getDatabase } from '@/db/client'
-import { resolveQuery } from '@/db/helpers'
-import { parseUser, userQuery } from '@/db/queries/user'
-import { CacheTag } from '@/lib/cache'
+import { db } from '@/db/client'
+import { parseUser } from '@/db/queries/user'
+import { users } from '@/db/schema'
+
+const userWith = {
+  memberships: { with: { organization: true } },
+  regions: { columns: { id: true, name: true, icon: true } },
+} as const
 
 export const uploadAvatar = async (formData: FormData) => {
   const file = formData.get('file') as File
   if (!file) throw new Error('No file uploaded')
 
-  const db = await getDatabase()
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
 
-  const arrayBuffer = await file.arrayBuffer()
-  const buffer = new Uint8Array(arrayBuffer)
-
-  const fileName = `${user.id}-${Date.now()}.png`
-
-  const { error: uploadError } = await db.storage.from('avatars').upload(fileName, buffer, {
+  const blob = await put(`avatars/${user.id}-${Date.now()}.png`, file, {
+    access: 'public',
     contentType: 'image/png',
-    upsert: true,
   })
-  if (uploadError) return { error: { ...uploadError } }
 
-  const {
-    data: { publicUrl },
-  } = db.storage.from('avatars').getPublicUrl(fileName)
+  await db.update(users).set({ avatarUrl: blob.url }).where(eq(users.id, user.id))
 
-  const query = db.from('users').update({ avatar_url: publicUrl }).eq('id', user.id).select(userQuery).single()
-  const { data, error } = await resolveQuery(query, parseUser)
-  if (error) return { error }
+  const updated = await db.query.users.findFirst({
+    where: eq(users.id, user.id),
+    with: userWith,
+  })
+  if (!updated) return { error: { code: 'NOT_FOUND', message: 'User not found' } }
 
-  updateTag(CacheTag.User)
-  return { data }
+  return { data: parseUser(updated) }
 }
 
 export const removeAvatar = async () => {
-  const db = await getDatabase()
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
 
-  const query = db.from('users').update({ avatar_url: null }).eq('id', user.id).select(userQuery).single()
-  const { data, error } = await resolveQuery(query, parseUser)
-  if (error) return { data: null, error }
+  // Get current avatar URL to delete from blob storage
+  const current = await db.query.users.findFirst({
+    columns: { avatarUrl: true },
+    where: eq(users.id, user.id),
+  })
+  if (current?.avatarUrl) {
+    await del(current.avatarUrl).catch(console.error)
+  }
 
-  updateTag(CacheTag.User)
-  return { data, error: null }
+  await db.update(users).set({ avatarUrl: null }).where(eq(users.id, user.id))
+
+  const updated = await db.query.users.findFirst({
+    where: eq(users.id, user.id),
+    with: userWith,
+  })
+  if (!updated) return { data: null, error: { code: 'NOT_FOUND', message: 'User not found' } }
+
+  return { data: parseUser(updated), error: null }
 }

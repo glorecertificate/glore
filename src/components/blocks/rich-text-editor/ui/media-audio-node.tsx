@@ -7,6 +7,8 @@ import { PlateElement, type PlateElementProps, withHOC } from 'platejs/react'
 
 import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
 
+const captionStyle = { width: '100%' }
+
 export const AudioElement = withHOC(ResizableProvider, (props: PlateElementProps<TAudioElement>) => {
   const { align = 'center', readOnly, unsafeUrl } = useMediaState()
 
@@ -17,7 +19,7 @@ export const AudioElement = withHOC(ResizableProvider, (props: PlateElementProps
           <audio className="size-full" controls src={unsafeUrl} />
         </div>
 
-        <Caption align={align} style={{ width: '100%' }}>
+        <Caption align={align} style={captionStyle}>
           <CaptionTextarea className="h-20" placeholder="Write a caption..." readOnly={readOnly} />
         </Caption>
       </figure>

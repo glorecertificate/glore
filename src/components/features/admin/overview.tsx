@@ -4,73 +4,73 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export const AdminOverview = () => (
   <div className="space-y-6">
-    <h2 className="font-bold text-3xl tracking-tight">{'Dashboard Overview'}</h2>
+    <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
 
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-medium text-sm">{'Total users'}</CardTitle>
+          <CardTitle className="text-sm font-medium">Total users</CardTitle>
           <UsersIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="font-bold text-2xl">{'1,248'}</div>
-          <p className="mt-1 flex items-center text-muted-foreground text-xs">
+          <div className="text-2xl font-bold">1,248</div>
+          <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
               <ArrowUpRightIcon className="mr-1 size-3" />
-              {'12%'}
+              12%
             </span>
-            {'from last month'}
+            from last month
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-medium text-sm">{'Organizations'}</CardTitle>
+          <CardTitle className="text-sm font-medium">Organizations</CardTitle>
           <Building2Icon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="font-bold text-2xl">{'86'}</div>
-          <p className="mt-1 flex items-center text-muted-foreground text-xs">
+          <div className="text-2xl font-bold">86</div>
+          <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
               <ArrowUpRightIcon className="mr-1 size-3" />
-              {'4%'}
+              4%
             </span>
-            {'from last month'}
+            from last month
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-medium text-sm">{'Certifications'}</CardTitle>
+          <CardTitle className="text-sm font-medium">Certifications</CardTitle>
           <AwardIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="font-bold text-2xl">{'3,782'}</div>
-          <p className="mt-1 flex items-center text-muted-foreground text-xs">
+          <div className="text-2xl font-bold">3,782</div>
+          <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-red-500">
               <ArrowDownRightIcon className="mr-1 size-3" />
-              {'2%'}
+              2%
             </span>
-            {'from last month'}
+            from last month
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="font-medium text-sm">{'Active Regions'}</CardTitle>
+          <CardTitle className="text-sm font-medium">Active Regions</CardTitle>
           <GlobeIcon className="size-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="font-bold text-2xl">{'24'}</div>
-          <p className="mt-1 flex items-center text-muted-foreground text-xs">
+          <div className="text-2xl font-bold">24</div>
+          <p className="mt-1 flex items-center text-xs text-muted-foreground">
             <span className="mr-1 flex items-center text-green-500">
               <ArrowUpRightIcon className="mr-1 size-3" />
-              {'8%'}
+              8%
             </span>
-            {'from last month'}
+            from last month
           </p>
         </CardContent>
       </Card>
@@ -79,8 +79,8 @@ export const AdminOverview = () => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
       <Card className="col-span-4">
         <CardHeader>
-          <CardTitle>{'Recent Activity'}</CardTitle>
-          <CardDescription>{'Overview of recent platform activity'}</CardDescription>
+          <CardTitle>Recent Activity</CardTitle>
+          <CardDescription>Overview of recent platform activity</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -96,14 +96,14 @@ export const AdminOverview = () => (
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-sm">
+                  <p className="text-sm font-medium">
                     {i % 3 === 0 ? 'New user registered' : i % 3 === 1 ? 'Certificate issued' : 'Organization added'}
                   </p>
-                  <p className="text-muted-foreground text-xs">
+                  <p className="text-xs text-muted-foreground">
                     {i % 3 === 0 ? 'John Doe' : i % 3 === 1 ? 'Leadership Certificate' : 'Community Helpers'}
                   </p>
                 </div>
-                <div className="text-muted-foreground text-xs">
+                <div className="text-xs text-muted-foreground">
                   {i === 1 ? 'Just now' : i === 2 ? '2 hours ago' : i === 3 ? 'Yesterday' : `${i} days ago`}
                 </div>
               </div>
@@ -114,26 +114,26 @@ export const AdminOverview = () => (
 
       <Card className="col-span-3">
         <CardHeader>
-          <CardTitle>{'Pending Approvals'}</CardTitle>
-          <CardDescription>{'Items requiring admin attention'}</CardDescription>
+          <CardTitle>Pending Approvals</CardTitle>
+          <CardDescription>Items requiring admin attention</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="font-medium text-sm">{'Certificate Requests'}</div>
-              <div className="font-bold text-sm">{'12'}</div>
+              <div className="text-sm font-medium">Certificate Requests</div>
+              <div className="text-sm font-bold">12</div>
             </div>
             <div className="flex items-center justify-between">
-              <div className="font-medium text-sm">{'Organization Verifications'}</div>
-              <div className="font-bold text-sm">{'5'}</div>
+              <div className="text-sm font-medium">Organization Verifications</div>
+              <div className="text-sm font-bold">5</div>
             </div>
             <div className="flex items-center justify-between">
-              <div className="font-medium text-sm">{'User Reports'}</div>
-              <div className="font-bold text-sm">{'3'}</div>
+              <div className="text-sm font-medium">User Reports</div>
+              <div className="text-sm font-bold">3</div>
             </div>
             <div className="flex items-center justify-between">
-              <div className="font-medium text-sm">{'Content Flags'}</div>
-              <div className="font-bold text-sm">{'7'}</div>
+              <div className="text-sm font-medium">Content Flags</div>
+              <div className="text-sm font-bold">7</div>
             </div>
           </div>
         </CardContent>

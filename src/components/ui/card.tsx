@@ -23,11 +23,11 @@ export const CardHeader = ({ className, ...props }: React.ComponentProps<'div'>)
 )
 
 export const CardTitle = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('font-semibold leading-none', className)} data-slot="card-title" {...props} />
+  <div className={cn('leading-none font-semibold', className)} data-slot="card-title" {...props} />
 )
 
 export const CardDescription = ({ className, ...props }: React.ComponentProps<'div'>) => (
-  <div className={cn('text-muted-foreground text-sm', className)} data-slot="card-description" {...props} />
+  <div className={cn('text-sm text-muted-foreground', className)} data-slot="card-description" {...props} />
 )
 
 export const CardAction = ({ className, ...props }: React.ComponentProps<'div'>) => (

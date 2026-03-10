@@ -4,23 +4,18 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
-import metadata from '~/config/metadata.json'
-
 import { i18n } from '@/lib/i18n'
 import { publicFile } from '@/lib/storage'
+import metadata from '~/config/metadata.json'
 
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)
   const locale = (url.searchParams.get('/locale') ?? i18n.defaultLocale) as Locale
-  const t = await getTranslations({ namespace: 'Metadata', locale })
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
 
   const manifest: MetadataRoute.Manifest = {
-    name: metadata.name,
-    short_name: metadata.shortName,
-    description: t('pwaDescription'),
-    start_url: '/',
     background_color: metadata.themeColor,
-    theme_color: metadata.themeColor,
+    description: t('pwaDescription'),
     display: 'standalone',
     icons: [
       {
@@ -36,6 +31,7 @@ export const GET = async (request: NextRequest) => {
         type: 'image/png',
       },
     ],
+    name: metadata.name,
     screenshots: [
       {
         form_factor: 'wide',
@@ -52,6 +48,9 @@ export const GET = async (request: NextRequest) => {
         label: metadata.name,
       },
     ],
+    short_name: metadata.shortName,
+    start_url: '/',
+    theme_color: metadata.themeColor,
   }
 
   return NextResponse.json<MetadataRoute.Manifest>(manifest, { status: 200 })

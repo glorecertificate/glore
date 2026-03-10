@@ -1,12 +1,10 @@
 'use client'
 
+import { Route } from 'next'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { type AppRoutes } from 'next/types/routes'
 
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-
-import settings from '~/config/settings.json'
 
 import { GloreIcon } from '@/components/icons/glore'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
@@ -18,12 +16,9 @@ import { APP_ROOT } from '@/lib/constants'
 import { type MessageKey, type Namespace } from '@/lib/i18n'
 import { type Any, type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import settings from '~/config/app.json'
 
-export const PageHeaderSidebarTrigger = ({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof SidebarTrigger>) => {
+export const PageHeaderSidebarTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
   const { action } = useSidebar()
 
   return (
@@ -32,7 +27,7 @@ export const PageHeaderSidebarTrigger = ({
         <SidebarTrigger className={cn('-ml-1', className)} {...props} />
       </TooltipTrigger>
       <TooltipContent showArrow side="right">
-        <p className="font-medium text-xs">{action}</p>
+        <p className="text-xs font-medium">{action}</p>
         <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${settings.sidebarShortcut.toUpperCase()}`}</p>
       </TooltipContent>
     </Tooltip>
@@ -48,7 +43,7 @@ export const PageHeaderBreadcrumb = <T extends Namespace>({
   ...props
 }: React.ComponentProps<typeof Breadcrumb> & {
   descriptionKey?: MessageKey<T>
-  href?: AppRoutes
+  href?: Route
   namespace?: T
   titleKey?: MessageKey<T>
 }) => {

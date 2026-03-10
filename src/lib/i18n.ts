@@ -1,4 +1,4 @@
-import { type createTranslator, type NamespaceKeys, type NestedKeyOf } from 'next-intl'
+import { type NamespaceKeys, type NestedKeyOf, type createTranslator } from 'next-intl'
 
 import config from '~/config/i18n.json'
 import type messages from '~/messages/en.json'
@@ -60,15 +60,23 @@ const localeItems = Object.entries(config.locales).map(([locale, item]) => ({ ..
 
 export const i18n = {
   cookie: 'NEXT_LOCALE',
-  locales,
   defaultLocale,
-  titleCaseLocales,
   localeItems,
+  locales,
+  titleCaseLocales,
 } as const
 
+export const intlPlaceholder = locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {} as Record<Locale, string>)
+
 export const localizeRecord = <T>(record: IntlRecord<T>, locale: Locale, fallback?: Locale) => {
-  if (!record || typeof record !== 'object') return ''
-  if (locale in record) return record[locale] as string
-  if (fallback && fallback in record) return record[fallback] as string
+  if (!record || typeof record !== 'object') {
+    return ''
+  }
+  if (locale in record) {
+    return record[locale] as string
+  }
+  if (fallback && fallback in record) {
+    return record[fallback] as string
+  }
   return ''
 }

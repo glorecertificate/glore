@@ -2,18 +2,24 @@
 
 import { execSync } from 'node:child_process'
 import { readdirSync, writeFileSync } from 'node:fs'
+import { stdout } from 'node:process'
 
 import { loadEnvConfig } from '@next/env'
 
-import { logger } from './logger'
-
-const ARGS = ['global', 'routes', 'database'] as const
-const GLOBAL_DTS = './global.d.ts'
-
-const SUPABASE_REGEX = /https:\/\/([a-z0-9]+)\.supabase\.co/
+const ARGS = ['env', 'routes'] as const
+const ENV_DTS = './env.d.ts'
 
 const args = process.argv.slice(2)
 const types = args && args.length > 0 ? args : ARGS
+
+const red = (text: string) => `\u001b[31m${text}\u001b[0m`
+const green = (text: string) => `\u001b[32m${text}\u001b[0m`
+const clearLine = () => {
+  if (stdout.isTTY) {
+    stdout.clearLine(0)
+    stdout.cursorTo(0)
+  }
+}
 
 const listPublicDir = (dir = '') => {
   const files: string[] = []
@@ -30,15 +36,14 @@ const listPublicDir = (dir = '') => {
   return files
 }
 
-if (types.includes('global')) {
+if (types.includes('env')) {
   try {
-    logger.inline('Generating global types...')
+    stdout.write('Generating environment types...')
 
     const lines = []
     const keys = new Set()
-    const { loadedEnvFiles } = loadEnvConfig('.')
 
-    for (const { env, path } of loadedEnvFiles) {
+    for (const { env, path } of loadEnvConfig('.').loadedEnvFiles) {
       for (const [key, value] of Object.entries(env)) {
         if (keys.has(key)) continue
         lines.push('      /**')
@@ -69,41 +74,26 @@ declare module 'lucide-react' {
 
 export {}`
 
-    writeFileSync(GLOBAL_DTS, content, 'utf-8')
+    writeFileSync(ENV_DTS, content, 'utf-8')
 
-    logger.success('Global types generated successfully', { clearLine: true })
-  } catch (_e) {
-    logger.error(`Failed to write ${GLOBAL_DTS}`, { clearLine: true })
+    clearLine()
+    console.info(`${green('✓ ')} Environment types generated successfully`)
+  } catch {
+    clearLine()
+    console.error(`${red('✗ ')} Failed to write ${ENV_DTS}`)
   }
 }
 
 if (types.includes('routes')) {
   try {
-    logger.inline('Generating route types...')
+    stdout.write('Generating route types...')
     execSync('next typegen', { stdio: 'ignore' })
-    logger.success('Route types generated successfully', { clearLine: true })
+    clearLine()
+    console.info(`${green('✓ ')} Route types generated successfully\n`)
   } catch (e) {
-    logger.error('Failed to generate route types', { clearLine: true })
-    if (e instanceof Error) logger.red(e.message)
-    process.exit(1)
-  }
-}
-
-if (types.includes('database')) {
-  try {
-    logger.inline('Generating database types...')
-
-    const projectID = process.env.SUPABASE_URL?.match(SUPABASE_REGEX)?.[1]
-    if (!projectID) throw new Error('SUPABASE_URL is not valid')
-
-    execSync(`supabase gen types typescript --project-id ${projectID} > ./supabase/types.ts`, {
-      stdio: 'ignore',
-    })
-
-    logger.success('Database types generated successfully', { clearLine: true })
-  } catch (e) {
-    logger.error('Failed to generate Supabase types', { clearLine: true })
-    if (e instanceof Error) logger.red(e.message)
+    clearLine()
+    console.error(`${red('✗ ')} Failed to generate route types\n`)
+    if (e instanceof Error) console.error(red(e.message))
     process.exit(1)
   }
 }

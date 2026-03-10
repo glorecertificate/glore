@@ -1,10 +1,11 @@
 'use client'
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
 import {
   createCourse as createCourseAction,
   deleteCourse as deleteCouseAction,
+  listCourses,
   updateCourse as updateCourseAction,
 } from '@/actions/course'
 import { type Course, type SkillGroup } from '@/db/queries/course'
@@ -20,6 +21,10 @@ const useCoursesContext = (value: CoursesContextValue) => {
   const { localize } = useI18n()
 
   const [courses, setCourses] = useState(value.courses)
+
+  useEffect(() => {
+    setCourses(value.courses)
+  }, [value.courses])
 
   const skillGroups = useMemo(
     () =>
@@ -43,10 +48,10 @@ const useCoursesContext = (value: CoursesContextValue) => {
   )
 
   const createCourse = useCallback(
-    async (payload: TableInsert<'courses'>) => {
+    async (payload: Omit<TableInsert<'courses'>, 'creatorId'>) => {
       const { data, error } = await createCourseAction({
         ...payload,
-        sort_order: courses.length + 1,
+        sortOrder: courses.length + 1,
       })
       if (error) throw error
       setCourses(prev => [...prev, data])
@@ -68,6 +73,12 @@ const useCoursesContext = (value: CoursesContextValue) => {
     setCourses(prev => prev.filter(c => c.id !== id))
   }, [])
 
+  const refreshCourses = useCallback(async () => {
+    const { data, error } = await listCourses({ cache: false })
+    if (error) return
+    setCourses(data)
+  }, [])
+
   return useMemo(
     () => ({
       courses,
@@ -77,8 +88,9 @@ const useCoursesContext = (value: CoursesContextValue) => {
       createCourse,
       updateCourse,
       deleteCourse,
+      refreshCourses,
     }),
-    [courses, createCourse, deleteCourse, setCourse, skillGroups, updateCourse]
+    [courses, createCourse, deleteCourse, refreshCourses, setCourse, skillGroups, updateCourse]
   )
 }
 

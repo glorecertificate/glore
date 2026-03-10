@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { useTranslations } from 'next-intl'
 
@@ -20,21 +20,31 @@ export default ({ error }: ErrorProps) => {
     console.error(error)
   }, [error])
 
+  const header = useMemo(
+    () => (
+      <header className="flex h-16 w-full items-center justify-center px-4">
+        <Link href={APP_ROOT} title={t('backToHome')}>
+          <GloreIcon className="mt-8 h-8" />
+        </Link>
+      </header>
+    ),
+    [t]
+  )
+
   const canGoBack = document.referrer?.startsWith(window.location.origin) && document.referrer !== window.location.href
 
+  const goBack = useCallback(() => {
+    if (canGoBack) {
+      router.back()
+    }
+  }, [canGoBack, router])
+
+  const refreshPage = useCallback(() => window.location.reload(), [])
+
   return (
-    <ErrorFallback
-      className="min-h-[calc(100vh-4rem)]"
-      header={
-        <header className="flex h-16 w-full items-center justify-center px-4">
-          <Link href={APP_ROOT} title={t('backToHome')}>
-            <GloreIcon className="mt-8 h-8" />
-          </Link>
-        </header>
-      }
-    >
+    <ErrorFallback className="min-h-[calc(100vh-4rem)]" header={header}>
       {canGoBack ? (
-        <Button onClick={() => router.back()} size="lg" variant="outline">
+        <Button onClick={goBack} size="lg" variant="outline">
           {t('backToPrevious')}
         </Button>
       ) : (
@@ -44,7 +54,7 @@ export default ({ error }: ErrorProps) => {
           </Button>
         )
       )}
-      <Button onClick={() => window.location.reload()} size="lg" variant="outline">
+      <Button onClick={refreshPage} size="lg" variant="outline">
         {t('refreshPage')}
       </Button>
     </ErrorFallback>

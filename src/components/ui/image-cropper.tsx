@@ -3,11 +3,10 @@
 import { type SyntheticEvent, useCallback, useRef, useState } from 'react'
 
 import { Trash2Icon, UploadCloudIcon } from 'lucide-react'
-import { useDropzone } from 'react-dropzone'
-import ReactCrop, { type Crop, centerCrop, makeAspectCrop, type PixelCrop } from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
-
 import { useTranslations } from 'next-intl'
+import { useDropzone } from 'react-dropzone'
+import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -82,19 +81,21 @@ export const ImageCropper = ({
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
-    if (!file) return
+    if (!file) {
+      return
+    }
     setSelectedFile(file)
     setPreviewUrl(URL.createObjectURL(file))
     setOpen(true)
   }, [])
 
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
     accept: {
       'image/*': ['.png', '.jpg', '.jpeg', '.webp'],
     },
-    maxFiles: 1,
     disabled,
+    maxFiles: 1,
+    onDrop,
   })
 
   const onImageLoad = useCallback((e: SyntheticEvent<HTMLImageElement>) => {

@@ -12,7 +12,7 @@ export default () => (
   <>
     <PageHeader />
     <PageMain>
-      <h1>{'Docs intro'}</h1>
+      <h1>Docs intro</h1>
     </PageMain>
   </>
 )

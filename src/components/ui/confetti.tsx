@@ -96,8 +96,8 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
     const duration = 5 * 1000
     const animationEnd = Date.now() + duration
     const defaults = {
-      startVelocity: 30,
       spread: 360,
+      startVelocity: 30,
       ticks: 60,
       zIndex: 1,
     }
@@ -106,19 +106,21 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
 
     const interval = window.setInterval(() => {
       const timeLeft = animationEnd - Date.now()
-      if (timeLeft <= 0) return clearInterval(interval)
+      if (timeLeft <= 0) {
+        return clearInterval(interval)
+      }
       const particleCount = 50 * (timeLeft / duration)
       void confetti({
         ...defaults,
         ...options,
-        particleCount,
         origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        particleCount,
       })
       void confetti({
         ...defaults,
         ...options,
-        particleCount,
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        particleCount,
       })
     }, 250)
   }, [options])
@@ -151,7 +153,9 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
           break
       }
 
-      if (onClick) onClick(event)
+      if (onClick) {
+        onClick(event)
+      }
     },
     [effect, onClick, triggerConfetti, triggerFireworks]
   )

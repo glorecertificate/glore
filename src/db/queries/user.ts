@@ -1,56 +1,29 @@
-import { organizationQuery } from '@/db/queries/organization'
-import { type DatabaseResult, type Enums } from '@/db/types'
+import { type InferSelectModel } from 'drizzle-orm'
+
+import { type memberships, type organizations, type regions, type users } from '@/db/schema'
+import { type EnumType } from '@/db/types'
+
+type UserRow = InferSelectModel<typeof users>
+type MembershipRow = InferSelectModel<typeof memberships>
+type OrganizationRow = InferSelectModel<typeof organizations>
+type RegionRow = Pick<InferSelectModel<typeof regions>, 'id' | 'name' | 'icon'>
+
+export interface UserWithRelations extends UserRow {
+  memberships: (MembershipRow & { organization: OrganizationRow })[]
+  regions: RegionRow[]
+}
 
 export type User = ReturnType<typeof parseUser>
-export type UserRole = Enums<'role'>
+export type UserRole = EnumType<'role'>
 export type UserOrganization = User['organizations'][number]
 
-export const baseUserQuery = `
-  id,
-  email,
-  phone,
-  username,
-  first_name,
-  last_name,
-  bio,
-  birthday,
-  sex,
-  pronouns,
-  country,
-  city,
-  languages,
-  locale,
-  avatar_url,
-  is_admin,
-  is_editor,
-  onboarded_at,
-  created_at,
-  updated_at
-` as const
-
-export const userQuery = `
-  ${baseUserQuery},
-  phone,
-  memberships (
-    id,
-    role,
-    organization:organizations (
-      ${organizationQuery}
-    )
-  ),
-  regions (
-    id,
-    name,
-    icon
-  )
-` as const
-
-export const parseUser = (user: DatabaseResult<'users', typeof userQuery>) => ({
+export const parseUser = (user: UserWithRelations) => ({
   ...user,
-  canEdit: Boolean(user.is_admin || user.is_editor),
+  isAdmin: user.role === 'admin',
+  canEdit: user.role === 'admin' || user.isEditor,
   organizations: user.memberships.map(({ organization, role }) => ({ ...organization, role })),
-  shortName: `${user.first_name} ${user.last_name ? `${user.last_name.trim().charAt(0).toUpperCase()}.` : ''}`,
-  initials: [user.first_name, user.last_name]
+  shortName: `${user.firstName} ${user.lastName ? `${user.lastName.trim().charAt(0).toUpperCase()}.` : ''}`,
+  initials: [user.firstName, user.lastName]
     .filter(Boolean)
     .map(name => name!.trim().charAt(0).toUpperCase())
     .slice(0, 2)

@@ -18,7 +18,7 @@ export const FloatingToolbar = ({
 }) => {
   const editorId = useEditorId()
   const focusedEditorId = useEventEditorValue('focus')
-  const isFloatingLinkOpen = !!usePluginOption({ key: KEYS.link }, 'mode')
+  const isFloatingLinkOpen = Boolean(usePluginOption({ key: KEYS.link }, 'mode'))
   const isAIChatOpen = usePluginOption({ key: KEYS.aiChat }, 'open') as boolean
 
   const floatingToolbarState = useFloatingToolbarState({
@@ -43,7 +43,9 @@ export const FloatingToolbar = ({
 
   const ref = useComposedRef<HTMLDivElement>(props.ref, floatingRef)
 
-  if (hidden) return null
+  if (hidden) {
+    return null
+  }
 
   return (
     <div ref={clickOutsideRef}>
@@ -51,7 +53,7 @@ export const FloatingToolbar = ({
         {...props}
         {...rootProps}
         className={cn(
-          'scrollbar-hide absolute z-50 max-w-[80vw] overflow-x-auto whitespace-nowrap rounded-md border bg-popover p-1 opacity-100 shadow-md print:hidden',
+          'absolute z-50 scrollbar-hide max-w-[80vw] overflow-x-auto rounded-md border bg-popover p-1 whitespace-nowrap opacity-100 shadow-md print:hidden',
           className
         )}
         ref={ref}

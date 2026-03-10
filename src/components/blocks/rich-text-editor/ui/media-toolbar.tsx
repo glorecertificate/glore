@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import {
   FloatingMedia as FloatingMediaPrimitive,
@@ -27,12 +27,7 @@ import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 
 const inputVariants = cva(
-  `
-    flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base
-    placeholder:text-muted-foreground
-    focus-visible:ring-transparent focus-visible:outline-none
-    md:text-sm
-  `
+  `flex h-7 w-full rounded-md border-none bg-transparent px-1.5 py-1 text-base placeholder:text-muted-foreground focus-visible:ring-transparent focus-visible:outline-none md:text-sm`
 )
 
 export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; plugin: WithRequiredKey }) => {
@@ -56,7 +51,11 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
   const element = useElement()
   const { props: buttonProps } = useRemoveNodeButton({ element })
 
-  if (readOnly) return <>{children}</>
+  const urlInputOptions = useMemo(() => ({ plugin }), [plugin])
+
+  if (readOnly) {
+    return <>{children}</>
+  }
 
   return (
     <Popover modal={false} open={isOpen}>
@@ -72,7 +71,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
 
               <FloatingMediaPrimitive.UrlInput
                 className={inputVariants()}
-                options={{ plugin }}
+                options={urlInputOptions}
                 placeholder="Paste the embed link..."
               />
             </div>

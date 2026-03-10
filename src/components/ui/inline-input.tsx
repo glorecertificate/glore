@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { cn } from '@/lib/utils'
@@ -10,8 +10,7 @@ import { cn } from '@/lib/utils'
 const NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
 export interface InlineInputProps
-  extends Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'>,
-    VariantProps<typeof inlineInputVariants> {
+  extends Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'>, VariantProps<typeof inlineInputVariants> {
   /**
    * When true, the input width adapts to the content.
    */
@@ -42,7 +41,9 @@ export const InlineInput = ({
   const [staticValue, setStaticValue] = useState(value ?? defaultValue ?? '')
 
   const adjustSize = useCallback(() => {
-    if (!ref.current) return
+    if (!ref.current) {
+      return
+    }
 
     ref.current.style.height = 'auto'
 
@@ -114,6 +115,11 @@ export const InlineInput = ({
     [onChange]
   )
 
+  const inputStyle = useMemo(
+    () => (autoWidth ? { width: 'auto', ...props.style } : props.style),
+    [autoWidth, props.style]
+  )
+
   return (
     <textarea
       autoComplete="off"
@@ -124,7 +130,7 @@ export const InlineInput = ({
       ref={composedRefs}
       rows={1}
       spellCheck={false}
-      style={autoWidth ? { width: 'auto', ...props.style } : props.style}
+      style={inputStyle}
       value={value}
       {...props}
     />
@@ -132,24 +138,16 @@ export const InlineInput = ({
 }
 
 const inlineInputVariants = cva(
-  `
-    w-full min-w-0 resize-none overflow-hidden bg-transparent
-    outline-none rounded -mx-0.5 px-0.5 align-top
-    transition-colors duration-150 border border-transparent
-    hover:bg-muted/40
-    focus-visible:bg-muted/70 focus-visible:border
-    placeholder:text-muted-foreground/40
-    disabled:pointer-events-none disabled:opacity-50
-  `,
+  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground/40 hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
   {
     defaultVariants: {
       size: 'default',
     },
     variants: {
       size: {
-        sm: 'text-xs',
         default: 'text-sm',
         lg: 'text-base',
+        sm: 'text-xs',
       },
     },
   }

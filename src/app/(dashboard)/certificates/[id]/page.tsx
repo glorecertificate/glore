@@ -1,15 +1,15 @@
-// import { notFound } from 'next/navigation'
+// Import { notFound } from 'next/navigation'
 
-// import { CertificateDocument } from '@/components/features/certificates/document'
+// Import { CertificateDocument } from '@/components/features/certificates/document'
 
-// export default async ({ params }: PageProps<'/certificates/[id]'>) => {
-//   const { id } = (await params) ?? {}
-//   if (!id) notFound()
+// Export default async ({ params }: PageProps<'/certificates/[id]'>) => {
+//   Const { id } = (await params) ?? {}
+//   If (!id) notFound()
 
-//   const certificate = null
-//   if (!certificate) notFound()
+//   Const certificate = null
+//   If (!certificate) notFound()
 
-//   return <CertificateDocument certificate={certificate} />
+//   Return <CertificateDocument certificate={certificate} />
 // }
 
 export default () => null

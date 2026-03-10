@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useId } from 'react'
+import { createContext, useContext, useId, useMemo } from 'react'
 
 import { Slot, type SlotProps } from '@radix-ui/react-slot'
 import {
@@ -31,12 +31,17 @@ export const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 >({
+  name,
   ...props
-}: ControllerProps<TFieldValues, TName>) => (
-  <FormFieldContext.Provider value={{ name: props.name }}>
-    <Controller {...props} />
-  </FormFieldContext.Provider>
-)
+}: ControllerProps<TFieldValues, TName>) => {
+  const value = useMemo(() => ({ name }), [name])
+
+  return (
+    <FormFieldContext.Provider value={value}>
+      <Controller {...props} {...value} />
+    </FormFieldContext.Provider>
+  )
+}
 
 export const useFormField = () => {
   const fieldContext = useContext(FormFieldContext)
@@ -52,11 +57,11 @@ export const useFormField = () => {
   const { id } = itemContext
 
   return {
+    formDescriptionId: `${id}-form-item-description`,
+    formItemId: `${id}-form-item`,
+    formMessageId: `${id}-form-item-message`,
     id,
     name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
     ...fieldState,
   }
 }
@@ -69,9 +74,10 @@ const FormItemContext = createContext<FormItemContextValue>({} as FormItemContex
 
 export const FormItem = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const id = useId()
+  const value = useMemo(() => ({ id }), [id])
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={value}>
       <div className={cn('grid gap-2', className)} data-slot="form-item" {...props} />
     </FormItemContext.Provider>
   )
@@ -83,7 +89,7 @@ export const FormLabel = ({ className, ...props }: React.ComponentProps<typeof L
   return (
     <Label
       className={cn('data-[error=true]:text-destructive', className)}
-      data-error={!!error}
+      data-error={Boolean(error)}
       data-slot="form-label"
       htmlFor={formItemId}
       {...props}
@@ -96,8 +102,8 @@ export const FormControl = ({ ...props }: SlotProps) => {
 
   return (
     <Slot
-      aria-describedby={!error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`}
-      aria-invalid={!!error}
+      aria-describedby={error ? `${formDescriptionId} ${formMessageId}` : formDescriptionId}
+      aria-invalid={Boolean(error)}
       data-slot="form-control"
       id={formItemId}
       {...props}
@@ -110,7 +116,7 @@ export const FormDescription = ({ className, ...props }: React.ComponentProps<'p
 
   return (
     <p
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn('text-sm text-muted-foreground', className)}
       data-slot="form-description"
       id={formDescriptionId}
       {...props}
@@ -122,11 +128,13 @@ export const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>) 
   const { error, formMessageId } = useFormField()
   const body = error ? String(error?.message) : props.children
 
-  if (!body) return null
+  if (!body) {
+    return null
+  }
 
   return (
     <p
-      className={cn('text-destructive text-sm leading-[normal]', className)}
+      className={cn('text-sm leading-[normal] text-destructive', className)}
       data-slot="form-message"
       id={formMessageId}
       {...props}

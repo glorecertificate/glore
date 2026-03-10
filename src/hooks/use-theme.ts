@@ -29,11 +29,11 @@ export const useTheme = () => {
       nextTheme.setTheme(theme)
       cookiesRef.current.set('theme', theme)
     },
-    [nextTheme.setTheme, nextTheme]
+    [nextTheme]
   )
 
   const setTheme = useCallback(
-    (theme: Theme) => {
+    async (theme: Theme) => {
       if (typeof window === 'undefined') {
         applyTheme(theme)
         return
@@ -51,9 +51,12 @@ export const useTheme = () => {
         const transition = doc.startViewTransition(() => {
           applyTheme(theme)
         })
-        transition?.finished.finally(() => {
+
+        try {
+          await transition?.finished
+        } finally {
           root.classList.remove(`${THEME_TRANSITION_CLASS}-view`)
-        })
+        }
         return
       }
 
@@ -73,11 +76,11 @@ export const useTheme = () => {
   )
 
   return {
-    theme,
-    themes,
-    resolvedTheme,
     isDarkMode: resolvedTheme === 'dark',
     isLightMode: resolvedTheme === 'light',
+    resolvedTheme,
     setTheme,
+    theme,
+    themes,
   }
 }

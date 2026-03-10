@@ -2,31 +2,53 @@
 
 import 'server-only'
 
-import { cache } from 'react'
-import { cacheTag, updateTag } from 'next/cache'
+import { cacheTag, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { cache } from 'react'
+
+import { eq, or } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { sendEmail } from '@/actions/email'
-import { getDatabase } from '@/db/client'
-import { resolveQuery } from '@/db/helpers'
-import { parseUser, userQuery } from '@/db/queries/user'
-import { type DatabaseSingleQuery, type TableUpdate } from '@/db/types'
+import { getCookie } from '@/actions/cookies'
+import { db } from '@/db/client'
+import { safeQuery } from '@/db/helpers'
+import { parseUser } from '@/db/queries/user'
+import { users } from '@/db/schema'
+import { type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
+import { sendMail } from '@/lib/email'
 
-const fetchUser = async (query: DatabaseSingleQuery<'users', typeof userQuery>) => {
+const userWith = {
+  memberships: { with: { organization: true } },
+  regions: { columns: { id: true, name: true, icon: true } },
+} as const
+
+const fetchUser = async (id: string) => {
   'use cache'
   cacheTag(CacheTag.User)
 
-  return await resolveQuery(query, parseUser)
+  return await safeQuery(async () => {
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, id),
+      with: userWith,
+    })
+    if (!user) throw new Error('User not found')
+    return parseUser(user)
+  })
 }
 
-const fetchUserEmail = async (query: DatabaseSingleQuery<'users', 'email'>) => {
+const fetchUserEmail = async (username: string) => {
   'use cache'
   cacheTag(CacheTag.UserEmail)
 
-  return await resolveQuery(query)
+  return await safeQuery(async () => {
+    const user = await db.query.users.findFirst({
+      columns: { email: true },
+      where: or(eq(users.email, username), eq(users.username, username)),
+    })
+    return user ?? null
+  })
 }
 
 export const getCurrentUser = cache(async () => {
@@ -35,59 +57,60 @@ export const getCurrentUser = cache(async () => {
   return await findUser(user.id)
 })
 
-export const findUser = async (id: string) => {
-  const db = await getDatabase()
+export const findUser = async (id: string, { cache = true }: { cache?: boolean } = {}) => {
+  if (!cache) {
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, id),
+      with: userWith,
+    })
+    if (!user) throw new Error('User not found')
+    return parseUser(user)
+  }
 
-  const query = db.from('users').select(userQuery).eq('id', id).single()
-  const { data, error } = await fetchUser(query)
+  const { data, error } = await fetchUser(id)
   if (error || !data) throw error || new Error('User not found')
 
   return data
 }
 
-export const findUserEmail = async (username: string) => {
-  const db = await getDatabase()
-
-  const query = db
-    .from('users')
-    .select('email')
-    .or(`email.eq."${username.replaceAll('"', '')}",username.eq."${username.replaceAll('"', '')}"`)
-    .single()
-  const response = await fetchUserEmail(query)
-
-  updateTag(CacheTag.UserEmail)
-  return response
-}
+export const findUserEmail = async (username: string) => await fetchUserEmail(username)
 
 export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
-  const db = await getDatabase()
+  const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
+  if (!updated) throw new Error('Failed to update user')
 
-  const query = db.from('users').update(values).eq('id', id).select(userQuery).single()
-  const { data, error } = await fetchUser(query)
-  if (error || !data) throw error || new Error('Failed to update user')
+  revalidateTag(CacheTag.User, 'max')
 
-  updateTag(CacheTag.User)
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, id),
+    with: userWith,
+  })
+  if (!user) throw new Error('User not found')
+
+  const parsed = parseUser(user)
 
   if (values.email && previousEmail && values.email !== previousEmail) {
-    const emailProps = {
-      username: data.first_name ?? undefined,
-      locale: data.locale ?? undefined,
-      newEmail: values.email,
-      oldEmail: previousEmail,
-    }
+    const name = parsed.firstName ?? 'User'
 
-    sendEmail('account/email-changed', {
-      ...emailProps,
+    await sendMail({
       to: values.email,
-      variant: 'new',
-    }).catch(console.error)
+      subject: 'Your GloRe Certificate email has been updated',
+      html: `<p>Hi ${name},</p><p>Your email address has been changed to <strong>${values.email}</strong>.</p><p>If you did not make this change, please contact support immediately.</p>`,
+    })
 
-    sendEmail('account/email-changed', {
-      ...emailProps,
+    await sendMail({
       to: previousEmail,
-      variant: 'old',
-    }).catch(console.error)
+      subject: 'Your GloRe Certificate email has been changed',
+      html: `<p>Hi ${name},</p><p>Your email address has been changed from <strong>${previousEmail}</strong> to a new address.</p><p>If you did not make this change, please contact support immediately.</p>`,
+    })
   }
 
-  return data
+  return parsed
+}
+
+export const getActiveOrgId = async () => {
+  const user = await getCurrentUser()
+  const stored = await getCookie('org')
+  const match = user.organizations.find(({ id }) => id === stored)
+  return (match ?? user.organizations[0])?.id ?? null
 }

@@ -4,25 +4,25 @@
 
 ### Features ✨
 
-* Add custom mailer adn review project structure ([6f1950f](https://github.com/glorecertificate/glore/commit/6f1950fa4fe88e32bfac39be4fdca883af2a3d4b))
-* Allow editing courses information and settings ([08a28e5](https://github.com/glorecertificate/glore/commit/08a28e5d7e4519366d33073d14b9d272422b77e3))
-* Enhance courses ([a320931](https://github.com/glorecertificate/glore/commit/a3209313aa8cc796c46feac981a377af7ae3a010))
-* Enhance layout components ([ec7ec6d](https://github.com/glorecertificate/glore/commit/ec7ec6d70791439f043abad54dba620ebd74ce9c))
-* Improve course list ([d1cc4c0](https://github.com/glorecertificate/glore/commit/d1cc4c02fb89130e55cd120b1a90e39b36406c73))
+- Add custom mailer adn review project structure ([6f1950f](https://github.com/glorecertificate/glore/commit/6f1950fa4fe88e32bfac39be4fdca883af2a3d4b))
+- Allow editing courses information and settings ([08a28e5](https://github.com/glorecertificate/glore/commit/08a28e5d7e4519366d33073d14b9d272422b77e3))
+- Enhance courses ([a320931](https://github.com/glorecertificate/glore/commit/a3209313aa8cc796c46feac981a377af7ae3a010))
+- Enhance layout components ([ec7ec6d](https://github.com/glorecertificate/glore/commit/ec7ec6d70791439f043abad54dba620ebd74ce9c))
+- Improve course list ([d1cc4c0](https://github.com/glorecertificate/glore/commit/d1cc4c02fb89130e55cd120b1a90e39b36406c73))
 
 ### CI 🤖
 
-* Fix release changelog format ([7e08ae7](https://github.com/glorecertificate/glore/commit/7e08ae7c4dc068bdd9879c38aa5d949d634dc6dd))
-* Limit deployments in GitHub Actions workflows ([71d650c](https://github.com/glorecertificate/glore/commit/71d650c2dd3d22d1bfb95fe7a4fae5a821b63036))
+- Fix release changelog format ([7e08ae7](https://github.com/glorecertificate/glore/commit/7e08ae7c4dc068bdd9879c38aa5d949d634dc6dd))
+- Limit deployments in GitHub Actions workflows ([71d650c](https://github.com/glorecertificate/glore/commit/71d650c2dd3d22d1bfb95fe7a4fae5a821b63036))
 
 ### Docs 📑
 
-* Update references to repository ([b276e7d](https://github.com/glorecertificate/glore/commit/b276e7d3e65557be03e6a0070d37b69de1e22c4c))
+- Update references to repository ([b276e7d](https://github.com/glorecertificate/glore/commit/b276e7d3e65557be03e6a0070d37b69de1e22c4c))
 
 ### Other
 
-* Turn monorepo into single-package workspace ([4d81196](https://github.com/glorecertificate/glore/commit/4d8119627d1b7388e33cdfdf3329c46ae6b25628))
-* Use server actions ([a34cbcb](https://github.com/glorecertificate/glore/commit/a34cbcbfa7758c387ea99409ff204fd5d8a860b8))
+- Turn monorepo into single-package workspace ([4d81196](https://github.com/glorecertificate/glore/commit/4d8119627d1b7388e33cdfdf3329c46ae6b25628))
+- Use server actions ([a34cbcb](https://github.com/glorecertificate/glore/commit/a34cbcbfa7758c387ea99409ff204fd5d8a860b8))
 
 ## [0.5.0](https://github.com/glorecertificate/glore/compare/v0.4.14...v0.5.0) (2025-09-29)
 

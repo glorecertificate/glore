@@ -49,7 +49,9 @@ export const ImportToolbarButton = (props: DropdownMenuProps) => {
     multiple: false,
     onFilesSelected: async (data: { plainFiles?: File[] }) => {
       const files = (await data.plainFiles) as File[]
-      if (files.length === 0) return
+      if (files.length === 0) {
+        return
+      }
 
       const text = await files[0].text()
       const nodes = getFileNodes(text, 'markdown')
@@ -63,7 +65,9 @@ export const ImportToolbarButton = (props: DropdownMenuProps) => {
     multiple: false,
     onFilesSelected: async (data: { plainFiles?: File[] }) => {
       const files = (await data.plainFiles) as File[]
-      if (files.length === 0) return
+      if (files.length === 0) {
+        return
+      }
 
       const text = await files[0].text()
       const nodes = getFileNodes(text, 'html')

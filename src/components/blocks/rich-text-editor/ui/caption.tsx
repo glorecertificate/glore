@@ -7,7 +7,7 @@ import {
   useCaptionButtonState,
 } from '@platejs/caption/react'
 import { createPrimitiveComponent } from '@udecode/cn'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'

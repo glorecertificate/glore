@@ -1,8 +1,8 @@
 'use client'
 
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Route } from 'next'
 import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { type AppRoutes } from 'next/types/routes'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
   AwardIcon,
@@ -67,7 +67,6 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
-import { useCookies } from '@/hooks/use-cookies'
 import { useSession } from '@/hooks/use-session'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type Icon } from '@/lib/types'
@@ -76,7 +75,7 @@ import { cn, sleep, titleize } from '@/lib/utils'
 interface AppSidebarItemProps extends React.ComponentProps<typeof SidebarMenuButton> {
   icon?: Icon
   label: string
-  route: AppRoutes
+  route: Route
   subItem?: boolean
 }
 
@@ -120,7 +119,7 @@ const AppSidebarItem = ({
         asChild
         className={cn(
           subItem
-            ? 'border-transparent border-l-2 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-border/50 data-active:font-medium data-active:text-sidebar-foreground'
+            ? 'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-border/50 data-active:font-medium data-active:text-sidebar-foreground'
             : 'py-3 font-medium data-active:shadow-[inset_3px_0_0_var(--color-primary)]',
           isActivePath && 'pointer-events-none',
           className
@@ -172,7 +171,6 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
   const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Layout')
 
-  const cookies = useCookies()
   const { setOrganization, user } = useSession()
 
   const membership = useMemo(
@@ -183,13 +181,10 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
   const selectOrganization = useCallback(
     (id: number) => {
       setActivePath(APP_ROOT)
-      setTimeout(() => {
-        setOrganization(id)
-        cookies.set('org', id)
-      }, 200)
+      setOrganization(id)
       router.push(APP_ROOT)
     },
-    [router, setActivePath, setOrganization, cookies.set, cookies]
+    [router, setActivePath, setOrganization]
   )
 
   return (
@@ -199,20 +194,18 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               asChild
-              className={
-                'justify-center overflow-visible rounded-lg py-7 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground peer-data-[state=collapsed]:border'
-              }
+              className="justify-center overflow-visible rounded-lg py-7 peer-data-[state=collapsed]:border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
               <Avatar
                 className={cn(
                   'flex aspect-square size-10 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
                   !open && 'size-8 text-xs',
-                  !organization.avatar_url && 'border'
+                  !organization.avatarUrl && 'border'
                 )}
               >
-                {organization.avatar_url ? (
-                  <AvatarImage alt={organization.name} src={organization.avatar_url} />
+                {organization.avatarUrl ? (
+                  <AvatarImage alt={organization.name} src={organization.avatarUrl} />
                 ) : (
                   <span className="text-muted-foreground">{organization.name.slice(0, 2).toUpperCase()}</span>
                 )}
@@ -220,7 +213,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
               <div className="grid flex-1 text-left leading-tight">
                 <span className="truncate font-semibold">{organization.name}</span>
                 {membership?.role && (
-                  <span className="truncate font-normal text-muted-foreground text-xs">
+                  <span className="truncate text-xs font-normal text-muted-foreground">
                     {titleize(membership.role)}
                   </span>
                 )}
@@ -234,11 +227,11 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-muted-foreground text-xs">{t('organizations')}</DropdownMenuLabel>
-            {user.memberships.map(({ organization: { id, avatar_url, name }, role }) => (
+            <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
+            {user.memberships.map(({ organization: { id, avatarUrl, name }, role }) => (
               <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
                 <Avatar className="aspect-square size-10 rounded-lg border">
-                  {avatar_url && <AvatarImage alt={name} src={avatar_url} />}
+                  {avatarUrl && <AvatarImage alt={name} src={avatarUrl} />}
                   <AvatarFallback className="text-muted-foreground">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -248,7 +241,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
                       <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
                     )}
                   </span>
-                  <span className="truncate font-normal text-muted-foreground text-xs">{titleize(role)}</span>
+                  <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>
                 </div>
               </DropdownMenuItem>
             ))}
@@ -281,7 +274,7 @@ const AppSidebarMain = () => {
           <AppSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <AppSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </AppSidebarCollapsible>
-        {user.is_admin && <AppSidebarItem icon={CogIcon} label={t('admin')} route="/admin" />}
+        {user.isAdmin && <AppSidebarItem icon={CogIcon} label={t('admin')} route="/admin" />}
       </SidebarMenu>
     </SidebarGroup>
   )
@@ -293,7 +286,7 @@ const AppSidebarUserItem = ({
   icon: Icon,
   onClick,
 }: React.PropsWithChildren<{
-  href: AppRoutes
+  href: Route
   icon: Icon
   onClick: () => void
 }>) => {
@@ -371,23 +364,23 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
               variant="outline"
             >
               <div className="relative ml-0 overflow-visible transition-all duration-150">
-                <Avatar className={cn('aspect-square size-8 rounded-lg border', !user.avatar_url && 'border')}>
-                  {user.avatar_url && <AvatarImage src={user.avatar_url} />}
+                <Avatar className={cn('aspect-square size-8 rounded-lg border', !user.avatarUrl && 'border')}>
+                  {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
                   <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                 </Avatar>
-                {organization?.avatar_url && (
+                {organization?.avatarUrl && (
                   <Image
                     className="absolute -right-1 -bottom-1 rounded-full object-cover"
                     height={14}
-                    src={organization.avatar_url}
+                    src={organization.avatarUrl}
                     width={14}
                   />
                 )}
               </div>
               <div className={cn('grid flex-1 text-left text-sm leading-tight', !open && 'hidden')}>
                 <span className="flex items-center gap-1 font-semibold">
-                  {user.first_name}
-                  {user.is_admin && (
+                  {user.firstName}
+                  {user.isAdmin && (
                     <Tooltip>
                       <TooltipTrigger
                         asChild
@@ -401,7 +394,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
                       </TooltipContent>
                     </Tooltip>
                   )}
-                  {user.is_editor && (
+                  {user.isEditor && (
                     <Tooltip>
                       <TooltipTrigger
                         asChild
@@ -416,7 +409,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
                     </Tooltip>
                   )}
                 </span>
-                <span className="truncate font-normal text-muted-foreground text-xs">{user.email}</span>
+                <span className="truncate text-xs font-normal text-muted-foreground">{user.email}</span>
               </div>
               <Button
                 asChild

@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 import { PlateStatic, type PlateStaticProps } from 'platejs/static'
 
 import { cn } from '@/lib/utils'
@@ -14,13 +14,9 @@ export const StaticEditor = ({
 const staticEditorVariants = cva(
   cn(
     'group/editor',
-    'wrap-break-word relative w-full cursor-text select-text overflow-x-hidden whitespace-pre-wrap',
+    'relative w-full cursor-text overflow-x-hidden wrap-break-word whitespace-pre-wrap select-text',
     'rounded-md ring-offset-background focus-visible:outline-none',
-    `
-      placeholder:text-muted-foreground/80
-      **:data-slate-placeholder:top-[auto_!important] **:data-slate-placeholder:text-muted-foreground/80
-      **:data-slate-placeholder:opacity-100!
-    `,
+    `placeholder:text-muted-foreground/80 **:data-slate-placeholder:top-[auto_!important] **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100!`,
     '[&_strong]:font-bold'
   ),
   {

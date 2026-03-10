@@ -13,7 +13,7 @@ export const Breadcrumb = ({ className, ...props }: React.ComponentProps<'nav'>)
 export const BreadcrumbList = ({ className, ...props }: React.ComponentProps<'ol'>) => (
   <ol
     className={cn(
-      'wrap-break-word flex flex-wrap items-center gap-0.5 text-muted-foreground text-sm sm:gap-3',
+      'flex flex-wrap items-center gap-0.5 text-sm wrap-break-word text-muted-foreground sm:gap-3',
       className
     )}
     data-slot="breadcrumb-list"
@@ -43,7 +43,6 @@ export const BreadcrumbPage = ({ className, ...props }: React.ComponentProps<'sp
     aria-disabled="true"
     className={cn('font-normal text-foreground', className)}
     data-slot="breadcrumb-page"
-    role="link"
     {...props}
   />
 )
@@ -69,6 +68,6 @@ export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps
     {...props}
   >
     <MoreHorizontalIcon className="size-4" />
-    <span className="sr-only">{'More'}</span>
+    <span className="sr-only">More</span>
   </span>
 )

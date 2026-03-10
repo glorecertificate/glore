@@ -71,16 +71,19 @@ export const PLUGINS = {
 
 export type RichTextEditorPlugin = keyof typeof PLUGINS
 
-export interface RichTextEditorProviderProps
-  extends React.PropsWithChildren<Omit<CreatePlateEditorOptions, 'plugins'>> {
+export interface RichTextEditorProviderProps extends React.PropsWithChildren<
+  Omit<CreatePlateEditorOptions, 'plugins'>
+> {
   exclude?: RichTextEditorPlugin | RichTextEditorPlugin[]
   onChange?: PlateProps['onChange']
   version?: string
 }
 
+const EMPTY_EXCLUDE: RichTextEditorPlugin[] = []
+
 export const RichTextEditorProvider = ({
   children,
-  exclude = [],
+  exclude = EMPTY_EXCLUDE,
   id,
   onChange,
   version,
@@ -100,7 +103,7 @@ export const RichTextEditorProvider = ({
             placeholders: {
               [KEYS.p]: t('block'),
             },
-            query: ({ path }) => path.length === 1,
+            query: ({ path }: { path: number[] }) => path.length === 1,
           },
         }),
       ].flat() as AnyPluginConfig[],

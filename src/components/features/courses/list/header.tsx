@@ -21,8 +21,8 @@ import { cn } from '@/lib/utils'
 export const CourseListHeader = memo(({ className, ...props }: React.ComponentProps<typeof PageHeaderContainer>) => {
   const { user } = useSession()
   const descriptionKey = useMemo(
-    () => (user.is_admin ? 'descriptionAdmin' : user.is_editor ? 'descriptionEditor' : 'description'),
-    [user.is_admin, user.is_editor]
+    () => (user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description'),
+    [user.isAdmin, user.isEditor]
   )
 
   return (

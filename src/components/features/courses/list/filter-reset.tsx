@@ -14,7 +14,9 @@ export const CourseListFilterReset = memo((props: React.ComponentProps<typeof Bu
 
   const { resetFilters, hasFilters } = useCourseListFilters()
 
-  if (!hasFilters) return null
+  if (!hasFilters) {
+    return null
+  }
 
   return (
     <Tooltip>

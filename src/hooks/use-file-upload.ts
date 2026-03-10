@@ -1,65 +1,51 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { generateReactHelpers } from '@uploadthing/react'
 import { toast } from 'sonner'
-import { type ClientUploadedFileData, type FileRouter, type UploadFilesOptions } from 'uploadthing/types'
-import { ZodError } from 'zod'
 
-export type UploadedFile<T = unknown> = ClientUploadedFileData<T>
+export interface UploadedFile {
+  url: string
+  pathname: string
+  contentType: string | undefined
+}
 
-interface UseFileUploadOptions<T extends FileRouter = FileRouter>
-  extends Pick<UploadFilesOptions<T['editorUploader']>, 'headers' | 'skipPolling'> {
+interface UseFileUploadOptions {
   onUploadComplete?: (file: UploadedFile) => void
   onUploadError?: (error: unknown) => void
 }
 
-/**
- * Provides methods to upload files via UploadThing, track progress, and handle completion
- *
- * @see {@link https://docs.uploadthing.com|UploadThing Docs}
- */
-export const useFileUpload = <T extends FileRouter = FileRouter>({
-  onUploadComplete,
-  onUploadError,
-  headers,
-}: UseFileUploadOptions = {}) => {
+export const useFileUpload = ({ onUploadComplete, onUploadError }: UseFileUploadOptions = {}) => {
   const [uploadedFile, setUploadedFile] = useState<UploadedFile>()
   const [uploadingFile, setUploadingFile] = useState<File>()
   const [progress, setProgress] = useState<number>(0)
   const [isUploading, setIsUploading] = useState(false)
 
-  const { uploadFiles, useUploadThing } = useMemo(() => generateReactHelpers<T>(), [])
-
-  const uploadThing = useCallback(
+  const uploadFile = useCallback(
     async (file: File) => {
       setIsUploading(true)
       setUploadingFile(file)
+      setProgress(0)
 
       try {
-        const [uploaded] = await uploadFiles('editorUploader', {
-          headers,
-          files: [file],
-          onUploadProgress: ({ progress }) => {
-            setProgress(Math.min(progress, 100))
-          },
-        } as UploadFilesOptions<T['editorUploader']>)
+        const response = await fetch('/api/v1/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': file.type },
+          body: file,
+        })
+
+        if (!response.ok) throw new Error('Upload failed')
+
+        setProgress(100)
+        const uploaded = (await response.json()) as UploadedFile
 
         setUploadedFile(uploaded)
         onUploadComplete?.(uploaded)
 
         return uploaded
       } catch (error) {
-        const message =
-          error instanceof ZodError
-            ? error.issues.map(issue => issue.message).join('\n')
-            : error instanceof Error
-              ? error.message
-              : 'Something went wrong, please try again later.'
-
+        const message = error instanceof Error ? error.message : 'Something went wrong, please try again later.'
         toast.error(message)
-
         onUploadError?.(error)
       } finally {
         setProgress(0)
@@ -67,16 +53,14 @@ export const useFileUpload = <T extends FileRouter = FileRouter>({
         setUploadingFile(undefined)
       }
     },
-    [headers, onUploadComplete, onUploadError, uploadFiles]
+    [onUploadComplete, onUploadError]
   )
 
   return {
     isUploading,
     progress,
     uploadedFile,
-    uploadFile: uploadThing,
-    uploadFiles,
+    uploadFile,
     uploadingFile,
-    useUploadThing,
   }
 }

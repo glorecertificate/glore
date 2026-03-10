@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { toUnitLess } from '@platejs/basic-styles'
 import { FontSizePlugin } from '@platejs/basic-styles/react'
 import { MinusIcon, PlusIcon } from 'lucide-react'
-import { KEYS, type TElement } from 'platejs'
+import { KEYS } from 'platejs'
 import { useEditorPlugin, useEditorSelector } from 'platejs/react'
 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -34,9 +34,11 @@ export const FontSizeToolbarButton = () => {
       return toUnitLess(fontSize as string)
     }
 
-    const [block] = editor.api.block<TElement>() || []
+    const [block] = editor.api.block() || []
 
-    if (!block?.type) return DEFAULT_FONT_SIZE
+    if (!block?.type) {
+      return DEFAULT_FONT_SIZE
+    }
 
     return block.type in FONT_SIZE_MAP ? FONT_SIZE_MAP[block.type as keyof typeof FONT_SIZE_MAP] : DEFAULT_FONT_SIZE
   }, [])

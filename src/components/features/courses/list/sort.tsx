@@ -41,15 +41,21 @@ export const CourseListSort = memo(() => {
   }, [t, user.canEdit])
 
   const icon = useMemo(() => {
-    if (!sort) return <ChevronsUpDownIcon className="size-3.5" />
+    if (!sort) {
+      return <ChevronsUpDownIcon className="size-3.5" />
+    }
     const Icon = sortDirection === 'asc' ? ArrowUpIcon : ArrowDownIcon
     return <Icon className="size-3 text-muted-foreground" />
   }, [sortDirection, sort])
 
   const handleSortChange = useCallback(
     (type: CourseListSortType) => () => {
-      if (type === sort) setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-      if (!type || type !== sort) setSort(type)
+      if (type === sort) {
+        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+      }
+      if (!type || type !== sort) {
+        setSort(type)
+      }
       setOpen(true)
     },
     [setSortDirection, setSort, sort, sortDirection]
@@ -67,7 +73,7 @@ export const CourseListSort = memo(() => {
       <DropdownMenuTrigger asChild>
         <Button className="group h-9 gap-0 text-[13.5px] has-[>svg]:px-3" size="sm" variant="outline">
           <span className="mr-1.5">{t('sortBy')}</span>
-          {sort && <span className="mr-0.5 font-medium text-muted-foreground text-xs">{options[sort]}</span>}
+          {sort && <span className="mr-0.5 text-xs font-medium text-muted-foreground">{options[sort]}</span>}
           {icon}
         </Button>
       </DropdownMenuTrigger>

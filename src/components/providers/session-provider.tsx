@@ -7,5 +7,7 @@ export const SessionProvider = async ({ children }: React.PropsWithChildren) => 
   const org = await getCookie('org')
   const organizationId = org ? user.organizations.find(({ id }) => id === org)?.id : user.organizations[0]?.id
 
-  return <SessionContextProvider value={{ organizationId, user }}>{children}</SessionContextProvider>
+  // oxlint-disable-next-line
+  const ctxValue = { organizationId, user }
+  return <SessionContextProvider value={ctxValue}>{children}</SessionContextProvider>
 }

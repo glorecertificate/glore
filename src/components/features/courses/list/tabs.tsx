@@ -42,8 +42,12 @@ export const CourseListTabsTrigger = memo(
     const t = useTranslations('Courses')
 
     const archiveTooltip = useMemo(() => {
-      if (value !== 'archived') return null
-      if (count === 0) return t('archive')
+      if (value !== 'archived') {
+        return null
+      }
+      if (count === 0) {
+        return t('archive')
+      }
       return (
         <>
           {t('archive')}
@@ -52,7 +56,7 @@ export const CourseListTabsTrigger = memo(
       )
     }, [count, value, t])
 
-    if (value === 'archived')
+    if (value === 'archived') {
       return (
         <TabsTrigger className={cn('p-0', className)} value={value} {...props}>
           <Tooltip delayDuration={0}>
@@ -67,6 +71,7 @@ export const CourseListTabsTrigger = memo(
           </Tooltip>
         </TabsTrigger>
       )
+    }
 
     return (
       <TabsTrigger className={cn('rounded-lg', className)} count={count} size="sm" value={value} {...props}>

@@ -1,4 +1,4 @@
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { type IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -41,22 +41,22 @@ const spinnerVariants = cva('animate-spin', {
   variants: {
     size: {
       default: '',
-      xs: 'size-3',
-      sm: 'size-3.5',
-      md: 'size-4',
       lg: 'size-5',
+      md: 'size-4',
+      sm: 'size-3.5',
       xl: 'size-6',
+      xs: 'size-3',
     },
     speed: {
       default: 'duration-950',
+      fast: 'duration-700',
+      faster: 'duration-800',
       slow: 'duration-1100',
       slower: 'duration-1000',
-      faster: 'duration-800',
-      fast: 'duration-700',
     },
     variant: {
-      default: '',
       colored: '',
+      default: '',
     },
   },
 })

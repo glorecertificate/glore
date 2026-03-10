@@ -29,6 +29,6 @@ export const POST = async (request: NextRequest) => {
     if (error instanceof Error && error.name === 'AbortError') {
       return NextResponse.json({ error: 'Request aborted' }, { status: 499 })
     }
-    return NextResponse.json({ error: 'Failed to process AI request', details: error }, { status: 500 })
+    return NextResponse.json({ details: error, error: 'Failed to process AI request' }, { status: 500 })
   }
 }

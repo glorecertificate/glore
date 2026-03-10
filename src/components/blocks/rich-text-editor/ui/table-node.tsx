@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin, useBlockSelected } from '@platejs/selection/react'
@@ -14,7 +14,7 @@ import {
   useTableElement,
   useTableMergeState,
 } from '@platejs/table/react'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 import {
   ArrowDownIcon,
   ArrowLeftIcon,
@@ -87,11 +87,13 @@ export const TableElement = withHOC(TableProvider, ({ children, ...props }: Plat
 
   const isSelectingTable = useBlockSelected(props.element.id as string) as boolean
 
+  const tableStyle = useMemo(() => ({ paddingLeft: marginLeft }), [marginLeft])
+
   const content = (
     <PlateElement
       {...props}
       className={cn('overflow-x-auto py-5', hasControls && '-ml-2 *:data-[slot=block-selection]:left-2')}
-      style={{ paddingLeft: marginLeft }}
+      style={tableStyle}
     >
       <div className="group/table relative w-fit">
         <table
@@ -131,9 +133,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
       <PopoverAnchor asChild>{children}</PopoverAnchor>
       <PopoverContent asChild contentEditable={false} onOpenAutoFocus={e => e.preventDefault()} {...props}>
         <Toolbar
-          className={
-            'scrollbar-hide flex w-auto max-w-[80vw] flex-row overflow-x-auto rounded-md border bg-popover p-1 shadow-md print:hidden'
-          }
+          className="scrollbar-hide flex w-auto max-w-[80vw] flex-row overflow-x-auto rounded-md border bg-popover p-1 shadow-md print:hidden"
           contentEditable={false}
         >
           <ToolbarGroup>
@@ -276,30 +276,30 @@ const TableBordersDropdownMenuContent = (props: React.ComponentProps<typeof Drop
       <DropdownMenuGroup>
         <DropdownMenuCheckboxItem checked={hasTopBorder} onCheckedChange={getOnSelectTableBorder('top')}>
           <BorderTopIcon />
-          <div>{'Top Border'}</div>
+          <div>Top Border</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasRightBorder} onCheckedChange={getOnSelectTableBorder('right')}>
           <BorderRightIcon />
-          <div>{'Right Border'}</div>
+          <div>Right Border</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasBottomBorder} onCheckedChange={getOnSelectTableBorder('bottom')}>
           <BorderBottomIcon />
-          <div>{'Bottom Border'}</div>
+          <div>Bottom Border</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasLeftBorder} onCheckedChange={getOnSelectTableBorder('left')}>
           <BorderLeftIcon />
-          <div>{'Left Border'}</div>
+          <div>Left Border</div>
         </DropdownMenuCheckboxItem>
       </DropdownMenuGroup>
 
       <DropdownMenuGroup>
         <DropdownMenuCheckboxItem checked={hasNoBorders} onCheckedChange={getOnSelectTableBorder('none')}>
           <BorderNoneIcon />
-          <div>{'No Border'}</div>
+          <div>No Border</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasOuterBorders} onCheckedChange={getOnSelectTableBorder('outer')}>
           <BorderAllIcon />
-          <div>{'Outside Borders'}</div>
+          <div>Outside Borders</div>
         </DropdownMenuCheckboxItem>
       </DropdownMenuGroup>
     </DropdownMenuContent>
@@ -342,7 +342,7 @@ const ColorDropdownMenu = ({ children, tooltip }: { children: React.ReactNode; t
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-2" onClick={onClearColor}>
             <EraserIcon />
-            <span>{'Clear'}</span>
+            <span>Clear</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -359,10 +359,9 @@ export const TableRowElement = (props: PlateElementProps<TTableRowElement>) => {
   const hasControls = !(readOnly || isSelectionAreaVisible)
 
   const { handleRef, isDragging, previewRef } = useDraggable({
-    element,
-    type: element.type,
     canDropNode: ({ dragEntry, dropEntry }) =>
       PathApi.equals(PathApi.parent(dragEntry[1]), PathApi.parent(dropEntry[1])),
+    element,
     onDropHandler: (_, { dragItem }) => {
       const dragElement = (dragItem as { element: TElement }).element
 
@@ -370,16 +369,19 @@ export const TableRowElement = (props: PlateElementProps<TTableRowElement>) => {
         editor.tf.select(dragElement)
       }
     },
+    type: element.type,
   })
+
+  const rowAttributes = useMemo(
+    () => ({ ...props.attributes, 'data-selected': selected ? 'true' : undefined }),
+    [props.attributes, selected]
+  )
 
   return (
     <PlateElement
       {...props}
       as="tr"
-      attributes={{
-        ...props.attributes,
-        'data-selected': selected ? 'true' : undefined,
-      }}
+      attributes={rowAttributes}
       className={cn('group/row', isDragging && 'opacity-50')}
       ref={useComposedRef(props.ref as React.Ref<HTMLDivElement>, previewRef)}
     >
@@ -420,7 +422,9 @@ const RowDragHandle = ({ dragRef }: { dragRef: React.Ref<HTMLButtonElement> }) =
 const RowDropLine = () => {
   const { dropLine } = useDropLine()
 
-  if (!dropLine) return null
+  if (!dropLine) {
+    return null
+  }
 
   return (
     <div
@@ -437,7 +441,7 @@ export const TableCellElement = ({
 }) => {
   const { api } = useEditorPlugin(TablePlugin)
   const readOnly = useReadOnly()
-  const element = props.element
+  const { element } = props
 
   const rowId = useElementSelector(([node]) => node.id as string, [], {
     key: KEYS.tr,
@@ -453,36 +457,46 @@ export const TableCellElement = ({
     rowIndex,
   })
 
+  const cellAttributes = useMemo(
+    () => ({
+      ...props.attributes,
+      colSpan: api.table.getColSpan(element),
+      rowSpan: api.table.getRowSpan(element),
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [props.attributes, element, api.table]
+  )
+  const cellStyle = useMemo(
+    () =>
+      ({
+        '--cellBackground': element.background,
+        maxWidth: width || 240,
+        minWidth: width || 120,
+      }) as React.CSSProperties,
+    [element.background, width]
+  )
+  const innerDivStyle = useMemo(() => ({ minHeight }), [minHeight])
+
   return (
     <PlateElement
       {...props}
       as={isHeader ? 'th' : 'td'}
-      attributes={{
-        ...props.attributes,
-        colSpan: api.table.getColSpan(element),
-        rowSpan: api.table.getRowSpan(element),
-      }}
+      attributes={cellAttributes}
       className={cn(
         'h-full overflow-visible border-none bg-background p-0',
         element.background ? 'bg-(--cellBackground)' : 'bg-background',
         isHeader && 'text-left *:m-0',
         'before:size-full',
         selected && 'before:z-10 before:bg-brand/5',
-        "before:absolute before:box-border before:select-none before:content-['']",
+        "before:absolute before:box-border before:content-[''] before:select-none",
         borders.bottom?.size && 'before:border-b before:border-b-border',
         borders.right?.size && 'before:border-r before:border-r-border',
         borders.left?.size && 'before:border-l before:border-l-border',
         borders.top?.size && 'before:border-t before:border-t-border'
       )}
-      style={
-        {
-          '--cellBackground': element.background,
-          maxWidth: width || 240,
-          minWidth: width || 120,
-        } as React.CSSProperties
-      }
+      style={cellStyle}
     >
-      <div className="relative z-20 box-border h-full px-3 py-2" style={{ minHeight }}>
+      <div className="relative z-20 box-border h-full px-3 py-2" style={innerDivStyle}>
         {props.children}
       </div>
 
@@ -490,7 +504,7 @@ export const TableCellElement = ({
         <div
           className="group absolute top-0 size-full select-none"
           contentEditable={false}
-          suppressContentEditableWarning={true}
+          suppressContentEditableWarning
         >
           {!readOnly && (
             <>
@@ -518,7 +532,7 @@ export const TableCellElement = ({
                   className={cn(
                     'absolute top-0 z-30 h-full w-1 bg-ring',
                     'left-[-1.5px]',
-                    `fade-in hidden animate-in group-has-[[data-resizer-left]:hover]/table:block group-has-[[data-resizer-left][data-resizing="true"]]/table:block`
+                    `hidden animate-in fade-in group-has-[[data-resizer-left]:hover]/table:block group-has-[[data-resizer-left][data-resizing="true"]]/table:block`
                   )}
                 />
               )}
@@ -536,11 +550,12 @@ export const TableCellHeaderElement = (props: React.ComponentProps<typeof TableC
   <TableCellElement {...props} isHeader />
 )
 
-const columnResizeVariants = cva('fade-in hidden animate-in', {
+const columnResizeVariants = cva('hidden animate-in fade-in', {
   variants: {
     colIndex: {
       0: 'group-has-[[data-col="0"]:hover]/table:block group-has-[[data-col="0"][data-resizing="true"]]/table:block',
       1: 'group-has-[[data-col="1"]:hover]/table:block group-has-[[data-col="1"][data-resizing="true"]]/table:block',
+      10: 'group-has-[[data-col="10"]:hover]/table:block group-has-[[data-col="10"][data-resizing="true"]]/table:block',
       2: 'group-has-[[data-col="2"]:hover]/table:block group-has-[[data-col="2"][data-resizing="true"]]/table:block',
       3: 'group-has-[[data-col="3"]:hover]/table:block group-has-[[data-col="3"][data-resizing="true"]]/table:block',
       4: 'group-has-[[data-col="4"]:hover]/table:block group-has-[[data-col="4"][data-resizing="true"]]/table:block',
@@ -549,7 +564,6 @@ const columnResizeVariants = cva('fade-in hidden animate-in', {
       7: 'group-has-[[data-col="7"]:hover]/table:block group-has-[[data-col="7"][data-resizing="true"]]/table:block',
       8: 'group-has-[[data-col="8"]:hover]/table:block group-has-[[data-col="8"][data-resizing="true"]]/table:block',
       9: 'group-has-[[data-col="9"]:hover]/table:block group-has-[[data-col="9"][data-resizing="true"]]/table:block',
-      10: 'group-has-[[data-col="10"]:hover]/table:block group-has-[[data-col="10"][data-resizing="true"]]/table:block',
     },
   },
 })

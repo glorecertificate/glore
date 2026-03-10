@@ -8,8 +8,11 @@ export const TableElementStatic = ({ children, ...props }: SlateElementProps<TTa
   const { disableMarginLeft } = props.editor.getOptions(BaseTablePlugin)
   const marginLeft = disableMarginLeft ? 0 : props.element.marginLeft
 
+  // oxlint-disable-next-line
+  const tableStyle = { paddingLeft: marginLeft }
+
   return (
-    <SlateElement {...props} className="overflow-x-auto py-5" style={{ paddingLeft: marginLeft }}>
+    <SlateElement {...props} className="overflow-x-auto py-5" style={tableStyle}>
       <div className="group/table relative w-fit">
         <table className="mr-0 ml-px table h-px table-fixed border-collapse">
           <tbody className="min-w-full">{children}</tbody>
@@ -37,21 +40,32 @@ export const TableCellElementStatic = ({
   const { minHeight, width } = api.table.getCellSize({ element })
   const borders = api.table.getCellBorders({ element })
 
+  // oxlint-disable-next-line
+  const cellAttributes = {
+    ...props.attributes,
+    colSpan: api.table.getColSpan(element),
+    rowSpan: api.table.getRowSpan(element),
+  }
+  // oxlint-disable-next-line
+  const cellStyle = {
+    '--cellBackground': element.background,
+    maxWidth: width || 240,
+    minWidth: width || 120,
+  } as React.CSSProperties
+  // oxlint-disable-next-line
+  const innerDivStyle = { minHeight }
+
   return (
     <SlateElement
       {...props}
       as={isHeader ? 'th' : 'td'}
-      attributes={{
-        ...props.attributes,
-        colSpan: api.table.getColSpan(element),
-        rowSpan: api.table.getRowSpan(element),
-      }}
+      attributes={cellAttributes}
       className={cn(
         'h-full overflow-visible border-none bg-background p-0',
         element.background ? 'bg-(--cellBackground)' : 'bg-background',
         isHeader && 'text-left font-normal *:m-0',
         'before:size-full',
-        "before:absolute before:box-border before:select-none before:content-['']",
+        "before:absolute before:box-border before:content-[''] before:select-none",
         borders &&
           cn(
             borders.bottom?.size && 'before:border-b before:border-b-border',
@@ -60,15 +74,9 @@ export const TableCellElementStatic = ({
             borders.top?.size && 'before:border-t before:border-t-border'
           )
       )}
-      style={
-        {
-          '--cellBackground': element.background,
-          maxWidth: width || 240,
-          minWidth: width || 120,
-        } as React.CSSProperties
-      }
+      style={cellStyle}
     >
-      <div className="relative z-20 box-border h-full px-4 py-2" style={{ minHeight }}>
+      <div className="relative z-20 box-border h-full px-4 py-2" style={innerDivStyle}>
         {props.children}
       </div>
     </SlateElement>

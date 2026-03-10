@@ -8,7 +8,9 @@ export const GhostText = () => {
 
   const isSuggested = usePluginOption(CopilotPlugin, 'isSuggested', element.id as string) as boolean
 
-  if (!isSuggested) return null
+  if (!isSuggested) {
+    return null
+  }
 
   return <GhostTextContent />
 }

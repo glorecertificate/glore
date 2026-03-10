@@ -31,7 +31,9 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
     (groupValue: string) => {
       if (activeSkillGroups.includes(groupValue)) {
         if (activeSkillGroups.length <= 1) {
-          if (toastTime && Date.now() - toastTime < 2000) return
+          if (toastTime && Date.now() - toastTime < 2000) {
+            return
+          }
           toast.info(t('selectAtLeastOneGroup'))
           setToastTime(Date.now())
           return
@@ -48,20 +50,18 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
     setActiveSkillGroups(defaultSkillGroups)
   }, [defaultSkillGroups, setActiveSkillGroups])
 
-  if (!activeTypes.includes('skill')) return null
+  if (!activeTypes.includes('skill')) {
+    return null
+  }
 
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
-        <Button className="font-normal text-[13.5px]" variant="outline">
+        <Button className="text-[13.5px] font-normal" variant="outline">
           <span className="flex flex-1 items-center gap-1.5">
             {t('skillGroup')}
             <span className="text-[13px] text-muted-foreground/70">
-              {'('}
-              {activeSkillGroups.length}
-              {'/'}
-              {skillGroups.length}
-              {')'}
+              ({activeSkillGroups.length}/{skillGroups.length})
             </span>
           </span>
           <ChevronDownIcon className="size-3 text-muted-foreground" />

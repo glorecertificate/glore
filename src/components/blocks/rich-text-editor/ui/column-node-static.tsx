@@ -4,8 +4,11 @@ import { SlateElement, type SlateElementProps } from 'platejs/static'
 export const ColumnElementStatic = (props: SlateElementProps<TColumnElement>) => {
   const { width } = props.element
 
+  // oxlint-disable-next-line
+  const divStyle = { width: width ?? '100%' }
+
   return (
-    <div className="group/column relative" style={{ width: width ?? '100%' }}>
+    <div className="group/column relative" style={divStyle}>
       <SlateElement className="h-full px-2 pt-2 group-first/column:pl-0 group-last/column:pr-0" {...props}>
         <div className="relative h-full border border-transparent p-1.5">{props.children}</div>
       </SlateElement>

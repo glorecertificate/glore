@@ -13,6 +13,7 @@ import { Tabs } from '@/components/ui/tabs'
 import { useMetadata } from '@/hooks/use-metadata'
 
 const COURSE_SIDEBAR_WIDTH = '18rem'
+const sidebarStyle = { width: COURSE_SIDEBAR_WIDTH }
 
 export const CourseView = () => {
   const { course, hasAnyUpdates, language, setLanguage } = useCourse()
@@ -40,7 +41,7 @@ export const CourseView = () => {
     <Tabs className="pt-2" onValueChange={value => setLanguage(value as Locale)} value={language}>
       <CourseHeader />
       <div className="flex flex-col gap-2 pb-8 md:flex-row">
-        <CourseSidebar className="hidden md:block" style={{ width: COURSE_SIDEBAR_WIDTH }} />
+        <CourseSidebar className="hidden md:block" style={sidebarStyle} />
         <div className="flex grow flex-col">
           <CourseHeaderMobile className="sticky top-18 md:hidden" />
           <CourseContent />

@@ -3,7 +3,7 @@
 import { useMemo } from 'react'
 
 import * as TabsPrimitive from '@radix-ui/react-tabs'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
@@ -61,52 +61,27 @@ export const TabsTrigger = ({
 }
 
 const tabsTriggerVariants = cva(
-  `
-    group/tabs-trigger
-    leading-0 inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm whitespace-nowrap select-none
-    focus-visible:border-ring focus-visible:ring-2 focus-visible:outline-1
-    disabled:pointer-events-none disabled:opacity-50
-    data-[state=active]:pointer-events-none data-[state=active]:shadow-sm
-    [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4
-  `,
+  `group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm leading-0 whitespace-nowrap select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:pointer-events-none data-[state=active]:shadow-sm [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4`,
   {
     defaultVariants: {
-      variant: 'default',
       size: 'md',
+      variant: 'default',
     },
     variants: {
-      variant: {
-        default: `
-          text-muted-foreground/90 border
-          focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring
-          data-[state=active]:bg-background data-[state=active]:text-foreground
-          dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground
-        `,
-        brand: `
-          focus-visible:text-brand-foreground focus-visible:ring-brand/50 focus-visible:outline-brand
-          data-[state=active]:bg-brand
-          dark:data-[state=active]:bg-brand-accent
-        `,
-        'brand-secondary': `
-          focus-visible:ring-brand-secondary/50 focus-visible:outline-brand-secondary
-          data-[state=active]:border-brand-secondary-accent data-[state=active]:bg-brand-secondary data-[state=active]:text-brand-secondary-foreground
-          dark:data-[state=active]:bg-brand-secondary-accent
-        `,
-        'brand-tertiary': `
-          text-brand-tertiary-foreground
-          focus-visible:ring-brand-tertiary/50 focus-visible:outline-brand-tertiary
-          data-[state=active]:bg-brand-tertiary
-          dark:data-[state=active]:bg-brand-tertiary-accent
-        `,
+      effect: {
+        grayscale: 'data-[state=inactive]:grayscale-80 data-[state=inactive]:*:opacity-60',
+        'text-stroke': 'font-normal data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground',
       },
       size: {
         sm: 'gap-1 px-3 text-sm',
         md: 'px-4 text-sm',
         lg: 'px-6 py-3 text-lg',
       },
-      effect: {
-        grayscale: 'data-[state=inactive]:grayscale-80 data-[state=inactive]:*:opacity-60',
-        'text-stroke': 'font-normal data-[state=active]:text-stroke-0.5 data-[state=active]:text-stroke-foreground',
+      variant: {
+        default: `border text-muted-foreground/90 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring data-[state=active]:bg-background data-[state=active]:text-foreground dark:text-muted-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground`,
+        brand: `focus-visible:text-brand-foreground focus-visible:ring-brand/50 focus-visible:outline-brand data-[state=active]:bg-brand dark:data-[state=active]:bg-brand-accent`,
+        'brand-secondary': `focus-visible:ring-brand-secondary/50 focus-visible:outline-brand-secondary data-[state=active]:border-brand-secondary-accent data-[state=active]:bg-brand-secondary data-[state=active]:text-brand-secondary-foreground dark:data-[state=active]:bg-brand-secondary-accent`,
+        'brand-tertiary': `text-brand-tertiary-foreground focus-visible:ring-brand-tertiary/50 focus-visible:outline-brand-tertiary data-[state=active]:bg-brand-tertiary dark:data-[state=active]:bg-brand-tertiary-accent`,
       },
     },
   }
@@ -114,10 +89,15 @@ const tabsTriggerVariants = cva(
 
 export const tabsTriggerBadgeVariants = cva('text-stroke-0', {
   defaultVariants: {
-    variant: 'default',
     size: 'md',
+    variant: 'default',
   },
   variants: {
+    size: {
+      sm: 'text-[10px]',
+      md: 'text-[11px]',
+      lg: 'text-xs',
+    },
     variant: {
       default: 'text-muted-foreground/50 group-data-[state=active]/tabs-trigger:text-muted-foreground',
       brand: 'bg-brand-secondary text-brand-foreground',
@@ -126,11 +106,6 @@ export const tabsTriggerBadgeVariants = cva('text-stroke-0', {
       success: 'text-success-accent/50 group-data-[state=active]/tabs-trigger:text-success-accent',
       warning: 'text-warning-accent/50 group-data-[state=active]/tabs-trigger:text-warning-accent',
       destructive: 'text-destructive-accent/50 group-data-[state=active]/tabs-trigger:text-destructive-accent',
-    },
-    size: {
-      sm: 'text-[10px]',
-      md: 'text-[11px]',
-      lg: 'text-xs',
     },
   },
 })

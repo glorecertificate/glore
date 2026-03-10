@@ -17,7 +17,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useSession } from '@/hooks/use-session'
-import { localizeRecord } from '@/lib/i18n'
+import { type IntlRecord, localizeRecord } from '@/lib/i18n'
+import { type IconName } from '@/lib/types'
 import { cn, debounce } from '@/lib/utils'
 
 const MAX_TITLE_LENGTH = 100
@@ -29,12 +30,12 @@ export const CourseBreadcrumb = () => {
   const { course, languageStatus, language, editCourse, setCourse } = useCourse()
 
   const title = localizeRecord(course.title, language)
-  const description = localizeRecord(course.description, language) ?? ''
+  const description = course.description ? localizeRecord(course.description, language) : ''
   const [draftTitle, setDraftTitle] = useState(title)
   const [draftDescription, setDraftDescription] = useState(description)
   const [titleFocused, setTitleFocused] = useState(false)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
-  const canEdit = user.canEdit && !course.archived_at
+  const canEdit = user.canEdit && !course.archivedAt
 
   useEffect(() => {
     if (!titleFocused) {
@@ -53,7 +54,7 @@ export const CourseBreadcrumb = () => {
       debounce((value: string) => {
         setCourse(prev => ({
           ...prev,
-          title: { ...prev.title, [language]: value },
+          title: { ...prev.title, [language]: value } as IntlRecord,
         }))
       }, DEBOUNCE_DELAY),
     [language, setCourse]
@@ -64,7 +65,7 @@ export const CourseBreadcrumb = () => {
       debounce((value: string) => {
         setCourse(prev => ({
           ...prev,
-          description: { ...prev.description, [language]: value },
+          description: { ...prev.description, [language]: value } as IntlRecord,
         }))
       }, DEBOUNCE_DELAY),
     [language, setCourse]
@@ -102,7 +103,7 @@ export const CourseBreadcrumb = () => {
     }
     setCourse(prev => ({
       ...prev,
-      title: { ...prev.title, [language]: draftTitle },
+      title: { ...prev.title, [language]: draftTitle } as IntlRecord,
     }))
   }, [commitTitle, draftTitle, language, setCourse, title])
 
@@ -119,7 +120,7 @@ export const CourseBreadcrumb = () => {
     if (draftDescription.trim() === description) return
     setCourse(prev => ({
       ...prev,
-      description: { ...prev.description, [language]: draftDescription },
+      description: { ...prev.description, [language]: draftDescription } as IntlRecord,
     }))
   }, [commitDescription, draftDescription, description, language, setCourse])
 
@@ -135,7 +136,7 @@ export const CourseBreadcrumb = () => {
                 <IconPicker
                   categorized={false}
                   className="h-4 w-4 shrink-0 text-muted-foreground/80 hover:text-foreground! dark:text-foreground/80 dark:hover:text-foreground! [&>svg]:size-4.5!"
-                  defaultValue={course.icon}
+                  defaultValue={(course.icon ?? undefined) as IconName | undefined}
                   fallback={<Skeleton className="h-4 w-4 rounded-md bg-foreground/15" />}
                   onValueChange={icon => editCourse({ icon })}
                   size="text"
@@ -172,9 +173,9 @@ export const CourseBreadcrumb = () => {
           </>
         ) : (
           <>
-            <LucideIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon} />
+            {course.icon && <LucideIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon as IconName} />}
             {title}
-            {course.archived_at && <Badge size="sm">{t('archived')}</Badge>}
+            {course.archivedAt && <Badge size="sm">{t('archived')}</Badge>}
           </>
         )}
         <Popover>

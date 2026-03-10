@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn, random } from '@/lib/utils'
 
@@ -24,7 +24,9 @@ export const ProgressBarContext = createContext<ProgressBarContext | null>(null)
 
 export const useProgressBar = () => {
   const context = useContext(ProgressBarContext)
-  if (!context) throw new Error('useProgressBar must be used within a ProgressBarProvider')
+  if (!context) {
+    throw new Error('useProgressBar must be used within a ProgressBarProvider')
+  }
   return context
 }
 
@@ -62,29 +64,51 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
   }, [])
 
   const getNextIncrement = useCallback((current: number) => {
-    if (current < 20) return random(0.5, 1.5)
-    if (current < 45) return random(0.4, 1.2)
-    if (current < 70) return random(0.3, 0.9)
-    if (current < 90) return random(0.2, 0.6)
+    if (current < 20) {
+      return random(0.5, 1.5)
+    }
+    if (current < 45) {
+      return random(0.4, 1.2)
+    }
+    if (current < 70) {
+      return random(0.3, 0.9)
+    }
+    if (current < 90) {
+      return random(0.2, 0.6)
+    }
     return random(0.1, 0.3)
   }, [])
 
   const getNextDelay = useCallback((current: number) => {
     const pauseRoll = Math.random()
-    if (pauseRoll < 0.15) return random(500, 1200)
-    if (pauseRoll < 0.35) return random(250, 450)
-    if (current < 40) return random(90, 160)
-    if (current < 70) return random(120, 220)
-    if (current < 90) return random(150, 260)
+    if (pauseRoll < 0.15) {
+      return random(500, 1200)
+    }
+    if (pauseRoll < 0.35) {
+      return random(250, 450)
+    }
+    if (current < 40) {
+      return random(90, 160)
+    }
+    if (current < 70) {
+      return random(120, 220)
+    }
+    if (current < 90) {
+      return random(150, 260)
+    }
     return random(180, 320)
   }, [])
 
   const tick = useCallback(() => {
     progressTimer.current = null
-    if (stateRef.current !== 'in-progress') return
+    if (stateRef.current !== 'in-progress') {
+      return
+    }
 
-    const current = valueRef.current
-    if (current >= stallThresholdRef.current) return
+    const { current } = valueRef
+    if (current >= stallThresholdRef.current) {
+      return
+    }
 
     const nextValue = Math.min(stallThresholdRef.current, current + getNextIncrement(current))
     valueRef.current = nextValue
@@ -111,7 +135,7 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
     }
 
     const animateToFinish = () => {
-      const current = valueRef.current
+      const { current } = valueRef
 
       if (current >= 100) {
         return cancelCompletion()
@@ -189,13 +213,15 @@ export const ProgressBarProvider = (props: React.PropsWithChildren) => {
 }
 
 export interface ProgressBarProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>,
-    VariantProps<typeof progressBarVariants> {}
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>, VariantProps<typeof progressBarVariants> {}
 
 export const ProgressBar = ({ className, variant, ...props }: ProgressBarProps) => {
   const { state, value = 10 } = useProgressBar()
-  if (state === 'initial') return null
-  return <div className={cn(progressBarVariants({ variant }), className)} style={{ width: `${value}%` }} {...props} />
+  const barStyle = useMemo(() => ({ width: `${value}%` }), [value])
+  if (state === 'initial') {
+    return null
+  }
+  return <div className={cn(progressBarVariants({ variant }), className)} style={barStyle} {...props} />
 }
 
 export const progressBarVariants = cva('fixed z-50 h-1 transition-all duration-300 ease-in-out', {
@@ -205,14 +231,14 @@ export const progressBarVariants = cva('fixed z-50 h-1 transition-all duration-3
   variants: {
     variant: {
       default: 'bg-foreground/30',
+      destructive: 'bg-destructive',
       link: 'bg-link',
+      muted: 'bg-muted-foreground',
       primary: 'bg-brand',
       secondary: 'bg-brand-secondary',
-      tertiary: 'bg-brand-tertiary',
-      destructive: 'bg-destructive',
       success: 'bg-success',
+      tertiary: 'bg-brand-tertiary',
       transparent: 'bg-transparent',
-      muted: 'bg-muted-foreground',
       underlined: 'bg-foreground/30',
     },
   },

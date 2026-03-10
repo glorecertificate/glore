@@ -6,17 +6,14 @@ import {
   useResizeHandle,
   useResizeHandleState,
 } from '@platejs/resizable'
-import { cva, type VariantProps } from 'class-variance-authority'
+import { type VariantProps, cva } from 'class-variance-authority'
 
 import { cn } from '@/lib/utils'
 
 export const mediaResizeHandleVariants = cva(
   cn(
-    'top-0 flex w-6 select-none flex-col justify-center',
-    `
-      after:flex after:h-16 after:w-[3px] after:rounded-[6px] after:bg-ring after:opacity-0 after:content-['_']
-      group-hover:after:opacity-100
-    `
+    'top-0 flex w-6 flex-col justify-center select-none',
+    `after:flex after:h-16 after:w-[3px] after:rounded-[6px] after:bg-ring after:opacity-0 after:content-['_'] group-hover:after:opacity-100`
   ),
   {
     variants: {
@@ -47,7 +44,9 @@ export const ResizeHandle = ({
   const state = useResizeHandleState(options ?? {})
   const resizeHandle = useResizeHandle(state)
 
-  if (state.readOnly) return null
+  if (state.readOnly) {
+    return null
+  }
 
   return (
     <div

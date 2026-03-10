@@ -26,6 +26,7 @@ export const Draggable = ({
   defaultPosition,
   onRelease,
   storageKey,
+  style,
   ...props
 }: DraggableProps) => {
   const [isDragging, setIsDragging] = useState(false)
@@ -36,21 +37,38 @@ export const Draggable = ({
   const Component = useMemo(() => (asChild ? Slot : 'div'), [asChild])
 
   const initialPosition = useMemo(() => {
-    if (defaultPosition) return defaultPosition
+    if (defaultPosition) {
+      return defaultPosition
+    }
     if (storageKey) {
       const savedPosition = localStorage.getItem(storageKey)
-      if (savedPosition) return JSON.parse(savedPosition) as { x: number; y: number }
+      if (savedPosition) {
+        return JSON.parse(savedPosition) as { x: number; y: number }
+      }
     }
     return { x: 100, y: 100 }
   }, [defaultPosition, storageKey])
 
   const [position, setPosition] = useState(initialPosition)
 
+  const draggableStyle = useMemo(
+    () => ({
+      left: `${position.x}px`,
+      top: `${position.y}px`,
+      ...style,
+    }),
+    [position, style]
+  )
+
   const onMouseUp = useCallback(() => {
     setIsDragging(false)
     isDraggingRef.current = false
-    if (storageKey) localStorage.setItem(storageKey, JSON.stringify(position))
-    if (onRelease && ref.current) onRelease(position)
+    if (storageKey) {
+      localStorage.setItem(storageKey, JSON.stringify(position))
+    }
+    if (onRelease && ref.current) {
+      onRelease(position)
+    }
   }, [onRelease, position, storageKey])
 
   const onMouseDown = useCallback(
@@ -67,7 +85,9 @@ export const Draggable = ({
   )
 
   const onMouseMove = useCallback((e: MouseEvent) => {
-    if (!(isDraggingRef.current && ref.current)) return
+    if (!(isDraggingRef.current && ref.current)) {
+      return
+    }
     const element = ref.current
     const elementWidth = element.offsetWidth
     const elementHeight = element.offsetHeight
@@ -97,7 +117,9 @@ export const Draggable = ({
   }, [])
 
   const onTouchMove = useCallback((e: TouchEvent) => {
-    if (!(isDraggingRef.current && ref.current)) return
+    if (!(isDraggingRef.current && ref.current)) {
+      return
+    }
     const touch = e.touches[0]
     const element = ref.current
     const elementWidth = element.offsetWidth
@@ -133,10 +155,7 @@ export const Draggable = ({
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
       ref={ref}
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
+      style={draggableStyle}
       {...props}
     >
       {children}

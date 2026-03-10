@@ -44,6 +44,7 @@ export const ThemeSwitchButton = ({
         isLast && '-mr-px',
         className
       )}
+      aria-selected={active}
       data-orientation="horizontal"
       role="tab"
       title={active ? undefined : title}
@@ -57,7 +58,9 @@ export const ThemeSwitchButton = ({
     </Button>
   )
 
-  if (!tooltip || active) return content
+  if (!tooltip || active) {
+    return content
+  }
 
   return (
     <Tooltip>
@@ -81,21 +84,21 @@ export const ThemeSwitch = ({ className, defaultTheme, tooltip, ...props }: Them
 
   const items = [
     {
-      name: 'light',
       icon: SunIcon,
       label: t('light'),
+      name: 'light',
       title: t('lightTitle'),
     },
     {
-      name: 'dark',
       icon: MoonIcon,
       label: t('dark'),
+      name: 'dark',
       title: t('darkTitle'),
     },
     {
-      name: 'system',
       icon: MonitorIcon,
       label: t('system'),
+      name: 'system',
       title: t('systemTitle'),
     },
   ] as const

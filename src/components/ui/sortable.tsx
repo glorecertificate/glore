@@ -4,31 +4,31 @@ import { createContext, useCallback, useContext, useId, useLayoutEffect, useMemo
 
 import {
   type Announcements,
-  closestCenter,
-  closestCorners,
   DndContext,
   type DndContextProps,
   type DragEndEvent,
-  type DraggableAttributes,
-  type DraggableSyntheticListeners,
   DragOverlay,
   type DragStartEvent,
+  type DraggableAttributes,
+  type DraggableSyntheticListeners,
   type DropAnimation,
-  defaultDropAnimationSideEffects,
   KeyboardSensor,
   MouseSensor,
   type ScreenReaderInstructions,
   TouchSensor,
   type UniqueIdentifier,
+  closestCenter,
+  closestCorners,
+  defaultDropAnimationSideEffects,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
 import { restrictToHorizontalAxis, restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import {
-  arrayMove,
-  horizontalListSortingStrategy,
   SortableContext,
   type SortableContextProps,
+  arrayMove,
+  horizontalListSortingStrategy,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
@@ -41,11 +41,6 @@ import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { cn } from '@/lib/utils'
 
 const orientationConfig = {
-  vertical: {
-    modifiers: [restrictToVerticalAxis, restrictToParentElement],
-    strategy: verticalListSortingStrategy,
-    collisionDetection: closestCenter,
-  },
   horizontal: {
     modifiers: [restrictToHorizontalAxis, restrictToParentElement],
     strategy: horizontalListSortingStrategy,
@@ -55,6 +50,11 @@ const orientationConfig = {
     modifiers: [restrictToParentElement],
     strategy: undefined,
     collisionDetection: closestCorners,
+  },
+  vertical: {
+    modifiers: [restrictToVerticalAxis, restrictToParentElement],
+    strategy: verticalListSortingStrategy,
+    collisionDetection: closestCenter,
   },
 }
 
@@ -142,19 +142,26 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
 
   const items = useMemo(() => value.map(item => getItemValue(item)), [value, getItemValue])
 
-  const onDragStart = useCallback((event: DragStartEvent) => {
-    sortableProps.onDragStart?.(event)
+  const onDragStart = useCallback(
+    (event: DragStartEvent) => {
+      sortableProps.onDragStart?.(event)
 
-    if (event.activatorEvent.defaultPrevented) return
+      if (event.activatorEvent.defaultPrevented) {
+        return
+      }
 
-    setActiveId(event.active.id)
-  }, [])
+      setActiveId(event.active.id)
+    },
+    [sortableProps]
+  )
 
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
       sortableProps.onDragEnd?.(event)
 
-      if (event.activatorEvent.defaultPrevented) return
+      if (event.activatorEvent.defaultPrevented) {
+        return
+      }
 
       const { active, over } = event
       if (over && active.id !== over?.id) {
@@ -169,22 +176,42 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
       }
       setActiveId(null)
     },
-    [value, onValueChange, onMove, getItemValue]
+    [getItemValue, onMove, onValueChange, sortableProps, value]
   )
 
-  const onDragCancel = useCallback((event: DragEndEvent) => {
-    sortableProps.onDragCancel?.(event)
-
-    if (event.activatorEvent.defaultPrevented) return
-
-    setActiveId(null)
-  }, [])
+  const onDragCancel = useCallback(
+    (event: DragEndEvent) => {
+      sortableProps.onDragCancel?.(event)
+      if (event.activatorEvent.defaultPrevented) return
+      setActiveId(null)
+    },
+    [sortableProps]
+  )
 
   const announcements: Announcements = useMemo(
     () => ({
-      onDragStart({ active }) {
+      onDragCancel({ active }) {
+        const activeIndex = active.data.current?.sortable.index ?? 0
         const activeValue = active.id.toString()
-        return `Grabbed sortable item "${activeValue}". Current position is ${active.data.current?.sortable.index + 1} of ${value.length}. Use arrow keys to move, space to drop.`
+        return `Sorting cancelled. Sortable item "${activeValue}" returned to position ${activeIndex + 1} of ${value.length}.`
+      },
+      onDragEnd({ active, over }) {
+        const activeValue = active.id.toString()
+        if (over) {
+          const overIndex = over.data.current?.sortable.index ?? 0
+          return `Sortable item "${activeValue}" dropped at position ${overIndex + 1} of ${value.length}.`
+        }
+        return `Sortable item "${activeValue}" dropped. No changes were made.`
+      },
+      onDragMove({ active, over }) {
+        if (over) {
+          const overIndex = over.data.current?.sortable.index ?? 0
+          const activeIndex = active.data.current?.sortable.index ?? 0
+          const moveDirection = overIndex > activeIndex ? 'down' : 'up'
+          const activeValue = active.id.toString()
+          return `Sortable item "${activeValue}" is moving ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
+        }
+        return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
       },
       onDragOver({ active, over }) {
         if (over) {
@@ -196,28 +223,9 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
         }
         return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
       },
-      onDragEnd({ active, over }) {
+      onDragStart({ active }) {
         const activeValue = active.id.toString()
-        if (over) {
-          const overIndex = over.data.current?.sortable.index ?? 0
-          return `Sortable item "${activeValue}" dropped at position ${overIndex + 1} of ${value.length}.`
-        }
-        return `Sortable item "${activeValue}" dropped. No changes were made.`
-      },
-      onDragCancel({ active }) {
-        const activeIndex = active.data.current?.sortable.index ?? 0
-        const activeValue = active.id.toString()
-        return `Sorting cancelled. Sortable item "${activeValue}" returned to position ${activeIndex + 1} of ${value.length}.`
-      },
-      onDragMove({ active, over }) {
-        if (over) {
-          const overIndex = over.data.current?.sortable.index ?? 0
-          const activeIndex = active.data.current?.sortable.index ?? 0
-          const moveDirection = overIndex > activeIndex ? 'down' : 'up'
-          const activeValue = active.id.toString()
-          return `Sortable item "${activeValue}" is moving ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
-        }
-        return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
+        return `Grabbed sortable item "${activeValue}". Current position is ${active.data.current?.sortable.index + 1} of ${value.length}. Use arrow keys to move, space to drop.`
       },
     }),
     [value]
@@ -234,16 +242,25 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
     [orientation]
   )
 
+  const sortableAccessibility = useMemo(
+    () => ({
+      announcements,
+      screenReaderInstructions,
+      ...accessibility,
+    }),
+    [accessibility, announcements, screenReaderInstructions]
+  )
+
   const contextValue = useMemo(
     () => ({
+      activeId,
+      flatCursor,
+      getItemValue,
       id,
       items,
       modifiers: modifiers ?? config.modifiers,
-      strategy: strategy ?? config.strategy,
-      activeId,
       setActiveId,
-      getItemValue,
-      flatCursor,
+      strategy: strategy ?? config.strategy,
     }),
     [id, items, modifiers, strategy, config.modifiers, config.strategy, activeId, getItemValue, flatCursor]
   )
@@ -255,11 +272,7 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
         modifiers={modifiers ?? config.modifiers}
         sensors={sensors}
         {...sortableProps}
-        accessibility={{
-          announcements,
-          screenReaderInstructions,
-          ...accessibility,
-        }}
+        accessibility={sortableAccessibility}
         id={id}
         onDragCancel={onDragCancel}
         onDragEnd={onDragEnd}
@@ -286,7 +299,7 @@ export const SortableContent = (props: SortableContentProps) => {
   const ContentPrimitive = asChild ? Slot : 'div'
 
   return (
-    <SortableContentContext.Provider value={true}>
+    <SortableContentContext.Provider value>
       <SortableContext items={context.items} strategy={strategyProp ?? context.strategy}>
         {withoutSlot ? (
           children
@@ -343,14 +356,18 @@ export const SortableItem = (props: SortableItemProps) => {
   const context = useSortableContext(ITEM_NAME)
   const id = useId()
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
-    id: value,
     disabled,
+    id: value,
   })
 
   const composedRef = useComposedRefs(ref, node => {
-    if (disabled) return
+    if (disabled) {
+      return
+    }
     setNodeRef(node)
-    if (asHandle) setActivatorNodeRef(node)
+    if (asHandle) {
+      setActivatorNodeRef(node)
+    }
   })
 
   const composedStyle = useMemo<React.CSSProperties>(
@@ -364,12 +381,12 @@ export const SortableItem = (props: SortableItemProps) => {
 
   const itemContext = useMemo<SortableItemContextValue>(
     () => ({
-      id,
       attributes,
+      disabled,
+      id,
+      isDragging,
       listeners,
       setActivatorNodeRef,
-      isDragging,
-      disabled,
     }),
     [id, attributes, listeners, setActivatorNodeRef, isDragging, disabled]
   )
@@ -387,14 +404,14 @@ export const SortableItem = (props: SortableItemProps) => {
         {...(asHandle && !disabled ? attributes : {})}
         {...(asHandle && !disabled ? listeners : {})}
         className={cn(
-          'focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1',
+          'focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden',
           {
-            'touch-none select-none': asHandle,
             'cursor-default': context.flatCursor,
-            'data-dragging:cursor-grabbing': !context.flatCursor,
             'cursor-grab': !isDragging && asHandle && !context.flatCursor,
+            'data-dragging:cursor-grabbing': !context.flatCursor,
             'opacity-50': isDragging,
             'pointer-events-none opacity-50': disabled,
+            'touch-none select-none': asHandle,
           },
           className
         )}
@@ -418,7 +435,9 @@ export const SortableItemHandle = (props: SortableItemHandleProps) => {
   const isDisabled = disabled ?? itemContext.disabled
 
   const composedRef = useComposedRefs(ref, node => {
-    if (!isDisabled) return
+    if (!isDisabled) {
+      return
+    }
     itemContext.setActivatorNodeRef(node)
   })
 
@@ -472,7 +491,9 @@ export const SortableOverlay = (props: SortableOverlayProps) => {
 
   const container = containerProp ?? (mounted ? globalThis.document?.body : null)
 
-  if (!container) return null
+  if (!container) {
+    return null
+  }
 
   return createPortal(
     <DragOverlay
@@ -481,7 +502,7 @@ export const SortableOverlay = (props: SortableOverlayProps) => {
       modifiers={context.modifiers}
       {...overlayProps}
     >
-      <SortableOverlayContext.Provider value={true}>
+      <SortableOverlayContext.Provider value>
         {context.activeId ? (typeof children === 'function' ? children({ value: context.activeId }) : children) : null}
       </SortableOverlayContext.Provider>
     </DragOverlay>,

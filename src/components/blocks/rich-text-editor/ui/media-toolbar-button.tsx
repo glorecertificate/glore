@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { PlaceholderPlugin } from '@platejs/media/react'
 import { AudioLinesIcon, FileUpIcon, FilmIcon, ImageIcon, LinkIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { isUrl, KEYS } from 'platejs'
+import { KEYS, isUrl } from 'platejs'
 import { useEditorRef } from 'platejs/react'
 import { toast } from 'sonner'
 import { useFilePicker } from 'use-file-picker'
@@ -151,7 +151,9 @@ const MediaUrlDialogContent = ({
   const inputRef = useRef<HTMLInputElement>(null)
 
   const embedMedia = useCallback(() => {
-    if (!isUrl(url)) return toast.error(t('invalidUrl'))
+    if (!isUrl(url)) {
+      return toast.error(t('invalidUrl'))
+    }
 
     setOpen(false)
 
@@ -186,7 +188,9 @@ const MediaUrlDialogContent = ({
         id="url"
         onChange={e => setUrl(e.target.value)}
         onKeyDown={e => {
-          if (e.key === 'Enter') embedMedia()
+          if (e.key === 'Enter') {
+            embedMedia()
+          }
         }}
         placeholder={t('url')}
         ref={inputRef}

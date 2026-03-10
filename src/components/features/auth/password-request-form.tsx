@@ -10,12 +10,11 @@ import { z } from 'zod'
 
 import { resetPassword } from '@/actions/auth'
 import { findUserEmail } from '@/actions/user'
-import { type AuthView } from '@/components/features/auth/auth-flow'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useCookies } from '@/hooks/use-cookies'
-import { type Enum } from '@/lib/types'
+import { AuthView } from '@/lib/types'
 import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
@@ -26,7 +25,7 @@ export const PasswordRequestForm = ({
 }: {
   setErrored: (hasErrors: boolean) => void
   setUsername: (name?: string) => void
-  setView: (view: Enum<AuthView>) => void
+  setView: (view: AuthView) => void
   username?: string
 }) => {
   const cookies = useCookies()
@@ -50,10 +49,10 @@ export const PasswordRequestForm = ({
   )
 
   const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
     defaultValues: {
       username: username ?? '',
     },
+    resolver: zodResolver(formSchema),
   })
 
   const disabled = defaultFormDisabled(form)
@@ -61,16 +60,23 @@ export const PasswordRequestForm = ({
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       const username = schema.username.trim()
-      const { data, error: emailError } = await findUserEmail(username)
+      const { data: emailData, error: emailError } = await findUserEmail(username)
 
       if (emailError) {
-        emailError.code === 'PGRST116'
-          ? form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
-          : toast.error(t('networkError'))
+        if (emailError.code === 'PGRST116') {
+          form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+        } else {
+          toast.error(t('networkError'))
+        }
         return
       }
 
-      const { error } = await resetPassword(data.email, { redirectTo: window.location.origin })
+      if (!emailData) {
+        form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+        return
+      }
+
+      const { error } = await resetPassword(emailData.email, { redirectTo: window.location.origin })
       if (error) {
         toast.error(t('networkError'))
         console.error('Reset password error:', error)
@@ -81,7 +87,7 @@ export const PasswordRequestForm = ({
       setUsername(username)
       cookies.set('loginUser', username)
     },
-    [form, setUsername, setView, t, cookies.set, cookies]
+    [cookies, form, setUsername, setView, t]
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0

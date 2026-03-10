@@ -5,7 +5,7 @@ import { createContext, useCallback, useEffect, useMemo, useRef, useState } from
 import { type Locale, type Messages, NextIntlClientProvider } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
-import { type IntlRecord, i18n, type LocaleItem, localizeRecord } from '@/lib/i18n'
+import { type IntlRecord, type LocaleItem, i18n, localizeRecord } from '@/lib/i18n'
 
 interface I18nContextValue {
   locale?: Locale
@@ -30,13 +30,15 @@ const useI18nContext = (value: I18nContextValue) => {
       i18n.localeItems.map(item => {
         const label = messageStore[locale]?.Intl.Languages?.[item.value] ?? item.label
         const displayLabel = i18n.titleCaseLocales.includes(locale) ? label : label.toLowerCase()
-        return { ...item, label, displayLabel }
+        return { ...item, displayLabel, label }
       }),
     [locale, messageStore]
   )
 
   const setMessages = useCallback(async (locale: Locale) => {
-    if (messageStoreRef.current[locale]) return
+    if (messageStoreRef.current[locale]) {
+      return
+    }
     const { default: messages } = (await import(`~/messages/${locale}`)) as { default: Messages }
     setMessagesStore(prev => ({ ...prev, [locale]: messages }))
   }, [])
@@ -55,12 +57,12 @@ const useI18nContext = (value: I18nContextValue) => {
     [locale]
   )
 
-  // biome-ignore lint/correctness: Run on mount only
   useEffect(() => {
     void setMessages(locale)
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return { locale, localeItems, messages, timeZone, setLocale, localize }
+  return { locale, localeItems, localize, messages, setLocale, timeZone }
 }
 
 export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>, 'messages' | 'timeZone'> | null>(null)
@@ -68,8 +70,10 @@ export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>,
 export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<I18nContextValue>) => {
   const { locale, messages, timeZone, ...providerValue } = useI18nContext(value)
 
+  const ctxValue = useMemo(() => ({ ...providerValue, locale }), [providerValue, locale])
+
   return (
-    <I18nContext.Provider value={{ ...providerValue, locale }} {...props}>
+    <I18nContext.Provider value={ctxValue} {...props}>
       <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
         {children}
       </NextIntlClientProvider>

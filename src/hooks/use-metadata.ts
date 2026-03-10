@@ -4,49 +4,60 @@ import { useCallback, useEffect } from 'react'
 
 import { useLocale } from 'next-intl'
 
-import metadata from '~/config/metadata.json'
-
 import { usePWA } from '@/hooks/use-pwa'
 import { i18n } from '@/lib/i18n'
 import { MANIFEST_URL } from '@/lib/metadata'
+import metadata from '~/config/metadata.json'
 
 const metaSelectors = {
-  title: ['[property="og:title"]', '[name="twitter:title"]'],
+  alternateLocale: '[property="og:locale:alternate"]',
   description: [
     '[name="description"]',
     '[property="og:description"]',
     '[name="twitter:description"]',
     '[itemprop="description"]',
   ],
-  locale: '[property="og:locale"]',
-  alternateLocale: '[property="og:locale:alternate"]',
   image: ['[property="og:image"]', '[name="twitter:image"]', '[itemprop="image"]'],
+  locale: '[property="og:locale"]',
   manifest: '[rel="manifest"]',
+  title: ['[property="og:title"]', '[name="twitter:title"]'],
 }
 
 const getMetaContent = (selector: keyof typeof metaSelectors) => {
-  if (typeof document === 'undefined') return
+  if (typeof document === 'undefined') {
+    return
+  }
   const selectors = metaSelectors[selector]
   for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
-    if (element) return element.content
+    if (element) {
+      return element.content
+    }
   }
 }
 
 const updateMetaContent = (selector: keyof typeof metaSelectors, value: string) => {
-  if (typeof document === 'undefined') return
+  if (typeof document === 'undefined') {
+    return
+  }
   const selectors = metaSelectors[selector]
   for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
-    if (element) element.content = value
+    if (element) {
+      element.content = value
+    }
   }
 }
 
 const updateLinkSelector = (selector: string | string[], value: string) => {
-  if (typeof document === 'undefined') return
+  if (typeof document === 'undefined') {
+    return
+  }
   for (const attribute of Array.isArray(selector) ? selector : [selector]) {
     const element = document.querySelector<HTMLLinkElement>(attribute)
-    if (element) element.href = value
+    if (element) {
+      element.href = value
+    }
   }
 }
 
@@ -105,12 +116,20 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
   const setImage = useCallback((image: string) => updateMetaContent('image', image), [])
 
   useEffect(() => {
-    if (!(options.title || options.description || options.image)) return
+    if (!(options.title || options.description || options.image)) {
+      return
+    }
 
     const timeout = setTimeout(() => {
-      if (options.title) setTitle(options.title)
-      if (options.description) setDescription(options.description)
-      if (options.image) setImage(options.image)
+      if (options.title) {
+        setTitle(options.title)
+      }
+      if (options.description) {
+        setDescription(options.description)
+      }
+      if (options.image) {
+        setImage(options.image)
+      }
     }, delay)
 
     return () => {

@@ -12,6 +12,7 @@ import {
   COURSE_LIST_PARAMS,
   COURSE_LIST_SORTS,
   COURSE_LIST_TABS,
+  COURSE_LIST_VIEWER_TABS,
   type CourseListSortDirection,
   type CourseListSortType,
   type CourseListTab,
@@ -120,16 +121,16 @@ export const useCourseListFilters = () => {
 export const useCourseListTabs = () => {
   const { user } = useSession()
   const { activeLanguages } = useCourseListLanguages()
+  const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
-  const tabs = useMemo(
-    () =>
-      user.canEdit
-        ? (activeLanguages ?? []).length > 1
-          ? COURSE_LIST_EDITOR_TABS
-          : COURSE_LIST_EDITOR_TABS.filter(tab => tab !== 'partial')
-        : COURSE_LIST_LEARNER_TABS,
-    [activeLanguages, user.canEdit]
-  )
+  const tabs = useMemo(() => {
+    if (user.canEdit)
+      return (activeLanguages ?? []).length > 1
+        ? COURSE_LIST_EDITOR_TABS
+        : COURSE_LIST_EDITOR_TABS.filter(tab => tab !== 'partial')
+    if (isViewer) return COURSE_LIST_VIEWER_TABS
+    return COURSE_LIST_LEARNER_TABS
+  }, [activeLanguages, isViewer, user.canEdit])
 
   return { tabs }
 }
@@ -137,6 +138,7 @@ export const useCourseListTabs = () => {
 export const useCourseList = () => {
   const { user } = useSession()
   const { courses } = useCourses()
+  const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
   const courseList = useMemo<Record<CamelCase<CourseListTab>, Course[]>>(() => {
     const list: Record<CamelCase<CourseListTab>, Course[]> = {
@@ -151,23 +153,38 @@ export const useCourseList = () => {
     }
 
     for (const course of courses) {
-      if (course.archivedAt) {
-        list.archived.push(course)
-        continue
-      }
-
-      list.all.push(course)
-
       if (user.canEdit) {
+        if (course.archivedAt) {
+          list.archived.push(course)
+          continue
+        }
+        list.all.push(course)
         list[course.publicationStatus]?.push(course)
         continue
       }
+
+      if (course.publicationStatus !== 'published') continue
+      if (user.isLearner && course.type === 'skill') continue
+      if (user.isVolunteer && course.type === 'learner') continue
+
+      list.all.push(course)
+
+      if (isViewer) continue
 
       list[course.progressStatus].push(course)
     }
 
     return list
-  }, [courses, user.canEdit])
+  }, [
+    courses,
+    isViewer,
+    user.canEdit,
+    user.isLearner,
+    user.isOrgAdmin,
+    user.isRepresentative,
+    user.isTutor,
+    user.isVolunteer,
+  ])
 
   return { courseList }
 }

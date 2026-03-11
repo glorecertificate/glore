@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
+import { Progress } from '@/components/ui/progress'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOverlay } from '@/components/ui/sortable'
 import {
@@ -254,6 +255,8 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
   const t = useTranslations('Courses')
 
   const currentLessonId = course.lessons[step - 1]?.id
+  const isStudent = user.isLearner || user.isVolunteer
+  const progressColor = course.progress === 100 ? 'success' : 'default'
 
   const indicators = useMemo(
     () => ({
@@ -283,6 +286,12 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
 
   return (
     <div {...props}>
+      {isStudent && (
+        <div className="flex items-center gap-2 py-2 pr-2 pl-3">
+          <Progress className="h-1.5" color={progressColor} value={course.progress} />
+          <span className="shrink-0 text-xs text-muted-foreground">{course.progress}%</span>
+        </div>
+      )}
       <Sortable getItemValue={lesson => lesson.id!} onValueChange={onReorder} value={course.lessons}>
         <Stepper
           className="sticky top-30 flex items-center gap-10 space-y-2 pr-2"

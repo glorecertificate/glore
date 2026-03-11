@@ -917,6 +917,7 @@
     "noDescriptionAvailable": "No description available.",
     "noLessonsCompleted": "No lessons completed",
     "noLessonsCreated": "No lessons available",
+    "enrolledStudents": "{count} enrolled",
     "noTitle": "Missing title",
     "noTitleProvided": "You must provide a title to save the course",
     "notCreated": "Not created",
@@ -1184,6 +1185,12 @@
     "requestCertificateMessage": "Create your certificate and wait for a member of your organization to approve it.",
     "requestCertificateTitle": "You can now request your GloRe certificate!",
     "reviewedBy": "Reviewed by",
+    "noCertificates": "You don't have any certificates yet",
+    "statusApproved": "Approved",
+    "statusChangesRequested": "Changes requested",
+    "statusDraft": "Draft",
+    "statusInReview": "In review",
+    "statusSubmitted": "Submitted",
     "title": "Your certificate"
   },
   "Users": {

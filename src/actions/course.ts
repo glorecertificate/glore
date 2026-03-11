@@ -136,7 +136,8 @@ export const getCourse = async (slug: string, { cache = true }: { cache?: boolea
 
 export const listCourses = async ({ cache = true }: { cache?: boolean } = {}) => {
   const authUser = await getAuthUser()
-  const userId = authUser?.id
+  const isEditor = authUser?.role === 'admin' || authUser?.isEditor
+  const userId = isEditor ? undefined : authUser?.id
   if (!cache) {
     return await safeQuery(async () => {
       const result = await db.query.courses.findMany({ with: buildCourseWith(userId) })

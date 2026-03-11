@@ -10,5 +10,6 @@ case "$(cat "$1")" in
     ./node_modules/.bin/commitlint --edit "$1"
     ./node_modules/.bin/oxlint
     ./node_modules/.bin/oxfmt --check
+    ./node_modules/.bin/knip
     ;;
 esac

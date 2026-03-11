@@ -3,7 +3,7 @@ import { type Locale } from 'next-intl'
 import { type Theme } from '@/components/providers/theme-provider'
 import { i18n } from '@/lib/i18n'
 
-export const COOKIE_PREFIX = process.env.NEXT_PUBLIC_COOKIE_PREFIX ?? ''
+export const COOKIE_PREFIX = process.env.COOKIE_PREFIX ?? process.env.NEXT_PUBLIC_COOKIE_PREFIX ?? ''
 
 export const COOKIE_OPTIONS = {
   httpOnly: true,

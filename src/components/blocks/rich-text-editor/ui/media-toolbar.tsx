@@ -63,7 +63,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
 
       <PopoverContent className="w-auto p-1" onOpenAutoFocus={e => e.preventDefault()}>
         {isEditing ? (
-          <div className="flex w-[330px] flex-col">
+          <div className="flex w-82.5 flex-col">
             <div className="flex items-center">
               <div className="flex items-center pr-1 pl-2 text-muted-foreground">
                 <LinkIcon className="size-4" />

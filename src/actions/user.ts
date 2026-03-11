@@ -12,17 +12,12 @@ import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { parseUser } from '@/db/queries/user'
+import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
-
-const userWith = {
-  memberships: { with: { organization: true } },
-  regions: { columns: { id: true, name: true, icon: true } },
-} as const
 
 const fetchUser = async (id: string) => {
   'use cache'

@@ -20,8 +20,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   memberships: many(memberships),
   regions: many(regions),
   contributions: many(contributions),
-  certificates: many(certificates),
-  teamInvitations: many(teamInvitations),
+  certificates: many(certificates, { relationName: 'certificateUser' }),
+  reviewedCertificates: many(certificates, { relationName: 'certificateReviewer' }),
+  teamInvitations: many(teamInvitations, { relationName: 'invitee' }),
+  invitedTeamInvitations: many(teamInvitations, { relationName: 'inviter' }),
   userCourses: many(userCourses),
   userLessons: many(userLessons),
   userAnswers: many(userAnswers),
@@ -131,9 +133,13 @@ export const userEvaluationsRelations = relations(userEvaluations, ({ one }) => 
 
 // Certificates
 export const certificatesRelations = relations(certificates, ({ one, many }) => ({
-  user: one(users, { fields: [certificates.userId], references: [users.id] }),
+  user: one(users, { fields: [certificates.userId], references: [users.id], relationName: 'certificateUser' }),
   organization: one(organizations, { fields: [certificates.organizationId], references: [organizations.id] }),
-  reviewer: one(users, { fields: [certificates.reviewerId], references: [users.id] }),
+  reviewer: one(users, {
+    fields: [certificates.reviewerId],
+    references: [users.id],
+    relationName: 'certificateReviewer',
+  }),
   skills: many(certificateSkills),
 }))
 
@@ -144,8 +150,8 @@ export const certificateSkillsRelations = relations(certificateSkills, ({ one })
 
 // Team Invitations
 export const teamInvitationsRelations = relations(teamInvitations, ({ one }) => ({
-  user: one(users, { fields: [teamInvitations.userId], references: [users.id] }),
-  inviter: one(users, { fields: [teamInvitations.invitedBy], references: [users.id] }),
+  user: one(users, { fields: [teamInvitations.userId], references: [users.id], relationName: 'invitee' }),
+  inviter: one(users, { fields: [teamInvitations.invitedBy], references: [users.id], relationName: 'inviter' }),
 }))
 
 // Docs

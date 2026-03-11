@@ -1,4 +1,4 @@
-import { integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { membershipRoleEnum } from './enums'
 import { type IntlJsonbNullable } from './helpers'
@@ -29,7 +29,7 @@ export const organizations = pgTable('organizations', {
 
 export const memberships = pgTable('memberships', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   organizationId: integer()

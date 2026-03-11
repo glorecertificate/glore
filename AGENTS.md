@@ -16,26 +16,39 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 ## Commands
 
-| Command             | Description                                    |
-| ------------------- | ---------------------------------------------- |
-| `pnpm install`      | Install dependencies                           |
-| `pnpm dev`          | Start Next.js dev server on port 3030          |
-| `pnpm build`        | Production build                               |
-| `pnpm start`        | Start production server on port 3030           |
-| `pnpm email`        | Preview email templates on port 3031           |
-| `pnpm lint`         | Lint with oxlint                               |
-| `pnpm lint:fix`     | Auto-fix lint issues                           |
-| `pnpm format`       | Format with oxfmt                              |
-| `pnpm format:check` | Check formatting without writing               |
-| `pnpm check`        | Type-check + lint + format check (in sequence) |
-| `pnpm knip`         | Find unused files, exports, and dependencies   |
-| `pnpm size-limit`   | Bundle size check                              |
-| `pnpm typecheck`    | Type-check only (`tsc --noEmit`)               |
-| `pnpm typegen`      | Generate env types → `env.d.ts`                |
-| `pnpm analyze`      | Next.js bundle analyzer                        |
-| `pnpm release`      | Create a release (release-it)                  |
-| `pnpm skills`       | Install agent skills from `skills-lock.json`   |
-| `pnpm db <command>` | Run drizzle-kit commands                       |
+| Command               | Description                                    |
+| --------------------- | ---------------------------------------------- |
+| `pnpm install`        | Install dependencies                           |
+| `pnpm dev`            | Start Next.js dev server on port 3030          |
+| `pnpm build`          | Production build                               |
+| `pnpm start`          | Start production server on port 3030           |
+| `pnpm email`          | Preview email templates on port 3031           |
+| `pnpm lint`           | Lint with oxlint                               |
+| `pnpm lint:fix`       | Auto-fix lint issues                           |
+| `pnpm format`         | Format with oxfmt                              |
+| `pnpm format:check`   | Check formatting without writing               |
+| `pnpm check`          | Type-check + lint + format check (in sequence) |
+| `pnpm knip`           | Find unused files, exports, and dependencies   |
+| `pnpm size-limit`     | Bundle size check                              |
+| `pnpm typecheck`      | Type-check only (`tsc --noEmit`)               |
+| `pnpm typegen`        | Generate env types → `env.d.ts`                |
+| `pnpm analyze`        | Next.js bundle analyzer                        |
+| `pnpm release`        | Create a release (release-it)                  |
+| `pnpm skills`         | Install agent skills from `skills-lock.json`   |
+| `pnpm auth <command>` | Run Better Auth CLI commands                   |
+| `pnpm db <command>`   | Run drizzle-kit commands                       |
+
+**Better Auth CLI subcommands** (`pnpm auth <subcommand>`):
+
+| Subcommand | Description                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| `generate` | Generate the Drizzle schema required by Better Auth (outputs to `src/db/schema/` via `--output`) |
+| `migrate`  | Apply the Better Auth schema directly to the database (Kysely adapter only)                      |
+| `init`     | Initialize Better Auth in the project (`--framework`, `--plugins`, `--database`)                 |
+| `info`     | Print diagnostic info: version, config, detected ORM/frameworks (use `--json` to share)          |
+| `secret`   | Generate a new `BETTER_AUTH_SECRET` value                                                        |
+
+All subcommands accept `--config <path>` to point at a non-default auth config file and `--yes` to skip confirmation prompts.
 
 **Pre-commit validation:** Run `pnpm check` before committing. This runs `tsc --noEmit`, oxlint, and `oxfmt --check` in sequence.
 
@@ -91,17 +104,23 @@ skills help                           # Show all CLI commands
 
 ### Installed skills
 
-| Skill                         | Source                      | Purpose                                             | When to use                                                                         |
-| ----------------------------- | --------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `frontend-design`             | `anthropics/skills`         | Production-grade UI design with bold aesthetics     | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-auth`                   | `neondatabase/ai-rules`     | Neon Auth setup and configuration                   | When modifying auth flows, routes, or session management                            |
-| `neon-drizzle`                | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                   | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`               | `neondatabase/agent-skills` | Neon Serverless Postgres best practices             | When working with database queries, branching, or Neon platform features            |
-| `shadcn`                      | `shadcn/ui`                 | Add and manage shadcn/ui components                 | When adding, updating, or inspecting shadcn/ui components                           |
-| `vercel-react-best-practices` | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`       | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review          | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `agents-md`                   | custom                      | Update AGENTS.md via `/agents-md <instruction>`     | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
-| `start`                       | custom                      | Start the next implementation cycle                 | When picking and implementing the next backlog feature                              |
+| Skill                                      | Source                      | Purpose                                                             | When to use                                                                                |
+| ------------------------------------------ | --------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `better-auth-best-practices`               | `better-auth/skills`        | Better Auth server/client, adapters, sessions, and plugins          | When configuring Better Auth, adding plugins, or setting up auth infrastructure            |
+| `better-auth-security-best-practices`      | `better-auth/skills`        | Rate limiting, CSRF, trusted origins, session/cookie security       | When hardening auth security, preventing brute force, or securing a Better Auth deployment |
+| `create-auth-skill`                        | `better-auth/skills`        | Scaffold auth with Better Auth — adapters, routes, OAuth, UI        | When setting up authentication from scratch in a new or existing project                   |
+| `email-and-password-best-practices`        | `better-auth/skills`        | Email verification, password reset, policies, and hashing           | When implementing email/password auth, password reset flows, or credential security        |
+| `frontend-design`                          | `anthropics/skills`         | Production-grade UI design with bold aesthetics                     | **ALWAYS** when building/styling UI components, pages, layouts                             |
+| `neon-auth`                                | `neondatabase/ai-rules`     | Neon Auth setup and configuration                                   | When modifying Neon Auth flows, routes, or session management                              |
+| `neon-drizzle`                             | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                                   | When creating/modifying schemas, migrations, or database configuration                     |
+| `neon-postgres`                            | `neondatabase/agent-skills` | Neon Serverless Postgres best practices                             | When working with database queries, branching, or Neon platform features                   |
+| `organization-best-practices`              | `better-auth/skills`        | Multi-tenant orgs, member/invite management, custom roles, and RBAC | When working with organizations, team management, member roles, or access control          |
+| `shadcn`                                   | `shadcn/ui`                 | Add and manage shadcn/ui components                                 | When adding, updating, or inspecting shadcn/ui components                                  |
+| `two-factor-authentication-best-practices` | `better-auth/skills`        | TOTP, OTP via email/SMS, backup codes, and 2FA sign-in flows        | When adding MFA, TOTP, 2FA, or multi-factor auth flows                                     |
+| `vercel-react-best-practices`              | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js                 | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages        |
+| `web-design-guidelines`                    | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review                          | When reviewing UI accessibility, UX patterns, or design compliance                         |
+| `agents-md`                                | custom                      | Update AGENTS.md via `/agents-md <instruction>`                     | When adding rules, syncing with codebase, or performing major AGENTS.md updates            |
+| `start`                                    | custom                      | Start the next implementation cycle                                 | When picking and implementing the next backlog feature                                     |
 
 ### Skill enforcement rules
 
@@ -110,11 +129,16 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 1. **Any UI work** → Read `frontend-design/SKILL.md` AND `vercel-react-best-practices/SKILL.md`. Use shadcn/ui components from `components.json` (new-york style). Composable component patterns are mandatory.
 2. **Any React/Next.js code** → Read `vercel-react-best-practices/SKILL.md`. Apply the 58 rules by priority (CRITICAL → HIGH → MEDIUM → LOW).
 3. **Database/schema changes** → Read `neon-drizzle/SKILL.md` and `neon-postgres/SKILL.md`.
-4. **Auth modifications** → Read `neon-auth/SKILL.md`.
-5. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
-6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
-7. **Adding/updating shadcn/ui components** → Read `shadcn/SKILL.md`. Use the `shadcn` MCP server for registry lookups and install commands.
-8. **Starting a new implementation cycle** → Read `start/SKILL.md`. Follow the protocol for picking and implementing the next feature.
+4. **Auth setup or configuration** → Read `better-auth-best-practices/SKILL.md`. For Neon Auth integration also read `neon-auth/SKILL.md`.
+5. **Auth security hardening** → Read `better-auth-security-best-practices/SKILL.md`.
+6. **Email/password auth flows** → Read `email-and-password-best-practices/SKILL.md`.
+7. **Organization, RBAC, or team management** → Read `organization-best-practices/SKILL.md`.
+8. **2FA or MFA flows** → Read `two-factor-authentication-best-practices/SKILL.md`.
+9. **Scaffolding auth from scratch** → Read `create-auth-skill/SKILL.md`.
+10. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
+11. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
+12. **Adding/updating shadcn/ui components** → Read `shadcn/SKILL.md`. Use the `shadcn` MCP server for registry lookups and install commands.
+13. **Starting a new implementation cycle** → Read `start/SKILL.md`. Follow the protocol for picking and implementing the next feature.
 
 ### Creating custom skills
 
@@ -130,16 +154,22 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
 ```
 .agents/
 └── skills/
-    ├── .gitignore              # Ignores all folders; add !<name> to track custom skills
-    ├── agents-md/              # AGENTS.md update skill (custom, git-tracked)
-    ├── frontend-design/        # UI design patterns (external)
-    ├── neon-auth/              # Auth setup guides (external)
-    ├── neon-drizzle/           # Drizzle ORM guides (external)
-    ├── neon-postgres/          # Postgres best practices (external)
-    ├── shadcn/                 # shadcn/ui component manager (external)
-    ├── start/                  # Implementation cycle workflow (custom, git-tracked)
-    ├── vercel-react-best-practices/  # React/Next.js performance (external)
-    └── web-design-guidelines/  # Web Interface Guidelines (external)
+    ├── .gitignore                                # Ignores all folders; add !<name> to track custom skills
+    ├── agents-md/                                # AGENTS.md update skill (custom, git-tracked)
+    ├── better-auth-best-practices/               # Better Auth configuration (external)
+    ├── better-auth-security-best-practices/      # Better Auth security hardening (external)
+    ├── create-auth-skill/                        # Auth scaffolding with Better Auth (external)
+    ├── email-and-password-best-practices/        # Email/password auth flows (external)
+    ├── frontend-design/                          # UI design patterns (external)
+    ├── neon-auth/                                # Neon Auth setup guides (external)
+    ├── neon-drizzle/                             # Drizzle ORM guides (external)
+    ├── neon-postgres/                            # Postgres best practices (external)
+    ├── organization-best-practices/              # Organizations and RBAC (external)
+    ├── shadcn/                                   # shadcn/ui component manager (external)
+    ├── start/                                    # Implementation cycle workflow (custom, git-tracked)
+    ├── two-factor-authentication-best-practices/ # 2FA/MFA flows (external)
+    ├── vercel-react-best-practices/              # React/Next.js performance (external)
+    └── web-design-guidelines/                    # Web Interface Guidelines (external)
 ```
 
 ---
@@ -148,14 +178,16 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
 
 Configured in `.vscode/mcp.json`. Agents MUST start and run MCP servers when they can streamline a task — prefer MCP tool calls over manual file reads or CLI workarounds when a relevant server is available.
 
-| Server   | Command                 | Purpose                                        | When to use                                                            |
-| -------- | ----------------------- | ---------------------------------------------- | ---------------------------------------------------------------------- |
-| `knip`   | `npx -y @knip/mcp`      | Detect unused files, exports, and dependencies | When auditing dead code, cleaning up files, or removing unused exports |
-| `shadcn` | `npx shadcn@latest mcp` | Add and manage shadcn/ui components            | When adding, updating, or inspecting shadcn/ui components              |
+| Server        | Command                   | Purpose                                        | When to use                                                                      |
+| ------------- | ------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------- |
+| `better-auth` | `npx @better-auth/mcp -y` | Better Auth schema, config, and plugin tooling | When generating schemas, inspecting auth config, or managing Better Auth plugins |
+| `knip`        | `npx @knip/mcp -y`        | Detect unused files, exports, and dependencies | When auditing dead code, cleaning up files, or removing unused exports           |
+| `shadcn`      | `npx shadcn mcp`          | Add and manage shadcn/ui components            | When adding, updating, or inspecting shadcn/ui components                        |
 
 ### MCP enforcement rules
 
 - **Always prefer MCP over manual CLI** — if an MCP server covers a task, use it instead of running raw commands
+- **`better-auth` MCP:** Use when generating schemas, inspecting auth config, or listing available plugins — prefer over running `pnpm auth` manually
 - **`knip` MCP:** Run before removing files or exports — let it identify what is actually unused rather than guessing
 - **`shadcn` MCP:** Run when adding UI components — provides accurate registry lookups, component docs, and install commands
 
@@ -977,6 +1009,23 @@ const double = (n: number) => {
 - **Use array shorthand**: `string[]` not `Array<string>`
 - **Omit inferrable types**: `const x = 5` not `const x: number = 5`
 
+### Inline prop types
+
+- **Define non-exported interfaces inline** in the function signature — never declare a separate interface just to use as props for a non-exported component or function:
+
+```typescript
+// ✅ Correct
+export const CertificateCard = ({ certificate }: { certificate: Certificate }) => {}
+
+// ❌ Wrong — unnecessary named interface
+interface CertificateCardProps {
+  certificate: Certificate
+}
+export const CertificateCard = ({ certificate }: CertificateCardProps) => {}
+```
+
+- **Exception:** A named `interface` is appropriate when it is exported, reused in multiple places, or complex enough that inlining would hurt readability.
+
 ### Iteration
 
 - **Use `for..of`** for loops (both `unicorn/no-for-loop` and `unicorn/no-array-for-each` are enforced)
@@ -998,6 +1047,18 @@ const double = (n: number) => {
 - **Use composable patterns** — build complex UIs from small, focused components
 - **Use CVA** (`class-variance-authority`) for component variants
 - **Use `cn()`** from `@/lib/utils` for conditional class merging
+
+### Tailwind class usage
+
+- **Always use canonical Tailwind classes** — avoid arbitrary bracket values unless no canonical class exists:
+
+```typescript
+// ✅ Correct
+<div className="min-w-45 pl-12.5" />
+
+// ❌ Wrong — use canonical classes instead
+<div className="min-w-[180px] pl-[50px]" />
+```
 
 ### Module organization
 

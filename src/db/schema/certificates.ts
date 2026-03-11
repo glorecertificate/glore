@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { courses } from './courses'
 import { certificateStatusEnum } from './enums'
@@ -8,7 +8,7 @@ import { users } from './users'
 export const certificates = pgTable('certificates', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   handle: text().notNull(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   organizationId: integer()
@@ -21,7 +21,7 @@ export const certificates = pgTable('certificates', {
   activityLocation: text().notNull(),
   activityDescription: text().notNull(),
   organizationRating: integer().notNull(),
-  reviewerId: uuid().references(() => users.id),
+  reviewerId: text().references(() => users.id),
   reviewerComment: text(),
   status: certificateStatusEnum().notNull().default('draft'),
   isDefault: boolean().notNull().default(false),

@@ -1,4 +1,4 @@
-import { integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { courseTypeEnum } from './enums'
 import { type IntlJsonb, type IntlJsonbNullable } from './helpers'
@@ -14,7 +14,7 @@ export const courses = pgTable('courses', {
   icon: text(),
   languages: text().array(),
   skillGroupId: integer().references(() => skillGroups.id),
-  creatorId: uuid()
+  creatorId: text()
     .notNull()
     .references(() => users.id),
   sortOrder: integer(),
@@ -46,7 +46,7 @@ export const contributions = pgTable('contributions', {
   lessonId: integer()
     .notNull()
     .references(() => lessons.id),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),

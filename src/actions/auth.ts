@@ -2,30 +2,23 @@
 
 import 'server-only'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { revalidateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { cache } from 'react'
 
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT } from '@/lib/constants'
 
-const fetchAuthUser = async () => {
-  'use cache'
-  cacheTag(CacheTag.AuthUser)
-
+const fetchAuthUser = cache(async () => {
   const session = await auth.api.getSession({ headers: await headers() })
   return session?.user ?? null
-}
+})
 
-export const login = async (credentials: { email: string; password: string }) => {
+export const login = async (body: { email: string; password: string }) => {
   try {
-    const result = await auth.api.signInEmail({
-      body: {
-        email: credentials.email,
-        password: credentials.password,
-      },
-    })
+    const result = await auth.api.signInEmail({ body })
     if (!result?.user) {
       return {
         data: { user: null, session: null },
@@ -48,7 +41,7 @@ export const logout = async () => {
   revalidateTag(CacheTag.AuthUserStatus, 'max')
 }
 
-export const getAuthUser = async () => await fetchAuthUser()
+export const getAuthUser = fetchAuthUser
 
 export const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -75,7 +68,7 @@ export const setAuthPassword = async (newPassword: string) => {
 
 export const resetPassword = async (email: string, _options?: { redirectTo?: string }) => {
   try {
-    await auth.api.resetPassword({
+    await auth.api.requestPasswordReset({
       body: {
         email,
         redirectTo: _options?.redirectTo ?? `${process.env.APP_URL}/login`,

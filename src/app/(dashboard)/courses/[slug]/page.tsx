@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
+import { getCookie } from '@/actions/cookies'
 import { enrollCourse, getCourse } from '@/actions/course'
 import { getCurrentUser } from '@/actions/user'
 import { CourseBreadcrumb } from '@/components/features/courses/editor/breadcrumb'
@@ -37,9 +38,12 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   const language = languageParam ?? (await getLocale())
 
   const user = await getCurrentUser()
+  const orgId = await getCookie('org')
+  const orgRole = user.organizations.find(({ id }) => id === orgId)?.role ?? null
+  const isViewer = !user.canEdit && (orgRole === 'admin' || orgRole === 'representative' || orgRole === 'tutor')
 
   let step = stepParam
-  if (!user.canEdit) {
+  if (!user.canEdit && !isViewer) {
     const max = course.lessons.findIndex(lesson => !lesson.completed)
     if (max !== -1 && step - 1 > max) {
       step = max + 1
@@ -66,7 +70,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
     redirect(`/courses/${slug}?${params.toString()}`)
   }
 
-  return { course, language, step, user }
+  return { course, isViewer, language, step, user }
 }
 
 export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
@@ -82,9 +86,9 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
 }
 
 export default async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, language, step, user } = await resolvePageData(props)
+  const { course, isViewer, language, step, user } = await resolvePageData(props)
 
-  if (!course.enrolled && !user.canEdit) {
+  if (!course.enrolled && !user.canEdit && !isViewer) {
     await enrollCourse(course.id, language)
   }
 

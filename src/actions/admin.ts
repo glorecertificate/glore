@@ -13,7 +13,7 @@ import { getTranslations } from 'next-intl/server'
 import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { parseUser } from '@/db/queries/user'
+import { parseUser, userWith } from '@/db/queries/user'
 import { teamInvitations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
@@ -21,11 +21,6 @@ import { JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
 const INVITATION_EXPIRY_DAYS = 7
-
-const userWith = {
-  memberships: { with: { organization: true } },
-  regions: { columns: { id: true, name: true, icon: true } },
-} as const
 
 const fetchTeamMembers = async () => {
   'use cache'

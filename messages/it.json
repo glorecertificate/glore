@@ -916,6 +916,7 @@
     "noDescriptionAvailable": "Nessuna descrizione disponibile.",
     "noLessonsCompleted": "Nessuna lezione completata",
     "noLessonsCreated": "Nessuna lezione disponibile",
+    "enrolledStudents": "{count} iscritti",
     "noTitle": "Titolo mancante",
     "noTitleProvided": "È necessario fornire un titolo per salvare il corso",
     "notCreated": "Non creato",
@@ -1184,6 +1185,12 @@
     "requestCertificateMessage": "Crea il tuo certificato e attendi che un membro della tua organizzazione lo approvi.",
     "requestCertificateTitle": "Ora puoi richiedere il tuo certificato glore!",
     "reviewedBy": "Recensione da",
+    "noCertificates": "Non hai ancora nessun certificato",
+    "statusApproved": "Approvato",
+    "statusChangesRequested": "Modifiche richieste",
+    "statusDraft": "Bozza",
+    "statusInReview": "In revisione",
+    "statusSubmitted": "Inviato",
     "title": "Il tuo certificato"
   },
   "Users": {

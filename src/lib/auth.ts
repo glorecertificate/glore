@@ -1,21 +1,13 @@
+import 'server-only'
+
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { nextCookies } from 'better-auth/next-js'
 import { admin, username } from 'better-auth/plugins'
-import { createTransport } from 'nodemailer'
 
 import { db } from '@/db/client'
 import * as schema from '@/db/schema'
-
-const transporter = createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: Number(process.env.SMTP_PORT) === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-})
+import { sendMail } from '@/lib/email'
 
 export const auth = betterAuth({
   appName: 'GloRe Certificate',
@@ -29,8 +21,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     async sendResetPassword({ user, url }) {
-      await transporter.sendMail({
-        from: process.env.SMTP_SENDER,
+      await sendMail({
         to: user.email,
         subject: 'Reset your password — GloRe Certificate',
         html: `<p>Click the link below to reset your password:</p><p><a href="${url}">${url}</a></p>`,
@@ -58,6 +49,21 @@ export const auth = betterAuth({
     },
     changeEmail: {
       enabled: true,
+      async sendChangeEmailVerification({
+        user,
+        newEmail,
+        url,
+      }: {
+        user: { name: string }
+        newEmail: string
+        url: string
+      }) {
+        await sendMail({
+          to: newEmail,
+          subject: 'Verify your new email — GloRe Certificate',
+          html: `<p>Hi ${user.name},</p><p>Click the link below to verify your new email address:</p><p><a href="${url}">${url}</a></p>`,
+        })
+      },
     },
   },
   session: {

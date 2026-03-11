@@ -2,10 +2,6 @@ import 'server-only'
 
 import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
-import { eq } from 'drizzle-orm'
-
-import { db } from '@/db/client'
-import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { APP_ROOT, AUTH_ROOT, JOIN_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 
@@ -33,11 +29,7 @@ export const proxy: NextProxy = async request => {
       return NextResponse.redirect(new URL(APP_ROOT, request.url))
     }
 
-    const profile = await db.query.users.findFirst({
-      columns: { onboardedAt: true },
-      where: eq(users.id, session.user.id),
-    })
-    const onboardingComplete = !!profile?.onboardedAt
+    const onboardingComplete = !!session.user.onboardedAt
     const isOnboardingPath = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
 
     if (!(onboardingComplete || isOnboardingPath)) {

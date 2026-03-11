@@ -33,11 +33,13 @@ export const CourseFooter = () => {
   const { course, currentLesson, next, previous, setCourse } = useCourse()
   const { user } = useSession()
   const [saving, setSaving] = useState(false)
+  const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
   const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
   const canProceed = useMemo(() => {
+    if (isViewer) return true
     switch (currentLesson.type) {
       case 'reading':
         return true
@@ -50,7 +52,7 @@ export const CourseFooter = () => {
       default:
         return false
     }
-  }, [currentLesson])
+  }, [currentLesson, isViewer])
 
   const nextTooltip = useMemo(() => {
     if (currentLesson.type && !canProceed) {
@@ -59,7 +61,7 @@ export const CourseFooter = () => {
   }, [canProceed, currentLesson.type, t])
 
   const handleAdvance = useCallback(async () => {
-    if (!user.canEdit && currentLesson.id && !currentLesson.completed) {
+    if (!user.canEdit && !isViewer && currentLesson.id && !currentLesson.completed) {
       setSaving(true)
       try {
         if (currentLesson.type === 'evaluations' && currentLesson.evaluations?.length) {
@@ -85,7 +87,7 @@ export const CourseFooter = () => {
       }
     }
     next()
-  }, [course.slug, currentLesson, next, setCourse, user.canEdit])
+  }, [course.slug, currentLesson, isViewer, next, setCourse, user.canEdit])
 
   const completedCount = course.lessons.filter(({ completed }) => completed).length
   const completedTitle =
@@ -107,7 +109,7 @@ export const CourseFooter = () => {
       )}
 
       {isLast ? (
-        user.canEdit ? null : canProceed ? (
+        user.canEdit || isViewer ? null : canProceed ? (
           <Dialog>
             <DialogTrigger asChild>
               {currentLesson.completed ? null : (

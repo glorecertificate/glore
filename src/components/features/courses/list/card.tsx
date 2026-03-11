@@ -2,7 +2,7 @@
 
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon } from 'lucide-react'
+import { BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon, UsersIcon } from 'lucide-react'
 import { type Locale, useFormatter, useTranslations } from 'next-intl'
 
 import { CourseCardActions } from '@/components/features/courses/list/card-actions'
@@ -127,10 +127,11 @@ export const CourseListCard = memo(
 
     const actionLabel = useMemo(() => {
       if (user.canEdit) return t('editCourse')
+      if (user.isOrgAdmin || user.isRepresentative || user.isTutor) return t('viewCourse')
       if (!course.enrolled) return t('startCourse')
       if (course.completed) return t('reviewCourse')
       return t('continueCourse')
-    }, [course.completed, course.enrolled, t, user.canEdit])
+    }, [course.completed, course.enrolled, t, user.canEdit, user.isOrgAdmin, user.isRepresentative, user.isTutor])
 
     const handleRemove = useCallback(() => setIsRemoving(true), [])
 
@@ -295,6 +296,12 @@ export const CourseListCard = memo(
                     </HoverCardContent>
                   </HoverCard>
                 </div>
+              </div>
+            )}
+            {user.canEdit && course.enrollmentCount > 0 && (
+              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
+                <UsersIcon className="size-3.5 text-muted-foreground" />
+                {t('enrolledStudents', { count: course.enrollmentCount })}
               </div>
             )}
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">

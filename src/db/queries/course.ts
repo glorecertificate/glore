@@ -63,6 +63,7 @@ export const parseCourse = (course: CourseWithRelations) => {
     languages,
     lessons,
     enrolled: course.userCourses.length > 0,
+    enrollmentCount: course.userCourses.length,
     progress,
     progressStatus,
     completed: progress === 100,

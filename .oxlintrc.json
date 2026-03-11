@@ -7,22 +7,22 @@
     "perf": "error",
     "restriction": "allow",
     "style": "error",
-    "suspicious": "error",
+    "suspicious": "error"
   },
   "env": {
     "browser": true,
     "node": true,
     "shared-node-browser": true,
-    "es2024": true,
+    "es2024": true
   },
   "options": {
     "typeAware": true,
-    "typeCheck": true,
+    "typeCheck": true
   },
   "plugins": ["import", "jsdoc", "jsx-a11y", "nextjs", "node", "promise", "react", "react-perf"],
   "settings": {
     "next": {
-      "rootDir": ".",
+      "rootDir": "."
     },
     "jsdoc": {
       "augmentsExtendsReplacesDocs": false,
@@ -32,8 +32,8 @@
       "ignoreReplacesDocs": true,
       "implementsReplacesDocs": false,
       "overrideReplacesDocs": true,
-      "tagNamePreference": {},
-    },
+      "tagNamePreference": {}
+    }
   },
   "rules": {
     "curly": ["error", "multi-line"],
@@ -43,8 +43,8 @@
     "sort-imports": [
       "error",
       {
-        "ignoreDeclarationSort": true,
-      },
+        "ignoreDeclarationSort": true
+      }
     ],
     "eslint/arrow-body-style": ["error", "as-needed"],
     "eslint/eqeqeq": "error",
@@ -60,8 +60,8 @@
     "eslint/no-console": [
       "warn",
       {
-        "allow": ["info", "error", "warn"],
-      },
+        "allow": ["info", "error", "warn"]
+      }
     ],
     "eslint/no-const-assign": "error",
     "eslint/no-continue": "off",
@@ -92,10 +92,10 @@
         "patterns": [
           {
             "group": ["../**"],
-            "message": "Parent imports are not allowed. Use @/ path aliases instead.",
-          },
-        ],
-      },
+            "message": "Parent imports are not allowed. Use @/ path aliases instead."
+          }
+        ]
+      }
     ],
     "eslint/no-return-await": "error",
     "eslint/no-script-url": "error",
@@ -111,8 +111,8 @@
         "argsIgnorePattern": "^_",
         "ignoreRestSiblings": true,
         "vars": "all",
-        "varsIgnorePattern": "^_",
-      },
+        "varsIgnorePattern": "^_"
+      }
     ],
     "eslint/no-useless-catch": "error",
     "eslint/no-useless-concat": "error",
@@ -205,8 +205,8 @@
     "typescript/array-type": [
       "error",
       {
-        "default": "array",
-      },
+        "default": "array"
+      }
     ],
     "typescript/ban-ts-comment": [
       "error",
@@ -214,16 +214,16 @@
         "ts-check": false,
         "ts-expect-error": "allow-with-description",
         "ts-ignore": true,
-        "ts-nocheck": true,
-      },
+        "ts-nocheck": true
+      }
     ],
     "typescript/consistent-type-definitions": ["error", "interface"],
     "typescript/consistent-type-imports": [
       "error",
       {
         "fixStyle": "inline-type-imports",
-        "prefer": "type-imports",
-      },
+        "prefer": "type-imports"
+      }
     ],
     "typescript/no-empty-interface": "warn",
     "typescript/no-explicit-any": "warn",
@@ -240,8 +240,8 @@
       "error",
       {
         "case": "kebabCase",
-        "ignore": ["^\\$"],
-      },
+        "ignore": ["^\\$"]
+      }
     ],
     "unicorn/new-for-builtins": "error",
     "unicorn/no-array-for-each": "error",
@@ -262,26 +262,26 @@
     "unicorn/prefer-string-trim-start-end": "warn",
     "unicorn/prefer-structured-clone": "warn",
     "unicorn/prefer-type-error": "warn",
-    "unicorn/throw-new-error": "error",
+    "unicorn/throw-new-error": "error"
   },
   "overrides": [
     {
       "files": ["src/components/ui/*.tsx", "src/db/*.ts", "src/lib/auth.ts"],
       "rules": {
-        "import/no-namespace": "off",
-      },
+        "import/no-namespace": "off"
+      }
     },
     {
       "files": ["src/app/**/layout.tsx", "src/app/**/page.tsx"],
       "rules": {
-        "react-perf/jsx-no-new-object-as-prop": "off",
-      },
+        "react-perf/jsx-no-new-object-as-prop": "off"
+      }
     },
     {
       "files": ["src/components/ui/**/*.tsx", "src/components/blocks/**/*.tsx"],
       "rules": {
-        "nextjs/no-img-element": "off",
-      },
-    },
-  ],
+        "nextjs/no-img-element": "off"
+      }
+    }
+  ]
 }

@@ -1,12 +1,24 @@
 {
   "servers": {
+    "better-auth": {
+      "command": "npx",
+      "args": ["@better-auth/mcp", "-y"],
+      "type": "stdio"
+    },
     "knip": {
       "command": "npx",
-      "args": ["-y", "@knip/mcp"]
+      "args": ["@knip/mcp", "-y"],
+      "type": "stdio"
+    },
+    "neondatabase/mcp-server-neon": {
+      "type": "http",
+      "url": "https://mcp.neon.tech/sse"
     },
     "shadcn": {
       "command": "npx",
-      "args": ["shadcn@latest", "mcp"]
+      "args": ["shadcn", "mcp"],
+      "type": "stdio"
     }
-  }
+  },
+  "inputs": []
 }

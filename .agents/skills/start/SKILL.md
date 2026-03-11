@@ -15,12 +15,13 @@ Check for a `.gitignore` file in the skill folder (`.agents/skills/start/`):
 
 - `SPEC.md` and `ROADMAP.md` are **private** — git-ignored and not tracked in the repository.
 - They must be shared with team members out-of-band (e.g., shared drive, internal wiki, or direct file handoff).
-- If either file is **missing**, create it now using the canonical template below, then proceed to Step 1.
+- If either file is **missing**, create it now in `.agents/skills/start/` using the canonical template below, then proceed to Step 1.
 
 **If `.gitignore` is absent:**
 
 - `SPEC.md` and `ROADMAP.md` are **tracked in the repository** — visible to all contributors via version control.
-- No special handling required.
+- Since they are tracked, they must stay **at the root of the repository** for easy access and visibility.
+- If either file is **missing**, create it now **at the root of the repository** using the canonical template below, then proceed to Step 1.
 
 ### Canonical templates
 
@@ -91,7 +92,7 @@ If `ROADMAP.md` is missing, create it with:
 
 1. Fill in `SPEC.md` with the full app description
 2. Add features to the **Backlog** below (ordered by priority, top = first)
-3. Open Copilot Chat → run `.github/prompts/start.prompt.md` (click the Play button)
+3. Run `/start` to pick the next feature and implement it
 4. The agent picks the top backlog item, plans it, implements it, and asks for your review
 5. Reply `"approve"` to move to the next feature, or request changes
 
@@ -135,8 +136,8 @@ After creating any missing files, continue to Step 1.
 Read these files in order:
 
 1. `AGENTS.md` — coding conventions, architecture, enforced patterns
-2. [`SPEC.md`](./SPEC.md) — what the app does and what the business rules are
-3. [`ROADMAP.md`](./ROADMAP.md) — current feature status and decisions log
+2. `SPEC.md` or `.agents/skills/start/SPEC.md` — what the app does and what the business rules are
+3. `ROADMAP.md` or `.agents/skills/start/ROADMAP.md` — current feature status and decisions log
 
 If `SPEC.md` is empty or only contains the template placeholder text, stop immediately and say:
 

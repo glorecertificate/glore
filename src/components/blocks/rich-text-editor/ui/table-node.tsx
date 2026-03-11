@@ -264,7 +264,7 @@ const TableBordersDropdownMenuContent = (props: React.ComponentProps<typeof Drop
   return (
     <DropdownMenuContent
       align="start"
-      className="min-w-[220px]"
+      className="min-w-55"
       onCloseAutoFocus={e => {
         e.preventDefault()
         editor.tf.focus()
@@ -463,7 +463,6 @@ export const TableCellElement = ({
       colSpan: api.table.getColSpan(element),
       rowSpan: api.table.getRowSpan(element),
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [props.attributes, element, api.table]
   )
   const cellStyle = useMemo(

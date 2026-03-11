@@ -3,17 +3,15 @@
   "entry": ["src/i18n.ts"],
   "project": ["src/**/*", "scripts/**/*"],
   "tags": ["-lintignore"],
-  "ignoreExportsUsedInFile": { "interface": true, "type": true },
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  },
   "ignoreIssues": {
     "src/actions/**": ["exports"],
     "src/components/ui/**": ["exports", "types"],
     "src/components/blocks/**": ["exports", "types"],
     "src/components/features/**": ["exports"]
   },
-  "ignoreDependencies": ["auth", "date-fns", "server-only", "shadcn"],
-  "next": true,
-  "oxlint": true,
-  "husky": true,
-  "changelogithub": true,
-  "tsx": true
+  "ignoreDependencies": ["auth", "date-fns", "server-only", "shadcn"]
 }

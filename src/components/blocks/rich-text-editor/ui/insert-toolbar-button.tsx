@@ -183,12 +183,12 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
         </ToolbarButton>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="start" className="flex max-h-[500px] min-w-0 flex-col overflow-y-auto">
+      <DropdownMenuContent align="start" className="flex max-h-125 min-w-0 flex-col overflow-y-auto">
         {groups.map(({ group, items: nestedItems }) => (
           <ToolbarMenuGroup key={group} label={group}>
             {nestedItems.map(({ icon, label, onSelect, value }) => (
               <DropdownMenuItem
-                className="min-w-[180px]"
+                className="min-w-45"
                 key={value}
                 onSelect={() => {
                   onSelect(editor, value)

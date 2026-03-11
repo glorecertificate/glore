@@ -20,6 +20,7 @@
     ["fill=['\"]([^'\"]*)"],
     ["stroke=['\"]([^'\"]*)"]
   ],
+  "tailwindCSS.files.exclude": ["**/*.md"],
   "tailwindCSS.experimental.configFile": "./src/app/globals.css",
   "tailwindCSS.includeLanguages": {
     "svg": "html"

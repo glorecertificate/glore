@@ -413,7 +413,7 @@ export const CourseHeader = () => {
           <div className="flex h-full items-center gap-2">
             <span className="pt-1 text-sm text-muted-foreground">
               {t('lessonCount', {
-                count: String(step + 1),
+                count: String(step),
                 total: String(course.lessons?.length || 0),
               })}
             </span>

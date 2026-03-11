@@ -15,6 +15,20 @@
       "when": 1773240475990,
       "tag": "0001_schema_migrations",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773263483249,
+      "tag": "0002_tiresome_tinkerer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773263723728,
+      "tag": "0003_orange_sally_floyd",
+      "breakpoints": true
     }
   ]
 }

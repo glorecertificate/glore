@@ -1,10 +1,10 @@
-import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { users } from './users'
 
 export const teamInvitations = pgTable('team_invitations', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   token: text().notNull(),
@@ -13,7 +13,7 @@ export const teamInvitations = pgTable('team_invitations', {
   lastName: text(),
   role: text().notNull(),
   locale: text(),
-  invitedBy: uuid()
+  invitedBy: text()
     .notNull()
     .references(() => users.id),
   expiresAt: timestamp({ mode: 'string' }).notNull(),

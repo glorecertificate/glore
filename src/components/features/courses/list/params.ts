@@ -8,6 +8,7 @@ export const COURSE_LIST_PARAMS = {
 } as const
 
 export const COURSE_LIST_EDITOR_TABS = ['all', 'published', 'partial', 'draft', 'archived'] as const
+export const COURSE_LIST_VIEWER_TABS = ['all'] as const
 export const COURSE_LIST_LEARNER_TABS = ['all', 'notStarted', 'inProgress', 'completed'] as const
 export const COURSE_LIST_TABS = [...COURSE_LIST_EDITOR_TABS, ...COURSE_LIST_LEARNER_TABS]
 

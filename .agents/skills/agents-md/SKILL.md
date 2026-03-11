@@ -2,7 +2,6 @@
 name: agents-md
 description: Update AGENTS.md with any request — add rules, sync with codebase changes, or perform major rewrites. Invoked via `/agents-md <instruction>`.
 metadata:
-  author: glore
   version: '1.0.0'
   argument-hint: <instruction>
 ---

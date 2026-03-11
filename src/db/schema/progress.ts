@@ -1,4 +1,4 @@
-import { integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { assessments, evaluations, questionOptions } from './assessments'
 import { courses, lessons } from './courses'
@@ -6,7 +6,7 @@ import { users } from './users'
 
 export const userCourses = pgTable('user_courses', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   courseId: integer()
@@ -22,7 +22,7 @@ export const userCourses = pgTable('user_courses', {
 
 export const userLessons = pgTable('user_lessons', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   lessonId: integer().references(() => lessons.id),
@@ -35,7 +35,7 @@ export const userLessons = pgTable('user_lessons', {
 
 export const userAnswers = pgTable('user_answers', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   optionId: integer()
@@ -50,7 +50,7 @@ export const userAnswers = pgTable('user_answers', {
 
 export const userAssessments = pgTable('user_assessments', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   assessmentId: integer().references(() => assessments.id),
@@ -64,7 +64,7 @@ export const userAssessments = pgTable('user_assessments', {
 
 export const userEvaluations = pgTable('user_evaluations', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  userId: uuid()
+  userId: text()
     .notNull()
     .references(() => users.id),
   evaluationId: integer()

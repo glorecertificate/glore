@@ -1,7 +1,6 @@
 import { type InferSelectModel } from 'drizzle-orm'
 
 import { type memberships, type organizations, type regions, type users } from '@/db/schema'
-import { type EnumType } from '@/db/types'
 
 type UserRow = InferSelectModel<typeof users>
 type MembershipRow = InferSelectModel<typeof memberships>
@@ -14,7 +13,6 @@ export interface UserWithRelations extends UserRow {
 }
 
 export type User = ReturnType<typeof parseUser>
-export type UserRole = EnumType<'role'>
 export type UserOrganization = User['organizations'][number]
 
 export const parseUser = (user: UserWithRelations) => ({

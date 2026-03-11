@@ -99,5 +99,3 @@ export const OutlookIcon = (props: IconProps) => (
     <path d="m1362.667 255.5h383.25v383.25h-383.25z" fill="#50d9ff" />
   </svg>
 )
-
-export const OutlookIconIcon = OutlookIcon

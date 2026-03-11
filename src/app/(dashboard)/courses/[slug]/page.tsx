@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation'
 import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
-import { getCourse } from '@/actions/course'
+import { enrollCourse, getCourse } from '@/actions/course'
 import { getCurrentUser } from '@/actions/user'
 import { CourseBreadcrumb } from '@/components/features/courses/editor/breadcrumb'
 import { CourseProvider } from '@/components/features/courses/editor/context'
@@ -83,6 +83,10 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
 
 export default async (props: PageProps<'/courses/[slug]'>) => {
   const { course, language, step, user } = await resolvePageData(props)
+
+  if (!course.enrolled && !user.canEdit) {
+    await enrollCourse(course.id, language)
+  }
 
   return (
     <CourseProvider value={{ course, language, step }}>

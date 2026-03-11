@@ -5,7 +5,7 @@ import { publicFile } from '@/lib/storage'
 import { type Any, type HttpUrl } from '@/lib/types'
 import config from '~/config/metadata.json'
 
-export const APP_URL = process.env.APP_URL as HttpUrl
+const APP_URL = process.env.APP_URL as HttpUrl
 export const WEBSITE_URL = config.website as HttpUrl
 export const MANIFEST_URL = '/api/v1/manifest' satisfies Route
 

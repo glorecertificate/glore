@@ -6,7 +6,7 @@ import { cacheTag, revalidateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import { auth } from '@/lib/auth/server'
+import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT } from '@/lib/constants'
 

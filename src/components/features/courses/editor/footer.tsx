@@ -1,10 +1,11 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { completeLesson, submitAssessmentRating, submitEvaluationRatings } from '@/actions/course'
 import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
@@ -23,33 +24,32 @@ import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 import settings from '~/config/app.json'
 
-const confettiOptions = { zIndex: 100 }
+const confettiOptions = {
+  zIndex: 100,
+}
 
 export const CourseFooter = () => {
   const t = useTranslations('Courses')
-  const { course, currentLesson, next, previous } = useCourse()
+  const { course, currentLesson, next, previous, setCourse } = useCourse()
   const { user } = useSession()
+  const [saving, setSaving] = useState(false)
 
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
   const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
   const canProceed = useMemo(() => {
-    if (!currentLesson) {
-      return false
+    switch (currentLesson.type) {
+      case 'reading':
+        return true
+      case 'questions':
+        return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer)) ?? false
+      case 'evaluations':
+        return currentLesson.evaluations?.every(e => !!e.userRating) ?? false
+      case 'assessment':
+        return !!currentLesson.assessment?.userRating
+      default:
+        return false
     }
-    if (currentLesson.type === 'reading' || currentLesson.completed) {
-      return true
-    }
-    if (currentLesson.type === 'questions') {
-      return currentLesson.questions?.every(q => q.options.some(o => o.isUserAnswer))
-    }
-    if (currentLesson.type === 'evaluations') {
-      return currentLesson.evaluations?.every(e => !!e.userRating)
-    }
-    if (currentLesson.type === 'assessment') {
-      return !!currentLesson.assessment?.userRating
-    }
-    return false
   }, [currentLesson])
 
   const nextTooltip = useMemo(() => {
@@ -57,6 +57,35 @@ export const CourseFooter = () => {
       return t('replyToProceed', { type: currentLesson.type })
     }
   }, [canProceed, currentLesson.type, t])
+
+  const handleAdvance = useCallback(async () => {
+    if (!user.canEdit && currentLesson.id && !currentLesson.completed) {
+      setSaving(true)
+      try {
+        if (currentLesson.type === 'evaluations' && currentLesson.evaluations?.length) {
+          const ratings = currentLesson.evaluations
+            .filter(e => e.userRating !== null && e.userRating !== undefined)
+            .map(e => ({ evaluationId: e.id, value: e.userRating! }))
+          if (ratings.length > 0) await submitEvaluationRatings(ratings)
+        }
+        if (
+          currentLesson.type === 'assessment' &&
+          currentLesson.assessment?.userRating !== null &&
+          currentLesson.assessment?.userRating !== undefined
+        ) {
+          await submitAssessmentRating(currentLesson.assessment.id, currentLesson.assessment.userRating)
+        }
+        await completeLesson(currentLesson.id, course.slug)
+        setCourse(prev => ({
+          ...prev,
+          lessons: prev.lessons.map(l => (l.id === currentLesson.id ? { ...l, completed: true } : l)),
+        }))
+      } finally {
+        setSaving(false)
+      }
+    }
+    next()
+  }, [course.slug, currentLesson, next, setCourse, user.canEdit])
 
   const completedCount = course.lessons.filter(({ completed }) => completed).length
   const completedTitle =
@@ -84,9 +113,9 @@ export const CourseFooter = () => {
               {currentLesson.completed ? null : (
                 <ConfettiButton
                   className={cn('gap-1')}
-                  disabled={!canProceed}
+                  disabled={!canProceed || saving}
                   effect="fireworks"
-                  onClick={next}
+                  onClick={handleAdvance}
                   options={confettiOptions}
                   variant="outline"
                 >
@@ -135,7 +164,13 @@ export const CourseFooter = () => {
           </Tooltip>
         )
       ) : canProceed ? (
-        <Button className="gap-1" onClick={() => next()} title={t('proceedToNextLesson')} variant="outline">
+        <Button
+          className="gap-1"
+          disabled={saving}
+          onClick={handleAdvance}
+          title={t('proceedToNextLesson')}
+          variant="outline"
+        >
           {t('next')}
         </Button>
       ) : (

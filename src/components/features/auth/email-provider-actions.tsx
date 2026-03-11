@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl'
 
 import { AppleMailIcon } from '@/components/icons/apple-mail'
 import { GmailIcon } from '@/components/icons/gmail'
-import { OutlookIconIcon } from '@/components/icons/outlook'
+import { OutlookIcon } from '@/components/icons/outlook'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
@@ -27,7 +27,7 @@ export const EmailProviderActions = () => {
       <Button
         asChild
         className="justify-center"
-        icon={OutlookIconIcon}
+        icon={OutlookIcon}
         iconPlacement="left"
         size="lg"
         title={`${t('open')} Outlook`}

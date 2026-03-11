@@ -1,4 +1,4 @@
-import { type InferInsertModel, type InferSelectModel } from 'drizzle-orm'
+import { type InferInsertModel } from 'drizzle-orm'
 
 import {
   type accounts,
@@ -58,7 +58,6 @@ interface TableMap {
 }
 
 export type TableName = keyof TableMap
-export type TableRow<T extends TableName> = InferSelectModel<TableMap[T]>
 export type TableInsert<T extends TableName> = InferInsertModel<TableMap[T]>
 export type TableUpdate<T extends TableName> = Partial<InferInsertModel<TableMap[T]>>
 

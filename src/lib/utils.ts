@@ -7,11 +7,6 @@ import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
 import { type Any, type AnyFunction, type AnyRecord, type Rgb } from '@/lib/types'
 
 /*
-  Environment
-*/
-export const isProduction = process.env.NODE_ENV === 'production'
-
-/*
   Theme
 */
 const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
@@ -64,11 +59,6 @@ export const camelize = <T extends string>(input: T) =>
       return index === 0 ? cleanWord : cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1)
     })
     .join('') as CamelCase<T>
-
-/*
-  Numbers
-*/
-export const random = (min: number, max: number): number => Math.floor(Math.random() * (max - min + 1)) + min
 
 /*
   Objects

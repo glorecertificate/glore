@@ -33,6 +33,3 @@ export type CookieOptions<T = {}> = T & {
 
 export const prefixCookieName = (name: CookieName, prefix: string | false = COOKIE_PREFIX) =>
   prefix === false ? name : `${prefix}${name}`
-
-export const unprefixCookieName = (name: string, prefix: string | false = COOKIE_PREFIX) =>
-  prefix === false ? name : name.replace(prefix, '')

@@ -2,10 +2,10 @@
 
 import 'server-only'
 
-import { eq } from 'drizzle-orm'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+import { eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
 import { getAuthUser, setAuthPassword } from '@/actions/auth'

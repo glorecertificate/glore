@@ -10,8 +10,8 @@ import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
 import { type Course } from '@/db/queries/course'
+import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
 import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, intlPlaceholder } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
@@ -36,7 +36,7 @@ const ExtraItem = memo(
     return (
       <div className="group flex items-start gap-2">
         <div className="flex-1 space-y-1">
-          <p className="font-medium text-muted-foreground text-xs">{label}</p>
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
           <Textarea
             className="min-h-10 text-sm"
             onChange={e => onDescriptionChange(e.target.value)}
@@ -92,7 +92,7 @@ const QuestionItem = memo(
       <div className="group/question space-y-3 rounded-lg border p-3">
         <div className="flex items-start gap-2">
           <div className="flex-1 space-y-1">
-            <p className="font-medium text-muted-foreground text-xs">{label}</p>
+            <p className="text-xs font-medium text-muted-foreground">{label}</p>
             <Textarea
               className="min-h-10 text-sm"
               onChange={e => onDescriptionChange(e.target.value)}
@@ -111,7 +111,7 @@ const QuestionItem = memo(
         </div>
 
         <div className="space-y-2">
-          <p className="font-medium text-muted-foreground text-xs">{t('extraOptions')}</p>
+          <p className="text-xs font-medium text-muted-foreground">{t('extraOptions')}</p>
           {options.map(option => (
             <div className="group/option flex items-center gap-2" key={option.id}>
               <button
@@ -147,7 +147,7 @@ const QuestionItem = memo(
         </div>
 
         <div className="space-y-1">
-          <p className="font-medium text-muted-foreground text-xs">{t('extraExplanation')}</p>
+          <p className="text-xs font-medium text-muted-foreground">{t('extraExplanation')}</p>
           <Textarea
             className="min-h-10 text-sm"
             onChange={e => onExplanationChange(e.target.value)}
@@ -183,12 +183,15 @@ export const LessonExtras = ({ className }: { className?: string }) => {
       updatedAt: new Date().toISOString(),
       lessonId: currentLesson.id,
     }
-    setCourse(prev => ({
-      ...prev,
-      lessons: prev.lessons.map((lesson, i) =>
-        i === step - 1 ? { ...lesson, questions: [...lesson.questions, question] } : lesson
-      ),
-    }) as Course)
+    setCourse(
+      prev =>
+        ({
+          ...prev,
+          lessons: prev.lessons.map((lesson, i) =>
+            i === step - 1 ? { ...lesson, questions: [...lesson.questions, question] } : lesson
+          ),
+        }) as Course
+    )
   }, [currentLesson.id, setCourse, step])
 
   const addEvaluation = useCallback(() => {
@@ -455,7 +458,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
 
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 font-semibold text-sm">
+          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
             <MessageCircleQuestionIcon className="size-4" />
             {t('questionsTitle')}
           </h4>
@@ -487,7 +490,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
 
       {currentLesson.evaluations.length > 0 && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 font-semibold text-sm">
+          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
             <ClipboardListIcon className="size-4" />
             {t('subskillEvaluationsTitle')}
           </h4>
@@ -519,7 +522,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
 
       {currentLesson.assessment && (
         <div className="space-y-3">
-          <h4 className="flex items-center gap-1.5 font-semibold text-sm">
+          <h4 className="flex items-center gap-1.5 text-sm font-semibold">
             <StarIcon className="size-4" />
             {t('skillEvaluationTitle')}
           </h4>

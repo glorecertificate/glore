@@ -155,7 +155,7 @@ export const CourseBreadcrumb = () => {
                     'mb-0.5 px-1 py-0.5 text-[14.5px] text-foreground/90 hover:text-foreground focus:text-foreground',
                     !titleFocused &&
                       languageStatus.hasTitleUpdates &&
-                      'decoration-2 decoration-warning decoration-dotted underline-offset-4'
+                      'decoration-warning decoration-dotted decoration-2 underline-offset-4'
                   )}
                   defaultValue={title}
                   onBlur={onTitleBlur}
@@ -173,7 +173,12 @@ export const CourseBreadcrumb = () => {
           </>
         ) : (
           <>
-            {course.icon && <LucideIcon className="size-4.5 text-muted-foreground/80 dark:text-foreground/80" name={course.icon as IconName} />}
+            {course.icon && (
+              <LucideIcon
+                className="size-4.5 text-muted-foreground/80 dark:text-foreground/80"
+                name={course.icon as IconName}
+              />
+            )}
             {title}
             {course.archivedAt && <Badge size="sm">{t('archived')}</Badge>}
           </>
@@ -198,9 +203,9 @@ export const CourseBreadcrumb = () => {
           </Tooltip>
           <PopoverContent align="start" className="w-80 p-0" side="bottom" sideOffset={8}>
             <div className="px-4 pt-2.5">
-              <p className="font-medium text-sm">{t('courseDescription')}</p>
+              <p className="text-sm font-medium">{t('courseDescription')}</p>
               {canEdit && (
-                <p className="font-medium text-[13px] text-muted-foreground">{t('courseDescriptionSubtitle')}</p>
+                <p className="text-[13px] font-medium text-muted-foreground">{t('courseDescriptionSubtitle')}</p>
               )}
             </div>
             <div className="p-3">
@@ -216,7 +221,7 @@ export const CourseBreadcrumb = () => {
                   value={draftDescription}
                 />
               ) : (
-                <p className="text-muted-foreground text-sm">{description || t('noDescriptionAvailable')}</p>
+                <p className="text-sm text-muted-foreground">{description || t('noDescriptionAvailable')}</p>
               )}
             </div>
           </PopoverContent>

@@ -1,5 +1,9 @@
 {
   "servers": {
+    "knip": {
+      "command": "npx",
+      "args": ["-y", "@knip/mcp"]
+    },
     "shadcn": {
       "command": "npx",
       "args": ["shadcn@latest", "mcp"]

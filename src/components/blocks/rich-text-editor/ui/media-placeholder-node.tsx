@@ -169,7 +169,7 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
   )
 })
 
-export const ImageProgress = ({
+const ImageProgress = ({
   className,
   file,
   imageRef,

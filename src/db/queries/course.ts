@@ -1,10 +1,9 @@
 import { type InferSelectModel } from 'drizzle-orm'
-
 import { type Locale } from 'next-intl'
 
-import { type courses, type skillGroups } from '@/db/schema'
 import { type LessonWithRelations, parseLesson } from '@/db/queries/lesson'
 import { type UserWithRelations, parseUser } from '@/db/queries/user'
+import { type courses, type skillGroups } from '@/db/schema'
 import { type EnumType } from '@/db/types'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 
@@ -26,7 +25,7 @@ export type SkillGroup = Exclude<Course['skillGroup'], null>
 export const COURSE_TYPES = ['intro', 'skill', 'learner'] satisfies EnumType<'course_type'>[]
 export const COURSE_SLUG_MIN_LENGTH = 3
 
-export const DEFAULT_COURSE = {
+const DEFAULT_COURSE = {
   title: {
     en: 'New Course',
     es: 'Nuevo Curso',

@@ -87,8 +87,8 @@ const SettingsSection = memo(
   }) => (
     <section className="grid gap-6 md:grid-cols-[minmax(200px,1fr)_2fr]">
       <div>
-        <h3 className="font-medium text-sm">{title}</h3>
-        <p className="mt-1 text-[13px] text-muted-foreground leading-snug">{description}</p>
+        <h3 className="text-sm font-medium">{title}</h3>
+        <p className="mt-1 text-[13px] leading-snug text-muted-foreground">{description}</p>
       </div>
       <div className="space-y-4">{children}</div>
     </section>

@@ -28,7 +28,8 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | `pnpm format`       | Format with oxfmt                              |
 | `pnpm format:check` | Check formatting without writing               |
 | `pnpm check`        | Type-check + lint + format check (in sequence) |
-| `pnpm check:size`   | Bundle size check                              |
+| `pnpm knip`         | Find unused files, exports, and dependencies   |
+| `pnpm size-limit`   | Bundle size check                              |
 | `pnpm typecheck`    | Type-check only (`tsc --noEmit`)               |
 | `pnpm typegen`      | Generate env types → `env.d.ts`                |
 | `pnpm analyze`      | Next.js bundle analyzer                        |
@@ -96,9 +97,11 @@ skills help                           # Show all CLI commands
 | `neon-auth`                   | `neondatabase/ai-rules`     | Neon Auth setup and configuration                   | When modifying auth flows, routes, or session management                            |
 | `neon-drizzle`                | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                   | When creating/modifying schemas, migrations, or database configuration              |
 | `neon-postgres`               | `neondatabase/agent-skills` | Neon Serverless Postgres best practices             | When working with database queries, branching, or Neon platform features            |
+| `shadcn`                      | `shadcn/ui`                 | Add and manage shadcn/ui components                 | When adding, updating, or inspecting shadcn/ui components                           |
 | `vercel-react-best-practices` | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
 | `web-design-guidelines`       | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review          | When reviewing UI accessibility, UX patterns, or design compliance                  |
 | `agents-md`                   | custom                      | Update AGENTS.md via `/agents-md <instruction>`     | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `start`                       | custom                      | Start the next implementation cycle                 | When picking and implementing the next backlog feature                              |
 
 ### Skill enforcement rules
 
@@ -110,6 +113,8 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 4. **Auth modifications** → Read `neon-auth/SKILL.md`.
 5. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
 6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
+7. **Adding/updating shadcn/ui components** → Read `shadcn/SKILL.md`. Use the `shadcn` MCP server for registry lookups and install commands.
+8. **Starting a new implementation cycle** → Read `start/SKILL.md`. Follow the protocol for picking and implementing the next feature.
 
 ### Creating custom skills
 
@@ -131,9 +136,28 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
     ├── neon-auth/              # Auth setup guides (external)
     ├── neon-drizzle/           # Drizzle ORM guides (external)
     ├── neon-postgres/          # Postgres best practices (external)
+    ├── shadcn/                 # shadcn/ui component manager (external)
+    ├── start/                  # Implementation cycle workflow (custom, git-tracked)
     ├── vercel-react-best-practices/  # React/Next.js performance (external)
     └── web-design-guidelines/  # Web Interface Guidelines (external)
 ```
+
+---
+
+## MCP Servers
+
+Configured in `.vscode/mcp.json`. Agents MUST start and run MCP servers when they can streamline a task — prefer MCP tool calls over manual file reads or CLI workarounds when a relevant server is available.
+
+| Server   | Command                 | Purpose                                        | When to use                                                            |
+| -------- | ----------------------- | ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `knip`   | `npx -y @knip/mcp`      | Detect unused files, exports, and dependencies | When auditing dead code, cleaning up files, or removing unused exports |
+| `shadcn` | `npx shadcn@latest mcp` | Add and manage shadcn/ui components            | When adding, updating, or inspecting shadcn/ui components              |
+
+### MCP enforcement rules
+
+- **Always prefer MCP over manual CLI** — if an MCP server covers a task, use it instead of running raw commands
+- **`knip` MCP:** Run before removing files or exports — let it identify what is actually unused rather than guessing
+- **`shadcn` MCP:** Run when adding UI components — provides accurate registry lookups, component docs, and install commands
 
 ---
 
@@ -981,6 +1005,14 @@ const double = (n: number) => {
 - **Keep files focused** — don't mix unrelated logic
 - **Follow existing folder structure** — place files where the architecture dictates
 - **Use path aliases** — `@/` for `src/`, `~/config/` and `~/messages/` for config
+
+### File organization
+
+- **Group files by meaning** — every file's location must communicate its purpose; if a file's folder context is misleading or irrelevant, move it
+- **Remove or consolidate dead files** — run `pnpm knip` (or the `knip` MCP) to identify unused files and exports; delete them without hesitation
+- **Merge thin modules** — if a file only re-exports from one place or adds trivial indirection, merge it into the consumer
+- **No misplaced files** — a file in the wrong folder is an architecture bug; relocate it immediately using the conventions in the Architecture section
+- **Split bloated files** — if a file covers multiple unrelated concerns, split it into focused modules
 
 ### Named exports
 

@@ -1,3 +1,5 @@
+import './globals.css'
+
 import Script from 'next/script'
 import { Suspense } from 'react'
 
@@ -15,8 +17,6 @@ import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
 import { publicFile } from '@/lib/storage'
 import config from '~/config/metadata.json'
-
-import './globals.css'
 
 export { viewport } from '@/lib/metadata'
 

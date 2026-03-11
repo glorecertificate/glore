@@ -1,12 +1,13 @@
 'use client'
 
+import 'react-image-crop/dist/ReactCrop.css'
+
 import { type SyntheticEvent, useCallback, useRef, useState } from 'react'
 
 import { Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useDropzone } from 'react-dropzone'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'

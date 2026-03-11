@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
-import { auth } from '@/lib/auth/server'
+import { auth } from '@/lib/auth'
 import { APP_ROOT, AUTH_ROOT, JOIN_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 
 export const config: ProxyConfig = {

@@ -1,7 +1,8 @@
 'use server'
 
-import { type Locale } from 'next-intl'
 import 'server-only'
+
+import { type Locale } from 'next-intl'
 
 import {
   COOKIE_OPTIONS,

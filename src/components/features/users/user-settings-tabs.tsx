@@ -11,6 +11,7 @@ const SETTINGS_TAB_PARAM = 'tab'
 const SETTINGS_TABS = ['profile', 'account'] as const
 const DEFAULT_SETTINGS_TAB = 'profile'
 
+/** @lintignore */
 export type UserSettingsTab = (typeof SETTINGS_TABS)[number]
 
 const settingsTabParser = parseAsStringEnum([...SETTINGS_TABS]).withDefault(DEFAULT_SETTINGS_TAB)

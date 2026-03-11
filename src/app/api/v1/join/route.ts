@@ -1,5 +1,6 @@
-import { eq } from 'drizzle-orm'
 import { type NextRequest, NextResponse } from 'next/server'
+
+import { eq } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { teamInvitations, users } from '@/db/schema'

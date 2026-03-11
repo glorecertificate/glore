@@ -1,5 +1,6 @@
-import { getRequestConfig } from 'next-intl/server'
 import 'server-only'
+
+import { getRequestConfig } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
 import { i18n } from '@/lib/i18n'

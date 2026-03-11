@@ -209,7 +209,7 @@ const useAIChatItems = () => {
   } satisfies Record<string, AIChatItem>
 }
 
-export const useChat = () => {
+const useChat = () => {
   const options = usePluginOption(aiChatPlugin, 'chatOptions')
   return useBaseChat({ id: 'editor', ...options })
 }
@@ -372,7 +372,7 @@ export const AIMenu = () => {
   )
 }
 
-export const AIMenuItems = ({ setValue }: { setValue: (value: string) => void }) => {
+const AIMenuItems = ({ setValue }: { setValue: (value: string) => void }) => {
   const editor = useEditorRef()
   const options = usePluginOption(AIChatPlugin, 'chat')
   const aiEditor = usePluginOption(AIChatPlugin, 'aiEditor') as SlateEditor

@@ -36,8 +36,6 @@ interface Formats {
   }
 }
 
-export type Translator<NestedKey extends Namespace = never> = ReturnType<typeof createTranslator<Messages, NestedKey>>
-
 export type Namespace = NamespaceKeys<Messages, NestedKeyOf<Messages>>
 
 export type MessageKey<T extends Namespace> = T extends Namespace

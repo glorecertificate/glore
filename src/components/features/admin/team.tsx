@@ -96,12 +96,12 @@ const TeamMemberRow = memo(
         <div className="flex items-center gap-4">
           <Avatar className="size-10 rounded-full">
             {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
-            <AvatarFallback className="rounded-full bg-muted font-medium text-sm">
+            <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
               {user.initials || <UserIcon className="size-4" />}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="flex items-center gap-1 truncate font-medium text-sm">
+            <p className="flex items-center gap-1 truncate text-sm font-medium">
               {getDisplayName(user)}
               {isCurrentUser && (
                 <Badge className="px-1.5" size="sm">
@@ -109,7 +109,7 @@ const TeamMemberRow = memo(
                 </Badge>
               )}
             </p>
-            <p className="truncate text-muted-foreground text-sm">{user.email}</p>
+            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -521,8 +521,8 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
         {displayUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
             <UserIcon className="mb-3 size-8 text-muted-foreground/50" />
-            <p className="font-medium text-muted-foreground text-sm">{t('noMembers')}</p>
-            {hasActiveFilters && <p className="mt-1 text-muted-foreground/70 text-xs">{t('tryAdjustingFilters')}</p>}
+            <p className="text-sm font-medium text-muted-foreground">{t('noMembers')}</p>
+            {hasActiveFilters && <p className="mt-1 text-xs text-muted-foreground/70">{t('tryAdjustingFilters')}</p>}
           </div>
         ) : (
           displayUsers.map(user => (
@@ -538,7 +538,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
         )}
       </div>
 
-      <p className="text-muted-foreground text-xs">
+      <p className="text-xs text-muted-foreground">
         {t('memberCount', { count: displayUsers.length, total: activeUsers.length })}
       </p>
 

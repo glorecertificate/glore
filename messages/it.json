@@ -1227,7 +1227,15 @@
     "submitting": "Invio in corso...",
     "unknownVolunteer": "Volontario sconosciuto",
     "updatedOn": "Ultimo aggiornamento",
-    "volunteerName": "Volontario"
+    "volunteerName": "Volontario",
+    "publicNotFound": "Certificato non trovato",
+    "publicNotFoundMessage": "Questo certificato non esiste o non è più disponibile pubblicamente.",
+    "publicVerified": "Certificato verificato",
+    "publicIssuedBy": "Emesso da GloRe Certificate",
+    "publicJoinTitle": "Ottieni il tuo certificato",
+    "publicJoinDescription": "Unisciti alla Rete GloRe, completa i corsi di volontariato e ottieni la certificazione ufficiale.",
+    "publicJoinButton": "Unisciti a GloRe",
+    "publicAccessApp": "Sei già membro? Accedi"
   },
   "Users": {
     "admin": "Utente admin",

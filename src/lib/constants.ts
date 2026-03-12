@@ -3,6 +3,16 @@ export const AUTH_ROOT = '/login'
 export const APP_ROOT = '/dashboard'
 export const JOIN_ROOT = '/api/v1/join'
 export const ONBOARDING_ROOT = '/onboarding'
+export const DASHBOARD_ROOTS = [
+  '/about',
+  '/admin',
+  '/certificates',
+  '/courses',
+  '/dashboard',
+  '/docs',
+  '/help',
+  '/settings',
+]
 
 /* App */
 export const AUTH_VIEWS = [

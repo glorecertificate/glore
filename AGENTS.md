@@ -157,6 +157,7 @@ src/
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated routes (login, onboarding)
 │   ├── (dashboard)/    # Authenticated routes (sidebar layout)
+│   ├── [username]/     # Public certificate page route
 │   └── api/            # API routes (auth catch-all + v1/)
 ├── components/
 │   ├── blocks/         # Complex composed blocks (rich-text-editor)
@@ -221,25 +222,26 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 
 ### Route table
 
-| Path                 | Auth               | Layout    | Description          |
-| -------------------- | ------------------ | --------- | -------------------- |
-| `/login`             | Public             | Root      | Login page           |
-| `/onboarding`        | Auth (pre-onboard) | Root      | Onboarding form      |
-| `/onboarding/error`  | Auth (pre-onboard) | Root      | Onboarding error     |
-| `/dashboard`         | Auth               | Dashboard | Main dashboard       |
-| `/about`             | Auth               | Dashboard | About page           |
-| `/admin`             | Auth + `is_admin`  | Dashboard | Admin panel          |
-| `/certificates`      | Auth + non-editor  | Dashboard | Certificate list     |
-| `/certificates/new`  | Auth + non-editor  | Dashboard | New certificate      |
-| `/certificates/[id]` | Auth + non-editor  | Dashboard | Certificate detail   |
-| `/courses`           | Auth               | Dashboard | Course list          |
-| `/courses/[slug]`    | Auth               | Dashboard | Course detail/editor |
-| `/docs`              | Auth               | Dashboard | Documentation        |
-| `/docs/intro`        | Auth               | Dashboard | Introduction docs    |
-| `/docs/faq`          | Auth               | Dashboard | FAQ docs             |
-| `/docs/tutorials`    | Auth               | Dashboard | Tutorial docs        |
-| `/help`              | Auth               | Dashboard | Help page            |
-| `/settings`          | Auth               | Dashboard | User settings        |
+| Path                 | Auth               | Layout    | Description             |
+| -------------------- | ------------------ | --------- | ----------------------- |
+| `/login`             | Public             | Root      | Login page              |
+| `/onboarding`        | Auth (pre-onboard) | Root      | Onboarding form         |
+| `/onboarding/error`  | Auth (pre-onboard) | Root      | Onboarding error        |
+| `/[username]`        | Public             | Root      | Public certificate page |
+| `/dashboard`         | Auth               | Dashboard | Main dashboard          |
+| `/about`             | Auth               | Dashboard | About page              |
+| `/admin`             | Auth + `is_admin`  | Dashboard | Admin panel             |
+| `/certificates`      | Auth + non-editor  | Dashboard | Certificate list        |
+| `/certificates/new`  | Auth + non-editor  | Dashboard | New certificate         |
+| `/certificates/[id]` | Auth + non-editor  | Dashboard | Certificate detail      |
+| `/courses`           | Auth               | Dashboard | Course list             |
+| `/courses/[slug]`    | Auth               | Dashboard | Course detail/editor    |
+| `/docs`              | Auth               | Dashboard | Documentation           |
+| `/docs/intro`        | Auth               | Dashboard | Introduction docs       |
+| `/docs/faq`          | Auth               | Dashboard | FAQ docs                |
+| `/docs/tutorials`    | Auth               | Dashboard | Tutorial docs           |
+| `/help`              | Auth               | Dashboard | Help page               |
+| `/settings`          | Auth               | Dashboard | User settings           |
 
 ### API routes
 

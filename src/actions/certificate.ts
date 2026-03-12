@@ -204,6 +204,16 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
 
     revalidateTag(CacheTag.Certificates, 'max')
 
+    if (isApprove) {
+      const existingDefault = await db.query.certificates.findFirst({
+        where: and(eq(certificates.userId, cert.userId), eq(certificates.isDefault, true)),
+        columns: { id: true },
+      })
+      if (!existingDefault) {
+        await db.update(certificates).set({ isDefault: true }).where(eq(certificates.id, id))
+      }
+    }
+
     if (cert.user?.email) {
       await sendMail({
         to: cert.user.email,
@@ -337,3 +347,22 @@ export const createCertificate = async (values: CertificateFormValues) => {
     return newCert
   })
 }
+
+export const findPublicCertificate = async (username: string, handle?: string) =>
+  await safeQuery(async () => {
+    const user = await db.query.users.findFirst({
+      columns: { id: true },
+      where: eq(users.username, username),
+    })
+    if (!user) throw new Error('User not found')
+
+    const cert = await db.query.certificates.findFirst({
+      where: handle
+        ? and(eq(certificates.userId, user.id), eq(certificates.handle, handle), eq(certificates.status, 'approved'))
+        : and(eq(certificates.userId, user.id), eq(certificates.isDefault, true), eq(certificates.status, 'approved')),
+      with: certificateWithUsers,
+    })
+    if (!cert) throw new Error('Certificate not found')
+
+    return parseCertificate(cert)
+  })

@@ -1,15 +1,29 @@
-// Import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 
-// Import { CertificateDocument } from '@/components/features/certificates/document'
+import { findCertificate } from '@/actions/certificate'
+import { getCurrentUser } from '@/actions/user'
+import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
+import { PageHeader } from '@/components/layout/page-header'
+import { PageMain } from '@/components/layout/page-main'
 
-// Export default async ({ params }: PageProps<'/certificates/[id]'>) => {
-//   Const { id } = (await params) ?? {}
-//   If (!id) notFound()
+export default async ({ params }: PageProps<'/certificates/[id]'>) => {
+  const { id } = await params
+  const certId = Number(id)
+  if (!certId || Number.isNaN(certId)) notFound()
 
-//   Const certificate = null
-//   If (!certificate) notFound()
+  const [user, { data: certificate }] = await Promise.all([getCurrentUser(), findCertificate(certId)])
+  if (!certificate) notFound()
 
-//   Return <CertificateDocument certificate={certificate} />
-// }
+  const isOwner = certificate.userId === user.id
+  const isAssignedReviewer = certificate.reviewerId === user.id
+  if (!isOwner && !isAssignedReviewer) notFound()
 
-export default () => null
+  return (
+    <>
+      <PageHeader href="/certificates" namespace="Certificates" titleKey="backTo" />
+      <PageMain>
+        <CertificateDetail certificate={certificate} />
+      </PageMain>
+    </>
+  )
+}

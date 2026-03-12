@@ -274,6 +274,7 @@
     {
       "files": ["src/app/**/layout.tsx", "src/app/**/page.tsx"],
       "rules": {
+        "react-perf/jsx-no-new-array-as-prop": "off",
         "react-perf/jsx-no-new-object-as-prop": "off"
       }
     },

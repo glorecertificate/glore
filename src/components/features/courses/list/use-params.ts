@@ -124,10 +124,11 @@ export const useCourseListTabs = () => {
   const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
   const tabs = useMemo(() => {
-    if (user.canEdit)
+    if (user.canEdit) {
       return (activeLanguages ?? []).length > 1
         ? COURSE_LIST_EDITOR_TABS
         : COURSE_LIST_EDITOR_TABS.filter(tab => tab !== 'partial')
+    }
     if (isViewer) return COURSE_LIST_VIEWER_TABS
     return COURSE_LIST_LEARNER_TABS
   }, [activeLanguages, isViewer, user.canEdit])
@@ -175,16 +176,7 @@ export const useCourseList = () => {
     }
 
     return list
-  }, [
-    courses,
-    isViewer,
-    user.canEdit,
-    user.isLearner,
-    user.isOrgAdmin,
-    user.isRepresentative,
-    user.isTutor,
-    user.isVolunteer,
-  ])
+  }, [courses, isViewer, user.canEdit, user.isLearner, user.isVolunteer])
 
   return { courseList }
 }

@@ -212,7 +212,13 @@ After implementation, run:
 pnpm check
 ```
 
-Fix all errors before proceeding.
+Fix all errors, then run:
+
+```
+pnpm build
+```
+
+Fix any build errors before proceeding. Verify the build output is correct and complete.
 
 ## Step 6 — Review request
 
@@ -249,7 +255,7 @@ On change request:
 
 **Rules:**
 
-- Never skip `pnpm check` before asking for review
+- Never skip `pnpm check` and `pnpm build` before asking for review
 - Never implement two features at once
 - Never modify AGENTS.md conventions without flagging it as a decision
 - Never add dependencies without checking if something in the existing stack already covers the need

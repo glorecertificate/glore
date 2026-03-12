@@ -12,6 +12,7 @@ import {
   type evaluations,
   type lessons,
   type memberships,
+  type organizationJoinRequests,
   type organizations,
   type questionOptions,
   type questions,
@@ -41,6 +42,7 @@ interface TableMap {
   evaluations: typeof evaluations
   lessons: typeof lessons
   memberships: typeof memberships
+  organization_join_requests: typeof organizationJoinRequests
   organizations: typeof organizations
   question_options: typeof questionOptions
   questions: typeof questions
@@ -64,6 +66,7 @@ export type TableUpdate<T extends TableName> = Partial<InferInsertModel<TableMap
 export interface Enums {
   certificate_status: 'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'
   course_type: 'intro' | 'skill' | 'learner'
+  organization_request_status: 'accepted' | 'pending' | 'rejected'
   role: 'admin' | 'learner' | 'tutor' | 'representative' | 'volunteer'
 }
 

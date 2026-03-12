@@ -11,6 +11,7 @@ export const DASHBOARD_ROOTS = [
   '/dashboard',
   '/docs',
   '/help',
+  '/organization',
   '/settings',
 ]
 

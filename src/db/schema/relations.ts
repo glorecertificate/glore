@@ -5,7 +5,7 @@ import { assessments, evaluations, questionOptions, questions } from './assessme
 import { certificateSkills, certificates } from './certificates'
 import { contributions, courses, lessons } from './courses'
 import { docArticles, docCategories } from './docs'
-import { memberships, organizations } from './organizations'
+import { memberships, organizationJoinRequests, organizations } from './organizations'
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from './progress'
 import { regions } from './regions'
 import { sessions } from './sessions'
@@ -18,6 +18,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
   memberships: many(memberships),
+  reviewedOrganizationJoinRequests: many(organizationJoinRequests, { relationName: 'organizationJoinRequestReviewer' }),
   regions: many(regions),
   contributions: many(contributions),
   certificates: many(certificates, { relationName: 'certificateUser' }),
@@ -45,11 +46,24 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 // Organizations
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   memberships: many(memberships),
+  joinRequests: many(organizationJoinRequests),
 }))
 
 export const membershipsRelations = relations(memberships, ({ one }) => ({
   user: one(users, { fields: [memberships.userId], references: [users.id] }),
   organization: one(organizations, { fields: [memberships.organizationId], references: [organizations.id] }),
+}))
+
+export const organizationJoinRequestsRelations = relations(organizationJoinRequests, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [organizationJoinRequests.organizationId],
+    references: [organizations.id],
+  }),
+  reviewer: one(users, {
+    fields: [organizationJoinRequests.reviewedBy],
+    references: [users.id],
+    relationName: 'organizationJoinRequestReviewer',
+  }),
 }))
 
 // Regions

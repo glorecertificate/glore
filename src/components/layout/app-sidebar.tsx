@@ -7,6 +7,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import {
   AwardIcon,
   BookOpenIcon,
+  Building2Icon,
   ChevronRightIcon,
   ChevronsUpDownIcon,
   CogIcon,
@@ -267,6 +268,9 @@ const AppSidebarMain = () => {
     <SidebarGroup>
       <SidebarMenu className="mt-4 gap-3">
         <AppSidebarItem label={t('dashboard')} route="/dashboard" />
+        {(user.isOrgAdmin || user.isRepresentative) && (
+          <AppSidebarItem icon={Building2Icon} label={t('organization')} route={'/organization' as Route} />
+        )}
         <AppSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
         {!user.canEdit && <AppSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
         <AppSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">

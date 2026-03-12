@@ -148,6 +148,7 @@ src/
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── course.ts       # Course + lesson CRUD, cached queries
 │   ├── onboarding.ts   # Complete onboarding flow
+│   ├── organization.ts # Org overview, members, join requests, settings
 │   ├── storage.ts      # Avatar upload/remove via Vercel Blob
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
 ├── app/                # App Router pages and layouts
@@ -157,11 +158,13 @@ src/
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated routes (login, onboarding)
 │   ├── (dashboard)/    # Authenticated routes (sidebar layout)
+│   │   └── organization/  # Org management page (overview, members, join requests, settings)
 │   ├── [username]/     # Public certificate page route
 │   └── api/            # API routes (auth catch-all + v1/)
 ├── components/
 │   ├── blocks/         # Complex composed blocks (rich-text-editor)
 │   ├── features/       # Domain components grouped by feature
+│   │   └── organization/  # Org panel header, tabs, and management sections
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper
 │   ├── layout/         # Shell components (sidebar, page header, fallbacks)
 │   ├── providers/      # Context providers (session, i18n, theme, courses)
@@ -231,6 +234,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | `/dashboard`         | Auth               | Dashboard | Main dashboard          |
 | `/about`             | Auth               | Dashboard | About page              |
 | `/admin`             | Auth + `is_admin`  | Dashboard | Admin panel             |
+| `/organization`      | Auth + org manager | Dashboard | Organization panel      |
 | `/certificates`      | Auth + non-editor  | Dashboard | Certificate list        |
 | `/certificates/new`  | Auth + non-editor  | Dashboard | New certificate         |
 | `/certificates/[id]` | Auth + non-editor  | Dashboard | Certificate detail      |
@@ -641,7 +645,7 @@ next / next/**                  # Next.js imports
 - TypeScript `enum` only for `CacheTag`
 - All other enums use `satisfies` + `as const` on arrays/objects
 - Example: `COURSE_TYPES = ['intro', 'skill', 'learner'] satisfies Enums<'course_type'>[]`
-- DB enums: `certificate_status` (`'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'`), `course_type` (`'intro' | 'skill' | 'learner'`), `role` (`'admin' | 'learner' | 'tutor' | 'representative' | 'volunteer'`)
+- DB enums: `certificate_status` (`'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'`), `course_type` (`'intro' | 'skill' | 'learner'`), `organization_request_status` (`'pending' | 'accepted' | 'rejected'`), `role` (`'admin' | 'learner' | 'tutor' | 'representative' | 'volunteer'`)
 
 ---
 

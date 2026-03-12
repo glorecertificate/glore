@@ -8,11 +8,13 @@ import {
   DownloadIcon,
   MapPinIcon,
   MessageSquareIcon,
+  PartyPopperIcon,
   TimerIcon,
   UserIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
 import { Button } from '@/components/ui/button'
@@ -37,6 +39,7 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
 
   const isTutorReviewer = user.isTutor && certificate.reviewerId === user.id
   const canReview = isTutorReviewer && (certificate.isSubmitted || certificate.isInReview)
+  const isOwner = certificate.userId === user.id
 
   return (
     <>
@@ -67,6 +70,16 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
             )}
           </div>
         </div>
+
+        {certificate.isApproved && isOwner && (
+          <div className="flex flex-col gap-3 rounded-lg border border-success/30 bg-success/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2 text-sm font-medium text-success">
+              <PartyPopperIcon className="size-4 shrink-0" />
+              {t('approvedBanner')}
+            </div>
+            <CertificateShare certificate={certificate} />
+          </div>
+        )}
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Card>

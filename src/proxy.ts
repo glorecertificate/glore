@@ -3,7 +3,7 @@ import 'server-only'
 import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
 
 import { auth } from '@/lib/auth'
-import { APP_ROOT, AUTH_ROOT, DASHBOARD_ROOTS, JOIN_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
+import { APP_ROOT, AUTH_ROOT, DASHBOARD_ROOTS, JOIN_ROOT, ONBOARDING_ROOT, REGISTER_ROOT } from '@/lib/constants'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -19,7 +19,10 @@ export const proxy: NextProxy = async request => {
   const response = NextResponse.next({ request: { headers: reqHeaders } })
 
   const isPublicPath =
-    nextUrl.pathname === AUTH_ROOT || nextUrl.pathname.startsWith(JOIN_ROOT) || isCertificatePage(nextUrl.pathname)
+    nextUrl.pathname === AUTH_ROOT ||
+    nextUrl.pathname === REGISTER_ROOT ||
+    nextUrl.pathname.startsWith(JOIN_ROOT) ||
+    isCertificatePage(nextUrl.pathname)
 
   try {
     const session = await auth.api.getSession({ headers: reqHeaders })

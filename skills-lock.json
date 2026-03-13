@@ -16,11 +16,6 @@
       "sourceType": "github",
       "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
     },
-    "neon-auth": {
-      "source": "neondatabase/ai-rules",
-      "sourceType": "github",
-      "computedHash": "693fd76e8fbd52c28b73537dda48d222d360f1c4691ca7dc321e70c989ecbd79"
-    },
     "neon-drizzle": {
       "source": "neondatabase/ai-rules",
       "sourceType": "github",

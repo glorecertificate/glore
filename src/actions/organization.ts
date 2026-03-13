@@ -25,7 +25,6 @@ import {
 import { certificates, memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 
@@ -166,13 +165,14 @@ const sendOrganizationAccessEmail = async ({
   organizationName: string
   role: OrganizationMembershipRole
 }) => {
-  const loginUrl = `${process.env.APP_URL}${AUTH_ROOT}`
   const roleLabel = role.replace('_', ' ')
 
   await sendMail({
     to: email,
-    subject: `You were added to ${organizationName} on GloRe`,
-    html: `<p>${inviterName} added you to <strong>${organizationName}</strong> as <strong>${roleLabel}</strong>.</p><p>${isNewUser ? 'We also sent a password setup email so you can access your account.' : `You can sign in here: <a href="${loginUrl}">${loginUrl}</a>`}</p>`,
+    template: {
+      name: 'organization/member-added',
+      props: { organizationName, inviterName, role: roleLabel, isNewUser },
+    },
   }).catch(() => null)
 }
 
@@ -187,18 +187,12 @@ const sendJoinRequestDecisionEmail = async ({
   reviewerComment?: string | null
   status: 'accepted' | 'rejected'
 }) => {
-  const loginUrl = `${process.env.APP_URL}${AUTH_ROOT}`
-
   await sendMail({
     to: email,
-    subject:
-      status === 'accepted'
-        ? `Your request to join ${organizationName} was approved`
-        : `Your request to join ${organizationName} was declined`,
-    html:
-      status === 'accepted'
-        ? `<p>Your request to join <strong>${organizationName}</strong> was approved.</p><p>Sign in here: <a href="${loginUrl}">${loginUrl}</a></p>`
-        : `<p>Your request to join <strong>${organizationName}</strong> was declined.</p>${reviewerComment ? `<p>Message from the organization: <strong>${reviewerComment}</strong></p>` : ''}`,
+    template: {
+      name: 'organization/join-request',
+      props: { organizationName, status, comment: reviewerComment },
+    },
   }).catch(() => null)
 }
 
@@ -764,16 +758,76 @@ export const removeOrganizationAvatar = async () => {
   })
 }
 
-export const deleteOrganization = async () => {
-  const { organization, role, user } = await getOrganizationContext()
+export const requestOrganizationRegistration = ({
+  city,
+  country,
+  email: orgEmail,
+  firstName,
+  lastName,
+  locale,
+  message,
+  name,
+  registrantEmail,
+  url,
+}: {
+  city: string
+  country: string
+  email: string
+  firstName: string
+  lastName?: string
+  locale?: string
+  message?: string
+  name: string
+  registrantEmail: string
+  url?: string
+}) =>
+  safeQuery(async () => {
+    const handle = name
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
 
-  return await safeQuery(async () => {
-    if (!organization?.id) {
-      throw new Error('No active organization found')
+    const existing = await db.query.organizations.findFirst({
+      columns: { id: true },
+      where: eq(organizations.handle, handle),
+    })
+
+    const finalHandle = existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle
+
+    const [org] = await db
+      .insert(organizations)
+      .values({
+        city: city.trim(),
+        country: country.trim(),
+        email: orgEmail.trim().toLowerCase(),
+        handle: finalHandle,
+        name: name.trim(),
+        url: url?.trim() || null,
+      })
+      .returning({ id: organizations.id, name: organizations.name })
+
+    if (!org) {
+      throw new Error('Failed to create organization')
     }
 
-    assertOrganizationAdmin(role)
+    await db.insert(organizationJoinRequests).values({
+      email: registrantEmail.trim().toLowerCase(),
+      firstName: firstName.trim(),
+      lastName: lastName?.trim() || null,
+      locale: locale ?? i18n.defaultLocale,
+      message: message?.trim() || null,
+      organizationId: org.id,
+      role: 'admin',
+    })
 
+    return { organizationId: org.id, organizationName: org.name }
+  })
+
+export const deleteOrganization = async () => {
+  const { organization, user } = await getOrganizationContext()
+
+  return await safeQuery(async () => {
     const [certificateCount] = await db
       .select({ total: count() })
       .from(certificates)

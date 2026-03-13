@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
+import { REGISTER_ROOT } from '@/lib/constants'
 import { WEBSITE_URL } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
 
@@ -52,7 +53,10 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
             p: content => <p>{content}</p>,
           })}
         </div>
-        <DialogFooter>
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
+          <Link className="flex-1 text-sm text-muted-foreground" href={REGISTER_ROOT}>
+            {t('signupDialogRegister')}
+          </Link>
           <DialogClose asChild>
             <Button variant="outline">{t('close')}</Button>
           </DialogClose>

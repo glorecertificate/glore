@@ -27,7 +27,7 @@ export default async ({ searchParams }: PageProps<'/courses'>) => {
     <Suspense fallback={<CourseListSkeleton />}>
       <CourseListTabs>
         <CourseListHeader />
-        <PageMain className="min-h-[calc(100vh-136px)]">
+        <PageMain className="min-h-[calc(100vh-160px)]">
           <CourseListContent className="pb-6" />
         </PageMain>
       </CourseListTabs>

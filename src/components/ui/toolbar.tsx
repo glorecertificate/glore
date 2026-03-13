@@ -7,7 +7,6 @@ import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { type VariantProps, cva } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
 import { DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipPortal, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -189,9 +188,9 @@ export const ToolbarSplitButtonSecondary = ({
   size,
   variant,
   ...props
-}: React.ComponentPropsWithoutRef<'span'> & VariantProps<typeof dropdownArrowVariants>) => {
+}: React.ComponentPropsWithoutRef<'button'> & VariantProps<typeof dropdownArrowVariants>) => {
   const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLSpanElement>) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
       onClick?.(e)
     },
@@ -199,17 +198,18 @@ export const ToolbarSplitButtonSecondary = ({
   )
 
   return (
-    <Button
+    <button
       className={cn(
         dropdownArrowVariants({ size, variant }),
         'group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground',
         className
       )}
       onClick={handleClick}
+      type="button"
       {...props}
     >
       <ChevronDownIcon className="size-3.5 text-muted-foreground" data-icon />
-    </Button>
+    </button>
   )
 }
 

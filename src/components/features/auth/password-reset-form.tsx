@@ -26,7 +26,7 @@ export const PasswordResetForm = ({
   setView: (view: AuthView) => void
 }) => {
   const t = useTranslations('Auth')
-  const [, setToken] = useQueryState('resetToken', parseAsString)
+  const [, setToken] = useQueryState('token', parseAsString)
 
   const formSchema = useMemo(
     () =>

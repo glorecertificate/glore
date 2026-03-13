@@ -5,7 +5,7 @@ import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
 import { i18n } from '@/lib/i18n'
-import { publicFile } from '@/lib/storage'
+import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 export const GET = async (request: NextRequest) => {

@@ -1,6 +1,6 @@
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 
-import { type CertificateFormValues } from '@/actions/certificate'
+import { type CertificateFormValues } from '@/components/features/certificates/schemas'
 
 Font.register({
   family: 'Inter',

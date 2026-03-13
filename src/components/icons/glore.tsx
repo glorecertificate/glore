@@ -1,5 +1,5 @@
-import { publicFile } from '@/lib/storage'
 import { type IconProps } from '@/lib/types'
+import { publicFile } from '@/lib/utils'
 
 export const GloreIcon = ({ height, width, ...props }: IconProps) => (
   <svg viewBox="0 0 1176 372" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" {...props}>

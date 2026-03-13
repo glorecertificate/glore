@@ -5,15 +5,13 @@ import 'server-only'
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache, createElement } from 'react'
 
-import { renderToBuffer } from '@react-pdf/renderer'
 import { put } from '@vercel/blob'
 import { and, asc, count, eq } from 'drizzle-orm'
-import { z } from 'zod'
 
 import { getAuthUser } from '@/actions/auth'
 import { listCourses } from '@/actions/course'
 import { getActiveOrgId } from '@/actions/user'
-import { CertificateDocument } from '@/components/features/certificates/document'
+import { type CertificateFormValues, type ReviewCertificateValues } from '@/components/features/certificates/schemas'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
@@ -30,31 +28,6 @@ const certificateUserColumns = {
   email: true,
   avatarUrl: true,
 } as const
-
-export const certificateFormSchema = z
-  .object({
-    activityStartDate: z.string().min(1),
-    activityEndDate: z.string().min(1),
-    activityDuration: z.coerce.number().int().positive(),
-    activityLocation: z.string().min(1).max(255),
-    activityDescription: z.string().min(10).max(2000),
-    organizationRating: z.coerce.number().int().min(1).max(5),
-    language: z.string().min(1),
-    skillCourseIds: z.array(z.number()).min(1),
-  })
-  .refine(data => new Date(data.activityEndDate) >= new Date(data.activityStartDate), {
-    path: ['activityEndDate'],
-    message: 'End date must be after start date',
-  })
-
-export type CertificateFormValues = z.infer<typeof certificateFormSchema>
-
-export const reviewCertificateSchema = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('approve') }),
-  z.object({ action: z.literal('request_changes'), comment: z.string().min(10).max(2000) }),
-])
-
-export type ReviewCertificateValues = z.infer<typeof reviewCertificateSchema>
 
 const certificateWith = {
   organization: {
@@ -168,6 +141,8 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
         const titleMap = s.course.title as Record<string, string>
         return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
       })
+      const { renderToBuffer } = await import('@react-pdf/renderer')
+      const { CertificateDocument } = await import('@/components/features/certificates/document')
       const pdfBuffer = await renderToBuffer(
         createElement(CertificateDocument, {
           values: {
@@ -197,7 +172,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       .set(
         isApprove
           ? { status: 'approved', issuedAt, documentUrl }
-          : { status: 'changes_requested', reviewerComment: values.comment }
+          : { status: 'changes_requested', reviewerComment: 'comment' in values ? values.comment : undefined }
       )
       .where(eq(certificates.id, id))
       .returning()
@@ -217,12 +192,15 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     if (cert.user?.email) {
       await sendMail({
         to: cert.user.email,
-        subject: isApprove
-          ? 'Your GloRe certificate has been approved!'
-          : 'Changes requested on your GloRe certificate',
-        html: isApprove
-          ? `<p>Congratulations! Your GloRe certificate has been approved and issued.</p>${documentUrl ? `<p><a href="${documentUrl}">Download your certificate</a></p>` : '<p>Log in to the GloRe platform to download it.</p>'}`
-          : `<p>Your reviewer has requested changes: <strong>${values.comment}</strong></p><p>Please log in to update and resubmit your certificate.</p>`,
+        template: {
+          name: 'certificate/review',
+          props: {
+            status: isApprove ? 'approved' : 'changes_requested',
+            comment: 'comment' in values ? values.comment : undefined,
+            documentUrl,
+            userName: cert.user.firstName ?? undefined,
+          },
+        },
       }).catch(() => null)
     }
 
@@ -338,8 +316,7 @@ export const createCertificate = async (values: CertificateFormValues) => {
       if (reviewer?.email) {
         await sendMail({
           to: reviewer.email,
-          subject: 'A new certificate has been submitted for review',
-          html: `<p>A new GloRe certificate has been submitted and assigned to you for review. Please log in to the GloRe platform to review it.</p>`,
+          template: { name: 'certificate/assigned', props: {} },
         }).catch(() => null)
       }
     }

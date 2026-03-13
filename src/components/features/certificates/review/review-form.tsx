@@ -8,12 +8,8 @@ import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import {
-  type ReviewCertificateValues,
-  claimCertificateReview,
-  reviewCertificate,
-  reviewCertificateSchema,
-} from '@/actions/certificate'
+import { claimCertificateReview, reviewCertificate } from '@/actions/certificate'
+import { type ReviewCertificateValues, reviewCertificateSchema } from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

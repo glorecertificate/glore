@@ -85,18 +85,22 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>, previ
   const parsed = parseUser(user)
 
   if (values.email && previousEmail && values.email !== previousEmail) {
-    const name = parsed.firstName ?? 'User'
+    const userName = parsed.firstName ?? undefined
 
     await sendMail({
       to: values.email,
-      subject: 'Your GloRe Certificate email has been updated',
-      html: `<p>Hi ${name},</p><p>Your email address has been changed to <strong>${values.email}</strong>.</p><p>If you did not make this change, please contact support immediately.</p>`,
+      template: {
+        name: 'account/email-changed',
+        props: { oldEmail: previousEmail, newEmail: values.email, type: 'new', userName },
+      },
     })
 
     await sendMail({
       to: previousEmail,
-      subject: 'Your GloRe Certificate email has been changed',
-      html: `<p>Hi ${name},</p><p>Your email address has been changed from <strong>${previousEmail}</strong> to a new address.</p><p>If you did not make this change, please contact support immediately.</p>`,
+      template: {
+        name: 'account/email-changed',
+        props: { oldEmail: previousEmail, newEmail: values.email, type: 'old', userName },
+      },
     })
   }
 

@@ -13,5 +13,5 @@
     "src/components/blocks/**": ["exports", "types"],
     "src/components/features/**": ["exports"]
   },
-  "ignoreDependencies": ["auth", "date-fns", "server-only", "shadcn"]
+  "ignoreDependencies": ["@react-email/preview-server", "auth", "date-fns", "server-only", "shadcn"]
 }

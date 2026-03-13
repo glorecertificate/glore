@@ -152,8 +152,7 @@ export const CourseListCard = memo(
                   <Tooltip delayDuration={500}>
                     <TooltipTrigger asChild>
                       <IconPicker
-                        categorized={false}
-                        className="peer size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
+                        className="peer size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground aria-expanded:bg-muted!"
                         onValueChange={updateCourseIcon}
                         value={(course.icon ?? undefined) as IconName | undefined}
                         variant="ghost"

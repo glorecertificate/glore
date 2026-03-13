@@ -107,7 +107,7 @@ export const PageHeaderContainer = ({ children, className, ...props }: React.Com
   return (
     <header
       className={cn(
-        'sticky top-0 z-5 ml-px flex min-h-12 w-full shrink-0 items-center justify-between gap-2 p-4',
+        'sticky top-0 z-5 ml-px flex min-h-12 w-full shrink-0 items-center justify-between gap-2 px-6 py-4',
         'bg-linear-to-tr from-background to-background/90 transition-[width,height] ease-linear',
         scrolled && 'border-b',
         className

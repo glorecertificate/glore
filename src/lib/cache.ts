@@ -4,6 +4,7 @@ export enum CacheTag {
   Certificates = 'certificates',
   Course = 'course',
   Courses = 'courses',
+  Organizations = 'organizations',
   SkillGroups = 'skill-groups',
   TeamMembers = 'team-members',
   User = 'user',

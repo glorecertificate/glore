@@ -1,11 +1,10 @@
 'use client'
 
 import type React from 'react'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { useCourseListSkillGroups, useCourseListTypes } from '@/components/features/courses/list/use-params'
 import { useCourses } from '@/components/providers/courses-context'
@@ -22,20 +21,15 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
   const t = useTranslations('Courses')
 
   const { skillGroups } = useCourses()
-  const { activeTypes } = useCourseListTypes()
+  const { activeTypes, setActiveTypes } = useCourseListTypes()
   const { activeSkillGroups, setActiveSkillGroups, defaultSkillGroups } = useCourseListSkillGroups()
-
-  const [toastTime, setToastTime] = useState<number | null>(null)
 
   const toggleGroup = useCallback(
     (groupValue: string) => {
       if (activeSkillGroups.includes(groupValue)) {
         if (activeSkillGroups.length <= 1) {
-          if (toastTime && Date.now() - toastTime < 2000) {
-            return
-          }
-          toast.info(t('selectAtLeastOneGroup'))
-          setToastTime(Date.now())
+          setActiveSkillGroups(null)
+          setActiveTypes(activeTypes.filter(type => type !== 'skill'))
           return
         }
         setActiveSkillGroups(activeSkillGroups.filter(g => g !== groupValue))
@@ -43,7 +37,7 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
       }
       setActiveSkillGroups([...activeSkillGroups, groupValue])
     },
-    [activeSkillGroups, setActiveSkillGroups, t, toastTime]
+    [activeSkillGroups, activeTypes, setActiveSkillGroups, setActiveTypes]
   )
 
   const selectAll = useCallback(() => {

@@ -1,11 +1,3 @@
-<!-- BEGIN:nextjs-agent-rules -->
-
-# Next.js: ALWAYS read docs before coding
-
-Before any Next.js work, find and read the relevant doc in `node_modules/next/dist/docs/`. Your training data is outdated — the docs are the source of truth.
-
-<!-- END:nextjs-agent-rules -->
-
 # `AGENTS.md`
 
 GloRe Certificate — multilingual e-learning platform for soft skills certification, built with Next.js 16, React 19, Neon (Postgres), Drizzle ORM, and Tailwind CSS 4.
@@ -90,15 +82,17 @@ skills help                           # Show all CLI commands
 
 ### Installed skills
 
-| Skill                         | Source                      | Purpose                                             | When to use                                                                         |
-| ----------------------------- | --------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `frontend-design`             | `anthropics/skills`         | Production-grade UI design with bold aesthetics     | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-auth`                   | `neondatabase/ai-rules`     | Neon Auth setup and configuration                   | When modifying auth flows, routes, or session management                            |
-| `neon-drizzle`                | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                   | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`               | `neondatabase/agent-skills` | Neon Serverless Postgres best practices             | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices` | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`       | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review          | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `agents-md`                   | custom                      | Update AGENTS.md via `/agents-md <instruction>`     | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| Skill                                 | Source                      | Purpose                                             | When to use                                                                         |
+| ------------------------------------- | --------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`        | Better Auth server/client setup, plugins, sessions  | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`        | Rate limiting, CSRF, secrets, session hardening     | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`        | Email verification, password reset, hashing policy  | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`         | Production-grade UI design with bold aesthetics     | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                   | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills` | Neon Serverless Postgres best practices             | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review          | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `agents-md`                           | custom                      | Update AGENTS.md via `/agents-md <instruction>`     | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
 
 ### Skill enforcement rules
 
@@ -107,7 +101,7 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 1. **Any UI work** → Read `frontend-design/SKILL.md` AND `vercel-react-best-practices/SKILL.md`. Use shadcn/ui components from `components.json` (new-york style). Composable component patterns are mandatory.
 2. **Any React/Next.js code** → Read `vercel-react-best-practices/SKILL.md`. Apply the 58 rules by priority (CRITICAL → HIGH → MEDIUM → LOW).
 3. **Database/schema changes** → Read `neon-drizzle/SKILL.md` and `neon-postgres/SKILL.md`.
-4. **Auth modifications** → Read `neon-auth/SKILL.md`.
+4. **Auth modifications** → Read `better-auth-best-practices/SKILL.md`, `better-auth-security-best-practices/SKILL.MD`, and `email-and-password-best-practices/SKILL.md`.
 5. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
 6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
 
@@ -127,8 +121,10 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
 └── skills/
     ├── .gitignore              # Ignores all folders; add !<name> to track custom skills
     ├── agents-md/              # AGENTS.md update skill (custom, git-tracked)
+    ├── better-auth-best-practices/           # Better Auth setup (external)
+    ├── better-auth-security-best-practices/  # Better Auth security (external)
+    ├── email-and-password-best-practices/    # Email/password auth (external)
     ├── frontend-design/        # UI design patterns (external)
-    ├── neon-auth/              # Auth setup guides (external)
     ├── neon-drizzle/           # Drizzle ORM guides (external)
     ├── neon-postgres/          # Postgres best practices (external)
     ├── vercel-react-best-practices/  # React/Next.js performance (external)
@@ -176,7 +172,7 @@ src/
 │   ├── schema/         # Drizzle schema definitions per table
 │   └── queries/        # Query parse functions per table
 ├── hooks/              # Custom React hooks
-├── lib/                # Utilities, constants, types
+├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── auth/           # Better Auth server + client instances
 │   ├── cache.ts        # CacheTag enum
 │   ├── constants.ts    # Route roots, regex validators
@@ -760,8 +756,6 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 **SMTP config:** `emailjs` client with settings from env vars (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SENDER`).
 
-**Email rendering:** `@react-email/render` with `pretty` output + `toPlainText` fallback.
-
 ---
 
 ## Environment Variables
@@ -851,7 +845,7 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 9. **No JSX literals:** All user-facing strings must go through `next-intl` translations.
 
-10. **Async page export pattern:** Page components use anonymous default export wrapping an async function: `export default async () => { ... }`.
+10. **Default export pattern:** Page and layout components MUST use a direct anonymous default export — never assign to a named variable first. Async page exports wrap an async arrow function directly: `export default async () => { ... }`. Sync exports do the same: `export default () => <Component />`.
 
 11. **Lucide icon import:** Import types from `lucide-react`, but use the lazy `LucideIcon` component from `@/components/icons/lucide` for rendering. The `lucide-react` module is augmented to re-export from `lucide-react/dist/lucide-react.suffixed`.
 
@@ -863,6 +857,8 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 15. **Never edit generated files:** Files like `env.d.ts` and everything under `drizzle/` (migrations, snapshots, journal) are auto-generated and MUST NOT be edited manually. Use the corresponding generation command instead (`pnpm typegen` for `env.d.ts`, `pnpm db generate` / `pnpm db migrate` for `drizzle/`). If a codegen/typegen script exists for a file, always use it.
 
+16. **Remove unused translation keys:** After every feature or code change, scan all three translation files (`messages/en.json`, `messages/es.json`, `messages/it.json`) and the source code to identify message keys that are no longer referenced anywhere. Remove any unused keys from all three files simultaneously to keep the translation files lean and in sync.
+
 ---
 
 ## Coding Patterns (ENFORCED)
@@ -873,7 +869,7 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 - **Always use `const` arrow functions** — never the `function` keyword:
 
-```typescript
+```tsx
 // ✅ Correct
 const sum = (a: number, b: number) => a + b
 const MyComponent = () => <div />
@@ -951,6 +947,7 @@ const double = (n: number) => {
 - **Reuse existing UI components** from `src/components/ui/` — always check shadcn/ui first
 - **Keep modules small and focused** — don't create monolithic files for a single feature
 - **Extract shared logic** into `src/lib/` when used in 2+ places
+- **`src/lib/` is for app-wide shared code only** — schemas, types, utilities, and constants scoped to a single feature MUST live inside that feature's folder (e.g., `src/components/features/<domain>/schemas.ts`), not in `src/lib/`
 
 ### Type definitions
 
@@ -1003,6 +1000,32 @@ const DashboardContent = () => {
   // ...
 }
 export { DashboardContent }
+```
+
+### Default export pattern
+
+- **Always export default directly** — never assign to a named variable and export it separately. This applies to pages, layouts, email templates, and any other file that uses a default export:
+
+```tsx
+// ✅ Correct
+export default () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <MyContent />
+  </div>
+)
+
+export default async () => {
+  const data = await fetchData()
+  return <Page data={data} />
+}
+
+// ❌ Wrong — never assign then export
+const MyPage = () => (
+  <div className="flex min-h-screen items-center justify-center">
+    <MyContent />
+  </div>
+)
+export default MyPage
 ```
 
 ### Dependency array ordering

@@ -8,9 +8,10 @@ import { admin, username } from 'better-auth/plugins'
 import { db } from '@/db/client'
 import * as schema from '@/db/schema'
 import { sendMail } from '@/lib/email'
+import metadata from '~/config/metadata.json'
 
 export const auth = betterAuth({
-  appName: 'GloRe Certificate',
+  appName: metadata.name,
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
@@ -23,13 +24,11 @@ export const auth = betterAuth({
     async sendResetPassword({ user, url }) {
       await sendMail({
         to: user.email,
-        subject: 'Reset your password — GloRe Certificate',
-        html: `<p>Click the link below to reset your password:</p><p><a href="${url}">${url}</a></p>`,
+        template: { name: 'auth/recovery', props: { url, userName: user.name || undefined } },
       })
     },
   },
   user: {
-    modelName: 'users',
     fields: {
       image: 'avatarUrl',
     },
@@ -60,8 +59,7 @@ export const auth = betterAuth({
       }) {
         await sendMail({
           to: newEmail,
-          subject: 'Verify your new email — GloRe Certificate',
-          html: `<p>Hi ${user.name},</p><p>Click the link below to verify your new email address:</p><p><a href="${url}">${url}</a></p>`,
+          template: { name: 'auth/verify-email', props: { url, userName: user.name || undefined } },
         })
       },
     },

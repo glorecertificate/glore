@@ -113,11 +113,10 @@ export const LoginForm = ({
       }
 
       const { error: loginError } = await login({ email: data.email, password })
+
       if (loginError) {
         setLoading(false)
-        if (loginError.code === '28P01') {
-          return setPasswordInvalid()
-        }
+        if (loginError.code === 'AUTH_ERROR') return setPasswordInvalid()
         console.error(loginError)
         return toast.error(t('networkError'))
       }

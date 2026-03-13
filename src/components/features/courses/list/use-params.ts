@@ -97,15 +97,16 @@ export const useCourseListFilters = () => {
   const { activeTypes, setActiveTypes } = useCourseListTypes()
   const { activeLanguages, setActiveLanguages } = useCourseListLanguages()
   const { activeSkillGroups, setActiveSkillGroups } = useCourseListSkillGroups()
-  const { setSort } = useCourseListSort()
+  const { sort, setSort } = useCourseListSort()
   const { skillGroups } = useCourses()
 
   const hasFilters = useMemo(
     () =>
-      activeTypes.length < COURSE_TYPES.length ||
+      COURSE_TYPES.some(t => !activeTypes.includes(t)) ||
       activeLanguages.length < i18n.locales.length ||
-      activeSkillGroups.length < skillGroups.length,
-    [activeTypes, activeLanguages, activeSkillGroups, skillGroups.length]
+      activeSkillGroups.length < skillGroups.length ||
+      sort !== null,
+    [activeLanguages, activeSkillGroups, activeTypes, skillGroups.length, sort]
   )
 
   const resetFilters = useCallback(() => {

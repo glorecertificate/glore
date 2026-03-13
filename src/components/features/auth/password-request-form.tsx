@@ -76,7 +76,7 @@ export const PasswordRequestForm = ({
         return
       }
 
-      const { error } = await resetPassword(emailData.email, { redirectTo: window.location.origin })
+      const { error } = await resetPassword(emailData.email, { redirectTo: `${window.location.origin}/login` })
       if (error) {
         toast.error(t('networkError'))
         console.error('Reset password error:', error)

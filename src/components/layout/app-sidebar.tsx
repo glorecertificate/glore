@@ -278,7 +278,12 @@ const AppSidebarMain = () => {
           <AppSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <AppSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </AppSidebarCollapsible>
-        {user.isAdmin && <AppSidebarItem icon={CogIcon} label={t('admin')} route="/admin" />}
+        {user.isAdmin && (
+          <AppSidebarCollapsible icon={CogIcon} label={t('admin')} route="/admin">
+            <AppSidebarItem label={t('adminTeam')} route="/admin" subItem />
+            <AppSidebarItem label={t('adminOrganizations')} route="/admin/organizations" subItem />
+          </AppSidebarCollapsible>
+        )}
       </SidebarMenu>
     </SidebarGroup>
   )

@@ -6,8 +6,7 @@ import { useTranslations } from 'next-intl'
 
 import { ErrorIcon } from '@/components/icons/error'
 import { Image } from '@/components/ui/image'
-import { publicFile } from '@/lib/storage'
-import { cn } from '@/lib/utils'
+import { cn, publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 export interface ErrorProps {

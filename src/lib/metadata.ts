@@ -1,8 +1,8 @@
 import { type Metadata, Route, type Viewport } from 'next'
 
 import { type MessageKey, type Namespace, i18n } from '@/lib/i18n'
-import { publicFile } from '@/lib/storage'
 import { type Any, type HttpUrl } from '@/lib/types'
+import { publicFile } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 const APP_URL = process.env.APP_URL as HttpUrl

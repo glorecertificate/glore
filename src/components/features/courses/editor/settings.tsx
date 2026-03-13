@@ -58,6 +58,7 @@ export const CourseSettings = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: 'onChange',
     defaultValues: {
       type: course?.type ?? 'intro',
       skillGroupId: course?.skillGroup?.id ?? null,
@@ -73,14 +74,12 @@ export const CourseSettings = ({
     .map(error => error.message)
     .filter(Boolean)
 
-  const disabled = useMemo(
-    () =>
-      disabledProp ||
-      !(form.formState.isValid && form.formState.isDirty) ||
-      form.formState.isSubmitting ||
-      (form.getValues('type') === 'skill' && !form.getValues('skillGroupId')),
-    [disabledProp, form]
-  )
+  const { isValid, isDirty, isSubmitting } = form.formState
+  const disabled =
+    disabledProp ||
+    !(isValid && isDirty) ||
+    isSubmitting ||
+    (form.getValues('type') === 'skill' && !form.getValues('skillGroupId'))
 
   const submitMessage = useMemo(() => {
     if (disabledProp && form.formState.isSubmitSuccessful) return t('redirecting')
@@ -144,7 +143,7 @@ export const CourseSettings = ({
                   >
                     <TabsList className="grid min-w-1/3 grid-cols-3">
                       {COURSE_TYPES.map(type => (
-                        <TabsTrigger className="h-7" key={type} size="sm" value={type}>
+                        <TabsTrigger className="h-8 py-0" key={type} size="sm" value={type}>
                           {t(`courseType-${type}`)}
                         </TabsTrigger>
                       ))}

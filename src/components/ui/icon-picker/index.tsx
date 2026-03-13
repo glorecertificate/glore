@@ -15,7 +15,6 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useMounted } from '@/hooks/use-mounted'
 import { type Any } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -45,9 +44,9 @@ const IconRenderer = memo(({ name }: { name: IconName }) => <LucideIcon name={na
 
 const IconsColumnSkeleton = () => (
   <div className="mt-1 flex w-full flex-col gap-2">
-    <div className="grid w-full grid-cols-5 gap-2">
-      {Array.from({ length: 40 }).map((_, i) => (
-        <Skeleton className="h-10 w-10 rounded-md" key={i} />
+    <div className="grid w-full grid-cols-6 gap-2">
+      {Array.from({ length: 42 }).map((_, i) => (
+        <Skeleton className="aspect-square w-full rounded-md" key={i} />
       ))}
     </div>
   </div>
@@ -63,7 +62,6 @@ const loadIconData = async () => {
 }
 
 export const useIconData = () => {
-  const mounted = useMounted()
   const [icons, setIcons] = useState<IconData[]>(cachedIcons ?? [])
   const [isLoading, setIsLoading] = useState(!cachedIcons)
 
@@ -73,11 +71,9 @@ export const useIconData = () => {
       setIsLoading(false)
       return
     }
-    if (mounted) {
-      const data = await loadIconData()
-      setIcons(data)
-      setIsLoading(false)
-    }
+    const data = await loadIconData()
+    setIcons(data)
+    setIsLoading(false)
   })
 
   useEffect(() => void loadIcons(), [])
@@ -179,8 +175,8 @@ export const IconPicker = memo(
         }
 
         const rows = []
-        for (let i = 0; i < category.icons.length; i += 5) {
-          rows.push(category.icons.slice(i, i + 5))
+        for (let i = 0; i < category.icons.length; i += 6) {
+          rows.push(category.icons.slice(i, i + 6))
         }
 
         for (const [rowIndex, rowIcons] of rows.entries()) {
@@ -323,18 +319,10 @@ export const IconPicker = memo(
     const handleClose = useCallback((e: Event) => e.preventDefault(), [])
 
     const categoryButtons = useMemo(() => {
-      if (!categorized || debouncedSearch.trim() !== '') {
-        return null
-      }
+      if (!categorized || debouncedSearch.trim() !== '') return null
 
       return categorizedIcons.map(category => (
-        <Button
-          className="text-xs"
-          key={category.name}
-          onClick={handleCategoryClick(category.name)}
-          size="sm"
-          variant="outline"
-        >
+        <Button key={category.name} onClick={handleCategoryClick(category.name)} size="xs" variant="ghost">
           {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
         </Button>
       ))
@@ -344,7 +332,13 @@ export const IconPicker = memo(
       (icon: IconData) => {
         if (!tooltips) {
           return (
-            <Button key={icon.name} onClick={handleIconClick(icon.name)} variant="outline">
+            <Button
+              className="aspect-square w-full"
+              key={icon.name}
+              onClick={handleIconClick(icon.name)}
+              variant="outline"
+              title={icon.name.replace(/-/g, ' ')}
+            >
               <IconRenderer name={icon.name as IconName} />
             </Button>
           )
@@ -354,7 +348,7 @@ export const IconPicker = memo(
           <TooltipProvider key={icon.name}>
             <Tooltip>
               <TooltipTrigger
-                className="flex items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
+                className="flex aspect-square w-full items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
                 onClick={handleIconClick(icon.name)}
               >
                 <IconRenderer name={icon.name as IconName} />
@@ -382,7 +376,7 @@ export const IconPicker = memo(
             if (item.type === 'row') {
               return (
                 <div data-index={virtualItem.index} key={virtualItem.key} style={itemStyle}>
-                  <div className="grid w-full grid-cols-5 gap-2">{item.icons!.map(renderIcon)}</div>
+                  <div className="grid w-full grid-cols-6 gap-2">{item.icons!.map(renderIcon)}</div>
                 </div>
               )
             }
@@ -390,7 +384,7 @@ export const IconPicker = memo(
             if (categorized) {
               return (
                 <div className="top-0 z-10" key={virtualItem.key} style={itemStyle}>
-                  <h3 className="text-sm font-medium capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
+                  <h3 className="text-[13px] font-medium capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
                   <Separator className="my-1.5" />
                 </div>
               )
@@ -442,7 +436,11 @@ export const IconPicker = memo(
         <PopoverTrigger asChild>
           {children ?? (
             <Button
-              className={cn('has-[>svg]:animate-none', isOpen && 'cursor-default', className)}
+              className={cn(
+                'has-[>svg]:animate-none',
+                isOpen && 'cursor-default bg-accent/80 dark:bg-accent/50',
+                className
+              )}
               variant="ghost"
               {...props}
             >
@@ -455,19 +453,17 @@ export const IconPicker = memo(
             </Button>
           )}
         </PopoverTrigger>
-        <PopoverContent className="w-64 rounded-lg border bg-card p-3" onCloseAutoFocus={handleClose}>
+        <PopoverContent
+          className="flex w-72 flex-col gap-2 rounded-lg border bg-card p-3 shadow-xs"
+          onCloseAutoFocus={handleClose}
+        >
           {searchable && (
-            <Input
-              className="mb-2 rounded-lg"
-              onChange={handleSearchChange}
-              placeholder={t('searchIcons')}
-              value={search}
-            />
+            <Input type="search" onChange={handleSearchChange} placeholder={t('searchIcons')} value={search} />
           )}
           {categorized && debouncedSearch.trim() === '' && (
-            <div className="mt-2 scrollbar-hide flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
+            <div className="scrollbar-hide flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
           )}
-          <div className="max-h-60 overflow-auto" ref={parentRef} style={listStyle}>
+          <div className="max-h-60 min-h-1 overflow-auto" ref={parentRef} style={listStyle}>
             {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
           </div>
         </PopoverContent>

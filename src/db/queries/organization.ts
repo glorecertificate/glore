@@ -58,3 +58,21 @@ export const parseOrganizationJoinRequest = (request: OrganizationJoinRequestWit
   isPending: request.status === 'pending',
   isRejected: request.status === 'rejected',
 })
+
+export interface AdminOrganizationWithRelations extends OrganizationRow {
+  registrationRequest: JoinRequestRow | null
+}
+
+export type AdminOrganization = ReturnType<typeof parseAdminOrganization>
+
+export const parseAdminOrganization = (org: AdminOrganizationWithRelations) => ({
+  ...org,
+  isApproved: !!org.approvedAt,
+  isPending: !org.approvedAt,
+  registrationRequest: org.registrationRequest
+    ? {
+        ...org.registrationRequest,
+        fullName: [org.registrationRequest.firstName, org.registrationRequest.lastName].filter(Boolean).join(' '),
+      }
+    : null,
+})

@@ -15,7 +15,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
-import { publicFile } from '@/lib/storage'
+import { publicFile } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 export { viewport } from '@/lib/metadata'

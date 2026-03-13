@@ -14,14 +14,13 @@ import {
   useCourseListTab,
   useDisplayCourses,
 } from '@/components/features/courses/list/use-params'
+import { EmptyListIcon } from '@/components/icons/empty-list'
 import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
-import { Image } from '@/components/ui/image'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
 import { TabsContent } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
-import { publicFile } from '@/lib/storage'
 import { cn } from '@/lib/utils'
 
 export const CourseListContent = memo(
@@ -91,7 +90,7 @@ export const CourseListContent = memo(
       return (
         <TabsContent className={cn('grow space-y-4', className)} value={tab} {...props}>
           <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
-            <Image className="w-64" loading="eager" src={publicFile('/assets/no-results.svg')} />
+            <EmptyListIcon className="size-22 fill-foreground/90" />
             <div className="flex flex-col items-center gap-1">
               <h3 className="text-xl font-medium">{emptyTitle}</h3>
               <p className="mt-1 text-muted-foreground">
@@ -160,12 +159,14 @@ export const CourseListContent = memo(
                     course={course}
                     key={course.slug}
                   />
-                  <SortableItemHandle
-                    className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
-                    title={t('reorderCourse')}
-                  >
-                    <GripVerticalIcon className="size-4 text-muted-foreground" />
-                  </SortableItemHandle>
+                  {displayCourses.length > 1 && (
+                    <SortableItemHandle
+                      className="absolute top-6 right-6 opacity-0 transition-opacity group-hover/sortable-item:opacity-100"
+                      title={t('reorderCourse')}
+                    >
+                      <GripVerticalIcon className="size-4 text-muted-foreground" />
+                    </SortableItemHandle>
+                  )}
                 </SortableItem>
               ))}
             </div>

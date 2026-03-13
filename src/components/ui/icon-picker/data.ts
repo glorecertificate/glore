@@ -1,9 +1,3 @@
-interface IconPickerData {
-  name: string
-  categories: string[]
-  tags: string[]
-}
-
 export default [
   {
     categories: ['text', 'design'],
@@ -13842,4 +13836,8 @@ export default [
     name: 'zoom-out',
     tags: ['magnifying glass', 'plus'],
   },
-] as IconPickerData[]
+] satisfies {
+  name: string
+  categories: string[]
+  tags: string[]
+}[]

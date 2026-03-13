@@ -143,7 +143,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
               <AlertDialogTrigger className="w-full">
                 <DropdownMenuItem onSelect={e => e.preventDefault()}>
                   <ArchiveIcon />
-                  {t('archive')}
+                  {t('archiveAction')}
                 </DropdownMenuItem>
               </AlertDialogTrigger>
               <AlertDialogContent>

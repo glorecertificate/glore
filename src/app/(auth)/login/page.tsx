@@ -9,12 +9,12 @@ import { intlMetadata } from '@/lib/metadata'
 import { AuthView } from '@/lib/types'
 import { camelize } from '@/lib/utils'
 
-const { parse } = createSearchParamsCache({ resetToken: parseAsString })
+const { parse } = createSearchParamsCache({ token: parseAsString })
 
 const resolveParams = async ({ searchParams }: PageProps<'/login'>) => {
-  const { resetToken } = await parse(searchParams)
-  const view: AuthView = resetToken ? 'password_reset' : 'login'
-  return { resetToken, view }
+  const { token } = await parse(searchParams)
+  const view: AuthView = token ? 'password_reset' : 'login'
+  return { resetToken: token, view }
 }
 
 export const generateMetadata = async (props: PageProps<'/login'>) => {

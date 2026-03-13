@@ -7,6 +7,11 @@ import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
 import { type Any, type AnyFunction, type AnyRecord, type Rgb } from '@/lib/types'
 
 /*
+  App
+*/
+export const publicFile = (file: PublicFile) => `${process.env.APP_URL ?? ''}/${file}`
+
+/*
   Theme
 */
 const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
@@ -34,7 +39,7 @@ export const hexToRgb = <T extends AnyRecord>(record: T) =>
   )
 
 /*
-  Validators
+  Validation
 */
 export const isValidUsername = (value: string) => EMAIL_REGEX.test(value) || USERNAME_REGEX.test(value)
 

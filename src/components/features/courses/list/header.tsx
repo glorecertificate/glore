@@ -26,26 +26,28 @@ export const CourseListHeader = memo(({ className, ...props }: React.ComponentPr
   )
 
   return (
-    <PageHeaderContainer className={cn('flex flex-col gap-3', className)} {...props}>
-      <div className="flex w-full items-center justify-between gap-2">
+    <PageHeaderContainer className={cn('flex flex-col sm:gap-5', className)} {...props}>
+      <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
         <div className="flex items-center gap-2">
           <PageHeaderSidebarTrigger />
           <PageHeaderBreadcrumb descriptionKey={descriptionKey} namespace="Courses" titleKey="courses" />
         </div>
-        <div className="mr-6 flex items-center gap-3">
+        <div className="flex items-center gap-3 sm:mr-6 sm:-mb-1">
           <CourseListTabsList />
           <CourseListDialog />
         </div>
-        <PageHeaderLogo />
+        <PageHeaderLogo className="hidden sm:block" />
       </div>
-      <div className="mt-2 mb-1 flex w-full justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <CourseListLanguageSelect />
+      <div className="mb-1 flex w-full flex-wrap justify-between gap-4 sm:mt-2 sm:gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <CourseListTypeSelect />
           <CourseListGroupSelect />
           <CourseListFilterReset />
         </div>
-        <CourseListSort />
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto">
+          <CourseListLanguageSelect />
+          <CourseListSort />
+        </div>
       </div>
     </PageHeaderContainer>
   )

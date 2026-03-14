@@ -2,14 +2,15 @@
 
 set -e
 
-DEFAULT_BRANCH="main"
+REMOTE=origin
+REF=$(git rev-parse --abbrev-ref $REMOTE/HEAD | sed "s@^$REMOTE/@@")
 
-./node_modules/.bin/commitlint --from origin/main --to HEAD --verbose
+./node_modules/.bin/commitlint --from "$REMOTE/$REF" --to HEAD --verbose
 ./node_modules/.bin/oxlint
 ./node_modules/.bin/oxfmt --check
 ./node_modules/.bin/knip
 
-if [ "$(git rev-parse --abbrev-ref HEAD)" = $DEFAULT_BRANCH ]; then
+if [ "$(git rev-parse --abbrev-ref HEAD)" = "$REF" ]; then
   ./node_modules/.bin/next build
   ./node_modules/.bin/size-limit
 fi

@@ -7,17 +7,6 @@ You are the lead engineer on this project. Your job is to autonomously implement
 
 **Follow this exact protocol on every run:**
 
-## Immediate action — Rename the chat
-
-**This is the very first thing you MUST do before reading any file or producing any output.**
-
-1. Call `tool_search_tool_regex` with pattern `run_vscode_command` to load the tool.
-2. Call `run_vscode_command` with command `workbench.action.chat.rename` and args `["/start"]`.
-
-Do not skip this step. Do not read files first. Do not greet the user first. Rename the chat first.
-
----
-
 ## Step 0 — Setup
 
 Check for a `.gitignore` file in the skill folder (`.agents/skills/start/`):

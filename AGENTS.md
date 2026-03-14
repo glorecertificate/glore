@@ -82,17 +82,19 @@ skills help                           # Show all CLI commands
 
 ### Installed skills
 
-| Skill                                 | Source                      | Purpose                                             | When to use                                                                         |
-| ------------------------------------- | --------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `better-auth-best-practices`          | `better-auth/skills`        | Better Auth server/client setup, plugins, sessions  | When configuring auth, adding plugins, or setting up email/password authentication  |
-| `better-auth-security-best-practices` | `better-auth/skills`        | Rate limiting, CSRF, secrets, session hardening     | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
-| `email-and-password-best-practices`   | `better-auth/skills`        | Email verification, password reset, hashing policy  | When implementing login/sign-up flows, password security, or email verification     |
-| `frontend-design`                     | `anthropics/skills`         | Production-grade UI design with bold aesthetics     | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-drizzle`                        | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                   | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`                       | `neondatabase/agent-skills` | Neon Serverless Postgres best practices             | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices`         | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`               | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review          | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `agents-md`                           | custom                      | Update AGENTS.md via `/agents-md <instruction>`     | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| Skill                                 | Source                      | Purpose                                                            | When to use                                                                         |
+| ------------------------------------- | --------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`        | Better Auth server/client setup, plugins, sessions                 | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`        | Rate limiting, CSRF, secrets, session hardening                    | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`        | Email verification, password reset, hashing policy                 | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`         | Production-grade UI design with bold aesthetics                    | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                                  | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills` | Neon Serverless Postgres best practices                            | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js                | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review                         | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `email-best-practices`                | custom                      | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `react-email`                         | custom                      | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `agents-md`                           | custom                      | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
 
 ### Skill enforcement rules
 
@@ -104,6 +106,7 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 4. **Auth modifications** → Read `better-auth-best-practices/SKILL.md`, `better-auth-security-best-practices/SKILL.MD`, and `email-and-password-best-practices/SKILL.md`.
 5. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
 6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
+7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
 
 ### Creating custom skills
 
@@ -128,7 +131,9 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
     ├── neon-drizzle/           # Drizzle ORM guides (external)
     ├── neon-postgres/          # Postgres best practices (external)
     ├── vercel-react-best-practices/  # React/Next.js performance (external)
-    └── web-design-guidelines/  # Web Interface Guidelines (external)
+    ├── web-design-guidelines/  # Web Interface Guidelines (external)
+    ├── email-best-practices/   # Email deliverability & compliance (external)
+    └── react-email/            # react-email components & patterns (external)
 ```
 
 ---
@@ -1068,6 +1073,8 @@ pnpm typecheck > /tmp/typecheck.log 2>&1
 
 ## Auto Updates
 
+### AGENTS.md
+
 > **MANDATORY:** Agents MUST keep `AGENTS.md` ALWAYS in sync with the codebase. This is automatic and does NOT require user confirmation.
 
 **When to update:**
@@ -1089,6 +1096,24 @@ pnpm typecheck > /tmp/typecheck.log 2>&1
 - Edit `AGENTS.md` directly — no PR, no branch, no confirmation needed
 - Keep the same formatting and table structure
 - Be precise — update only the affected section(s)
+
+### README.md
+
+> **MANDATORY:** Agents MUST update `README.md` whenever there are notable changes to the project. This is automatic and does NOT require user confirmation.
+
+**When to update:**
+
+- Adding new features, pages, or user-facing functionality
+- Changing setup steps, install commands, or environment variables
+- Adding or modifying `pnpm` scripts worth documenting
+- Structural or architectural changes that affect how the project is understood
+- Any change that makes existing README content inaccurate or incomplete
+
+**How to update:**
+
+- Edit `README.md` directly — no PR, no branch, no confirmation needed
+- Keep existing sections intact unless they need correction
+- Be concise — README is for human readers, not exhaustive reference
 
 ---
 

@@ -1,4 +1,5 @@
 export enum CacheTag {
+  AdminUsers = 'admin-users',
   AuthUser = 'auth-user',
   AuthUserStatus = 'auth-user-status',
   Certificates = 'certificates',

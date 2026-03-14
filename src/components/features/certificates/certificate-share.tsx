@@ -2,10 +2,12 @@
 
 import { useState } from 'react'
 
-import { CheckIcon, CopyIcon, FacebookIcon, LinkedinIcon, ShareIcon } from 'lucide-react'
+import { CheckIcon, CopyIcon, ShareIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { FacebookIcon } from '@/components/icons/facebook'
+import { LinkedinIcon } from '@/components/icons/linkedin'
 import { Button } from '@/components/ui/button'
 import { type Certificate } from '@/db/queries/certificate'
 import { useSession } from '@/hooks/use-session'

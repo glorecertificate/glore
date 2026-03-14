@@ -46,13 +46,13 @@ export const EmailLayout = ({
     <Html dir="ltr" lang={locale}>
       <Tailwind config={tailwindConfig}>
         <Head>
-          <style>{`
+          {/* <style>{`
             .logo-dark { display: none !important; }
             @media (prefers-color-scheme: dark) {
               .logo-light { display: none !important; }
               .logo-dark { display: block !important; }
             }
-          `}</style>
+          `}</style> */}
         </Head>
         <Preview>{preview}</Preview>
         <Body className="m-0 bg-[#f4f4f5] py-10 font-sans">
@@ -66,13 +66,13 @@ export const EmailLayout = ({
                   src={publicFile(`/logo.png`)}
                   style={logoStyle}
                 />
-                <Img
+                {/* <Img
                   alt={metadata.name}
                   className="logo-dark"
                   height={40}
                   src={publicFile(`/logo-dark.png`)}
                   style={logoStyle}
-                />
+                /> */}
               </Link>
             </Section>
             <Section className="rounded-2xl border border-[#e4e4e7] bg-white px-10 py-10">

@@ -282,6 +282,7 @@ const AppSidebarMain = () => {
           <AppSidebarCollapsible icon={CogIcon} label={t('admin')} route="/admin">
             <AppSidebarItem label={t('adminTeam')} route="/admin" subItem />
             <AppSidebarItem label={t('adminOrganizations')} route="/admin/organizations" subItem />
+            <AppSidebarItem label={t('adminUsers')} route={'/admin/users' as Route} subItem />
           </AppSidebarCollapsible>
         )}
       </SidebarMenu>

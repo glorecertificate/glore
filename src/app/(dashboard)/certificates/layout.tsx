@@ -1,6 +1,6 @@
 import { intlMetadata } from '@/lib/metadata'
 
-export const metadata = () =>
+export const generateMetadata = () =>
   intlMetadata({
     namespace: 'Layout',
     title: 'certificates',

@@ -758,7 +758,7 @@ export const removeOrganizationAvatar = async () => {
   })
 }
 
-export const requestOrganizationRegistration = ({
+export const requestOrganizationRegistration = async ({
   city,
   country,
   email: orgEmail,
@@ -781,7 +781,7 @@ export const requestOrganizationRegistration = ({
   registrantEmail: string
   url?: string
 }) =>
-  safeQuery(async () => {
+  await safeQuery(async () => {
     const handle = name
       .toLowerCase()
       .trim()

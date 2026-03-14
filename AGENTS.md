@@ -95,6 +95,7 @@ skills help                           # Show all CLI commands
 | `email-best-practices`                | custom                      | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
 | `react-email`                         | custom                      | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
 | `agents-md`                           | custom                      | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `ship`                                | custom                      | Ship the next feature via `/ship [input]`                          | When managing the roadmap, picking the next task, or shipping features              |
 
 ### Skill enforcement rules
 
@@ -107,6 +108,7 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 5. **UI review requests** → Read `web-design-guidelines/SKILL.md`, fetch the latest guidelines, and produce terse `file:line` output.
 6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
 7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
+8. **Shipping features** → Read `ship/SKILL.md`. Follow the full workflow: present roadmap, plan, implement, post-action loop.
 
 ### Creating custom skills
 
@@ -117,6 +119,29 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
 3. **To track a custom skill in git:** Add `!<skill-name>` to `.agents/skills/.gitignore` (external skills installed via `skills` CLI are gitignored by default; only custom skills need explicit tracking)
 4. If an agent creates a custom skill, it MUST ask the user whether to track it in git, and if yes, add the exclusion to `.agents/skills/.gitignore`
 
+### Gitignore enforcement for skills
+
+The `.agents/skills/.gitignore` file controls which skills are tracked in git. The rules are:
+
+- **External skills** (listed in `skills-lock.json`) MUST NOT be tracked — do **NOT** add them as exceptions. They behave like `node_modules`.
+- **Custom skills** (created by the user or an agent, NOT in `skills-lock.json`) MUST be added as exceptions (`!<skill-name>`) to be tracked.
+
+Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the skill appears there, it is external and must remain ignored.
+
+```gitignore
+# CORRECT — only custom/user-created skills are tracked
+/*/
+!agents-md
+!ship
+
+# WRONG — external skills must not be exceptions
+/*/
+!agents-md
+!ship
+!better-auth-best-practices   ← WRONG (in skills-lock.json)
+!shadcn                       ← WRONG (in skills-lock.json)
+```
+
 ### Skills directory structure
 
 ```
@@ -124,6 +149,8 @@ Custom skills can be created in `.agents/skills/` following the [Agent Skills fo
 └── skills/
     ├── .gitignore              # Ignores all folders; add !<name> to track custom skills
     ├── agents-md/              # AGENTS.md update skill (custom, git-tracked)
+    ├── commit/                 # Commit workflow skill (custom, git-tracked)
+    ├── ship/                   # Feature shipping skill (custom, git-tracked)
     ├── better-auth-best-practices/           # Better Auth setup (external)
     ├── better-auth-security-best-practices/  # Better Auth security (external)
     ├── email-and-password-best-practices/    # Email/password auth (external)
@@ -723,11 +750,6 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 **Custom utilities:** `text-stroke-*` (webkit text stroke width and color).
 
-**Animations:**
-
-- `shine` — shimmer effect (3s ease-out infinite)
-- `gradient-flow` — background gradient animation (10s ease infinite)
-
 **Theme switching:** Uses `next-themes` with `class` attribute strategy. Supports `system`, `light`, `dark`. View Transitions API used for smooth theme changes (with fallback for browsers without support).
 
 **Mobile breakpoint:** 768px (from `config/theme.json`)
@@ -864,6 +886,8 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 16. **Remove unused translation keys:** After every feature or code change, scan all three translation files (`messages/en.json`, `messages/es.json`, `messages/it.json`) and the source code to identify message keys that are no longer referenced anywhere. Remove any unused keys from all three files simultaneously to keep the translation files lean and in sync.
 
+17. **No comments in new code:** When writing new code, NEVER add inline comments (`//`, `/* */`) or JSDoc comments (`/** */`). The only exception is `//` section dividers inside long JSX components to separate non-obvious sections. Do NOT touch comments in existing code unless explicitly asked.
+
 ---
 
 ## Coding Patterns (ENFORCED)
@@ -941,9 +965,60 @@ const double = (n: number) => {
 
 ### Comments
 
-- **NEVER add comments** unless the user explicitly requests them
-- Code should be self-documenting through clear naming and structure
-- Only exceptions: JSDoc on exported hooks for IDE tooltips (as seen in existing hooks)
+> **MANDATORY:** This rule applies to **new code only**. Never touch comments in existing code unless explicitly asked. When writing new code, follow these rules without exception.
+
+- **NEVER add inline comments** (`//` or `/* */`) to new code — not for clarification, context, TODOs, or documentation
+- **NEVER add JSDoc comments** (`/** */`) to new code — not on hooks, utilities, components, actions, or any other export
+- Code must be self-documenting through clear naming and structure alone
+- **One exception:** `//` section dividers are allowed inside **long JSX components** where visual separation between distinct, non-obvious sections genuinely aids readability. This is the only permitted use of comments in new code.
+
+```tsx
+// ✅ Correct — section dividers in a long JSX component
+const CoursePage = () => (
+  <div>
+    {/* Header */}
+    <header>
+      <CourseTitle />
+      <CourseActions />
+      {/* ... */}
+    </header>
+    {/* Content */}
+    <main>
+      <CourseDescription />
+      <LessonList />
+      {/* ... */}
+    </main>
+    {/* Sidebar */}
+    <aside>
+      <CourseProgress />
+      <CourseResources />
+      {/* ... */}
+    </aside>
+  </div>
+)
+
+// ❌ Wrong — inline comment on logic
+const parseUser = (data: RawUser) => ({
+  ...data,
+  canEdit: Boolean(data.isAdmin || data.isEditor), // true if admin or editor
+})
+
+// ❌ Wrong — JSDoc comment
+/**
+ * Parses a raw user into a User object.
+ */
+const parseUser = (data: RawUser) => ({
+  ...data,
+  canEdit: Boolean(data.isAdmin || data.isEditor),
+})
+
+// ❌ Wrong — section divider in a short or non-JSX context
+const getStatus = (score: number) => {
+  // Thresholds
+  if (score >= 90) return 'excellent'
+  return 'needs-improvement'
+}
+```
 
 ### Code reuse
 

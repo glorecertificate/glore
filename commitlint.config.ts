@@ -1,12 +1,22 @@
 import { RuleConfigSeverity, type UserConfig } from '@commitlint/types'
 
+const { Error, Warning, Disabled } = RuleConfigSeverity
+
 export default {
-  defaultIgnores: true,
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'body-max-line-length': [RuleConfigSeverity.Disabled],
-    'footer-max-line-length': [RuleConfigSeverity.Error, 'always', 120],
-    'scope-enum': [RuleConfigSeverity.Error, 'always', ['deps', 'deps-dev', 'dev', 'release', 'security']],
-    'subject-case': [RuleConfigSeverity.Error, 'always', 'sentence-case'],
+    'type-enum': [
+      Error,
+      'always',
+      ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert', 'ai'],
+    ],
+    'scope-enum': [Error, 'always', ['deps', 'deps-dev', 'release', 'security', 'mcp', 'skills', 'agents']],
+    'subject-case': [Error, 'always', 'sentence-case'],
+    'subject-empty': [Error, 'never'],
+    'header-max-length': [Error, 'always', 100],
+    'body-max-line-length': [Disabled],
+    'body-leading-blank': [Warning, 'always'],
+    'footer-max-line-length': [Error, 'always', 120],
+    'footer-leading-blank': [Warning, 'always'],
   },
 } satisfies UserConfig

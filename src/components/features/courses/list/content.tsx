@@ -90,7 +90,7 @@ export const CourseListContent = memo(
       return (
         <TabsContent className={cn('grow space-y-4', className)} value={tab} {...props}>
           <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
-            <EmptyListIcon className="size-22 fill-foreground/90" />
+            <EmptyListIcon className="size-22 fill-brand-secondary/80" />
             <div className="flex flex-col items-center gap-1">
               <h3 className="text-xl font-medium">{emptyTitle}</h3>
               <p className="mt-1 text-muted-foreground">

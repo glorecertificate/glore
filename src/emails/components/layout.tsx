@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { Body, Container, Head, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from '@react-email/components'
+import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 
 import { publicFile } from '@/lib/utils'
@@ -45,34 +45,12 @@ export const EmailLayout = ({
   return (
     <Html dir="ltr" lang={locale}>
       <Tailwind config={tailwindConfig}>
-        <Head>
-          {/* <style>{`
-            .logo-dark { display: none !important; }
-            @media (prefers-color-scheme: dark) {
-              .logo-light { display: none !important; }
-              .logo-dark { display: block !important; }
-            }
-          `}</style> */}
-        </Head>
         <Preview>{preview}</Preview>
         <Body className="m-0 bg-[#f4f4f5] py-10 font-sans">
           <Container className="mx-auto max-w-140 px-4">
             <Section className="pb-6 text-center">
-              <Link className="no-underline" href={metadata.website}>
-                <Img
-                  alt={metadata.name}
-                  className="logo-light"
-                  height={40}
-                  src={publicFile(`/logo.png`)}
-                  style={logoStyle}
-                />
-                {/* <Img
-                  alt={metadata.name}
-                  className="logo-dark"
-                  height={40}
-                  src={publicFile(`/logo-dark.png`)}
-                  style={logoStyle}
-                /> */}
+              <Link className="no-underline" href={process.env.APP_URL}>
+                <Img alt={metadata.name} height={40} src={publicFile(`/logo.png`)} style={logoStyle} />
               </Link>
             </Section>
             <Section className="rounded-2xl border border-[#e4e4e7] bg-white px-10 py-10">

@@ -33,16 +33,60 @@
       "preset": {
         "name": "conventionalcommits",
         "types": [
-          { "section": "Features", "type": "feat" },
-          { "section": "Bug Fixes", "type": "fix" },
-          { "section": "Chore", "type": "chore", "hidden": false },
-          { "section": "Performance", "type": "perf", "hidden": false },
-          { "section": "Build", "scopes": ["deps", "dev-deps"], "type": "build", "hidden": false },
-          { "section": "CI", "type": "ci", "hidden": false },
-          { "section": "Docs", "type": "docs", "hidden": false },
-          { "section": "Other", "type": "refactor", "hidden": false },
-          { "section": "Other", "type": "revert", "hidden": false },
-          { "section": "Other", "type": "style", "hidden": false }
+          {
+            "section": "Features",
+            "type": "feat"
+          },
+          {
+            "section": "Bug Fixes",
+            "type": "fix"
+          },
+          {
+            "section": "Chore",
+            "type": "chore",
+            "hidden": false
+          },
+          {
+            "section": "Performance",
+            "type": "perf",
+            "hidden": false
+          },
+          {
+            "section": "Build",
+            "scopes": ["deps", "dev-deps"],
+            "type": "build",
+            "hidden": false
+          },
+          {
+            "section": "CI",
+            "type": "ci",
+            "hidden": false
+          },
+          {
+            "section": "Docs",
+            "type": "docs",
+            "hidden": false
+          },
+          {
+            "section": "Other",
+            "type": "refactor",
+            "hidden": false
+          },
+          {
+            "section": "Other",
+            "type": "revert",
+            "hidden": false
+          },
+          {
+            "section": "Other",
+            "type": "style",
+            "hidden": false
+          },
+          {
+            "section": "Other",
+            "type": "ai",
+            "hidden": false
+          }
         ]
       }
     }

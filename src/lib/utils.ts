@@ -4,12 +4,12 @@ import { type FieldValues, type UseFormReturn } from 'react-hook-form'
 import { extendTailwindMerge } from 'tailwind-merge'
 
 import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
-import { type Any, type AnyFunction, type AnyRecord, type Rgb } from '@/lib/types'
+import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } from '@/lib/types'
 
 /*
   App
 */
-export const publicFile = (file: PublicFile) => `${process.env.APP_URL ?? ''}/${file}`
+export const publicFile = (file: PublicFile) => `${process.env.APP_URL ?? ''}${file}`
 
 /*
   Theme
@@ -102,12 +102,11 @@ export const debounce = <T extends unknown[]>(callback: (...args: T) => void, de
     lastArgs = null
   }
   debounced.flush = () => {
-    if (lastArgs) {
-      clearTimeout(timer)
-      const args = lastArgs
-      lastArgs = null
-      callback(...args)
-    }
+    if (!lastArgs) return
+    clearTimeout(timer)
+    const args = lastArgs
+    lastArgs = null
+    callback(...args)
   }
   return debounced
 }
@@ -126,10 +125,9 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
     clearTimeout(timeout)
     timeout = setTimeout(
       () => {
-        if (Date.now() - timestamp >= limit) {
-          callback.apply(this, args)
-          timestamp = Date.now()
-        }
+        if (Date.now() - timestamp < limit) return
+        callback.apply(this, args)
+        timestamp = Date.now()
       },
       limit - (Date.now() - timestamp)
     )
@@ -138,15 +136,4 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export const noop = () => {
-  /**/
-}
-
-/*
-  Types
-*/
-export type CamelCase<S extends string> = S extends `${infer T}_${infer U}`
-  ? `${T}${Capitalize<CamelCase<U>>}`
-  : S extends `${infer T}-${infer U}`
-    ? `${T}${Capitalize<CamelCase<U>>}`
-    : S
+export const noop = () => {}

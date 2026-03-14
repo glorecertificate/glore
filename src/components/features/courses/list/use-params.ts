@@ -24,8 +24,8 @@ import { useCookies } from '@/hooks/use-cookies'
 import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
 import { i18n } from '@/lib/i18n'
-import { type Enum } from '@/lib/types'
-import { type CamelCase, camelize, pluck } from '@/lib/utils'
+import { CamelCase, type Enum } from '@/lib/types'
+import { camelize, pluck } from '@/lib/utils'
 
 const tabParser = parseAsStringEnum(COURSE_LIST_TABS).withDefault('all')
 const typesParser = parseAsArrayOf(parseAsStringEnum(COURSE_TYPES)).withDefault([...COURSE_TYPES])

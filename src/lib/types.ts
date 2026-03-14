@@ -20,6 +20,11 @@ export type AnyRecord = Record<string | number | symbol, any>
 export type AnyFunction = (...args: any[]) => any
 export type Enum<T extends string> = T | `${T}`
 export type HttpUrl = `http://${string}` | `https://${string}`
+export type CamelCase<S extends string> = S extends `${infer T}_${infer U}`
+  ? `${T}${Capitalize<CamelCase<U>>}`
+  : S extends `${infer T}-${infer U}`
+    ? `${T}${Capitalize<CamelCase<U>>}`
+    : S
 
 /*
   Theme
@@ -30,6 +35,6 @@ export type { IconName }
 export type Rgb = [number, number, number]
 
 /*
-  Auth
+  App
 */
 export type AuthView = (typeof AUTH_VIEWS)[number]

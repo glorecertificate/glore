@@ -799,7 +799,6 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 | ----------------------- | ---------------------------------- | ------ |
 | `APP_URL`               | Application base URL               | Server |
 | `BETTER_AUTH_SECRET`    | Better Auth secret key             | Server |
-| `BETTER_AUTH_URL`       | Better Auth base URL               | Server |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob read/write token       | Server |
 | `COOKIE_PREFIX`         | App cookie prefix (default: `gl_`) | Server |
 | `DATABASE_URL`          | Neon Postgres connection string    | Server |

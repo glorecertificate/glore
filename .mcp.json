@@ -5,6 +5,10 @@
       "command": "npx",
       "args": ["@better-auth/mcp", "-y"]
     },
+    "cloudflare-api": {
+      "type": "http",
+      "url": "https://mcp.cloudflare.com/mcp"
+    },
     "knip": {
       "type": "stdio",
       "command": "npx",

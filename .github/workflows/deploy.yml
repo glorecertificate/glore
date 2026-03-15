@@ -2,6 +2,8 @@ name: Deploy
 
 on:
   push:
+    branches:
+      - main
     tags:
       - v*
 
@@ -10,8 +12,32 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  deploy:
+  deploy-preview:
+    name: Deploy Preview
+    if: "!startsWith(github.ref, 'refs/tags/')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: Preview
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install -D --frozen-lockfile --ignore-scripts --strict-peer-dependencies
+      - name: Deploy to Vercel
+        run: ./node_modules/.bin/vercel deploy --token ${{ secrets.VERCEL_TOKEN }}
+
+  deploy-prod:
     name: Deploy to Production
+    if: "startsWith(github.ref, 'refs/tags/')"
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,17 +45,15 @@ jobs:
     environment:
       name: Production
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
           cache: pnpm
       - name: Install dependencies
-        run: |
-          pnpm install -D --frozen-lockfile --ignore-scripts --strict-peer-dependencies
-          echo ./node_modules/.bin >> $GITHUB_PATH
+        run: pnpm install -D --frozen-lockfile --ignore-scripts --strict-peer-dependencies
       - name: Deploy to Vercel
-        run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+        run: ./node_modules/.bin/vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}

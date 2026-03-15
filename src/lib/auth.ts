@@ -12,7 +12,7 @@ import metadata from '~/config/metadata.json'
 
 export const auth = betterAuth({
   appName: metadata.name,
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: process.env.APP_URL,
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',

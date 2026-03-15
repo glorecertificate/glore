@@ -77,9 +77,9 @@ This project uses [Agent Skills](https://skills.sh) (`skills` CLI) to provide do
 
 ```bash
 pnpm skills                           # Install all skills from skills-lock.json
-skills experimental_install <name>    # Install a new external skill
+skills add <owner/repo>               # Install a new external skill
 skills list                           # List installed skills
-skills help                           # Show all CLI commands
+skills --help                         # Show all CLI commands
 ```
 
 ### Installed skills
@@ -1127,6 +1127,23 @@ useEffect(() => { ... }, [alpha, beta, gamma])
 
 // ❌ Wrong — unordered
 useEffect(() => { ... }, [gamma, alpha, beta])
+```
+
+### Punctuation and separators
+
+- **Never use em dashes (`—`), en dashes (`–`), or middle dots (`·`)** in agent output (code, comments, commit messages, PR descriptions, documentation, UI strings)
+- **Hyphens (`-`) are only allowed when grammatically required** by the word or sentence (e.g., compound adjectives like "server-side", "read-only"). This is rare. When in doubt, do not use a hyphen.
+- Use commas, colons, or parentheses instead of dash-based separators
+
+```
+// ✅ Correct
+User settings: account, profile, preferences
+Error (missing field): name is required
+
+// ❌ Wrong
+User settings — account, profile, preferences
+Error · missing field · name is required
+User settings – account, profile, preferences
 ```
 
 ---

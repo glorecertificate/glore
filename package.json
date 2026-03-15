@@ -26,7 +26,7 @@
     "release": "dotenv release-it --",
     "analyze": "next experimental-analyze",
     "bump": "corepack use pnpm@latest && pnpm update -Li",
-    "skills": "skills"
+    "skills": "skills experimental_install --yes"
   },
   "dependencies": {
     "@ai-sdk/openai": "3.0.26",

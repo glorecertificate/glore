@@ -1,94 +1,85 @@
 <div align="center">
-  <h1><img src="public/icon.png" alt="" width="80"></h1>
-  <a href="https://github.com/glorecertificate/glore/actions/workflows/deploy.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/deploy.yml/badge.svg" /></a>
+  <h1><img src="public/logo.png" alt="" height="80"></h1>
   <a href="https://github.com/glorecertificate/glore/actions/workflows/ci.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
+  <a href="https://github.com/glorecertificate/glore/actions/workflows/deploy.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/deploy.yml/badge.svg" /></a>
 </div>
 <br>
 
-GloRe is an official certificate that verifies volunteering activities.
-
-Visit our website to find out how to sign up to the [e-learning platform](https://elearning.glorecertificate.net) and get the certificate recognizing your soft skills.
+**GloRe** is a multilingual e-learning platform that helps volunteers get their soft skills officially recognized. Visit [elearning.glorecertificate.net](https://elearning.glorecertificate.net) to sign up and get the certificate recognizing your skills.
 
 ## About
 
-GloRe is a single-package <a href="https://nextjs.org">Next.js</a> application backed by <a href="https://neon.tech">Neon</a> Serverless Postgres, <a href="https://orm.drizzle.team">Drizzle ORM</a>, and different utility packages.
-
-The project uses <a href="https://tailwindcss.com">Tailwind CSS</a> and <a href="https://ui.shadcn.com">shadcn/ui</a> components for building user interfaces.
+GloRe is a project developed by [Associazione Joint](https://associazionejoint.org), a non-profit organization founded in 2003 that supports youth mobility and international volunteering through Erasmus+ and the European Solidarity Corps.
 
 ## Development
 
+This project is a multi-language Next.js 16 application written in TypeScript, using a Postgres database (Neon) with Drizzle and Better Auth, Tailwind CSS with shadcn/ui, and other tools for services like email and translations.
+
 ### Prerequisites
 
-You must download and activate the Node.js version specified [here](.node-version).
+You must download and activate the Node.js version specified in [`.node-version`](.node-version).
 
 ### Setup
 
-Download the project using the GitHub client or Git:
-
 ```sh
-gh repo clone glorecertificate/glore
-# or
-git clone https://github.com/glorecertificate/glore.git
-```
+# Clone the repo
+git clone https://github.com/glorecertificate/glore.git && cd glore
 
-Switch to the project directory, copy the example env file and fill in the required values to gain access to the services used throughout the project:
-
-```sh
-cd glore
+# Set up environment variables
 cp .env.example .env
-```
 
-### Running the application
+# Enable pnpm and install dependencies
+corepack enable && corepack install && pnpm install
 
-Activate pnpm using Corepack and install the project dependencies:
+# Install agent skills
+pnpm skills
 
-```sh
-corepack enable
-corepack install
-pnpm install
-```
-
-Run a development server with:
-
-```bash
+# Start the dev server on http://localhost:3030
 pnpm dev
+
+# Start the mail server on http://localhost:3031
+pnpm email
 ```
 
-This command will start the Next.js application and the mail development server. By default, you can access the application at [http://localhost:3030](http://localhost:3030) and the mail server at [http://localhost:3031](http://localhost:3031).
+### Deployment
 
-## Deployment
-
-The application is hosted on [Vercel](https://vercel.com).
-
-To deploy it, you must set up a Vercel account and create a new project specifying the required environment variables.
-
-By connecting the project to GitHub, Vercel will automatically create preview deployments for each push and pull request.
-
-Alternatively, you can create a new preview deployment by running:
+The app is hosted on Vercel. Preview deployments are created automatically on every push.
 
 ```sh
-pnpm deploy:preview
+pnpm deploy:preview  # manual preview
+pnpm deploy:prod     # deploy to production without a release
+pnpm release         # interactive release + tag, triggers production deploy
 ```
 
-### Production and releases
+## Contributing
 
-To release a new version, you must specify a `GITHUB_TOKEN` or `GH_TOKEN` environment variable at the root of the project. The token needs access to the `repository` and `workflow` scopes.
+### Issues
 
-Once set up, run the following command to start an interactive release:
+Issues are used for bug reports, feature requests, and maintenance tasks. If you want to contribute, you can [open an issue](https://github.com/glorecertificate/glore/issues/new/choose) using one of the templates and describe the problem or the feature you want to implement.
 
-```sh
-pnpm release
+### Pull Requests
+
+All commits must follow the [Conventional Commits](https://www.conventionalcommits.org) format enforced by commitlint and Husky on commit and push:
+
+```
+<type>(<scope>): Sentence case subject
 ```
 
-Once the release is created, a new production deployment will be automatically triggered.
+To open a pull request:
 
-To manually deploy to production without a release, use the command:
+1. Branch off `main` and implement your changes
+2. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
+3. The CI checks must pass and a collaborator review is required
 
-```sh
-pnpm deploy:prod
-```
+## AI and agents
+
+All coding conventions and architecture details are in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting.
+
+The project uses MCP servers (configured in [`.mcp.json`](.mcp.json)) and agent skills to provide specific knowledge for database, auth, UI, and email.
+
+Planning files like `SPEC.md` and `ROADMAP.md` are excluded from version control and shared among collaborators separately.
 
 ## License
 
-Copyright © 2025-present Associazione Joint <info@associazionejoint.org>
+Copyright 2025-present Associazione Joint <info@associazionejoint.org>

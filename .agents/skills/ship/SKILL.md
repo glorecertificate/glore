@@ -1,6 +1,7 @@
 ---
 name: ship
-description: Ship the next feature — present roadmap status, pick a task, implement it, and loop until done. Invoked via `/ship [input]`.
+description: Ship the next feature from the roadmap. See the backlog status, pick the next task, implement it and loop until done. Use when users want to implement a feature, work on the backlog, start or resume a task, manage the roadmap, or run a codebase review. Trigger with `/ship` or whenever the user mentions "continue", "ship", "review", "next task", or "backlog".
+argument-hint: 'start | review | <task slug> | <custom input>'
 ---
 
 You are the lead engineer on this project. Your job is to keep the roadmap moving: present the current status, pick the next task, implement it, and loop until the backlog is clear.
@@ -23,122 +24,22 @@ Check for `AGENTS.md` in the repository root. If the file is **missing** or **em
 
 ### 3. Create missing files from canonical templates
 
-If `SPEC.md` and/or `ROADMAP.md` are missing from the repository root, create them there now using the canonical templates below, then continue.
+If `SPEC.md` and/or `ROADMAP.md` are missing from the repository root, read the canonical template(s) from:
 
-#### Canonical SPEC.md template
+- `references/spec-template.md` — canonical `SPEC.md` template
+- `references/roadmap-template.md` — canonical `ROADMAP.md` template
 
-```markdown
-# App Specification
-
-> **Agent instructions:** Read this file at the start of every session and before picking up any feature from ROADMAP.md. This is the canonical description of what the application does, who uses it, and what the expected behavior is. Never implement anything that contradicts this spec without first flagging it to the user.
-
----
-
-## Overview
-
-<!-- One paragraph describing the app at a high level. What is it, who is it for, what problem does it solve? -->
-
-## Users & roles
-
-<!-- Who are the users? What roles exist? What can each role do? -->
-
-| Role | Description | Permissions |
-| ---- | ----------- | ----------- |
-|      |             |             |
-
-## Core features
-
-<!-- Numbered list of major features. Be as detailed as needed. Sub-bullets for specifics. -->
-
-1.
-2.
-3.
-
-## User flows
-
-<!-- Describe the key flows a user goes through. Step-by-step for each important interaction. -->
-
-### Flow 1: [Name]
-
-1.
-2.
-3.
-
-## Data model (high level)
-
-<!-- Main entities and their relationships. No need for SQL precision here. -->
-
-## Business rules
-
-<!-- Constraints, validations, and edge cases that MUST be enforced. -->
-
-## Out of scope
-
-<!-- Features explicitly NOT included in this version. Prevents scope creep. -->
-
-## Open questions
-
-<!-- Unresolved decisions. Surface these before implementing anything that depends on them. -->
-```
-
-#### Canonical ROADMAP.md template
-
-```markdown
-# Roadmap
-
-> **Agent instructions:** Read this file at the start of every session. Update it immediately after completing a milestone or making a structural decision. This is the source of truth for feature status and priorities.
-
----
-
-## Status key
-
-| Symbol | Meaning           |
-| ------ | ----------------- |
-| `[ ]`  | Not started       |
-| `[~]`  | In progress       |
-| `[x]`  | Done              |
-| `[!]`  | Blocked / on hold |
-
----
-
-## Active
-
-_No active features._
-
----
-
-## Backlog
-
-_Ordered list of upcoming features. Add slugs (e.g. `config-crud`, `user-auth`). Top = highest priority._
-
-| Slug | Feature | Notes |
-| ---- | ------- | ----- |
-|      |         |       |
-
----
-
-## Done
-
-| Slug | Feature | Completed |
-| ---- | ------- | --------- |
-
----
-
-## Decisions log
-
-| Date | Decision | Rationale |
-| ---- | -------- | --------- |
-```
+Create the missing file(s) at the repository root using the corresponding template content, then continue.
 
 ---
 
 ## Step 1 — Load context
 
-Read these files in order:
+Read all three files in parallel (no need to wait for one before starting the next):
 
-1. `AGENTS.md` — coding conventions, architecture, enforced patterns
-2. `SPEC.md` — what the app does and what the business rules are
-3. `ROADMAP.md` — current feature status and decisions log
+- `AGENTS.md` — coding conventions, architecture, enforced patterns
+- `SPEC.md` — what the app does and what the business rules are
+- `ROADMAP.md` — current feature status and decisions log
 
 If `SPEC.md` exists but is empty or only contains template placeholder text, stop and say:
 
@@ -180,7 +81,7 @@ Act immediately after presenting the roadmap (do not ask again):
 
 #### `start` / `sail`
 
-- If there is an active `[~]` task: resume it from where it was left off.
+- If there is an active `[~]` task: resume it. To understand where it was left off, check `git status` and the most recent commits — this tells you which files were changed and what was already done. Then continue from that point.
 - If there is no active task: pick the **top** `[ ]` item from the backlog. Move it to **Active** in `ROADMAP.md`, marking it `[~]`. Then proceed to **Step 4**.
 - If the backlog is empty, ask the user to input a new task or for another action. If a task is provided, add it to the backlog and then start it.
 
@@ -193,6 +94,15 @@ Run a full, thorough audit of the codebase and the roadmap:
 3. Present findings with clear categories (e.g. **Bugs**, **Performance**, **UI**, **Features**, **Housekeeping**).
 4. Propose additions, removals, or reprioritisations to the roadmap.
 5. If the user confirms, update `ROADMAP.md` with the new tasks.
+
+#### `<task slug>`
+
+Jump directly to a specific task by slug (e.g. `/ship r2-storage`):
+
+- Find the matching task in the roadmap by slug.
+- If the task is in the backlog, move it to **Active** (`[~]`) in `ROADMAP.md` and proceed to **Step 4**.
+- If the task is already active, resume it from where it left off.
+- If no task matches the slug, say so and list the available slugs from the backlog.
 
 #### Any other input
 
@@ -231,7 +141,7 @@ Before writing any code, read all skills referenced in the plan from `.agents/sk
 
 Implement the feature following **every** convention and pattern defined in `AGENTS.md` exactly. No exceptions.
 
-After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). Fix all errors. Then run the **build command**. Fix any build errors before presenting results.
+After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). If errors exist that pre-date your changes (unrelated to the current feature), note them but do not fix them — only fix errors you introduced. Then run the **build command**. Fix any build errors you introduced before presenting results.
 
 ---
 
@@ -255,6 +165,8 @@ After implementing, run the project's **check command** (see `AGENTS.md` → Com
 > - `approve` — mark done, update roadmap, stop
 > - `approve and commit` — mark done, update roadmap, then commit
 > - `continue` — mark done and immediately start the next backlog item
+> - `skip` — mark as blocked (`[!]`), move to the next backlog item
+> - `stop` — pause here without marking anything done
 > - Or tell me what to change.
 
 ---
@@ -278,6 +190,14 @@ Perform all steps from `approve`, then execute the `/commit` skill to test, veri
 ### `continue`
 
 Perform all steps from `approve`, then immediately loop back to **Step 2** and pick the next backlog item.
+
+### `skip`
+
+Mark the current task as blocked (`[!]`) in `ROADMAP.md` with a brief note, then loop back to **Step 2** and pick the next available backlog item.
+
+### `stop`
+
+Pause the workflow without changing any task status. Summarize where things stand so the session can be resumed easily next time.
 
 ### Any other input
 

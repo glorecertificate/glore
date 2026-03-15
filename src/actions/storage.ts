@@ -2,13 +2,13 @@
 
 import 'server-only'
 
-import { del, put } from '@vercel/blob'
 import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { parseUser } from '@/db/queries/user'
 import { users } from '@/db/schema'
+import { r2Delete, r2Put } from '@/lib/storage'
 
 const userWith = {
   memberships: { with: { organization: true } },
@@ -22,12 +22,9 @@ export const uploadAvatar = async (formData: FormData) => {
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
 
-  const blob = await put(`avatars/${user.id}-${Date.now()}.png`, file, {
-    access: 'public',
-    contentType: 'image/png',
-  })
+  const url = await r2Put(`avatars/${user.id}-${Date.now()}.png`, file, 'image/png')
 
-  await db.update(users).set({ avatarUrl: blob.url }).where(eq(users.id, user.id))
+  await db.update(users).set({ avatarUrl: url }).where(eq(users.id, user.id))
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),
@@ -42,13 +39,12 @@ export const removeAvatar = async () => {
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
 
-  // Get current avatar URL to delete from blob storage
   const current = await db.query.users.findFirst({
     columns: { avatarUrl: true },
     where: eq(users.id, user.id),
   })
   if (current?.avatarUrl) {
-    await del(current.avatarUrl).catch(console.error)
+    await r2Delete(current.avatarUrl).catch(console.error)
   }
 
   await db.update(users).set({ avatarUrl: null }).where(eq(users.id, user.id))

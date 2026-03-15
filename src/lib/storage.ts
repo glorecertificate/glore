@@ -1,0 +1,29 @@
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+
+const s3 = new S3Client({
+  region: 'auto',
+  endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  },
+})
+
+const r2Url = (key: string) => `${process.env.R2_PUBLIC_URL}/${key}`
+
+export const r2Put = async (key: string, body: Buffer | Uint8Array | Blob | File, contentType: string) => {
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    })
+  )
+  return r2Url(key)
+}
+
+export const r2Delete = async (urlOrKey: string) => {
+  const key = urlOrKey.startsWith('http') ? urlOrKey.replace(`${process.env.R2_PUBLIC_URL}/`, '') : urlOrKey
+  await s3.send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: key }))
+}

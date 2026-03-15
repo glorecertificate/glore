@@ -6,7 +6,6 @@ import { randomBytes } from 'node:crypto'
 
 import { revalidateTag } from 'next/cache'
 
-import { del, put } from '@vercel/blob'
 import { and, count, eq, inArray } from 'drizzle-orm'
 
 import { deleteCookie, getCookie, setCookie } from '@/actions/cookies'
@@ -27,6 +26,7 @@ import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { type IntlRecord, i18n } from '@/lib/i18n'
+import { r2Delete, r2Put } from '@/lib/storage'
 
 const MANAGER_ROLES: OrganizationMembershipRole[] = ['admin', 'representative']
 const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
@@ -708,15 +708,12 @@ export const uploadOrganizationAvatar = async (formData: FormData) => {
       where: eq(organizations.id, organization.id),
     })
 
-    const blob = await put(`organizations/${organization.id}-${Date.now()}.png`, file, {
-      access: 'public',
-      contentType: 'image/png',
-    })
+    const url = await r2Put(`organizations/${organization.id}-${Date.now()}.png`, file, 'image/png')
 
-    await db.update(organizations).set({ avatarUrl: blob.url }).where(eq(organizations.id, organization.id))
+    await db.update(organizations).set({ avatarUrl: url }).where(eq(organizations.id, organization.id))
 
     if (current?.avatarUrl) {
-      await del(current.avatarUrl).catch(() => null)
+      await r2Delete(current.avatarUrl).catch(() => null)
     }
 
     const nextUser = await getFreshCurrentUser(user.id)
@@ -744,7 +741,7 @@ export const removeOrganizationAvatar = async () => {
     })
 
     if (current?.avatarUrl) {
-      await del(current.avatarUrl).catch(() => null)
+      await r2Delete(current.avatarUrl).catch(() => null)
     }
 
     await db.update(organizations).set({ avatarUrl: null }).where(eq(organizations.id, organization.id))

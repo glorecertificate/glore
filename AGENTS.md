@@ -48,7 +48,7 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | Database         | Neon Serverless Postgres (`@neondatabase/serverless`) | ^0.10.4           |
 | ORM              | Drizzle ORM + drizzle-kit                             | ^0.44.0 / ^0.30.0 |
 | Auth             | Better Auth (`better-auth`)                           | ^1.5.4            |
-| Storage          | Vercel Blob (`@vercel/blob`)                          | ^0.27.0           |
+| Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  | ^3.761.0          |
 | Linter           | oxlint (`.oxlintrc.json`)                             | latest            |
 | Formatter        | oxfmt (`.oxfmtrc.json`)                               | latest            |
 | Styling          | Tailwind CSS                                          | ^4.1.18           |
@@ -184,7 +184,7 @@ src/
 │   ├── course.ts       # Course + lesson CRUD, cached queries
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── organization.ts # Org overview, members, join requests, settings
-│   ├── storage.ts      # Avatar upload/remove via Vercel Blob
+│   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
 ├── app/                # App Router pages and layouts
 │   ├── layout.tsx      # Root layout (providers, analytics, JSON-LD)
@@ -219,7 +219,7 @@ src/
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail utility)
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
-│   ├── storage.ts      # Storage URL helpers
+│   ├── storage.ts      # R2 Put/Delete/URL helpers (r2Put, r2Delete, r2Url)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, etc.)
 │   └── utils.ts        # cn(), debounce(), throttle(), camelize(), etc.
 ├── i18n.ts             # next-intl request config
@@ -795,22 +795,26 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 ## Environment Variables
 
-| Variable                | Purpose                            | Scope  |
-| ----------------------- | ---------------------------------- | ------ |
-| `APP_URL`               | Application base URL               | Server |
-| `BETTER_AUTH_SECRET`    | Better Auth secret key             | Server |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob read/write token       | Server |
-| `COOKIE_PREFIX`         | App cookie prefix (default: `gl_`) | Server |
-| `DATABASE_URL`          | Neon Postgres connection string    | Server |
-| `OPENAI_API_KEY`        | OpenAI API key                     | Server |
-| `OPENAI_MODEL`          | OpenAI model name (e.g., `gpt-4o`) | Server |
-| `SMTP_HOST`             | SMTP server hostname               | Server |
-| `SMTP_PORT`             | SMTP port                          | Server |
-| `SMTP_USER`             | SMTP username                      | Server |
-| `SMTP_PASSWORD`         | SMTP password                      | Server |
-| `SMTP_SENDER`           | Email sender address               | Server |
-| `GITHUB_TOKEN`          | GitHub personal access token       | Server |
-| `VERCEL_TOKEN`          | Vercel CLI token                   | Server |
+| Variable               | Purpose                                          | Scope  |
+| ---------------------- | ------------------------------------------------ | ------ |
+| `APP_URL`              | Application base URL                             | Server |
+| `BETTER_AUTH_SECRET`   | Better Auth secret key                           | Server |
+| `R2_ACCOUNT_ID`        | Cloudflare account ID                            | Server |
+| `R2_ACCESS_KEY_ID`     | R2 API token access key                          | Server |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret                              | Server |
+| `R2_BUCKET_NAME`       | R2 bucket name                                   | Server |
+| `R2_PUBLIC_URL`        | R2 public base URL (custom domain or r2.dev URL) | Server |
+| `COOKIE_PREFIX`        | App cookie prefix (default: `gl_`)               | Server |
+| `DATABASE_URL`         | Neon Postgres connection string                  | Server |
+| `OPENAI_API_KEY`       | OpenAI API key                                   | Server |
+| `OPENAI_MODEL`         | OpenAI model name (e.g., `gpt-4o`)               | Server |
+| `SMTP_HOST`            | SMTP server hostname                             | Server |
+| `SMTP_PORT`            | SMTP port                                        | Server |
+| `SMTP_USER`            | SMTP username                                    | Server |
+| `SMTP_PASSWORD`        | SMTP password                                    | Server |
+| `SMTP_SENDER`          | Email sender address                             | Server |
+| `GITHUB_TOKEN`         | GitHub personal access token                     | Server |
+| `VERCEL_TOKEN`         | Vercel CLI token                                 | Server |
 
 ---
 

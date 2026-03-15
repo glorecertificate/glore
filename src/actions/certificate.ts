@@ -5,7 +5,6 @@ import 'server-only'
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache, createElement } from 'react'
 
-import { put } from '@vercel/blob'
 import { and, asc, count, eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
@@ -19,6 +18,7 @@ import { certificateSkills, certificates, memberships, users } from '@/db/schema
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { i18n } from '@/lib/i18n'
+import { r2Put } from '@/lib/storage'
 import appConfig from '~/config/app.json'
 
 const certificateUserColumns = {
@@ -160,11 +160,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
           issuedDate: issuedAt,
         }) as Parameters<typeof renderToBuffer>[0]
       )
-      const blob = await put(`certificates/${cert.handle}.pdf`, pdfBuffer, {
-        access: 'public',
-        contentType: 'application/pdf',
-      })
-      documentUrl = blob.url
+      documentUrl = await r2Put(`certificates/${cert.handle}.pdf`, pdfBuffer, 'application/pdf')
     }
 
     const [updated] = await db

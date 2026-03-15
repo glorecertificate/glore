@@ -55,7 +55,8 @@ If `SPEC.md` exists but is empty or only contains template placeholder text, sto
 📦 Roadmap — [Project name]
 
 🔄 Active
-  [~] slug — Feature name
+  [~] slug — Feature name   (agent: x7k2pa, started: YYYY-MM-DD HH:MM)
+  [~] slug — Feature name   (stale — no active agent)
 
 📋 Backlog
   [ ] slug — Feature name     (notes if any)
@@ -73,6 +74,55 @@ If the backlog is empty and nothing is active, say:
 
 ---
 
+## Concurrent task handling
+
+Multiple agents can work on this project simultaneously. Every time a `/ship` session starts, it must assess the current concurrency state before choosing what to work on.
+
+### Session ID
+
+Generate a random 6-character alphanumeric string (e.g. `x7k2pa`) at the start of each session. Use it consistently when stamping tasks in `ROADMAP.md` for the duration of that session.
+
+### Staleness
+
+A `[~]` task is **stale** when:
+
+- It carries no `agent:` annotation, or
+- It has an `agent:` annotation but that session has left no recent git activity tied to it — check `git log --oneline -20` for commits referencing the slug; if none exist in a reasonable window (a few hours), treat the task as abandoned.
+
+A `[~]` task is **claimed** when it has a valid `agent:` annotation with recent matching git activity.
+
+### Task selection algorithm
+
+Follow these steps in order whenever choosing what to work on:
+
+**1. Stale active task?**
+Scan all `[~]` tasks. If any are stale, pick the highest-priority one (top of the Active section), claim it by stamping your session ID and timestamp, check git history to understand what was already done, and resume from there.
+
+**2. All active tasks are claimed (or no active tasks exist)?**
+Scan the `[ ]` backlog in priority order (top to bottom). Pick the first task that does not conflict with any currently claimed task.
+
+Two tasks **conflict** when they would modify the same files, modules, data tables, or domain areas. Assess this by:
+
+- Inspecting recent commits on claimed tasks (`git log --name-only`) to see which files they touched
+- Comparing those against the expected scope of the backlog candidate based on its description and domain
+
+Move the chosen task to Active, stamp it with your session ID and timestamp, then proceed to **Step 4**.
+
+**3. Every backlog task conflicts with an active task?**
+Report clearly which tasks are blocked and why (e.g., "task `api-v2` conflicts with the active `api-auth` task — both touch `src/app/api/`"). Do not force-pick a conflicting task. Stop and wait for the user to add a new task or unblock the situation.
+
+### Stamping format
+
+When claiming a task, update its line in `ROADMAP.md` to include the agent annotation:
+
+```
+[~] slug — Feature name   agent:x7k2pa   started:2026-03-15T19:05
+```
+
+When a task is marked done (`[x]`), remove the `agent:` and `started:` annotations from the line.
+
+---
+
 ## Step 3 — Act on user input
 
 When `/ship` is invoked **with no additional input**, treat it as if `start` was specified: resume the active task or pick the next backlog item and proceed to **Step 4** immediately. Do not pause to ask what to do next.
@@ -81,9 +131,11 @@ Act immediately after presenting the roadmap (do not ask again):
 
 #### `start` / `sail`
 
-- If there is an active `[~]` task: resume it. To understand where it was left off, check `git status` and the most recent commits — this tells you which files were changed and what was already done. Then continue from that point.
-- If there is no active task: pick the **top** `[ ]` item from the backlog. Move it to **Active** in `ROADMAP.md`, marking it `[~]`. Then proceed to **Step 4**.
-- If the backlog is empty, ask the user to input a new task or for another action. If a task is provided, add it to the backlog and then start it.
+Apply the **concurrent task handling** algorithm (see above) to determine which task to work on:
+
+- If there is a stale `[~]` task: claim it, determine what was already done via `git status` and recent commits, and resume from that point.
+- If all active tasks are claimed and a non-conflicting backlog task exists: move it to Active, stamp it, then proceed to **Step 4**.
+- If the backlog is empty and no stale task exists: ask the user to input a new task or another action. If a task is provided, add it to the backlog and start it using the same algorithm.
 
 #### `review`
 
@@ -100,13 +152,25 @@ Run a full, thorough audit of the codebase and the roadmap:
 Jump directly to a specific task by slug (e.g. `/ship r2-storage`):
 
 - Find the matching task in the roadmap by slug.
-- If the task is in the backlog, move it to **Active** (`[~]`) in `ROADMAP.md` and proceed to **Step 4**.
-- If the task is already active, resume it from where it left off.
+- If the task is in the backlog, move it to **Active** (`[~]`), stamp it with your session ID and timestamp, and proceed to **Step 4**. Before starting, verify it does not conflict with any currently claimed task using the concurrency rules above — if it does, warn the user before proceeding.
+- If the task is already active, check whether it's stale (see Concurrent task handling). If stale, claim it and resume. If claimed by another session, report that and ask the user to confirm before taking it over.
 - If no task matches the slug, say so and list the available slugs from the backlog.
 
 #### Any other input
 
 Interpret the user's request and proceed accordingly. Use your best judgment to determine the most helpful action.
+
+---
+
+### Set chat title
+
+After picking a task (regardless of how it was triggered), attempt to rename the active VS Code chat session so the window title reflects the current work:
+
+**Format:** `/ship \`<task-slug>\` - <short description>`
+
+Example: `/ship r2-storage - Migrate from Vercel Blob to Cloudflare R2`. **Always include the slug in the title** to make it easy to identify the session.
+
+Use `run_vscode_command` with `commandId: workbench.action.chat.rename` and `args: ["<formatted title>"]`. Retry up to 5 times on failure. If all 5 attempts fail, skip silently and continue to Step 4. Never block or interrupt execution over a title change.
 
 ---
 
@@ -122,14 +186,14 @@ Before writing any code, write a concise implementation plan:
 
 Present the plan:
 
-> **Plan: [slug] — [Feature name]**
+> **Plan: `[slug]` - [Feature name]**
 >
 > Files: ...
 > Patterns: ...
 > Skills: ...
 > [Any questions or risks]
 >
-> **Reply "go" to start, or tell me what to change.**
+> **Reply "start" or tell me what to change.**
 
 Wait for confirmation before writing code.
 
@@ -216,6 +280,18 @@ Every task in `ROADMAP.md` MUST have a unique **slug**:
 
 When adding tasks to the roadmap (from any source — user input, `review`, etc.), always assign slugs.
 
+Active tasks carry concurrency annotations that MUST be preserved exactly as written by the agent that stamped them — do not reformat or strip them:
+
+```
+[~] slug — Feature name   agent:x7k2pa   started:2026-03-15T19:05
+```
+
+When marking a task done, remove the `agent:` and `started:` fields:
+
+```
+[x] slug — Feature name   Completed: YYYY-MM-DD
+```
+
 ---
 
 ## Keeping files in sync
@@ -249,8 +325,8 @@ Before adding any skill to `.gitignore`, check `skills-lock.json`. If it appears
 
 # WRONG — external skills must not be added as exceptions
 /*/
-!agents-md
-!ship
-!better-auth-best-practices   ← WRONG, this is in skills-lock.json
-!shadcn                       ← WRONG, this is in skills-lock.json
+!/agents-md/
+!/ship/
+!/better-auth-best-practices/   ← WRONG, this is in skills-lock.json
+!/shadcn/                       ← WRONG, this is in skills-lock.json
 ```

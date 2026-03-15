@@ -1,3 +1,6 @@
+import { notFound } from 'next/navigation'
+
+import { getCurrentUser } from '@/actions/user'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -6,4 +9,8 @@ export const generateMetadata = () =>
     title: 'certificates',
   })
 
-export default ({ children }: LayoutProps<'/certificates'>) => children
+export default async ({ children }: LayoutProps<'/certificates'>) => {
+  const user = await getCurrentUser()
+  if (user.canEdit) return notFound()
+  return children
+}

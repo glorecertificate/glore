@@ -10,5 +10,11 @@ export const POST = async (request: NextRequest) => {
   const key = `uploads/${Date.now()}-${file.name}`
   const url = await r2Put(key, file, file.type)
 
-  return NextResponse.json({ key, name: file.name, size: file.size, type: file.type, url })
+  return NextResponse.json({
+    key,
+    name: file.name,
+    size: file.size,
+    type: file.type,
+    url,
+  })
 }

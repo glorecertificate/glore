@@ -15,7 +15,7 @@ import {
 import { cva } from 'class-variance-authority'
 import { ExternalLinkIcon, LinkIcon, TextIcon, UnlinkIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { KEYS } from 'platejs'
+import { KEYS, TLinkElement } from 'platejs'
 import { useEditorRef, useEditorSelection, useFormInputProps, usePluginOption } from 'platejs/react'
 
 import { buttonVariants } from '@/components/ui/button'
@@ -139,11 +139,8 @@ const LinkOpenButton = () => {
     const entry = editor.api.node({
       match: { type: editor.getType(KEYS.link) },
     })
-    if (!entry) {
-      return {}
-    }
-    const [element] = entry
-    return getLinkAttributes(editor, element)
+    if (!entry) return {}
+    return getLinkAttributes(editor, entry[0] as TLinkElement)
   }, [editor])
 
   return (

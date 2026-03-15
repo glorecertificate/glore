@@ -105,7 +105,7 @@ export const setBlockType = (editor: PlateEditor, type: string, { at }: { at?: P
     }
 
     if (at) {
-      const entry = editor.api.node(at)
+      const entry = editor.api.node(at) as NodeEntry<TElement> | undefined
       if (entry) {
         return setEntry(entry)
       }

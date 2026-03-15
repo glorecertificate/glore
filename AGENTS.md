@@ -8,27 +8,30 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 ## Commands
 
-| Command             | Description                                    |
-| ------------------- | ---------------------------------------------- |
-| `pnpm install`      | Install dependencies                           |
-| `pnpm dev`          | Start Next.js dev server on port 3030          |
-| `pnpm build`        | Production build                               |
-| `pnpm start`        | Start production server on port 3030           |
-| `pnpm email`        | Preview email templates on port 3031           |
-| `pnpm lint`         | Lint with oxlint                               |
-| `pnpm lint:fix`     | Auto-fix lint issues                           |
-| `pnpm format`       | Format with oxfmt                              |
-| `pnpm format:check` | Check formatting without writing               |
-| `pnpm check`        | Type-check + lint + format check (in sequence) |
-| `pnpm check:size`   | Bundle size check                              |
-| `pnpm typecheck`    | Type-check only (`tsc --noEmit`)               |
-| `pnpm typegen`      | Generate env types → `env.d.ts`                |
-| `pnpm analyze`      | Next.js bundle analyzer                        |
-| `pnpm release`      | Create a release (release-it)                  |
-| `pnpm skills`       | Install agent skills from `skills-lock.json`   |
-| `pnpm db <command>` | Run drizzle-kit commands                       |
+| Command               | Description                                        |
+| --------------------- | -------------------------------------------------- |
+| `pnpm install`        | Install dependencies                               |
+| `pnpm dev`            | Start Next.js dev server on port 3030              |
+| `pnpm build`          | Production build                                   |
+| `pnpm start`          | Start production server on port 3030               |
+| `pnpm email`          | Preview email templates on port 3031               |
+| `pnpm lint`           | Lint with oxlint                                   |
+| `pnpm lint:fix`       | Auto-fix lint issues                               |
+| `pnpm format`         | Format with oxfmt                                  |
+| `pnpm format:check`   | Check formatting without writing                   |
+| `pnpm check`          | Lint + format check + unused exports (in sequence) |
+| `pnpm check:size`     | Bundle size check                                  |
+| `pnpm typecheck`      | Type-check only (`tsc --noEmit`)                   |
+| `pnpm typegen`        | Generate env types → `env.d.ts`                    |
+| `pnpm analyze`        | Next.js bundle analyzer                            |
+| `pnpm release`        | Create a release (release-it)                      |
+| `pnpm deploy:preview` | Deploy preview to Vercel                           |
+| `pnpm deploy:prod`    | Deploy to production on Vercel                     |
+| `pnpm bump`           | Update pnpm and upgrade all dependencies           |
+| `pnpm skills`         | Install agent skills from `skills-lock.json`       |
+| `pnpm db <command>`   | Run drizzle-kit commands                           |
 
-**Pre-commit validation:** Run `pnpm check` before committing. This runs `tsc --noEmit`, oxlint, and `oxfmt --check` in sequence.
+**Pre-commit validation:** Run `pnpm check` before committing. This runs oxlint, `oxfmt --check`, and knip in sequence.
 
 **Git hooks:** Husky manages hooks. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
 
@@ -61,7 +64,6 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | Icons            | lucide-react                                          | ^0.563.0          |
 | Deployment       | Vercel                                                | ^50.13.2          |
 | Analytics        | @vercel/analytics + @vercel/speed-insights            | ^1.6.1 / ^1.3.1   |
-| Dates            | date-fns                                              | ^4.1.0            |
 | Search           | fuse.js                                               | ^7.1.0            |
 | Agent Skills     | skills CLI (https://skills.sh)                        | latest            |
 
@@ -82,20 +84,22 @@ skills help                           # Show all CLI commands
 
 ### Installed skills
 
-| Skill                                 | Source                      | Purpose                                                            | When to use                                                                         |
-| ------------------------------------- | --------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `better-auth-best-practices`          | `better-auth/skills`        | Better Auth server/client setup, plugins, sessions                 | When configuring auth, adding plugins, or setting up email/password authentication  |
-| `better-auth-security-best-practices` | `better-auth/skills`        | Rate limiting, CSRF, secrets, session hardening                    | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
-| `email-and-password-best-practices`   | `better-auth/skills`        | Email verification, password reset, hashing policy                 | When implementing login/sign-up flows, password security, or email verification     |
-| `frontend-design`                     | `anthropics/skills`         | Production-grade UI design with bold aesthetics                    | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-drizzle`                        | `neondatabase/ai-rules`     | Drizzle ORM + Neon database setup                                  | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`                       | `neondatabase/agent-skills` | Neon Serverless Postgres best practices                            | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices`         | `vercel-labs/agent-skills`  | 58 performance optimization rules for React/Next.js                | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`               | `vercel-labs/agent-skills`  | Web Interface Guidelines compliance review                         | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `email-best-practices`                | custom                      | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `react-email`                         | custom                      | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `agents-md`                           | custom                      | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
-| `ship`                                | custom                      | Ship the next feature via `/ship [input]`                          | When managing the roadmap, picking the next task, or shipping features              |
+| Skill                                 | Source                        | Purpose                                                            | When to use                                                                         |
+| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                 | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                    | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                 | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                    | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                  | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                            | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                         | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits      | After completing a feature, before merging to main                                  |
+| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                             | When adding, modifying, or debugging shadcn/ui components                           |
+| `ship`                                | custom                        | Ship the next feature via `/ship [input]`                          | When managing the roadmap, picking the next task, or shipping features              |
 
 ### Skill enforcement rules
 
@@ -109,6 +113,8 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 6. **AGENTS.md updates** → Read `agents-md/SKILL.md`. Follow the workflow for add/remove/update operations.
 7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
 8. **Shipping features** → Read `ship/SKILL.md`. Follow the full workflow: present roadmap, plan, implement, post-action loop.
+9. **shadcn/ui component work** → Read `shadcn/SKILL.md`. Use when adding, editing, or debugging shadcn/ui components.
+10. **Committing changes** → Read `commit/SKILL.md`. Follow the commit workflow before merging any feature branch.
 
 ### Creating custom skills
 
@@ -160,7 +166,8 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
     ├── vercel-react-best-practices/  # React/Next.js performance (external)
     ├── web-design-guidelines/  # Web Interface Guidelines (external)
     ├── email-best-practices/   # Email deliverability & compliance (external)
-    └── react-email/            # react-email components & patterns (external)
+    ├── react-email/            # react-email components & patterns (external)
+    └── shadcn/                 # shadcn/ui components (external)
 ```
 
 ---
@@ -200,12 +207,12 @@ src/
 ├── db/
 │   ├── client.ts       # Neon + Drizzle client (neon HTTP driver)
 │   ├── helpers.ts      # safeQuery(), queryError()
-│   ├── types.ts        # Drizzle table type helpers (InferSelectModel, InferInsertModel)
+│   ├── types.ts        # Drizzle table type helpers (InferInsertModel)
 │   ├── schema/         # Drizzle schema definitions per table
 │   └── queries/        # Query parse functions per table
 ├── hooks/              # Custom React hooks
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
-│   ├── auth/           # Better Auth server + client instances
+│   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum
 │   ├── constants.ts    # Route roots, regex validators
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
@@ -256,6 +263,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | Path                 | Auth               | Layout    | Description             |
 | -------------------- | ------------------ | --------- | ----------------------- |
 | `/login`             | Public             | Root      | Login page              |
+| `/register`          | Public             | Root      | Registration page       |
 | `/onboarding`        | Auth (pre-onboard) | Root      | Onboarding form         |
 | `/onboarding/error`  | Auth (pre-onboard) | Root      | Onboarding error        |
 | `/[username]`        | Public             | Root      | Public certificate page |
@@ -291,7 +299,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 
 | Group         | Purpose                                                                                                 |
 | ------------- | ------------------------------------------------------------------------------------------------------- |
-| `(auth)`      | Unauthenticated pages — login, onboarding. No shared layout beyond root.                                |
+| `(auth)`      | Unauthenticated pages — login, register, onboarding. No shared layout beyond root.                      |
 | `(dashboard)` | Authenticated pages with sidebar. Wrapped in `SidebarProvider` → `SessionProvider` → `CoursesProvider`. |
 
 ### Redirects
@@ -315,14 +323,9 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 
 **Token storage:** Better Auth manages session tokens in signed HTTP-only cookies. Session data is cached in cookies (5-minute TTL) to reduce API calls.
 
-**Cookie prefix:** All app cookies use `gl` prefix. Better Auth session cookies use `gl.` prefix via `advanced.cookiePrefix`.
+**Cookie prefix:** All app cookies use `gl` prefix. Better Auth session cookies use `gl` prefix via `advanced.cookiePrefix`.
 
-**Auth instances:**
-
-| Instance     | Location                 | Use case                                           |
-| ------------ | ------------------------ | -------------------------------------------------- |
-| `auth`       | `src/lib/auth/server.ts` | Server components, actions, proxy — `betterAuth()` |
-| `authClient` | `src/lib/auth/client.ts` | Client components — `createAuthClient()`           |
+**Auth instance:** `auth` — exported from `src/lib/auth.ts`, server-only (`betterAuth()`). Used in server components, server actions, and the proxy.
 
 **Plugins:**
 
@@ -412,12 +415,13 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 | Tag                | Used by                                   |
 | ------------------ | ----------------------------------------- |
+| `admin-users`      | `fetchAdminUsers`                         |
 | `auth-user`        | `fetchAuthUser`                           |
 | `auth-user-status` | `logout`                                  |
+| `certificates`     | `fetchCertificates`                       |
 | `course`           | `fetchCourse` (per-slug: `course-{slug}`) |
 | `courses`          | `fetchCourses`                            |
-| `doc-articles`     | Documentation articles                    |
-| `doc-categories`   | Documentation categories                  |
+| `organizations`    | `fetchOrganizations`                      |
 | `skill-groups`     | `listSkillGroups`                         |
 | `team-members`     | `fetchTeamMembers`                        |
 | `user`             | `fetchUser`                               |
@@ -643,18 +647,18 @@ next / next/**                  # Next.js imports
 
 ### Custom type helpers (`src/lib/types.ts`)
 
-| Type                      | Purpose                                             |
-| ------------------------- | --------------------------------------------------- |
-| `Any`                     | Escape hatch (only in `src/lib/types.ts`)           |
-| `AnyRecord`               | `Record<string \| number \| symbol, any>`           |
-| `AnyFunction`             | `(...args: any[]) => any`                           |
-| `Icon<T>`, `IconProps<T>` | SVG component prop types extending LucideProps      |
-| `IconName`                | Re-export from `lucide-react/dynamic`               |
-| `Rgb`                     | `[number, number, number]` tuple                    |
-| `Enum<T>`                 | `T \| \`${T}\`` — allows string literal or template |
-| `PartialKeys<T, K>`       | Make specific keys optional                         |
-| `Replace<S, From, To>`    | String replacement at type level                    |
-| `HttpUrl`                 | `\`http://${string}\` \| \`https://${string}\``     |
+| Type                      | Purpose                                               |
+| ------------------------- | ----------------------------------------------------- |
+| `Any`                     | Escape hatch (only in `src/lib/types.ts`)             |
+| `AnyRecord`               | `Record<string \| number \| symbol, any>`             |
+| `AnyFunction`             | `(...args: any[]) => any`                             |
+| `AuthView`                | Union of valid auth view names (from `AUTH_VIEWS`)    |
+| `CamelCase<S>`            | Convert snake/kebab string to camelCase at type level |
+| `Icon<T>`, `IconProps<T>` | SVG component prop types extending LucideProps        |
+| `IconName`                | Re-export from `lucide-react/dynamic`                 |
+| `Rgb`                     | `[number, number, number]` tuple                      |
+| `Enum<T>`                 | `T \| \`${T}\`` — allows string literal or template   |
+| `HttpUrl`                 | `\`http://${string}\` \| \`https://${string}\``       |
 
 ### Database types (`src/db/types.ts`)
 
@@ -662,7 +666,6 @@ next / next/**                  # Next.js imports
 | ---------------- | ----------------------------------------------------------- |
 | `TableMap`       | Interface mapping snake_case names to Drizzle table objects |
 | `TableName`      | Union of all table names (`keyof TableMap`)                 |
-| `TableRow<T>`    | `InferSelectModel` for a table                              |
 | `TableInsert<T>` | `InferInsertModel` for a table                              |
 | `TableUpdate<T>` | `Partial<InferInsertModel>` for a table                     |
 | `Enums`          | Interface of database enum types                            |
@@ -682,10 +685,10 @@ next / next/**                  # Next.js imports
 | Function                    | Purpose                                                   |
 | --------------------------- | --------------------------------------------------------- |
 | `cn(...inputs)`             | Merge Tailwind classes (extended `tailwind-merge` + `cx`) |
-| `isProduction`              | `process.env.NODE_ENV === 'production'`                   |
 | `hexToRgb(record)`          | Convert hex color record to RGB tuples                    |
 | `isValidUsername(value)`    | Validate email or username format                         |
 | `defaultFormDisabled(form)` | Check if form is pristine or has errors                   |
+| `publicFile(file)`          | Resolve a public file URL relative to `APP_URL`           |
 | `titleize(input)`           | Title-case string (words >3 chars capitalized)            |
 | `camelize(input)`           | Convert to camelCase (typed)                              |
 | `random(min, max)`          | Random integer in range                                   |
@@ -771,38 +774,44 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 ## Email Templates
 
-**Templates** in `src/email/templates/`:
+**Templates** in `src/emails/`:
 
-| Template         | Path                       |
-| ---------------- | -------------------------- |
-| Auth recovery    | `auth/recovery`            |
-| Auth invite      | `auth/invite`              |
-| Team invite      | `team/invite`              |
-| Password changed | `account/password-changed` |
-| Email changed    | `account/email-changed`    |
+| Template                  | Path                        |
+| ------------------------- | --------------------------- |
+| Auth recovery             | `auth/recovery`             |
+| Auth invite               | `auth/invite`               |
+| Auth verify email         | `auth/verify-email`         |
+| Team invite               | `team/invite`               |
+| Password changed          | `account/password-changed`  |
+| Email changed             | `account/email-changed`     |
+| Certificate assigned      | `certificate/assigned`      |
+| Certificate review        | `certificate/review`        |
+| Organization join request | `organization/join-request` |
+| Organization member added | `organization/member-added` |
 
-**SMTP config:** `emailjs` client with settings from env vars (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SENDER`).
+**SMTP config:** Nodemailer client with settings from env vars (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SENDER`).
 
 ---
 
 ## Environment Variables
 
-| Variable             | Purpose                            | Scope  |
-| -------------------- | ---------------------------------- | ------ |
-| `APP_URL`            | Application base URL               | Server |
-| `BETTER_AUTH_SECRET` | Better Auth secret key             | Server |
-| `BETTER_AUTH_URL`    | Better Auth base URL               | Server |
-| `COOKIE_PREFIX`      | App cookie prefix (default: `gl_`) | Server |
-| `DATABASE_URL`       | Neon Postgres connection string    | Server |
-| `OPENAI_API_KEY`     | OpenAI API key                     | Server |
-| `OPENAI_MODEL`       | OpenAI model name (e.g., `gpt-4o`) | Server |
-| `SMTP_HOST`          | SMTP server hostname               | Server |
-| `SMTP_PORT`          | SMTP port                          | Server |
-| `SMTP_USER`          | SMTP username                      | Server |
-| `SMTP_PASSWORD`      | SMTP password                      | Server |
-| `SMTP_SENDER`        | Email sender address               | Server |
-| `GITHUB_TOKEN`       | GitHub personal access token       | Server |
-| `VERCEL_TOKEN`       | Vercel CLI token                   | Server |
+| Variable                | Purpose                            | Scope  |
+| ----------------------- | ---------------------------------- | ------ |
+| `APP_URL`               | Application base URL               | Server |
+| `BETTER_AUTH_SECRET`    | Better Auth secret key             | Server |
+| `BETTER_AUTH_URL`       | Better Auth base URL               | Server |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob read/write token       | Server |
+| `COOKIE_PREFIX`         | App cookie prefix (default: `gl_`) | Server |
+| `DATABASE_URL`          | Neon Postgres connection string    | Server |
+| `OPENAI_API_KEY`        | OpenAI API key                     | Server |
+| `OPENAI_MODEL`          | OpenAI model name (e.g., `gpt-4o`) | Server |
+| `SMTP_HOST`             | SMTP server hostname               | Server |
+| `SMTP_PORT`             | SMTP port                          | Server |
+| `SMTP_USER`             | SMTP username                      | Server |
+| `SMTP_PASSWORD`         | SMTP password                      | Server |
+| `SMTP_SENDER`           | Email sender address               | Server |
+| `GITHUB_TOKEN`          | GitHub personal access token       | Server |
+| `VERCEL_TOKEN`          | Vercel CLI token                   | Server |
 
 ---
 

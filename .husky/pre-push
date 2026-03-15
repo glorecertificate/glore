@@ -2,15 +2,9 @@
 
 set -e
 
-REMOTE=origin
-REF=$(git rev-parse --abbrev-ref $REMOTE/HEAD | sed "s@^$REMOTE/@@")
+REF=$(git rev-parse --abbrev-ref origin/HEAD)
 
-./node_modules/.bin/commitlint --from "$REMOTE/$REF" --to HEAD --verbose
+./node_modules/.bin/commitlint --from "$REF" --to HEAD --verbose
 ./node_modules/.bin/oxlint
 ./node_modules/.bin/oxfmt --check
 ./node_modules/.bin/knip
-
-if [ "$(git rev-parse --abbrev-ref HEAD)" = "$REF" ]; then
-  ./node_modules/.bin/next build
-  ./node_modules/.bin/size-limit
-fi

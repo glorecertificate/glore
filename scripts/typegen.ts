@@ -38,7 +38,7 @@ const listPublicDir = (dir = '') => {
 
 if (types.includes('env')) {
   try {
-    stdout.write('Generating environment types...')
+    if (stdout.isTTY) stdout.write('Generating environment types...')
 
     const lines = []
     const keys = new Set()
@@ -86,7 +86,7 @@ export {}`
 
 if (types.includes('routes')) {
   try {
-    stdout.write('Generating route types...')
+    if (stdout.isTTY) stdout.write('Generating route types...')
     execSync('next typegen', { stdio: 'ignore' })
     clearLine()
     console.info(`${green('✓ ')} Route types generated successfully\n`)

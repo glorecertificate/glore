@@ -1,0 +1,11 @@
+.agents/
+.husky/
+drizzle/
+AGENTS.md
+CHANGELOG.md
+CLAUDE.md
+README.md
+LICENSE
+skills-lock.json
+knip.json
+commitlint.config.ts

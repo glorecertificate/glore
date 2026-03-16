@@ -7,6 +7,7 @@ export const GloreIcon = ({ height, width, ...props }: IconProps) => (
       <image
         height="225"
         href={publicFile('/icon.png')}
+        suppressHydrationWarning
         preserveAspectRatio="none"
         transform="matrix(.00445119 0 0 .00405119 0.02 0)"
         width="225"

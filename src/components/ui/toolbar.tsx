@@ -132,13 +132,17 @@ const toolbarButtonVariants = cva(
   }
 )
 
-export const ToolbarSplitButton = ({ className, pressed, ...props }: ToolbarButtonProps) => (
-  <ToolbarPrimitive.ToolbarButton className={cn('group flex gap-0 px-0 hover:bg-transparent', className)} {...props} />
+export const ToolbarSplitButton = ({
+  className,
+  pressed,
+  ...props
+}: React.ComponentProps<'div'> & { pressed?: boolean }) => (
+  <div className={cn('group flex gap-0', className)} data-pressed={pressed ? 'true' : undefined} {...props} />
 )
 
 export interface ToolbarSplitButtonPrimaryProps
   extends
-    Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'value'>,
+    Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'asChild' | 'value'>,
     VariantProps<typeof toolbarButtonVariants> {
   tooltip?: string
   tooltipContentProps?: React.ComponentProps<typeof TooltipContent>

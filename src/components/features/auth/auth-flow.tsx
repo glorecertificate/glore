@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
@@ -13,7 +14,7 @@ import { PasswordResetForm } from '@/components/features/auth/password-reset-for
 import { ResendEmailButton } from '@/components/features/auth/resend-email-button'
 import { GloreIcon } from '@/components/icons/glore'
 import { Button } from '@/components/ui/button'
-import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
+import { type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
@@ -21,6 +22,8 @@ import { EMAIL_REGEX } from '@/lib/constants'
 import { AuthView, type Enum } from '@/lib/types'
 import { camelize, cn, hexToRgb } from '@/lib/utils'
 import theme from '~/config/theme.json'
+
+const Globe = dynamic(async () => (await import('@/components/ui/globe')).Globe, { ssr: false })
 
 const motionAnimate = { opacity: 1, y: 0 }
 const motionExit = { opacity: 0, y: -8 }

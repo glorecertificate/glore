@@ -30,6 +30,15 @@ const nextConfig = {
   ],
   typedRoutes: true,
   experimental: {
+    optimizePackageImports: [
+      '@dnd-kit/core',
+      '@dnd-kit/modifiers',
+      '@dnd-kit/sortable',
+      '@dnd-kit/utilities',
+      'motion',
+    ],
+    parallelServerBuildTraces: true,
+    parallelServerCompiles: true,
     turbopackFileSystemCacheForDev: true,
   },
 } satisfies NextConfig

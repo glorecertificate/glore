@@ -78,7 +78,7 @@ All coding conventions and architecture details are in [`AGENTS.md`](AGENTS.md).
 
 The project uses MCP servers (configured in [`.mcp.json`](.mcp.json)) and agent skills to provide specific knowledge for database, auth, UI, and email.
 
-Planning files like `SPEC.md` and `ROADMAP.md` are excluded from version control and shared among collaborators separately.
+Planning files `spec.md` and `roadmap.md` live in `.agents/skills/ship/references/` alongside the ship skill.
 
 ## License
 

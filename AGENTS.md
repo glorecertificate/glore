@@ -2,7 +2,11 @@
 
 GloRe Certificate — multilingual e-learning platform for soft skills certification, built with Next.js 16, React 19, Neon (Postgres), Drizzle ORM, and Tailwind CSS 4.
 
-> **MANDATORY:** Every agent working on this codebase MUST follow ALL rules in this file without exception. This file is the single source of truth for coding patterns, conventions, and workflows. Agents MUST auto-update this file whenever they make structural or architectural changes (see [Auto Updates](#auto-updates)).
+> **Source of truth**: This file is the single source of truth for all AI agent instructions in this project. `CLAUDE.md` redirects here via `@AGENTS.md` — **never edit `CLAUDE.md` directly**. All updates must be made to this file only.
+
+> **Auto-update rule**: When making changes that affect the information documented here (new routes, components, packages, actions, types, patterns, or conventions), update this file as part of the same change. AGENTS.md must always reflect the current state of the codebase.
+
+> **MANDATORY:** Every agent working on this codebase MUST follow ALL rules in this file without exception. Agents MUST auto-update this file whenever they make structural or architectural changes (see [Auto Updates](#auto-updates)).
 
 ---
 
@@ -37,6 +41,45 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 ---
 
+## Model Selection
+
+> **MANDATORY:** Agents MUST assess task complexity before starting and suggest a model switch when the current model is not the best fit for the task at hand.
+
+### Default models
+
+| Model               | Role                 | Use for                                                                                                                  |
+| ------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `Claude Sonnet 4.6` | Default              | Day-to-day tasks: feature implementation, bug fixes, refactors, code review, documentation, and most agent work          |
+| `Claude Opus 4.6`   | High-complexity only | Architectural decisions with high ambiguity, large-scale cross-cutting refactors (>10K lines), multi-agent orchestration |
+
+### When to suggest a model switch
+
+Agents MUST proactively recommend switching to a more suitable model when the current one is likely to underperform. Surface the suggestion as a short, direct message before proceeding.
+
+**Suggest switching from Sonnet to Opus when:**
+
+- The task requires architectural decisions with significant ambiguity (e.g., choosing between competing system designs, evaluating trade-offs across many layers)
+- The change touches more than 10K lines of code across many modules (large-scale refactors, migrations, or full-feature rewrites)
+- The task involves orchestrating or designing a multi-agent system or complex agentic workflow
+- The task requires deep reasoning across many interacting constraints simultaneously
+
+**Suggest switching from Opus to Sonnet when:**
+
+- The task is well-scoped and mechanical (single-file changes, routine feature additions, minor refactors)
+- Speed and cost efficiency are more important than deep reasoning depth
+
+### How to surface the suggestion
+
+When a model switch is warranted, say so clearly at the start of the response before doing any work:
+
+```
+This task involves [reason]. Consider switching to Claude Opus 4.6 for better results before proceeding.
+```
+
+Do not block on the suggestion — if the user continues without switching, proceed with the current model.
+
+---
+
 ## Stack
 
 | Category         | Technology                                            | Version           |
@@ -65,13 +108,17 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | Deployment       | Vercel                                                | ^50.13.2          |
 | Analytics        | @vercel/analytics + @vercel/speed-insights            | ^1.6.1 / ^1.3.1   |
 | Search           | fuse.js                                               | ^7.1.0            |
-| Agent Skills     | skills CLI (https://skills.sh)                        | latest            |
+| Agent Skills     | skills CLI (https://agentskills.io)                   | latest            |
 
 ---
 
 ## Agent Skills
 
-This project uses [Agent Skills](https://skills.sh) (`skills` CLI) to provide domain-specific knowledge to AI agents. Skills are managed via symlinks in `.agents/skills/` and tracked in `skills-lock.json`.
+This project uses [Agent Skills](https://agentskills.io) (`skills` CLI) to provide domain-specific knowledge to AI agents. Skills are managed in `.agents/skills/` and tracked in `skills-lock.json`.
+
+> **MANDATORY:** All skill creation, management, and structure MUST conform to the [agentskills.io](https://agentskills.io) standard (file naming, `SKILL.md` frontmatter, `references/` folder usage, and `assets/` folder usage).
+
+> **MANDATORY:** The **only** skills folder to read or edit is `.agents/skills/`. Any `skills/` folder inside `.claude/` is a symlink to `.agents/skills/` — never access or modify it directly. Always use `.agents/skills/` as the canonical path.
 
 ### Setup
 
@@ -260,28 +307,30 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 
 ### Route table
 
-| Path                 | Auth               | Layout    | Description             |
-| -------------------- | ------------------ | --------- | ----------------------- |
-| `/login`             | Public             | Root      | Login page              |
-| `/register`          | Public             | Root      | Registration page       |
-| `/onboarding`        | Auth (pre-onboard) | Root      | Onboarding form         |
-| `/onboarding/error`  | Auth (pre-onboard) | Root      | Onboarding error        |
-| `/[username]`        | Public             | Root      | Public certificate page |
-| `/dashboard`         | Auth               | Dashboard | Main dashboard          |
-| `/about`             | Auth               | Dashboard | About page              |
-| `/admin`             | Auth + `is_admin`  | Dashboard | Admin panel             |
-| `/organization`      | Auth + org manager | Dashboard | Organization panel      |
-| `/certificates`      | Auth + non-editor  | Dashboard | Certificate list        |
-| `/certificates/new`  | Auth + non-editor  | Dashboard | New certificate         |
-| `/certificates/[id]` | Auth + non-editor  | Dashboard | Certificate detail      |
-| `/courses`           | Auth               | Dashboard | Course list             |
-| `/courses/[slug]`    | Auth               | Dashboard | Course detail/editor    |
-| `/docs`              | Auth               | Dashboard | Documentation           |
-| `/docs/intro`        | Auth               | Dashboard | Introduction docs       |
-| `/docs/faq`          | Auth               | Dashboard | FAQ docs                |
-| `/docs/tutorials`    | Auth               | Dashboard | Tutorial docs           |
-| `/help`              | Auth               | Dashboard | Help page               |
-| `/settings`          | Auth               | Dashboard | User settings           |
+| Path                   | Auth               | Layout    | Description                                        |
+| ---------------------- | ------------------ | --------- | -------------------------------------------------- |
+| `/login`               | Public             | Root      | Login page                                         |
+| `/register`            | Public             | Root      | Registration page                                  |
+| `/onboarding`          | Auth (pre-onboard) | Root      | Onboarding form                                    |
+| `/onboarding/error`    | Auth (pre-onboard) | Root      | Onboarding error                                   |
+| `/[username]`          | Public             | Root      | Public certificate page                            |
+| `/dashboard`           | Auth               | Dashboard | Main dashboard                                     |
+| `/about`               | Auth               | Dashboard | About page                                         |
+| `/admin`               | Auth + `is_admin`  | Dashboard | Admin panel                                        |
+| `/admin/users`         | Auth + `is_admin`  | Dashboard | User moderation: ban/unban, platform role changes  |
+| `/admin/organizations` | Auth + `is_admin`  | Dashboard | Org approval workflow: approve/reject pending orgs |
+| `/organization`        | Auth + org manager | Dashboard | Organization panel                                 |
+| `/certificates`        | Auth + non-editor  | Dashboard | Certificate list                                   |
+| `/certificates/new`    | Auth + non-editor  | Dashboard | New certificate                                    |
+| `/certificates/[id]`   | Auth + non-editor  | Dashboard | Certificate detail                                 |
+| `/courses`             | Auth               | Dashboard | Course list                                        |
+| `/courses/[slug]`      | Auth               | Dashboard | Course detail/editor                               |
+| `/docs`                | Auth               | Dashboard | Documentation                                      |
+| `/docs/intro`          | Auth               | Dashboard | Introduction docs                                  |
+| `/docs/faq`            | Auth               | Dashboard | FAQ docs                                           |
+| `/docs/tutorials`      | Auth               | Dashboard | Tutorial docs                                      |
+| `/help`                | Auth               | Dashboard | Help page                                          |
+| `/settings`            | Auth               | Dashboard | User settings                                      |
 
 ### API routes
 
@@ -704,21 +753,21 @@ next / next/**                  # Next.js imports
 
 ## Custom Hooks
 
-| Hook               | Purpose                               | Key behavior                                                                                                                                                                 |
-| ------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `useComposedRefs`  | Compose multiple refs into one        | Handles React 19 cleanup refs                                                                                                                                                |
-| `useCookies`       | Browser-side typed cookie management  | Uses `document.cookie`; JSON serialize/parse; supports prefix                                                                                                                |
-| `useDebounce`      | Debounce a value                      | Default 500ms delay                                                                                                                                                          |
-| `useDevice`        | Detect device type and touch          | Uses `window.matchMedia`; configurable breakpoint (default 768px)                                                                                                            |
-| `useFileUpload`    | UploadThing file upload with progress | Tracks progress, shows toast on error                                                                                                                                        |
-| `useI18n`          | Access i18n context                   | Reads from `I18nContext`; throws if outside provider                                                                                                                         |
-| `useMetadata`      | Client-side document metadata updates | Updates `<meta>` tags, PWA title formatting, 100ms delay                                                                                                                     |
-| `useMounted`       | Check if component has mounted        | For hydration-safe rendering                                                                                                                                                 |
-| `usePWA`           | Detect PWA display mode               | Detects TWA, Standalone, MinimalUI, Fullscreen, Browser                                                                                                                      |
-| `useScroll`        | Track scroll position                 | Throttled at 100ms; returns `{ scroll, scrolled }`                                                                                                                           |
-| `useSession`       | Access session context                | Reads from `SessionContext`; throws if outside provider; user includes `isOrgAdmin`, `isLearner`, `isRepresentative`, `isTutor`, `isVolunteer` computed from active org role |
-| `useSidebarResize` | Drag-to-resize sidebar                | Configurable min/max widths; collapse/expand thresholds                                                                                                                      |
-| `useTheme`         | Theme with cookie + view transitions  | Extends next-themes; uses View Transitions API; respects `prefers-reduced-motion`                                                                                            |
+| Hook               | Purpose                               | Key behavior                                                                                                                                                                                                                                                                                                               |
+| ------------------ | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `useComposedRefs`  | Compose multiple refs into one        | Handles React 19 cleanup refs                                                                                                                                                                                                                                                                                              |
+| `useCookies`       | Browser-side typed cookie management  | Uses `document.cookie`; JSON serialize/parse; supports prefix                                                                                                                                                                                                                                                              |
+| `useDebounce`      | Debounce a value                      | Default 500ms delay                                                                                                                                                                                                                                                                                                        |
+| `useDevice`        | Detect device type and touch          | Uses `window.matchMedia`; configurable breakpoint (default 768px)                                                                                                                                                                                                                                                          |
+| `useFileUpload`    | UploadThing file upload with progress | Tracks progress, shows toast on error                                                                                                                                                                                                                                                                                      |
+| `useI18n`          | Access i18n context                   | Reads from `I18nContext`; throws if outside provider                                                                                                                                                                                                                                                                       |
+| `useMetadata`      | Client-side document metadata updates | Updates `<meta>` tags, PWA title formatting, 100ms delay                                                                                                                                                                                                                                                                   |
+| `useMounted`       | Check if component has mounted        | For hydration-safe rendering                                                                                                                                                                                                                                                                                               |
+| `usePWA`           | Detect PWA display mode               | Detects TWA, Standalone, MinimalUI, Fullscreen, Browser                                                                                                                                                                                                                                                                    |
+| `useScroll`        | Track scroll position                 | Throttled at 100ms; returns `{ scroll, scrolled }`                                                                                                                                                                                                                                                                         |
+| `useSession`       | Access session context                | Reads from `SessionContext`; throws if outside provider; user includes `isOrgAdmin` (true for `admin` or `representative` org role), `isLearner`, `isRepresentative`, `isTutor`, `isVolunteer` computed from active org role; org-owner-only operations (e.g., deletion) must check `membership.role === 'admin'` directly |
+| `useSidebarResize` | Drag-to-resize sidebar                | Configurable min/max widths; collapse/expand thresholds                                                                                                                                                                                                                                                                    |
+| `useTheme`         | Theme with cookie + view transitions  | Extends next-themes; uses View Transitions API; respects `prefers-reduced-motion`                                                                                                                                                                                                                                          |
 
 ---
 
@@ -899,6 +948,14 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 16. **Remove unused translation keys:** After every feature or code change, scan all three translation files (`messages/en.json`, `messages/es.json`, `messages/it.json`) and the source code to identify message keys that are no longer referenced anywhere. Remove any unused keys from all three files simultaneously to keep the translation files lean and in sync.
 
 17. **No comments in new code:** When writing new code, NEVER add inline comments (`//`, `/* */`) or JSDoc comments (`/** */`). The only exception is `//` section dividers inside long JSX components to separate non-obvious sections. Do NOT touch comments in existing code unless explicitly asked.
+
+18. **Certificate PDF template:** The official template is at `.agents/skills/ship/assets/certificate-template.pdf`. All generated certificate PDFs must match it exactly: Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, reviewer signature block.
+
+19. **Org admin uniqueness:** Each organization has exactly ONE admin (the sole owner/creator). Representatives have the same management rights as admin EXCEPT org deletion. Never allow creating a second `admin` role membership per org. Use `isOrgAdmin` (admin or representative) for management checks; use `membership.role === 'admin'` only for owner-exclusive operations (deletion, ownership transfer).
+
+20. **Certificate review workflow:** Only **tutors** review certificates. A tutor is auto-assigned as reviewer when the certificate is created or submitted. The review form MUST allow editing activity fields (`activityStartDate`, `activityEndDate`, `activityDuration`, `activityLocation`, `activityDescription`) and associated skills/evaluations, not just approve/reject with a comment. Status flow: `draft` → `submitted` → `in_review` → `approved` or `changes_requested`. After `changes_requested`, the volunteer edits and resubmits (back to `submitted`).
+
+21. **Registration creates org request:** New users register and request to join an existing organization (status `pending`). A platform admin approves or rejects the request. Registration is NOT a simple signup with immediate org selection.
 
 ---
 
@@ -1198,6 +1255,7 @@ pnpm typecheck > /tmp/typecheck.log 2>&1
 **How to update:**
 
 - Edit `AGENTS.md` directly — no PR, no branch, no confirmation needed
+- **Never edit `CLAUDE.md`** — it only contains `@AGENTS.md` and must stay untouched
 - Keep the same formatting and table structure
 - Be precise — update only the affected section(s)
 

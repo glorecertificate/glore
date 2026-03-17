@@ -10,5 +10,3 @@ tmp/
 .env
 .env.*
 !.env.example
-/ROADMAP.md
-/SPEC.md

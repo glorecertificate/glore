@@ -1,7 +1,7 @@
 ---
 name: ship
-description: Ship the next feature from the roadmap. See the backlog status, pick the next task, implement it and loop until done. Use when users want to implement a feature, work on the backlog, start or resume a task, manage the roadmap, or run a codebase review. Trigger with `/ship` or whenever the user mentions "continue", "ship", "review", "next task", or "backlog".
-argument-hint: 'start | review | <task slug> | <custom input>'
+description: Ships the next feature from the project roadmap by presenting backlog status, picking the next task, implementing it, and looping until the backlog is clear. Use when users want to implement features, manage the backlog, resume a task in progress, or run a codebase review. Triggers on `/ship`, "continue", "ship", "review", "next task", or "backlog".
+compatibility: Designed for Claude Code and VS Code Copilot Chat. The session title step uses the run_vscode_command tool. On GitHub.com Copilot, it falls back to PR title updates instead.
 ---
 
 You are the lead engineer on this project. Your job is to keep the roadmap moving: present the current status, pick the next task, implement it, and loop until the backlog is clear.
@@ -20,57 +20,48 @@ Check for `AGENTS.md` in the repository root. If the file is **missing** or **em
 
 ### 2. SPEC.md and ROADMAP.md location
 
-`SPEC.md` and `ROADMAP.md` **MUST always live in the repository root**. Always look for them at the root when the skill is invoked. Whether these files are tracked in version control or listed in `.gitignore` is entirely up to the user — the agent MUST NOT touch `.gitignore` or make any decision about it.
-
-### 3. Create missing files from canonical templates
-
-If `SPEC.md` and/or `ROADMAP.md` are missing from the repository root, read the canonical template(s) from:
-
-- `references/spec-template.md` — canonical `SPEC.md` template
-- `references/roadmap-template.md` — canonical `ROADMAP.md` template
-
-Create the missing file(s) at the repository root using the corresponding template content, then continue.
+`references/spec.md` and `references/roadmap.md` live **only** inside this skill's `references/` folder (`.agents/skills/ship/references/`). They do NOT exist at the repository root. Always resolve their path relative to this skill's directory, never relative to the project root.
 
 ---
 
-## Step 1 — Load context
+## Step 1: Load context
 
-Read all three files in parallel (no need to wait for one before starting the next):
+Read all three files in parallel:
 
-- `AGENTS.md` — coding conventions, architecture, enforced patterns
-- `SPEC.md` — what the app does and what the business rules are
-- `ROADMAP.md` — current feature status and decisions log
+- `AGENTS.md`: coding conventions, architecture, enforced patterns
+- `references/spec.md`: what the app does and what the business rules are
+- `references/roadmap.md`: current feature status and decisions log
 
-If `SPEC.md` exists but is empty or only contains template placeholder text, stop and say:
+If `references/spec.md` exists but is empty or only contains template placeholder text, stop and say:
 
-> `SPEC.md` is empty. Fill it in with your app description, then run `/ship` again.
+> `references/spec.md` is empty. Fill it in with your app description, then run `/ship` again.
 
 ---
 
-## Step 2 — Present the roadmap
+## Step 2: Present the roadmap
 
 **Every time `/ship` is invoked**, present the current roadmap state in a clear, readable format:
 
 ```
-📦 Roadmap — [Project name]
+📦 Roadmap: [Project name]
 
 🔄 Active
-  [~] slug — Feature name   (agent: x7k2pa, started: YYYY-MM-DD HH:MM)
-  [~] slug — Feature name   (stale — no active agent)
+  [~] slug: Feature name   (agent: x7k2pa, started: YYYY-MM-DD HH:MM)
+  [~] slug: Feature name   (stale, no active agent)
 
 📋 Backlog
-  [ ] slug — Feature name     (notes if any)
-  [ ] slug — Feature name
+  [ ] slug: Feature name   (notes if any)
+  [ ] slug: Feature name
 
 ✅ Done (N completed)
-  [x] slug — Feature name     Completed: YYYY-MM-DD
+  [x] slug: Feature name   Completed: YYYY-MM-DD
   ...
 
 ```
 
 If the backlog is empty and nothing is active, say:
 
-> The backlog is empty. Add features to `ROADMAP.md → Backlog`, then run `/ship` again.
+> The backlog is empty. Add features to `references/roadmap.md → Backlog`, then run `/ship` again.
 
 ---
 
@@ -80,14 +71,14 @@ Multiple agents can work on this project simultaneously. Every time a `/ship` se
 
 ### Session ID
 
-Generate a random 6-character alphanumeric string (e.g. `x7k2pa`) at the start of each session. Use it consistently when stamping tasks in `ROADMAP.md` for the duration of that session.
+Generate a random 6-character alphanumeric string (e.g. `x7k2pa`) at the start of each session. Use it consistently when stamping tasks in `references/roadmap.md` for the duration of that session.
 
 ### Staleness
 
 A `[~]` task is **stale** when:
 
 - It carries no `agent:` annotation, or
-- It has an `agent:` annotation but that session has left no recent git activity tied to it — check `git log --oneline -20` for commits referencing the slug; if none exist in a reasonable window (a few hours), treat the task as abandoned.
+- It has an `agent:` annotation but that session has left no recent git activity tied to it. Check `git log --oneline -20` for commits referencing the slug; if none exist in a reasonable window (a few hours), treat the task as abandoned.
 
 A `[~]` task is **claimed** when it has a valid `agent:` annotation with recent matching git activity.
 
@@ -109,27 +100,27 @@ Two tasks **conflict** when they would modify the same files, modules, data tabl
 Move the chosen task to Active, stamp it with your session ID and timestamp, then proceed to **Step 4**.
 
 **3. Every backlog task conflicts with an active task?**
-Report clearly which tasks are blocked and why (e.g., "task `api-v2` conflicts with the active `api-auth` task — both touch `src/app/api/`"). Do not force-pick a conflicting task. Stop and wait for the user to add a new task or unblock the situation.
+Report clearly which tasks are blocked and why (e.g., "task `api-v2` conflicts with the active `api-auth` task: both touch `src/app/api/`"). Do not force-pick a conflicting task. Stop and wait for the user to add a new task or unblock the situation.
 
 ### Stamping format
 
-When claiming a task, update its line in `ROADMAP.md` to include the agent annotation:
+When claiming a task, update its line in `references/roadmap.md` to include the agent annotation:
 
 ```
-[~] slug — Feature name   agent:x7k2pa   started:2026-03-15T19:05
+[~] slug: Feature name   agent:x7k2pa   started:2026-03-15T19:05
 ```
 
 When a task is marked done (`[x]`), remove the `agent:` and `started:` annotations from the line.
 
 ---
 
-## Step 3 — Act on user input
+## Step 3: Act on user input
 
 When `/ship` is invoked **with no additional input**, treat it as if `start` was specified: resume the active task or pick the next backlog item and proceed to **Step 4** immediately. Do not pause to ask what to do next.
 
 Act immediately after presenting the roadmap (do not ask again):
 
-#### `start` / `sail`
+#### `start` or `continue`
 
 Apply the **concurrent task handling** algorithm (see above) to determine which task to work on:
 
@@ -137,22 +128,22 @@ Apply the **concurrent task handling** algorithm (see above) to determine which 
 - If all active tasks are claimed and a non-conflicting backlog task exists: move it to Active, stamp it, then proceed to **Step 4**.
 - If the backlog is empty and no stale task exists: ask the user to input a new task or another action. If a task is provided, add it to the backlog and start it using the same algorithm.
 
-#### `review`
+#### `review` or `review roadmap`
 
 Run a full, thorough audit of the codebase and the roadmap:
 
-1. Read all relevant source files and the current `ROADMAP.md` and `SPEC.md`.
+1. Read all relevant source files and the current `references/roadmap.md` and `references/spec.md`.
 2. Identify improvements: missing features, bugs, performance issues, UI/UX gaps, outdated patterns, dead code, etc.
 3. Present findings with clear categories (e.g. **Bugs**, **Performance**, **UI**, **Features**, **Housekeeping**).
 4. Propose additions, removals, or reprioritisations to the roadmap.
-5. If the user confirms, update `ROADMAP.md` with the new tasks.
+5. If the user confirms, update `references/roadmap.md` with the new tasks.
 
 #### `<task slug>`
 
 Jump directly to a specific task by slug (e.g. `/ship r2-storage`):
 
 - Find the matching task in the roadmap by slug.
-- If the task is in the backlog, move it to **Active** (`[~]`), stamp it with your session ID and timestamp, and proceed to **Step 4**. Before starting, verify it does not conflict with any currently claimed task using the concurrency rules above — if it does, warn the user before proceeding.
+- If the task is in the backlog, move it to **Active** (`[~]`), stamp it with your session ID and timestamp, and proceed to **Step 4**. Before starting, verify it does not conflict with any currently claimed task using the concurrency rules above. If it does, warn the user before proceeding.
 - If the task is already active, check whether it's stale (see Concurrent task handling). If stale, claim it and resume. If claimed by another session, report that and ask the user to confirm before taking it over.
 - If no task matches the slug, say so and list the available slugs from the backlog.
 
@@ -162,36 +153,52 @@ Interpret the user's request and proceed accordingly. Use your best judgment to 
 
 ---
 
-### Set chat title
+### Set session title
 
-After picking a task (regardless of how it was triggered), attempt to rename the active VS Code chat session so the window title reflects the current work:
+This step runs **only after a task has been confirmed and its slug and name are known**. Never attempt it before the task is determined. The slug must already be in hand.
 
-**Format:** `/ship \`<task-slug>\` - <short description>`
+**Title format:** `[ship] <task-slug>: <short description>`
 
-Example: `/ship r2-storage - Migrate from Vercel Blob to Cloudflare R2`. **Always include the slug in the title** to make it easy to identify the session.
+**Example:** `[ship] r2-storage: Migrate from Vercel Blob to Cloudflare R2`
 
-Use `run_vscode_command` with `commandId: workbench.action.chat.rename` and `args: ["<formatted title>"]`. Retry up to 5 times on failure. If all 5 attempts fail, skip silently and continue to Step 4. Never block or interrupt execution over a title change.
+#### In VS Code (Copilot chat)
+
+Load the `run_vscode_command` tool via `tool_search_tool_regex` if not already loaded. Then call it with:
+
+- `commandId`: `workbench.action.chat.rename`
+- `args`: `["[ship] <task-slug>: <short description>"]`
+
+Execute this call **up to 5 times in a row without delay** between attempts. Do not check for success between retries. Just fire all 5 calls. After all 5 calls are done (regardless of outcome), move on immediately. Never pause, block, or report failure over a title rename. It is a cosmetic step.
+
+#### In GitHub.com Copilot chat (https://github.com/copilot)
+
+The `run_vscode_command` tool is unavailable in this context. Load the appropriate GitHub tool via `tool_search_tool_regex` (e.g. `mcp_github_update_pull_request` or `mcp_github_create_pull_request`). Whenever a pull request is created or updated during this session (including during `approve and commit`) set its title to `[ship] <task-slug>: <short description>`. This applies on PR creation, reopening, and any time the PR title would otherwise be auto-generated.
+
+#### When `continue` picks a new task
+
+Run this step again for the new task before moving to Step 4. The title must always match the task currently being worked on.
 
 ---
 
-## Step 4 — Plan
+## Step 4: Plan
 
 Before writing any code, write a concise implementation plan:
 
 - Which files will be created or modified
 - Which `AGENTS.md` patterns apply
-- Which skills need to be read (check the skill enforcement rules in `AGENTS.md`)
+- Which skills need to be read (check the skill enforcement rules in `AGENTS.md`; list each by name)
 - Any DB schema changes or migrations required
 - Any new environment variables required
+- Any risks or open questions that should be resolved before starting
 
 Present the plan:
 
-> **Plan: `[slug]` - [Feature name]**
+> **Plan: `[slug]` ([Feature name])**
 >
 > Files: ...
 > Patterns: ...
-> Skills: ...
-> [Any questions or risks]
+> Skills: ... (or "none" if no skill applies)
+> [Any risks or open questions]
 >
 > **Reply "start" or tell me what to change.**
 
@@ -199,19 +206,19 @@ Wait for confirmation before writing code.
 
 ---
 
-## Step 5 — Implement
+## Step 5: Implement
 
-Before writing any code, read all skills referenced in the plan from `.agents/skills/`.
+Before writing any code, read all skills listed in the plan from `.agents/skills/`, in parallel if multiple apply. This includes any skills mandated by `AGENTS.md` skill enforcement rules for the type of work being done (e.g. UI work always requires `frontend-design` and `vercel-react-best-practices`).
 
 Implement the feature following **every** convention and pattern defined in `AGENTS.md` exactly. No exceptions.
 
-After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). If errors exist that pre-date your changes (unrelated to the current feature), note them but do not fix them — only fix errors you introduced. Then run the **build command**. Fix any build errors you introduced before presenting results.
+After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). If errors exist that pre-date your changes (unrelated to the current feature), note them but do not fix them. Only fix errors you introduced. Then run the **build command**. Fix any build errors you introduced before presenting results.
 
 ---
 
-## Step 6 — Present results
+## Step 6: Present results
 
-> **Done: [slug] — [Feature name]**
+> **Done: [slug] ([Feature name])**
 >
 > **What was built:**
 >
@@ -226,38 +233,38 @@ After implementing, run the project's **check command** (see `AGENTS.md` → Com
 >
 > **What's next?**
 >
-> - `approve` — mark done, update roadmap, stop
-> - `approve and commit` — mark done, update roadmap, then commit
-> - `continue` — mark done and immediately start the next backlog item
-> - `skip` — mark as blocked (`[!]`), move to the next backlog item
-> - `stop` — pause here without marking anything done
+> - `approve`: mark done, update roadmap, stop
+> - `approve and commit`: mark done, update roadmap, then commit
+> - `continue`: mark done and immediately start the next backlog item
+> - `skip`: mark as blocked (`[!]`), move to the next backlog item
+> - `stop`: pause here without marking anything done
 > - Or tell me what to change.
 
 ---
 
-## Step 7 — Post-action loop
+## Step 7: Post-action loop
 
 The user may reply with a **single keyword** (no need to repeat `/ship`):
 
 ### `approve`
 
-1. Mark the feature `[x]` with a completion date in `ROADMAP.md`.
+1. Mark the feature `[x]` with a completion date in `references/roadmap.md`.
 2. Add any architectural decisions to the **Decisions log**.
 3. Update `AGENTS.md` if new routes, hooks, utilities, or patterns were introduced.
-4. Update `SPEC.md` if the feature changed or clarified the app spec.
+4. Update `references/spec.md` if the feature changed or clarified the app spec.
 5. Stop the workflow.
 
 ### `approve and commit`
 
-Perform all steps from `approve`, then execute the `/commit` skill to test, verify, and commit the pending changes.
+Perform all steps from `approve`, then execute the `/commit` skill to test, verify, and commit the pending changes. If a pull request is created, its title must follow the session title format: `[ship] <task-slug>: <short description>`.
 
 ### `continue`
 
-Perform all steps from `approve`, then immediately loop back to **Step 2** and pick the next backlog item.
+Perform all steps from `approve`, then immediately loop back to **Step 2**, pick the next backlog item, and run the **Set session title** step for the new task before proceeding to Step 4.
 
 ### `skip`
 
-Mark the current task as blocked (`[!]`) in `ROADMAP.md` with a brief note, then loop back to **Step 2** and pick the next available backlog item.
+Mark the current task as blocked (`[!]`) in `references/roadmap.md` with a brief note, then loop back to **Step 2** and pick the next available backlog item.
 
 ### `stop`
 
@@ -269,27 +276,27 @@ Apply the user's requested changes BEFORE updating task status. Re-run the proje
 
 ---
 
-## Roadmap slugs — enforcement rules
+## Roadmap slugs: enforcement rules
 
-Every task in `ROADMAP.md` MUST have a unique **slug**:
+Every task in `references/roadmap.md` MUST have a unique **slug**:
 
 - **2 words** (hyphen-separated), **maximum 3** only when 2 is ambiguous
 - Lowercase, kebab-case, descriptive of the task
 - Examples: `admin-certs`, `settings-ui`, `about-page`, `config-crud`, `user-invite`
 - Slugs are referenced in chat (e.g. `continue admin-certs`) and in the decisions log
 
-When adding tasks to the roadmap (from any source — user input, `review`, etc.), always assign slugs.
+When adding tasks to the roadmap (from any source, including user input and `review`), always assign slugs.
 
-Active tasks carry concurrency annotations that MUST be preserved exactly as written by the agent that stamped them — do not reformat or strip them:
+Active tasks in `references/roadmap.md` carry concurrency annotations that MUST be preserved exactly as written by the agent that stamped them. Do not reformat or strip them:
 
 ```
-[~] slug — Feature name   agent:x7k2pa   started:2026-03-15T19:05
+[~] slug: Feature name   agent:x7k2pa   started:2026-03-15T19:05
 ```
 
 When marking a task done, remove the `agent:` and `started:` fields:
 
 ```
-[x] slug — Feature name   Completed: YYYY-MM-DD
+[x] slug: Feature name   Completed: YYYY-MM-DD
 ```
 
 ---
@@ -298,35 +305,12 @@ When marking a task done, remove the `agent:` and `started:` fields:
 
 After every action, verify and update all three files if needed:
 
-| File         | What to update                                                             |
-| ------------ | -------------------------------------------------------------------------- |
-| `AGENTS.md`  | New routes, hooks, utilities, components, env vars, patterns introduced    |
-| `SPEC.md`    | New features, updated flows, changed business rules, or resolved questions |
-| `ROADMAP.md` | Task status changes, new items, decisions log entries, slug assignments    |
+| File                    | What to update                                                             |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `AGENTS.md`             | New routes, hooks, utilities, components, env vars, patterns introduced    |
+| `references/spec.md`    | New features, updated flows, changed business rules, or resolved questions |
+| `references/roadmap.md` | Task status changes, new items, decisions log entries, slug assignments    |
 
-These updates are **automatic and mandatory** — no user confirmation needed.
+> **Important:** `references/spec.md` and `references/roadmap.md` always refer to the files inside this skill's folder (`.agents/skills/ship/references/`), never files at the repository root.
 
----
-
-## Gitignore enforcement for skills
-
-When creating or modifying the `.agents/skills/.gitignore` file, follow these rules strictly:
-
-- **External skills** (listed in `skills-lock.json`) MUST NOT be tracked. Do NOT add them as exceptions to the gitignore.
-- **Custom skills** (created by the user or agent, NOT in `skills-lock.json`) MUST be added as exceptions (`!<skill-name>`) to be tracked.
-
-Before adding any skill to `.gitignore`, check `skills-lock.json`. If it appears there, it is external and must remain ignored.
-
-```gitignore
-# CORRECT — only custom/user-created skills are tracked
-/*/
-!agents-md
-!ship
-
-# WRONG — external skills must not be added as exceptions
-/*/
-!/agents-md/
-!/ship/
-!/better-auth-best-practices/   ← WRONG, this is in skills-lock.json
-!/shadcn/                       ← WRONG, this is in skills-lock.json
-```
+These updates are **automatic and mandatory**. No user confirmation needed.

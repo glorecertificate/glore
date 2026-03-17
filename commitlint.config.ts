@@ -10,7 +10,7 @@ export default {
       'always',
       ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert', 'ai'],
     ],
-    'scope-enum': [Error, 'always', ['deps', 'deps-dev', 'release', 'security', 'mcp', 'skills', 'agents']],
+    'scope-enum': [Error, 'always', ['deps', 'deps-dev', 'release', 'security']],
     'subject-case': [Error, 'always', 'sentence-case'],
     'subject-empty': [Error, 'never'],
     'header-max-length': [Error, 'always', 100],

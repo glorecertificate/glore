@@ -31,7 +31,6 @@ _No P0 tasks remaining._
 
 | Slug           | Feature                        | Notes                                                                                                                                                                                                                                                                   |
 | -------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cert-filter`  | Certificate list filtering     | High. Add URL-based filter by status (nuqs) to `/certificates` page. Add sort by date. Update `certificates-content.tsx` with filter controls.                                                                                                                          |
 | `docs-feature` | Documentation CRUD and UI      | High. DB tables exist (`doc_categories`, `doc_articles`). Need: server actions (CRUD), queries, API, components for browsing/reading/editing articles. Admin/editor creates; all authenticated users read. Fill `/docs`, `/docs/intro`, `/docs/faq`, `/docs/tutorials`. |
 | `bundle-opt`   | Bundle size optimization       | High. Lucide icons tree-shaking, zod (consider zod mini), react-player/hls.js dynamic import, general code splits.                                                                                                                                                      |
 | `build-speed`  | Fix slow Vercel builds (3min+) | High. Remote cache, output standalone, reduce static gen, parallelism.                                                                                                                                                                                                  |
@@ -64,6 +63,7 @@ _No P0 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `cert-filter`    | Certificate list filtering                | 2026-03-18 |
 | `cert-qr`        | QR code on public certificate page        | 2026-03-18 |
 | `cert-social`    | Public certificate social sharing         | 2026-03-18 |
 | `action-cache`   | Server action cache invalidation audit    | 2026-03-26 |
@@ -98,7 +98,8 @@ org-admin-sole ──┘
 
 | Date       | Decision                                                                                  | Rationale                                                                                                                                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-18 | cert-qr: Used qrcode package (server-side PNG via toDataURL) + @/components/ui/image     | Avoids client bundle impact, dangerouslySetInnerHTML, and next/no-img-element lint errors. QR data URL is generated server-side and rendered with the project Image component.                                            |
+| 2026-03-18 | cert-filter: Pure client-side filter/sort with nuqs URL state in certificates-content.tsx | Used parseAsStringEnum for status filter and withDefault for sort. All certs fetched upfront and filtered via useMemo, matching courses list pattern. No server action changes needed.                                    |
+| 2026-03-18 | cert-qr: Used qrcode package (server-side PNG via toDataURL) + @/components/ui/image      | Avoids client bundle impact, dangerouslySetInnerHTML, and next/no-img-element lint errors. QR data URL is generated server-side and rendered with the project Image component.                                            |
 | 2026-03-18 | cert-social: Added opengraph-image.tsx route segment for dynamic OG images                | Next.js ImageResponse with teal brand card; auto-picked up without manual images key in generateMetadata. Also exempted the file pattern in .oxlintrc.json and knip.json.                                                 |
 | 2026-03-19 | Restructured roadmap with priority tiers P0-P3                                            | Codebase audit revealed critical missing features (cert review editing, resubmission, org admin uniqueness) that must be completed before polish/optimization work.                                                       |
 | 2026-03-19 | Added cert-review, cert-resubmit, org-admin-sole as P0                                    | These are core workflow gaps: review form lacks field editing per spec, no resubmission path exists, multiple org admins allowed but spec requires exactly one.                                                           |

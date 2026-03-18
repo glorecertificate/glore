@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  VERCEL_TELEMETRY_DISABLED: 1
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+    environment:
+      name: Production
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --dev --frozen-lockfile --strict-peer-dependencies --ignore-scripts
+      - name: Deploy to Vercel
+        run: pnpm exec vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --no-wait --yes

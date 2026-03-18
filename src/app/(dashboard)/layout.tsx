@@ -7,6 +7,8 @@ import { CoursesProvider } from '@/components/providers/courses-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
+export const dynamic = 'force-dynamic'
+
 export default async ({ children }: LayoutProps<'/'>) => {
   const { get } = await cookies()
   const sidebarOpen = get('sidebarOpen')

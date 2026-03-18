@@ -7,7 +7,7 @@ case "$(cat "$1")" in
     exit 0
     ;;
   *)
-    ./node_modules/.bin/commitlint --edit "$1"
-    ./node_modules/.bin/oxfmt --check
+    pnpm commitlint --edit "$1"
+    pnpm oxfmt --check
     ;;
 esac

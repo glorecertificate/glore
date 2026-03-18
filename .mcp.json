@@ -14,7 +14,7 @@
       "command": "npx",
       "args": ["@knip/mcp", "-y"]
     },
-    "neondatabase/mcp-server-neon": {
+    "neon": {
       "type": "http",
       "url": "https://mcp.neon.tech/sse"
     },

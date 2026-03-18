@@ -12,32 +12,35 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 ## Commands
 
-| Command               | Description                                        |
-| --------------------- | -------------------------------------------------- |
-| `pnpm install`        | Install dependencies                               |
-| `pnpm dev`            | Start Next.js dev server on port 3030              |
-| `pnpm build`          | Production build                                   |
-| `pnpm start`          | Start production server on port 3030               |
-| `pnpm email`          | Preview email templates on port 3031               |
-| `pnpm lint`           | Lint with oxlint                                   |
-| `pnpm lint:fix`       | Auto-fix lint issues                               |
-| `pnpm format`         | Format with oxfmt                                  |
-| `pnpm format:check`   | Check formatting without writing                   |
-| `pnpm check`          | Lint + format check + unused exports (in sequence) |
-| `pnpm check:size`     | Bundle size check                                  |
-| `pnpm typecheck`      | Type-check only (`tsc --noEmit`)                   |
-| `pnpm typegen`        | Generate env types → `env.d.ts`                    |
-| `pnpm analyze`        | Next.js bundle analyzer                            |
-| `pnpm release`        | Create a release (release-it)                      |
-| `pnpm deploy:preview` | Deploy preview to Vercel                           |
-| `pnpm deploy:prod`    | Deploy to production on Vercel                     |
-| `pnpm bump`           | Update pnpm and upgrade all dependencies           |
-| `pnpm skills`         | Install agent skills from `skills-lock.json`       |
-| `pnpm db <command>`   | Run drizzle-kit commands                           |
+| Command                   | Description                                                     |
+| ------------------------- | --------------------------------------------------------------- |
+| `pnpm install`            | Install dependencies                                            |
+| `pnpm run dev`            | Start Next.js dev server on port 3030                           |
+| `pnpm run build`          | Production build                                                |
+| `pnpm run start`          | Start production server on port 3030                            |
+| `pnpm run email`          | Preview email templates on port 3031                            |
+| `pnpm run lint`           | Lint with oxlint                                                |
+| `pnpm run lint:fix`       | Auto-fix lint issues                                            |
+| `pnpm run format`         | Format with oxfmt                                               |
+| `pnpm run format:check`   | Check formatting without writing                                |
+| `pnpm run check`          | Type check + lint + format check + unused exports (in sequence) |
+| `pnpm run check:parallel` | Same as `check` but runs all tools in parallel                  |
+| `pnpm run check:size`     | Bundle size check                                               |
+| `pnpm run typecheck`      | Type-check only (`tsc --noEmit`)                                |
+| `pnpm run typegen`        | Generate route + public-file types → `env.d.ts`                 |
+| `pnpm run analyze`        | Next.js bundle analyzer                                         |
+| `pnpm run release`        | Create a release (release-it)                                   |
+| `pnpm run deploy:preview` | Deploy preview to Vercel                                        |
+| `pnpm run deploy:prod`    | Deploy to production on Vercel                                  |
+| `pnpm run bump`           | Update pnpm and upgrade all dependencies                        |
+| `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
+| `pnpm run db <command>`   | Run drizzle-kit commands                                        |
 
-**Pre-commit validation:** Run `pnpm check` before committing. This runs oxlint, `oxfmt --check`, and knip in sequence.
+**Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc --noEmit`, oxlint, `oxfmt --check`, and knip in sequence.
 
 **Git hooks:** Husky manages hooks. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
+
+> **MANDATORY:** Always use `pnpm run <script>` (never bare `pnpm <script>`) to avoid conflicts with built-in pnpm commands (e.g. `pnpm ci`, `pnpm install`, `pnpm build`). The only exception is `pnpm install` itself.
 
 ---
 
@@ -82,33 +85,33 @@ Do not block on the suggestion — if the user continues without switching, proc
 
 ## Stack
 
-| Category         | Technology                                            | Version           |
-| ---------------- | ----------------------------------------------------- | ----------------- |
-| Framework        | Next.js (App Router, RSC, Cached Components)          | ^16.1.6           |
-| Language         | TypeScript (strict mode)                              | ^5.9.3            |
-| Runtime          | React                                                 | ^19.2.4           |
-| Package manager  | pnpm                                                  | 10.29.1           |
-| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) | ^0.10.4           |
-| ORM              | Drizzle ORM + drizzle-kit                             | ^0.44.0 / ^0.30.0 |
-| Auth             | Better Auth (`better-auth`)                           | ^1.5.4            |
-| Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  | ^3.761.0          |
-| Linter           | oxlint (`.oxlintrc.json`)                             | latest            |
-| Formatter        | oxfmt (`.oxfmtrc.json`)                               | latest            |
-| Styling          | Tailwind CSS                                          | ^4.1.18           |
-| UI Components    | shadcn/ui (new-york style)                            | ^3.8.4            |
-| Rich text editor | Plate.js                                              | ^52.0.17          |
-| i18n             | next-intl                                             | ^4.8.2            |
-| Forms            | react-hook-form + zod                                 | ^7.71.1 / ^4.3.6  |
-| State            | nuqs (URL state)                                      | ^2.8.8            |
-| Email            | Nodemailer (SMTP)                                     | ^8.0.2            |
-| AI               | Vercel AI SDK + OpenAI                                | ^6.0.77 / ^3.0.26 |
-| Animation        | motion                                                | ^12.33.0          |
-| DnD              | @dnd-kit                                              | ^6.3.1            |
-| Icons            | lucide-react                                          | ^0.563.0          |
-| Deployment       | Vercel                                                | ^50.13.2          |
-| Analytics        | @vercel/analytics + @vercel/speed-insights            | ^1.6.1 / ^1.3.1   |
-| Search           | fuse.js                                               | ^7.1.0            |
-| Agent Skills     | skills CLI (https://agentskills.io)                   | latest            |
+| Category         | Technology                                            | Version            |
+| ---------------- | ----------------------------------------------------- | ------------------ |
+| Framework        | Next.js (App Router, RSC, Cached Components)          | ^16.1.7            |
+| Language         | TypeScript (strict mode)                              | ^5.9.3             |
+| Runtime          | React                                                 | ^19.2.4            |
+| Package manager  | pnpm                                                  | 10.32.1            |
+| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) | ^0.10.4            |
+| ORM              | Drizzle ORM + drizzle-kit                             | ^0.45.1 / ^0.31.10 |
+| Auth             | Better Auth (`better-auth`)                           | ^1.5.4             |
+| Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  | ^3.1010.0          |
+| Linter           | oxlint (`.oxlintrc.json`)                             | latest             |
+| Formatter        | oxfmt (`.oxfmtrc.json`)                               | latest             |
+| Styling          | Tailwind CSS                                          | ^4.1.18            |
+| UI Components    | shadcn/ui (new-york style)                            | ^3.8.4             |
+| Rich text editor | Plate.js                                              | ^52.0.17           |
+| i18n             | next-intl                                             | ^4.8.2             |
+| Forms            | react-hook-form + zod                                 | ^7.71.1 / ^4.3.6   |
+| State            | nuqs (URL state)                                      | ^2.8.8             |
+| Email            | Nodemailer (SMTP)                                     | ^8.0.2             |
+| AI               | Vercel AI SDK + OpenAI                                | ^6.0.116 / ^3.0.41 |
+| Animation        | motion                                                | ^12.38.0           |
+| DnD              | @dnd-kit                                              | ^6.3.1             |
+| Icons            | lucide-react                                          | ^0.577.0           |
+| Deployment       | Vercel                                                | ^50.13.2           |
+| Analytics        | @vercel/analytics + @vercel/speed-insights            | ^2.0.1 / ^2.0.0    |
+| Search           | fuse.js                                               | ^7.1.0             |
+| Agent Skills     | skills CLI (https://agentskills.io)                   | latest             |
 
 ---
 
@@ -258,12 +261,14 @@ src/
 │   ├── schema/         # Drizzle schema definitions per table
 │   └── queries/        # Query parse functions per table
 ├── hooks/              # Custom React hooks
+├── instrumentation.ts  # Next.js instrumentation hook (runtime env validation)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum
 │   ├── constants.ts    # Route roots, regex validators
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail utility)
+│   ├── env.ts          # Zod env schema, runtime validation, ProcessEnv augmentation
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
 │   ├── storage.ts      # R2 Put/Delete/URL helpers (r2Put, r2Delete, r2Url)
@@ -339,10 +344,9 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | `/api/auth/[...path]` | GET/POST | Neon Auth catch-all handler                    |
 | `/api/v1/ai/command`  | POST     | AI command endpoint                            |
 | `/api/v1/ai/copilot`  | POST     | AI copilot endpoint                            |
-| `/api/v1/health`      | GET      | Health check (cron: daily at midnight)         |
 | `/api/v1/join`        | GET      | Team invitation join endpoint                  |
 | `/api/v1/manifest`    | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
-| `/api/v1/upload`      | POST     | File upload (UploadThing)                      |
+| `/api/v1/upload`      | POST     | R2 file upload                                 |
 
 ### Route groups
 
@@ -740,7 +744,6 @@ next / next/**                  # Next.js imports
 | `publicFile(file)`          | Resolve a public file URL relative to `APP_URL`           |
 | `titleize(input)`           | Title-case string (words >3 chars capitalized)            |
 | `camelize(input)`           | Convert to camelCase (typed)                              |
-| `random(min, max)`          | Random integer in range                                   |
 | `keysOf(record)`            | Type-safe `Object.keys()`                                 |
 | `pluck(array, key)`         | Extract values of a key from array of objects             |
 | `omit(record, keys)`        | Omit keys from object                                     |
@@ -844,26 +847,57 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 ## Environment Variables
 
-| Variable               | Purpose                                          | Scope  |
-| ---------------------- | ------------------------------------------------ | ------ |
-| `APP_URL`              | Application base URL                             | Server |
-| `BETTER_AUTH_SECRET`   | Better Auth secret key                           | Server |
-| `R2_ACCOUNT_ID`        | Cloudflare account ID                            | Server |
-| `R2_ACCESS_KEY_ID`     | R2 API token access key                          | Server |
-| `R2_SECRET_ACCESS_KEY` | R2 API token secret                              | Server |
-| `R2_BUCKET_NAME`       | R2 bucket name                                   | Server |
-| `R2_PUBLIC_URL`        | R2 public base URL (custom domain or r2.dev URL) | Server |
-| `COOKIE_PREFIX`        | App cookie prefix (default: `gl_`)               | Server |
-| `DATABASE_URL`         | Neon Postgres connection string                  | Server |
-| `OPENAI_API_KEY`       | OpenAI API key                                   | Server |
-| `OPENAI_MODEL`         | OpenAI model name (e.g., `gpt-4o`)               | Server |
-| `SMTP_HOST`            | SMTP server hostname                             | Server |
-| `SMTP_PORT`            | SMTP port                                        | Server |
-| `SMTP_USER`            | SMTP username                                    | Server |
-| `SMTP_PASSWORD`        | SMTP password                                    | Server |
-| `SMTP_SENDER`          | Email sender address                             | Server |
-| `GITHUB_TOKEN`         | GitHub personal access token                     | Server |
-| `VERCEL_TOKEN`         | Vercel CLI token                                 | Server |
+> **MANDATORY:** Every environment variable used by the Next.js app MUST be declared in `src/lib/env.ts`. Whenever a new variable is added, add it to the Zod schema in that file immediately. `GITHUB_TOKEN` and `VERCEL_TOKEN` are excluded — they are only used by external CLI tools and are not part of the runtime app.
+
+| Variable               | Purpose                                          | Scope  | In `env.ts` |
+| ---------------------- | ------------------------------------------------ | ------ | ----------- |
+| `APP_URL`              | Application base URL                             | Server | Yes         |
+| `BETTER_AUTH_SECRET`   | Better Auth secret key                           | Server | Yes         |
+| `R2_ACCOUNT_ID`        | Cloudflare account ID                            | Server | Yes         |
+| `R2_ACCESS_KEY_ID`     | R2 API token access key                          | Server | Yes         |
+| `R2_SECRET_ACCESS_KEY` | R2 API token secret                              | Server | Yes         |
+| `R2_BUCKET_NAME`       | R2 bucket name                                   | Server | Yes         |
+| `R2_PUBLIC_URL`        | R2 public base URL (custom domain or r2.dev URL) | Server | Yes         |
+| `COOKIE_PREFIX`        | App cookie prefix (default: `gl_`)               | Server | Yes         |
+| `DATABASE_URL`         | Neon Postgres connection string                  | Server | Yes         |
+| `OPENAI_API_KEY`       | OpenAI API key                                   | Server | Yes         |
+| `OPENAI_MODEL`         | OpenAI model name (e.g., `gpt-4o`)               | Server | Yes         |
+| `SMTP_HOST`            | SMTP server hostname                             | Server | Yes         |
+| `SMTP_PORT`            | SMTP port                                        | Server | Yes         |
+| `SMTP_USER`            | SMTP username                                    | Server | Yes         |
+| `SMTP_PASSWORD`        | SMTP password                                    | Server | Yes         |
+| `SMTP_SENDER`          | Email sender address                             | Server | Yes         |
+| `GITHUB_TOKEN`         | GitHub personal access token                     | Server | No          |
+| `VERCEL_TOKEN`         | Vercel CLI token                                 | Server | No          |
+
+### Validation schema (`src/lib/env.ts`)
+
+Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts`. Validation runs at build time (via `next.config.ts`) and at server startup (via `src/instrumentation.ts`). The schema is also the source of the global `ProcessEnv` type augmentation.
+
+| Variable               | Zod validator                                           | Notes                                          |
+| ---------------------- | ------------------------------------------------------- | ---------------------------------------------- |
+| `APP_URL`              | `z.url()`                                               |                                                |
+| `BETTER_AUTH_SECRET`   | `z.string().regex(/^[A-Za-z0-9+/]{43}=$/)`              | Generate with `openssl rand -base64 32`        |
+| `COOKIE_PREFIX`        | `z.string().optional()`                                 | Defaults to `gl_` at runtime if unset          |
+| `DATABASE_URL`         | `z.string().startsWith('postgresql://')`                | Neon connection string                         |
+| `OPENAI_API_KEY`       | `z.string().min(1).optional()`                          | Project-scoped key format                      |
+| `OPENAI_MODEL`         | `z.string().min(1).optional()`                          | Any `OpenAIChatModelId` value (e.g., `gpt-4o`) |
+| `R2_ACCOUNT_ID`        | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                          |
+| `R2_ACCESS_KEY_ID`     | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                          |
+| `R2_SECRET_ACCESS_KEY` | `z.string().regex(/^[0-9a-f]{64}$/)`                    | 64-char lowercase hex                          |
+| `R2_BUCKET_NAME`       | `z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/)` | 3-63 chars, lowercase, no leading/trailing `-` |
+| `R2_PUBLIC_URL`        | `z.url()`                                               |                                                |
+| `SMTP_HOST`            | `z.string().min(1)`                                     |                                                |
+| `SMTP_PORT`            | `z.enum(['25', '465', '587'])`                          | Must be one of these three ports               |
+| `SMTP_SENDER`          | `z.string().min(1)`                                     |                                                |
+| `SMTP_USER`            | `z.email()`                                             |                                                |
+| `SMTP_PASSWORD`        | `z.string().min(1)`                                     |                                                |
+
+**Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called only when `phase === PHASE_DEVELOPMENT_SERVER`. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
+
+**Runtime validation:** `src/instrumentation.ts` exports `register` as a sync function that calls `validateEnv()` when the Next.js server bootstraps.
+
+> **Note:** No special CI configuration is required. Static analysis tools import `next.config.ts` but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
 
 ---
 
@@ -880,18 +914,18 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 ## Constants Reference (`src/lib/constants.ts`)
 
-| Constant            | Value                                                      | Purpose                     |
-| ------------------- | ---------------------------------------------------------- | --------------------------- |
-| `AUTH_ROOT`         | `'/login'`                                                 | Login page route            |
-| `APP_ROOT`          | `'/dashboard'`                                             | Default authenticated route |
-| `JOIN_ROOT`         | `'/api/v1/join'`                                           | Team invitation endpoint    |
-| `ONBOARDING_ROOT`   | `'/onboarding'`                                            | Onboarding route            |
-| `EMAIL_REGEX`       | `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`                             | Email validation            |
-| `USERNAME_REGEX`    | `/^(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9.]+$/`               | Username validation         |
-| `PASSWORD_REGEX`    | `/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).+$/` | Password strength           |
-| `SLUG_REGEX`        | `/^(?!.*--)(?!.*-$)[a-z0-9-]+$/`                           | URL slug validation         |
-| `CAMEL_CASE_REGEX`  | `/[\s_.\\/-]+/`                                            | CamelCase split pattern     |
-| `WHITESPACES_REGEX` | `/\s+/`                                                    | Whitespace matching         |
+| Constant           | Value                                                      | Purpose                     |
+| ------------------ | ---------------------------------------------------------- | --------------------------- |
+| `AUTH_ROOT`        | `'/login'`                                                 | Login page route            |
+| `APP_ROOT`         | `'/dashboard'`                                             | Default authenticated route |
+| `JOIN_ROOT`        | `'/api/v1/join'`                                           | Team invitation endpoint    |
+| `ONBOARDING_ROOT`  | `'/onboarding'`                                            | Onboarding route            |
+| `REGISTER_ROOT`    | `'/register'`                                              | Registration page route     |
+| `EMAIL_REGEX`      | `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`                             | Email validation            |
+| `USERNAME_REGEX`   | `/^(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9.]+$/`               | Username validation         |
+| `PASSWORD_REGEX`   | `/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).+$/` | Password strength           |
+| `SLUG_REGEX`       | `/^(?!.*--)(?!.*-$)[a-z0-9-]+$/`                           | URL slug validation         |
+| `CAMEL_CASE_REGEX` | `/[\s_.\\/-]+/`                                            | CamelCase split pattern     |
 
 ---
 
@@ -939,23 +973,25 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 12. **Build tsconfig:** Production builds use `tsconfig.build.json` which excludes dev types. The base `tsconfig.json` includes `.next/dev/types/**/*.ts`.
 
-13. **Vercel cron:** `/api/v1/health` is hit daily at midnight by Vercel cron.
+13. **`cacheComponents: true`:** Enabled in `next.config.ts` for Next.js cached components feature.
 
-14. **`cacheComponents: true`:** Enabled in `next.config.ts` for Next.js cached components feature.
+14. **Never edit generated files:** Files like `env.d.ts` and everything under `drizzle/` (migrations, snapshots, journal) are auto-generated and MUST NOT be edited manually. Use the corresponding generation command instead (`pnpm typegen` for `env.d.ts`, `pnpm db generate` / `pnpm db migrate` for `drizzle/`). If a codegen/typegen script exists for a file, always use it. Note: `env.d.ts` no longer contains `ProcessEnv` — that lives in `src/lib/env.ts`. It only generates `PublicFile` and the `lucide-react` module augmentation.
 
-15. **Never edit generated files:** Files like `env.d.ts` and everything under `drizzle/` (migrations, snapshots, journal) are auto-generated and MUST NOT be edited manually. Use the corresponding generation command instead (`pnpm typegen` for `env.d.ts`, `pnpm db generate` / `pnpm db migrate` for `drizzle/`). If a codegen/typegen script exists for a file, always use it.
+15. **Remove unused translation keys:** After every feature or code change, scan all three translation files (`messages/en.json`, `messages/es.json`, `messages/it.json`) and the source code to identify message keys that are no longer referenced anywhere. Remove any unused keys from all three files simultaneously to keep the translation files lean and in sync.
 
-16. **Remove unused translation keys:** After every feature or code change, scan all three translation files (`messages/en.json`, `messages/es.json`, `messages/it.json`) and the source code to identify message keys that are no longer referenced anywhere. Remove any unused keys from all three files simultaneously to keep the translation files lean and in sync.
+16. **No comments in new code:** When writing new code, NEVER add inline comments (`//`, `/* */`) or JSDoc comments (`/** */`). The only exception is `//` section dividers inside long JSX components to separate non-obvious sections. Do NOT touch comments in existing code unless explicitly asked.
 
-17. **No comments in new code:** When writing new code, NEVER add inline comments (`//`, `/* */`) or JSDoc comments (`/** */`). The only exception is `//` section dividers inside long JSX components to separate non-obvious sections. Do NOT touch comments in existing code unless explicitly asked.
+17. **Certificate PDF template:** The official template is at `.agents/skills/ship/assets/certificate-template.pdf`. All generated certificate PDFs must match it exactly: Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, reviewer signature block.
 
-18. **Certificate PDF template:** The official template is at `.agents/skills/ship/assets/certificate-template.pdf`. All generated certificate PDFs must match it exactly: Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, reviewer signature block.
+18. **Org admin uniqueness:** Each organization has exactly ONE admin (the sole owner/creator). Representatives have the same management rights as admin EXCEPT org deletion. Never allow creating a second `admin` role membership per org. Use `isOrgAdmin` (admin or representative) for management checks; use `membership.role === 'admin'` only for owner-exclusive operations (deletion, ownership transfer).
 
-19. **Org admin uniqueness:** Each organization has exactly ONE admin (the sole owner/creator). Representatives have the same management rights as admin EXCEPT org deletion. Never allow creating a second `admin` role membership per org. Use `isOrgAdmin` (admin or representative) for management checks; use `membership.role === 'admin'` only for owner-exclusive operations (deletion, ownership transfer).
+19. **Certificate review workflow:** Only **tutors** review certificates. A tutor is auto-assigned as reviewer when the certificate is created or submitted. The review form MUST allow editing activity fields (`activityStartDate`, `activityEndDate`, `activityDuration`, `activityLocation`, `activityDescription`) and associated skills/evaluations, not just approve/reject with a comment. Status flow: `draft` → `submitted` → `in_review` → `approved` or `changes_requested`. After `changes_requested`, the volunteer edits and resubmits (back to `submitted`).
 
-20. **Certificate review workflow:** Only **tutors** review certificates. A tutor is auto-assigned as reviewer when the certificate is created or submitted. The review form MUST allow editing activity fields (`activityStartDate`, `activityEndDate`, `activityDuration`, `activityLocation`, `activityDescription`) and associated skills/evaluations, not just approve/reject with a comment. Status flow: `draft` → `submitted` → `in_review` → `approved` or `changes_requested`. After `changes_requested`, the volunteer edits and resubmits (back to `submitted`).
+20. **Registration creates org request:** New users register and request to join an existing organization (status `pending`). A platform admin approves or rejects the request. Registration is NOT a simple signup with immediate org selection.
 
-21. **Registration creates org request:** New users register and request to join an existing organization (status `pending`). A platform admin approves or rejects the request. Registration is NOT a simple signup with immediate org selection.
+21. **Env vars require env.ts entry — MANDATORY:** Every environment variable used by the Next.js app MUST have a corresponding entry in the Zod schema at `src/lib/env.ts`. This applies without exception: adding a new env var to `.env` or Vercel without updating `env.ts` is a bug. The schema drives both runtime type safety (`ProcessEnv` augmentation) and validation at build time (`next.config.ts`) and server startup (`src/instrumentation.ts`). See the [Environment Variables](#environment-variables) section for the complete Zod schema reference.
+
+22. **`validateEnv` must be called at startup only:** `src/lib/env.ts` exports `validateEnv()` which parses `process.env` against the Zod schema. It is intentionally called only from `next.config.ts` (phase-guarded: `PHASE_DEVELOPMENT_SERVER` only) and `src/instrumentation.ts` (inside `register()`). Do not call it from application code or server actions.
 
 ---
 
@@ -1245,7 +1281,7 @@ pnpm typecheck > /tmp/typecheck.log 2>&1
 - Adding new hooks → update Custom Hooks table
 - Adding new utility functions → update Utility Functions table
 - Changing database schema → update Database types
-- Adding/removing environment variables → update Environment Variables
+- Adding/removing environment variables → update Environment Variables table and `src/lib/env.ts`
 - Changing linter/formatter config → update Code Style section
 - Adding new components or providers → update Architecture tree and Component Patterns
 - Adding/removing/updating agent skills → update Agent Skills section

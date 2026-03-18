@@ -4,7 +4,5 @@ set -e
 
 REF=$(git rev-parse --abbrev-ref origin/HEAD)
 
-./node_modules/.bin/commitlint --from "$REF" --to HEAD --verbose
-./node_modules/.bin/oxlint
-./node_modules/.bin/oxfmt --check
-./node_modules/.bin/knip
+pnpm commitlint --from "$REF" --to HEAD --verbose
+pnpm run check:parallel

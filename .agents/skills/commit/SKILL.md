@@ -64,17 +64,14 @@ Pick exactly one type based on the nature of the change:
 
 ### Scopes
 
-Scope is **required**. Pick the most relevant one based on the changed files:
+Scope is **not required**. Optionally pick the most relevant one based on the changed files:
 
-| Scope      | When to use                                          |
-| ---------- | ---------------------------------------------------- |
-| `deps`     | Production dependency changes (`dependencies`)       |
-| `deps-dev` | Dev dependency changes (`devDependencies`)           |
-| `release`  | Release-related files (changelog, version bumps)     |
-| `security` | Security fixes or hardening                          |
-| `mcp`      | MCP server or tool configuration                     |
-| `skills`   | Agent skill files under `.agents/skills/`            |
-| `agents`   | Agent configuration files (`AGENTS.md`, `CLAUDE.md`) |
+| Scope      | When to use                                      |
+| ---------- | ------------------------------------------------ |
+| `deps`     | Production dependency changes (`dependencies`)   |
+| `deps-dev` | Dev dependency changes (`devDependencies`)       |
+| `release`  | Release-related files (changelog, version bumps) |
+| `security` | Security fixes or hardening                      |
 
 If none of the scopes apply, **omit the scope** (e.g. `feat: Add public certificate page`).
 

@@ -1,6 +1,9 @@
 import { type NextConfig, Route } from 'next'
+import { PHASE_DEVELOPMENT_SERVER, type PHASE_TYPE } from 'next/constants'
 
 import nextIntl from 'next-intl/plugin'
+
+import { validateEnv } from './src/lib/env'
 
 const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
@@ -28,14 +31,45 @@ const nextConfig = {
       permanent: true,
     },
   ],
+  typescript: {
+    tsconfigPath: './tsconfig.build.json',
+  },
   typedRoutes: true,
   experimental: {
     optimizePackageImports: [
+      '@ai-sdk/openai',
+      '@ai-sdk/react',
       '@dnd-kit/core',
       '@dnd-kit/modifiers',
       '@dnd-kit/sortable',
       '@dnd-kit/utilities',
+      '@platejs/ai',
+      '@platejs/autoformat',
+      '@platejs/basic-nodes',
+      '@platejs/basic-styles',
+      '@platejs/callout',
+      '@platejs/caption',
+      '@platejs/combobox',
+      '@platejs/date',
+      '@platejs/dnd',
+      '@platejs/emoji',
+      '@platejs/floating',
+      '@platejs/indent',
+      '@platejs/juice',
+      '@platejs/layout',
+      '@platejs/link',
+      '@platejs/list',
+      '@platejs/markdown',
+      '@platejs/media',
+      '@platejs/resizable',
+      '@platejs/selection',
+      '@platejs/slash-command',
+      '@platejs/table',
+      '@platejs/toc',
+      '@platejs/toggle',
+      'better-auth',
       'motion',
+      'platejs',
     ],
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
@@ -57,4 +91,9 @@ const plugins = [
   }),
 ]
 
-export default plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)
+export default (phase: PHASE_TYPE) => {
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    validateEnv()
+  }
+  return plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)
+}

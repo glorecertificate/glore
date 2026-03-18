@@ -1,9 +1,11 @@
 {
-  "include": [".next/dev/types", ".next/types", "src", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "include": ["src", "scripts", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "checkJs": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
@@ -38,6 +40,5 @@
     "target": "esnext",
     "tsBuildInfoFile": ".next/.tsbuildinfo",
     "types": ["next", "node", "react", "react-dom"]
-  },
-  "exclude": ["node_modules"]
+  }
 }

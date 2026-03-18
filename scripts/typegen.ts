@@ -4,8 +4,6 @@ import { execSync } from 'node:child_process'
 import { readdirSync, writeFileSync } from 'node:fs'
 import { stdout } from 'node:process'
 
-import { loadEnvConfig } from '@next/env'
-
 const ARGS = ['env', 'routes'] as const
 const ENV_DTS = './env.d.ts'
 
@@ -40,29 +38,7 @@ if (types.includes('env')) {
   try {
     if (stdout.isTTY) stdout.write('Generating environment types...')
 
-    const lines = []
-    const keys = new Set()
-
-    for (const { env, path } of loadEnvConfig('.').loadedEnvFiles) {
-      for (const [key, value] of Object.entries(env)) {
-        if (keys.has(key)) continue
-        lines.push('      /**')
-        lines.push(`       * Loaded from \`${path}\``)
-        lines.push('       *')
-        lines.push(`       * ${value || '*Empty*'}`)
-        lines.push('       */')
-        lines.push(`      ${key}${value ? '' : '?'}: string`)
-        keys.add(key)
-      }
-    }
-
     const content = `declare global {
-  namespace NodeJS {
-    interface ProcessEnv {
-${lines.join('\n')}
-    }
-  }
-
   type PublicFile = ${listPublicDir()
     .map(file => `'/${file}'`)
     .join(' | ')}
@@ -77,10 +53,10 @@ export {}`
     writeFileSync(ENV_DTS, content, 'utf-8')
 
     clearLine()
-    console.info(`${green('✓ ')} Environment types generated successfully`)
+    console.info(`${green('✓')} Environment types generated successfully`)
   } catch {
     clearLine()
-    console.error(`${red('✗ ')} Failed to write ${ENV_DTS}`)
+    console.error(`${red('✗')} Failed to write ${ENV_DTS}`)
   }
 }
 
@@ -89,10 +65,10 @@ if (types.includes('routes')) {
     if (stdout.isTTY) stdout.write('Generating route types...')
     execSync('next typegen', { stdio: 'ignore' })
     clearLine()
-    console.info(`${green('✓ ')} Route types generated successfully\n`)
+    console.info(`${green('✓')} Route types generated successfully\n`)
   } catch (e) {
     clearLine()
-    console.error(`${red('✗ ')} Failed to generate route types\n`)
+    console.error(`${red('✗')} Failed to generate route types\n`)
     if (e instanceof Error) console.error(red(e.message))
     process.exit(1)
   }

@@ -4,6 +4,7 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "es5",
+  "sortPackageJson": false,
   "sortImports": {
     "groups": [
       ["side_effect", "side_effect_style", "style"],

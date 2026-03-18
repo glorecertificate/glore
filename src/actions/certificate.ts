@@ -133,24 +133,49 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     const isApprove = values.action === 'approve'
     const issuedAt = new Date().toISOString()
 
+    const activityStartDate = values.activityStartDate ?? cert.activityStartDate
+    const activityEndDate = values.activityEndDate ?? cert.activityEndDate
+    const activityDuration = values.activityDuration ?? cert.activityDuration
+    const activityLocation = values.activityLocation ?? cert.activityLocation
+    const activityDescription = values.activityDescription ?? cert.activityDescription
+
+    if (values.skillCourseIds !== undefined) {
+      await db.delete(certificateSkills).where(eq(certificateSkills.certificateId, id))
+      if (values.skillCourseIds.length > 0) {
+        await db
+          .insert(certificateSkills)
+          .values(values.skillCourseIds.map(courseId => ({ certificateId: id, courseId })))
+      }
+    }
+
+    const skillNames =
+      values.skillCourseIds !== undefined
+        ? cert.skills
+            .filter(s => values.skillCourseIds!.includes(s.course.id))
+            .map(s => {
+              if (!s.course.title) return s.course.slug
+              const titleMap = s.course.title as Record<string, string>
+              return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
+            })
+        : cert.skills.map(s => {
+            if (!s.course.title) return s.course.slug
+            const titleMap = s.course.title as Record<string, string>
+            return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
+          })
+
     let documentUrl: string | undefined
     if (isApprove) {
       const volunteerName = cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : ''
-      const skillNames = cert.skills.map(s => {
-        if (!s.course.title) return s.course.slug
-        const titleMap = s.course.title as Record<string, string>
-        return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
-      })
       const { renderToBuffer } = await import('@react-pdf/renderer')
       const { CertificateDocument } = await import('@/components/features/certificates/document')
       const pdfBuffer = await renderToBuffer(
         createElement(CertificateDocument, {
           values: {
-            activityStartDate: cert.activityStartDate,
-            activityEndDate: cert.activityEndDate,
-            activityDuration: cert.activityDuration,
-            activityLocation: cert.activityLocation,
-            activityDescription: cert.activityDescription,
+            activityStartDate,
+            activityEndDate,
+            activityDuration,
+            activityLocation,
+            activityDescription,
             organizationRating: cert.organizationRating,
           },
           volunteerName,
@@ -163,12 +188,24 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       documentUrl = await r2Put(`certificates/${cert.handle}.pdf`, pdfBuffer, 'application/pdf')
     }
 
+    const activityUpdates = {
+      activityStartDate,
+      activityEndDate,
+      activityDuration,
+      activityLocation,
+      activityDescription,
+    }
+
     const [updated] = await db
       .update(certificates)
       .set(
         isApprove
-          ? { status: 'approved', issuedAt, documentUrl }
-          : { status: 'changes_requested', reviewerComment: 'comment' in values ? values.comment : undefined }
+          ? { ...activityUpdates, status: 'approved', issuedAt, documentUrl }
+          : {
+              ...activityUpdates,
+              status: 'changes_requested',
+              reviewerComment: 'comment' in values ? values.comment : undefined,
+            }
       )
       .where(eq(certificates.id, id))
       .returning()

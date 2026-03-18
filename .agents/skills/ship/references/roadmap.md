@@ -17,7 +17,7 @@
 
 ## Active
 
-_No active tasks._
+`[x]` `cert-review` — Certificate review field editing [agent:m8p3qx]
 
 ---
 
@@ -25,11 +25,10 @@ _No active tasks._
 
 ### P0: Critical (core features incomplete)
 
-| Slug             | Feature                                  | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ---------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `cert-review`    | Certificate review field editing         | **Critical.** Review form currently only allows approve/request-changes with a comment. Must add editable fields: `activityStartDate`, `activityEndDate`, `activityDuration`, `activityLocation`, `activityDescription`, plus associated skills/evaluations. Update `reviewCertificateSchema` in `src/components/features/certificates/schemas.ts`, update `reviewCertificate` action in `src/actions/certificate.ts`, update `review-form.tsx`. |
-| `cert-resubmit`  | Certificate resubmission after changes   | **Critical.** No `updateCertificate` or `resubmitCertificate` action exists. After `changes_requested`, the volunteer must be able to edit fields and resubmit (returns to `submitted`). Add server action, edit UI in `certificate-detail.tsx`, update schema.                                                                                                                                                                                  |
-| `org-admin-sole` | Enforce single org admin (owner) pattern | **Critical.** Current code allows multiple membership `admin` roles per org. Must enforce exactly ONE admin per org. Add DB constraint or action-level guard. Representatives get all admin rights except org deletion. Update role assignment logic in `src/actions/organization.ts`.                                                                                                                                                           |
+| Slug             | Feature                                  | Notes                                                                                                                                                                                                                                                                                  |
+| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cert-resubmit`  | Certificate resubmission after changes   | **Critical.** No `updateCertificate` or `resubmitCertificate` action exists. After `changes_requested`, the volunteer must be able to edit fields and resubmit (returns to `submitted`). Add server action, edit UI in `certificate-detail.tsx`, update schema.                        |
+| `org-admin-sole` | Enforce single org admin (owner) pattern | **Critical.** Current code allows multiple membership `admin` roles per org. Must enforce exactly ONE admin per org. Add DB constraint or action-level guard. Representatives get all admin rights except org deletion. Update role assignment logic in `src/actions/organization.ts`. |
 
 ### P1: High (feature completeness)
 

@@ -18,9 +18,18 @@ export const certificateFormSchema = z
 
 export type CertificateFormValues = z.infer<typeof certificateFormSchema>
 
+const reviewActivitySchema = z.object({
+  activityStartDate: z.string().optional(),
+  activityEndDate: z.string().optional(),
+  activityDuration: z.coerce.number().int().positive().optional(),
+  activityLocation: z.string().max(255).optional(),
+  activityDescription: z.string().max(2000).optional(),
+  skillCourseIds: z.array(z.number()).optional(),
+})
+
 export const reviewCertificateSchema = z.discriminatedUnion('action', [
-  z.object({ action: z.literal('approve') }),
-  z.object({ action: z.literal('request_changes'), comment: z.string().min(10).max(2000) }),
+  reviewActivitySchema.extend({ action: z.literal('approve') }),
+  reviewActivitySchema.extend({ action: z.literal('request_changes'), comment: z.string().min(10).max(2000) }),
 ])
 
 export type ReviewCertificateValues = z.infer<typeof reviewCertificateSchema>

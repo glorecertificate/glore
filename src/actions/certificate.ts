@@ -10,7 +10,11 @@ import { and, asc, count, eq } from 'drizzle-orm'
 import { getAuthUser } from '@/actions/auth'
 import { listCourses } from '@/actions/course'
 import { getActiveOrgId } from '@/actions/user'
-import { type CertificateFormValues, type ReviewCertificateValues } from '@/components/features/certificates/schemas'
+import {
+  type CertificateFormValues,
+  type ResubmitCertificateValues,
+  type ReviewCertificateValues,
+} from '@/components/features/certificates/schemas'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
@@ -376,3 +380,29 @@ export const findPublicCertificate = async (username: string, handle?: string) =
 
     return parseCertificate(cert)
   })
+
+export const resubmitCertificate = async (id: number, values: ResubmitCertificateValues) => {
+  const authUser = await getAuthUser()
+  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  return await safeQuery(async () => {
+    const [updated] = await db
+      .update(certificates)
+      .set({
+        status: 'submitted',
+        reviewerComment: null,
+        activityStartDate: values.activityStartDate,
+        activityEndDate: values.activityEndDate,
+        activityDuration: values.activityDuration,
+        activityLocation: values.activityLocation,
+        activityDescription: values.activityDescription,
+      })
+      .where(
+        and(eq(certificates.id, id), eq(certificates.userId, authUser.id), eq(certificates.status, 'changes_requested'))
+      )
+      .returning()
+    if (!updated) throw new Error('Certificate not found or cannot be resubmitted')
+    revalidateTag(CacheTag.Certificates, 'max')
+    return updated
+  })
+}

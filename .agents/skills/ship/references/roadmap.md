@@ -17,8 +17,6 @@
 
 ## Active
 
-`[x]` `cert-review` — Certificate review field editing [agent:m8p3qx]
-
 ---
 
 ## Backlog
@@ -27,7 +25,6 @@
 
 | Slug             | Feature                                  | Notes                                                                                                                                                                                                                                                                                  |
 | ---------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cert-resubmit`  | Certificate resubmission after changes   | **Critical.** No `updateCertificate` or `resubmitCertificate` action exists. After `changes_requested`, the volunteer must be able to edit fields and resubmit (returns to `submitted`). Add server action, edit UI in `certificate-detail.tsx`, update schema.                        |
 | `org-admin-sole` | Enforce single org admin (owner) pattern | **Critical.** Current code allows multiple membership `admin` roles per org. Must enforce exactly ONE admin per org. Add DB constraint or action-level guard. Representatives get all admin rights except org deletion. Update role assignment logic in `src/actions/organization.ts`. |
 
 ### P1: High (feature completeness)
@@ -68,9 +65,11 @@
 
 ## Done
 
-| Slug         | Feature                                   | Completed  |
-| ------------ | ----------------------------------------- | ---------- |
-| `r2-storage` | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
+| Slug            | Feature                                   | Completed  |
+| --------------- | ----------------------------------------- | ---------- |
+| `cert-resubmit` | Certificate resubmission after changes    | 2026-03-19 |
+| `cert-review`   | Certificate review field editing          | 2026-03-18 |
+| `r2-storage`    | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
 
 ---
 

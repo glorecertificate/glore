@@ -256,7 +256,16 @@ The user may reply with a **single keyword** (no need to repeat `/ship`):
 
 ### `approve and commit`
 
-Perform all steps from `approve`, then execute the `/commit` skill to test, verify, and commit the pending changes. If a pull request is created, its title must follow the session title format: `[ship] <task-slug>: <short description>`.
+> **MANDATORY order — do not skip or reorder these steps:**
+
+1. Perform all steps from `approve` (mark done, update roadmap, update `AGENTS.md`, update `references/spec.md`).
+2. Run the project's **format command** and **check command** (see `AGENTS.md` → Commands table) to fix formatting and catch any lint/type errors introduced by the feature. Fix every error before proceeding.
+3. Stage all changes — including the roadmap, `AGENTS.md`, and any formatting-only diffs — so they are part of the commit. The entire working tree must be included.
+4. Execute the `/commit` skill. After the commit completes, run `git status` to verify the working tree is **completely clean** (no staged, unstaged, or untracked files related to this work). If it is not clean, stage the remaining changes and amend or add a follow-up commit before declaring done.
+
+If a pull request is created, its title must follow the session title format: `[ship] <task-slug>: <short description>`.
+
+**Why this matters:** roadmap files and formatting diffs that are left uncommitted create false-dirty state, confuse the next agent session, and make the commit history misleading. The commit must represent a complete, self-contained unit of work.
 
 ### `continue`
 

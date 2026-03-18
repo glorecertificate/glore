@@ -33,3 +33,18 @@ export const reviewCertificateSchema = z.discriminatedUnion('action', [
 ])
 
 export type ReviewCertificateValues = z.infer<typeof reviewCertificateSchema>
+
+export const resubmitCertificateSchema = z
+  .object({
+    activityStartDate: z.string().min(1),
+    activityEndDate: z.string().min(1),
+    activityDuration: z.coerce.number().int().positive(),
+    activityLocation: z.string().min(1).max(255),
+    activityDescription: z.string().min(10).max(2000),
+  })
+  .refine(data => new Date(data.activityEndDate) >= new Date(data.activityStartDate), {
+    path: ['activityEndDate'],
+    message: 'End date must be after start date',
+  })
+
+export type ResubmitCertificateValues = z.infer<typeof resubmitCertificateSchema>

@@ -9,6 +9,7 @@ import {
   MapPinIcon,
   MessageSquareIcon,
   PartyPopperIcon,
+  PencilIcon,
   TimerIcon,
   UserIcon,
 } from 'lucide-react'
@@ -16,6 +17,7 @@ import { useTranslations } from 'next-intl'
 
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -32,6 +34,7 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
   const { locale, localize } = useI18n()
   const { user } = useSession()
   const [reviewOpen, setReviewOpen] = useState(false)
+  const [resubmitOpen, setResubmitOpen] = useState(false)
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const start = dateFormatter.format(new Date(certificate.activityStartDate))
@@ -40,6 +43,7 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
   const isTutorReviewer = user.isTutor && certificate.reviewerId === user.id
   const canReview = isTutorReviewer && (certificate.isSubmitted || certificate.isInReview)
   const isOwner = certificate.userId === user.id
+  const canResubmit = isOwner && certificate.isChangesRequested
 
   return (
     <>
@@ -61,6 +65,11 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
                 <a download href={certificate.documentUrl} rel="noopener noreferrer" target="_blank">
                   {t('download')}
                 </a>
+              </Button>
+            )}
+            {canResubmit && (
+              <Button icon={PencilIcon} onClick={() => setResubmitOpen(true)} size="sm" variant="outline">
+                {t('resubmitButton')}
               </Button>
             )}
             {canReview && (
@@ -161,6 +170,7 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
       </div>
 
       {canReview && <ReviewForm certificate={certificate} onOpenChange={setReviewOpen} open={reviewOpen} />}
+      {canResubmit && <ResubmitForm certificate={certificate} onOpenChange={setResubmitOpen} open={resubmitOpen} />}
     </>
   )
 }

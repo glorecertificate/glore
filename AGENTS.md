@@ -111,6 +111,7 @@ Do not block on the suggestion — if the user continues without switching, proc
 | Deployment       | Vercel                                                | ^50.13.2           |
 | Analytics        | @vercel/analytics + @vercel/speed-insights            | ^2.0.1 / ^2.0.0    |
 | Search           | fuse.js                                               | ^7.1.0             |
+| QR code          | qrcode                                                | ^1.5.4             |
 | Agent Skills     | skills CLI (https://agentskills.io)                   | latest             |
 
 ---

@@ -1,10 +1,12 @@
 import { CalendarIcon, CheckCircle2Icon, DownloadIcon, GlobeIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { getLocale, getTranslations } from 'next-intl/server'
+import qrcode from 'qrcode'
 
 import { GloreIcon } from '@/components/icons/glore'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Image } from '@/components/ui/image'
 import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -13,9 +15,10 @@ import appConfig from '~/config/metadata.json'
 
 interface PublicCertificateViewProps {
   certificate: Certificate
+  username: string
 }
 
-export const PublicCertificateView = async ({ certificate }: PublicCertificateViewProps) => {
+export const PublicCertificateView = async ({ certificate, username }: PublicCertificateViewProps) => {
   const t = await getTranslations('Certificates')
   const locale = (await getLocale()) as (typeof i18n.locales)[number]
 
@@ -29,6 +32,9 @@ export const PublicCertificateView = async ({ certificate }: PublicCertificateVi
   const volunteerName = certificate.user
     ? `${certificate.user.firstName} ${certificate.user.lastName}`
     : t('unknownVolunteer')
+
+  const verificationUrl = `${appConfig.url}/${username}?v=${certificate.handle}`
+  const qrDataUrl = await qrcode.toDataURL(verificationUrl, { margin: 2, scale: 4 })
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,6 +137,11 @@ export const PublicCertificateView = async ({ certificate }: PublicCertificateVi
             {t('publicIssuedBy')} · {issuedAt}
           </p>
         )}
+
+        <div className="flex flex-col items-center gap-2">
+          <Image className="size-28 rounded-lg border" height={112} src={qrDataUrl} unoptimized width={112} />
+          <p className="text-xs text-muted-foreground">{t('publicScanToVerify')}</p>
+        </div>
 
         <Separator />
 

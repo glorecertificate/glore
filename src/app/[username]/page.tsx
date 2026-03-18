@@ -42,5 +42,5 @@ export default async ({ params, searchParams }: PageProps<'/[username]'>) => {
   const { v: handle } = await searchParams
   const { data: certificate } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
   if (!certificate) notFound()
-  return <PublicCertificateView certificate={certificate} />
+  return <PublicCertificateView certificate={certificate} username={username} />
 }

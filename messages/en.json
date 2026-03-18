@@ -1243,6 +1243,7 @@
     "publicNotFoundMessage": "This certificate does not exist or is no longer publicly available.",
     "publicVerified": "Verified certificate",
     "publicIssuedBy": "Issued by GloRe Certificate",
+    "publicScanToVerify": "Scan to verify",
     "publicJoinTitle": "Earn your own certificate",
     "publicJoinDescription": "Join the GloRe Network, complete volunteering courses, and get officially certified.",
     "publicJoinButton": "Join GloRe",

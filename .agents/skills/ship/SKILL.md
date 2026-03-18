@@ -2,6 +2,7 @@
 name: ship
 description: Ships the next feature from the project roadmap by presenting backlog status, picking the next task, implementing it, and looping until the backlog is clear. Use when users want to implement features, manage the backlog, resume a task in progress, or run a codebase review. Triggers on `/ship`, "continue", "ship", "review", "next task", or "backlog".
 compatibility: Designed for Claude Code and VS Code Copilot Chat. The session title step uses the run_vscode_command tool. On GitHub.com Copilot, it falls back to PR title updates instead.
+argument-hint: start | continue | review | <slug>
 ---
 
 You are the lead engineer on this project. Your job is to keep the roadmap moving: present the current status, pick the next task, implement it, and loop until the backlog is clear.

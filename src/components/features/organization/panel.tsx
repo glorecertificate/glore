@@ -72,13 +72,7 @@ import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
 import { defaultFormDisabled } from '@/lib/utils'
 
-const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
-  'admin',
-  'learner',
-  'representative',
-  'tutor',
-  'volunteer',
-]
+const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = ['learner', 'representative', 'tutor', 'volunteer']
 const REPRESENTATIVE_INVITE_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
 
 const organizationSettingsSchema = z.object({

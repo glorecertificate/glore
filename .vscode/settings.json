@@ -13,6 +13,10 @@
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "oxc.enable": true,
   "oxc.fixKind": "dangerous_fix_or_suggestion",
+  "search.exclude": {
+    "**/.claude": true,
+    "**/node_modules": true
+  },
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
@@ -20,8 +24,8 @@
     ["fill=['\"]([^'\"]*)"],
     ["stroke=['\"]([^'\"]*)"]
   ],
-  "tailwindCSS.files.exclude": ["**/*.md"],
   "tailwindCSS.experimental.configFile": "./src/app/globals.css",
+  "tailwindCSS.files.exclude": ["**/*.md"],
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   }

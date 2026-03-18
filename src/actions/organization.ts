@@ -317,6 +317,13 @@ export const inviteOrganizationMember = async ({
       throw new Error('You cannot invite users with this role')
     }
 
+    if (role === 'admin') {
+      const adminCount = await getOrganizationAdminsCount(organization.id)
+      if (adminCount > 0) {
+        throw new Error('An organization admin already exists. Invite as representative instead.')
+      }
+    }
+
     const normalizedEmail = email.trim().toLowerCase()
     const normalizedFirstName = firstName.trim()
     const normalizedLastName = lastName.trim()
@@ -416,6 +423,14 @@ export const updateOrganizationMemberRole = async (membershipId: number, role: O
 
       if (adminCount <= 1) {
         throw new Error('At least one organization admin is required')
+      }
+    }
+
+    if (role === 'admin' && membership.role !== 'admin') {
+      const adminCount = await getOrganizationAdminsCount(organization.id)
+
+      if (adminCount > 0) {
+        throw new Error('An organization admin already exists. Only one admin is allowed per organization.')
       }
     }
 
@@ -822,9 +837,11 @@ export const requestOrganizationRegistration = async ({
   })
 
 export const deleteOrganization = async () => {
-  const { organization, user } = await getOrganizationContext()
+  const { organization, role, user } = await getOrganizationContext()
 
   return await safeQuery(async () => {
+    assertOrganizationAdmin(role)
+
     const [certificateCount] = await db
       .select({ total: count() })
       .from(certificates)

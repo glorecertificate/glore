@@ -17,15 +17,15 @@
 
 ## Active
 
+_No tasks in progress._
+
 ---
 
 ## Backlog
 
 ### P0: Critical (core features incomplete)
 
-| Slug             | Feature                                  | Notes                                                                                                                                                                                                                                                                                  |
-| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `org-admin-sole` | Enforce single org admin (owner) pattern | **Critical.** Current code allows multiple membership `admin` roles per org. Must enforce exactly ONE admin per org. Add DB constraint or action-level guard. Representatives get all admin rights except org deletion. Update role assignment logic in `src/actions/organization.ts`. |
+_No P0 tasks remaining._
 
 ### P1: High (feature completeness)
 
@@ -65,11 +65,12 @@
 
 ## Done
 
-| Slug            | Feature                                   | Completed  |
-| --------------- | ----------------------------------------- | ---------- |
-| `cert-resubmit` | Certificate resubmission after changes    | 2026-03-19 |
-| `cert-review`   | Certificate review field editing          | 2026-03-18 |
-| `r2-storage`    | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
+| Slug             | Feature                                   | Completed  |
+| ---------------- | ----------------------------------------- | ---------- |
+| `org-admin-sole` | Enforce single org admin (owner) pattern  | 2026-03-18 |
+| `cert-resubmit`  | Certificate resubmission after changes    | 2026-03-19 |
+| `cert-review`    | Certificate review field editing          | 2026-03-18 |
+| `r2-storage`     | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
 
 ---
 

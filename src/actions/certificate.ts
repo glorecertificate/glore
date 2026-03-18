@@ -173,20 +173,16 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       }
     }
 
-    const skillNames =
-      values.skillCourseIds !== undefined
+    const skillsToMap =
+      values.skillCourseIds === undefined
         ? cert.skills
-            .filter(s => values.skillCourseIds!.includes(s.course.id))
-            .map(s => {
-              if (!s.course.title) return s.course.slug
-              const titleMap = s.course.title as Record<string, string>
-              return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
-            })
-        : cert.skills.map(s => {
-            if (!s.course.title) return s.course.slug
-            const titleMap = s.course.title as Record<string, string>
-            return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
-          })
+        : cert.skills.filter(s => values.skillCourseIds!.includes(s.course.id))
+
+    const skillNames = skillsToMap.map(s => {
+      if (!s.course.title) return s.course.slug
+      const titleMap = s.course.title as Record<string, string>
+      return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
+    })
 
     let documentUrl: string | undefined
     if (isApprove) {

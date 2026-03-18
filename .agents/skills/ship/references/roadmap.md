@@ -31,7 +31,6 @@ _No P0 tasks remaining._
 
 | Slug           | Feature                            | Notes                                                                                                                                                                                                                                                                   |
 | -------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cert-social`  | Public certificate social sharing  | High. Add Open Graph + Twitter Card meta tags to `src/app/[username]/page.tsx` `generateMetadata`. Add `og:title`, `og:description`, `og:image` (use cert PDF or generate OG image), `og:url`, `twitter:card`.                                                          |
 | `cert-qr`      | QR code on public certificate page | High. Add QR code component to `public-certificate-view.tsx` linking to `/{username}?v={handle}`. Consider `qrcode` or `react-qr-code` package. Must match PDF template spec.                                                                                           |
 | `cert-filter`  | Certificate list filtering         | High. Add URL-based filter by status (nuqs) to `/certificates` page. Add sort by date. Update `certificates-content.tsx` with filter controls.                                                                                                                          |
 | `docs-feature` | Documentation CRUD and UI          | High. DB tables exist (`doc_categories`, `doc_articles`). Need: server actions (CRUD), queries, API, components for browsing/reading/editing articles. Admin/editor creates; all authenticated users read. Fill `/docs`, `/docs/intro`, `/docs/faq`, `/docs/tutorials`. |
@@ -66,6 +65,7 @@ _No P0 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `cert-social`    | Public certificate social sharing         | 2026-03-18 |
 | `action-cache`   | Server action cache invalidation audit    | 2026-03-26 |
 | `org-admin-sole` | Enforce single org admin (owner) pattern  | 2026-03-18 |
 | `cert-resubmit`  | Certificate resubmission after changes    | 2026-03-19 |
@@ -98,6 +98,7 @@ org-admin-sole ──┘
 
 | Date       | Decision                                                                                  | Rationale                                                                                                                                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | cert-social: Added opengraph-image.tsx route segment for dynamic OG images                | Next.js ImageResponse with teal brand card; auto-picked up without manual images key in generateMetadata. Also exempted the file pattern in .oxlintrc.json and knip.json.                                                 |
 | 2026-03-19 | Restructured roadmap with priority tiers P0-P3                                            | Codebase audit revealed critical missing features (cert review editing, resubmission, org admin uniqueness) that must be completed before polish/optimization work.                                                       |
 | 2026-03-19 | Added cert-review, cert-resubmit, org-admin-sole as P0                                    | These are core workflow gaps: review form lacks field editing per spec, no resubmission path exists, multiple org admins allowed but spec requires exactly one.                                                           |
 | 2026-03-19 | Added cert-social, cert-qr, cert-filter, docs-feature as P1                               | Public certificate page needs OG/Twitter meta tags and QR code. Certificate list needs filtering. Docs DB tables exist but no UI/actions.                                                                                 |

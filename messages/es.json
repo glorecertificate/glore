@@ -1246,7 +1246,8 @@
     "publicJoinTitle": "Obtén tu propio certificado",
     "publicJoinDescription": "Únete a la Red GloRe, completa cursos de voluntariado y obtén la certificación oficial.",
     "publicJoinButton": "Únete a GloRe",
-    "publicAccessApp": "¿Ya eres miembro? Inicia sesión"
+    "publicAccessApp": "¿Ya eres miembro? Inicia sesión",
+    "publicOgDescription": "{name} ha sido certificado/a oficialmente por su actividad de voluntariado en {org} por GloRe Certificate."
   },
   "Organization": {
     "title": "Organización",

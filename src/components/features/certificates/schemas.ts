@@ -21,7 +21,7 @@ export type CertificateFormValues = z.infer<typeof certificateFormSchema>
 const reviewActivitySchema = z.object({
   activityStartDate: z.string().optional(),
   activityEndDate: z.string().optional(),
-  activityDuration: z.coerce.number().int().positive().optional(),
+  activityDuration: z.number().int().positive().optional(),
   activityLocation: z.string().max(255).optional(),
   activityDescription: z.string().max(2000).optional(),
   skillCourseIds: z.array(z.number()).optional(),

@@ -235,7 +235,7 @@ After implementing, run the project's **check command** (see `AGENTS.md` → Com
 > **What's next?**
 >
 > - `approve`: run tests, mark done, update roadmap and all files, stop (no commit)
-> - `approve and commit` / `commit`: same as approve, then commit using the commit skill
+> - `approve and commit` / `commit` / `finalize`: same as approve, then commit using the commit skill
 > - `continue`: same as approve and commit, then immediately start the next backlog item
 > - `skip`: mark as blocked (`[!]`), move to the next backlog item
 > - `stop`: pause here without changing any task status
@@ -258,7 +258,7 @@ The user may reply with a **single keyword** (no need to repeat `/ship`):
 5. Update `references/spec.md` if the feature changed or clarified the app spec.
 6. Stop the workflow. Changes are NOT committed — use `approve and commit` or `commit` to also commit.
 
-### `approve and commit` / `commit`
+### `approve and commit` / `commit` / `finalize`
 
 > **MANDATORY order — do not skip or reorder these steps:**
 

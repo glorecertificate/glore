@@ -77,7 +77,7 @@ export const CourseFooter = () => {
         ) {
           await submitAssessmentRating(currentLesson.assessment.id, currentLesson.assessment.userRating)
         }
-        await completeLesson(currentLesson.id, course.slug)
+        await completeLesson(currentLesson.id)
         setCourse(prev => ({
           ...prev,
           lessons: prev.lessons.map(l => (l.id === currentLesson.id ? { ...l, completed: true } : l)),
@@ -87,7 +87,7 @@ export const CourseFooter = () => {
       }
     }
     next()
-  }, [course.slug, currentLesson, isViewer, next, setCourse, user.canEdit])
+  }, [currentLesson, isViewer, next, setCourse, user.canEdit])
 
   const completedCount = course.lessons.filter(({ completed }) => completed).length
   const completedTitle =

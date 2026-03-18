@@ -355,7 +355,7 @@ export const enrollCourse = async (courseId: number, locale: string) => {
   return { data: result }
 }
 
-export const completeLesson = async (lessonId: number, courseSlug: string) => {
+export const completeLesson = async (lessonId: number) => {
   const user = await getAuthUser()
   if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 

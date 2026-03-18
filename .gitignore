@@ -1,7 +1,6 @@
 .next/
 .vercel/
 node_modules/
-private/
 tmp/
 .DS_Store
 *.d.ts

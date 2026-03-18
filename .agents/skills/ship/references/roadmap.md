@@ -17,7 +17,7 @@
 
 ## Active
 
-_No tasks in progress._
+_No active tasks._
 
 ---
 
@@ -29,15 +29,14 @@ _No P0 tasks remaining._
 
 ### P1: High (feature completeness)
 
-| Slug           | Feature                                | Notes                                                                                                                                                                                                                                                                   |
-| -------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action-cache` | Server action cache invalidation audit | High. Remove `revalidateTag` from mutation actions to prevent RSC refetches and Suspense flashes. Add `{ cache: false }` bypass to read actions. See `tmp/server-action-rerendering.md` for the pattern.                                                                |
-| `cert-social`  | Public certificate social sharing      | High. Add Open Graph + Twitter Card meta tags to `src/app/[username]/page.tsx` `generateMetadata`. Add `og:title`, `og:description`, `og:image` (use cert PDF or generate OG image), `og:url`, `twitter:card`.                                                          |
-| `cert-qr`      | QR code on public certificate page     | High. Add QR code component to `public-certificate-view.tsx` linking to `/{username}?v={handle}`. Consider `qrcode` or `react-qr-code` package. Must match PDF template spec.                                                                                           |
-| `cert-filter`  | Certificate list filtering             | High. Add URL-based filter by status (nuqs) to `/certificates` page. Add sort by date. Update `certificates-content.tsx` with filter controls.                                                                                                                          |
-| `docs-feature` | Documentation CRUD and UI              | High. DB tables exist (`doc_categories`, `doc_articles`). Need: server actions (CRUD), queries, API, components for browsing/reading/editing articles. Admin/editor creates; all authenticated users read. Fill `/docs`, `/docs/intro`, `/docs/faq`, `/docs/tutorials`. |
-| `bundle-opt`   | Bundle size optimization               | High. Lucide icons tree-shaking, zod (consider zod mini), react-player/hls.js dynamic import, general code splits.                                                                                                                                                      |
-| `build-speed`  | Fix slow Vercel builds (3min+)         | High. Remote cache, output standalone, reduce static gen, parallelism.                                                                                                                                                                                                  |
+| Slug           | Feature                            | Notes                                                                                                                                                                                                                                                                   |
+| -------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cert-social`  | Public certificate social sharing  | High. Add Open Graph + Twitter Card meta tags to `src/app/[username]/page.tsx` `generateMetadata`. Add `og:title`, `og:description`, `og:image` (use cert PDF or generate OG image), `og:url`, `twitter:card`.                                                          |
+| `cert-qr`      | QR code on public certificate page | High. Add QR code component to `public-certificate-view.tsx` linking to `/{username}?v={handle}`. Consider `qrcode` or `react-qr-code` package. Must match PDF template spec.                                                                                           |
+| `cert-filter`  | Certificate list filtering         | High. Add URL-based filter by status (nuqs) to `/certificates` page. Add sort by date. Update `certificates-content.tsx` with filter controls.                                                                                                                          |
+| `docs-feature` | Documentation CRUD and UI          | High. DB tables exist (`doc_categories`, `doc_articles`). Need: server actions (CRUD), queries, API, components for browsing/reading/editing articles. Admin/editor creates; all authenticated users read. Fill `/docs`, `/docs/intro`, `/docs/faq`, `/docs/tutorials`. |
+| `bundle-opt`   | Bundle size optimization           | High. Lucide icons tree-shaking, zod (consider zod mini), react-player/hls.js dynamic import, general code splits.                                                                                                                                                      |
+| `build-speed`  | Fix slow Vercel builds (3min+)     | High. Remote cache, output standalone, reduce static gen, parallelism.                                                                                                                                                                                                  |
 
 ### P2: Medium (polish and UX)
 
@@ -67,6 +66,7 @@ _No P0 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `action-cache`   | Server action cache invalidation audit    | 2026-03-26 |
 | `org-admin-sole` | Enforce single org admin (owner) pattern  | 2026-03-18 |
 | `cert-resubmit`  | Certificate resubmission after changes    | 2026-03-19 |
 | `cert-review`    | Certificate review field editing          | 2026-03-18 |

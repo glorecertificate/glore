@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
 import { and, eq, inArray } from 'drizzle-orm'
@@ -187,8 +187,6 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
     return { error: lessonError }
   }
 
-  revalidateTag(CacheTag.Courses, 'max')
-
   const full = await db.query.courses.findFirst({
     where: eq(courses.id, created.id),
     with: buildCourseWith(authUser.id),
@@ -210,8 +208,6 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
   const authUser = await getAuthUser()
   await db.update(courses).set(course).where(eq(courses.id, id))
 
-  revalidateTag(CacheTag.Courses, 'max')
-
   const updated = await db.query.courses.findFirst({
     where: eq(courses.id, id),
     with: buildCourseWith(authUser?.id),
@@ -229,7 +225,6 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
 export const deleteCourse = async (id: number) => {
   try {
     await db.delete(courses).where(eq(courses.id, id))
-    revalidateTag(CacheTag.Courses, 'max')
     return { data: true, error: null }
   } catch (e) {
     return {
@@ -370,9 +365,6 @@ export const completeLesson = async (lessonId: number, courseSlug: string) => {
   if (existing) return { data: existing }
 
   const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).returning()
-
-  revalidateTag(`${CacheTag.Course}-${courseSlug}`, 'max')
-  revalidateTag(CacheTag.Courses, 'max')
 
   return { data: result }
 }

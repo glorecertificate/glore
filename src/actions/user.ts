@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
@@ -73,8 +73,6 @@ export const findUserEmail = async (username: string) => await fetchUserEmail(us
 export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
   const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
   if (!updated) throw new Error('Failed to update user')
-
-  revalidateTag(CacheTag.User, 'max')
 
   const user = await db.query.users.findFirst({
     where: eq(users.id, id),

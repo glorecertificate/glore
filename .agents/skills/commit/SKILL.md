@@ -11,19 +11,23 @@ Finalize and commit staged changes using conventional commits.
 
 ## Workflow
 
-### 1. Check for changes
+### 1. Validate — MANDATORY gate
+
+Run `pnpm run check` (or `pnpm run check:parallel` for speed). **This MUST exit with code 0 before any commit is made.** If any TypeScript, lint, format, or unused-export errors are reported, stop immediately, fix every error, and re-run the check until it passes cleanly. Do not proceed to the next step while errors remain. There are no exceptions.
+
+### 2. Check for changes
 
 Run `git status` to check for uncommitted changes. If the working tree is clean (no changes), abort and inform the user.
 
-### 2. Stage all changes
+### 3. Stage all changes
 
 Run `git add -A` to stage all modified, added, and deleted files.
 
-### 3. Inspect the diff
+### 4. Inspect the diff
 
 Run `git diff --cached --stat` to get a summary of what was staged. Use this to determine the appropriate commit type and scope.
 
-### 4. Compose the commit message
+### 5. Compose the commit message
 
 Use the format below, following the rules in the next section.
 
@@ -35,7 +39,7 @@ Use the format below, following the rules in the next section.
 <optional footer>
 ```
 
-### 5. Commit
+### 6. Commit
 
 Run `git commit -m "<message>"` with the composed message.
 

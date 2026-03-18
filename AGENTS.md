@@ -36,7 +36,7 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
 | `pnpm run db <command>`   | Run drizzle-kit commands                                        |
 
-**Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc --noEmit`, oxlint, `oxfmt --check`, and knip in sequence.
+**Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc --noEmit`, oxlint, `oxfmt --check`, and knip in sequence. **`pnpm run check` MUST exit with code 0 (zero errors) before any commit is made. This is a hard gate — no exceptions, no partial compliance. Do not commit while any error remains, regardless of whether it pre-existed or was introduced by the current change.**
 
 **Git hooks:** Husky manages hooks. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
 

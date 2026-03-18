@@ -213,7 +213,7 @@ Before writing any code, read all skills listed in the plan from `.agents/skills
 
 Implement the feature following **every** convention and pattern defined in `AGENTS.md` exactly. No exceptions.
 
-After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). If errors exist that pre-date your changes (unrelated to the current feature), note them but do not fix them. Only fix errors you introduced. Then run the **build command**. Fix any build errors you introduced before presenting results.
+After implementing, run the project's **check command** (see `AGENTS.md` → Commands table). **The check MUST pass with zero errors** — all TypeScript, lint, format, and unused-export errors must be resolved before presenting results, regardless of whether they were introduced by this feature or pre-existed. There are no exceptions: a failing check blocks all forward progress. Fix every reported error before moving on. Then run the **build command** and fix any build errors as well.
 
 ---
 
@@ -234,11 +234,11 @@ After implementing, run the project's **check command** (see `AGENTS.md` → Com
 >
 > **What's next?**
 >
-> - `approve`: mark done, update roadmap, stop
-> - `approve and commit`: mark done, update roadmap, then commit
-> - `continue`: mark done and immediately start the next backlog item
+> - `approve`: run tests, mark done, update roadmap and all files, stop (no commit)
+> - `approve and commit` / `commit`: same as approve, then commit using the commit skill
+> - `continue`: same as approve and commit, then immediately start the next backlog item
 > - `skip`: mark as blocked (`[!]`), move to the next backlog item
-> - `stop`: pause here without marking anything done
+> - `stop`: pause here without changing any task status
 > - Or tell me what to change.
 
 ---
@@ -249,28 +249,30 @@ The user may reply with a **single keyword** (no need to repeat `/ship`):
 
 ### `approve`
 
-1. Mark the feature `[x]` with a completion date in `references/roadmap.md`.
-2. Add any architectural decisions to the **Decisions log**.
-3. Update `AGENTS.md` if new routes, hooks, utilities, or patterns were introduced.
-4. Update `references/spec.md` if the feature changed or clarified the app spec.
-5. Stop the workflow.
+> **MANDATORY order — do not skip or reorder these steps:**
 
-### `approve and commit`
+1. Run the project's **check command** (`pnpm run check`). It MUST exit with code 0. Fix every error before proceeding.
+2. Mark the feature `[x]` with a completion date in `references/roadmap.md`.
+3. Add any architectural decisions to the **Decisions log**.
+4. Update `AGENTS.md` if new routes, hooks, utilities, or patterns were introduced.
+5. Update `references/spec.md` if the feature changed or clarified the app spec.
+6. Stop the workflow. Changes are NOT committed — use `approve and commit` or `commit` to also commit.
+
+### `approve and commit` / `commit`
 
 > **MANDATORY order — do not skip or reorder these steps:**
 
-1. Perform all steps from `approve` (mark done, update roadmap, update `AGENTS.md`, update `references/spec.md`).
-2. Run the project's **format command** and **check command** (see `AGENTS.md` → Commands table) to fix formatting and catch any lint/type errors introduced by the feature. Fix every error before proceeding.
-3. Stage all changes — including the roadmap, `AGENTS.md`, and any formatting-only diffs — so they are part of the commit. The entire working tree must be included.
-4. Execute the `/commit` skill. After the commit completes, run `git status` to verify the working tree is **completely clean** (no staged, unstaged, or untracked files related to this work). If it is not clean, stage the remaining changes and amend or add a follow-up commit before declaring done.
-
-If a pull request is created, its title must follow the session title format: `[ship] <task-slug>: <short description>`.
-
-**Why this matters:** roadmap files and formatting diffs that are left uncommitted create false-dirty state, confuse the next agent session, and make the commit history misleading. The commit must represent a complete, self-contained unit of work.
+1. Perform all steps from `approve` (run check, mark done, update roadmap, update `AGENTS.md`, update `references/spec.md`).
+2. Read `.agents/skills/commit/SKILL.md` and execute the commit skill in full: stage all changes (including roadmap, `AGENTS.md`, and any formatting-only diffs), compose a conventional commit message, and commit.
+3. After the commit, run `git status` to verify the working tree is completely clean. If it is not, stage the remaining changes and amend or add a follow-up commit before declaring done.
+4. Stop the workflow.
 
 ### `continue`
 
-Perform all steps from `approve`, then immediately loop back to **Step 2**, pick the next backlog item, and run the **Set session title** step for the new task before proceeding to Step 4.
+> **MANDATORY order — do not skip or reorder these steps:**
+
+1. Perform all steps from `approve and commit` (run check, mark done, update roadmap, update `AGENTS.md`, update `references/spec.md`, commit).
+2. Immediately loop back to **Step 2**, pick the next backlog item, and run the **Set session title** step for the new task before proceeding to Step 4.
 
 ### `skip`
 

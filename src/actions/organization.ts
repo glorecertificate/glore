@@ -4,8 +4,6 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { revalidateTag } from 'next/cache'
-
 import { and, count, eq, inArray } from 'drizzle-orm'
 
 import { deleteCookie, getCookie, setCookie } from '@/actions/cookies'
@@ -23,7 +21,6 @@ import {
 } from '@/db/queries/organization'
 import { certificates, memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
-import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 import { r2Delete, r2Put } from '@/lib/storage'
@@ -107,7 +104,6 @@ const canManageMemberRole = (managerRole: OrganizationMembershipRole, targetRole
   if (managerRole === 'admin') {
     return MANAGEABLE_MEMBER_ROLES.includes(targetRole)
   }
-
   return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
 }
 
@@ -115,7 +111,6 @@ const canInviteRole = (managerRole: OrganizationMembershipRole, targetRole: Orga
   if (managerRole === 'admin') {
     return MANAGEABLE_MEMBER_ROLES.includes(targetRole)
   }
-
   return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
 }
 
@@ -123,7 +118,6 @@ const canReviewRequestRole = (managerRole: OrganizationMembershipRole, targetRol
   if (managerRole === 'admin') {
     return REQUESTABLE_ROLES.includes(targetRole)
   }
-
   return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
 }
 
@@ -136,10 +130,7 @@ const getOrganizationAdminsCount = async (organizationId: number) => {
   return result?.total ?? 0
 }
 
-const getFreshCurrentUser = async (userId: string) => {
-  revalidateTag(CacheTag.User, 'max')
-  return await findUser(userId, { cache: false })
-}
+const getFreshCurrentUser = (userId: string) => findUser(userId, { cache: false })
 
 const getDescriptionRecord = (description: string, locale?: string, previous?: IntlRecord | null) => {
   const localeKey = i18n.locales.includes(locale as (typeof i18n.locales)[number])
@@ -387,8 +378,6 @@ export const inviteOrganizationMember = async ({
         .catch(() => null)
     }
 
-    revalidateTag(CacheTag.User, 'max')
-
     return { email: normalizedEmail, userId: invitee.id }
   })
 }
@@ -436,8 +425,6 @@ export const updateOrganizationMemberRole = async (membershipId: number, role: O
 
     await db.update(memberships).set({ role }).where(eq(memberships.id, membership.id))
 
-    revalidateTag(CacheTag.User, 'max')
-
     return parseOrganizationMember({ ...membership, role })
   })
 }
@@ -480,8 +467,6 @@ export const removeOrganizationMember = async (membershipId: number) => {
     }
 
     await db.delete(memberships).where(eq(memberships.id, membership.id))
-
-    revalidateTag(CacheTag.User, 'max')
 
     return { id: membership.id, userId: membership.userId }
   })
@@ -578,8 +563,6 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
       organizationName: organization.name,
       status: 'accepted',
     })
-
-    revalidateTag(CacheTag.User, 'max')
 
     return parseOrganizationJoinRequest({ ...request, status: 'accepted' })
   })

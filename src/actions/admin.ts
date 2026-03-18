@@ -4,7 +4,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag } from 'next/cache'
 
 import { and, desc, eq, isNull, or } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
@@ -376,7 +376,6 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
       },
     }).catch(() => null)
 
-    revalidateTag(CacheTag.Organizations, 'max')
     return { organizationId, organizationName: org.name }
   })
 }
@@ -416,7 +415,6 @@ export const rejectOrganization = async (organizationId: number, reviewerComment
 
     await db.delete(organizations).where(eq(organizations.id, organizationId))
 
-    revalidateTag(CacheTag.Organizations, 'max')
     return { organizationId }
   })
 }
@@ -541,7 +539,6 @@ export const inviteOrganization = async ({
       locale: locale ?? undefined,
     }).catch(() => null)
 
-    revalidateTag(CacheTag.Organizations, 'max')
     return { organizationId: org.id, organizationName: org.name }
   })
 }
@@ -580,7 +577,6 @@ export const banUser = async (userId: string, reason?: string) => {
     .set({ banned: true, banReason: reason?.trim() || null })
     .where(eq(users.id, userId))
 
-  revalidateTag(CacheTag.AdminUsers, 'max')
   return { data: { id: userId } }
 }
 
@@ -590,7 +586,6 @@ export const unbanUser = async (userId: string) => {
 
   await db.update(users).set({ banned: false, banReason: null, banExpires: null }).where(eq(users.id, userId))
 
-  revalidateTag(CacheTag.AdminUsers, 'max')
   return { data: { id: userId } }
 }
 
@@ -607,6 +602,5 @@ export const updateUserRole = async (userId: string, role: 'admin' | 'editor' | 
     })
     .where(eq(users.id, userId))
 
-  revalidateTag(CacheTag.AdminUsers, 'max')
   return { data: { id: userId, role } }
 }

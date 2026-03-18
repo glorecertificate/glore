@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { cache, createElement } from 'react'
 
 import { and, asc, count, eq } from 'drizzle-orm'
@@ -65,9 +65,20 @@ const fetchUserCertificates = cache(async (userId: string) => {
   })
 })
 
-export const listUserCertificates = async (): Promise<{ data: Certificate[] | null; error: unknown }> => {
+export const listUserCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+  data: Certificate[] | null
+  error: unknown
+}> => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  if (!cache) {
+    const result = await db.query.certificates.findMany({
+      where: eq(certificates.userId, authUser.id),
+      with: certificateWith,
+      orderBy: (certs, { desc }) => [desc(certs.createdAt)],
+    })
+    return { data: result.map(parseCertificate), error: null }
+  }
   return await fetchUserCertificates(authUser.id)
 }
 
@@ -86,9 +97,20 @@ const fetchTutorCertificates = cache(async (reviewerId: string) => {
   })
 })
 
-export const listTutorCertificates = async (): Promise<{ data: Certificate[] | null; error: unknown }> => {
+export const listTutorCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+  data: Certificate[] | null
+  error: unknown
+}> => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  if (!cache) {
+    const result = await db.query.certificates.findMany({
+      where: eq(certificates.reviewerId, authUser.id),
+      with: certificateWithUsers,
+      orderBy: (certs, { desc }) => [desc(certs.updatedAt)],
+    })
+    return { data: result.map(parseCertificate), error: null }
+  }
   return await fetchTutorCertificates(authUser.id)
 }
 
@@ -118,7 +140,6 @@ export const claimCertificateReview = async (id: number) => {
         and(eq(certificates.id, id), eq(certificates.reviewerId, authUser.id), eq(certificates.status, 'submitted'))
       )
       .returning()
-    if (updated) revalidateTag(CacheTag.Certificates, 'max')
     return updated ?? null
   })
 }
@@ -213,8 +234,6 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       )
       .where(eq(certificates.id, id))
       .returning()
-
-    revalidateTag(CacheTag.Certificates, 'max')
 
     if (isApprove) {
       const existingDefault = await db.query.certificates.findFirst({
@@ -346,8 +365,6 @@ export const createCertificate = async (values: CertificateFormValues) => {
       }))
     )
 
-    revalidateTag(CacheTag.Certificates, 'max')
-
     if (reviewerId) {
       const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))
       if (reviewer?.email) {
@@ -402,7 +419,6 @@ export const resubmitCertificate = async (id: number, values: ResubmitCertificat
       )
       .returning()
     if (!updated) throw new Error('Certificate not found or cannot be resubmitted')
-    revalidateTag(CacheTag.Certificates, 'max')
     return updated
   })
 }

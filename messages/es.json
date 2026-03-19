@@ -1169,6 +1169,46 @@
       "description": "¿Interesado en unirte a la red GloRe o saber más? Contacta con tu organización asociada local."
     }
   },
+  "Help": {
+    "title": "Ayuda y soporte",
+    "description": "Todo lo que necesitas para sacar el máximo partido a GloRe Certificate.",
+    "gettingStarted": {
+      "title": "Primeros pasos",
+      "description": "Sigue estos pasos para comenzar tu camino con GloRe.",
+      "step1": {
+        "title": "Únete a una organización",
+        "description": "Regístrate y solicita unirte a una organización asociada de GloRe. Un administrador aprobará tu membresía y te asignará un rol."
+      },
+      "step2": {
+        "title": "Completa cursos",
+        "description": "Inscríbete en cursos de habilidades, completa lecciones y envía tus autoevaluaciones para desarrollar tu perfil de competencias."
+      },
+      "step3": {
+        "title": "Solicita tu certificado",
+        "description": "Una vez que hayas completado al menos 3 cursos con una calificación de 3 o superior, podrás solicitar tu Certificado GloRe."
+      }
+    },
+    "resources": {
+      "title": "Recursos",
+      "description": "Explora la documentación para aprender más sobre la plataforma.",
+      "intro": {
+        "title": "Introducción",
+        "description": "Aprende los conceptos básicos de GloRe Certificate, los roles y el proceso de certificación."
+      },
+      "faq": {
+        "title": "Preguntas frecuentes",
+        "description": "Respuestas a las preguntas más comunes sobre cursos, certificados y organizaciones."
+      },
+      "tutorials": {
+        "title": "Tutoriales",
+        "description": "Guías paso a paso para ayudarte a navegar la plataforma y completar tareas clave."
+      }
+    },
+    "contact": {
+      "title": "¿Necesitas más ayuda?",
+      "description": "Contáctanos en {email} o visita nuestro sitio web en {website} para obtener soporte adicional."
+    }
+  },
   "Certificates": {
     "alreadyHave": "Ya tiene un certificado con esta organización",
     "backTo": "Volver a todos los certificados",

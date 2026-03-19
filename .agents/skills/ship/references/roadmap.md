@@ -35,7 +35,6 @@ _No P1 tasks remaining._
 
 | Slug                | Feature                                 | Notes                                                                                                                                                                       |
 | ------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `help-page`         | Help page content                       | Medium. `/help` is a stub. Add help content: getting started guide, FAQ links, support contact.                                                                             |
 | `render-opt`        | Rendering and interaction optimizations | Medium. React Compiler, Suspense boundaries, RSC audit, reduce client re-renders.                                                                                           |
 | `cert-tutor-assign` | Manual tutor re-assignment              | Medium. Allow admin/rep to change assigned tutor from certificate detail. Allow tutor to self-assign to unreviewed certs (UI for browsing unassigned). Update actions + UI. |
 | `search-ui`         | Search functionality in UI              | Medium. `fuse.js` is installed but not exposed in UI. Add search bar to sidebar or header for courses, certificates, members. Wire up fuzzy search.                         |
@@ -58,6 +57,7 @@ _No P1 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `help-page`      | Help page content                         | 2026-03-19 |
 | `about-page`     | About page content                        | 2026-03-19 |
 | `build-speed`    | Fix slow Vercel builds                    | 2026-03-19 |
 | `bundle-opt`     | Bundle size optimization                  | 2026-03-19 |

@@ -1169,6 +1169,46 @@
       "description": "Interested in joining the GloRe network or learning more? Reach out to us through your local partner organization."
     }
   },
+  "Help": {
+    "title": "Help & Support",
+    "description": "Everything you need to get the most out of GloRe Certificate.",
+    "gettingStarted": {
+      "title": "Getting started",
+      "description": "Follow these steps to start your GloRe journey.",
+      "step1": {
+        "title": "Join an organization",
+        "description": "Register and request to join a GloRe partner organization. An admin will approve your membership and assign you a role."
+      },
+      "step2": {
+        "title": "Complete courses",
+        "description": "Enroll in skill courses, complete lessons, and submit your self-evaluations to build your competence profile."
+      },
+      "step3": {
+        "title": "Request your certificate",
+        "description": "Once you have completed at least 3 courses with a rating of 3 or above, you can request your GloRe Certificate."
+      }
+    },
+    "resources": {
+      "title": "Resources",
+      "description": "Browse the documentation to learn more about the platform.",
+      "intro": {
+        "title": "Introduction",
+        "description": "Learn the basics of GloRe Certificate, roles, and the certification process."
+      },
+      "faq": {
+        "title": "FAQs",
+        "description": "Answers to the most common questions about courses, certificates, and organizations."
+      },
+      "tutorials": {
+        "title": "Tutorials",
+        "description": "Step-by-step guides to help you navigate the platform and complete key tasks."
+      }
+    },
+    "contact": {
+      "title": "Need more help?",
+      "description": "Contact us at {email} or visit our website at {website} for additional support."
+    }
+  },
   "Certificates": {
     "alreadyHave": "You already have a certificate with this organization",
     "backTo": "Back to all certificates",

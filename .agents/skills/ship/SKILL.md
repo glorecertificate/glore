@@ -117,17 +117,19 @@ When a task is marked done (`[x]`), remove the `agent:` and `started:` annotatio
 
 ## Step 3: Act on user input
 
-When `/ship` is invoked **with no additional input**, stop after presenting the roadmap (Step 2). Tell the user to reply `start` or `continue` to begin the first backlog item or resume the first pending task. Do not act yet.
+When `/ship` is invoked **with no additional input**, stop after presenting the roadmap (Step 2). Tell the user to reply **`start`** to start the first item in the backlog or continue the first pending one. Do not act yet.
 
-#### `start` or `continue`
+#### `start`
 
-Present a brief recap of the roadmap (active tasks and the first few backlog items), then apply the **concurrent task handling** algorithm (see above) to determine which task to work on:
+Present a brief recap of the roadmap (active tasks and the first few backlog items), then pick the first non-conflicting task from the **backlog** (`[ ]`), move it to Active, stamp it with your session ID and timestamp, and proceed to **Step 4** without asking for confirmation.
 
-- If there is a stale `[~]` task: claim it, determine what was already done via `git status` and recent commits, and resume from that point.
-- If all active tasks are claimed and a non-conflicting backlog task exists: move it to Active, stamp it, then proceed to **Step 4**.
-- If the backlog is empty and no stale task exists: tell the user the backlog is empty and ask them to add a task with `/ship add <description>`.
+If the backlog is empty, tell the user there are no backlog items and ask them to add a task with `/ship add <description>`.
 
-Proceed to Step 4 **without asking for confirmation**.
+#### `continue`
+
+Present a brief recap of the roadmap (active tasks and the first few backlog items), then look for the first `[~]` task that has **no valid active agent** (i.e. stale or unclaimed — see Concurrent task handling above). Claim it by stamping your session ID and timestamp, check `git status` and recent commits to understand what was already done, and resume from that point without asking for confirmation.
+
+If there are no pending (`[~]`) tasks or all active tasks are claimed by another session, tell the user there is nothing pending and that the first backlog item will be started instead. Then immediately pick the first non-conflicting backlog task, move it to Active, stamp it, and proceed to **Step 4** — all without asking for confirmation.
 
 #### `add <description>`
 
@@ -214,7 +216,7 @@ Present the plan:
 >
 > **Reply "start" or tell me what to change.**
 
-Wait for confirmation before writing code. **Exception:** if the workflow was initiated via `start` or `continue`, skip this pause and proceed directly to Step 5 without waiting.
+Wait for confirmation before writing code. **Exception:** if the workflow was initiated via `start` or `continue` (with or without arguments), skip this pause and proceed directly to Step 5 without waiting.
 
 ---
 

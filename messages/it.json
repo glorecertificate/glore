@@ -1169,6 +1169,46 @@
       "description": "Interessato a unirti alla rete GloRe o saperne di più? Contatta la tua organizzazione partner locale."
     }
   },
+  "Help": {
+    "title": "Aiuto e supporto",
+    "description": "Tutto ciò di cui hai bisogno per sfruttare al massimo GloRe Certificate.",
+    "gettingStarted": {
+      "title": "Per iniziare",
+      "description": "Segui questi passaggi per iniziare il tuo percorso con GloRe.",
+      "step1": {
+        "title": "Unisciti a un'organizzazione",
+        "description": "Registrati e richiedi di unirti a un'organizzazione partner GloRe. Un amministratore approverà la tua membership e ti assegnerà un ruolo."
+      },
+      "step2": {
+        "title": "Completa i corsi",
+        "description": "Iscriviti ai corsi di competenze, completa le lezioni e invia le tue autovalutazioni per costruire il tuo profilo di competenze."
+      },
+      "step3": {
+        "title": "Richiedi il tuo certificato",
+        "description": "Una volta completati almeno 3 corsi con un punteggio di 3 o superiore, potrai richiedere il tuo Certificato GloRe."
+      }
+    },
+    "resources": {
+      "title": "Risorse",
+      "description": "Consulta la documentazione per saperne di più sulla piattaforma.",
+      "intro": {
+        "title": "Introduzione",
+        "description": "Scopri le basi di GloRe Certificate, i ruoli e il processo di certificazione."
+      },
+      "faq": {
+        "title": "Domande frequenti",
+        "description": "Risposte alle domande più comuni su corsi, certificati e organizzazioni."
+      },
+      "tutorials": {
+        "title": "Tutorial",
+        "description": "Guide passo passo per navigare la piattaforma e completare le attività principali."
+      }
+    },
+    "contact": {
+      "title": "Hai bisogno di ulteriore aiuto?",
+      "description": "Contattaci all'indirizzo {email} o visita il nostro sito web all'indirizzo {website} per ulteriore supporto."
+    }
+  },
   "Certificates": {
     "alreadyHave": "Hai già un certificato con questa organizzazione",
     "backTo": "Torna a tutti i certificati",

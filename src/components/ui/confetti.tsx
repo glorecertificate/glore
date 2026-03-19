@@ -2,12 +2,15 @@
 
 import { createContext, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
 
-import canvasConfetti, { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
+import { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { type Any } from '@/lib/types'
 
-export const confetti = canvasConfetti
+const loadConfetti = async () => {
+  const { default: canvasConfetti } = await import('canvas-confetti')
+  return canvasConfetti
+}
 
 const ConfettiContext = createContext<{
   fire: (options?: Options) => void
@@ -33,13 +36,16 @@ export const Confetti = ({
   const instanceRef = useRef<CreateTypes | null>(null)
 
   const canvasRef = useCallback(
-    (node: HTMLCanvasElement) => {
+    (node: HTMLCanvasElement | null) => {
       if (node !== null) {
         if (!instanceRef.current) {
-          instanceRef.current = confetti.create(node, {
-            ...globalOptions,
-            resize: true,
-          })
+          void (async () => {
+            const canvasConfetti = await loadConfetti()
+            instanceRef.current = canvasConfetti.create(node, {
+              ...globalOptions,
+              resize: true,
+            })
+          })()
         }
         return
       }
@@ -92,7 +98,8 @@ export interface ConfettiButtonProps extends Omit<ButtonProps, 'effect'> {
 }
 
 export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props }: ConfettiButtonProps) => {
-  const triggerFireworks = useCallback(() => {
+  const triggerFireworks = useCallback(async () => {
+    const confetti = await loadConfetti()
     const duration = 5 * 1000
     const animationEnd = Date.now() + duration
     const defaults = {
@@ -127,6 +134,7 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
 
   const triggerConfetti = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
+      const confetti = await loadConfetti()
       const rect = event.currentTarget.getBoundingClientRect()
       const x = rect.left + rect.width / 2
       const y = rect.top + rect.height / 2
@@ -146,7 +154,7 @@ export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       switch (effect) {
         case 'fireworks':
-          triggerFireworks()
+          await triggerFireworks()
           break
         case 'confetti':
           await triggerConfetti(event)

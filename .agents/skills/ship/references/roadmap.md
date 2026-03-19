@@ -29,10 +29,9 @@ _No P0 tasks remaining._
 
 ### P1: High (feature completeness)
 
-| Slug          | Feature                        | Notes                                                                                                              |
-| ------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| `bundle-opt`  | Bundle size optimization       | High. Lucide icons tree-shaking, zod (consider zod mini), react-player/hls.js dynamic import, general code splits. |
-| `build-speed` | Fix slow Vercel builds (3min+) | High. Remote cache, output standalone, reduce static gen, parallelism.                                             |
+| Slug          | Feature                        | Notes                                                                  |
+| ------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| `build-speed` | Fix slow Vercel builds (3min+) | High. Remote cache, output standalone, reduce static gen, parallelism. |
 
 ### P2: Medium (polish and UX)
 
@@ -62,6 +61,7 @@ _No P0 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `bundle-opt`     | Bundle size optimization                  | 2026-03-19 |
 | `cert-filter`    | Certificate list filtering                | 2026-03-18 |
 | `cert-qr`        | QR code on public certificate page        | 2026-03-18 |
 | `cert-social`    | Public certificate social sharing         | 2026-03-18 |

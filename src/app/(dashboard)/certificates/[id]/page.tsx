@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { findCertificate } from '@/actions/certificate'
+import { listOrgTutors } from '@/actions/organization'
 import { getCurrentUser } from '@/actions/user'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -14,9 +15,15 @@ const CertificateDetailContent = async ({ id }: { id: number }) => {
 
   const isOwner = certificate.userId === user.id
   const isAssignedReviewer = certificate.reviewerId === user.id
-  if (!isOwner && !isAssignedReviewer) notFound()
+  const isOrgManager = user.organizations.some(
+    o => o.id === certificate.organizationId && (o.role === 'admin' || o.role === 'representative')
+  )
 
-  return <CertificateDetail certificate={certificate} />
+  if (!isOwner && !isAssignedReviewer && !isOrgManager) notFound()
+
+  const { data: tutors } = isOrgManager ? await listOrgTutors(certificate.organizationId) : { data: null }
+
+  return <CertificateDetail certificate={certificate} tutors={tutors ?? undefined} />
 }
 
 export default async ({ params }: PageProps<'/certificates/[id]'>) => {

@@ -33,12 +33,11 @@ _No P1 tasks remaining._
 
 ### P2: Medium (polish and UX)
 
-| Slug                | Feature                        | Notes                                                                                                                                                                       |
-| ------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cert-tutor-assign` | Manual tutor re-assignment     | Medium. Allow admin/rep to change assigned tutor from certificate detail. Allow tutor to self-assign to unreviewed certs (UI for browsing unassigned). Update actions + UI. |
-| `search-ui`         | Search functionality in UI     | Medium. `fuse.js` is installed but not exposed in UI. Add search bar to sidebar or header for courses, certificates, members. Wire up fuzzy search.                         |
-| `notif-system`      | In-app notification system     | Medium. Currently email only. Consider adding a notifications dropdown/panel with unread count. Would need a `notifications` table and real-time or polling mechanism.      |
-| `course-analytics`  | Course analytics and reporting | Medium. Dashboard stats exist but are basic. Add: completion rates per course, avg ratings, popular courses, learner progress overview for admins/editors.                  |
+| Slug               | Feature                        | Notes                                                                                                                                                                  |
+| ------------------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `search-ui`        | Search functionality in UI     | Medium. `fuse.js` is installed but not exposed in UI. Add search bar to sidebar or header for courses, certificates, members. Wire up fuzzy search.                    |
+| `notif-system`     | In-app notification system     | Medium. Currently email only. Consider adding a notifications dropdown/panel with unread count. Would need a `notifications` table and real-time or polling mechanism. |
+| `course-analytics` | Course analytics and reporting | Medium. Dashboard stats exist but are basic. Add: completion rates per course, avg ratings, popular courses, learner progress overview for admins/editors.             |
 
 ### P3: Low (improvements and DX)
 
@@ -54,22 +53,23 @@ _No P1 tasks remaining._
 
 ## Done
 
-| Slug             | Feature                                   | Completed  |
-| ---------------- | ----------------------------------------- | ---------- |
-| `render-opt`     | Rendering and interaction optimizations   | 2026-03-19 |
-| `help-page`      | Help page content                         | 2026-03-19 |
-| `about-page`     | About page content                        | 2026-03-19 |
-| `build-speed`    | Fix slow Vercel builds                    | 2026-03-19 |
-| `bundle-opt`     | Bundle size optimization                  | 2026-03-19 |
-| `cert-filter`    | Certificate list filtering                | 2026-03-18 |
-| `cert-qr`        | QR code on public certificate page        | 2026-03-18 |
-| `cert-social`    | Public certificate social sharing         | 2026-03-18 |
-| `action-cache`   | Server action cache invalidation audit    | 2026-03-26 |
-| `docs-feature`   | Documentation CRUD and UI                 | 2026-03-26 |
-| `org-admin-sole` | Enforce single org admin (owner) pattern  | 2026-03-18 |
-| `cert-resubmit`  | Certificate resubmission after changes    | 2026-03-19 |
-| `cert-review`    | Certificate review field editing          | 2026-03-18 |
-| `r2-storage`     | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
+| Slug                | Feature                                   | Completed  |
+| ------------------- | ----------------------------------------- | ---------- |
+| `cert-tutor-assign` | Manual tutor re-assignment                | 2026-03-19 |
+| `render-opt`        | Rendering and interaction optimizations   | 2026-03-19 |
+| `help-page`         | Help page content                         | 2026-03-19 |
+| `about-page`        | About page content                        | 2026-03-19 |
+| `build-speed`       | Fix slow Vercel builds                    | 2026-03-19 |
+| `bundle-opt`        | Bundle size optimization                  | 2026-03-19 |
+| `cert-filter`       | Certificate list filtering                | 2026-03-18 |
+| `cert-qr`           | QR code on public certificate page        | 2026-03-18 |
+| `cert-social`       | Public certificate social sharing         | 2026-03-18 |
+| `action-cache`      | Server action cache invalidation audit    | 2026-03-26 |
+| `docs-feature`      | Documentation CRUD and UI                 | 2026-03-26 |
+| `org-admin-sole`    | Enforce single org admin (owner) pattern  | 2026-03-18 |
+| `cert-resubmit`     | Certificate resubmission after changes    | 2026-03-19 |
+| `cert-review`       | Certificate review field editing          | 2026-03-18 |
+| `r2-storage`        | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
 
 ---
 

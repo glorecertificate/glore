@@ -1,6 +1,11 @@
 import { Suspense } from 'react'
 
-import { getCertificateEligibility, listTutorCertificates, listUserCertificates } from '@/actions/certificate'
+import {
+  getCertificateEligibility,
+  listTutorCertificates,
+  listUnassignedOrgCertificates,
+  listUserCertificates,
+} from '@/actions/certificate'
 import { getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
@@ -13,8 +18,11 @@ const CertificatesPageContent = async () => {
   const isTutor = user.organizations.some(o => o.role === 'tutor')
 
   if (isTutor) {
-    const { data: certificates } = await listTutorCertificates()
-    return <TutorCertificatesContent certificates={certificates ?? []} />
+    const [{ data: assigned }, { data: unassigned }] = await Promise.all([
+      listTutorCertificates(),
+      listUnassignedOrgCertificates(),
+    ])
+    return <TutorCertificatesContent assigned={assigned ?? []} unassigned={unassigned ?? []} />
   }
 
   const [{ data: certificates }, eligibility] = await Promise.all([listUserCertificates(), getCertificateEligibility()])

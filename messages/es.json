@@ -1291,7 +1291,21 @@
     "publicJoinDescription": "Únete a la Red GloRe, completa cursos de voluntariado y obtén la certificación oficial.",
     "publicJoinButton": "Únete a GloRe",
     "publicAccessApp": "¿Ya eres miembro? Inicia sesión",
-    "publicOgDescription": "{name} ha sido certificado/a oficialmente por su actividad de voluntariado en {org} por GloRe Certificate."
+    "publicOgDescription": "{name} ha sido certificado/a oficialmente por su actividad de voluntariado en {org} por GloRe Certificate.",
+    "assignTutor": "Asignar tutor",
+    "assignTutorError": "No se pudo asignar el tutor. Inténtalo de nuevo.",
+    "assignTutorSuccess": "Tutor asignado correctamente",
+    "noTutorsAvailable": "No hay tutores disponibles en esta organización",
+    "reviewer": "Revisor",
+    "reviewerUnassigned": "Sin asignar",
+    "selfAssign": "Reclamar revisión",
+    "selfAssignError": "No se pudo reclamar este certificado. Inténtalo de nuevo.",
+    "selfAssignSuccess": "Certificado reclamado. Eres el revisor asignado.",
+    "selfRelease": "Liberar asignación",
+    "selfReleaseSuccess": "Has sido desasignado de este certificado.",
+    "submittedOn": "Enviado el",
+    "unassignedCertificatesTitle": "Disponibles para reclamar",
+    "unassignedCertificatesMessage": "Estos certificados aún no tienen revisor asignado."
   },
   "Organization": {
     "title": "Organización",

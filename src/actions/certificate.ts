@@ -5,7 +5,7 @@ import 'server-only'
 import { cacheLife, cacheTag } from 'next/cache'
 import { cache, createElement } from 'react'
 
-import { and, asc, count, eq } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { listCourses } from '@/actions/course'
@@ -417,4 +417,133 @@ export const resubmitCertificate = async (id: number, values: ResubmitCertificat
     if (!updated) throw new Error('Certificate not found or cannot be resubmitted')
     return updated
   })
+}
+
+export const assignCertificateTutor = async (certId: number, reviewerId: string | null) => {
+  const authUser = await getAuthUser()
+  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  return await safeQuery(async () => {
+    const cert = await db.query.certificates.findFirst({
+      where: eq(certificates.id, certId),
+      columns: { id: true, organizationId: true, reviewerId: true, status: true },
+    })
+    if (!cert) throw new Error('Certificate not found')
+    if (cert.status === 'approved') throw new Error('Cannot reassign an approved certificate')
+
+    const membership = await db.query.memberships.findFirst({
+      where: and(
+        eq(memberships.userId, authUser.id),
+        eq(memberships.organizationId, cert.organizationId),
+        inArray(memberships.role, ['admin', 'representative'])
+      ),
+      columns: { id: true },
+    })
+    const isCurrentReviewer = cert.reviewerId === authUser.id
+    if (!membership && !isCurrentReviewer) throw new Error('Not authorized to reassign this certificate')
+
+    if (reviewerId) {
+      const tutorMembership = await db.query.memberships.findFirst({
+        where: and(
+          eq(memberships.userId, reviewerId),
+          eq(memberships.organizationId, cert.organizationId),
+          eq(memberships.role, 'tutor')
+        ),
+        columns: { id: true },
+      })
+      if (!tutorMembership) throw new Error('Selected user is not a tutor in this organization')
+    }
+
+    const [updated] = await db.update(certificates).set({ reviewerId }).where(eq(certificates.id, certId)).returning()
+
+    if (reviewerId) {
+      const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))
+      if (reviewer?.email) {
+        await sendMail({
+          to: reviewer.email,
+          template: { name: 'certificate/assigned', props: {} },
+        }).catch(() => null)
+      }
+    }
+
+    return updated
+  })
+}
+
+export const selfAssignCertificate = async (certId: number) => {
+  const authUser = await getAuthUser()
+  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  return await safeQuery(async () => {
+    const cert = await db.query.certificates.findFirst({
+      where: eq(certificates.id, certId),
+      columns: { id: true, organizationId: true, reviewerId: true, status: true },
+    })
+    if (!cert) throw new Error('Certificate not found')
+    if (cert.reviewerId !== null) throw new Error('Certificate already has an assigned reviewer')
+    if (cert.status !== 'submitted') throw new Error('Certificate cannot be claimed at this stage')
+
+    const membership = await db.query.memberships.findFirst({
+      where: and(
+        eq(memberships.userId, authUser.id),
+        eq(memberships.organizationId, cert.organizationId),
+        eq(memberships.role, 'tutor')
+      ),
+      columns: { id: true },
+    })
+    if (!membership) throw new Error('Not a tutor in this organization')
+
+    const [updated] = await db
+      .update(certificates)
+      .set({ reviewerId: authUser.id })
+      .where(and(eq(certificates.id, certId), isNull(certificates.reviewerId)))
+      .returning()
+    if (!updated) throw new Error('Certificate was already claimed by another tutor')
+
+    return updated
+  })
+}
+
+const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
+  'use cache'
+  cacheTag(CacheTag.Certificates)
+  cacheLife('max')
+
+  return await safeQuery(async () => {
+    const result = await db.query.certificates.findMany({
+      where: and(
+        eq(certificates.organizationId, orgId),
+        isNull(certificates.reviewerId),
+        eq(certificates.status, 'submitted')
+      ),
+      with: certificateWithUsers,
+      orderBy: (c, { asc: byAsc }) => [byAsc(c.createdAt)],
+    })
+    return result.map(parseCertificate)
+  })
+})
+
+export const listUnassignedOrgCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+  data: Certificate[] | null
+  error: unknown
+}> => {
+  const authUser = await getAuthUser()
+  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  const orgId = await getActiveOrgId()
+  if (!orgId) return { data: null, error: { code: 'NO_ORG', message: 'No active organization' } }
+
+  if (!cache) {
+    const result = await db.query.certificates.findMany({
+      where: and(
+        eq(certificates.organizationId, orgId),
+        isNull(certificates.reviewerId),
+        eq(certificates.status, 'submitted')
+      ),
+      with: certificateWithUsers,
+      orderBy: (c, { asc: byAsc }) => [byAsc(c.createdAt)],
+    })
+    return { data: result.map(parseCertificate), error: null }
+  }
+  return await fetchUnassignedOrgCertificates(orgId)
 }

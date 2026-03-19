@@ -1291,7 +1291,21 @@
     "publicJoinDescription": "Join the GloRe Network, complete volunteering courses, and get officially certified.",
     "publicJoinButton": "Join GloRe",
     "publicAccessApp": "Already a member? Sign in",
-    "publicOgDescription": "{name} has been officially certified for their volunteering activity at {org} by GloRe Certificate."
+    "publicOgDescription": "{name} has been officially certified for their volunteering activity at {org} by GloRe Certificate.",
+    "assignTutor": "Assign tutor",
+    "assignTutorError": "Failed to assign tutor. Please try again.",
+    "assignTutorSuccess": "Tutor assigned successfully",
+    "noTutorsAvailable": "No tutors available in this organization",
+    "reviewer": "Reviewer",
+    "reviewerUnassigned": "Unassigned",
+    "selfAssign": "Claim review",
+    "selfAssignError": "Failed to claim this certificate. Please try again.",
+    "selfAssignSuccess": "Certificate claimed. You are now the assigned reviewer.",
+    "selfRelease": "Release assignment",
+    "selfReleaseSuccess": "You have been unassigned from this certificate.",
+    "submittedOn": "Submitted on",
+    "unassignedCertificatesTitle": "Available to claim",
+    "unassignedCertificatesMessage": "These certificates have no assigned reviewer yet."
   },
   "Organization": {
     "title": "Organization",

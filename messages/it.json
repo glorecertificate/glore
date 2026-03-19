@@ -1291,7 +1291,21 @@
     "publicJoinDescription": "Unisciti alla Rete GloRe, completa i corsi di volontariato e ottieni la certificazione ufficiale.",
     "publicJoinButton": "Unisciti a GloRe",
     "publicAccessApp": "Sei già membro? Accedi",
-    "publicOgDescription": "{name} è stato/a ufficialmente certificato/a per la sua attività di volontariato presso {org} da GloRe Certificate."
+    "publicOgDescription": "{name} è stato/a ufficialmente certificato/a per la sua attività di volontariato presso {org} da GloRe Certificate.",
+    "assignTutor": "Assegna tutor",
+    "assignTutorError": "Impossibile assegnare il tutor. Riprova.",
+    "assignTutorSuccess": "Tutor assegnato con successo",
+    "noTutorsAvailable": "Nessun tutor disponibile in questa organizzazione",
+    "reviewer": "Revisore",
+    "reviewerUnassigned": "Non assegnato",
+    "selfAssign": "Prendi in carico",
+    "selfAssignError": "Impossibile prendere in carico questo certificato. Riprova.",
+    "selfAssignSuccess": "Certificato preso in carico. Sei il revisore assegnato.",
+    "selfRelease": "Rilascia assegnazione",
+    "selfReleaseSuccess": "Sei stato rimosso da questo certificato.",
+    "submittedOn": "Inviato il",
+    "unassignedCertificatesTitle": "Disponibili da prendere in carico",
+    "unassignedCertificatesMessage": "Questi certificati non hanno ancora un revisore assegnato."
   },
   "Organization": {
     "title": "Organizzazione",

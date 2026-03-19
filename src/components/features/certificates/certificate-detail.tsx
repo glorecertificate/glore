@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
 
 import {
   CalendarIcon,
@@ -11,30 +12,43 @@ import {
   PartyPopperIcon,
   PencilIcon,
   TimerIcon,
+  UserCheckIcon,
   UserIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
+import { assignCertificateTutor } from '@/actions/certificate'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
 import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
 
-interface CertificateDetailProps {
-  certificate: Certificate
+interface OrgTutor {
+  id: string
+  firstName: string | null
+  lastName: string | null
 }
 
-export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
+interface CertificateDetailProps {
+  certificate: Certificate
+  tutors?: OrgTutor[]
+}
+
+export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProps) => {
   const t = useTranslations('Certificates')
+  const router = useRouter()
   const { locale, localize } = useI18n()
   const { user } = useSession()
   const [reviewOpen, setReviewOpen] = useState(false)
   const [resubmitOpen, setResubmitOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const start = dateFormatter.format(new Date(certificate.activityStartDate))
@@ -44,6 +58,32 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
   const canReview = isTutorReviewer && (certificate.isSubmitted || certificate.isInReview)
   const isOwner = certificate.userId === user.id
   const canResubmit = isOwner && certificate.isChangesRequested
+  const canAssignTutor = Array.isArray(tutors) && !certificate.isApproved
+  const canReleaseSelf = isTutorReviewer && !certificate.isApproved && !canAssignTutor
+
+  const handleAssignTutor = (value: string) => {
+    startTransition(async () => {
+      const { error } = await assignCertificateTutor(certificate.id, value || null)
+      if (error) {
+        toast.error(t('assignTutorError'))
+        return
+      }
+      toast.success(t('assignTutorSuccess'))
+      router.refresh()
+    })
+  }
+
+  const handleReleaseSelf = () => {
+    startTransition(async () => {
+      const { error } = await assignCertificateTutor(certificate.id, null)
+      if (error) {
+        toast.error(t('assignTutorError'))
+        return
+      }
+      toast.success(t('selfReleaseSuccess'))
+      router.refresh()
+    })
+  }
 
   return (
     <>
@@ -78,6 +118,41 @@ export const CertificateDetail = ({ certificate }: CertificateDetailProps) => {
               </Button>
             )}
           </div>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 rounded-lg border px-4 py-2.5">
+          <div className="flex items-center gap-2 text-sm">
+            <UserCheckIcon className="size-4 shrink-0 text-muted-foreground" />
+            <span className="text-muted-foreground">{t('reviewer')}:</span>
+            <span className="font-medium">
+              {certificate.reviewer
+                ? `${certificate.reviewer.firstName} ${certificate.reviewer.lastName}`
+                : t('reviewerUnassigned')}
+            </span>
+          </div>
+          {canAssignTutor &&
+            (tutors!.length === 0 ? (
+              <p className="text-xs text-muted-foreground">{t('noTutorsAvailable')}</p>
+            ) : (
+              <Select disabled={isPending} onValueChange={handleAssignTutor} value={certificate.reviewerId ?? ''}>
+                <SelectTrigger className="h-8 w-48">
+                  <SelectValue placeholder={t('reviewerUnassigned')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">{t('reviewerUnassigned')}</SelectItem>
+                  {tutors!.map(tutor => (
+                    <SelectItem key={tutor.id} value={tutor.id}>
+                      {tutor.firstName} {tutor.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ))}
+          {canReleaseSelf && (
+            <Button disabled={isPending} onClick={handleReleaseSelf} size="sm" variant="ghost">
+              {t('selfRelease')}
+            </Button>
+          )}
         </div>
 
         {certificate.isApproved && isOwner && (

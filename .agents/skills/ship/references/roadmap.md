@@ -33,9 +33,7 @@ _No P1 tasks remaining._
 
 ### P2: Medium (polish and UX)
 
-| Slug               | Feature                        | Notes                                                                                                                                                      |
-| ------------------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `course-analytics` | Course analytics and reporting | Medium. Dashboard stats exist but are basic. Add: completion rates per course, avg ratings, popular courses, learner progress overview for admins/editors. |
+_No P2 tasks remaining._
 
 ### P3: Low (improvements and DX)
 
@@ -53,6 +51,7 @@ _No P1 tasks remaining._
 
 | Slug                | Feature                                   | Completed  |
 | ------------------- | ----------------------------------------- | ---------- |
+| `course-analytics`  | Course analytics and reporting            | 2026-03-19 |
 | `notif-system`      | In-app notification system                | 2026-03-19 |
 | `search-ui`         | Search functionality in UI                | 2026-03-19 |
 | `cert-tutor-assign` | Manual tutor re-assignment                | 2026-03-19 |

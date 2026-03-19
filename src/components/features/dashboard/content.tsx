@@ -5,6 +5,8 @@ import { useMemo } from 'react'
 import { BookOpenIcon, GraduationCapIcon, LayersIcon, LibraryIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { CourseAnalytics } from '@/components/features/dashboard/analytics'
+import { PersonalProgress } from '@/components/features/dashboard/progress'
 import { useCourses } from '@/components/providers/courses-context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useI18n } from '@/hooks/use-i18n'
@@ -140,6 +142,8 @@ export const DashboardContent = () => {
           </div>
         </section>
       )}
+
+      {user.canEdit ? <CourseAnalytics /> : <PersonalProgress />}
     </div>
   )
 }

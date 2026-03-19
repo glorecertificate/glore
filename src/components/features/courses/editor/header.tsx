@@ -17,6 +17,7 @@ import {
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { CourseAnalyticsSheet } from '@/components/features/courses/editor/analytics'
 import { type CourseStatus, useCourse } from '@/components/features/courses/editor/context'
 import { CourseSettings } from '@/components/features/courses/editor/settings'
 import { Badge } from '@/components/ui/badge'
@@ -326,6 +327,7 @@ export const CourseHeader = () => {
                   </DialogDescription>
                 </DialogContent>
               </Dialog>
+              <CourseAnalyticsSheet />
             </div>
             <TabsList className="h-8 w-full sm:w-fit">
               {localeItems.map(({ label, icon, value }) => (

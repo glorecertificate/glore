@@ -5,7 +5,7 @@ import 'server-only'
 import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, asc, count, eq, inArray } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
@@ -27,6 +27,7 @@ import {
 } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
+import { type IntlRecord } from '@/lib/i18n'
 
 const courseWith = {
   skillGroup: { columns: { id: true, name: true } },
@@ -407,4 +408,71 @@ export const submitAssessmentRating = async (assessmentId: number, value: number
   const [result] = await db.insert(userAssessments).values({ userId: user.id, assessmentId, value }).returning()
 
   return { data: result }
+}
+
+export interface CourseAnalyticsStats {
+  enrollmentCount: number
+  completionCount: number
+  completionRate: number
+  avgRating: number | null
+  ratingDistribution: { value: number; count: number }[]
+  lessonStats: {
+    id: number
+    title: IntlRecord | null
+    completionCount: number
+    completionRate: number
+  }[]
+}
+
+export const getCourseAnalytics = async (courseId: number) => {
+  const authUser = await getAuthUser()
+  const isEditor = authUser?.role === 'admin' || authUser?.isEditor
+  if (!isEditor) return { error: { code: 'UNAUTHORIZED', message: 'Not authorized' } }
+
+  return await safeQuery(async () => {
+    const [enrollmentResult, lessonsData] = await Promise.all([
+      db.select({ total: count() }).from(userCourses).where(eq(userCourses.courseId, courseId)),
+      db.query.lessons.findMany({
+        where: eq(lessons.courseId, courseId),
+        with: {
+          userLessons: { columns: { id: true } },
+          assessments: { with: { userAssessments: { columns: { value: true } } } },
+        },
+        orderBy: asc(lessons.sortOrder),
+      }),
+    ])
+
+    const total = enrollmentResult[0]?.total ?? 0
+
+    const lessonStats = lessonsData.map(lesson => ({
+      id: lesson.id,
+      title: lesson.title as IntlRecord | null,
+      completionCount: lesson.userLessons.length,
+      completionRate: total > 0 ? Math.round((lesson.userLessons.length / total) * 100) : 0,
+    }))
+
+    const completionCount = lessonStats.length > 0 ? Math.min(...lessonStats.map(l => l.completionCount)) : 0
+    const completionRate = total > 0 ? Math.round((completionCount / total) * 100) : 0
+
+    const allRatings = lessonsData.flatMap(l => (l.assessments[0]?.userAssessments ?? []).map(ua => ua.value))
+
+    const avgRating =
+      allRatings.length > 0
+        ? Math.round((allRatings.reduce((sum, v) => sum + v, 0) / allRatings.length) * 10) / 10
+        : null
+
+    const ratingDistribution = [1, 2, 3, 4, 5].map(value => ({
+      value,
+      count: allRatings.filter(r => r === value).length,
+    }))
+
+    return {
+      enrollmentCount: total,
+      completionCount,
+      completionRate,
+      avgRating,
+      ratingDistribution,
+      lessonStats,
+    } satisfies CourseAnalyticsStats
+  })
 }

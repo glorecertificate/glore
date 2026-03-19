@@ -1,5 +1,92 @@
 # Changelog
 
+## [0.6.0](https://github.com/glorecertificate/glore/compare/v0.5.1...v0.6.0) (2026-03-19)
+
+### ⚠ BREAKING CHANGES
+
+- Migrate Supabase to Neon and Drizzle, Biome to Oxlint and Oxfmt
+
+### Features
+
+- Add about page content ([c53620a](https://github.com/glorecertificate/glore/commit/c53620a869fb19f1648ca5e8e392d4c30bf6a190))
+- Add account deletion ([c8e6584](https://github.com/glorecertificate/glore/commit/c8e6584a4c377c2b847ccb45727b2978c1054a5f))
+- Add certificate approval and PDF generation ([3df5069](https://github.com/glorecertificate/glore/commit/3df5069f36c5f97fab7e8490c30823dca1b557be))
+- Add certificate resubmission flow after changes requested ([97905fa](https://github.com/glorecertificate/glore/commit/97905fa852521bf5c6dead49fc1b997b2d2c079a))
+- Add certificate view and sharing ([7e5e2f5](https://github.com/glorecertificate/glore/commit/7e5e2f59796ca7e204bc294b00f4f4ddbaf67c78))
+- Add course analytics and reporting ([5341a04](https://github.com/glorecertificate/glore/commit/5341a04976aeb1e2c85a6987693c6f74c777ed1d))
+- Add course editor ([a929687](https://github.com/glorecertificate/glore/commit/a929687ef9a557a817d32cf660a77cf589b45202))
+- Add documentation CRUD and UI ([4937e87](https://github.com/glorecertificate/glore/commit/4937e87872ad94693d0829a65bb6366bcd704ae5))
+- Add editable fields and validation to certificate review ([be94f93](https://github.com/glorecertificate/glore/commit/be94f93475628dac0e8f59cd36df2d818d06963d))
+- Add global search command palette ([8801188](https://github.com/glorecertificate/glore/commit/880118890535b7317e63bfa213a6d9b0d46a413e))
+- Add help page content ([2f06268](https://github.com/glorecertificate/glore/commit/2f06268cc98e649d7a20daf441f752f36eb02946))
+- Add in-app notification system ([4234394](https://github.com/glorecertificate/glore/commit/423439480a1ba806d2bbc156c72c68abd55c3906))
+- Add manual tutor re-assignment for certificates ([927c4a7](https://github.com/glorecertificate/glore/commit/927c4a7b74eca54ac65bdd0de95059d58b2edd75))
+- Add new authentication skills and update password reset method ([a30bff0](https://github.com/glorecertificate/glore/commit/a30bff095bf9437731bd6714a2019730c8f7d45e))
+- Add organization panel ([44bb8d4](https://github.com/glorecertificate/glore/commit/44bb8d4f25762dbddbaa59f4b92346288b1c7127))
+- Add organization registration flow ([9ad9347](https://github.com/glorecertificate/glore/commit/9ad9347af2e2c83da66fa409f8836d0237a1c232))
+- Add organization registration flow and admin panel ([b82c686](https://github.com/glorecertificate/glore/commit/b82c686d8e4bc2d13257659ae2f633d99116ada5))
+- Add public certificate page ([2fe21e7](https://github.com/glorecertificate/glore/commit/2fe21e77eef977e48b5cce26c447bd9caee53335))
+- Add QR code to public certificate page ([5a98940](https://github.com/glorecertificate/glore/commit/5a98940b0cede3941038191adbe2be1bc6978172))
+- Add social sharing meta tags to public certificate page ([464b54f](https://github.com/glorecertificate/glore/commit/464b54ff856b94da861b73438a3560b1f130a655))
+- Add status filter and date sort to certificate list ([79423af](https://github.com/glorecertificate/glore/commit/79423af7a573c4f2a8d21f42bb51eacc40d0b92f))
+- Add team invitations ([1d06f0b](https://github.com/glorecertificate/glore/commit/1d06f0b25ee65f87a3cb339cda48e1b72877eb61))
+- Add universal light/dark logo to email templates ([dc010d0](https://github.com/glorecertificate/glore/commit/dc010d089506947e4de90dac9bea13ae89172e1e))
+- Add users panel to admin section ([513ee7e](https://github.com/glorecertificate/glore/commit/513ee7e3263739ffd2d22bf3b4d55b2a954742b2))
+- Improve auth flow ([4aa4469](https://github.com/glorecertificate/glore/commit/4aa44694396bc7aadc8ae7c4f4f94803fb4d17ac))
+- Remove progress bar ([ba632b2](https://github.com/glorecertificate/glore/commit/ba632b281c12ba81b1cdd26bc920d1169cb1b3f9))
+- Render breadcrumbs statically and improve course header ([463b25e](https://github.com/glorecertificate/glore/commit/463b25eea260f5dd83a7d92f917af65f14e941d8))
+
+### Bug Fixes
+
+- Enforce single org admin (owner) pattern ([a2f538c](https://github.com/glorecertificate/glore/commit/a2f538c2a2310c99944831b4d2fb43cbb8f193da))
+- Fix auth email hook ([4efef5d](https://github.com/glorecertificate/glore/commit/4efef5d43776cb43ce1a579621de60283c0ab02d))
+
+### Chore
+
+- Add `ai` commit type ([cc81655](https://github.com/glorecertificate/glore/commit/cc8165535cf0f922afb6f7e3574cd005ba1d9f69))
+- Add default cookie options ([29d3e8f](https://github.com/glorecertificate/glore/commit/29d3e8f52a9fa7e97b87836fe3bf8f94d87d0b74))
+- Enable oxlint auto-fix on save ([4f4c7c8](https://github.com/glorecertificate/glore/commit/4f4c7c8452788bffef957d63ea8440049c526ba5))
+- Fix Outlook title in email actions footer ([fa33a23](https://github.com/glorecertificate/glore/commit/fa33a230798a561d386c745ef1e117f465c06b73))
+- Migrate AI provider from OpenAI to Google Gemini ([17d6210](https://github.com/glorecertificate/glore/commit/17d62101af675e60b91c7e88ac763c7235e1077c))
+- Migrate storage from Vercel Blob to Cloudflare R2 ([a17117c](https://github.com/glorecertificate/glore/commit/a17117c3ff8e1165341586628167bf8e4aeb5f80))
+- Migrate Supabase to Neon and Drizzle, Biome to Oxlint and Oxfmt ([be16baa](https://github.com/glorecertificate/glore/commit/be16baad687183eae1ffeafcb5ea7f536bf31773))
+- Update commit scopes and release types ([7edef54](https://github.com/glorecertificate/glore/commit/7edef548fbee20aed3b5b4768c0ec6f9cd2528f0))
+
+### Performance
+
+- Enable React Compiler and add Suspense boundaries ([6b9f305](https://github.com/glorecertificate/glore/commit/6b9f3057a8ed53550e616f8cf98b8281d8276000))
+- Improve rendering performance by restructuring providers and data handling components ([4c56c7b](https://github.com/glorecertificate/glore/commit/4c56c7b9ed70dee4ff6bbcc68f3db96a31fdd094))
+- Optimize bundle size and speed up Vercel builds ([4949a52](https://github.com/glorecertificate/glore/commit/4949a5244b4b7a721bf06c8eb19bbb20b86982fb))
+- Optimize client bundle size ([9acc2d9](https://github.com/glorecertificate/glore/commit/9acc2d9bbfaa784cb4728d74db16c1323f41d94f))
+- Remove tag revalidation from server action mutations ([fa725cb](https://github.com/glorecertificate/glore/commit/fa725cb9310c511913ad79b327cb217ba36b7afa))
+- Speed up Vercel builds with webpack worker and output tracing ([b48d643](https://github.com/glorecertificate/glore/commit/b48d64308d571f560bbf3b29c998cda8f692cb51))
+
+### Build
+
+- Add environment variables validation ([b31a573](https://github.com/glorecertificate/glore/commit/b31a57374e9a741738afff329d18ce4a46c1bdda))
+
+### CI
+
+- Add CI workflow for code quality checks ([a11dca0](https://github.com/glorecertificate/glore/commit/a11dca09a7baf006dfa26c6f1bbcaf08df1cc086))
+- Add Knip to detect unused files, exports, and dependencies ([cfab190](https://github.com/glorecertificate/glore/commit/cfab19023a95c2ea0547aab1576e7865adf37c36))
+- Add preview deployment to `deployment` workflow ([d423b87](https://github.com/glorecertificate/glore/commit/d423b8706d5b1eae86d0232f49769f3b0bac6e67))
+- **dev:** Replace lefthook with husky ([b78e0ec](https://github.com/glorecertificate/glore/commit/b78e0ec3cb9c111971263e20e15e35a9fed76f57))
+- Run oxlint and knip on push only ([7a097be](https://github.com/glorecertificate/glore/commit/7a097bedc6d7bc8effeda4ed74199b4467554a27))
+
+### Docs
+
+- Add issue and pull request templates ([70bf164](https://github.com/glorecertificate/glore/commit/70bf16467e22c6d5b7ff189148e3084d8a402aaf))
+- Update AGENTS file ([23ee76b](https://github.com/glorecertificate/glore/commit/23ee76bda1294d2afb7a774b985292f448b5ffcd))
+
+### Other
+
+- Add `commit` and `ship` skills ([2740dfe](https://github.com/glorecertificate/glore/commit/2740dfea660cf06069a0cc25cdd1dfb368d5d1d3))
+- Add email best practices skills ([0869aad](https://github.com/glorecertificate/glore/commit/0869aadbb990fadd73d6784f59758e9d88d2d809))
+- Add project roadmap, spec, and certificate template ([613c4b4](https://github.com/glorecertificate/glore/commit/613c4b4e05eca5cd344a44398313ec82c259563b))
+- Clean up global styles and button variants ([4ba4180](https://github.com/glorecertificate/glore/commit/4ba4180133b44d3e3d105c875199dd415015dbea))
+- Review release-it configuration and reorganize utilities and types ([a8a1ba5](https://github.com/glorecertificate/glore/commit/a8a1ba51b6b2a51fca6e8102167ca5fdc6f8b92d))
+- Update `ship` skill and add spec and roadmap templates ([4a60a3b](https://github.com/glorecertificate/glore/commit/4a60a3b7ca46cb0850836bec8a4de2486793d641))
+
 ## [0.5.1](https://github.com/glorecertificate/glore/compare/v0.5.0...v0.5.1) (2026-01-18)
 
 ### Features ✨

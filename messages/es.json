@@ -44,6 +44,14 @@
     "item": "Artículo",
     "comingSoonPage": "Esta página está actualmente en construcción, ¡vuelve pronto para recibir actualizaciones! \n🏗️"
   },
+  "Search": {
+    "certificates": "Certificados",
+    "courses": "Cursos",
+    "members": "Miembros",
+    "noResults": "No se encontraron resultados.",
+    "placeholder": "Buscar cursos, certificados y miembros...",
+    "trigger": "Buscar"
+  },
   "Intl": {
     "Countries": {
       "ad": "Andorra",

@@ -18,6 +18,7 @@ import {
   PaletteIcon,
   PencilIcon,
   PlusIcon,
+  SearchIcon,
   SettingsIcon,
   ShieldUserIcon,
 } from 'lucide-react'
@@ -25,6 +26,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
+import { SearchCommand } from '@/components/features/search/command'
 import { DashboardIcon } from '@/components/icons/dashboard'
 import {
   AlertDialog,
@@ -498,6 +500,41 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
   )
 }
 
+const AppSidebarSearch = () => {
+  const t = useTranslations('Search')
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setOpen(prev => !prev)
+      }
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [])
+
+  return (
+    <>
+      <SidebarGroup>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip={t('trigger')} onClick={() => setOpen(true)}>
+              <SearchIcon />
+              <span className="flex flex-1 items-center justify-between">
+                {t('trigger')}
+                <kbd className="font-mono text-[10px] text-muted-foreground/70">⌘K</kbd>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+      <SearchCommand open={open} onOpenChange={setOpen} />
+    </>
+  )
+}
+
 export const AppSidebar = () => {
   const { organization } = useSession()
 
@@ -505,6 +542,7 @@ export const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarHeader>{organization && <AppSidebarOrgs organization={organization} />}</SidebarHeader>
       <SidebarContent>
+        <AppSidebarSearch />
         <AppSidebarMain />
       </SidebarContent>
       <SidebarFooter>

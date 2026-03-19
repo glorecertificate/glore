@@ -35,7 +35,6 @@ _No P1 tasks remaining._
 
 | Slug               | Feature                        | Notes                                                                                                                                                                  |
 | ------------------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `search-ui`        | Search functionality in UI     | Medium. `fuse.js` is installed but not exposed in UI. Add search bar to sidebar or header for courses, certificates, members. Wire up fuzzy search.                    |
 | `notif-system`     | In-app notification system     | Medium. Currently email only. Consider adding a notifications dropdown/panel with unread count. Would need a `notifications` table and real-time or polling mechanism. |
 | `course-analytics` | Course analytics and reporting | Medium. Dashboard stats exist but are basic. Add: completion rates per course, avg ratings, popular courses, learner progress overview for admins/editors.             |
 
@@ -55,6 +54,7 @@ _No P1 tasks remaining._
 
 | Slug                | Feature                                   | Completed  |
 | ------------------- | ----------------------------------------- | ---------- |
+| `search-ui`         | Search functionality in UI                | 2026-03-19 |
 | `cert-tutor-assign` | Manual tutor re-assignment                | 2026-03-19 |
 | `render-opt`        | Rendering and interaction optimizations   | 2026-03-19 |
 | `help-page`         | Help page content                         | 2026-03-19 |

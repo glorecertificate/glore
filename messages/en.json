@@ -44,6 +44,14 @@
     "verified": "Verified",
     "comingSoonPage": "This page is currently under construction, come back soon for updates! 🏗️"
   },
+  "Search": {
+    "certificates": "Certificates",
+    "courses": "Courses",
+    "members": "Members",
+    "noResults": "No results found.",
+    "placeholder": "Search courses, certificates and members...",
+    "trigger": "Search"
+  },
   "Intl": {
     "Countries": {
       "ad": "Andorra",

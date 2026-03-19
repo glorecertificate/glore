@@ -233,6 +233,7 @@ src/
 │   ├── certificate.ts  # Certificate queries
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── course.ts       # Course + lesson CRUD, cached queries
+│   ├── doc.ts          # Doc category + article CRUD, cached queries
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── organization.ts # Org overview, members, join requests, settings
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
@@ -250,6 +251,7 @@ src/
 ├── components/
 │   ├── blocks/         # Complex composed blocks (rich-text-editor)
 │   ├── features/       # Domain components grouped by feature
+│   │   ├── docs/          # Docs article cards, sheets, editor dialog, category manager
 │   │   └── organization/  # Org panel header, tabs, and management sections
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper
 │   ├── layout/         # Shell components (sidebar, page header, fallbacks)
@@ -469,7 +471,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 | Tag                | Used by                                   |
 | ------------------ | ----------------------------------------- |
-| `admin-users`      | `fetchAdminUsers`                         |
+| `doc-categories`   | `fetchDocCategories`                      |
 | `auth-user`        | `fetchAuthUser`                           |
 | `auth-user-status` | `logout`                                  |
 | `certificates`     | `fetchCertificates`                       |

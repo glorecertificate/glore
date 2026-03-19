@@ -37,12 +37,11 @@ _No P2 tasks remaining._
 
 ### P3: Low (improvements and DX)
 
-| Slug            | Feature                            | Notes                                                                                                                                      |
-| --------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `oxlint-saves`  | Oxlint auto-fix on save in VS Code | Low. Enable import sort + unused vars auto-fix via `editor.codeActionsOnSave`.                                                             |
-| `course-search` | Course filtering and search        | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.                                           |
-| `account-tab`   | Enhanced account settings          | Low. Verify account tab completeness: email change, password change, account deletion. Ensure all actions have proper email notifications. |
-| `pwa-enhance`   | PWA enhancements                   | Low. Push notifications, offline course reading, install prompt improvements.                                                              |
+| Slug            | Feature                     | Notes                                                                                                                                      |
+| --------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `course-search` | Course filtering and search | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.                                           |
+| `account-tab`   | Enhanced account settings   | Low. Verify account tab completeness: email change, password change, account deletion. Ensure all actions have proper email notifications. |
+| `pwa-enhance`   | PWA enhancements            | Low. Push notifications, offline course reading, install prompt improvements.                                                              |
 
 ---
 
@@ -50,6 +49,7 @@ _No P2 tasks remaining._
 
 | Slug                | Feature                                   | Completed  |
 | ------------------- | ----------------------------------------- | ---------- |
+| `oxlint-saves`      | Oxlint auto-fix on save in VS Code        | 2026-03-19 |
 | `ai-gemini`         | Migrate from OpenAI to Google Gemini      | 2026-03-19 |
 | `course-analytics`  | Course analytics and reporting            | 2026-03-19 |
 | `notif-system`      | In-app notification system                | 2026-03-19 |

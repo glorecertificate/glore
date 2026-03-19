@@ -1546,7 +1546,18 @@
     "selectDate": "Seleziona data",
     "reset": "Ripristina",
     "avatarUploadError": "Impossibile caricare l'avatar, riprova",
-    "avatarUploaded": "Avatar aggiornato con successo"
+    "avatarUploaded": "Avatar aggiornato con successo",
+    "dangerZone": "Zona pericolosa",
+    "dangerZoneDescription": "Una volta eliminato il tuo account, non si può tornare indietro. Assicurati di essere sicuro.",
+    "deleteAccount": "Elimina account",
+    "deleteAccountTitle": "Elimina il tuo account",
+    "deleteAccountDescription": "Rimuovi definitivamente il tuo account e tutti i dati associati dalla piattaforma.",
+    "deleteAccountConfirmTitle": "Eliminare il tuo account?",
+    "deleteAccountConfirmDescription": "Questo eliminerà definitivamente il tuo account, profilo e tutti i dati di progresso. Questa azione non può essere annullata.",
+    "deleteAccountBlockedAdmin": "Non puoi eliminare il tuo account mentre sei l'unico amministratore di un'organizzazione. Trasferisci la proprietà o elimina prima l'organizzazione.",
+    "deleteAccountBlockedCerts": "Non puoi eliminare il tuo account mentre hai dei certificati. Contatta l'amministratore della tua organizzazione.",
+    "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
+    "deleting": "Eliminazione in corso..."
   },
   "Register": {
     "alreadyHaveAccount": "Hai già un account?",

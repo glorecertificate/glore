@@ -17,7 +17,9 @@
 
 ## Active
 
-_No active tasks._
+| Slug          | Feature                   | Agent                                 |
+| ------------- | ------------------------- | ------------------------------------- |
+| `account-tab` | Enhanced account settings | agent:m9p3jw started:2026-03-19T22:24 |
 
 ---
 
@@ -37,11 +39,10 @@ _No P2 tasks remaining._
 
 ### P3: Low (improvements and DX)
 
-| Slug            | Feature                     | Notes                                                                                                                                      |
-| --------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `course-search` | Course filtering and search | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.                                           |
-| `account-tab`   | Enhanced account settings   | Low. Verify account tab completeness: email change, password change, account deletion. Ensure all actions have proper email notifications. |
-| `pwa-enhance`   | PWA enhancements            | Low. Push notifications, offline course reading, install prompt improvements.                                                              |
+| Slug            | Feature                     | Notes                                                                                            |
+| --------------- | --------------------------- | ------------------------------------------------------------------------------------------------ |
+| `course-search` | Course filtering and search | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state. |
+| `pwa-enhance`   | PWA enhancements            | Low. Push notifications, offline course reading, install prompt improvements.                    |
 
 ---
 

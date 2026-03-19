@@ -38,7 +38,7 @@ pnpm skills
 # Start the dev server on http://localhost:3030
 pnpm dev
 
-# Start the mail server on http://localhost:3031
+# Start the email preview server on http://localhost:3031
 pnpm email
 ```
 
@@ -46,9 +46,9 @@ pnpm email
 
 The app is hosted on [Vercel](https://vercel.com).
 
-Preview deployments are created automatically on every push to main via the [CI] action, preoduction deployments are triggered on release with the [Release] action.
+Preview deployments are created automatically on every push to main with the [CI](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) pipeline. Production deployments are triggered by the [Release](https://github.com/glorecertificate/glore/actions/workflows/release.yml) workflow, running on every new release.
 
-Manual deployments can be triggerred with the following commands:
+The application can be deployed manually with the following commands:
 
 ```sh
 pnpm run deploy       # deploy a preview
@@ -60,11 +60,11 @@ pnpm run release      # interactive release + triggers production deploy
 
 ### Issues
 
-Issues are used for bug reports, feature requests, and maintenance tasks. If you want to contribute, you can [open an issue](https://github.com/glorecertificate/glore/issues/new/choose) using one of the templates and describe the problem or the feature you want to implement.
+Issues are used for bug reports, feature requests, and maintenance tasks. If you want to contribute, please [open an issue](https://github.com/glorecertificate/glore/issues/new/choose) using one of the templates and describe the problem or feature you want to implement.
 
 ### Pull Requests
 
-All commits must follow the [Conventional Commits](https://www.conventionalcommits.org) format enforced by commitlint and Husky on commit and push:
+All commits must follow the [Conventional Commits](https://conventionalcommits.org) format, which is enforced by commitlint and Husky on commit and push:
 
 ```
 <type>(<scope>): Sentence case subject
@@ -78,9 +78,9 @@ To open a pull request:
 
 ## AI and agents
 
-All coding conventions and architecture details are in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting.
+All coding conventions and architecture details are in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.
 
-The project uses MCP servers (configured in [`.mcp.json`](.mcp.json)) and agent skills to provide specific knowledge for database, auth, UI, and email.
+The project uses the MCP servers configured in [`.mcp.json`](.mcp.json) and different agent skills to provide specific knowledge for database and auth, UI, emails, and more. Use the `pnpm skills` command to install the skills locally and run them with Claude or any other compatible agent.
 
 ## License
 

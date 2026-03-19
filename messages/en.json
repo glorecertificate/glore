@@ -1546,7 +1546,18 @@
     "selectDate": "Select date",
     "reset": "Reset",
     "avatarUploadError": "Failed to upload avatar, please try again",
-    "avatarUploaded": "Avatar updated successfully"
+    "avatarUploaded": "Avatar updated successfully",
+    "dangerZone": "Danger zone",
+    "dangerZoneDescription": "Once you delete your account, there is no going back. Please be certain.",
+    "deleteAccount": "Delete account",
+    "deleteAccountTitle": "Delete your account",
+    "deleteAccountDescription": "Permanently remove your account and all associated data from the platform.",
+    "deleteAccountConfirmTitle": "Delete your account?",
+    "deleteAccountConfirmDescription": "This will permanently delete your account, profile, and all progress data. This action cannot be undone.",
+    "deleteAccountBlockedAdmin": "You cannot delete your account while you are the sole administrator of an organization. Transfer ownership or delete the organization first.",
+    "deleteAccountBlockedCerts": "You cannot delete your account while you have certificates. Contact your organization administrator.",
+    "deleteAccountError": "Failed to delete account. Please try again.",
+    "deleting": "Deleting..."
   },
   "Register": {
     "alreadyHaveAccount": "Already have an account?",

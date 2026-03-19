@@ -6,14 +6,25 @@ import { cacheTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-import { eq, or } from 'drizzle-orm'
+import { and, eq, ne, or } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseUser, userWith } from '@/db/queries/user'
-import { users } from '@/db/schema'
+import {
+  certificates,
+  contributions,
+  memberships,
+  organizationJoinRequests,
+  userAnswers,
+  userAssessments,
+  userCourses,
+  userEvaluations,
+  userLessons,
+  users,
+} from '@/db/schema'
 import { type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -110,4 +121,48 @@ export const getActiveOrgId = async () => {
   const stored = await getCookie('org')
   const match = user.organizations.find(({ id }) => id === stored)
   return (match ?? user.organizations[0])?.id ?? null
+}
+
+export const deleteAccount = async () => {
+  const user = await getCurrentUser()
+
+  const adminMemberships = await db
+    .select({ organizationId: memberships.organizationId })
+    .from(memberships)
+    .where(and(eq(memberships.userId, user.id), eq(memberships.role, 'admin')))
+
+  for (const m of adminMemberships) {
+    const otherAdmin = await db.query.memberships.findFirst({
+      where: and(
+        eq(memberships.organizationId, m.organizationId),
+        eq(memberships.role, 'admin'),
+        ne(memberships.userId, user.id)
+      ),
+    })
+    if (!otherAdmin) throw new Error('SOLE_ORG_ADMIN')
+  }
+
+  const cert = await db.query.certificates.findFirst({
+    where: eq(certificates.userId, user.id),
+    columns: { id: true },
+  })
+  if (cert) throw new Error('HAS_CERTIFICATES')
+
+  await db.delete(userAssessments).where(eq(userAssessments.userId, user.id))
+  await db.delete(userEvaluations).where(eq(userEvaluations.userId, user.id))
+  await db.delete(userAnswers).where(eq(userAnswers.userId, user.id))
+  await db.delete(userLessons).where(eq(userLessons.userId, user.id))
+  await db.delete(userCourses).where(eq(userCourses.userId, user.id))
+  await db.delete(contributions).where(eq(contributions.userId, user.id))
+
+  await db
+    .update(organizationJoinRequests)
+    .set({ reviewedBy: null })
+    .where(eq(organizationJoinRequests.reviewedBy, user.id))
+
+  await db.update(certificates).set({ reviewerId: null }).where(eq(certificates.reviewerId, user.id))
+
+  await db.delete(users).where(eq(users.id, user.id))
+
+  redirect(AUTH_ROOT)
 }

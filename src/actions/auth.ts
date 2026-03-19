@@ -10,6 +10,7 @@ import { cache } from 'react'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { APP_ROOT } from '@/lib/constants'
+import { sendMail } from '@/lib/email'
 
 const fetchAuthUser = cache(async () => {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -115,6 +116,11 @@ export const changePassword = async (currentPassword: string, newPassword: strin
   } catch (e) {
     return { error: { code: 'AUTH_ERROR', message: e instanceof Error ? e.message : 'Invalid current password' } }
   }
+
+  await sendMail({
+    to: session.user.email,
+    template: { name: 'account/password-changed', props: { userName: session.user.name || undefined } },
+  })
 
   return { data: session.user }
 }

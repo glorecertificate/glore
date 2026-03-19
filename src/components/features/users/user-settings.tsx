@@ -10,9 +10,20 @@ import { z } from 'zod'
 
 import { changePassword } from '@/actions/auth'
 import { removeAvatar, uploadAvatar } from '@/actions/storage'
-import { updateUser } from '@/actions/user'
+import { deleteAccount, updateUser } from '@/actions/user'
 import { useUserSettingsTab } from '@/components/features/users/user-settings-tabs'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -607,6 +618,24 @@ const AccountForm = () => {
     [passwordForm, t]
   )
 
+  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
+
+  const handleDeleteAccount = useCallback(async () => {
+    try {
+      await deleteAccount()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ''
+      if (message === 'SOLE_ORG_ADMIN') {
+        toast.error(t('deleteAccountBlockedAdmin'))
+      } else if (message === 'HAS_CERTIFICATES') {
+        toast.error(t('deleteAccountBlockedCerts'))
+      } else {
+        toast.error(t('deleteAccountError'))
+      }
+      setDeleteAccountOpen(false)
+    }
+  }, [t])
+
   return (
     <div className="space-y-0">
       <Form {...accountForm}>
@@ -760,6 +789,72 @@ const AccountForm = () => {
           </div>
         </form>
       </Form>
+
+      <Separator className="my-10" />
+
+      <SettingsSection description={t('dangerZoneDescription')} title={t('dangerZone')}>
+        <Card className="border-destructive/20 bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="text-base text-destructive">{t('deleteAccountTitle')}</CardTitle>
+            <CardDescription>{t('deleteAccountDescription')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setDeleteAccountOpen(true)} type="button" variant="destructive">
+              {t('deleteAccount')}
+            </Button>
+          </CardContent>
+        </Card>
+      </SettingsSection>
+
+      <AccountDeleteDialog
+        onConfirm={handleDeleteAccount}
+        onOpenChange={setDeleteAccountOpen}
+        open={deleteAccountOpen}
+      />
     </div>
+  )
+}
+
+const AccountDeleteDialog = ({
+  onConfirm,
+  onOpenChange,
+  open,
+}: {
+  onConfirm: () => Promise<void>
+  onOpenChange: (open: boolean) => void
+  open: boolean
+}) => {
+  const t = useTranslations('Users')
+  const [deleting, setDeleting] = useState(false)
+
+  const handleConfirm = useCallback(async () => {
+    try {
+      setDeleting(true)
+      await onConfirm()
+    } finally {
+      setDeleting(false)
+    }
+  }, [onConfirm])
+
+  return (
+    <AlertDialog onOpenChange={onOpenChange} open={open}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{t('deleteAccountConfirmTitle')}</AlertDialogTitle>
+          <AlertDialogDescription>{t('deleteAccountConfirmDescription')}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={deleting}>{t('cancel')}</AlertDialogCancel>
+          <AlertDialogAction
+            loading={deleting}
+            loadingText={t('deleting')}
+            onClick={handleConfirm}
+            variant="destructive"
+          >
+            {t('deleteAccount')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

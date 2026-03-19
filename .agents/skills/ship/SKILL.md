@@ -117,17 +117,28 @@ When a task is marked done (`[x]`), remove the `agent:` and `started:` annotatio
 
 ## Step 3: Act on user input
 
-When `/ship` is invoked **with no additional input**, treat it as if `start` was specified: resume the active task or pick the next backlog item and proceed to **Step 4** immediately. Do not pause to ask what to do next.
-
-Act immediately after presenting the roadmap (do not ask again):
+When `/ship` is invoked **with no additional input**, stop after presenting the roadmap (Step 2). Tell the user to reply `start` or `continue` to begin the first backlog item or resume the first pending task. Do not act yet.
 
 #### `start` or `continue`
 
-Apply the **concurrent task handling** algorithm (see above) to determine which task to work on:
+Present a brief recap of the roadmap (active tasks and the first few backlog items), then apply the **concurrent task handling** algorithm (see above) to determine which task to work on:
 
 - If there is a stale `[~]` task: claim it, determine what was already done via `git status` and recent commits, and resume from that point.
 - If all active tasks are claimed and a non-conflicting backlog task exists: move it to Active, stamp it, then proceed to **Step 4**.
-- If the backlog is empty and no stale task exists: ask the user to input a new task or another action. If a task is provided, add it to the backlog and start it using the same algorithm.
+- If the backlog is empty and no stale task exists: tell the user the backlog is empty and ask them to add a task with `/ship add <description>`.
+
+Proceed to Step 4 **without asking for confirmation**.
+
+#### `add <description>`
+
+Add a new task to the backlog:
+
+1. Parse the description and assign a slug following the slug enforcement rules.
+2. Append the task to the Backlog in `references/roadmap.md`.
+3. Present a brief recap of the updated roadmap.
+4. Tell the user to reply `start` to start the task just added.
+
+When the user provides **multiple items** to add in the same message, add all of them to the backlog, sort it, then present a brief recap and tell the user to reply `start` to start the first item in the backlog.
 
 #### `review` or `review roadmap`
 
@@ -203,7 +214,7 @@ Present the plan:
 >
 > **Reply "start" or tell me what to change.**
 
-Wait for confirmation before writing code.
+Wait for confirmation before writing code. **Exception:** if the workflow was initiated via `start` or `continue`, skip this pause and proceed directly to Step 5 without waiting.
 
 ---
 

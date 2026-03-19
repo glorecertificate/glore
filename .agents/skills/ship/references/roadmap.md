@@ -17,9 +17,7 @@
 
 ## Active
 
-| Slug          | Feature                        | Agent                                 |
-| ------------- | ------------------------------ | ------------------------------------- |
-| `build-speed` | Fix slow Vercel builds (3min+) | agent:k4p8nz started:2026-03-19T03:21 |
+_No active tasks._
 
 ---
 
@@ -37,7 +35,6 @@ _No P1 tasks remaining._
 
 | Slug                | Feature                                 | Notes                                                                                                                                                                       |
 | ------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `about-page`        | About page content                      | Medium. `/about` is a stub. Add proper content: project description, team info, partner organizations, contact.                                                             |
 | `help-page`         | Help page content                       | Medium. `/help` is a stub. Add help content: getting started guide, FAQ links, support contact.                                                                             |
 | `render-opt`        | Rendering and interaction optimizations | Medium. React Compiler, Suspense boundaries, RSC audit, reduce client re-renders.                                                                                           |
 | `cert-tutor-assign` | Manual tutor re-assignment              | Medium. Allow admin/rep to change assigned tutor from certificate detail. Allow tutor to self-assign to unreviewed certs (UI for browsing unassigned). Update actions + UI. |
@@ -61,6 +58,7 @@ _No P1 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `about-page`     | About page content                        | 2026-03-19 |
 | `build-speed`    | Fix slow Vercel builds                    | 2026-03-19 |
 | `bundle-opt`     | Bundle size optimization                  | 2026-03-19 |
 | `cert-filter`    | Certificate list filtering                | 2026-03-18 |

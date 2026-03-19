@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { createOpenAI } from '@ai-sdk/openai'
+import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { type TextStreamPart, type ToolSet, convertToModelMessages, streamText } from 'ai'
@@ -98,13 +98,13 @@ const smoothStream = <TOOLS extends ToolSet>({
 export const POST = async (request: NextRequest) => {
   const { apiKey, messages, system } = await request.json()
 
-  const key = apiKey ?? process.env.OPENAI_API_KEY
+  const key = apiKey ?? process.env.GEMINI_API_KEY
 
   if (!key) {
-    return NextResponse.json({ error: 'Missing OpenAI API key.' }, { status: 401 })
+    return NextResponse.json({ error: 'Missing Gemini API key.' }, { status: 401 })
   }
 
-  const openai = createOpenAI({ apiKey: key })
+  const gemini = createGoogleGenerativeAI({ apiKey: key })
 
   let isInCodeBlock = false
   let isInTable = false
@@ -156,7 +156,7 @@ export const POST = async (request: NextRequest) => {
       }),
       maxOutputTokens: 2048,
       messages: await convertToModelMessages(messages),
-      model: openai(process.env.OPENAI_MODEL ?? 'gpt-5'),
+      model: gemini(process.env.GEMINI_MODEL ?? 'gemini-2.0-flash'),
       system,
     })
 

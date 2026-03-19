@@ -37,13 +37,12 @@ _No P2 tasks remaining._
 
 ### P3: Low (improvements and DX)
 
-| Slug            | Feature                              | Notes                                                                                                                                      |
-| --------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ai-gemini`     | Migrate from OpenAI to Google Gemini | Low. Free tier via `@ai-sdk/google`. Replace command + copilot routes. Consider as fallback or full replacement.                           |
-| `oxlint-saves`  | Oxlint auto-fix on save in VS Code   | Low. Enable import sort + unused vars auto-fix via `editor.codeActionsOnSave`.                                                             |
-| `course-search` | Course filtering and search          | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.                                           |
-| `account-tab`   | Enhanced account settings            | Low. Verify account tab completeness: email change, password change, account deletion. Ensure all actions have proper email notifications. |
-| `pwa-enhance`   | PWA enhancements                     | Low. Push notifications, offline course reading, install prompt improvements.                                                              |
+| Slug            | Feature                            | Notes                                                                                                                                      |
+| --------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `oxlint-saves`  | Oxlint auto-fix on save in VS Code | Low. Enable import sort + unused vars auto-fix via `editor.codeActionsOnSave`.                                                             |
+| `course-search` | Course filtering and search        | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.                                           |
+| `account-tab`   | Enhanced account settings          | Low. Verify account tab completeness: email change, password change, account deletion. Ensure all actions have proper email notifications. |
+| `pwa-enhance`   | PWA enhancements                   | Low. Push notifications, offline course reading, install prompt improvements.                                                              |
 
 ---
 
@@ -51,6 +50,7 @@ _No P2 tasks remaining._
 
 | Slug                | Feature                                   | Completed  |
 | ------------------- | ----------------------------------------- | ---------- |
+| `ai-gemini`         | Migrate from OpenAI to Google Gemini      | 2026-03-19 |
 | `course-analytics`  | Course analytics and reporting            | 2026-03-19 |
 | `notif-system`      | In-app notification system                | 2026-03-19 |
 | `search-ui`         | Search functionality in UI                | 2026-03-19 |
@@ -96,6 +96,7 @@ org-admin-sole ──┘
 
 | Date       | Decision                                                                                              | Rationale                                                                                                                                                                                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-19 | ai-gemini: Replaced @ai-sdk/openai with @ai-sdk/google (full replacement, not fallback)               | Free tier via Google AI Studio. Removed @ai-sdk/openai, installed @ai-sdk/google 3.0.43. Renamed OPENAI_API_KEY/OPENAI_MODEL to GEMINI_API_KEY/GEMINI_MODEL. Default model: gemini-2.0-flash. Both command and copilot routes updated.                                                                                 |
 | 2026-03-19 | render-opt: Enabled React Compiler via top-level reactCompiler config + babel-plugin-react-compiler   | React Compiler is a top-level NextConfig field (not experimental) in Next.js 16. Installed babel-plugin-react-compiler 1.0.0, enabled reactCompiler: true. Auto-memoizes all components at compile time.                                                                                                               |
 | 2026-03-19 | render-opt: Added Suspense boundaries to certificates/page, certificates/[id]/page, organization/page | Extracted inner async data-fetching component + outer sync page with Suspense. Page header renders immediately while data loads. Matches the pattern already used in admin pages.                                                                                                                                      |
 | 2026-03-19 | render-opt: Hoisted static Suspense fallback JSX to module level in dashboard layout                  | Follows rendering-hoist-jsx rule. Prevents re-creating fallback JSX element on every render of the async layout component.                                                                                                                                                                                             |

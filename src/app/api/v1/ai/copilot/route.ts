@@ -1,25 +1,25 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { createOpenAI } from '@ai-sdk/openai'
+import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateText } from 'ai'
 
 export const POST = async (request: NextRequest) => {
-  const { apiKey: key, model = process.env.OPENAI_MODEL, prompt, system } = await request.json()
+  const { apiKey: key, model = process.env.GEMINI_MODEL, prompt, system } = await request.json()
 
-  const apiKey = key ?? process.env.OPENAI_API_KEY
+  const apiKey = key ?? process.env.GEMINI_API_KEY
 
   if (!apiKey) {
-    return NextResponse.json({ error: 'Missing OpenAI API key' }, { status: 401 })
+    return NextResponse.json({ error: 'Missing Gemini API key' }, { status: 401 })
   }
 
-  const openai = createOpenAI({ apiKey })
+  const gemini = createGoogleGenerativeAI({ apiKey })
 
   try {
     return NextResponse.json(
       await generateText({
         abortSignal: request.signal,
         maxOutputTokens: 50,
-        model: openai(model ?? 'gpt-5'),
+        model: gemini(model ?? 'gemini-2.0-flash'),
         prompt,
         system,
         temperature: 0.7,

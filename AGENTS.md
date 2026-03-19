@@ -105,7 +105,7 @@ Do not block on the suggestion — if the user continues without switching, proc
 | Forms            | react-hook-form + zod                                 | ^7.71.1 / ^4.3.6   |
 | State            | nuqs (URL state)                                      | ^2.8.8             |
 | Email            | Nodemailer (SMTP)                                     | ^8.0.2             |
-| AI               | Vercel AI SDK + OpenAI                                | ^6.0.116 / ^3.0.41 |
+| AI               | Vercel AI SDK + Google Gemini (`@ai-sdk/google`)      | ^6.0.116 / ^3.0.43 |
 | Animation        | motion                                                | ^12.38.0           |
 | DnD              | @dnd-kit                                              | ^6.3.1             |
 | Icons            | lucide-react                                          | ^0.577.0           |
@@ -866,8 +866,8 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 | `R2_PUBLIC_URL`        | R2 public base URL (custom domain or r2.dev URL) | Server | Yes         |
 | `COOKIE_PREFIX`        | App cookie prefix (default: `gl_`)               | Server | Yes         |
 | `DATABASE_URL`         | Neon Postgres connection string                  | Server | Yes         |
-| `OPENAI_API_KEY`       | OpenAI API key                                   | Server | Yes         |
-| `OPENAI_MODEL`         | OpenAI model name (e.g., `gpt-4o`)               | Server | Yes         |
+| `GEMINI_API_KEY`       | Google Gemini API key                            | Server | Yes         |
+| `GEMINI_MODEL`         | Gemini model name (e.g., `gemini-2.0-flash`)     | Server | Yes         |
 | `SMTP_HOST`            | SMTP server hostname                             | Server | Yes         |
 | `SMTP_PORT`            | SMTP port                                        | Server | Yes         |
 | `SMTP_USER`            | SMTP username                                    | Server | Yes         |
@@ -880,24 +880,24 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 
 Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts`. Validation runs at build time (via `next.config.ts`) and at server startup (via `src/instrumentation.ts`). The schema is also the source of the global `ProcessEnv` type augmentation.
 
-| Variable               | Zod validator                                           | Notes                                          |
-| ---------------------- | ------------------------------------------------------- | ---------------------------------------------- |
-| `APP_URL`              | `z.url()`                                               |                                                |
-| `BETTER_AUTH_SECRET`   | `z.string().regex(/^[A-Za-z0-9+/]{43}=$/)`              | Generate with `openssl rand -base64 32`        |
-| `COOKIE_PREFIX`        | `z.string().optional()`                                 | Defaults to `gl_` at runtime if unset          |
-| `DATABASE_URL`         | `z.string().startsWith('postgresql://')`                | Neon connection string                         |
-| `OPENAI_API_KEY`       | `z.string().min(1).optional()`                          | Project-scoped key format                      |
-| `OPENAI_MODEL`         | `z.string().min(1).optional()`                          | Any `OpenAIChatModelId` value (e.g., `gpt-4o`) |
-| `R2_ACCOUNT_ID`        | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                          |
-| `R2_ACCESS_KEY_ID`     | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                          |
-| `R2_SECRET_ACCESS_KEY` | `z.string().regex(/^[0-9a-f]{64}$/)`                    | 64-char lowercase hex                          |
-| `R2_BUCKET_NAME`       | `z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/)` | 3-63 chars, lowercase, no leading/trailing `-` |
-| `R2_PUBLIC_URL`        | `z.url()`                                               |                                                |
-| `SMTP_HOST`            | `z.string().min(1)`                                     |                                                |
-| `SMTP_PORT`            | `z.enum(['25', '465', '587'])`                          | Must be one of these three ports               |
-| `SMTP_SENDER`          | `z.string().min(1)`                                     |                                                |
-| `SMTP_USER`            | `z.email()`                                             |                                                |
-| `SMTP_PASSWORD`        | `z.string().min(1)`                                     |                                                |
+| Variable               | Zod validator                                           | Notes                                                |
+| ---------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
+| `APP_URL`              | `z.url()`                                               |                                                      |
+| `BETTER_AUTH_SECRET`   | `z.string().regex(/^[A-Za-z0-9+/]{43}=$/)`              | Generate with `openssl rand -base64 32`              |
+| `COOKIE_PREFIX`        | `z.string().optional()`                                 | Defaults to `gl_` at runtime if unset                |
+| `DATABASE_URL`         | `z.string().startsWith('postgresql://')`                | Neon connection string                               |
+| `GEMINI_API_KEY`       | `z.string().min(1).optional()`                          | Project-scoped key from Google AI Studio             |
+| `GEMINI_MODEL`         | `z.string().min(1).optional()`                          | Any valid Gemini model ID (e.g., `gemini-2.0-flash`) |
+| `R2_ACCOUNT_ID`        | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                                |
+| `R2_ACCESS_KEY_ID`     | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                                |
+| `R2_SECRET_ACCESS_KEY` | `z.string().regex(/^[0-9a-f]{64}$/)`                    | 64-char lowercase hex                                |
+| `R2_BUCKET_NAME`       | `z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/)` | 3-63 chars, lowercase, no leading/trailing `-`       |
+| `R2_PUBLIC_URL`        | `z.url()`                                               |                                                      |
+| `SMTP_HOST`            | `z.string().min(1)`                                     |                                                      |
+| `SMTP_PORT`            | `z.enum(['25', '465', '587'])`                          | Must be one of these three ports                     |
+| `SMTP_SENDER`          | `z.string().min(1)`                                     |                                                      |
+| `SMTP_USER`            | `z.email()`                                             |                                                      |
+| `SMTP_PASSWORD`        | `z.string().min(1)`                                     |                                                      |
 
 **Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called only when `phase === PHASE_DEVELOPMENT_SERVER`. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
 

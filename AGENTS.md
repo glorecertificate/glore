@@ -89,8 +89,9 @@ Do not block on the suggestion — if the user continues without switching, proc
 | ---------------- | ----------------------------------------------------- | ------------------ |
 | Framework        | Next.js (App Router, RSC, Cached Components)          | ^16.1.7            |
 | Language         | TypeScript (strict mode)                              | ^5.9.3             |
-| Runtime          | React                                                 | ^19.2.4            |
+| Runtime          | React (with React Compiler enabled)                   | ^19.2.4            |
 | Package manager  | pnpm                                                  | 10.32.1            |
+| React Compiler   | babel-plugin-react-compiler                           | ^1.0.0             |
 | Database         | Neon Serverless Postgres (`@neondatabase/serverless`) | ^0.10.4            |
 | ORM              | Drizzle ORM + drizzle-kit                             | ^0.45.1 / ^0.31.10 |
 | Auth             | Better Auth (`better-auth`)                           | ^1.5.4             |
@@ -552,6 +553,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - **Server Components** by default
 - `'use client'` only when interactivity is needed (hooks, event handlers, browser APIs)
 - Layout guards (admin, certificates) are server components that call `notFound()`
+- **Page Suspense pattern:** Pages that fetch data async MUST use an inner async component + outer sync page with `<Suspense fallback={<LoadingFallback />}>`. The page header renders immediately while data loads. See `admin/page.tsx`, `certificates/page.tsx`, `organization/page.tsx` as reference.
 
 ### Variant pattern
 
@@ -977,6 +979,8 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 12. **Build tsconfig:** Production builds use `tsconfig.build.json` which excludes dev types. The base `tsconfig.json` includes `.next/dev/types/**/*.ts`.
 
 13. **`cacheComponents: true`:** Enabled in `next.config.ts` for Next.js cached components feature.
+
+13b. **React Compiler enabled:** `reactCompiler: true` is set at the top level of `next.config.ts` (NOT inside `experimental`). The `babel-plugin-react-compiler` package is required. The compiler auto-memoizes all components — do not add manual `useMemo`/`useCallback` to compensate for re-renders unless the compiler cannot handle the specific pattern.
 
 14. **Never edit generated files:** Files like `env.d.ts` and everything under `drizzle/` (migrations, snapshots, journal) are auto-generated and MUST NOT be edited manually. Use the corresponding generation command instead (`pnpm typegen` for `env.d.ts`, `pnpm db generate` / `pnpm db migrate` for `drizzle/`). If a codegen/typegen script exists for a file, always use it. Note: `env.d.ts` no longer contains `ProcessEnv` — that lives in `src/lib/env.ts`. It only generates `PublicFile` and the `lucide-react` module augmentation.
 

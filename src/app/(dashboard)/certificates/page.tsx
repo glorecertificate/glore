@@ -1,34 +1,33 @@
+import { Suspense } from 'react'
+
 import { getCertificateEligibility, listTutorCertificates, listUserCertificates } from '@/actions/certificate'
 import { getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 
-export default async () => {
+const CertificatesPageContent = async () => {
   const user = await getCurrentUser()
   const isTutor = user.organizations.some(o => o.role === 'tutor')
 
   if (isTutor) {
     const { data: certificates } = await listTutorCertificates()
-    return (
-      <>
-        <PageHeader namespace="Layout" titleKey="certificates" />
-        <PageMain>
-          <TutorCertificatesContent certificates={certificates ?? []} />
-        </PageMain>
-      </>
-    )
+    return <TutorCertificatesContent certificates={certificates ?? []} />
   }
 
   const [{ data: certificates }, eligibility] = await Promise.all([listUserCertificates(), getCertificateEligibility()])
-
-  return (
-    <>
-      <PageHeader namespace="Layout" titleKey="certificates" />
-      <PageMain>
-        <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
-      </PageMain>
-    </>
-  )
+  return <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
 }
+
+export default () => (
+  <>
+    <PageHeader namespace="Layout" titleKey="certificates" />
+    <PageMain>
+      <Suspense fallback={<LoadingFallback />}>
+        <CertificatesPageContent />
+      </Suspense>
+    </PageMain>
+  </>
+)

@@ -7,7 +7,7 @@ import { CoursesProvider } from '@/components/providers/courses-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
-export const dynamic = 'force-dynamic'
+const fallback = <LoadingFallback size="full" />
 
 export default async ({ children }: LayoutProps<'/'>) => {
   const { get } = await cookies()
@@ -15,7 +15,7 @@ export default async ({ children }: LayoutProps<'/'>) => {
   const sidebarWidth = get('sidebarWidth')
 
   return (
-    <Suspense fallback={<LoadingFallback size="full" />}>
+    <Suspense fallback={fallback}>
       <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
         <SessionProvider>
           <CoursesProvider>

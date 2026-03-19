@@ -2632,12 +2632,12 @@ export default [
   {
     categories: ['account', 'buildings'],
     name: 'building-2',
-    tags: ['business', 'company', 'enterprise', 'skyscraper', 'organisation', 'organization', 'city'],
+    tags: ['business', 'company', 'enterprise', 'skyscraper', 'organization', 'organization', 'city'],
   },
   {
     categories: ['account', 'buildings'],
     name: 'building',
-    tags: ['organisation', 'organization'],
+    tags: ['organization', 'organization'],
   },
   {
     categories: ['transportation'],

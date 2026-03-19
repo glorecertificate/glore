@@ -1,6 +1,6 @@
 ---
 name: commit
-description: 'Finalize and commit the code for the current feature branch. This should be the last step before merging to main.'
+description: Finalize and commit the code for the current feature branch. This should be the last step before merging to main.
 ---
 
 # Commit Skill
@@ -99,6 +99,7 @@ If none of the scopes apply, **omit the scope** (e.g. `feat: Add public certific
 - Use for breaking changes (`BREAKING CHANGE: <description>`) or issue references (`Closes #123`)
 - Maximum 120 characters per line
 - Separated from the body (or subject if no body) by a blank line
+- **NEVER add a `Co-authored-by:` trailer** — do not attribute the commit to any AI agent, Copilot, or automated tool under any circumstances
 
 ---
 
@@ -129,4 +130,22 @@ refactor: Rename auth cookie prefix
 - Migrate existing session handling logic
 
 BREAKING CHANGE: Existing sessions using the old prefix will be invalidated
+```
+
+Never add a co-author footer. The footer is only for breaking changes or issue references:
+
+```
+// WRONG — never add Co-authored-by
+perf: Enable React Compiler and add Suspense boundaries
+
+- Install babel-plugin-react-compiler and enable reactCompiler in next.config.ts
+
+Co-authored-by: Copilot <copilot@github.com>
+```
+
+```
+// CORRECT — no co-author trailer
+perf: Enable React Compiler and add Suspense boundaries
+
+- Install babel-plugin-react-compiler and enable reactCompiler in next.config.ts
 ```

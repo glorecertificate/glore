@@ -14,6 +14,7 @@ const HEAVY_PKGS = [...AWS_SDK_PKGS, './node_modules/@react-pdf/**/*']
 
 const nextConfig = {
   reactStrictMode: true,
+  reactCompiler: true,
   cacheComponents: true,
   trailingSlash: false,
   headers: () => [

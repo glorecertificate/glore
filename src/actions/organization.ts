@@ -7,6 +7,7 @@ import { randomBytes } from 'node:crypto'
 import { and, count, eq, inArray } from 'drizzle-orm'
 
 import { deleteCookie, getCookie, setCookie } from '@/actions/cookies'
+import { createNotification, createNotificationByEmail } from '@/actions/notification'
 import { findUser, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -367,6 +368,11 @@ export const inviteOrganizationMember = async ({
       role,
     })
 
+    await createNotification(invitee.id, 'member_added', {
+      organizationName: organization.name,
+      role,
+    }).catch(() => null)
+
     if (!existingUser || !existingUser.onboardedAt) {
       await auth.api
         .requestPasswordReset({
@@ -564,6 +570,11 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
       status: 'accepted',
     })
 
+    await createNotification(invitedUser.id, 'join_request_decided', {
+      organizationName: organization.name,
+      status: 'accepted',
+    }).catch(() => null)
+
     return parseOrganizationJoinRequest({ ...request, status: 'accepted' })
   })
 }
@@ -616,6 +627,11 @@ export const rejectOrganizationJoinRequest = async (requestId: number, reviewerC
       reviewerComment: nextComment,
       status: 'rejected',
     })
+
+    await createNotificationByEmail(request.email, 'join_request_decided', {
+      organizationName: organization.name,
+      status: 'rejected',
+    }).catch(() => null)
 
     return parseOrganizationJoinRequest({ ...request, reviewerComment: nextComment, status: 'rejected' })
   })

@@ -1848,5 +1848,16 @@
       "outro": "Thanks,",
       "signature": "The GloRe Team"
     }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all as read",
+    "certificate_assigned": "A certificate has been assigned to you for review",
+    "certificate_reviewed_approved": "Your certificate has been approved",
+    "certificate_reviewed_changes": "Your certificate requires changes",
+    "member_added": "You have been added to {organization}",
+    "join_request_accepted": "Your request to join {organization} has been accepted",
+    "join_request_rejected": "Your request to join {organization} has been rejected"
   }
 }

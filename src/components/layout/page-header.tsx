@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { NotificationBell } from '@/components/features/notifications/notification-bell'
 import { GloreIcon } from '@/components/icons/glore'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
 import { Link } from '@/components/ui/link'
@@ -125,6 +126,9 @@ export const PageHeader = (props: React.ComponentProps<typeof PageHeaderBreadcru
       <PageHeaderSidebarTrigger />
       <PageHeaderBreadcrumb {...props} />
     </div>
-    <PageHeaderLogo />
+    <div className="flex items-center gap-1">
+      <NotificationBell />
+      <PageHeaderLogo />
+    </div>
   </PageHeaderContainer>
 )

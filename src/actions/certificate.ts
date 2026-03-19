@@ -9,6 +9,7 @@ import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { listCourses } from '@/actions/course'
+import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
 import {
   type CertificateFormValues,
@@ -256,6 +257,13 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       }).catch(() => null)
     }
 
+    if (cert.userId) {
+      await createNotification(cert.userId, 'certificate_reviewed', {
+        certificateId: id,
+        status: isApprove ? 'approved' : 'changes_requested',
+      }).catch(() => null)
+    }
+
     return updated
   })
 }
@@ -369,6 +377,9 @@ export const createCertificate = async (values: CertificateFormValues) => {
           template: { name: 'certificate/assigned', props: {} },
         }).catch(() => null)
       }
+      await createNotification(reviewerId, 'certificate_assigned', {
+        certificateId: newCert.id,
+      }).catch(() => null)
     }
 
     return newCert
@@ -464,6 +475,9 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
           template: { name: 'certificate/assigned', props: {} },
         }).catch(() => null)
       }
+      await createNotification(reviewerId, 'certificate_assigned', {
+        certificateId: certId,
+      }).catch(() => null)
     }
 
     return updated

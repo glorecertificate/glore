@@ -272,7 +272,12 @@
       }
     },
     {
-      "files": ["src/app/**/layout.tsx", "src/app/**/page.tsx", "src/app/**/opengraph-image.tsx"],
+      "files": [
+        "src/app/**/layout.tsx",
+        "src/app/**/page.tsx",
+        "src/app/**/opengraph-image.tsx",
+        "src/components/providers/**"
+      ],
       "rules": {
         "react-perf/jsx-no-new-array-as-prop": "off",
         "react-perf/jsx-no-new-object-as-prop": "off"

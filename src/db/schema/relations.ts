@@ -5,6 +5,7 @@ import { assessments, evaluations, questionOptions, questions } from './assessme
 import { certificateSkills, certificates } from './certificates'
 import { contributions, courses, lessons } from './courses'
 import { docArticles, docCategories } from './docs'
+import { notifications } from './notifications'
 import { memberships, organizationJoinRequests, organizations } from './organizations'
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from './progress'
 import { regions } from './regions'
@@ -18,6 +19,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
   memberships: many(memberships),
+  notifications: many(notifications),
   reviewedOrganizationJoinRequests: many(organizationJoinRequests, { relationName: 'organizationJoinRequestReviewer' }),
   regions: many(regions),
   contributions: many(contributions),
@@ -175,4 +177,9 @@ export const docCategoriesRelations = relations(docCategories, ({ many }) => ({
 
 export const docArticlesRelations = relations(docArticles, ({ one }) => ({
   category: one(docCategories, { fields: [docArticles.categoryId], references: [docCategories.id] }),
+}))
+
+// Notifications
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, { fields: [notifications.userId], references: [users.id] }),
 }))

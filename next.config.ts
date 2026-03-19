@@ -9,6 +9,9 @@ const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
 const MANIFEST_CACHE_MAX_AGE = 'public, max-age=3600'
 
+const AWS_SDK_PKGS = ['./node_modules/@aws-sdk/**/*']
+const HEAVY_PKGS = [...AWS_SDK_PKGS, './node_modules/@react-pdf/**/*']
+
 const nextConfig = {
   reactStrictMode: true,
   cacheComponents: true,
@@ -31,6 +34,31 @@ const nextConfig = {
       permanent: true,
     },
   ],
+  outputFileTracingExcludes: {
+    '/login': HEAVY_PKGS,
+    '/register': HEAVY_PKGS,
+    '/onboarding': HEAVY_PKGS,
+    '/onboarding/error': HEAVY_PKGS,
+    '/dashboard': HEAVY_PKGS,
+    '/about': HEAVY_PKGS,
+    '/help': HEAVY_PKGS,
+    '/docs': HEAVY_PKGS,
+    '/docs/faq': HEAVY_PKGS,
+    '/docs/intro': HEAVY_PKGS,
+    '/docs/tutorials': HEAVY_PKGS,
+    '/courses': HEAVY_PKGS,
+    '/courses/[slug]': HEAVY_PKGS,
+    '/admin': HEAVY_PKGS,
+    '/admin/users': HEAVY_PKGS,
+    '/admin/organizations': HEAVY_PKGS,
+    '/settings': AWS_SDK_PKGS,
+    '/organization': AWS_SDK_PKGS,
+    '/api/auth/[...all]': HEAVY_PKGS,
+    '/api/v1/ai/command': HEAVY_PKGS,
+    '/api/v1/ai/copilot': HEAVY_PKGS,
+    '/api/v1/join': HEAVY_PKGS,
+    '/api/v1/manifest': HEAVY_PKGS,
+  },
   typescript: {
     tsconfigPath: './tsconfig.build.json',
   },
@@ -79,6 +107,7 @@ const nextConfig = {
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
     turbopackFileSystemCacheForDev: true,
+    webpackBuildWorker: true,
   },
 } satisfies NextConfig
 

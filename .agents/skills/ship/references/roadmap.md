@@ -17,7 +17,9 @@
 
 ## Active
 
-_No active tasks._
+| Slug          | Feature                        | Agent                                 |
+| ------------- | ------------------------------ | ------------------------------------- |
+| `build-speed` | Fix slow Vercel builds (3min+) | agent:k4p8nz started:2026-03-19T03:21 |
 
 ---
 
@@ -29,9 +31,7 @@ _No P0 tasks remaining._
 
 ### P1: High (feature completeness)
 
-| Slug          | Feature                        | Notes                                                                  |
-| ------------- | ------------------------------ | ---------------------------------------------------------------------- |
-| `build-speed` | Fix slow Vercel builds (3min+) | High. Remote cache, output standalone, reduce static gen, parallelism. |
+_No P1 tasks remaining._
 
 ### P2: Medium (polish and UX)
 
@@ -61,6 +61,7 @@ _No P0 tasks remaining._
 
 | Slug             | Feature                                   | Completed  |
 | ---------------- | ----------------------------------------- | ---------- |
+| `build-speed`    | Fix slow Vercel builds                    | 2026-03-19 |
 | `bundle-opt`     | Bundle size optimization                  | 2026-03-19 |
 | `cert-filter`    | Certificate list filtering                | 2026-03-18 |
 | `cert-qr`        | QR code on public certificate page        | 2026-03-18 |

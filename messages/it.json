@@ -1898,5 +1898,16 @@
     "member_added": "Sei stato aggiunto a {organization}",
     "join_request_accepted": "La tua richiesta di unirsi a {organization} è stata accettata",
     "join_request_rejected": "La tua richiesta di unirsi a {organization} è stata rifiutata"
+  },
+  "PWA": {
+    "installTitle": "Installa GloRe",
+    "installDescription": "Aggiungi GloRe alla schermata Home per un accesso rapido.",
+    "installButton": "Installa",
+    "installDismiss": "Non ora",
+    "offlineTitle": "Sei offline",
+    "offlineDescription": "Connettiti a internet per continuare a usare GloRe.",
+    "offlineRetry": "Riprova",
+    "pushNotifications": "Notifiche push",
+    "pushDenied": "Le notifiche sono bloccate. Attivale nelle impostazioni del browser."
   }
 }

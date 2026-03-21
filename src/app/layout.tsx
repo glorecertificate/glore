@@ -8,8 +8,10 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
+import { InstallBanner } from '@/components/features/pwa/install-banner'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n-provider'
+import { PWAContextProvider } from '@/components/providers/pwa-context'
 import { SearchParamsProvider } from '@/components/providers/search-params-provider'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
@@ -53,10 +55,13 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
       <body suppressHydrationWarning>
         <SearchParamsProvider>
           <I18nProvider value={i18nContextValue}>
-            <ThemeProvider>
-              {children}
-              <Toaster />
-            </ThemeProvider>
+            <PWAContextProvider>
+              <ThemeProvider>
+                {children}
+                <InstallBanner />
+                <Toaster />
+              </ThemeProvider>
+            </PWAContextProvider>
           </I18nProvider>
         </SearchParamsProvider>
         <Analytics debug={false} />

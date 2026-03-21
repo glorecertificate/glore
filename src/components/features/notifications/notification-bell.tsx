@@ -6,9 +6,11 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 import { type Notification } from '@/db/queries/notification'
 import { type NotificationDataMap } from '@/db/schema/notifications'
 import { useNotifications } from '@/hooks/use-notifications'
+import { usePWAContext } from '@/hooks/use-pwa-context'
 import { cn } from '@/lib/utils'
 
 const getNotificationDisplay = (
@@ -87,7 +89,9 @@ const NotificationItem = ({ notification, onRead }: { notification: Notification
 
 export const NotificationBell = () => {
   const t = useTranslations('Notifications')
+  const tPwa = useTranslations('PWA')
   const { markAllRead, markRead, notifications, unreadCount } = useNotifications()
+  const { pushPermission, pushSubscribed, requestPushPermission, unsubscribePush } = usePWAContext()
 
   return (
     <Popover>
@@ -117,13 +121,29 @@ export const NotificationBell = () => {
           )}
         </div>
         <Separator />
-        <div className="max-h-[360px] overflow-y-auto p-1.5">
+        <div className="max-h-90 overflow-y-auto p-1.5">
           {notifications.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">{t('empty')}</p>
           ) : (
             notifications.map(n => <NotificationItem key={n.id} notification={n} onRead={markRead} />)
           )}
         </div>
+        {pushPermission !== 'unsupported' && (
+          <>
+            <Separator />
+            <div className="flex items-center justify-between px-4 py-3">
+              <span className="text-xs text-muted-foreground">{tPwa('pushNotifications')}</span>
+              <Switch
+                checked={pushSubscribed}
+                disabled={pushPermission === 'denied'}
+                onCheckedChange={pushSubscribed ? () => void unsubscribePush() : () => void requestPushPermission()}
+              />
+            </div>
+            {pushPermission === 'denied' && (
+              <p className="pb-3 text-center text-[11px] text-destructive">{tPwa('pushDenied')}</p>
+            )}
+          </>
+        )}
       </PopoverContent>
     </Popover>
   )

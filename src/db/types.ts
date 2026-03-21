@@ -15,6 +15,7 @@ import {
   type notifications,
   type organizationJoinRequests,
   type organizations,
+  type pushSubscriptions,
   type questionOptions,
   type questions,
   type regions,
@@ -46,6 +47,7 @@ interface TableMap {
   notifications: typeof notifications
   organization_join_requests: typeof organizationJoinRequests
   organizations: typeof organizations
+  push_subscriptions: typeof pushSubscriptions
   question_options: typeof questionOptions
   questions: typeof questions
   regions: typeof regions

@@ -7,7 +7,7 @@ import { APP_ROOT, AUTH_ROOT, DASHBOARD_ROOTS, JOIN_ROOT, ONBOARDING_ROOT, REGIS
 
 export const config: ProxyConfig = {
   matcher: [
-    '/((?!_next/static|_next/image|api/|favicon.ico|sitemap.xml|robots.txt|manifest.json|.*.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|api/|favicon.ico|sitemap.xml|robots.txt|manifest.json|sw.js|offline|.*.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
 

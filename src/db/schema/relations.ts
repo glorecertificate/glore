@@ -8,6 +8,7 @@ import { docArticles, docCategories } from './docs'
 import { notifications } from './notifications'
 import { memberships, organizationJoinRequests, organizations } from './organizations'
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from './progress'
+import { pushSubscriptions } from './push-subscriptions'
 import { regions } from './regions'
 import { sessions } from './sessions'
 import { skillGroups } from './skill-groups'
@@ -20,6 +21,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
   memberships: many(memberships),
   notifications: many(notifications),
+  pushSubscriptions: many(pushSubscriptions),
   reviewedOrganizationJoinRequests: many(organizationJoinRequests, { relationName: 'organizationJoinRequestReviewer' }),
   regions: many(regions),
   contributions: many(contributions),

@@ -17,6 +17,9 @@ const schema = z.object({
   SMTP_SENDER: z.string().min(1),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
+  VAPID_PUBLIC_KEY: z.string().min(1).optional(),
+  VAPID_PRIVATE_KEY: z.string().min(1).optional(),
+  VAPID_SUBJECT: z.string().min(1).optional(),
 })
 
 export const validateEnv = () => schema.parse(process.env)

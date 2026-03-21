@@ -341,6 +341,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | `/docs/tutorials`      | Auth               | Dashboard | Tutorial docs                                      |
 | `/help`                | Auth               | Dashboard | Help page                                          |
 | `/settings`            | Auth               | Dashboard | User settings                                      |
+| `/offline`             | Public             | Root      | PWA offline fallback page                          |
 
 ### API routes
 
@@ -351,6 +352,9 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | `/api/v1/ai/copilot`  | POST     | AI copilot endpoint                            |
 | `/api/v1/join`        | GET      | Team invitation join endpoint                  |
 | `/api/v1/manifest`    | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
+| `/api/v1/push`        | GET      | Return VAPID public key                        |
+| `/api/v1/push`        | POST     | Save push subscription for authenticated user  |
+| `/api/v1/push`        | DELETE   | Remove push subscription                       |
 | `/api/v1/upload`      | POST     | R2 file upload                                 |
 
 ### Route groups
@@ -580,7 +584,7 @@ Split into two files:
 Provider hierarchy (root layout):
 
 ```
-SearchParamsProvider → I18nProvider → ThemeProvider
+SearchParamsProvider → I18nProvider → PWAContextProvider → ThemeProvider
 ```
 
 Dashboard layout adds:
@@ -873,6 +877,9 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 | `SMTP_USER`            | SMTP username                                    | Server | Yes         |
 | `SMTP_PASSWORD`        | SMTP password                                    | Server | Yes         |
 | `SMTP_SENDER`          | Email sender address                             | Server | Yes         |
+| `VAPID_PUBLIC_KEY`     | VAPID public key for push notifications          | Server | Yes         |
+| `VAPID_PRIVATE_KEY`    | VAPID private key for push notifications         | Server | Yes         |
+| `VAPID_SUBJECT`        | VAPID subject (mailto: or URL)                   | Server | Yes         |
 | `GITHUB_TOKEN`         | GitHub personal access token                     | Server | No          |
 | `VERCEL_TOKEN`         | Vercel CLI token                                 | Server | No          |
 
@@ -898,6 +905,9 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 | `SMTP_SENDER`          | `z.string().min(1)`                                     |                                                      |
 | `SMTP_USER`            | `z.email()`                                             |                                                      |
 | `SMTP_PASSWORD`        | `z.string().min(1)`                                     |                                                      |
+| `VAPID_PUBLIC_KEY`     | `z.string().min(1).optional()`                          | Generate with `web-push generate-vapid-keys`         |
+| `VAPID_PRIVATE_KEY`    | `z.string().min(1).optional()`                          | Generate with `web-push generate-vapid-keys`         |
+| `VAPID_SUBJECT`        | `z.string().min(1).optional()`                          | `mailto:` address or HTTPS URL                       |
 
 **Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called only when `phase === PHASE_DEVELOPMENT_SERVER`. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
 

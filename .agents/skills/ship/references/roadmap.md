@@ -17,9 +17,9 @@
 
 ## Active
 
-| Slug          | Feature                   | Agent                                 |
-| ------------- | ------------------------- | ------------------------------------- |
-| `account-tab` | Enhanced account settings | agent:m9p3jw started:2026-03-19T22:24 |
+| Slug          | Feature                   | Agent                                       |
+| ------------- | ------------------------- | ------------------------------------------- |
+| `account-tab` | Enhanced account settings | agent:m9p3jw started:2026-03-19T22:24 stale |
 
 ---
 
@@ -42,7 +42,6 @@ _No P2 tasks remaining._
 | Slug            | Feature                     | Notes                                                                                            |
 | --------------- | --------------------------- | ------------------------------------------------------------------------------------------------ |
 | `course-search` | Course filtering and search | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state. |
-| `pwa-enhance`   | PWA enhancements            | Low. Push notifications, offline course reading, install prompt improvements.                    |
 
 ---
 
@@ -70,6 +69,7 @@ _No P2 tasks remaining._
 | `cert-resubmit`     | Certificate resubmission after changes    | 2026-03-19 |
 | `cert-review`       | Certificate review field editing          | 2026-03-18 |
 | `r2-storage`        | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
+| `pwa-enhance`       | PWA enhancements                          | 2026-03-27 |
 
 ---
 

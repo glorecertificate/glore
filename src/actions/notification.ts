@@ -11,9 +11,10 @@ import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Notification } from '@/db/queries/notification'
-import { notifications, users } from '@/db/schema'
+import { notifications, pushSubscriptions, users } from '@/db/schema'
 import { type NotificationDataMap, type NotificationType } from '@/db/schema/notifications'
 import { CacheTag } from '@/lib/cache'
+import { sendPushNotification } from '@/lib/push'
 
 const fetchNotifications = cache(async (userId: string) => {
   'use cache'
@@ -85,6 +86,41 @@ export const createNotification = async <T extends NotificationType>(
     .values({ userId, type, data })
     .catch(() => null)
   revalidateTag(CacheTag.Notifications, 'max')
+
+  const subs = await db.query.pushSubscriptions.findMany({ where: eq(pushSubscriptions.userId, userId) })
+  const payload = buildPushPayload(type, data as NotificationDataMap[NotificationType])
+  for (const sub of subs) {
+    void sendPushNotification(sub, payload)
+  }
+}
+
+const buildPushPayload = (type: NotificationType, data: NotificationDataMap[NotificationType]) => {
+  if (type === 'certificate_assigned') {
+    return { body: 'A certificate has been assigned to you for review.', title: 'GloRe' }
+  }
+  if (type === 'certificate_reviewed') {
+    const d = data as NotificationDataMap['certificate_reviewed']
+    return {
+      body: d.status === 'approved' ? 'Your certificate has been approved.' : 'Your certificate requires changes.',
+      title: 'GloRe',
+      url: `/certificates/${d.certificateId}`,
+    }
+  }
+  if (type === 'member_added') {
+    const d = data as NotificationDataMap['member_added']
+    return { body: `You have been added to ${d.organizationName}.`, title: 'GloRe' }
+  }
+  if (type === 'join_request_decided') {
+    const d = data as NotificationDataMap['join_request_decided']
+    return {
+      body:
+        d.status === 'accepted'
+          ? `Your request to join ${d.organizationName} was accepted.`
+          : `Your request to join ${d.organizationName} was rejected.`,
+      title: 'GloRe',
+    }
+  }
+  return { body: 'You have a new notification.', title: 'GloRe' }
 }
 
 export const createNotificationByEmail = async <T extends NotificationType>(

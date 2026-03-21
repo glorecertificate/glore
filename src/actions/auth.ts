@@ -7,9 +7,13 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
+import { and, desc, eq, ne } from 'drizzle-orm'
+
+import { db } from '@/db/client'
+import { sessions } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { APP_ROOT } from '@/lib/constants'
+import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
 const fetchAuthUser = cache(async () => {
@@ -123,4 +127,35 @@ export const changePassword = async (currentPassword: string, newPassword: strin
   })
 
   return { data: session.user }
+}
+
+export const listUserSessions = async () => {
+  const authUser = await getAuthUser()
+  if (!authUser) redirect(AUTH_ROOT)
+
+  const currentSession = await auth.api.getSession({ headers: await headers() })
+
+  const allSessions = await db.query.sessions.findMany({
+    where: eq(sessions.userId, authUser.id),
+    orderBy: [desc(sessions.createdAt)],
+  })
+
+  return { sessions: allSessions, currentToken: currentSession?.session.token ?? null }
+}
+
+export const revokeUserSession = async (token: string) => {
+  const currentSession = await auth.api.getSession({ headers: await headers() })
+  if (!currentSession?.user) throw new Error('Not authenticated')
+  if (currentSession.session.token === token) return
+
+  await db.delete(sessions).where(and(eq(sessions.token, token), eq(sessions.userId, currentSession.user.id)))
+}
+
+export const revokeAllOtherSessions = async () => {
+  const currentSession = await auth.api.getSession({ headers: await headers() })
+  if (!currentSession?.user) throw new Error('Not authenticated')
+
+  await db
+    .delete(sessions)
+    .where(and(eq(sessions.userId, currentSession.user.id), ne(sessions.token, currentSession.session.token)))
 }

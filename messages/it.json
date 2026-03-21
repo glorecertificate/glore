@@ -1557,7 +1557,18 @@
     "deleteAccountBlockedAdmin": "Non puoi eliminare il tuo account mentre sei l'unico amministratore di un'organizzazione. Trasferisci la proprietà o elimina prima l'organizzazione.",
     "deleteAccountBlockedCerts": "Non puoi eliminare il tuo account mentre hai dei certificati. Contatta l'amministratore della tua organizzazione.",
     "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
-    "deleting": "Eliminazione in corso..."
+    "deleting": "Eliminazione in corso...",
+    "sessions": "Sessioni",
+    "sessionsDescription": "Gestisci le sessioni di accesso attive su tutti i tuoi dispositivi.",
+    "currentSession": "Sessione corrente",
+    "unknownIp": "IP sconosciuto",
+    "signedInAt": "Accesso il {date}",
+    "signOut": "Disconnetti",
+    "signOutAll": "Disconnetti ovunque",
+    "revokeSessionSuccess": "Sessione disconnessa con successo",
+    "revokeSessionError": "Impossibile disconnettere la sessione",
+    "revokeAllSessionsSuccess": "Altre sessioni disconnesse con successo",
+    "revokeAllSessionsError": "Impossibile disconnettere tutte le sessioni"
   },
   "Register": {
     "alreadyHaveAccount": "Hai già un account?",

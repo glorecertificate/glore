@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, memo, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -80,11 +80,11 @@ const SPOKEN_LANGUAGES = [
 
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
-export const UserSettings = () => {
+export const UserSettings = ({ sessionsContent }: { sessionsContent?: ReactNode }) => {
   const { tab } = useUserSettingsTab()
 
   if (tab === 'profile') return <ProfileForm />
-  if (tab === 'account') return <AccountForm />
+  if (tab === 'account') return <AccountForm sessionsContent={sessionsContent} />
   return null
 }
 
@@ -487,7 +487,7 @@ const ProfileForm = () => {
   )
 }
 
-const AccountForm = () => {
+const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }) => {
   const { user, setUser } = useSession()
   const { setLocale } = useI18n()
   const t = useTranslations('Users')
@@ -791,6 +791,16 @@ const AccountForm = () => {
       </Form>
 
       <Separator className="my-10" />
+
+      {sessionsContent && (
+        <>
+          <SettingsSection description={t('sessionsDescription')} title={t('sessions')}>
+            {sessionsContent}
+          </SettingsSection>
+
+          <Separator className="my-10" />
+        </>
+      )}
 
       <SettingsSection description={t('dangerZoneDescription')} title={t('dangerZone')}>
         <Card className="border-destructive/20 bg-destructive/5">

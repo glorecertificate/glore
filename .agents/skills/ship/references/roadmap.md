@@ -17,9 +17,7 @@
 
 ## Active
 
-| Slug          | Feature                   | Agent                                       |
-| ------------- | ------------------------- | ------------------------------------------- |
-| `account-tab` | Enhanced account settings | agent:m9p3jw started:2026-03-19T22:24 stale |
+_No active tasks._
 
 ---
 
@@ -70,6 +68,7 @@ _No P2 tasks remaining._
 | `cert-review`       | Certificate review field editing          | 2026-03-18 |
 | `r2-storage`        | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
 | `pwa-enhance`       | PWA enhancements                          | 2026-03-27 |
+| `account-tab`       | Enhanced account settings                 | 2026-03-28 |
 
 ---
 

@@ -1557,7 +1557,18 @@
     "deleteAccountBlockedAdmin": "No puedes eliminar tu cuenta mientras seas el único administrador de una organización. Transfiere la propiedad o elimina la organización primero.",
     "deleteAccountBlockedCerts": "No puedes eliminar tu cuenta mientras tengas certificados. Contacta al administrador de tu organización.",
     "deleteAccountError": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
-    "deleting": "Eliminando..."
+    "deleting": "Eliminando...",
+    "sessions": "Sesiones",
+    "sessionsDescription": "Gestiona tus sesiones activas en todos los dispositivos.",
+    "currentSession": "Sesión actual",
+    "unknownIp": "IP desconocida",
+    "signedInAt": "Iniciado el {date}",
+    "signOut": "Cerrar sesión",
+    "signOutAll": "Cerrar todas las sesiones",
+    "revokeSessionSuccess": "Sesión cerrada correctamente",
+    "revokeSessionError": "No se pudo cerrar la sesión",
+    "revokeAllSessionsSuccess": "Sesiones restantes cerradas correctamente",
+    "revokeAllSessionsError": "No se pudo cerrar todas las sesiones"
   },
   "Register": {
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",

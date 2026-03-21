@@ -1557,7 +1557,18 @@
     "deleteAccountBlockedAdmin": "You cannot delete your account while you are the sole administrator of an organization. Transfer ownership or delete the organization first.",
     "deleteAccountBlockedCerts": "You cannot delete your account while you have certificates. Contact your organization administrator.",
     "deleteAccountError": "Failed to delete account. Please try again.",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "sessions": "Sessions",
+    "sessionsDescription": "Manage your active login sessions across all devices.",
+    "currentSession": "Current session",
+    "unknownIp": "Unknown IP",
+    "signedInAt": "Signed in {date}",
+    "signOut": "Sign out",
+    "signOutAll": "Sign out everywhere",
+    "revokeSessionSuccess": "Signed out from session",
+    "revokeSessionError": "Failed to sign out from this session",
+    "revokeAllSessionsSuccess": "Signed out from all other sessions",
+    "revokeAllSessionsError": "Failed to sign out from all sessions"
   },
   "Register": {
     "alreadyHaveAccount": "Already have an account?",

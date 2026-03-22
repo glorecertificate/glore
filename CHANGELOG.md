@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.1](https://github.com/glorecertificate/glore/compare/v0.6.0...v0.6.1) (2026-03-22)
+
+### Features
+
+- Add PWA support ([ae642d4](https://github.com/glorecertificate/glore/commit/ae642d40a4d11b815ec4ba6a64a31ed8e46cd4f2))
+- Add session management to account settings ([6e439b5](https://github.com/glorecertificate/glore/commit/6e439b5223d8f087915067ce17481f0b1d7dc470))
+
+### Docs
+
+- Migrate from ship skill to superpowers workflow ([b6b153c](https://github.com/glorecertificate/glore/commit/b6b153c4774a2e20627687caa4e4854658b1927c))
+
 ## [0.6.0](https://github.com/glorecertificate/glore/compare/v0.5.1...v0.6.0) (2026-03-19)
 
 ### ⚠ BREAKING CHANGES

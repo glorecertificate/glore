@@ -81,11 +81,6 @@
             "section": "Other",
             "type": "style",
             "hidden": false
-          },
-          {
-            "section": "Other",
-            "type": "ai",
-            "hidden": false
           }
         ]
       }

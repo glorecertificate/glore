@@ -9,8 +9,8 @@ const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
 const MANIFEST_CACHE_MAX_AGE = 'public, max-age=3600'
 
-const AWS_SDK_PKGS = ['./node_modules/@aws-sdk/**/*']
-const HEAVY_PKGS = [...AWS_SDK_PKGS, './node_modules/@react-pdf/**/*']
+const AWS_SDKS = ['./node_modules/@aws-sdk/**/*']
+const OPTIMIZED_PKGS = [...AWS_SDKS, './node_modules/@react-pdf/**/*']
 
 const nextConfig = {
   reactStrictMode: true,
@@ -36,29 +36,29 @@ const nextConfig = {
     },
   ],
   outputFileTracingExcludes: {
-    '/login': HEAVY_PKGS,
-    '/register': HEAVY_PKGS,
-    '/onboarding': HEAVY_PKGS,
-    '/onboarding/error': HEAVY_PKGS,
-    '/dashboard': HEAVY_PKGS,
-    '/about': HEAVY_PKGS,
-    '/help': HEAVY_PKGS,
-    '/docs': HEAVY_PKGS,
-    '/docs/faq': HEAVY_PKGS,
-    '/docs/intro': HEAVY_PKGS,
-    '/docs/tutorials': HEAVY_PKGS,
-    '/courses': HEAVY_PKGS,
-    '/courses/[slug]': HEAVY_PKGS,
-    '/admin': HEAVY_PKGS,
-    '/admin/users': HEAVY_PKGS,
-    '/admin/organizations': HEAVY_PKGS,
-    '/settings': AWS_SDK_PKGS,
-    '/organization': AWS_SDK_PKGS,
-    '/api/auth/[...all]': HEAVY_PKGS,
-    '/api/v1/ai/command': HEAVY_PKGS,
-    '/api/v1/ai/copilot': HEAVY_PKGS,
-    '/api/v1/join': HEAVY_PKGS,
-    '/api/v1/manifest': HEAVY_PKGS,
+    '/login': OPTIMIZED_PKGS,
+    '/register': OPTIMIZED_PKGS,
+    '/onboarding': OPTIMIZED_PKGS,
+    '/onboarding/error': OPTIMIZED_PKGS,
+    '/dashboard': OPTIMIZED_PKGS,
+    '/about': OPTIMIZED_PKGS,
+    '/help': OPTIMIZED_PKGS,
+    '/docs': OPTIMIZED_PKGS,
+    '/docs/faq': OPTIMIZED_PKGS,
+    '/docs/intro': OPTIMIZED_PKGS,
+    '/docs/tutorials': OPTIMIZED_PKGS,
+    '/courses': OPTIMIZED_PKGS,
+    '/courses/[slug]': OPTIMIZED_PKGS,
+    '/admin': OPTIMIZED_PKGS,
+    '/admin/users': OPTIMIZED_PKGS,
+    '/admin/organizations': OPTIMIZED_PKGS,
+    '/settings': AWS_SDKS,
+    '/organization': AWS_SDKS,
+    '/api/auth/[...all]': OPTIMIZED_PKGS,
+    '/api/v1/ai/command': OPTIMIZED_PKGS,
+    '/api/v1/ai/copilot': OPTIMIZED_PKGS,
+    '/api/v1/join': OPTIMIZED_PKGS,
+    '/api/v1/manifest': OPTIMIZED_PKGS,
   },
   typescript: {
     tsconfigPath: './tsconfig.build.json',

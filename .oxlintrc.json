@@ -37,6 +37,7 @@
   },
   "rules": {
     "curly": ["error", "multi-line"],
+    "func-style": ["error", "expression"],
     "max-statements": ["error", 100],
     "no-ternary": "off",
     "no-unused-vars": "error",

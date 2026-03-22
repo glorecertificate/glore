@@ -64,11 +64,10 @@ Pick exactly one type based on the nature of the change:
 | `ci`       | CI/CD configuration changes                 |
 | `chore`    | Maintenance tasks, tooling, config          |
 | `revert`   | Reverts a previous commit                   |
-| `ai`       | AI-generated or AI-assisted changes         |
 
 ### Scopes
 
-Scope is **not required**. Optionally pick the most relevant one based on the changed files:
+Scope is **not required**. Pick the most relevant one based on the changed files only if necessary:
 
 | Scope      | When to use                                      |
 | ---------- | ------------------------------------------------ |
@@ -114,7 +113,7 @@ feat: Add public certificate page
 Commit with scope and body:
 
 ```
-feat(skills): Add commit skill
+docs: Add commit skill
 
 - Define workflow for staging and committing changes
 - Document conventional commit types and scopes

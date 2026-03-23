@@ -205,7 +205,8 @@ Permanent project documents (always read at session start):
 | File                         | Purpose                             |
 | ---------------------------- | ----------------------------------- |
 | `.agents/specs/app-spec.md`  | Canonical application specification |
-| `.agents/specs/decisions.md` | Decisions log and remaining backlog |
+| `.agents/specs/decisions.md` | Decisions log                       |
+| `.agents/specs/roadmap.md`   | Feature backlog and roadmap (P0-P3) |
 
 ---
 
@@ -386,7 +387,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 ├── assets/             # Shared agent assets (certificate template PDF, etc.)
 ├── plans/              # Implementation plans from writing-plans skill (YYYY-MM-DD-<feature>.md)
 ├── skills/             # Agent skills (see Agent Skills section)
-└── specs/              # Permanent docs (app-spec.md, decisions.md) and feature design specs
+└── specs/              # Permanent docs (app-spec.md, decisions.md, roadmap.md) and feature design specs
 ```
 
 ### File naming conventions

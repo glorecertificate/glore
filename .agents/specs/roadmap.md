@@ -17,7 +17,9 @@
 
 ## Active
 
-_No active tasks._
+| Slug                       | Feature                                 | Notes                                                                                                                                                |
+| -------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course-mutations-no-auth` | Course mutation actions unauthenticated | agent:m9r4kw started:2026-03-24T14:08 Security. Add auth + role check (`is_admin` or `is_editor`) to all course create/update/delete server actions. |
 
 ---
 
@@ -25,24 +27,20 @@ _No active tasks._
 
 ### P1: High (important)
 
-| Slug                                   | Feature                                        | Notes                                                                                                                                        |
-| -------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `auth-input-privilege-escalation`      | isEditor/onboardedAt self-promotion vector     | Security. Remove `input: true` from `isEditor` and `onboardedAt` in Better Auth user fields config.                                          |
-| `course-mutations-no-auth`             | Course mutation actions unauthenticated        | Security. Add auth + role check (`is_admin` or `is_editor`) to all course create/update/delete server actions.                               |
-| `admin-actions-no-auth`                | Admin data-fetch actions expose sensitive data | Security. Guard `getAdminUsers`, `getTeamMembers`, and similar admin fetch actions with an `is_admin` check.                                 |
-| `update-user-no-ownership-check`       | updateUser has no ownership check              | Security. Verify `session.user.id === targetId` or `is_admin` before updating any user record.                                               |
-| `no-security-headers`                  | No browser security headers                    | Infra. Add CSP, X-Frame-Options, X-Content-Type-Options, HSTS, Referrer-Policy, and Permissions-Policy in `vercel.json` or `next.config.ts`. |
-| `no-precommit-hook`                    | No pre-commit hook                             | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.                   |
-| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale            | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                        |
-| `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | Features. Surface the rejection reason field in the join-request status view across all locales.                                             |
-| `no-slug-availability-check`           | No slug availability check in course form      | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                                  |
-| `overuse-use-client`                   | Overuse of use client in feature components    | Performance. Audit feature components; demote data-display components to Server Components.                                                  |
-| `heavy-client-deps`                    | Heavy client-side dependencies                 | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative.        |
-| `sequential-data-fetching`             | Sequential awaits in data-fetching pages       | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                                  |
-| `massive-static-data-files`            | Massive static data files in component tree    | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                                  |
-| `oversized-ui-components`              | Oversized components exceeding 300-line limit  | Code Org. Split components over 300 lines into focused sub-components.                                                                       |
-| `broad-cache-invalidation`             | Cache invalidation too broad                   | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                                     |
-| `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route  | Infra. Fix header to valid syntax: `public, max-age=3600, s-maxage=3600`.                                                                    |
+| Slug                                   | Feature                                       | Notes                                                                                                                                                                              |
+| -------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-security-headers`                  | No browser security headers                   | agent:m9r4kw started:2026-03-24T14:08 Infra. Add CSP, X-Frame-Options, X-Content-Type-Options, HSTS, Referrer-Policy, and Permissions-Policy in `vercel.json` or `next.config.ts`. |
+| `no-precommit-hook`                    | No pre-commit hook                            | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.                                                         |
+| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale           | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                                                              |
+| `join-request-rejection-reason-hidden` | Join request rejection reason not shown       | Features. Surface the rejection reason field in the join-request status view across all locales.                                                                                   |
+| `no-slug-availability-check`           | No slug availability check in course form     | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                                                                        |
+| `overuse-use-client`                   | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                                                                        |
+| `heavy-client-deps`                    | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative.                                              |
+| `sequential-data-fetching`             | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                                                                        |
+| `massive-static-data-files`            | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                                                                        |
+| `oversized-ui-components`              | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                                                             |
+| `broad-cache-invalidation`             | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                                                                           |
+| `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route | Infra. Fix header to valid syntax: `public, max-age=3600, s-maxage=3600`.                                                                                                          |
 
 ### P2: Medium (polish)
 
@@ -113,32 +111,36 @@ _No active tasks._
 
 ## Done
 
-| Slug                              | Feature                                   | Completed  |
-| --------------------------------- | ----------------------------------------- | ---------- |
-| `oxlint-saves`                    | Oxlint auto-fix on save in VS Code        | 2026-03-19 |
-| `ai-gemini`                       | Migrate from OpenAI to Google Gemini      | 2026-03-19 |
-| `course-analytics`                | Course analytics and reporting            | 2026-03-19 |
-| `notif-system`                    | In-app notification system                | 2026-03-19 |
-| `search-ui`                       | Search functionality in UI                | 2026-03-19 |
-| `cert-tutor-assign`               | Manual tutor re-assignment                | 2026-03-19 |
-| `render-opt`                      | Rendering and interaction optimizations   | 2026-03-19 |
-| `help-page`                       | Help page content                         | 2026-03-19 |
-| `about-page`                      | About page content                        | 2026-03-19 |
-| `build-speed`                     | Fix slow Vercel builds                    | 2026-03-19 |
-| `bundle-opt`                      | Bundle size optimization                  | 2026-03-19 |
-| `cert-filter`                     | Certificate list filtering                | 2026-03-18 |
-| `cert-qr`                         | QR code on public certificate page        | 2026-03-18 |
-| `cert-social`                     | Public certificate social sharing         | 2026-03-18 |
-| `action-cache`                    | Server action cache invalidation audit    | 2026-03-26 |
-| `docs-feature`                    | Documentation CRUD and UI                 | 2026-03-26 |
-| `org-admin-sole`                  | Enforce single org admin (owner) pattern  | 2026-03-18 |
-| `cert-resubmit`                   | Certificate resubmission after changes    | 2026-03-19 |
-| `cert-review`                     | Certificate review field editing          | 2026-03-18 |
-| `r2-storage`                      | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
-| `pwa-enhance`                     | PWA enhancements                          | 2026-03-27 |
-| `account-tab`                     | Enhanced account settings                 | 2026-03-28 |
-| `upload-endpoint-unauthenticated` | Unauthenticated R2 upload endpoint        | 2026-03-24 |
-| `ai-endpoints-unauthenticated`    | AI endpoints unauthenticated              | 2026-03-24 |
-| `ai-client-supplied-api-key`      | AI routes accept client-supplied API key  | 2026-03-24 |
-| `admin-pages-missing-role-checks` | Admin pages missing role checks           | 2026-03-24 |
-| `missing-fk-indexes`              | Missing foreign key indexes               | 2026-03-24 |
+| Slug                              | Feature                                        | Completed  |
+| --------------------------------- | ---------------------------------------------- | ---------- |
+| `auth-input-privilege-escalation` | isEditor/onboardedAt self-promotion vector     | 2026-03-24 |
+| `course-mutations-no-auth`        | Course mutation actions unauthenticated        | 2026-03-24 |
+| `admin-actions-no-auth`           | Admin data-fetch actions expose sensitive data | 2026-03-24 |
+| `update-user-no-ownership-check`  | updateUser has no ownership check              | 2026-03-24 |
+| `oxlint-saves`                    | Oxlint auto-fix on save in VS Code             | 2026-03-19 |
+| `ai-gemini`                       | Migrate from OpenAI to Google Gemini           | 2026-03-19 |
+| `course-analytics`                | Course analytics and reporting                 | 2026-03-19 |
+| `notif-system`                    | In-app notification system                     | 2026-03-19 |
+| `search-ui`                       | Search functionality in UI                     | 2026-03-19 |
+| `cert-tutor-assign`               | Manual tutor re-assignment                     | 2026-03-19 |
+| `render-opt`                      | Rendering and interaction optimizations        | 2026-03-19 |
+| `help-page`                       | Help page content                              | 2026-03-19 |
+| `about-page`                      | About page content                             | 2026-03-19 |
+| `build-speed`                     | Fix slow Vercel builds                         | 2026-03-19 |
+| `bundle-opt`                      | Bundle size optimization                       | 2026-03-19 |
+| `cert-filter`                     | Certificate list filtering                     | 2026-03-18 |
+| `cert-qr`                         | QR code on public certificate page             | 2026-03-18 |
+| `cert-social`                     | Public certificate social sharing              | 2026-03-18 |
+| `action-cache`                    | Server action cache invalidation audit         | 2026-03-26 |
+| `docs-feature`                    | Documentation CRUD and UI                      | 2026-03-26 |
+| `org-admin-sole`                  | Enforce single org admin (owner) pattern       | 2026-03-18 |
+| `cert-resubmit`                   | Certificate resubmission after changes         | 2026-03-19 |
+| `cert-review`                     | Certificate review field editing               | 2026-03-18 |
+| `r2-storage`                      | Migrate from Vercel Blob to Cloudflare R2      | 2026-03-15 |
+| `pwa-enhance`                     | PWA enhancements                               | 2026-03-27 |
+| `account-tab`                     | Enhanced account settings                      | 2026-03-28 |
+| `upload-endpoint-unauthenticated` | Unauthenticated R2 upload endpoint             | 2026-03-24 |
+| `ai-endpoints-unauthenticated`    | AI endpoints unauthenticated                   | 2026-03-24 |
+| `ai-client-supplied-api-key`      | AI routes accept client-supplied API key       | 2026-03-24 |
+| `admin-pages-missing-role-checks` | Admin pages missing role checks                | 2026-03-24 |
+| `missing-fk-indexes`              | Missing foreign key indexes                    | 2026-03-24 |

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.2](https://github.com/glorecertificate/glore/compare/v0.6.1...v0.6.2) (2026-03-24)
+
+### Bug Fixes
+
+- **security:** Address P0/P1 critical vulnerabilities ([f19b440](https://github.com/glorecertificate/glore/commit/f19b440f2b5d20641b1414b51781585b743a1d0d))
+
+### CI
+
+- Skip CI validation on releases ([fb1babb](https://github.com/glorecertificate/glore/commit/fb1babb84ded444754902f097b3d028c240a146a))
+
+### Docs
+
+- Add implementation design specs ([dc0b2a6](https://github.com/glorecertificate/glore/commit/dc0b2a6cee7065294a65a9c1761c1cf17e68fd95))
+
 ## [0.6.1](https://github.com/glorecertificate/glore/compare/v0.6.0...v0.6.1) (2026-03-22)
 
 ### Features

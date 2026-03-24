@@ -38,7 +38,8 @@
             "type": "feat"
           },
           {
-            "section": "Bug Fixes",
+            "section": "Fixes",
+            "scopes": ["security"],
             "type": "fix"
           },
           {

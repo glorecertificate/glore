@@ -17,9 +17,7 @@
 
 ## Active
 
-| Slug                       | Feature                                 | Notes                                                                                                                                                |
-| -------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `course-mutations-no-auth` | Course mutation actions unauthenticated | agent:m9r4kw started:2026-03-24T14:08 Security. Add auth + role check (`is_admin` or `is_editor`) to all course create/update/delete server actions. |
+_No active tasks._
 
 ---
 
@@ -27,20 +25,18 @@
 
 ### P1: High (important)
 
-| Slug                                   | Feature                                       | Notes                                                                                                                                                                              |
-| -------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-security-headers`                  | No browser security headers                   | agent:m9r4kw started:2026-03-24T14:08 Infra. Add CSP, X-Frame-Options, X-Content-Type-Options, HSTS, Referrer-Policy, and Permissions-Policy in `vercel.json` or `next.config.ts`. |
-| `no-precommit-hook`                    | No pre-commit hook                            | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.                                                         |
-| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale           | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                                                              |
-| `join-request-rejection-reason-hidden` | Join request rejection reason not shown       | Features. Surface the rejection reason field in the join-request status view across all locales.                                                                                   |
-| `no-slug-availability-check`           | No slug availability check in course form     | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                                                                        |
-| `overuse-use-client`                   | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                                                                        |
-| `heavy-client-deps`                    | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative.                                              |
-| `sequential-data-fetching`             | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                                                                        |
-| `massive-static-data-files`            | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                                                                        |
-| `oversized-ui-components`              | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                                                             |
-| `broad-cache-invalidation`             | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                                                                           |
-| `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route | Infra. Fix header to valid syntax: `public, max-age=3600, s-maxage=3600`.                                                                                                          |
+| Slug                                   | Feature                                       | Notes                                                                                                                                 |
+| -------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `no-precommit-hook`                    | No pre-commit hook                            | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.            |
+| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale           | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                 |
+| `join-request-rejection-reason-hidden` | Join request rejection reason not shown       | Features. Surface the rejection reason field in the join-request status view across all locales.                                      |
+| `no-slug-availability-check`           | No slug availability check in course form     | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                           |
+| `overuse-use-client`                   | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                           |
+| `heavy-client-deps`                    | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative. |
+| `sequential-data-fetching`             | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                           |
+| `massive-static-data-files`            | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                           |
+| `oversized-ui-components`              | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                |
+| `broad-cache-invalidation`             | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                              |
 
 ### P2: Medium (polish)
 
@@ -113,6 +109,9 @@
 
 | Slug                              | Feature                                        | Completed  |
 | --------------------------------- | ---------------------------------------------- | ---------- |
+| `no-security-headers`             | No browser security headers                    | 2026-03-24 |
+| `malformed-pwa-cache-control`     | Malformed Cache-Control on PWA manifest route  | 2026-03-24 |
+| `no-precommit-hook`               | No pre-commit hook                             | 2026-03-24 |
 | `auth-input-privilege-escalation` | isEditor/onboardedAt self-promotion vector     | 2026-03-24 |
 | `course-mutations-no-auth`        | Course mutation actions unauthenticated        | 2026-03-24 |
 | `admin-actions-no-auth`           | Admin data-fetch actions expose sensitive data | 2026-03-24 |

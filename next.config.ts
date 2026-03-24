@@ -7,7 +7,6 @@ import { validateEnv } from './src/lib/env'
 
 const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
-const MANIFEST_CACHE_MAX_AGE = 'public, max-age=3600'
 
 const AWS_SDKS = ['./node_modules/@aws-sdk/**/*']
 const OPTIMIZED_PKGS = [...AWS_SDKS, './node_modules/@react-pdf/**/*']
@@ -28,6 +27,22 @@ const nextConfig = {
           key: 'Strict-Transport-Security',
           value: 'max-age=63072000; includeSubDomains; preload',
         },
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: blob: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https:",
+            "frame-ancestors 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "object-src 'none'",
+            "worker-src 'self' blob:",
+          ].join('; '),
+        },
       ],
       source: '/(.*)',
     },
@@ -35,7 +50,7 @@ const nextConfig = {
       headers: [
         {
           key: 'cache-control',
-          value: `public, max-age=${MANIFEST_CACHE_MAX_AGE}`,
+          value: 'public, max-age=3600, s-maxage=3600',
         },
       ],
       source: MANIFEST_PATH,

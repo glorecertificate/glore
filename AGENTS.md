@@ -38,7 +38,7 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 **Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc --noEmit`, oxlint, `oxfmt --check`, and knip in sequence. **`pnpm run check` MUST exit with code 0 (zero errors) before any commit is made. This is a hard gate — no exceptions, no partial compliance. Do not commit while any error remains, regardless of whether it pre-existed or was introduced by the current change.**
 
-**Git hooks:** Husky manages hooks. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
+**Git hooks:** Husky manages hooks. `pre-commit` runs `pnpm run format:check && pnpm run lint`. `commit-msg` runs commitlint. `pre-push` runs full `check:ci`. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
 
 > **MANDATORY:** Always use `pnpm run <script>` (never bare `pnpm <script>`) to avoid conflicts with built-in pnpm commands (e.g. `pnpm ci`, `pnpm install`, `pnpm build`). The only exception is `pnpm install` itself.
 

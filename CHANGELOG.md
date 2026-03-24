@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.3](https://github.com/glorecertificate/glore/compare/v0.6.2...v0.6.3) (2026-03-24)
+
+### Fixes
+
+- Invalidate certificates cache on course progress mutations ([a9381f9](https://github.com/glorecertificate/glore/commit/a9381f96c38daee38d07bbaeea33e3da6e003943))
+- **security:** Add admin page role checks and FK indexes ([0668e39](https://github.com/glorecertificate/glore/commit/0668e392495fe237145c72c759cafb4fd14f71df))
+- **security:** Add CSP header, fix manifest cache-control, and add pre-commit hook ([ebd29f4](https://github.com/glorecertificate/glore/commit/ebd29f449626c0c77ab0a9e6c77a07eb719d9674))
+
+### Docs
+
+- Add security feature notes to roadmap ([7a78863](https://github.com/glorecertificate/glore/commit/7a788630027515f253a832f1ed0a4d64bfe0dc76))
+- Migrate agentic workflow to ship skill ([a129459](https://github.com/glorecertificate/glore/commit/a129459a93cb40e571c06cd62213527aebd19944))
+
 ## [0.6.2](https://github.com/glorecertificate/glore/compare/v0.6.1...v0.6.2) (2026-03-24)
 
 ### Bug Fixes

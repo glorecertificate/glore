@@ -1,6 +1,8 @@
+import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getOrganizations } from '@/actions/admin'
+import { getCurrentUser } from '@/actions/user'
 import { AdminOrganizations } from '@/components/features/admin/organizations'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageHeader } from '@/components/layout/page-header'
@@ -14,6 +16,9 @@ export const generateMetadata = () =>
   })
 
 const AdminOrganizationsPage = async () => {
+  const user = await getCurrentUser()
+  if (!user.isAdmin) return notFound()
+
   const { data, error } = await getOrganizations()
   if (error || !data) throw error ?? new Error('Failed to load organizations')
   return <AdminOrganizations orgs={data} />

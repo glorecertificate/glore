@@ -23,15 +23,6 @@ _No active tasks._
 
 ## Backlog
 
-### P0: Critical (blocking)
-
-| Slug                              | Feature                            | Notes                                                                                                                     |
-| --------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `upload-endpoint-unauthenticated` | Unauthenticated R2 upload endpoint | Security + Infra. Add session auth check, MIME type validation, and file size limit to `/api/v1/upload`.                  |
-| `ai-endpoints-unauthenticated`    | AI endpoints unauthenticated       | Security + Infra. Add session auth to `/api/v1/ai/command` and `/api/v1/ai/copilot`.                                      |
-| `admin-pages-missing-role-checks` | Admin pages missing role checks    | Features. Enforce `is_admin` check at every admin page component level, not just the layout.                              |
-| `missing-fk-indexes`              | Missing foreign key indexes        | Scalability. Add DB indexes on all FK columns across users, memberships, certificates, notifications, and related tables. |
-
 ### P1: High (important)
 
 | Slug                                   | Feature                                        | Notes                                                                                                                                        |
@@ -40,7 +31,6 @@ _No active tasks._
 | `course-mutations-no-auth`             | Course mutation actions unauthenticated        | Security. Add auth + role check (`is_admin` or `is_editor`) to all course create/update/delete server actions.                               |
 | `admin-actions-no-auth`                | Admin data-fetch actions expose sensitive data | Security. Guard `getAdminUsers`, `getTeamMembers`, and similar admin fetch actions with an `is_admin` check.                                 |
 | `update-user-no-ownership-check`       | updateUser has no ownership check              | Security. Verify `session.user.id === targetId` or `is_admin` before updating any user record.                                               |
-| `ai-client-supplied-api-key`           | AI routes accept client-supplied API key       | Security + Infra. Remove the `apiKey` field from AI request bodies; always use server-side `GEMINI_API_KEY`.                                 |
 | `no-security-headers`                  | No browser security headers                    | Infra. Add CSP, X-Frame-Options, X-Content-Type-Options, HSTS, Referrer-Policy, and Permissions-Policy in `vercel.json` or `next.config.ts`. |
 | `no-precommit-hook`                    | No pre-commit hook                             | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.                   |
 | `cert-eligibility-cache-stale`         | Certificate eligibility cache stale            | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                        |
@@ -123,27 +113,32 @@ _No active tasks._
 
 ## Done
 
-| Slug                | Feature                                   | Completed  |
-| ------------------- | ----------------------------------------- | ---------- |
-| `oxlint-saves`      | Oxlint auto-fix on save in VS Code        | 2026-03-19 |
-| `ai-gemini`         | Migrate from OpenAI to Google Gemini      | 2026-03-19 |
-| `course-analytics`  | Course analytics and reporting            | 2026-03-19 |
-| `notif-system`      | In-app notification system                | 2026-03-19 |
-| `search-ui`         | Search functionality in UI                | 2026-03-19 |
-| `cert-tutor-assign` | Manual tutor re-assignment                | 2026-03-19 |
-| `render-opt`        | Rendering and interaction optimizations   | 2026-03-19 |
-| `help-page`         | Help page content                         | 2026-03-19 |
-| `about-page`        | About page content                        | 2026-03-19 |
-| `build-speed`       | Fix slow Vercel builds                    | 2026-03-19 |
-| `bundle-opt`        | Bundle size optimization                  | 2026-03-19 |
-| `cert-filter`       | Certificate list filtering                | 2026-03-18 |
-| `cert-qr`           | QR code on public certificate page        | 2026-03-18 |
-| `cert-social`       | Public certificate social sharing         | 2026-03-18 |
-| `action-cache`      | Server action cache invalidation audit    | 2026-03-26 |
-| `docs-feature`      | Documentation CRUD and UI                 | 2026-03-26 |
-| `org-admin-sole`    | Enforce single org admin (owner) pattern  | 2026-03-18 |
-| `cert-resubmit`     | Certificate resubmission after changes    | 2026-03-19 |
-| `cert-review`       | Certificate review field editing          | 2026-03-18 |
-| `r2-storage`        | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
-| `pwa-enhance`       | PWA enhancements                          | 2026-03-27 |
-| `account-tab`       | Enhanced account settings                 | 2026-03-28 |
+| Slug                              | Feature                                   | Completed  |
+| --------------------------------- | ----------------------------------------- | ---------- |
+| `oxlint-saves`                    | Oxlint auto-fix on save in VS Code        | 2026-03-19 |
+| `ai-gemini`                       | Migrate from OpenAI to Google Gemini      | 2026-03-19 |
+| `course-analytics`                | Course analytics and reporting            | 2026-03-19 |
+| `notif-system`                    | In-app notification system                | 2026-03-19 |
+| `search-ui`                       | Search functionality in UI                | 2026-03-19 |
+| `cert-tutor-assign`               | Manual tutor re-assignment                | 2026-03-19 |
+| `render-opt`                      | Rendering and interaction optimizations   | 2026-03-19 |
+| `help-page`                       | Help page content                         | 2026-03-19 |
+| `about-page`                      | About page content                        | 2026-03-19 |
+| `build-speed`                     | Fix slow Vercel builds                    | 2026-03-19 |
+| `bundle-opt`                      | Bundle size optimization                  | 2026-03-19 |
+| `cert-filter`                     | Certificate list filtering                | 2026-03-18 |
+| `cert-qr`                         | QR code on public certificate page        | 2026-03-18 |
+| `cert-social`                     | Public certificate social sharing         | 2026-03-18 |
+| `action-cache`                    | Server action cache invalidation audit    | 2026-03-26 |
+| `docs-feature`                    | Documentation CRUD and UI                 | 2026-03-26 |
+| `org-admin-sole`                  | Enforce single org admin (owner) pattern  | 2026-03-18 |
+| `cert-resubmit`                   | Certificate resubmission after changes    | 2026-03-19 |
+| `cert-review`                     | Certificate review field editing          | 2026-03-18 |
+| `r2-storage`                      | Migrate from Vercel Blob to Cloudflare R2 | 2026-03-15 |
+| `pwa-enhance`                     | PWA enhancements                          | 2026-03-27 |
+| `account-tab`                     | Enhanced account settings                 | 2026-03-28 |
+| `upload-endpoint-unauthenticated` | Unauthenticated R2 upload endpoint        | 2026-03-24 |
+| `ai-endpoints-unauthenticated`    | AI endpoints unauthenticated              | 2026-03-24 |
+| `ai-client-supplied-api-key`      | AI routes accept client-supplied API key  | 2026-03-24 |
+| `admin-pages-missing-role-checks` | Admin pages missing role checks           | 2026-03-24 |
+| `missing-fk-indexes`              | Missing foreign key indexes               | 2026-03-24 |

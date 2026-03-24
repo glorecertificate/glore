@@ -37,6 +37,9 @@ const fetchTeamMembers = async () => {
 }
 
 export const getTeamMembers = async ({ cache = true }: { cache?: boolean } = {}) => {
+  const currentUser = await getCurrentUser()
+  if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
+
   if (!cache) {
     const result = await db.query.users.findMany({
       where: or(eq(users.role, 'admin'), eq(users.isEditor, true)),
@@ -233,6 +236,9 @@ const fetchOrganizations = async () => {
 }
 
 export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {}) => {
+  const currentUser = await getCurrentUser()
+  if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
+
   if (!cache) {
     const rows = await db.query.organizations.findMany({
       orderBy: (record, { desc }) => [desc(record.createdAt)],
@@ -557,6 +563,9 @@ const fetchAdminUsers = async () => {
 }
 
 export const getAdminUsers = async ({ cache = true }: { cache?: boolean } = {}) => {
+  const currentUser = await getCurrentUser()
+  if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
+
   if (!cache) {
     const result = await db.query.users.findMany({
       orderBy: (u, { desc }) => [desc(u.createdAt)],

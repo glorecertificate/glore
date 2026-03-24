@@ -868,8 +868,9 @@ export const deleteOrganization = async () => {
   })
 }
 
-export const listOrgTutors = async (organizationId: number) =>
-  await safeQuery(async () => {
+export const listOrgTutors = async (organizationId: number) => {
+  await getCurrentUser()
+  return await safeQuery(async () => {
     const result = await db.query.memberships.findMany({
       where: and(eq(memberships.organizationId, organizationId), eq(memberships.role, 'tutor')),
       columns: {},
@@ -879,3 +880,4 @@ export const listOrgTutors = async (organizationId: number) =>
     })
     return result.map(m => m.user)
   })
+}

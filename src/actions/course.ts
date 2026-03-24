@@ -167,9 +167,15 @@ export const listSkillGroups = cache(async () => {
   })
 })
 
+const requireEditor = async () => {
+  const user = await getAuthUser()
+  if (!user) throw new Error('Not authenticated')
+  if (user.role !== 'admin' && !user.isEditor) throw new Error('Not authorized')
+  return user
+}
+
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
-  const authUser = await getAuthUser()
-  if (!authUser) throw new Error('Not authenticated')
+  const authUser = await requireEditor()
 
   const [created] = await db
     .insert(courses)
@@ -206,7 +212,7 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 }
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
-  const authUser = await getAuthUser()
+  const authUser = await requireEditor()
   await db.update(courses).set(course).where(eq(courses.id, id))
 
   const updated = await db.query.courses.findFirst({
@@ -225,6 +231,7 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
 
 export const deleteCourse = async (id: number) => {
   try {
+    await requireEditor()
     await db.delete(courses).where(eq(courses.id, id))
     return { data: true, error: null }
   } catch (e) {
@@ -236,6 +243,7 @@ export const deleteCourse = async (id: number) => {
 }
 
 export const createLesson = async (lesson: TableInsert<'lessons'>) => {
+  await requireEditor()
   const [created] = await db.insert(lessons).values(lesson).returning()
   if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create lesson' } }
 
@@ -243,6 +251,7 @@ export const createLesson = async (lesson: TableInsert<'lessons'>) => {
 }
 
 export const upsertLessons = async (values: TableInsert<'lessons'>[]) => {
+  await requireEditor()
   const result = await db
     .insert(lessons)
     .values(values)
@@ -260,6 +269,7 @@ export const upsertLessons = async (values: TableInsert<'lessons'>[]) => {
 }
 
 export const reorderCourses = async (items: Course[]) => {
+  await requireEditor()
   for (const [i, { id }] of items.entries()) {
     await db
       .update(courses)
@@ -271,6 +281,7 @@ export const reorderCourses = async (items: Course[]) => {
 }
 
 export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
+  await requireEditor()
   const result = await db
     .insert(questions)
     .values(values)
@@ -287,11 +298,13 @@ export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
 }
 
 export const deleteQuestions = async (ids: number[]) => {
+  await requireEditor()
   await db.delete(questions).where(inArray(questions.id, ids))
   return { data: true }
 }
 
 export const upsertEvaluations = async (values: TableInsert<'evaluations'>[]) => {
+  await requireEditor()
   const result = await db
     .insert(evaluations)
     .values(values)
@@ -307,11 +320,13 @@ export const upsertEvaluations = async (values: TableInsert<'evaluations'>[]) =>
 }
 
 export const deleteEvaluations = async (ids: number[]) => {
+  await requireEditor()
   await db.delete(evaluations).where(inArray(evaluations.id, ids))
   return { data: true }
 }
 
 export const upsertAssessment = async (assessment: TableInsert<'assessments'>) => {
+  await requireEditor()
   const [result] = await db
     .insert(assessments)
     .values(assessment)
@@ -326,6 +341,7 @@ export const upsertAssessment = async (assessment: TableInsert<'assessments'>) =
 }
 
 export const deleteAssessment = async (id: number) => {
+  await requireEditor()
   await db.delete(assessments).where(eq(assessments.id, id))
   return { data: true }
 }

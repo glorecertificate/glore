@@ -3,14 +3,18 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateText } from 'ai'
 
+import { auth } from '@/lib/auth'
+
+export const maxDuration = 60
+
 export const POST = async (request: NextRequest) => {
-  const { apiKey: key, model = process.env.GEMINI_MODEL, prompt, system } = await request.json()
+  const session = await auth.api.getSession({ headers: request.headers })
+  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const apiKey = key ?? process.env.GEMINI_API_KEY
+  const { prompt, system } = await request.json()
 
-  if (!apiKey) {
-    return NextResponse.json({ error: 'Missing Gemini API key' }, { status: 401 })
-  }
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
 
   const gemini = createGoogleGenerativeAI({ apiKey })
 
@@ -18,8 +22,8 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json(
       await generateText({
         abortSignal: request.signal,
-        maxOutputTokens: 50,
-        model: gemini(model ?? 'gemini-2.0-flash'),
+        maxOutputTokens: 2048,
+        model: gemini(process.env.GEMINI_MODEL ?? 'gemini-2.0-flash'),
         prompt,
         system,
         temperature: 0.7,
@@ -29,6 +33,6 @@ export const POST = async (request: NextRequest) => {
     if (error instanceof Error && error.name === 'AbortError') {
       return NextResponse.json({ error: 'Request aborted' }, { status: 499 })
     }
-    return NextResponse.json({ details: error, error: 'Failed to process AI request' }, { status: 500 })
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -82,6 +82,9 @@ export const findUser = async (id: string, { cache = true }: { cache?: boolean }
 export const findUserEmail = async (username: string) => await fetchUserEmail(username)
 
 export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
+  const currentUser = await getCurrentUser()
+  if (currentUser.id !== id && !currentUser.isAdmin) throw new Error('Forbidden')
+
   const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
   if (!updated) throw new Error('Failed to update user')
 

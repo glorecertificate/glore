@@ -15,7 +15,7 @@ export const generateMetadata = () =>
 
 const AdminOrganizationsPage = async () => {
   const { data, error } = await getOrganizations()
-  if (error) throw error
+  if (error || !data) throw error ?? new Error('Failed to load organizations')
   return <AdminOrganizations orgs={data} />
 }
 

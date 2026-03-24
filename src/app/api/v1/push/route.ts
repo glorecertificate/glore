@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { pushSubscriptions } from '@/db/schema'
@@ -30,7 +30,9 @@ export const DELETE = async (request: NextRequest) => {
   const body = (await request.json()) as { endpoint?: string }
   if (!body.endpoint) return NextResponse.json({ error: 'Missing endpoint' }, { status: 400 })
 
-  await db.delete(pushSubscriptions).where(eq(pushSubscriptions.endpoint, body.endpoint))
+  await db
+    .delete(pushSubscriptions)
+    .where(and(eq(pushSubscriptions.endpoint, body.endpoint), eq(pushSubscriptions.userId, session.user.id)))
 
   return NextResponse.json({ ok: true })
 }

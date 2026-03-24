@@ -15,9 +15,7 @@ export const generateMetadata = () =>
 
 const AdminTeamPage = async () => {
   const { data, error } = await getTeamMembers()
-  if (error) {
-    throw error
-  }
+  if (error || !data) throw error ?? new Error('Failed to load team members')
   return <AdminTeam users={data} />
 }
 

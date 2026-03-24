@@ -69,11 +69,10 @@ export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>,
 
 export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<I18nContextValue>) => {
   const { locale, messages, timeZone, ...providerValue } = useI18nContext(value)
-
-  const ctxValue = useMemo(() => ({ ...providerValue, locale }), [providerValue, locale])
+  const contextValue = useMemo(() => ({ ...providerValue, locale }), [providerValue, locale])
 
   return (
-    <I18nContext.Provider value={ctxValue} {...props}>
+    <I18nContext.Provider value={contextValue} {...props}>
       <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
         {children}
       </NextIntlClientProvider>

@@ -5,6 +5,10 @@ import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { type TextStreamPart, type ToolSet, convertToModelMessages, streamText } from 'ai'
 
+import { auth } from '@/lib/auth'
+
+export const maxDuration = 60
+
 const CHUNKING_REGEXPS = {
   line: /\n+/m,
   list: /.{8}/m,
@@ -96,15 +100,15 @@ const smoothStream = <TOOLS extends ToolSet>({
 }
 
 export const POST = async (request: NextRequest) => {
-  const { apiKey, messages, system } = await request.json()
+  const session = await auth.api.getSession({ headers: request.headers })
+  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const key = apiKey ?? process.env.GEMINI_API_KEY
+  const { messages, system } = await request.json()
 
-  if (!key) {
-    return NextResponse.json({ error: 'Missing Gemini API key.' }, { status: 401 })
-  }
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
 
-  const gemini = createGoogleGenerativeAI({ apiKey: key })
+  const gemini = createGoogleGenerativeAI({ apiKey })
 
   let isInCodeBlock = false
   let isInTable = false
@@ -161,7 +165,7 @@ export const POST = async (request: NextRequest) => {
     })
 
     return result.toUIMessageStreamResponse()
-  } catch (error) {
-    return NextResponse.json({ error }, { status: 500 })
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

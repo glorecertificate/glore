@@ -43,8 +43,8 @@ export const auth = betterAuth({
       country: { type: 'string', required: false, input: true },
       city: { type: 'string', required: false, input: true },
       locale: { type: 'string', required: false, input: true },
-      isEditor: { type: 'boolean', required: false, input: true, defaultValue: false },
-      onboardedAt: { type: 'string', required: false, input: true },
+      isEditor: { type: 'boolean', required: false, input: false, defaultValue: false },
+      onboardedAt: { type: 'string', required: false, input: false },
     },
     changeEmail: {
       enabled: true,

@@ -5,7 +5,7 @@ import 'server-only'
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
@@ -55,7 +55,7 @@ export const markNotificationRead = async (id: number) => {
     const [updated] = await db
       .update(notifications)
       .set({ read: true, readAt: new Date().toISOString() })
-      .where(eq(notifications.id, id))
+      .where(and(eq(notifications.id, id), eq(notifications.userId, authUser.id)))
       .returning()
     revalidateTag(CacheTag.Notifications, 'max')
     return updated

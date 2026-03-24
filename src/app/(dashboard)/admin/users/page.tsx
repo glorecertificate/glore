@@ -15,7 +15,7 @@ export const generateMetadata = () =>
 
 const AdminUsersPage = async () => {
   const { data, error } = await getAdminUsers()
-  if (error) throw error
+  if (error || !data) throw error ?? new Error('Failed to load users')
   return <AdminUsers users={data} />
 }
 

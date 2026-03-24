@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheLife, cacheTag } from 'next/cache'
+import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
 import { and, asc, count, eq, inArray } from 'drizzle-orm'
@@ -383,6 +383,7 @@ export const completeLesson = async (lessonId: number) => {
 
   const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).returning()
 
+  revalidateTag(CacheTag.Certificates, 'max')
   return { data: result }
 }
 
@@ -409,6 +410,7 @@ export const submitEvaluationRatings = async (ratings: { evaluationId: number; v
     .values(newRatings.map(({ evaluationId, value }) => ({ userId: user.id, evaluationId, value })))
     .returning()
 
+  revalidateTag(CacheTag.Certificates, 'max')
   return { data: [...existing, ...result] }
 }
 
@@ -423,6 +425,7 @@ export const submitAssessmentRating = async (assessmentId: number, value: number
 
   const [result] = await db.insert(userAssessments).values({ userId: user.id, assessmentId, value }).returning()
 
+  revalidateTag(CacheTag.Certificates, 'max')
   return { data: result }
 }
 

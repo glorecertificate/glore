@@ -27,8 +27,6 @@ _No active tasks._
 
 | Slug                                   | Feature                                       | Notes                                                                                                                                 |
 | -------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-precommit-hook`                    | No pre-commit hook                            | DX. Add a `pre-commit` Husky hook running `pnpm run format:check && pnpm run lint`. Move format check out of `commit-msg`.            |
-| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale           | Features. Call `revalidateTag(CacheTag.Certificates)` in course completion and rating server actions.                                 |
 | `join-request-rejection-reason-hidden` | Join request rejection reason not shown       | Features. Surface the rejection reason field in the join-request status view across all locales.                                      |
 | `no-slug-availability-check`           | No slug availability check in course form     | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                           |
 | `overuse-use-client`                   | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                           |
@@ -109,6 +107,7 @@ _No active tasks._
 
 | Slug                              | Feature                                        | Completed  |
 | --------------------------------- | ---------------------------------------------- | ---------- |
+| `cert-eligibility-cache-stale`    | Certificate eligibility cache stale            | 2026-03-24 |
 | `no-security-headers`             | No browser security headers                    | 2026-03-24 |
 | `malformed-pwa-cache-control`     | Malformed Cache-Control on PWA manifest route  | 2026-03-24 |
 | `no-precommit-hook`               | No pre-commit hook                             | 2026-03-24 |

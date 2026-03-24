@@ -24,7 +24,7 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 | `pnpm run format`         | Format with oxfmt                                               |
 | `pnpm run format:check`   | Check formatting without writing                                |
 | `pnpm run check`          | Type check + lint + format check + unused exports (in sequence) |
-| `pnpm run check:parallel` | Same as `check` but runs all tools in parallel                  |
+| `pnpm run check:ci`       | Same as `check` but runs all tools in parallel                  |
 | `pnpm run check:size`     | Bundle size check                                               |
 | `pnpm run typecheck`      | Type-check only (`tsc --noEmit`)                                |
 | `pnpm run typegen`        | Generate route + public-file types → `env.d.ts`                 |
@@ -153,58 +153,36 @@ skills --help                         # Show all CLI commands
 | `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance      | When creating, editing, or optimizing agent skills for this project                 |
 | `commit`                              | custom                        | Finalize and commit staged changes using conventional commits      | After completing a feature, before merging to main                                  |
 | `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                             | When adding, modifying, or debugging shadcn/ui components                           |
+| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — check roadmap, implement tasks, loop    | **ALWAYS** when starting any development work (`/ship`)                             |
 
-### Superpowers Skills
+### Workflow Skills (used by ship)
 
-This project integrates [Superpowers](https://github.com/obra/superpowers) (`obra/superpowers`), a complete agent development workflow built on composable skills. Superpowers adds Socratic design refinement, structured planning, TDD enforcement, systematic debugging, and subagent-driven execution.
+Ship automatically invokes these skills at the right moments. You do not need to invoke them separately.
 
-> **MANDATORY:** Before starting any task, invoke the `using-superpowers` skill or read `.agents/skills/using-superpowers/SKILL.md`. Check for a relevant superpowers skill before every task — even a 1% chance a skill applies means you MUST invoke it.
+> **Priority:** AGENTS.md rules and user instructions ALWAYS take precedence over workflow skill instructions. Skill behaviors override only default agent behavior, never project-specific conventions documented here.
 
-> **Priority:** AGENTS.md rules and user instructions ALWAYS take precedence over superpowers skills. Superpowers overrides only default agent behavior, never project-specific conventions documented here.
-
-| Skill                            | Purpose                                                                                        | When to use                                                                |
-| -------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `brainstorming`                  | Socratic design refinement; saves spec to `.agents/specs/`                                     | **Before writing any code** for a new feature or non-trivial change        |
-| `dispatching-parallel-agents`    | Concurrent subagent workflows for multiple independent problems                                | When 2+ independent tasks can run without shared state or dependencies     |
-| `executing-plans`                | Batch plan execution with human checkpoints; fallback without subagent support                 | When executing a written plan in a separate session                        |
-| `finishing-a-development-branch` | Verify tests, present merge/PR/discard options, clean up worktree                              | When implementation is complete and ready to integrate                     |
-| `receiving-code-review`          | Technical evaluation of review feedback; verify before implementing                            | When receiving code review feedback, before implementing suggestions       |
-| `requesting-code-review`         | Dispatch code-reviewer subagent with precise context (git SHAs + requirements)                 | After completing a task, before declaring work done or merging             |
-| `subagent-driven-development`    | Fresh subagent per task with two-stage review (spec compliance, then code quality)             | When executing implementation plans with independent tasks in this session |
-| `systematic-debugging`           | 4-phase root cause process: reproduce, localize, identify root cause, verify fix               | When encountering any bug, test failure, or unexpected behavior            |
-| `test-driven-development`        | RED-GREEN-REFACTOR: write failing test, watch it fail, pass with minimal code                  | **ALWAYS** when implementing any feature or bug fix                        |
-| `using-git-worktrees`            | Isolated workspace per feature branch with safety verification                                 | When starting feature work needing isolation from the current workspace    |
-| `using-superpowers`              | Introduction to the superpowers system; mandatory skill-check before every task                | **ALWAYS** at session start and before any task                            |
-| `verification-before-completion` | Run verification commands and confirm output before making any success claim                   | **Before** claiming work is complete, fixed, or passing                    |
-| `writing-plans`                  | Bite-sized tasks (2-5 min each) with file paths, code, verify steps; saves to `.agents/plans/` | After brainstorming approval, before touching code                         |
-| `writing-skills`                 | Create and test new skills following agentskills.io best practices                             | When creating or improving agent skills for this project                   |
-
-#### Superpowers workflow
-
-The canonical 7-step workflow for new feature development:
-
-1. **`brainstorming`** — Explore context, ask clarifying questions one at a time, propose 2-3 approaches with trade-offs, present design in sections, save spec to `.agents/specs/YYYY-MM-DD-<topic>-design.md`
-2. **`using-git-worktrees`** — Create isolated workspace on a new branch, run project setup, verify clean test baseline
-3. **`writing-plans`** — Break approved design into bite-sized tasks (2-5 min each) with exact file paths, complete code, and verification steps; save to `.agents/plans/YYYY-MM-DD-<feature>.md`
-4. **`subagent-driven-development`** or **`executing-plans`** — Dispatch fresh subagent per task with two-stage review (spec compliance first, then code quality), or execute in batches with human checkpoints
-5. **`test-driven-development`** — During implementation: write failing test, watch it fail, write minimal code to pass, refactor, commit
-6. **`requesting-code-review`** — Between tasks and before merge: dispatch reviewer subagent with git SHAs and requirements
-7. **`finishing-a-development-branch`** — When tasks complete: verify tests, present merge/PR/keep/discard options, clean up worktree
-
-#### Location overrides
-
-The superpowers skills use default output locations that are overridden for this project:
-
-| Output type                          | Default (superpowers)     | This project     |
-| ------------------------------------ | ------------------------- | ---------------- |
-| Feature design specs (brainstorming) | `docs/superpowers/specs/` | `.agents/specs/` |
-| Implementation plans (writing-plans) | `docs/superpowers/plans/` | `.agents/plans/` |
+| Skill                            | Purpose                                                                                        | When ship invokes it                                                           |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `brainstorming`                  | Socratic design refinement; saves spec to `.agents/specs/`                                     | Complex or ambiguous feature design (Step 5)                                   |
+| `dispatching-parallel-agents`    | Concurrent subagent workflows for multiple independent problems                                | Independent sub-problems within a task (Step 6); full codebase review (Step 3) |
+| `executing-plans`                | Batch plan execution with human checkpoints                                                    | Executing a written plan (Step 6)                                              |
+| `finishing-a-development-branch` | Verify tests, present merge/PR/discard options, clean up worktree                              | After approve: present branch options                                          |
+| `receiving-code-review`          | Technical evaluation of review feedback; verify before implementing                            | When code review feedback is received                                          |
+| `requesting-code-review`         | Dispatch code-reviewer subagent with precise context (git SHAs + requirements)                 | After completing a task, before declaring done                                 |
+| `subagent-driven-development`    | Fresh subagent per task with two-stage review (spec compliance, then code quality)             | When executing implementation plans (Step 6)                                   |
+| `systematic-debugging`           | 4-phase root cause process: reproduce, localize, identify root cause, verify fix               | Bug, test failure, or unexpected behavior (Step 6)                             |
+| `test-driven-development`        | RED-GREEN-REFACTOR: write failing test, watch it fail, pass with minimal code                  | Any feature or bug fix implementation (Step 6)                                 |
+| `using-git-worktrees`            | Isolated workspace per feature branch with safety verification                                 | Feature branch isolation (before Step 5)                                       |
+| `using-superpowers`              | Overview of the superpowers workflow system                                                    | Available for reference; ship embeds the relevant behaviors directly           |
+| `verification-before-completion` | Run verification commands and confirm output before making any success claim                   | Before marking any task done (Step 8)                                          |
+| `writing-plans`                  | Bite-sized tasks (2-5 min each) with file paths, code, verify steps; saves to `.agents/plans/` | Large features needing a detailed plan (Step 5)                                |
+| `writing-skills`                 | Create and test new skills following agentskills.io best practices                             | When creating or improving agent skills                                        |
 
 Permanent project documents (always read at session start):
 
 | File                         | Purpose                             |
 | ---------------------------- | ----------------------------------- |
-| `.agents/specs/app-spec.md`  | Canonical application specification |
+| `.agents/specs/app.md`       | Canonical application specification |
 | `.agents/specs/decisions.md` | Decisions log                       |
 | `.agents/specs/roadmap.md`   | Feature backlog and roadmap (P0-P3) |
 
@@ -223,20 +201,9 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
 8. **shadcn/ui component work** → Read `shadcn/SKILL.md`. Use when adding, editing, or debugging shadcn/ui components.
 9. **Committing changes** → Read `commit/SKILL.md`. Follow the commit workflow before merging any feature branch.
-10. **Any task start** → Invoke the `using-superpowers` skill before responding. Check for a relevant skill — even a 1% chance means you must invoke it.
-11. **New feature or non-trivial change** → Read `brainstorming/SKILL.md` before writing any code. Present design and get approval before implementation.
-12. **Implementation planning** → Read `writing-plans/SKILL.md` after design approval. Save the plan to `.agents/plans/YYYY-MM-DD-<feature>.md`.
-13. **Any feature or bug fix implementation** → Read `test-driven-development/SKILL.md`. Write the failing test first — no production code without a failing test.
-14. **Any bug, test failure, or unexpected behavior** → Read `systematic-debugging/SKILL.md`. Find the root cause before proposing any fix.
-15. **Executing a written plan** → Read `subagent-driven-development/SKILL.md` (or `executing-plans/SKILL.md` if subagents are unavailable).
-16. **Before declaring work complete** → Read `verification-before-completion/SKILL.md`. Run `pnpm run check` and confirm exit code 0 before any completion claim.
-17. **Feature branch isolation** → Read `using-git-worktrees/SKILL.md` when starting isolated development on a new branch.
-18. **Completing a feature branch** → Read `finishing-a-development-branch/SKILL.md` when all tasks are done and tests pass.
-19. **Requesting code review** → Read `requesting-code-review/SKILL.md`. Dispatch the code-reviewer subagent with git SHAs and precise requirements context.
-20. **Receiving code review feedback** → Read `receiving-code-review/SKILL.md`. Verify each suggestion against the codebase before implementing.
-21. **Multiple independent tasks** → Read `dispatching-parallel-agents/SKILL.md` when 2+ independent problems can be solved concurrently.
-22. **Cloudflare work** → Read `cloudflare/SKILL.md` when working with Cloudflare Workers, Pages, D1, R2, KV, AI, or any Cloudflare service.
-23. **Creating or optimizing skills** → Read `skill-creator/SKILL.md` when creating new skills or improving existing ones.
+10. **All development work** → Use `/ship` as the only entry point. Ship orchestrates all workflow skills (brainstorming, TDD, systematic debugging, parallel subagents, etc.) at the right moments. You do not need to invoke them separately.
+11. **Cloudflare work** → Read `cloudflare/SKILL.md` when working with Cloudflare Workers, Pages, D1, R2, KV, AI, or any Cloudflare service.
+12. **Creating or optimizing skills** → Read `skill-creator/SKILL.md` when creating new skills or improving existing ones.
 
 ### Creating custom skills
 
@@ -278,33 +245,34 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
     ├── .gitignore                            # Ignores all folders; add !<name> to track custom skills
     ├── agents-md/                            # AGENTS.md update skill (custom, git-tracked)
     ├── commit/                               # Commit workflow skill (custom, git-tracked)
+    ├── ship/                                 # Primary orchestrator skill (custom, git-tracked)
     ├── better-auth-best-practices/           # Better Auth setup (external)
     ├── better-auth-security-best-practices/  # Better Auth security (external)
-    ├── brainstorming/                        # Design refinement before coding (external, superpowers)
+    ├── brainstorming/                        # Design refinement before coding (external, workflow)
     ├── cloudflare/                           # Cloudflare platform and services (external)
-    ├── dispatching-parallel-agents/          # Concurrent subagent workflows (external, superpowers)
+    ├── dispatching-parallel-agents/          # Concurrent subagent workflows (external, workflow)
     ├── email-and-password-best-practices/    # Email/password auth (external)
     ├── email-best-practices/                 # Email deliverability & compliance (external)
-    ├── executing-plans/                      # Plan execution with checkpoints (external, superpowers)
-    ├── finishing-a-development-branch/       # Merge/PR decision workflow (external, superpowers)
+    ├── executing-plans/                      # Plan execution with checkpoints (external, workflow)
+    ├── finishing-a-development-branch/       # Merge/PR decision workflow (external, workflow)
     ├── frontend-design/                      # UI design patterns (external)
     ├── neon-drizzle/                         # Drizzle ORM guides (external)
     ├── neon-postgres/                        # Postgres best practices (external)
     ├── react-email/                          # react-email components & patterns (external)
-    ├── receiving-code-review/                # Technical code review reception (external, superpowers)
-    ├── requesting-code-review/               # Code reviewer subagent dispatch (external, superpowers)
+    ├── receiving-code-review/                # Technical code review reception (external, workflow)
+    ├── requesting-code-review/               # Code reviewer subagent dispatch (external, workflow)
     ├── shadcn/                               # shadcn/ui components (external)
     ├── skill-creator/                        # Create and optimize agent skills (external)
-    ├── subagent-driven-development/          # Fresh subagent per task with two-stage review (external, superpowers)
-    ├── systematic-debugging/                 # 4-phase root cause debugging process (external, superpowers)
-    ├── test-driven-development/              # RED-GREEN-REFACTOR TDD workflow (external, superpowers)
-    ├── using-git-worktrees/                  # Isolated branch workspaces (external, superpowers)
-    ├── using-superpowers/                    # Superpowers system introduction (external, superpowers)
+    ├── subagent-driven-development/          # Fresh subagent per task with two-stage review (external, workflow)
+    ├── systematic-debugging/                 # 4-phase root cause debugging process (external, workflow)
+    ├── test-driven-development/              # RED-GREEN-REFACTOR TDD workflow (external, workflow)
+    ├── using-git-worktrees/                  # Isolated branch workspaces (external, workflow)
+    ├── using-superpowers/                    # Superpowers system introduction (external, workflow)
     ├── vercel-react-best-practices/          # React/Next.js performance (external)
-    ├── verification-before-completion/       # Verify before claiming done (external, superpowers)
+    ├── verification-before-completion/       # Verify before claiming done (external, workflow)
     ├── web-design-guidelines/               # Web Interface Guidelines (external)
-    ├── writing-plans/                        # Implementation plan creation (external, superpowers)
-    └── writing-skills/                       # New skill creation workflow (external, superpowers)
+    ├── writing-plans/                        # Implementation plan creation (external, workflow)
+    └── writing-skills/                       # New skill creation workflow (external, workflow)
 ```
 
 ---
@@ -387,7 +355,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 ├── assets/             # Shared agent assets (certificate template PDF, etc.)
 ├── plans/              # Implementation plans from writing-plans skill (YYYY-MM-DD-<feature>.md)
 ├── skills/             # Agent skills (see Agent Skills section)
-└── specs/              # Permanent docs (app-spec.md, decisions.md, roadmap.md) and feature design specs
+└── specs/              # Permanent docs (app.md, decisions.md, roadmap.md) and feature design specs
 ```
 
 ### File naming conventions

@@ -2,7 +2,7 @@
 
 > **Agent instructions:** Read this file at the start of every session and before starting any feature work. This is the canonical description of what the application does, who uses it, and what the expected behavior is. Never implement anything that contradicts this spec without first flagging it to the user.
 >
-> **Location:** `.agents/specs/app-spec.md` — this file is tracked in git.
+> **Location:** `.agents/specs/app.md` — this file is tracked in git.
 
 ---
 

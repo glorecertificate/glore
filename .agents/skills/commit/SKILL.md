@@ -13,7 +13,7 @@ Finalize and commit staged changes using conventional commits.
 
 ### 1. Validate — MANDATORY gate
 
-Run `pnpm run check` (or `pnpm run check:parallel` for speed). **This MUST exit with code 0 before any commit is made.** If any TypeScript, lint, format, or unused-export errors are reported, stop immediately, fix every error, and re-run the check until it passes cleanly. Do not proceed to the next step while errors remain. There are no exceptions.
+Run `pnpm run check` (or `pnpm run check:ci` for speed). **This MUST exit with code 0 before any commit is made.** If any TypeScript, lint, format, or unused-export errors are reported, stop immediately, fix every error, and re-run the check until it passes cleanly. Do not proceed to the next step while errors remain. There are no exceptions.
 
 ### 2. Check for changes
 

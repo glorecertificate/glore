@@ -17,7 +17,7 @@
   },
   "options": {
     "typeAware": true,
-    "typeCheck": false
+    "typeCheck": true
   },
   "plugins": ["import", "jsdoc", "jsx-a11y", "nextjs", "node", "promise", "react", "react-perf"],
   "settings": {

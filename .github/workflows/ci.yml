@@ -24,8 +24,8 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
-      - name: Run checks
-        run: pnpm run check:parallel
+      - name: Run code checks
+        run: pnpm run check:ci
 
   deploy:
     name: Deploy Preview

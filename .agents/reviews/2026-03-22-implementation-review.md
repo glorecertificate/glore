@@ -200,7 +200,7 @@ Duplicates across domains have been merged; the higher severity is retained when
 #### `bundle-size-not-in-ci` — Bundle size check not enforced in CI or main check script
 
 **Severity:** low
-**Detail:** `package.json` defines a `check:size` script backed by `size-limit`, but this script is not included in `pnpm run check` or `pnpm run check:parallel`, nor is it run in any CI pipeline. Bundle regressions go undetected until a developer manually runs the size check.
+**Detail:** `package.json` defines a `check:size` script backed by `size-limit`, but this script is not included in `pnpm run check` or `pnpm run check:ci`, nor is it run in any CI pipeline. Bundle regressions go undetected until a developer manually runs the size check.
 **Suggestion:** Add `pnpm run check:size` as a step in the CI workflow (or append it to `pnpm run check`). Set failure thresholds in `.size-limit.json` for the main JS chunk and the page-level chunks that matter most.
 
 ---
@@ -496,8 +496,8 @@ Duplicates across domains have been merged; the higher severity is retained when
 #### `no-precommit-hook` — No pre-commit hook; format check placed in the wrong Husky stage
 
 **Severity:** high
-**Detail:** There is no `.husky/pre-commit` hook. The `commit-msg` hook runs `pnpm oxfmt --check` after the commit message is written, which is the wrong stage for source-file validation. Without a `pre-commit` hook, type errors and lint violations can be committed locally and are only caught at `pre-push` time (when `check:parallel` runs), extending the feedback loop to the full push latency rather than a few seconds.
-**Suggestion:** Create `.husky/pre-commit` with `pnpm run check:parallel` (or at minimum `pnpm run lint && pnpm oxfmt --check`). Move the `pnpm oxfmt --check` line out of `commit-msg` into this new hook. The `commit-msg` hook should only invoke `commitlint`.
+**Detail:** There is no `.husky/pre-commit` hook. The `commit-msg` hook runs `pnpm oxfmt --check` after the commit message is written, which is the wrong stage for source-file validation. Without a `pre-commit` hook, type errors and lint violations can be committed locally and are only caught at `pre-push` time (when `check:ci` runs), extending the feedback loop to the full push latency rather than a few seconds.
+**Suggestion:** Create `.husky/pre-commit` with `pnpm run check:ci` (or at minimum `pnpm run lint && pnpm oxfmt --check`). Move the `pnpm oxfmt --check` line out of `commit-msg` into this new hook. The `commit-msg` hook should only invoke `commitlint`.
 
 ---
 

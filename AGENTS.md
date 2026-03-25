@@ -10,6 +10,16 @@ GloRe Certificate — multilingual e-learning platform for soft skills certifica
 
 ---
 
+<!-- BEGIN:nextjs-agent-rules -->
+
+## Next.js Docs
+
+Before any Next.js work, find and read the relevant doc in `node_modules/next/dist/docs/`. Your training data is outdated — the docs are the source of truth.
+
+<!-- END:nextjs-agent-rules -->
+
+---
+
 ## Commands
 
 | Command                   | Description                                                     |
@@ -1127,7 +1137,7 @@ const getUser = async (id: string): Promise<User> => { ... }
 
 ### Control flow
 
-- **Always use early returns** — never use `else` or `else if`:
+- **`if/else`, `else if`, and `else` blocks are FORBIDDEN without exception.** All conditional logic MUST use guard clauses (early returns). This applies to every language, every file, and every context in this codebase. Any agent writing `if/else` is in violation of project conventions.
 
 ```typescript
 // ✅ Correct
@@ -1137,7 +1147,15 @@ const getStatus = (score: number) => {
   return 'needs-improvement'
 }
 
-// ❌ Wrong
+// ✅ Correct — guard clause pattern
+const processUser = async (id: string) => {
+  const user = await findUser(id)
+  if (!user) return null
+  if (!user.isActive) return null
+  return user
+}
+
+// ❌ FORBIDDEN — if/else
 const getStatus = (score: number) => {
   if (score >= 90) {
     return 'excellent'
@@ -1145,6 +1163,16 @@ const getStatus = (score: number) => {
     return 'good'
   } else {
     return 'needs-improvement'
+  }
+}
+
+// ❌ FORBIDDEN — else after return
+const processUser = async (id: string) => {
+  const user = await findUser(id)
+  if (!user) {
+    return null
+  } else {
+    return user
   }
 }
 ```

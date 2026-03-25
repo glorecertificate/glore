@@ -1,6 +1,9 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "explicit"
+    "source.addMissingImports.ts": "always",
+    "source.fixAll.oxc": "always",
+    "source.format.oxc": "always",
+    "source.removeUnusedImports": "always"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
@@ -16,6 +19,7 @@
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "oxc.enable": true,
   "oxc.fixKind": "dangerous_fix_or_suggestion",
+  "oxc.fmt.configPath": ".oxfmtrc.json",
   "search.exclude": {
     "**/.claude": true,
     "**/node_modules": true

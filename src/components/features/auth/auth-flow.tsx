@@ -6,6 +6,7 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
@@ -32,9 +33,11 @@ const motionTransition = { duration: 0.15, ease: 'easeOut' } as const
 
 export const AuthFlow = ({
   resetToken,
+  sessionExpired,
   ...value
 }: {
   resetToken: string | null
+  sessionExpired?: boolean
   username?: string
   view: Enum<AuthView>
 }) => {
@@ -44,6 +47,12 @@ export const AuthFlow = ({
   const [view, setView] = useState(value.view)
   const [username, setUsername] = useState(value.username)
   const [errored, setErrored] = useState(false)
+
+  useLayoutEffect(() => {
+    if (sessionExpired) {
+      toast.error(t('sessionExpired'))
+    }
+  }, [sessionExpired, t])
 
   useMetadata({
     applicationName: view === 'login' ? false : 'full',

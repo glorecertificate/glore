@@ -800,7 +800,8 @@
     "userNotFound": "User not found",
     "userRequired": "Insert a valid email or username",
     "userTooShort": "Username is too short",
-    "userInvalid": "Invalid email or username"
+    "userInvalid": "Invalid email or username",
+    "sessionExpired": "Your session has expired. Please sign in again."
   },
   "Courses": {
     "active": "Active",

@@ -800,7 +800,8 @@
     "userNotFound": "Usuario no encontrado",
     "userRequired": "Insertar un correo electrónico o username válido",
     "userTooShort": "El username es demasiado corto",
-    "userInvalid": "Email o nombre de usuario no válido"
+    "userInvalid": "Email o nombre de usuario no válido",
+    "sessionExpired": "Tu sesión ha expirado. Inicia sesión de nuevo."
   },
   "Courses": {
     "noChangesToSave": "No hay cambios para guardar",

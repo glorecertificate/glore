@@ -800,7 +800,8 @@
     "userNotFound": "Utente non trovato",
     "userRequired": "Inserire un'email o un nome utente valido",
     "userTooShort": "Il nome utente è troppo breve",
-    "userInvalid": "Email o nome utente non validi"
+    "userInvalid": "Email o nome utente non validi",
+    "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo."
   },
   "Courses": {
     "noChangesToSave": "Nessuna modifica da salvare",

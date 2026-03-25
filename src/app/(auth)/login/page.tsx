@@ -9,12 +9,12 @@ import { intlMetadata } from '@/lib/metadata'
 import { AuthView } from '@/lib/types'
 import { camelize } from '@/lib/utils'
 
-const { parse } = createSearchParamsCache({ token: parseAsString })
+const { parse } = createSearchParamsCache({ expired: parseAsString, token: parseAsString })
 
 const resolveParams = async ({ searchParams }: PageProps<'/login'>) => {
-  const { token } = await parse(searchParams)
+  const { expired, token } = await parse(searchParams)
   const view: AuthView = token ? 'password_reset' : 'login'
-  return { resetToken: token, view }
+  return { expired: expired === 'true', resetToken: token, view }
 }
 
 export const generateMetadata = async (props: PageProps<'/login'>) => {
@@ -24,7 +24,7 @@ export const generateMetadata = async (props: PageProps<'/login'>) => {
 
 const LoginPage = async (props: PageProps<'/login'>) => {
   const { get } = await cookies()
-  const [username, theme, { resetToken, view }] = await Promise.all([
+  const [username, theme, { expired, resetToken, view }] = await Promise.all([
     get('loginUser'),
     get('theme'),
     resolveParams(props),
@@ -33,7 +33,7 @@ const LoginPage = async (props: PageProps<'/login'>) => {
 
   return (
     <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
-      <AuthFlow resetToken={resetToken} username={username} view={view} />
+      <AuthFlow resetToken={resetToken} sessionExpired={expired} username={username} view={view} />
       <div className="flex justify-end">
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={tooltip} />
       </div>

@@ -24,12 +24,20 @@ export const proxy: NextProxy = async request => {
     nextUrl.pathname.startsWith(JOIN_ROOT) ||
     isCertificatePage(nextUrl.pathname)
 
+  const expiredRedirect = () => {
+    const url = new URL(AUTH_ROOT, request.url)
+    if (reqHeaders.get('cookie')?.includes('session_token')) {
+      url.searchParams.set('expired', 'true')
+    }
+    return NextResponse.redirect(url)
+  }
+
   try {
     const session = await auth.api.getSession({ headers: reqHeaders })
 
     if (!session?.user) {
       if (isPublicPath) return response
-      return NextResponse.redirect(new URL(AUTH_ROOT, request.url))
+      return expiredRedirect()
     }
 
     if (nextUrl.pathname === AUTH_ROOT) {
@@ -51,8 +59,6 @@ export const proxy: NextProxy = async request => {
   } catch {
     if (isPublicPath) return response
 
-    const url = new URL(AUTH_ROOT, request.url)
-    url.search = nextUrl.search
-    return NextResponse.redirect(url)
+    return expiredRedirect()
   }
 }

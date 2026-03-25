@@ -291,7 +291,7 @@ export const CourseHeader = () => {
                   <CourseSettings
                     course={course}
                     onError={error => {
-                      console.error(error.message)
+                      console.warn(error.message)
                       toast.error(t('courseCreationFailed'))
                     }}
                     onSuccess={updated => {

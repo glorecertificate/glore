@@ -44,10 +44,8 @@ _All P1 tasks completed._
 | Slug                                  | Feature                                                     | Notes                                                                                                  |
 | ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | `course-search`                       | Course filtering and search                                 | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.       |
-| `console-errors-production`           | Console errors logged in production                         | Features. Replace `console.error` in user-facing flows with structured server-side logging.            |
 | `course-rating-before-completion`     | Course rating allowed before all lessons completed          | Features. Gate the rating action behind a lesson-completion check.                                     |
 | `docs-search-missing`                 | Docs search and filter functionality missing                | Features. Add a search/filter input to the docs page.                                                  |
-| `no-next-image-optimization`          | Images not using next/image or lazy loading                 | Performance. Replace bare `<img>` tags with `@/components/ui/image` or `next/image`.                   |
 | `bundle-size-not-in-ci`               | Bundle size check not enforced in CI                        | Performance. Add `pnpm run check:size` to the Vercel build command or a GitHub Actions workflow.       |
 | `no-explicit-react-cache`             | Expensive pure computations not wrapped in React.cache      | Performance. Wrap request-scoped expensive pure functions in `cache()` from React.                     |
 | `validation-schemas-wrong-location`   | Validation schemas in components/ instead of feature folder | Code Org. Move feature-scoped Zod schemas into `features/<domain>/schemas.ts`.                         |
@@ -139,3 +137,6 @@ _All P1 tasks completed._
 | `drizzle-config-non-null-assertion`    | Replace non-null assertion in drizzle config    | completed:2026-07-22 |
 | `no-health-check-endpoint`             | Add GET /api/v1/health endpoint                 | completed:2026-07-22 |
 | `no-query-result-size-limits`          | Add .limit() to all list queries                | completed:2026-07-22 |
+| `console-errors-production`            | Replace console.error with console.warn in UI   | completed:2026-07-22 |
+| `no-next-image-optimization`           | Verified: no bare img tags found                | completed:2026-07-22 |
+| `no-warning-comments-disabled`         | Verified: only 1 TODO in library code           | completed:2026-07-22 |

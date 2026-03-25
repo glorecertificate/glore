@@ -114,7 +114,7 @@ export const ImageCropper = ({
         setOpen(false)
         setPreviewUrl(null)
       } catch (e) {
-        console.error(e)
+        console.warn(e)
       } finally {
         setSaving(false)
       }

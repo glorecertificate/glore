@@ -124,7 +124,7 @@ export const CourseContent = () => {
       try {
         await submitAnswers([{ id: option.id }])
       } catch (e) {
-        console.error(e)
+        console.warn(e)
       }
     },
     [step, setCourse]

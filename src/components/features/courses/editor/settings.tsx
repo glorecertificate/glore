@@ -146,7 +146,7 @@ export const CourseSettings = ({
         onSuccess?.(data)
       } catch (e) {
         const error = queryError(e)
-        console.error(error.code)
+        console.warn(error.code)
         if (error.code === '23505') {
           form.setError('slug', { message: t('courseSlugTaken') })
           form.setFocus('slug')

@@ -68,7 +68,7 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
     async (user: User, role: PlatformRole) => {
       const { error } = await updateUserRole(user.id, role)
       if (error) {
-        console.error(error)
+        console.warn(error)
         toast.error(t('roleUpdateError'))
         return
       }
@@ -83,7 +83,7 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
       if (!banTarget) return
       const { error } = await banUser(banTarget.id, reason)
       if (error) {
-        console.error(error)
+        console.warn(error)
         toast.error(t('banError'))
         return
       }
@@ -98,7 +98,7 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
     if (!unbanTarget) return
     const { error } = await unbanUser(unbanTarget.id)
     if (error) {
-      console.error(error)
+      console.warn(error)
       toast.error(t('unbanError'))
       return
     }

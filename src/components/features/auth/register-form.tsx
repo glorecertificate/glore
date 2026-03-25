@@ -77,7 +77,7 @@ export const RegisterForm = () => {
       setLoading(false)
 
       if (error) {
-        console.error(error)
+        console.warn(error)
         toast.error(t('submitError'))
         return
       }

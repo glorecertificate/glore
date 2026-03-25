@@ -76,7 +76,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
       const { error } = await inviteTeamMember(data)
 
       if (error) {
-        console.error(error)
+        console.warn(error)
         toast.error(t('inviteError'))
         return
       }

@@ -98,7 +98,7 @@ export const LoginForm = ({
           form.setError('username', { message: t('userNotFound') })
           return form.setFocus('username')
         }
-        console.error(error)
+        console.warn(error)
         return toast.error(t('networkError'))
       }
 
@@ -117,7 +117,7 @@ export const LoginForm = ({
       if (loginError) {
         setLoading(false)
         if (loginError.code === 'AUTH_ERROR') return setPasswordInvalid()
-        console.error(loginError)
+        console.warn(loginError)
         return toast.error(t('networkError'))
       }
 

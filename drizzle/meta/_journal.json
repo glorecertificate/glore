@@ -57,6 +57,13 @@
       "when": 1774353672171,
       "tag": "0007_moaning_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1774435270135,
+      "tag": "0008_big_sphinx",
+      "breakpoints": true
     }
   ]
 }

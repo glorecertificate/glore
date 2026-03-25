@@ -36,9 +36,7 @@ _All P1 tasks completed._
 | `large-action-modules`             | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                     |
 | `many-files-exceed-300-lines`      | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                         |
 | `overly-wide-tables`               | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                             |
-| `no-partial-indexes`               | No partial indexes for status/boolean filtered queries   | Scalability. Add `WHERE status = 'pending'` and similar partial indexes for common filtered queries.   |
 | `no-query-result-size-limits`      | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets. |
-| `no-index-text-columns`            | Frequently queried text columns lack explicit indexes    | Scalability. Add indexes on `username`, `slug`, `email`, and other frequently-filtered text columns.   |
 | `no-rate-limiting-auth`            | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                              |
 | `tsgolint-not-configured`          | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                 |
 | `safequery-non-descriptive-errors` | safeQuery returns non-descriptive error codes            | DX. Extend `queryError` to produce domain-specific codes (`NOT_FOUND`, `CONFLICT`, etc.).              |
@@ -74,6 +72,8 @@ _All P1 tasks completed._
 
 | Slug                                   | Feature                                        | Completed            |
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `no-partial-indexes`                   | Add status/slug/category indexes               | completed:2026-07-22 |
+| `no-index-text-columns`                | Add text column indexes (slug, categoryId)     | completed:2026-07-22 |
 | `missing-suspense-boundaries`          | Add Suspense boundaries to docs pages          | completed:2026-07-22 |
 | `provider-context-split-inconsistent`  | Split i18n and PWA provider/context files      | completed:2026-07-22 |
 | `avatar-upload-no-mime-validation`     | Validate upload magic bytes server-side        | completed:2026-07-22 |

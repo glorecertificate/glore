@@ -78,5 +78,6 @@ export const organizationJoinRequests = pgTable(
   table => [
     index('org_join_requests_organization_id_idx').on(table.organizationId),
     index('org_join_requests_reviewed_by_idx').on(table.reviewedBy),
+    index('org_join_requests_status_idx').on(table.status),
   ]
 )

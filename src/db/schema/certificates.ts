@@ -39,6 +39,7 @@ export const certificates = pgTable(
     index('certificates_user_id_idx').on(table.userId),
     index('certificates_organization_id_idx').on(table.organizationId),
     index('certificates_reviewer_id_idx').on(table.reviewerId),
+    index('certificates_status_idx').on(table.status),
   ]
 )
 

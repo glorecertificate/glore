@@ -1,10 +1,10 @@
 'use client'
 
-import { Route } from 'next'
+import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import Fuse from 'fuse.js'
+import { type default as FuseType } from 'fuse.js'
 import { BookOpenIcon, FileTextIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -44,12 +44,16 @@ export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [members, setMembers] = useState<OrganizationMember[]>([])
   const loaded = useRef(false)
+  const [Fuse, setFuse] = useState<typeof FuseType | null>(null)
 
   useEffect(() => {
     if (!open || loaded.current) return
     loaded.current = true
 
     const load = async () => {
+      const { default: F } = await import('fuse.js')
+      setFuse(() => F)
+
       if (!user.canEdit) {
         const { data } = await listUserCertificates()
         if (data) setCertificates(data)
@@ -74,40 +78,46 @@ export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
 
   const courseFuse = useMemo(
     () =>
-      new Fuse(searchableCourses, {
-        ignoreLocation: true,
-        includeScore: true,
-        keys: ['localTitle', 'slug'],
-        threshold: 0.4,
-      }),
-    [searchableCourses]
+      Fuse
+        ? new Fuse(searchableCourses, {
+            ignoreLocation: true,
+            includeScore: true,
+            keys: ['localTitle', 'slug'],
+            threshold: 0.4,
+          })
+        : null,
+    [Fuse, searchableCourses]
   )
 
   const certFuse = useMemo(
     () =>
-      new Fuse(certificates, {
-        ignoreLocation: true,
-        includeScore: true,
-        keys: ['handle', 'organization.name'],
-        threshold: 0.4,
-      }),
-    [certificates]
+      Fuse
+        ? new Fuse(certificates, {
+            ignoreLocation: true,
+            includeScore: true,
+            keys: ['handle', 'organization.name'],
+            threshold: 0.4,
+          })
+        : null,
+    [Fuse, certificates]
   )
 
   const memberFuse = useMemo(
     () =>
-      new Fuse(members, {
-        ignoreLocation: true,
-        includeScore: true,
-        keys: ['fullName', 'user.email'],
-        threshold: 0.4,
-      }),
-    [members]
+      Fuse
+        ? new Fuse(members, {
+            ignoreLocation: true,
+            includeScore: true,
+            keys: ['fullName', 'user.email'],
+            threshold: 0.4,
+          })
+        : null,
+    [Fuse, members]
   )
 
   const courseResults = useMemo(
     () =>
-      debouncedQuery.trim()
+      debouncedQuery.trim() && courseFuse
         ? courseFuse
             .search(debouncedQuery)
             .slice(0, 8)
@@ -118,7 +128,7 @@ export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
 
   const certResults = useMemo(
     () =>
-      debouncedQuery.trim()
+      debouncedQuery.trim() && certFuse
         ? certFuse
             .search(debouncedQuery)
             .slice(0, 5)
@@ -129,7 +139,7 @@ export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
 
   const memberResults = useMemo(
     () =>
-      debouncedQuery.trim()
+      debouncedQuery.trim() && memberFuse
         ? memberFuse
             .search(debouncedQuery)
             .slice(0, 5)

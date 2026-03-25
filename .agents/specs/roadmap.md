@@ -25,13 +25,12 @@ _No active tasks._
 
 ### P1: High (important)
 
-| Slug                        | Feature                                       | Notes                                                                                                                                 |
-| --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `heavy-client-deps`         | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative. |
-| `sequential-data-fetching`  | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                           |
-| `massive-static-data-files` | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                           |
-| `oversized-ui-components`   | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                |
-| `broad-cache-invalidation`  | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                              |
+| Slug                        | Feature                                       | Notes                                                                                                    |
+| --------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `sequential-data-fetching`  | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.              |
+| `massive-static-data-files` | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.              |
+| `oversized-ui-components`   | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                   |
+| `broad-cache-invalidation`  | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible. |
 
 ### P2: Medium (polish)
 
@@ -142,3 +141,4 @@ _No active tasks._
 | `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | 2026-03-25 |
 | `no-slug-availability-check`           | Slug availability check in course form         | 2026-03-25 |
 | `overuse-use-client`                   | Audit use client in feature components         | 2026-03-25 |
+| `heavy-client-deps`                    | Lazy load heavy client-side dependencies       | 2026-03-25 |

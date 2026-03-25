@@ -3,7 +3,7 @@
 import { memo, useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
 
 import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual'
-import Fuse from 'fuse.js'
+import { type default as FuseType } from 'fuse.js'
 import { type IconName, dynamicIconImports } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 
@@ -112,15 +112,27 @@ export const IconPicker = memo(
 
     const iconsToUse = useMemo(() => iconsList || icons, [iconsList, icons])
 
+    const [FuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
+
+    useEffect(() => {
+      const load = async () => {
+        const { default: F } = await import('fuse.js')
+        setFuseClass(() => F)
+      }
+      void load()
+    }, [])
+
     const fuseInstance = useMemo(
       () =>
-        new Fuse(iconsToUse, {
-          ignoreLocation: true,
-          includeScore: true,
-          keys: ['name', 'tags', 'categories'],
-          threshold: 0.3,
-        }),
-      [iconsToUse]
+        FuseClass
+          ? new FuseClass(iconsToUse, {
+              ignoreLocation: true,
+              includeScore: true,
+              keys: ['name', 'tags', 'categories'],
+              threshold: 0.3,
+            })
+          : null,
+      [FuseClass, iconsToUse]
     )
 
     const filteredIcons = useMemo(() => {
@@ -128,9 +140,11 @@ export const IconPicker = memo(
         return iconsToUse
       }
 
+      if (!fuseInstance) return iconsToUse
+
       const results = fuseInstance.search(debouncedSearch.toLowerCase().trim())
       return results.map(result => result.item)
-    }, [debouncedSearch, iconsToUse, fuseInstance])
+    }, [debouncedSearch, fuseInstance, iconsToUse])
 
     const categorizedIcons = useMemo(() => {
       if (!categorized || debouncedSearch.trim() !== '') {

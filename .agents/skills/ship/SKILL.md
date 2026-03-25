@@ -2,7 +2,7 @@
 name: ship
 description: >
   The primary development orchestrator for this project. Use ship for ANY development work: starting a task, executing features, fixing bugs, reviewing the codebase, checking the roadmap, or committing changes. Ship is the only entry point for all development — it validates context, selects tasks, drives a 5-phase execution pipeline, and delegates to superpowers skills at the right moments. Invoke it via /ship, with a command (run, next, continue, scan, roadmap, specs), or with a task slug to target a specific item.
-argument-hint: run | next | continue | scan | roadmap | specs | <slug>
+argument-hint: run | next | continue | scan | roadmap | specs | <slug> | <n>
 ---
 
 # Ship
@@ -37,17 +37,18 @@ Create a random 6-character alphanumeric string (e.g. `x7k2pa`). Use it consiste
 
 ## Commands
 
-Match input exactly against the table below. `run` and no arguments are strict aliases. Task slugs are matched against roadmap entries when no command matches.
+Match input exactly against the table below. `run` and no arguments are strict aliases. A bare integer is a numeric limit. Task slugs are matched against roadmap entries when nothing else matches.
 
-| Command           | Behavior                                                                                                                                                                                                             |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `run` / (no args) | Autonomous loop. Execute all backlog tasks sequentially with zero confirmations. Pause only for blocking questions (ambiguous design, missing information that cannot be inferred). Loop until the backlog is empty. |
-| `next`            | Single task. Execute the next available backlog task, present results, then stop.                                                                                                                                    |
-| `continue`        | Resume. Claim the first pending or interrupted (`[~]`) task. Check git history for prior work and resume from there. If no `[~]` tasks exist, inform the user. Do not auto-pick from the backlog.                    |
-| `<task-slug>`     | Targeted. Execute the task matching this slug, present results, then stop. If the slug matches no roadmap entry, ask the user how to proceed. Do not guess or skip.                                                  |
-| `scan`            | Codebase audit. Dispatch parallel subagents across 7 review domains. Populate the roadmap with findings (gaps, bugs, refactors, tech debt). Each item includes a one-line rationale. Require confirmation to commit. |
-| `roadmap`         | Display the full roadmap, then show available commands.                                                                                                                                                              |
-| `specs`           | Display a structured recap of `.agents/specs/app.md`, then show available commands.                                                                                                                                  |
+| Command           | Behavior                                                                                                                                                                                                                                                                                                                                |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `run` / (no args) | **Autonomous loop — start immediately, no confirmation, no roadmap display.** Execute all backlog tasks, loop until the backlog is empty. Pause only for genuine blocking questions (ambiguous design, missing information that cannot be inferred). There is no preamble, no roadmap recap, no "shall I proceed?" — just start task 1. |
+| `<n>` (integer)   | **Numeric limit — autonomous, then stop.** Pick the next N highest-priority backlog tasks. Among them, identify any that are fully independent (no shared files, modules, or domain areas) and execute those in parallel via subagents. Execute the rest sequentially. After all N tasks are done, present outcomes and stop.           |
+| `next`            | Single task. Execute the next available backlog task, present results, then stop.                                                                                                                                                                                                                                                       |
+| `continue`        | Resume. Claim the first pending or interrupted (`[~]`) task. Check git history for prior work and resume from there. If no `[~]` tasks exist, inform the user. Do not auto-pick from the backlog.                                                                                                                                       |
+| `<task-slug>`     | Targeted. Execute the task matching this slug, present results, then stop. If the slug matches no roadmap entry, ask the user how to proceed. Do not guess or skip.                                                                                                                                                                     |
+| `scan`            | Codebase audit. Dispatch parallel subagents across 7 review domains. Populate the roadmap with findings (gaps, bugs, refactors, tech debt). Each item includes a one-line rationale. Require confirmation to commit.                                                                                                                    |
+| `roadmap`         | Display the full roadmap, then show available commands.                                                                                                                                                                                                                                                                                 |
+| `specs`           | Display a structured recap of `.agents/specs/app.md`, then show available commands.                                                                                                                                                                                                                                                     |
 
 ### Roadmap display format
 
@@ -79,6 +80,7 @@ Show this after every stopping point:
 What's next?
   run       — execute all remaining tasks autonomously
   next      — execute one task, then stop for feedback
+  <n>       — execute N tasks autonomously (parallel when possible), then stop
   continue  — resume a pending task
   scan      — audit codebase and update roadmap
   roadmap   — view the full roadmap
@@ -189,6 +191,34 @@ After Phase 5, loop back to task selection immediately. No pause, no results pre
 When the backlog is empty:
 
 > All tasks complete. Use `scan` to find new work or add items to the roadmap.
+
+Then show available commands.
+
+### In `<n>` (numeric limit) mode
+
+Before starting, resolve the task list:
+
+1. Collect the next N highest-priority backlog tasks (P0 first, then P1, etc.).
+2. Partition them into parallel groups and a sequential queue:
+   - **Parallel group:** tasks with no shared files, modules, tables, or domain areas — dispatch via `dispatching-parallel-agents`.
+   - **Sequential queue:** everything else, ordered by priority.
+3. Execute the parallel group first (all at once via subagents), then the sequential queue one by one.
+4. After all N tasks are done, present a consolidated outcome summary and stop.
+
+Do not ask for confirmation before starting. Do not show the roadmap before starting. Pick the N tasks and begin.
+
+If fewer than N tasks are available, execute all remaining ones and note the shortfall in the outcome summary.
+
+Outcome summary format:
+
+```
+Completed N tasks:
+  [x] slug-1: Feature name
+  [x] slug-2: Feature name   (parallel)
+  [x] slug-3: Feature name   (parallel)
+
+Notes: [any edge cases, blocked items, or follow-up needed]
+```
 
 Then show available commands.
 

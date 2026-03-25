@@ -5,7 +5,7 @@ import 'server-only'
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
-import { and, asc, count, eq, inArray } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
@@ -172,6 +172,17 @@ const requireEditor = async () => {
   if (!user) throw new Error('Not authenticated')
   if (user.role !== 'admin' && !user.isEditor) throw new Error('Not authorized')
   return user
+}
+
+export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
+  await requireEditor()
+
+  const existing = await db.query.courses.findFirst({
+    where: excludeId ? and(eq(courses.slug, slug), ne(courses.id, excludeId)) : eq(courses.slug, slug),
+    columns: { id: true },
+  })
+
+  return !existing
 }
 
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {

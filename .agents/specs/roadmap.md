@@ -25,15 +25,14 @@ _No active tasks._
 
 ### P1: High (important)
 
-| Slug                         | Feature                                       | Notes                                                                                                                                 |
-| ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `no-slug-availability-check` | No slug availability check in course form     | Features. Add a debounced `checkSlugAvailable` server action and wire it to the slug input.                                           |
-| `overuse-use-client`         | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                           |
-| `heavy-client-deps`          | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative. |
-| `sequential-data-fetching`   | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                           |
-| `massive-static-data-files`  | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                           |
-| `oversized-ui-components`    | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                |
-| `broad-cache-invalidation`   | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                              |
+| Slug                        | Feature                                       | Notes                                                                                                                                 |
+| --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `overuse-use-client`        | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                           |
+| `heavy-client-deps`         | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative. |
+| `sequential-data-fetching`  | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                           |
+| `massive-static-data-files` | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                           |
+| `oversized-ui-components`   | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                                                |
+| `broad-cache-invalidation`  | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible.                              |
 
 ### P2: Medium (polish)
 
@@ -142,3 +141,4 @@ _No active tasks._
 | `admin-pages-missing-role-checks`      | Admin pages missing role checks                | 2026-03-24 |
 | `missing-fk-indexes`                   | Missing foreign key indexes                    | 2026-03-24 |
 | `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | 2026-03-25 |
+| `no-slug-availability-check`           | Slug availability check in course form         | 2026-03-25 |

@@ -1,13 +1,14 @@
 'use client'
 
-import { useCallback, useId, useMemo } from 'react'
+import { useCallback, useEffect, useId, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link2Icon } from 'lucide-react'
+import { CheckCircle2Icon, Link2Icon, LoaderCircleIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { checkSlugAvailable } from '@/actions/course'
 import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
@@ -18,6 +19,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course } from '@/db/queries/course'
+import { useDebounce } from '@/hooks/use-debounce'
 import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
 import { cn } from '@/lib/utils'
@@ -66,6 +68,42 @@ export const CourseSettings = ({
     },
   })
   form.watch()
+
+  const slugValue = form.getValues('slug')
+  const debouncedSlug = useDebounce(slugValue, 500)
+  const [slugStatus, setSlugStatus] = useState<'available' | 'checking' | 'idle' | 'taken'>('idle')
+
+  useEffect(() => {
+    if (!debouncedSlug || debouncedSlug.length < COURSE_SLUG_MIN_LENGTH || !SLUG_REGEX.test(debouncedSlug)) {
+      setSlugStatus('idle')
+      return
+    }
+    if (course?.slug === debouncedSlug) {
+      setSlugStatus('idle')
+      return
+    }
+
+    let cancelled = false
+    setSlugStatus('checking')
+
+    const check = async () => {
+      try {
+        const available = await checkSlugAvailable(debouncedSlug, course?.id)
+        if (cancelled) return
+        setSlugStatus(available ? 'available' : 'taken')
+        if (!available) {
+          form.setError('slug', { message: t('courseSlugTaken') })
+        }
+      } catch {
+        if (!cancelled) setSlugStatus('idle')
+      }
+    }
+
+    void check()
+    return () => {
+      cancelled = true
+    }
+  }, [course?.id, course?.slug, debouncedSlug, form, t])
 
   const slugId = useId()
   const slugPrefix = `${window.location.origin}/courses/`
@@ -209,7 +247,13 @@ export const CourseSettings = ({
                       {...field}
                     />
                     <InputGroupAddon align="inline-end">
-                      <Link2Icon className="cursor-default" />
+                      {slugStatus === 'checking' ? (
+                        <LoaderCircleIcon className="animate-spin text-muted-foreground" />
+                      ) : slugStatus === 'available' ? (
+                        <CheckCircle2Icon className="text-success" />
+                      ) : (
+                        <Link2Icon className="cursor-default" />
+                      )}
                     </InputGroupAddon>
                   </InputGroup>
                   <FormMessage />

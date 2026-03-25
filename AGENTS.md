@@ -152,6 +152,7 @@ skills --help                         # Show all CLI commands
 | `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                         | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
 | `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance           | When creating, editing, or optimizing agent skills for this project                 |
 | `commit`                              | custom                        | Finalize and commit staged changes using conventional commits           | After completing a feature, before merging to main                                  |
+| `release`                             | custom                        | Controlled release workflow: preview, confirm, publish                  | When cutting a release (`/release`) or when ship triggers a release gate            |
 | `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                                  | When adding, modifying, or debugging shadcn/ui components                           |
 | `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — execute tasks, scan codebase, manage roadmap | **ALWAYS** when starting any development work (`/ship`)                             |
 
@@ -201,9 +202,10 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
 8. **shadcn/ui component work** → Read `shadcn/SKILL.md`. Use when adding, editing, or debugging shadcn/ui components.
 9. **Committing changes** → Read `commit/SKILL.md`. Follow the commit workflow before merging any feature branch.
-10. **All development work** → Use `/ship` as the only entry point. Ship orchestrates all workflow skills (brainstorming, TDD, systematic debugging, parallel subagents, etc.) at the right moments. You do not need to invoke them separately.
-11. **Cloudflare work** → Read `cloudflare/SKILL.md` when working with Cloudflare Workers, Pages, D1, R2, KV, AI, or any Cloudflare service.
-12. **Creating or optimizing skills** → Read `skill-creator/SKILL.md` when creating new skills or improving existing ones.
+10. **Releasing versions** → Read `release/SKILL.md`. Follow the release workflow for version bumps, changelog generation, and GitHub releases. Ship delegates to this skill at its release gate.
+11. **All development work** → Use `/ship` as the only entry point. Ship orchestrates all workflow skills (brainstorming, TDD, systematic debugging, parallel subagents, etc.) at the right moments. You do not need to invoke them separately.
+12. **Cloudflare work** → Read `cloudflare/SKILL.md` when working with Cloudflare Workers, Pages, D1, R2, KV, AI, or any Cloudflare service.
+13. **Creating or optimizing skills** → Read `skill-creator/SKILL.md` when creating new skills or improving existing ones.
 
 ### Creating custom skills
 
@@ -228,6 +230,7 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
 /*/
 !agents-md
 !commit
+!release
 
 # WRONG — external skills must not be exceptions
 /*/
@@ -245,6 +248,7 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
     ├── .gitignore                            # Ignores all folders; add !<name> to track custom skills
     ├── agents-md/                            # AGENTS.md update skill (custom, git-tracked)
     ├── commit/                               # Commit workflow skill (custom, git-tracked)
+    ├── release/                              # Release workflow skill (custom, git-tracked)
     ├── ship/                                 # Primary orchestrator skill (custom, git-tracked)
     ├── better-auth-best-practices/           # Better Auth setup (external)
     ├── better-auth-security-best-practices/  # Better Auth security (external)

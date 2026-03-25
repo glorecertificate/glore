@@ -1,8 +1,8 @@
 ---
 name: ship
 description: >
-  The primary development orchestrator for this project. Use ship for ANY development work: starting a task, executing features, fixing bugs, reviewing the codebase, checking the roadmap, or committing changes. Ship is the only entry point for all development — it validates context, selects tasks, drives a 5-phase execution pipeline, and delegates to superpowers skills at the right moments. Invoke it via /ship, with a command (run, next, continue, scan, roadmap, specs), or with a task slug to target a specific item.
-argument-hint: run | next | continue | scan | roadmap | specs | <slug> | <n>
+  The primary development orchestrator for this project. Use ship for ANY development work: starting a task, executing features, fixing bugs, reviewing the codebase, checking the roadmap, releasing versions, or committing changes. Ship is the only entry point for all development — it validates context, selects tasks, drives a 5-phase execution pipeline, and delegates to superpowers skills at the right moments. Invoke it via /ship, with a command (run, next, continue, scan, roadmap, specs, release), or with a task slug to target a specific item.
+argument-hint: run | next | continue | scan | roadmap | specs | release | <slug> | <n>
 ---
 
 # Ship
@@ -49,6 +49,7 @@ Match input exactly against the table below. `run` and no arguments are strict a
 | `scan`            | Codebase audit. Dispatch parallel subagents across 7 review domains. Populate the roadmap with findings (gaps, bugs, refactors, tech debt). Each item includes a one-line rationale. Require confirmation to commit.                                                                                                                    |
 | `roadmap`         | Display the full roadmap, then show available commands.                                                                                                                                                                                                                                                                                 |
 | `specs`           | Display a structured recap of `.agents/specs/app.md`, then show available commands.                                                                                                                                                                                                                                                     |
+| `release`         | **Release workflow.** Start a normal iteration (same as `run`), but stop when a release is warranted. Present a release summary with commit details and changelog preview. Wait for the user to type `release` to execute, or give feedback. See the [Release](#release) section.                                                       |
 
 ### Roadmap display format
 
@@ -85,8 +86,60 @@ What's next?
   scan      — audit codebase and update roadmap
   roadmap   — view the full roadmap
   specs     — view project specifications
+  release   — execute tasks, then stop for a release
   <slug>    — execute a specific task by slug
 ```
+
+---
+
+## Orchestrator / Sub-Agent Execution Model
+
+When ship runs in autonomous mode without user feedback (`run`, `<n>`, or no args), the main agent becomes an **orchestrator** and must never execute tasks directly. Every task is delegated to a sub-agent. This is mandatory, no exceptions, no additional deliberation.
+
+### Why this matters
+
+Sub-agents receive a clean, focused context with only the information relevant to their specific task. This produces significantly better results than a single agent accumulating context across many tasks, where earlier work pollutes the context window and degrades output quality.
+
+### Orchestrator responsibilities
+
+The main agent (orchestrator) does not write code, run commands, or make file edits. It:
+
+1. **Selects tasks** from the roadmap per the task selection rules.
+2. **Decides the model and reasoning level** for each sub-agent (see model selection below).
+3. **Composes the sub-agent prompt** with scoped instructions, target files, AGENTS.md conventions, and the specific task description.
+4. **Dispatches the sub-agent** and waits for its result.
+5. **Reviews the sub-agent's output** for correctness and convention compliance.
+6. **Loops** to the next task or stops per the active command's rules.
+
+### Sub-agent model selection
+
+The orchestrator must pick the model that performs best for each task:
+
+| Task characteristics                                                                                                                                    | Model      | When to use                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------- |
+| Well-scoped, mechanical, single-file changes, routine features, minor refactors, formatting, translation updates                                        | **Sonnet** | Default for most tasks                 |
+| Architectural decisions with high ambiguity, large cross-cutting refactors (>10K lines), complex multi-constraint reasoning, security-sensitive changes | **Opus**   | Only when deeper reasoning is required |
+
+Sonnet is the default. Choose Opus only when the task genuinely demands it.
+
+### Sub-agents as sub-orchestrators
+
+A sub-agent may in turn dispatch its own sub-agents (sub-sub-agents) to break its work into smaller pieces. When this happens, the sub-agent becomes a **sub-orchestrator** and follows the same rules:
+
+1. It must not execute the sub-tasks itself; it delegates to sub-sub-agents.
+2. It selects the model for each sub-sub-agent based on effort and complexity:
+
+| Task characteristics                                                                | Model      | When to use                                   |
+| ----------------------------------------------------------------------------------- | ---------- | --------------------------------------------- |
+| Trivial, single-purpose tasks: file reads, simple searches, small edits, formatting | **Haiku**  | Minimal effort, speed is the priority         |
+| Standard implementation tasks: component work, action updates, schema changes       | **Sonnet** | Default for most sub-sub-tasks                |
+| Complex reasoning tasks: multi-file refactors, tricky debugging, design decisions   | **Opus**   | Only when the sub-task requires deep thinking |
+
+3. It reviews sub-sub-agent outputs before reporting results back to the orchestrator.
+
+### Enforcement
+
+This model applies unconditionally when any of these commands are invoked: `run`, `<n>`, or ship with no arguments. The orchestrator must delegate immediately after task selection without performing any implementation work itself. There is no opt-out, no "this task is simple enough to do inline" exception. Every task goes to a sub-agent.
 
 ---
 
@@ -244,6 +297,31 @@ Then show available commands. The user may:
 - Give feedback to revise (re-verify and re-present after changes)
 - Say `stop` to pause without committing
 - Say `skip` to mark the task as blocked (`[!]`) and move on
+
+---
+
+## Release
+
+The `release` command combines a normal development iteration with a controlled release gate.
+
+### Execution flow
+
+1. **Start iteration.** Begin exactly as `run` does: load context, select the next backlog task, and execute it through the full pipeline (Phases 1 through 5). Loop to the next task as `run` would.
+
+2. **Release gate.** After completing each task, evaluate whether a release is warranted. A release is warranted when:
+   - All current backlog tasks are done, or
+   - The completed work represents a coherent, shippable increment (a feature, a set of fixes, a meaningful improvement)
+
+   When the agent determines a release is appropriate, it MUST stop and hand off to the release skill.
+
+3. **Delegate to `/release`.** Read `.agents/skills/release/SKILL.md` and follow its workflow. The release skill handles the full preview, confirmation, and execution flow. Do not duplicate its logic here.
+
+4. **After the release completes (or if the user declines),** show available commands and stop. Do not resume the iteration loop.
+
+### Important behaviors
+
+- The release command follows the same orchestrator/sub-agent model as `run`. Tasks are delegated to sub-agents; the orchestrator handles only task selection and the release gate.
+- All release mechanics (preflight checks, increment selection, changelog preview, confirmation, execution) are owned by the release skill. Ship only decides _when_ to trigger it.
 
 ---
 

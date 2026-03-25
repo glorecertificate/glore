@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { teamInvitations, users } from '@/db/schema'
+import { auth } from '@/lib/auth'
 import { APP_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 
 export const GET = async (request: NextRequest) => {
@@ -23,13 +24,17 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.redirect(new URL('/onboarding/error', request.url))
   }
 
-  // Verify the invited user exists in the database
   const user = await db.query.users.findFirst({
     columns: { id: true, onboardedAt: true },
     where: eq(users.id, invitation.userId),
   })
 
   if (!user) {
+    return NextResponse.redirect(new URL('/onboarding/error', request.url))
+  }
+
+  const session = await auth.api.getSession({ headers: request.headers })
+  if (session && session.user.id !== invitation.userId) {
     return NextResponse.redirect(new URL('/onboarding/error', request.url))
   }
 

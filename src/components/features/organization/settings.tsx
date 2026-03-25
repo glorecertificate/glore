@@ -39,7 +39,7 @@ import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
 import { defaultFormDisabled } from '@/lib/utils'
 
-import { organizationSettingsSchema } from './utils'
+import { organizationSettingsSchema } from './schemas'
 
 const SettingsSection = ({
   children,

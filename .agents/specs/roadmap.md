@@ -41,19 +41,17 @@ _All P1 tasks completed._
 
 ### P3: Low (improvements and DX)
 
-| Slug                                  | Feature                                                     | Notes                                                                                                  |
-| ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `course-search`                       | Course filtering and search                                 | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.       |
-| `course-rating-before-completion`     | Course rating allowed before all lessons completed          | Features. Gate the rating action behind a lesson-completion check.                                     |
-| `docs-search-missing`                 | Docs search and filter functionality missing                | Features. Add a search/filter input to the docs page.                                                  |
-| `bundle-size-not-in-ci`               | Bundle size check not enforced in CI                        | Performance. Add `pnpm run check:size` to the Vercel build command or a GitHub Actions workflow.       |
-| `no-explicit-react-cache`             | Expensive pure computations not wrapped in React.cache      | Performance. Wrap request-scoped expensive pure functions in `cache()` from React.                     |
-| `validation-schemas-wrong-location`   | Validation schemas in components/ instead of feature folder | Code Org. Move feature-scoped Zod schemas into `features/<domain>/schemas.ts`.                         |
-| `no-rate-limiting-expensive-actions`  | No rate limiting on expensive server actions                | Scalability. Add rate limiting to PDF generation and AI command actions.                               |
-| `no-concurrent-write-handling`        | No locking for concurrent writes                            | Scalability. Add optimistic concurrency checks (e.g., `updatedAt` comparison) to critical write paths. |
-| `invitation-no-session-binding`       | Invitation acceptance not bound to accepting user           | Security. Validate that the user accepting the invitation matches the token recipient.                 |
-| `cookie-cache-revocation-window`      | 5-minute cookie cache keeps banned users active             | Security. Reduce cookie cache TTL or add a revocation check for banned/suspended users.                |
-| `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment        | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox.             |
+| Slug                                  | Feature                                                | Notes                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `course-search`                       | Course filtering and search                            | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state.       |
+| `course-rating-before-completion`     | Course rating allowed before all lessons completed     | Features. Gate the rating action behind a lesson-completion check.                                     |
+| `docs-search-missing`                 | Docs search and filter functionality missing           | Features. Add a search/filter input to the docs page.                                                  |
+| `bundle-size-not-in-ci`               | Bundle size check not enforced in CI                   | Performance. Add `pnpm run check:size` to the Vercel build command or a GitHub Actions workflow.       |
+| `no-explicit-react-cache`             | Expensive pure computations not wrapped in React.cache | Performance. Wrap request-scoped expensive pure functions in `cache()` from React.                     |
+| `no-rate-limiting-expensive-actions`  | No rate limiting on expensive server actions           | Scalability. Add rate limiting to PDF generation and AI command actions.                               |
+| `no-concurrent-write-handling`        | No locking for concurrent writes                       | Scalability. Add optimistic concurrency checks (e.g., `updatedAt` comparison) to critical write paths. |
+| `cookie-cache-revocation-window`      | 5-minute cookie cache keeps banned users active        | Security. Reduce cookie cache TTL or add a revocation check for banned/suspended users.                |
+| `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment   | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox.             |
 
 ---
 
@@ -140,3 +138,5 @@ _All P1 tasks completed._
 | `console-errors-production`            | Replace console.error with console.warn in UI   | completed:2026-07-22 |
 | `no-next-image-optimization`           | Verified: no bare img tags found                | completed:2026-07-22 |
 | `no-warning-comments-disabled`         | Verified: only 1 TODO in library code           | completed:2026-07-22 |
+| `validation-schemas-wrong-location`    | Move org schema to schemas.ts                   | completed:2026-07-22 |
+| `invitation-no-session-binding`        | Bind invitation acceptance to session user      | completed:2026-07-22 |

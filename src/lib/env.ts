@@ -4,7 +4,10 @@ const schema = z.object({
   APP_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().regex(/^[A-Za-z0-9+/]{43}=$/),
   COOKIE_PREFIX: z.string().optional(),
-  DATABASE_URL: z.string().startsWith('postgresql://'),
+  DATABASE_URL: z
+    .string()
+    .startsWith('postgresql://')
+    .refine(url => url.includes('sslmode=require'), 'DATABASE_URL must include sslmode=require'),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/),

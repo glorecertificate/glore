@@ -13,7 +13,7 @@ const urlBase64ToUint8Array = (base64: string) => {
   return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
 }
 
-const usePWAContext = () => {
+export const usePWAContext = () => {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
   const [pushSubscribed, setPushSubscribed] = useState(false)
@@ -116,8 +116,3 @@ const usePWAContext = () => {
 }
 
 export const PWAContext = createContext<ReturnType<typeof usePWAContext> | null>(null)
-
-export const PWAContextProvider = ({ children }: React.PropsWithChildren) => {
-  const value = usePWAContext()
-  return <PWAContext.Provider value={value}>{children}</PWAContext.Provider>
-}

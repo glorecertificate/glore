@@ -2,7 +2,7 @@
 
 import { useContext } from 'react'
 
-import { I18nContext } from '@/components/providers/i18n-provider'
+import { I18nContext } from '@/components/providers/i18n-context'
 
 /**
  * Accesses i18n context for localization and locale management.

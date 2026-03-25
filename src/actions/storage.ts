@@ -15,6 +15,24 @@ const userWith = {
   regions: { columns: { id: true, name: true, icon: true } },
 } as const
 
+const IMAGE_SIGNATURES: [string, number[]][] = [
+  ['image/png', [0x89, 0x50, 0x4e, 0x47]],
+  ['image/jpeg', [0xff, 0xd8, 0xff]],
+  ['image/webp', [0x52, 0x49, 0x46, 0x46]],
+]
+
+const MAX_AVATAR_SIZE = 5 * 1024 * 1024
+
+const validateImageFile = async (file: File) => {
+  if (file.size > MAX_AVATAR_SIZE) throw new Error('File too large (max 5 MB)')
+
+  const buffer = new Uint8Array(await file.slice(0, 8).arrayBuffer())
+  const match = IMAGE_SIGNATURES.find(([, sig]) => sig.every((byte, i) => buffer[i] === byte))
+  if (!match) throw new Error('Invalid image file')
+
+  return match[0]
+}
+
 export const uploadAvatar = async (formData: FormData) => {
   const file = formData.get('file') as File
   if (!file) throw new Error('No file uploaded')
@@ -22,7 +40,9 @@ export const uploadAvatar = async (formData: FormData) => {
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
 
-  const url = await r2Put(`avatars/${user.id}-${Date.now()}.png`, file, 'image/png')
+  const mimeType = await validateImageFile(file)
+  const ext = mimeType.split('/')[1]
+  const url = await r2Put(`avatars/${user.id}-${Date.now()}.${ext}`, file, mimeType)
 
   await db.update(users).set({ avatarUrl: url }).where(eq(users.id, user.id))
 

@@ -31,7 +31,6 @@ _All P1 tasks completed._
 
 | Slug                                  | Feature                                                   | Notes                                                                                                                  |
 | ------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `cert-form-missing-field-errors`      | Certificate form missing field-level errors               | Features. Add Zod refinements and per-field error messages for length, skill requirements, and duration constraints.   |
 | `docs-article-edit-delete-missing`    | Docs article edit and delete missing                      | Features. Wire edit and delete actions to article list items in the docs UI.                                           |
 | `missing-empty-states`                | Multiple screens missing empty states                     | Features. Add empty state UI to courses, certificates, members, and docs lists.                                        |
 | `no-session-expiry-feedback`          | No user feedback on session expiry                        | Features. Show a toast or modal when session expires mid-session, redirecting to login.                                |
@@ -98,6 +97,7 @@ _All P1 tasks completed._
 
 | Slug                                   | Feature                                        | Completed            |
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `cert-form-missing-field-errors`       | Per-field cert form validation errors          | completed:2026-07-22 |
 | `broad-cache-invalidation`             | Per-record cache tag invalidation              | completed:2026-07-22 |
 | `oversized-ui-components`              | Split oversized UI components                  | completed:2026-07-22 |
 | `no-security-headers`                  | No browser security headers                    | 2026-03-24           |

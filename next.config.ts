@@ -1,5 +1,5 @@
 import { type NextConfig, Route } from 'next'
-import { PHASE_DEVELOPMENT_SERVER, type PHASE_TYPE } from 'next/constants'
+import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type PHASE_TYPE } from 'next/constants'
 
 import nextIntl from 'next-intl/plugin'
 
@@ -155,7 +155,7 @@ const plugins = [
 ]
 
 export default (phase: PHASE_TYPE) => {
-  if (phase === PHASE_DEVELOPMENT_SERVER) {
+  if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
     validateEnv()
   }
   return plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)

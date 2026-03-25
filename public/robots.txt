@@ -1,3 +1,11 @@
 User-Agent: *
 Allow: /
-Disallow:
+
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /certificates
+Disallow: /courses
+Disallow: /organization
+Disallow: /onboarding
+Disallow: /api/

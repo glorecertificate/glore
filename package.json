@@ -21,6 +21,7 @@
     "check:ci": "concurrently -g 'tsc --noEmit' 'oxlint' 'oxfmt --check' 'knip'",
     "check:size": "size-limit",
     "deploy": "vercel build && vercel --prebuilt",
+    "deploy:preview": "vercel build && vercel --prebuilt",
     "deploy:prod": "vercel build && vercel --prebuilt --prod",
     "db": "drizzle-kit",
     "email": "dotenv -- email dev --dir src/emails --port 3031",

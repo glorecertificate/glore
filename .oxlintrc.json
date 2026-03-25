@@ -90,6 +90,13 @@
     "eslint/no-restricted-imports": [
       "error",
       {
+        "paths": [
+          {
+            "name": "next/headers",
+            "importNames": ["cookies"],
+            "message": "Use @/actions/cookies instead of cookies from next/headers."
+          }
+        ],
         "patterns": [
           {
             "group": ["../**"],
@@ -101,7 +108,7 @@
     "eslint/no-return-await": "error",
     "eslint/no-script-url": "error",
     "eslint/no-self-compare": "error",
-    "eslint/no-shadow": "off",
+    "eslint/no-shadow": "warn",
     "eslint/no-throw-literal": "error",
     "eslint/no-unreachable": "error",
     "eslint/no-unused-expressions": "error",

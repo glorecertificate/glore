@@ -980,7 +980,7 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 | `VAPID_PRIVATE_KEY`    | `z.string().min(1).optional()`                          | Generate with `web-push generate-vapid-keys`         |
 | `VAPID_SUBJECT`        | `z.string().min(1).optional()`                          | `mailto:` address or HTTPS URL                       |
 
-**Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called only when `phase === PHASE_DEVELOPMENT_SERVER`. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
+**Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called when `phase === PHASE_DEVELOPMENT_SERVER` or `phase === PHASE_PRODUCTION_BUILD`. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process.
 
 **Runtime validation:** `src/instrumentation.ts` exports `register` as a sync function that calls `validateEnv()` when the Next.js server bootstraps.
 
@@ -1082,7 +1082,7 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 
 21. **Env vars require env.ts entry — MANDATORY:** Every environment variable used by the Next.js app MUST have a corresponding entry in the Zod schema at `src/lib/env.ts`. This applies without exception: adding a new env var to `.env` or Vercel without updating `env.ts` is a bug. The schema drives both runtime type safety (`ProcessEnv` augmentation) and validation at build time (`next.config.ts`) and server startup (`src/instrumentation.ts`). See the [Environment Variables](#environment-variables) section for the complete Zod schema reference.
 
-22. **`validateEnv` must be called at startup only:** `src/lib/env.ts` exports `validateEnv()` which parses `process.env` against the Zod schema. It is intentionally called only from `next.config.ts` (phase-guarded: `PHASE_DEVELOPMENT_SERVER` only) and `src/instrumentation.ts` (inside `register()`). Do not call it from application code or server actions.
+22. **`validateEnv` must be called at startup only:** `src/lib/env.ts` exports `validateEnv()` which parses `process.env` against the Zod schema. It is intentionally called only from `next.config.ts` (phase-guarded: `PHASE_DEVELOPMENT_SERVER` and `PHASE_PRODUCTION_BUILD`) and `src/instrumentation.ts` (inside `register()`). Do not call it from application code or server actions.
 
 ---
 

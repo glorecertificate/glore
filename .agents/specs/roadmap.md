@@ -29,34 +29,24 @@ _All P1 tasks completed._
 
 ### P2: Medium (polish)
 
-| Slug                                  | Feature                                                  | Notes                                                                                                                  |
-| ------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `missing-cache-on-queries`            | Some read queries missing use cache                      | Performance. Add `'use cache'` to frequently-called read actions not yet cached.                                       |
-| `over-fetching-queries`               | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                                    |
-| `missing-suspense-boundaries`         | Suspense boundaries missing on some dashboard pages      | Performance. Apply the outer-sync + inner-async Suspense pattern to all data-heavy dashboard pages.                    |
-| `provider-context-split-inconsistent` | Provider/context split not consistently applied          | Code Org. Split mixed provider files into `*-context.tsx` + `*-provider.tsx`.                                          |
-| `actions-importing-ui-components`     | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                                                    |
-| `large-action-modules`                | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                                     |
-| `many-files-exceed-300-lines`         | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                                         |
-| `overly-wide-tables`                  | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                                             |
-| `no-partial-indexes`                  | No partial indexes for status/boolean filtered queries   | Scalability. Add `WHERE status = 'pending'` and similar partial indexes for common filtered queries.                   |
-| `no-query-result-size-limits`         | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets.                 |
-| `no-index-text-columns`               | Frequently queried text columns lack explicit indexes    | Scalability. Add indexes on `username`, `slug`, `email`, and other frequently-filtered text columns.                   |
-| `notification-read-no-ownership`      | markNotificationRead missing ownership check             | Security. Add `eq(notifications.userId, session.user.id)` predicate to the update query.                               |
-| `push-delete-no-ownership`            | DELETE /api/v1/push missing ownership check              | Security. Verify the subscription belongs to the authenticated user before deleting.                                   |
-| `no-rate-limiting-auth`               | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                                              |
-| `avatar-upload-no-mime-validation`    | Avatar upload trusts client-provided MIME type           | Security. Validate file magic bytes server-side.                                                                       |
-| `list-org-tutors-no-auth`             | listOrgTutors exposes data without auth check            | Security. Add session auth check to the `listOrgTutors` server action.                                                 |
-| `tsgolint-not-configured`             | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                                 |
-| `commitlint-scope-discrepancy`        | dev scope missing from commitlint config                 | DX. Add `dev` to `scope-enum` in `commitlint.config.ts`.                                                               |
-| `no-lint-rule-cookies-import`         | No lint rule enforcing cookies import restriction        | DX. Add a `no-restricted-imports` rule for `cookies` from `next/headers` pointing to `@/actions/cookies`.              |
-| `safequery-non-descriptive-errors`    | safeQuery returns non-descriptive error codes            | DX. Extend `queryError` to produce domain-specific codes (`NOT_FOUND`, `CONFLICT`, etc.).                              |
-| `no-shadow-rule-disabled`             | eslint/no-shadow disabled                                | DX. Re-enable `eslint/no-shadow` in `.oxlintrc.json`.                                                                  |
-| `deploy-preview-script-missing`       | deploy:preview script missing from package.json          | DX. Add the `deploy:preview` script documented in AGENTS.md.                                                           |
-| `env-validation-skips-prod-build`     | Env validation skips production build phase              | Infra. Run `validateEnv()` during `PHASE_PRODUCTION_BUILD` to catch missing vars before a broken deployment goes live. |
-| `no-maxduration-ai-route`             | Streaming AI route has no maxDuration export             | Infra. Add `export const maxDuration = 60` to the AI streaming route.                                                  |
-| `robots-txt-allows-all-routes`        | robots.txt exposes full authenticated route structure    | Infra. Disallow `/admin`, `/dashboard`, `/settings`, `/certificates`, and other authenticated paths.                   |
-| `database-url-no-ssl`                 | DATABASE_URL validator does not enforce SSL mode         | Infra. Add `.refine()` requiring `sslmode=` in the connection string.                                                  |
+| Slug                                  | Feature                                                  | Notes                                                                                                  |
+| ------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `missing-cache-on-queries`            | Some read queries missing use cache                      | Performance. Add `'use cache'` to frequently-called read actions not yet cached.                       |
+| `over-fetching-queries`               | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                    |
+| `missing-suspense-boundaries`         | Suspense boundaries missing on some dashboard pages      | Performance. Apply the outer-sync + inner-async Suspense pattern to all data-heavy dashboard pages.    |
+| `provider-context-split-inconsistent` | Provider/context split not consistently applied          | Code Org. Split mixed provider files into `*-context.tsx` + `*-provider.tsx`.                          |
+| `actions-importing-ui-components`     | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                                    |
+| `large-action-modules`                | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                     |
+| `many-files-exceed-300-lines`         | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                         |
+| `overly-wide-tables`                  | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                             |
+| `no-partial-indexes`                  | No partial indexes for status/boolean filtered queries   | Scalability. Add `WHERE status = 'pending'` and similar partial indexes for common filtered queries.   |
+| `no-query-result-size-limits`         | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets. |
+| `no-index-text-columns`               | Frequently queried text columns lack explicit indexes    | Scalability. Add indexes on `username`, `slug`, `email`, and other frequently-filtered text columns.   |
+| `no-rate-limiting-auth`               | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                              |
+| `avatar-upload-no-mime-validation`    | Avatar upload trusts client-provided MIME type           | Security. Validate file magic bytes server-side.                                                       |
+| `tsgolint-not-configured`             | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                 |
+| `safequery-non-descriptive-errors`    | safeQuery returns non-descriptive error codes            | DX. Extend `queryError` to produce domain-specific codes (`NOT_FOUND`, `CONFLICT`, etc.).              |
+| `database-url-no-ssl`                 | DATABASE_URL validator does not enforce SSL mode         | Infra. Add `.refine()` requiring `sslmode=` in the connection string.                                  |
 
 ### P3: Low (improvements and DX)
 
@@ -89,6 +79,16 @@ _All P1 tasks completed._
 
 | Slug                                   | Feature                                        | Completed            |
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `robots-txt-allows-all-routes`         | Disallow authenticated routes in robots.txt    | completed:2026-07-22 |
+| `env-validation-skips-prod-build`      | Validate env during production build phase     | completed:2026-07-22 |
+| `no-lint-rule-cookies-import`          | Lint rule for cookies import restriction       | completed:2026-07-22 |
+| `deploy-preview-script-missing`        | Add deploy:preview script                      | completed:2026-07-22 |
+| `no-shadow-rule-disabled`              | Re-enable eslint/no-shadow as warn             | completed:2026-07-22 |
+| `notification-read-no-ownership`       | Verified: ownership check already present      | completed:2026-07-22 |
+| `push-delete-no-ownership`             | Verified: ownership check already present      | completed:2026-07-22 |
+| `list-org-tutors-no-auth`              | Verified: auth check already present           | completed:2026-07-22 |
+| `commitlint-scope-discrepancy`         | Verified: dev scope already in config          | completed:2026-07-22 |
+| `no-maxduration-ai-route`              | Verified: maxDuration already exported         | completed:2026-07-22 |
 | `missing-empty-states`                 | Add empty states to org members and docs root  | completed:2026-07-22 |
 | `no-session-expiry-feedback`           | Show toast on session expiry redirect          | completed:2026-07-22 |
 | `no-signout-confirmation`              | Add confirmation to session revoke buttons     | completed:2026-07-22 |

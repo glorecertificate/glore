@@ -8,7 +8,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 
 export const RedoToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const editor = useEditorRef()
-  const disabled = useEditorSelector(editor => editor.history.redos.length === 0, [])
+  const disabled = useEditorSelector(ed => ed.history.redos.length === 0, [])
   const t = useTranslations('Components.RichTextEditor.actions')
 
   return (
@@ -27,7 +27,7 @@ export const RedoToolbarButton = (props: React.ComponentProps<typeof ToolbarButt
 export const UndoToolbarButton = (props: React.ComponentProps<typeof ToolbarButton>) => {
   const t = useTranslations('Components.RichTextEditor.actions')
   const editor = useEditorRef()
-  const disabled = useEditorSelector(editor => editor.history.undos.length === 0, [])
+  const disabled = useEditorSelector(ed => ed.history.undos.length === 0, [])
 
   return (
     <ToolbarButton

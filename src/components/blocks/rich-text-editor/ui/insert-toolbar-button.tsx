@@ -95,8 +95,8 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
           },
         ].map(item => ({
           ...item,
-          onSelect: (editor, value) => {
-            insertBlock(editor, value)
+          onSelect: (ed: PlateEditor, value) => {
+            insertBlock(ed, value)
           },
         })),
       },
@@ -125,8 +125,8 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
           },
         ].map(item => ({
           ...item,
-          onSelect: (editor, value) => {
-            insertBlock(editor, value)
+          onSelect: (ed: PlateEditor, value) => {
+            insertBlock(ed, value)
           },
         })),
       },
@@ -145,8 +145,8 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
           },
         ].map(item => ({
           ...item,
-          onSelect: (editor, value) => {
-            insertBlock(editor, value)
+          onSelect: (ed: PlateEditor, value) => {
+            insertBlock(ed, value)
           },
         })),
       },
@@ -166,8 +166,8 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
           },
         ].map(item => ({
           ...item,
-          onSelect: (editor, value) => {
-            insertInlineElement(editor, value)
+          onSelect: (ed: PlateEditor, value) => {
+            insertInlineElement(ed, value)
           },
         })),
       },

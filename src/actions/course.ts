@@ -113,10 +113,10 @@ const fetchCourses = cache(async (userId?: string) => {
   })
 })
 
-export const getCourse = async (slug: string, { cache = true }: { cache?: boolean } = {}) => {
+export const getCourse = async (slug: string, { cache: useCache = true }: { cache?: boolean } = {}) => {
   const authUser = await getAuthUser()
   const userId = authUser?.id
-  if (!cache) {
+  if (!useCache) {
     return await safeQuery(async () => {
       const course = await db.query.courses.findFirst({
         where: eq(courses.slug, slug),
@@ -135,11 +135,11 @@ export const getCourse = async (slug: string, { cache = true }: { cache?: boolea
   return await fetchCourse(slug, userId)
 }
 
-export const listCourses = async ({ cache = true }: { cache?: boolean } = {}) => {
+export const listCourses = async ({ cache: useCache = true }: { cache?: boolean } = {}) => {
   const authUser = await getAuthUser()
   const isEditor = authUser?.role === 'admin' || authUser?.isEditor
   const userId = isEditor ? undefined : authUser?.id
-  if (!cache) {
+  if (!useCache) {
     return await safeQuery(async () => {
       const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })
       return result.map(course =>

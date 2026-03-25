@@ -34,7 +34,7 @@ import { ToolbarButton } from '@/components/ui/toolbar'
 import { cn } from '@/lib/utils'
 
 export const TableToolbarButton = (props: DropdownMenuProps) => {
-  const tableSelected = useEditorSelector(editor => editor.api.some({ match: { type: KEYS.table } }), [])
+  const tableSelected = useEditorSelector(ed => ed.api.some({ match: { type: KEYS.table } }), [])
   const { editor, tf } = useEditorPlugin(TablePlugin)
   const mergeState = useTableMergeState()
   const t = useTranslations('Components.RichTextEditor.blocks')

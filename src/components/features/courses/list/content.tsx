@@ -41,7 +41,7 @@ export const CourseListContent = memo(
 
         setCourses(prev => {
           const reordered = orderedCourses.map(course => {
-            const previousCourse = new Map(prev.map(course => [course.id, course])).get(course.id)
+            const previousCourse = new Map(prev.map(c => [c.id, c])).get(course.id)
             const sortOrder = next.get(course.id)
             if (!previousCourse) {
               const { language: _language, ...rest } = course as Course & { language?: Locale }

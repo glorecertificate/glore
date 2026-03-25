@@ -19,6 +19,7 @@
     "format:check": "oxfmt --check",
     "check": "tsc --noEmit && oxlint && oxfmt --check && knip",
     "check:ci": "concurrently -g 'tsc --noEmit' 'oxlint' 'oxfmt --check' 'knip'",
+    "check:fix": "concurrently -g 'tsc --noEmit' 'oxlint --fix' 'oxfmt' 'knip --fix'",
     "check:size": "size-limit",
     "deploy": "vercel build && vercel --prebuilt",
     "deploy:preview": "vercel build && vercel --prebuilt",

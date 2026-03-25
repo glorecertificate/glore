@@ -59,8 +59,8 @@ export const PasswordRequestForm = ({
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
-      const username = schema.username.trim()
-      const { data: emailData, error: emailError } = await findUserEmail(username)
+      const inputUsername = schema.username.trim()
+      const { data: emailData, error: emailError } = await findUserEmail(inputUsername)
 
       if (emailError) {
         if (emailError.code === 'PGRST116') {
@@ -79,13 +79,13 @@ export const PasswordRequestForm = ({
       const { error } = await resetPassword(emailData.email, { redirectTo: `${window.location.origin}/login` })
       if (error) {
         toast.error(t('networkError'))
-        console.warn('Reset password error:', error)
+        console.error('Reset password error:', error)
         return
       }
 
       setView('email_sent')
-      setUsername(username)
-      cookies.set('loginUser', username)
+      setUsername(inputUsername)
+      cookies.set('loginUser', inputUsername)
     },
     [cookies, form, setUsername, setView, t]
   )

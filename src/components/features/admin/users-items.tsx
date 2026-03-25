@@ -193,9 +193,9 @@ export const BanDialog = memo(
     }, [onConfirm, reason])
 
     const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (!open) setReason('')
-        onOpenChange(open)
+      (isOpen: boolean) => {
+        if (!isOpen) setReason('')
+        onOpenChange(isOpen)
       },
       [onOpenChange]
     )

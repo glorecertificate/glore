@@ -36,7 +36,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
   const readOnly = useReadOnly()
   const selected = useSelected()
 
-  const selectionCollapsed = useEditorSelector(editor => !editor.api.isExpanded(), [])
+  const selectionCollapsed = useEditorSelector(ed => !ed.api.isExpanded(), [])
   const isImagePreviewOpen = useImagePreviewValue('isOpen', editor.id)
   const isOpen = !readOnly && selected && selectionCollapsed && !isImagePreviewOpen
   const isEditing = useFloatingMediaValue('isEditing')

@@ -114,7 +114,7 @@ export const ImageCropper = ({
         setOpen(false)
         setPreviewUrl(null)
       } catch (e) {
-        console.warn(e)
+        console.error(e)
       } finally {
         setSaving(false)
       }
@@ -156,9 +156,9 @@ export const ImageCropper = ({
       </div>
 
       <Dialog
-        onOpenChange={open => {
-          setOpen(open)
-          if (!open) {
+        onOpenChange={isOpen => {
+          setOpen(isOpen)
+          if (!isOpen) {
             setPreviewUrl(null)
             setSelectedFile(null)
           }

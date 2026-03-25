@@ -27,8 +27,8 @@ export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
 
 export const hexToRgb = <T extends AnyRecord>(record: T) =>
   Object.entries(record).reduce(
-    (record, [key, value]) => ({
-      ...record,
+    (acc, [key, value]) => ({
+      ...acc,
       [key as keyof T]: [
         parseInt(value.slice(1, 3), 16),
         parseInt(value.slice(3, 5), 16),
@@ -115,7 +115,7 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
   let throttling: boolean
   let timeout: ReturnType<typeof setTimeout>
   let timestamp: number
-  return function throttle(this: Any, ...args: Any[]) {
+  return function throttled(this: Any, ...args: Any[]) {
     if (!throttling) {
       callback.apply(this, args)
       timestamp = Date.now()

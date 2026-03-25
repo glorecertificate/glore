@@ -54,12 +54,12 @@ export const useSidebarResize = ({
       }
       e.preventDefault()
 
-      const { currentWidth, isCollapsed } = propsRef.current
-      const { unit } = parseWidth(currentWidth)
+      const { currentWidth: refWidth, isCollapsed: refCollapsed } = propsRef.current
+      const { unit } = parseWidth(refWidth)
       const startX = e.clientX
       let dragged = false
-      let collapsed = isCollapsed
-      let latestWidth = currentWidth
+      let collapsed = refCollapsed
+      let latestWidth = refWidth
       let referenceX = startX
       let lastToggleTime = 0
 
@@ -73,9 +73,9 @@ export const useSidebarResize = ({
         }
       }
 
-      const onMouseMove = (e: MouseEvent) => {
+      const onMouseMove = (evt: MouseEvent) => {
         if (!dragged) {
-          if (Math.abs(e.clientX - startX) <= 5) {
+          if (Math.abs(evt.clientX - startX) <= 5) {
             return
           }
           dragged = true
@@ -84,7 +84,7 @@ export const useSidebarResize = ({
           setDragging(true)
         }
 
-        const rawPx = direction === 'left' ? window.innerWidth - e.clientX : e.clientX
+        const rawPx = direction === 'left' ? window.innerWidth - evt.clientX : evt.clientX
         const now = Date.now()
         const canToggle = now - lastToggleTime > 200
 
@@ -92,11 +92,11 @@ export const useSidebarResize = ({
           if (!canToggle) {
             return
           }
-          const expandDist = direction === 'left' ? referenceX - e.clientX : e.clientX - referenceX
+          const expandDist = direction === 'left' ? referenceX - evt.clientX : evt.clientX - referenceX
           if (expandDist > minPx * 0.2) {
             collapsed = false
             lastToggleTime = now
-            referenceX = e.clientX
+            referenceX = evt.clientX
             setDragging(true)
             propsRef.current.onToggle?.()
             const clamped = Math.max(minPx, Math.min(maxPx, rawPx))
@@ -109,7 +109,7 @@ export const useSidebarResize = ({
         if (canToggle && rawPx < minPx * 0.6) {
           collapsed = true
           lastToggleTime = now
-          referenceX = e.clientX
+          referenceX = evt.clientX
           setDragging(false)
           propsRef.current.onToggle?.()
           return

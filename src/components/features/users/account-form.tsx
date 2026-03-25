@@ -109,7 +109,7 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
           toast.success(t('accountUpdated'))
         }
       } catch (error) {
-        console.warn(error)
+        console.error(error)
         toast.error(t('accountUpdateError'))
       }
     },

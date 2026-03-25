@@ -246,7 +246,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
       for (const lesson of lessons) {
         const attributes = Object.keys(lesson) as Array<keyof Lesson>
-        const initialLesson = courseRef.current.lessons.find(({ id }) => id === lesson.id)
+        const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
         const lessonUpdates: TableUpdate<'lessons'> = {}
 
         for (const attribute of attributes) {
@@ -273,7 +273,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       }
 
       for (const lesson of lessons) {
-        const initialLesson = courseRef.current.lessons.find(({ id }) => id === lesson.id)
+        const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
 
         const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
         const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
@@ -422,9 +422,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   const removeLesson = useCallback(
     (lessonId: number) => {
-      setCourse(course => ({
-        ...course,
-        lessons: course.lessons
+      setCourse(prev => ({
+        ...prev,
+        lessons: prev.lessons
           .filter(lesson => lesson.id !== lessonId)
           .map((lesson, i) => ({ ...lesson, sortOrder: i + 1 })),
       }))

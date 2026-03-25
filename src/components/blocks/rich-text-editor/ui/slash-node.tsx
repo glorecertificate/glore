@@ -61,8 +61,8 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
           {
             focusEditor: false,
             icon: <SparklesIcon />,
-            onSelect: editor => {
-              editor.getApi(AIChatPlugin).aiChat.show()
+            onSelect: (ed: PlateEditor) => {
+              ed.getApi(AIChatPlugin).aiChat.show()
             },
             value: 'AI',
           },
@@ -145,8 +145,8 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
           },
         ].map(item => ({
           ...item,
-          onSelect: (editor, value) => {
-            insertBlock(editor, value)
+          onSelect: (ed: PlateEditor, value) => {
+            insertBlock(ed, value)
           },
         })),
       },
@@ -157,16 +157,16 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
             icon: <TableOfContentsIcon />,
             keywords: ['toc'],
             label: t('tableOfContents'),
-            onSelect: (editor, value) => {
-              insertBlock(editor, value)
+            onSelect: (ed: PlateEditor, value) => {
+              insertBlock(ed, value)
             },
             value: KEYS.toc,
           },
           {
             icon: <Columns3Icon />,
             label: t('threeColumns'),
-            onSelect: (editor, value) => {
-              insertBlock(editor, value)
+            onSelect: (ed: PlateEditor, value) => {
+              insertBlock(ed, value)
             },
             value: 'action_three_columns',
           },
@@ -175,8 +175,8 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
             icon: <CalendarIcon />,
             keywords: ['time'],
             label: t('date'),
-            onSelect: (editor, value) => {
-              insertInlineElement(editor, value)
+            onSelect: (ed: PlateEditor, value) => {
+              insertInlineElement(ed, value)
             },
             value: KEYS.date,
           },

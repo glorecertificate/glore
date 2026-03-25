@@ -62,7 +62,7 @@ export const BlockDraggable: RenderNodeWrapper = props => {
     return
   }
 
-  return props => <Draggable {...props} />
+  return innerProps => <Draggable {...innerProps} />
 }
 
 const Draggable = (props: PlateElementProps) => {

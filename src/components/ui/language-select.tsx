@@ -63,11 +63,11 @@ export const LanguageSelect = ({
   const activeItemValue = useMemo(() => (controlled ? value : locale), [controlled, locale, value])
 
   const onValueChange = useCallback(
-    (locale: Locale) => {
+    (newLocale: Locale) => {
       if (!controlled) {
-        startTransition(() => setLocale(locale))
+        startTransition(() => setLocale(newLocale))
       }
-      onChange?.(locale)
+      onChange?.(newLocale)
     },
     [controlled, onChange, setLocale]
   )

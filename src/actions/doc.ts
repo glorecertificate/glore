@@ -50,11 +50,11 @@ const fetchDocCategories = cache(async (includeUnpublished = false) => {
   })
 })
 
-export const listDocCategories = async ({ cache = true, includeUnpublished = false } = {}): Promise<{
+export const listDocCategories = async ({ cache: useCache = true, includeUnpublished = false } = {}): Promise<{
   data: DocCategory[] | null
   error: unknown
 }> => {
-  if (!cache) {
+  if (!useCache) {
     const result = await db.query.docCategories.findMany({
       with: includeUnpublished ? articlesWith : publishedArticlesWith,
       orderBy: [asc(docCategories.createdAt)],

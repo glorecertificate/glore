@@ -60,7 +60,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
         200
       )
     } catch (e) {
-      console.warn(e)
+      console.error(e)
       setIsArchiving(false)
       toast.error(t('courseArchivedError'))
     }
@@ -79,7 +79,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
         200
       )
     } catch (e) {
-      console.warn(e)
+      console.error(e)
       setIsArchiving(false)
       toast.error(t('courseArchivedError'))
     }
@@ -95,7 +95,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       onRemove()
       setTimeout(() => setCourses(prev => prev.filter(c => c.id !== course.id)), 200)
     } catch (e) {
-      console.warn(e)
+      console.error(e)
       setIsDeleting(false)
       toast.error(t('courseDeletedError'))
     }

@@ -59,8 +59,8 @@ export const AlignToolbarButton = (props: DropdownMenuProps) => {
 
       <DropdownMenuContent align="start" className="min-w-0">
         <DropdownMenuRadioGroup
-          onValueChange={value => {
-            tf.textAlign.setNodes(value as Alignment)
+          onValueChange={newValue => {
+            tf.textAlign.setNodes(newValue as Alignment)
             editor.tf.focus()
           }}
           value={value}

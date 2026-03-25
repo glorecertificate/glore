@@ -188,9 +188,9 @@ export const TeamInviteDialog = memo(
     }, [firstName, lastName, email, role, locale, onInvite, resetForm, onOpenChange, t])
 
     const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (!open) resetForm()
-        onOpenChange(open)
+      (isOpen: boolean) => {
+        if (!isOpen) resetForm()
+        onOpenChange(isOpen)
       },
       [onOpenChange, resetForm]
     )

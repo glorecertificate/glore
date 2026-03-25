@@ -171,7 +171,7 @@ export const IconPicker = memo(
       }
 
       return Array.from(categories.entries())
-        .map(([name, icons]) => ({ icons, name: t(`categories.${name}` as Any) }))
+        .map(([name, categoryIcons]) => ({ icons: categoryIcons, name: t(`categories.${name}` as Any) }))
         .sort((a, b) => a.name.localeCompare(b.name))
     }, [filteredIcons, categorized, debouncedSearch, t])
 

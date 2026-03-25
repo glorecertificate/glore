@@ -127,9 +127,9 @@ export const ApproveDialog = memo(
     }, [comment, onConfirm])
 
     const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (!open) setComment('')
-        onOpenChange(open)
+      (isOpen: boolean) => {
+        if (!isOpen) setComment('')
+        onOpenChange(isOpen)
       },
       [onOpenChange]
     )
@@ -193,9 +193,9 @@ export const RejectDialog = memo(
     }, [comment, onConfirm])
 
     const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (!open) setComment('')
-        onOpenChange(open)
+      (isOpen: boolean) => {
+        if (!isOpen) setComment('')
+        onOpenChange(isOpen)
       },
       [onOpenChange]
     )
@@ -309,9 +309,9 @@ export const OrgInviteDialog = memo(
     }, [name, email, city, country, url, firstName, lastName, registrantEmail, onInvite, resetForm, onOpenChange, t])
 
     const handleOpenChange = useCallback(
-      (open: boolean) => {
-        if (!open) resetForm()
-        onOpenChange(open)
+      (isOpen: boolean) => {
+        if (!isOpen) resetForm()
+        onOpenChange(isOpen)
       },
       [onOpenChange, resetForm]
     )

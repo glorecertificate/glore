@@ -90,7 +90,7 @@ export const ProfileForm = () => {
         setUser(data)
         toast.success(t('avatarUploaded'))
       } catch (e) {
-        console.warn(e)
+        console.error(e)
         toast.error(t('avatarUploadError'))
       }
     },
@@ -158,7 +158,7 @@ export const ProfileForm = () => {
           toast.success(t('profileUpdated'))
         }
       } catch (error) {
-        console.warn(error)
+        console.error(error)
         toast.error(t('profileUpdateError'))
       }
     },

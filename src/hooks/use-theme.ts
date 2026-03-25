@@ -25,17 +25,17 @@ export const useTheme = () => {
   const resolvedTheme = nextTheme.resolvedTheme as ResolvedTheme
 
   const applyTheme = useCallback(
-    (theme: Theme) => {
-      nextTheme.setTheme(theme)
-      cookiesRef.current.set('theme', theme)
+    (newTheme: Theme) => {
+      nextTheme.setTheme(newTheme)
+      cookiesRef.current.set('theme', newTheme)
     },
     [nextTheme]
   )
 
   const setTheme = useCallback(
-    async (theme: Theme) => {
+    async (newTheme: Theme) => {
       if (typeof window === 'undefined') {
-        applyTheme(theme)
+        applyTheme(newTheme)
         return
       }
 
@@ -49,7 +49,7 @@ export const useTheme = () => {
         root.classList.add(`${THEME_TRANSITION_CLASS}-view`)
 
         const transition = doc.startViewTransition(() => {
-          applyTheme(theme)
+          applyTheme(newTheme)
         })
 
         try {
@@ -66,7 +66,7 @@ export const useTheme = () => {
         window.clearTimeout(transitionTimeout)
       }
 
-      applyTheme(theme)
+      applyTheme(newTheme)
 
       transitionTimeout = window.setTimeout(() => {
         root.classList.remove(THEME_TRANSITION_CLASS)

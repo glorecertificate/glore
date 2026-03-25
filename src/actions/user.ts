@@ -63,8 +63,8 @@ export const getCurrentUser = cache(async () => {
   return await findUser(user.id)
 })
 
-export const findUser = async (id: string, { cache = true }: { cache?: boolean } = {}) => {
-  if (!cache) {
+export const findUser = async (id: string, { cache: useCache = true }: { cache?: boolean } = {}) => {
+  if (!useCache) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, id),
       with: userWith,

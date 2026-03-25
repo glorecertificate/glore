@@ -69,7 +69,13 @@ const clamp = (value: number, min: number, max: number) => Math.min(Math.max(val
 
 export const Globe = memo(({ className, ...options }: GlobeProps) => {
   const { friction, mass, precision, tension, ...config } = useMemo(() => {
-    const { baseColor, glowColor, markerColor, markers, ...rest } = {
+    const {
+      baseColor,
+      glowColor,
+      markerColor,
+      markers: globeMarkers,
+      ...rest
+    } = {
       ...GLOBE_OPTIONS,
       ...options,
     } as Required<GlobeOptions>
@@ -83,9 +89,9 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
       baseColor: normalizeRgb(baseColor),
       glowColor: normalizeRgb(glowColor),
       markerColor: color,
-      markers: markers.map(({ color, ...marker }) => ({
+      markers: globeMarkers.map(({ color: markerDotColor, ...marker }) => ({
         ...marker,
-        color: color ?? (isMulticolor ? colors[Math.floor(Math.random() * colors.length)] : color),
+        color: markerDotColor ?? (isMulticolor ? colors[Math.floor(Math.random() * colors.length)] : markerDotColor),
       })),
     }
   }, [options])
@@ -106,12 +112,12 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   }, [config.phi, config.theta])
 
   useEffect(() => {
-    const markers =
+    const updatedMarkers =
       paramsRef.current &&
       paramsRef.current?.markerColor.flat().sort().join('') === config.markerColor.flat().sort().join('')
         ? (paramsRef.current?.markers ?? [])
         : config.markers
-    paramsRef.current = { ...config, markers }
+    paramsRef.current = { ...config, markers: updatedMarkers }
   }, [config])
 
   const [{ phiDelta, thetaDelta }, springApi] = useSpring(

@@ -147,9 +147,9 @@ export const AuthFlow = ({
   const [height, setHeight] = useState<number>()
 
   const updateHeight = useCallback((element: HTMLDivElement) => {
-    const { height } = element.getBoundingClientRect()
-    if (height === 0) return
-    setHeight(height)
+    const { height: newHeight } = element.getBoundingClientRect()
+    if (newHeight === 0) return
+    setHeight(newHeight)
   }, [])
 
   useLayoutEffect(() => {

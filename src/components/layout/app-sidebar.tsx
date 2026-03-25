@@ -156,7 +156,7 @@ const AppSidebarCollapsible = ({ children, icon, label, route }: AppSidebarItemP
         <CollapsibleTrigger asChild>
           <SidebarMenuAction
             className="cursor-pointer data-[state=open]:rotate-90"
-            onClick={() => setOpen(open => !open)}
+            onClick={() => setOpen(prev => !prev)}
           >
             <ChevronRightIcon className="text-foreground/64" />
           </SidebarMenuAction>
@@ -177,7 +177,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
   const { setOrganization, user } = useSession()
 
   const membership = useMemo(
-    () => user.memberships.find(membership => membership.organization.id === organization.id),
+    () => user.memberships.find(m => m.organization.id === organization.id),
     [user.memberships, organization.id]
   )
 

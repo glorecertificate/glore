@@ -35,7 +35,7 @@ export const CourseListSort = memo(() => {
   const options = useMemo<Record<CourseListSortType, string>>(() => {
     const sorts = user.canEdit ? COURSE_LIST_EDITOR_SORTS : COURSE_LIST_LEARNER_SORTS
     return sorts.reduce(
-      (acc, sort) => ({ ...acc, [sort]: t(`sortBy-${sort}`) }),
+      (acc, sortItem) => ({ ...acc, [sortItem]: t(`sortBy-${sortItem}`) }),
       {} as Record<CourseListSortType, string>
     )
   }, [t, user.canEdit])

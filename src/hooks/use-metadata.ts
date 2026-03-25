@@ -98,22 +98,22 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
   const image = getMetaContent('image')
 
   const setTitle = useCallback(
-    (title: string) => {
+    (newTitle: string) => {
       const content =
         displayMode === 'browser' && applicationName
-          ? `${title} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
-          : title
+          ? `${newTitle} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+          : newTitle
       document.title = content
       updateMetaContent('title', content)
     },
     [applicationName, displayMode]
   )
 
-  const setDescription = useCallback((description: string) => {
-    updateMetaContent('description', description)
+  const setDescription = useCallback((newDescription: string) => {
+    updateMetaContent('description', newDescription)
   }, [])
 
-  const setImage = useCallback((image: string) => updateMetaContent('image', image), [])
+  const setImage = useCallback((newImage: string) => updateMetaContent('image', newImage), [])
 
   useEffect(() => {
     if (!(options.title || options.description || options.image)) {

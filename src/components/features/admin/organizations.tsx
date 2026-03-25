@@ -45,7 +45,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       const { error } = await approveOrganization(approveTarget.id, comment)
 
       if (error) {
-        console.warn(error)
+        console.error(error)
         toast.error(t('approveError'))
         return
       }
@@ -64,7 +64,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       const { error } = await rejectOrganization(rejectTarget.id, comment)
 
       if (error) {
-        console.warn(error)
+        console.error(error)
         toast.error(t('rejectError'))
         return
       }
@@ -90,7 +90,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
       const { error } = await inviteOrganization(data)
 
       if (error) {
-        console.warn(error)
+        console.error(error)
         toast.error(t('inviteError'))
         return
       }

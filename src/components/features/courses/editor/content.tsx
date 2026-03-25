@@ -102,8 +102,8 @@ export const CourseContent = () => {
 
   const onQuestionAnswer = useCallback(
     async (question: Question, option: QuestionOption) => {
-      setCourse(({ lessons, ...course }) => ({
-        ...course,
+      setCourse(({ lessons, ...rest }) => ({
+        ...rest,
         lessons: lessons?.map((lesson, i) =>
           i === step - 1 && lesson.questions
             ? {
@@ -124,7 +124,7 @@ export const CourseContent = () => {
       try {
         await submitAnswers([{ id: option.id }])
       } catch (e) {
-        console.warn(e)
+        console.error(e)
       }
     },
     [step, setCourse]
@@ -132,8 +132,8 @@ export const CourseContent = () => {
 
   const onEvaluation = useCallback(
     (id: number, rating: number) => {
-      setCourse(({ lessons, ...course }) => ({
-        ...course,
+      setCourse(({ lessons, ...rest }) => ({
+        ...rest,
         lessons: lessons?.map((lesson, i) =>
           i === step - 1 && lesson.evaluations
             ? {
@@ -149,8 +149,8 @@ export const CourseContent = () => {
 
   const onAssessment = useCallback(
     (rating: number) => {
-      setCourse(({ lessons, ...course }) => ({
-        ...course,
+      setCourse(({ lessons, ...rest }) => ({
+        ...rest,
         lessons: lessons?.map((lesson, i) =>
           i === step - 1 && lesson.assessment
             ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }

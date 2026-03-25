@@ -253,8 +253,8 @@ export const AIMenu = () => {
   }, [streaming, api.aiChat.node, editor.api.toDOMNode, api.aiChat, editor.api])
 
   const setOpen = useCallback(
-    (open: boolean) => {
-      if (open) {
+    (isOpen: boolean) => {
+      if (isOpen) {
         return api.aiChat.show()
       }
       api.aiChat.hide()
@@ -263,8 +263,8 @@ export const AIMenu = () => {
   )
 
   const show = useCallback(
-    (anchorElement: HTMLElement) => {
-      setAnchorElement(anchorElement)
+    (el: HTMLElement) => {
+      setAnchorElement(el)
       setOpen(true)
     },
     [setOpen]
@@ -279,8 +279,8 @@ export const AIMenu = () => {
       }
       show(editor.api.toDOMNode(block)!)
     },
-    onOpenChange: open => {
-      if (!open) {
+    onOpenChange: isOpen => {
+      if (!isOpen) {
         setAnchorElement(null)
         setInput('')
       }

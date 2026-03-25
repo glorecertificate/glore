@@ -55,7 +55,7 @@ export const intlMetadata = async <T extends Namespace>({
   namespace,
   title,
   description,
-  ...metadata
+  ...rest
 }: Omit<Metadata, 'title' | 'description'> & {
   namespace?: T
   title?: MessageKey<T> | { default?: MessageKey<T>; template?: MessageKey<T>; absolute?: MessageKey<T> }
@@ -67,7 +67,7 @@ export const intlMetadata = async <T extends Namespace>({
   const resolveKey = (key?: string) => (key && t.has(key) ? t(key) : undefined)
 
   return {
-    ...metadata,
+    ...rest,
     description: resolveKey(description),
     title:
       typeof title === 'object'

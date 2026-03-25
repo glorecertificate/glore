@@ -123,7 +123,7 @@ const TableFloatingToolbar = ({ children, ...props }: React.ComponentProps<typeo
   const selected = useSelected()
   const element = useElement<TTableElement>()
   const { props: buttonProps } = useRemoveNodeButton({ element })
-  const collapsedInside = useEditorSelector(editor => selected && editor.api.isCollapsed(), [selected])
+  const collapsedInside = useEditorSelector(ed => selected && ed.api.isCollapsed(), [selected])
   const t = useTranslations('Components.RichTextEditor.blocks')
 
   const { canMerge, canSplit } = useTableMergeState()

@@ -46,19 +46,19 @@ export const BlockList: RenderNodeWrapper = props => {
     return
   }
 
-  return props => <List {...props} />
+  return innerProps => <List {...innerProps} />
 }
 
 const List = (props: PlateElementProps) => {
   const { listStart, listStyleType } = props.element as TListElement
   const { Li, Marker } = config[listStyleType] ?? {}
-  const List = isOrderedList(props.element) ? 'ol' : 'ul'
+  const ListTag = isOrderedList(props.element) ? 'ol' : 'ul'
   const listStyle = useMemo(() => ({ listStyleType }), [listStyleType])
 
   return (
-    <List className="relative m-0 p-0" start={listStart} style={listStyle}>
+    <ListTag className="relative m-0 p-0" start={listStart} style={listStyle}>
       {Marker && <Marker {...props} />}
       {Li ? <Li {...props} /> : <li>{props.children}</li>}
-    </List>
+    </ListTag>
   )
 }

@@ -88,17 +88,17 @@ export const LoginForm = ({
     async (schema: z.infer<typeof formSchema>) => {
       setLoading(true)
 
-      const username = schema.username.trim()
+      const inputUsername = schema.username.trim()
       const password = schema.password.trim()
 
-      const { data, error } = await findUserEmail(username)
+      const { data, error } = await findUserEmail(inputUsername)
       if (error) {
         setLoading(false)
         if (error.code === 'PGRST116') {
           form.setError('username', { message: t('userNotFound') })
           return form.setFocus('username')
         }
-        console.warn(error)
+        console.error(error)
         return toast.error(t('networkError'))
       }
 
@@ -117,7 +117,7 @@ export const LoginForm = ({
       if (loginError) {
         setLoading(false)
         if (loginError.code === 'AUTH_ERROR') return setPasswordInvalid()
-        console.warn(loginError)
+        console.error(loginError)
         return toast.error(t('networkError'))
       }
 

@@ -473,8 +473,8 @@ export const FontColorToolbarButton = ({
   tooltip?: string
 } & DropdownMenuProps) => {
   const editor = useEditorRef()
-  const selectionDefined = useEditorSelector(editor => Boolean(editor.selection), [])
-  const color = useEditorSelector(editor => editor.api.mark(nodeType) as string, [nodeType])
+  const selectionDefined = useEditorSelector(ed => Boolean(ed.selection), [])
+  const color = useEditorSelector(ed => ed.api.mark(nodeType) as string, [nodeType])
   const { colors, customColors } = useColors()
 
   const [selectedColor, setSelectedColor] = useState<string>()

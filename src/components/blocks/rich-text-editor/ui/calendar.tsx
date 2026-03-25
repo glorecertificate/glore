@@ -110,26 +110,33 @@ const Calendar = ({
   const calendarComponents = useMemo(
     () => ({
       Chevron: ({
-        className,
+        className: chevronClassName,
         orientation,
-        ...props
+        ...chevronProps
       }: React.ComponentProps<typeof import('react-day-picker').Chevron>) => {
         if (orientation === 'left') {
-          return <ChevronLeftIcon className={cn('size-4', className)} {...props} />
+          return <ChevronLeftIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
         }
 
         if (orientation === 'right') {
-          return <ChevronRightIcon className={cn('size-4', className)} {...props} />
+          return <ChevronRightIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
         }
 
-        return <ChevronDownIcon className={cn('size-4', className)} {...props} />
+        return <ChevronDownIcon className={cn('size-4', chevronClassName)} {...chevronProps} />
       },
       DayButton: CalendarDayButton,
-      Root: ({ className, rootRef, ...props }: React.ComponentProps<typeof import('react-day-picker').Root>) => (
-        <div className={cn(className)} data-slot="calendar" ref={rootRef} {...props} />
+      Root: ({
+        className: rootClassName,
+        rootRef,
+        ...rootProps
+      }: React.ComponentProps<typeof import('react-day-picker').Root>) => (
+        <div className={cn(rootClassName)} data-slot="calendar" ref={rootRef} {...rootProps} />
       ),
-      WeekNumber: ({ children, ...props }: React.ComponentProps<typeof import('react-day-picker').WeekNumber>) => (
-        <td {...props}>
+      WeekNumber: ({
+        children,
+        ...weekNumProps
+      }: React.ComponentProps<typeof import('react-day-picker').WeekNumber>) => (
+        <td {...weekNumProps}>
           <div className="flex size-(--cell-size) items-center justify-center text-center">{children}</div>
         </td>
       ),

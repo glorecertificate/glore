@@ -15,7 +15,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 import { i18n, localizeRecord } from '@/lib/i18n'
 
-const RichTextEditorProvider = dynamic(async () => {
+const TextEditorProvider = dynamic(async () => {
   const { RichTextEditorProvider } = await import('@/components/blocks/rich-text-editor/provider')
   return RichTextEditorProvider
 })
@@ -51,22 +51,22 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   step = step > 0 && step <= course.lessons.length ? step : 1
 
   if (stepParam !== step) {
-    const params = new URLSearchParams()
+    const pageParams = new URLSearchParams()
 
     for (const [key, value] of Object.entries(resolvedSearchParams)) {
       if (Array.isArray(value)) {
         for (const v of value) {
-          params.append(key, v)
+          pageParams.append(key, v)
         }
         continue
       }
       if (value) {
-        params.set(key, value)
+        pageParams.set(key, value)
       }
     }
 
-    params.set(COURSE_PARAMS.STEP, step.toString())
-    redirect(`/courses/${slug}?${params.toString()}`)
+    pageParams.set(COURSE_PARAMS.STEP, step.toString())
+    redirect(`/courses/${slug}?${pageParams.toString()}`)
   }
 
   return { course, isViewer, language, step, user }
@@ -97,9 +97,9 @@ export default async (props: PageProps<'/courses/[slug]'>) => {
         <CourseBreadcrumb />
       </PageHeader>
       <PageMain>
-        <RichTextEditorProvider readOnly={!user.canEdit}>
+        <TextEditorProvider readOnly={!user.canEdit}>
           <CourseView />
-        </RichTextEditorProvider>
+        </TextEditorProvider>
       </PageMain>
     </CourseProvider>
   )

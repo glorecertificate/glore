@@ -29,7 +29,7 @@ export const BulletedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
   const [open, setOpen] = useState(false)
 
   const pressed = useEditorSelector(
-    editor => someList(editor, [ListStyleType.Disc, ListStyleType.Circle, ListStyleType.Square]),
+    ed => someList(ed, [ListStyleType.Disc, ListStyleType.Circle, ListStyleType.Square]),
     []
   )
 
@@ -104,8 +104,8 @@ export const NumberedListToolbarButton = ({ tooltip }: { tooltip?: string }) => 
   const [open, setOpen] = useState(false)
 
   const pressed = useEditorSelector(
-    editor =>
-      someList(editor, [
+    ed =>
+      someList(ed, [
         ListStyleType.Decimal,
         ListStyleType.LowerAlpha,
         ListStyleType.UpperAlpha,

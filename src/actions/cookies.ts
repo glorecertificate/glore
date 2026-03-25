@@ -15,13 +15,13 @@ import {
 import { i18n } from '@/lib/i18n'
 
 export const cookies = async () => {
-  const { cookies } = await import('next/headers')
-  const { get, set, delete: deleteCookie } = await cookies()
+  const { cookies: nextCookies } = await import('next/headers')
+  const { get, set, delete: removeCookieEntry } = await nextCookies()
 
   return {
     delete: (name: CookieName, options?: CookieOptions) => {
       const { prefix = COOKIE_PREFIX } = options ?? {}
-      deleteCookie(prefixCookieName(name, prefix))
+      removeCookieEntry(prefixCookieName(name, prefix))
     },
     get: <T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) => {
       const { fallback, prefix = COOKIE_PREFIX } = options ?? {}
@@ -73,8 +73,8 @@ export const setCookie = async <T extends CookieName>(
 }
 
 export const deleteCookie = async (name: CookieName, options?: CookieOptions) => {
-  const { delete: deleteCookie } = await cookies()
-  deleteCookie(name, options)
+  const { delete: remove } = await cookies()
+  remove(name, options)
 }
 
 export const getLocaleCookie = async () => {

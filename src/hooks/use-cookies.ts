@@ -51,10 +51,10 @@ export const useCookies = () => ({
     const serializedValue = typeof value === 'string' ? value : JSON.stringify(value)
     const args = [`${prefixCookieName(name, prefix)}=${serializedValue}`]
 
-    for (const [key, value] of Object.entries(params)) {
-      if (!value) continue
-      const name = key === 'maxAge' ? 'Max-Age' : key.charAt(0).toUpperCase() + key.slice(1)
-      args.push(`${name}=${String(value)}`)
+    for (const [key, paramValue] of Object.entries(params)) {
+      if (!paramValue) continue
+      const paramName = key === 'maxAge' ? 'Max-Age' : key.charAt(0).toUpperCase() + key.slice(1)
+      args.push(`${paramName}=${String(paramValue)}`)
     }
 
     document.cookie = args.join('; ')

@@ -68,13 +68,13 @@ const fetchUserCertificates = cache(async (userId: string) => {
   })
 })
 
-export const listUserCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+export const listUserCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
   error: unknown
 }> => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
-  if (!cache) {
+  if (!useCache) {
     const result = await db.query.certificates.findMany({
       where: eq(certificates.userId, authUser.id),
       with: certificateWith,
@@ -102,13 +102,13 @@ const fetchTutorCertificates = cache(async (reviewerId: string) => {
   })
 })
 
-export const listTutorCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+export const listTutorCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
   error: unknown
 }> => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
-  if (!cache) {
+  if (!useCache) {
     const result = await db.query.certificates.findMany({
       where: eq(certificates.reviewerId, authUser.id),
       with: certificateWithUsers,
@@ -580,7 +580,7 @@ const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
   })
 })
 
-export const listUnassignedOrgCertificates = async ({ cache = true }: { cache?: boolean } = {}): Promise<{
+export const listUnassignedOrgCertificates = async ({ cache: useCache = true }: { cache?: boolean } = {}): Promise<{
   data: Certificate[] | null
   error: unknown
 }> => {
@@ -590,7 +590,7 @@ export const listUnassignedOrgCertificates = async ({ cache = true }: { cache?: 
   const orgId = await getActiveOrgId()
   if (!orgId) return { data: null, error: { code: 'NO_ORG', message: 'No active organization' } }
 
-  if (!cache) {
+  if (!useCache) {
     const result = await db.query.certificates.findMany({
       where: and(
         eq(certificates.organizationId, orgId),

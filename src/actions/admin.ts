@@ -201,7 +201,7 @@ const fetchOrganizations = async () => {
 
   return await safeQuery(async () => {
     const rows = await db.query.organizations.findMany({
-      orderBy: (record, { desc }) => [desc(record.createdAt)],
+      orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
       limit: 1000,
     })
 
@@ -245,7 +245,7 @@ export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {
 
   if (!cache) {
     const rows = await db.query.organizations.findMany({
-      orderBy: (record, { desc }) => [desc(record.createdAt)],
+      orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
       limit: 1000,
     })
 
@@ -561,7 +561,7 @@ const fetchAdminUsers = async () => {
 
   return await safeQuery(async () => {
     const result = await db.query.users.findMany({
-      orderBy: (u, { desc }) => [desc(u.createdAt)],
+      orderBy: (u, { desc: orderDesc }) => [orderDesc(u.createdAt)],
       with: userWith,
       limit: 1000,
     })
@@ -575,7 +575,7 @@ export const getAdminUsers = async ({ cache = true }: { cache?: boolean } = {}) 
 
   if (!cache) {
     const result = await db.query.users.findMany({
-      orderBy: (u, { desc }) => [desc(u.createdAt)],
+      orderBy: (u, { desc: orderDesc }) => [orderDesc(u.createdAt)],
       with: userWith,
       limit: 1000,
     })

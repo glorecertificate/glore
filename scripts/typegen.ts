@@ -63,7 +63,7 @@ export {}`
 if (types.includes('routes')) {
   try {
     if (stdout.isTTY) stdout.write('Generating route types...')
-    execSync('next typegen', { stdio: 'ignore' })
+    execSync('next typegen', { stdio: stdout.isTTY ? 'ignore' : 'pipe' })
     clearLine()
     console.info(`${green('✓')} Route types generated successfully\n`)
   } catch (e) {

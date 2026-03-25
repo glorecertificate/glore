@@ -1142,7 +1142,12 @@
       "updated": "Articolo aggiornato con successo.",
       "created": "Articolo creato con successo.",
       "error": "Impossibile salvare l'articolo.",
-      "requiredFields": "Titolo e slug sono obbligatori."
+      "requiredFields": "Titolo e slug sono obbligatori.",
+      "delete": "Elimina",
+      "deleted": "Articolo eliminato con successo.",
+      "deleteError": "Impossibile eliminare l'articolo.",
+      "deleteConfirmTitle": "Eliminare l'articolo?",
+      "deleteConfirmMessage": "Questa azione non può essere annullata. L'articolo verrà eliminato definitivamente."
     },
     "categories": {
       "manage": "Gestisci categorie",

@@ -1142,7 +1142,12 @@
       "updated": "Artículo actualizado correctamente.",
       "created": "Artículo creado correctamente.",
       "error": "Error al guardar el artículo.",
-      "requiredFields": "El título y el slug son obligatorios."
+      "requiredFields": "El título y el slug son obligatorios.",
+      "delete": "Eliminar",
+      "deleted": "Artículo eliminado correctamente.",
+      "deleteError": "Error al eliminar el artículo.",
+      "deleteConfirmTitle": "¿Eliminar artículo?",
+      "deleteConfirmMessage": "Esta acción no se puede deshacer. El artículo se eliminará permanentemente."
     },
     "categories": {
       "manage": "Gestionar categorías",

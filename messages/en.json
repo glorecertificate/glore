@@ -1142,7 +1142,12 @@
       "updated": "Article updated successfully.",
       "created": "Article created successfully.",
       "error": "Failed to save article.",
-      "requiredFields": "Title and slug are required."
+      "requiredFields": "Title and slug are required.",
+      "delete": "Delete",
+      "deleted": "Article deleted successfully.",
+      "deleteError": "Failed to delete article.",
+      "deleteConfirmTitle": "Delete article?",
+      "deleteConfirmMessage": "This action cannot be undone. The article will be permanently deleted."
     },
     "categories": {
       "manage": "Manage categories",

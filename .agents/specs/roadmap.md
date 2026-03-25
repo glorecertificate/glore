@@ -31,7 +31,6 @@ _All P1 tasks completed._
 
 | Slug                                  | Feature                                                   | Notes                                                                                                                  |
 | ------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `docs-article-edit-delete-missing`    | Docs article edit and delete missing                      | Features. Wire edit and delete actions to article list items in the docs UI.                                           |
 | `missing-empty-states`                | Multiple screens missing empty states                     | Features. Add empty state UI to courses, certificates, members, and docs lists.                                        |
 | `no-session-expiry-feedback`          | No user feedback on session expiry                        | Features. Show a toast or modal when session expires mid-session, redirecting to login.                                |
 | `no-signout-confirmation`             | No confirmation before signing out a session              | Features. Add a confirmation dialog before ending an active session from the sessions list.                            |
@@ -97,6 +96,7 @@ _All P1 tasks completed._
 
 | Slug                                   | Feature                                        | Completed            |
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `docs-article-edit-delete-missing`     | Wire docs article delete in UI                 | completed:2026-07-22 |
 | `cert-form-missing-field-errors`       | Per-field cert form validation errors          | completed:2026-07-22 |
 | `broad-cache-invalidation`             | Per-record cache tag invalidation              | completed:2026-07-22 |
 | `oversized-ui-components`              | Split oversized UI components                  | completed:2026-07-22 |

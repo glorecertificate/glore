@@ -155,7 +155,7 @@ const plugins = [
 ]
 
 export default (phase: PHASE_TYPE) => {
-  if (phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) {
+  if ((phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) && !process.env.SKIP_ENV_VALIDATION) {
     validateEnv()
   }
   return plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)

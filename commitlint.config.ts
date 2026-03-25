@@ -11,7 +11,6 @@ export default {
       ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert', 'ai'],
     ],
     'scope-enum': [Error, 'always', ['deps', 'deps-dev', 'dev', 'release', 'security']],
-    'subject-case': [Error, 'always', 'sentence-case'],
     'subject-empty': [Error, 'never'],
     'header-max-length': [Error, 'always', 100],
     'body-max-line-length': [Disabled],

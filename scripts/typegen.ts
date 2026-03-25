@@ -1,11 +1,12 @@
 #!/usr/bin/env tsx
 
 import { execSync } from 'node:child_process'
-import { readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, writeFileSync } from 'node:fs'
 import { stdout } from 'node:process'
 
 const ARGS = ['env', 'routes'] as const
 const ENV_DTS = './env.d.ts'
+const NEXT_DTS = ['.next/types/link.d.ts', '.next/types/routes.d.ts']
 
 const args = process.argv.slice(2)
 const types = args && args.length > 0 ? args : ARGS
@@ -63,8 +64,18 @@ export {}`
 if (types.includes('routes')) {
   try {
     if (stdout.isTTY) stdout.write('Generating route types...')
-    execSync('next typegen', { stdio: stdout.isTTY ? 'ignore' : 'pipe' })
+    execSync('next typegen', {
+      stdio: stdout.isTTY ? 'ignore' : 'inherit',
+      env: { ...process.env, SKIP_ENV_VALIDATION: '1' },
+    })
     clearLine()
+
+    const missingTypes = NEXT_DTS.filter(file => !existsSync(file))
+
+    if (missingTypes.length > 0) {
+      throw new Error(`Expected type declaration files not found: ${missingTypes.join(', ')}`)
+    }
+
     console.info(`${green('✓')} Route types generated successfully\n`)
   } catch (e) {
     clearLine()

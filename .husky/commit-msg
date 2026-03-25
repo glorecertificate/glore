@@ -8,5 +8,6 @@ case "$(cat "$1")" in
     ;;
   *)
     pnpm commitlint --edit "$1"
+    pnpm run format:check
     ;;
 esac

@@ -1,5 +1,8 @@
 .agents/
+.claude/
+.github/
 .husky/
+.vscode/
 drizzle/
 AGENTS.md
 CHANGELOG.md

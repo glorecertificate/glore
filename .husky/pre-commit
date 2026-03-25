@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-set -e
-
-pnpm run format:check && pnpm run lint

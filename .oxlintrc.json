@@ -48,6 +48,7 @@
       }
     ],
     "eslint/arrow-body-style": ["error", "as-needed"],
+    "eslint/capitalized-comments": "off",
     "eslint/eqeqeq": "error",
     "eslint/func-style": "off",
     "eslint/id-length": "off",

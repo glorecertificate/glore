@@ -62,6 +62,7 @@ const fetchUserCertificates = cache(async (userId: string) => {
       where: eq(certificates.userId, userId),
       with: certificateWith,
       orderBy: (certs, { desc }) => [desc(certs.createdAt)],
+      limit: 500,
     })
     return result.map(parseCertificate)
   })
@@ -78,6 +79,7 @@ export const listUserCertificates = async ({ cache = true }: { cache?: boolean }
       where: eq(certificates.userId, authUser.id),
       with: certificateWith,
       orderBy: (certs, { desc }) => [desc(certs.createdAt)],
+      limit: 500,
     })
     return { data: result.map(parseCertificate), error: null }
   }
@@ -94,6 +96,7 @@ const fetchTutorCertificates = cache(async (reviewerId: string) => {
       where: eq(certificates.reviewerId, reviewerId),
       with: certificateWithUsers,
       orderBy: (certs, { desc }) => [desc(certs.updatedAt)],
+      limit: 500,
     })
     return result.map(parseCertificate)
   })
@@ -110,6 +113,7 @@ export const listTutorCertificates = async ({ cache = true }: { cache?: boolean 
       where: eq(certificates.reviewerId, authUser.id),
       with: certificateWithUsers,
       orderBy: (certs, { desc }) => [desc(certs.updatedAt)],
+      limit: 500,
     })
     return { data: result.map(parseCertificate), error: null }
   }
@@ -570,6 +574,7 @@ const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
       ),
       with: certificateWithUsers,
       orderBy: (c, { asc: byAsc }) => [byAsc(c.createdAt)],
+      limit: 500,
     })
     return result.map(parseCertificate)
   })
@@ -594,6 +599,7 @@ export const listUnassignedOrgCertificates = async ({ cache = true }: { cache?: 
       ),
       with: certificateWithUsers,
       orderBy: (c, { asc: byAsc }) => [byAsc(c.createdAt)],
+      limit: 500,
     })
     return { data: result.map(parseCertificate), error: null }
   }

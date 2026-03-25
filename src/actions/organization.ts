@@ -213,6 +213,7 @@ export const getOrganizationPanel = async () => {
             user: { columns: memberUserColumns },
           },
           orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
+          limit: 500,
         }),
         db.query.organizationJoinRequests.findMany({
           where: and(
@@ -223,6 +224,7 @@ export const getOrganizationPanel = async () => {
             reviewer: { columns: reviewerColumns },
           },
           orderBy: (records, { desc }) => [desc(records.createdAt)],
+          limit: 200,
         }),
         db
           .select({ total: count() })
@@ -882,6 +884,7 @@ export const listOrgTutors = async (organizationId: number) => {
       with: {
         user: { columns: { id: true, firstName: true, lastName: true } },
       },
+      limit: 200,
     })
     return result.map(m => m.user)
   })

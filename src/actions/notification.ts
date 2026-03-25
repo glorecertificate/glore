@@ -25,6 +25,7 @@ const fetchNotifications = cache(async (userId: string) => {
     db.query.notifications.findMany({
       where: eq(notifications.userId, userId),
       orderBy: [desc(notifications.createdAt)],
+      limit: 200,
     })
   )
 })
@@ -87,7 +88,7 @@ export const createNotification = async <T extends NotificationType>(
     .catch(() => null)
   revalidateTag(notificationsTag(userId), 'max')
 
-  const subs = await db.query.pushSubscriptions.findMany({ where: eq(pushSubscriptions.userId, userId) })
+  const subs = await db.query.pushSubscriptions.findMany({ where: eq(pushSubscriptions.userId, userId), limit: 20 })
   const payload = buildPushPayload(type, data as NotificationDataMap[NotificationType])
   for (const sub of subs) {
     void sendPushNotification(sub, payload)

@@ -44,6 +44,7 @@ const fetchDocCategories = cache(async (includeUnpublished = false) => {
     const result = await db.query.docCategories.findMany({
       with: includeUnpublished ? articlesWith : publishedArticlesWith,
       orderBy: [asc(docCategories.createdAt)],
+      limit: 100,
     })
     return result.map(parseDocCategory)
   })
@@ -57,6 +58,7 @@ export const listDocCategories = async ({ cache = true, includeUnpublished = fal
     const result = await db.query.docCategories.findMany({
       with: includeUnpublished ? articlesWith : publishedArticlesWith,
       orderBy: [asc(docCategories.createdAt)],
+      limit: 100,
     })
     return { data: result.map(parseDocCategory), error: null }
   }

@@ -29,16 +29,15 @@ _All P1 tasks completed._
 
 ### P2: Medium (polish)
 
-| Slug                              | Feature                                                  | Notes                                                                                                  |
-| --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `over-fetching-queries`           | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                    |
-| `actions-importing-ui-components` | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                                    |
-| `large-action-modules`            | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                     |
-| `many-files-exceed-300-lines`     | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                         |
-| `overly-wide-tables`              | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                             |
-| `no-query-result-size-limits`     | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets. |
-| `no-rate-limiting-auth`           | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                              |
-| `tsgolint-not-configured`         | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                 |
+| Slug                              | Feature                                                  | Notes                                                                                  |
+| --------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `over-fetching-queries`           | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.    |
+| `actions-importing-ui-components` | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                    |
+| `large-action-modules`            | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                     |
+| `many-files-exceed-300-lines`     | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                         |
+| `overly-wide-tables`              | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.             |
+| `no-rate-limiting-auth`           | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.              |
+| `tsgolint-not-configured`         | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`. |
 
 ### P3: Low (improvements and DX)
 
@@ -50,14 +49,12 @@ _All P1 tasks completed._
 | `docs-search-missing`                 | Docs search and filter functionality missing                | Features. Add a search/filter input to the docs page.                                                  |
 | `no-next-image-optimization`          | Images not using next/image or lazy loading                 | Performance. Replace bare `<img>` tags with `@/components/ui/image` or `next/image`.                   |
 | `bundle-size-not-in-ci`               | Bundle size check not enforced in CI                        | Performance. Add `pnpm run check:size` to the Vercel build command or a GitHub Actions workflow.       |
-| `no-explicit-cache-revalidation`      | Mutations missing revalidateTag after DB writes             | Performance. Audit all mutation actions for missing `revalidateTag` calls.                             |
 | `no-explicit-react-cache`             | Expensive pure computations not wrapped in React.cache      | Performance. Wrap request-scoped expensive pure functions in `cache()` from React.                     |
 | `validation-schemas-wrong-location`   | Validation schemas in components/ instead of feature folder | Code Org. Move feature-scoped Zod schemas into `features/<domain>/schemas.ts`.                         |
 | `no-rate-limiting-expensive-actions`  | No rate limiting on expensive server actions                | Scalability. Add rate limiting to PDF generation and AI command actions.                               |
 | `no-concurrent-write-handling`        | No locking for concurrent writes                            | Scalability. Add optimistic concurrency checks (e.g., `updatedAt` comparison) to critical write paths. |
 | `invitation-no-session-binding`       | Invitation acceptance not bound to accepting user           | Security. Validate that the user accepting the invitation matches the token recipient.                 |
 | `cookie-cache-revocation-window`      | 5-minute cookie cache keeps banned users active             | Security. Reduce cookie cache TTL or add a revocation check for banned/suspended users.                |
-| `no-health-check-endpoint`            | No health check endpoint                                    | Infra. Add `GET /api/v1/health` returning `{ status: 'ok' }`, unauthenticated.                         |
 | `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment        | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox.             |
 
 ---
@@ -141,3 +138,4 @@ _All P1 tasks completed._
 | `ts-expect-error-no-description`       | Add description to @ts-expect-error             | completed:2026-07-22 |
 | `drizzle-config-non-null-assertion`    | Replace non-null assertion in drizzle config    | completed:2026-07-22 |
 | `no-health-check-endpoint`             | Add GET /api/v1/health endpoint                 | completed:2026-07-22 |
+| `no-query-result-size-limits`          | Add .limit() to all list queries                | completed:2026-07-22 |

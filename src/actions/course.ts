@@ -100,7 +100,7 @@ const fetchCourses = cache(async (userId?: string) => {
   cacheTag(CacheTag.Courses)
 
   return await safeQuery(async () => {
-    const result = await db.query.courses.findMany({ with: buildCourseWith(userId) })
+    const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })
     return result.map(course =>
       parseCourse({
         ...course,
@@ -141,7 +141,7 @@ export const listCourses = async ({ cache = true }: { cache?: boolean } = {}) =>
   const userId = isEditor ? undefined : authUser?.id
   if (!cache) {
     return await safeQuery(async () => {
-      const result = await db.query.courses.findMany({ with: buildCourseWith(userId) })
+      const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })
       return result.map(course =>
         parseCourse({
           ...course,
@@ -164,6 +164,7 @@ export const listSkillGroups = cache(async () => {
   return await db.query.skillGroups.findMany({
     columns: { id: true, name: true },
     orderBy: skillGroups.name,
+    limit: 100,
   })
 })
 
@@ -469,6 +470,7 @@ export const getCourseAnalytics = async (courseId: number) => {
           assessments: { with: { userAssessments: { columns: { value: true } } } },
         },
         orderBy: asc(lessons.sortOrder),
+        limit: 200,
       }),
     ])
 

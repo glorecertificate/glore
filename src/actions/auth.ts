@@ -138,6 +138,7 @@ export const listUserSessions = async () => {
   const allSessions = await db.query.sessions.findMany({
     where: eq(sessions.userId, authUser.id),
     orderBy: [desc(sessions.createdAt)],
+    limit: 50,
   })
 
   return { sessions: allSessions, currentToken: currentSession?.session.token ?? null }

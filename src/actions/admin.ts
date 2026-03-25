@@ -31,6 +31,7 @@ const fetchTeamMembers = async () => {
     const result = await db.query.users.findMany({
       where: or(eq(users.role, 'admin'), eq(users.isEditor, true)),
       with: userWith,
+      limit: 500,
     })
     return result.map(parseUser)
   })
@@ -44,6 +45,7 @@ export const getTeamMembers = async ({ cache = true }: { cache?: boolean } = {})
     const result = await db.query.users.findMany({
       where: or(eq(users.role, 'admin'), eq(users.isEditor, true)),
       with: userWith,
+      limit: 500,
     })
     return { data: result.map(parseUser), error: null }
   }
@@ -200,6 +202,7 @@ const fetchOrganizations = async () => {
   return await safeQuery(async () => {
     const rows = await db.query.organizations.findMany({
       orderBy: (record, { desc }) => [desc(record.createdAt)],
+      limit: 1000,
     })
 
     const requests = await db.query.organizationJoinRequests.findMany({
@@ -222,6 +225,7 @@ const fetchOrganizations = async () => {
         reviewerComment: true,
       },
       where: eq(organizationJoinRequests.role, 'admin'),
+      limit: 1000,
     })
 
     const requestMap = new Map(requests.map(r => [r.organizationId, r]))
@@ -242,6 +246,7 @@ export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {
   if (!cache) {
     const rows = await db.query.organizations.findMany({
       orderBy: (record, { desc }) => [desc(record.createdAt)],
+      limit: 1000,
     })
 
     const requests = await db.query.organizationJoinRequests.findMany({
@@ -264,6 +269,7 @@ export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {
         reviewerComment: true,
       },
       where: eq(organizationJoinRequests.role, 'admin'),
+      limit: 1000,
     })
 
     const requestMap = new Map(requests.map(r => [r.organizationId, r]))
@@ -557,6 +563,7 @@ const fetchAdminUsers = async () => {
     const result = await db.query.users.findMany({
       orderBy: (u, { desc }) => [desc(u.createdAt)],
       with: userWith,
+      limit: 1000,
     })
     return result.map(parseUser)
   })
@@ -570,6 +577,7 @@ export const getAdminUsers = async ({ cache = true }: { cache?: boolean } = {}) 
     const result = await db.query.users.findMany({
       orderBy: (u, { desc }) => [desc(u.createdAt)],
       with: userWith,
+      limit: 1000,
     })
     return { data: result.map(parseUser), error: null }
   }

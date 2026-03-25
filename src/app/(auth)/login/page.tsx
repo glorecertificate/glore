@@ -24,9 +24,11 @@ export const generateMetadata = async (props: PageProps<'/login'>) => {
 
 const LoginPage = async (props: PageProps<'/login'>) => {
   const { get } = await cookies()
-  const username = await get('loginUser')
-  const theme = await get('theme')
-  const { resetToken, view } = await resolveParams(props)
+  const [username, theme, { resetToken, view }] = await Promise.all([
+    get('loginUser'),
+    get('theme'),
+    resolveParams(props),
+  ])
   const tooltip = Object.freeze({ showArrow: false, side: 'top' })
 
   return (

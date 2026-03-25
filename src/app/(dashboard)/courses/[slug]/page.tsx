@@ -37,8 +37,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   const { [COURSE_PARAMS.LANGUAGE]: languageParam, [COURSE_PARAMS.STEP]: stepParam } = await parse(resolvedSearchParams)
   const language = languageParam ?? (await getLocale())
 
-  const user = await getCurrentUser()
-  const orgId = await getCookie('org')
+  const [user, orgId] = await Promise.all([getCurrentUser(), getCookie('org')])
   const orgRole = user.organizations.find(({ id }) => id === orgId)?.role ?? null
   const isViewer = !user.canEdit && (orgRole === 'admin' || orgRole === 'representative' || orgRole === 'tutor')
 

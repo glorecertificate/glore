@@ -120,8 +120,7 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>, previ
 }
 
 export const getActiveOrgId = async () => {
-  const user = await getCurrentUser()
-  const stored = await getCookie('org')
+  const [user, stored] = await Promise.all([getCurrentUser(), getCookie('org')])
   const match = user.organizations.find(({ id }) => id === stored)
   return (match ?? user.organizations[0])?.id ?? null
 }

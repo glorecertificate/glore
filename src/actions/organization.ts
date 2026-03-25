@@ -78,8 +78,7 @@ export interface OrganizationPanelData {
 }
 
 const getOrganizationContext = async () => {
-  const user = await getCurrentUser()
-  const storedOrgId = await getCookie('org')
+  const [user, storedOrgId] = await Promise.all([getCurrentUser(), getCookie('org')])
   const organization = user.organizations.find(({ id }) => id === storedOrgId) ?? user.organizations[0] ?? null
 
   return {

@@ -1578,7 +1578,11 @@
     "revokeSessionSuccess": "Signed out from session",
     "revokeSessionError": "Failed to sign out from this session",
     "revokeAllSessionsSuccess": "Signed out from all other sessions",
-    "revokeAllSessionsError": "Failed to sign out from all sessions"
+    "revokeAllSessionsError": "Failed to sign out from all sessions",
+    "revokeSessionTitle": "Sign out session?",
+    "revokeSessionDescription": "This will end the selected session. The device will need to sign in again.",
+    "revokeAllSessionsTitle": "Sign out all other sessions?",
+    "revokeAllSessionsDescription": "This will end all sessions except your current one. All other devices will need to sign in again."
   },
   "Register": {
     "alreadyHaveAccount": "Already have an account?",

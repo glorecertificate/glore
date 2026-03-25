@@ -7,6 +7,16 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { revokeAllOtherSessions, revokeUserSession } from '@/actions/auth'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -54,11 +64,14 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
   const { locale } = useI18n()
   const [isPending, startTransition] = useTransition()
   const [revokingToken, setRevokingToken] = useState<string | null>(null)
+  const [confirmToken, setConfirmToken] = useState<string | null>(null)
+  const [confirmAll, setConfirmAll] = useState(false)
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
   const handleRevoke = useCallback(
     (token: string) => {
+      setConfirmToken(null)
       setRevokingToken(token)
       startTransition(async () => {
         try {
@@ -75,6 +88,7 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
   )
 
   const handleRevokeAll = useCallback(() => {
+    setConfirmAll(false)
     startTransition(async () => {
       try {
         await revokeAllOtherSessions()
@@ -122,7 +136,7 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
                     className="shrink-0"
                     disabled={isPending}
                     loading={revokingToken === session.token}
-                    onClick={() => handleRevoke(session.token)}
+                    onClick={() => setConfirmToken(session.token)}
                     size="sm"
                     variant="outline"
                   >
@@ -139,7 +153,7 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
           <Button
             disabled={isPending}
             loading={isPending && !revokingToken}
-            onClick={handleRevokeAll}
+            onClick={() => setConfirmAll(true)}
             size="sm"
             variant="outline"
           >
@@ -147,6 +161,36 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
           </Button>
         </div>
       )}
+
+      <AlertDialog onOpenChange={open => !open && setConfirmToken(null)} open={!!confirmToken}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('revokeSessionTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('revokeSessionDescription')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => confirmToken && handleRevoke(confirmToken)} variant="destructive">
+              {t('signOut')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog onOpenChange={setConfirmAll} open={confirmAll}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('revokeAllSessionsTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('revokeAllSessionsDescription')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRevokeAll} variant="destructive">
+              {t('signOutAll')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

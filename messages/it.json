@@ -1578,7 +1578,11 @@
     "revokeSessionSuccess": "Sessione disconnessa con successo",
     "revokeSessionError": "Impossibile disconnettere la sessione",
     "revokeAllSessionsSuccess": "Altre sessioni disconnesse con successo",
-    "revokeAllSessionsError": "Impossibile disconnettere tutte le sessioni"
+    "revokeAllSessionsError": "Impossibile disconnettere tutte le sessioni",
+    "revokeSessionTitle": "Disconnettere questa sessione?",
+    "revokeSessionDescription": "Questo terminerà la sessione selezionata. Il dispositivo dovrà accedere di nuovo.",
+    "revokeAllSessionsTitle": "Disconnettere tutte le altre sessioni?",
+    "revokeAllSessionsDescription": "Questo terminerà tutte le sessioni tranne quella corrente. Tutti gli altri dispositivi dovranno accedere di nuovo."
   },
   "Register": {
     "alreadyHaveAccount": "Hai già un account?",

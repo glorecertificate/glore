@@ -1578,7 +1578,11 @@
     "revokeSessionSuccess": "Sesión cerrada correctamente",
     "revokeSessionError": "No se pudo cerrar la sesión",
     "revokeAllSessionsSuccess": "Sesiones restantes cerradas correctamente",
-    "revokeAllSessionsError": "No se pudo cerrar todas las sesiones"
+    "revokeAllSessionsError": "No se pudo cerrar todas las sesiones",
+    "revokeSessionTitle": "¿Cerrar esta sesión?",
+    "revokeSessionDescription": "Esto finalizará la sesión seleccionada. El dispositivo deberá iniciar sesión de nuevo.",
+    "revokeAllSessionsTitle": "¿Cerrar todas las demás sesiones?",
+    "revokeAllSessionsDescription": "Esto finalizará todas las sesiones excepto la actual. Todos los demás dispositivos deberán iniciar sesión de nuevo."
   },
   "Register": {
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",

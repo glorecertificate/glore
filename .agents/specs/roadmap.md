@@ -31,7 +31,6 @@ _All P1 tasks completed._
 
 | Slug                                  | Feature                                                   | Notes                                                                                                                  |
 | ------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `no-signout-confirmation`             | No confirmation before signing out a session              | Features. Add a confirmation dialog before ending an active session from the sessions list.                            |
 | `cert-no-draft-save`                  | Certificate cannot be saved as draft                      | Features. Add a "Save draft" path that persists without triggering a status change.                                    |
 | `org-invite-email-silent-failure`     | Organization invitation email failures are silent         | Features. Surface email send errors to the inviting admin via toast; log failures server-side.                         |
 | `missing-cache-on-queries`            | Some read queries missing use cache                       | Performance. Add `'use cache'` to frequently-called read actions not yet cached.                                       |
@@ -96,6 +95,7 @@ _All P1 tasks completed._
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
 | `missing-empty-states`                 | Add empty states to org members and docs root  | completed:2026-07-22 |
 | `no-session-expiry-feedback`           | Show toast on session expiry redirect          | completed:2026-07-22 |
+| `no-signout-confirmation`              | Add confirmation to session revoke buttons     | completed:2026-07-22 |
 | `docs-article-edit-delete-missing`     | Wire docs article delete in UI                 | completed:2026-07-22 |
 | `cert-form-missing-field-errors`       | Per-field cert form validation errors          | completed:2026-07-22 |
 | `broad-cache-invalidation`             | Per-record cache tag invalidation              | completed:2026-07-22 |

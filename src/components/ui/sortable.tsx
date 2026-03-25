@@ -324,7 +324,7 @@ interface SortableItemContextValue {
 
 const SortableItemContext = createContext<SortableItemContextValue | null>(null)
 
-function useSortableItemContext(consumerName: string) {
+const useSortableItemContext = (consumerName: string) => {
   const context = useContext(SortableItemContext)
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ITEM_NAME}\``)

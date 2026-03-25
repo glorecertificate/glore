@@ -1464,7 +1464,8 @@
     "role_tutor": "Tutor",
     "role_volunteer": "Volontario",
     "noMembers": "Nessun membro ancora",
-    "noMembersDescription": "Invita i membri nella tua organizzazione per iniziare."
+    "noMembersDescription": "Invita i membri nella tua organizzazione per iniziare.",
+    "inviteEmailFailed": "L'email di invito non è stata inviata. Il membro è stato aggiunto ma potrebbe essere necessario notificarlo manualmente."
   },
   "Users": {
     "admin": "Utente admin",

@@ -85,6 +85,11 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
       }
 
       toast.success(t('inviteSuccess', { email: data.email }))
+
+      if (!data.emailSent) {
+        toast.warning(t('inviteEmailFailed'))
+      }
+
       onRefresh()
     },
     [onRefresh, t]

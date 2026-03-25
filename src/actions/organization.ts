@@ -158,13 +158,18 @@ const sendOrganizationAccessEmail = async ({
 }) => {
   const roleLabel = role.replace('_', ' ')
 
-  await sendMail({
-    to: email,
-    template: {
-      name: 'organization/member-added',
-      props: { organizationName, inviterName, role: roleLabel, isNewUser },
-    },
-  }).catch(() => null)
+  try {
+    await sendMail({
+      to: email,
+      template: {
+        name: 'organization/member-added',
+        props: { organizationName, inviterName, role: roleLabel, isNewUser },
+      },
+    })
+    return true
+  } catch {
+    return false
+  }
 }
 
 const sendJoinRequestDecisionEmail = async ({
@@ -359,7 +364,7 @@ export const inviteOrganizationMember = async ({
 
     const inviterName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email
 
-    await sendOrganizationAccessEmail({
+    const emailSent = await sendOrganizationAccessEmail({
       email: normalizedEmail,
       inviterName,
       isNewUser: !existingUser || !existingUser.onboardedAt,
@@ -383,7 +388,7 @@ export const inviteOrganizationMember = async ({
         .catch(() => null)
     }
 
-    return { email: normalizedEmail, userId: invitee.id }
+    return { email: normalizedEmail, emailSent, userId: invitee.id }
   })
 }
 

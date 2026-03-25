@@ -136,24 +136,24 @@ skills --help                         # Show all CLI commands
 
 ### Installed skills
 
-| Skill                                 | Source                        | Purpose                                                            | When to use                                                                         |
-| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
-| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                 | When configuring auth, adding plugins, or setting up email/password authentication  |
-| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                    | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
-| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                 | When implementing login/sign-up flows, password security, or email verification     |
-| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                    | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                  | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                            | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                         | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform  | When working with Cloudflare APIs, services, or infrastructure                      |
-| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
-| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance      | When creating, editing, or optimizing agent skills for this project                 |
-| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits      | After completing a feature, before merging to main                                  |
-| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                             | When adding, modifying, or debugging shadcn/ui components                           |
-| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — check roadmap, implement tasks, loop    | **ALWAYS** when starting any development work (`/ship`)                             |
+| Skill                                 | Source                        | Purpose                                                                 | When to use                                                                         |
+| ------------------------------------- | ----------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                      | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                         | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                      | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                         | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                       | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                                 | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                     | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                              | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns      | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns             | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform       | When working with Cloudflare APIs, services, or infrastructure                      |
+| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                         | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance           | When creating, editing, or optimizing agent skills for this project                 |
+| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits           | After completing a feature, before merging to main                                  |
+| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                                  | When adding, modifying, or debugging shadcn/ui components                           |
+| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — execute tasks, scan codebase, manage roadmap | **ALWAYS** when starting any development work (`/ship`)                             |
 
 ### Workflow Skills (used by ship)
 
@@ -163,19 +163,19 @@ Ship automatically invokes these skills at the right moments. You do not need to
 
 | Skill                            | Purpose                                                                                        | When ship invokes it                                                           |
 | -------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `brainstorming`                  | Socratic design refinement; saves spec to `.agents/specs/`                                     | Complex or ambiguous feature design (Step 5)                                   |
-| `dispatching-parallel-agents`    | Concurrent subagent workflows for multiple independent problems                                | Independent sub-problems within a task (Step 6); full codebase review (Step 3) |
-| `executing-plans`                | Batch plan execution with human checkpoints                                                    | Executing a written plan (Step 6)                                              |
-| `finishing-a-development-branch` | Verify tests, present merge/PR/discard options, clean up worktree                              | After approve: present branch options                                          |
+| `brainstorming`                  | Socratic design refinement; saves spec to `.agents/specs/`                                     | Complex or ambiguous feature design (Phase 2: Plan)                            |
+| `dispatching-parallel-agents`    | Concurrent subagent workflows for multiple independent problems                                | Independent sub-problems (Phase 3: Implement); codebase audit (`scan` command) |
+| `executing-plans`                | Batch plan execution with human checkpoints                                                    | Executing a written plan in a parallel session (Phase 3: Implement)            |
+| `finishing-a-development-branch` | Verify tests, present merge/PR/discard options, clean up worktree                              | After Phase 5: merge/PR/discard decision                                       |
 | `receiving-code-review`          | Technical evaluation of review feedback; verify before implementing                            | When code review feedback is received                                          |
-| `requesting-code-review`         | Dispatch code-reviewer subagent with precise context (git SHAs + requirements)                 | After completing a task, before declaring done                                 |
-| `subagent-driven-development`    | Fresh subagent per task with two-stage review (spec compliance, then code quality)             | When executing implementation plans (Step 6)                                   |
-| `systematic-debugging`           | 4-phase root cause process: reproduce, localize, identify root cause, verify fix               | Bug, test failure, or unexpected behavior (Step 6)                             |
-| `test-driven-development`        | RED-GREEN-REFACTOR: write failing test, watch it fail, pass with minimal code                  | Any feature or bug fix implementation (Step 6)                                 |
-| `using-git-worktrees`            | Isolated workspace per feature branch with safety verification                                 | Feature branch isolation (before Step 5)                                       |
+| `requesting-code-review`         | Dispatch code-reviewer subagent with precise context (git SHAs + requirements)                 | After completing a task (Phase 5: Complete)                                    |
+| `subagent-driven-development`    | Fresh subagent per task with two-stage review (spec compliance, then code quality)             | Executing implementation plans in the current session (Phase 3: Implement)     |
+| `systematic-debugging`           | 4-phase root cause process: reproduce, localize, identify root cause, verify fix               | Bug, test failure, or unexpected behavior (Phase 3: Implement)                 |
+| `test-driven-development`        | RED-GREEN-REFACTOR: write failing test, watch it fail, pass with minimal code                  | Any feature or bug fix implementation (Phase 3: Implement)                     |
+| `using-git-worktrees`            | Isolated workspace per feature branch with safety verification                                 | Feature branch isolation (before Phase 2: Plan)                                |
 | `using-superpowers`              | Overview of the superpowers workflow system                                                    | Available for reference; ship embeds the relevant behaviors directly           |
-| `verification-before-completion` | Run verification commands and confirm output before making any success claim                   | Before marking any task done (Step 8)                                          |
-| `writing-plans`                  | Bite-sized tasks (2-5 min each) with file paths, code, verify steps; saves to `.agents/plans/` | Large features needing a detailed plan (Step 5)                                |
+| `verification-before-completion` | Run verification commands and confirm output before making any success claim                   | Before any completion claim (Phase 4: Verify)                                  |
+| `writing-plans`                  | Bite-sized tasks (2-5 min each) with file paths, code, verify steps; saves to `.agents/plans/` | Large features needing a detailed plan (Phase 2: Plan)                         |
 | `writing-skills`                 | Create and test new skills following agentskills.io best practices                             | When creating or improving agent skills                                        |
 
 Permanent project documents (always read at session start):

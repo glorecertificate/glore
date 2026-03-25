@@ -27,7 +27,6 @@ _No active tasks._
 
 | Slug                       | Feature                                       | Notes                                                                                                    |
 | -------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `oversized-ui-components`  | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                   |
 | `broad-cache-invalidation` | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible. |
 
 ### P2: Medium (polish)
@@ -101,7 +100,7 @@ _No active tasks._
 
 | Slug                                   | Feature                                        | Completed  |
 | -------------------------------------- | ---------------------------------------------- | ---------- |
-| `cert-eligibility-cache-stale`         | Certificate eligibility cache stale            | 2026-03-24 |
+| `oversized-ui-components`              | Split oversized UI components                  | completed:2026-07-22 |
 | `no-security-headers`                  | No browser security headers                    | 2026-03-24 |
 | `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route  | 2026-03-24 |
 | `no-precommit-hook`                    | No pre-commit hook                             | 2026-03-24 |

@@ -1,5 +1,56 @@
 # Changelog
 
+## [0.6.4](https://github.com/glorecertificate/glore/compare/v0.6.3...v0.6.4) (2026-03-25)
+
+### Features
+
+- Add confirmation dialogs to session revoke buttons ([171407b](https://github.com/glorecertificate/glore/commit/171407b35ff3266c1fce2a0ea7d8715e97d36aa0))
+- Add debounced slug availability check to course form ([cb46949](https://github.com/glorecertificate/glore/commit/cb469494d084bc2ff1e4fdf86ffb369185258422))
+- Add empty state UI to org members and docs root ([a851414](https://github.com/glorecertificate/glore/commit/a8514140770f498005e2b01d3bbde18192e19d5a))
+- Add join request rejection reason in notifications ([28e8766](https://github.com/glorecertificate/glore/commit/28e8766cd45056c9c37f7cb2a388a0443b989648))
+- Add per-field error messages to certificate form schemas ([c9aaa39](https://github.com/glorecertificate/glore/commit/c9aaa392e91c48e76614b0db2ef923f234226f89))
+- Add save as draft to certificate form ([19110c9](https://github.com/glorecertificate/glore/commit/19110c94b62cb2cf997fce52189bbb84fdc1016d))
+- Show toast on session expiry redirect ([e9001a9](https://github.com/glorecertificate/glore/commit/e9001a99262f4539985293f3d0a65327ea43fd51))
+- Wire article delete action in docs article sheet ([c861a8c](https://github.com/glorecertificate/glore/commit/c861a8cd1628d81dfaa9528cd97d67660a6bc3b8))
+
+### Fixes
+
+- Add health endpoint, fix ts-expect-error and drizzle config ([7c32464](https://github.com/glorecertificate/glore/commit/7c3246472bd46cb1ceddd2efc4646d59cf682e4a))
+- Add typegen command to CI workflow ([eeb3955](https://github.com/glorecertificate/glore/commit/eeb395553ba7d4b26e2cf062b00c700ba5920f79))
+- Harden infra and DX (robots.txt, env validation, lint rules, deploy script) ([3070d60](https://github.com/glorecertificate/glore/commit/3070d60302831791b415a05d142e68ee6e1a4417))
+- Move org schema, bind invitation to session, replace console.error ([d2dcfd2](https://github.com/glorecertificate/glore/commit/d2dcfd26acd50e3aa42de01983e8f7fa65c578a6))
+- Replace console.error with console.warn in client components ([934dbaa](https://github.com/glorecertificate/glore/commit/934dbaa090d09d7e2a31fd6b8d2cf897157b3d48))
+- Surface invite email failures and convert function declaration ([dd2f98a](https://github.com/glorecertificate/glore/commit/dd2f98a2123ebbe5d26cb88b41f1816d6c5b525a))
+
+### Performance
+
+- Add indexes on status, slug, and category columns ([9a1df05](https://github.com/glorecertificate/glore/commit/9a1df05191d608ba8a7ecc0f1535f7ac803bb1ae))
+- Add query result size limits to all list queries ([5465251](https://github.com/glorecertificate/glore/commit/54652513fba4903c7b919e0d9df4db1b3a519730))
+- Lazy load fuse.js in search command and icon picker ([21d132f](https://github.com/glorecertificate/glore/commit/21d132f93e8dc2b10bdc7054f20befe30ca6c47d))
+- Parallelize independent sequential awaits with Promise.all ([63609fc](https://github.com/glorecertificate/glore/commit/63609fc67b12c1b60689988165c76584fe3d7d30))
+- Replace broad cache invalidation with per-record tags ([5ada6be](https://github.com/glorecertificate/glore/commit/5ada6be8a2579b1412e03d926e169ce0113bbc9c))
+
+### Build
+
+- **deps:** bump socket.io-parser ([db57461](https://github.com/glorecertificate/glore/commit/db5746132c756a5cb4ebe2fb940c604cd0170f8b))
+
+### CI
+
+- Use only errors in oxlint config ([238d74e](https://github.com/glorecertificate/glore/commit/238d74e19e903fa2c16e0a98192b93a41dbf0c04))
+
+### Docs
+
+- Add orchestrator and sub-agent execution model to ship skill ([899ea27](https://github.com/glorecertificate/glore/commit/899ea27f9b0226a3364a74cc70e9c3c0dfbad255))
+- Update ship skill inputs and expected output ([b03e612](https://github.com/glorecertificate/glore/commit/b03e612f6553de7686ac1575110967fc67dead68))
+
+### Other
+
+- Add domain-specific error classification to safeQuery ([acb8827](https://github.com/glorecertificate/glore/commit/acb8827bcbee6b62f39ffda02cb1f4fc76066dff))
+- Add Suspense boundaries, split providers, validate uploads and SSL ([f00e0eb](https://github.com/glorecertificate/glore/commit/f00e0eb4921bbfd277b0a25d0b939f9c9594dab3))
+- Demote memo-only headers to server components ([ad48090](https://github.com/glorecertificate/glore/commit/ad480904673c90e45a78f3a437bec469efc4352c))
+- Extract static data arrays to config JSON files ([e91a62d](https://github.com/glorecertificate/glore/commit/e91a62dd2de4bbfac3e620094414fb4837a98155))
+- Split oversized UI components for readability ([fc3b7a6](https://github.com/glorecertificate/glore/commit/fc3b7a6f5c86e8f6564862538241d33afc3ba3f4))
+
 ## [0.6.3](https://github.com/glorecertificate/glore/compare/v0.6.2...v0.6.3) (2026-03-24)
 
 ### Fixes

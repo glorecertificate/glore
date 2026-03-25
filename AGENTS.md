@@ -322,7 +322,7 @@ src/
 ├── instrumentation.ts  # Next.js instrumentation hook (runtime env validation)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── auth.ts         # Better Auth server instance
-│   ├── cache.ts        # CacheTag enum
+│   ├── cache.ts        # CacheTag enum, per-record tag helpers
 │   ├── constants.ts    # Route roots, regex validators
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail utility)
@@ -494,7 +494,7 @@ export type User = ReturnType<typeof parseUser>
 // Server action with cache
 const fetchUser = async (id: string) => {
   'use cache'
-  cacheTag(CacheTag.User)
+  cacheTag(userTag(id))
 
   return await safeQuery(async () => {
     const user = await db.query.users.findFirst({
@@ -533,19 +533,32 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 **Cache tags** (defined in `src/lib/cache.ts` `CacheTag` enum):
 
-| Tag                | Used by                                   |
-| ------------------ | ----------------------------------------- |
-| `doc-categories`   | `fetchDocCategories`                      |
-| `auth-user`        | `fetchAuthUser`                           |
-| `auth-user-status` | `logout`                                  |
-| `certificates`     | `fetchCertificates`                       |
-| `course`           | `fetchCourse` (per-slug: `course-{slug}`) |
-| `courses`          | `fetchCourses`                            |
-| `organizations`    | `fetchOrganizations`                      |
-| `skill-groups`     | `listSkillGroups`                         |
-| `team-members`     | `fetchTeamMembers`                        |
-| `user`             | `fetchUser`                               |
-| `user-email`       | `fetchUserEmail`                          |
+| Tag                | Used by                                                                      | Pattern    |
+| ------------------ | ---------------------------------------------------------------------------- | ---------- |
+| `admin-users`      | `fetchAdminUsers`                                                            | Global     |
+| `auth-user`        | `fetchAuthUser`                                                              | Global     |
+| `auth-user-status` | `logout`                                                                     | Global     |
+| `certificates`     | `fetchUserCertificates`, `fetchTutorCertificates`, `fetchUnassignedOrgCerts` | Per-record |
+| `course`           | `fetchCourse`                                                                | Per-record |
+| `courses`          | `fetchCourses`                                                               | Global     |
+| `doc-categories`   | `fetchDocCategories`                                                         | Global     |
+| `notifications`    | `fetchNotifications`                                                         | Per-record |
+| `organizations`    | `fetchOrganizations`                                                         | Global     |
+| `skill-groups`     | `listSkillGroups`                                                            | Global     |
+| `team-members`     | `fetchTeamMembers`                                                           | Global     |
+| `user`             | `fetchUser`                                                                  | Per-record |
+| `user-email`       | `fetchUserEmail`                                                             | Global     |
+
+**Per-record tag helpers** (`src/lib/cache.ts`):
+
+| Helper                             | Tag format                        |
+| ---------------------------------- | --------------------------------- |
+| `userTag(id)`                      | `user-{id}`                       |
+| `courseTag(slug)`                  | `course-{slug}`                   |
+| `notificationsTag(userId)`         | `notifications-{userId}`          |
+| `certificatesUserTag(userId)`      | `certificates-user-{userId}`      |
+| `certificatesTutorTag(reviewerId)` | `certificates-tutor-{reviewerId}` |
+| `certificatesOrgTag(orgId)`        | `certificates-org-{orgId}`        |
 
 **Patterns:**
 
@@ -1405,12 +1418,12 @@ import { revalidateTag } from 'next/cache'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { type TableUpdate } from '@/db/types'
-import { CacheTag } from '@/lib/cache'
+import { userTag } from '@/lib/cache'
 
 export const updateUser = async (id: string, values: TableUpdate<'users'>) => {
   const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
   if (!updated) throw new Error('Failed to update user')
-  revalidateTag(CacheTag.User, 'max')
+  revalidateTag(userTag(id), 'max')
   return updated
 }
 ```

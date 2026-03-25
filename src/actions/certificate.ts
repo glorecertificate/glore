@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheLife, cacheTag } from 'next/cache'
+import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
 import { cache, createElement } from 'react'
 
 import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
@@ -20,7 +20,7 @@ import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
 import { certificateSkills, certificates, memberships, users } from '@/db/schema'
-import { CacheTag } from '@/lib/cache'
+import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { i18n } from '@/lib/i18n'
 import { r2Put } from '@/lib/storage'
@@ -53,7 +53,7 @@ const certificateWithUsers = {
 
 const fetchUserCertificates = cache(async (userId: string) => {
   'use cache'
-  cacheTag(CacheTag.Certificates)
+  cacheTag(certificatesUserTag(userId))
   cacheLife('max')
 
   return await safeQuery(async () => {
@@ -85,7 +85,7 @@ export const listUserCertificates = async ({ cache = true }: { cache?: boolean }
 
 const fetchTutorCertificates = cache(async (reviewerId: string) => {
   'use cache'
-  cacheTag(CacheTag.Certificates)
+  cacheTag(certificatesTutorTag(reviewerId))
   cacheLife('max')
 
   return await safeQuery(async () => {
@@ -257,7 +257,10 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       }).catch(() => null)
     }
 
+    revalidateTag(certificatesTutorTag(authUser.id), 'max')
+    revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
     if (cert.userId) {
+      revalidateTag(certificatesUserTag(cert.userId), 'max')
       await createNotification(cert.userId, 'certificate_reviewed', {
         certificateId: id,
         status: isApprove ? 'approved' : 'changes_requested',
@@ -382,6 +385,12 @@ export const createCertificate = async (values: CertificateFormValues) => {
       }).catch(() => null)
     }
 
+    revalidateTag(certificatesUserTag(authUser.id), 'max')
+    revalidateTag(certificatesOrgTag(orgId), 'max')
+    if (reviewerId) {
+      revalidateTag(certificatesTutorTag(reviewerId), 'max')
+    }
+
     return newCert
   })
 }
@@ -426,6 +435,15 @@ export const resubmitCertificate = async (id: number, values: ResubmitCertificat
       )
       .returning()
     if (!updated) throw new Error('Certificate not found or cannot be resubmitted')
+
+    revalidateTag(certificatesUserTag(authUser.id), 'max')
+    if (updated.reviewerId) {
+      revalidateTag(certificatesTutorTag(updated.reviewerId), 'max')
+    }
+    if (updated.organizationId) {
+      revalidateTag(certificatesOrgTag(updated.organizationId), 'max')
+    }
+
     return updated
   })
 }
@@ -480,6 +498,14 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
       }).catch(() => null)
     }
 
+    revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
+    if (cert.reviewerId) {
+      revalidateTag(certificatesTutorTag(cert.reviewerId), 'max')
+    }
+    if (reviewerId) {
+      revalidateTag(certificatesTutorTag(reviewerId), 'max')
+    }
+
     return updated
   })
 }
@@ -514,13 +540,16 @@ export const selfAssignCertificate = async (certId: number) => {
       .returning()
     if (!updated) throw new Error('Certificate was already claimed by another tutor')
 
+    revalidateTag(certificatesTutorTag(authUser.id), 'max')
+    revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
+
     return updated
   })
 }
 
 const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
   'use cache'
-  cacheTag(CacheTag.Certificates)
+  cacheTag(certificatesOrgTag(orgId))
   cacheLife('max')
 
   return await safeQuery(async () => {

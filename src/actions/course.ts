@@ -26,7 +26,7 @@ import {
   userLessons,
 } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
-import { CacheTag } from '@/lib/cache'
+import { CacheTag, certificatesUserTag, courseTag } from '@/lib/cache'
 import { type IntlRecord } from '@/lib/i18n'
 
 const courseWith = {
@@ -77,7 +77,7 @@ const buildCourseWith = (userId?: string) => {
 
 const fetchCourse = cache(async (slug: string, userId?: string) => {
   'use cache'
-  cacheTag(`${CacheTag.Course}-${slug}`)
+  cacheTag(courseTag(slug))
 
   return await safeQuery(async () => {
     const course = await db.query.courses.findFirst({
@@ -394,7 +394,7 @@ export const completeLesson = async (lessonId: number) => {
 
   const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).returning()
 
-  revalidateTag(CacheTag.Certificates, 'max')
+  revalidateTag(certificatesUserTag(user.id), 'max')
   return { data: result }
 }
 
@@ -421,7 +421,7 @@ export const submitEvaluationRatings = async (ratings: { evaluationId: number; v
     .values(newRatings.map(({ evaluationId, value }) => ({ userId: user.id, evaluationId, value })))
     .returning()
 
-  revalidateTag(CacheTag.Certificates, 'max')
+  revalidateTag(certificatesUserTag(user.id), 'max')
   return { data: [...existing, ...result] }
 }
 
@@ -436,7 +436,7 @@ export const submitAssessmentRating = async (assessmentId: number, value: number
 
   const [result] = await db.insert(userAssessments).values({ userId: user.id, assessmentId, value }).returning()
 
-  revalidateTag(CacheTag.Certificates, 'max')
+  revalidateTag(certificatesUserTag(user.id), 'max')
   return { data: result }
 }
 

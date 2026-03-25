@@ -13,12 +13,12 @@ import { safeQuery } from '@/db/helpers'
 import { type Notification } from '@/db/queries/notification'
 import { notifications, pushSubscriptions, users } from '@/db/schema'
 import { type NotificationDataMap, type NotificationType } from '@/db/schema/notifications'
-import { CacheTag } from '@/lib/cache'
+import { notificationsTag } from '@/lib/cache'
 import { sendPushNotification } from '@/lib/push'
 
 const fetchNotifications = cache(async (userId: string) => {
   'use cache'
-  cacheTag(CacheTag.Notifications)
+  cacheTag(notificationsTag(userId))
   cacheLife('max')
 
   return await safeQuery(() =>
@@ -57,7 +57,7 @@ export const markNotificationRead = async (id: number) => {
       .set({ read: true, readAt: new Date().toISOString() })
       .where(and(eq(notifications.id, id), eq(notifications.userId, authUser.id)))
       .returning()
-    revalidateTag(CacheTag.Notifications, 'max')
+    revalidateTag(notificationsTag(authUser.id), 'max')
     return updated
   })
 }
@@ -71,7 +71,7 @@ export const markAllNotificationsRead = async () => {
       .update(notifications)
       .set({ read: true, readAt: new Date().toISOString() })
       .where(eq(notifications.userId, authUser.id))
-    revalidateTag(CacheTag.Notifications, 'max')
+    revalidateTag(notificationsTag(authUser.id), 'max')
     return true
   })
 }
@@ -85,7 +85,7 @@ export const createNotification = async <T extends NotificationType>(
     .insert(notifications)
     .values({ userId, type, data })
     .catch(() => null)
-  revalidateTag(CacheTag.Notifications, 'max')
+  revalidateTag(notificationsTag(userId), 'max')
 
   const subs = await db.query.pushSubscriptions.findMany({ where: eq(pushSubscriptions.userId, userId) })
   const payload = buildPushPayload(type, data as NotificationDataMap[NotificationType])

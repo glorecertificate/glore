@@ -25,9 +25,7 @@ _No active tasks._
 
 ### P1: High (important)
 
-| Slug                       | Feature                                       | Notes                                                                                                    |
-| -------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `broad-cache-invalidation` | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible. |
+_All P1 tasks completed._
 
 ### P2: Medium (polish)
 
@@ -98,46 +96,47 @@ _No active tasks._
 
 ## Done
 
-| Slug                                   | Feature                                        | Completed  |
-| -------------------------------------- | ---------------------------------------------- | ---------- |
+| Slug                                   | Feature                                        | Completed            |
+| -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `broad-cache-invalidation`             | Per-record cache tag invalidation              | completed:2026-07-22 |
 | `oversized-ui-components`              | Split oversized UI components                  | completed:2026-07-22 |
-| `no-security-headers`                  | No browser security headers                    | 2026-03-24 |
-| `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route  | 2026-03-24 |
-| `no-precommit-hook`                    | No pre-commit hook                             | 2026-03-24 |
-| `auth-input-privilege-escalation`      | isEditor/onboardedAt self-promotion vector     | 2026-03-24 |
-| `course-mutations-no-auth`             | Course mutation actions unauthenticated        | 2026-03-24 |
-| `admin-actions-no-auth`                | Admin data-fetch actions expose sensitive data | 2026-03-24 |
-| `update-user-no-ownership-check`       | updateUser has no ownership check              | 2026-03-24 |
-| `oxlint-saves`                         | Oxlint auto-fix on save in VS Code             | 2026-03-19 |
-| `ai-gemini`                            | Migrate from OpenAI to Google Gemini           | 2026-03-19 |
-| `course-analytics`                     | Course analytics and reporting                 | 2026-03-19 |
-| `notif-system`                         | In-app notification system                     | 2026-03-19 |
-| `search-ui`                            | Search functionality in UI                     | 2026-03-19 |
-| `cert-tutor-assign`                    | Manual tutor re-assignment                     | 2026-03-19 |
-| `render-opt`                           | Rendering and interaction optimizations        | 2026-03-19 |
-| `help-page`                            | Help page content                              | 2026-03-19 |
-| `about-page`                           | About page content                             | 2026-03-19 |
-| `build-speed`                          | Fix slow Vercel builds                         | 2026-03-19 |
-| `bundle-opt`                           | Bundle size optimization                       | 2026-03-19 |
-| `cert-filter`                          | Certificate list filtering                     | 2026-03-18 |
-| `cert-qr`                              | QR code on public certificate page             | 2026-03-18 |
-| `cert-social`                          | Public certificate social sharing              | 2026-03-18 |
-| `action-cache`                         | Server action cache invalidation audit         | 2026-03-26 |
-| `docs-feature`                         | Documentation CRUD and UI                      | 2026-03-26 |
-| `org-admin-sole`                       | Enforce single org admin (owner) pattern       | 2026-03-18 |
-| `cert-resubmit`                        | Certificate resubmission after changes         | 2026-03-19 |
-| `cert-review`                          | Certificate review field editing               | 2026-03-18 |
-| `r2-storage`                           | Migrate from Vercel Blob to Cloudflare R2      | 2026-03-15 |
-| `pwa-enhance`                          | PWA enhancements                               | 2026-03-27 |
-| `account-tab`                          | Enhanced account settings                      | 2026-03-28 |
-| `upload-endpoint-unauthenticated`      | Unauthenticated R2 upload endpoint             | 2026-03-24 |
-| `ai-endpoints-unauthenticated`         | AI endpoints unauthenticated                   | 2026-03-24 |
-| `ai-client-supplied-api-key`           | AI routes accept client-supplied API key       | 2026-03-24 |
-| `admin-pages-missing-role-checks`      | Admin pages missing role checks                | 2026-03-24 |
-| `missing-fk-indexes`                   | Missing foreign key indexes                    | 2026-03-24 |
-| `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | 2026-03-25 |
-| `no-slug-availability-check`           | Slug availability check in course form         | 2026-03-25 |
-| `overuse-use-client`                   | Audit use client in feature components         | 2026-03-25 |
-| `heavy-client-deps`                    | Lazy load heavy client-side dependencies       | 2026-03-25 |
-| `sequential-data-fetching`             | Parallelize sequential data fetching           | 2026-03-25 |
-| `massive-static-data-files`            | Extract static data to config JSON files       | 2026-03-25 |
+| `no-security-headers`                  | No browser security headers                    | 2026-03-24           |
+| `malformed-pwa-cache-control`          | Malformed Cache-Control on PWA manifest route  | 2026-03-24           |
+| `no-precommit-hook`                    | No pre-commit hook                             | 2026-03-24           |
+| `auth-input-privilege-escalation`      | isEditor/onboardedAt self-promotion vector     | 2026-03-24           |
+| `course-mutations-no-auth`             | Course mutation actions unauthenticated        | 2026-03-24           |
+| `admin-actions-no-auth`                | Admin data-fetch actions expose sensitive data | 2026-03-24           |
+| `update-user-no-ownership-check`       | updateUser has no ownership check              | 2026-03-24           |
+| `oxlint-saves`                         | Oxlint auto-fix on save in VS Code             | 2026-03-19           |
+| `ai-gemini`                            | Migrate from OpenAI to Google Gemini           | 2026-03-19           |
+| `course-analytics`                     | Course analytics and reporting                 | 2026-03-19           |
+| `notif-system`                         | In-app notification system                     | 2026-03-19           |
+| `search-ui`                            | Search functionality in UI                     | 2026-03-19           |
+| `cert-tutor-assign`                    | Manual tutor re-assignment                     | 2026-03-19           |
+| `render-opt`                           | Rendering and interaction optimizations        | 2026-03-19           |
+| `help-page`                            | Help page content                              | 2026-03-19           |
+| `about-page`                           | About page content                             | 2026-03-19           |
+| `build-speed`                          | Fix slow Vercel builds                         | 2026-03-19           |
+| `bundle-opt`                           | Bundle size optimization                       | 2026-03-19           |
+| `cert-filter`                          | Certificate list filtering                     | 2026-03-18           |
+| `cert-qr`                              | QR code on public certificate page             | 2026-03-18           |
+| `cert-social`                          | Public certificate social sharing              | 2026-03-18           |
+| `action-cache`                         | Server action cache invalidation audit         | 2026-03-26           |
+| `docs-feature`                         | Documentation CRUD and UI                      | 2026-03-26           |
+| `org-admin-sole`                       | Enforce single org admin (owner) pattern       | 2026-03-18           |
+| `cert-resubmit`                        | Certificate resubmission after changes         | 2026-03-19           |
+| `cert-review`                          | Certificate review field editing               | 2026-03-18           |
+| `r2-storage`                           | Migrate from Vercel Blob to Cloudflare R2      | 2026-03-15           |
+| `pwa-enhance`                          | PWA enhancements                               | 2026-03-27           |
+| `account-tab`                          | Enhanced account settings                      | 2026-03-28           |
+| `upload-endpoint-unauthenticated`      | Unauthenticated R2 upload endpoint             | 2026-03-24           |
+| `ai-endpoints-unauthenticated`         | AI endpoints unauthenticated                   | 2026-03-24           |
+| `ai-client-supplied-api-key`           | AI routes accept client-supplied API key       | 2026-03-24           |
+| `admin-pages-missing-role-checks`      | Admin pages missing role checks                | 2026-03-24           |
+| `missing-fk-indexes`                   | Missing foreign key indexes                    | 2026-03-24           |
+| `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | 2026-03-25           |
+| `no-slug-availability-check`           | Slug availability check in course form         | 2026-03-25           |
+| `overuse-use-client`                   | Audit use client in feature components         | 2026-03-25           |
+| `heavy-client-deps`                    | Lazy load heavy client-side dependencies       | 2026-03-25           |
+| `sequential-data-fetching`             | Parallelize sequential data fetching           | 2026-03-25           |
+| `massive-static-data-files`            | Extract static data to config JSON files       | 2026-03-25           |

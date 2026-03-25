@@ -11,7 +11,7 @@ import { type Locale } from 'next-intl'
 import { getAuthUser, setAuthPassword } from '@/actions/auth'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
-import { CacheTag } from '@/lib/cache'
+import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 
 export const completeOnboarding = async ({
@@ -56,7 +56,7 @@ export const completeOnboarding = async ({
     })
     .where(eq(users.id, authUser.id))
 
-  revalidateTag(CacheTag.User, 'max')
+  revalidateTag(userTag(authUser.id), 'max')
   revalidateTag(CacheTag.AuthUser, 'max')
   revalidateTag(CacheTag.TeamMembers, 'max')
   redirect(APP_ROOT)

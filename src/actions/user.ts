@@ -26,13 +26,13 @@ import {
   users,
 } from '@/db/schema'
 import { type TableUpdate } from '@/db/types'
-import { CacheTag } from '@/lib/cache'
+import { CacheTag, userTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
 const fetchUser = async (id: string) => {
   'use cache'
-  cacheTag(CacheTag.User)
+  cacheTag(userTag(id))
 
   return await safeQuery(async () => {
     const user = await db.query.users.findFirst({

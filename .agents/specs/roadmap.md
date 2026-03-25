@@ -25,11 +25,10 @@ _No active tasks._
 
 ### P1: High (important)
 
-| Slug                        | Feature                                       | Notes                                                                                                    |
-| --------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `massive-static-data-files` | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.              |
-| `oversized-ui-components`   | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                   |
-| `broad-cache-invalidation`  | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible. |
+| Slug                       | Feature                                       | Notes                                                                                                    |
+| -------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `oversized-ui-components`  | Oversized components exceeding 300-line limit | Code Org. Split components over 300 lines into focused sub-components.                                   |
+| `broad-cache-invalidation` | Cache invalidation too broad                  | Scalability. Replace broad tag invalidation with per-record tags (e.g., `course-{slug}`) where possible. |
 
 ### P2: Medium (polish)
 
@@ -142,3 +141,4 @@ _No active tasks._
 | `overuse-use-client`                   | Audit use client in feature components         | 2026-03-25 |
 | `heavy-client-deps`                    | Lazy load heavy client-side dependencies       | 2026-03-25 |
 | `sequential-data-fetching`             | Parallelize sequential data fetching           | 2026-03-25 |
+| `massive-static-data-files`            | Extract static data to config JSON files       | 2026-03-25 |

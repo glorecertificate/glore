@@ -41,42 +41,7 @@ import { useSession } from '@/hooks/use-session'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { cn, defaultFormDisabled } from '@/lib/utils'
-
-const SPOKEN_LANGUAGES = [
-  'en',
-  'es',
-  'it',
-  'fr',
-  'de',
-  'pt',
-  'ar',
-  'ja',
-  'ru',
-  'zh',
-  'ko',
-  'hi',
-  'tr',
-  'nl',
-  'pl',
-  'sv',
-  'da',
-  'fi',
-  'el',
-  'he',
-  'th',
-  'vi',
-  'id',
-  'uk',
-  'ro',
-  'hu',
-  'cs',
-  'no',
-  'bn',
-  'sw',
-  'fa',
-  'ca',
-  'ms',
-] as const
+import i18nConfig from '~/config/i18n.json'
 
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
@@ -446,7 +411,7 @@ const ProfileForm = () => {
 
         <SettingsSection description={t('spokenLanguagesDescription')} title={t('spokenLanguages')}>
           <div className="flex flex-wrap gap-2">
-            {SPOKEN_LANGUAGES.map(lang => (
+            {i18nConfig.spokenLanguages.map(lang => (
               <Toggle
                 className={cn(
                   'rounded-full border px-3 py-1.5 text-sm transition-colors',

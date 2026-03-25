@@ -977,12 +977,14 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 
 ## Static Data
 
-| File                   | Purpose                                                                              |
-| ---------------------- | ------------------------------------------------------------------------------------ |
-| `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `mapsUrl`, `sidebarShortcut: "s"`) |
-| `config/i18n.json`     | Locale definitions, default locale, title-case locales, hardcoded messages           |
-| `config/metadata.json` | App name, version, URL, email, keywords, authors                                     |
-| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light/dark                           |
+| File                   | Purpose                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------- |
+| `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `mapsUrl`, `sidebarShortcut: "s"`)         |
+| `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages |
+| `config/icons.json`    | Lucide icon metadata (1,640 entries: name, categories, tags) for icon picker fuzzy search    |
+| `config/markers.json`  | Globe marker coordinates (456 lat/lon pairs)                                                 |
+| `config/metadata.json` | App name, version, URL, email, keywords, authors                                             |
+| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light/dark                                   |
 
 ---
 

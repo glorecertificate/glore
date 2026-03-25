@@ -6,8 +6,7 @@ import createGlobe, { type COBEOptions } from 'cobe'
 import { useSpring } from 'react-spring'
 
 import { cn, noop } from '@/lib/utils'
-
-import { MARKERS } from './data'
+import markers from '~/config/markers.json'
 
 export interface GlobeColorOptions extends Pick<GlobeOptions, 'baseColor' | 'glowColor'> {
   markerColor?: [number, number, number] | [number, number, number][]
@@ -45,7 +44,7 @@ const GLOBE_OPTIONS = {
   mapBrightness: 12,
   mapSamples: 15000,
   markerColor: [1, 1, 1],
-  markers: (MARKERS as [number, number][]).map(location => ({
+  markers: (markers as [number, number][]).map(location => ({
     location,
     size: Math.random() * (MARKER_MAX_SIZE - MARKER_MIN_SIZE) + MARKER_MIN_SIZE,
   })),

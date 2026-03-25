@@ -56,7 +56,7 @@ let cachedIcons: IconData[] | null = null
 
 const loadIconData = async () => {
   if (cachedIcons) return cachedIcons
-  const { default: icons } = await import('./data')
+  const { default: icons } = await import('~/config/icons.json')
   cachedIcons = icons.filter((icon: IconData) => icon.name in dynamicIconImports)
   return cachedIcons
 }

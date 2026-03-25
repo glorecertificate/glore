@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils'
 const getNotificationDisplay = (
   notification: Notification,
   t: ReturnType<typeof useTranslations<'Notifications'>>
-): { href: string; title: string } => {
+): { description?: string; href: string; title: string } => {
   const type = notification.type
   const data = notification.data as Record<string, unknown>
 
@@ -46,6 +46,7 @@ const getNotificationDisplay = (
   if (type === 'join_request_decided') {
     const requestData = data as NotificationDataMap['join_request_decided']
     return {
+      description: requestData.status === 'rejected' && requestData.comment ? requestData.comment : undefined,
       href: '/dashboard',
       title:
         requestData.status === 'accepted'
@@ -59,7 +60,7 @@ const getNotificationDisplay = (
 
 const NotificationItem = ({ notification, onRead }: { notification: Notification; onRead: (id: number) => void }) => {
   const t = useTranslations('Notifications')
-  const { href, title } = getNotificationDisplay(notification, t)
+  const { description, href, title } = getNotificationDisplay(notification, t)
 
   const handleClick = () => {
     if (!notification.read) onRead(notification.id)
@@ -79,6 +80,11 @@ const NotificationItem = ({ notification, onRead }: { notification: Notification
       />
       <span className="min-w-0 flex-1">
         <span className={cn('block text-sm leading-snug', !notification.read && 'font-medium')}>{title}</span>
+        {description && (
+          <span className="mt-0.5 line-clamp-2 block text-xs leading-snug text-muted-foreground italic">
+            {description}
+          </span>
+        )}
         <span className="mt-0.5 block text-[11px] text-muted-foreground">
           {new Date(notification.createdAt).toLocaleDateString()}
         </span>

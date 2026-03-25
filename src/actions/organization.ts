@@ -629,6 +629,7 @@ export const rejectOrganizationJoinRequest = async (requestId: number, reviewerC
     })
 
     await createNotificationByEmail(request.email, 'join_request_decided', {
+      comment: nextComment,
       organizationName: organization.name,
       status: 'rejected',
     }).catch(() => null)

@@ -112,13 +112,13 @@ const buildPushPayload = (type: NotificationType, data: NotificationDataMap[Noti
   }
   if (type === 'join_request_decided') {
     const d = data as NotificationDataMap['join_request_decided']
-    return {
-      body:
-        d.status === 'accepted'
-          ? `Your request to join ${d.organizationName} was accepted.`
-          : `Your request to join ${d.organizationName} was rejected.`,
-      title: 'GloRe',
-    }
+    const body =
+      d.status === 'accepted'
+        ? `Your request to join ${d.organizationName} was accepted.`
+        : d.comment
+          ? `Your request to join ${d.organizationName} was rejected. ${d.comment}`
+          : `Your request to join ${d.organizationName} was rejected.`
+    return { body, title: 'GloRe' }
   }
   return { body: 'You have a new notification.', title: 'GloRe' }
 }

@@ -5,7 +5,7 @@ import { users } from './users'
 export interface NotificationDataMap {
   certificate_assigned: { certificateId: number; organizationName?: string }
   certificate_reviewed: { certificateId: number; status: 'approved' | 'changes_requested' }
-  join_request_decided: { organizationName: string; status: 'accepted' | 'rejected' }
+  join_request_decided: { comment?: string | null; organizationName: string; status: 'accepted' | 'rejected' }
   member_added: { organizationName: string; role: string }
 }
 

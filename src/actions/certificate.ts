@@ -13,6 +13,7 @@ import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
 import {
   type CertificateFormValues,
+  type DraftCertificateValues,
   type ResubmitCertificateValues,
   type ReviewCertificateValues,
 } from '@/components/features/certificates/schemas'
@@ -313,7 +314,10 @@ export const getCertificateEligibility = async (): Promise<CertificateEligibilit
   return { eligible, completedSkillCount, minSkills, minRating, hasLowRatings, avgRating }
 }
 
-export const createCertificate = async (values: CertificateFormValues) => {
+export const createCertificate = async (
+  values: CertificateFormValues | DraftCertificateValues,
+  { draft = false } = {}
+) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
@@ -322,27 +326,29 @@ export const createCertificate = async (values: CertificateFormValues) => {
 
   return await safeQuery(async () => {
     const handle = `${authUser.id}-${orgId}-${Date.now()}`
-
-    // Find the tutor with the fewest assigned certificates in this org
-    const tutors = await db
-      .select({ userId: memberships.userId })
-      .from(memberships)
-      .where(and(eq(memberships.organizationId, orgId), eq(memberships.role, 'tutor')))
+    const status = draft ? 'draft' : 'submitted'
 
     let reviewerId: string | null = null
 
-    if (tutors.length > 0) {
-      const tutorIds = tutors.map(t => t.userId)
-      const assignmentCounts = await db
-        .select({ reviewerId: certificates.reviewerId, total: count() })
-        .from(certificates)
-        .where(and(eq(certificates.organizationId, orgId)))
-        .groupBy(certificates.reviewerId)
-        .orderBy(asc(count()))
+    if (!draft) {
+      const tutors = await db
+        .select({ userId: memberships.userId })
+        .from(memberships)
+        .where(and(eq(memberships.organizationId, orgId), eq(memberships.role, 'tutor')))
 
-      const countMap = new Map(assignmentCounts.map(r => [r.reviewerId, r.total]))
-      const sorted = tutorIds.sort((a, b) => (countMap.get(a) ?? 0) - (countMap.get(b) ?? 0))
-      reviewerId = sorted[0] ?? null
+      if (tutors.length > 0) {
+        const tutorIds = tutors.map(t => t.userId)
+        const assignmentCounts = await db
+          .select({ reviewerId: certificates.reviewerId, total: count() })
+          .from(certificates)
+          .where(and(eq(certificates.organizationId, orgId)))
+          .groupBy(certificates.reviewerId)
+          .orderBy(asc(count()))
+
+        const countMap = new Map(assignmentCounts.map(r => [r.reviewerId, r.total]))
+        const sorted = tutorIds.sort((a, b) => (countMap.get(a) ?? 0) - (countMap.get(b) ?? 0))
+        reviewerId = sorted[0] ?? null
+      }
     }
 
     const [newCert] = await db
@@ -352,27 +358,30 @@ export const createCertificate = async (values: CertificateFormValues) => {
         userId: authUser.id,
         organizationId: orgId,
         language: values.language,
-        activityStartDate: values.activityStartDate,
-        activityEndDate: values.activityEndDate,
-        activityDuration: values.activityDuration,
-        activityLocation: values.activityLocation,
-        activityDescription: values.activityDescription,
-        organizationRating: values.organizationRating,
+        activityStartDate: values.activityStartDate || '',
+        activityEndDate: values.activityEndDate || '',
+        activityDuration: values.activityDuration || 0,
+        activityLocation: values.activityLocation || '',
+        activityDescription: values.activityDescription || '',
+        organizationRating: values.organizationRating || 0,
         reviewerId,
-        status: 'submitted',
+        status,
       })
       .returning()
 
     if (!newCert) throw new Error('Failed to create certificate')
 
-    await db.insert(certificateSkills).values(
-      values.skillCourseIds.map(courseId => ({
-        certificateId: newCert.id,
-        courseId,
-      }))
-    )
+    const skillCourseIds = values.skillCourseIds ?? []
+    if (skillCourseIds.length > 0) {
+      await db.insert(certificateSkills).values(
+        skillCourseIds.map(courseId => ({
+          certificateId: newCert.id,
+          courseId,
+        }))
+      )
+    }
 
-    if (reviewerId) {
+    if (!draft && reviewerId) {
       const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))
       if (reviewer?.email) {
         await sendMail({

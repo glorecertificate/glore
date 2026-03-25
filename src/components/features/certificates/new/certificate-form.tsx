@@ -10,7 +10,11 @@ import { toast } from 'sonner'
 
 import { createCertificate } from '@/actions/certificate'
 import { CertificatePreview } from '@/components/features/certificates/preview'
-import { type CertificateFormValues, certificateFormSchema } from '@/components/features/certificates/schemas'
+import {
+  type CertificateFormValues,
+  certificateFormSchema,
+  draftCertificateSchema,
+} from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -33,6 +37,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
   const t = useTranslations('Certificates')
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSavingDraft, setIsSavingDraft] = useState(false)
 
   const form = useForm<CertificateFormValues>({
     resolver: zodResolver(certificateFormSchema) as never,
@@ -73,6 +78,28 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
     }
 
     toast.success(t('submitSuccess'))
+    router.push('/certificates')
+  }
+
+  const onSaveDraft = async () => {
+    const raw = form.getValues()
+    const parsed = draftCertificateSchema.safeParse(raw)
+
+    if (!parsed.success) {
+      toast.error(t('draftError'))
+      return
+    }
+
+    setIsSavingDraft(true)
+    const result = await createCertificate(parsed.data, { draft: true })
+    setIsSavingDraft(false)
+
+    if (result.error) {
+      toast.error(t('draftError'))
+      return
+    }
+
+    toast.success(t('draftSuccess'))
     router.push('/certificates')
   }
 
@@ -244,15 +271,28 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
               )}
             />
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isSubmitting}
-              loading={isSubmitting}
-              loadingText={t('submitting')}
-            >
-              {t('submitCertificate')}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                className="flex-1"
+                disabled={isSubmitting || isSavingDraft}
+                loading={isSavingDraft}
+                loadingText={t('savingDraft')}
+                onClick={onSaveDraft}
+                type="button"
+                variant="outline"
+              >
+                {t('saveDraft')}
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1"
+                disabled={isSubmitting || isSavingDraft}
+                loading={isSubmitting}
+                loadingText={t('submitting')}
+              >
+                {t('submitCertificate')}
+              </Button>
+            </div>
           </form>
         </Form>
       </div>

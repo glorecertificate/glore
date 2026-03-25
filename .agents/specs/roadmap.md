@@ -31,7 +31,6 @@ _All P1 tasks completed._
 
 | Slug                                  | Feature                                                  | Notes                                                                                                                  |
 | ------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `cert-no-draft-save`                  | Certificate cannot be saved as draft                     | Features. Add a "Save draft" path that persists without triggering a status change.                                    |
 | `missing-cache-on-queries`            | Some read queries missing use cache                      | Performance. Add `'use cache'` to frequently-called read actions not yet cached.                                       |
 | `over-fetching-queries`               | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                                    |
 | `missing-suspense-boundaries`         | Suspense boundaries missing on some dashboard pages      | Performance. Apply the outer-sync + inner-async Suspense pattern to all data-heavy dashboard pages.                    |
@@ -96,6 +95,7 @@ _All P1 tasks completed._
 | `org-invite-email-silent-failure`      | Surface invite email send errors               | completed:2026-07-22 |
 | `function-declaration-sortable`        | Convert function declaration to arrow          | completed:2026-07-22 |
 | `email-template-default-exports`       | Verified: all templates already correct        | completed:2026-07-22 |
+| `cert-no-draft-save`                   | Add save as draft to certificate form          | completed:2026-07-22 |
 | `docs-article-edit-delete-missing`     | Wire docs article delete in UI                 | completed:2026-07-22 |
 | `cert-form-missing-field-errors`       | Per-field cert form validation errors          | completed:2026-07-22 |
 | `broad-cache-invalidation`             | Per-record cache tag invalidation              | completed:2026-07-22 |

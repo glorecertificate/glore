@@ -1349,7 +1349,11 @@
     "selfReleaseSuccess": "Has sido desasignado de este certificado.",
     "submittedOn": "Enviado el",
     "unassignedCertificatesTitle": "Disponibles para reclamar",
-    "unassignedCertificatesMessage": "Estos certificados aún no tienen revisor asignado."
+    "unassignedCertificatesMessage": "Estos certificados aún no tienen revisor asignado.",
+    "saveDraft": "Guardar borrador",
+    "savingDraft": "Guardando...",
+    "draftSuccess": "Certificado guardado como borrador.",
+    "draftError": "Error al guardar el borrador."
   },
   "Organization": {
     "title": "Organización",

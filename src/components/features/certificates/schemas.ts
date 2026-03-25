@@ -29,6 +29,19 @@ export const certificateFormSchema = z
 
 export type CertificateFormValues = z.infer<typeof certificateFormSchema>
 
+export const draftCertificateSchema = z.object({
+  activityStartDate: z.string().optional().default(''),
+  activityEndDate: z.string().optional().default(''),
+  activityDuration: z.coerce.number().int().nonnegative().max(MAX_DURATION_HOURS).optional().default(0),
+  activityLocation: z.string().max(255).optional().default(''),
+  activityDescription: z.string().max(2000).optional().default(''),
+  organizationRating: z.coerce.number().int().min(0).max(5).optional().default(0),
+  language: z.string().min(1, 'Language is required'),
+  skillCourseIds: z.array(z.number()).optional().default([]),
+})
+
+export type DraftCertificateValues = z.infer<typeof draftCertificateSchema>
+
 const reviewActivitySchema = z.object({
   activityStartDate: z.string().optional(),
   activityEndDate: z.string().optional(),

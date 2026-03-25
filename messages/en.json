@@ -1349,7 +1349,11 @@
     "selfReleaseSuccess": "You have been unassigned from this certificate.",
     "submittedOn": "Submitted on",
     "unassignedCertificatesTitle": "Available to claim",
-    "unassignedCertificatesMessage": "These certificates have no assigned reviewer yet."
+    "unassignedCertificatesMessage": "These certificates have no assigned reviewer yet.",
+    "saveDraft": "Save draft",
+    "savingDraft": "Saving...",
+    "draftSuccess": "Certificate saved as draft.",
+    "draftError": "Failed to save draft."
   },
   "Organization": {
     "title": "Organization",

@@ -1,7 +1,3 @@
-'use client'
-
-import { memo } from 'react'
-
 import { UserSettingsTabsList } from '@/components/features/users/user-settings-tabs'
 import {
   PageHeaderBreadcrumb,
@@ -10,7 +6,7 @@ import {
   PageHeaderSidebarTrigger,
 } from '@/components/layout/page-header'
 
-export const UserSettingsHeader = memo((props: React.ComponentProps<typeof PageHeaderContainer>) => (
+export const UserSettingsHeader = (props: React.ComponentProps<typeof PageHeaderContainer>) => (
   <PageHeaderContainer {...props}>
     <div className="flex items-center gap-2">
       <PageHeaderSidebarTrigger />
@@ -19,4 +15,4 @@ export const UserSettingsHeader = memo((props: React.ComponentProps<typeof PageH
     <UserSettingsTabsList />
     <PageHeaderLogo />
   </PageHeaderContainer>
-))
+)

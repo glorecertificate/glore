@@ -27,7 +27,6 @@ _No active tasks._
 
 | Slug                        | Feature                                       | Notes                                                                                                                                 |
 | --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `overuse-use-client`        | Overuse of use client in feature components   | Performance. Audit feature components; demote data-display components to Server Components.                                           |
 | `heavy-client-deps`         | Heavy client-side dependencies                | Performance. Move `@react-pdf/renderer` to a dynamic import with `ssr: false`; evaluate replacing Fuse.js with a smaller alternative. |
 | `sequential-data-fetching`  | Sequential awaits in data-fetching pages      | Performance. Wrap independent `await` calls in `Promise.all()` in pages and server actions.                                           |
 | `massive-static-data-files` | Massive static data files in component tree   | Code Org. Extract large static arrays/objects to JSON files in `config/` and import lazily.                                           |
@@ -142,3 +141,4 @@ _No active tasks._
 | `missing-fk-indexes`                   | Missing foreign key indexes                    | 2026-03-24 |
 | `join-request-rejection-reason-hidden` | Join request rejection reason not shown        | 2026-03-25 |
 | `no-slug-availability-check`           | Slug availability check in course form         | 2026-03-25 |
+| `overuse-use-client`                   | Audit use client in feature components         | 2026-03-25 |

@@ -127,7 +127,7 @@ export const RichTextEditorProvider = ({
       editor.history.undos = []
       editor.history.redos = []
       editor.operations = []
-      // @ts-expect-error
+      // @ts-expect-error Plate onChange() types require args but internal call works without
       editor.onChange()
       prevVersionRef.current = version
     }

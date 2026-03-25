@@ -414,6 +414,7 @@ tmp/                    # Temporary files (git-ignored, see Temporary Files sect
 | `/api/v1/push`        | POST     | Save push subscription for authenticated user  |
 | `/api/v1/push`        | DELETE   | Remove push subscription                       |
 | `/api/v1/upload`      | POST     | R2 file upload                                 |
+| `/api/v1/health`      | GET      | Health check (returns `{ status: 'ok' }`)      |
 
 ### Route groups
 

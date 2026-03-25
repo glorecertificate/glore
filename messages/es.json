@@ -1166,7 +1166,9 @@
       "deleted": "Categoría eliminada correctamente.",
       "error": "Error al guardar la categoría.",
       "requiredFields": "El nombre y el slug son obligatorios."
-    }
+    },
+    "noCategories": "Aún no hay categorías de documentación.",
+    "noCategoriesDescription": "Crea una categoría para empezar a añadir artículos."
   },
   "About": {
     "title": "Acerca de GloRe",
@@ -1459,7 +1461,9 @@
     "role_learner": "Estudiante",
     "role_representative": "Representante",
     "role_tutor": "Tutor",
-    "role_volunteer": "Voluntario"
+    "role_volunteer": "Voluntario",
+    "noMembers": "Aún no hay miembros",
+    "noMembersDescription": "Invita miembros a tu organización para comenzar."
   },
   "Users": {
     "admin": "Usuario admin",

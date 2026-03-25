@@ -1166,7 +1166,9 @@
       "deleted": "Categoria eliminata con successo.",
       "error": "Impossibile salvare la categoria.",
       "requiredFields": "Nome e slug sono obbligatori."
-    }
+    },
+    "noCategories": "Nessuna categoria di documentazione ancora.",
+    "noCategoriesDescription": "Crea una categoria per iniziare ad aggiungere articoli."
   },
   "About": {
     "title": "Chi siamo",
@@ -1459,7 +1461,9 @@
     "role_learner": "Studente",
     "role_representative": "Rappresentante",
     "role_tutor": "Tutor",
-    "role_volunteer": "Volontario"
+    "role_volunteer": "Volontario",
+    "noMembers": "Nessun membro ancora",
+    "noMembersDescription": "Invita i membri nella tua organizzazione per iniziare."
   },
   "Users": {
     "admin": "Utente admin",

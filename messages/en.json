@@ -1166,7 +1166,9 @@
       "deleted": "Category deleted successfully.",
       "error": "Failed to save category.",
       "requiredFields": "Name and slug are required."
-    }
+    },
+    "noCategories": "No documentation categories yet.",
+    "noCategoriesDescription": "Create a category to start adding articles."
   },
   "About": {
     "title": "About GloRe",
@@ -1459,7 +1461,9 @@
     "role_learner": "Learner",
     "role_representative": "Representative",
     "role_tutor": "Tutor",
-    "role_volunteer": "Volunteer"
+    "role_volunteer": "Volunteer",
+    "noMembers": "No members yet",
+    "noMembersDescription": "Invite members to your organization to get started."
   },
   "Users": {
     "admin": "Admin user",

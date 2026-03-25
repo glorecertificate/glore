@@ -10,7 +10,19 @@ interface QueryError {
 
 export type SafeQueryResult<T> = QueryResult<T> | QueryError
 
-/** Wraps a database query in a try/catch and returns a response object `{ data, error }`. */
+const classifyError = (error: Error): string => {
+  const msg = error.message.toLowerCase()
+  if (msg.includes('not found') || msg.includes('no rows')) return 'NOT_FOUND'
+  if (msg.includes('unique') || msg.includes('duplicate') || msg.includes('already exists')) return 'CONFLICT'
+  if (msg.includes('foreign key') || msg.includes('violates')) return 'CONSTRAINT_VIOLATION'
+  if (msg.includes('permission') || msg.includes('unauthorized') || msg.includes('not authenticated')) {
+    return 'UNAUTHORIZED'
+  }
+  if (msg.includes('timeout') || msg.includes('timed out')) return 'TIMEOUT'
+  if (msg.includes('connection')) return 'CONNECTION_ERROR'
+  return 'QUERY_ERROR'
+}
+
 export const safeQuery = async <T>(queryFn: () => Promise<T>): Promise<SafeQueryResult<T>> => {
   try {
     const data = await queryFn()
@@ -19,16 +31,15 @@ export const safeQuery = async <T>(queryFn: () => Promise<T>): Promise<SafeQuery
     const error = e instanceof Error ? e : new Error(String(e))
     return {
       data: null,
-      error: { code: 'QUERY_ERROR', message: error.message },
+      error: { code: classifyError(error), message: error.message },
     }
   }
 }
 
-/** Normalizes an unknown error into a structured error object. */
 export const queryError = (e: unknown) => {
   const error = e instanceof Error ? e : new Error(String(e))
   return {
-    code: 'UNKNOWN',
+    code: classifyError(error),
     message: error.message,
   }
 }

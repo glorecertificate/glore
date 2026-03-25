@@ -29,17 +29,16 @@ _All P1 tasks completed._
 
 ### P2: Medium (polish)
 
-| Slug                               | Feature                                                  | Notes                                                                                                  |
-| ---------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `over-fetching-queries`            | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                    |
-| `actions-importing-ui-components`  | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                                    |
-| `large-action-modules`             | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                     |
-| `many-files-exceed-300-lines`      | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                         |
-| `overly-wide-tables`               | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                             |
-| `no-query-result-size-limits`      | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets. |
-| `no-rate-limiting-auth`            | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                              |
-| `tsgolint-not-configured`          | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                 |
-| `safequery-non-descriptive-errors` | safeQuery returns non-descriptive error codes            | DX. Extend `queryError` to produce domain-specific codes (`NOT_FOUND`, `CONFLICT`, etc.).              |
+| Slug                              | Feature                                                  | Notes                                                                                                  |
+| --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `over-fetching-queries`           | Over-fetching columns in certificate and course queries  | Performance. Narrow `with` clauses to only the fields each call site actually uses.                    |
+| `actions-importing-ui-components` | Server actions import UI components for PDF rendering    | Code Org. Move PDF logic to a dedicated server-only utility module.                                    |
+| `large-action-modules`            | Large action modules with mixed responsibilities         | Code Org. Split oversized action files by concern.                                                     |
+| `many-files-exceed-300-lines`     | Many source files exceed 300-line guideline              | Code Org. Audit all files over 300 lines and split by concern.                                         |
+| `overly-wide-tables`              | Overly wide table definitions with many nullable columns | Scalability. Move rarely-used nullable fields to related extension tables.                             |
+| `no-query-result-size-limits`     | Queries do not enforce maximum result sizes              | Scalability. Add `.limit()` to all list queries; implement cursor-based pagination for large datasets. |
+| `no-rate-limiting-auth`           | No rate limiting on auth or API endpoints                | Security. Add rate limiting to sign-in, password reset, and AI endpoints.                              |
+| `tsgolint-not-configured`         | Type-aware lint rules not active                         | DX. Configure `oxlint-tsgolint` with `no-floating-promises` and `no-misused-promises`.                 |
 
 ### P3: Low (improvements and DX)
 
@@ -72,6 +71,7 @@ _All P1 tasks completed._
 
 | Slug                                   | Feature                                        | Completed            |
 | -------------------------------------- | ---------------------------------------------- | -------------------- |
+| `safequery-non-descriptive-errors`     | Domain-specific error codes in safeQuery       | completed:2026-07-22 |
 | `no-partial-indexes`                   | Add status/slug/category indexes               | completed:2026-07-22 |
 | `no-index-text-columns`                | Add text column indexes (slug, categoryId)     | completed:2026-07-22 |
 | `missing-suspense-boundaries`          | Add Suspense boundaries to docs pages          | completed:2026-07-22 |

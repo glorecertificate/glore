@@ -127,8 +127,10 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
               reviewerComment: 'comment' in values ? values.comment : undefined,
             }
       )
-      .where(eq(certificates.id, id))
+      .where(and(eq(certificates.id, id), eq(certificates.updatedAt, cert.updatedAt)))
       .returning()
+
+    if (!updated) throw new Error('Conflict: certificate was modified by another request')
 
     if (isApprove) {
       const existingDefault = await db.query.certificates.findFirst({

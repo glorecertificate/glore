@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { count, eq } from 'drizzle-orm'
+import { and, count, eq } from 'drizzle-orm'
 
 import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
@@ -70,7 +70,7 @@ export const updateOrganization = async ({
         region: region.trim() || null,
         url: url.trim() || null,
       })
-      .where(eq(organizations.id, organization.id))
+      .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt)))
 
     const nextUser = await getFreshCurrentUser(user.id)
 

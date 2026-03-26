@@ -231,7 +231,11 @@ Plan: [slug] ([Feature name])
 3. Update `AGENTS.md` if new routes, hooks, utilities, or patterns were introduced.
 4. Update `.agents/specs/app.md` if the feature changed the app spec.
 5. Read `.agents/skills/commit/SKILL.md`. Stage all changes (including roadmap, AGENTS.md, formatting diffs), compose a conventional commit message, and commit.
+   - The commit must describe the **task** that was completed, not the pipeline housekeeping. The roadmap update, AGENTS.md changes, and spec files are included in the same commit as the task's code changes — they are part of the task, not separate commits.
+   - Wrong: `chore: mark tasks X and Y as done` — this is a pipeline-internal action, not a meaningful change for a reader of git history.
+   - Right: `feat(courses): add lesson progress tracking` — with roadmap, AGENTS.md, and spec files staged alongside the code.
 6. Run `git status`. If the working tree is not clean, stage remaining changes and amend.
+7. **Never push.** Git push (including `--force`) is never performed autonomously. Push only when the user explicitly requests it in their message. This applies in every mode: `run`, `next`, `<n>`, `continue`, `release`, and `<slug>`.
 
 ---
 

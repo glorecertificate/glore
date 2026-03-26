@@ -300,7 +300,8 @@ src/
 │   ├── admin-team.ts           # Team member management, invitations
 │   ├── admin-users.ts          # User moderation (ban/unban, role updates)
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
-│   ├── certificate.ts  # Certificate queries
+│   ├── certificate-management.ts  # Certificate mutations: review, create, submit, assign
+│   ├── certificate-queries.ts      # Certificate reads: list, find, eligibility + column configs
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── course-management.ts    # Course and content CRUD (lessons, questions, evaluations)
 │   ├── course-progress.ts      # Learner progress and analytics (enroll, complete, submit)

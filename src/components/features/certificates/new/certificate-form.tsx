@@ -8,7 +8,7 @@ import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createCertificate } from '@/actions/certificate'
+import { createCertificate } from '@/actions/certificate-management'
 import { CertificatePreview } from '@/components/features/certificates/preview'
 import {
   type CertificateFormValues,

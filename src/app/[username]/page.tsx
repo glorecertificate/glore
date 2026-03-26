@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { getTranslations } from 'next-intl/server'
 
-import { findPublicCertificate } from '@/actions/certificate'
+import { findPublicCertificate } from '@/actions/certificate-queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import config from '~/config/metadata.json'
 

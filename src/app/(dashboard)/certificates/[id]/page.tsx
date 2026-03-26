@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { findCertificate } from '@/actions/certificate'
+import { findCertificate } from '@/actions/certificate-queries'
 import { listOrgTutors } from '@/actions/organization-queries'
 import { getCurrentUser } from '@/actions/user'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'

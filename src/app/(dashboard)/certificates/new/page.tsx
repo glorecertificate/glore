@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-import { getCertificateEligibility, listUserCertificates } from '@/actions/certificate'
+import { getCertificateEligibility, listUserCertificates } from '@/actions/certificate-queries'
 import { listCourses } from '@/actions/course-queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { CertificateForm } from '@/components/features/certificates/new/certificate-form'

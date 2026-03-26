@@ -32,12 +32,11 @@ const certificateUserColumns = {
   firstName: true,
   lastName: true,
   email: true,
-  avatarUrl: true,
 } as const
 
 const certificateWith = {
   organization: {
-    columns: { id: true, handle: true, name: true, city: true, country: true, avatarUrl: true },
+    columns: { id: true, name: true, avatarUrl: true },
   },
   skills: {
     with: {

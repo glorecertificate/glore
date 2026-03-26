@@ -4,13 +4,10 @@ import { type certificateSkills, type certificates, type courses, type organizat
 import { type EnumType } from '@/db/types'
 
 type CertificateRow = InferSelectModel<typeof certificates>
-type OrganizationRow = Pick<
-  InferSelectModel<typeof organizations>,
-  'id' | 'handle' | 'name' | 'city' | 'country' | 'avatarUrl'
->
+type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name' | 'avatarUrl'>
 type CourseRow = Pick<InferSelectModel<typeof courses>, 'id' | 'slug' | 'title'>
 type CertificateSkillRow = Omit<InferSelectModel<typeof certificateSkills>, 'courseId'> & { course: CourseRow }
-type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName' | 'email' | 'avatarUrl'>
+type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName' | 'email'>
 
 export type CertificateStatus = EnumType<'certificate_status'>
 

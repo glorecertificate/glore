@@ -10,7 +10,6 @@ import {
   type questions,
   type userAssessments,
   type userEvaluations,
-  type userLessons,
 } from '@/db/schema'
 import { type IntlRecord } from '@/lib/i18n'
 
@@ -22,7 +21,7 @@ type AssessmentRow = InferSelectModel<typeof assessments>
 type UserAssessmentRow = Pick<InferSelectModel<typeof userAssessments>, 'id' | 'value'>
 type UserEvaluationRow = Pick<InferSelectModel<typeof userEvaluations>, 'id' | 'value'>
 type ContributionRow = InferSelectModel<typeof contributions> & { user: UserWithRelations }
-type UserLessonCount = InferSelectModel<typeof userLessons>[]
+type UserLessonCount = { id: number }[]
 
 export interface LessonWithRelations extends LessonRow {
   userLessons?: UserLessonCount

@@ -33,7 +33,7 @@ const courseWith = {
   skillGroup: { columns: { id: true, name: true } },
   creator: {
     with: {
-      memberships: { with: { organization: true } },
+      memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
       regions: { columns: { id: true, name: true, icon: true } },
     },
   },
@@ -43,16 +43,16 @@ const courseWith = {
         with: {
           user: {
             with: {
-              memberships: { with: { organization: true } },
+              memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
               regions: { columns: { id: true, name: true, icon: true } },
             },
           },
         },
       },
-      questions: { with: { options: { with: { userAnswers: true } } } },
-      evaluations: { with: { userEvaluations: true } },
-      assessments: { with: { userAssessments: true } },
-      userLessons: true,
+      questions: { with: { options: { with: { userAnswers: { columns: { id: true } } } } } },
+      evaluations: { with: { userEvaluations: { columns: { id: true, value: true } } } },
+      assessments: { with: { userAssessments: { columns: { id: true, value: true } } } },
+      userLessons: { columns: { id: true } },
     },
   },
   userCourses: { columns: { id: true } },
@@ -65,10 +65,18 @@ const buildCourseWith = (userId?: string) => {
     lessons: {
       with: {
         ...courseWith.lessons.with,
-        questions: { with: { options: { with: { userAnswers: { where: eq(userAnswers.userId, userId) } } } } },
-        evaluations: { with: { userEvaluations: { where: eq(userEvaluations.userId, userId) } } },
-        assessments: { with: { userAssessments: { where: eq(userAssessments.userId, userId) } } },
-        userLessons: { where: eq(userLessons.userId, userId) },
+        questions: {
+          with: {
+            options: { with: { userAnswers: { where: eq(userAnswers.userId, userId), columns: { id: true } } } },
+          },
+        },
+        evaluations: {
+          with: { userEvaluations: { where: eq(userEvaluations.userId, userId), columns: { id: true, value: true } } },
+        },
+        assessments: {
+          with: { userAssessments: { where: eq(userAssessments.userId, userId), columns: { id: true, value: true } } },
+        },
+        userLessons: { where: eq(userLessons.userId, userId), columns: { id: true } },
       },
     },
     userCourses: { where: eq(userCourses.userId, userId), columns: { id: true } },

@@ -3,13 +3,13 @@ import { type InferSelectModel } from 'drizzle-orm'
 import { type memberships, type organizations, type regions, type users } from '@/db/schema'
 
 export const userWith = {
-  memberships: { with: { organization: true } },
+  memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
   regions: { columns: { id: true, name: true, icon: true } },
 } as const
 
 type UserRow = InferSelectModel<typeof users>
 type MembershipRow = InferSelectModel<typeof memberships>
-type OrganizationRow = InferSelectModel<typeof organizations>
+type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name' | 'avatarUrl'>
 type RegionRow = Pick<InferSelectModel<typeof regions>, 'id' | 'name' | 'icon'>
 
 export interface UserWithRelations extends UserRow {

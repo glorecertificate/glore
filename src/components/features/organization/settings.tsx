@@ -10,12 +10,12 @@ import { toast } from 'sonner'
 import { type z } from 'zod'
 
 import {
-  type OrganizationPanelData,
   deleteOrganization,
   removeOrganizationAvatar,
   updateOrganization,
   uploadOrganizationAvatar,
-} from '@/actions/organization'
+} from '@/actions/organization-management'
+import { type OrganizationPanelData } from '@/actions/organization-queries'
 import {
   AlertDialog,
   AlertDialogAction,

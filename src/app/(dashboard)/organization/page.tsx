@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getCookie } from '@/actions/cookies'
-import { getOrganizationPanel } from '@/actions/organization'
+import { getOrganizationPanel } from '@/actions/organization-queries'
 import { getCurrentUser } from '@/actions/user'
 import { OrganizationHeader } from '@/components/features/organization/header'
 import { OrganizationPanel } from '@/components/features/organization/panel'

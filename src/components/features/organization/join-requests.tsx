@@ -6,11 +6,8 @@ import { MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import {
-  type OrganizationPanelData,
-  approveOrganizationJoinRequest,
-  rejectOrganizationJoinRequest,
-} from '@/actions/organization'
+import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organization-management'
+import { type OrganizationPanelData } from '@/actions/organization-queries'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'

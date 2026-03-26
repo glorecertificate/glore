@@ -9,7 +9,7 @@ import { BookOpenIcon, FileTextIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { listUserCertificates } from '@/actions/certificate'
-import { getOrganizationPanel } from '@/actions/organization'
+import { getOrganizationPanel } from '@/actions/organization-queries'
 import { useCourses } from '@/components/providers/courses-context'
 import {
   Command,

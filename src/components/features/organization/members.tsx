@@ -7,11 +7,11 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import {
-  type OrganizationPanelData,
   inviteOrganizationMember,
   removeOrganizationMember,
   updateOrganizationMemberRole,
-} from '@/actions/organization'
+} from '@/actions/organization-management'
+import { type OrganizationPanelData } from '@/actions/organization-queries'
 import {
   AlertDialog,
   AlertDialogAction,

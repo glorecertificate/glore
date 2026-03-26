@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { requestOrganizationRegistration } from '@/actions/organization'
+import { requestOrganizationRegistration } from '@/actions/organization-management'
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'

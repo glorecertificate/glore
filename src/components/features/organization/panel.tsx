@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useCallback, useEffect, useState } from 'react'
 
-import { type OrganizationPanelData } from '@/actions/organization'
+import { type OrganizationPanelData } from '@/actions/organization-queries'
 import { type User } from '@/db/queries/user'
 import { useSession } from '@/hooks/use-session'
 

@@ -5,7 +5,7 @@ import 'server-only'
 import { and, eq, inArray, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { buildCourseWith } from '@/actions/course-queries'
+import { buildCourseWith } from '@/actions/courses/helpers'
 import { db } from '@/db/client'
 import { parseCourse } from '@/db/queries/course'
 import { type Course } from '@/db/queries/course'

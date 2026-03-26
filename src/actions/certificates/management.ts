@@ -7,7 +7,7 @@ import { revalidateTag } from 'next/cache'
 import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { certificateWithUsers } from '@/actions/certificate-queries'
+import { certificateWithUsers } from '@/actions/certificates/helpers'
 import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'

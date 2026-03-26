@@ -1,4 +1,4 @@
-import { listCourses, listSkillGroups } from '@/actions/course-queries'
+import { listCourses, listSkillGroups } from '@/actions/courses/queries'
 import { CoursesContextProvider } from '@/components/providers/courses-context'
 
 export const CoursesProvider = async ({ children }: React.PropsWithChildren) => {

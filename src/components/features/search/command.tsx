@@ -8,8 +8,8 @@ import { type default as FuseType } from 'fuse.js'
 import { BookOpenIcon, FileTextIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { listUserCertificates } from '@/actions/certificate-queries'
-import { getOrganizationPanel } from '@/actions/organization-queries'
+import { listUserCertificates } from '@/actions/certificates/queries'
+import { getOrganizationPanel } from '@/actions/organizations/queries'
 import { useCourses } from '@/components/providers/courses-context'
 import {
   Command,

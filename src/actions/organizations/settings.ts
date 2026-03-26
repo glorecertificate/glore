@@ -10,7 +10,7 @@ import {
   getDescriptionRecord,
   getFreshCurrentUser,
   getOrganizationContext,
-} from '@/actions/organization-helpers'
+} from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { certificates, organizations } from '@/db/schema'

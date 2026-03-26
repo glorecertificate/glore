@@ -15,7 +15,7 @@ import {
   upsertEvaluations,
   upsertLessons,
   upsertQuestions,
-} from '@/actions/course-management'
+} from '@/actions/courses/management'
 import { COURSE_PARAMS } from '@/components/features/courses/editor/params'
 import { type Course } from '@/db/queries/course'
 import { type Lesson, parseLesson } from '@/db/queries/lesson'

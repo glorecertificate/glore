@@ -3,6 +3,7 @@
 import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { type Locale, type Messages } from 'next-intl'
+import { NextIntlClientProvider } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
 import { type IntlRecord, type LocaleItem, i18n, localizeRecord } from '@/lib/i18n'
@@ -13,7 +14,7 @@ export interface I18nContextValue {
   timeZone?: string
 }
 
-export const useI18nContext = (value: I18nContextValue) => {
+const useI18nContext = (value: I18nContextValue) => {
   const [localeState, setLocaleState] = useState<Locale>(value.locale ?? i18n.defaultLocale)
   const [messageStore, setMessagesStore] = useState<Partial<Record<Locale, Messages>>>(
     value.messages ? { [localeState]: value.messages } : {}
@@ -55,10 +56,23 @@ export const useI18nContext = (value: I18nContextValue) => {
 
   useEffect(() => {
     void setMessages(localeState)
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return { locale: localeState, localeItems, localize, messages, setLocale, timeZone }
 }
 
 export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>, 'messages' | 'timeZone'> | null>(null)
+
+export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<I18nContextValue>) => {
+  const { locale, messages, timeZone, ...providerValue } = useI18nContext(value)
+  const contextValue = useMemo(() => ({ ...providerValue, locale }), [providerValue, locale])
+
+  return (
+    <I18nContext.Provider value={contextValue} {...props}>
+      <NextIntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
+        {children}
+      </NextIntlClientProvider>
+    </I18nContext.Provider>
+  )
+}

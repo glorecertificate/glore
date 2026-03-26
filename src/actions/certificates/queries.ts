@@ -8,7 +8,8 @@ import { cache } from 'react'
 import { and, eq, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { listCourses } from '@/actions/course-queries'
+import { certificateWith, certificateWithUsers } from '@/actions/certificates/helpers'
+import { listCourses } from '@/actions/courses/queries'
 import { getActiveOrgId } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -16,30 +17,6 @@ import { type Certificate, parseCertificate } from '@/db/queries/certificate'
 import { certificates, users } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import appConfig from '~/config/app.json'
-
-const certificateUserColumns = {
-  id: true,
-  firstName: true,
-  lastName: true,
-  email: true,
-} as const
-
-export const certificateWith = {
-  organization: {
-    columns: { id: true, name: true, avatarUrl: true },
-  },
-  skills: {
-    with: {
-      course: { columns: { id: true, slug: true, title: true } },
-    },
-  },
-} as const
-
-export const certificateWithUsers = {
-  ...certificateWith,
-  user: { columns: certificateUserColumns },
-  reviewer: { columns: certificateUserColumns },
-} as const
 
 const fetchUserCertificates = cache(async (userId: string) => {
   'use cache'

@@ -12,7 +12,7 @@ import {
   inviteTeamMember,
   resendInvitation,
   updateTeamMemberRole,
-} from '@/actions/admin-team'
+} from '@/actions/admin/team'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'

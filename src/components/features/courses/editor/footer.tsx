@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { completeLesson, submitAssessmentRating, submitEvaluationRatings } from '@/actions/course-progress'
+import { completeLesson, submitAssessmentRating, submitEvaluationRatings } from '@/actions/courses/progress'
 import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'

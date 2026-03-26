@@ -146,25 +146,25 @@ skills --help                         # Show all CLI commands
 
 ### Installed skills
 
-| Skill                                 | Source                        | Purpose                                                                 | When to use                                                                         |
-| ------------------------------------- | ----------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                      | When configuring auth, adding plugins, or setting up email/password authentication  |
-| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                         | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
-| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                      | When implementing login/sign-up flows, password security, or email verification     |
-| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                         | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                       | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                                 | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                     | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                              | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns      | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns             | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform       | When working with Cloudflare APIs, services, or infrastructure                      |
-| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                         | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
-| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance           | When creating, editing, or optimizing agent skills for this project                 |
-| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits           | After completing a feature, before merging to main                                  |
-| `release`                             | custom                        | Controlled release workflow: preview, confirm, publish                  | When cutting a release (`/release`) or when ship triggers a release gate            |
-| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                                  | When adding, modifying, or debugging shadcn/ui components                           |
-| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — execute tasks, scan codebase, manage roadmap | **ALWAYS** when starting any development work (`/ship`)                             |
+| Skill                                 | Source                        | Purpose                                                                                                                           | When to use                                                                         |
+| ------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                                                                                | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                                                                                   | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                                                                                | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                                                                                   | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                                                                                 | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                                                                                           | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                                                                               | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                                                                                        | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns                                                                | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns                                                                       | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform                                                                 | When working with Cloudflare APIs, services, or infrastructure                      |
+| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                                                                                   | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance                                                                     | When creating, editing, or optimizing agent skills for this project                 |
+| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits                                                                     | After completing a feature, before merging to main                                  |
+| `release`                             | custom                        | Controlled release workflow: preview, confirm, publish                                                                            | When cutting a release (`/release`) or when ship triggers a release gate            |
+| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                                                                                            | When adding, modifying, or debugging shadcn/ui components                           |
+| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — execute tasks, scan codebase, manage roadmap; requires passing `pnpm run build` before task completion | **ALWAYS** when starting any development work (`/ship`)                             |
 
 ### Workflow Skills (used by ship)
 
@@ -296,23 +296,29 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
 ```
 src/
 ├── actions/            # Server actions (mutations and cached queries)
-│   ├── admin-organizations.ts  # Organization approvals, invitations
-│   ├── admin-team.ts           # Team member management, invitations
-│   ├── admin-users.ts          # User moderation (ban/unban, role updates)
+│   ├── admin/
+│   │   ├── organizations.ts    # Organization approvals, invitations
+│   │   ├── team.ts             # Team member management, invitations
+│   │   └── users.ts            # User moderation (ban/unban, role updates)
+│   ├── certificates/
+│   │   ├── management.ts       # Certificate mutations: review, create, submit, assign
+│   │   └── queries.ts          # Certificate reads: list, find, eligibility + column configs
+│   ├── courses/
+│   │   ├── helpers.ts          # Shared server-only helpers, courseWith, buildCourseWith (no 'use server')
+│   │   ├── management.ts       # Course and content CRUD (lessons, questions, evaluations)
+│   │   ├── progress.ts         # Learner progress and analytics (enroll, complete, submit)
+│   │   └── queries.ts          # Course read queries
+│   ├── organizations/
+│   │   ├── helpers.ts          # Shared server-only helpers, types, column configs (no 'use server')
+│   │   ├── members.ts          # Org member management: invite, role update, remove
+│   │   ├── queries.ts          # Org reads: getOrganizationPanel, listOrgTutors
+│   │   ├── requests.ts         # Org join requests: approve, reject, register
+│   │   └── settings.ts         # Org entity: update, avatar upload/remove, delete
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
-│   ├── certificate-management.ts  # Certificate mutations: review, create, submit, assign
-│   ├── certificate-queries.ts      # Certificate reads: list, find, eligibility + column configs
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
-│   ├── course-management.ts    # Course and content CRUD (lessons, questions, evaluations)
-│   ├── course-progress.ts      # Learner progress and analytics (enroll, complete, submit)
-│   ├── course-queries.ts       # Course read queries and courseWith helpers
 │   ├── doc.ts          # Doc category + article CRUD, cached queries
+│   ├── notification.ts # Notification creation helpers
 │   ├── onboarding.ts   # Complete onboarding flow
-│   ├── organization-helpers.ts  # Shared server-only helpers, types, column configs (no 'use server')
-│   ├── organization-members.ts  # Org member management: invite, role update, remove
-│   ├── organization-queries.ts  # Org reads: getOrganizationPanel, listOrgTutors
-│   ├── organization-requests.ts # Org join requests: approve, reject, register
-│   ├── organization-settings.ts # Org entity: update, avatar upload/remove, delete
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
 ├── app/                # App Router pages and layouts

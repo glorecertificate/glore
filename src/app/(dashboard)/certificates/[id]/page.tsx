@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { findCertificate } from '@/actions/certificate-queries'
-import { listOrgTutors } from '@/actions/organization-queries'
+import { findCertificate } from '@/actions/certificates/queries'
+import { listOrgTutors } from '@/actions/organizations/queries'
 import { getCurrentUser } from '@/actions/user'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
 import { LoadingFallback } from '@/components/layout/loading-fallback'

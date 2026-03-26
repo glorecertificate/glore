@@ -5,7 +5,7 @@ import {
   listTutorCertificates,
   listUnassignedOrgCertificates,
   listUserCertificates,
-} from '@/actions/certificate-queries'
+} from '@/actions/certificates/queries'
 import { getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'

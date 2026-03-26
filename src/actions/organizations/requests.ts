@@ -13,7 +13,7 @@ import {
   getOrganizationContext,
   reviewerColumns,
   sendJoinRequestDecisionEmail,
-} from '@/actions/organization-helpers'
+} from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseOrganizationJoinRequest } from '@/db/queries/organization'

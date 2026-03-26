@@ -6,7 +6,7 @@ import { FilterIcon, SearchIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin-users'
+import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin/users'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'

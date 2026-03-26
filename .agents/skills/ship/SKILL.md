@@ -221,10 +221,12 @@ Plan: [slug] ([Feature name])
 ### Phase 4: Verify
 
 1. Run `pnpm run check`. Fix every error until it exits 0.
-2. Run `pnpm run build`. Fix every build error.
+2. Run `pnpm run build`. Fix every build error until it exits 0. A task is not complete unless the final build passes.
 3. Read `.agents/skills/verification-before-completion/SKILL.md`. Confirm with evidence before claiming done.
 
 ### Phase 5: Complete
+
+Phase 5 can start only after both `pnpm run check` and `pnpm run build` pass.
 
 1. Mark task `[x]` with completion date in `.agents/specs/roadmap.md`.
 2. Add decisions to `.agents/specs/decisions.md` if applicable.

@@ -9,13 +9,13 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { type z } from 'zod'
 
-import { type OrganizationPanelData } from '@/actions/organization-queries'
+import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import {
   deleteOrganization,
   removeOrganizationAvatar,
   updateOrganization,
   uploadOrganizationAvatar,
-} from '@/actions/organization-settings'
+} from '@/actions/organizations/settings'
 import {
   AlertDialog,
   AlertDialogAction,

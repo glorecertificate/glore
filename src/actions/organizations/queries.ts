@@ -9,14 +9,14 @@ import {
   getOrganizationContext,
   memberUserColumns,
   reviewerColumns,
-} from '@/actions/organization-helpers'
+} from '@/actions/organizations/helpers'
 import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseOrganization } from '@/db/queries/organization'
 import { certificates, memberships, organizationJoinRequests, organizations } from '@/db/schema'
 
-export type { OrganizationPanelData } from '@/actions/organization-helpers'
+export type { OrganizationPanelData } from '@/actions/organizations/helpers'
 
 export const getOrganizationPanel = async () => {
   const { organization, role, user } = await getOrganizationContext()

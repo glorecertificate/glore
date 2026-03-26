@@ -6,8 +6,8 @@ import {
   createCourse as createCourseAction,
   deleteCourse as deleteCouseAction,
   updateCourse as updateCourseAction,
-} from '@/actions/course-management'
-import { listCourses } from '@/actions/course-queries'
+} from '@/actions/courses/management'
+import { listCourses } from '@/actions/courses/queries'
 import { type Course, type SkillGroup } from '@/db/queries/course'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'

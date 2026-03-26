@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type OrganizationPanelData } from '@/actions/organization-queries'
+import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { useI18n } from '@/hooks/use-i18n'
 

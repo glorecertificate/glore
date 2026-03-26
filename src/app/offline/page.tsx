@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 
 export default () => {
   const t = useTranslations('PWA')
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
       <WifiOffIcon className="size-12 text-muted-foreground" />

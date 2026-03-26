@@ -18,7 +18,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { assignCertificateTutor } from '@/actions/certificate-management'
+import { assignCertificateTutor } from '@/actions/certificates/management'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'

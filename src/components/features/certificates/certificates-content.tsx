@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { BookOpenIcon, GraduationCapIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type CertificateEligibility } from '@/actions/certificate-queries'
+import { type CertificateEligibility } from '@/actions/certificates/queries'
 import { CertificateCard } from '@/components/features/certificates/certificate-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'

@@ -16,7 +16,7 @@ import {
   getOrganizationContext,
   memberUserColumns,
   sendOrganizationAccessEmail,
-} from '@/actions/organization-helpers'
+} from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type OrganizationMembershipRole, parseOrganizationMember } from '@/db/queries/organization'

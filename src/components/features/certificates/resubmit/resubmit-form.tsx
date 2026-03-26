@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { resubmitCertificate } from '@/actions/certificate-management'
+import { resubmitCertificate } from '@/actions/certificates/management'
 import { type ResubmitCertificateValues, resubmitCertificateSchema } from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'

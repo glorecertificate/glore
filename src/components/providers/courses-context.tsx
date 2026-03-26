@@ -5,9 +5,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import {
   createCourse as createCourseAction,
   deleteCourse as deleteCouseAction,
-  listCourses,
   updateCourse as updateCourseAction,
-} from '@/actions/course'
+} from '@/actions/course-management'
+import { listCourses } from '@/actions/course-queries'
 import { type Course, type SkillGroup } from '@/db/queries/course'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'

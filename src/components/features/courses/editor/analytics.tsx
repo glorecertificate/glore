@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { BarChart2Icon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type CourseAnalyticsStats, getCourseAnalytics } from '@/actions/course'
+import { type CourseAnalyticsStats, getCourseAnalytics } from '@/actions/course-progress'
 import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'

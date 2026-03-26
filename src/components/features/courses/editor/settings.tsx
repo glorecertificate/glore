@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { checkSlugAvailable } from '@/actions/course'
+import { checkSlugAvailable } from '@/actions/course-management'
 import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'

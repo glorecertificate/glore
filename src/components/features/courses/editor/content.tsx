@@ -4,7 +4,7 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { type Value } from 'platejs'
 
-import { submitAnswers } from '@/actions/course'
+import { submitAnswers } from '@/actions/course-progress'
 import { RichTextEditor } from '@/components/blocks/rich-text-editor'
 import { RichTextEditorProvider } from '@/components/blocks/rich-text-editor/provider'
 import { CourseAssessment } from '@/components/features/courses/editor/assessment'

@@ -6,7 +6,7 @@ import { ArchiveIcon, MoreHorizontalIcon, RocketIcon, Trash2Icon } from 'lucide-
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { deleteCourse as deleteCourseAction, updateCourse as updateCourseAction } from '@/actions/course'
+import { deleteCourse as deleteCourseAction, updateCourse as updateCourseAction } from '@/actions/course-management'
 import { useCourses } from '@/components/providers/courses-context'
 import {
   AlertDialog,

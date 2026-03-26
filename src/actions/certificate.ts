@@ -8,7 +8,7 @@ import { cache } from 'react'
 import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { listCourses } from '@/actions/course'
+import { listCourses } from '@/actions/course-queries'
 import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'

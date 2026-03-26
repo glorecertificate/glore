@@ -302,7 +302,9 @@ src/
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── certificate.ts  # Certificate queries
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
-│   ├── course.ts       # Course + lesson CRUD, cached queries
+│   ├── course-management.ts    # Course and content CRUD (lessons, questions, evaluations)
+│   ├── course-progress.ts      # Learner progress and analytics (enroll, complete, submit)
+│   ├── course-queries.ts       # Course read queries and courseWith helpers
 │   ├── doc.ts          # Doc category + article CRUD, cached queries
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── organization.ts # Org overview, members, join requests, settings

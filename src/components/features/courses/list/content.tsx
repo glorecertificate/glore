@@ -6,7 +6,7 @@ import { memo, useCallback, useMemo } from 'react'
 import { GripVerticalIcon, RotateCcwIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
-import { reorderCourses } from '@/actions/course'
+import { reorderCourses } from '@/actions/course-management'
 import { CourseListCard } from '@/components/features/courses/list/card'
 import {
   useCourseListFilters,

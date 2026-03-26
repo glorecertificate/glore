@@ -1,6 +1,6 @@
 import { CalendarIcon, CheckCircle2Icon, DownloadIcon, GlobeIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { getLocale, getTranslations } from 'next-intl/server'
-import qrcode from 'qrcode'
+import * as qrcode from 'qrcode' // eslint-disable-line
 
 import { GloreIcon } from '@/components/icons/glore'
 import { Badge } from '@/components/ui/badge'

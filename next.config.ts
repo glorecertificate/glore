@@ -16,46 +16,6 @@ const nextConfig = {
   reactCompiler: true,
   cacheComponents: true,
   trailingSlash: false,
-  headers: () => [
-    {
-      headers: [
-        { key: 'X-Content-Type-Options', value: 'nosniff' },
-        { key: 'X-Frame-Options', value: 'DENY' },
-        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-        {
-          key: 'Strict-Transport-Security',
-          value: 'max-age=63072000; includeSubDomains; preload',
-        },
-        {
-          key: 'Content-Security-Policy',
-          value: [
-            "default-src 'self'",
-            "script-src 'self' 'unsafe-inline'",
-            "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: blob: https:",
-            "font-src 'self' data:",
-            "connect-src 'self' https:",
-            "frame-ancestors 'none'",
-            "base-uri 'self'",
-            "form-action 'self'",
-            "object-src 'none'",
-            "worker-src 'self' blob:",
-          ].join('; '),
-        },
-      ],
-      source: '/(.*)',
-    },
-    {
-      headers: [
-        {
-          key: 'cache-control',
-          value: 'public, max-age=3600, s-maxage=3600',
-        },
-      ],
-      source: MANIFEST_PATH,
-    },
-  ],
   redirects: () => [
     {
       source: '/',
@@ -88,6 +48,7 @@ const nextConfig = {
     '/api/v1/join': OPTIMIZED_PKGS,
     '/api/v1/manifest': OPTIMIZED_PKGS,
   },
+  serverExternalPackages: ['qrcode', 'web-push'],
   typescript: {
     tsconfigPath: './tsconfig.build.json',
   },
@@ -158,5 +119,49 @@ export default (phase: PHASE_TYPE) => {
   if ((phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) && !process.env.SKIP_ENV_VALIDATION) {
     validateEnv()
   }
-  return plugins.reduce<NextConfig>((config, next) => next(config), nextConfig)
+  const isDev = phase === PHASE_DEVELOPMENT_SERVER
+  const config: NextConfig = {
+    ...nextConfig,
+    headers: () => [
+      {
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https:",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "object-src 'none'",
+              "worker-src 'self' blob:",
+            ].join('; '),
+          },
+        ],
+        source: '/(.*)',
+      },
+      {
+        headers: [
+          {
+            key: 'cache-control',
+            value: 'public, max-age=3600, s-maxage=3600',
+          },
+        ],
+        source: MANIFEST_PATH,
+      },
+    ],
+  }
+  return plugins.reduce<NextConfig>((acc, next) => next(acc), config)
 }

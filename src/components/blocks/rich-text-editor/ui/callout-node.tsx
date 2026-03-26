@@ -33,7 +33,6 @@ export const CalloutElement = ({
   const calloutAttributes = useMemo(() => ({ ...attributes, 'data-plate-open-context-menu': true }), [attributes])
   const bgStyle = useMemo(
     () => ({ backgroundColor: props.element.backgroundColor as string }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [props.element.backgroundColor]
   )
 

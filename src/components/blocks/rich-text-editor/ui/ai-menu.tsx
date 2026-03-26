@@ -26,7 +26,7 @@ import { useTranslations } from 'next-intl'
 import { NodeApi, type NodeEntry, type SlateEditor } from 'platejs'
 import { type PlateEditor, useEditorPlugin, useEditorRef, useHotkeys, usePluginOption } from 'platejs/react'
 
-import { aiChatPlugin } from '@/components/blocks/rich-text-editor/plugins/ai'
+import { aiChatPlugin } from '@/components/blocks/rich-text-editor/plugins/ai-chat-plugin'
 import { AIChatEditor } from '@/components/blocks/rich-text-editor/ui/ai-chat-editor'
 import { isHotkey } from '@/components/blocks/rich-text-editor/utils'
 import { Button } from '@/components/ui/button'

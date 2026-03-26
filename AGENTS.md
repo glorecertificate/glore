@@ -309,8 +309,10 @@ src/
 │   ├── doc.ts          # Doc category + article CRUD, cached queries
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── organization-helpers.ts  # Shared server-only helpers, types, column configs (no 'use server')
-│   ├── organization-management.ts  # Org mutations: invite, roles, join requests, settings, delete
+│   ├── organization-members.ts  # Org member management: invite, role update, remove
 │   ├── organization-queries.ts  # Org reads: getOrganizationPanel, listOrgTutors
+│   ├── organization-requests.ts # Org join requests: approve, reject, register
+│   ├── organization-settings.ts # Org entity: update, avatar upload/remove, delete
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
 ├── app/                # App Router pages and layouts

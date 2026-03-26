@@ -10,7 +10,7 @@ import {
   inviteOrganizationMember,
   removeOrganizationMember,
   updateOrganizationMemberRole,
-} from '@/actions/organization-management'
+} from '@/actions/organization-members'
 import { type OrganizationPanelData } from '@/actions/organization-queries'
 import {
   AlertDialog,

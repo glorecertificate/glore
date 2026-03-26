@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { cache } from 'react'
+
 import { and, count, eq } from 'drizzle-orm'
 
 import { getCookie } from '@/actions/cookies'
@@ -66,7 +68,7 @@ export interface OrganizationPanelData {
   }
 }
 
-export const getOrganizationContext = async () => {
+export const getOrganizationContext = cache(async () => {
   const [user, storedOrgId] = await Promise.all([getCurrentUser(), getCookie('org')])
   const organization = user.organizations.find(({ id }) => id === storedOrgId) ?? user.organizations[0] ?? null
 
@@ -75,8 +77,7 @@ export const getOrganizationContext = async () => {
     role: organization?.role ?? null,
     user,
   }
-}
-
+})
 export const assertOrganizationManager = (role: OrganizationMembershipRole | null) => {
   if (!role || !MANAGER_ROLES.includes(role)) {
     throw new Error('You do not have permission to manage this organization')

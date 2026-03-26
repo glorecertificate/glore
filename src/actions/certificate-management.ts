@@ -23,6 +23,7 @@ import { certificateSkills, certificates, memberships, users } from '@/db/schema
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { i18n } from '@/lib/i18n'
+import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
 
 export const claimCertificateReview = async (id: number) => {
@@ -44,6 +45,11 @@ export const claimCertificateReview = async (id: number) => {
 export const reviewCertificate = async (id: number, values: ReviewCertificateValues) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  const rl = checkRateLimit(`review-cert:${authUser.id}`, 10, 60 * 60 * 1000)
+  if (rl.limited) {
+    return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many certificate reviews. Try again later.' } }
+  }
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
@@ -173,6 +179,11 @@ export const createCertificate = async (
   const orgId = await getActiveOrgId()
   if (!orgId) return { data: null, error: { code: 'NO_ORG', message: 'No active organization' } }
 
+  const rl = checkRateLimit(`create-cert:${authUser.id}`, 5, 60 * 60 * 1000)
+  if (rl.limited) {
+    return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many certificates submitted. Try again later.' } }
+  }
+
   return await safeQuery(async () => {
     const handle = `${authUser.id}-${orgId}-${Date.now()}`
     const status = draft ? 'draft' : 'submitted'
@@ -256,6 +267,11 @@ export const createCertificate = async (
 export const resubmitCertificate = async (id: number, values: ResubmitCertificateValues) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  const rl = checkRateLimit(`resubmit-cert:${authUser.id}`, 10, 60 * 60 * 1000)
+  if (rl.limited) {
+    return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many resubmissions. Try again later.' } }
+  }
 
   return await safeQuery(async () => {
     const [updated] = await db

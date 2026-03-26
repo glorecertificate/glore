@@ -151,7 +151,7 @@ export interface CertificateEligibility {
   avgRating: number | null
 }
 
-export const getCertificateEligibility = async (): Promise<CertificateEligibility> => {
+export const getCertificateEligibility = cache(async (): Promise<CertificateEligibility> => {
   const { minSkills, minRating } = appConfig
   const { data: courses, error } = await listCourses()
   if (error || !courses) {
@@ -182,7 +182,7 @@ export const getCertificateEligibility = async (): Promise<CertificateEligibilit
   const eligible = completedSkillCount >= minSkills && !hasLowRatings
 
   return { eligible, completedSkillCount, minSkills, minRating, hasLowRatings, avgRating }
-}
+})
 
 const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
   'use cache'

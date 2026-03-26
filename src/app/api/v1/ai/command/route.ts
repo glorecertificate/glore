@@ -6,6 +6,7 @@ import { delay as originalDelay } from '@ai-sdk/provider-utils'
 import { type TextStreamPart, type ToolSet, convertToModelMessages, streamText } from 'ai'
 
 import { auth } from '@/lib/auth'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export const maxDuration = 60
 
@@ -102,6 +103,9 @@ const smoothStream = <TOOLS extends ToolSet>({
 export const POST = async (request: NextRequest) => {
   const session = await auth.api.getSession({ headers: request.headers })
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { limited } = checkRateLimit(`ai:command:${session.user.id}`, 20, 60_000)
+  if (limited) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
   const { messages, system } = await request.json()
 

@@ -4,12 +4,16 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateText } from 'ai'
 
 import { auth } from '@/lib/auth'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 export const maxDuration = 60
 
 export const POST = async (request: NextRequest) => {
   const session = await auth.api.getSession({ headers: request.headers })
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const { limited } = checkRateLimit(`ai:copilot:${session.user.id}`, 20, 60_000)
+  if (limited) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
   const { prompt, system } = await request.json()
 

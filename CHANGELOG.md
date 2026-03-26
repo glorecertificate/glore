@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.6](https://github.com/glorecertificate/glore/compare/v0.6.5...v0.6.6) (2026-03-26)
+
+### Fixes
+
+- remove synchronous exports from server-only files ([1a30a9d](https://github.com/glorecertificate/glore/commit/1a30a9d5aaf0132c4f82bbb5d2b71c1fa2903d4c))
+
 ## [0.6.5](https://github.com/glorecertificate/glore/compare/v0.6.4...v0.6.5) (2026-03-26)
 
 ### Features

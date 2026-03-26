@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getAdminUsers } from '@/actions/admin'
+import { getAdminUsers } from '@/actions/admin-users'
 import { getCurrentUser } from '@/actions/user'
 import { AdminUsers } from '@/components/features/admin/users'
 import { LoadingFallback } from '@/components/layout/loading-fallback'

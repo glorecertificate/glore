@@ -296,7 +296,9 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
 ```
 src/
 ├── actions/            # Server actions (mutations and cached queries)
-│   ├── admin.ts        # Team management, invitations
+│   ├── admin-organizations.ts  # Organization approvals, invitations
+│   ├── admin-team.ts           # Team member management, invitations
+│   ├── admin-users.ts          # User moderation (ban/unban, role updates)
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── certificate.ts  # Certificate queries
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)

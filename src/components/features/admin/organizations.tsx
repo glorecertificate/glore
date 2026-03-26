@@ -6,7 +6,12 @@ import { Building2Icon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { approveOrganization, getOrganizations, inviteOrganization, rejectOrganization } from '@/actions/admin'
+import {
+  approveOrganization,
+  getOrganizations,
+  inviteOrganization,
+  rejectOrganization,
+} from '@/actions/admin-organizations'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { type AdminOrganization } from '@/db/queries/organization'

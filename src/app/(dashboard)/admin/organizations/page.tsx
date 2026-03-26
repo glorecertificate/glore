@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getOrganizations } from '@/actions/admin'
+import { getOrganizations } from '@/actions/admin-organizations'
 import { getCurrentUser } from '@/actions/user'
 import { AdminOrganizations } from '@/components/features/admin/organizations'
 import { LoadingFallback } from '@/components/layout/loading-fallback'

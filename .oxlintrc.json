@@ -243,6 +243,8 @@
     "typescript/no-misused-new": "error",
     "typescript/no-non-null-assertion": "allow",
     "typescript/no-require-imports": "error",
+    "typescript/no-floating-promises": "error",
+    "typescript/no-misused-promises": "error",
     "typescript/no-unnecessary-type-assertion": "warn",
     "typescript/prefer-nullish-coalescing": "warn",
     "typescript/prefer-optional-chain": "warn",

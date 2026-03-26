@@ -3,7 +3,7 @@
 import 'server-only'
 
 import { cacheLife, cacheTag, revalidateTag } from 'next/cache'
-import { cache, createElement } from 'react'
+import { cache } from 'react'
 
 import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
@@ -11,6 +11,7 @@ import { getAuthUser } from '@/actions/auth'
 import { listCourses } from '@/actions/course'
 import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
+import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 import {
   type CertificateFormValues,
   type DraftCertificateValues,
@@ -192,25 +193,21 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     let documentUrl: string | undefined
     if (isApprove) {
       const volunteerName = cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : ''
-      const { renderToBuffer } = await import('@react-pdf/renderer')
-      const { CertificateDocument } = await import('@/components/features/certificates/document')
-      const pdfBuffer = await renderToBuffer(
-        createElement(CertificateDocument, {
-          values: {
-            activityStartDate,
-            activityEndDate,
-            activityDuration,
-            activityLocation,
-            activityDescription,
-            organizationRating: cert.organizationRating,
-          },
-          volunteerName,
-          orgName: cert.organization.name,
-          orgLogoUrl: cert.organization.avatarUrl,
-          skillNames,
-          issuedDate: issuedAt,
-        }) as Parameters<typeof renderToBuffer>[0]
-      )
+      const pdfBuffer = await generateCertificatePdf({
+        values: {
+          activityStartDate,
+          activityEndDate,
+          activityDuration,
+          activityLocation,
+          activityDescription,
+          organizationRating: cert.organizationRating,
+        },
+        volunteerName,
+        orgName: cert.organization.name,
+        orgLogoUrl: cert.organization.avatarUrl,
+        skillNames,
+        issuedDate: issuedAt,
+      })
       documentUrl = await r2Put(`certificates/${cert.handle}.pdf`, pdfBuffer, 'application/pdf')
     }
 

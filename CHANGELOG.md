@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.6.5](https://github.com/glorecertificate/glore/compare/v0.6.4...v0.6.5) (2026-03-26)
+
+### Features
+
+- **security:** add rate limiting to auth and AI endpoints ([3ec2f90](https://github.com/glorecertificate/glore/commit/3ec2f90a68cb765af1ecdba0db4dc53852df8291))
+- **security:** rate limit certificate create, review, and resubmit actions ([cda704b](https://github.com/glorecertificate/glore/commit/cda704b5ecbf9802f3c9a1e5a9bdb6aa9429348f))
+
+### Fixes
+
+- **security:** add optimistic concurrency to certificate review and org update ([ca0ea87](https://github.com/glorecertificate/glore/commit/ca0ea875f36eb5a8fccd4a123106abc2b0a899e9))
+- **security:** reduce cookie cache TTL and enforce ban check in proxy ([0b656b4](https://github.com/glorecertificate/glore/commit/0b656b4a417577e2d30772edbb83fb24c79b1d1d))
+
+### Performance
+
+- narrow over-fetching columns in certificate and course queries ([128e418](https://github.com/glorecertificate/glore/commit/128e418f6bbe73b46587f78b97dc472d3fa7a24e))
+
+### Build
+
+- bump all packages to latest version ([4dba9a5](https://github.com/glorecertificate/glore/commit/4dba9a56bc4f1d80d9a9d0f93736c09bc6059b6e))
+- bump pnpm to 10.33.0 ([c3cd55b](https://github.com/glorecertificate/glore/commit/c3cd55b61a45aa3cf47a32686e3bd74dd7a093c1))
+- **deps:** bump kysely in the security group across 1 directory ([27de9f5](https://github.com/glorecertificate/glore/commit/27de9f5ce3dec55d4fa5679244f72bf192e9745d))
+
+### CI
+
+- deny warnings in oxlint ([2f82307](https://github.com/glorecertificate/glore/commit/2f82307ecc4eb243bbdc3d49ada6099e95649635))
+- enable no-floating-promises and no-misused-promises type-aware lint rules ([8e69227](https://github.com/glorecertificate/glore/commit/8e692270cda660e4f6203abc9851d728d0264202))
+- update CI workflows with improved dependency management ([346a37c](https://github.com/glorecertificate/glore/commit/346a37c56d0ec28faa96825242349d2336082d87))
+
+### Docs
+
+- improve commit message guidelines and push restrictions for agents ([51ae744](https://github.com/glorecertificate/glore/commit/51ae744b350ac29d4769c41001620a6a6e105b75))
+
+### Other
+
+- extract PDF generation from certificate action to server utility ([9e21922](https://github.com/glorecertificate/glore/commit/9e21922c834a5a7aca98a68d52f0370a18544854))
+- split admin actions into team, organizations, and users modules ([a83e71b](https://github.com/glorecertificate/glore/commit/a83e71bcfddbafcd2aaf7e5f28a4827aa897debb))
+- split certificate actions into queries and management modules ([05c2d02](https://github.com/glorecertificate/glore/commit/05c2d02e5d2cba95a7b8976197e163ae3c22c118))
+- split course actions into queries, management, and progress modules ([4063a6b](https://github.com/glorecertificate/glore/commit/4063a6b45739669c70de326676ea2a6d331acc69))
+- split organization actions into helpers, queries, and management modules ([3a7c20d](https://github.com/glorecertificate/glore/commit/3a7c20da25e146c7620a959efc1b5f6040f62290))
+- split organization-management into members, requests, and settings modules ([703cb27](https://github.com/glorecertificate/glore/commit/703cb273133fce3e103688c734eca1a7f084794a))
+
 ## [0.6.4](https://github.com/glorecertificate/glore/compare/v0.6.3...v0.6.4) (2026-03-25)
 
 ### Features

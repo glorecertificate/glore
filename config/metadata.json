@@ -1,7 +1,7 @@
 {
   "name": "GloRe Certificate",
   "shortName": "GloRe",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "slug": "glore",
   "separator": "·",
   "keywords": ["glore", "certificate", "elearning", "soft skills"],

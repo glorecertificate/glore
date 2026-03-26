@@ -40,6 +40,10 @@ export const proxy: NextProxy = async request => {
       return expiredRedirect()
     }
 
+    if (session.user.banned) {
+      return expiredRedirect()
+    }
+
     if (nextUrl.pathname === AUTH_ROOT) {
       return NextResponse.redirect(new URL(APP_ROOT, request.url))
     }

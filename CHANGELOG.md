@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.7](https://github.com/glorecertificate/glore/compare/v0.6.6...v0.6.7) (2026-03-27)
+
+### Fixes
+
+- update deployment workflow ([12cbca2](https://github.com/glorecertificate/glore/commit/12cbca27f2ffb1acbb18e6549c8e64a64fda9914))
+
 ## [0.6.6](https://github.com/glorecertificate/glore/compare/v0.6.5...v0.6.6) (2026-03-26)
 
 ### Fixes

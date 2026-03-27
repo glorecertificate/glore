@@ -10,6 +10,7 @@ const NEXT_DTS = ['.next/types/link.d.ts', '.next/types/routes.d.ts']
 
 const args = process.argv.slice(2)
 const types = args && args.length > 0 ? args : ARGS
+const ci = process.env.CI === 'true'
 
 const red = (text: string) => `\u001b[31m${text}\u001b[0m`
 const green = (text: string) => `\u001b[32m${text}\u001b[0m`
@@ -54,18 +55,19 @@ export {}`
     writeFileSync(ENV_DTS, content, 'utf-8')
 
     clearLine()
-    console.info(`${green('✓')} Environment types generated successfully`)
+    if (!ci) console.info(`${green('✓')} Environment types generated successfully`)
   } catch {
     clearLine()
     console.error(`${red('✗')} Failed to write ${ENV_DTS}`)
+    process.exit(1)
   }
 }
 
 if (types.includes('routes')) {
   try {
     if (stdout.isTTY) stdout.write('Generating route types...')
-    execSync('next typegen', {
-      stdio: stdout.isTTY ? 'ignore' : 'inherit',
+    execSync('pnpm exec next typegen', {
+      stdio: 'ignore',
       env: { ...process.env, SKIP_ENV_VALIDATION: '1' },
     })
     clearLine()
@@ -76,7 +78,7 @@ if (types.includes('routes')) {
       throw new Error(`Expected type declaration files not found: ${missingTypes.join(', ')}`)
     }
 
-    console.info(`${green('✓')} Route types generated successfully\n`)
+    if (!ci) console.info(`${green('✓')} Route types generated successfully\n`)
   } catch (e) {
     clearLine()
     console.error(`${red('✗')} Failed to generate route types\n`)

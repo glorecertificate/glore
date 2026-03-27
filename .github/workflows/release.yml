@@ -5,34 +5,10 @@ on:
     tags:
       - v*
 
-env:
-  VERCEL_TELEMETRY_DISABLED: 1
-
 jobs:
   deploy:
-    name: Deploy to Production
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      deployments: write
-    environment:
-      name: Production
-      url: ${{ steps.vercel.outputs.deployment-url }}
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: pnpm
-      - name: Pull Vercel environment
-        run: pnpm exec vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build project artifacts
-        run: pnpm exec vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Deploy to Vercel
-        id: vercel
-        run: |
-          pnpm exec vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
-          echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT
+    name: Deploy
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      environment: Production

@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: Environment to deploy to, can be Preview or Production.
+        default: Preview
+        type: string
+    secrets:
+      VERCEL_TOKEN:
+        required: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: 1
+  VERCEL_TELEMETRY_DISABLED: 1
+
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ steps.vercel.outputs.deployment-url }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - uses: pnpm/action-setup@v5
+        with:
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - uses: actions/cache/restore@v5
+        with:
+          path: .tsbuildinfo
+          key: tsc-${{ runner.os }}-${{ hashFiles('tsconfig.json', 'src/**/*.ts', 'src/**/*.tsx') }}
+          restore-keys: tsc-${{ runner.os }}-
+      - name: Install dependencies
+        run: pnpm install --dev --frozen-lockfile --ignore-scripts
+      - name: Set environment
+        id: set-env
+        run: echo "env=$(echo ${{ inputs.environment }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+      - name: Pull Vercel environment
+        run: pnpm exec vercel pull --yes --environment=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build project artifacts
+        run: pnpm exec vercel build --target=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy to Vercel
+        id: vercel
+        run: |
+          pnpm exec vercel deploy --prebuilt --archive=tgz --target=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

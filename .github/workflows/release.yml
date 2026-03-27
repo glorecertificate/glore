@@ -6,8 +6,8 @@ on:
       - v*
 
 jobs:
-  deploy:
-    name: Deploy
+  release:
+    name: Release
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:

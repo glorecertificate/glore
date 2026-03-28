@@ -17,7 +17,7 @@ import {
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseOrganizationJoinRequest } from '@/db/queries/organization'
-import { memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
+import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { i18n } from '@/lib/i18n'
 
@@ -222,17 +222,21 @@ export const requestOrganizationRegistration = async ({
       .insert(organizations)
       .values({
         city: city.trim(),
-        country: country.trim(),
         email: orgEmail.trim().toLowerCase(),
         handle: finalHandle,
         name: name.trim(),
-        url: url?.trim() || null,
       })
       .returning({ id: organizations.id, name: organizations.name })
 
     if (!org) {
       throw new Error('Failed to create organization')
     }
+
+    await db.insert(organizationProfiles).values({
+      country: country.trim(),
+      organizationId: org.id,
+      url: url?.trim() || null,
+    })
 
     await db.insert(organizationJoinRequests).values({
       email: registrantEmail.trim().toLowerCase(),

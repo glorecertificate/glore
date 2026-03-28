@@ -6,14 +6,9 @@ import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
-import { parseUser } from '@/db/queries/user'
+import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { r2Delete, r2Put } from '@/lib/storage'
-
-const userWith = {
-  memberships: { with: { organization: true } },
-  regions: { columns: { id: true, name: true, icon: true } },
-} as const
 
 const IMAGE_SIGNATURES: [string, number[]][] = [
   ['image/png', [0x89, 0x50, 0x4e, 0x47]],

@@ -1,15 +1,21 @@
 import { type InferSelectModel } from 'drizzle-orm'
 
-import { type memberships, type organizations, type regions, type users } from '@/db/schema'
+import { type memberships, type organizationProfiles, type organizations, type regions, type users } from '@/db/schema'
 
 export const userWith = {
-  memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
+  memberships: {
+    with: {
+      organization: { columns: { id: true, name: true }, with: { profile: { columns: { avatarUrl: true } } } },
+    },
+  },
   regions: { columns: { id: true, name: true, icon: true } },
 } as const
 
 type UserRow = InferSelectModel<typeof users>
 type MembershipRow = InferSelectModel<typeof memberships>
-type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name' | 'avatarUrl'>
+type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name'> & {
+  profile: Pick<InferSelectModel<typeof organizationProfiles>, 'avatarUrl'> | null
+}
 type RegionRow = Pick<InferSelectModel<typeof regions>, 'id' | 'name' | 'icon'>
 
 export interface UserWithRelations extends UserRow {
@@ -24,7 +30,12 @@ export const parseUser = (user: UserWithRelations) => ({
   ...user,
   isAdmin: user.role === 'admin',
   canEdit: user.role === 'admin' || user.isEditor,
-  organizations: user.memberships.map(({ organization, role }) => ({ ...organization, role })),
+  organizations: user.memberships.map(({ organization, role }) => ({
+    id: organization.id,
+    name: organization.name,
+    avatarUrl: organization.profile?.avatarUrl ?? null,
+    role,
+  })),
   shortName: `${user.firstName} ${user.lastName ? `${user.lastName.trim().charAt(0).toUpperCase()}.` : ''}`,
   initials: [user.firstName, user.lastName]
     .filter(Boolean)

@@ -1114,6 +1114,8 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 
 22. **`validateEnv` must be called at startup only:** `src/lib/env.ts` exports `validateEnv()` which parses `process.env` against the Zod schema. It is intentionally called only from `next.config.ts` (phase-guarded: `PHASE_DEVELOPMENT_SERVER` and `PHASE_PRODUCTION_BUILD`) and `src/instrumentation.ts` (inside `register()`). Do not call it from application code or server actions.
 
+23. **Organization profile table split:** Keep sparse organization profile fields (`description`, `url`, `phone`, `country`, `region`, `postcode`, `address`, `rating`, `avatarUrl`) in `organization_profiles` and keep core organization identity/status fields in `organizations`. Query parsers (`parseOrganization`, `parseAdminOrganization`, `parseUser`, `parseCertificate`) must flatten profile fields so downstream UI/actions continue using `organization.avatarUrl` and related properties.
+
 ---
 
 ## Coding Patterns (ENFORCED)

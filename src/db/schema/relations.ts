@@ -6,7 +6,7 @@ import { certificateSkills, certificates } from './certificates'
 import { contributions, courses, lessons } from './courses'
 import { docArticles, docCategories } from './docs'
 import { notifications } from './notifications'
-import { memberships, organizationJoinRequests, organizations } from './organizations'
+import { memberships, organizationJoinRequests, organizationProfiles, organizations } from './organizations'
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from './progress'
 import { pushSubscriptions } from './push-subscriptions'
 import { regions } from './regions'
@@ -48,9 +48,20 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 }))
 
 // Organizations
-export const organizationsRelations = relations(organizations, ({ many }) => ({
+export const organizationsRelations = relations(organizations, ({ many, one }) => ({
   memberships: many(memberships),
   joinRequests: many(organizationJoinRequests),
+  profile: one(organizationProfiles, {
+    fields: [organizations.id],
+    references: [organizationProfiles.organizationId],
+  }),
+}))
+
+export const organizationProfilesRelations = relations(organizationProfiles, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [organizationProfiles.organizationId],
+    references: [organizations.id],
+  }),
 }))
 
 export const membershipsRelations = relations(memberships, ({ one }) => ({

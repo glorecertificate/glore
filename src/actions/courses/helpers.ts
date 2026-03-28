@@ -8,7 +8,11 @@ export const courseWith = {
   skillGroup: { columns: { id: true, name: true } },
   creator: {
     with: {
-      memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
+      memberships: {
+        with: {
+          organization: { columns: { id: true, name: true }, with: { profile: { columns: { avatarUrl: true } } } },
+        },
+      },
       regions: { columns: { id: true, name: true, icon: true } },
     },
   },
@@ -18,7 +22,14 @@ export const courseWith = {
         with: {
           user: {
             with: {
-              memberships: { with: { organization: { columns: { id: true, name: true, avatarUrl: true } } } },
+              memberships: {
+                with: {
+                  organization: {
+                    columns: { id: true, name: true },
+                    with: { profile: { columns: { avatarUrl: true } } },
+                  },
+                },
+              },
               regions: { columns: { id: true, name: true, icon: true } },
             },
           },

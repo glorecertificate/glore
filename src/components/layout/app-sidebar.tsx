@@ -231,23 +231,27 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
-            {user.memberships.map(({ organization: { id, avatarUrl, name }, role }) => (
-              <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
-                <Avatar className="aspect-square size-10 rounded-lg border">
-                  {avatarUrl && <AvatarImage alt={name} src={avatarUrl} />}
-                  <AvatarFallback className="text-muted-foreground">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="flex items-center truncate font-semibold">
-                    {name}
-                    {id === organization.id && (
-                      <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
-                    )}
-                  </span>
-                  <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>
-                </div>
-              </DropdownMenuItem>
-            ))}
+            {user.memberships.map(({ organization: { id, name, profile }, role }) => {
+              const avatarUrl = profile?.avatarUrl ?? null
+
+              return (
+                <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
+                  <Avatar className="aspect-square size-10 rounded-lg border">
+                    {avatarUrl && <AvatarImage alt={name} src={avatarUrl} />}
+                    <AvatarFallback className="text-muted-foreground">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="flex items-center truncate font-semibold">
+                      {name}
+                      {id === organization.id && (
+                        <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
+                      )}
+                    </span>
+                    <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>
+                  </div>
+                </DropdownMenuItem>
+              )
+            })}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">

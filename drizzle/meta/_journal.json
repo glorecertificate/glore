@@ -64,6 +64,13 @@
       "when": 1774435270135,
       "tag": "0008_big_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1774686451809,
+      "tag": "0009_marvelous_dexter_bennett",
+      "breakpoints": true
     }
   ]
 }

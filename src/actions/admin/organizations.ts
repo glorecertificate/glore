@@ -12,7 +12,7 @@ import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseAdminOrganization } from '@/db/queries/organization'
-import { memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
+import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
@@ -25,6 +25,9 @@ const fetchOrganizations = async () => {
   return await safeQuery(async () => {
     const rows = await db.query.organizations.findMany({
       orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
+      with: {
+        profile: true,
+      },
       limit: 1000,
     })
 
@@ -69,6 +72,9 @@ export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {
   if (!cache) {
     const rows = await db.query.organizations.findMany({
       orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
+      with: {
+        profile: true,
+      },
       limit: 1000,
     })
 
@@ -299,17 +305,21 @@ export const inviteOrganization = async ({
       .values({
         approvedAt: now,
         city: city.trim(),
-        country: country.trim(),
         email: orgEmail.trim().toLowerCase(),
         handle: finalHandle,
         name: name.trim(),
-        url: url?.trim() || null,
       })
       .returning({ id: organizations.id, name: organizations.name })
 
     if (!org) {
       throw new Error('Failed to create organization')
     }
+
+    await db.insert(organizationProfiles).values({
+      country: country.trim(),
+      organizationId: org.id,
+      url: url?.trim() || null,
+    })
 
     const existingUser = await db.query.users.findFirst({
       columns: { email: true, id: true, onboardedAt: true },

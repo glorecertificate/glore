@@ -29,6 +29,9 @@ export const getOrganizationPanel = async () => {
     const [organizationRecord, membershipRecords, joinRequestRecords, pendingCertificates, approvedCertificates] =
       await Promise.all([
         db.query.organizations.findFirst({
+          with: {
+            profile: true,
+          },
           where: eq(organizations.id, organization.id),
         }),
         db.query.memberships.findMany({

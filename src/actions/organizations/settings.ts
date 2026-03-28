@@ -13,7 +13,7 @@ import {
 } from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { certificates, organizations } from '@/db/schema'
+import { certificates, organizationProfiles, organizations } from '@/db/schema'
 import { r2Delete, r2Put } from '@/lib/storage'
 
 export const updateOrganization = async ({
@@ -49,6 +49,13 @@ export const updateOrganization = async ({
     assertOrganizationAdmin(role)
 
     const current = await db.query.organizations.findFirst({
+      with: {
+        profile: {
+          columns: {
+            description: true,
+          },
+        },
+      },
       where: eq(organizations.id, organization.id),
     })
 
@@ -59,18 +66,44 @@ export const updateOrganization = async ({
     await db
       .update(organizations)
       .set({
-        address: address.trim() || null,
         city: city.trim(),
-        country: country.trim() || null,
-        description: getDescriptionRecord(description.trim(), user.locale ?? undefined, current.description ?? null),
         email: email.trim().toLowerCase(),
         name: name.trim(),
+      })
+      .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt)))
+
+    await db
+      .insert(organizationProfiles)
+      .values({
+        organizationId: organization.id,
+        address: address.trim() || null,
+        country: country.trim() || null,
+        description: getDescriptionRecord(
+          description.trim(),
+          user.locale ?? undefined,
+          current.profile?.description ?? null
+        ),
         phone: phone.trim() || null,
         postcode: postcode.trim() || null,
         region: region.trim() || null,
         url: url.trim() || null,
       })
-      .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt)))
+      .onConflictDoUpdate({
+        target: organizationProfiles.organizationId,
+        set: {
+          address: address.trim() || null,
+          country: country.trim() || null,
+          description: getDescriptionRecord(
+            description.trim(),
+            user.locale ?? undefined,
+            current.profile?.description ?? null
+          ),
+          phone: phone.trim() || null,
+          postcode: postcode.trim() || null,
+          region: region.trim() || null,
+          url: url.trim() || null,
+        },
+      })
 
     const nextUser = await getFreshCurrentUser(user.id)
 
@@ -96,14 +129,20 @@ export const uploadOrganizationAvatar = async (formData: FormData) => {
 
     assertOrganizationAdmin(role)
 
-    const current = await db.query.organizations.findFirst({
+    const current = await db.query.organizationProfiles.findFirst({
       columns: { avatarUrl: true },
-      where: eq(organizations.id, organization.id),
+      where: eq(organizationProfiles.organizationId, organization.id),
     })
 
     const url = await r2Put(`organizations/${organization.id}-${Date.now()}.png`, file, 'image/png')
 
-    await db.update(organizations).set({ avatarUrl: url }).where(eq(organizations.id, organization.id))
+    await db
+      .insert(organizationProfiles)
+      .values({ avatarUrl: url, organizationId: organization.id })
+      .onConflictDoUpdate({
+        target: organizationProfiles.organizationId,
+        set: { avatarUrl: url },
+      })
 
     if (current?.avatarUrl) {
       await r2Delete(current.avatarUrl).catch(() => null)
@@ -128,16 +167,22 @@ export const removeOrganizationAvatar = async () => {
 
     assertOrganizationAdmin(role)
 
-    const current = await db.query.organizations.findFirst({
+    const current = await db.query.organizationProfiles.findFirst({
       columns: { avatarUrl: true },
-      where: eq(organizations.id, organization.id),
+      where: eq(organizationProfiles.organizationId, organization.id),
     })
 
     if (current?.avatarUrl) {
       await r2Delete(current.avatarUrl).catch(() => null)
     }
 
-    await db.update(organizations).set({ avatarUrl: null }).where(eq(organizations.id, organization.id))
+    await db
+      .insert(organizationProfiles)
+      .values({ avatarUrl: null, organizationId: organization.id })
+      .onConflictDoUpdate({
+        target: organizationProfiles.organizationId,
+        set: { avatarUrl: null },
+      })
 
     const nextUser = await getFreshCurrentUser(user.id)
 

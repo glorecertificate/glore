@@ -101,7 +101,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
         },
         volunteerName,
         orgName: cert.organization.name,
-        orgLogoUrl: cert.organization.avatarUrl,
+        orgLogoUrl: cert.organization.profile?.avatarUrl,
         skillNames,
         issuedDate: issuedAt,
       })

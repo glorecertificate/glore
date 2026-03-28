@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.6.8](https://github.com/glorecertificate/glore/compare/v0.6.7...v0.6.8) (2026-03-28)
+
+### Features
+
+- add course search url filters on courses page ([53176a7](https://github.com/glorecertificate/glore/commit/53176a73a620442fe64e53b41443d4f5d8882e50))
+- add search to docs page ([e50288b](https://github.com/glorecertificate/glore/commit/e50288b681094e91665980788c0204e809338b71))
+
+### Fixes
+
+- allow course ratings after lesson completion ([10c951d](https://github.com/glorecertificate/glore/commit/10c951d4f909eacff625c94dd22172f7e40bad2b))
+- use build id in service worker cache name ([8cfa042](https://github.com/glorecertificate/glore/commit/8cfa042176571f4a9a329b02c90c86bc8a5fd7e2))
+
+### Docs
+
+- remove ship skill and optimize agent configuration ([ec40987](https://github.com/glorecertificate/glore/commit/ec40987a41c49be3e4ed4c7617932b2d8f94adf3))
+
+### Other
+
+- split organization fields into profiles ([0ab6289](https://github.com/glorecertificate/glore/commit/0ab62897265c1796af25a57d2e017144aff8feb8))
+- update mcp symlinks ([861fe34](https://github.com/glorecertificate/glore/commit/861fe344bed47e10fff1e42501c8a3dfe4927343))
+
 ## [0.6.7](https://github.com/glorecertificate/glore/compare/v0.6.6...v0.6.7) (2026-03-27)
 
 ### Fixes

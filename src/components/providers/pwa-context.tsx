@@ -13,6 +13,12 @@ const urlBase64ToUint8Array = (base64: string) => {
   return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
 }
 
+const getBuildId = () => {
+  if (typeof window === 'undefined') return 'dev'
+  const nextData = (window as typeof window & { __NEXT_DATA__?: { buildId?: string } }).__NEXT_DATA__
+  return nextData?.buildId ?? 'dev'
+}
+
 const usePWAContext = () => {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
@@ -21,7 +27,8 @@ const usePWAContext = () => {
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      void navigator.serviceWorker.register('/sw.js')
+      const buildId = encodeURIComponent(getBuildId())
+      void navigator.serviceWorker.register(`/sw.js?buildId=${buildId}`)
     }
 
     const handler = (e: Event) => {

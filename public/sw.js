@@ -1,4 +1,5 @@
-const CACHE_NAME = 'glore-v1'
+const buildId = new URL(self.location.href).searchParams.get('buildId') || 'dev'
+const CACHE_NAME = `glore-${buildId}`
 const OFFLINE_URL = '/offline'
 
 self.addEventListener('install', event => {

@@ -64,6 +64,7 @@ export const CourseFooter = () => {
     if (!user.canEdit && !isViewer && currentLesson.id && !currentLesson.completed) {
       setSaving(true)
       try {
+        await completeLesson(currentLesson.id)
         if (currentLesson.type === 'evaluations' && currentLesson.evaluations?.length) {
           const ratings = currentLesson.evaluations
             .filter(e => e.userRating !== null && e.userRating !== undefined)
@@ -77,7 +78,6 @@ export const CourseFooter = () => {
         ) {
           await submitAssessmentRating(currentLesson.assessment.id, currentLesson.assessment.userRating)
         }
-        await completeLesson(currentLesson.id)
         setCourse(prev => ({
           ...prev,
           lessons: prev.lessons.map(l => (l.id === currentLesson.id ? { ...l, completed: true } : l)),

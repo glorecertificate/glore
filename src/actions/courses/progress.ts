@@ -9,9 +9,29 @@ import { and, asc, count, eq, inArray } from 'drizzle-orm'
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { lessons, userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
+import {
+  assessments,
+  evaluations,
+  lessons,
+  userAnswers,
+  userAssessments,
+  userCourses,
+  userEvaluations,
+  userLessons,
+} from '@/db/schema'
 import { certificatesUserTag } from '@/lib/cache'
 import { type IntlRecord } from '@/lib/i18n'
+
+const hasCompletedLessons = async (userId: string, lessonIds: number[]) => {
+  if (lessonIds.length === 0) return false
+
+  const completedLessons = await db.query.userLessons.findMany({
+    where: and(eq(userLessons.userId, userId), inArray(userLessons.lessonId, lessonIds)),
+    columns: { lessonId: true },
+  })
+
+  return new Set(completedLessons.flatMap(({ lessonId }) => (lessonId ? [lessonId] : []))).size === lessonIds.length
+}
 
 export const submitAnswers = async (options: { id: number }[]) => {
   const user = await getAuthUser()
@@ -58,6 +78,15 @@ export const submitEvaluationRatings = async (ratings: { evaluationId: number; v
   const user = await getAuthUser()
   if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
+  const ratingIds = ratings.map(({ evaluationId }) => evaluationId)
+  const evaluationRows = await db.query.evaluations.findMany({
+    where: inArray(evaluations.id, ratingIds),
+    columns: { id: true, lessonId: true },
+  })
+  const lessonIds = [...new Set(evaluationRows.map(({ lessonId }) => lessonId))]
+  const canRate = await hasCompletedLessons(user.id, lessonIds)
+  if (!canRate) return { error: { code: 'FORBIDDEN', message: 'Complete the lesson before submitting ratings' } }
+
   const existing = await db.query.userEvaluations.findMany({
     where: and(
       eq(userEvaluations.userId, user.id),
@@ -84,6 +113,15 @@ export const submitEvaluationRatings = async (ratings: { evaluationId: number; v
 export const submitAssessmentRating = async (assessmentId: number, value: number) => {
   const user = await getAuthUser()
   if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+
+  const assessment = await db.query.assessments.findFirst({
+    where: eq(assessments.id, assessmentId),
+    columns: { lessonId: true },
+  })
+  if (!assessment) return { error: { code: 'NOT_FOUND', message: 'Assessment not found' } }
+
+  const canRate = await hasCompletedLessons(user.id, [assessment.lessonId])
+  if (!canRate) return { error: { code: 'FORBIDDEN', message: 'Complete the lesson before submitting ratings' } }
 
   const existing = await db.query.userAssessments.findFirst({
     where: and(eq(userAssessments.userId, user.id), eq(userAssessments.assessmentId, assessmentId)),

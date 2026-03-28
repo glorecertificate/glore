@@ -33,12 +33,11 @@ _All P2 tasks completed._
 
 ### P3: Low (improvements and DX)
 
-| Slug                                  | Feature                                              | Notes                                                                                            |
-| ------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `course-search`                       | Course filtering and search                          | Low. Add URL-based filters (type, skill group, language) to `/courses` page. Use nuqs for state. |
-| `course-rating-before-completion`     | Course rating allowed before all lessons completed   | Features. Gate the rating action behind a lesson-completion check.                               |
-| `docs-search-missing`                 | Docs search and filter functionality missing         | Features. Add a search/filter input to the docs page.                                            |
-| `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox.       |
+| Slug                                  | Feature                                              | Notes                                                                                      |
+| ------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `course-rating-before-completion`     | Course rating allowed before all lessons completed   | Features. Gate the rating action behind a lesson-completion check.                         |
+| `docs-search-missing`                 | Docs search and filter functionality missing         | Features. Add a search/filter input to the docs page.                                      |
+| `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox. |
 
 ---
 
@@ -46,6 +45,7 @@ _All P2 tasks completed._
 
 | Slug                                   | Feature                                            | Completed            |
 | -------------------------------------- | -------------------------------------------------- | -------------------- |
+| `course-search`                        | Course filtering and search                        | completed:2026-03-28 |
 | `overly-wide-tables`                   | Move sparse organization fields to extension table | completed:2026-03-28 |
 | `safequery-non-descriptive-errors`     | Domain-specific error codes in safeQuery           | completed:2026-07-22 |
 | `no-partial-indexes`                   | Add status/slug/category indexes                   | completed:2026-07-22 |

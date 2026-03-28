@@ -208,6 +208,14 @@ export const useDisplayCourses = () => {
 
     let values = data.values()
 
+    if (activeLanguages.length < i18n.locales.length) {
+      values = values.filter(course => {
+        if (course.publicationStatus === 'draft') return false
+        if (!course.languages || course.languages.length === 0) return false
+        return course.languages.some(language => activeLanguages.includes(language))
+      })
+    }
+
     if (activeTypes.length < COURSE_TYPES.length) {
       values = values.filter(course => activeTypes.includes(course.type))
     }
@@ -260,6 +268,7 @@ export const useDisplayCourses = () => {
       }
     })
   }, [
+    activeLanguages,
     activeTypes,
     activeSkillGroups,
     courseList,

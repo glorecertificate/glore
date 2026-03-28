@@ -38,6 +38,7 @@ jobs:
         run: pnpm install --frozen-lockfile --strict-peer-dependencies
       - name: Run code checks
         run: pnpm run check:ci
+
   deploy:
     name: Deploy
     needs: validate

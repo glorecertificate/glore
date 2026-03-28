@@ -52,6 +52,8 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 
 > **MANDATORY:** Always use `pnpm run <script>` (never bare `pnpm <script>`) to avoid conflicts with built-in pnpm commands (e.g. `pnpm ci`, `pnpm install`, `pnpm build`). The only exception is `pnpm install` itself.
 
+**Commit discipline:** Make one commit per logical task or feature. Never split a single task into a sequence of partial commits (e.g. `feat: add form` then `feat: add validation` then `feat: add error handling` — this is WRONG). Stage all changes for the task and commit once with a message that covers the full scope of work.
+
 ---
 
 ## Model Selection
@@ -95,35 +97,35 @@ Do not block on the suggestion — if the user continues without switching, proc
 
 ## Stack
 
-| Category         | Technology                                            | Version            |
-| ---------------- | ----------------------------------------------------- | ------------------ |
-| Framework        | Next.js (App Router, RSC, Cached Components)          | ^16.1.7            |
-| Language         | TypeScript (strict mode)                              | ^5.9.3             |
-| Runtime          | React (with React Compiler enabled)                   | ^19.2.4            |
-| Package manager  | pnpm                                                  | 10.32.1            |
-| React Compiler   | babel-plugin-react-compiler                           | ^1.0.0             |
-| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) | ^0.10.4            |
-| ORM              | Drizzle ORM + drizzle-kit                             | ^0.45.1 / ^0.31.10 |
-| Auth             | Better Auth (`better-auth`)                           | ^1.5.4             |
-| Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  | ^3.1010.0          |
-| Linter           | oxlint (`.oxlintrc.json`)                             | latest             |
-| Formatter        | oxfmt (`.oxfmtrc.json`)                               | latest             |
-| Styling          | Tailwind CSS                                          | ^4.1.18            |
-| UI Components    | shadcn/ui (new-york style)                            | ^3.8.4             |
-| Rich text editor | Plate.js                                              | ^52.0.17           |
-| i18n             | next-intl                                             | ^4.8.2             |
-| Forms            | react-hook-form + zod                                 | ^7.71.1 / ^4.3.6   |
-| State            | nuqs (URL state)                                      | ^2.8.8             |
-| Email            | Nodemailer (SMTP)                                     | ^8.0.2             |
-| AI               | Vercel AI SDK + Google Gemini (`@ai-sdk/google`)      | ^6.0.116 / ^3.0.43 |
-| Animation        | motion                                                | ^12.38.0           |
-| DnD              | @dnd-kit                                              | ^6.3.1             |
-| Icons            | lucide-react                                          | ^0.577.0           |
-| Deployment       | Vercel                                                | ^50.13.2           |
-| Analytics        | @vercel/analytics + @vercel/speed-insights            | ^2.0.1 / ^2.0.0    |
-| Search           | fuse.js                                               | ^7.1.0             |
-| QR code          | qrcode                                                | ^1.5.4             |
-| Agent Skills     | skills CLI (https://agentskills.io)                   | latest             |
+| Category         | Technology                                            |
+| ---------------- | ----------------------------------------------------- |
+| Framework        | Next.js (App Router, RSC, Cached Components)          |
+| Language         | TypeScript (strict mode)                              |
+| Runtime          | React (with React Compiler enabled)                   |
+| Package manager  | pnpm                                                  |
+| React Compiler   | babel-plugin-react-compiler                           |
+| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) |
+| ORM              | Drizzle ORM + drizzle-kit                             |
+| Auth             | Better Auth (`better-auth`)                           |
+| Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  |
+| Linter           | oxlint (`.oxlintrc.json`)                             |
+| Formatter        | oxfmt (`.oxfmtrc.json`)                               |
+| Styling          | Tailwind CSS                                          |
+| UI Components    | shadcn/ui (new-york style)                            |
+| Rich text editor | Plate.js                                              |
+| i18n             | next-intl                                             |
+| Forms            | react-hook-form + zod                                 |
+| State            | nuqs (URL state)                                      |
+| Email            | Nodemailer (SMTP)                                     |
+| AI               | Vercel AI SDK + Google Gemini (`@ai-sdk/google`)      |
+| Animation        | motion                                                |
+| DnD              | @dnd-kit                                              |
+| Icons            | lucide-react                                          |
+| Deployment       | Vercel                                                |
+| Analytics        | @vercel/analytics + @vercel/speed-insights            |
+| Search           | fuse.js                                               |
+| QR code          | qrcode                                                |
+| Agent Skills     | skills CLI (https://agentskills.io)                   |
 
 ---
 
@@ -146,33 +148,32 @@ skills --help                         # Show all CLI commands
 
 ### Installed skills
 
-| Skill                                 | Source                        | Purpose                                                                                                                           | When to use                                                                         |
-| ------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                                                                                | When configuring auth, adding plugins, or setting up email/password authentication  |
-| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                                                                                   | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
-| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                                                                                | When implementing login/sign-up flows, password security, or email verification     |
-| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                                                                                   | **ALWAYS** when building/styling UI components, pages, layouts                      |
-| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                                                                                 | When creating/modifying schemas, migrations, or database configuration              |
-| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                                                                                           | When working with database queries, branching, or Neon platform features            |
-| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                                                                               | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
-| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                                                                                        | When reviewing UI accessibility, UX patterns, or design compliance                  |
-| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns                                                                | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns                                                                       | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
-| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform                                                                 | When working with Cloudflare APIs, services, or infrastructure                      |
-| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                                                                                   | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
-| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance                                                                     | When creating, editing, or optimizing agent skills for this project                 |
-| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits                                                                     | After completing a feature, before merging to main                                  |
-| `release`                             | custom                        | Controlled release workflow: preview, confirm, publish                                                                            | When cutting a release (`/release`) or when ship triggers a release gate            |
-| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                                                                                            | When adding, modifying, or debugging shadcn/ui components                           |
-| `ship`                                | custom                        | **PRIMARY ORCHESTRATOR** — execute tasks, scan codebase, manage roadmap; requires passing `pnpm run build` before task completion | **ALWAYS** when starting any development work (`/ship`)                             |
+| Skill                                 | Source                        | Purpose                                                            | When to use                                                                         |
+| ------------------------------------- | ----------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| `better-auth-best-practices`          | `better-auth/skills`          | Better Auth server/client setup, plugins, sessions                 | When configuring auth, adding plugins, or setting up email/password authentication  |
+| `better-auth-security-best-practices` | `better-auth/skills`          | Rate limiting, CSRF, secrets, session hardening                    | When securing auth, preventing brute force, or hardening a Better Auth deployment   |
+| `email-and-password-best-practices`   | `better-auth/skills`          | Email verification, password reset, hashing policy                 | When implementing login/sign-up flows, password security, or email verification     |
+| `frontend-design`                     | `anthropics/skills`           | Production-grade UI design with bold aesthetics                    | **ALWAYS** when building/styling UI components, pages, layouts                      |
+| `neon-drizzle`                        | `neondatabase/ai-rules`       | Drizzle ORM + Neon database setup                                  | When creating/modifying schemas, migrations, or database configuration              |
+| `neon-postgres`                       | `neondatabase/agent-skills`   | Neon Serverless Postgres best practices                            | When working with database queries, branching, or Neon platform features            |
+| `vercel-react-best-practices`         | `vercel-labs/agent-skills`    | 58 performance optimization rules for React/Next.js                | **ALWAYS** when writing/reviewing React components, data fetching, or Next.js pages |
+| `web-design-guidelines`               | `vercel-labs/agent-skills`    | Web Interface Guidelines compliance review                         | When reviewing UI accessibility, UX patterns, or design compliance                  |
+| `email-best-practices`                | `resend/email-best-practices` | Email deliverability, compliance, transactional/marketing patterns | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `react-email`                         | `resend/react-email`          | react-email components, styling, i18n, and sending patterns        | **ALWAYS** when creating or modifying email templates in `src/emails/`              |
+| `cloudflare`                          | `cloudflare/skills`           | Cloudflare Workers, Pages, D1, R2, KV, AI, WAF, Tunnel, Terraform  | When working with Cloudflare APIs, services, or infrastructure                      |
+| `agents-md`                           | custom                        | Update AGENTS.md via `/agents-md <instruction>`                    | When adding rules, syncing with codebase, or performing major AGENTS.md updates     |
+| `skill-creator`                       | `anthropics/skills`           | Create and optimize skills; run evals and measure performance      | When creating, editing, or optimizing agent skills for this project                 |
+| `commit`                              | custom                        | Finalize and commit staged changes using conventional commits      | After completing a feature, before merging to main                                  |
+| `release`                             | custom                        | Controlled release workflow: preview, confirm, publish             | When cutting a release (`/release`)                                                 |
+| `shadcn`                              | `shadcn/ui`                   | Manages shadcn components and projects                             | When adding, modifying, or debugging shadcn/ui components                           |
 
-### Workflow Skills (used by ship)
+### Superpowers Workflow Skills
 
-Ship automatically invokes these skills at the right moments. You do not need to invoke them separately.
+These skills define the full superpowers development workflow. Invoke them at the right phase — they are not invoked automatically.
 
 > **Priority:** AGENTS.md rules and user instructions ALWAYS take precedence over workflow skill instructions. Skill behaviors override only default agent behavior, never project-specific conventions documented here.
 
-| Skill                            | Purpose                                                                                        | When ship invokes it                                                           |
+| Skill                            | Purpose                                                                                        | When to invoke                                                                 |
 | -------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | `brainstorming`                  | Socratic design refinement; saves spec to `.agents/specs/`                                     | Complex or ambiguous feature design (Phase 2: Plan)                            |
 | `dispatching-parallel-agents`    | Concurrent subagent workflows for multiple independent problems                                | Independent sub-problems (Phase 3: Implement); codebase audit (`scan` command) |
@@ -184,7 +185,7 @@ Ship automatically invokes these skills at the right moments. You do not need to
 | `systematic-debugging`           | 4-phase root cause process: reproduce, localize, identify root cause, verify fix               | Bug, test failure, or unexpected behavior (Phase 3: Implement)                 |
 | `test-driven-development`        | RED-GREEN-REFACTOR: write failing test, watch it fail, pass with minimal code                  | Any feature or bug fix implementation (Phase 3: Implement)                     |
 | `using-git-worktrees`            | Isolated workspace per feature branch with safety verification                                 | Feature branch isolation (before Phase 2: Plan)                                |
-| `using-superpowers`              | Overview of the superpowers workflow system                                                    | Available for reference; ship embeds the relevant behaviors directly           |
+| `using-superpowers`              | Overview of the superpowers workflow system                                                    | When orienting to the superpowers system or onboarding to the workflow         |
 | `verification-before-completion` | Run verification commands and confirm output before making any success claim                   | Before any completion claim (Phase 4: Verify)                                  |
 | `writing-plans`                  | Bite-sized tasks (2-5 min each) with file paths, code, verify steps; saves to `.agents/plans/` | Large features needing a detailed plan (Phase 2: Plan)                         |
 | `writing-skills`                 | Create and test new skills following agentskills.io best practices                             | When creating or improving agent skills                                        |
@@ -212,8 +213,8 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 7. **Any email work** (`src/emails/`) → Read `email-best-practices/SKILL.md` AND `react-email/SKILL.md`. Both are mandatory before creating or modifying any template.
 8. **shadcn/ui component work** → Read `shadcn/SKILL.md`. Use when adding, editing, or debugging shadcn/ui components.
 9. **Committing changes** → Read `commit/SKILL.md`. Follow the commit workflow before merging any feature branch.
-10. **Releasing versions** → Read `release/SKILL.md`. Follow the release workflow for version bumps, changelog generation, and GitHub releases. Ship delegates to this skill at its release gate.
-11. **All development work** → Use `/ship` as the only entry point. Ship orchestrates all workflow skills (brainstorming, TDD, systematic debugging, parallel subagents, etc.) at the right moments. You do not need to invoke them separately.
+10. **Releasing versions** → Read `release/SKILL.md`. Follow the release workflow for version bumps, changelog generation, and GitHub releases.
+11. **All development work** → Follow the superpowers workflow: `brainstorming` for design (saves spec to `.agents/specs/`) → `writing-plans` for complex tasks (saves plan to `.agents/plans/`) → `dispatching-parallel-agents` (preferred for independent sub-tasks) or `executing-plans` (sequential execution). Invoke each skill manually at the appropriate phase.
 12. **Cloudflare work** → Read `cloudflare/SKILL.md` when working with Cloudflare Workers, Pages, D1, R2, KV, AI, or any Cloudflare service.
 13. **Creating or optimizing skills** → Read `skill-creator/SKILL.md` when creating new skills or improving existing ones.
 
@@ -259,7 +260,6 @@ Before adding any skill to `.gitignore`, always check `skills-lock.json`. If the
     ├── agents-md/                            # AGENTS.md update skill (custom, git-tracked)
     ├── commit/                               # Commit workflow skill (custom, git-tracked)
     ├── release/                              # Release workflow skill (custom, git-tracked)
-    ├── ship/                                 # Primary orchestrator skill (custom, git-tracked)
     ├── better-auth-best-practices/           # Better Auth setup (external)
     ├── better-auth-security-best-practices/  # Better Auth security (external)
     ├── brainstorming/                        # Design refinement before coding (external, workflow)
@@ -363,28 +363,6 @@ src/
 │   └── utils.ts        # cn(), debounce(), throttle(), camelize(), etc.
 ├── i18n.ts             # next-intl request config
 └── proxy.ts            # NextProxy middleware (auth guard)
-config/                 # Static JSON configuration
-├── app.json            # Feature settings (minSkills, minRating, etc.)
-├── i18n.json           # Locales, default locale, title-case locales
-├── metadata.json       # App name, version, URL, SEO data
-└── theme.json          # Theme modes, colors, breakpoints
-drizzle/                # drizzle-kit output — auto-generated, do not edit manually
-├── *.sql               # Migration SQL files (one per `pnpm db generate` run)
-└── meta/               # Schema snapshots and migration journal
-    ├── _journal.json
-    └── *_snapshot.json
-messages/               # Translation files
-├── en.json
-├── es.json
-└── it.json
-scripts/
-└── typegen.ts          # Env + route type generation script
-tmp/                    # Temporary files (git-ignored, see Temporary Files section)
-.agents/
-├── assets/             # Shared agent assets (certificate template PDF, etc.)
-├── plans/              # Implementation plans from writing-plans skill (YYYY-MM-DD-<feature>.md)
-├── skills/             # Agent skills (see Agent Skills section)
-└── specs/              # Permanent docs (app.md, decisions.md, roadmap.md) and feature design specs
 ```
 
 ### File naming conventions
@@ -617,18 +595,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 **Message files:** `messages/{locale}.json`
 
-**Namespace conventions:**
-
-| Namespace                                   | Purpose                                                                |
-| ------------------------------------------- | ---------------------------------------------------------------------- |
-| `Metadata`                                  | Page titles, descriptions, SEO                                         |
-| `Common`                                    | Shared strings (actions, labels)                                       |
-| `Components.*`                              | Component-specific (`Components.MultiSelect`, `Components.IconPicker`) |
-| `Layout`                                    | Shell, navigation, footer                                              |
-| `Auth`                                      | Authentication pages                                                   |
-| `Courses`, `Certificates`, `Users`, `Admin` | Feature pages                                                          |
-| `Intl.Countries.*`, `Intl.Languages.*`      | Country/language names                                                 |
-| `Email.*`                                   | Email template strings                                                 |
+**Namespace conventions:** Top-level namespaces match feature/domain names (`Auth`, `Courses`, `Certificates`, `Admin`, `Layout`, `Common`, `Metadata`). Component-specific strings use `Components.<Name>`. i18n data uses `Intl.Countries.*` and `Intl.Languages.*`. Email strings use `Email.*`.
 
 **Key types:**
 
@@ -750,33 +717,16 @@ next / next/**                  # Next.js imports
 
 ### Key lint rules (oxlint — `.oxlintrc.json`)
 
-| Rule                                      | Setting                                                  |
-| ----------------------------------------- | -------------------------------------------------------- |
-| `unicorn/no-array-for-each`               | Error — use `for..of`, `map`, `reduce`                   |
-| `unicorn/no-for-loop`                     | Error — use `for..of`                                    |
-| `eslint/arrow-body-style`                 | Error — concise arrow body (`as-needed`)                 |
-| `eslint/no-else-return`                   | Error — use early returns                                |
-| `eslint/prefer-arrow-callback`            | Error — arrow functions in callbacks                     |
-| `eslint/prefer-const`                     | Error                                                    |
-| `eslint/prefer-template`                  | Error — template literals over concatenation             |
-| `eslint/require-await`                    | Error — async functions must await                       |
-| `eslint/no-console`                       | Warn — only `info`, `error`, `warn` allowed              |
-| `eslint/no-restricted-imports`            | Error — `../**` parent imports blocked                   |
-| `import/no-relative-parent-imports`       | Error — use `@/` or `~/` path aliases                    |
-| `import/consistent-type-specifier-style`  | Error — inline type imports                              |
-| `import/no-namespace`                     | Error (except `src/components/ui/*`, `src/db/client.ts`) |
-| `import/no-cycle`                         | Error                                                    |
-| `import/no-commonjs`                      | Error — ESM only                                         |
-| `typescript/consistent-type-definitions`  | Error — prefer `interface`                               |
-| `typescript/consistent-type-imports`      | Error — inline type imports                              |
-| `typescript/array-type`                   | Error — shorthand (`T[]`)                                |
-| `typescript/no-inferrable-types`          | Error — omit obvious types                               |
-| `typescript/no-explicit-any`              | Warn (only `src/lib/types.ts` may use `any`)             |
-| `unicorn/filename-case`                   | Error — kebab-case                                       |
-| `react/jsx-fragments`                     | Error — syntax fragments (`<>`) only                     |
-| `react/jsx-no-constructed-context-values` | Error                                                    |
-| `react/self-closing-comp`                 | Error                                                    |
-| `promise/prefer-await-to-then`            | Error — use `await` over `.then()`                       |
+The most non-obvious enforced rules (the linter catches violations automatically):
+
+| Rule                                     | Setting                                      |
+| ---------------------------------------- | -------------------------------------------- |
+| `unicorn/no-array-for-each`              | Error — use `for..of`, `map`, `reduce`       |
+| `eslint/no-else-return`                  | Error — use early returns                    |
+| `import/no-relative-parent-imports`      | Error — use `@/` or `~/` path aliases        |
+| `import/consistent-type-specifier-style` | Error — inline type imports                  |
+| `typescript/no-explicit-any`             | Warn (only `src/lib/types.ts` may use `any`) |
+| `unicorn/filename-case`                  | Error — kebab-case                           |
 
 ### Lint overrides
 
@@ -867,21 +817,21 @@ next / next/**                  # Next.js imports
 
 ## Custom Hooks
 
-| Hook               | Purpose                               | Key behavior                                                                                                                                                                                                                                                                                                               |
-| ------------------ | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `useComposedRefs`  | Compose multiple refs into one        | Handles React 19 cleanup refs                                                                                                                                                                                                                                                                                              |
-| `useCookies`       | Browser-side typed cookie management  | Uses `document.cookie`; JSON serialize/parse; supports prefix                                                                                                                                                                                                                                                              |
-| `useDebounce`      | Debounce a value                      | Default 500ms delay                                                                                                                                                                                                                                                                                                        |
-| `useDevice`        | Detect device type and touch          | Uses `window.matchMedia`; configurable breakpoint (default 768px)                                                                                                                                                                                                                                                          |
-| `useFileUpload`    | UploadThing file upload with progress | Tracks progress, shows toast on error                                                                                                                                                                                                                                                                                      |
-| `useI18n`          | Access i18n context                   | Reads from `I18nContext`; throws if outside provider                                                                                                                                                                                                                                                                       |
-| `useMetadata`      | Client-side document metadata updates | Updates `<meta>` tags, PWA title formatting, 100ms delay                                                                                                                                                                                                                                                                   |
-| `useMounted`       | Check if component has mounted        | For hydration-safe rendering                                                                                                                                                                                                                                                                                               |
-| `usePWA`           | Detect PWA display mode               | Detects TWA, Standalone, MinimalUI, Fullscreen, Browser                                                                                                                                                                                                                                                                    |
-| `useScroll`        | Track scroll position                 | Throttled at 100ms; returns `{ scroll, scrolled }`                                                                                                                                                                                                                                                                         |
-| `useSession`       | Access session context                | Reads from `SessionContext`; throws if outside provider; user includes `isOrgAdmin` (true for `admin` or `representative` org role), `isLearner`, `isRepresentative`, `isTutor`, `isVolunteer` computed from active org role; org-owner-only operations (e.g., deletion) must check `membership.role === 'admin'` directly |
-| `useSidebarResize` | Drag-to-resize sidebar                | Configurable min/max widths; collapse/expand thresholds                                                                                                                                                                                                                                                                    |
-| `useTheme`         | Theme with cookie + view transitions  | Extends next-themes; uses View Transitions API; respects `prefers-reduced-motion`                                                                                                                                                                                                                                          |
+| Hook               | Purpose                               | Key behavior                                                                                                                                                                                                                   |
+| ------------------ | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `useComposedRefs`  | Compose multiple refs into one        | Handles React 19 cleanup refs                                                                                                                                                                                                  |
+| `useCookies`       | Browser-side typed cookie management  | Uses `document.cookie`; JSON serialize/parse; supports prefix                                                                                                                                                                  |
+| `useDebounce`      | Debounce a value                      | Default 500ms delay                                                                                                                                                                                                            |
+| `useDevice`        | Detect device type and touch          | Uses `window.matchMedia`; configurable breakpoint (default 768px)                                                                                                                                                              |
+| `useFileUpload`    | UploadThing file upload with progress | Tracks progress, shows toast on error                                                                                                                                                                                          |
+| `useI18n`          | Access i18n context                   | Reads from `I18nContext`; throws if outside provider                                                                                                                                                                           |
+| `useMetadata`      | Client-side document metadata updates | Updates `<meta>` tags, PWA title formatting, 100ms delay                                                                                                                                                                       |
+| `useMounted`       | Check if component has mounted        | For hydration-safe rendering                                                                                                                                                                                                   |
+| `usePWA`           | Detect PWA display mode               | Detects TWA, Standalone, MinimalUI, Fullscreen, Browser                                                                                                                                                                        |
+| `useScroll`        | Track scroll position                 | Throttled at 100ms; returns `{ scroll, scrolled }`                                                                                                                                                                             |
+| `useSession`       | Access session context                | Reads from `SessionContext`; throws if outside provider; exposes `isOrgAdmin` (true for admin or representative role), `isLearner`, `isTutor`, `isVolunteer`; use `membership.role === 'admin'` for owner-exclusive operations |
+| `useSidebarResize` | Drag-to-resize sidebar                | Configurable min/max widths; collapse/expand thresholds                                                                                                                                                                        |
+| `useTheme`         | Theme with cookie + view transitions  | Extends next-themes; uses View Transitions API; respects `prefers-reduced-motion`                                                                                                                                              |
 
 ---
 
@@ -891,26 +841,7 @@ next / next/**                  # Next.js imports
 
 Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.css` with light/dark variants.
 
-**Semantic tokens:**
-
-| Token                                                  | Purpose                                               |
-| ------------------------------------------------------ | ----------------------------------------------------- |
-| `--background` / `--foreground`                        | Base page colors                                      |
-| `--card` / `--card-foreground`                         | Card surfaces                                         |
-| `--popover` / `--popover-foreground`                   | Popover surfaces                                      |
-| `--primary` / `--primary-foreground`                   | Primary actions                                       |
-| `--secondary` / `--secondary-foreground`               | Secondary actions                                     |
-| `--muted` / `--muted-foreground`                       | Muted/disabled elements                               |
-| `--accent` / `--accent-foreground`                     | Accent highlights                                     |
-| `--brand` / `--brand-accent` / `--brand-foreground`    | Brand primary (teal)                                  |
-| `--brand-secondary` / `--brand-secondary-*`            | Brand secondary (olive)                               |
-| `--brand-tertiary` / `--brand-tertiary-*`              | Brand tertiary (navy)                                 |
-| `--link` / `--link-accent`                             | Link colors                                           |
-| `--info` / `--success` / `--warning` / `--destructive` | Status colors (each with `-accent` and `-foreground`) |
-| `--border` / `--input` / `--ring`                      | Interactive element borders                           |
-| `--sidebar-*`                                          | Sidebar-specific tokens                               |
-| `--editor-highlight`                                   | Rich text editor highlight                            |
-| `--chart-1` through `--chart-5`                        | Chart colors                                          |
+Semantic token groups (all defined in `src/app/globals.css` with light/dark variants): page surface (`--background`, `--foreground`), cards and popovers, primary/secondary/muted/accent actions, brand colors (`--brand` teal, `--brand-secondary` olive, `--brand-tertiary` navy), link colors, status colors (`--info`, `--success`, `--warning`, `--destructive`), interactive borders (`--border`, `--input`, `--ring`), sidebar tokens, editor highlight, and five chart colors.
 
 **Border radius:** `--radius: 0.625rem` with computed `--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-xl`.
 
@@ -984,31 +915,7 @@ Uses **OKLCH** color space. CSS custom properties defined in `src/app/globals.cs
 | `GITHUB_TOKEN`         | GitHub personal access token                     | Server | No          |
 | `VERCEL_TOKEN`         | Vercel CLI token                                 | Server | No          |
 
-### Validation schema (`src/lib/env.ts`)
-
-Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts`. Validation runs at build time (via `next.config.ts`) and at server startup (via `src/instrumentation.ts`). The schema is also the source of the global `ProcessEnv` type augmentation.
-
-| Variable               | Zod validator                                           | Notes                                                |
-| ---------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
-| `APP_URL`              | `z.url()`                                               |                                                      |
-| `BETTER_AUTH_SECRET`   | `z.string().regex(/^[A-Za-z0-9+/]{43}=$/)`              | Generate with `openssl rand -base64 32`              |
-| `COOKIE_PREFIX`        | `z.string().optional()`                                 | Defaults to `gl_` at runtime if unset                |
-| `DATABASE_URL`         | `z.string().startsWith('postgresql://')`                | Neon connection string                               |
-| `GEMINI_API_KEY`       | `z.string().min(1).optional()`                          | Project-scoped key from Google AI Studio             |
-| `GEMINI_MODEL`         | `z.string().min(1).optional()`                          | Any valid Gemini model ID (e.g., `gemini-2.0-flash`) |
-| `R2_ACCOUNT_ID`        | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                                |
-| `R2_ACCESS_KEY_ID`     | `z.string().regex(/^[0-9a-f]{32}$/)`                    | 32-char lowercase hex                                |
-| `R2_SECRET_ACCESS_KEY` | `z.string().regex(/^[0-9a-f]{64}$/)`                    | 64-char lowercase hex                                |
-| `R2_BUCKET_NAME`       | `z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/)` | 3-63 chars, lowercase, no leading/trailing `-`       |
-| `R2_PUBLIC_URL`        | `z.url()`                                               |                                                      |
-| `SMTP_HOST`            | `z.string().min(1)`                                     |                                                      |
-| `SMTP_PORT`            | `z.enum(['25', '465', '587'])`                          | Must be one of these three ports                     |
-| `SMTP_SENDER`          | `z.string().min(1)`                                     |                                                      |
-| `SMTP_USER`            | `z.email()`                                             |                                                      |
-| `SMTP_PASSWORD`        | `z.string().min(1)`                                     |                                                      |
-| `VAPID_PUBLIC_KEY`     | `z.string().min(1).optional()`                          | Generate with `web-push generate-vapid-keys`         |
-| `VAPID_PRIVATE_KEY`    | `z.string().min(1).optional()`                          | Generate with `web-push generate-vapid-keys`         |
-| `VAPID_SUBJECT`        | `z.string().min(1).optional()`                          | `mailto:` address or HTTPS URL                       |
+> See `src/lib/env.ts` for the full Zod validation schema, regex validators, and build-time/runtime validation logic.
 
 **Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase as its first argument (`export default (phase: string) => {}`). `validateEnv` is imported statically from `'./src/lib/env'` (relative path required; `@/` aliases are not available in `next.config.ts`) and called when `phase === PHASE_DEVELOPMENT_SERVER` or `phase === PHASE_PRODUCTION_BUILD`, AND `process.env.SKIP_ENV_VALIDATION` is not set. Static analysis tools (knip, tsc) import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped outside a real Next.js process. The `scripts/typegen.ts` script sets `SKIP_ENV_VALIDATION=1` when calling `next typegen` to prevent validation failures during type generation (e.g., in the `prepare` hook during CI `pnpm install`).
 
@@ -1028,23 +935,6 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 | `config/markers.json`  | Globe marker coordinates (456 lat/lon pairs)                                                 |
 | `config/metadata.json` | App name, version, URL, email, keywords, authors                                             |
 | `config/theme.json`    | Theme modes, breakpoints, hex color palette for light/dark                                   |
-
----
-
-## Constants Reference (`src/lib/constants.ts`)
-
-| Constant           | Value                                                      | Purpose                     |
-| ------------------ | ---------------------------------------------------------- | --------------------------- |
-| `AUTH_ROOT`        | `'/login'`                                                 | Login page route            |
-| `APP_ROOT`         | `'/dashboard'`                                             | Default authenticated route |
-| `JOIN_ROOT`        | `'/api/v1/join'`                                           | Team invitation endpoint    |
-| `ONBOARDING_ROOT`  | `'/onboarding'`                                            | Onboarding route            |
-| `REGISTER_ROOT`    | `'/register'`                                              | Registration page route     |
-| `EMAIL_REGEX`      | `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`                             | Email validation            |
-| `USERNAME_REGEX`   | `/^(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9.]+$/`               | Username validation         |
-| `PASSWORD_REGEX`   | `/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).+$/` | Password strength           |
-| `SLUG_REGEX`       | `/^(?!.*--)(?!.*-$)[a-z0-9-]+$/`                           | URL slug validation         |
-| `CAMEL_CASE_REGEX` | `/[\s_.\\/-]+/`                                            | CamelCase split pattern     |
 
 ---
 
@@ -1102,7 +992,7 @@ Env vars are validated via a Zod schema exported as `validateEnv()` from `env.ts
 
 16. **No comments in new code:** When writing new code, NEVER add inline comments (`//`, `/* */`) or JSDoc comments (`/** */`). The only exception is `//` section dividers inside long JSX components to separate non-obvious sections. Do NOT touch comments in existing code unless explicitly asked.
 
-17. **Certificate PDF template:** The official template is at `.agents/assets/certificate-template.pdf`. All generated certificate PDFs must match it exactly: Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, reviewer signature block.
+17. **Certificate PDF template:** All generated certificate PDFs must use Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, and a reviewer signature block. The template PDF is provided per-prompt when needed.
 
 18. **Org admin uniqueness:** Each organization has exactly ONE admin (the sole owner/creator). Representatives have the same management rights as admin EXCEPT org deletion. Never allow creating a second `admin` role membership per org. Use `isOrgAdmin` (admin or representative) for management checks; use `membership.role === 'admin'` only for owner-exclusive operations (deletion, ownership transfer).
 
@@ -1393,9 +1283,10 @@ User settings – account, profile, preferences
 
 1. **Always use `tmp/`** (relative to project root) — NEVER use system `/tmp/` or any path outside the repository
 2. Create subdirectories within `tmp/` as needed (e.g., `tmp/test-output/`, `tmp/scratch/`)
-3. **Clean up after every operation** — delete all files created during a task (logs, scripts, output) immediately after the task is complete, unless they contain information that will be explicitly referenced in a future task
-4. When in doubt, delete — transient output such as typecheck logs, lint output, migration logs, and test results MUST always be removed when no longer needed
-5. Never commit contents of `tmp/` to git
+3. **Delete every file you create in `tmp/` before ending your turn** — there are no exceptions for "maybe useful later". All files written during a task must be removed once the task is complete.
+4. **The only reason to keep a file is an explicit, narrow one:** it is a human-readable artifact that a future agent or the user will deliberately open and consult (e.g., a spec written by the agent, a data export requested by the user, an interface). If you cannot name who will read it and why, delete it.
+5. **Tool output is never a keeper** — the following file types are ALWAYS useless once the task ends and MUST be deleted: grep results, `ls` / directory listings, version info, typecheck logs, lint output, build logs, migration output, Next.js server info, bundle analysis output, and any other machine-generated diagnostic output.
+6. Never commit contents of `tmp/` to git
 
 ```bash
 # ✅ Correct

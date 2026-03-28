@@ -1,7 +1,7 @@
 .agents/
 .claude/
 .github/
-.husky/
+.vite-hooks/
 .vscode/
 config/
 drizzle/
@@ -11,9 +11,7 @@ scripts/
 src/
 .editorconfig
 .mcp.json
-.oxfmtrc.json
-.oxlintrc.json
-.release-it.json
+.release-it.ts
 AGENTS.md
 CHANGELOG.md
 CLAUDE.md
@@ -29,3 +27,4 @@ README.md
 skills-lock.json
 tsconfig.build.json
 tsconfig.json
+vite.config.ts

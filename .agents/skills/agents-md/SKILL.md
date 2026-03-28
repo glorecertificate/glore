@@ -91,8 +91,8 @@ Key files to inspect for a broad update:
 | Components         | `src/components/` structure                              |
 | Providers          | `src/components/providers/`                              |
 | i18n               | `config/i18n.json`, `src/lib/i18n.ts`, `messages/`       |
-| Linter rules       | `.oxlintrc.json`                                         |
-| Formatter config   | `.oxfmtrc.json`                                          |
+| Linter rules       | `vite.config.ts`                                         |
+| Formatter config   | `vite.config.ts`                                         |
 | Type system        | `tsconfig.json`, `src/lib/types.ts`, `src/db/types.ts`   |
 | Env vars           | `env.d.ts`                                               |
 | Email templates    | `src/email/templates/`                                   |

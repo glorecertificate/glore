@@ -29,12 +29,12 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run build`          | Production build                                                |
 | `pnpm run start`          | Start production server on port 3030                            |
 | `pnpm run email`          | Preview email templates on port 3031                            |
-| `pnpm run lint`           | Lint with oxlint                                                |
+| `pnpm run lint`           | Lint with vp                                                    |
 | `pnpm run lint:fix`       | Auto-fix lint issues                                            |
-| `pnpm run format`         | Format with oxfmt                                               |
-| `pnpm run format:check`   | Check formatting without writing                                |
-| `pnpm run check`          | Type check + lint + format check + unused exports (in sequence) |
+| `pnpm run format`         | Format with vp                                                  |
+| `pnpm run check`          | Type check + lint + format + unused exports (in sequence)       |
 | `pnpm run check:ci`       | Same as `check` but runs all tools in parallel                  |
+| `pnpm run check:fix`      | Same as `check:ci` but with auto-fix enabled                    |
 | `pnpm run check:size`     | Bundle size check                                               |
 | `pnpm run typecheck`      | Type-check only (`tsc --noEmit`)                                |
 | `pnpm run typegen`        | Generate route + public-file types → `env.d.ts`                 |
@@ -46,9 +46,9 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
 | `pnpm run db <command>`   | Run drizzle-kit commands                                        |
 
-**Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc --noEmit`, oxlint, `oxfmt --check`, and knip in sequence. **`pnpm run check` MUST exit with code 0 (zero errors) before any commit is made. This is a hard gate — no exceptions, no partial compliance. Do not commit while any error remains, regardless of whether it pre-existed or was introduced by the current change.**
+**Pre-commit validation:** Run `pnpm run check` before committing. This runs `tsc`, `vp check`, and knip in sequence. **`pnpm run check` MUST exit with code 0 (zero errors) before any commit is made. This is a hard gate — no exceptions, no partial compliance. Do not commit while any error remains, regardless of whether it pre-existed or was introduced by the current change.**
 
-**Git hooks:** Husky manages hooks. `pre-commit` runs `pnpm run format:check && pnpm run lint`. `commit-msg` runs commitlint. `pre-push` runs full `check:ci`. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
+**Git hooks:** Vite+ manages hooks via the `.vite-hooks` directory (set up by `vp config`, replaces Husky). `pre-commit` runs `vp staged`. `commit-msg` runs commitlint and `vp staged`. `pre-push` runs commitlint and full `check:ci`. Commitlint enforces conventional commits with sentence-case subjects. Allowed scopes: `deps`, `deps-dev`, `dev`, `release`, `security`.
 
 > **MANDATORY:** Always use `pnpm run <script>` (never bare `pnpm <script>`) to avoid conflicts with built-in pnpm commands (e.g. `pnpm ci`, `pnpm install`, `pnpm build`). The only exception is `pnpm install` itself.
 
@@ -108,8 +108,8 @@ Do not block on the suggestion — if the user continues without switching, proc
 | ORM              | Drizzle ORM + drizzle-kit                             |
 | Auth             | Better Auth (`better-auth`)                           |
 | Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  |
-| Linter           | oxlint (`.oxlintrc.json`)                             |
-| Formatter        | oxfmt (`.oxfmtrc.json`)                               |
+| Linter           | oxlint (`vite.config.ts`)                             |
+| Formatter        | oxfmt (`vite.config.ts`)                              |
 | Styling          | Tailwind CSS                                          |
 | UI Components    | shadcn/ui (new-york style)                            |
 | Rich text editor | Plate.js                                              |
@@ -367,7 +367,7 @@ src/
 
 ### File naming conventions
 
-- All files: **kebab-case** (enforced by oxlint `unicorn/filename-case`)
+- All files: **kebab-case** (enforced by vp lint `unicorn/filename-case`)
 - Components: one component per file, named exports preferred
 - Feature components: grouped by domain under `features/<domain>/`, sub-features in sub-folders
   - Drop domain prefix from filenames: `features/courses/editor/view.tsx` (not `course-editor-view.tsx`)
@@ -678,7 +678,7 @@ Uses `nuqs` for URL search params with type-safe parsers. Feature-specific `para
 
 ## Code Style
 
-### Formatter (oxfmt — `.oxfmtrc.json`)
+### Formatter (oxfmt — `vite.config.ts`)
 
 | Setting         | Value                          |
 | --------------- | ------------------------------ |
@@ -715,7 +715,7 @@ next / next/**                  # Next.js imports
 | `default` from `zod`           | Blocked     | Use `z` named import          |
 | `../**` (parent imports)       | Blocked     | Use path aliases (`@/`, `~/`) |
 
-### Key lint rules (oxlint — `.oxlintrc.json`)
+### Key lint rules (oxlint — `vite.config.ts`)
 
 The most non-obvious enforced rules (the linter catches violations automatically):
 

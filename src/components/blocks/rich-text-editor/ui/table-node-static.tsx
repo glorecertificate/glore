@@ -8,7 +8,7 @@ export const TableElementStatic = ({ children, ...props }: SlateElementProps<TTa
   const { disableMarginLeft } = props.editor.getOptions(BaseTablePlugin)
   const marginLeft = disableMarginLeft ? 0 : props.element.marginLeft
 
-  // oxlint-disable-next-line
+  // eslint-disable-next-line
   const tableStyle = { paddingLeft: marginLeft }
 
   return (
@@ -40,19 +40,19 @@ export const TableCellElementStatic = ({
   const { minHeight, width } = api.table.getCellSize({ element })
   const borders = api.table.getCellBorders({ element })
 
-  // oxlint-disable-next-line
+  // eslint-disable-next-line
   const cellAttributes = {
     ...props.attributes,
     colSpan: api.table.getColSpan(element),
     rowSpan: api.table.getRowSpan(element),
   }
-  // oxlint-disable-next-line
+  // eslint-disable-next-line
   const cellStyle = {
     '--cellBackground': element.background,
     maxWidth: width || 240,
     minWidth: width || 120,
   } as React.CSSProperties
-  // oxlint-disable-next-line
+  // eslint-disable-next-line
   const innerDivStyle = { minHeight }
 
   return (

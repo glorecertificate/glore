@@ -239,7 +239,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
     if (canvasRef.current) {
       width = canvasRef.current.offsetWidth
     }
-    // oxlint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
@@ -298,7 +298,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
       globe.destroy()
       window.removeEventListener('resize', onResize)
     }
-    // oxlint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (

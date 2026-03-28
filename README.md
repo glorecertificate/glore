@@ -66,7 +66,7 @@ Issues are used for bug reports, feature requests, and maintenance tasks. If you
 
 ### Pull Requests
 
-All commits must follow the [Conventional Commits](https://conventionalcommits.org) format, which is enforced by commitlint and Husky on commit and push:
+All commits must follow the [Conventional Commits](https://conventionalcommits.org) format, which is enforced by commitlint and vite-hooks on commit and push:
 
 ```
 <type>(<scope>): <description>

@@ -7,7 +7,7 @@ case "$(cat "$1")" in
     exit 0
     ;;
   *)
-    pnpm commitlint --edit "$1"
-    pnpm run format:check
+    pnpm exec commitlint --edit "$1"
+    pnpm exec vp staged
     ;;
 esac

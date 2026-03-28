@@ -3,7 +3,7 @@ import { type TLinkElement } from 'platejs'
 import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 export const LinkElementStatic = (props: SlateElementProps<TLinkElement>) => {
-  // oxlint-disable-next-line
+  // eslint-disable-next-line
   const linkAttributes = {
     ...props.attributes,
     ...getLinkAttributes(props.editor, props.element),

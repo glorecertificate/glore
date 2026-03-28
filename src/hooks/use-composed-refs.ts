@@ -38,5 +38,5 @@ export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React
         }
       }
     }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, refs)

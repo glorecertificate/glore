@@ -13,5 +13,5 @@
     "src/components/blocks/**": ["exports", "types"],
     "src/components/features/**": ["exports"]
   },
-  "ignoreDependencies": ["@react-email/preview-server", "server-only"]
+  "ignoreDependencies": ["@commitlint/cli", "@react-email/preview-server", "oxlint-tsgolint", "server-only"]
 }

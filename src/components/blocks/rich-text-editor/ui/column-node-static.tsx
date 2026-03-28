@@ -1,11 +1,12 @@
+'use client'
+
+import { useMemo } from 'react'
+
 import { type TColumnElement } from 'platejs'
 import { SlateElement, type SlateElementProps } from 'platejs/static'
 
 export const ColumnElementStatic = (props: SlateElementProps<TColumnElement>) => {
-  const { width } = props.element
-
-  // oxlint-disable-next-line
-  const divStyle = { width: width ?? '100%' }
+  const divStyle = useMemo(() => ({ width: props.element.width ?? '100%' }), [props.element.width])
 
   return (
     <div className="group/column relative" style={divStyle}>

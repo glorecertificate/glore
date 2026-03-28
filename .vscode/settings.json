@@ -17,9 +17,10 @@
   "i18n-ally.namespace": true,
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "oxc.configPath": "./vite.config.ts",
   "oxc.enable": true,
   "oxc.fixKind": "dangerous_fix_or_suggestion",
-  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "oxc.fmt.configPath": "./vite.config.ts",
   "search.exclude": {
     "**/.claude/**": true,
     "**/node_modules/**": true

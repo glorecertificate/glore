@@ -334,7 +334,7 @@ src/
 ├── components/
 │   ├── blocks/         # Complex composed blocks (rich-text-editor)
 │   ├── features/       # Domain components grouped by feature
-│   │   ├── docs/          # Docs article cards, sheets, editor dialog, category manager
+│   │   ├── docs/          # Docs article cards, list/search, sheets, editor dialog, category manager
 │   │   ├── organization/  # Org panel header, tabs, and management sections
 │   │   └── search/        # Global command palette (SearchCommand) with Fuse.js fuzzy search
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper

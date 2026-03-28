@@ -5,8 +5,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { listDocCategories } from '@/actions/doc'
-import { DocsSection } from '@/components/features/docs/docs-section'
-import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
+import { DocsList } from '@/components/features/docs/docs-list'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
@@ -31,7 +30,6 @@ const DocsContent = async () => {
 
   return (
     <>
-      {canEdit && <CategoryManagerTrigger categories={allCategories} />}
       {allCategories.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
@@ -43,9 +41,7 @@ const DocsContent = async () => {
           </CardContent>
         </Card>
       ) : (
-        allCategories.map(category => (
-          <DocsSection key={category.id} allCategories={allCategories} canEdit={canEdit} category={category} />
-        ))
+        <DocsList canEdit={canEdit} categories={allCategories} />
       )}
     </>
   )

@@ -35,7 +35,6 @@ _All P2 tasks completed._
 
 | Slug                                  | Feature                                              | Notes                                                                                      |
 | ------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `docs-search-missing`                 | Docs search and filter functionality missing         | Features. Add a search/filter input to the docs page.                                      |
 | `service-worker-hardcoded-cache-name` | Service worker cache name never bumped on deployment | Infra. Inject the Next.js `BUILD_ID` into the SW cache name at build time, or use Workbox. |
 
 ---
@@ -44,6 +43,7 @@ _All P2 tasks completed._
 
 | Slug                                   | Feature                                            | Completed            |
 | -------------------------------------- | -------------------------------------------------- | -------------------- |
+| `docs-search-missing`                  | Docs search and filter functionality missing       | completed:2026-03-28 |
 | `course-rating-before-completion`      | Course rating allowed before all lessons completed | completed:2026-03-28 |
 | `course-search`                        | Course filtering and search                        | completed:2026-03-28 |
 | `overly-wide-tables`                   | Move sparse organization fields to extension table | completed:2026-03-28 |

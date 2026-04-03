@@ -36,21 +36,21 @@ corepack enable && corepack install && pnpm install
 # Install agent skills
 pnpm skills
 
-# Start the dev server on http://localhost:3030
+# Start the dev server at https://glore.localhost
 pnpm dev
 
-# Start the email preview server on http://localhost:3031
+# Start the email preview server on https://glore-email.localhost
 pnpm email
 ```
 
 ### Deployment
 
-The app is currently hosted on [Vercel](https://vercel.com):
+The app is hosted on [Vercel](https://vercel.com):
 
-- Preview deployments are created automatically on every push to main with the [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml)
-- Production deployments are triggered by a release with the [Release worflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml)
+- Preview deployments are created automatically on every push to `main` using the [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml)
+- Production deployments are triggered by the [Release worflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml)
 
-The application can also be deployed manually:
+The application can be also deployed manually:
 
 ```sh
 pnpm run deploy       # deploy a preview
@@ -66,7 +66,7 @@ Issues are used for bug reports, feature requests, and maintenance tasks. If you
 
 ### Pull Requests
 
-All commits must follow the [Conventional Commits](https://conventionalcommits.org) format, which is enforced by commitlint and vite-hooks on commit and push:
+All commits must follow the Conventional Commits specification, which is enforced by commitlint on commit and push:
 
 ```
 <type>(<scope>): <description>
@@ -76,18 +76,16 @@ To open a pull request:
 
 1. Fork the repository, create a new branch and implement your changes
 2. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
-3. Make sure all CI checks pass and wait for the maintainers to review your PR
+3. Make sure all CI checks pass and wait for a maintainer to review your PR
 
 ## AI and agents
 
-All coding conventions and architecture details are in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.
+All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.
 
 The project uses the MCP servers configured in [`.mcp.json`](.mcp.json) and different agent skills to provide specific knowledge for database, auth, UI, emails, and more.
 
 Use the `pnpm skills` command to install the skills locally and run them with Claude or any other compatible agent.
 
 ## License
-
-<!-- add copyright symbol -->
 
 Copyright © 2025-present Associazione Joint <info@associazionejoint.org>

@@ -82,9 +82,9 @@ export const CountrySelect = ({
                   }}
                   value={translateCountry(code)}
                 >
-                  <CheckIcon className={cn('mr-2 size-4', value === code ? 'opacity-100' : 'opacity-0')} />
-                  <span>{countryCodeToFlag(code)}</span>
+                  <span className="pr-0.5">{countryCodeToFlag(code)}</span>
                   {translateCountry(code)}
+                  <CheckIcon className={cn('size-4', value === code ? 'opacity-100' : 'opacity-0')} />
                 </CommandItem>
               ))}
             </CommandGroup>

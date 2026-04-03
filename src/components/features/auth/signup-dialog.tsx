@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
@@ -19,9 +21,12 @@ import { cn } from '@/lib/utils'
 
 export const SignupDialog = ({ loading }: { loading: boolean }) => {
   const t = useTranslations('Auth')
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => () => setOpen(false), [])
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <div className="mt-2 text-center text-sm text-muted-foreground">
         {t.rich('signupMessage', {
           link: content => (

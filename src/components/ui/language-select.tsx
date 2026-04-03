@@ -56,7 +56,8 @@ export const LanguageSelect = ({
   )
 
   const activeItem = useMemo<LanguageSelectItem>(
-    () => localeItems.find(item => (controlled ? item.value === value : item.value === locale))!,
+    () =>
+      localeItems.find(item => (controlled && value ? item.value === value : item.value === locale)) ?? localeItems[0]!,
     [controlled, locale, localeItems, value]
   )
 

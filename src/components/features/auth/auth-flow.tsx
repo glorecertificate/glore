@@ -26,6 +26,7 @@ import theme from '~/config/theme.json'
 
 const Globe = dynamic(async () => (await import('@/components/ui/globe')).Globe, { ssr: false })
 
+const globeOffset: [number, number] = [140, -100]
 const motionAnimate = { opacity: 1, y: 0 }
 const motionExit = { opacity: 0, y: -8 }
 const motionInitial = { opacity: 0, y: 8 }
@@ -77,7 +78,15 @@ export const AuthFlow = ({
   const content = useMemo(() => {
     switch (view) {
       case 'login':
-        return <LoginForm setErrored={setErrored} setUsername={setUsername} setView={setView} username={username} />
+        return (
+          <LoginForm
+            errored={errored}
+            setErrored={setErrored}
+            setUsername={setUsername}
+            setView={setView}
+            username={username}
+          />
+        )
       case 'password_request':
         return (
           <PasswordRequestForm
@@ -141,7 +150,7 @@ export const AuthFlow = ({
       default:
         return null
     }
-  }, [t, username, view, resetToken])
+  }, [errored, resetToken, t, username, view])
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
@@ -209,8 +218,6 @@ export const AuthFlow = ({
     }
   }, [errored, resolvedTheme, view])
 
-  const globeOffset = useMemo(() => [36, -32] as [number, number], [])
-
   return (
     <>
       <div className="flex justify-between gap-2">
@@ -233,9 +240,9 @@ export const AuthFlow = ({
           <div className="flex min-h-137.5 flex-col gap-8" ref={ref} style={containerStyle}>
             <div className="flex flex-col gap-8">
               <Globe
-                className="mx-auto size-56"
+                className="mx-auto size-80"
                 offset={globeOffset}
-                scale={1.3}
+                scale={1.6}
                 transitionDuration={200}
                 {...globeColorOptions}
               />

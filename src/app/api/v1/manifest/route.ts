@@ -21,7 +21,7 @@ export const GET = async (request: NextRequest) => {
       {
         purpose: 'any',
         sizes: '192x192',
-        src: publicFile('/assets/certificate.svg'),
+        src: publicFile('/web-app-icon-192x192.png'),
         type: 'image/png',
       },
       {

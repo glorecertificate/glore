@@ -22,8 +22,7 @@
   "oxc.fixKind": "dangerous_fix_or_suggestion",
   "oxc.fmt.configPath": "./vite.config.ts",
   "search.exclude": {
-    "**/.claude/**": true,
-    "**/node_modules/**": true
+    "**/.claude/**": true
   },
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],

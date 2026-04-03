@@ -10,7 +10,7 @@ export const generateMetadata = () =>
 
 export default () => (
   <div className="flex min-h-screen items-center justify-center p-6">
-    <div className="mx-auto w-full max-w-xl space-y-8">
+    <div className="mx-auto w-full max-w-xl space-y-12">
       <div className="flex flex-col items-center gap-8">
         <GloreIcon className="w-40" />
       </div>

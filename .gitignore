@@ -3,10 +3,8 @@ node_modules/
 tmp/
 .DS_Store
 *.d.ts
-!next-env.d.ts
 *.d.json.ts
 *.tsbuildinfo
-.env
-.env.*
+.env*
 !.env.example
 .vercel

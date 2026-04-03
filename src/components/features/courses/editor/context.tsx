@@ -221,147 +221,169 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     return result
   }, [])
 
-  const saveCourse = useCallback(
-    async ({ languages }: { languages?: Locale[] } = {}) => {
-      if (contentFlushRef.current) {
-        flushSync(() => {
-          contentFlushRef.current?.()
+  const saveCourse = useCallback(async ({ languages }: { languages?: Locale[] } = {}) => {
+    if (contentFlushRef.current) {
+      flushSync(() => {
+        contentFlushRef.current?.()
+      })
+    }
+
+    const current = courseSnapshotRef.current
+    const { id, lessons, ...courseData } = current
+
+    const lessonsPayload: Array<TableInsert<'lessons'> & { id?: number }> = []
+    const idMap = new Map<number, number>()
+    const lessonOnlyKeys = new Set([
+      'title',
+      'content',
+      'sortOrder',
+      'courseId',
+      'id',
+      'createdAt',
+      'updatedAt',
+      'deletedAt',
+    ])
+
+    for (const lesson of lessons) {
+      const attributes = Object.keys(lesson) as Array<keyof Lesson>
+      const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+      const lessonUpdates: TableUpdate<'lessons'> = {}
+
+      for (const attribute of attributes) {
+        if (!lessonOnlyKeys.has(attribute)) continue
+        if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
+          lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
+        }
+      }
+
+      if (Object.keys(lessonUpdates).length > 0) {
+        lessonsPayload.push({
+          ...lessonUpdates,
+          id: lesson.id,
+          title: lesson.title!,
+          courseId: id,
+          sortOrder: lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
         })
       }
+    }
 
-      const current = courseSnapshotRef.current
-      const { id, lessons, ...courseData } = current
-
-      const lessonsPayload: TableInsert<'lessons'>[] = []
-      const lessonOnlyKeys = new Set([
-        'title',
-        'content',
-        'sortOrder',
-        'courseId',
-        'id',
-        'createdAt',
-        'updatedAt',
-        'deletedAt',
-      ])
-
-      for (const lesson of lessons) {
-        const attributes = Object.keys(lesson) as Array<keyof Lesson>
-        const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
-        const lessonUpdates: TableUpdate<'lessons'> = {}
-
-        for (const attribute of attributes) {
-          if (!lessonOnlyKeys.has(attribute)) continue
-          if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
-            lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
-          }
-        }
-
-        if (Object.keys(lessonUpdates).length > 0) {
-          lessonsPayload.push({
-            ...lessonUpdates,
-            id: lesson.id,
-            title: lesson.title,
-            courseId: id,
-            sortOrder: lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
-          } as TableInsert<'lessons'>)
-        }
+    if (lessonsPayload.length > 0) {
+      const result = await upsertLessons(lessonsPayload)
+      if (result && 'error' in result) throw result.error
+      for (const [i, payload] of lessonsPayload.entries()) {
+        const realId = result.data[i]?.id
+        if (payload.id && realId && payload.id !== realId) idMap.set(payload.id, realId)
       }
-
-      if (lessonsPayload.length > 0) {
-        const result = await upsertLessons(lessonsPayload)
-        if (result && 'error' in result) throw result.error
+      if (idMap.size > 0) {
+        setCourse(prev => ({
+          ...prev,
+          lessons: prev.lessons.map(l => {
+            const newId = idMap.get(l.id!)
+            if (newId === undefined) return l
+            return { ...l, id: newId }
+          }),
+        }))
       }
+    }
 
-      for (const lesson of lessons) {
-        const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+    for (const lesson of lessons) {
+      const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
 
-        const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
-        const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
-        const removedQuestionIds = [...initialQuestionIds].filter(qId => !currentQuestionIds.has(qId))
+      const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
+      const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
+      const removedQuestionIds = [...initialQuestionIds].filter(qId => !currentQuestionIds.has(qId))
 
-        const questionsToUpsert = lesson.questions
-          .filter(q => {
-            if (!initialQuestionIds.has(q.id)) return true
-            const initial = initialLesson?.questions.find(iq => iq.id === q.id)
-            return !initial || JSON.stringify(initial.description) !== JSON.stringify(q.description)
-          })
-          .map(q => ({
-            id: initialQuestionIds.has(q.id) ? q.id : undefined,
+      const questionsToUpsert = lesson.questions
+        .filter(q => {
+          if (!initialQuestionIds.has(q.id)) return true
+          const initial = initialLesson?.questions.find(iq => iq.id === q.id)
+          return !initial || JSON.stringify(initial.description) !== JSON.stringify(q.description)
+        })
+        .map(q => ({
+          id: initialQuestionIds.has(q.id) ? q.id : undefined,
+          lessonId: lesson.id,
+          description: q.description as IntlRecord,
+          explanation: q.explanation as IntlRecord | null,
+        }))
+
+      if (questionsToUpsert.length > 0) await upsertQuestions(questionsToUpsert as TableInsert<'questions'>[])
+      if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
+
+      const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
+      const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
+      const removedEvalIds = [...initialEvalIds].filter(eId => !currentEvalIds.has(eId))
+
+      const evalsToUpsert = lesson.evaluations
+        .filter(e => {
+          if (!initialEvalIds.has(e.id)) return true
+          const initial = initialLesson?.evaluations.find(ie => ie.id === e.id)
+          return !initial || JSON.stringify(initial.description) !== JSON.stringify(e.description)
+        })
+        .map(e => ({
+          id: initialEvalIds.has(e.id) ? e.id : undefined,
+          lessonId: lesson.id,
+          description: e.description as IntlRecord,
+        }))
+
+      if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as TableInsert<'evaluations'>[])
+      if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
+
+      const hadAssessment = !!initialLesson?.assessment
+      const hasAssessment = !!lesson.assessment
+
+      if (hasAssessment) {
+        const descriptionChanged =
+          !hadAssessment ||
+          JSON.stringify(initialLesson?.assessment?.description) !== JSON.stringify(lesson.assessment?.description)
+
+        if (descriptionChanged && lesson.assessment) {
+          await upsertAssessment({
+            id: hadAssessment ? lesson.assessment.id : undefined,
             lessonId: lesson.id,
-            description: q.description as IntlRecord,
-            explanation: q.explanation as IntlRecord | null,
-          }))
+            description: lesson.assessment.description as IntlRecord,
+          } as TableInsert<'assessments'>)
+        }
+      } else if (hadAssessment && initialLesson?.assessment) {
+        await deleteAssessment(initialLesson.assessment.id)
+      }
+    }
 
-        if (questionsToUpsert.length > 0) await upsertQuestions(questionsToUpsert as TableInsert<'questions'>[])
-        if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
+    const courseDbKeys = new Set(['title', 'description', 'icon', 'type', 'slug', 'sortOrder', 'archivedAt'])
+    const coursePayload: Record<string, unknown> = {}
 
-        const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
-        const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
-        const removedEvalIds = [...initialEvalIds].filter(eId => !currentEvalIds.has(eId))
+    for (const attribute in courseData) {
+      if (!courseDbKeys.has(attribute)) continue
+      const key = attribute as keyof typeof courseData
+      if (JSON.stringify(courseData[key]) !== JSON.stringify(courseRef.current[key])) {
+        coursePayload[key] = courseData[key]
+      }
+    }
 
-        const evalsToUpsert = lesson.evaluations
-          .filter(e => {
-            if (!initialEvalIds.has(e.id)) return true
-            const initial = initialLesson?.evaluations.find(ie => ie.id === e.id)
-            return !initial || JSON.stringify(initial.description) !== JSON.stringify(e.description)
-          })
-          .map(e => ({
-            id: initialEvalIds.has(e.id) ? e.id : undefined,
-            lessonId: lesson.id,
-            description: e.description as IntlRecord,
-          }))
+    if (languages) {
+      coursePayload.languages = languages
+    }
 
-        if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as TableInsert<'evaluations'>[])
-        if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
+    await updateCourse(id, {
+      ...coursePayload,
+      updatedAt: new Date().toISOString(),
+    } as TableUpdate<'courses'>)
 
-        const hadAssessment = !!initialLesson?.assessment
-        const hasAssessment = !!lesson.assessment
-
-        if (hasAssessment) {
-          const descriptionChanged =
-            !hadAssessment ||
-            JSON.stringify(initialLesson?.assessment?.description) !== JSON.stringify(lesson.assessment?.description)
-
-          if (descriptionChanged && lesson.assessment) {
-            await upsertAssessment({
-              id: hadAssessment ? lesson.assessment.id : undefined,
-              lessonId: lesson.id,
-              description: lesson.assessment.description as IntlRecord,
-            } as TableInsert<'assessments'>)
+    if (languages) {
+      setCourse(prev => ({ ...prev, languages }))
+    }
+    const resolved =
+      idMap.size > 0
+        ? {
+            ...current,
+            lessons: current.lessons.map(l => {
+              const newId = idMap.get(l.id!)
+              if (newId === undefined) return l
+              return { ...l, id: newId }
+            }),
           }
-        } else if (hadAssessment && initialLesson?.assessment) {
-          await deleteAssessment(initialLesson.assessment.id)
-        }
-      }
-
-      const courseDbKeys = new Set(['title', 'description', 'icon', 'type', 'slug', 'sortOrder', 'archivedAt'])
-      const coursePayload: Record<string, unknown> = {}
-
-      for (const attribute in courseData) {
-        if (!courseDbKeys.has(attribute)) continue
-        const key = attribute as keyof typeof courseData
-        if (JSON.stringify(courseData[key]) !== JSON.stringify(courseRef.current[key])) {
-          coursePayload[key] = courseData[key]
-        }
-      }
-
-      if (languages) {
-        coursePayload.languages = languages
-      }
-
-      // Always call updateCourse to revalidate the individual course cache
-      await updateCourse(id, {
-        ...coursePayload,
-        updatedAt: new Date().toISOString(),
-      } as TableUpdate<'courses'>)
-
-      if (languages) {
-        setCourse(prev => ({ ...prev, languages }))
-      }
-      courseRef.current = structuredClone(languages ? { ...current, languages } : current)
-    },
-    [] // Stable — reads from refs
-  )
+        : current
+    courseRef.current = structuredClone(languages ? { ...resolved, languages } : resolved)
+  }, [])
 
   const addLesson = useCallback(
     (values: TableUpdate<'lessons'> = {}) => {

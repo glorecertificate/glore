@@ -142,17 +142,20 @@ export const CourseSettings = ({
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       try {
-        const data = course ? await updateCourse(course.id, schema) : await createCourse(schema)
-        onSuccess?.(data)
+        const { data, error } = course ? await updateCourse(course.id, schema) : await createCourse(schema)
+        if (error) {
+          if (error.code === 'CONFLICT') {
+            form.setError('slug', { message: t('courseSlugTaken') })
+            form.setFocus('slug')
+            return
+          }
+          onError?.(error)
+          return
+        }
+        if (data) onSuccess?.(data)
       } catch (e) {
         const error = queryError(e)
         console.error(error.code)
-        if (error.code === '23505') {
-          form.setError('slug', { message: t('courseSlugTaken') })
-          form.setFocus('slug')
-          return
-        }
-        onError?.(error)
       }
     },
     [course, createCourse, form, onError, onSuccess, t, updateCourse]

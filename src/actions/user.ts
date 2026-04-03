@@ -44,7 +44,7 @@ const fetchUser = async (id: string) => {
   })
 }
 
-const fetchUserEmail = async (username: string) => {
+export const findUserEmail = async (username: string) => {
   'use cache'
   cacheTag(CacheTag.UserEmail)
 
@@ -78,8 +78,6 @@ export const findUser = async (id: string, { cache: useCache = true }: { cache?:
 
   return data
 }
-
-export const findUserEmail = async (username: string) => await fetchUserEmail(username)
 
 export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
   const currentUser = await getCurrentUser()

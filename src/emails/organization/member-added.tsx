@@ -1,7 +1,7 @@
 import { Button, Section, Text } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 
-import { EmailLayout } from '@/emails/components/layout'
+import { EmailLayout } from '@/emails/layout'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 

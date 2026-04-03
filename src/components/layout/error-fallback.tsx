@@ -33,9 +33,7 @@ export const ErrorFallback = ({
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))
   const errorMessage = useMemo(() => {
-    if (message) {
-      return message
-    }
+    if (message) return message
     return type === 'not-found'
       ? t('notFoundMessage')
       : t.rich('errorMessage', {

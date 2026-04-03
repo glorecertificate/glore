@@ -35,7 +35,7 @@ interface TemplatePropsMap {
   }
   'organization/join-request': {
     organizationName: string
-    status: 'accepted' | 'rejected'
+    status: 'accepted' | 'pending' | 'rejected'
     comment?: string | null
     userName?: string
   }
@@ -122,7 +122,11 @@ const buildEmail = (template: EmailTemplate, messages: Messages, locale: Locale)
       const t = createTranslator({ locale, messages, namespace: 'Email.organization/join-request' })
       const { organizationName, status } = template.props
       const subject =
-        status === 'accepted' ? t('subjectAccepted', { organizationName }) : t('subjectRejected', { organizationName })
+        status === 'pending'
+          ? t('subjectPending', { organizationName })
+          : status === 'accepted'
+            ? t('subjectAccepted', { organizationName })
+            : t('subjectRejected', { organizationName })
       return {
         subject,
         element: createElement(OrganizationJoinRequestEmail, { ...template.props, locale, messages: m }),

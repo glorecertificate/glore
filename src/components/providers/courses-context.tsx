@@ -53,18 +53,16 @@ const useCoursesContext = (value: CoursesContextValue) => {
         ...payload,
         sortOrder: courses.length + 1,
       })
-      if (error) throw error
+      if (error) return { error }
       setCourses(prev => [...prev, data])
-      return data
+      return { data }
     },
     [courses.length]
   )
 
   const updateCourse = useCallback(async (id: number, payload: TableUpdate<'courses'>) => {
     setCourses(prev => prev.map(course => (course.id === id ? ({ ...course, ...payload } as Course) : course)))
-    const { error, data } = await updateCourseAction(id, payload)
-    if (error) throw error
-    return data
+    return await updateCourseAction(id, payload)
   }, [])
 
   const deleteCourse = useCallback(async (id: number) => {

@@ -2,6 +2,8 @@
 
 import 'server-only'
 
+import { revalidateTag } from 'next/cache'
+
 import { and, eq, inArray, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
@@ -12,6 +14,7 @@ import { type Course } from '@/db/queries/course'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { assessments, courses, evaluations, lessons, questions } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
+import { CacheTag, courseTag } from '@/lib/cache'
 
 const requireEditor = async () => {
   const user = await getAuthUser()
@@ -76,7 +79,17 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
     where: eq(courses.id, id),
     with: buildCourseWith(authUser?.id),
   })
-  if (!updated) return { error: { code: 'NOT_FOUND', message: 'Course not found' } }
+  if (!updated) {
+    return {
+      error: {
+        code: 'NOT_FOUND',
+        message: 'Course not found',
+      },
+    }
+  }
+
+  revalidateTag(courseTag(updated.slug), 'max')
+  revalidateTag(CacheTag.Courses, 'max')
 
   return {
     data: parseCourse({
@@ -107,21 +120,20 @@ export const createLesson = async (lesson: TableInsert<'lessons'>) => {
   return { data: parseLesson(created) }
 }
 
-export const upsertLessons = async (values: TableInsert<'lessons'>[]) => {
+export const upsertLessons = async (values: Array<TableInsert<'lessons'> & { id?: number }>) => {
   await requireEditor()
-  const result = await db
-    .insert(lessons)
-    .values(values)
-    .onConflictDoUpdate({
-      target: lessons.id,
-      set: {
-        title: values[0]?.title,
-        content: values[0]?.content,
-        sortOrder: values[0]?.sortOrder,
-      },
-    })
-    .returning()
-
+  const result: (typeof lessons.$inferSelect)[] = []
+  for (const { id, ...set } of values) {
+    if (id) {
+      const [updated] = await db.update(lessons).set(set).where(eq(lessons.id, id)).returning()
+      if (updated) {
+        result.push(updated)
+        continue
+      }
+    }
+    const [inserted] = await db.insert(lessons).values(set).returning()
+    if (inserted) result.push(inserted)
+  }
   return { data: result.map(parseLesson) }
 }
 

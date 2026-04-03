@@ -17,8 +17,6 @@ import {
 } from '@/components/blocks/rich-text-editor/ui/inline-combobox'
 import { useDebounce } from '@/hooks/use-debounce'
 
-const COLON_REGEX = /:$/
-
 export const EmojiInputElement = (props: PlateElementProps) => {
   const { editor, element } = props
   const data = usePluginOption(EmojiPlugin, 'data')!
@@ -32,7 +30,7 @@ export const EmojiInputElement = (props: PlateElementProps) => {
     if (debouncedValue.trim().length === 0) {
       return []
     }
-    return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(COLON_REGEX, '')).get()
+    return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(/:$/, '')).get()
   }, [data, debouncedValue])
 
   return (

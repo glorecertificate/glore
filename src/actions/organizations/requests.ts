@@ -19,6 +19,7 @@ import { safeQuery } from '@/db/helpers'
 import { parseOrganizationJoinRequest } from '@/db/queries/organization'
 import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
+import { sendMail } from '@/lib/email'
 import { i18n } from '@/lib/i18n'
 
 export const approveOrganizationJoinRequest = async (requestId: number) => {
@@ -247,6 +248,15 @@ export const requestOrganizationRegistration = async ({
       organizationId: org.id,
       role: 'admin',
     })
+
+    await sendMail({
+      locale: locale ?? undefined,
+      template: {
+        name: 'organization/join-request',
+        props: { organizationName: org.name, status: 'pending', userName: firstName.trim() },
+      },
+      to: registrantEmail.trim().toLowerCase(),
+    }).catch(() => null)
 
     return { organizationId: org.id, organizationName: org.name }
   })

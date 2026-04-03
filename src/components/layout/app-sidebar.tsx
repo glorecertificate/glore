@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import {
   AwardIcon,
@@ -94,12 +94,8 @@ const AppSidebarItem = ({
   const { activePath, setActivePath } = useSidebar()
   const searchParams = useSearchParams()
 
-  const Component = useMemo(
-    () => (asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem),
-    [asChild, subItem]
-  )
-
-  const isActivePath = useMemo(() => route === activePath && searchParams.size === 0, [route, activePath, searchParams])
+  const Component = asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem
+  const isActivePath = route === activePath && searchParams.size === 0
 
   const isActive = useMemo(() => {
     if (isActivePath || subItem) return isActivePath
@@ -107,13 +103,10 @@ const AppSidebarItem = ({
     return activePath.startsWith(route)
   }, [isActivePath, subItem, route, activePath])
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      setActivePath(route)
-      onClick?.(e)
-    },
-    [onClick, route, setActivePath]
-  )
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setActivePath(route)
+    onClick?.(e)
+  }
 
   return (
     <Component>
@@ -176,19 +169,13 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
 
   const { setOrganization, user } = useSession()
 
-  const membership = useMemo(
-    () => user.memberships.find(m => m.organization.id === organization.id),
-    [user.memberships, organization.id]
-  )
+  const membership = user.memberships.find(m => m.organization.id === organization.id)
 
-  const selectOrganization = useCallback(
-    (id: number) => {
-      setActivePath(APP_ROOT)
-      setOrganization(id)
-      router.push(APP_ROOT)
-    },
-    [router, setActivePath, setOrganization]
-  )
+  const selectOrganization = (id: number) => {
+    setActivePath(APP_ROOT)
+    setOrganization(id)
+    router.push(APP_ROOT)
+  }
 
   return (
     <SidebarMenu>
@@ -196,7 +183,6 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              asChild
               className="justify-center overflow-visible rounded-lg py-7 peer-data-[state=collapsed]:border data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               size="lg"
             >
@@ -335,14 +321,14 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const onLinkClick = useCallback(() => {
+  const onLinkClick = () => {
     setMenuOpen(false)
     if (openMobile) {
       setOpenMobile(false)
     }
-  }, [openMobile, setOpenMobile])
+  }
 
-  const onLogoutClick = useCallback(async () => {
+  const onLogoutClick = async () => {
     setLogoutDialogOpen(true)
     setLoggingOut(true)
 
@@ -357,7 +343,7 @@ const AppSidebarUser = ({ organization }: { organization: UserOrganization | nul
     await sleep(500)
     setTimeout(() => setMenuOpen(false), 1000)
     redirect(AUTH_ROOT)
-  }, [t])
+  }
 
   useEffect(
     () => () => {
@@ -528,7 +514,10 @@ const AppSidebarSearch = () => {
               <SearchIcon />
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
-                <kbd className="font-mono text-[10px] text-muted-foreground/70">⌘K</kbd>
+                <kbd className="flex items-center gap-0.5 font-mono text-[13px] text-muted-foreground/70">
+                  <span className="text-[15px]">⌘</span>
+                  <span>K</span>
+                </kbd>
               </span>
             </SidebarMenuButton>
           </SidebarMenuItem>

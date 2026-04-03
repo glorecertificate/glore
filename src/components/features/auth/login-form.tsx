@@ -18,15 +18,17 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { APP_ROOT, PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
-import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
+import { cn, isValidUsername } from '@/lib/utils'
 
 export const LoginForm = ({
+  errored,
   setErrored,
   setUsername,
   setView,
   username,
 }: {
-  setErrored: (hasErrors: boolean) => void
+  errored: boolean
+  setErrored: (errored: boolean) => void
   setUsername: (username?: string) => void
   setView: (view: AuthView) => void
   username?: string
@@ -63,74 +65,69 @@ export const LoginForm = ({
     },
     resolver: zodResolver(formSchema),
   })
-
-  const disabled = defaultFormDisabled(form)
-  const hasErrors = Object.keys(form.formState.errors).length > 0
-  const passwordError = form.formState.errors.password
+  form.watch()
+  const formDisabled = errored || loading || !form.getValues('username') || !form.getValues('password')
 
   const setPasswordInvalid = useCallback(() => {
-    form.setError(
-      'password',
-      {
-        message: t('passwordInvalid'),
-        type: 'validate',
-      },
-      { shouldFocus: true }
-    )
+    form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
   }, [form, t])
 
   const setPasswordReset = useCallback(() => {
     setUsername(form.getValues('username'))
     setView('password_request')
+    form.reset()
   }, [form, setUsername, setView])
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       setLoading(true)
 
-      const inputUsername = schema.username.trim()
+      const { data, error } = await findUserEmail(schema.username.trim())
+
+      if (error?.code === 'NOT_FOUND' || !data) {
+        setLoading(false)
+        setErrored(true)
+        form.setError('username', { message: t('userNotFound') })
+        form.setFocus('username')
+        return
+      }
+      if (error) {
+        console.error(error)
+        toast.error(t('networkError'))
+        return
+      }
+
       const password = schema.password.trim()
 
-      const { data, error } = await findUserEmail(inputUsername)
-      if (error) {
-        setLoading(false)
-        if (error.code === 'PGRST116') {
-          form.setError('username', { message: t('userNotFound') })
-          return form.setFocus('username')
-        }
-        console.error(error)
-        return toast.error(t('networkError'))
-      }
-
-      if (!data) {
-        setLoading(false)
-        form.setError('username', { message: t('userNotFound') })
-        return form.setFocus('username')
-      }
-
       if (!PASSWORD_REGEX.test(password)) {
-        return setPasswordInvalid()
+        setPasswordInvalid()
+        setLoading(false)
+        setErrored(true)
+        return
       }
 
       const { error: loginError } = await login({ email: data.email, password })
 
       if (loginError) {
         setLoading(false)
-        if (loginError.code === 'AUTH_ERROR') return setPasswordInvalid()
+        setErrored(true)
+        if (loginError.code === 'AUTH_ERROR') {
+          setPasswordInvalid()
+          return
+        }
         console.error(loginError)
-        return toast.error(t('networkError'))
+        toast.error(t('networkError'))
+        return
       }
 
       redirect(APP_ROOT)
     },
-    [form, t, setPasswordInvalid]
+    [form, setErrored, setPasswordInvalid, t]
   )
 
   useEffect(() => {
-    setErrored(hasErrors)
-  }, [hasErrors, setErrored])
-
-  useEffect(() => (username ? form.setFocus('password') : form.setFocus('username')), [username, form.setFocus, form])
+    form.setFocus(username ? 'password' : 'username')
+  }, [form, username])
 
   useEffect(
     () => () => {
@@ -184,18 +181,14 @@ export const LoginForm = ({
                   <FormControl>
                     <PasswordInput autoFocus={Boolean(username)} disabled={loading} variant="floating" {...field} />
                   </FormControl>
-                  {passwordError && (
-                    <p className="text-sm leading-[normal] text-destructive">
-                      {passwordError.type === 'validate' ? t('passwordInvalid') : passwordError.message}
-                    </p>
-                  )}
+                  <FormMessage />
                 </FormItem>
               )}
             />
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={disabled}
+            disabled={formDisabled}
             disabledTitle={t('insertCredentials')}
             loading={loading}
             type="submit"

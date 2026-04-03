@@ -64,10 +64,7 @@ export const insertBlock = (editor: PlateEditor, type: string) =>
   })
 
 export const insertInlineElement = (editor: PlateEditor, type: string) => {
-  if (!insertInlineMap[type]) {
-    return
-  }
-  insertInlineMap[type](editor, type)
+  insertInlineMap[type]?.(editor, type)
 }
 
 const setList = (editor: PlateEditor, type: string, entry: NodeEntry<TElement>) =>
@@ -117,15 +114,9 @@ export const setBlockType = (editor: PlateEditor, type: string, { at }: { at?: P
   })
 
 export const getBlockType = (block: TElement) => {
-  if (!block[KEYS.listType]) {
-    return block.type
-  }
-  if (block[KEYS.listType] === KEYS.ol) {
-    return KEYS.ol
-  }
-  if (block[KEYS.listType] === KEYS.listTodo) {
-    return KEYS.listTodo
-  }
+  if (!block[KEYS.listType]) return block.type
+  if (block[KEYS.listType] === KEYS.ol) return KEYS.ol
+  if (block[KEYS.listType] === KEYS.listTodo) return KEYS.listTodo
   return KEYS.ul
 }
 

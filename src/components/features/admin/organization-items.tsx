@@ -329,6 +329,7 @@ export const OrgInviteDialog = memo(
               <div className="col-span-2 flex flex-col space-y-2">
                 <Label htmlFor="invite-name">{t('inviteOrgName')}</Label>
                 <Input
+                  autoFocus
                   disabled={loading}
                   id="invite-name"
                   onChange={e => setName(e.target.value)}

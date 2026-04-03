@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -28,8 +28,9 @@ export const PasswordRequestForm = ({
   setView: (view: AuthView) => void
   username?: string
 }) => {
-  const cookies = useCookies()
   const t = useTranslations('Auth')
+  const cookies = useCookies()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const formSchema = useMemo(
     () =>
@@ -54,25 +55,20 @@ export const PasswordRequestForm = ({
     },
     resolver: zodResolver(formSchema),
   })
-
-  const disabled = defaultFormDisabled(form)
+  form.watch('username')
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
       const inputUsername = schema.username.trim()
       const { data: emailData, error: emailError } = await findUserEmail(inputUsername)
 
-      if (emailError) {
-        if (emailError.code === 'PGRST116') {
-          form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
-        } else {
-          toast.error(t('networkError'))
-        }
+      if (emailError?.code === 'NOT_FOUND' || !emailData) {
+        form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+        setTimeout(() => inputRef.current?.focus(), 20)
         return
       }
-
-      if (!emailData) {
-        form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+      if (emailError) {
+        toast.error(t('networkError'))
         return
       }
 
@@ -93,9 +89,9 @@ export const PasswordRequestForm = ({
   const hasErrors = Object.keys(form.formState.errors).length > 0
 
   const backToLogin = useCallback(() => {
-    setUsername(form.getValues('username'))
     setView('login')
-  }, [form, setUsername, setView])
+    setUsername('')
+  }, [setUsername, setView])
 
   useEffect(() => {
     setErrored(hasErrors)
@@ -113,12 +109,13 @@ export const PasswordRequestForm = ({
                 <FormItem>
                   <FormControl>
                     <Input
+                      {...field}
                       autoFocus
                       disabled={form.formState.isSubmitting}
                       open
                       placeholder={t('userLabel')}
                       variant="floating"
-                      {...field}
+                      ref={inputRef}
                     />
                   </FormControl>
                   <FormMessage />
@@ -128,7 +125,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!username && disabled}
+            disabled={!username && defaultFormDisabled(form)}
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

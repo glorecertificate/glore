@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2Icon } from 'lucide-react'
@@ -55,25 +55,21 @@ export const RegisterForm = () => {
     },
     resolver: zodResolver(formSchema),
   })
+  form.watch()
 
   const disabled = defaultFormDisabled(form)
 
   const onSubmit = useCallback(
     async (values: z.infer<typeof formSchema>) => {
       setLoading(true)
-
       const { error } = await requestOrganizationRegistration({
+        ...values,
         city: values.orgCity,
         country: values.orgCountry,
         email: values.orgEmail,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        message: values.message,
         name: values.orgName,
-        registrantEmail: values.registrantEmail,
         url: values.orgUrl,
       })
-
       setLoading(false)
 
       if (error) {
@@ -85,6 +81,14 @@ export const RegisterForm = () => {
       setSubmitted(true)
     },
     [t]
+  )
+
+  useEffect(
+    () => () => {
+      form.reset()
+      setSubmitted(false)
+    },
+    [submitted, form]
   )
 
   if (submitted) {
@@ -118,7 +122,7 @@ export const RegisterForm = () => {
                 <FormItem className="sm:col-span-2">
                   <FormLabel>{t('orgName')}</FormLabel>
                   <FormControl>
-                    <Input disabled={loading} placeholder={t('orgNamePlaceholder')} {...field} />
+                    <Input autoFocus disabled={loading} placeholder={t('orgNamePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

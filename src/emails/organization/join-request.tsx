@@ -1,7 +1,7 @@
 import { Button, Section, Text } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 
-import { EmailLayout } from '@/emails/components/layout'
+import { EmailLayout } from '@/emails/layout'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
@@ -9,7 +9,7 @@ type Messages = typeof defaultMessages
 
 interface OrganizationJoinRequestEmailProps {
   organizationName: string
-  status: 'accepted' | 'rejected'
+  status: 'accepted' | 'pending' | 'rejected'
   comment?: string | null
   userName?: string
   locale?: string
@@ -36,25 +36,31 @@ const OrganizationJoinRequestEmail = ({
   })
 
   const isAccepted = status === 'accepted'
+  const isPending = status === 'pending'
   const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
 
+  const preview = isPending
+    ? t('previewPending', { organizationName })
+    : isAccepted
+      ? t('previewAccepted', { organizationName })
+      : t('previewRejected', { organizationName })
+
+  const intro = isPending
+    ? t('introPending', { organizationName })
+    : isAccepted
+      ? t('introAccepted', { organizationName })
+      : t('introRejected', { organizationName })
+
   return (
-    <EmailLayout
-      footer={footer}
-      locale={locale}
-      messages={messages}
-      preview={isAccepted ? t('previewAccepted', { organizationName }) : t('previewRejected', { organizationName })}
-    >
+    <EmailLayout footer={footer} locale={locale} messages={messages} preview={preview}>
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">
-        {isAccepted ? t('introAccepted', { organizationName }) : t('introRejected', { organizationName })}
-      </Text>
-      {isAccepted ? (
-        <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsAccepted')}</Text>
-      ) : (
-        comment && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsRejected', { comment })}</Text>
+      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{intro}</Text>
+      {isPending && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsPending')}</Text>}
+      {isAccepted && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsAccepted')}</Text>}
+      {!isAccepted && !isPending && comment && (
+        <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsRejected', { comment })}</Text>
       )}
       {isAccepted && (
         <Section className="my-6 text-center">

@@ -84,4 +84,4 @@ export const getLocaleCookie = async () => {
   }
 }
 
-export const setLocaleCookie = async (locale: Locale) => await setCookie(i18n.cookie, locale)
+export const setLocaleCookie = async (locale: Locale) => await setCookie(i18n.cookie, locale, { prefix: false })

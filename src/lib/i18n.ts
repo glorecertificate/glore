@@ -52,29 +52,20 @@ export interface LocaleItem {
 }
 
 const locales = Object.keys(config.locales) as Locale[]
-const defaultLocale = config.defaultLocale as Locale
-const titleCaseLocales = config.titleCaseLocales as Locale[]
-const localeItems = Object.entries(config.locales).map(([locale, item]) => ({ ...item, value: locale as Locale }))
 
 export const i18n = {
   cookie: 'NEXT_LOCALE',
-  defaultLocale,
-  localeItems,
   locales,
-  titleCaseLocales,
+  defaultLocale: config.defaultLocale as Locale,
+  localeItems: Object.entries(config.locales).map(([locale, item]) => ({ ...item, value: locale as Locale })),
+  titleCaseLocales: config.titleCaseLocales as Locale[],
 } as const
 
 export const intlPlaceholder = locales.reduce((acc, locale) => ({ ...acc, [locale]: '' }), {} as Record<Locale, string>)
 
 export const localizeRecord = <T>(record: IntlRecord<T>, locale: Locale, fallback?: Locale) => {
-  if (!record || typeof record !== 'object') {
-    return ''
-  }
-  if (locale in record) {
-    return record[locale] as string
-  }
-  if (fallback && fallback in record) {
-    return record[fallback] as string
-  }
+  if (!record || typeof record !== 'object') return ''
+  if (locale in record) return record[locale] as string
+  if (fallback && fallback in record) return record[fallback] as string
   return ''
 }

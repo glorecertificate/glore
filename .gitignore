@@ -1,9 +1,9 @@
 .next/
 node_modules/
 tmp/
+/messages/*.d.json.ts
+/*.d.ts
 .DS_Store
-*.d.ts
-*.d.json.ts
 *.tsbuildinfo
 .env*
 !.env.example

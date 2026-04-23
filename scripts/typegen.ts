@@ -4,7 +4,7 @@ import { execSync } from 'node:child_process'
 import { existsSync, readdirSync, writeFileSync } from 'node:fs'
 import { stdout } from 'node:process'
 
-const ARGS = ['env', 'routes'] as const
+const ARGS = ['env', 'next'] as const
 const ENV_DTS = './env.d.ts'
 const NEXT_DTS = ['.next/types/link.d.ts', '.next/types/routes.d.ts']
 
@@ -46,10 +46,6 @@ if (types.includes('env')) {
     .join(' | ')}
 }
 
-declare module 'lucide-react' {
-  export * from 'lucide-react/dist/lucide-react.suffixed'
-}
-
 export {}`
 
     writeFileSync(ENV_DTS, content, 'utf-8')
@@ -63,7 +59,7 @@ export {}`
   }
 }
 
-if (types.includes('routes')) {
+if (types.includes('next')) {
   try {
     if (stdout.isTTY) stdout.write('Generating route types...')
     execSync('pnpm exec next typegen', {
@@ -78,7 +74,7 @@ if (types.includes('routes')) {
       throw new Error(`Expected type declaration files not found: ${missingTypes.join(', ')}`)
     }
 
-    if (!ci) console.info(`${green('✓')} Route types generated successfully\n`)
+    if (!ci) console.info(`${green('✓')} Next types generated successfully\n`)
   } catch (e) {
     clearLine()
     console.error(`${red('✗')} Failed to generate route types\n`)

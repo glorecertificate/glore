@@ -9,9 +9,9 @@
   "scripts": {
     "prepare": "vp config && tsx ./scripts/typegen.ts",
     "typegen": "tsx ./scripts/typegen.ts",
-    "dev": "portless glore next dev",
+    "dev": "portless run next dev",
     "build": "next build",
-    "start": "portless glore next start",
+    "start": "portless run next start",
     "typecheck": "tsc",
     "lint": "vp lint",
     "lint:fix": "vp lint --fix-dangerously",

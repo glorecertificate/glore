@@ -1,18 +1,14 @@
 {
-  "servers": {
+  "mcpServers": {
     "better-auth": {
       "type": "stdio",
       "command": "npx",
-      "args": ["@better-auth/mcp", "-y"]
+      "args": ["-y", "@better-auth/mcp"],
+      "env": {}
     },
-    "cloudflare-api": {
+    "cloudflare": {
       "type": "http",
       "url": "https://mcp.cloudflare.com/mcp"
-    },
-    "knip": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["@knip/mcp", "-y"]
     },
     "neon": {
       "type": "http",
@@ -21,7 +17,8 @@
     "shadcn": {
       "type": "stdio",
       "command": "npx",
-      "args": ["shadcn", "mcp"]
+      "args": ["shadcn", "mcp"],
+      "env": {}
     },
     "vercel": {
       "type": "http",

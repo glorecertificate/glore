@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
-import { useFormGuard } from 'use-form-guard'
 
 import { CourseContent } from '@/components/features/courses/editor/content'
 import { useCourse } from '@/components/features/courses/editor/context'
@@ -23,6 +22,7 @@ import {
 import { Tabs } from '@/components/ui/tabs'
 import { useI18n } from '@/hooks/use-i18n'
 import { useMetadata } from '@/hooks/use-metadata'
+import { useNavigationGuard } from '@/hooks/use-navigation-guard'
 
 const COURSE_SIDEBAR_WIDTH = '18rem'
 const sidebarStyle = { width: COURSE_SIDEBAR_WIDTH }
@@ -54,7 +54,7 @@ export const CourseView = () => {
     []
   )
 
-  useFormGuard({
+  useNavigationGuard({
     isDirty: hasAnyUpdates,
     onBlock: handleBlock,
   })

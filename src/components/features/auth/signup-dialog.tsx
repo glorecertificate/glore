@@ -51,17 +51,17 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
         <div className="flex flex-col gap-3">
           {t.rich('signupDialogMessage', {
             link: content => (
-              <Link className="font-medium" href={WEBSITE_URL} variant="underlined">
+              <Link className="underline" href={WEBSITE_URL}>
                 {content}
               </Link>
             ),
             p: content => <p>{content}</p>,
           })}
         </div>
-        <DialogFooter className="flex-col gap-2 sm:flex-row">
-          <Link className="flex-1 text-sm text-muted-foreground" href={REGISTER_ROOT}>
-            {t('signupDialogRegister')}
-          </Link>
+        <DialogFooter className="flex-col gap-2 sm:flex-row sm:justify-between">
+          <Button asChild variant="success">
+            <Link href={REGISTER_ROOT}>{t('signupDialogRegister')}</Link>
+          </Button>
           <DialogClose asChild>
             <Button variant="outline">{t('close')}</Button>
           </DialogClose>

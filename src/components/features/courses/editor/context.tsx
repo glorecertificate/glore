@@ -66,6 +66,19 @@ export const normalizeContent = (content: unknown): unknown => {
   return content
 }
 
+const contentStringCache = new WeakMap<object, string>()
+
+const stringifyContent = (content: unknown): string => {
+  const normalized = normalizeContent(content)
+  if (!normalized) return ''
+  if (!Array.isArray(normalized)) return JSON.stringify(normalized)
+  const cached = contentStringCache.get(normalized)
+  if (cached !== undefined) return cached
+  const result = JSON.stringify(normalized)
+  contentStringCache.set(normalized, result)
+  return result
+}
+
 const mergeLocale = <T,>(
   current: Record<string, T> | null | undefined,
   initial: Record<string, T> | null | undefined,
@@ -155,39 +168,41 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           })
           const hasContentUpdates = course.lessons.some((lesson, i) => {
             const initialLesson = courseRef.current.lessons[i] || {}
-            const initialLessonData = {
-              title: initialLesson.title?.[locale],
-              content: normalizeContent((initialLesson.content as IntlRecord)?.[locale]),
-            }
-            const lessonData = {
-              title: lesson.title?.[locale],
-              content: normalizeContent((lesson.content as IntlRecord)?.[locale]),
-            }
-            if (JSON.stringify(initialLessonData) !== JSON.stringify(lessonData)) return true
 
-            const initialQuestions = (initialLesson.questions ?? []).map(
-              (q: { id: number; description: IntlRecord }) => ({ id: q.id, description: q.description?.[locale] })
-            )
-            const currentQuestions = (lesson.questions ?? []).map(q => ({
-              id: q.id,
-              description: (q.description as IntlRecord)?.[locale],
-            }))
-            if (JSON.stringify(initialQuestions) !== JSON.stringify(currentQuestions)) return true
+            if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
 
-            const initialEvaluations = (initialLesson.evaluations ?? []).map(
-              (e: { id: number; description: IntlRecord }) => ({ id: e.id, description: e.description?.[locale] })
-            )
-            const currentEvaluations = (lesson.evaluations ?? []).map(e => ({
-              id: e.id,
-              description: (e.description as IntlRecord)?.[locale],
-            }))
-            if (JSON.stringify(initialEvaluations) !== JSON.stringify(currentEvaluations)) return true
+            const initialContent = (initialLesson.content as IntlRecord | undefined)?.[locale]
+            const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
+            if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
+
+            const qs0 = (initialLesson.questions ?? []) as Array<{ id: number; description: IntlRecord }>
+            const qs1 = lesson.questions ?? []
+            if (qs0.length !== qs1.length) return true
+            if (
+              qs0.some(
+                (q, j) =>
+                  q.id !== qs1[j]?.id || q.description?.[locale] !== (qs1[j]?.description as IntlRecord)?.[locale]
+              )
+            ) {
+              return true
+            }
+
+            const evs0 = (initialLesson.evaluations ?? []) as Array<{ id: number; description: IntlRecord }>
+            const evs1 = lesson.evaluations ?? []
+            if (evs0.length !== evs1.length) return true
+            if (
+              evs0.some(
+                (e, j) =>
+                  e.id !== evs1[j]?.id || e.description?.[locale] !== (evs1[j]?.description as IntlRecord)?.[locale]
+              )
+            ) {
+              return true
+            }
 
             const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
-            const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord)?.[locale]
+            const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
             return (
-              JSON.stringify({ id: initialLesson.assessment?.id, d: initialAssessmentDesc }) !==
-              JSON.stringify({ id: lesson.assessment?.id, d: currentAssessmentDesc })
+              initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
             )
           })
 

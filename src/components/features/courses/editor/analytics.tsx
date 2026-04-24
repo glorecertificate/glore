@@ -10,7 +10,7 @@ import { useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useI18n } from '@/hooks/use-i18n'
@@ -20,7 +20,7 @@ const AnalyticsSkeleton = () => (
   <div className="flex flex-col gap-6 p-6">
     <div className="grid grid-cols-2 gap-3">
       {[0, 1, 2, 3].map(i => (
-        <Skeleton className="h-[72px] rounded-lg" key={i} />
+        <Skeleton className="h-18 rounded-lg" key={i} />
       ))}
     </div>
     <Skeleton className="h-48 rounded-lg" />
@@ -100,7 +100,6 @@ const AnalyticsContent = ({
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      {/* Stat cards */}
       <div className={cn('grid gap-3', isSkill ? 'grid-cols-2' : 'grid-cols-3')}>
         {statCards.map(({ icon: Icon, key, label, value }) => (
           <Card key={key}>
@@ -117,7 +116,6 @@ const AnalyticsContent = ({
         ))}
       </div>
 
-      {/* Lesson breakdown */}
       {data.lessonStats.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-medium text-muted-foreground">{t('analyticsLessons')}</h3>
@@ -147,7 +145,6 @@ const AnalyticsContent = ({
         </div>
       )}
 
-      {/* Rating distribution (skill courses only) */}
       {isSkill && (
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-medium text-muted-foreground">{t('analyticsRatingDistribution')}</h3>
@@ -170,42 +167,39 @@ export const CourseAnalyticsSheet = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<CourseAnalyticsStats | null>(null)
 
-  const handleOpenChange = useCallback(
-    async (isOpen: boolean) => {
-      setOpen(isOpen)
-      if (!isOpen || data) return
-      setLoading(true)
-      const result = await getCourseAnalytics(course.id)
-      if ('data' in result && result.data) setData(result.data)
-      setLoading(false)
-    },
-    [course.id, data]
-  )
+  const handleOpen = useCallback(async () => {
+    setOpen(true)
+    if (data) return
+    setLoading(true)
+    const result = await getCourseAnalytics(course.id)
+    if ('data' in result && result.data) setData(result.data)
+    setLoading(false)
+  }, [course.id, data])
 
   return (
-    <Sheet onOpenChange={handleOpenChange} open={open}>
+    <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <SheetTrigger asChild>
-            <Button size="xs" variant="outline">
-              <BarChart2Icon className="size-4" />
-            </Button>
-          </SheetTrigger>
+          <Button onClick={handleOpen} size="xs" variant="outline">
+            <BarChart2Icon className="size-4" />
+          </Button>
         </TooltipTrigger>
         <TooltipContent className="max-w-72 text-center" sideOffset={6}>
           {t('analyticsSheet')}
         </TooltipContent>
       </Tooltip>
-      <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0" side="right">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle className="flex items-center gap-2 text-sm">
-            <BarChart2Icon className="size-4" />
-            {t('analyticsSheet')}
-          </SheetTitle>
-          <SheetDescription className="text-xs">{t('analyticsSheetDescription')}</SheetDescription>
-        </SheetHeader>
-        {loading ? <AnalyticsSkeleton /> : data && <AnalyticsContent course={course} data={data} />}
-      </SheetContent>
-    </Sheet>
+      <Sheet onOpenChange={setOpen} open={open}>
+        <SheetContent className="flex flex-col gap-0 overflow-y-auto p-0" side="right">
+          <SheetHeader className="border-b px-6 py-4">
+            <SheetTitle className="flex items-center gap-2 text-sm">
+              <BarChart2Icon className="size-4" />
+              {t('analyticsSheet')}
+            </SheetTitle>
+            <SheetDescription className="text-xs">{t('analyticsSheetDescription')}</SheetDescription>
+          </SheetHeader>
+          {loading ? <AnalyticsSkeleton /> : data && <AnalyticsContent course={course} data={data} />}
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }

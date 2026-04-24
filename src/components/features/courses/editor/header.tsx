@@ -1,33 +1,31 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import {
-  CheckCircle2Icon,
-  ChevronDownIcon,
-  EyeIcon,
-  GlobeIcon,
-  HistoryIcon,
-  SaveAllIcon,
-  SaveIcon,
-  SettingsIcon,
-  UploadCloudIcon,
-} from 'lucide-react'
-import { type Locale, useTranslations } from 'next-intl'
+import { ChevronDownIcon, EyeIcon, HistoryIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { CourseAnalyticsSheet } from '@/components/features/courses/editor/analytics'
-import { type CourseStatus, useCourse } from '@/components/features/courses/editor/context'
+import { normalizeContent, useCourse } from '@/components/features/courses/editor/context'
 import { CourseSettings } from '@/components/features/courses/editor/settings'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -41,150 +39,8 @@ import { type Lesson } from '@/db/queries/lesson'
 import { useI18n } from '@/hooks/use-i18n'
 import { useScroll } from '@/hooks/use-scroll'
 import { useSession } from '@/hooks/use-session'
-import { localizeRecord } from '@/lib/i18n'
+import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
-
-const SaveAllDialog = ({
-  onSave,
-  status,
-  publishedLanguages,
-}: {
-  onSave: (languages: Locale[]) => Promise<void>
-  status: Record<Locale, CourseStatus>
-  publishedLanguages: Locale[]
-}) => {
-  const { localeItems } = useI18n()
-  const t = useTranslations('Courses')
-
-  const [open, setOpen] = useState(false)
-  const [publishStates, setPublishStates] = useState<Record<string, boolean>>({})
-
-  const [loading, setLoading] = useState(false)
-
-  const hasAnyChanges = useMemo(() => Object.values(status).some(s => s.hasUpdates), [status])
-
-  const handleOpenChange = useCallback(
-    (isOpen: boolean) => {
-      if (isOpen) {
-        const initial: Record<string, boolean> = {}
-        for (const item of localeItems) {
-          initial[item.value] = publishedLanguages.includes(item.value)
-        }
-        setPublishStates(initial)
-      }
-      setOpen(isOpen)
-    },
-    [localeItems, publishedLanguages]
-  )
-
-  const handleToggle = useCallback((locale: string, checked: boolean) => {
-    setPublishStates(prev => ({ ...prev, [locale]: checked }))
-  }, [])
-
-  const handleConfirm = useCallback(async () => {
-    try {
-      setLoading(true)
-      const languages = Object.entries(publishStates)
-        .filter(([, published]) => published)
-        .map(([locale]) => locale as Locale)
-      await onSave(languages)
-      toast.success(t('saveAllSuccess'))
-      setOpen(false)
-    } catch {
-      toast.error(t('saveAllError'))
-    } finally {
-      setLoading(false)
-    }
-  }, [onSave, publishStates, t])
-
-  const hasToggleChanges = useMemo(
-    () => localeItems.some(item => publishStates[item.value] !== publishedLanguages.includes(item.value)),
-    [localeItems, publishedLanguages, publishStates]
-  )
-
-  const canConfirm = hasAnyChanges || hasToggleChanges
-
-  return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
-      <DialogTrigger asChild>
-        <Button disabled={!hasAnyChanges} variant="outline">
-          <SaveAllIcon className="size-4" />
-          {t('saveAll')}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="gap-5 p-6 sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <SaveAllIcon className="size-5" />
-            {t('saveAll')}
-          </DialogTitle>
-          <DialogDescription>{t('saveAllDescription')}</DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-2">
-          {localeItems.map(item => {
-            const localeStatus = status[item.value]
-            const isPublished = publishStates[item.value] ?? false
-            const canPublish = localeStatus.isFulfilled
-
-            return (
-              <div
-                className={cn(
-                  'flex items-center justify-between rounded-lg border px-4 py-3 transition-colors',
-                  localeStatus.hasUpdates && 'border-warning/40 bg-warning/5'
-                )}
-                key={item.value}
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{item.icon}</span>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">{item.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {localeStatus.hasUpdates ? t('hasChanges') : t('noChanges')}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <span className={cn('text-xs font-medium', isPublished ? 'text-success' : 'text-muted-foreground')}>
-                    {isPublished ? t('published') : t('draft')}
-                  </span>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span>
-                        <Switch
-                          checked={isPublished}
-                          disabled={!(canPublish || isPublished)}
-                          onCheckedChange={checked => handleToggle(item.value, checked)}
-                        />
-                      </span>
-                    </TooltipTrigger>
-                    {!(canPublish || isPublished) && (
-                      <TooltipContent className="max-w-56 text-center" side="left">
-                        {t('cannotPublishIncomplete')}
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        <p className="text-xs leading-relaxed text-muted-foreground">{t('publishedInfo')}</p>
-
-        <DialogFooter className="gap-2 sm:gap-0">
-          <DialogClose asChild>
-            <Button variant="outline">{t('cancel')}</Button>
-          </DialogClose>
-          <Button disabled={!canConfirm} loading={loading} onClick={handleConfirm}>
-            <SaveAllIcon className="size-4" />
-            {t('saveAll')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
-}
 
 export const CourseHeader = () => {
   const router = useRouter()
@@ -195,66 +51,63 @@ export const CourseHeader = () => {
   const { user } = useSession()
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
 
-  const [savingDraft, setSavingDraft] = useState(false)
-  const [publishing, setPublishing] = useState(false)
-  const [savingPublished, setSavingPublished] = useState(false)
+  const [incompleteAlertOpen, setIncompleteAlertOpen] = useState(false)
+  const [publishTarget, setPublishTarget] = useState(languageStatus.published)
+  const [saving, setSaving] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const alertResolverRef = useRef<((value: boolean) => void) | null>(null)
 
-  const publishedLanguages = useMemo(() => course.languages ?? [], [course.languages])
+  useEffect(() => {
+    setPublishTarget(languageStatus.published)
+  }, [language, languageStatus.published])
+
   const progressColor = course.progress === 100 ? 'success' : 'default'
-  const canSaveDraft = languageStatus.hasUpdates
 
-  const handleSave = useCallback(async () => {
-    if (!canSaveDraft) {
-      return
+  const incompleteLessons = course.lessons.reduce<number[]>((acc, lesson, i) => {
+    const title = lesson.title?.[language]
+    const content = (lesson.content as IntlRecord)?.[language]
+    if (!normalizeContent(title) || !normalizeContent(content)) acc.push(i + 1)
+    return acc
+  }, [])
+
+  const isSaveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
+
+  const handleSave = async () => {
+    if (isSaveDisabled) return
+    const publish =
+      publishTarget && !languageStatus.published ? true : !publishTarget && languageStatus.published ? false : null
+    if (publish === true && !languageStatus.hasContent) {
+      const confirmed = await new Promise<boolean>(resolve => {
+        alertResolverRef.current = resolve
+        setIncompleteAlertOpen(true)
+      })
+      if (!confirmed) {
+        setPublishTarget(languageStatus.published)
+        return
+      }
     }
     try {
-      setSavingDraft(true)
-      await saveCourse()
-      toast.success(t('saveDraftSuccess'))
+      setSaving(true)
+      await saveCourse({ locale: language, publish })
+      toast.success(t('saveSuccess'))
     } catch {
-      toast.error(t('saveDraftError'))
+      toast.error(t('saveError'))
     } finally {
-      setSavingDraft(false)
+      setSaving(false)
     }
-  }, [canSaveDraft, saveCourse, t])
+  }
 
-  const handlePublish = useCallback(async () => {
-    if (!languageStatus.isFulfilled) {
-      return
-    }
-    try {
-      setPublishing(true)
-      await saveCourse({ languages: [...new Set([...(course.languages ?? []), language])] })
-      toast.success(t('publishSuccess'))
-    } catch {
-      toast.error(t('publishError'))
-    } finally {
-      setPublishing(false)
-    }
-  }, [languageStatus.isFulfilled, saveCourse, course.languages, language, t])
+  const handleAlertCancel = () => {
+    alertResolverRef.current?.(false)
+    alertResolverRef.current = null
+    setIncompleteAlertOpen(false)
+  }
 
-  const handleSavePublished = useCallback(async () => {
-    if (!(languageStatus.isFulfilled && languageStatus.hasUpdates)) {
-      return
-    }
-    try {
-      setSavingPublished(true)
-      await saveCourse()
-      toast.success(t('saveDraftSuccess'))
-    } catch {
-      toast.error(t('saveDraftError'))
-    } finally {
-      setSavingPublished(false)
-    }
-  }, [languageStatus.isFulfilled, languageStatus.hasUpdates, saveCourse, t])
-
-  const handleSaveAll = useCallback(
-    async (languages: Locale[]) => {
-      await saveCourse({ languages })
-    },
-    [saveCourse]
-  )
+  const handleAlertConfirm = () => {
+    alertResolverRef.current?.(true)
+    alertResolverRef.current = null
+    setIncompleteAlertOpen(false)
+  }
 
   return (
     <div
@@ -330,84 +183,77 @@ export const CourseHeader = () => {
               <CourseAnalyticsSheet />
             </div>
             <TabsList className="h-8 w-full sm:w-fit">
-              {localeItems.map(({ label, icon, value }) => (
-                <TabsTrigger
-                  className={cn('relative flex', status[value].hasUpdates && 'text-yellow-600!')}
-                  key={value}
-                  size="sm"
-                  value={value}
-                >
-                  <span className="group-data-[status=inactive]/tabs-trigger:opacity-60 group-data-[status=inactive]/tabs-trigger:grayscale-40">
-                    {label} {icon}
-                  </span>
-                </TabsTrigger>
-              ))}
+              {localeItems.map(({ label, icon, value }) => {
+                const isPublished = status[value].published
+                return (
+                  <TabsTrigger
+                    className={cn('relative flex', status[value].hasUpdates && 'text-yellow-600!')}
+                    key={value}
+                    size="sm"
+                    value={value}
+                  >
+                    <span className="flex items-center group-data-[status=inactive]/tabs-trigger:opacity-60 group-data-[status=inactive]/tabs-trigger:grayscale-40">
+                      <span
+                        aria-hidden
+                        className={cn(
+                          'relative mr-1.5 inline-block size-1.5 rounded-full align-middle',
+                          isPublished ? 'bg-success' : 'bg-muted-foreground/40'
+                        )}
+                      >
+                        {isPublished && (
+                          <span className="absolute inset-0 z-0 animate-ping rounded-full bg-success opacity-60" />
+                        )}
+                      </span>
+                      <span className="flex items-center justify-between">
+                        {label} {icon}
+                      </span>
+                    </span>
+                  </TabsTrigger>
+                )
+              })}
             </TabsList>
           </div>
-          <div className="flex items-center gap-2">
-            <SaveAllDialog onSave={handleSaveAll} publishedLanguages={publishedLanguages} status={status} />
-            {/* Save draft button — enabled only when there are changes */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  className="transition-none"
-                  disabled={!canSaveDraft}
-                  loading={savingDraft}
-                  loadingSpinner="sm"
-                  onClick={handleSave}
-                  variant="outline"
-                >
-                  <SaveIcon />
-                  {t('saveDraft')}
-                </Button>
-              </TooltipTrigger>
-              {!canSaveDraft && <TooltipContent>{t('saveDraftNoChanges')}</TooltipContent>}
-            </Tooltip>
-
-            {languageStatus.published ? (
-              languageStatus.hasUpdates ? (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      className="transition-none"
-                      disabled={!languageStatus.isFulfilled}
-                      loading={savingPublished}
-                      loadingSpinner="sm"
-                      onClick={handleSavePublished}
-                    >
-                      <CheckCircle2Icon className="size-4" />
-                      {t('save')}
-                    </Button>
-                  </TooltipTrigger>
-                  {!languageStatus.isFulfilled && (
-                    <TooltipContent className="max-w-64 text-center">{t('publishDisabledMessage')}</TooltipContent>
-                  )}
-                </Tooltip>
-              ) : (
-                <Badge className="gap-1.5 px-3 py-1.5" variant="outline">
-                  <GlobeIcon className="size-3.5" />
-                  {t('published')}
-                </Badge>
-              )
-            ) : (
+          <div className="flex items-center gap-3">
+            {isSaveDisabled ? (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    disabled={!languageStatus.isFulfilled}
-                    loading={publishing}
-                    loadingSpinner="sm"
-                    onClick={handlePublish}
-                    variant="brand"
-                  >
-                    <UploadCloudIcon className="size-4" />
-                    {t('publish')}
-                  </Button>
+                  <span>
+                    <Button className="transition-none" disabled loading={saving} loadingSpinner="sm" variant="brand">
+                      <SaveIcon />
+                      {t('save')}
+                    </Button>
+                  </span>
                 </TooltipTrigger>
-                {!languageStatus.isFulfilled && (
-                  <TooltipContent className="max-w-64 text-center">{t('publishDisabledMessage')}</TooltipContent>
-                )}
+                <TooltipContent>{t('nothingToSave')}</TooltipContent>
               </Tooltip>
+            ) : (
+              <Button
+                className="transition-none"
+                loading={saving}
+                loadingSpinner="sm"
+                onClick={handleSave}
+                variant="brand"
+              >
+                <SaveIcon />
+                {t('save')}
+              </Button>
             )}
+            <Switch
+              checked={publishTarget}
+              className="data-[state=checked]:bg-success"
+              disabled={saving}
+              id="publish-toggle"
+              onCheckedChange={setPublishTarget}
+            />
+            <label className="cursor-pointer text-sm" htmlFor="publish-toggle">
+              {t('publishToggleLabel')}
+            </label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <InfoIcon className="size-4 cursor-help text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64 text-center">{t('publishInfo')}</TooltipContent>
+            </Tooltip>
           </div>
         </>
       ) : (
@@ -443,6 +289,27 @@ export const CourseHeader = () => {
           )}
         </>
       )}
+      <AlertDialog onOpenChange={open => !open && handleAlertCancel()} open={incompleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('publishIncompleteTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('publishIncompleteMessage', {
+                count: incompleteLessons.length,
+                lessons: incompleteLessons.join(', '),
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleAlertCancel} variant="outline">
+              {tCommon('cancel')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleAlertConfirm} variant="brand">
+              {t('publishAnyway')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

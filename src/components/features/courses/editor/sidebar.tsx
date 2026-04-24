@@ -4,10 +4,9 @@ import { forwardRef, memo, useCallback, useEffect, useMemo, useRef, useState } f
 
 import { CheckIcon, GripVerticalIcon, LoaderCircleIcon, PlusIcon, XIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
-import { type Value } from 'platejs'
 import { toast } from 'sonner'
 
-import { useCourse } from '@/components/features/courses/editor/context'
+import { normalizeContent, useCourse } from '@/components/features/courses/editor/context'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Progress } from '@/components/ui/progress'
@@ -31,22 +30,6 @@ import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
 const MAX_LESSON_TITLE_LENGTH = 120
-
-const parseInitialContent = (content?: string | Value) => {
-  if (!content) return null
-  if (typeof content === 'string' && content.trim() === '') return null
-  if (
-    Array.isArray(content) &&
-    content.length === 1 &&
-    (content[0].type === 'p' || content[0].type === 'paragraph') &&
-    Array.isArray(content[0].children) &&
-    content[0].children.length === 1 &&
-    content[0].children[0].text === ''
-  ) {
-    return null
-  }
-  return content as Value
-}
 
 const CourseSidebarItem = memo(
   forwardRef<
@@ -107,11 +90,11 @@ const CourseSidebarItem = memo(
 
         const initialLessonData = {
           title: initialLesson.title?.[language],
-          content: parseInitialContent(initialContent),
+          content: normalizeContent(initialContent),
         }
         const lessonData = {
           title: lesson.title?.[language],
-          content: parseInitialContent(lessonContent),
+          content: normalizeContent(lessonContent),
         }
         return JSON.stringify(initialLessonData) !== JSON.stringify(lessonData)
       }, [initialCourse.lessons, language, lesson.content, lesson.id, lesson.title])
@@ -206,27 +189,29 @@ const CourseSidebarItem = memo(
                         {t('renameLesson')}
                       </TooltipContent>
                     </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button
-                          className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground"
-                          onClick={e => {
-                            e.stopPropagation()
-                            if (isSingleLesson) {
-                              return toast.error(t('courseMustHaveAtLeastOneLesson'))
-                            }
-                            onRemove(lesson.id!)
-                          }}
-                          size="text"
-                          variant="transparent"
-                        >
-                          <XIcon className="size-3" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" size="sm">
-                        {t('removeLesson')}
-                      </TooltipContent>
-                    </Tooltip>
+                    {!isSingleLesson && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground"
+                            onClick={e => {
+                              e.stopPropagation()
+                              if (isSingleLesson) {
+                                return toast.error(t('courseMustHaveAtLeastOneLesson'))
+                              }
+                              onRemove(lesson.id!)
+                            }}
+                            size="text"
+                            variant="transparent"
+                          >
+                            <XIcon className="size-3" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" size="sm">
+                          {t('removeLesson')}
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
                   </div>
                 ) : (
                   title

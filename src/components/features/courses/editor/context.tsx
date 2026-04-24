@@ -18,7 +18,7 @@ import {
 } from '@/actions/courses/management'
 import { COURSE_PARAMS } from '@/components/features/courses/editor/params'
 import { type Course } from '@/db/queries/course'
-import { type Lesson, parseLesson } from '@/db/queries/lesson'
+import { parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 import { messages } from '~/config/i18n.json'
@@ -49,7 +49,7 @@ const paramOptions = {
 const defaultLessonContent = [{ type: 'p', children: [{ text: '' }] }]
 
 /** Treats null, undefined, empty string, empty array, and a single empty paragraph as equivalent (null). */
-const normalizeContent = (content: unknown): unknown => {
+export const normalizeContent = (content: unknown): unknown => {
   if (!content) return null
   if (typeof content === 'string' && content.trim() === '') return null
   if (Array.isArray(content) && content.length === 0) return null
@@ -64,6 +64,18 @@ const normalizeContent = (content: unknown): unknown => {
     return null
   }
   return content
+}
+
+const mergeLocale = <T,>(
+  current: Record<string, T> | null | undefined,
+  initial: Record<string, T> | null | undefined,
+  locale: Locale
+): Record<string, T> | null | undefined => {
+  if (!current && !initial) return current === null || initial === null ? null : undefined
+  if (!initial) return current
+  const result: Record<string, T> = { ...initial }
+  if (current && locale in current) result[locale] = current[locale]
+  return result
 }
 
 const ensureLesson = (course: Course): Course => {
@@ -221,7 +233,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     return result
   }, [])
 
-  const saveCourse = useCallback(async ({ languages }: { languages?: Locale[] } = {}) => {
+  const saveCourse = useCallback(async ({ locale, publish }: { locale: Locale; publish?: boolean | null }) => {
     if (contentFlushRef.current) {
       flushSync(() => {
         contentFlushRef.current?.()
@@ -229,41 +241,45 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     }
 
     const current = courseSnapshotRef.current
-    const { id, lessons, ...courseData } = current
+    const initial = courseRef.current
+    const { id, lessons } = current
 
     const lessonsPayload: Array<TableInsert<'lessons'> & { id?: number }> = []
     const idMap = new Map<number, number>()
-    const lessonOnlyKeys = new Set([
-      'title',
-      'content',
-      'sortOrder',
-      'courseId',
-      'id',
-      'createdAt',
-      'updatedAt',
-      'deletedAt',
-    ])
 
     for (const lesson of lessons) {
-      const attributes = Object.keys(lesson) as Array<keyof Lesson>
-      const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
-      const lessonUpdates: TableUpdate<'lessons'> = {}
+      const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+      const isNew = !initialLesson
+      const lessonUpdates: Record<string, unknown> = {}
 
-      for (const attribute of attributes) {
-        if (!lessonOnlyKeys.has(attribute)) continue
-        if (!initialLesson || JSON.stringify(lesson[attribute]) !== JSON.stringify(initialLesson[attribute])) {
-          lessonUpdates[attribute as keyof TableUpdate<'lessons'>] = lesson[attribute] as never
-        }
+      const titleDiffers = isNew || lesson.title?.[locale] !== initialLesson?.title?.[locale]
+      if (titleDiffers) {
+        lessonUpdates.title = mergeLocale(lesson.title, initialLesson?.title, locale)
+      }
+
+      const initialContent = normalizeContent((initialLesson?.content as IntlRecord | undefined)?.[locale])
+      const currentContent = normalizeContent((lesson.content as IntlRecord | undefined)?.[locale])
+      const contentDiffers = isNew || JSON.stringify(initialContent) !== JSON.stringify(currentContent)
+      if (contentDiffers) {
+        lessonUpdates.content = mergeLocale(
+          lesson.content as IntlRecord | null | undefined,
+          initialLesson?.content as IntlRecord | null | undefined,
+          locale
+        )
+      }
+
+      if (isNew || lesson.sortOrder !== initialLesson?.sortOrder) {
+        lessonUpdates.sortOrder = lesson.sortOrder ?? lessons.indexOf(lesson) + 1
       }
 
       if (Object.keys(lessonUpdates).length > 0) {
         lessonsPayload.push({
           ...lessonUpdates,
           id: lesson.id,
-          title: lesson.title!,
+          title: (lessonUpdates.title ?? lesson.title) as IntlRecord,
           courseId: id,
-          sortOrder: lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
-        })
+          sortOrder: (lessonUpdates.sortOrder as number | undefined) ?? lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
+        } as TableInsert<'lessons'> & { id?: number })
       }
     }
 
@@ -287,7 +303,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     }
 
     for (const lesson of lessons) {
-      const initialLesson = courseRef.current.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+      const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
 
       const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
       const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
@@ -295,18 +311,28 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
       const questionsToUpsert = lesson.questions
         .filter(q => {
-          if (!initialQuestionIds.has(q.id)) return true
-          const initial = initialLesson?.questions.find(iq => iq.id === q.id)
-          return !initial || JSON.stringify(initial.description) !== JSON.stringify(q.description)
+          const existing = initialLesson?.questions.find(iq => iq.id === q.id)
+          if (!existing) return true
+          if (existing.description?.[locale] !== (q.description as IntlRecord | undefined)?.[locale]) return true
+          return existing.explanation?.[locale] !== (q.explanation as IntlRecord | undefined)?.[locale]
         })
-        .map(q => ({
-          id: initialQuestionIds.has(q.id) ? q.id : undefined,
-          lessonId: lesson.id,
-          description: q.description as IntlRecord,
-          explanation: q.explanation as IntlRecord | null,
-        }))
+        .map(q => {
+          const existing = initialLesson?.questions.find(iq => iq.id === q.id)
+          return {
+            id: existing ? q.id : undefined,
+            lessonId: lesson.id,
+            description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
+            explanation: mergeLocale(
+              q.explanation as IntlRecord | null | undefined,
+              existing?.explanation ?? null,
+              locale
+            ),
+          }
+        })
 
-      if (questionsToUpsert.length > 0) await upsertQuestions(questionsToUpsert as TableInsert<'questions'>[])
+      if (questionsToUpsert.length > 0) {
+        await upsertQuestions(questionsToUpsert as unknown as TableInsert<'questions'>[])
+      }
       if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
 
       const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
@@ -315,32 +341,39 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
       const evalsToUpsert = lesson.evaluations
         .filter(e => {
-          if (!initialEvalIds.has(e.id)) return true
-          const initial = initialLesson?.evaluations.find(ie => ie.id === e.id)
-          return !initial || JSON.stringify(initial.description) !== JSON.stringify(e.description)
+          const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
+          if (!existing) return true
+          return existing.description?.[locale] !== (e.description as IntlRecord | undefined)?.[locale]
         })
-        .map(e => ({
-          id: initialEvalIds.has(e.id) ? e.id : undefined,
-          lessonId: lesson.id,
-          description: e.description as IntlRecord,
-        }))
+        .map(e => {
+          const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
+          return {
+            id: existing ? e.id : undefined,
+            lessonId: lesson.id,
+            description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
+          }
+        })
 
-      if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as TableInsert<'evaluations'>[])
+      if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as unknown as TableInsert<'evaluations'>[])
       if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
 
       const hadAssessment = !!initialLesson?.assessment
       const hasAssessment = !!lesson.assessment
 
       if (hasAssessment) {
-        const descriptionChanged =
-          !hadAssessment ||
-          JSON.stringify(initialLesson?.assessment?.description) !== JSON.stringify(lesson.assessment?.description)
+        const initialDesc = initialLesson?.assessment?.description?.[locale]
+        const currentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
+        const descriptionChanged = !hadAssessment || initialDesc !== currentDesc
 
         if (descriptionChanged && lesson.assessment) {
           await upsertAssessment({
             id: hadAssessment ? lesson.assessment.id : undefined,
             lessonId: lesson.id,
-            description: lesson.assessment.description as IntlRecord,
+            description: mergeLocale(
+              lesson.assessment.description as IntlRecord,
+              initialLesson?.assessment?.description,
+              locale
+            ),
           } as TableInsert<'assessments'>)
         }
       } else if (hadAssessment && initialLesson?.assessment) {
@@ -348,41 +381,102 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       }
     }
 
-    const courseDbKeys = new Set(['title', 'description', 'icon', 'type', 'slug', 'sortOrder', 'archivedAt'])
     const coursePayload: Record<string, unknown> = {}
 
-    for (const attribute in courseData) {
-      if (!courseDbKeys.has(attribute)) continue
-      const key = attribute as keyof typeof courseData
-      if (JSON.stringify(courseData[key]) !== JSON.stringify(courseRef.current[key])) {
-        coursePayload[key] = courseData[key]
+    if (current.title?.[locale] !== initial.title?.[locale]) {
+      coursePayload.title = mergeLocale(current.title, initial.title, locale)
+    }
+    if (current.description?.[locale] !== initial.description?.[locale]) {
+      coursePayload.description = mergeLocale(current.description, initial.description, locale)
+    }
+
+    const nonLocaleKeys = ['icon', 'type', 'slug', 'sortOrder', 'archivedAt'] as const
+    for (const key of nonLocaleKeys) {
+      if (JSON.stringify(current[key]) !== JSON.stringify(initial[key])) {
+        coursePayload[key] = current[key]
       }
     }
 
-    if (languages) {
-      coursePayload.languages = languages
+    const existingLanguages = (initial.languages ?? []) as Locale[]
+    let nextLanguages: Locale[] | undefined
+    if (publish === true) {
+      nextLanguages = [...new Set([...existingLanguages, locale])]
+    }
+    if (publish === false) {
+      nextLanguages = existingLanguages.filter(l => l !== locale)
+    }
+    if (nextLanguages !== undefined) {
+      coursePayload.languages = nextLanguages
     }
 
-    await updateCourse(id, {
-      ...coursePayload,
-      updatedAt: new Date().toISOString(),
-    } as TableUpdate<'courses'>)
-
-    if (languages) {
-      setCourse(prev => ({ ...prev, languages }))
+    if (Object.keys(coursePayload).length > 0) {
+      await updateCourse(id, {
+        ...coursePayload,
+        updatedAt: new Date().toISOString(),
+      } as TableUpdate<'courses'>)
     }
-    const resolved =
+
+    if (nextLanguages !== undefined) {
+      setCourse(prev => ({ ...prev, languages: nextLanguages }))
+    }
+
+    const snapshot = courseSnapshotRef.current
+    const remapped =
       idMap.size > 0
         ? {
-            ...current,
-            lessons: current.lessons.map(l => {
+            ...snapshot,
+            lessons: snapshot.lessons.map(l => {
               const newId = idMap.get(l.id!)
-              if (newId === undefined) return l
-              return { ...l, id: newId }
+              return newId === undefined ? l : { ...l, id: newId }
             }),
           }
-        : current
-    courseRef.current = structuredClone(languages ? { ...resolved, languages } : resolved)
+        : snapshot
+
+    const mergedLessons = remapped.lessons.map(lesson => {
+      const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+      return {
+        ...lesson,
+        title: mergeLocale(lesson.title, initialLesson?.title, locale) as IntlRecord,
+        content: mergeLocale(
+          lesson.content as IntlRecord | null | undefined,
+          initialLesson?.content as IntlRecord | null | undefined,
+          locale
+        ),
+        questions: lesson.questions.map(q => {
+          const existing = initialLesson?.questions.find(iq => iq.id === q.id)
+          return {
+            ...q,
+            description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
+            explanation: mergeLocale(q.explanation as IntlRecord | null, existing?.explanation ?? null, locale),
+          }
+        }),
+        evaluations: lesson.evaluations.map(e => {
+          const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
+          return {
+            ...e,
+            description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
+          }
+        }),
+        assessment: lesson.assessment
+          ? {
+              ...lesson.assessment,
+              description: mergeLocale(
+                lesson.assessment.description as IntlRecord,
+                initialLesson?.assessment?.description,
+                locale
+              ),
+            }
+          : lesson.assessment,
+      }
+    }) as typeof remapped.lessons
+
+    courseRef.current = structuredClone({
+      ...remapped,
+      title: mergeLocale(remapped.title, initial.title, locale) as IntlRecord,
+      description: mergeLocale(remapped.description, initial.description, locale),
+      languages: nextLanguages ?? initial.languages,
+      lessons: mergedLessons,
+    }) as Course
   }, [])
 
   const addLesson = useCallback(

@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { memo, useCallback } from 'react'
 
 import { ChevronDownIcon } from 'lucide-react'

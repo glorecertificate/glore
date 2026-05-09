@@ -26,7 +26,18 @@ import theme from '~/config/theme.json'
 
 const Globe = dynamic(async () => (await import('@/components/ui/globe')).Globe, { ssr: false })
 
-const globeOffset: [number, number] = [140, -100]
+const arcPalette: [number, number, number][] = [
+  [236, 72, 153],
+  [168, 85, 247],
+  [99, 102, 241],
+  [14, 165, 233],
+  [20, 184, 166],
+  [132, 204, 22],
+  [250, 204, 21],
+  [249, 115, 22],
+  [244, 63, 94],
+]
+
 const motionAnimate = { opacity: 1, y: 0 }
 const motionExit = { opacity: 0, y: -8 }
 const motionInitial = { opacity: 0, y: 8 }
@@ -177,42 +188,22 @@ export const AuthFlow = ({
 
   const globeColorOptions = useMemo<GlobeColorOptions>(() => {
     const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
-    const options = { glowColor: colors.background } as GlobeColorOptions
+    const options: GlobeColorOptions = { arcColor: arcPalette, glowColor: colors.background }
 
     if (errored || view === 'invalid_token' || view === 'invalid_password_reset') {
-      return {
-        ...options,
-        baseColor: colors.destructive,
-        markerColor: colors.destructive,
-      }
+      return { ...options, baseColor: colors.destructive }
     }
 
     switch (view) {
       case 'login':
-        return {
-          ...options,
-          baseColor: colors.brand,
-          markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
-        }
+        return { ...options, baseColor: colors.brand }
       case 'password_request':
-        return {
-          ...options,
-          baseColor: colors.neutral,
-          markerColor: [colors.brand, colors.brandSecondary, colors.brandTertiary],
-        }
+        return { ...options, baseColor: colors.neutral }
       case 'password_reset':
-        return {
-          ...options,
-          baseColor: colors.warning,
-          markerColor: [colors.warning],
-        }
+        return { ...options, baseColor: colors.warning }
       case 'password_updated':
       case 'email_sent':
-        return {
-          ...options,
-          baseColor: colors.success,
-          markerColor: [colors.success],
-        }
+        return { ...options, baseColor: colors.success }
       default:
         return options
     }
@@ -239,13 +230,7 @@ export const AuthFlow = ({
         <div className="w-full max-w-md">
           <div className="flex min-h-137.5 flex-col gap-8" ref={ref} style={containerStyle}>
             <div className="flex flex-col gap-8">
-              <Globe
-                className="mx-auto size-80"
-                offset={globeOffset}
-                scale={1.6}
-                transitionDuration={200}
-                {...globeColorOptions}
-              />
+              <Globe className="mx-auto size-80" transitionDuration={200} {...globeColorOptions} />
               <AnimatePresence mode="wait">
                 <motion.div
                   animate={motionAnimate}

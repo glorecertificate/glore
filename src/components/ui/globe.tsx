@@ -33,22 +33,14 @@ export interface GlobeProps extends Partial<GlobeOptions> {
 }
 
 const MARKER_LOCATIONS = markersData as [number, number][]
-const MARKER_MIN_SIZE = 0.02
-const MARKER_MAX_SIZE = 0.05
 const MIN_THETA = -Math.PI / 2 + 0.1
 const MAX_THETA = Math.PI / 2 - 0.1
 const PHI_SENSITIVITY = 120
 const THETA_SENSITIVITY = 120
-const ARC_POOL_SIZE = 24
+const ARC_POOL_SIZE = 32
 const AUTO_ROTATE_SPEED = 0.005
 
-const BASE_MARKERS = MARKER_LOCATIONS.map(location => ({
-  colorIndex: Math.random(),
-  location,
-  size: Math.random() * (MARKER_MAX_SIZE - MARKER_MIN_SIZE) + MARKER_MIN_SIZE,
-}))
-
-const ARC_POOL = Array.from({ length: ARC_POOL_SIZE }, () => {
+const arcPool = Array.from({ length: ARC_POOL_SIZE }, () => {
   const fromIndex = Math.floor(Math.random() * MARKER_LOCATIONS.length)
   let toIndex = Math.floor(Math.random() * MARKER_LOCATIONS.length)
   while (toIndex === fromIndex) {
@@ -57,9 +49,11 @@ const ARC_POOL = Array.from({ length: ARC_POOL_SIZE }, () => {
   return { from: MARKER_LOCATIONS[fromIndex]!, to: MARKER_LOCATIONS[toIndex]! }
 })
 
+const NO_MARKERS: Marker[] = []
+
 const GLOBE_OPTIONS = {
   arcColor: [1, 1, 1] as [number, number, number],
-  arcCount: 6,
+  arcCount: 18,
   arcHeight: 0.45,
   arcWidth: 1,
   baseColor: [1, 1, 1] as [number, number, number],
@@ -106,22 +100,12 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   const merged = { ...GLOBE_OPTIONS, ...options }
 
   const arcColorSource = options.arcColor ?? options.markerColor ?? GLOBE_OPTIONS.arcColor
-  const markerColorKey = paletteKey(merged.markerColor)
   const arcColorKey = paletteKey(arcColorSource)
-
-  const markers = useMemo<Marker[]>(() => {
-    const palette = toPalette(merged.markerColor)
-    return BASE_MARKERS.map(({ colorIndex, ...marker }) => ({
-      ...marker,
-      color: palette.length > 1 ? palette[Math.floor(colorIndex * palette.length)] : undefined,
-    }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markerColorKey])
 
   const arcs = useMemo<Arc[]>(() => {
     const palette = toPalette(arcColorSource)
     const count = clamp(merged.arcCount, 0, ARC_POOL_SIZE)
-    return ARC_POOL.slice(0, count).map((pair, i) => ({
+    return arcPool.slice(0, count).map((pair, i) => ({
       ...pair,
       color: palette[i % palette.length],
     }))
@@ -148,7 +132,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
     mapSamples: merged.mapSamples,
     markerColor,
     markerElevation: merged.markerElevation,
-    markers,
+    markers: NO_MARKERS,
     offset: merged.offset,
     opacity: merged.opacity,
     scale: merged.scale,
@@ -169,7 +153,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
     mapSamples: merged.mapSamples,
     markerColor,
     markerElevation: merged.markerElevation,
-    markers,
+    markers: NO_MARKERS,
     offset: merged.offset,
     opacity: merged.opacity,
     scale: merged.scale,

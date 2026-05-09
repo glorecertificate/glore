@@ -6,6 +6,18 @@
     "source.removeUnusedImports": "always"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "files.associations": {
@@ -15,15 +27,15 @@
   "i18n-ally.keystyle": "nested",
   "i18n-ally.localesPaths": ["./messages"],
   "i18n-ally.namespace": true,
+  "js/ts.experimental.useTsgo": true,
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsdk.path": "./node_modules/typescript/lib",
   "oxc.configPath": "./vite.config.ts",
   "oxc.enable": true,
   "oxc.fixKind": "dangerous_fix_or_suggestion",
   "oxc.fmt.configPath": "./vite.config.ts",
-  "search.exclude": {
-    "**/.claude/**": true
-  },
+  "oxc.path.oxfmt": "./node_modules/.bin/oxfmt",
+  "oxc.path.oxlint": "./node_modules/.bin/oxlint",
   "tailwindCSS.experimental.classRegex": [
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
@@ -35,5 +47,7 @@
   "tailwindCSS.files.exclude": ["**/*.md"],
   "tailwindCSS.includeLanguages": {
     "svg": "html"
-  }
+  },
+  "typescript.native-preview.tsdk": "/Users/gabrielecanepa/Developer/@glorecertificate/glore/node_modules/@typescript/native-preview",
+  "postman.settings.dotenv-detection-notification-visibility": false
 }

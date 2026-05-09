@@ -6,11 +6,5 @@
   "ignoreIssues": {
     "src/components/ui/**": ["exports"]
   },
-  "ignoreDependencies": [
-    "@commitlint/cli",
-    "@react-email/preview-server",
-    "oxlint-tsgolint",
-    "react-email",
-    "server-only"
-  ]
+  "ignoreDependencies": ["@commitlint/cli", "oxlint-tsgolint", "react-doctor", "server-only"]
 }

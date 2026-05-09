@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -53,6 +53,12 @@ export const PasswordResetForm = ({
 
   const disabled = defaultFormDisabled(form)
   const errored = Object.keys(form.formState.errors).length > 0
+  const [prevErrored, setPrevErrored] = useState(errored)
+
+  if (prevErrored !== errored) {
+    setPrevErrored(errored)
+    setErrored(errored)
+  }
 
   const onSubmit = useCallback(
     async (schema: z.infer<typeof formSchema>) => {
@@ -80,10 +86,6 @@ export const PasswordResetForm = ({
     },
     [form, setToken, setView, t, resetToken]
   )
-
-  useEffect(() => {
-    setErrored(errored)
-  }, [errored, setErrored])
 
   return (
     <>

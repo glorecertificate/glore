@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { memo, useCallback, useMemo } from 'react'
 
 import { cva } from 'class-variance-authority'

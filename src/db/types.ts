@@ -65,7 +65,7 @@ interface TableMap {
 export type TableInsert<T extends keyof TableMap> = InferInsertModel<TableMap[T]>
 export type TableUpdate<T extends keyof TableMap> = Partial<InferInsertModel<TableMap[T]>>
 
-export interface Enums {
+interface Enums {
   certificate_status: 'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'
   course_type: 'intro' | 'skill' | 'learner'
   organization_request_status: 'accepted' | 'pending' | 'rejected'

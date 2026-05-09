@@ -85,6 +85,12 @@ export default defineConfig({
         tagNamePreference: {},
       },
     },
+    jsPlugins: [
+      {
+        name: 'react-doctor',
+        specifier: 'react-doctor/oxlint-plugin',
+      },
+    ],
     rules: {
       curly: ['error', 'multi-line'],
       'func-style': ['error', 'expression'],
@@ -112,7 +118,7 @@ export default defineConfig({
       'eslint/no-console': [
         'warn',
         {
-          allow: ['info', 'error', 'warn'],
+          allow: ['info', 'warn', 'error'],
         },
       ],
       'eslint/no-const-assign': 'error',
@@ -140,17 +146,17 @@ export default defineConfig({
       'eslint/no-restricted-imports': [
         'error',
         {
+          patterns: [
+            {
+              group: ['../**'],
+              message: 'Parent imports are not allowed, use an alias instead.',
+            },
+          ],
           paths: [
             {
               name: 'next/headers',
               importNames: ['cookies'],
-              message: 'Use @/actions/cookies instead of cookies from next/headers.',
-            },
-          ],
-          patterns: [
-            {
-              group: ['../**'],
-              message: 'Parent imports are not allowed. Use @/ path aliases instead.',
+              message: 'Import from @/actions/cookies instead.',
             },
           ],
         },
@@ -201,7 +207,7 @@ export default defineConfig({
       'import/no-duplicates': 'error',
       'import/no-named-as-default': 'off',
       'import/no-named-export': 'off',
-      'import/no-namespace': 'error',
+      'import/no-namespace': 'off',
       'import/no-nodejs-modules': 'off',
       'import/no-relative-parent-imports': 'error',
       'import/no-self-import': 'error',
@@ -254,6 +260,8 @@ export default defineConfig({
       'react/rules-of-hooks': 'error',
       'react/self-closing-comp': 'error',
       'react/void-dom-elements-no-children': 'error',
+      'react-doctor/no-fetch-in-effect': 'error',
+      'react-doctor/no-derived-state-effect': 'error',
       'react-perf/jsx-no-new-function-as-prop': 'off',
       'react-perf/jsx-no-jsx-as-prop': 'off',
       'typescript/array-type': [
@@ -320,7 +328,7 @@ export default defineConfig({
     },
     overrides: [
       {
-        files: ['.release-it.ts'],
+        files: ['*.ts'],
         rules: {
           'eslint/no-template-curly-in-string': 'off',
         },
@@ -335,12 +343,6 @@ export default defineConfig({
         rules: {
           'react-perf/jsx-no-new-array-as-prop': 'off',
           'react-perf/jsx-no-new-object-as-prop': 'off',
-        },
-      },
-      {
-        files: ['src/components/ui/*.tsx', 'src/db/*.ts', 'src/lib/auth.ts'],
-        rules: {
-          'import/no-namespace': 'off',
         },
       },
       {

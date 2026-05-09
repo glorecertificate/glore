@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -49,10 +49,12 @@ export const InviteMemberDialog = ({
   const [locale, setLocale] = useState<Locale>(defaultLocale)
   const [role, setRole] = useState<OrganizationMembershipRole>(allowedRoles[0] ?? 'learner')
   const [submitting, setSubmitting] = useState(false)
+  const [prevAllowedRoles, setPrevAllowedRoles] = useState(allowedRoles)
 
-  useEffect(() => {
+  if (prevAllowedRoles !== allowedRoles) {
+    setPrevAllowedRoles(allowedRoles)
     setRole(allowedRoles[0] ?? 'learner')
-  }, [allowedRoles])
+  }
 
   const reset = useCallback(() => {
     setEmail('')

@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback, useEffect, useState } from 'react'
+import { startTransition, useCallback } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { type User } from '@/db/queries/user'
@@ -18,11 +18,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   const { setOrganization, setUser } = useSession()
   const { tab } = useOrganizationTab()
 
-  const [data, setData] = useState(initialData)
-
-  useEffect(() => {
-    setData(initialData)
-  }, [initialData])
+  const data = initialData
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 

@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'

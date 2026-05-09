@@ -13,7 +13,7 @@ export const COOKIE_OPTIONS = {
   secure: process.env.NODE_ENV === 'production',
 } as const
 
-export interface Cookies {
+interface Cookies {
   [i18n.cookie]: Locale
   courseListLanguages: Record<number, Locale>
   courseListParams: string

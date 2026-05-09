@@ -1,4 +1,4 @@
-import * as webpush from 'web-push' // eslint-disable-line
+import * as webpush from 'web-push'
 
 interface PushPayload {
   body: string

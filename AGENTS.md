@@ -50,7 +50,7 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run check:ci`       | Same as `check` but runs all tools in parallel                  |
 | `pnpm run check:fix`      | Same as `check:ci` but with auto-fix enabled                    |
 | `pnpm run check:size`     | Bundle size check                                               |
-| `pnpm run typecheck`      | Type-check only (`tsc --noEmit`)                                |
+| `pnpm run typecheck`      | Type-check only (`tsgo --noEmit`)                                |
 | `pnpm run typegen`        | Generate route + public-file types into `env.d.ts`              |
 | `pnpm run analyze`        | Next.js bundle analyzer                                         |
 | `pnpm run release`        | Create a release (release-it)                                   |

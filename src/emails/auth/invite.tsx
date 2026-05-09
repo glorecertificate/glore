@@ -1,5 +1,5 @@
-import { Button, Hr, Link, Section, Text } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
+import { Button, Hr, Link, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import metadata from '~/config/metadata.json'

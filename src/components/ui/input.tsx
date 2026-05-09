@@ -14,6 +14,34 @@ export interface InputProps
   open?: boolean
 }
 
+export const inputVariants = cva(
+  [
+    'flex w-full min-w-0 rounded border border-input bg-transparent shadow-2xs transition-[color,box-shadow] outline-none',
+    'placeholder:text-muted-foreground disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-destructive/20',
+    'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30',
+    'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
+    'dark:bg-input/30 dark:aria-invalid:ring-destructive/40',
+  ],
+  {
+    defaultVariants: {
+      size: 'default',
+      variant: 'default',
+    },
+    variants: {
+      size: {
+        sm: 'h-8 px-2.5 py-0.5 text-xs placeholder:text-xs',
+        default: 'h-9.5 px-3 py-1 text-sm placeholder:text-sm',
+        lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
+      },
+      variant: {
+        default: '',
+        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
+        floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
+      },
+    },
+  }
+)
+
 export const Input = ({
   className,
   defaultOpen,
@@ -65,25 +93,3 @@ export const Input = ({
     </div>
   )
 }
-
-export const inputVariants = cva(
-  `flex w-full min-w-0 rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:bg-input/30 dark:aria-invalid:ring-destructive/40`,
-  {
-    defaultVariants: {
-      size: 'default',
-      variant: 'default',
-    },
-    variants: {
-      size: {
-        sm: 'h-8 px-2.5 py-0.5 text-xs placeholder:text-xs',
-        default: 'h-9 px-3 py-1 text-sm placeholder:text-sm',
-        lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
-      },
-      variant: {
-        default: '',
-        brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
-        floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
-      },
-    },
-  }
-)

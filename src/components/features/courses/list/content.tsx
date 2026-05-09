@@ -1,6 +1,5 @@
 'use client'
 
-import type React from 'react'
 import { memo, useCallback, useMemo } from 'react'
 
 import { GripVerticalIcon, RotateCcwIcon } from 'lucide-react'
@@ -14,7 +13,7 @@ import {
   useCourseListTab,
   useDisplayCourses,
 } from '@/components/features/courses/list/use-params'
-import { EmptyListIllustration } from '@/components/illustrations/empty-list'
+import { EmptyListIcon } from '@/components/icons/empty-list'
 import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
@@ -90,7 +89,7 @@ export const CourseListContent = memo(
       return (
         <TabsContent className={cn('grow space-y-4', className)} value={tab} {...props}>
           <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
-            <EmptyListIllustration className="w-68" />
+            <EmptyListIcon className="w-68" />
             <div className="flex flex-col items-center gap-1">
               <h3 className="text-xl font-medium">{emptyTitle}</h3>
               <p className="mt-1 text-muted-foreground">

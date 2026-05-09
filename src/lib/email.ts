@@ -2,9 +2,9 @@ import 'server-only'
 
 import { createElement } from 'react'
 
-import { render } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { createTransport } from 'nodemailer'
+import { render } from 'react-email'
 
 import AccountEmailChangedEmail from '@/emails/account/email-changed'
 import AccountPasswordChangedEmail from '@/emails/account/password-changed'

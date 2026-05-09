@@ -1,7 +1,5 @@
 'use client'
 
-import type React from 'react'
-
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 

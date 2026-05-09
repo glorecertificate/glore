@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -87,15 +87,17 @@ export const PasswordRequestForm = ({
   )
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
+  const [prevHasErrors, setPrevHasErrors] = useState(hasErrors)
+
+  if (prevHasErrors !== hasErrors) {
+    setPrevHasErrors(hasErrors)
+    setErrored(hasErrors)
+  }
 
   const backToLogin = useCallback(() => {
     setView('login')
     setUsername('')
   }, [setUsername, setView])
-
-  useEffect(() => {
-    setErrored(hasErrors)
-  }, [hasErrors, setErrored])
 
   return (
     <>

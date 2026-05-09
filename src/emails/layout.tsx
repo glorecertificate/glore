@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react'
 
-import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from '@react-email/components'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
+import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from 'react-email'
 
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'

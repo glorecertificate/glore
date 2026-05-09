@@ -1,7 +1,7 @@
 import { IconProps } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export const EmptyListIllustration = ({ className, ...props }: IconProps) => (
+export const EmptyListIcon = ({ className, ...props }: IconProps) => (
   <svg
     fill="none"
     height="411"

@@ -52,12 +52,6 @@ interface TemplatePropsMap {
 type TemplateName = keyof TemplatePropsMap
 type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplatePropsMap[K] } }[TemplateName]
 
-export interface EmailOptions {
-  to: string | string[]
-  template: EmailTemplate
-  locale?: string
-}
-
 const messagesFor = async (locale: string) => {
   if (locale === 'it') {
     const { default: messages } = await import('~/messages/it.json')
@@ -160,7 +154,15 @@ const transporter = createTransport({
   },
 })
 
-export const sendMail = async ({ to, template, locale = 'en' }: EmailOptions) => {
+export const sendMail = async ({
+  to,
+  template,
+  locale = 'en',
+}: {
+  to: string | string[]
+  template: EmailTemplate
+  locale?: string
+}) => {
   const messages = await messagesFor(locale)
   const { subject, element } = buildEmail(template, messages, locale as Locale)
   const html = await render(element)

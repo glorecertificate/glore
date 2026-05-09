@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 
 const NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
-export interface InlineInputProps
+interface InlineInputProps
   extends Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'>, VariantProps<typeof inlineInputVariants> {
   /**
    * When true, the input width adapts to the content.
@@ -17,7 +17,6 @@ export interface InlineInputProps
   autoWidth?: boolean
   /**
    * When true, resets the value to `defaultValue` on blur.
-   *
    * @default true
    */
   keepFilled?: boolean

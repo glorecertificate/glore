@@ -17,16 +17,16 @@ import { memberships } from '@/db/schema'
 import { sendMail } from '@/lib/email'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 
-export const MANAGER_ROLES: OrganizationMembershipRole[] = ['admin', 'representative']
-export const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
+const MANAGER_ROLES: OrganizationMembershipRole[] = ['admin', 'representative']
+const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
   'admin',
   'learner',
   'representative',
   'tutor',
   'volunteer',
 ]
-export const REQUESTABLE_ROLES: OrganizationMembershipRole[] = ['learner', 'volunteer']
-export const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
+const REQUESTABLE_ROLES: OrganizationMembershipRole[] = ['learner', 'volunteer']
+const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
 export const PENDING_CERTIFICATE_STATUSES = ['changes_requested', 'in_review', 'submitted'] as const
 
 export const memberUserColumns = {

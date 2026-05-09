@@ -39,14 +39,14 @@ export const listNotifications = async (): Promise<{ data: Notification[] | null
   return { data, error: null }
 }
 
-export const getUnreadCount = async (): Promise<number> => {
-  const authUser = await getAuthUser()
-  if (!authUser) return 0
+// const getUnreadCount = async (): Promise<number> => {
+//   const authUser = await getAuthUser()
+//   if (!authUser) return 0
 
-  const { data } = await fetchNotifications(authUser.id)
-  if (!data) return 0
-  return data.filter(n => !n.read).length
-}
+//   const { data } = await fetchNotifications(authUser.id)
+//   if (!data) return 0
+//   return data.filter(n => !n.read).length
+// }
 
 export const markNotificationRead = async (id: number) => {
   const authUser = await getAuthUser()

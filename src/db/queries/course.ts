@@ -10,15 +10,15 @@ import { type IntlRecord, i18n } from '@/lib/i18n'
 type CourseRow = InferSelectModel<typeof courses>
 type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name'> | null
 
-export interface CourseWithRelations extends CourseRow {
+interface CourseWithRelations extends CourseRow {
   skillGroup: SkillGroupRow
   creator: UserWithRelations
   lessons: LessonWithRelations[]
   userCourses: { id: number }[]
 }
 
-export type PublicationStatus = 'archived' | 'draft' | 'partial' | 'published'
-export type ProgressStatus = 'notStarted' | 'inProgress' | 'completed'
+type PublicationStatus = 'archived' | 'draft' | 'partial' | 'published'
+type ProgressStatus = 'notStarted' | 'inProgress' | 'completed'
 export type Course = ReturnType<typeof parseCourse>
 export type SkillGroup = Exclude<Course['skillGroup'], null>
 

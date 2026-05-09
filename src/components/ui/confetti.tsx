@@ -16,12 +16,6 @@ const ConfettiContext = createContext<{
   fire: (options?: Options) => void
 } | null>(null)
 
-export interface ConfettiProps extends React.ComponentProps<'canvas'> {
-  globalOptions?: GlobalOptions
-  manual?: boolean
-  options?: Options
-}
-
 export const Confetti = ({
   children,
   globalOptions = {
@@ -32,7 +26,11 @@ export const Confetti = ({
   options,
   ref,
   ...props
-}: ConfettiProps) => {
+}: React.ComponentProps<'canvas'> & {
+  globalOptions?: GlobalOptions
+  manual?: boolean
+  options?: Options
+}) => {
   const instanceRef = useRef<CreateTypes | null>(null)
 
   const canvasRef = useCallback(
@@ -88,16 +86,18 @@ export const Confetti = ({
   )
 }
 
-export interface ConfettiButtonProps extends Omit<ButtonProps, 'effect'> {
-  children?: React.ReactNode
+export const ConfettiButton = ({
+  effect = 'confetti',
+  onClick,
+  options,
+  ...props
+}: Omit<ButtonProps, 'effect'> & {
   effect?: 'confetti' | 'fireworks'
   options?: Options &
     GlobalOptions & {
       canvas?: HTMLCanvasElement
     }
-}
-
-export const ConfettiButton = ({ effect = 'confetti', onClick, options, ...props }: ConfettiButtonProps) => {
+}) => {
   const triggerFireworks = useCallback(async () => {
     const confetti = await loadConfetti()
     const duration = 5 * 1000

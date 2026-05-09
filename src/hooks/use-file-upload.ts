@@ -4,18 +4,19 @@ import { useCallback, useState } from 'react'
 
 import { toast } from 'sonner'
 
-export interface UploadedFile {
+interface UploadedFile {
   url: string
   pathname: string
   contentType: string | undefined
 }
 
-interface UseFileUploadOptions {
+export const useFileUpload = ({
+  onUploadComplete,
+  onUploadError,
+}: {
   onUploadComplete?: (file: UploadedFile) => void
   onUploadError?: (error: unknown) => void
-}
-
-export const useFileUpload = ({ onUploadComplete, onUploadError }: UseFileUploadOptions = {}) => {
+} = {}) => {
   const [uploadedFile, setUploadedFile] = useState<UploadedFile>()
   const [uploadingFile, setUploadingFile] = useState<File>()
   const [progress, setProgress] = useState<number>(0)

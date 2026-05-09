@@ -10,7 +10,6 @@ import { normalizeContent, useCourse } from '@/components/features/courses/edito
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Progress } from '@/components/ui/progress'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOverlay } from '@/components/ui/sortable'
 import {
   Stepper,
@@ -372,26 +371,3 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
     </div>
   )
 }
-
-export const CourseSidebarSkeleton = () => (
-  <div className="hidden md:block">
-    <div className="sticky top-30 space-y-4 pr-2">
-      {[...Array(5)].map((_, i) => (
-        <div className="relative" key={i}>
-          <div className="mb-4 flex items-center pl-12">
-            <div className="absolute top-1/2 left-6 -translate-y-1/2">
-              <Skeleton className="flex h-6 w-6 items-center justify-center rounded-full" />
-            </div>
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-3 w-1/2" />
-            </div>
-          </div>
-        </div>
-      ))}
-      <div className="flex h-16 items-center pl-3">
-        <Skeleton className="size-6 rounded-full" />
-      </div>
-    </div>
-  </div>
-)

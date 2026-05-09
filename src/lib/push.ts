@@ -1,14 +1,17 @@
 import * as webpush from 'web-push' // eslint-disable-line
 
-export interface PushPayload {
+interface PushPayload {
   body: string
   title: string
   url?: string
 }
 
-export interface PushSubscriptionData {
+interface PushSubscriptionData {
   endpoint: string
-  keys: { auth: string; p256dh: string }
+  keys: {
+    auth: string
+    p256dh: string
+  }
 }
 
 const initWebPush = () => {

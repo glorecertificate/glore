@@ -24,7 +24,7 @@ interface IconData {
   tags: string[]
 }
 
-export interface IconPickerProps extends ButtonProps {
+interface IconPickerProps extends ButtonProps {
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName
@@ -112,7 +112,7 @@ export const IconPicker = memo(
 
     const iconsToUse = useMemo(() => iconsList || icons, [iconsList, icons])
 
-    const [FuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
+    const [fuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
 
     useEffect(() => {
       const load = async () => {
@@ -124,15 +124,15 @@ export const IconPicker = memo(
 
     const fuseInstance = useMemo(
       () =>
-        FuseClass
-          ? new FuseClass(iconsToUse, {
+        fuseClass
+          ? new fuseClass(iconsToUse, {
               ignoreLocation: true,
               includeScore: true,
               keys: ['name', 'tags', 'categories'],
               threshold: 0.3,
             })
           : null,
-      [FuseClass, iconsToUse]
+      [fuseClass, iconsToUse]
     )
 
     const filteredIcons = useMemo(() => {

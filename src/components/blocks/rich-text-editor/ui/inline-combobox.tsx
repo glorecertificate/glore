@@ -20,7 +20,6 @@ import {
   type ComboboxItemProps,
   ComboboxPopover,
   ComboboxProvider,
-  ComboboxRow,
   Portal,
   useComboboxContext,
   useComboboxStore,
@@ -49,9 +48,7 @@ interface InlineComboboxContextValue {
   trigger: string
 }
 
-export const InlineComboboxContext = createContext<InlineComboboxContextValue>(
-  null as unknown as InlineComboboxContextValue
-)
+const InlineComboboxContext = createContext<InlineComboboxContextValue>(null as unknown as InlineComboboxContextValue)
 
 const defaultFilter: FilterFn = ({ group, keywords = [], label, value }, search) => {
   const uniqueTerms = new Set([value, ...keywords, group, label].filter(Boolean))
@@ -221,7 +218,7 @@ export const InlineComboboxInput = forwardRef<HTMLInputElement, React.HTMLAttrib
 export const InlineComboboxContent: typeof ComboboxPopover = ({ className, ...props }) => (
   <Portal>
     <ComboboxPopover
-      className={cn('z-500 max-h-72 w-[300px] overflow-y-auto rounded-md bg-popover shadow-md', className)}
+      className={cn('z-500 max-h-72 w-75 overflow-y-auto rounded-md bg-popover shadow-md', className)}
       {...props}
     />
   </Portal>
@@ -308,8 +305,6 @@ export const InlineComboboxEmpty = ({ children, className }: React.HTMLAttribute
 
   return <div className={cn(comboboxItemVariants({ interactive: false }), className)}>{children}</div>
 }
-
-export const InlineComboboxRow = ComboboxRow
 
 export const InlineComboboxGroup = ({ className, ...props }: React.ComponentProps<typeof ComboboxGroup>) => (
   <ComboboxGroup {...props} className={cn('hidden py-1.5 not-last:border-b [&:has([role=option])]:block', className)} />

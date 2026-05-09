@@ -6,6 +6,15 @@
     "type": "git",
     "url": "git+https://github.com/glorecertificate/glore.git"
   },
+  "packageManager": "pnpm@10.33.1+sha512.05ba3c1d5d1c18f68df06470d74055e62d41fc110a0c660db1b2dfb2785327f04cf0f68345d4609bc52089e7fa0343c31593b2f9594e2c5d5da426230acc9820",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "esbuild",
+      "sharp"
+    ]
+  },
   "scripts": {
     "prepare": "vp config && tsx ./scripts/typegen.ts",
     "typegen": "tsx ./scripts/typegen.ts",
@@ -119,7 +128,6 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.2.5",
     "react-dropzone": "^15.0.0",
-    "react-email": "^6.0.0",
     "react-hook-form": "^7.73.1",
     "react-image-crop": "^11.0.10",
     "react-lite-youtube-embed": "^3.3.3",
@@ -156,6 +164,7 @@
     "oxlint-tsgolint": "^0.21.1",
     "portless": "^0.10.3",
     "postcss": "^8.5.10",
+    "react-email": "^6.0.0",
     "release-it": "^20.0.0",
     "size-limit": "^12.1.0",
     "skills": "^1.5.1",
@@ -166,15 +175,6 @@
     "typescript": "^6.0.3",
     "vercel": "^52.0.0",
     "vite-plus": "^0.1.19"
-  },
-  "packageManager": "pnpm@10.33.1+sha512.05ba3c1d5d1c18f68df06470d74055e62d41fc110a0c660db1b2dfb2785327f04cf0f68345d4609bc52089e7fa0343c31593b2f9594e2c5d5da426230acc9820",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "@swc/core",
-      "esbuild",
-      "sharp"
-    ]
   },
   "postcss": {
     "plugins": {

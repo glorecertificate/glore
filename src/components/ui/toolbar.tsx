@@ -140,15 +140,6 @@ export const ToolbarSplitButton = ({
   <div className={cn('group flex gap-0', className)} data-pressed={pressed ? 'true' : undefined} {...props} />
 )
 
-export interface ToolbarSplitButtonPrimaryProps
-  extends
-    Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'asChild' | 'value'>,
-    VariantProps<typeof toolbarButtonVariants> {
-  tooltip?: string
-  tooltipContentProps?: React.ComponentProps<typeof TooltipContent>
-  tooltipTriggerProps?: React.ComponentProps<typeof TooltipTrigger>
-}
-
 export const ToolbarSplitButtonPrimary = ({
   children,
   className,
@@ -158,7 +149,12 @@ export const ToolbarSplitButtonPrimary = ({
   tooltipTriggerProps,
   variant,
   ...props
-}: ToolbarSplitButtonPrimaryProps) => {
+}: Omit<React.ComponentPropsWithoutRef<typeof ToolbarToggleItem>, 'asChild' | 'value'> &
+  VariantProps<typeof toolbarButtonVariants> & {
+    tooltip?: string
+    tooltipContentProps?: React.ComponentProps<typeof TooltipContent>
+    tooltipTriggerProps?: React.ComponentProps<typeof TooltipTrigger>
+  }) => {
   const button = (
     <span
       className={cn(
@@ -265,13 +261,6 @@ export const ToolbarGroup = ({
     )}
   </div>
 )
-
-export type ToolbarTooltipProps<T extends React.ElementType> = {
-  tooltip?: React.ReactNode
-  tooltipContentProps?: Omit<React.ComponentProps<typeof TooltipContent>, 'children'>
-  tooltipProps?: Omit<React.ComponentProps<typeof Tooltip>, 'children'>
-  tooltipTriggerProps?: Omit<React.ComponentProps<typeof TooltipTrigger>, 'asChild'>
-} & React.ComponentProps<T>
 
 export const ToolbarTooltipContent = ({
   children,

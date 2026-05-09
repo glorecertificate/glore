@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
-export const CourseCardSkeleton = () => (
+const CourseCardSkeleton = () => (
   <div className="flex min-h-80 flex-col gap-3 rounded-xl border bg-card p-5 shadow-xs">
     <div className="flex items-center justify-between">
       <Skeleton className="h-5 w-5 rounded-full" />
@@ -37,24 +37,6 @@ export const CourseCardSkeleton = () => (
       <Skeleton className="h-9 flex-1 rounded-md" />
       <Skeleton className="h-9 w-9 rounded-md" />
     </div>
-  </div>
-)
-
-export const CourseListContentSkeleton = ({
-  className,
-  count = 8,
-  ...props
-}: React.ComponentProps<'div'> & { count?: number }) => (
-  <div
-    className={cn(
-      'grid gap-6 duration-150 animate-in fade-in md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4',
-      className
-    )}
-    {...props}
-  >
-    {Array.from({ length: count }, (_, i) => (
-      <CourseCardSkeleton key={i} />
-    ))}
   </div>
 )
 

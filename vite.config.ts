@@ -233,6 +233,7 @@ export default defineConfig({
       'promise/prefer-await-to-then': 'error',
       'react/display-name': 'off',
       'react/exhaustive-deps': 'error',
+      'react/hook-use-state': 'off',
       'react/iframe-missing-sandbox': 'warn',
       'react/jsx-fragments': ['error', 'syntax'],
       'react/jsx-handler-names': 'off',

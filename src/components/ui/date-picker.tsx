@@ -11,14 +11,17 @@ import { FormControl } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 
-export interface DatePickerProps {
+export const DatePicker = ({
+  disabled,
+  onChange,
+  placeholder,
+  value,
+}: {
   disabled?: boolean
   onChange?: (value: string) => void
   placeholder?: string
   value?: string
-}
-
-export const DatePicker = ({ disabled, onChange, placeholder, value }: DatePickerProps) => {
+}) => {
   const t = useTranslations('Components.DatePicker')
   const locale = useLocale()
   const [open, setOpen] = useState(false)

@@ -20,7 +20,7 @@ type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName
 
 export type CertificateStatus = EnumType<'certificate_status'>
 
-export interface CertificateWithRelations extends CertificateRow {
+interface CertificateWithRelations extends CertificateRow {
   organization: OrganizationRow
   skills: CertificateSkillRow[]
   user?: CertificateUserRow | null

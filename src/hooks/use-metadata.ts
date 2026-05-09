@@ -61,7 +61,7 @@ const updateLinkSelector = (selector: string | string[], value: string) => {
   }
 }
 
-export interface UseMetadataOptions {
+interface UseMetadataOptions {
   /**
    * Whether to show the application name in the document title.
    * @default true

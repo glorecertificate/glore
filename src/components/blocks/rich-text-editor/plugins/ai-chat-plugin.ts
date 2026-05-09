@@ -76,7 +76,7 @@ NEVER write [Block] or <Selection>.
 </Reminder>
 {prompt} about <Selection>`
 
-export const PROMPT_TEMPLATES = {
+const PROMPT_TEMPLATES = {
   systemBlockSelecting,
   systemDefault,
   systemSelecting,

@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm'
 
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
 
-export const courseWith = {
+const courseWith = {
   skillGroup: { columns: { id: true, name: true } },
   creator: {
     with: {

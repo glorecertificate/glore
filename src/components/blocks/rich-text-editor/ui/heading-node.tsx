@@ -16,10 +16,7 @@ const headingVariants = cva('relative mb-1', {
   },
 })
 
-export const HeadingElement = ({
-  variant = 'h1',
-  ...props
-}: PlateElementProps & VariantProps<typeof headingVariants>) => (
+const HeadingElement = ({ variant = 'h1', ...props }: PlateElementProps & VariantProps<typeof headingVariants>) => (
   <PlateElement as={variant as keyof HTMLElementTagNameMap} className={headingVariants({ variant })} {...props}>
     {props.children}
   </PlateElement>

@@ -24,20 +24,6 @@ type ReviewerRow = Pick<InferSelectModel<typeof users>, 'email' | 'firstName' | 
 
 export type OrganizationMembershipRole = EnumType<'role'>
 
-export interface OrganizationMemberWithRelations extends MembershipRow {
-  user: MemberUserRow
-}
-
-export interface OrganizationJoinRequestWithRelations extends JoinRequestRow {
-  reviewer?: ReviewerRow | null
-}
-
-export interface OrganizationWithRelations extends OrganizationRow {
-  profile: OrganizationProfileRow | null
-  joinRequests: OrganizationJoinRequestWithRelations[]
-  memberships: OrganizationMemberWithRelations[]
-}
-
 export type Organization = ReturnType<typeof parseOrganization>
 export type OrganizationMember = ReturnType<typeof parseOrganizationMember>
 export type OrganizationJoinRequest = ReturnType<typeof parseOrganizationJoinRequest>
@@ -61,13 +47,19 @@ const mergeOrganizationProfile = <T extends OrganizationRow & { profile: Organiz
   }
 }
 
-export const parseOrganization = (organization: OrganizationWithRelations) => ({
+export const parseOrganization = (
+  organization: OrganizationRow & {
+    profile: OrganizationProfileRow | null
+    joinRequests: (JoinRequestRow & { reviewer?: ReviewerRow | null })[]
+    memberships: (MembershipRow & { user: MemberUserRow })[]
+  }
+) => ({
   ...mergeOrganizationProfile(organization),
   joinRequests: organization.joinRequests.map(parseOrganizationJoinRequest),
   memberships: organization.memberships.map(parseOrganizationMember),
 })
 
-export const parseOrganizationMember = (membership: OrganizationMemberWithRelations) => ({
+export const parseOrganizationMember = (membership: MembershipRow & { user: MemberUserRow }) => ({
   ...membership,
   fullName: [membership.user.firstName, membership.user.lastName].filter(Boolean).join(' '),
   isAdmin: membership.role === 'admin',
@@ -78,7 +70,7 @@ export const parseOrganizationMember = (membership: OrganizationMemberWithRelati
   isVolunteer: membership.role === 'volunteer',
 })
 
-export const parseOrganizationJoinRequest = (request: OrganizationJoinRequestWithRelations) => ({
+export const parseOrganizationJoinRequest = (request: JoinRequestRow & { reviewer?: ReviewerRow | null }) => ({
   ...request,
   fullName: [request.firstName, request.lastName].filter(Boolean).join(' '),
   isAccepted: request.status === 'accepted',
@@ -86,14 +78,14 @@ export const parseOrganizationJoinRequest = (request: OrganizationJoinRequestWit
   isRejected: request.status === 'rejected',
 })
 
-export interface AdminOrganizationWithRelations extends OrganizationRow {
-  profile: OrganizationProfileRow | null
-  registrationRequest: JoinRequestRow | null
-}
-
 export type AdminOrganization = ReturnType<typeof parseAdminOrganization>
 
-export const parseAdminOrganization = (org: AdminOrganizationWithRelations) => ({
+export const parseAdminOrganization = (
+  org: OrganizationRow & {
+    profile: OrganizationProfileRow | null
+    registrationRequest: JoinRequestRow | null
+  }
+) => ({
   ...mergeOrganizationProfile(org),
   isApproved: !!org.approvedAt,
   isPending: !org.approvedAt,

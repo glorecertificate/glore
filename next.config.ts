@@ -3,13 +3,13 @@ import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type PHASE_TYPE } fro
 
 import nextIntl from 'next-intl/plugin'
 
-import { validateEnv } from './src/lib/env'
+import { type dependencies } from './package.json'
+import { schema } from './src/lib/env'
+
+type PackageName = keyof typeof dependencies
 
 const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
-
-const AWS_SDKS = ['./node_modules/@aws-sdk/**/*']
-const OPTIMIZED_PKGS = [...AWS_SDKS, './node_modules/@react-pdf/**/*']
 
 const nextConfig = {
   reactStrictMode: true,
@@ -23,39 +23,65 @@ const nextConfig = {
       permanent: true,
     },
   ],
-  outputFileTracingExcludes: {
-    '/login': OPTIMIZED_PKGS,
-    '/register': OPTIMIZED_PKGS,
-    '/onboarding': OPTIMIZED_PKGS,
-    '/onboarding/error': OPTIMIZED_PKGS,
-    '/dashboard': OPTIMIZED_PKGS,
-    '/about': OPTIMIZED_PKGS,
-    '/help': OPTIMIZED_PKGS,
-    '/docs': OPTIMIZED_PKGS,
-    '/docs/faq': OPTIMIZED_PKGS,
-    '/docs/intro': OPTIMIZED_PKGS,
-    '/docs/tutorials': OPTIMIZED_PKGS,
-    '/courses': OPTIMIZED_PKGS,
-    '/courses/[slug]': OPTIMIZED_PKGS,
-    '/admin': OPTIMIZED_PKGS,
-    '/admin/users': OPTIMIZED_PKGS,
-    '/admin/organizations': OPTIMIZED_PKGS,
-    '/settings': AWS_SDKS,
-    '/organization': AWS_SDKS,
-    '/api/auth/[...all]': OPTIMIZED_PKGS,
-    '/api/v1/ai/command': OPTIMIZED_PKGS,
-    '/api/v1/ai/copilot': OPTIMIZED_PKGS,
-    '/api/v1/join': OPTIMIZED_PKGS,
-    '/api/v1/manifest': OPTIMIZED_PKGS,
-  },
-  serverExternalPackages: ['qrcode', 'web-push'],
+  headers: () => [
+    {
+      source: '/(.*)',
+      headers: [
+        {
+          key: 'Content-Security-Policy',
+          value: [
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline'",
+            "img-src 'self' data: blob: https:",
+            "font-src 'self' data:",
+            "connect-src 'self' https:",
+            "frame-ancestors 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "object-src 'none'",
+            "worker-src 'self' blob:",
+          ].join('; '),
+        },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=()',
+        },
+        {
+          key: 'Referrer-Policy',
+          value: 'strict-origin-when-cross-origin',
+        },
+        {
+          key: 'Strict-Transport-Security',
+          value: 'max-age=63072000; includeSubDomains; preload',
+        },
+        {
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
+        },
+        {
+          key: 'X-Frame-Options',
+          value: 'DENY',
+        },
+      ],
+    },
+    {
+      source: MANIFEST_PATH,
+      headers: [
+        {
+          key: 'cache-control',
+          value: 'public, max-age=3600, s-maxage=3600',
+        },
+      ],
+    },
+  ],
+  serverExternalPackages: ['qrcode', 'web-push'] satisfies PackageName[],
   typescript: {
     tsconfigPath: './tsconfig.build.json',
   },
   typedRoutes: true,
   experimental: {
     optimizePackageImports: [
-      '@ai-sdk/openai',
       '@ai-sdk/react',
       '@dnd-kit/core',
       '@dnd-kit/modifiers',
@@ -93,7 +119,7 @@ const nextConfig = {
       'nuqs',
       'platejs',
       'sonner',
-    ],
+    ] satisfies PackageName[],
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
     turbopackFileSystemCacheForDev: true,
@@ -117,51 +143,7 @@ const plugins = [
 
 export default (phase: PHASE_TYPE) => {
   if ((phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) && !process.env.SKIP_ENV_VALIDATION) {
-    validateEnv()
+    schema.parse(process.env)
   }
-  const isDev = phase === PHASE_DEVELOPMENT_SERVER
-  const config: NextConfig = {
-    ...nextConfig,
-    headers: () => [
-      {
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload',
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-              "style-src 'self' 'unsafe-inline'",
-              "img-src 'self' data: blob: https:",
-              "font-src 'self' data:",
-              "connect-src 'self' https:",
-              "frame-ancestors 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "object-src 'none'",
-              "worker-src 'self' blob:",
-            ].join('; '),
-          },
-        ],
-        source: '/(.*)',
-      },
-      {
-        headers: [
-          {
-            key: 'cache-control',
-            value: 'public, max-age=3600, s-maxage=3600',
-          },
-        ],
-        source: MANIFEST_PATH,
-      },
-    ],
-  }
-  return plugins.reduce<NextConfig>((acc, next) => next(acc), config)
+  return plugins.reduce<NextConfig>((acc, next) => next(acc), nextConfig)
 }

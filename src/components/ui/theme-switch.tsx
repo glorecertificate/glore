@@ -11,16 +11,6 @@ import { useTheme } from '@/hooks/use-theme'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export interface ThemeSwitchButtonProps extends Omit<ButtonProps, 'icon' | 'title'> {
-  active: boolean
-  icon: Icon
-  isFirst: boolean
-  isLast: boolean
-  label: string
-  title: string
-  tooltip?: boolean | React.ComponentProps<typeof TooltipContent>
-}
-
 export const ThemeSwitchButton = ({
   active,
   children,
@@ -32,7 +22,15 @@ export const ThemeSwitchButton = ({
   title,
   tooltip,
   ...props
-}: ThemeSwitchButtonProps) => {
+}: Omit<ButtonProps, 'icon' | 'title'> & {
+  active: boolean
+  icon: Icon
+  isFirst: boolean
+  isLast: boolean
+  label: string
+  title: string
+  tooltip?: boolean | React.ComponentProps<typeof TooltipContent>
+}) => {
   const tooltipProps = typeof tooltip === 'object' ? tooltip : {}
 
   const content = (
@@ -72,12 +70,15 @@ export const ThemeSwitchButton = ({
   )
 }
 
-export interface ThemeSwitchProps extends React.HTMLAttributes<HTMLDivElement> {
+export const ThemeSwitch = ({
+  className,
+  defaultTheme,
+  tooltip,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement> & {
   defaultTheme?: Theme
   tooltip?: boolean | React.ComponentProps<typeof TooltipContent>
-}
-
-export const ThemeSwitch = ({ className, defaultTheme, tooltip, ...props }: ThemeSwitchProps) => {
+}) => {
   const mounted = useMounted()
   const { setTheme, theme } = useTheme()
   const t = useTranslations('Components.ThemeSwitch')

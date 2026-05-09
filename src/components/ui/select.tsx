@@ -79,11 +79,14 @@ export const SelectLabel = ({ className, ...props }: React.ComponentProps<typeof
   />
 )
 
-export interface SelectItemProps extends React.ComponentProps<typeof SelectPrimitive.Item> {
+export const SelectItem = ({
+  children,
+  className,
+  indicator = true,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Item> & {
   indicator?: React.ReactNode
-}
-
-export const SelectItem = ({ children, className, indicator = true, ...props }: SelectItemProps) => (
+}) => (
   <SelectPrimitive.Item
     className={cn(
       `relative flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none not-disabled:cursor-pointer focus:bg-accent focus:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2`,

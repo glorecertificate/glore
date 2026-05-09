@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { cn } from '@/lib/utils'
 
-export interface RatingGroupProps
+interface RatingGroupProps
   extends
     Omit<React.ComponentProps<typeof RadioGroup>, 'id' | 'value' | keyof VariantProps<typeof ratingGroupVariants>>,
     VariantProps<typeof ratingGroupVariants> {
@@ -31,12 +31,8 @@ export const RatingGroup = ({
 
   const handleClick = useCallback(
     (rating: number) => () => {
-      if (!(disabled && disabledToast) || value === rating) {
-        return
-      }
-      toast.info(disabledToast, {
-        duration: 1200,
-      })
+      if (!(disabled && disabledToast) || value === rating) return
+      toast.info(disabledToast, { duration: 1200 })
     },
     [disabled, disabledToast, value]
   )

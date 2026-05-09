@@ -1,5 +1,5 @@
-import { validateEnv } from '@/lib/env'
+import { schema } from '@/lib/env'
 
 export const register = () => {
-  validateEnv()
+  schema.parse(process.env)
 }

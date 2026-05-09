@@ -1,4 +1,4 @@
-export type DatabaseErrorCode =
+type DatabaseErrorCode =
   | 'CONFLICT'
   | 'CONNECTION_ERROR'
   | 'CONSTRAINT_VIOLATION'

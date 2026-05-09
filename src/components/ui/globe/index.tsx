@@ -2,17 +2,24 @@
 
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 
-import createGlobe, { type COBEOptions } from 'cobe'
+import createGlobe, { type Arc, type COBEOptions, type Marker } from 'cobe'
 import { useSpring } from 'react-spring'
 
-import { cn, noop } from '@/lib/utils'
-import markers from '~/config/markers.json'
+import { cn } from '@/lib/utils'
+import markersData from '~/config/markers.json'
 
-export interface GlobeColorOptions extends Pick<GlobeOptions, 'baseColor' | 'glowColor'> {
+export interface GlobeColorOptions {
+  arcColor?: [number, number, number] | [number, number, number][]
+  baseColor?: [number, number, number]
+  glowColor?: [number, number, number]
   markerColor?: [number, number, number] | [number, number, number][]
 }
 
-export interface GlobeOptions extends Omit<COBEOptions, 'markerColor'>, GlobeColorOptions {
+export interface GlobeOptions
+  extends
+    Omit<COBEOptions, 'arcColor' | 'arcs' | 'baseColor' | 'glowColor' | 'markerColor' | 'markers'>,
+    GlobeColorOptions {
+  arcCount: number
   friction: number
   mass: number
   precision: number
@@ -25,32 +32,50 @@ export interface GlobeProps extends Partial<GlobeOptions> {
   className?: string
 }
 
+const MARKER_LOCATIONS = markersData as [number, number][]
 const MARKER_MIN_SIZE = 0.02
 const MARKER_MAX_SIZE = 0.05
 const MIN_THETA = -Math.PI / 2 + 0.1
 const MAX_THETA = Math.PI / 2 - 0.1
 const PHI_SENSITIVITY = 120
 const THETA_SENSITIVITY = 120
+const ARC_POOL_SIZE = 24
+const AUTO_ROTATE_SPEED = 0.005
+
+const BASE_MARKERS = MARKER_LOCATIONS.map(location => ({
+  colorIndex: Math.random(),
+  location,
+  size: Math.random() * (MARKER_MAX_SIZE - MARKER_MIN_SIZE) + MARKER_MIN_SIZE,
+}))
+
+const ARC_POOL = Array.from({ length: ARC_POOL_SIZE }, () => {
+  const fromIndex = Math.floor(Math.random() * MARKER_LOCATIONS.length)
+  let toIndex = Math.floor(Math.random() * MARKER_LOCATIONS.length)
+  while (toIndex === fromIndex) {
+    toIndex = Math.floor(Math.random() * MARKER_LOCATIONS.length)
+  }
+  return { from: MARKER_LOCATIONS[fromIndex]!, to: MARKER_LOCATIONS[toIndex]! }
+})
 
 const GLOBE_OPTIONS = {
-  baseColor: [1, 1, 1],
+  arcColor: [1, 1, 1] as [number, number, number],
+  arcCount: 6,
+  arcHeight: 0.45,
+  arcWidth: 1,
+  baseColor: [1, 1, 1] as [number, number, number],
   dark: 0,
   devicePixelRatio: 2,
   diffuse: 0,
   friction: 26,
-  glowColor: [1, 1, 1],
+  glowColor: [1, 1, 1] as [number, number, number],
   height: 400,
   mapBaseBrightness: 0,
   mapBrightness: 12,
   mapSamples: 15000,
-  markerColor: [1, 1, 1],
-  markers: (markers as [number, number][]).map(location => ({
-    location,
-    size: Math.random() * (MARKER_MAX_SIZE - MARKER_MIN_SIZE) + MARKER_MIN_SIZE,
-  })),
+  markerColor: [1, 1, 1] as [number, number, number],
+  markerElevation: 0,
   mass: 0.1,
-  offset: [0, 0],
-  onRender: noop,
+  offset: [0, 0] as [number, number],
   opacity: 0.75,
   phi: 0,
   precision: 0.002,
@@ -60,80 +85,128 @@ const GLOBE_OPTIONS = {
   theta: 0.4,
   transitionDuration: 400,
   width: 400,
-} satisfies GlobeOptions
+}
+
+const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
 const normalizeRgb = (color: [number, number, number]) =>
   color.map(n => Math.min(Math.max(n, 0), 255) / 255) as [number, number, number]
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
+const toPalette = (color: [number, number, number] | [number, number, number][]) => {
+  const palette = (Array.isArray(color[0]) ? color : [color]) as [number, number, number][]
+  return palette.map(normalizeRgb)
+}
+
+const paletteKey = (color: [number, number, number] | [number, number, number][]) => {
+  const palette = (Array.isArray(color[0]) ? color : [color]) as [number, number, number][]
+  return palette.map(c => c.join(',')).join('|')
+}
 
 export const Globe = memo(({ className, ...options }: GlobeProps) => {
-  const { friction, mass, precision, tension, ...config } = useMemo(() => {
-    const {
-      baseColor,
-      glowColor,
-      markerColor,
-      markers: globeMarkers,
-      ...rest
-    } = {
-      ...GLOBE_OPTIONS,
-      ...options,
-    } as Required<GlobeOptions>
+  const merged = { ...GLOBE_OPTIONS, ...options }
 
-    const isMulticolor = Array.isArray(markerColor[0])
-    const colors = ((isMulticolor ? markerColor : [markerColor]) as [number, number, number][]).map(normalizeRgb)
-    const color = colors[0]
+  const arcColorSource = options.arcColor ?? options.markerColor ?? GLOBE_OPTIONS.arcColor
+  const markerColorKey = paletteKey(merged.markerColor)
+  const arcColorKey = paletteKey(arcColorSource)
 
-    return {
-      ...rest,
-      baseColor: normalizeRgb(baseColor),
-      glowColor: normalizeRgb(glowColor),
-      markerColor: color,
-      markers: globeMarkers.map(({ color: markerDotColor, ...marker }) => ({
-        ...marker,
-        color: markerDotColor ?? (isMulticolor ? colors[Math.floor(Math.random() * colors.length)] : markerDotColor),
-      })),
-    }
-  }, [options])
+  const markers = useMemo<Marker[]>(() => {
+    const palette = toPalette(merged.markerColor)
+    return BASE_MARKERS.map(({ colorIndex, ...marker }) => ({
+      ...marker,
+      color: palette.length > 1 ? palette[Math.floor(colorIndex * palette.length)] : undefined,
+    }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [markerColorKey])
 
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const paramsRef = useRef<COBEOptions>(null)
-  const pointerRef = useRef<{ x: number; y: number } | null>(null)
-  const baseRotationRef = useRef({
-    phi: config.phi ?? 0,
-    theta: clamp(config.theta ?? 0, MIN_THETA, MAX_THETA),
+  const arcs = useMemo<Arc[]>(() => {
+    const palette = toPalette(arcColorSource)
+    const count = clamp(merged.arcCount, 0, ARC_POOL_SIZE)
+    return ARC_POOL.slice(0, count).map((pair, i) => ({
+      ...pair,
+      color: palette[i % palette.length],
+    }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arcColorKey, merged.arcCount])
+
+  const baseColor = normalizeRgb(merged.baseColor)
+  const glowColor = normalizeRgb(merged.glowColor)
+  const markerColor = toPalette(merged.markerColor)[0]!
+  const arcColor = toPalette(arcColorSource)[0]!
+
+  const propsRef = useRef({
+    arcColor,
+    arcHeight: merged.arcHeight,
+    arcWidth: merged.arcWidth,
+    arcs,
+    baseColor,
+    dark: merged.dark,
+    devicePixelRatio: merged.devicePixelRatio,
+    diffuse: merged.diffuse,
+    glowColor,
+    mapBaseBrightness: merged.mapBaseBrightness,
+    mapBrightness: merged.mapBrightness,
+    mapSamples: merged.mapSamples,
+    markerColor,
+    markerElevation: merged.markerElevation,
+    markers,
+    offset: merged.offset,
+    opacity: merged.opacity,
+    scale: merged.scale,
   })
 
-  let width = 0
+  propsRef.current = {
+    arcColor,
+    arcHeight: merged.arcHeight,
+    arcWidth: merged.arcWidth,
+    arcs,
+    baseColor,
+    dark: merged.dark,
+    devicePixelRatio: merged.devicePixelRatio,
+    diffuse: merged.diffuse,
+    glowColor,
+    mapBaseBrightness: merged.mapBaseBrightness,
+    mapBrightness: merged.mapBrightness,
+    mapSamples: merged.mapSamples,
+    markerColor,
+    markerElevation: merged.markerElevation,
+    markers,
+    offset: merged.offset,
+    opacity: merged.opacity,
+    scale: merged.scale,
+  }
+
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const widthRef = useRef(0)
+  const pointerRef = useRef<{ x: number; y: number } | null>(null)
+  const baseRotationRef = useRef({
+    phi: merged.phi,
+    theta: clamp(merged.theta, MIN_THETA, MAX_THETA),
+  })
+  const sentMarkersRef = useRef<Marker[] | null>(null)
+  const sentArcsRef = useRef<Arc[] | null>(null)
 
   useEffect(() => {
-    baseRotationRef.current.phi = config.phi ?? baseRotationRef.current.phi
-    baseRotationRef.current.theta = clamp(config.theta ?? baseRotationRef.current.theta, MIN_THETA, MAX_THETA)
-  }, [config.phi, config.theta])
-
-  useEffect(() => {
-    const updatedMarkers =
-      paramsRef.current &&
-      paramsRef.current?.markerColor.flat().sort().join('') === config.markerColor.flat().sort().join('')
-        ? (paramsRef.current?.markers ?? [])
-        : config.markers
-    paramsRef.current = { ...config, markers: updatedMarkers }
-  }, [config])
+    baseRotationRef.current.phi = merged.phi
+    baseRotationRef.current.theta = clamp(merged.theta, MIN_THETA, MAX_THETA)
+  }, [merged.phi, merged.theta])
 
   const [{ phiDelta, thetaDelta }, springApi] = useSpring(
     () => ({
-      config: { friction, mass, precision, tension },
+      config: {
+        friction: merged.friction,
+        mass: merged.mass,
+        precision: merged.precision,
+        tension: merged.tension,
+      },
       phiDelta: 0,
       thetaDelta: 0,
     }),
-    [friction, mass, precision, tension]
+    [merged.friction, merged.mass, merged.precision, merged.tension]
   )
 
   const updateDrag = useCallback(
     (x: number, y: number) => {
-      if (!pointerRef.current) {
-        return
-      }
+      if (!pointerRef.current) return
       const deltaX = x - pointerRef.current.x
       const deltaY = y - pointerRef.current.y
       const targetTheta = clamp(baseRotationRef.current.theta + deltaY / THETA_SENSITIVITY, MIN_THETA, MAX_THETA)
@@ -148,9 +221,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   )
 
   const endDrag = useCallback(() => {
-    if (!pointerRef.current) {
-      return
-    }
+    if (!pointerRef.current) return
 
     baseRotationRef.current.phi += phiDelta.get()
     baseRotationRef.current.theta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)
@@ -162,13 +233,11 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
     if (canvasRef.current) {
       canvasRef.current.style.cursor = 'grab'
     }
-  }, [baseRotationRef, canvasRef, phiDelta, springApi, thetaDelta])
+  }, [phiDelta, springApi, thetaDelta])
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLCanvasElement>) => {
     pointerRef.current = { x: e.clientX, y: e.clientY }
-    if (!canvasRef.current) {
-      return
-    }
+    if (!canvasRef.current) return
 
     canvasRef.current.style.cursor = 'grabbing'
     if (!canvasRef.current.hasPointerCapture?.(e.pointerId)) {
@@ -178,9 +247,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
-      if (!pointerRef.current) {
-        return
-      }
+      if (!pointerRef.current) return
       updateDrag(e.clientX, e.clientY)
     },
     [updateDrag]
@@ -208,9 +275,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
     const touch = e.touches[0]
-    if (!touch) {
-      return
-    }
+    if (!touch) return
 
     pointerRef.current = { x: touch.clientX, y: touch.clientY }
     if (canvasRef.current) {
@@ -221,9 +286,7 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
   const onTouchMove = useCallback(
     (e: React.TouchEvent<HTMLCanvasElement>) => {
       const touch = e.touches[0]
-      if (!touch) {
-        return
-      }
+      if (!touch) return
 
       e.preventDefault()
       updateDrag(touch.clientX, touch.clientY)
@@ -237,68 +300,104 @@ export const Globe = memo(({ className, ...options }: GlobeProps) => {
 
   const onResize = useCallback(() => {
     if (canvasRef.current) {
-      width = canvasRef.current.offsetWidth
+      widthRef.current = canvasRef.current.offsetWidth
     }
-    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
-    if (!canvasRef.current) {
-      return
-    }
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-    window.addEventListener('resize', onResize)
     onResize()
+    window.addEventListener('resize', onResize)
 
-    const globe = createGlobe(canvasRef.current, {
-      ...config,
-      onRender: cobe => {
-        const state = cobe as COBEOptions
+    const initialWidth = (widthRef.current || merged.width) * 2
 
-        if (!pointerRef.current) {
-          baseRotationRef.current.phi += 0.005
-        }
-
-        const nextTheta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)
-
-        state.phi = baseRotationRef.current.phi + phiDelta.get()
-        state.theta = nextTheta
-        state.width = width * 2
-        state.height = width * 2
-
-        if (!paramsRef.current) {
-          return
-        }
-        if (!state.markers || state.baseColor?.some((n, i) => n !== paramsRef.current?.baseColor[i])) {
-          state.markers = paramsRef.current.markers
-        }
-
-        state.baseColor = paramsRef.current.baseColor
-        state.dark = paramsRef.current.dark
-        state.diffuse = paramsRef.current.diffuse
-        state.glowColor = paramsRef.current.glowColor
-        state.mapBaseBrightness = paramsRef.current.mapBaseBrightness
-        state.mapBrightness = paramsRef.current.mapBrightness
-        state.mapSamples = paramsRef.current.mapSamples
-        state.markerColor = paramsRef.current.markerColor
-        state.offset = paramsRef.current.offset
-        state.opacity = paramsRef.current.opacity
-        state.scale = paramsRef.current.scale
-      },
+    const globe = createGlobe(canvas, {
+      arcColor: propsRef.current.arcColor,
+      arcHeight: propsRef.current.arcHeight,
+      arcWidth: propsRef.current.arcWidth,
+      arcs: propsRef.current.arcs,
+      baseColor: propsRef.current.baseColor,
+      dark: propsRef.current.dark,
+      devicePixelRatio: propsRef.current.devicePixelRatio,
+      diffuse: propsRef.current.diffuse,
+      glowColor: propsRef.current.glowColor,
+      height: initialWidth,
+      mapBaseBrightness: propsRef.current.mapBaseBrightness,
+      mapBrightness: propsRef.current.mapBrightness,
+      mapSamples: propsRef.current.mapSamples,
+      markerColor: propsRef.current.markerColor,
+      markerElevation: propsRef.current.markerElevation,
+      markers: propsRef.current.markers,
+      offset: propsRef.current.offset,
+      opacity: propsRef.current.opacity,
+      phi: baseRotationRef.current.phi,
+      scale: propsRef.current.scale,
+      theta: baseRotationRef.current.theta,
+      width: initialWidth,
     })
 
-    setTimeout(() => {
-      if (!canvasRef.current) {
-        return
+    sentMarkersRef.current = propsRef.current.markers
+    sentArcsRef.current = propsRef.current.arcs
+
+    let frame = 0
+    const tick = () => {
+      if (!pointerRef.current) {
+        baseRotationRef.current.phi += AUTO_ROTATE_SPEED
       }
-      canvasRef.current.style.opacity = '1'
+
+      const w = widthRef.current * 2
+      const nextTheta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)
+
+      const state: Partial<COBEOptions> = {
+        arcColor: propsRef.current.arcColor,
+        arcHeight: propsRef.current.arcHeight,
+        arcWidth: propsRef.current.arcWidth,
+        baseColor: propsRef.current.baseColor,
+        dark: propsRef.current.dark,
+        diffuse: propsRef.current.diffuse,
+        glowColor: propsRef.current.glowColor,
+        height: w,
+        mapBaseBrightness: propsRef.current.mapBaseBrightness,
+        mapBrightness: propsRef.current.mapBrightness,
+        markerColor: propsRef.current.markerColor,
+        markerElevation: propsRef.current.markerElevation,
+        offset: propsRef.current.offset,
+        opacity: propsRef.current.opacity,
+        phi: baseRotationRef.current.phi + phiDelta.get(),
+        scale: propsRef.current.scale,
+        theta: nextTheta,
+        width: w,
+      }
+
+      if (sentMarkersRef.current !== propsRef.current.markers) {
+        state.markers = propsRef.current.markers
+        sentMarkersRef.current = propsRef.current.markers
+      }
+      if (sentArcsRef.current !== propsRef.current.arcs) {
+        state.arcs = propsRef.current.arcs
+        sentArcsRef.current = propsRef.current.arcs
+      }
+
+      globe.update(state as COBEOptions)
+      frame = requestAnimationFrame(tick)
+    }
+
+    frame = requestAnimationFrame(tick)
+
+    setTimeout(() => {
+      if (canvasRef.current) {
+        canvasRef.current.style.opacity = '1'
+      }
     })
 
     return () => {
+      cancelAnimationFrame(frame)
       globe.destroy()
       window.removeEventListener('resize', onResize)
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

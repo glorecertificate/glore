@@ -24,7 +24,7 @@ import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
-export const courseSettingsSchema = z.object({
+const courseSettingsSchema = z.object({
   type: z.enum(COURSE_TYPES),
   skillGroupId: z.number().nullable(),
   slug: z.string(),

@@ -1,6 +1,6 @@
 import z from 'zod'
 
-const schema = z.object({
+export const schema = z.object({
   APP_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().regex(/^[A-Za-z0-9+/]{43}=$/),
   COOKIE_PREFIX: z.string().optional(),
@@ -24,8 +24,6 @@ const schema = z.object({
   VAPID_PRIVATE_KEY: z.string().min(1).optional(),
   VAPID_SUBJECT: z.string().min(1).optional(),
 })
-
-export const validateEnv = () => schema.parse(process.env)
 
 declare global {
   namespace NodeJS {

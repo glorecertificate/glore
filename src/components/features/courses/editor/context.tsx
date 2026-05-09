@@ -29,7 +29,7 @@ interface CourseProviderOptions {
   step: number
 }
 
-export interface CourseStatus {
+interface CourseStatus {
   hasContent: boolean
   hasContentUpdates: boolean
   hasDescriptionUpdates: boolean
@@ -624,7 +624,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   )
 }
 
-export const CourseContext = createContext<ReturnType<typeof useCourseProvider> | null>(null)
+const CourseContext = createContext<ReturnType<typeof useCourseProvider> | null>(null)
 
 export const CourseProvider = memo(({ children, value, ...props }: React.ProviderProps<CourseProviderOptions>) => {
   const providerValue = useCourseProvider(value)

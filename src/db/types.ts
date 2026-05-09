@@ -31,7 +31,6 @@ import {
   type verifications,
 } from '@/db/schema'
 
-// Table map for generic access
 interface TableMap {
   accounts: typeof accounts
   assessments: typeof assessments
@@ -63,9 +62,8 @@ interface TableMap {
   verifications: typeof verifications
 }
 
-export type TableName = keyof TableMap
-export type TableInsert<T extends TableName> = InferInsertModel<TableMap[T]>
-export type TableUpdate<T extends TableName> = Partial<InferInsertModel<TableMap[T]>>
+export type TableInsert<T extends keyof TableMap> = InferInsertModel<TableMap[T]>
+export type TableUpdate<T extends keyof TableMap> = Partial<InferInsertModel<TableMap[T]>>
 
 export interface Enums {
   certificate_status: 'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'

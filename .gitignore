@@ -1,10 +1,9 @@
 .next/
+.vercel/
 node_modules/
 tmp/
-/messages/*.d.json.ts
-/*.d.ts
-.DS_Store
-*.tsbuildinfo
 .env*
 !.env.example
-.vercel
+*.d.ts
+*.d.json.ts
+*.tsbuildinfo

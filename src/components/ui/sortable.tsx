@@ -93,7 +93,7 @@ interface GetItemValue<T> {
   getItemValue: (item: T) => UniqueIdentifier
 }
 
-export type SortableProps<T> = DndContextProps &
+type SortableProps<T> = DndContextProps &
   (T extends object ? GetItemValue<T> : Partial<GetItemValue<T>>) & {
     value: T[]
     onValueChange?: (items: T[]) => void
@@ -284,14 +284,14 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
 
 const SortableContentContext = createContext<boolean>(false)
 
-export interface SortableContentProps extends React.ComponentProps<'div'> {
-  strategy?: SortableContextProps['strategy']
-  children: React.ReactNode
-  asChild?: boolean
-  withoutSlot?: boolean
-}
-
-export const SortableContent = (props: SortableContentProps) => {
+export const SortableContent = (
+  props: React.ComponentProps<'div'> & {
+    strategy?: SortableContextProps['strategy']
+    children: React.ReactNode
+    asChild?: boolean
+    withoutSlot?: boolean
+  }
+) => {
   const { strategy: strategyProp, asChild, withoutSlot, children, ref, ...contentProps } = props
 
   const context = useSortableContext(CONTENT_NAME)
@@ -332,14 +332,14 @@ const useSortableItemContext = (consumerName: string) => {
   return context
 }
 
-export interface SortableItemProps extends React.ComponentProps<'div'> {
-  value: UniqueIdentifier
-  asHandle?: boolean
-  asChild?: boolean
-  disabled?: boolean
-}
-
-export const SortableItem = (props: SortableItemProps) => {
+export const SortableItem = (
+  props: React.ComponentProps<'div'> & {
+    value: UniqueIdentifier
+    asHandle?: boolean
+    asChild?: boolean
+    disabled?: boolean
+  }
+) => {
   const { value, style, asHandle, asChild, disabled, className, ref, ...itemProps } = props
 
   const inSortableContent = useContext(SortableContentContext)
@@ -422,11 +422,11 @@ export const SortableItem = (props: SortableItemProps) => {
   )
 }
 
-export interface SortableItemHandleProps extends React.ComponentProps<'button'> {
-  asChild?: boolean
-}
-
-export const SortableItemHandle = (props: SortableItemHandleProps) => {
+export const SortableItemHandle = (
+  props: React.ComponentProps<'button'> & {
+    asChild?: boolean
+  }
+) => {
   const { asChild, disabled, className, ref, ...itemHandleProps } = props
 
   const context = useSortableContext(ITEM_HANDLE_NAME)
@@ -476,12 +476,12 @@ const dropAnimation: DropAnimation = {
   }),
 }
 
-export interface SortableOverlayProps extends Omit<React.ComponentProps<typeof DragOverlay>, 'children'> {
-  container?: Element | DocumentFragment | null
-  children?: ((params: { value: UniqueIdentifier }) => React.ReactNode) | React.ReactNode
-}
-
-export const SortableOverlay = (props: SortableOverlayProps) => {
+export const SortableOverlay = (
+  props: Omit<React.ComponentProps<typeof DragOverlay>, 'children'> & {
+    container?: Element | DocumentFragment | null
+    children?: ((params: { value: UniqueIdentifier }) => React.ReactNode) | React.ReactNode
+  }
+) => {
   const { container: containerProp, children, ...overlayProps } = props
 
   const context = useSortableContext(OVERLAY_NAME)

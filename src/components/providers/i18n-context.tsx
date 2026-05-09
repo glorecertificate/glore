@@ -8,7 +8,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { setLocaleCookie } from '@/actions/cookies'
 import { type IntlRecord, type LocaleItem, i18n, localizeRecord } from '@/lib/i18n'
 
-export interface I18nContextValue {
+interface I18nContextValue {
   locale?: Locale
   messages?: Messages
   timeZone?: string
@@ -16,7 +16,7 @@ export interface I18nContextValue {
 
 const useI18nContext = (value: I18nContextValue) => {
   const [localeState, setLocaleState] = useState<Locale>(value.locale ?? i18n.defaultLocale)
-  const [messageStore, setMessagesStore] = useState<Partial<Record<Locale, Messages>>>(
+  const [messageStore, setMessageStore] = useState<Partial<Record<Locale, Messages>>>(
     value.messages ? { [localeState]: value.messages } : {}
   )
   const messageStoreRef = useRef(messageStore)
@@ -37,7 +37,7 @@ const useI18nContext = (value: I18nContextValue) => {
   const setMessages = useCallback(async (locale: Locale) => {
     if (messageStoreRef.current[locale]) return
     const messagesModule = await import(`~/messages/${locale}`)
-    setMessagesStore(prev => ({ ...prev, [locale]: messagesModule.default }))
+    setMessageStore(prev => ({ ...prev, [locale]: messagesModule.default }))
   }, [])
 
   const setLocale = useCallback(

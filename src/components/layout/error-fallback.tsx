@@ -14,12 +14,6 @@ export interface ErrorProps {
   reset: () => void
 }
 
-export interface ErrorFallbackProps extends React.HTMLAttributes<HTMLDivElement> {
-  header?: React.ReactNode
-  message?: string
-  type?: 'error' | 'not-found'
-}
-
 export const ErrorFallback = ({
   children,
   className,
@@ -28,7 +22,12 @@ export const ErrorFallback = ({
   title,
   type = 'error',
   ...props
-}: ErrorFallbackProps) => {
+}: React.HTMLAttributes<HTMLDivElement> &
+  React.HTMLAttributes<HTMLDivElement> & {
+    header?: React.ReactNode
+    message?: string
+    type?: 'error' | 'not-found'
+  }) => {
   const t = useTranslations('Common')
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))

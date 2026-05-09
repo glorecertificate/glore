@@ -112,7 +112,7 @@ export const deleteCourse = async (id: number) => {
   }
 }
 
-export const createLesson = async (lesson: TableInsert<'lessons'>) => {
+const createLesson = async (lesson: TableInsert<'lessons'>) => {
   await requireEditor()
   const [created] = await db.insert(lessons).values(lesson).returning()
   if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create lesson' } }

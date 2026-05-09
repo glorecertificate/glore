@@ -1,21 +1,19 @@
 import { RuleConfigSeverity, type UserConfig } from '@commitlint/types'
 
-const { Error, Warning, Disabled } = RuleConfigSeverity
-
 export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': [
-      Error,
+      RuleConfigSeverity.Error,
       'always',
-      ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert', 'ai'],
+      ['feat', 'fix', 'docs', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'],
     ],
-    'scope-enum': [Error, 'always', ['deps', 'deps-dev', 'dev', 'release', 'security']],
-    'subject-empty': [Error, 'never'],
-    'header-max-length': [Error, 'always', 100],
-    'body-max-line-length': [Disabled],
-    'body-leading-blank': [Warning, 'always'],
-    'footer-max-line-length': [Error, 'always', 120],
-    'footer-leading-blank': [Warning, 'always'],
+    'scope-enum': [RuleConfigSeverity.Error, 'always', ['release', 'deps', 'deps-dev', 'security']],
+    'subject-empty': [RuleConfigSeverity.Error, 'never'],
+    'header-max-length': [RuleConfigSeverity.Error, 'always', 100],
+    'body-max-line-length': [RuleConfigSeverity.Disabled],
+    'body-leading-blank': [RuleConfigSeverity.Warning, 'always'],
+    'footer-max-line-length': [RuleConfigSeverity.Error, 'always', 120],
+    'footer-leading-blank': [RuleConfigSeverity.Warning, 'always'],
   },
 } satisfies UserConfig

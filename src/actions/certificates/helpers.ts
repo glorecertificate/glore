@@ -1,4 +1,4 @@
-export const certificateUserColumns = {
+const certificateUserColumns = {
   id: true,
   firstName: true,
   lastName: true,

@@ -48,18 +48,18 @@ export const logout = async () => {
 
 export const getAuthUser = fetchAuthUser
 
-export const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
-  const session = await auth.api.getSession({ headers: await headers() })
-  if (!session?.user) throw new Error('Not authenticated')
+// const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
+//   const session = await auth.api.getSession({ headers: await headers() })
+//   if (!session?.user) throw new Error('Not authenticated')
 
-  await auth.api.updateUser({
-    body: attributes,
-    headers: await headers(),
-  })
+//   await auth.api.updateUser({
+//     body: attributes,
+//     headers: await headers(),
+//   })
 
-  revalidateTag(CacheTag.AuthUser, 'max')
-  return session.user
-}
+//   revalidateTag(CacheTag.AuthUser, 'max')
+//   return session.user
+// }
 
 export const setAuthPassword = async (newPassword: string) => {
   const session = await auth.api.getSession({ headers: await headers() })

@@ -6,22 +6,11 @@ import * as PopoverPrimitive from '@radix-ui/react-popover'
 
 import { cn } from '@/lib/utils'
 
-export interface PopoverProps extends PopoverPrimitive.PopoverProps {
-  className?: string
-}
-export interface PopoverTriggerProps extends PopoverPrimitive.PopoverTriggerProps {
-  className?: string
-}
-export interface PopoverContentProps extends PopoverPrimitive.PopoverContentProps {
-  className?: string
-  portal?: boolean
-  width?: number
-}
-export interface PopoverPortalProps extends PopoverPrimitive.PopoverPortalProps {}
+export const Popover = (props: React.ComponentProps<typeof PopoverPrimitive.Root>) => (
+  <PopoverPrimitive.Root data-slot="popover" {...props} />
+)
 
-export const Popover = (props: PopoverProps) => <PopoverPrimitive.Root data-slot="popover" {...props} />
-
-export const PopoverTrigger = (props: PopoverTriggerProps) => (
+export const PopoverTrigger = (props: React.ComponentProps<typeof PopoverPrimitive.Trigger>) => (
   <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 )
 
@@ -33,14 +22,11 @@ export const PopoverContent = ({
   style,
   width,
   ...props
-}: PopoverContentProps) => {
-  const contentStyle = useMemo(
-    () => ({
-      ...style,
-      width: width ? `${width}px` : style?.width,
-    }),
-    [style, width]
-  )
+}: React.ComponentProps<typeof PopoverPrimitive.Content> & {
+  portal?: boolean
+  width?: number
+}) => {
+  const contentStyle = useMemo(() => ({ ...style, width: width ? `${width}px` : style?.width }), [style, width])
 
   const content = (
     <PopoverPrimitive.Content
@@ -56,16 +42,13 @@ export const PopoverContent = ({
     />
   )
 
-  if (!portal) {
-    return content
-  }
-  return <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal>
+  return portal ? <PopoverPrimitive.Portal>{content}</PopoverPrimitive.Portal> : content
 }
 
 export const PopoverAnchor = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) => (
   <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
 )
 
-export const PopoverPortal = ({ ...props }: PopoverPortalProps) => (
+export const PopoverPortal = ({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Portal>) => (
   <PopoverPrimitive.Portal data-slot="popover-portal" {...props} />
 )

@@ -308,9 +308,6 @@ importers:
       use-file-picker:
         specifier: 2.1.4
         version: 2.1.4(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react@19.2.5)
-      use-form-guard:
-        specifier: ^0.1.0
-        version: 0.1.0(react@19.2.5)
       web-push:
         specifier: ^3.6.7
         version: 3.6.7
@@ -9966,11 +9963,6 @@ packages:
       '@types/react': '>=16'
       '@types/react-dom': '>=16'
       react: '>=16'
-
-  use-form-guard@0.1.0:
-    resolution: {integrity: sha512-9voFimijtWme5LSYZ3RoEsFgOjYsbV9q4F/iN7alNLRdliwEPwedvKoivrGatnji3lM1wYjsAgndH1wveUfK1Q==}
-    peerDependencies:
-      react: '>=17'
 
   use-intl@4.9.1:
     resolution: {integrity: sha512-iGVV/xFYlhe3btafRlL8RPLD2Jsuet4yqn9DR6LWWbMhULsJnXgLonDkzDmsAIBIwFtk02oJuX/Ox2vwHKF+UQ==}
@@ -20362,10 +20354,6 @@ snapshots:
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
       file-selector: 2.1.2
-      react: 19.2.5
-
-  use-form-guard@0.1.0(react@19.2.5):
-    dependencies:
       react: 19.2.5
 
   use-intl@4.9.1(react@19.2.5):

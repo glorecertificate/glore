@@ -17,7 +17,7 @@ import { useI18n } from '@/hooks/use-i18n'
 import { i18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-export interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'> {
+interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'> {
   addLanguage?: (locale: Locale) => void
   contentProps?: SelectContentProps
   controlled?: boolean

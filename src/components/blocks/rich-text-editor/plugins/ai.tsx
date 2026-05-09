@@ -11,7 +11,7 @@ import { MarkdownKit } from '@/components/blocks/rich-text-editor/plugins/markdo
 import { AILoadingBar, AIMenu } from '@/components/blocks/rich-text-editor/ui/ai-menu'
 import { AIAnchorElement, AILeaf } from '@/components/blocks/rich-text-editor/ui/ai-node'
 
-export const aiChatPlugin = baseAiChatPlugin.extend({
+const aiChatPlugin = baseAiChatPlugin.extend({
   render: { afterContainer: AILoadingBar, afterEditable: AIMenu, node: AIAnchorElement },
   useHooks: ({ editor, getOption }) => {
     const mode = usePluginOption({ key: KEYS.aiChat }, 'mode') as 'insert' | 'select' | 'block-select'
@@ -52,5 +52,3 @@ export const aiChatPlugin = baseAiChatPlugin.extend({
 })
 
 export const AIKit = [...CursorOverlayKit, ...MarkdownKit, AIPlugin.withComponent(AILeaf), aiChatPlugin]
-
-export { PROMPT_TEMPLATES } from '@/components/blocks/rich-text-editor/plugins/ai-chat-plugin'

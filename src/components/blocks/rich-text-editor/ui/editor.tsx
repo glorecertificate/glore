@@ -1,7 +1,7 @@
 'use client'
 
 import { type VariantProps, cva } from 'class-variance-authority'
-import { PlateContainer, PlateContent, type PlateContentProps, PlateView, type PlateViewProps } from 'platejs/react'
+import { PlateContainer, PlateContent, type PlateContentProps } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
 
@@ -20,7 +20,7 @@ export const Editor = ({ className, disabled, focused, readOnly, variant, ...pro
   />
 )
 
-export const editorVariants = cva(
+const editorVariants = cva(
   cn(
     `group/editor relative w-full cursor-text overflow-x-hidden rounded-b-lg border wrap-break-word whitespace-pre-wrap ring-offset-background select-text placeholder:text-muted-foreground/80 focus-visible:outline-none **:data-slate-placeholder:top-1/2! **:data-slate-placeholder:-translate-y-1/2 **:data-slate-placeholder:text-muted-foreground/80 **:data-slate-placeholder:opacity-100! [&_strong]:font-bold`
   ),
@@ -37,7 +37,7 @@ export const editorVariants = cva(
       },
       variant: {
         ai: 'w-full px-0 text-base md:text-sm',
-        aiChat: 'max-h-[min(70vh,320px)] w-full max-w-[700px] overflow-y-auto px-3 py-2 text-base md:text-sm',
+        aiChat: 'max-h-[min(70vh,320px)] w-full max-w-175 overflow-y-auto px-3 py-2 text-base md:text-sm',
         comment: 'rounded-none border-none bg-transparent text-sm',
         default: 'size-full px-16 pt-4 pb-72 text-base sm:px-[max(64px,calc(50%-350px))]',
         fullWidth: 'size-full px-8 pt-8 pb-72 text-base sm:px-12',
@@ -58,7 +58,7 @@ export const EditorContainer = ({
   />
 )
 
-export const editorContainerVariants = cva(
+const editorContainerVariants = cva(
   `relative w-full cursor-text overflow-y-auto select-text focus-visible:outline-none [&_.slate-selection-area]:z-50 [&_.slate-selection-area]:border`,
   {
     defaultVariants: {
@@ -74,6 +74,6 @@ export const editorContainerVariants = cva(
   }
 )
 
-export const EditorView = ({ className, variant, ...props }: PlateViewProps & VariantProps<typeof editorVariants>) => (
-  <PlateView {...props} className={cn(editorVariants({ variant }), className)} />
-)
+// const EditorView = ({ className, variant, ...props }: PlateViewProps & VariantProps<typeof editorVariants>) => (
+//   <PlateView {...props} className={cn(editorVariants({ variant }), className)} />
+// )

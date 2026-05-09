@@ -40,7 +40,7 @@ import { ToggleKit } from '@/components/blocks/rich-text-editor/plugins/toggle'
 import { TrailingBlockKit } from '@/components/blocks/rich-text-editor/plugins/trailing-block'
 import { omit } from '@/lib/utils'
 
-export const PLUGINS = {
+const PLUGINS = {
   ai: AIKit,
   align: AlignKit,
   autoformat: AutoformatKit,
@@ -69,11 +69,9 @@ export const PLUGINS = {
   trailingBlock: TrailingBlockKit,
 }
 
-export type RichTextEditorPlugin = keyof typeof PLUGINS
+type RichTextEditorPlugin = keyof typeof PLUGINS
 
-export interface RichTextEditorProviderProps extends React.PropsWithChildren<
-  Omit<CreatePlateEditorOptions, 'plugins'>
-> {
+interface RichTextEditorProviderProps extends React.PropsWithChildren<Omit<CreatePlateEditorOptions, 'plugins'>> {
   exclude?: RichTextEditorPlugin | RichTextEditorPlugin[]
   onChange?: PlateProps['onChange']
   version?: string

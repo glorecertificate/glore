@@ -12,7 +12,7 @@ import { type Course, type SkillGroup } from '@/db/queries/course'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { useI18n } from '@/hooks/use-i18n'
 
-export interface CoursesContextValue {
+interface CoursesContextValue {
   courses: Course[]
   skillGroups: SkillGroup[]
 }

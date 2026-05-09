@@ -29,7 +29,7 @@ export const CourseListTabs = memo(({ children, ...props }: React.ComponentProps
   )
 })
 
-export const CourseListTabsTrigger = memo(
+const CourseListTabsTrigger = memo(
   ({
     className,
     count,

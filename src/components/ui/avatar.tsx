@@ -5,7 +5,7 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { cn } from '@/lib/utils'
 
-export interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {}
+interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {}
 
 export const Avatar = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) => (
   <AvatarPrimitive.Root

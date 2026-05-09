@@ -9,7 +9,7 @@ import { type DayButton, DayPicker, defaultLocale, getDefaultClassNames } from '
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-const Calendar = ({
+export const Calendar = ({
   buttonVariant = 'ghost',
   captionLayout = 'label',
   className,
@@ -203,5 +203,3 @@ const CalendarDayButton = ({ className, day, modifiers, ...props }: React.Compon
     />
   )
 }
-
-export { Calendar, CalendarDayButton }

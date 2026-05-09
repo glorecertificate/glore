@@ -5,7 +5,7 @@ import { createContext, useCallback, useEffect, useMemo, useRef, useState } from
 import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
 
-export interface SessionContextValue {
+interface SessionContextValue {
   user: User
   organizationId?: number
 }

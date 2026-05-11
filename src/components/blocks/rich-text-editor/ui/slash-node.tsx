@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { AIChatPlugin } from '@platejs/ai/react'
 import {
   CalendarIcon,
@@ -53,138 +51,135 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
   const { editor, element } = props
   const t = useTranslations('Components.RichTextEditor.blocks')
 
-  const groups = useMemo<Group[]>(
-    () => [
-      {
-        group: t('ai'),
-        items: [
-          {
-            focusEditor: false,
-            icon: <SparklesIcon />,
-            onSelect: (ed: PlateEditor) => {
-              ed.getApi(AIChatPlugin).aiChat.show()
-            },
-            value: 'AI',
+  const groups: Group[] = [
+    {
+      group: t('ai'),
+      items: [
+        {
+          focusEditor: false,
+          icon: <SparklesIcon />,
+          onSelect: (ed: PlateEditor) => {
+            ed.getApi(AIChatPlugin).aiChat.show()
           },
-        ],
-      },
-      {
-        group: t('basicBlocks'),
-        items: [
-          {
-            icon: <PilcrowIcon />,
-            keywords: ['paragraph'],
-            label: t('paragraph'),
-            value: KEYS.p,
-          },
-          {
-            icon: <Heading1Icon />,
-            keywords: ['title', 'h1'],
-            label: t('heading1'),
-            value: KEYS.h1,
-          },
-          {
-            icon: <Heading2Icon />,
-            keywords: ['subtitle', 'h2'],
-            label: t('heading2'),
-            value: KEYS.h2,
-          },
-          {
-            icon: <Heading3Icon />,
-            keywords: ['subtitle', 'h3'],
-            label: t('heading3'),
-            value: KEYS.h3,
-          },
-          {
-            icon: <ListIcon />,
-            keywords: ['unordered', 'ul', '-'],
-            label: t('bulletList'),
-            value: KEYS.ul,
-          },
-          {
-            icon: <ListOrderedIcon />,
-            keywords: ['ordered', 'ol', '1'],
-            label: t('orderedList'),
-            value: KEYS.ol,
-          },
-          {
-            icon: <SquareIcon />,
-            keywords: ['checklist', 'task', 'checkbox', '[]'],
-            label: t('todoList'),
-            value: KEYS.listTodo,
-          },
-          {
-            icon: <ChevronRightIcon />,
-            keywords: ['collapsible', 'expandable'],
-            label: t('toggle'),
-            value: KEYS.toggle,
-          },
-          {
-            icon: <Code2Icon />,
-            keywords: ['```'],
-            label: t('codeBlock'),
-            value: KEYS.codeBlock,
-          },
-          {
-            icon: <TableIcon />,
-            label: t('table'),
-            value: KEYS.table,
-          },
-          {
-            icon: <QuoteIcon />,
-            keywords: ['citation', 'blockquote', 'quote', '>'],
-            label: t('blockquote'),
-            value: KEYS.blockquote,
-          },
-          {
-            description: 'Insert a highlighted block.',
-            icon: <LightbulbIcon />,
-            keywords: ['note'],
-            label: t('callout'),
-            value: KEYS.callout,
-          },
-        ].map(item => ({
-          ...item,
+          value: 'AI',
+        },
+      ],
+    },
+    {
+      group: t('basicBlocks'),
+      items: [
+        {
+          icon: <PilcrowIcon />,
+          keywords: ['paragraph'],
+          label: t('paragraph'),
+          value: KEYS.p,
+        },
+        {
+          icon: <Heading1Icon />,
+          keywords: ['title', 'h1'],
+          label: t('heading1'),
+          value: KEYS.h1,
+        },
+        {
+          icon: <Heading2Icon />,
+          keywords: ['subtitle', 'h2'],
+          label: t('heading2'),
+          value: KEYS.h2,
+        },
+        {
+          icon: <Heading3Icon />,
+          keywords: ['subtitle', 'h3'],
+          label: t('heading3'),
+          value: KEYS.h3,
+        },
+        {
+          icon: <ListIcon />,
+          keywords: ['unordered', 'ul', '-'],
+          label: t('bulletList'),
+          value: KEYS.ul,
+        },
+        {
+          icon: <ListOrderedIcon />,
+          keywords: ['ordered', 'ol', '1'],
+          label: t('orderedList'),
+          value: KEYS.ol,
+        },
+        {
+          icon: <SquareIcon />,
+          keywords: ['checklist', 'task', 'checkbox', '[]'],
+          label: t('todoList'),
+          value: KEYS.listTodo,
+        },
+        {
+          icon: <ChevronRightIcon />,
+          keywords: ['collapsible', 'expandable'],
+          label: t('toggle'),
+          value: KEYS.toggle,
+        },
+        {
+          icon: <Code2Icon />,
+          keywords: ['```'],
+          label: t('codeBlock'),
+          value: KEYS.codeBlock,
+        },
+        {
+          icon: <TableIcon />,
+          label: t('table'),
+          value: KEYS.table,
+        },
+        {
+          icon: <QuoteIcon />,
+          keywords: ['citation', 'blockquote', 'quote', '>'],
+          label: t('blockquote'),
+          value: KEYS.blockquote,
+        },
+        {
+          description: 'Insert a highlighted block.',
+          icon: <LightbulbIcon />,
+          keywords: ['note'],
+          label: t('callout'),
+          value: KEYS.callout,
+        },
+      ].map(item => ({
+        ...item,
+        onSelect: (ed: PlateEditor, value) => {
+          insertBlock(ed, value)
+        },
+      })),
+    },
+    {
+      group: t('advancedBlocks'),
+      items: [
+        {
+          icon: <TableOfContentsIcon />,
+          keywords: ['toc'],
+          label: t('tableOfContents'),
           onSelect: (ed: PlateEditor, value) => {
             insertBlock(ed, value)
           },
-        })),
-      },
-      {
-        group: t('advancedBlocks'),
-        items: [
-          {
-            icon: <TableOfContentsIcon />,
-            keywords: ['toc'],
-            label: t('tableOfContents'),
-            onSelect: (ed: PlateEditor, value) => {
-              insertBlock(ed, value)
-            },
-            value: KEYS.toc,
+          value: KEYS.toc,
+        },
+        {
+          icon: <Columns3Icon />,
+          label: t('threeColumns'),
+          onSelect: (ed: PlateEditor, value) => {
+            insertBlock(ed, value)
           },
-          {
-            icon: <Columns3Icon />,
-            label: t('threeColumns'),
-            onSelect: (ed: PlateEditor, value) => {
-              insertBlock(ed, value)
-            },
-            value: 'action_three_columns',
+          value: 'action_three_columns',
+        },
+        {
+          focusEditor: true,
+          icon: <CalendarIcon />,
+          keywords: ['time'],
+          label: t('date'),
+          onSelect: (ed: PlateEditor, value) => {
+            insertInlineElement(ed, value)
           },
-          {
-            focusEditor: true,
-            icon: <CalendarIcon />,
-            keywords: ['time'],
-            label: t('date'),
-            onSelect: (ed: PlateEditor, value) => {
-              insertInlineElement(ed, value)
-            },
-            value: KEYS.date,
-          },
-        ],
-      },
-    ],
-    [t]
-  )
+          value: KEYS.date,
+        },
+      ],
+    },
+  ]
 
   return (
     <PlateElement {...props} as="span">
@@ -192,7 +187,7 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          <InlineComboboxEmpty>No results</InlineComboboxEmpty>
+          <InlineComboboxEmpty>{'No results'}</InlineComboboxEmpty>
 
           {groups.map(({ group, items }) => (
             <InlineComboboxGroup key={group}>

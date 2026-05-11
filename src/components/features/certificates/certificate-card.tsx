@@ -40,7 +40,8 @@ export const CertificateCard = ({ certificate }: CertificateCardProps) => {
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <CalendarIcon className="size-3.5 shrink-0" />
           <span>
-            {start} – {end}
+            {start} {'– '}
+            {end}
           </span>
         </div>
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">

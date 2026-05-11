@@ -32,7 +32,7 @@ interface ResubmitFormProps {
 
 export const ResubmitForm = ({ certificate, onOpenChange, open }: ResubmitFormProps) => {
   const t = useTranslations('Certificates')
-  const router = useRouter()
+  const { refresh } = useRouter()
 
   const form = useForm<ResubmitCertificateValues>({
     resolver: zodResolver(resubmitCertificateSchema) as never,
@@ -55,7 +55,7 @@ export const ResubmitForm = ({ certificate, onOpenChange, open }: ResubmitFormPr
     }
     toast.success(t('resubmitSuccess'))
     onOpenChange(false)
-    router.refresh()
+    refresh()
   }
 
   return (

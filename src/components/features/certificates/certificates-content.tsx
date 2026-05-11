@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { BookOpenIcon, GraduationCapIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -35,14 +33,14 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
   const { eligible, completedSkillCount, minSkills, minRating, hasLowRatings } = eligibility
   const hasCertificates = certificates.length > 0
 
-  const displayCertificates = useMemo(() => {
+  const displayCertificates = (() => {
     const filtered = status ? certificates.filter(c => c.status === status) : certificates
-    return [...filtered].sort((a, b) => {
+    return filtered.toSorted((a, b) => {
       const dateA = new Date(a.createdAt).getTime()
       const dateB = new Date(b.createdAt).getTime()
       return sort === 'oldest' ? dateA - dateB : dateB - dateA
     })
-  }, [certificates, sort, status])
+  })()
 
   if (!eligible && !hasCertificates) {
     const titleKey = completedSkillCount < minSkills ? 'missingCoursesTitle' : 'invalidCoursesTitle'

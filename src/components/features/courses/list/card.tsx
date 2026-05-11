@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon, UsersIcon } from 'lucide-react'
 import { type Locale, useFormatter, useTranslations } from 'next-intl'
@@ -28,176 +28,136 @@ import { i18n, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-export const CourseListCard = memo(
-  ({
-    activeLanguages,
-    className,
-    course,
-    ...props
-  }: React.ComponentProps<typeof Card> & {
-    activeLanguages: Locale[]
-    course: Course
-  }) => {
-    const { locale, localeItems } = useI18n()
-    const t = useTranslations('Courses')
-    const f = useFormatter()
-    const cookies = useCookies()
+export const CourseListCard = ({
+  activeLanguages,
+  className,
+  course,
+  ...props
+}: React.ComponentProps<typeof Card> & {
+  activeLanguages: Locale[]
+  course: Course
+}) => {
+  const { locale, localeItems } = useI18n()
+  const t = useTranslations('Courses')
+  const f = useFormatter()
+  const cookies = useCookies()
 
-    const { user } = useSession()
-    const { updateCourse } = useCourses()
+  const { user } = useSession()
+  const { updateCourse } = useCourses()
 
-    const updateCourseRef = useRef(updateCourse)
-    useEffect(() => {
-      updateCourseRef.current = updateCourse
-    }, [updateCourse])
+  const updateCourseRef = useRef(updateCourse)
+  useEffect(() => {
+    updateCourseRef.current = updateCourse
+  }, [updateCourse])
 
-    const updateCourseIcon = useCallback((icon: IconName) => updateCourseRef.current(course.id, { icon }), [course.id])
+  const updateCourseIcon = (icon: IconName) => updateCourseRef.current(course.id, { icon })
 
-    const [language, setLanguageState] = useState(() => {
-      const courseLanguages = cookies.get('courseListLanguages') ?? {}
-      const courseLanguage = courseLanguages[course.id]
-      if (courseLanguage && activeLanguages.includes(courseLanguage)) return courseLanguage
-      if (activeLanguages.includes(locale)) return locale
-      return activeLanguages[0]
+  const [language, setLanguageState] = useState(() => {
+    const courseLanguages = cookies.get('courseListLanguages') ?? {}
+    const courseLanguage = courseLanguages[course.id]
+    if (courseLanguage && activeLanguages.includes(courseLanguage)) return courseLanguage
+    if (activeLanguages.includes(locale)) return locale
+    return activeLanguages[0]
+  })
+  const [isRemoving, setIsRemoving] = useState(false)
+
+  const setLanguage = (value: Locale) => {
+    if (value === language || !activeLanguages.includes(value)) return
+    setLanguageState(value)
+    const languageCookie = cookies.get('courseListLanguages') ?? {}
+    cookies.set('courseListLanguages', { ...languageCookie, [course.id]: value })
+  }
+
+  useEffect(() => {
+    if (activeLanguages.includes(language)) return
+    const value = activeLanguages[0]
+    if (!value || value === language) return
+    setLanguageState(value)
+    const languageCookie = cookies.get('courseListLanguages') ?? {}
+    cookies.set('courseListLanguages', { ...languageCookie, [course.id]: value })
+  }, [activeLanguages, cookies, course.id, language])
+
+  const title = localizeRecord(course.title, language)
+  const coursePath = `/courses/${course.slug}?lang=${language}` as const
+  const completedLessons = course.lessons?.filter(lesson => lesson.completed).length ?? 0
+  const lessonsMessage =
+    course.lessons.length > 0
+      ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
+      : t('noLessonsCreated')
+  const createdOn = t('createdOnBy', { date: f.relativeTime(new Date(course.createdAt), Date.now()) })
+
+  const activeSet = new Set(activeLanguages)
+  const publishedSet = new Set(course.languages ?? [])
+  const languageItems: Array<(typeof localeItems)[number] & { active: boolean; published: boolean }> = []
+  for (const item of localeItems) {
+    if (!activeSet.has(item.value)) continue
+    languageItems.push({
+      ...item,
+      active: item.value === language,
+      published: publishedSet.has(item.value),
     })
-    const [isRemoving, setIsRemoving] = useState(false)
+  }
+  languageItems.sort((a, b) => i18n.locales.indexOf(a.value) - i18n.locales.indexOf(b.value))
 
-    const setLanguage = useCallback(
-      (value: Locale) => {
-        if (value === language || !activeLanguages.includes(value)) return
-        setLanguageState(value)
-        const languageCookie = cookies.get('courseListLanguages') ?? {}
-        cookies.set('courseListLanguages', { ...languageCookie, [course.id]: value })
-      },
-      [activeLanguages, cookies, course.id, language]
+  const description = (() => {
+    const translation = course.description ? localizeRecord(course.description, language) : undefined
+    if (!translation) return
+    const courseDescription = `${translation.split('.')[0]}.`
+
+    return translation.length > courseDescription.length ? (
+      <>
+        {courseDescription}
+        <Tooltip>
+          <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
+            {t('cardDescriptionMore')}
+          </TooltipTrigger>
+          <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
+            {translation}
+          </TooltipContent>
+        </Tooltip>
+      </>
+    ) : (
+      courseDescription
     )
+  })()
 
-    useEffect(() => {
-      if (!activeLanguages.includes(language)) {
-        setLanguage(activeLanguages[0])
-      }
-    }, [activeLanguages, language, setLanguage])
+  const actionLabel = (() => {
+    if (user.canEdit) return t('editCourse')
+    if (user.isOrgAdmin || user.isRepresentative || user.isTutor) return t('viewCourse')
+    if (!course.enrolled) return t('startCourse')
+    if (course.completed) return t('reviewCourse')
+    return t('continueCourse')
+  })()
 
-    const title = useMemo(() => localizeRecord(course.title, language), [course.title, language])
-    const coursePath = `/courses/${course.slug}?lang=${language}` as const
-    const completedLessons = useMemo(
-      () => course.lessons?.filter(lesson => lesson.completed).length ?? 0,
-      [course.lessons]
-    )
-    const lessonsMessage =
-      course.lessons.length > 0
-        ? `${course.lessons.length} ${t('lessons', { count: course.lessons.length })}`
-        : t('noLessonsCreated')
-    const createdOn = t('createdOnBy', { date: f.relativeTime(new Date(course.createdAt), Date.now()) })
+  const handleRemove = () => setIsRemoving(true)
 
-    const languageItems = useMemo(
-      () =>
-        localeItems
-          .filter(({ value }) => activeLanguages.includes(value))
-          .map(item => ({
-            ...item,
-            active: item.value === language,
-            published: !!course.languages && course.languages.includes(item.value),
-          }))
-          .sort((a, b) => i18n.locales.indexOf(a.value) - i18n.locales.indexOf(b.value)),
-      [activeLanguages, course.languages, language, localeItems]
-    )
-
-    const description = useMemo(() => {
-      const translation = course.description ? localizeRecord(course.description, language) : undefined
-      if (!translation) return
-      const courseDescription = `${translation.split('.')[0]}.`
-
-      return translation.length > courseDescription.length ? (
-        <>
-          {courseDescription}
-          <Tooltip>
-            <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
-              {t('cardDescriptionMore')}
-            </TooltipTrigger>
-            <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
-              {translation}
-            </TooltipContent>
-          </Tooltip>
-        </>
-      ) : (
-        courseDescription
-      )
-    }, [course.description, t, language])
-
-    const actionLabel = useMemo(() => {
-      if (user.canEdit) return t('editCourse')
-      if (user.isOrgAdmin || user.isRepresentative || user.isTutor) return t('viewCourse')
-      if (!course.enrolled) return t('startCourse')
-      if (course.completed) return t('reviewCourse')
-      return t('continueCourse')
-    }, [course.completed, course.enrolled, t, user.canEdit, user.isOrgAdmin, user.isRepresentative, user.isTutor])
-
-    const handleRemove = useCallback(() => setIsRemoving(true), [])
-
-    return (
-      <Card
-        className={cn(
-          'min-h-80 transition-all duration-200',
-          isRemoving && 'pointer-events-none scale-95 opacity-0',
-          className
-        )}
-        {...props}
-      >
-        <CardHeader className="gap-4">
-          {user.canEdit ? (
-            <div className="flex grow flex-col gap-3">
-              <div className="flex flex-col gap-2.5">
-                <div className="flex items-center gap-1">
-                  <Tooltip delayDuration={500}>
-                    <TooltipTrigger asChild>
-                      <IconPicker
-                        className="peer size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground aria-expanded:bg-muted!"
-                        onValueChange={updateCourseIcon}
-                        value={(course.icon ?? undefined) as IconName | undefined}
-                        variant="ghost"
-                      />
-                    </TooltipTrigger>
-                    <span className="not:peer-data-[state=open]:invisible">
-                      <TooltipContent size="sm">{course.icon ? t('updateIcon') : t('addIcon')}</TooltipContent>
-                    </span>
-                  </Tooltip>
-                  <Link
-                    className={cn('leading-[normal] font-medium transition-none')}
-                    href={coursePath}
-                    prefetch
-                    title={t('viewCourse')}
-                  >
-                    {title}
-                  </Link>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <LinkIcon className="size-2.5" />
-                  <Link
-                    className="font-mono text-[11px] text-muted-foreground"
-                    href={coursePath}
-                    title={t('followLink')}
-                  >
-                    {course.slug}
-                  </Link>
-                </div>
-              </div>
+  return (
+    <Card
+      className={cn(
+        'min-h-80 transition-all duration-200',
+        isRemoving && 'pointer-events-none scale-95 opacity-0',
+        className
+      )}
+      {...props}
+    >
+      <CardHeader className="gap-4">
+        {user.canEdit ? (
+          <div className="flex grow flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               <div className="flex items-center gap-1">
-                <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
-                  {t(`courseType-${course.type}`)}
-                </Badge>
-                {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
-              </div>
-            </div>
-          ) : (
-            <div className="flex grow flex-col gap-3">
-              <div className="flex gap-2">
-                {course.icon && (
-                  <LucideIcon
-                    className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
-                    name={course.icon as IconName}
-                  />
-                )}
+                <Tooltip delayDuration={500}>
+                  <TooltipTrigger asChild>
+                    <IconPicker
+                      className="peer size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground aria-expanded:bg-muted!"
+                      onValueChange={updateCourseIcon}
+                      value={(course.icon ?? undefined) as IconName | undefined}
+                      variant="ghost"
+                    />
+                  </TooltipTrigger>
+                  <span className="not:peer-data-[state=open]:invisible">
+                    <TooltipContent size="sm">{course.icon ? t('updateIcon') : t('addIcon')}</TooltipContent>
+                  </span>
+                </Tooltip>
                 <Link
                   className={cn('leading-[normal] font-medium transition-none')}
                   href={coursePath}
@@ -206,158 +166,187 @@ export const CourseListCard = memo(
                 >
                   {title}
                 </Link>
-                {course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
               </div>
-              <div className="flex items-center gap-1">
-                <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
-                  {t(`courseType-${course.type}`)}
-                </Badge>
-                {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
+              <div className="flex items-center gap-1.5">
+                <LinkIcon className="size-2.5" />
+                <Link className="font-mono text-[11px] text-muted-foreground" href={coursePath} title={t('followLink')}>
+                  {course.slug}
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
+                {t(`courseType-${course.type}`)}
+              </Badge>
+              {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
+            </div>
+          </div>
+        ) : (
+          <div className="flex grow flex-col gap-3">
+            <div className="flex gap-2">
+              {course.icon && (
+                <LucideIcon
+                  className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
+                  name={course.icon as IconName}
+                />
+              )}
+              <Link
+                className={cn('leading-[normal] font-medium transition-none')}
+                href={coursePath}
+                prefetch
+                title={t('viewCourse')}
+              >
+                {title}
+              </Link>
+              {course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
+            </div>
+            <div className="flex items-center gap-1">
+              <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
+                {t(`courseType-${course.type}`)}
+              </Badge>
+              {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
+            </div>
+          </div>
+        )}
+      </CardHeader>
+      <CardContent className="mb-0.5">
+        <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground/50')}>
+          {description ?? t('noDescription')}
+        </p>
+      </CardContent>
+      <CardFooter className="flex grow flex-col justify-end gap-4">
+        <div className="flex flex-col gap-2">
+          {/* Drafts */}
+          {user.canEdit && languageItems.length > 1 && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
+              <LanguagesIcon className="size-3.5 text-muted-foreground" />
+              <div className="flex items-center gap-2">
+                {languageItems.map(({ active, displayLabel, icon, published, value }) => (
+                  <div className="flex flex-col items-center gap-0" key={value}>
+                    <Tooltip delayDuration={500}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          className={cn('relative text-base', active && 'pointer-events-none cursor-default')}
+                          onClick={() => {
+                            if (!active) {
+                              setLanguage(value)
+                            }
+                          }}
+                          size="text"
+                          variant="transparent"
+                        >
+                          <span className={cn('flex h-3 items-center', !active && 'opacity-50')}>{icon}</span>
+                          {published && (
+                            <div className="absolute -bottom-1.25 size-1 animate-pulse rounded-full bg-success" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent sideOffset={2} size="sm">
+                        {t(published ? 'previewIn' : 'previewDraftIn', { lang: displayLabel })}
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                ))}
               </div>
             </div>
           )}
-        </CardHeader>
-        <CardContent className="mb-0.5">
-          <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground/50')}>
-            {description ?? t('noDescription')}
-          </p>
-        </CardContent>
-        <CardFooter className="flex grow flex-col justify-end gap-4">
-          <div className="flex flex-col gap-2">
-            {/* Drafts */}
-            {user.canEdit && languageItems.length > 1 && (
-              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground">
-                <LanguagesIcon className="size-3.5 text-muted-foreground" />
-                <div className="flex items-center gap-2">
-                  {languageItems.map(({ active, displayLabel, icon, published, value }) => (
-                    <div className="flex flex-col items-center gap-0" key={value}>
-                      <Tooltip delayDuration={500}>
-                        <TooltipTrigger asChild>
-                          <Button
-                            className={cn('relative text-base', active && 'pointer-events-none cursor-default')}
-                            onClick={() => {
-                              if (!active) {
-                                setLanguage(value)
-                              }
-                            }}
-                            size="text"
-                            variant="transparent"
-                          >
-                            <span className={cn('flex h-3 items-center', !active && 'opacity-50')}>{icon}</span>
-                            {published && (
-                              <div className="absolute -bottom-1.25 size-1 animate-pulse rounded-full bg-success" />
-                            )}
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={2} size="sm">
-                          {t(published ? 'previewIn' : 'previewDraftIn', { lang: displayLabel })}
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          <div
+            className={cn(
+              'flex items-center gap-2.5 text-xs font-normal',
+              course.lessons.length > 0
+                ? 'text-muted-foreground'
+                : 'pointer-events-none text-muted-foreground/50 select-none'
             )}
-            <div
-              className={cn(
-                'flex items-center gap-2.5 text-xs font-normal',
-                course.lessons.length > 0
-                  ? 'text-muted-foreground'
-                  : 'pointer-events-none text-muted-foreground/50 select-none'
-              )}
-            >
-              <BookOpenIcon className="size-3.5 text-muted-foreground" />
-              {lessonsMessage}
+          >
+            <BookOpenIcon className="size-3.5 text-muted-foreground" />
+            {lessonsMessage}
+          </div>
+          {user.canEdit && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
+              <UserPenIcon className="size-3.5 text-muted-foreground" />
+              <div className="flex items-center gap-1.5">
+                <span suppressHydrationWarning>{createdOn}</span>
+                <HoverCard closeDelay={50} openDelay={300}>
+                  <HoverCardTrigger asChild>
+                    <Button
+                      className="peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50"
+                      size="text"
+                      variant="ghost"
+                    >
+                      <Avatar className="size-4 rounded-full border">
+                        {course.creator.avatarUrl && (
+                          <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
+                        )}
+                        <AvatarFallback className="text-[7.5px]">{course.creator.initials}</AvatarFallback>
+                      </Avatar>
+                      {course.creator.shortName}
+                    </Button>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="bg-popover" side="top">
+                    <UserCard user={course.creator} />
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
             </div>
-            {user.canEdit && (
-              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-                <UserPenIcon className="size-3.5 text-muted-foreground" />
-                <div className="flex items-center gap-1.5">
-                  <span suppressHydrationWarning>{createdOn}</span>
-                  <HoverCard closeDelay={50} openDelay={300}>
+          )}
+          {user.canEdit && course.enrollmentCount > 0 && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
+              <UsersIcon className="size-3.5 text-muted-foreground" />
+              {t('enrolledStudents', { count: course.enrollmentCount })}
+            </div>
+          )}
+          <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
+            <Edit3Icon className="size-3.5 text-muted-foreground" />
+            <div className="flex items-center gap-1.5">
+              <span>{t('writtenBy')}</span>
+              <div className="flex -space-x-0.5 hover:space-x-1">
+                {course.contributors.map(contributor => (
+                  <HoverCard closeDelay={50} key={contributor.id} openDelay={300}>
                     <HoverCardTrigger asChild>
-                      <Button
-                        className="peer/user-card cursor-default gap-1 pr-0.5 text-xs font-normal text-muted-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:data-[state=open]:bg-accent/50"
-                        size="text"
-                        variant="ghost"
-                      >
-                        <Avatar className="size-4 rounded-full border">
-                          {course.creator.avatarUrl && (
-                            <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
-                          )}
-                          <AvatarFallback className="text-[7.5px]">{course.creator.initials}</AvatarFallback>
-                        </Avatar>
-                        {course.creator.shortName}
-                      </Button>
+                      <Avatar className="size-4 rounded-full border ring-background transition-all duration-200 ease-in-out">
+                        {contributor.avatarUrl && <AvatarImage className="rounded-full" src={contributor.avatarUrl} />}
+                        <AvatarFallback className="text-[7.5px]">{contributor.initials}</AvatarFallback>
+                      </Avatar>
                     </HoverCardTrigger>
                     <HoverCardContent className="bg-popover" side="top">
-                      <UserCard user={course.creator} />
+                      <UserCard user={contributor} />
                     </HoverCardContent>
                   </HoverCard>
-                </div>
-              </div>
-            )}
-            {user.canEdit && course.enrollmentCount > 0 && (
-              <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-                <UsersIcon className="size-3.5 text-muted-foreground" />
-                {t('enrolledStudents', { count: course.enrollmentCount })}
-              </div>
-            )}
-            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-              <Edit3Icon className="size-3.5 text-muted-foreground" />
-              <div className="flex items-center gap-1.5">
-                <span>{t('writtenBy')}</span>
-                <div className="flex -space-x-0.5 hover:space-x-1">
-                  {course.contributors.map(contributor => (
-                    <HoverCard closeDelay={50} key={contributor.id} openDelay={300}>
-                      <HoverCardTrigger asChild>
-                        <Avatar className="size-4 rounded-full border ring-background transition-all duration-200 ease-in-out">
-                          {contributor.avatarUrl && (
-                            <AvatarImage className="rounded-full" src={contributor.avatarUrl} />
-                          )}
-                          <AvatarFallback className="text-[7.5px]">{contributor.initials}</AvatarFallback>
-                        </Avatar>
-                      </HoverCardTrigger>
-                      <HoverCardContent className="bg-popover" side="top">
-                        <UserCard user={contributor} />
-                      </HoverCardContent>
-                    </HoverCard>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
           </div>
-          {!user.canEdit && course.enrolled && (
-            <div className="w-full">
-              <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
-                <span className="flex items-center">
-                  {completedLessons}
-                  {' / '}
-                  {course.lessons.length} {t('lessons', { count: course.lessons.length })}
-                </span>
-                <span>
-                  {course.progress}
-                  {'% '}
-                  {t('completed').toLowerCase()}
-                </span>
-              </div>
-              <Progress className="h-1.5" value={course.progress} />
+        </div>
+        {!user.canEdit && course.enrolled && (
+          <div className="w-full">
+            <div className="mb-1 flex items-center justify-between text-sm text-muted-foreground">
+              <span className="flex items-center">
+                {completedLessons}
+                {' / '}
+                {course.lessons.length} {t('lessons', { count: course.lessons.length })}
+              </span>
+              <span>
+                {course.progress}
+                {'% '}
+                {t('completed').toLowerCase()}
+              </span>
             </div>
-          )}
-          {user.canEdit ? (
-            <ButtonGroup className="w-full">
-              <Button asChild className="flex-1" variant="outline">
-                <Link href={coursePath}>{actionLabel}</Link>
-              </Button>
-              <CourseCardActions course={course} onRemove={handleRemove} />
-            </ButtonGroup>
-          ) : (
-            <Button asChild className="w-full" variant="outline">
+            <Progress className="h-1.5" value={course.progress} />
+          </div>
+        )}
+        {user.canEdit ? (
+          <ButtonGroup className="w-full">
+            <Button asChild className="flex-1" variant="outline">
               <Link href={coursePath}>{actionLabel}</Link>
             </Button>
-          )}
-        </CardFooter>
-      </Card>
-    )
-  }
-)
+            <CourseCardActions course={course} onRemove={handleRemove} />
+          </ButtonGroup>
+        ) : (
+          <Button asChild className="w-full" variant="outline">
+            <Link href={coursePath}>{actionLabel}</Link>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  )
+}

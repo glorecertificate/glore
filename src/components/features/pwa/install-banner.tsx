@@ -1,27 +1,27 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { DownloadIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
-import { usePWAContext } from '@/hooks/use-pwa-context'
+import { usePWA } from '@/hooks/use-pwa'
 
 const DISMISSED_KEY = 'pwa-install-dismissed'
 
 export const InstallBanner = () => {
   const t = useTranslations('PWA')
-  const { canInstall, promptInstall } = usePWAContext()
-  const [dismissed, setDismissed] = useState(true)
+  const { canInstall, promptInstall } = usePWA()
+  const dismissedRef = useRef(true)
 
   useEffect(() => {
-    setDismissed(localStorage.getItem(DISMISSED_KEY) === '1')
+    dismissedRef.current = localStorage.getItem(DISMISSED_KEY) === '1'
   }, [])
 
   const dismiss = () => {
     localStorage.setItem(DISMISSED_KEY, '1')
-    setDismissed(true)
+    dismissedRef.current = true
   }
 
   const install = async () => {
@@ -29,7 +29,7 @@ export const InstallBanner = () => {
     dismiss()
   }
 
-  if (!canInstall || dismissed) return null
+  if (!canInstall || dismissedRef.current) return null
 
   return (
     <div className="fixed right-4 bottom-4 z-50 flex w-80 items-start gap-3 rounded-xl border bg-card p-4 shadow-lg">

@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { listNotifications, markAllNotificationsRead, markNotificationRead } from '@/actions/notification'
 import { type Notification } from '@/db/queries/notification'
@@ -11,34 +11,36 @@ interface NotificationsContextInput {
 
 const useNotificationsContext = ({ notifications: initial }: NotificationsContextInput) => {
   const [notifications, setNotifications] = useState(initial)
-  const unreadCount = useMemo(() => notifications.filter(n => !n.read).length, [notifications])
+  const unreadCount = notifications.filter(n => !n.read).length
 
-  const refresh = useCallback(async () => {
+  const refresh = async () => {
     const { data } = await listNotifications()
     if (data) setNotifications(data)
-  }, [])
+  }
 
   useEffect(() => {
     const poll = setInterval(() => {
-      if (document.visibilityState === 'visible') refresh()
+      if (document.visibilityState === 'visible') {
+        void (async () => {
+          const { data } = await listNotifications()
+          if (data) setNotifications(data)
+        })()
+      }
     }, 30_000)
     return () => clearInterval(poll)
-  }, [refresh])
+  }, [])
 
-  const markRead = useCallback(async (id: number) => {
+  const markRead = async (id: number) => {
     await markNotificationRead(id)
     setNotifications(prev => prev.map(n => (n.id === id ? { ...n, read: true } : n)))
-  }, [])
+  }
 
-  const markAllRead = useCallback(async () => {
+  const markAllRead = async () => {
     await markAllNotificationsRead()
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
-  }, [])
+  }
 
-  return useMemo(
-    () => ({ markAllRead, markRead, notifications, refresh, unreadCount }),
-    [markAllRead, markRead, notifications, refresh, unreadCount]
-  )
+  return { markAllRead, markRead, notifications, refresh, unreadCount }
 }
 
 export const NotificationsContext = createContext<ReturnType<typeof useNotificationsContext> | null>(null)

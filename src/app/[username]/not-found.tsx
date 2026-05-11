@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import appConfig from '~/config/metadata.json'
 
-export default () => {
+const UserNotFound = () => {
   const t = useTranslations('Certificates')
+
   return (
     <ErrorFallback message={t('publicNotFoundMessage')} title={t('publicNotFound')} type="not-found">
       <Button asChild variant="outline">
@@ -22,3 +23,5 @@ export default () => {
     </ErrorFallback>
   )
 }
+
+export default UserNotFound

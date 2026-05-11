@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { ChevronDownIcon, EyeIcon, HistoryIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -43,7 +43,7 @@ import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseHeader = () => {
-  const router = useRouter()
+  const { replace } = useRouter()
   const { scrolled } = useScroll()
   const { localeItems } = useI18n()
   const tCommon = useTranslations('Common')
@@ -151,7 +151,7 @@ export const CourseHeader = () => {
                       toast.success(t('courseSettingsUpdated'))
                       setSettingsOpen(false)
                       if (updated.slug !== course.slug) {
-                        router.replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
+                        replace(`/courses/${updated.slug}?lesson=${step}&lang=${language}`)
                       }
                     }}
                   />
@@ -283,7 +283,10 @@ export const CourseHeader = () => {
                   </TooltipContent>
                 </Tooltip>
               )}
-              <span className="text-sm">{course.progress}%</span>
+              <span className="text-sm">
+                {course.progress}
+                {'%'}
+              </span>
               <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
             </>
           )}
@@ -319,11 +322,10 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
   const { scrolled } = useScroll()
   const t = useTranslations('Courses')
 
-  const progressColor = useMemo(() => (course.progress === 100 ? 'success' : 'default'), [course.progress])
-
-  const lessonType = useCallback((lesson: Lesson) => t('lessonType', { type: lesson.type }), [t])
-  const isCurrentLesson = useCallback((index: number) => index === step, [step])
-  const isCompletedLesson = useCallback((index: number) => course.lessons[index].completed, [course.lessons])
+  const progressColor = course.progress === 100 ? 'success' : 'default'
+  const lessonType = (lesson: Lesson) => t('lessonType', { type: lesson.type })
+  const isCurrentLesson = (index: number) => index === step
+  const isCompletedLesson = (index: number) => course.lessons[index].completed
 
   return (
     <div className={cn('flex flex-col gap-4 bg-background pb-4', scrolled && 'border-b', className)} {...props}>
@@ -339,7 +341,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                   <span className="text-xs text-muted-foreground">{lessonType(currentLesson)}</span>
                 </>
               ) : (
-                <span className="font-medium">No lessons</span>
+                <span className="font-medium">{'No lessons'}</span>
               )}
             </div>
             <ChevronDownIcon className="size-4 opacity-50" />
@@ -356,7 +358,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
                     {lesson.title && localizeRecord(lesson.title, language)}{' '}
-                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">✔︎</span>}
+                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
                   </span>
                   <span className="text-xs text-muted-foreground">{lessonType(lesson)}</span>
                 </div>
@@ -365,7 +367,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
           ) : (
             <DropdownMenuItem className="flex justify-between py-2">
               <div className="flex flex-col">
-                <span>Add lesson</span>
+                <span>{'Add lesson'}</span>
               </div>
             </DropdownMenuItem>
           )}
@@ -373,7 +375,10 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
       </DropdownMenu>
       {course.progressStatus !== 'completed' && (
         <div className="flex items-center justify-end gap-2 bg-background md:top-18">
-          <span className="text-sm">{course.progress}%</span>
+          <span className="text-sm">
+            {course.progress}
+            {'%'}
+          </span>
           <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
         </div>
       )}

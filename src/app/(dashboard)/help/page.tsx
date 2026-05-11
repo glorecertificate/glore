@@ -9,7 +9,7 @@ export const generateMetadata = () =>
     title: 'help',
   })
 
-export default () => (
+const HelpPage = () => (
   <>
     <PageHeader namespace="Layout" titleKey="help" />
     <PageMain>
@@ -17,3 +17,5 @@ export default () => (
     </PageMain>
   </>
 )
+
+export default HelpPage

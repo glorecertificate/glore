@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useCallback, useState, useTransition } from 'react'
+import { Fragment, useState, useTransition } from 'react'
 
 import { MonitorIcon, SmartphoneIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -69,25 +69,22 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
-  const handleRevoke = useCallback(
-    (token: string) => {
-      setConfirmToken(null)
-      setRevokingToken(token)
-      startTransition(async () => {
-        try {
-          await revokeUserSession(token)
-          toast.success(t('revokeSessionSuccess'))
-        } catch {
-          toast.error(t('revokeSessionError'))
-        } finally {
-          setRevokingToken(null)
-        }
-      })
-    },
-    [t]
-  )
+  const handleRevoke = (token: string) => {
+    setConfirmToken(null)
+    setRevokingToken(token)
+    startTransition(async () => {
+      try {
+        await revokeUserSession(token)
+        toast.success(t('revokeSessionSuccess'))
+      } catch {
+        toast.error(t('revokeSessionError'))
+      } finally {
+        setRevokingToken(null)
+      }
+    })
+  }
 
-  const handleRevokeAll = useCallback(() => {
+  const handleRevokeAll = () => {
     setConfirmAll(false)
     startTransition(async () => {
       try {
@@ -97,7 +94,7 @@ export const AccountSessions = ({ currentToken, sessions }: AccountSessionsProps
         toast.error(t('revokeAllSessionsError'))
       }
     })
-  }, [t])
+  }
 
   const otherSessions = sessions.filter(s => s.token !== currentToken)
 

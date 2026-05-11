@@ -165,8 +165,7 @@ export const sendMail = async ({
 }) => {
   const messages = await messagesFor(locale)
   const { subject, element } = buildEmail(template, messages, locale as Locale)
-  const html = await render(element)
-  const text = await render(element, { plainText: true })
+  const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
   await transporter.sendMail({
     from: process.env.SMTP_SENDER,
     to: Array.isArray(to) ? to.join(', ') : to,

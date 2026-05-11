@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import {
   CalendarIcon,
@@ -53,127 +53,124 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
 
   const [open, setOpen] = useState(false)
 
-  const groups = useMemo<Group[]>(
-    () => [
-      {
-        group: t('blocks.basicBlocks'),
-        items: [
-          {
-            icon: <PilcrowIcon />,
-            label: t('blocks.paragraph'),
-            value: KEYS.p,
-          },
-          {
-            icon: <Heading1Icon />,
-            label: t('blocks.heading1'),
-            value: 'h1',
-          },
-          {
-            icon: <Heading2Icon />,
-            label: t('blocks.heading2'),
-            value: 'h2',
-          },
-          {
-            icon: <Heading3Icon />,
-            label: t('blocks.heading3'),
-            value: 'h3',
-          },
-          {
-            icon: <TableIcon />,
-            label: t('blocks.table'),
-            value: KEYS.table,
-          },
-          {
-            icon: <QuoteIcon />,
-            label: t('blocks.blockquote'),
-            value: KEYS.blockquote,
-          },
-          {
-            icon: <MinusIcon />,
-            label: t('blocks.horizontalRule'),
-            value: KEYS.hr,
-          },
-        ].map(item => ({
-          ...item,
-          onSelect: (ed: PlateEditor, value) => {
-            insertBlock(ed, value)
-          },
-        })),
-      },
-      {
-        group: t('blocks.lists'),
-        items: [
-          {
-            icon: <ListIcon />,
-            label: t('blocks.unorderedList'),
-            value: KEYS.ul,
-          },
-          {
-            icon: <ListOrderedIcon />,
-            label: t('blocks.orderedList'),
-            value: KEYS.ol,
-          },
-          {
-            icon: <SquareIcon />,
-            label: t('blocks.todoList'),
-            value: KEYS.listTodo,
-          },
-          {
-            icon: <ChevronRightIcon />,
-            label: t('blocks.toggle'),
-            value: KEYS.toggle,
-          },
-        ].map(item => ({
-          ...item,
-          onSelect: (ed: PlateEditor, value) => {
-            insertBlock(ed, value)
-          },
-        })),
-      },
-      {
-        group: t('blocks.mediaEmbed'),
-        items: [
-          {
-            icon: <ImageIcon />,
-            label: t('blocks.image'),
-            value: KEYS.img,
-          },
-          {
-            icon: <FilmIcon />,
-            label: t('blocks.video'),
-            value: KEYS.mediaEmbed,
-          },
-        ].map(item => ({
-          ...item,
-          onSelect: (ed: PlateEditor, value) => {
-            insertBlock(ed, value)
-          },
-        })),
-      },
-      {
-        group: t('blocks.inline'),
-        items: [
-          {
-            icon: <Link2Icon />,
-            label: t('blocks.link'),
-            value: KEYS.link,
-          },
-          {
-            focusEditor: true,
-            icon: <CalendarIcon />,
-            label: t('blocks.date'),
-            value: KEYS.date,
-          },
-        ].map(item => ({
-          ...item,
-          onSelect: (ed: PlateEditor, value) => {
-            insertInlineElement(ed, value)
-          },
-        })),
-      },
-    ],
-    [t]
-  )
+  const groups: Group[] = [
+    {
+      group: t('blocks.basicBlocks'),
+      items: [
+        {
+          icon: <PilcrowIcon />,
+          label: t('blocks.paragraph'),
+          value: KEYS.p,
+        },
+        {
+          icon: <Heading1Icon />,
+          label: t('blocks.heading1'),
+          value: 'h1',
+        },
+        {
+          icon: <Heading2Icon />,
+          label: t('blocks.heading2'),
+          value: 'h2',
+        },
+        {
+          icon: <Heading3Icon />,
+          label: t('blocks.heading3'),
+          value: 'h3',
+        },
+        {
+          icon: <TableIcon />,
+          label: t('blocks.table'),
+          value: KEYS.table,
+        },
+        {
+          icon: <QuoteIcon />,
+          label: t('blocks.blockquote'),
+          value: KEYS.blockquote,
+        },
+        {
+          icon: <MinusIcon />,
+          label: t('blocks.horizontalRule'),
+          value: KEYS.hr,
+        },
+      ].map(item => ({
+        ...item,
+        onSelect: (ed: PlateEditor, value) => {
+          insertBlock(ed, value)
+        },
+      })),
+    },
+    {
+      group: t('blocks.lists'),
+      items: [
+        {
+          icon: <ListIcon />,
+          label: t('blocks.unorderedList'),
+          value: KEYS.ul,
+        },
+        {
+          icon: <ListOrderedIcon />,
+          label: t('blocks.orderedList'),
+          value: KEYS.ol,
+        },
+        {
+          icon: <SquareIcon />,
+          label: t('blocks.todoList'),
+          value: KEYS.listTodo,
+        },
+        {
+          icon: <ChevronRightIcon />,
+          label: t('blocks.toggle'),
+          value: KEYS.toggle,
+        },
+      ].map(item => ({
+        ...item,
+        onSelect: (ed: PlateEditor, value) => {
+          insertBlock(ed, value)
+        },
+      })),
+    },
+    {
+      group: t('blocks.mediaEmbed'),
+      items: [
+        {
+          icon: <ImageIcon />,
+          label: t('blocks.image'),
+          value: KEYS.img,
+        },
+        {
+          icon: <FilmIcon />,
+          label: t('blocks.video'),
+          value: KEYS.mediaEmbed,
+        },
+      ].map(item => ({
+        ...item,
+        onSelect: (ed: PlateEditor, value) => {
+          insertBlock(ed, value)
+        },
+      })),
+    },
+    {
+      group: t('blocks.inline'),
+      items: [
+        {
+          icon: <Link2Icon />,
+          label: t('blocks.link'),
+          value: KEYS.link,
+        },
+        {
+          focusEditor: true,
+          icon: <CalendarIcon />,
+          label: t('blocks.date'),
+          value: KEYS.date,
+        },
+      ].map(item => ({
+        ...item,
+        onSelect: (ed: PlateEditor, value) => {
+          insertInlineElement(ed, value)
+        },
+      })),
+    },
+  ]
 
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>

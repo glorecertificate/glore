@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -37,21 +37,17 @@ export const ProfileForm = () => {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        bio: z.string().optional(),
-        phone: z.string().optional(),
-        birthday: z.string().optional(),
-        sex: z.enum(['female', 'male', 'non-binary', 'unspecified']).optional().or(z.literal('')),
-        pronouns: z.string().optional(),
-        city: z.string().optional(),
-        country: z.string().optional(),
-      }),
-    []
-  )
+  const formSchema = z.object({
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    bio: z.string().optional(),
+    phone: z.string().optional(),
+    birthday: z.string().optional(),
+    sex: z.enum(['female', 'male', 'non-binary', 'unspecified']).optional().or(z.literal('')),
+    pronouns: z.string().optional(),
+    city: z.string().optional(),
+    country: z.string().optional(),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,36 +64,33 @@ export const ProfileForm = () => {
     },
   })
 
-  const languagesChanged = useMemo(() => {
+  const languagesChanged = (() => {
     const original = user.languages ?? []
     if (languages.length !== original.length) return true
     return languages.some(l => !original.includes(l))
-  }, [languages, user.languages])
+  })()
 
   const disabled = defaultFormDisabled(form) && !languagesChanged
 
-  const handleAvatarUpload = useCallback(
-    async (file: File) => {
-      try {
-        const formData = new FormData()
-        formData.append('file', file)
-        const { data, error } = await uploadAvatar(formData)
-        if (error || !data) {
-          toast.error(t('avatarUploadError'))
-          return
-        }
-        setAvatarPreview(data.avatarUrl)
-        setUser(data)
-        toast.success(t('avatarUploaded'))
-      } catch (e) {
-        console.error(e)
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      const { data, error } = await uploadAvatar(formData)
+      if (error || !data) {
         toast.error(t('avatarUploadError'))
+        return
       }
-    },
-    [t, setUser]
-  )
+      setAvatarPreview(data.avatarUrl)
+      setUser(data)
+      toast.success(t('avatarUploaded'))
+    } catch (e) {
+      console.error(e)
+      toast.error(t('avatarUploadError'))
+    }
+  }
 
-  const handleAvatarRemove = useCallback(async () => {
+  const handleAvatarRemove = async () => {
     try {
       const { data, error } = await removeAvatar()
       if (error) {
@@ -110,72 +103,66 @@ export const ProfileForm = () => {
     } catch {
       toast.error(t('profileUpdateError'))
     }
-  }, [t, setUser])
+  }
 
-  const onSubmit = useCallback(
-    async (schema: z.infer<typeof formSchema>) => {
-      try {
-        const updates: TableUpdate<'users'> = {}
-        const fields = [
-          'firstName',
-          'lastName',
-          'bio',
-          'phone',
-          'birthday',
-          'sex',
-          'pronouns',
-          'city',
-          'country',
-        ] as const
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
+    try {
+      const updates: TableUpdate<'users'> = {}
+      const fields = [
+        'firstName',
+        'lastName',
+        'bio',
+        'phone',
+        'birthday',
+        'sex',
+        'pronouns',
+        'city',
+        'country',
+      ] as const
 
-        for (const key of fields) {
-          const value = schema[key]
-          if (value !== (user[key] ?? '')) {
-            updates[key] = (value || null) as never
-          }
+      for (const key of fields) {
+        const value = schema[key]
+        if (value !== (user[key] ?? '')) {
+          updates[key] = (value || null) as never
         }
-
-        if (languagesChanged) {
-          updates.languages = languages.length > 0 ? languages : null
-        }
-
-        if (Object.keys(updates).length > 0) {
-          const data = await updateUser(user.id, updates)
-
-          setUser(data)
-          form.reset({
-            firstName: data.firstName ?? '',
-            lastName: data.lastName ?? '',
-            bio: data.bio ?? '',
-            phone: data.phone ?? '',
-            birthday: data.birthday ?? '',
-            sex: (data.sex ?? '') as '' | 'female' | 'male' | 'non-binary' | 'unspecified',
-            pronouns: data.pronouns ?? '',
-            city: data.city ?? '',
-            country: data.country ?? '',
-          })
-          setLanguages(data.languages ?? [])
-          toast.success(t('profileUpdated'))
-        }
-      } catch (error) {
-        console.error(error)
-        toast.error(t('profileUpdateError'))
       }
-    },
-    [form, t, user, languages, languagesChanged, setUser]
-  )
 
-  const translateLanguage = useCallback(
-    (language: string) => {
-      const key = `Intl.Languages.${language}` as Any
-      return tGlobal.has?.(key) ? tGlobal(key) : language.toUpperCase()
-    },
-    [tGlobal]
-  )
+      if (languagesChanged) {
+        updates.languages = languages.length > 0 ? languages : null
+      }
 
-  const toggleLanguage = useCallback((lang: string) => {
+      if (Object.keys(updates).length > 0) {
+        const data = await updateUser(user.id, updates)
+
+        setUser(data)
+        form.reset({
+          firstName: data.firstName ?? '',
+          lastName: data.lastName ?? '',
+          bio: data.bio ?? '',
+          phone: data.phone ?? '',
+          birthday: data.birthday ?? '',
+          sex: (data.sex ?? '') as '' | 'female' | 'male' | 'non-binary' | 'unspecified',
+          pronouns: data.pronouns ?? '',
+          city: data.city ?? '',
+          country: data.country ?? '',
+        })
+        setLanguages(data.languages ?? [])
+        toast.success(t('profileUpdated'))
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error(t('profileUpdateError'))
+    }
+  }
+
+  const translateLanguage = (language: string) => {
+    const key = `Intl.Languages.${language}` as Any
+    return tGlobal.has?.(key) ? tGlobal(key) : language.toUpperCase()
+  }
+
+  const toggleLanguage = (lang: string) => {
     setLanguages(prev => (prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]))
-  }, [])
+  }
 
   return (
     <Form {...form}>

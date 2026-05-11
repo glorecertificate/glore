@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -26,7 +26,7 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
     return () => clearInterval(timer)
   }, [timeLeft])
 
-  const handleResend = useCallback(async () => {
+  const handleResend = async () => {
     if (!username) {
       return
     }
@@ -51,7 +51,7 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
     } finally {
       setLoading(false)
     }
-  }, [username, t])
+  }
 
   if (!username) {
     return null

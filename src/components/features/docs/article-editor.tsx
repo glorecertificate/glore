@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback, useEffect, useState } from 'react'
+import { startTransition, useEffect, useReducer } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -35,45 +35,91 @@ const slugify = (input: string) =>
     .replace(/-{2,}/g, '-')
     .replace(/^-|-$/g, '')
 
+interface EditorState {
+  titles: IntlRecord
+  excerpts: IntlRecord
+  contents: IntlRecord
+  slug: string
+  categoryId: number | null
+  published: boolean
+  saving: boolean
+}
+
+type EditorAction =
+  | { type: 'INIT_ARTICLE'; article: DocArticle }
+  | { type: 'INIT_NEW'; defaultCategoryId?: number }
+  | { type: 'SET_LOCALE_FIELD'; field: 'contents' | 'excerpts' | 'titles'; locale: string; value: string }
+  | { type: 'SET_CATEGORY'; value: number | null }
+  | { type: 'SET_PUBLISHED'; value: boolean }
+  | { type: 'SET_SAVING'; value: boolean }
+  | { type: 'SET_SLUG'; value: string }
+
+const editorReducer = (state: EditorState, action: EditorAction): EditorState => {
+  if (action.type === 'INIT_ARTICLE') {
+    return {
+      titles: { ...(action.article.title as IntlRecord) },
+      excerpts: { ...((action.article.excerpt as IntlRecord) ?? intlPlaceholder) },
+      contents: { ...(action.article.content as IntlRecord) },
+      slug: action.article.slug,
+      categoryId: action.article.categoryId,
+      published: action.article.isPublished,
+      saving: false,
+    }
+  }
+  if (action.type === 'INIT_NEW') {
+    return {
+      titles: { ...intlPlaceholder },
+      excerpts: { ...intlPlaceholder },
+      contents: { ...intlPlaceholder },
+      slug: '',
+      categoryId: action.defaultCategoryId ?? null,
+      published: false,
+      saving: false,
+    }
+  }
+  if (action.type === 'SET_LOCALE_FIELD') {
+    return { ...state, [action.field]: { ...state[action.field], [action.locale]: action.value } }
+  }
+  if (action.type === 'SET_CATEGORY') return { ...state, categoryId: action.value }
+  if (action.type === 'SET_PUBLISHED') return { ...state, published: action.value }
+  if (action.type === 'SET_SAVING') return { ...state, saving: action.value }
+  if (action.type === 'SET_SLUG') return { ...state, slug: action.value }
+  return state
+}
+
 export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenChange, open }: ArticleEditorProps) => {
   const t = useTranslations('Docs')
-  const router = useRouter()
+  const { refresh: routerRefresh } = useRouter()
 
-  const [titles, setTitles] = useState<IntlRecord>({ ...intlPlaceholder })
-  const [excerpts, setExcerpts] = useState<IntlRecord>({ ...intlPlaceholder })
-  const [contents, setContents] = useState<IntlRecord>({ ...intlPlaceholder })
-  const [slug, setSlug] = useState('')
-  const [categoryId, setCategoryId] = useState<number | null>(defaultCategoryId ?? null)
-  const [published, setPublished] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [state, dispatch] = useReducer(editorReducer, {
+    titles: { ...intlPlaceholder },
+    excerpts: { ...intlPlaceholder },
+    contents: { ...intlPlaceholder },
+    slug: '',
+    categoryId: defaultCategoryId ?? null,
+    published: false,
+    saving: false,
+  })
+
+  const { categoryId, contents, excerpts, published, saving, slug, titles } = state
 
   useEffect(() => {
     if (!open) return
     if (article) {
-      setTitles({ ...(article.title as IntlRecord) })
-      setExcerpts({ ...((article.excerpt as IntlRecord) ?? intlPlaceholder) })
-      setContents({ ...(article.content as IntlRecord) })
-      setSlug(article.slug)
-      setCategoryId(article.categoryId)
-      setPublished(article.isPublished)
+      dispatch({ type: 'INIT_ARTICLE', article })
     } else {
-      setTitles({ ...intlPlaceholder })
-      setExcerpts({ ...intlPlaceholder })
-      setContents({ ...intlPlaceholder })
-      setSlug('')
-      setCategoryId(defaultCategoryId ?? null)
-      setPublished(false)
+      dispatch({ type: 'INIT_NEW', defaultCategoryId })
     }
   }, [article, defaultCategoryId, open])
 
-  const generateSlug = useCallback(() => setSlug(slugify(titles[i18n.defaultLocale] ?? '')), [titles])
+  const generateSlug = () => dispatch({ type: 'SET_SLUG', value: slugify(titles[i18n.defaultLocale] ?? '') })
 
-  const handleSave = useCallback(async () => {
+  const handleSave = async () => {
     if (!titles[i18n.defaultLocale] || !slug) {
       toast.error(t('editor.requiredFields'))
       return
     }
-    setSaving(true)
+    dispatch({ type: 'SET_SAVING', value: true })
     const payload = {
       title: titles,
       excerpt: excerpts,
@@ -83,15 +129,15 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
       published,
     }
     const { error } = article ? await updateDocArticle(article.id, payload) : await createDocArticle(payload)
-    setSaving(false)
+    dispatch({ type: 'SET_SAVING', value: false })
     if (error) {
       toast.error(t('editor.error'))
       return
     }
     toast.success(article ? t('editor.updated') : t('editor.created'))
     onOpenChange(false)
-    startTransition(() => router.refresh())
-  }, [article, categoryId, contents, excerpts, onOpenChange, published, router, slug, t, titles])
+    startTransition(() => routerRefresh())
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,7 +156,7 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
                   id="article-slug"
                   placeholder={t('editor.slugPlaceholder')}
                   value={slug}
-                  onChange={e => setSlug(e.target.value)}
+                  onChange={e => dispatch({ type: 'SET_SLUG', value: e.target.value })}
                 />
               </div>
               <div className="mt-auto">
@@ -122,7 +168,10 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
 
             <div className="space-y-1.5">
               <Label>{t('editor.category')}</Label>
-              <Select value={categoryId?.toString() ?? ''} onValueChange={v => setCategoryId(v ? Number(v) : null)}>
+              <Select
+                value={categoryId?.toString() ?? ''}
+                onValueChange={v => dispatch({ type: 'SET_CATEGORY', value: v ? Number(v) : null })}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -138,7 +187,11 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
           </div>
 
           <div className="flex items-center gap-2">
-            <Switch checked={published} id="article-published" onCheckedChange={setPublished} />
+            <Switch
+              checked={published}
+              id="article-published"
+              onCheckedChange={value => dispatch({ type: 'SET_PUBLISHED', value })}
+            />
             <Label htmlFor="article-published">{t('editor.published')}</Label>
           </div>
         </div>
@@ -160,7 +213,9 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
                 <Input
                   placeholder={t('editor.titlePlaceholder')}
                   value={titles[item.value] ?? ''}
-                  onChange={e => setTitles(prev => ({ ...prev, [item.value]: e.target.value }))}
+                  onChange={e =>
+                    dispatch({ type: 'SET_LOCALE_FIELD', field: 'titles', locale: item.value, value: e.target.value })
+                  }
                 />
               </div>
 
@@ -170,7 +225,9 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
                   className="min-h-20"
                   placeholder={t('editor.excerptPlaceholder')}
                   value={excerpts[item.value] ?? ''}
-                  onChange={e => setExcerpts(prev => ({ ...prev, [item.value]: e.target.value }))}
+                  onChange={e =>
+                    dispatch({ type: 'SET_LOCALE_FIELD', field: 'excerpts', locale: item.value, value: e.target.value })
+                  }
                 />
               </div>
 
@@ -180,7 +237,9 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
                   className="min-h-40 font-mono text-sm"
                   placeholder={t('editor.contentPlaceholder')}
                   value={contents[item.value] ?? ''}
-                  onChange={e => setContents(prev => ({ ...prev, [item.value]: e.target.value }))}
+                  onChange={e =>
+                    dispatch({ type: 'SET_LOCALE_FIELD', field: 'contents', locale: item.value, value: e.target.value })
+                  }
                 />
                 <p className="text-xs text-muted-foreground">{t('editor.markdownSupported')}</p>
               </div>

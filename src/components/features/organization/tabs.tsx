@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, startTransition } from 'react'
+import { startTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
@@ -23,7 +23,7 @@ export const useOrganizationTab = () => {
   return { setTab, tab }
 }
 
-export const OrganizationTabs = memo((props: React.ComponentProps<typeof Tabs>) => {
+export const OrganizationTabs = (props: React.ComponentProps<typeof Tabs>) => {
   const { setTab, tab } = useOrganizationTab()
 
   return (
@@ -34,25 +34,23 @@ export const OrganizationTabs = memo((props: React.ComponentProps<typeof Tabs>) 
       {...props}
     />
   )
-})
+}
 
-export const OrganizationTabsList = memo(
-  ({
-    isOrgAdmin,
-    joinRequestCount,
-    ...props
-  }: React.ComponentProps<typeof TabsList> & { isOrgAdmin: boolean; joinRequestCount: number }) => {
-    const t = useTranslations('Organization')
+export const OrganizationTabsList = ({
+  isOrgAdmin,
+  joinRequestCount,
+  ...props
+}: React.ComponentProps<typeof TabsList> & { isOrgAdmin: boolean; joinRequestCount: number }) => {
+  const t = useTranslations('Organization')
 
-    return (
-      <TabsList className="max-w-full overflow-x-auto" {...props}>
-        <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-        <TabsTrigger value="members">{t('members')}</TabsTrigger>
-        <TabsTrigger count={joinRequestCount} value="joinRequests">
-          {t('joinRequests')}
-        </TabsTrigger>
-        {isOrgAdmin && <TabsTrigger value="settings">{t('settings')}</TabsTrigger>}
-      </TabsList>
-    )
-  }
-)
+  return (
+    <TabsList className="max-w-full overflow-x-auto" {...props}>
+      <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
+      <TabsTrigger value="members">{t('members')}</TabsTrigger>
+      <TabsTrigger count={joinRequestCount} value="joinRequests">
+        {t('joinRequests')}
+      </TabsTrigger>
+      {isOrgAdmin && <TabsTrigger value="settings">{t('settings')}</TabsTrigger>}
+    </TabsList>
+  )
+}

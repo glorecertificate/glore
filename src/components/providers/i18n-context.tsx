@@ -1,12 +1,12 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 import { type Locale, type Messages } from 'next-intl'
 import { NextIntlClientProvider } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
-import { type IntlRecord, type LocaleItem, i18n, localizeRecord } from '@/lib/i18n'
+import { type IntlRecord, i18n, localizeRecord } from '@/lib/i18n'
 
 interface I18nContextValue {
   locale?: Locale
@@ -21,38 +21,28 @@ const useI18nContext = (value: I18nContextValue) => {
   )
   const messageStoreRef = useRef(messageStore)
   messageStoreRef.current = messageStore
-  const messages = useMemo(() => messageStore[localeState], [localeState, messageStore])
+  const messages = messageStore[localeState]
   const timeZone = value.timeZone ?? Intl.DateTimeFormat(localeState).resolvedOptions().timeZone
 
-  const localeItems = useMemo<LocaleItem[]>(
-    () =>
-      i18n.localeItems.map(item => {
-        const label = messageStore[localeState]?.Intl.Languages?.[item.value] ?? item.label
-        const displayLabel = i18n.titleCaseLocales.includes(localeState) ? label : label.toLowerCase()
-        return { ...item, displayLabel, label }
-      }),
-    [localeState, messageStore]
-  )
+  const localeItems = i18n.localeItems.map(item => {
+    const label = messageStore[localeState]?.Intl.Languages?.[item.value] ?? item.label
+    const displayLabel = i18n.titleCaseLocales.includes(localeState) ? label : label.toLowerCase()
+    return { ...item, displayLabel, label }
+  })
 
-  const setMessages = useCallback(async (locale: Locale) => {
+  const setMessages = async (locale: Locale) => {
     if (messageStoreRef.current[locale]) return
     const messagesModule = await import(`~/messages/${locale}`)
     setMessageStore(prev => ({ ...prev, [locale]: messagesModule.default }))
-  }, [])
+  }
 
-  const setLocale = useCallback(
-    async (locale: Locale) => {
-      await setMessages(locale)
-      setLocaleState(locale)
-      setLocaleCookie(locale)
-    },
-    [setMessages]
-  )
+  const setLocale = async (locale: Locale) => {
+    await setMessages(locale)
+    setLocaleState(locale)
+    setLocaleCookie(locale)
+  }
 
-  const localize = useCallback(
-    <T,>(record: IntlRecord<T>, fallback?: Locale) => localizeRecord(record, localeState, fallback),
-    [localeState]
-  )
+  const localize = <T,>(record: IntlRecord<T>, fallback?: Locale) => localizeRecord(record, localeState, fallback)
 
   useEffect(() => {
     void setMessages(localeState)
@@ -66,7 +56,7 @@ export const I18nContext = createContext<Omit<ReturnType<typeof useI18nContext>,
 
 export const I18nProvider = ({ children, value, ...props }: React.ProviderProps<I18nContextValue>) => {
   const { locale, messages, timeZone, ...providerValue } = useI18nContext(value)
-  const contextValue = useMemo(() => ({ ...providerValue, locale }), [providerValue, locale])
+  const contextValue = { ...providerValue, locale }
 
   return (
     <I18nContext.Provider value={contextValue} {...props}>

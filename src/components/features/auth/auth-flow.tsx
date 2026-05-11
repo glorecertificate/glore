@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -61,9 +61,8 @@ export const AuthFlow = ({
   const [errored, setErrored] = useState(false)
 
   useLayoutEffect(() => {
-    if (sessionExpired) {
-      toast.error(t('sessionExpired'))
-    }
+    if (!sessionExpired) return
+    toast.error(t('sessionExpired'))
   }, [sessionExpired, t])
 
   useMetadata({
@@ -73,7 +72,7 @@ export const AuthFlow = ({
 
   const title = view ? t(camelize(`${view}_title`)) : null
 
-  const message = useMemo(() => {
+  const message = (() => {
     if (!view) {
       return null
     }
@@ -84,9 +83,9 @@ export const AuthFlow = ({
       email: () =>
         username && EMAIL_REGEX.test(username) ? <span className="text-brand">{` ${username} `}</span> : null,
     })
-  }, [username, t, view])
+  })()
 
-  const content = useMemo(() => {
+  const content = (() => {
     switch (view) {
       case 'login':
         return (
@@ -161,32 +160,33 @@ export const AuthFlow = ({
       default:
         return null
     }
-  }, [errored, resetToken, t, username, view])
+  })()
 
   const ref = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState<number>()
-
-  const updateHeight = useCallback((element: HTMLDivElement) => {
-    const { height: newHeight } = element.getBoundingClientRect()
-    if (newHeight === 0) return
-    setHeight(newHeight)
-  }, [])
 
   useLayoutEffect(() => {
     if (view !== 'login') return
 
     const element = ref.current
     if (!element) return
-    updateHeight(element)
 
-    const observer = new ResizeObserver(() => updateHeight(element))
+    const measureHeight = (el: HTMLDivElement) => {
+      const { height: newHeight } = el.getBoundingClientRect()
+      if (newHeight === 0) return
+      setHeight(newHeight)
+    }
+
+    measureHeight(element)
+
+    const observer = new ResizeObserver(() => measureHeight(element))
     observer.observe(element)
     return () => observer.disconnect()
-  }, [view, updateHeight])
+  }, [view])
 
-  const containerStyle = useMemo(() => (height ? { minHeight: height } : {}), [height])
+  const containerStyle = height ? { minHeight: height } : {}
 
-  const globeColorOptions = useMemo<GlobeColorOptions>(() => {
+  const globeColorOptions: GlobeColorOptions = (() => {
     const colors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
     const options: GlobeColorOptions = { arcColor: arcPalette, glowColor: colors.background }
 
@@ -207,7 +207,7 @@ export const AuthFlow = ({
       default:
         return options
     }
-  }, [errored, resolvedTheme, view])
+  })()
 
   return (
     <>
@@ -240,7 +240,7 @@ export const AuthFlow = ({
                   key={`heading-${view}`}
                   transition={motionTransition}
                 >
-                  {title && <h1 className="text-3xl font-bold">{title}</h1>}
+                  {title && <h1 className="text-3xl font-semibold">{title}</h1>}
                   {message && <p className="text-muted-foreground">{message}</p>}
                 </motion.div>
               </AnimatePresence>

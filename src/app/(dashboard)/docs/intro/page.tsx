@@ -14,31 +14,29 @@ export const generateMetadata = () =>
     title: 'docsIntro',
   })
 
-const IntroContent = async () => {
-  const [user, category, { data: allCategories }] = await Promise.all([
-    getAuthUser(),
-    findDocCategory('intro', { includeUnpublished: true }),
-    listDocCategories({ includeUnpublished: true }),
-  ])
-
+const DocsIntroContent = async () => {
+  const category = await findDocCategory('intro', { includeUnpublished: true })
   if (!category) return null
+  const [user, categories] = await Promise.all([getAuthUser(), listDocCategories({ includeUnpublished: true })])
 
   return (
     <DocsSection
-      allCategories={allCategories ?? []}
+      allCategories={categories.data ?? []}
       canEdit={user?.role === 'admin' || Boolean(user?.isEditor)}
       category={category}
     />
   )
 }
 
-export default () => (
+const DocsIntroPage = () => (
   <>
     <PageHeader />
     <PageMain>
       <Suspense fallback={<LoadingFallback />}>
-        <IntroContent />
+        <DocsIntroContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default DocsIntroPage

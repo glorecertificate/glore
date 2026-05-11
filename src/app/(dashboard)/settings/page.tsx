@@ -20,7 +20,7 @@ const SessionsContent = async () => {
   return <AccountSessions currentToken={currentToken} sessions={sessions} />
 }
 
-export default () => (
+const SettingsPage = () => (
   <UserSettingsTabs>
     <UserSettingsHeader />
     <PageMain className="py-8">
@@ -34,3 +34,5 @@ export default () => (
     </PageMain>
   </UserSettingsTabs>
 )
+
+export default SettingsPage

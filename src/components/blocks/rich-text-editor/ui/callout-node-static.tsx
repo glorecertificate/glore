@@ -14,7 +14,6 @@ export const CalloutElementStatic = ({
 }: SlateElementProps & {
   className?: string
 }) => {
-  // eslint-disable-next-line
   const bgStyle: React.CSSProperties = { backgroundColor: props.element.backgroundColor as string }
 
   return (

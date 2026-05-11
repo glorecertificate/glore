@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { FilterIcon, SearchIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -35,7 +35,7 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
   const [banTarget, setBanTarget] = useState<User | null>(null)
   const [unbanTarget, setUnbanTarget] = useState<User | null>(null)
 
-  const displayUsers = useMemo(() => {
+  const displayUsers = (() => {
     let filtered = users
 
     if (search.trim()) {
@@ -57,44 +57,38 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
     }
 
     return filtered
-  }, [users, search, filterRole, filterStatus])
+  })()
 
-  const refreshUsers = useCallback(async () => {
+  const refreshUsers = async () => {
     const { data } = await getAdminUsers({ cache: false })
     if (data) setUsers(data)
-  }, [])
+  }
 
-  const handleChangeRole = useCallback(
-    async (user: User, role: PlatformRole) => {
-      const { error } = await updateUserRole(user.id, role)
-      if (error) {
-        console.error(error)
-        toast.error(t('roleUpdateError'))
-        return
-      }
-      toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`) }))
-      refreshUsers()
-    },
-    [t, refreshUsers]
-  )
+  const handleChangeRole = async (user: User, role: PlatformRole) => {
+    const { error } = await updateUserRole(user.id, role)
+    if (error) {
+      console.error(error)
+      toast.error(t('roleUpdateError'))
+      return
+    }
+    toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`) }))
+    refreshUsers()
+  }
 
-  const handleBanConfirm = useCallback(
-    async (reason?: string) => {
-      if (!banTarget) return
-      const { error } = await banUser(banTarget.id, reason)
-      if (error) {
-        console.error(error)
-        toast.error(t('banError'))
-        return
-      }
-      toast.success(t('banSuccess', { name: getDisplayName(banTarget) }))
-      setBanTarget(null)
-      refreshUsers()
-    },
-    [banTarget, t, refreshUsers]
-  )
+  const handleBanConfirm = async (reason?: string) => {
+    if (!banTarget) return
+    const { error } = await banUser(banTarget.id, reason)
+    if (error) {
+      console.error(error)
+      toast.error(t('banError'))
+      return
+    }
+    toast.success(t('banSuccess', { name: getDisplayName(banTarget) }))
+    setBanTarget(null)
+    refreshUsers()
+  }
 
-  const handleUnbanConfirm = useCallback(async () => {
+  const handleUnbanConfirm = async () => {
     if (!unbanTarget) return
     const { error } = await unbanUser(unbanTarget.id)
     if (error) {
@@ -105,15 +99,15 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
     toast.success(t('unbanSuccess', { name: getDisplayName(unbanTarget) }))
     setUnbanTarget(null)
     refreshUsers()
-  }, [unbanTarget, t, refreshUsers])
+  }
 
   const hasFilters = search.trim() !== '' || filterRole !== 'all' || filterStatus !== 'all'
 
-  const handleClearFilters = useCallback(() => {
+  const handleClearFilters = () => {
     setSearch('')
     setFilterRole('all')
     setFilterStatus('all')
-  }, [])
+  }
 
   return (
     <div className="flex flex-col gap-4">

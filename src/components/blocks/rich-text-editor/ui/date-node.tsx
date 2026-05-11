@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useTranslations } from 'next-intl'
 import { type TDateElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly } from 'platejs/react'
@@ -16,7 +14,7 @@ export const DateElement = (props: PlateElementProps<TDateElement>) => {
   const t = useTranslations('Components.RichTextEditor.actions')
   const readOnly = useReadOnly()
 
-  const dateAttributes = useMemo(() => ({ ...props.attributes, contentEditable: false }), [props.attributes])
+  const dateAttributes = { ...props.attributes, contentEditable: false }
 
   const trigger = (
     <span

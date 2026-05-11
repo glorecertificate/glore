@@ -131,16 +131,18 @@ export const deleteAccount = async () => {
     .from(memberships)
     .where(and(eq(memberships.userId, user.id), eq(memberships.role, 'admin')))
 
-  for (const m of adminMemberships) {
-    const otherAdmin = await db.query.memberships.findFirst({
-      where: and(
-        eq(memberships.organizationId, m.organizationId),
-        eq(memberships.role, 'admin'),
-        ne(memberships.userId, user.id)
-      ),
-    })
-    if (!otherAdmin) throw new Error('SOLE_ORG_ADMIN')
-  }
+  const otherAdmins = await Promise.all(
+    adminMemberships.map(m =>
+      db.query.memberships.findFirst({
+        where: and(
+          eq(memberships.organizationId, m.organizationId),
+          eq(memberships.role, 'admin'),
+          ne(memberships.userId, user.id)
+        ),
+      })
+    )
+  )
+  if (otherAdmins.some(a => !a)) throw new Error('SOLE_ORG_ADMIN')
 
   const cert = await db.query.certificates.findFirst({
     where: eq(certificates.userId, user.id),
@@ -148,21 +150,20 @@ export const deleteAccount = async () => {
   })
   if (cert) throw new Error('HAS_CERTIFICATES')
 
-  await db.delete(userAssessments).where(eq(userAssessments.userId, user.id))
-  await db.delete(userEvaluations).where(eq(userEvaluations.userId, user.id))
-  await db.delete(userAnswers).where(eq(userAnswers.userId, user.id))
-  await db.delete(userLessons).where(eq(userLessons.userId, user.id))
-  await db.delete(userCourses).where(eq(userCourses.userId, user.id))
-  await db.delete(contributions).where(eq(contributions.userId, user.id))
-
-  await db
-    .update(organizationJoinRequests)
-    .set({ reviewedBy: null })
-    .where(eq(organizationJoinRequests.reviewedBy, user.id))
-
-  await db.update(certificates).set({ reviewerId: null }).where(eq(certificates.reviewerId, user.id))
-
-  await db.delete(users).where(eq(users.id, user.id))
+  await Promise.all([
+    db.delete(userAssessments).where(eq(userAssessments.userId, user.id)),
+    db.delete(userEvaluations).where(eq(userEvaluations.userId, user.id)),
+    db.delete(userAnswers).where(eq(userAnswers.userId, user.id)),
+    db.delete(userLessons).where(eq(userLessons.userId, user.id)),
+    db.delete(userCourses).where(eq(userCourses.userId, user.id)),
+    db.delete(contributions).where(eq(contributions.userId, user.id)),
+    db
+      .update(organizationJoinRequests)
+      .set({ reviewedBy: null })
+      .where(eq(organizationJoinRequests.reviewedBy, user.id)),
+    db.update(certificates).set({ reviewerId: null }).where(eq(certificates.reviewerId, user.id)),
+    db.delete(users).where(eq(users.id, user.id)),
+  ])
 
   redirect(AUTH_ROOT)
 }

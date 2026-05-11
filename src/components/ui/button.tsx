@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
@@ -51,10 +51,7 @@ export const Button = ({
   const hasLeftIcon = !loading && iconPlacement === 'left'
   const hasRightIcon = !loading && iconPlacement === 'right'
   const isDisabled = disabled || loading
-  const buttonTitle = useMemo(
-    () => (loading ? loadingTitle : disabled ? disabledTitle : title),
-    [loading, loadingTitle, disabled, disabledTitle, title]
-  )
+  const buttonTitle = loading ? loadingTitle : disabled ? disabledTitle : title
 
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 import { useChat as useBaseChat } from '@ai-sdk/react'
 import { AIChatPlugin, AIPlugin, useEditorChat, useLastAssistantMessage } from '@platejs/ai/react'
@@ -233,42 +233,30 @@ export const AIMenu = () => {
   const lastMessage = useLastAssistantMessage()
   const content = lastMessage?.parts?.find(p => p.type === 'text')?.text
 
-  const placeholder = useMemo(
-    () => (messages?.length ? t('placeholders.askAIEdit') : t('placeholders.askAI')),
-    [messages, t]
-  )
+  const placeholder = messages?.length ? t('placeholders.askAIEdit') : t('placeholders.askAI')
 
   useEffect(() => {
-    if (!streaming) {
-      return
-    }
+    if (!streaming) return
     const anchor = api.aiChat.node({ anchor: true })
-    setTimeout(() => {
-      if (!anchor?.[0]) {
-        return
-      }
+    const timeout = setTimeout(() => {
+      if (!anchor?.[0]) return
       const anchorDom = editor.api.toDOMNode(anchor[0])!
       setAnchorElement(anchorDom)
     }, 0)
+    return () => clearTimeout(timeout)
   }, [streaming, api.aiChat.node, editor.api.toDOMNode, api.aiChat, editor.api])
 
-  const setOpen = useCallback(
-    (isOpen: boolean) => {
-      if (isOpen) {
-        return api.aiChat.show()
-      }
-      api.aiChat.hide()
-    },
-    [api]
-  )
+  const setOpen = (isOpen: boolean) => {
+    if (isOpen) {
+      return api.aiChat.show()
+    }
+    api.aiChat.hide()
+  }
 
-  const show = useCallback(
-    (el: HTMLElement) => {
-      setAnchorElement(el)
-      setOpen(true)
-    },
-    [setOpen]
-  )
+  const show = (el: HTMLElement) => {
+    setAnchorElement(el)
+    setOpen(true)
+  }
 
   useEditorChat({
     chat,
@@ -309,8 +297,8 @@ export const AIMenu = () => {
 
   const isLoading = status === 'streaming' || status === 'submitted'
 
-  const anchorVirtualRef = useMemo(() => ({ current: anchorElement! }), [anchorElement])
-  const popoverStyle = useMemo(() => ({ width: anchorElement?.offsetWidth }), [anchorElement])
+  const anchorVirtualRef = { current: anchorElement! }
+  const popoverStyle = { width: anchorElement?.offsetWidth }
 
   if (isLoading && mode === 'insert') {
     return null
@@ -379,60 +367,61 @@ const AIMenuItems = ({ setValue }: { setValue: (value: string) => void }) => {
   const isSelecting = useIsSelecting() as boolean
   const aiChatItems = useAIChatItems()
 
-  const messages = useMemo(() => (options ? options?.messages : []), [options])
+  const messages = options ? options?.messages : []
 
-  const menuStateItems = useMemo<MenuStateItems>(
-    () => ({
-      cursorCommand: [
-        {
-          items: [aiChatItems.continueWrite, aiChatItems.summarize, aiChatItems.explain],
-        },
-      ],
-      cursorSuggestion: [
-        {
-          items: [aiChatItems.accept, aiChatItems.discard, aiChatItems.tryAgain],
-        },
-      ],
-      selectionCommand: [
-        {
-          items: [
-            aiChatItems.improveWriting,
-            aiChatItems.emojify,
-            aiChatItems.makeLonger,
-            aiChatItems.makeShorter,
-            aiChatItems.fixSpelling,
-            aiChatItems.simplifyLanguage,
-          ],
-        },
-      ],
-      selectionSuggestion: [
-        {
-          items: [aiChatItems.replace, aiChatItems.insertBelow, aiChatItems.discard, aiChatItems.tryAgain],
-        },
-      ],
-    }),
-    [aiChatItems]
-  )
+  const menuStateItems: MenuStateItems = {
+    cursorCommand: [
+      {
+        items: [aiChatItems.continueWrite, aiChatItems.summarize, aiChatItems.explain],
+      },
+    ],
+    cursorSuggestion: [
+      {
+        items: [aiChatItems.accept, aiChatItems.discard, aiChatItems.tryAgain],
+      },
+    ],
+    selectionCommand: [
+      {
+        items: [
+          aiChatItems.improveWriting,
+          aiChatItems.emojify,
+          aiChatItems.makeLonger,
+          aiChatItems.makeShorter,
+          aiChatItems.fixSpelling,
+          aiChatItems.simplifyLanguage,
+        ],
+      },
+    ],
+    selectionSuggestion: [
+      {
+        items: [aiChatItems.replace, aiChatItems.insertBelow, aiChatItems.discard, aiChatItems.tryAgain],
+      },
+    ],
+  }
 
-  const menuState = useMemo(() => {
+  const menuState = (() => {
     if (messages && messages.length > 0) {
       return isSelecting ? 'selectionSuggestion' : 'cursorSuggestion'
     }
     return isSelecting ? 'selectionCommand' : 'cursorCommand'
-  }, [isSelecting, messages])
+  })()
 
-  const menuGroups = useMemo(() => menuStateItems[menuState], [menuState, menuStateItems])
+  const menuGroups = menuStateItems[menuState]
 
-  useEffect(() => {
+  const syncMenuValue = useEffectEvent(() => {
     if (menuGroups.length > 0 && menuGroups[0].items.length > 0) {
       setValue(menuGroups[0].items[0].value)
     }
-  }, [setValue, menuGroups])
+  })
+
+  useEffect(() => {
+    syncMenuValue()
+  }, [menuGroups])
 
   return (
     <>
-      {menuGroups.map((group, index) => (
-        <CommandGroup heading={group.heading} key={index}>
+      {menuGroups.map(group => (
+        <CommandGroup heading={group.heading} key={group.heading}>
           {group.items.map(menuItem => (
             <CommandItem
               className="[&_svg]:text-muted-foreground"

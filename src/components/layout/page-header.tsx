@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { NotificationBell } from '@/components/features/notifications/notification-bell'
+import { NotificationBell } from '@/components/features/pwa/notification-bell'
 import { GloreIcon } from '@/components/icons/glore'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList } from '@/components/ui/breadcrumb'
 import { Link } from '@/components/ui/link'
@@ -29,7 +29,7 @@ export const PageHeaderSidebarTrigger = ({ className, ...props }: React.Componen
       </TooltipTrigger>
       <TooltipContent showArrow side="right">
         <p className="text-xs font-medium">{action}</p>
-        <p className="font-mono text-[10px] text-gray-400 dark:text-gray-500">{`Ctrl + ${settings.sidebarShortcut.toUpperCase()}`}</p>
+        <p className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500">{`Ctrl + ${settings.sidebarShortcut.toUpperCase()}`}</p>
       </TooltipContent>
     </Tooltip>
   )

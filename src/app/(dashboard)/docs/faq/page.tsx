@@ -14,31 +14,29 @@ export const generateMetadata = () =>
     title: 'docsFaq',
   })
 
-const FaqContent = async () => {
-  const [user, category, { data: allCategories }] = await Promise.all([
-    getAuthUser(),
-    findDocCategory('faq', { includeUnpublished: true }),
-    listDocCategories({ includeUnpublished: true }),
-  ])
-
+const DocsFaqContent = async () => {
+  const category = await findDocCategory('faq', { includeUnpublished: true })
   if (!category) return null
+  const [user, categories] = await Promise.all([getAuthUser(), listDocCategories({ includeUnpublished: true })])
 
   return (
     <DocsSection
-      allCategories={allCategories ?? []}
+      allCategories={categories.data ?? []}
       canEdit={user?.role === 'admin' || Boolean(user?.isEditor)}
       category={category}
     />
   )
 }
 
-export default () => (
+const DocsFaqPage = () => (
   <>
     <PageHeader />
     <PageMain>
       <Suspense fallback={<LoadingFallback />}>
-        <FaqContent />
+        <DocsFaqContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default DocsFaqPage

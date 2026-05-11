@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
   if (typeof ref === 'function') {
     return ref(value)
@@ -14,8 +12,9 @@ const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
 /**
  * Composes multiple refs, accepts callback refs and {@link React.RefObject}.
  */
-export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> =>
-  useCallback(node => {
+export const useComposedRefs =
+  <T>(...refs: (React.Ref<T> | undefined)[]): React.RefCallback<T> =>
+  node => {
     let hasCleanup = false
 
     const cleanups = refs.map(ref => {
@@ -38,5 +37,4 @@ export const useComposedRefs = <T>(...refs: (React.Ref<T> | undefined)[]): React
         }
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, refs)
+  }

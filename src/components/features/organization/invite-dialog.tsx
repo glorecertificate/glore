@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -34,6 +34,44 @@ interface InviteMemberDialogProps {
   open: boolean
 }
 
+interface InviteState {
+  email: string
+  firstName: string
+  lastName: string
+  locale: Locale
+  role: OrganizationMembershipRole
+  submitting: boolean
+}
+
+type InviteAction =
+  | { type: 'RESET'; defaultLocale: Locale; defaultRole: OrganizationMembershipRole }
+  | { type: 'SET_EMAIL'; value: string }
+  | { type: 'SET_FIRST_NAME'; value: string }
+  | { type: 'SET_LAST_NAME'; value: string }
+  | { type: 'SET_LOCALE'; value: Locale }
+  | { type: 'SET_ROLE'; value: OrganizationMembershipRole }
+  | { type: 'SET_SUBMITTING'; value: boolean }
+
+const inviteReducer = (state: InviteState, action: InviteAction): InviteState => {
+  if (action.type === 'RESET') {
+    return {
+      email: '',
+      firstName: '',
+      lastName: '',
+      locale: action.defaultLocale,
+      role: action.defaultRole,
+      submitting: false,
+    }
+  }
+  if (action.type === 'SET_EMAIL') return { ...state, email: action.value }
+  if (action.type === 'SET_FIRST_NAME') return { ...state, firstName: action.value }
+  if (action.type === 'SET_LAST_NAME') return { ...state, lastName: action.value }
+  if (action.type === 'SET_LOCALE') return { ...state, locale: action.value }
+  if (action.type === 'SET_ROLE') return { ...state, role: action.value }
+  if (action.type === 'SET_SUBMITTING') return { ...state, submitting: action.value }
+  return state
+}
+
 export const InviteMemberDialog = ({
   allowedRoles,
   defaultLocale,
@@ -43,35 +81,33 @@ export const InviteMemberDialog = ({
 }: InviteMemberDialogProps) => {
   const t = useTranslations('Organization')
 
-  const [email, setEmail] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [locale, setLocale] = useState<Locale>(defaultLocale)
-  const [role, setRole] = useState<OrganizationMembershipRole>(allowedRoles[0] ?? 'learner')
-  const [submitting, setSubmitting] = useState(false)
-  const [prevAllowedRoles, setPrevAllowedRoles] = useState(allowedRoles)
+  const [state, dispatch] = useReducer(inviteReducer, {
+    email: '',
+    firstName: '',
+    lastName: '',
+    locale: defaultLocale,
+    role: allowedRoles[0] ?? 'learner',
+    submitting: false,
+  })
 
-  if (prevAllowedRoles !== allowedRoles) {
-    setPrevAllowedRoles(allowedRoles)
-    setRole(allowedRoles[0] ?? 'learner')
+  const { email, firstName, lastName, locale, role, submitting } = state
+
+  useEffect(() => {
+    dispatch({ type: 'SET_ROLE', value: allowedRoles[0] ?? 'learner' })
+  }, [allowedRoles])
+
+  const reset = () => {
+    dispatch({ type: 'RESET', defaultLocale, defaultRole: allowedRoles[0] ?? 'learner' })
   }
 
-  const reset = useCallback(() => {
-    setEmail('')
-    setFirstName('')
-    setLastName('')
-    setLocale(defaultLocale)
-    setRole(allowedRoles[0] ?? 'learner')
-  }, [allowedRoles, defaultLocale])
-
-  const handleSubmit = useCallback(async () => {
+  const handleSubmit = async () => {
     if (!(email.trim() && firstName.trim())) {
       toast.error(t('inviteInvalid'))
       return
     }
 
     try {
-      setSubmitting(true)
+      dispatch({ type: 'SET_SUBMITTING', value: true })
       await onInvite({
         email: email.trim(),
         firstName: firstName.trim(),
@@ -82,9 +118,9 @@ export const InviteMemberDialog = ({
       reset()
       onOpenChange(false)
     } finally {
-      setSubmitting(false)
+      dispatch({ type: 'SET_SUBMITTING', value: false })
     }
-  }, [email, firstName, lastName, locale, onInvite, onOpenChange, reset, role, t])
+  }
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
@@ -100,7 +136,7 @@ export const InviteMemberDialog = ({
               <Input
                 disabled={submitting}
                 id="organization-invite-first-name"
-                onChange={e => setFirstName(e.target.value)}
+                onChange={e => dispatch({ type: 'SET_FIRST_NAME', value: e.target.value })}
                 placeholder={t('firstNamePlaceholder')}
                 value={firstName}
               />
@@ -110,7 +146,7 @@ export const InviteMemberDialog = ({
               <Input
                 disabled={submitting}
                 id="organization-invite-last-name"
-                onChange={e => setLastName(e.target.value)}
+                onChange={e => dispatch({ type: 'SET_LAST_NAME', value: e.target.value })}
                 placeholder={t('lastNamePlaceholder')}
                 value={lastName}
               />
@@ -121,7 +157,7 @@ export const InviteMemberDialog = ({
             <Input
               disabled={submitting}
               id="organization-invite-email"
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => dispatch({ type: 'SET_EMAIL', value: e.target.value })}
               placeholder={t('emailPlaceholder')}
               type="email"
               value={email}
@@ -132,7 +168,7 @@ export const InviteMemberDialog = ({
               <Label htmlFor="organization-invite-role">{t('role')}</Label>
               <Select
                 disabled={submitting}
-                onValueChange={value => setRole(value as OrganizationMembershipRole)}
+                onValueChange={value => dispatch({ type: 'SET_ROLE', value: value as OrganizationMembershipRole })}
                 value={role}
               >
                 <SelectTrigger id="organization-invite-role">
@@ -149,7 +185,12 @@ export const InviteMemberDialog = ({
             </div>
             <div className="flex flex-col gap-2">
               <Label>{t('language')}</Label>
-              <LanguageSelect controlled disabled={submitting} onChange={setLocale} value={locale} />
+              <LanguageSelect
+                controlled
+                disabled={submitting}
+                onChange={value => dispatch({ type: 'SET_LOCALE', value })}
+                value={locale}
+              />
             </div>
           </div>
         </div>

@@ -44,13 +44,6 @@ export type MessageKey<T extends Namespace> = T extends Namespace
 
 export type IntlRecord<T = string> = Record<Locale, T>
 
-export interface LocaleItem {
-  value: Locale
-  label: string
-  displayLabel: string
-  icon: string
-}
-
 const locales = Object.keys(config.locales) as Locale[]
 
 export const i18n = {

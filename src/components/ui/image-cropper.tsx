@@ -125,7 +125,7 @@ export const ImageCropper = ({
     <>
       <div className="flex items-center gap-4">
         <div className="group relative">
-          <Avatar className="h-24 w-24 cursor-pointer rounded-xl border transition-opacity hover:opacity-50">
+          <Avatar className="size-24 cursor-pointer rounded-xl border transition-opacity hover:opacity-50">
             <AvatarImage className="object-cover" src={value || undefined} />
             <AvatarFallback className="text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
           </Avatar>
@@ -135,7 +135,7 @@ export const ImageCropper = ({
 
         <div className="flex flex-col gap-2">
           <Button size="sm" type="button" variant="outline" {...getRootProps()} className="w-fit" disabled={disabled}>
-            <UploadCloudIcon className="mr-2 h-4 w-4" />
+            <UploadCloudIcon className="mr-2 size-4" />
             {value ? t('changeAvatar') : t('uploadAvatar')}
           </Button>
 
@@ -148,7 +148,7 @@ export const ImageCropper = ({
               type="button"
               variant="ghost"
             >
-              <Trash2Icon className="mr-2 h-4 w-4" />
+              <Trash2Icon className="mr-2 size-4" />
               {t('remove')}
             </Button>
           )}

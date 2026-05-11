@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { PlaceholderPlugin } from '@platejs/media/react'
 import { AudioLinesIcon, FileUpIcon, FilmIcon, ImageIcon, LinkIcon } from 'lucide-react'
@@ -48,33 +48,30 @@ export const MediaToolbarButton = ({
   const editor = useEditorRef()
   const t = useTranslations('Components.RichTextEditor.media')
 
-  const mediaConfig = useMemo<Record<string, MediaConfig>>(
-    () => ({
-      [KEYS.audio]: {
-        accept: ['audio/*'],
-        icon: <AudioLinesIcon className="size-4" />,
-        label: t('audio'),
-      },
-      [KEYS.file]: {
-        accept: ['*'],
-        icon: <FileUpIcon className="size-4" />,
-        label: t('file'),
-      },
-      [KEYS.img]: {
-        accept: ['image/*'],
-        icon: <ImageIcon className="size-4" />,
-        label: t('image'),
-      },
-      [KEYS.video]: {
-        accept: ['video/*'],
-        icon: <FilmIcon className="size-4" />,
-        label: t('video'),
-      },
-    }),
-    [t]
-  )
+  const mediaConfig = {
+    [KEYS.audio]: {
+      accept: ['audio/*'],
+      icon: <AudioLinesIcon className="size-4" />,
+      label: t('audio'),
+    },
+    [KEYS.file]: {
+      accept: ['*'],
+      icon: <FileUpIcon className="size-4" />,
+      label: t('file'),
+    },
+    [KEYS.img]: {
+      accept: ['image/*'],
+      icon: <ImageIcon className="size-4" />,
+      label: t('image'),
+    },
+    [KEYS.video]: {
+      accept: ['video/*'],
+      icon: <FilmIcon className="size-4" />,
+      label: t('video'),
+    },
+  }
 
-  const currentConfig = mediaConfig[nodeType]
+  const currentConfig = mediaConfig[nodeType as keyof typeof mediaConfig]
 
   const [open, setOpen] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -150,7 +147,7 @@ const MediaUrlDialogContent = ({
   const [url, setUrl] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const embedMedia = useCallback(() => {
+  const embedMedia = () => {
     if (!isUrl(url)) {
       return toast.error(t('invalidUrl'))
     }
@@ -163,12 +160,11 @@ const MediaUrlDialogContent = ({
       type: nodeType,
       url,
     })
-  }, [url, editor, nodeType, setOpen, t])
+  }
 
   useEffect(() => {
-    setTimeout(() => {
-      inputRef.current?.focus()
-    })
+    const timeout = setTimeout(() => inputRef.current?.focus(), 100)
+    return () => clearTimeout(timeout)
   }, [])
 
   return (

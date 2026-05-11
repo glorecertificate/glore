@@ -1,6 +1,7 @@
-const buildId = new URL(self.location.href).searchParams.get('buildId') || 'dev'
 const CACHE_NAME = `glore-${buildId}`
 const OFFLINE_URL = '/offline'
+
+const buildId = new URL(self.location.href).searchParams.get('buildId') || 'dev'
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -15,8 +16,9 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     (async () => {
-      const keys = await caches.keys()
-      await Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+      const cachesKeys = await caches.keys()
+      const keys = cachesKeys.filter(key => key !== CACHE_NAME)
+      await Promise.all(keys.map(key => caches.delete(key)))
     })()
   )
   self.clients.claim()

@@ -2,7 +2,7 @@
 
 import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { type default as FuseType } from 'fuse.js'
 import { BookOpenIcon, FileTextIcon, UsersIcon } from 'lucide-react'
@@ -35,7 +35,7 @@ interface SearchCommandProps {
 
 export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
   const t = useTranslations('Search')
-  const router = useRouter()
+  const { push } = useRouter()
   const { localize } = useI18n()
   const { user } = useSession()
   const { courses } = useCourses()
@@ -71,88 +71,64 @@ export const SearchCommand = ({ open, onOpenChange }: SearchCommandProps) => {
     if (!open) setQuery('')
   }, [open])
 
-  const searchableCourses = useMemo(
-    () => courses.map(c => ({ ...c, localTitle: localize(c.title) })),
-    [courses, localize]
-  )
+  const searchableCourses = courses.map(c => ({ ...c, localTitle: localize(c.title) }))
 
-  const courseFuse = useMemo(
-    () =>
-      Fuse
-        ? new Fuse(searchableCourses, {
-            ignoreLocation: true,
-            includeScore: true,
-            keys: ['localTitle', 'slug'],
-            threshold: 0.4,
-          })
-        : null,
-    [Fuse, searchableCourses]
-  )
+  const courseFuse = Fuse
+    ? new Fuse(searchableCourses, {
+        ignoreLocation: true,
+        includeScore: true,
+        keys: ['localTitle', 'slug'],
+        threshold: 0.4,
+      })
+    : null
 
-  const certFuse = useMemo(
-    () =>
-      Fuse
-        ? new Fuse(certificates, {
-            ignoreLocation: true,
-            includeScore: true,
-            keys: ['handle', 'organization.name'],
-            threshold: 0.4,
-          })
-        : null,
-    [Fuse, certificates]
-  )
+  const certFuse = Fuse
+    ? new Fuse(certificates, {
+        ignoreLocation: true,
+        includeScore: true,
+        keys: ['handle', 'organization.name'],
+        threshold: 0.4,
+      })
+    : null
 
-  const memberFuse = useMemo(
-    () =>
-      Fuse
-        ? new Fuse(members, {
-            ignoreLocation: true,
-            includeScore: true,
-            keys: ['fullName', 'user.email'],
-            threshold: 0.4,
-          })
-        : null,
-    [Fuse, members]
-  )
+  const memberFuse = Fuse
+    ? new Fuse(members, {
+        ignoreLocation: true,
+        includeScore: true,
+        keys: ['fullName', 'user.email'],
+        threshold: 0.4,
+      })
+    : null
 
-  const courseResults = useMemo(
-    () =>
-      debouncedQuery.trim() && courseFuse
-        ? courseFuse
-            .search(debouncedQuery)
-            .slice(0, 8)
-            .map(r => r.item)
-        : searchableCourses.slice(0, 5),
-    [courseFuse, debouncedQuery, searchableCourses]
-  )
+  const courseResults =
+    debouncedQuery.trim() && courseFuse
+      ? courseFuse
+          .search(debouncedQuery)
+          .slice(0, 8)
+          .map(r => r.item)
+      : searchableCourses.slice(0, 5)
 
-  const certResults = useMemo(
-    () =>
-      debouncedQuery.trim() && certFuse
-        ? certFuse
-            .search(debouncedQuery)
-            .slice(0, 5)
-            .map(r => r.item)
-        : certificates.slice(0, 5),
-    [certFuse, certificates, debouncedQuery]
-  )
+  const certResults =
+    debouncedQuery.trim() && certFuse
+      ? certFuse
+          .search(debouncedQuery)
+          .slice(0, 5)
+          .map(r => r.item)
+      : certificates.slice(0, 5)
 
-  const memberResults = useMemo(
-    () =>
-      debouncedQuery.trim() && memberFuse
-        ? memberFuse
-            .search(debouncedQuery)
-            .slice(0, 5)
-            .map(r => r.item)
-        : members.slice(0, 5),
-    [debouncedQuery, memberFuse, members]
-  )
+  const memberResults =
+    debouncedQuery.trim() && memberFuse
+      ? memberFuse
+          .search(debouncedQuery)
+          .slice(0, 5)
+          .map(r => r.item)
+      : members.slice(0, 5)
 
   const hasResults = courseResults.length > 0 || certResults.length > 0 || memberResults.length > 0
 
   const navigate = (href: string) => {
     onOpenChange(false)
-    router.push(href as Route)
+    push(href as Route)
   }
 
   return (

@@ -18,7 +18,7 @@ export const generateMetadata = () =>
     title: 'docs',
   })
 
-const DocsContent = async () => {
+const DocsPageContent = async () => {
   const [user, { data: categories }, t] = await Promise.all([
     getAuthUser(),
     listDocCategories({ includeUnpublished: true }),
@@ -47,13 +47,15 @@ const DocsContent = async () => {
   )
 }
 
-export default () => (
+const DocsPage = () => (
   <>
     <PageHeader />
     <PageMain className="space-y-10">
       <Suspense fallback={<LoadingFallback />}>
-        <DocsContent />
+        <DocsPageContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default DocsPage

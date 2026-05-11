@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useRef } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -28,21 +28,17 @@ export const PasswordResetForm = ({
   const t = useTranslations('Auth')
   const [, setToken] = useQueryState('token', parseAsString)
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        password: z
-          .string()
-          .nonempty(t('newPasswordRequired'))
-          .min(8, {
-            message: t('passwordTooShort'),
-          })
-          .regex(PASSWORD_REGEX, {
-            message: t('passwordRequirements'),
-          }),
+  const formSchema = z.object({
+    password: z
+      .string()
+      .nonempty(t('newPasswordRequired'))
+      .min(8, {
+        message: t('passwordTooShort'),
+      })
+      .regex(PASSWORD_REGEX, {
+        message: t('passwordRequirements'),
       }),
-    [t]
-  )
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -53,39 +49,36 @@ export const PasswordResetForm = ({
 
   const disabled = defaultFormDisabled(form)
   const errored = Object.keys(form.formState.errors).length > 0
-  const [prevErrored, setPrevErrored] = useState(errored)
+  const prevErrored = useRef(errored)
 
-  if (prevErrored !== errored) {
-    setPrevErrored(errored)
+  if (prevErrored.current !== errored) {
+    prevErrored.current = errored
     setErrored(errored)
   }
 
-  const onSubmit = useCallback(
-    async (schema: z.infer<typeof formSchema>) => {
-      if (!resetToken) {
-        return setView('invalid_token')
-      }
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
+    if (!resetToken) {
+      return setView('invalid_token')
+    }
 
-      const { error } = await updatePassword(resetToken, schema.password.trim())
+    const { error } = await updatePassword(resetToken, schema.password.trim())
 
-      if (error) {
-        if (error.code === 'same_password') {
-          form.setError('password', { message: t('passwordSameAsOld') })
-          form.setFocus('password')
-          return
-        }
-        setView('invalid_password_reset')
-        setToken(null)
-        await logout()
+    if (error) {
+      if (error.code === 'same_password') {
+        form.setError('password', { message: t('passwordSameAsOld') })
+        form.setFocus('password')
         return
       }
-
-      setView('password_updated')
+      setView('invalid_password_reset')
       setToken(null)
       await logout()
-    },
-    [form, setToken, setView, t, resetToken]
-  )
+      return
+    }
+
+    setView('password_updated')
+    setToken(null)
+    await logout()
+  }
 
   return (
     <>

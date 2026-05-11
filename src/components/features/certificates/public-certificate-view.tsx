@@ -54,7 +54,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             {t('publicVerified')}
           </Badge>
           <div className="space-y-1.5">
-            <h1 className="text-3xl font-bold tracking-tight">{volunteerName}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight">{volunteerName}</h1>
             <p className="text-lg text-muted-foreground">{certificate.organization.name}</p>
           </div>
           {certificate.documentUrl && (
@@ -71,12 +71,14 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarIcon className="size-4 shrink-0" />
-                {t('activityStartDate')} – {t('activityEndDate')}
+                {t('activityStartDate')} {'– '}
+                {t('activityEndDate')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm">
-                {start} – {end}
+                {start} {'– '}
+                {end}
               </p>
             </CardContent>
           </Card>
@@ -89,7 +91,10 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{certificate.activityDuration}h</p>
+              <p className="text-sm">
+                {certificate.activityDuration}
+                {'h'}
+              </p>
             </CardContent>
           </Card>
 
@@ -134,7 +139,8 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
         {issuedAt && (
           <p className="text-center text-xs text-muted-foreground">
-            {t('publicIssuedBy')} · {issuedAt}
+            {t('publicIssuedBy')} {'· '}
+            {issuedAt}
           </p>
         )}
 

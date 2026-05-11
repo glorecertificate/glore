@@ -4,9 +4,7 @@ import { SlateElement, type SlateElementProps } from 'platejs/static'
 export const VideoElementStatic = (props: SlateElementProps<TVideoElement & TCaptionElement & TResizableProps>) => {
   const { align = 'center', caption, url, width } = props.element
 
-  // eslint-disable-next-line
   const divStyle = { textAlign: align as React.CSSProperties['textAlign'] }
-  // eslint-disable-next-line
   const figureStyle = { width }
 
   return (

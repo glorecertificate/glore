@@ -1,3 +1,4 @@
+// eslint-disable-next-line react-doctor/prefer-dynamic-import
 import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
 
 import { type CertificateFormValues } from '@/components/features/certificates/schemas'
@@ -217,8 +218,8 @@ export const CertificateDocument = ({
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>GloRe Certificate</Text>
-          <Text style={styles.headerSubtitle}>Global Volunteering Network</Text>
+          <Text style={styles.headerTitle}>{'GloRe Certificate'}</Text>
+          <Text style={styles.headerSubtitle}>{'Global Volunteering Network'}</Text>
         </View>
         {orgLogoUrl ? <Image src={orgLogoUrl} style={styles.orgLogo} /> : null}
       </View>
@@ -227,7 +228,7 @@ export const CertificateDocument = ({
       <View style={styles.body}>
         <View style={styles.certifyRow}>
           <View style={styles.certifyLine} />
-          <Text style={styles.certifyText}>This is to certify that</Text>
+          <Text style={styles.certifyText}>{'This is to certify that'}</Text>
           <View style={styles.certifyLine} />
         </View>
 
@@ -244,7 +245,7 @@ export const CertificateDocument = ({
         {/* Activity details */}
         <View style={styles.twoCol}>
           <View style={styles.col}>
-            <Text style={styles.metaLabel}>Activity period</Text>
+            <Text style={styles.metaLabel}>{'Activity period'}</Text>
             <Text style={styles.metaValue}>
               {values.activityStartDate && values.activityEndDate
                 ? `${formatDate(values.activityStartDate)} – ${formatDate(values.activityEndDate)}`
@@ -252,18 +253,18 @@ export const CertificateDocument = ({
             </Text>
           </View>
           <View style={styles.col}>
-            <Text style={styles.metaLabel}>Duration</Text>
+            <Text style={styles.metaLabel}>{'Duration'}</Text>
             <Text style={styles.metaValue}>{values.activityDuration ? `${values.activityDuration} hours` : '—'}</Text>
           </View>
         </View>
 
         <View style={styles.twoCol}>
           <View style={styles.col}>
-            <Text style={styles.metaLabel}>Location</Text>
+            <Text style={styles.metaLabel}>{'Location'}</Text>
             <Text style={styles.metaValue}>{values.activityLocation || '—'}</Text>
           </View>
           <View style={styles.col}>
-            <Text style={styles.metaLabel}>Organization rating</Text>
+            <Text style={styles.metaLabel}>{'Organization rating'}</Text>
             <View style={styles.ratingRow}>
               {Array.from({ length: 5 }).map((_, i) => (
                 <View key={i} style={i < (values.organizationRating ?? 0) ? styles.ratingDot : styles.ratingDotEmpty} />
@@ -275,10 +276,10 @@ export const CertificateDocument = ({
         {/* Skills */}
         {skillNames.length > 0 ? (
           <View style={styles.skillsSection}>
-            <Text style={styles.skillsTitle}>Certified Skills</Text>
+            <Text style={styles.skillsTitle}>{'Certified Skills'}</Text>
             <View style={styles.skillsGrid}>
-              {skillNames.map((name, i) => (
-                <View key={i} style={styles.skillChip}>
+              {skillNames.map(name => (
+                <View key={name} style={styles.skillChip}>
                   <Text style={styles.skillChipText}>{name}</Text>
                 </View>
               ))}
@@ -289,7 +290,7 @@ export const CertificateDocument = ({
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>GloRe — Global Volunteering Network</Text>
+        <Text style={styles.footerText}>{'GloRe — Global Volunteering Network'}</Text>
         <Text style={styles.footerText}>
           {issuedDate
             ? `Issued on ${formatDate(issuedDate)}`

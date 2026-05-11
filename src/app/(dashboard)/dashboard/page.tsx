@@ -9,7 +9,7 @@ export const generateMetadata = () =>
     title: 'dashboard',
   })
 
-export default () => (
+const DashboardPage = () => (
   <>
     <PageHeader namespace="Layout" titleKey="dashboard" />
     <PageMain>
@@ -17,3 +17,5 @@ export default () => (
     </PageMain>
   </>
 )
+
+export default DashboardPage

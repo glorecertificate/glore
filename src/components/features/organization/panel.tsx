@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback } from 'react'
+import { startTransition } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { type User } from '@/db/queries/user'
@@ -14,7 +14,7 @@ import { OrganizationSettings } from './settings'
 import { useOrganizationTab } from './tabs'
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
-  const router = useRouter()
+  const { refresh: routerRefresh } = useRouter()
   const { setOrganization, setUser } = useSession()
   const { tab } = useOrganizationTab()
 
@@ -22,21 +22,18 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
 
   const currentTab = !data.isOrgAdmin && tab === 'settings' ? 'overview' : tab
 
-  const refresh = useCallback(() => {
-    startTransition(() => router.refresh())
-  }, [router])
+  const refresh = () => {
+    startTransition(() => routerRefresh())
+  }
 
-  const syncUser = useCallback(
-    (nextUser: User) => {
-      setUser(nextUser)
-      const nextOrganization = nextUser.organizations[0]
+  const syncUser = (nextUser: User) => {
+    setUser(nextUser)
+    const nextOrganization = nextUser.organizations[0]
 
-      if (nextOrganization?.id) {
-        setOrganization(nextOrganization.id)
-      }
-    },
-    [setOrganization, setUser]
-  )
+    if (nextOrganization?.id) {
+      setOrganization(nextOrganization.id)
+    }
+  }
 
   if (currentTab === 'members') {
     return (

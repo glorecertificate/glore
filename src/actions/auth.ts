@@ -133,13 +133,14 @@ export const listUserSessions = async () => {
   const authUser = await getAuthUser()
   if (!authUser) redirect(AUTH_ROOT)
 
-  const currentSession = await auth.api.getSession({ headers: await headers() })
-
-  const allSessions = await db.query.sessions.findMany({
-    where: eq(sessions.userId, authUser.id),
-    orderBy: [desc(sessions.createdAt)],
-    limit: 50,
-  })
+  const [currentSession, allSessions] = await Promise.all([
+    auth.api.getSession({ headers: await headers() }),
+    db.query.sessions.findMany({
+      where: eq(sessions.userId, authUser.id),
+      orderBy: [desc(sessions.createdAt)],
+      limit: 50,
+    }),
+  ])
 
   return { sessions: allSessions, currentToken: currentSession?.session.token ?? null }
 }

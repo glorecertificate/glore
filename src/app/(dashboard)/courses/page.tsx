@@ -15,7 +15,7 @@ export const generateMetadata = () =>
     title: 'courses',
   })
 
-export default async ({ searchParams }: PageProps<'/courses'>) => {
+const CoursesPage = async ({ searchParams }: PageProps<'/courses'>) => {
   if (Object.keys(await searchParams).length === 0) {
     const params = await getCookie('courseListParams')
     if (params) {
@@ -34,3 +34,5 @@ export default async ({ searchParams }: PageProps<'/courses'>) => {
     </Suspense>
   )
 }
+
+export default CoursesPage

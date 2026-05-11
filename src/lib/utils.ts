@@ -56,14 +56,11 @@ export const titleize = (input: string) =>
     .join(' ')
 
 export const camelize = <T extends string>(input: T) =>
-  input
-    .split(CAMEL_CASE_REGEX)
-    .filter(Boolean)
-    .map((word, index) => {
-      const cleanWord = word.toLowerCase()
-      return index === 0 ? cleanWord : cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1)
-    })
-    .join('') as CamelCase<T>
+  input.split(CAMEL_CASE_REGEX).reduce<string>((acc, word) => {
+    if (!word) return acc
+    const cleanWord = word.toLowerCase()
+    return acc + (acc.length === 0 ? cleanWord : cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1))
+  }, '') as CamelCase<T>
 
 /*
   Objects

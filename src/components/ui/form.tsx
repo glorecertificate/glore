@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useId, useMemo } from 'react'
+import { createContext, use, useId, useMemo } from 'react'
 
 import { Slot, type SlotProps } from '@radix-ui/react-slot'
 import {
@@ -44,8 +44,8 @@ export const FormField = <
 }
 
 export const useFormField = () => {
-  const fieldContext = useContext(FormFieldContext)
-  const itemContext = useContext(FormItemContext)
+  const fieldContext = use(FormFieldContext)
+  const itemContext = use(FormItemContext)
   const { getFieldState } = useFormContext()
   const formState = useFormState({ name: fieldContext.name })
   const fieldState = getFieldState(fieldContext.name, formState)

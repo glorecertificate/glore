@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -38,7 +38,7 @@ export const CourseFooter = () => {
   const isFirst = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === 0
   const isLast = course.lessons.findIndex(lesson => lesson.id === currentLesson.id) === course.lessons.length - 1
 
-  const canProceed = useMemo(() => {
+  const canProceed = (() => {
     if (isViewer) return true
     switch (currentLesson.type) {
       case 'reading':
@@ -52,23 +52,23 @@ export const CourseFooter = () => {
       default:
         return false
     }
-  }, [currentLesson, isViewer])
+  })()
 
-  const nextTooltip = useMemo(() => {
+  const nextTooltip = (() => {
     if (currentLesson.type && !canProceed) {
       return t('replyToProceed', { type: currentLesson.type })
     }
-  }, [canProceed, currentLesson.type, t])
+  })()
 
-  const handleAdvance = useCallback(async () => {
+  const handleAdvance = async () => {
     if (!user.canEdit && !isViewer && currentLesson.id && !currentLesson.completed) {
       setSaving(true)
       try {
         await completeLesson(currentLesson.id)
         if (currentLesson.type === 'evaluations' && currentLesson.evaluations?.length) {
-          const ratings = currentLesson.evaluations
-            .filter(e => e.userRating !== null && e.userRating !== undefined)
-            .map(e => ({ evaluationId: e.id, value: e.userRating! }))
+          const ratings = currentLesson.evaluations.flatMap(e =>
+            e.userRating !== null && e.userRating !== undefined ? [{ evaluationId: e.id, value: e.userRating }] : []
+          )
           if (ratings.length > 0) await submitEvaluationRatings(ratings)
         }
         if (
@@ -87,7 +87,7 @@ export const CourseFooter = () => {
       }
     }
     next()
-  }, [currentLesson, isViewer, next, setCourse, user.canEdit])
+  }
 
   const completedCount = course.lessons.filter(({ completed }) => completed).length
   const completedTitle =

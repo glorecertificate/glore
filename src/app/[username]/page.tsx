@@ -7,9 +7,7 @@ import { PublicCertificateView } from '@/components/features/certificates/public
 import config from '~/config/metadata.json'
 
 export const generateMetadata = async ({ params, searchParams }: PageProps<'/[username]'>) => {
-  const { username } = await params
-  const { v: handle } = await searchParams
-  const t = await getTranslations('Certificates')
+  const [{ username }, { v: handle }, t] = await Promise.all([params, searchParams, getTranslations('Certificates')])
   const resolvedHandle = typeof handle === 'string' ? handle : handle?.[0]
   const { data: cert } = await findPublicCertificate(username, resolvedHandle)
 
@@ -37,10 +35,11 @@ export const generateMetadata = async ({ params, searchParams }: PageProps<'/[us
   }
 }
 
-export default async ({ params, searchParams }: PageProps<'/[username]'>) => {
-  const { username } = await params
-  const { v: handle } = await searchParams
+const UserPage = async ({ params, searchParams }: PageProps<'/[username]'>) => {
+  const [{ username }, { v: handle }] = await Promise.all([params, searchParams])
   const { data: certificate } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
   if (!certificate) notFound()
   return <PublicCertificateView certificate={certificate} username={username} />
 }
+
+export default UserPage

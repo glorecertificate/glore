@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin, useBlockSelected } from '@platejs/selection/react'
@@ -88,7 +88,7 @@ export const TableElement = withHOC(TableProvider, ({ children, ...props }: Plat
 
   const isSelectingTable = useBlockSelected(props.element.id as string) as boolean
 
-  const tableStyle = useMemo(() => ({ paddingLeft: marginLeft }), [marginLeft])
+  const tableStyle = { paddingLeft: marginLeft }
 
   const content = (
     <PlateElement
@@ -277,30 +277,30 @@ const TableBordersDropdownMenuContent = (props: React.ComponentProps<typeof Drop
       <DropdownMenuGroup>
         <DropdownMenuCheckboxItem checked={hasTopBorder} onCheckedChange={getOnSelectTableBorder('top')}>
           <BorderTopIcon />
-          <div>Top Border</div>
+          <div>{'Top Border'}</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasRightBorder} onCheckedChange={getOnSelectTableBorder('right')}>
           <BorderRightIcon />
-          <div>Right Border</div>
+          <div>{'Right Border'}</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasBottomBorder} onCheckedChange={getOnSelectTableBorder('bottom')}>
           <BorderBottomIcon />
-          <div>Bottom Border</div>
+          <div>{'Bottom Border'}</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasLeftBorder} onCheckedChange={getOnSelectTableBorder('left')}>
           <BorderLeftIcon />
-          <div>Left Border</div>
+          <div>{'Left Border'}</div>
         </DropdownMenuCheckboxItem>
       </DropdownMenuGroup>
 
       <DropdownMenuGroup>
         <DropdownMenuCheckboxItem checked={hasNoBorders} onCheckedChange={getOnSelectTableBorder('none')}>
           <BorderNoneIcon />
-          <div>No Border</div>
+          <div>{'No Border'}</div>
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={hasOuterBorders} onCheckedChange={getOnSelectTableBorder('outer')}>
           <BorderAllIcon />
-          <div>Outside Borders</div>
+          <div>{'Outside Borders'}</div>
         </DropdownMenuCheckboxItem>
       </DropdownMenuGroup>
     </DropdownMenuContent>
@@ -314,21 +314,18 @@ const ColorDropdownMenu = ({ children, tooltip }: { children: React.ReactNode; t
   const editor = useEditorRef()
   const selectedCells = usePluginOption(TablePlugin, 'selectedCells')
 
-  const onUpdateColor = useCallback(
-    (color: string) => {
-      setOpen(false)
-      setCellBackground(editor, { color, selectedCells: selectedCells ?? [] })
-    },
-    [selectedCells, editor]
-  )
+  const onUpdateColor = (color: string) => {
+    setOpen(false)
+    setCellBackground(editor, { color, selectedCells: selectedCells ?? [] })
+  }
 
-  const onClearColor = useCallback(() => {
+  const onClearColor = () => {
     setOpen(false)
     setCellBackground(editor, {
       color: null,
       selectedCells: selectedCells ?? [],
     })
-  }, [selectedCells, editor])
+  }
 
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open}>
@@ -343,7 +340,7 @@ const ColorDropdownMenu = ({ children, tooltip }: { children: React.ReactNode; t
         <DropdownMenuGroup>
           <DropdownMenuItem className="p-2" onClick={onClearColor}>
             <EraserIcon />
-            <span>Clear</span>
+            <span>{'Clear'}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -373,10 +370,7 @@ export const TableRowElement = (props: PlateElementProps<TTableRowElement>) => {
     type: element.type,
   })
 
-  const rowAttributes = useMemo(
-    () => ({ ...props.attributes, 'data-selected': selected ? 'true' : undefined }),
-    [props.attributes, selected]
-  )
+  const rowAttributes = { ...props.attributes, 'data-selected': selected ? 'true' : undefined }
 
   return (
     <PlateElement
@@ -458,24 +452,17 @@ export const TableCellElement = ({
     rowIndex,
   })
 
-  const cellAttributes = useMemo(
-    () => ({
-      ...props.attributes,
-      colSpan: api.table.getColSpan(element),
-      rowSpan: api.table.getRowSpan(element),
-    }),
-    [props.attributes, element, api.table]
-  )
-  const cellStyle = useMemo(
-    () =>
-      ({
-        '--cellBackground': element.background,
-        maxWidth: width || 240,
-        minWidth: width || 120,
-      }) as React.CSSProperties,
-    [element.background, width]
-  )
-  const innerDivStyle = useMemo(() => ({ minHeight }), [minHeight])
+  const cellAttributes = {
+    ...props.attributes,
+    colSpan: api.table.getColSpan(element),
+    rowSpan: api.table.getRowSpan(element),
+  }
+  const cellStyle = {
+    '--cellBackground': element.background,
+    maxWidth: width || 240,
+    minWidth: width || 120,
+  } as React.CSSProperties
+  const innerDivStyle = { minHeight }
 
   return (
     <PlateElement

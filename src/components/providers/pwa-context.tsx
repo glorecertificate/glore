@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -19,7 +19,7 @@ const getBuildId = () => {
   return nextData?.buildId ?? 'dev'
 }
 
-const usePWAContext = () => {
+const usePWA = () => {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
   const [pushSubscribed, setPushSubscribed] = useState(false)
@@ -61,7 +61,7 @@ const usePWAContext = () => {
 
   const canInstall = Boolean(installPrompt) && !isInstalled
 
-  const promptInstall = useCallback(async () => {
+  const promptInstall = async () => {
     if (!installPrompt) return
     await installPrompt.prompt()
     const { outcome } = await installPrompt.userChoice
@@ -69,9 +69,9 @@ const usePWAContext = () => {
       setIsInstalled(true)
       setInstallPrompt(null)
     }
-  }, [installPrompt])
+  }
 
-  const requestPushPermission = useCallback(async () => {
+  const requestPushPermission = async () => {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) return
     const permission = await Notification.requestPermission()
     setPushPermission(permission)
@@ -92,9 +92,9 @@ const usePWAContext = () => {
       method: 'POST',
     })
     setPushSubscribed(true)
-  }, [])
+  }
 
-  const unsubscribePush = useCallback(async () => {
+  const unsubscribePush = async () => {
     if (!('serviceWorker' in navigator)) return
     const reg = await navigator.serviceWorker.ready
     const sub = await reg.pushManager.getSubscription()
@@ -106,25 +106,22 @@ const usePWAContext = () => {
       method: 'DELETE',
     })
     setPushSubscribed(false)
-  }, [])
+  }
 
-  return useMemo(
-    () => ({
-      canInstall,
-      isInstalled,
-      promptInstall,
-      pushPermission,
-      pushSubscribed,
-      requestPushPermission,
-      unsubscribePush,
-    }),
-    [canInstall, isInstalled, promptInstall, pushPermission, pushSubscribed, requestPushPermission, unsubscribePush]
-  )
+  return {
+    canInstall,
+    isInstalled,
+    promptInstall,
+    pushPermission,
+    pushSubscribed,
+    requestPushPermission,
+    unsubscribePush,
+  }
 }
 
-export const PWAContext = createContext<ReturnType<typeof usePWAContext> | null>(null)
+export const PWAContext = createContext<ReturnType<typeof usePWA> | null>(null)
 
 export const PWAContextProvider = ({ children }: React.PropsWithChildren) => {
-  const value = usePWAContext()
+  const value = usePWA()
   return <PWAContext.Provider value={value}>{children}</PWAContext.Provider>
 }

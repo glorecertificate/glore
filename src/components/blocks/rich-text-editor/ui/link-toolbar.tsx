@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { type UseVirtualFloatingOptions, flip, offset } from '@platejs/floating'
 import { getLinkAttributes } from '@platejs/link'
 import {
@@ -34,19 +32,16 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
   const activeCommentId = usePluginOption({ key: KEYS.comment }, 'activeId') as string | undefined
   const activeSuggestionId = usePluginOption({ key: KEYS.suggestion }, 'activeId') as string | undefined
 
-  const floatingOptions: UseVirtualFloatingOptions = useMemo(
-    () => ({
-      middleware: [
-        offset(8),
-        flip({
-          fallbackPlacements: ['bottom-end', 'top-start', 'top-end'],
-          padding: 12,
-        }),
-      ],
-      placement: activeSuggestionId || activeCommentId ? 'top-start' : 'bottom-start',
-    }),
-    [activeCommentId, activeSuggestionId]
-  )
+  const floatingOptions: UseVirtualFloatingOptions = {
+    middleware: [
+      offset(8),
+      flip({
+        fallbackPlacements: ['bottom-end', 'top-start', 'top-end'],
+        padding: 12,
+      }),
+    ],
+    placement: activeSuggestionId || activeCommentId ? 'top-start' : 'bottom-start',
+  }
 
   const insertState = useFloatingLinkInsertState({
     ...state,
@@ -135,13 +130,13 @@ const LinkOpenButton = () => {
   const editor = useEditorRef()
   const _selection = useEditorSelection() as string | undefined
 
-  const attributes = useMemo(() => {
+  const attributes = (() => {
     const entry = editor.api.node({
       match: { type: editor.getType(KEYS.link) },
     })
     if (!entry) return {}
     return getLinkAttributes(editor, entry[0] as TLinkElement)
-  }, [editor])
+  })()
 
   return (
     <a

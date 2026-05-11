@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -40,19 +40,15 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
   const { setLocale } = useI18n()
   const t = useTranslations('Users')
 
-  const accountSchema = useMemo(
-    () =>
-      z.object({
-        locale: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
-        email: z.email().optional(),
-        username: z
-          .string()
-          .min(3, { message: t('usernameInvalid') })
-          .optional()
-          .or(z.literal('')),
-      }),
-    [t]
-  )
+  const accountSchema = z.object({
+    locale: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
+    email: z.email().optional(),
+    username: z
+      .string()
+      .min(3, { message: t('usernameInvalid') })
+      .optional()
+      .or(z.literal('')),
+  })
 
   const accountForm = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
@@ -63,76 +59,65 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
     },
   })
 
-  const generateUsername = useCallback((firstName: string, lastName: string) => {
-    const parts = []
-    if (firstName) parts.push(firstName.toLowerCase().replace(/\s+/g, ''))
-    if (lastName) parts.push(lastName.toLowerCase().replace(/\s+/g, ''))
-    return parts.join('.')
-  }, [])
-
   useEffect(() => {
     if (!user.username && user.firstName) {
-      const username = generateUsername(user.firstName ?? '', user.lastName ?? '')
+      const parts = []
+      if (user.firstName) parts.push(user.firstName.toLowerCase().replace(/\s+/g, ''))
+      if (user.lastName) parts.push(user.lastName.toLowerCase().replace(/\s+/g, ''))
+      const username = parts.join('.')
       if (username) accountForm.setValue('username', username, { shouldValidate: false })
     }
-  }, [accountForm, generateUsername, user.username, user.firstName, user.lastName])
+  }, [accountForm, user.firstName, user.lastName, user.username])
 
   const accountDisabled = defaultFormDisabled(accountForm)
 
-  const onAccountSubmit = useCallback(
-    async (schema: z.infer<typeof accountSchema>) => {
-      try {
-        const updates: TableUpdate<'users'> = {}
-        const fields = ['locale', 'email', 'username'] as const
+  const onAccountSubmit = async (schema: z.infer<typeof accountSchema>) => {
+    try {
+      const updates: TableUpdate<'users'> = {}
+      const fields = ['locale', 'email', 'username'] as const
 
-        for (const key of fields) {
-          const value = schema[key]
-          if (value !== (user[key] ?? '')) {
-            updates[key] = (value || null) as never
-          }
+      for (const key of fields) {
+        const value = schema[key]
+        if (value !== (user[key] ?? '')) {
+          updates[key] = (value || null) as never
         }
-
-        if (Object.keys(updates).length > 0) {
-          const previousEmail = updates.email && updates.email !== user.email ? user.email : undefined
-          const data = await updateUser(user.id, updates, previousEmail ?? undefined)
-
-          if (updates.locale && updates.locale !== user.locale) {
-            setLocale(updates.locale as Any)
-          }
-
-          setUser(data)
-          accountForm.reset({
-            locale: (data.locale ?? '') as '' | 'en' | 'es' | 'it',
-            email: data.email ?? '',
-            username: data.username ?? '',
-          })
-          toast.success(t('accountUpdated'))
-        }
-      } catch (error) {
-        console.error(error)
-        toast.error(t('accountUpdateError'))
       }
-    },
-    [accountForm, t, user, setLocale, setUser]
-  )
 
-  const passwordSchema = useMemo(
-    () =>
-      z
-        .object({
-          currentPassword: z.string().min(1, { message: t('currentPasswordRequired') }),
-          newPassword: z
-            .string()
-            .min(8, { message: t('passwordTooShort') })
-            .regex(PASSWORD_REGEX, { message: t('passwordRequirements') }),
-          confirmPassword: z.string().min(1, { message: t('confirmPasswordRequired') }),
+      if (Object.keys(updates).length > 0) {
+        const previousEmail = updates.email && updates.email !== user.email ? user.email : undefined
+        const data = await updateUser(user.id, updates, previousEmail ?? undefined)
+
+        if (updates.locale && updates.locale !== user.locale) {
+          setLocale(updates.locale as Any)
+        }
+
+        setUser(data)
+        accountForm.reset({
+          locale: (data.locale ?? '') as '' | 'en' | 'es' | 'it',
+          email: data.email ?? '',
+          username: data.username ?? '',
         })
-        .refine(data => data.newPassword === data.confirmPassword, {
-          message: t('passwordMismatch'),
-          path: ['confirmPassword'],
-        }),
-    [t]
-  )
+        toast.success(t('accountUpdated'))
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error(t('accountUpdateError'))
+    }
+  }
+
+  const passwordSchema = z
+    .object({
+      currentPassword: z.string().min(1, { message: t('currentPasswordRequired') }),
+      newPassword: z
+        .string()
+        .min(8, { message: t('passwordTooShort') })
+        .regex(PASSWORD_REGEX, { message: t('passwordRequirements') }),
+      confirmPassword: z.string().min(1, { message: t('confirmPasswordRequired') }),
+    })
+    .refine(data => data.newPassword === data.confirmPassword, {
+      message: t('passwordMismatch'),
+      path: ['confirmPassword'],
+    })
 
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -143,32 +128,29 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
     },
   })
 
-  const onPasswordSubmit = useCallback(
-    async (values: z.infer<typeof passwordSchema>) => {
-      try {
-        const result = await changePassword(values.currentPassword, values.newPassword)
+  const onPasswordSubmit = async (values: z.infer<typeof passwordSchema>) => {
+    try {
+      const result = await changePassword(values.currentPassword, values.newPassword)
 
-        if (result.error) {
-          if (result.error.message?.includes('Invalid login')) {
-            passwordForm.setError('currentPassword', { message: t('currentPasswordIncorrect') })
-          } else {
-            toast.error(t('passwordChangeError'))
-          }
-          return
+      if (result.error) {
+        if (result.error.message?.includes('Invalid login')) {
+          passwordForm.setError('currentPassword', { message: t('currentPasswordIncorrect') })
+        } else {
+          toast.error(t('passwordChangeError'))
         }
-
-        passwordForm.reset()
-        toast.success(t('passwordChanged'))
-      } catch {
-        toast.error(t('passwordChangeError'))
+        return
       }
-    },
-    [passwordForm, t]
-  )
+
+      passwordForm.reset()
+      toast.success(t('passwordChanged'))
+    } catch {
+      toast.error(t('passwordChangeError'))
+    }
+  }
 
   const [deleteAccountOpen, setDeleteAccountOpen] = useState(false)
 
-  const handleDeleteAccount = useCallback(async () => {
+  const handleDeleteAccount = async () => {
     try {
       await deleteAccount()
     } catch (error) {
@@ -182,7 +164,7 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
       }
       setDeleteAccountOpen(false)
     }
-  }, [t])
+  }
 
   return (
     <div className="space-y-0">
@@ -385,14 +367,14 @@ const AccountDeleteDialog = ({
   const t = useTranslations('Users')
   const [deleting, setDeleting] = useState(false)
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     try {
       setDeleting(true)
       await onConfirm()
     } finally {
       setDeleting(false)
     }
-  }, [onConfirm])
+  }
 
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>

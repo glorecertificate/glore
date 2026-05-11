@@ -1,12 +1,17 @@
-'use client'
-
 import { WifiOffIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { getTranslations } from 'next-intl/server'
 
 import { Button } from '@/components/ui/button'
+import { intlMetadata } from '@/lib/metadata'
 
-export default () => {
-  const t = useTranslations('PWA')
+export const generateMetadata = () =>
+  intlMetadata({
+    namespace: 'PWA',
+    title: 'offlineTitle',
+  })
+
+const OfflinePage = async () => {
+  const t = await getTranslations('PWA')
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
@@ -17,3 +22,5 @@ export default () => {
     </div>
   )
 }
+
+export default OfflinePage

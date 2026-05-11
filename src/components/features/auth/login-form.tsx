@@ -1,7 +1,7 @@
 'use client'
 
 import { redirect } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -36,27 +36,23 @@ export const LoginForm = ({
   const t = useTranslations('Auth')
   const [loading, setLoading] = useState(false)
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        password: z
-          .string()
-          .nonempty(t('passwordRequired'))
-          .min(8, {
-            message: t('passwordTooShort'),
-          }),
-        username: z
-          .string()
-          .nonempty(t('userRequired'))
-          .min(5, {
-            message: t('userTooShort'),
-          })
-          .refine(isValidUsername, {
-            message: t('userInvalid'),
-          }),
+  const formSchema = z.object({
+    password: z
+      .string()
+      .nonempty(t('passwordRequired'))
+      .min(8, {
+        message: t('passwordTooShort'),
       }),
-    [t]
-  )
+    username: z
+      .string()
+      .nonempty(t('userRequired'))
+      .min(5, {
+        message: t('userTooShort'),
+      })
+      .refine(isValidUsername, {
+        message: t('userInvalid'),
+      }),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -68,62 +64,59 @@ export const LoginForm = ({
   form.watch()
   const formDisabled = errored || loading || !form.getValues('username') || !form.getValues('password')
 
-  const setPasswordInvalid = useCallback(() => {
+  const setPasswordInvalid = () => {
     form.setError('password', { message: t('passwordInvalid'), type: 'validate' }, { shouldFocus: true })
-  }, [form, t])
+  }
 
-  const setPasswordReset = useCallback(() => {
+  const setPasswordReset = () => {
     setUsername(form.getValues('username'))
     setView('password_request')
     form.reset()
-  }, [form, setUsername, setView])
+  }
 
-  const onSubmit = useCallback(
-    async (schema: z.infer<typeof formSchema>) => {
-      setLoading(true)
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
+    setLoading(true)
 
-      const { data, error } = await findUserEmail(schema.username.trim())
+    const { data, error } = await findUserEmail(schema.username.trim())
 
-      if (error?.code === 'NOT_FOUND' || !data) {
-        setLoading(false)
-        setErrored(true)
-        form.setError('username', { message: t('userNotFound') })
-        form.setFocus('username')
-        return
-      }
-      if (error) {
-        console.error(error)
-        toast.error(t('networkError'))
-        return
-      }
+    if (error?.code === 'NOT_FOUND' || !data) {
+      setLoading(false)
+      setErrored(true)
+      form.setError('username', { message: t('userNotFound') })
+      form.setFocus('username')
+      return
+    }
+    if (error) {
+      console.error(error)
+      toast.error(t('networkError'))
+      return
+    }
 
-      const password = schema.password.trim()
+    const password = schema.password.trim()
 
-      if (!PASSWORD_REGEX.test(password)) {
+    if (!PASSWORD_REGEX.test(password)) {
+      setPasswordInvalid()
+      setLoading(false)
+      setErrored(true)
+      return
+    }
+
+    const { error: loginError } = await login({ email: data.email, password })
+
+    if (loginError) {
+      setLoading(false)
+      setErrored(true)
+      if (loginError.code === 'AUTH_ERROR') {
         setPasswordInvalid()
-        setLoading(false)
-        setErrored(true)
         return
       }
+      console.error(loginError)
+      toast.error(t('networkError'))
+      return
+    }
 
-      const { error: loginError } = await login({ email: data.email, password })
-
-      if (loginError) {
-        setLoading(false)
-        setErrored(true)
-        if (loginError.code === 'AUTH_ERROR') {
-          setPasswordInvalid()
-          return
-        }
-        console.error(loginError)
-        toast.error(t('networkError'))
-        return
-      }
-
-      redirect(APP_ROOT)
-    },
-    [form, setErrored, setPasswordInvalid, t]
-  )
+    redirect(APP_ROOT)
+  }
 
   useEffect(() => {
     form.setFocus(username ? 'password' : 'username')

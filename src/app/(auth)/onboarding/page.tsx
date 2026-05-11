@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
 
 import { desc, eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
@@ -8,7 +7,6 @@ import { getTranslations } from 'next-intl/server'
 import { getAuthUser } from '@/actions/auth'
 import { OnboardingForm } from '@/components/features/onboarding/onboarding-form'
 import { GloreIcon } from '@/components/icons/glore'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -21,7 +19,7 @@ export const generateMetadata = () =>
   })
 
 const OnboardingPage = async () => {
-  const user = await getAuthUser()
+  const [user, t] = await Promise.all([getAuthUser(), getTranslations('Onboarding')])
   if (!user?.email) redirect(AUTH_ROOT)
 
   const invitation = await db.query.teamInvitations.findFirst({
@@ -29,8 +27,6 @@ const OnboardingPage = async () => {
     columns: { firstName: true, lastName: true, locale: true },
     orderBy: desc(teamInvitations.createdAt),
   })
-
-  const t = await getTranslations('Onboarding')
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
@@ -53,8 +49,4 @@ const OnboardingPage = async () => {
   )
 }
 
-export default () => (
-  <Suspense fallback={<LoadingFallback />}>
-    <OnboardingPage />
-  </Suspense>
-)
+export default OnboardingPage

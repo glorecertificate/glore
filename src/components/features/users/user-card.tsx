@@ -1,5 +1,3 @@
-import { useCallback, useMemo } from 'react'
-
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
@@ -11,65 +9,58 @@ import { useI18n } from '@/hooks/use-i18n'
 import { type Any, type HttpUrl } from '@/lib/types'
 import app from '~/config/app.json'
 
-export const UserCard = ({ hide = [], user }: { hide?: (keyof User)[]; user: User }) => {
+const DEFAULT_HIDE: (keyof User)[] = []
+
+export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[]; user: User }) => {
   const { locale } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Users')
   const format = useFormatter()
 
-  const resolveCountryLabel = useCallback(
-    (country: string | null | undefined) => {
-      if (!country) return ''
-      const key = `Intl.Countries.${country}` as Any
-      return t.has?.(key) ? t(key) : country.toUpperCase()
-    },
-    [t]
-  )
+  const resolveCountryLabel = (country: string | null | undefined) => {
+    if (!country) return ''
+    const key = `Intl.Countries.${country}` as Any
+    return t.has?.(key) ? t(key) : country.toUpperCase()
+  }
 
-  const resolveLanguageLabel = useCallback(
-    (language: string) => {
-      const key = `Languages.${language}` as Any
-      return t.has?.(key) ? t(key) : language.toUpperCase()
-    },
-    [t]
-  )
+  const resolveLanguageLabel = (language: string) => {
+    const key = `Languages.${language}` as Any
+    return t.has?.(key) ? t(key) : language.toUpperCase()
+  }
 
-  const location = useMemo(() => {
+  const location = (() => {
     if (!(user.city || user.country)) return
     const locations = []
     if (user.city) locations.push(user.city)
     const countryLabel = resolveCountryLabel(user.country)
     if (countryLabel) locations.push(countryLabel)
     return locations.filter(Boolean).join(', ')
-  }, [resolveCountryLabel, user.city, user.country])
+  })()
 
-  const locationUrl = useMemo(() => {
+  const locationUrl = (() => {
     if (!location) return
     const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
     return `${app.mapsUrl}/${searchQuery}` as HttpUrl
-  }, [location])
+  })()
 
-  const languages = useMemo(() => {
+  const languages = (() => {
     if (!user.languages?.length) return
     const langs = user.languages.map((lang: string) => resolveLanguageLabel(lang))
     const list = locale === 'en' ? langs : langs.map((lang: string) => lang.toLowerCase())
     const formatted = String(format.list(list))
     return t('speaks', { languages: formatted })
-  }, [format, locale, resolveLanguageLabel, t, user.languages])
+  })()
 
-  const contactTitle = useMemo(() => {
+  const contactTitle = (() => {
     if (!user.firstName) return
     return t('contact', { user: user.firstName })
-  }, [t, user.firstName])
+  })()
 
-  const isVisible = useCallback(
-    (key: keyof User) => {
-      const isVisibleKey = !hide.includes(key)
-      const hasValue = Array.isArray(user[key]) ? user[key]?.length > 0 : Boolean(user[key])
-      return isVisibleKey && hasValue
-    },
-    [hide, user]
-  )
+  const isVisible = (key: keyof User) => {
+    const isVisibleKey = !hide.includes(key)
+    const hasValue = Array.isArray(user[key]) ? user[key]?.length > 0 : Boolean(user[key])
+    return isVisibleKey && hasValue
+  }
 
   return (
     <div className="flex items-start gap-3">

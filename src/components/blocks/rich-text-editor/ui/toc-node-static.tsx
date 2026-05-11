@@ -38,7 +38,7 @@ export const TocElementStatic = (props: SlateElementProps) => {
             </Button>
           ))
         ) : (
-          <div className="text-sm text-gray-500">Create a heading to display the table of contents.</div>
+          <div className="text-sm text-zinc-500">{'Create a heading to display the table of contents.'}</div>
         )}
       </div>
       {props.children}

@@ -6,7 +6,7 @@ import { ErrorFallback } from '@/components/layout/error-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 
-export default () => {
+const CoursesNotFound = () => {
   const t = useTranslations('Courses')
 
   return (
@@ -17,3 +17,5 @@ export default () => {
     </ErrorFallback>
   )
 }
+
+export default CoursesNotFound

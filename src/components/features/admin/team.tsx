@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { ArrowUpDownIcon, CalendarIcon, CheckIcon, FilterIcon, ShieldIcon, UserIcon, UserPlusIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
@@ -46,9 +46,9 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
   const [inviteOpen, setInviteOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
 
-  const activeUsers = useMemo(() => users.filter(u => !deletedIds.has(u.id)), [users, deletedIds])
+  const activeUsers = users.filter(u => !deletedIds.has(u.id))
 
-  const displayUsers = useMemo(() => {
+  const displayUsers = (() => {
     let filtered = activeUsers
 
     if (filterRole !== 'all') {
@@ -59,64 +59,61 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
       filtered = filtered.filter(u => getUserStatus(u) === filterStatus)
     }
 
-    return [...filtered].sort((a, b) => {
+    return filtered.toSorted((a, b) => {
       if (sortBy === 'name') return getDisplayName(a).localeCompare(getDisplayName(b))
       if (sortBy === 'role') return getUserRole(a).localeCompare(getUserRole(b))
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-  }, [activeUsers, sortBy, filterRole, filterStatus])
+  })()
 
-  const refreshTeam = useCallback(async () => {
+  const refreshTeam = async () => {
     const { data } = await getTeamMembers({ cache: false })
     if (data) setUsers(data)
-  }, [])
+  }
 
-  const handleInvite = useCallback(
-    async (data: { firstName: string; lastName: string; email: string; role: TeamRole; locale: Locale }) => {
-      const { error } = await inviteTeamMember(data)
+  const handleInvite = async (data: {
+    firstName: string
+    lastName: string
+    email: string
+    role: TeamRole
+    locale: Locale
+  }) => {
+    const { error } = await inviteTeamMember(data)
 
-      if (error) {
-        console.error(error)
-        toast.error(t('inviteError'))
-        return
-      }
+    if (error) {
+      console.error(error)
+      toast.error(t('inviteError'))
+      return
+    }
 
-      toast.success(t('inviteSuccess', { email: data.email }))
-      refreshTeam()
-    },
-    [t, refreshTeam]
-  )
+    toast.success(t('inviteSuccess', { email: data.email }))
+    refreshTeam()
+  }
 
-  const handleChangeRole = useCallback(
-    async (user: User, role: TeamRole) => {
-      const { error } = await updateTeamMemberRole(user.id, role)
+  const handleChangeRole = async (user: User, role: TeamRole) => {
+    const { error } = await updateTeamMemberRole(user.id, role)
 
-      if (error) {
-        toast.error(error)
-        return
-      }
+    if (error) {
+      toast.error(error)
+      return
+    }
 
-      toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`).toLowerCase() }))
-      refreshTeam()
-    },
-    [t, refreshTeam]
-  )
+    toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`).toLowerCase() }))
+    refreshTeam()
+  }
 
-  const handleResend = useCallback(
-    async (user: User) => {
-      const { error, data } = await resendInvitation(user.id)
+  const handleResend = async (user: User) => {
+    const { error, data } = await resendInvitation(user.id)
 
-      if (error) {
-        toast.error(t('resendError'))
-        return
-      }
+    if (error) {
+      toast.error(t('resendError'))
+      return
+    }
 
-      toast.success(t('resendSuccess', { email: data?.email ?? user.email }))
-    },
-    [t]
-  )
+    toast.success(t('resendSuccess', { email: data?.email ?? user.email }))
+  }
 
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     if (!deleteTarget) return
 
     const { error } = await deleteTeamMember(deleteTarget.id)
@@ -129,7 +126,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
     setDeletedIds(prev => new Set(prev).add(deleteTarget.id))
     setDeleteTarget(null)
     toast.success(t('deleteSuccess'))
-  }, [deleteTarget, t])
+  }
 
   const hasActiveFilters = filterRole !== 'all' || filterStatus !== 'all'
 

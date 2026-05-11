@@ -7,7 +7,7 @@ import { CertificateForm } from '@/components/features/certificates/new/certific
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 
-export default async () => {
+const CertificatesNewPage = async () => {
   const [user, { data: certificates }, { eligible }, { data: courses }, activeOrgId] = await Promise.all([
     getCurrentUser(),
     listUserCertificates(),
@@ -38,3 +38,5 @@ export default async () => {
     </>
   )
 }
+
+export default CertificatesNewPage

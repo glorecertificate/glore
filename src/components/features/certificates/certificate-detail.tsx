@@ -43,7 +43,7 @@ interface CertificateDetailProps {
 
 export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProps) => {
   const t = useTranslations('Certificates')
-  const router = useRouter()
+  const { refresh } = useRouter()
   const { locale, localize } = useI18n()
   const { user } = useSession()
   const [reviewOpen, setReviewOpen] = useState(false)
@@ -69,7 +69,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
         return
       }
       toast.success(t('assignTutorSuccess'))
-      router.refresh()
+      refresh()
     })
   }
 
@@ -81,7 +81,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
         return
       }
       toast.success(t('selfReleaseSuccess'))
-      router.refresh()
+      refresh()
     })
   }
 
@@ -123,7 +123,10 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
         <div className="flex items-center justify-between gap-3 rounded-lg border px-4 py-2.5">
           <div className="flex items-center gap-2 text-sm">
             <UserCheckIcon className="size-4 shrink-0 text-muted-foreground" />
-            <span className="text-muted-foreground">{t('reviewer')}:</span>
+            <span className="text-muted-foreground">
+              {t('reviewer')}
+              {':'}
+            </span>
             <span className="font-medium">
               {certificate.reviewer
                 ? `${certificate.reviewer.firstName} ${certificate.reviewer.lastName}`
@@ -170,12 +173,14 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CalendarIcon className="size-4" />
-                {t('activityStartDate')} – {t('activityEndDate')}
+                {t('activityStartDate')} {'– '}
+                {t('activityEndDate')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm">
-                {start} – {end}
+                {start} {'– '}
+                {end}
               </p>
             </CardContent>
           </Card>
@@ -200,7 +205,10 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm">{certificate.activityDuration}h</p>
+              <p className="text-sm">
+                {certificate.activityDuration}
+                {'h'}
+              </p>
             </CardContent>
           </Card>
 

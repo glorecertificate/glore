@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { isOrderedList } from '@platejs/list'
 import { useTodoListElement, useTodoListElementState } from '@platejs/list/react'
 import { type TListElement } from 'platejs'
@@ -53,7 +51,7 @@ const List = (props: PlateElementProps) => {
   const { listStart, listStyleType } = props.element as TListElement
   const { Li, Marker } = config[listStyleType] ?? {}
   const ListTag = isOrderedList(props.element) ? 'ol' : 'ul'
-  const listStyle = useMemo(() => ({ listStyleType }), [listStyleType])
+  const listStyle = { listStyleType }
 
   return (
     <ListTag className="relative m-0 p-0" start={listStart} style={listStyle}>

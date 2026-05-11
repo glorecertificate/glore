@@ -53,7 +53,7 @@ export const EmailLayout = ({
                 <Img alt={metadata.name} height={40} src={publicFile(`/logo.png`)} style={logoStyle} />
               </Link>
             </Section>
-            <Section className="rounded-2xl border border-[#e4e4e7] bg-white px-10 py-10">
+            <Section className="rounded-2xl border border-[#e4e4e7] bg-white p-10">
               {children}
               <Hr className="mx-0 my-6 border-[#e4e4e7]" />
               {footer}

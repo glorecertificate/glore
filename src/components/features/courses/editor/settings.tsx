@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2Icon, Link2Icon, LoaderCircleIcon } from 'lucide-react'
@@ -48,15 +48,11 @@ export const CourseSettings = ({
   const { localize } = useI18n()
   const t = useTranslations('Courses')
 
-  const formSchema = useMemo(
-    () =>
-      courseSettingsSchema.extend({
-        slug: courseSettingsSchema.shape.slug
-          .regex(SLUG_REGEX, t('invalidSlugFormat'))
-          .min(COURSE_SLUG_MIN_LENGTH, t('courseSlugTooShort', { min: String(COURSE_SLUG_MIN_LENGTH) })),
-      }),
-    [t]
-  )
+  const formSchema = courseSettingsSchema.extend({
+    slug: courseSettingsSchema.shape.slug
+      .regex(SLUG_REGEX, t('invalidSlugFormat'))
+      .min(COURSE_SLUG_MIN_LENGTH, t('courseSlugTooShort', { min: String(COURSE_SLUG_MIN_LENGTH) })),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -74,11 +70,12 @@ export const CourseSettings = ({
   const [slugStatus, setSlugStatus] = useState<'available' | 'checking' | 'idle' | 'taken'>('idle')
 
   useEffect(() => {
-    if (!debouncedSlug || debouncedSlug.length < COURSE_SLUG_MIN_LENGTH || !SLUG_REGEX.test(debouncedSlug)) {
-      setSlugStatus('idle')
-      return
-    }
-    if (course?.slug === debouncedSlug) {
+    if (
+      !debouncedSlug ||
+      debouncedSlug.length < COURSE_SLUG_MIN_LENGTH ||
+      !SLUG_REGEX.test(debouncedSlug) ||
+      course?.slug === debouncedSlug
+    ) {
       setSlugStatus('idle')
       return
     }
@@ -86,7 +83,7 @@ export const CourseSettings = ({
     let cancelled = false
     setSlugStatus('checking')
 
-    const check = async () => {
+    const doCheck = async () => {
       try {
         const available = await checkSlugAvailable(debouncedSlug, course?.id)
         if (cancelled) return
@@ -99,7 +96,8 @@ export const CourseSettings = ({
       }
     }
 
-    void check()
+    void doCheck()
+
     return () => {
       cancelled = true
     }
@@ -108,9 +106,7 @@ export const CourseSettings = ({
   const slugId = useId()
   const slugPrefix = `${window.location.origin}/courses/`
   const isIntro = form.getValues('type') === 'intro'
-  const errors = Object.values(form.formState.errors)
-    .map(error => error.message)
-    .filter(Boolean)
+  const errors = Object.values(form.formState.errors).flatMap(error => (error.message ? [error.message] : []))
 
   const { isValid, isDirty, isSubmitting } = form.formState
   const disabled =
@@ -119,47 +115,41 @@ export const CourseSettings = ({
     isSubmitting ||
     (form.getValues('type') === 'skill' && !form.getValues('skillGroupId'))
 
-  const submitMessage = useMemo(() => {
+  const submitMessage = (() => {
     if (disabledProp && form.formState.isSubmitSuccessful) return t('redirecting')
     if (disabledProp) return course ? t('savingChange') : t('creatingCourse')
     if (course && !form.formState.isDirty) return t('noChangesToSave')
     if (form.formState.isSubmitting) return course ? t('savingChange') : t('creatingCourse')
     return course ? t('saveChanges') : t('createCourse')
-  }, [course, disabledProp, form.formState, t])
+  })()
 
-  const onSlugChange = useCallback(
-    (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target
-      const slug = value
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/g, '-')
-        .replace(/-+/g, '-')
-      onChange(slug)
-    },
-    []
-  )
+  const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target
+    const slug = value
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')
+      .replace(/-+/g, '-')
+    onChange(slug)
+  }
 
-  const onSubmit = useCallback(
-    async (schema: z.infer<typeof formSchema>) => {
-      try {
-        const { data, error } = course ? await updateCourse(course.id, schema) : await createCourse(schema)
-        if (error) {
-          if (error.code === 'CONFLICT') {
-            form.setError('slug', { message: t('courseSlugTaken') })
-            form.setFocus('slug')
-            return
-          }
-          onError?.(error)
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
+    try {
+      const { data, error } = course ? await updateCourse(course.id, schema) : await createCourse(schema)
+      if (error) {
+        if (error.code === 'CONFLICT') {
+          form.setError('slug', { message: t('courseSlugTaken') })
+          form.setFocus('slug')
           return
         }
-        if (data) onSuccess?.(data)
-      } catch (e) {
-        const error = queryError(e)
-        console.error(error.code)
+        onError?.(error)
+        return
       }
-    },
-    [course, createCourse, form, onError, onSuccess, t, updateCourse]
-  )
+      if (data) onSuccess?.(data)
+    } catch (e) {
+      const error = queryError(e)
+      console.error(error.code)
+    }
+  }
 
   return (
     <Form {...form}>
@@ -170,7 +160,7 @@ export const CourseSettings = ({
             name="type"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col gap-y-1">
                   <FormLabel className="text-[15px]">{t('courseType')}</FormLabel>
                   <FormDescription>{t('courseTypeDescription')}</FormDescription>
                 </div>
@@ -203,7 +193,7 @@ export const CourseSettings = ({
               name="skillGroupId"
               render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <div className="flex flex-col space-y-1">
+                  <div className="flex flex-col gap-y-1">
                     <FormLabel className="text-[15px]">{t('skillGroup')}</FormLabel>
                     <FormDescription>{t('skillGroupDescription')}</FormDescription>
                   </div>
@@ -231,7 +221,7 @@ export const CourseSettings = ({
             name="slug"
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
-                <div className="flex flex-col space-y-1">
+                <div className="flex flex-col gap-y-1">
                   <Label className="text-[15px]">{t('courseSlug')}</Label>
                   <FormDescription>{t('courseSlugDescription')}</FormDescription>
                 </div>
@@ -283,8 +273,8 @@ export const CourseSettings = ({
           </TooltipContent>
           {errors.length > 0 ? (
             <TooltipContent side="top" sideOffset={8} size="sm">
-              {errors.map((error, i) => (
-                <div key={i}>{error}</div>
+              {errors.map(error => (
+                <div key={error}>{error}</div>
               ))}
             </TooltipContent>
           ) : (

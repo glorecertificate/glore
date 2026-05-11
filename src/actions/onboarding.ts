@@ -38,10 +38,11 @@ export const completeOnboarding = async ({
     return { error: err instanceof Error ? err.message : 'Failed to set password' }
   }
 
-  const username = [firstName, lastName]
-    .filter(Boolean)
-    .map(part => part.toLowerCase().replace(/\s+/g, ''))
-    .join('.')
+  const usernameParts: string[] = []
+  for (const part of [firstName, lastName]) {
+    if (part) usernameParts.push(part.toLowerCase().replace(/\s+/g, ''))
+  }
+  const username = usernameParts.join('.')
 
   await db
     .update(users)

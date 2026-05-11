@@ -91,8 +91,8 @@ const smoothStream = <TOOLS extends ToolSet>({
         while (match) {
           controller.enqueue({ text: match, type: 'text-delta' } as TextStreamPart<TOOLS>)
           buffer = buffer.slice(match.length)
-          const _delayInMs = typeof delayInMs === 'number' ? delayInMs : (delayInMs?.(buffer) ?? 10)
-          await delay(_delayInMs)
+          // eslint-disable-next-line react-doctor/async-await-in-loop
+          await delay(typeof delayInMs === 'number' ? delayInMs : (delayInMs?.(buffer) ?? 10))
           match = detectChunk(buffer)
         }
       },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useId, useMemo, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { type AnyPluginConfig, KEYS, type Value } from 'platejs'
@@ -90,23 +90,19 @@ export const RichTextEditorProvider = ({
   const randomId = useId()
   const t = useTranslations('Components.RichTextEditor.placeholders')
 
-  const plugins = useMemo(
-    () =>
-      [
-        ...Object.values(omit(PLUGINS, exclude)),
-        BlockPlaceholderPlugin.configure({
-          options: {
-            className:
-              'before:absolute before:cursor-text before:text-muted-foreground/80 before:content-[attr(placeholder)]',
-            placeholders: {
-              [KEYS.p]: t('block'),
-            },
-            query: ({ path }: { path: number[] }) => path.length === 1,
-          },
-        }),
-      ].flat() as AnyPluginConfig[],
-    [exclude, t]
-  )
+  const plugins = [
+    ...Object.values(omit(PLUGINS, exclude)),
+    BlockPlaceholderPlugin.configure({
+      options: {
+        className:
+          'before:absolute before:cursor-text before:text-muted-foreground/80 before:content-[attr(placeholder)]',
+        placeholders: {
+          [KEYS.p]: t('block'),
+        },
+        query: ({ path }: { path: number[] }) => path.length === 1,
+      },
+    }),
+  ].flat() as AnyPluginConfig[]
 
   const editor = usePlateEditor(
     {

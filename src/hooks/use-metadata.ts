@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 
 import { useLocale } from 'next-intl'
 
@@ -97,23 +97,20 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
   const description = getMetaContent('description')
   const image = getMetaContent('image')
 
-  const setTitle = useCallback(
-    (newTitle: string) => {
-      const content =
-        displayMode === 'browser' && applicationName
-          ? `${newTitle} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
-          : newTitle
-      document.title = content
-      updateMetaContent('title', content)
-    },
-    [applicationName, displayMode]
-  )
+  const setTitle = (newTitle: string) => {
+    const content =
+      displayMode === 'browser' && applicationName
+        ? `${newTitle} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+        : newTitle
+    document.title = content
+    updateMetaContent('title', content)
+  }
 
-  const setDescription = useCallback((newDescription: string) => {
+  const setDescription = (newDescription: string) => {
     updateMetaContent('description', newDescription)
-  }, [])
+  }
 
-  const setImage = useCallback((newImage: string) => updateMetaContent('image', newImage), [])
+  const setImage = (newImage: string) => updateMetaContent('image', newImage)
 
   useEffect(() => {
     if (!(options.title || options.description || options.image)) {
@@ -122,20 +119,25 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
 
     const timeout = setTimeout(() => {
       if (options.title) {
-        setTitle(options.title)
+        const content =
+          displayMode === 'browser' && applicationName
+            ? `${options.title} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+            : options.title
+        document.title = content
+        updateMetaContent('title', content)
       }
       if (options.description) {
-        setDescription(options.description)
+        updateMetaContent('description', options.description)
       }
       if (options.image) {
-        setImage(options.image)
+        updateMetaContent('image', options.image)
       }
     }, delay)
 
     return () => {
       clearTimeout(timeout)
     }
-  }, [delay, options.title, options.description, options.image, setTitle, setDescription, setImage])
+  }, [applicationName, delay, displayMode, options.description, options.image, options.title])
 
   useEffect(() => {
     const html = document.querySelector('html')!

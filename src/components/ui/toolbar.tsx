@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback } from 'react'
 
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { type VariantProps, cva } from 'class-variance-authority'
@@ -8,6 +8,7 @@ import { ChevronDownIcon } from 'lucide-react'
 
 import { DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipPortal, TooltipTrigger } from '@/components/ui/tooltip'
+import { useMounted } from '@/hooks/use-mounted'
 import { cn } from '@/lib/utils'
 
 export const Toolbar = ({ className, ...props }: React.ComponentProps<typeof ToolbarPrimitive.Root>) => (
@@ -54,11 +55,8 @@ export const ToolbarButton = ({
   variant,
   ...props
 }: ToolbarButtonProps) => {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
-
-  const showTooltip = useMemo(() => Boolean(tooltip) && mounted && !pressed, [tooltip, mounted, pressed])
+  const mounted = useMounted()
+  const showTooltip = Boolean(tooltip) && mounted && !pressed
 
   const content =
     typeof pressed === 'boolean' ? (

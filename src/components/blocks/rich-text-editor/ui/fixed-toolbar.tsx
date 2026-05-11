@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 
 import { usePlateState } from 'platejs/react'
 
@@ -11,19 +11,19 @@ export const FixedToolbar = ({ className, ...props }: React.ComponentProps<typeo
   const ref = useRef<HTMLDivElement>(null)
   const [readOnly] = usePlateState('readOnly')
 
-  const canScrollLeft = useMemo(() => {
+  const canScrollLeft = (() => {
     if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) {
       return false
     }
     return ref.current.scrollLeft > 0
-  }, [])
+  })()
 
-  const canScrollRight = useMemo(() => {
+  const canScrollRight = (() => {
     if (!ref.current || ref.current.clientWidth === ref.current.scrollWidth) {
       return false
     }
     return ref.current.scrollWidth > ref.current.clientWidth + ref.current.scrollLeft
-  }, [])
+  })()
 
   return (
     <>

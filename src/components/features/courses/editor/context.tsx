@@ -1,10 +1,9 @@
 'use client'
 
-import { createContext, memo, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import { createContext, startTransition, use, useRef, useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
-import { flushSync } from 'react-dom'
 
 import {
   deleteAssessment,
@@ -18,7 +17,7 @@ import {
 } from '@/actions/courses/management'
 import { COURSE_PARAMS } from '@/components/features/courses/editor/params'
 import { type Course } from '@/db/queries/course'
-import { parseLesson } from '@/db/queries/lesson'
+import { Lesson, parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { type IntlRecord, i18n } from '@/lib/i18n'
 import { messages } from '~/config/i18n.json'
@@ -132,107 +131,96 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   const contentFlushRef = useRef<(() => void) | null>(null)
 
-  const currentLesson = useMemo(
-    () => ({
-      ...course.lessons[step - 1],
-      isFirst: step === 1,
-      isLast: step === course.lessons.length,
-    }),
-    [course.lessons, step]
+  const currentLesson = {
+    ...course.lessons[step - 1],
+    isFirst: step === 1,
+    isLast: step === course.lessons.length,
+  }
+
+  const status = i18n.locales.reduce(
+    (courseState, locale) => {
+      const published = !!course.languages?.includes(locale)
+
+      const initialTitle = courseRef.current.title[locale]
+      const title = course.title[locale]
+      const hasTitle = !!title && title.trim().length > 0
+      const hasTitleUpdates = hasTitle && initialTitle !== title
+
+      const initialDescription = courseRef.current.description?.[locale]
+      const currentDescription = course.description?.[locale]
+      const hasDescriptionUpdates = currentDescription !== initialDescription
+
+      const hasContent = course.lessons.every(lesson => {
+        const content = (lesson.content as IntlRecord)?.[locale]
+        const hasText =
+          Array.isArray(content) &&
+          content.some(block =>
+            block.children?.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
+          )
+
+        return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
+      })
+      const hasContentUpdates = course.lessons.some((lesson, i) => {
+        const initialLesson = courseRef.current.lessons[i] || {}
+
+        if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
+
+        const initialContent = (initialLesson.content as IntlRecord | undefined)?.[locale]
+        const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
+        if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
+
+        const qs0 = (initialLesson.questions ?? []) as Array<{ id: number; description: IntlRecord }>
+        const qs1 = lesson.questions ?? []
+        if (qs0.length !== qs1.length) return true
+        if (
+          qs0.some(
+            (q, j) => q.id !== qs1[j]?.id || q.description?.[locale] !== (qs1[j]?.description as IntlRecord)?.[locale]
+          )
+        ) {
+          return true
+        }
+
+        const evs0 = (initialLesson.evaluations ?? []) as Array<{ id: number; description: IntlRecord }>
+        const evs1 = lesson.evaluations ?? []
+        if (evs0.length !== evs1.length) return true
+        if (
+          evs0.some(
+            (e, j) => e.id !== evs1[j]?.id || e.description?.[locale] !== (evs1[j]?.description as IntlRecord)?.[locale]
+          )
+        ) {
+          return true
+        }
+
+        const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
+        const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
+        return initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
+      })
+
+      const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates
+      const isFulfilled = hasTitle && hasContent
+
+      return {
+        ...courseState,
+        [locale]: {
+          published,
+          hasTitle,
+          hasTitleUpdates,
+          hasContent,
+          hasContentUpdates,
+          hasDescriptionUpdates,
+          hasUpdates,
+          isFulfilled,
+        } satisfies CourseStatus,
+      }
+    },
+    {} as Record<Locale, CourseStatus>
   )
 
-  const status = useMemo(
-    () =>
-      i18n.locales.reduce(
-        (courseState, locale) => {
-          const published = !!course.languages?.includes(locale)
+  const languageStatus = status[language]
 
-          const initialTitle = courseRef.current.title[locale]
-          const title = course.title[locale]
-          const hasTitle = !!title && title.trim().length > 0
-          const hasTitleUpdates = hasTitle && initialTitle !== title
+  const hasAnyUpdates = Object.values(status).some(s => s.hasUpdates)
 
-          const initialDescription = courseRef.current.description?.[locale]
-          const currentDescription = course.description?.[locale]
-          const hasDescriptionUpdates = currentDescription !== initialDescription
-
-          const hasContent = course.lessons.every(lesson => {
-            const content = (lesson.content as IntlRecord)?.[locale]
-            const hasText =
-              Array.isArray(content) &&
-              content.some(block =>
-                block.children?.some((child: { text?: string }) => child.text && child.text.trim().length > 0)
-              )
-
-            return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
-          })
-          const hasContentUpdates = course.lessons.some((lesson, i) => {
-            const initialLesson = courseRef.current.lessons[i] || {}
-
-            if (lesson.title?.[locale] !== initialLesson.title?.[locale]) return true
-
-            const initialContent = (initialLesson.content as IntlRecord | undefined)?.[locale]
-            const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
-            if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
-
-            const qs0 = (initialLesson.questions ?? []) as Array<{ id: number; description: IntlRecord }>
-            const qs1 = lesson.questions ?? []
-            if (qs0.length !== qs1.length) return true
-            if (
-              qs0.some(
-                (q, j) =>
-                  q.id !== qs1[j]?.id || q.description?.[locale] !== (qs1[j]?.description as IntlRecord)?.[locale]
-              )
-            ) {
-              return true
-            }
-
-            const evs0 = (initialLesson.evaluations ?? []) as Array<{ id: number; description: IntlRecord }>
-            const evs1 = lesson.evaluations ?? []
-            if (evs0.length !== evs1.length) return true
-            if (
-              evs0.some(
-                (e, j) =>
-                  e.id !== evs1[j]?.id || e.description?.[locale] !== (evs1[j]?.description as IntlRecord)?.[locale]
-              )
-            ) {
-              return true
-            }
-
-            const initialAssessmentDesc = initialLesson.assessment?.description?.[locale]
-            const currentAssessmentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
-            return (
-              initialLesson.assessment?.id !== lesson.assessment?.id || initialAssessmentDesc !== currentAssessmentDesc
-            )
-          })
-
-          const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates
-          const isFulfilled = hasTitle && hasContent
-
-          return {
-            ...courseState,
-            [locale]: {
-              published,
-              hasTitle,
-              hasTitleUpdates,
-              hasContent,
-              hasContentUpdates,
-              hasDescriptionUpdates,
-              hasUpdates,
-              isFulfilled,
-            } satisfies CourseStatus,
-          }
-        },
-        {} as Record<Locale, CourseStatus>
-      ),
-    [course.description, course.languages, course.lessons, course.title]
-  )
-
-  const languageStatus = useMemo(() => status[language], [status, language])
-
-  const hasAnyUpdates = useMemo(() => Object.values(status).some(s => s.hasUpdates), [status])
-
-  const editCourse = useCallback(async (payload: TableUpdate<'courses'>) => {
+  const editCourse = async (payload: TableUpdate<'courses'>) => {
     setCourse(
       prev =>
         ({
@@ -246,11 +234,11 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       courseRef.current = { ...courseRef.current, ...payload } as Course
     }
     return result
-  }, [])
+  }
 
-  const saveCourse = useCallback(async ({ locale, publish }: { locale: Locale; publish?: boolean | null }) => {
+  const saveCourse = async ({ locale, publish }: { locale: Locale; publish?: boolean | null }) => {
     if (contentFlushRef.current) {
-      flushSync(() => {
+      startTransition(() => {
         contentFlushRef.current?.()
       })
     }
@@ -261,9 +249,10 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
     const lessonsPayload: Array<TableInsert<'lessons'> & { id?: number }> = []
     const idMap = new Map<number, number>()
+    const initialLessonMap = new Map(initial.lessons.map(l => [l.id, l]))
 
-    for (const lesson of lessons) {
-      const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+    for (const [lessonIndex, lesson] of lessons.entries()) {
+      const initialLesson = initialLessonMap.get(lesson.id)
       const isNew = !initialLesson
       const lessonUpdates: Record<string, unknown> = {}
 
@@ -284,7 +273,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       }
 
       if (isNew || lesson.sortOrder !== initialLesson?.sortOrder) {
-        lessonUpdates.sortOrder = lesson.sortOrder ?? lessons.indexOf(lesson) + 1
+        lessonUpdates.sortOrder = lesson.sortOrder ?? lessonIndex + 1
       }
 
       if (Object.keys(lessonUpdates).length > 0) {
@@ -293,7 +282,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           id: lesson.id,
           title: (lessonUpdates.title ?? lesson.title) as IntlRecord,
           courseId: id,
-          sortOrder: (lessonUpdates.sortOrder as number | undefined) ?? lesson.sortOrder ?? lessons.indexOf(lesson) + 1,
+          sortOrder: (lessonUpdates.sortOrder as number | undefined) ?? lesson.sortOrder ?? lessonIndex + 1,
         } as TableInsert<'lessons'> & { id?: number })
       }
     }
@@ -317,84 +306,89 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       }
     }
 
-    for (const lesson of lessons) {
-      const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
+    await Promise.all(
+      lessons.map(async lesson => {
+        const initialLesson = initialLessonMap.get(lesson.id)
+        const initialQuestionMap = new Map((initialLesson?.questions ?? []).map(q => [q.id, q]))
+        const initialEvalMap = new Map((initialLesson?.evaluations ?? []).map(e => [e.id, e]))
 
-      const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
-      const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
-      const removedQuestionIds = [...initialQuestionIds].filter(qId => !currentQuestionIds.has(qId))
+        const initialQuestionIds = new Set((initialLesson?.questions ?? []).map(q => q.id))
+        const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
+        const removedQuestionIds = [...initialQuestionIds].filter(qId => !currentQuestionIds.has(qId))
 
-      const questionsToUpsert = lesson.questions
-        .filter(q => {
-          const existing = initialLesson?.questions.find(iq => iq.id === q.id)
-          if (!existing) return true
-          if (existing.description?.[locale] !== (q.description as IntlRecord | undefined)?.[locale]) return true
-          return existing.explanation?.[locale] !== (q.explanation as IntlRecord | undefined)?.[locale]
-        })
-        .map(q => {
-          const existing = initialLesson?.questions.find(iq => iq.id === q.id)
-          return {
-            id: existing ? q.id : undefined,
-            lessonId: lesson.id,
-            description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
-            explanation: mergeLocale(
-              q.explanation as IntlRecord | null | undefined,
-              existing?.explanation ?? null,
-              locale
-            ),
+        const questionsToUpsert = lesson.questions.flatMap(q => {
+          const existing = initialQuestionMap.get(q.id)
+          if (
+            existing &&
+            existing.description?.[locale] === (q.description as IntlRecord | undefined)?.[locale] &&
+            existing.explanation?.[locale] === (q.explanation as IntlRecord | undefined)?.[locale]
+          ) {
+            return []
           }
+          return [
+            {
+              id: existing ? q.id : undefined,
+              lessonId: lesson.id,
+              description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
+              explanation: mergeLocale(
+                q.explanation as IntlRecord | null | undefined,
+                existing?.explanation ?? null,
+                locale
+              ),
+            },
+          ]
         })
 
-      if (questionsToUpsert.length > 0) {
-        await upsertQuestions(questionsToUpsert as unknown as TableInsert<'questions'>[])
-      }
-      if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
-
-      const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
-      const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
-      const removedEvalIds = [...initialEvalIds].filter(eId => !currentEvalIds.has(eId))
-
-      const evalsToUpsert = lesson.evaluations
-        .filter(e => {
-          const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
-          if (!existing) return true
-          return existing.description?.[locale] !== (e.description as IntlRecord | undefined)?.[locale]
-        })
-        .map(e => {
-          const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
-          return {
-            id: existing ? e.id : undefined,
-            lessonId: lesson.id,
-            description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
-          }
-        })
-
-      if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as unknown as TableInsert<'evaluations'>[])
-      if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
-
-      const hadAssessment = !!initialLesson?.assessment
-      const hasAssessment = !!lesson.assessment
-
-      if (hasAssessment) {
-        const initialDesc = initialLesson?.assessment?.description?.[locale]
-        const currentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
-        const descriptionChanged = !hadAssessment || initialDesc !== currentDesc
-
-        if (descriptionChanged && lesson.assessment) {
-          await upsertAssessment({
-            id: hadAssessment ? lesson.assessment.id : undefined,
-            lessonId: lesson.id,
-            description: mergeLocale(
-              lesson.assessment.description as IntlRecord,
-              initialLesson?.assessment?.description,
-              locale
-            ),
-          } as TableInsert<'assessments'>)
+        if (questionsToUpsert.length > 0) {
+          await upsertQuestions(questionsToUpsert as unknown as TableInsert<'questions'>[])
         }
-      } else if (hadAssessment && initialLesson?.assessment) {
-        await deleteAssessment(initialLesson.assessment.id)
-      }
-    }
+        if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
+
+        const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
+        const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
+        const removedEvalIds = [...initialEvalIds].filter(eId => !currentEvalIds.has(eId))
+
+        const evalsToUpsert = lesson.evaluations.flatMap(e => {
+          const existing = initialEvalMap.get(e.id)
+          if (existing && existing.description?.[locale] === (e.description as IntlRecord | undefined)?.[locale]) {
+            return []
+          }
+          return [
+            {
+              id: existing ? e.id : undefined,
+              lessonId: lesson.id,
+              description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
+            },
+          ]
+        })
+
+        if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as unknown as TableInsert<'evaluations'>[])
+        if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
+
+        const hadAssessment = !!initialLesson?.assessment
+        const hasAssessment = !!lesson.assessment
+
+        if (hasAssessment) {
+          const initialDesc = initialLesson?.assessment?.description?.[locale]
+          const currentDesc = (lesson.assessment?.description as IntlRecord | undefined)?.[locale]
+          const descriptionChanged = !hadAssessment || initialDesc !== currentDesc
+
+          if (descriptionChanged && lesson.assessment) {
+            await upsertAssessment({
+              id: hadAssessment ? lesson.assessment.id : undefined,
+              lessonId: lesson.id,
+              description: mergeLocale(
+                lesson.assessment.description as IntlRecord,
+                initialLesson?.assessment?.description,
+                locale
+              ),
+            } as TableInsert<'assessments'>)
+          }
+        } else if (hadAssessment && initialLesson?.assessment) {
+          await deleteAssessment(initialLesson.assessment.id)
+        }
+      })
+    )
 
     const coursePayload: Record<string, unknown> = {}
 
@@ -492,141 +486,115 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       languages: nextLanguages ?? initial.languages,
       lessons: mergedLessons,
     }) as Course
-  }, [])
+  }
 
-  const addLesson = useCallback(
-    (values: TableUpdate<'lessons'> = {}) => {
-      const lessonData = {
-        id: Date.now(),
-        title: messages.defaultLessonTitle,
-        content: i18n.locales.reduce(
-          (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
-          {} as IntlRecord
-        ),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        assessment: null,
-        userLessons: [],
-        questions: [],
-        evaluations: [],
-        contributions: [],
-        ...values,
-      }
-      setCourse(prev => {
-        const lessons = [
-          ...prev.lessons,
-          parseLesson({
-            ...lessonData,
-            sortOrder: prev.lessons.length + 1,
-          }),
-        ]
-        return { ...prev, lessons }
-      })
-      setCourse(prev => {
-        setStep(prev.lessons.length)
+  const addLesson = (values: TableUpdate<'lessons'> = {}) => {
+    const lessonData = {
+      id: Date.now(),
+      title: messages.defaultLessonTitle,
+      content: i18n.locales.reduce(
+        (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
+        {} as IntlRecord
+      ),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      assessment: null,
+      userLessons: [],
+      questions: [],
+      evaluations: [],
+      contributions: [],
+      ...values,
+    }
+    setCourse(prev => {
+      const lessons = [
+        ...prev.lessons,
+        parseLesson({
+          ...lessonData,
+          sortOrder: prev.lessons.length + 1,
+        }),
+      ]
+      return { ...prev, lessons }
+    })
+    setCourse(prev => {
+      setStep(prev.lessons.length)
+      return prev
+    })
+    return parseLesson({ ...lessonData, sortOrder: 0 })
+  }
+
+  const setLesson = (data: TableUpdate<'lessons'> & { id?: number }) => {
+    setCourse(prev => {
+      if (prev.lessons.length === 0) {
+        addLesson(data)
         return prev
-      })
-      return parseLesson({ ...lessonData, sortOrder: 0 })
-    },
-    [setStep]
-  )
-
-  const setLesson = useCallback(
-    (data: TableUpdate<'lessons'> & { id?: number }) => {
-      setCourse(prev => {
-        if (prev.lessons.length === 0) {
-          addLesson(data)
-          return prev
-        }
-        return {
-          ...prev,
-          lessons: prev.lessons.map((lesson, i) => {
-            if (data.id && lesson.id === data.id) return { ...lesson, ...data }
-            if (!data.id && i === step - 1) return { ...lesson, ...data }
-            return lesson
-          }),
-        }
-      })
-    },
-    [addLesson, step]
-  )
-
-  const removeLesson = useCallback(
-    (lessonId: number) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons
-          .filter(lesson => lesson.id !== lessonId)
-          .map((lesson, i) => ({ ...lesson, sortOrder: i + 1 })),
-      }))
-      if (step > 1) {
-        setStep(i => i - 1)
       }
-    },
-    [setStep, step]
-  )
+      return {
+        ...prev,
+        lessons: prev.lessons.map((lesson, i) => {
+          if (data.id && lesson.id === data.id) return { ...lesson, ...data }
+          if (!data.id && i === step - 1) return { ...lesson, ...data }
+          return lesson
+        }),
+      }
+    })
+  }
 
-  const previous = useCallback(() => {
+  const removeLesson = (lessonId: number) => {
+    setCourse(prev => {
+      const lessons: Lesson[] = []
+      for (const [i, lesson] of prev.lessons.entries()) {
+        if (lesson.id !== lessonId) {
+          lessons.push({ ...lesson, sortOrder: i + 1 })
+        }
+      }
+      return { ...prev, lessons }
+    })
     if (step > 1) {
       setStep(i => i - 1)
     }
-  }, [setStep, step])
+  }
 
-  const next = useCallback(() => {
+  const previous = () => {
+    if (step > 1) {
+      setStep(i => i - 1)
+    }
+  }
+
+  const next = () => {
     setCourse(prev => {
       if (step < prev.lessons.length) {
         setStep(i => i + 1)
       }
       return prev
     })
-  }, [setStep, step])
+  }
 
-  return useMemo(
-    () => ({
-      addLesson,
-      contentFlushRef,
-      course,
-      courseRef,
-      currentLesson,
-      editCourse,
-      hasAnyUpdates,
-      language,
-      languageStatus,
-      next,
-      previous,
-      removeLesson,
-      saveCourse,
-      setCourse,
-      setLanguage,
-      setLesson,
-      setStep,
-      status,
-      step,
-    }),
-    [
-      addLesson,
-      course,
-      currentLesson,
-      editCourse,
-      hasAnyUpdates,
-      language,
-      languageStatus,
-      next,
-      previous,
-      removeLesson,
-      saveCourse,
-      setLanguage,
-      setLesson,
-      setStep,
-      status,
-      step,
-    ]
-  )
+  return {
+    addLesson,
+    contentFlushRef,
+    course,
+    courseRef,
+    currentLesson,
+    editCourse,
+    hasAnyUpdates,
+    language,
+    languageStatus,
+    next,
+    previous,
+    removeLesson,
+    saveCourse,
+    setCourse,
+    setLanguage,
+    setLesson,
+    setStep,
+    status,
+    step,
+  }
 }
 
 const CourseContext = createContext<ReturnType<typeof useCourseProvider> | null>(null)
 
-export const CourseProvider = memo(({ children, value, ...props }: React.ProviderProps<CourseProviderOptions>) => {
+export const CourseProvider = ({ children, value, ...props }: React.ProviderProps<CourseProviderOptions>) => {
   const providerValue = useCourseProvider(value)
 
   return (
@@ -634,10 +602,10 @@ export const CourseProvider = memo(({ children, value, ...props }: React.Provide
       {children}
     </CourseContext.Provider>
   )
-})
+}
 
 export const useCourse = () => {
-  const context = useContext(CourseContext)
+  const context = use(CourseContext)
   if (!context) throw new Error('useCourse must be used within a CourseProvider')
   return context
 }

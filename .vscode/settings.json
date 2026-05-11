@@ -1,11 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.addMissingImports.ts": "always",
-    "source.fixAll.oxc": "always",
-    "source.format.oxc": "always",
-    "source.removeUnusedImports": "always"
-  },
-  "editor.defaultFormatter": "oxc.oxc-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
@@ -18,6 +11,13 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports.ts": "always",
+    "source.fixAll.oxc": "always",
+    "source.format.oxc": "always",
+    "source.removeUnusedImports": "always"
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "files.associations": {
@@ -48,6 +48,6 @@
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   },
-  "typescript.native-preview.tsdk": "/Users/gabrielecanepa/Developer/@glorecertificate/glore/node_modules/@typescript/native-preview",
+  "typescript.native-preview.tsdk": "./node_modules/@typescript/native-preview",
   "postman.settings.dotenv-detection-notification-visibility": false
 }

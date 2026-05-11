@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
@@ -24,17 +22,14 @@ export const CourseEvaluations = ({
   const { localize } = useI18n()
   const t = useTranslations('Courses')
 
-  const onValueChange = useCallback(
-    (id: number) => {
-      if (completed) {
-        return
-      }
-      return (value: string) => {
-        onEvaluation(id, Number(value))
-      }
-    },
-    [completed, onEvaluation]
-  )
+  const onValueChange = (id: number) => {
+    if (completed) {
+      return
+    }
+    return (value: string) => {
+      onEvaluation(id, Number(value))
+    }
+  }
 
   return (
     <div {...props}>

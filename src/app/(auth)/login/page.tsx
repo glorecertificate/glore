@@ -1,5 +1,3 @@
-import { Suspense } from 'react'
-
 import { createSearchParamsCache, parseAsString } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
@@ -41,8 +39,4 @@ const LoginPage = async (props: PageProps<'/login'>) => {
   )
 }
 
-export default (props: PageProps<'/login'>) => (
-  <Suspense fallback={null}>
-    <LoginPage {...props} />
-  </Suspense>
-)
+export default LoginPage

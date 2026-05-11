@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import { usePathname } from 'next/navigation'
-import { createContext, startTransition, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, startTransition, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Slot } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
@@ -53,7 +53,7 @@ interface SidebarContext {
 const SidebarContext = createContext<SidebarContext | null>(null)
 
 export const useSidebar = () => {
-  const context = useContext(SidebarContext)
+  const context = use(SidebarContext)
   if (!context) {
     throw new Error('useSidebar must be used within a SidebarProvider.')
   }

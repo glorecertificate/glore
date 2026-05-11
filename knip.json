@@ -3,8 +3,16 @@
   "entry": ["src/i18n.ts"],
   "project": ["src/**/*", "scripts/**/*"],
   "tags": ["-lintignore"],
+  "ignore": ["src/components/features/notifications/notification-bell.tsx"],
   "ignoreIssues": {
     "src/components/ui/**": ["exports"]
   },
-  "ignoreDependencies": ["@commitlint/cli", "oxlint-tsgolint", "react-doctor", "server-only"]
+  "ignoreDependencies": [
+    "@commitlint/cli",
+    "@release-it/bumper",
+    "@release-it/conventional-changelog",
+    "oxlint-tsgolint",
+    "react-doctor",
+    "server-only"
+  ]
 }

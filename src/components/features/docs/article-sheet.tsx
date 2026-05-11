@@ -37,7 +37,7 @@ interface ArticleSheetProps {
 
 export const ArticleSheet = ({ article, canEdit, categories, onOpenChange, open }: ArticleSheetProps) => {
   const t = useTranslations('Docs')
-  const router = useRouter()
+  const { refresh: routerRefresh } = useRouter()
   const { locale, localize } = useI18n()
   const [editorOpen, setEditorOpen] = useState(false)
 
@@ -55,7 +55,7 @@ export const ArticleSheet = ({ article, canEdit, categories, onOpenChange, open 
     }
     toast.success(t('editor.deleted'))
     onOpenChange(false)
-    startTransition(() => router.refresh())
+    startTransition(() => routerRefresh())
   }
 
   return (

@@ -36,16 +36,14 @@ export const generateMetadata = async () => {
   }
 }
 
-const Layout = async ({ children }: LayoutProps<'/'>) => {
-  const t = await getTranslations('Metadata')
+const LayoutContent = async ({ children }: LayoutProps<'/'>) => {
   const locale = await getLocaleCookie()
   const messages = await getMessages({ locale })
-  const i18nContextValue = Object.freeze({ locale, messages })
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Page',
-    description: t('description'),
+    description: messages.Metadata.description,
     image: publicFile('/og-image.png'),
     name: config.name,
   }
@@ -54,7 +52,7 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
     <html lang={locale} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <SearchParamsProvider>
-          <I18nProvider value={i18nContextValue}>
+          <I18nProvider value={{ locale, messages }}>
             <PWAContextProvider>
               <ThemeProvider>
                 {children}
@@ -74,7 +72,7 @@ const Layout = async ({ children }: LayoutProps<'/'>) => {
   )
 }
 
-const fallback = (
+const LayoutFallback = () => (
   <html lang={i18n.defaultLocale}>
     <body>
       <LoadingFallback size="full" />
@@ -82,8 +80,10 @@ const fallback = (
   </html>
 )
 
-export default (props: LayoutProps<'/'>) => (
-  <Suspense fallback={fallback}>
-    <Layout {...props} />
+const Layout = (props: LayoutProps<'/'>) => (
+  <Suspense fallback={<LayoutFallback />}>
+    <LayoutContent {...props} />
   </Suspense>
 )
+
+export default Layout

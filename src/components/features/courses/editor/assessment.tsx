@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 import { useTranslations } from 'next-intl'
 
 import { Markdown } from '@/components/ui/markdown'
@@ -28,14 +26,11 @@ export const CourseAssessment = ({
   const description = assessment.description ? localize(assessment.description) : ''
   const rating = assessment.userAssessments?.[0]?.value || 0
 
-  const onChange = useCallback(
-    (value: string) => {
-      if (!completed) {
-        onValueChange(Number(value))
-      }
-    },
-    [completed, onValueChange]
-  )
+  const onChange = (value: string) => {
+    if (!completed) {
+      onValueChange(Number(value))
+    }
+  }
 
   return (
     <div {...props}>

@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, startTransition } from 'react'
+import { startTransition } from 'react'
 
 import { useTranslations } from 'next-intl'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
@@ -22,15 +22,15 @@ export const useUserSettingsTab = () => {
   return { setTab, tab }
 }
 
-export const UserSettingsTabs = memo((props: React.ComponentProps<typeof Tabs>) => {
+export const UserSettingsTabs = (props: React.ComponentProps<typeof Tabs>) => {
   const { tab, setTab } = useUserSettingsTab()
 
   return (
     <Tabs defaultValue={DEFAULT_SETTINGS_TAB} onValueChange={setTab as (tab: string) => void} value={tab} {...props} />
   )
-})
+}
 
-export const UserSettingsTabsList = memo(({ children, ...props }: React.ComponentProps<typeof TabsList>) => {
+export const UserSettingsTabsList = ({ children, ...props }: React.ComponentProps<typeof TabsList>) => {
   const t = useTranslations('Users')
 
   return (
@@ -42,4 +42,4 @@ export const UserSettingsTabsList = memo(({ children, ...props }: React.Componen
       ))}
     </TabsList>
   )
-})
+}

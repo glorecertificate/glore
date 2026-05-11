@@ -23,36 +23,37 @@ const fetchOrganizations = async () => {
   cacheTag(CacheTag.Organizations)
 
   return await safeQuery(async () => {
-    const rows = await db.query.organizations.findMany({
-      orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
-      with: {
-        profile: true,
-      },
-      limit: 1000,
-    })
-
-    const requests = await db.query.organizationJoinRequests.findMany({
-      columns: {
-        createdAt: true,
-        email: true,
-        firstName: true,
-        id: true,
-        lastName: true,
-        locale: true,
-        message: true,
-        organizationId: true,
-        role: true,
-        status: true,
-        updatedAt: true,
-        acceptedAt: true,
-        rejectedAt: true,
-        reviewedAt: true,
-        reviewedBy: true,
-        reviewerComment: true,
-      },
-      where: eq(organizationJoinRequests.role, 'admin'),
-      limit: 1000,
-    })
+    const [rows, requests] = await Promise.all([
+      db.query.organizations.findMany({
+        orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
+        with: {
+          profile: true,
+        },
+        limit: 1000,
+      }),
+      db.query.organizationJoinRequests.findMany({
+        columns: {
+          createdAt: true,
+          email: true,
+          firstName: true,
+          id: true,
+          lastName: true,
+          locale: true,
+          message: true,
+          organizationId: true,
+          role: true,
+          status: true,
+          updatedAt: true,
+          acceptedAt: true,
+          rejectedAt: true,
+          reviewedAt: true,
+          reviewedBy: true,
+          reviewerComment: true,
+        },
+        where: eq(organizationJoinRequests.role, 'admin'),
+        limit: 1000,
+      }),
+    ])
 
     const requestMap = new Map(requests.map(r => [r.organizationId, r]))
 
@@ -70,36 +71,37 @@ export const getOrganizations = async ({ cache = true }: { cache?: boolean } = {
   if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
 
   if (!cache) {
-    const rows = await db.query.organizations.findMany({
-      orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
-      with: {
-        profile: true,
-      },
-      limit: 1000,
-    })
-
-    const requests = await db.query.organizationJoinRequests.findMany({
-      columns: {
-        createdAt: true,
-        email: true,
-        firstName: true,
-        id: true,
-        lastName: true,
-        locale: true,
-        message: true,
-        organizationId: true,
-        role: true,
-        status: true,
-        updatedAt: true,
-        acceptedAt: true,
-        rejectedAt: true,
-        reviewedAt: true,
-        reviewedBy: true,
-        reviewerComment: true,
-      },
-      where: eq(organizationJoinRequests.role, 'admin'),
-      limit: 1000,
-    })
+    const [rows, requests] = await Promise.all([
+      db.query.organizations.findMany({
+        orderBy: (record, { desc: orderDesc }) => [orderDesc(record.createdAt)],
+        with: {
+          profile: true,
+        },
+        limit: 1000,
+      }),
+      db.query.organizationJoinRequests.findMany({
+        columns: {
+          createdAt: true,
+          email: true,
+          firstName: true,
+          id: true,
+          lastName: true,
+          locale: true,
+          message: true,
+          organizationId: true,
+          role: true,
+          status: true,
+          updatedAt: true,
+          acceptedAt: true,
+          rejectedAt: true,
+          reviewedAt: true,
+          reviewedBy: true,
+          reviewerComment: true,
+        },
+        where: eq(organizationJoinRequests.role, 'admin'),
+        limit: 1000,
+      }),
+    ])
 
     const requestMap = new Map(requests.map(r => [r.organizationId, r]))
 

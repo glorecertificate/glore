@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { Building2Icon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -30,81 +30,72 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
   const [inviteOpen, setInviteOpen] = useState(false)
 
-  const displayOrgs = useMemo(() => {
+  const displayOrgs = (() => {
     if (filter === 'pending') return orgs.filter(o => o.isPending)
     if (filter === 'approved') return orgs.filter(o => o.isApproved)
     return orgs
-  }, [orgs, filter])
+  })()
 
-  const pendingCount = useMemo(() => orgs.filter(o => o.isPending).length, [orgs])
+  const pendingCount = orgs.filter(o => o.isPending).length
 
-  const refreshOrgs = useCallback(async () => {
+  const refreshOrgs = async () => {
     const { data } = await getOrganizations({ cache: false })
     if (data) setOrgs(data)
-  }, [])
+  }
 
-  const handleApprove = useCallback(
-    async (comment?: string) => {
-      if (!approveTarget) return
+  const handleApprove = async (comment?: string) => {
+    if (!approveTarget) return
 
-      const { error } = await approveOrganization(approveTarget.id, comment)
+    const { error } = await approveOrganization(approveTarget.id, comment)
 
-      if (error) {
-        console.error(error)
-        toast.error(t('approveError'))
-        return
-      }
+    if (error) {
+      console.error(error)
+      toast.error(t('approveError'))
+      return
+    }
 
-      toast.success(t('approveSuccess', { name: approveTarget.name }))
-      setApproveTarget(null)
-      refreshOrgs()
-    },
-    [approveTarget, t, refreshOrgs]
-  )
+    toast.success(t('approveSuccess', { name: approveTarget.name }))
+    setApproveTarget(null)
+    refreshOrgs()
+  }
 
-  const handleReject = useCallback(
-    async (comment?: string) => {
-      if (!rejectTarget) return
+  const handleReject = async (comment?: string) => {
+    if (!rejectTarget) return
 
-      const { error } = await rejectOrganization(rejectTarget.id, comment)
+    const { error } = await rejectOrganization(rejectTarget.id, comment)
 
-      if (error) {
-        console.error(error)
-        toast.error(t('rejectError'))
-        return
-      }
+    if (error) {
+      console.error(error)
+      toast.error(t('rejectError'))
+      return
+    }
 
-      toast.success(t('rejectSuccess', { name: rejectTarget.name }))
-      setRejectTarget(null)
-      refreshOrgs()
-    },
-    [rejectTarget, t, refreshOrgs]
-  )
+    toast.success(t('rejectSuccess', { name: rejectTarget.name }))
+    setRejectTarget(null)
+    refreshOrgs()
+  }
 
-  const handleInvite = useCallback(
-    async (data: {
-      name: string
-      email: string
-      city: string
-      country: string
-      url?: string
-      firstName: string
-      lastName?: string
-      registrantEmail: string
-    }) => {
-      const { error } = await inviteOrganization(data)
+  const handleInvite = async (data: {
+    name: string
+    email: string
+    city: string
+    country: string
+    url?: string
+    firstName: string
+    lastName?: string
+    registrantEmail: string
+  }) => {
+    const { error } = await inviteOrganization(data)
 
-      if (error) {
-        console.error(error)
-        toast.error(t('inviteError'))
-        return
-      }
+    if (error) {
+      console.error(error)
+      toast.error(t('inviteError'))
+      return
+    }
 
-      toast.success(t('inviteSuccess', { name: data.name }))
-      refreshOrgs()
-    },
-    [t, refreshOrgs]
-  )
+    toast.success(t('inviteSuccess', { name: data.name }))
+    refreshOrgs()
+  }
 
   return (
     <div className="space-y-6">

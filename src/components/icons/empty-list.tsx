@@ -21,11 +21,11 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m97.863 376.715 1.708 12.873s32.021 13.64 29.051 13.837c-2.97.198-48.986-2.772-48.986-2.772l2.708-23.37z"
-      className="fill-gray-700"
+      className="fill-zinc-700"
     />
     <path
       d="m88.9429 166.56s-2.552 24.56-4.465 25.836c-1.914 1.276-4.465 1.914-4.465 1.914l4.146-28.068z"
-      className="stroke-gray-600"
+      className="stroke-zinc-600"
       strokeMiterlimit="10"
     />
     <path
@@ -38,7 +38,7 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m22.3871 375.163 2.764 11.106s20.201 24.296 17.224 24.296-36.14903-15.04-36.14903-15.04l4.25303-23.138z"
-      className="fill-gray-700"
+      className="fill-zinc-700"
     />
     <path
       d="m30.359 186.61-30.359 193.339s13.258 12.421 30.005 1.116l30.87-157.923 14.991-10.065 2.233-28.807z"
@@ -73,13 +73,13 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m182.361 228.007-90.172 175.287"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinejoin="round"
       strokeMiterlimit="10"
     />
     <path
       d="m219.517 258.214h77.675c2.118 0 4.089-1.066 5.226-2.826 2.624-4.061-.338-9.376-5.226-9.376h-77.675c-2.118 0-4.089 1.066-5.226 2.825-2.625 4.062.338 9.377 5.226 9.377z"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinejoin="round"
       strokeMiterlimit="10"
     />
@@ -112,25 +112,25 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m121.332 163.632 1.73 7.27-2.857 7.553"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m116.891 163.363 2.241 7.451-3.086 8.777"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m112.995 164.195 1.305 7.164-1.493 5.366"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m105.471 26.0716c-3.269 3.06-3.317 6.781-3.317 6.781s-1.124-1.388-2.5141-1.834"
-      className="stroke-gray-700"
+      className="stroke-zinc-700"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
@@ -140,19 +140,19 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m171.355 163.679-.111 7.378-5.382 7.831"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m167.534 163.737-.421 7.605-4.545 6.94"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m163.654 163.936-.545 6.404-3.879 6.434"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
@@ -162,7 +162,7 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m155.495 161.275s-2.119.34-2.724 2.828"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
@@ -196,7 +196,7 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m122.273 77.1066.071 2.908c.054.03-.118.898-3.002 1.229-12.671-.378-13.674-14.636-14.705-25.979 0 0 18.806 19.578 17.636 21.842z"
-      className="fill-gray-900"
+      className="fill-zinc-900"
     />
     <path
       d="m140.005 45.3026s3.255 29.652-14.139 34.47-21.561-23.547-20.961-33.357 5.498-14.655 17.689-15.094c18.035-.65 17.411 13.981 17.411 13.981z"
@@ -204,7 +204,7 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m113.965 37.2656s-.326 6.232-4.462 7.477l-2.974 9.165s-2.492-4.073-5.23-5.516c0 0-3.0242-12.103.783-16.912 3.807-4.809 9.099-7.247 21.902-6.182 9.745.81 15.446 7.723 17.308 11.24.604 1.14 2.069 4.344-1.356 7.461 0 0 .046-2.358-1.954-5.117 0 0-4.666 9.539-24.017-1.616z"
-      className="fill-gray-700"
+      className="fill-zinc-700"
     />
     <path
       d="m97.2889 55.4786c1.073 3.913 4.1511 6.499 6.8751 5.777s4.064-4.479 2.991-8.392c-1.072-3.913-4.151-6.499-6.875-5.777-2.7251.723-4.0641 4.48-2.9911 8.392z"
@@ -212,41 +212,41 @@ export const EmptyListIcon = ({ className, ...props }: IconProps) => (
     />
     <path
       d="m122.368 56.7856c-.05 1.008.429 1.851 1.07 1.884s1.2-.758 1.249-1.766c.05-1.008-.429-1.851-1.07-1.884-.64-.032-1.2.759-1.249 1.766z"
-      className="fill-gray-900"
+      className="fill-zinc-900"
     />
     <path
       d="m135.784 57.6146c-.099.944.288 1.76.864 1.821s1.124-.654 1.223-1.599c.099-.944-.288-1.76-.864-1.821-.577-.061-1.124.655-1.223 1.599z"
-      className="fill-gray-900"
+      className="fill-zinc-900"
     />
     <path
       d="m118.538 48.8036s4.607.987 4.914-3.382"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
     <path
       d="m134.149 48.4456s1.174 4.061 4.637 1.71"
-      className="stroke-gray-900"
+      className="stroke-zinc-900"
       strokeLinecap="round"
       strokeMiterlimit="10"
     />
-    <path d="m121.563 73.0306s-1.519-6.189-6.233-2.641z" className="fill-gray-900" />
+    <path d="m121.563 73.0306s-1.519-6.189-6.233-2.641z" className="fill-zinc-900" />
     <g strokeMiterlimit="10">
       <path
         d="m100.023 52.0726s3.064-2.636 4.738 2.184c0 0-1.79 1.9-.66 3.391 0 0-1.765.4-2.635-1.156"
-        className="stroke-gray-900"
+        className="stroke-zinc-900"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="m101.35 53.9166s.171-1.071 1.36-2.294"
-        className="stroke-gray-900"
+        className="stroke-zinc-900"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="m133.788 61.2476c.576.731.696 1.602.405 2.544-.287.93-1.235 1.496-2.195 1.476-.445-.009-.872-.129-1.293-.261-.184-.057-.548-.254-.746-.167-.959.424-2.076-.413-1.756-1.067"
-        className="stroke-gray-900"
+        className="stroke-zinc-900"
         strokeLinecap="round"
       />
     </g>

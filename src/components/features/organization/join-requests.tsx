@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -38,7 +38,7 @@ const RejectRequestDialog = ({
   const [comment, setComment] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     try {
       setSubmitting(true)
       await onConfirm(comment)
@@ -47,7 +47,7 @@ const RejectRequestDialog = ({
     } finally {
       setSubmitting(false)
     }
-  }, [comment, onConfirm, onOpenChange])
+  }
 
   return (
     <Dialog onOpenChange={onOpenChange} open={open}>
@@ -96,50 +96,44 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
   const [activeRequestId, setActiveRequestId] = useState<number | null>(null)
   const [rejectRequestId, setRejectRequestId] = useState<number | null>(null)
 
-  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }), [locale])
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
 
-  const handleApproveRequest = useCallback(
-    async (requestId: number) => {
-      setActiveRequestId(requestId)
+  const handleApproveRequest = async (requestId: number) => {
+    setActiveRequestId(requestId)
 
-      const { error } = await approveOrganizationJoinRequest(requestId)
+    const { error } = await approveOrganizationJoinRequest(requestId)
 
-      setActiveRequestId(null)
+    setActiveRequestId(null)
 
-      if (error) {
-        toast.error(error.message)
-        return
-      }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
 
-      toast.success(t('joinRequestApproved'))
-      onRefresh()
-    },
-    [onRefresh, t]
-  )
+    toast.success(t('joinRequestApproved'))
+    onRefresh()
+  }
 
-  const handleRejectRequest = useCallback(
-    async (comment: string) => {
-      if (!rejectRequestId) {
-        return
-      }
+  const handleRejectRequest = async (comment: string) => {
+    if (!rejectRequestId) {
+      return
+    }
 
-      setActiveRequestId(rejectRequestId)
+    setActiveRequestId(rejectRequestId)
 
-      const { error } = await rejectOrganizationJoinRequest(rejectRequestId, comment)
+    const { error } = await rejectOrganizationJoinRequest(rejectRequestId, comment)
 
-      setActiveRequestId(null)
+    setActiveRequestId(null)
 
-      if (error) {
-        toast.error(error.message)
-        return
-      }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
 
-      setRejectRequestId(null)
-      toast.success(t('joinRequestRejected'))
-      onRefresh()
-    },
-    [onRefresh, rejectRequestId, t]
-  )
+    setRejectRequestId(null)
+    toast.success(t('joinRequestRejected'))
+    onRefresh()
+  }
 
   return (
     <>

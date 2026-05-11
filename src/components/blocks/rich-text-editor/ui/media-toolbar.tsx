@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import {
   FloatingMedia as FloatingMediaPrimitive,
@@ -51,7 +51,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
   const element = useElement()
   const { props: buttonProps } = useRemoveNodeButton({ element })
 
-  const urlInputOptions = useMemo(() => ({ plugin }), [plugin])
+  const urlInputOptions = { plugin }
 
   if (readOnly) {
     return <>{children}</>

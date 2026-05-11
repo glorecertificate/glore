@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { Fragment, Suspense, useEffect, useState } from 'react'
 
 import {
   AwardIcon,
@@ -97,13 +97,13 @@ const AppSidebarItem = ({
   const Component = asChild ? Fragment : subItem ? SidebarMenuSubItem : SidebarMenuItem
   const isActivePath = route === activePath && searchParams.size === 0
 
-  const isActive = useMemo(() => {
+  const isActive = (() => {
     if (isActivePath || subItem) return isActivePath
     if (route === APP_ROOT) return activePath === APP_ROOT
     return activePath.startsWith(route)
-  }, [isActivePath, subItem, route, activePath])
+  })()
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const setPath = (e: React.MouseEvent<HTMLButtonElement>) => {
     setActivePath(route)
     onClick?.(e)
   }
@@ -120,7 +120,7 @@ const AppSidebarItem = ({
           isActivePath && 'pointer-events-none',
           className
         )}
-        onClick={handleClick}
+        onClick={setPath}
         tooltip={label}
       >
         <Link href={route} prefetch>
@@ -138,7 +138,7 @@ const AppSidebarItem = ({
 
 const AppSidebarCollapsible = ({ children, icon, label, route }: AppSidebarItemProps) => {
   const { activePath } = useSidebar()
-  const [open, setOpen] = useState(activePath.startsWith(route))
+  const [open, setOpen] = useState(() => activePath.startsWith(route))
 
   return (
     <Collapsible asChild open={open}>
@@ -163,7 +163,7 @@ const AppSidebarCollapsible = ({ children, icon, label, route }: AppSidebarItemP
 }
 
 const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) => {
-  const router = useRouter()
+  const { push } = useRouter()
   const { isMobile, open, setActivePath } = useSidebar()
   const t = useTranslations('Layout')
 
@@ -174,7 +174,7 @@ const AppSidebarOrgs = ({ organization }: { organization: UserOrganization }) =>
   const selectOrganization = (id: number) => {
     setActivePath(APP_ROOT)
     setOrganization(id)
-    router.push(APP_ROOT)
+    push(APP_ROOT)
   }
 
   return (
@@ -296,17 +296,19 @@ const AppSidebarUserItem = ({
   const searchParams = useSearchParams()
 
   return (
-    <Link href={href} onClick={onClick}>
-      <DropdownMenuItem
-        className={cn(
-          pathname === href && 'bg-accent/50',
-          href === pathname && searchParams.size === 0 && 'pointer-events-none'
-        )}
-      >
-        <Icon />
-        {children}
-      </DropdownMenuItem>
-    </Link>
+    <Suspense fallback={<DropdownMenuItem disabled>{children}</DropdownMenuItem>}>
+      <Link href={href} onClick={onClick}>
+        <DropdownMenuItem
+          className={cn(
+            pathname === href && 'bg-accent/50',
+            href === pathname && searchParams.size === 0 && 'pointer-events-none'
+          )}
+        >
+          <Icon />
+          {children}
+        </DropdownMenuItem>
+      </Link>
+    </Suspense>
   )
 }
 
@@ -515,8 +517,8 @@ const AppSidebarSearch = () => {
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
                 <kbd className="flex items-center gap-0.5 font-mono text-[13px] text-muted-foreground/70">
-                  <span className="text-[15px]">⌘</span>
-                  <span>K</span>
+                  <span className="text-[15px]">{'⌘'}</span>
+                  <span>{'K'}</span>
                 </kbd>
               </span>
             </SidebarMenuButton>

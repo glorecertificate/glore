@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext } from 'react'
+import { use } from 'react'
 
 import { I18nContext } from '@/components/providers/i18n-context'
 
@@ -8,7 +8,7 @@ import { I18nContext } from '@/components/providers/i18n-context'
  * Accesses i18n context for localization and locale management.
  */
 export const useI18n = () => {
-  const context = useContext(I18nContext)
+  const context = use(I18nContext)
   if (!context) throw Error('useI18n must be used within a I18nProvider')
   return context
 }

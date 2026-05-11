@@ -1,6 +1,6 @@
 'use client'
 
-import { startTransition, useCallback } from 'react'
+import { startTransition } from 'react'
 
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 
@@ -19,12 +19,12 @@ const sortParser = parseAsStringEnum([...CERT_LIST_SORTS]).withDefault('newest')
 
 export const useCertListStatus = () => {
   const [status, setStatusRaw] = useQueryState(CERT_LIST_PARAMS.STATUS, { ...statusParser, ...paramsOptions })
-  const setStatus = useCallback((s: CertListStatus | null) => setStatusRaw(s), [setStatusRaw])
+  const setStatus = (s: CertListStatus | null) => setStatusRaw(s)
   return { setStatus, status }
 }
 
 export const useCertListSort = () => {
   const [sort, setSortRaw] = useQueryState(CERT_LIST_PARAMS.SORT, { ...sortParser, ...paramsOptions })
-  const setSort = useCallback((s: CertListSort | null) => setSortRaw(s), [setSortRaw])
+  const setSort = (s: CertListSort | null) => setSortRaw(s)
   return { setSort, sort }
 }

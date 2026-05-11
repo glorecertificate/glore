@@ -54,7 +54,7 @@ export const CertificateShare = ({ certificate, className }: CertificateSharePro
         <Button asChild size="sm" variant="outline">
           <a href={linkedInUrl} rel="noopener noreferrer" target="_blank">
             <LinkedinIcon className="size-3.5" />
-            LinkedIn
+            {'LinkedIn'}
           </a>
         </Button>
       )}
@@ -62,7 +62,7 @@ export const CertificateShare = ({ certificate, className }: CertificateSharePro
         <Button asChild size="sm" variant="outline">
           <a href={facebookUrl} rel="noopener noreferrer" target="_blank">
             <FacebookIcon className="size-3.5" />
-            Facebook
+            {'Facebook'}
           </a>
         </Button>
       )}

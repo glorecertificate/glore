@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import {
   CheckIcon,
@@ -40,104 +40,98 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
 
   const [open, setOpen] = useState(false)
 
-  const turnIntoItems = useMemo(
-    () => [
-      {
-        icon: <PilcrowIcon />,
-        keywords: ['paragraph'],
-        label: t('blocks.paragraph'),
-        value: KEYS.p,
-      },
-      {
-        icon: <Heading1Icon />,
-        keywords: ['title', 'h1'],
-        label: t('blocks.heading1'),
-        value: 'h1',
-      },
-      {
-        icon: <Heading2Icon />,
-        keywords: ['subtitle', 'h2'],
-        label: t('blocks.heading2'),
-        value: 'h2',
-      },
-      {
-        icon: <Heading3Icon />,
-        keywords: ['subtitle', 'h3'],
-        label: t('blocks.heading3'),
-        value: 'h3',
-      },
-      {
-        icon: <Heading4Icon />,
-        keywords: ['subtitle', 'h4'],
-        label: t('blocks.heading4'),
-        value: 'h4',
-      },
-      {
-        icon: <Heading5Icon />,
-        keywords: ['subtitle', 'h5'],
-        label: t('blocks.heading5'),
-        value: 'h5',
-      },
-      {
-        icon: <Heading6Icon />,
-        keywords: ['subtitle', 'h6'],
-        label: t('blocks.heading6'),
-        value: 'h6',
-      },
-      {
-        icon: <ListIcon />,
-        keywords: ['unordered', 'ul', '-'],
-        label: t('blocks.bulletList'),
-        value: KEYS.ul,
-      },
-      {
-        icon: <ListOrderedIcon />,
-        keywords: ['ordered', 'ol', '1'],
-        label: t('blocks.numberedList'),
-        value: KEYS.ol,
-      },
-      {
-        icon: <SquareIcon />,
-        keywords: ['checklist', 'task', 'checkbox', '[]'],
-        label: t('blocks.todoList'),
-        value: KEYS.listTodo,
-      },
-      {
-        icon: <ChevronRightIcon />,
-        keywords: ['collapsible', 'expandable'],
-        label: t('blocks.toggle'),
-        value: KEYS.toggle,
-      },
-      {
-        icon: <FileCodeIcon />,
-        keywords: ['```'],
-        label: t('blocks.codeBlock'),
-        value: KEYS.codeBlock,
-      },
-      {
-        icon: <QuoteIcon />,
-        keywords: ['citation', 'blockquote', '>'],
-        label: t('blocks.quote'),
-        value: KEYS.blockquote,
-      },
-      {
-        icon: <Columns3Icon />,
-        label: t('blocks.threeColumns'),
-        value: 'action_three_columns',
-      },
-    ],
-    [t]
-  )
+  const turnIntoItems = [
+    {
+      icon: <PilcrowIcon />,
+      keywords: ['paragraph'],
+      label: t('blocks.paragraph'),
+      value: KEYS.p,
+    },
+    {
+      icon: <Heading1Icon />,
+      keywords: ['title', 'h1'],
+      label: t('blocks.heading1'),
+      value: 'h1',
+    },
+    {
+      icon: <Heading2Icon />,
+      keywords: ['subtitle', 'h2'],
+      label: t('blocks.heading2'),
+      value: 'h2',
+    },
+    {
+      icon: <Heading3Icon />,
+      keywords: ['subtitle', 'h3'],
+      label: t('blocks.heading3'),
+      value: 'h3',
+    },
+    {
+      icon: <Heading4Icon />,
+      keywords: ['subtitle', 'h4'],
+      label: t('blocks.heading4'),
+      value: 'h4',
+    },
+    {
+      icon: <Heading5Icon />,
+      keywords: ['subtitle', 'h5'],
+      label: t('blocks.heading5'),
+      value: 'h5',
+    },
+    {
+      icon: <Heading6Icon />,
+      keywords: ['subtitle', 'h6'],
+      label: t('blocks.heading6'),
+      value: 'h6',
+    },
+    {
+      icon: <ListIcon />,
+      keywords: ['unordered', 'ul', '-'],
+      label: t('blocks.bulletList'),
+      value: KEYS.ul,
+    },
+    {
+      icon: <ListOrderedIcon />,
+      keywords: ['ordered', 'ol', '1'],
+      label: t('blocks.numberedList'),
+      value: KEYS.ol,
+    },
+    {
+      icon: <SquareIcon />,
+      keywords: ['checklist', 'task', 'checkbox', '[]'],
+      label: t('blocks.todoList'),
+      value: KEYS.listTodo,
+    },
+    {
+      icon: <ChevronRightIcon />,
+      keywords: ['collapsible', 'expandable'],
+      label: t('blocks.toggle'),
+      value: KEYS.toggle,
+    },
+    {
+      icon: <FileCodeIcon />,
+      keywords: ['```'],
+      label: t('blocks.codeBlock'),
+      value: KEYS.codeBlock,
+    },
+    {
+      icon: <QuoteIcon />,
+      keywords: ['citation', 'blockquote', '>'],
+      label: t('blocks.quote'),
+      value: KEYS.blockquote,
+    },
+    {
+      icon: <Columns3Icon />,
+      label: t('blocks.threeColumns'),
+      value: 'action_three_columns',
+    },
+  ]
 
   const value = useSelectionFragmentProp({
     defaultValue: KEYS.p,
     getProp: node => getBlockType(node as TElement),
   })
 
-  const selectedItem = useMemo(
-    () => turnIntoItems.find(item => item.value === (value ?? KEYS.p)) ?? turnIntoItems[0],
-    [turnIntoItems, value]
-  )
+  const selectedItem = turnIntoItems.find(item => item.value === (value ?? KEYS.p)) ?? turnIntoItems[0]
 
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>

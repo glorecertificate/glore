@@ -47,8 +47,8 @@ export const MediaPreviewDialog = () => {
       onContextMenu={e => e.stopPropagation()}
       {...maskLayerProps}
     >
-      <div className="absolute inset-0 size-full bg-black opacity-30" />
-      <div className="absolute inset-0 size-full bg-black opacity-30" />
+      <div className="absolute inset-0 size-full bg-black/95 opacity-30" />
+      <div className="absolute inset-0 size-full bg-black/95 opacity-30" />
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative flex max-h-screen w-full items-center">
           <PreviewImage
@@ -98,7 +98,7 @@ export const MediaPreviewDialog = () => {
               <div className="mx-px">
                 {isEditingScale ? (
                   <>
-                    <ScaleInput className="w-10 rounded-sm px-1 text-slate-500 outline" /> <span>%</span>
+                    <ScaleInput className="text-zinc w-10 rounded-sm px-1 outline" /> <span>{'%'}</span>
                   </>
                 ) : (
                   <span {...scaleTextProps}>{`${scale * 100}%`}</span>

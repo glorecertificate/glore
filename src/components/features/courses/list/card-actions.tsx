@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { ArchiveIcon, MoreHorizontalIcon, RocketIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -34,7 +34,7 @@ import {
 import { type Course } from '@/db/queries/course'
 import { useI18n } from '@/hooks/use-i18n'
 
-export const CourseCardActions = memo(({ course, onRemove }: { course: Course; onRemove: () => void }) => {
+export const CourseCardActions = ({ course, onRemove }: { course: Course; onRemove: () => void }) => {
   const t = useTranslations('Courses')
   const { localeItems } = useI18n()
   const { setCourses } = useCourses()
@@ -44,7 +44,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false)
 
-  const archiveCourse = useCallback(async () => {
+  const archiveCourse = async () => {
     setIsArchiving(true)
     try {
       const { error } = await updateCourseAction(course.id, { archivedAt: new Date().toISOString() })
@@ -64,9 +64,9 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       setIsArchiving(false)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, onRemove, setCourses, t])
+  }
 
-  const unarchiveCourse = useCallback(async () => {
+  const unarchiveCourse = async () => {
     setIsArchiving(true)
     try {
       const { error } = await updateCourseAction(course.id, { archivedAt: null })
@@ -83,9 +83,9 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       setIsArchiving(false)
       toast.error(t('courseArchivedError'))
     }
-  }, [course.id, onRemove, setCourses, t])
+  }
 
-  const deleteCourse = useCallback(async () => {
+  const deleteCourse = async () => {
     setIsDeleting(true)
     try {
       const { error } = await deleteCourseAction(course.id)
@@ -99,7 +99,7 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       setIsDeleting(false)
       toast.error(t('courseDeletedError'))
     }
-  }, [course.id, onRemove, setCourses, t])
+  }
 
   return (
     <DropdownMenu>
@@ -212,4 +212,4 @@ export const CourseCardActions = memo(({ course, onRemove }: { course: Course; o
       </DropdownMenuContent>
     </DropdownMenu>
   )
-})
+}

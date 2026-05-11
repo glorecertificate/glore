@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useCallback, useState } from 'react'
+import { startTransition, useState } from 'react'
 
 import { PlusIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -38,7 +38,7 @@ interface CategoryManagerProps {
 
 export const CategoryManager = ({ categories, onOpenChange, open }: CategoryManagerProps) => {
   const t = useTranslations('Docs')
-  const router = useRouter()
+  const { refresh } = useRouter()
   const { localize } = useI18n()
 
   const [names, setNames] = useState<IntlRecord>({ ...intlPlaceholder })
@@ -46,7 +46,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
   const [slug, setSlug] = useState('')
   const [adding, setAdding] = useState(false)
 
-  const handleAdd = useCallback(async () => {
+  const handleAdd = async () => {
     if (!names[i18n.defaultLocale] || !slug) {
       toast.error(t('categories.requiredFields'))
       return
@@ -62,21 +62,18 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
     setNames({ ...intlPlaceholder })
     setDescriptions({ ...intlPlaceholder })
     setSlug('')
-    startTransition(() => router.refresh())
-  }, [descriptions, names, router, slug, t])
+    startTransition(() => refresh())
+  }
 
-  const handleDelete = useCallback(
-    async (id: number) => {
-      const { error } = await deleteDocCategory(id)
-      if (error) {
-        toast.error(t('categories.error'))
-        return
-      }
-      toast.success(t('categories.deleted'))
-      startTransition(() => router.refresh())
-    },
-    [router, t]
-  )
+  const handleDelete = async (id: number) => {
+    const { error } = await deleteDocCategory(id)
+    if (error) {
+      toast.error(t('categories.error'))
+      return
+    }
+    toast.success(t('categories.deleted'))
+    startTransition(() => refresh())
+  }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -130,7 +127,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
           <p className="text-sm font-medium">{t('categories.addNew')}</p>
 
           <div className="space-y-1.5">
-            <Label htmlFor="cat-slug">Slug</Label>
+            <Label htmlFor="cat-slug">{'Slug'}</Label>
             <Input id="cat-slug" placeholder="category-slug" value={slug} onChange={e => setSlug(e.target.value)} />
           </div>
 

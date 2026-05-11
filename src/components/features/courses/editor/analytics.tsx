@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { BarChart2Icon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -19,9 +19,10 @@ import { cn } from '@/lib/utils'
 const AnalyticsSkeleton = () => (
   <div className="flex flex-col gap-6 p-6">
     <div className="grid grid-cols-2 gap-3">
-      {[0, 1, 2, 3].map(i => (
-        <Skeleton className="h-18 rounded-lg" key={i} />
-      ))}
+      <Skeleton className="h-18 rounded-lg" />
+      <Skeleton className="h-18 rounded-lg" />
+      <Skeleton className="h-18 rounded-lg" />
+      <Skeleton className="h-18 rounded-lg" />
     </div>
     <Skeleton className="h-48 rounded-lg" />
   </div>
@@ -51,44 +52,38 @@ const AnalyticsContent = ({
 
   const isSkill = course.type === 'skill'
 
-  const statCards = useMemo(
-    () => [
-      {
-        icon: UsersIcon,
-        key: 'enrollments',
-        label: t('analyticsEnrollments'),
-        value: data.enrollmentCount,
-      },
-      {
-        icon: TrendingUpIcon,
-        key: 'completions',
-        label: t('analyticsCompletions'),
-        value: data.completionCount,
-      },
-      {
-        icon: BarChart2Icon,
-        key: 'rate',
-        label: t('analyticsCompletionRate'),
-        value: `${data.completionRate}%`,
-      },
-      ...(isSkill
-        ? [
-            {
-              icon: StarIcon,
-              key: 'rating',
-              label: t('analyticsAvgRating'),
-              value: data.avgRating === null ? '—' : `★ ${data.avgRating}`,
-            },
-          ]
-        : []),
-    ],
-    [data, isSkill, t]
-  )
+  const statCards = [
+    {
+      icon: UsersIcon,
+      key: 'enrollments',
+      label: t('analyticsEnrollments'),
+      value: data.enrollmentCount,
+    },
+    {
+      icon: TrendingUpIcon,
+      key: 'completions',
+      label: t('analyticsCompletions'),
+      value: data.completionCount,
+    },
+    {
+      icon: BarChart2Icon,
+      key: 'rate',
+      label: t('analyticsCompletionRate'),
+      value: `${data.completionRate}%`,
+    },
+    ...(isSkill
+      ? [
+          {
+            icon: StarIcon,
+            key: 'rating',
+            label: t('analyticsAvgRating'),
+            value: data.avgRating === null ? '—' : `★ ${data.avgRating}`,
+          },
+        ]
+      : []),
+  ]
 
-  const maxRatingCount = useMemo(
-    () => Math.max(...data.ratingDistribution.map(r => r.count), 1),
-    [data.ratingDistribution]
-  )
+  const maxRatingCount = Math.max(...data.ratingDistribution.map(r => r.count), 1)
 
   if (data.enrollmentCount === 0) {
     return (
@@ -167,14 +162,14 @@ export const CourseAnalyticsSheet = () => {
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<CourseAnalyticsStats | null>(null)
 
-  const handleOpen = useCallback(async () => {
+  const handleOpen = async () => {
     setOpen(true)
     if (data) return
     setLoading(true)
     const result = await getCourseAnalytics(course.id)
     if ('data' in result && result.data) setData(result.data)
     setLoading(false)
-  }, [course.id, data])
+  }
 
   return (
     <>

@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useDraggable } from '@platejs/dnd'
 import { Image, ImagePlugin, useMediaState } from '@platejs/media/react'
 import { ResizableProvider, useResizableValue } from '@platejs/resizable'
@@ -28,8 +26,8 @@ export const ImageElement = withHOC(ResizableProvider, (props: PlateElementProps
     element: props.element,
   })
 
-  const resizableOptions = useMemo(() => ({ align, readOnly }), [align, readOnly])
-  const captionStyle = useMemo(() => ({ width: width as string }), [width])
+  const resizableOptions = { align, readOnly }
+  const captionStyle = { width: width as string }
 
   return (
     <MediaToolbar plugin={ImagePlugin}>

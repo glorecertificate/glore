@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CalendarIcon } from 'lucide-react'
@@ -35,24 +35,20 @@ export const OnboardingForm = ({
   const [submitting, setSubmitting] = useState(false)
   const [calendarOpen, setCalendarOpen] = useState(false)
 
-  const formSchema = useMemo(
-    () =>
-      z
-        .object({
-          birthday: z.string().min(1, { message: t('birthdayRequired') }),
-          confirmPassword: z.string().min(8),
-          firstName: z.string().min(1),
-          lastName: z.string(),
-          password: z.string().min(8).regex(PASSWORD_REGEX),
-          phone: z.string().min(1, { message: t('phoneRequired') }),
-          preferredLanguage: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
-        })
-        .refine(data => data.password === data.confirmPassword, {
-          message: t('passwordMismatch'),
-          path: ['confirmPassword'],
-        }),
-    [t]
-  )
+  const formSchema = z
+    .object({
+      birthday: z.string().min(1, { message: t('birthdayRequired') }),
+      confirmPassword: z.string().min(8),
+      firstName: z.string().min(1),
+      lastName: z.string(),
+      password: z.string().min(8).regex(PASSWORD_REGEX),
+      phone: z.string().min(1, { message: t('phoneRequired') }),
+      preferredLanguage: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
+    })
+    .refine(data => data.password === data.confirmPassword, {
+      message: t('passwordMismatch'),
+      path: ['confirmPassword'],
+    })
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -67,34 +63,31 @@ export const OnboardingForm = ({
     resolver: zodResolver(formSchema),
   })
 
-  const onSubmit = useCallback(
-    async (values: z.infer<typeof formSchema>) => {
-      try {
-        setSubmitting(true)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setSubmitting(true)
 
-        const result = await completeOnboarding({
-          birthday: values.birthday,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          locale: (values.preferredLanguage as Locale) || undefined,
-          password: values.password,
-          phone: values.phone,
-        })
+      const result = await completeOnboarding({
+        birthday: values.birthday,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        locale: (values.preferredLanguage as Locale) || undefined,
+        password: values.password,
+        phone: values.phone,
+      })
 
-        if (result?.error) {
-          toast.error(result.error)
-          return
-        }
-
-        toast.success(t('success'))
-      } catch {
-        toast.error(t('error'))
-      } finally {
-        setSubmitting(false)
+      if (result?.error) {
+        toast.error(result.error)
+        return
       }
-    },
-    [t]
-  )
+
+      toast.success(t('success'))
+    } catch {
+      toast.error(t('error'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   const selectedBirthday = form.watch('birthday')
 
@@ -142,7 +135,7 @@ export const OnboardingForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t('birthdayLabel')} <span className="text-destructive">*</span>
+                  {t('birthdayLabel')} <span className="text-destructive">{'*'}</span>
                 </FormLabel>
                 <Popover onOpenChange={setCalendarOpen} open={calendarOpen}>
                   <PopoverTrigger asChild>
@@ -186,7 +179,7 @@ export const OnboardingForm = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
-                  {t('phoneLabel')} <span className="text-destructive">*</span>
+                  {t('phoneLabel')} <span className="text-destructive">{'*'}</span>
                 </FormLabel>
                 <FormControl>
                   <Input disabled={submitting} placeholder={t('phonePlaceholder')} type="tel" {...field} />

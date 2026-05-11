@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { InfoIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -49,27 +49,19 @@ export const CourseBreadcrumb = () => {
     }
   }, [description])
 
-  const commitTitle = useMemo(
-    () =>
-      debounce((value: string) => {
-        setCourse(prev => ({
-          ...prev,
-          title: { ...prev.title, [language]: value } as IntlRecord,
-        }))
-      }, DEBOUNCE_DELAY),
-    [language, setCourse]
-  )
+  const commitTitle = debounce((value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      title: { ...prev.title, [language]: value } as IntlRecord,
+    }))
+  }, DEBOUNCE_DELAY)
 
-  const commitDescription = useMemo(
-    () =>
-      debounce((value: string) => {
-        setCourse(prev => ({
-          ...prev,
-          description: { ...prev.description, [language]: value } as IntlRecord,
-        }))
-      }, DEBOUNCE_DELAY),
-    [language, setCourse]
-  )
+  const commitDescription = debounce((value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      description: { ...prev.description, [language]: value } as IntlRecord,
+    }))
+  }, DEBOUNCE_DELAY)
 
   useEffect(
     () => () => {
@@ -79,21 +71,18 @@ export const CourseBreadcrumb = () => {
     [commitTitle, commitDescription]
   )
 
-  const onTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const value = e.target.value.slice(0, MAX_TITLE_LENGTH)
-      if (e.target.value.length > MAX_TITLE_LENGTH) {
-        toast.warning(t('titleTooLong'))
-      }
-      setDraftTitle(value)
-      commitTitle(value)
-    },
-    [commitTitle, t]
-  )
+  const onTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value.slice(0, MAX_TITLE_LENGTH)
+    if (e.target.value.length > MAX_TITLE_LENGTH) {
+      toast.warning(t('titleTooLong'))
+    }
+    setDraftTitle(value)
+    commitTitle(value)
+  }
 
-  const onTitleFocus = useCallback(() => setTitleFocused(true), [])
+  const onTitleFocus = () => setTitleFocused(true)
 
-  const onTitleBlur = useCallback(() => {
+  const onTitleBlur = () => {
     commitTitle.cancel()
     setTitleFocused(false)
     const trimmed = draftTitle.trim()
@@ -105,24 +94,21 @@ export const CourseBreadcrumb = () => {
       ...prev,
       title: { ...prev.title, [language]: draftTitle } as IntlRecord,
     }))
-  }, [commitTitle, draftTitle, language, setCourse, title])
+  }
 
-  const onDescriptionChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setDraftDescription(e.target.value)
-      commitDescription(e.target.value)
-    },
-    [commitDescription]
-  )
+  const onDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDraftDescription(e.target.value)
+    commitDescription(e.target.value)
+  }
 
-  const onDescriptionBlur = useCallback(() => {
+  const onDescriptionBlur = () => {
     commitDescription.cancel()
     if (draftDescription.trim() === description) return
     setCourse(prev => ({
       ...prev,
       description: { ...prev.description, [language]: draftDescription } as IntlRecord,
     }))
-  }, [commitDescription, draftDescription, description, language, setCourse])
+  }
 
   return (
     <>
@@ -135,9 +121,9 @@ export const CourseBreadcrumb = () => {
               <TooltipTrigger asChild>
                 <IconPicker
                   categorized={false}
-                  className="h-4 w-4 shrink-0 text-muted-foreground/80 hover:text-foreground! dark:text-foreground/80 dark:hover:text-foreground! [&>svg]:size-4.5!"
+                  className="size-4 shrink-0 text-muted-foreground/80 hover:text-foreground! dark:text-foreground/80 dark:hover:text-foreground! [&>svg]:size-4.5!"
                   defaultValue={(course.icon ?? undefined) as IconName | undefined}
-                  fallback={<Skeleton className="h-4 w-4 rounded-md bg-foreground/15" />}
+                  fallback={<Skeleton className="size-4 rounded-md bg-foreground/15" />}
                   onValueChange={icon => editCourse({ icon })}
                   size="text"
                   variant="transparent"

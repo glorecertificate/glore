@@ -58,7 +58,6 @@ const List = (props: SlateRenderElementProps) => {
   const { Li, Marker } = config[listStyleType] ?? {}
   const ListTag = isOrderedList(props.element) ? 'ol' : 'ul'
 
-  // eslint-disable-next-line
   const listStyle = { listStyleType }
 
   return (

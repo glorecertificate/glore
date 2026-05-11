@@ -9,7 +9,7 @@ import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 
-const CertificateDetailContent = async ({ id }: { id: number }) => {
+const CertificatePageContent = async ({ id }: { id: number }) => {
   const [user, { data: certificate }] = await Promise.all([getCurrentUser(), findCertificate(id)])
   if (!certificate) notFound()
 
@@ -26,7 +26,7 @@ const CertificateDetailContent = async ({ id }: { id: number }) => {
   return <CertificateDetail certificate={certificate} tutors={tutors ?? undefined} />
 }
 
-export default async ({ params }: PageProps<'/certificates/[id]'>) => {
+const CertificatePage = async ({ params }: PageProps<'/certificates/[id]'>) => {
   const { id } = await params
   const certId = Number(id)
   if (!certId || Number.isNaN(certId)) notFound()
@@ -36,9 +36,11 @@ export default async ({ params }: PageProps<'/certificates/[id]'>) => {
       <PageHeader href="/certificates" namespace="Certificates" titleKey="backTo" />
       <PageMain>
         <Suspense fallback={<LoadingFallback />}>
-          <CertificateDetailContent id={certId} />
+          <CertificatePageContent id={certId} />
         </Suspense>
       </PageMain>
     </>
   )
 }
+
+export default CertificatePage

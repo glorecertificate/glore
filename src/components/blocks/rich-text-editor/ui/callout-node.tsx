@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useCalloutEmojiPicker } from '@platejs/callout/react'
 import { useEmojiDropdownMenuState } from '@platejs/emoji/react'
 import { PlateElement } from 'platejs/react'
@@ -30,11 +28,8 @@ export const CalloutElement = ({
     setIsOpen,
   })
 
-  const calloutAttributes = useMemo(() => ({ ...attributes, 'data-plate-open-context-menu': true }), [attributes])
-  const bgStyle = useMemo(
-    () => ({ backgroundColor: props.element.backgroundColor as string }),
-    [props.element.backgroundColor]
-  )
+  const calloutAttributes = { ...attributes, 'data-plate-open-context-menu': true }
+  const bgStyle = { backgroundColor: props.element.backgroundColor as string }
 
   return (
     <PlateElement

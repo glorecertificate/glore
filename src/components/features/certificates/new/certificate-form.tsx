@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Locale, useTranslations } from 'next-intl'
@@ -35,7 +35,7 @@ interface CertificateFormProps {
 
 export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCourses }: CertificateFormProps) => {
   const t = useTranslations('Certificates')
-  const router = useRouter()
+  const { push } = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
 
@@ -55,17 +55,14 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
 
   const values = form.watch()
 
-  const selectedSkillNames = useMemo(
-    () =>
-      completedSkillCourses
-        .filter(c => values.skillCourseIds?.includes(c.id))
-        .map(c =>
-          typeof c.title === 'string'
-            ? c.title
-            : ((c.title as Record<string, string>)[values.language] ?? (c.title as Record<string, string>).en ?? '')
-        ),
-    [completedSkillCourses, values.skillCourseIds, values.language]
-  )
+  const selectedSkillNames = completedSkillCourses.flatMap(c => {
+    if (!values.skillCourseIds?.includes(c.id)) return []
+    const title =
+      typeof c.title === 'string'
+        ? c.title
+        : ((c.title as Record<string, string>)[values.language] ?? (c.title as Record<string, string>).en ?? '')
+    return [title]
+  })
 
   const onSubmit = async (data: CertificateFormValues) => {
     setIsSubmitting(true)
@@ -78,7 +75,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
     }
 
     toast.success(t('submitSuccess'))
-    router.push('/certificates')
+    push('/certificates')
   }
 
   const onSaveDraft = async () => {
@@ -100,7 +97,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
     }
 
     toast.success(t('draftSuccess'))
-    router.push('/certificates')
+    push('/certificates')
   }
 
   return (
@@ -131,7 +128,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
                           control={form.control}
                           name="skillCourseIds"
                           render={({ field }) => (
-                            <FormItem className="flex items-center gap-2 space-y-0">
+                            <FormItem className="flex items-center gap-2 gap-y-0">
                               <FormControl>
                                 <Checkbox
                                   checked={field.value?.includes(course.id)}

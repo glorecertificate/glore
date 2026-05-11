@@ -37,10 +37,11 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
   const authUser = await requireEditor()
 
-  const [created] = await db
+  const values = await db
     .insert(courses)
     .values({ ...course, creatorId: authUser.id })
     .returning()
+  const created = values[0]
   if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create course' } }
 
   const { data: lesson, error: lessonError } = await createLesson({
@@ -114,7 +115,8 @@ export const deleteCourse = async (id: number) => {
 
 const createLesson = async (lesson: TableInsert<'lessons'>) => {
   await requireEditor()
-  const [created] = await db.insert(lessons).values(lesson).returning()
+  const values = await db.insert(lessons).values(lesson).returning()
+  const created = values[0]
   if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create lesson' } }
 
   return { data: parseLesson(created) }
@@ -122,30 +124,27 @@ const createLesson = async (lesson: TableInsert<'lessons'>) => {
 
 export const upsertLessons = async (values: Array<TableInsert<'lessons'> & { id?: number }>) => {
   await requireEditor()
-  const result: (typeof lessons.$inferSelect)[] = []
-  for (const { id, ...set } of values) {
-    if (id) {
-      const [updated] = await db.update(lessons).set(set).where(eq(lessons.id, id)).returning()
-      if (updated) {
-        result.push(updated)
-        continue
-      }
-    }
-    const [inserted] = await db.insert(lessons).values(set).returning()
-    if (inserted) result.push(inserted)
-  }
-  return { data: result.map(parseLesson) }
+  const result = await Promise.all(
+    values.reduce<Promise<(typeof lessons.$inferSelect)[]>[]>((promises, { id, ...set }) => {
+      const promise = id
+        ? db.update(lessons).set(set).where(eq(lessons.id, id)).returning()
+        : db.insert(lessons).values(set).returning()
+      return [...promises, promise]
+    }, [])
+  )
+  return { data: result.flat().map(parseLesson) }
 }
 
 export const reorderCourses = async (items: Course[]) => {
   await requireEditor()
-  for (const [i, { id }] of items.entries()) {
-    await db
-      .update(courses)
-      .set({ sortOrder: i + 1 })
-      .where(eq(courses.id, id))
-  }
-
+  await Promise.all(
+    items.map(({ id }, i) =>
+      db
+        .update(courses)
+        .set({ sortOrder: i + 1 })
+        .where(eq(courses.id, id))
+    )
+  )
   return { data: true }
 }
 
@@ -162,7 +161,6 @@ export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
       },
     })
     .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
-
   return { data: result }
 }
 
@@ -184,7 +182,6 @@ export const upsertEvaluations = async (values: TableInsert<'evaluations'>[]) =>
       },
     })
     .returning({ id: evaluations.id, description: evaluations.description })
-
   return { data: result }
 }
 
@@ -196,7 +193,7 @@ export const deleteEvaluations = async (ids: number[]) => {
 
 export const upsertAssessment = async (assessment: TableInsert<'assessments'>) => {
   await requireEditor()
-  const [result] = await db
+  const results = await db
     .insert(assessments)
     .values(assessment)
     .onConflictDoUpdate({
@@ -204,9 +201,8 @@ export const upsertAssessment = async (assessment: TableInsert<'assessments'>) =
       set: { description: assessment.description },
     })
     .returning({ id: assessments.id, description: assessments.description })
-  if (!result) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
-
-  return { data: result }
+  if (!results[0]) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
+  return { data: results[0] }
 }
 
 export const deleteAssessment = async (id: number) => {

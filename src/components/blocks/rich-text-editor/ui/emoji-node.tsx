@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { EmojiInlineIndexSearch, insertEmoji } from '@platejs/emoji'
 import { EmojiPlugin } from '@platejs/emoji/react'
@@ -26,12 +26,12 @@ export const EmojiInputElement = (props: PlateElementProps) => {
   const debouncedValue = useDebounce(value, 100)
   const isPending = value !== debouncedValue
 
-  const filteredEmojis = useMemo(() => {
+  const filteredEmojis = (() => {
     if (debouncedValue.trim().length === 0) {
       return []
     }
     return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(/:$/, '')).get()
-  }, [data, debouncedValue])
+  })()
 
   return (
     <PlateElement as="span" {...props}>

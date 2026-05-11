@@ -15,22 +15,23 @@ export const generateMetadata = () =>
     title: 'title',
   })
 
-const AdminTeamPage = async () => {
+const AdminContent = async () => {
   const user = await getCurrentUser()
   if (!user.isAdmin) return notFound()
-
   const { data, error } = await getTeamMembers()
   if (error || !data) throw error ?? new Error('Failed to load team members')
   return <AdminTeam users={data} />
 }
 
-export default () => (
+const AdminPage = () => (
   <>
     <PageHeader namespace="Admin.team" titleKey="title" />
     <PageMain>
       <Suspense fallback={<LoadingFallback />}>
-        <AdminTeamPage />
+        <AdminContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default AdminPage

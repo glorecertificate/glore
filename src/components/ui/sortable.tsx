@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext, useId, useLayoutEffect, useMemo, useState } from 'react'
+import { createContext, use, useCallback, useId, useLayoutEffect, useMemo, useState } from 'react'
 
 import {
   type Announcements,
@@ -78,7 +78,7 @@ interface SortableRootContextValue<T> {
 const SortableRootContext = createContext<SortableRootContextValue<unknown> | null>(null)
 
 const useSortableContext = (consumerName: string) => {
-  const context = useContext(SortableRootContext)
+  const context = use(SortableRootContext)
   if (!context) {
     throw new Error(`\`${consumerName}\` must be used within \`${ROOT_NAME}\``)
   }
@@ -325,10 +325,8 @@ interface SortableItemContextValue {
 const SortableItemContext = createContext<SortableItemContextValue | null>(null)
 
 const useSortableItemContext = (consumerName: string) => {
-  const context = useContext(SortableItemContext)
-  if (!context) {
-    throw new Error(`\`${consumerName}\` must be used within \`${ITEM_NAME}\``)
-  }
+  const context = use(SortableItemContext)
+  if (!context) throw new Error(`\`${consumerName}\` must be used within \`${ITEM_NAME}\``)
   return context
 }
 
@@ -342,8 +340,8 @@ export const SortableItem = (
 ) => {
   const { value, style, asHandle, asChild, disabled, className, ref, ...itemProps } = props
 
-  const inSortableContent = useContext(SortableContentContext)
-  const inSortableOverlay = useContext(SortableOverlayContext)
+  const inSortableContent = use(SortableContentContext)
+  const inSortableOverlay = use(SortableOverlayContext)
 
   if (!(inSortableContent || inSortableOverlay)) {
     throw new Error(`\`${ITEM_NAME}\` must be used within \`${CONTENT_NAME}\` or \`${OVERLAY_NAME}\``)

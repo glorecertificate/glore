@@ -1,7 +1,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useMemo } from 'react'
 
 import { useDraggable } from '@platejs/dnd'
 import { parseTwitterUrl, parseVideoUrl } from '@platejs/media'
@@ -45,11 +44,8 @@ export const VideoElement = withHOC(ResizableProvider, (props: PlateElementProps
     element: props.element,
   })
 
-  const resizableOptions = useMemo(
-    () => ({ align, maxWidth: isTweet ? 550 : '100%', minWidth: isTweet ? 300 : 100, readOnly }),
-    [align, isTweet, readOnly]
-  )
-  const captionStyle = useMemo(() => ({ width: width as string }), [width])
+  const resizableOptions = { align, maxWidth: isTweet ? 550 : '100%', minWidth: isTweet ? 300 : 100, readOnly }
+  const captionStyle = { width: width as string }
 
   return (
     <PlateElement className="py-2.5" {...props}>

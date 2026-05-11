@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { startTransition, useCallback, useEffect, useMemo, useRef } from 'react'
+import { startTransition, useEffect, useRef } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsArrayOf, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
@@ -38,7 +38,7 @@ const paramsOptions = { history: 'push', startTransition } as const
 
 export const useCourseListTab = () => {
   const [tab, setTabRaw] = useQueryState(COURSE_LIST_PARAMS.TAB, { ...tabParser, ...paramsOptions })
-  const setTab = useCallback((newTab: CourseListTab | null) => setTabRaw(newTab), [setTabRaw])
+  const setTab = (newTab: CourseListTab | null) => setTabRaw(newTab)
   return { tab, setTab }
 }
 
@@ -47,7 +47,7 @@ export const useCourseListTypes = () => {
     ...typesParser,
     ...paramsOptions,
   })
-  const setActiveTypes = useCallback((types: EnumType<'course_type'>[] | null) => setTypesRaw(types), [setTypesRaw])
+  const setActiveTypes = (types: EnumType<'course_type'>[] | null) => setTypesRaw(types)
   return { activeTypes, setActiveTypes }
 }
 
@@ -56,7 +56,7 @@ export const useCourseListLanguages = () => {
     ...languagesParser,
     ...paramsOptions,
   })
-  const setActiveLanguages = useCallback((languages: Locale[] | null) => setLanguagesRaw(languages), [setLanguagesRaw])
+  const setActiveLanguages = (languages: Locale[] | null) => setLanguagesRaw(languages)
   return { activeLanguages, setActiveLanguages }
 }
 
@@ -68,10 +68,10 @@ export const useCourseListSkillGroups = () => {
     ...paramsOptions,
   })
 
-  const defaultSkillGroups = useMemo(() => pluck(skillGroups, 'value'), [skillGroups])
+  const defaultSkillGroups = pluck(skillGroups, 'value')
   const activeSkillGroups = rawSkillGroups ?? defaultSkillGroups
 
-  const setActiveSkillGroups = useCallback((groups: string[] | null) => setSkillGroupsRaw(groups), [setSkillGroupsRaw])
+  const setActiveSkillGroups = (groups: string[] | null) => setSkillGroupsRaw(groups)
 
   return { activeSkillGroups, setActiveSkillGroups, defaultSkillGroups }
 }
@@ -83,12 +83,9 @@ export const useCourseListSort = () => {
     ...paramsOptions,
   })
 
-  const setSort = useCallback((newSort: CourseListSortType | null) => setSortRaw(newSort), [setSortRaw])
+  const setSort = (newSort: CourseListSortType | null) => setSortRaw(newSort)
 
-  const setSortDirection = useCallback(
-    (direction: Enum<CourseListSortDirection> | null) => setSortDirectionRaw(direction),
-    [setSortDirectionRaw]
-  )
+  const setSortDirection = (direction: Enum<CourseListSortDirection> | null) => setSortDirectionRaw(direction)
 
   return { sort, sortDirection, setSort, setSortDirection }
 }
@@ -100,21 +97,18 @@ export const useCourseListFilters = () => {
   const { sort, setSort } = useCourseListSort()
   const { skillGroups } = useCourses()
 
-  const hasFilters = useMemo(
-    () =>
-      COURSE_TYPES.some(t => !activeTypes.includes(t)) ||
-      activeLanguages.length < i18n.locales.length ||
-      activeSkillGroups.length < skillGroups.length ||
-      sort !== null,
-    [activeLanguages, activeSkillGroups, activeTypes, skillGroups.length, sort]
-  )
+  const hasFilters =
+    COURSE_TYPES.some(t => !activeTypes.includes(t)) ||
+    activeLanguages.length < i18n.locales.length ||
+    activeSkillGroups.length < skillGroups.length ||
+    sort !== null
 
-  const resetFilters = useCallback(() => {
+  const resetFilters = () => {
     setActiveTypes(null)
     setActiveLanguages(null)
     setActiveSkillGroups(null)
     setSort(null)
-  }, [setActiveTypes, setActiveLanguages, setActiveSkillGroups, setSort])
+  }
 
   return { hasFilters, resetFilters }
 }
@@ -124,7 +118,7 @@ export const useCourseListTabs = () => {
   const { activeLanguages } = useCourseListLanguages()
   const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
-  const tabs = useMemo(() => {
+  const tabs = (() => {
     if (user.canEdit) {
       return (activeLanguages ?? []).length > 1
         ? COURSE_LIST_EDITOR_TABS
@@ -132,7 +126,7 @@ export const useCourseListTabs = () => {
     }
     if (isViewer) return COURSE_LIST_VIEWER_TABS
     return COURSE_LIST_LEARNER_TABS
-  }, [activeLanguages, isViewer, user.canEdit])
+  })()
 
   return { tabs }
 }
@@ -142,7 +136,7 @@ export const useCourseList = () => {
   const { courses } = useCourses()
   const isViewer = user.isOrgAdmin || user.isRepresentative || user.isTutor
 
-  const courseList = useMemo<Record<CamelCase<CourseListTab>, Course[]>>(() => {
+  const courseList = (() => {
     const list: Record<CamelCase<CourseListTab>, Course[]> = {
       all: [],
       published: [],
@@ -177,7 +171,7 @@ export const useCourseList = () => {
     }
 
     return list
-  }, [courses, isViewer, user.canEdit, user.isLearner, user.isVolunteer])
+  })()
 
   return { courseList }
 }
@@ -192,17 +186,14 @@ export const useDisplayCourses = () => {
   const { sort, sortDirection } = useCourseListSort()
   const { courseList } = useCourseList()
 
-  const hasFilters = useMemo(
-    () =>
-      activeTypes.length < COURSE_TYPES.length ||
-      activeLanguages.length < i18n.locales.length ||
-      activeSkillGroups.length < skillGroups.length,
-    [activeTypes, activeLanguages, activeSkillGroups, skillGroups.length]
-  )
+  const hasFilters =
+    activeTypes.length < COURSE_TYPES.length ||
+    activeLanguages.length < i18n.locales.length ||
+    activeSkillGroups.length < skillGroups.length
 
-  const isDefaultView = useMemo(() => !(sort || hasFilters), [hasFilters, sort])
+  const isDefaultView = !(sort || hasFilters)
 
-  const displayCourses = useMemo(() => {
+  const displayCourses = (() => {
     const data = courseList[camelize(tab as CourseListTab)]
     if (data.length < 2 || isDefaultView) return data
 
@@ -267,18 +258,7 @@ export const useDisplayCourses = () => {
           return a.sortOrder - b.sortOrder
       }
     })
-  }, [
-    activeLanguages,
-    activeTypes,
-    activeSkillGroups,
-    courseList,
-    isDefaultView,
-    localize,
-    skillGroups.length,
-    sort,
-    sortDirection,
-    tab,
-  ])
+  })()
 
   return { displayCourses, hasFilters, isDefaultView }
 }

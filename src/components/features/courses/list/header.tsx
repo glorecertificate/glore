@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useMemo } from 'react'
-
 import { CourseListDialog } from '@/components/features/courses/list/dialog'
 import { CourseListFilterReset } from '@/components/features/courses/list/filter-reset'
 import { CourseListLanguageSelect } from '@/components/features/courses/list/language-select'
@@ -18,12 +16,9 @@ import {
 import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
-export const CourseListHeader = memo(({ className, ...props }: React.ComponentProps<typeof PageHeaderContainer>) => {
+export const CourseListHeader = ({ className, ...props }: React.ComponentProps<typeof PageHeaderContainer>) => {
   const { user } = useSession()
-  const descriptionKey = useMemo(
-    () => (user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description'),
-    [user.isAdmin, user.isEditor]
-  )
+  const descriptionKey = user.isAdmin ? 'descriptionAdmin' : user.isEditor ? 'descriptionEditor' : 'description'
 
   return (
     <PageHeaderContainer className={cn('flex flex-col sm:gap-5', className)} {...props}>
@@ -51,4 +46,4 @@ export const CourseListHeader = memo(({ className, ...props }: React.ComponentPr
       </div>
     </PageHeaderContainer>
   )
-})
+}

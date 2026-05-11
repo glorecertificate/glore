@@ -150,7 +150,7 @@ export const ConfettiButton = ({
     [options]
   )
 
-  const handleClick = useCallback(
+  const triggerEvent = useCallback(
     async (event: React.MouseEvent<HTMLButtonElement>) => {
       switch (effect) {
         case 'fireworks':
@@ -168,5 +168,5 @@ export const ConfettiButton = ({
     [effect, onClick, triggerConfetti, triggerFireworks]
   )
 
-  return <Button onClick={handleClick} {...props} />
+  return <Button onClick={triggerEvent} {...props} />
 }

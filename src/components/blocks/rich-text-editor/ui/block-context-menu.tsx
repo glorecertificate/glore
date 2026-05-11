@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { AIChatPlugin } from '@platejs/ai/react'
 import { BLOCK_CONTEXT_MENU_ID, BlockMenuPlugin, BlockSelectionPlugin } from '@platejs/selection/react'
@@ -27,26 +27,20 @@ export const BlockContextMenu = ({ children }: { children: React.ReactNode }) =>
   const { isTouch } = useDevice()
   const [readOnly] = usePlateState('readOnly')
 
-  const handleTurnInto = useCallback(
-    (type: string) => {
-      const nodes = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes()
+  const handleTurnInto = (type: string) => {
+    const nodes = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes()
 
-      for (const [node, path] of nodes) {
-        if (node[KEYS.listType]) {
-          editor.tf.unsetNodes([KEYS.listType, 'indent'], { at: path })
-        }
-        editor.tf.toggleBlock(type, { at: path })
+    for (const [node, path] of nodes) {
+      if (node[KEYS.listType]) {
+        editor.tf.unsetNodes([KEYS.listType, 'indent'], { at: path })
       }
-    },
-    [editor]
-  )
+      editor.tf.toggleBlock(type, { at: path })
+    }
+  }
 
-  const handleAlign = useCallback(
-    (align: 'center' | 'left' | 'right') => {
-      editor.getTransforms(BlockSelectionPlugin).blockSelection.setNodes({ align })
-    },
-    [editor]
-  )
+  const handleAlign = (align: 'center' | 'left' | 'right') => {
+    editor.getTransforms(BlockSelectionPlugin).blockSelection.setNodes({ align })
+  }
 
   if (isTouch) {
     return children

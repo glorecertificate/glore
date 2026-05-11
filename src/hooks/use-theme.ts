@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef } from 'react'
+import { useRef } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
@@ -24,56 +24,50 @@ export const useTheme = () => {
   const themes = nextTheme.themes as Theme[]
   const resolvedTheme = nextTheme.resolvedTheme as ResolvedTheme
 
-  const applyTheme = useCallback(
-    (newTheme: Theme) => {
-      nextTheme.setTheme(newTheme)
-      cookiesRef.current.set('theme', newTheme)
-    },
-    [nextTheme]
-  )
+  const applyTheme = (newTheme: Theme) => {
+    nextTheme.setTheme(newTheme)
+    cookiesRef.current.set('theme', newTheme)
+  }
 
-  const setTheme = useCallback(
-    async (newTheme: Theme) => {
-      if (typeof window === 'undefined') {
-        applyTheme(newTheme)
-        return
-      }
-
-      const root = window.document.documentElement
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      const doc = window.document as Document & {
-        startViewTransition?: (callback: () => void) => { finished: Promise<void> }
-      }
-
-      if (!prefersReducedMotion && typeof doc.startViewTransition === 'function') {
-        root.classList.add(`${THEME_TRANSITION_CLASS}-view`)
-
-        const transition = doc.startViewTransition(() => {
-          applyTheme(newTheme)
-        })
-
-        try {
-          await transition?.finished
-        } finally {
-          root.classList.remove(`${THEME_TRANSITION_CLASS}-view`)
-        }
-        return
-      }
-
-      root.classList.add(THEME_TRANSITION_CLASS)
-
-      if (transitionTimeout) {
-        window.clearTimeout(transitionTimeout)
-      }
-
+  const setTheme = async (newTheme: Theme) => {
+    if (typeof window === 'undefined') {
       applyTheme(newTheme)
+      return
+    }
 
-      transitionTimeout = window.setTimeout(() => {
-        root.classList.remove(THEME_TRANSITION_CLASS)
-      }, 250)
-    },
-    [applyTheme]
-  )
+    const root = window.document.documentElement
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const doc = window.document as Document & {
+      startViewTransition?: (callback: () => void) => { finished: Promise<void> }
+    }
+
+    if (!prefersReducedMotion && typeof doc.startViewTransition === 'function') {
+      root.classList.add(`${THEME_TRANSITION_CLASS}-view`)
+
+      const transition = doc.startViewTransition(() => {
+        applyTheme(newTheme)
+      })
+
+      try {
+        await transition?.finished
+      } finally {
+        root.classList.remove(`${THEME_TRANSITION_CLASS}-view`)
+      }
+      return
+    }
+
+    root.classList.add(THEME_TRANSITION_CLASS)
+
+    if (transitionTimeout) {
+      window.clearTimeout(transitionTimeout)
+    }
+
+    applyTheme(newTheme)
+
+    transitionTimeout = window.setTimeout(() => {
+      root.classList.remove(THEME_TRANSITION_CLASS)
+    }, 250)
+  }
 
   return {
     isDarkMode: resolvedTheme === 'dark',

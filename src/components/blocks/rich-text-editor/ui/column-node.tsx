@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useMemo } from 'react'
-
 import { useDraggable, useDropLine } from '@platejs/dnd'
 import { setColumns } from '@platejs/layout'
 import { useDebouncePopoverOpen } from '@platejs/layout/react'
@@ -41,7 +39,7 @@ export const ColumnElement = withHOC(ResizableProvider, (props: PlateElementProp
     type: 'column',
   })
 
-  const columnStyle = useMemo(() => ({ width: width ?? '100%' }), [width])
+  const columnStyle = { width: width ?? '100%' }
 
   return (
     <div className="group/column relative" style={columnStyle}>
@@ -79,7 +77,7 @@ export const ColumnElement = withHOC(ResizableProvider, (props: PlateElementProp
   )
 })
 
-const ColumnDragHandle = memo(() => {
+const ColumnDragHandle = () => {
   const t = useTranslations('Components.RichTextEditor.blocks')
 
   return (
@@ -100,7 +98,7 @@ const ColumnDragHandle = memo(() => {
       </Tooltip>
     </TooltipProvider>
   )
-})
+}
 
 const DropLine = () => {
   const { dropLine } = useDropLine({ orientation: 'horizontal' })

@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useCallback, useMemo } from 'react'
-
 import { type Emoji } from '@emoji-mart/data'
 import en from '@emoji-mart/data/i18n/en.json'
 import es from '@emoji-mart/data/i18n/es.json'
@@ -97,16 +95,13 @@ export const EmojiPicker = ({
   const locale = useLocale()
   const t = useTranslations('Components.RichTextEditor.emoji')
 
-  const i18n = useMemo(
-    () => ({
-      ...(I18N_DATA[locale] || I18N_DATA.en),
-      clear: t('clear'),
-      searchNoResultsSubtitle: t('searchNoResultsSubtitle'),
-      searchNoResultsTitle: t('searchNoResultsTitle'),
-      searchResult: t('searchResult'),
-    }),
-    [locale, t]
-  )
+  const i18n = {
+    ...(I18N_DATA[locale] || I18N_DATA.en),
+    clear: t('clear'),
+    searchNoResultsSubtitle: t('searchNoResultsSubtitle'),
+    searchNoResultsTitle: t('searchNoResultsTitle'),
+    searchResult: t('searchResult'),
+  }
 
   return (
     <div className={cn('flex flex-col rounded-xl bg-popover text-popover-foreground', 'h-92 w-80 border shadow-md')}>
@@ -141,57 +136,53 @@ const emojiNativeFontStyle: React.CSSProperties = {
     '"Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", EmojiSymbols',
 }
 
-const EmojiButton = memo(
-  ({
-    emoji,
-    index,
-    onMouseOver,
-    onSelect,
-  }: {
-    emoji: Emoji
-    index: number
-    onMouseOver: (emoji?: Emoji) => void
-    onSelect: (emoji: Emoji) => void
-  }) => (
-    <button
-      aria-label={emoji.skins[0].native}
-      className="group relative flex size-9 cursor-pointer items-center justify-center border-none bg-transparent text-2xl leading-none"
-      data-index={index}
-      onClick={() => onSelect(emoji)}
-      onMouseEnter={() => onMouseOver(emoji)}
-      onMouseLeave={() => onMouseOver()}
-      tabIndex={-1}
-      type="button"
-    >
-      <div aria-hidden="true" className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100" />
-      <span className="relative" data-emoji-set="native" style={emojiNativeFontStyle}>
-        {emoji.skins[0].native}
-      </span>
-    </button>
-  )
+const EmojiButton = ({
+  emoji,
+  index,
+  onMouseOver,
+  onSelect,
+}: {
+  emoji: Emoji
+  index: number
+  onMouseOver: (emoji?: Emoji) => void
+  onSelect: (emoji: Emoji) => void
+}) => (
+  <button
+    aria-label={emoji.skins[0].native}
+    className="group relative flex size-9 cursor-pointer items-center justify-center border-none bg-transparent text-2xl leading-none"
+    data-index={index}
+    onClick={() => onSelect(emoji)}
+    onMouseEnter={() => onMouseOver(emoji)}
+    onMouseLeave={() => onMouseOver()}
+    tabIndex={-1}
+    type="button"
+  >
+    <div aria-hidden="true" className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100" />
+    <span className="relative" data-emoji-set="native" style={emojiNativeFontStyle}>
+      {emoji.skins[0].native}
+    </span>
+  </button>
 )
 
-const RowOfButtons = memo(
-  ({
-    emojiLibrary,
-    onMouseOver,
-    onSelectEmoji,
-    row,
-  }: {
-    row: GridRow
-  } & Pick<UseEmojiPickerType, 'emojiLibrary' | 'onMouseOver' | 'onSelectEmoji'>) => (
-    <div className="flex" data-index={row.id} key={row.id}>
-      {row.elements.map((emojiId, index) => (
-        <EmojiButton
-          emoji={emojiLibrary.getEmoji(emojiId)}
-          index={index}
-          key={emojiId}
-          onMouseOver={onMouseOver}
-          onSelect={onSelectEmoji}
-        />
-      ))}
-    </div>
-  )
+const RowOfButtons = ({
+  emojiLibrary,
+  onMouseOver,
+  onSelectEmoji,
+  row,
+}: {
+  row: GridRow
+} & Pick<UseEmojiPickerType, 'emojiLibrary' | 'onMouseOver' | 'onSelectEmoji'>) => (
+  <div className="flex" data-index={row.id} key={row.id}>
+    {row.elements.map((emojiId, index) => (
+      <EmojiButton
+        emoji={emojiLibrary.getEmoji(emojiId)}
+        index={index}
+        key={emojiId}
+        onMouseOver={onMouseOver}
+        onSelect={onSelectEmoji}
+      />
+    ))}
+  </div>
 )
 
 const EmojiPickerContent = ({
@@ -217,72 +208,61 @@ const EmojiPickerContent = ({
   | 'visibleCategories'
 >) => {
   const getRowWidth = settings.perLine.value * settings.buttonSize.value
-  const rowWidthStyle = useMemo(() => ({ width: getRowWidth }), [getRowWidth])
+  const rowWidthStyle = { width: getRowWidth }
 
-  const isCategoryVisible = useCallback(
-    (categoryId: EmojiCategoryList) => (visibleCategories.has(categoryId) ? visibleCategories.get(categoryId) : false),
-    [visibleCategories]
-  )
+  const isCategoryVisible = (categoryId: EmojiCategoryList) =>
+    visibleCategories.has(categoryId) ? visibleCategories.get(categoryId) : false
 
-  const getListStyle = useCallback(
-    (section: ReturnType<Grid<unknown>['section']>) => ({
-      height: section.getRows().length * settings.buttonSize.value,
-    }),
-    [settings.buttonSize.value]
-  )
+  const getListStyle = (section: ReturnType<Grid<unknown>['section']>) => ({
+    height: section.getRows().length * settings.buttonSize.value,
+  })
 
-  const EmojiList = useCallback(
-    () =>
-      emojiLibrary
-        .getGrid()
-        .sections()
-        .map(({ id: categoryId }) => {
-          const section = emojiLibrary.getGrid().section(categoryId)
-          return (
-            <div data-id={categoryId} key={categoryId} ref={section.root} style={rowWidthStyle}>
-              <div className="sticky -top-px z-1 bg-popover/90 p-1 py-2 text-sm font-semibold backdrop-blur-xs">
-                {i18n.categories[categoryId]}
-              </div>
-              <div className="relative flex flex-wrap" style={getListStyle(section)}>
-                {isCategoryVisible(categoryId) &&
-                  section
-                    .getRows()
-                    .map((row: GridRow) => (
-                      <RowOfButtons
-                        emojiLibrary={emojiLibrary}
-                        key={row.id}
-                        onMouseOver={onMouseOver}
-                        onSelectEmoji={onSelectEmoji}
-                        row={row}
-                      />
-                    ))}
-              </div>
+  const renderEmojiList = () =>
+    emojiLibrary
+      .getGrid()
+      .sections()
+      .map(({ id: categoryId }) => {
+        const section = emojiLibrary.getGrid().section(categoryId)
+        return (
+          <div data-id={categoryId} key={categoryId} ref={section.root} style={rowWidthStyle}>
+            <div className="sticky -top-px z-1 bg-popover/90 p-1 py-2 text-sm font-semibold backdrop-blur-xs">
+              {i18n.categories[categoryId]}
             </div>
-          )
-        }),
-    [emojiLibrary, getListStyle, i18n.categories, isCategoryVisible, onMouseOver, onSelectEmoji, rowWidthStyle]
-  )
+            <div className="relative flex flex-wrap" style={getListStyle(section)}>
+              {isCategoryVisible(categoryId) &&
+                section
+                  .getRows()
+                  .map((row: GridRow) => (
+                    <RowOfButtons
+                      emojiLibrary={emojiLibrary}
+                      key={row.id}
+                      onMouseOver={onMouseOver}
+                      onSelectEmoji={onSelectEmoji}
+                      row={row}
+                    />
+                  ))}
+            </div>
+          </div>
+        )
+      })
 
-  const SearchList = useCallback(
-    () => (
-      <div data-id="search" style={rowWidthStyle}>
-        <div className="sticky -top-px z-1 bg-popover/90 p-1 py-2 text-sm font-semibold text-card-foreground backdrop-blur-xs">
-          {i18n.searchResult}
-        </div>
-        <div className="relative flex flex-wrap">
-          {searchResult.map((emoji: Emoji, index: number) => (
-            <EmojiButton
-              emoji={emojiLibrary.getEmoji(emoji.id)}
-              index={index}
-              key={emoji.id}
-              onMouseOver={onMouseOver}
-              onSelect={onSelectEmoji}
-            />
-          ))}
-        </div>
+  const renderSearchList = () => (
+    <div data-id="search" style={rowWidthStyle}>
+      <div className="sticky -top-px z-1 bg-popover/90 p-1 py-2 text-sm font-semibold text-card-foreground backdrop-blur-xs">
+        {i18n.searchResult}
       </div>
-    ),
-    [emojiLibrary, rowWidthStyle, i18n.searchResult, searchResult, onSelectEmoji, onMouseOver]
+      <div className="relative flex flex-wrap">
+        {searchResult.map((emoji: Emoji, index: number) => (
+          <EmojiButton
+            emoji={emojiLibrary.getEmoji(emoji.id)}
+            index={index}
+            key={emoji.id}
+            onMouseOver={onMouseOver}
+            onSelect={onSelectEmoji}
+          />
+        ))}
+      </div>
+    </div>
   )
 
   return (
@@ -298,7 +278,7 @@ const EmojiPickerContent = ({
       ref={refs.current.contentRoot}
     >
       <div className="h-full" ref={refs.current.content}>
-        {isSearching ? SearchList() : EmojiList()}
+        {isSearching ? renderSearchList() : renderEmojiList()}
       </div>
     </div>
   )
@@ -371,7 +351,7 @@ const EmojiPreview = ({ emoji }: Pick<UseEmojiPickerType, 'emoji'>) => (
 
 const NoEmoji = ({ i18n }: Pick<UseEmojiPickerType, 'i18n'>) => (
   <div className="flex h-14 max-h-14 min-h-14 items-center border-t border-muted p-2">
-    <div className="flex items-center justify-center text-2xl">😢</div>
+    <div className="flex items-center justify-center text-2xl">{'😢'}</div>
     <div className="overflow-hidden pl-2">
       <div className="truncate text-sm font-bold">{i18n.searchNoResultsTitle}</div>
       <div className="truncate text-sm">{i18n.searchNoResultsSubtitle}</div>
@@ -381,7 +361,7 @@ const NoEmoji = ({ i18n }: Pick<UseEmojiPickerType, 'i18n'>) => (
 
 const PickAnEmoji = ({ i18n }: Pick<UseEmojiPickerType, 'i18n'>) => (
   <div className="flex h-14 max-h-14 min-h-14 items-center border-t border-muted p-2">
-    <div className="flex items-center justify-center text-2xl">☝️</div>
+    <div className="flex items-center justify-center text-2xl">{'☝️'}</div>
     <div className="overflow-hidden pl-2">
       <div className="truncate text-sm font-semibold">{i18n.pick}</div>
     </div>

@@ -38,8 +38,7 @@ export const parseUser = (user: UserWithRelations) => ({
   })),
   shortName: `${user.firstName} ${user.lastName ? `${user.lastName.trim().charAt(0).toUpperCase()}.` : ''}`,
   initials: [user.firstName, user.lastName]
-    .filter(Boolean)
-    .map(name => name!.trim().charAt(0).toUpperCase())
+    .flatMap(name => (name ? [name.trim().charAt(0).toUpperCase()] : []))
     .slice(0, 2)
     .join(''),
 })

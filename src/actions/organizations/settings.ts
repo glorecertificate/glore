@@ -63,34 +63,19 @@ export const updateOrganization = async ({
       throw new Error('Organization not found')
     }
 
-    await db
-      .update(organizations)
-      .set({
-        city: city.trim(),
-        email: email.trim().toLowerCase(),
-        name: name.trim(),
-      })
-      .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt)))
-
-    await db
-      .insert(organizationProfiles)
-      .values({
-        organizationId: organization.id,
-        address: address.trim() || null,
-        country: country.trim() || null,
-        description: getDescriptionRecord(
-          description.trim(),
-          user.locale ?? undefined,
-          current.profile?.description ?? null
-        ),
-        phone: phone.trim() || null,
-        postcode: postcode.trim() || null,
-        region: region.trim() || null,
-        url: url.trim() || null,
-      })
-      .onConflictDoUpdate({
-        target: organizationProfiles.organizationId,
-        set: {
+    await Promise.all([
+      db
+        .update(organizations)
+        .set({
+          city: city.trim(),
+          email: email.trim().toLowerCase(),
+          name: name.trim(),
+        })
+        .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt))),
+      db
+        .insert(organizationProfiles)
+        .values({
+          organizationId: organization.id,
           address: address.trim() || null,
           country: country.trim() || null,
           description: getDescriptionRecord(
@@ -102,8 +87,24 @@ export const updateOrganization = async ({
           postcode: postcode.trim() || null,
           region: region.trim() || null,
           url: url.trim() || null,
-        },
-      })
+        })
+        .onConflictDoUpdate({
+          target: organizationProfiles.organizationId,
+          set: {
+            address: address.trim() || null,
+            country: country.trim() || null,
+            description: getDescriptionRecord(
+              description.trim(),
+              user.locale ?? undefined,
+              current.profile?.description ?? null
+            ),
+            phone: phone.trim() || null,
+            postcode: postcode.trim() || null,
+            region: region.trim() || null,
+            url: url.trim() || null,
+          },
+        }),
+    ])
 
     const nextUser = await getFreshCurrentUser(user.id)
 
@@ -129,12 +130,13 @@ export const uploadOrganizationAvatar = async (formData: FormData) => {
 
     assertOrganizationAdmin(role)
 
-    const current = await db.query.organizationProfiles.findFirst({
-      columns: { avatarUrl: true },
-      where: eq(organizationProfiles.organizationId, organization.id),
-    })
-
-    const url = await r2Put(`organizations/${organization.id}-${Date.now()}.png`, file, 'image/png')
+    const [current, url] = await Promise.all([
+      db.query.organizationProfiles.findFirst({
+        columns: { avatarUrl: true },
+        where: eq(organizationProfiles.organizationId, organization.id),
+      }),
+      r2Put(`organizations/${organization.id}-${Date.now()}.png`, file, 'image/png'),
+    ])
 
     await db
       .insert(organizationProfiles)

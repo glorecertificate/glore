@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, use, useCallback, useMemo, useState } from 'react'
 
 import { CommandSeparator } from 'cmdk'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
@@ -28,7 +28,7 @@ const MultiSelectContext = createContext<{
 } | null>(null)
 
 const useMultiSelect = () => {
-  const context = useContext(MultiSelectContext)
+  const context = use(MultiSelectContext)
   if (!context) {
     throw new Error('useMultiSelect must be used within a MultiSelectProvider')
   }
@@ -172,7 +172,7 @@ export const MultiSelectTrigger = ({
       {...props}
     >
       <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
-        <div className="flex flex-1 gap-1 overflow-x-auto px-2 py-2" style={scrollbarStyle}>
+        <div className="flex flex-1 gap-1 overflow-x-auto p-2" style={scrollbarStyle}>
           {value.length === 0 ? <span className="truncate text-muted-foreground">{placeholder}</span> : children}
         </div>
         <hr className="mx-0.5 my-auto h-6 border-l border-border" />
@@ -381,7 +381,7 @@ export const MultiSelectContent = ({
                 ))}
               </div>
             ) : (
-              <div className="py-4 text-center text-sm text-muted-foreground">No items found.</div>
+              <div className="py-4 text-center text-sm text-muted-foreground">{'No items found.'}</div>
             )}
           </CommandEmpty>
           <CommandGroup>

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2Icon } from 'lucide-react'
@@ -25,21 +25,17 @@ export const RegisterForm = () => {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        orgName: z.string().nonempty(t('orgNameRequired')),
-        orgEmail: z.string().nonempty(t('orgEmailRequired')).regex(EMAIL_REGEX, t('orgEmailInvalid')),
-        orgCity: z.string().nonempty(t('orgCityRequired')),
-        orgCountry: z.string().nonempty(t('orgCountryRequired')),
-        orgUrl: z.string().optional(),
-        firstName: z.string().nonempty(t('firstNameRequired')),
-        lastName: z.string().optional(),
-        registrantEmail: z.string().nonempty(t('emailRequired')).regex(EMAIL_REGEX, t('emailInvalid')),
-        message: z.string().optional(),
-      }),
-    [t]
-  )
+  const formSchema = z.object({
+    orgName: z.string().nonempty(t('orgNameRequired')),
+    orgEmail: z.string().nonempty(t('orgEmailRequired')).regex(EMAIL_REGEX, t('orgEmailInvalid')),
+    orgCity: z.string().nonempty(t('orgCityRequired')),
+    orgCountry: z.string().nonempty(t('orgCountryRequired')),
+    orgUrl: z.string().optional(),
+    firstName: z.string().nonempty(t('firstNameRequired')),
+    lastName: z.string().optional(),
+    registrantEmail: z.string().nonempty(t('emailRequired')).regex(EMAIL_REGEX, t('emailInvalid')),
+    message: z.string().optional(),
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -59,54 +55,46 @@ export const RegisterForm = () => {
 
   const disabled = defaultFormDisabled(form)
 
-  const onSubmit = useCallback(
-    async (values: z.infer<typeof formSchema>) => {
-      setLoading(true)
-      const { error } = await requestOrganizationRegistration({
-        ...values,
-        city: values.orgCity,
-        country: values.orgCountry,
-        email: values.orgEmail,
-        name: values.orgName,
-        url: values.orgUrl,
-      })
-      setLoading(false)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true)
+    const { error } = await requestOrganizationRegistration({
+      ...values,
+      city: values.orgCity,
+      country: values.orgCountry,
+      email: values.orgEmail,
+      name: values.orgName,
+      url: values.orgUrl,
+    })
+    setLoading(false)
 
-      if (error) {
-        console.error(error)
-        toast.error(t('submitError'))
-        return
-      }
+    if (error) {
+      console.error(error)
+      toast.error(t('submitError'))
+      return
+    }
 
-      setSubmitted(true)
-    },
-    [t]
-  )
+    setSubmitted(true)
+  }
 
   useEffect(
     () => () => {
       form.reset()
-      setSubmitted(false)
     },
-    [submitted, form]
+    [form]
   )
 
-  if (submitted) {
-    return (
-      <div className="flex flex-col items-center gap-6 rounded-lg border p-8 text-center">
-        <CheckCircle2Icon className="size-12 text-green-500" />
-        <div className="space-y-2">
-          <h2 className="text-xl font-semibold">{t('successTitle')}</h2>
-          <p className="text-sm text-muted-foreground">{t('successMessage')}</p>
-        </div>
-        <Button asChild variant="outline">
-          <Link href={AUTH_ROOT}>{t('goToLogin')}</Link>
-        </Button>
+  return submitted ? (
+    <div className="flex flex-col items-center gap-6 rounded-lg border p-8 text-center">
+      <CheckCircle2Icon className="size-12 text-green-500" />
+      <div className="space-y-2">
+        <h2 className="text-xl font-semibold">{t('successTitle')}</h2>
+        <p className="text-sm text-muted-foreground">{t('successMessage')}</p>
       </div>
-    )
-  }
-
-  return (
+      <Button asChild variant="outline">
+        <Link href={AUTH_ROOT}>{t('goToLogin')}</Link>
+      </Button>
+    </div>
+  ) : (
     <Form {...form}>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-4">
@@ -147,7 +135,12 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t('orgUrl')} <span className="text-muted-foreground">({t('optional')})</span>
+                    {t('orgUrl')}{' '}
+                    <span className="text-muted-foreground">
+                      {'('}
+                      {t('optional')}
+                      {')'}
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder={t('orgUrlPlaceholder')} type="url" {...field} />
@@ -212,7 +205,12 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {t('lastName')} <span className="text-muted-foreground">({t('optional')})</span>
+                    {t('lastName')}{' '}
+                    <span className="text-muted-foreground">
+                      {'('}
+                      {t('optional')}
+                      {')'}
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Input disabled={loading} placeholder={t('lastNamePlaceholder')} {...field} />
@@ -240,7 +238,12 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem className="sm:col-span-2">
                   <FormLabel>
-                    {t('message')} <span className="text-muted-foreground">({t('optional')})</span>
+                    {t('message')}{' '}
+                    <span className="text-muted-foreground">
+                      {'('}
+                      {t('optional')}
+                      {')'}
+                    </span>
                   </FormLabel>
                   <FormControl>
                     <Textarea disabled={loading} placeholder={t('messagePlaceholder')} rows={3} {...field} />

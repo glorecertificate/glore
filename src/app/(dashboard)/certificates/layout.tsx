@@ -9,8 +9,10 @@ export const generateMetadata = () =>
     title: 'certificates',
   })
 
-export default async ({ children }: LayoutProps<'/certificates'>) => {
+const CertificatesLayout = async ({ children }: LayoutProps<'/certificates'>) => {
   const user = await getCurrentUser()
   if (user.canEdit) return notFound()
   return children
 }
+
+export default CertificatesLayout

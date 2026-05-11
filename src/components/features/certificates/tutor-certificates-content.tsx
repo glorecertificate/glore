@@ -22,7 +22,7 @@ interface TutorCertificatesContentProps {
 
 export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertificatesContentProps) => {
   const t = useTranslations('Certificates')
-  const router = useRouter()
+  const { refresh } = useRouter()
   const { locale } = useI18n()
   const [isPending, startTransition] = useTransition()
 
@@ -36,7 +36,7 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
         return
       }
       toast.success(t('selfAssignSuccess'))
-      router.refresh()
+      refresh()
     })
   }
 
@@ -74,7 +74,9 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
                     <p className="text-sm text-muted-foreground">{cert.organization.name}</p>
                     {cert.updatedAt && (
                       <p className="text-xs text-muted-foreground">
-                        {t('updatedOn')}: {formatter.format(new Date(cert.updatedAt))}
+                        {t('updatedOn')}
+                        {': '}
+                        {formatter.format(new Date(cert.updatedAt))}
                       </p>
                     )}
                   </CardContent>
@@ -107,7 +109,9 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
                     <p className="text-sm text-muted-foreground">{cert.organization.name}</p>
                     {cert.createdAt && (
                       <p className="text-xs text-muted-foreground">
-                        {t('submittedOn')}: {formatter.format(new Date(cert.createdAt))}
+                        {t('submittedOn')}
+                        {': '}
+                        {formatter.format(new Date(cert.createdAt))}
                       </p>
                     )}
                   </div>

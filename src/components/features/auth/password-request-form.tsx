@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -32,22 +32,18 @@ export const PasswordRequestForm = ({
   const cookies = useCookies()
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const formSchema = useMemo(
-    () =>
-      z.object({
-        username: z
-          .string()
-          .nonempty(t('userRequired'))
-          .nonempty(t('userRequired'))
-          .min(5, {
-            message: t('userTooShort'),
-          })
-          .refine(isValidUsername, {
-            message: t('userInvalid'),
-          }),
+  const formSchema = z.object({
+    username: z
+      .string()
+      .nonempty(t('userRequired'))
+      .nonempty(t('userRequired'))
+      .min(5, {
+        message: t('userTooShort'),
+      })
+      .refine(isValidUsername, {
+        message: t('userInvalid'),
       }),
-    [t]
-  )
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -57,47 +53,44 @@ export const PasswordRequestForm = ({
   })
   form.watch('username')
 
-  const onSubmit = useCallback(
-    async (schema: z.infer<typeof formSchema>) => {
-      const inputUsername = schema.username.trim()
-      const { data: emailData, error: emailError } = await findUserEmail(inputUsername)
+  const onSubmit = async (schema: z.infer<typeof formSchema>) => {
+    const inputUsername = schema.username.trim()
+    const { data: emailData, error: emailError } = await findUserEmail(inputUsername)
 
-      if (emailError?.code === 'NOT_FOUND' || !emailData) {
-        form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
-        setTimeout(() => inputRef.current?.focus(), 20)
-        return
-      }
-      if (emailError) {
-        toast.error(t('networkError'))
-        return
-      }
+    if (emailError?.code === 'NOT_FOUND' || !emailData) {
+      form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
+      setTimeout(() => inputRef.current?.focus(), 20)
+      return
+    }
+    if (emailError) {
+      toast.error(t('networkError'))
+      return
+    }
 
-      const { error } = await resetPassword(emailData.email, { redirectTo: `${window.location.origin}/login` })
-      if (error) {
-        toast.error(t('networkError'))
-        console.error('Reset password error:', error)
-        return
-      }
+    const { error } = await resetPassword(emailData.email, { redirectTo: `${window.location.origin}/login` })
+    if (error) {
+      toast.error(t('networkError'))
+      console.error('Reset password error:', error)
+      return
+    }
 
-      setView('email_sent')
-      setUsername(inputUsername)
-      cookies.set('loginUser', inputUsername)
-    },
-    [cookies, form, setUsername, setView, t]
-  )
+    setView('email_sent')
+    setUsername(inputUsername)
+    cookies.set('loginUser', inputUsername)
+  }
 
   const hasErrors = Object.keys(form.formState.errors).length > 0
-  const [prevHasErrors, setPrevHasErrors] = useState(hasErrors)
+  const prevHasErrors = useRef(hasErrors)
 
-  if (prevHasErrors !== hasErrors) {
-    setPrevHasErrors(hasErrors)
+  if (prevHasErrors.current !== hasErrors) {
+    prevHasErrors.current = hasErrors
     setErrored(hasErrors)
   }
 
-  const backToLogin = useCallback(() => {
+  const backToLogin = () => {
     setView('login')
     setUsername('')
-  }, [setUsername, setView])
+  }
 
   return (
     <>

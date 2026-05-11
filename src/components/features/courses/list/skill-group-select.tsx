@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useCallback } from 'react'
-
 import { ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -16,32 +14,29 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<typeof DropdownMenu>) => {
+export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof DropdownMenu>) => {
   const t = useTranslations('Courses')
 
   const { skillGroups } = useCourses()
   const { activeTypes, setActiveTypes } = useCourseListTypes()
-  const { activeSkillGroups, setActiveSkillGroups, defaultSkillGroups } = useCourseListSkillGroups()
+  const { activeSkillGroups, setActiveSkillGroups: setActiveGroups, defaultSkillGroups } = useCourseListSkillGroups()
 
-  const toggleGroup = useCallback(
-    (groupValue: string) => {
-      if (activeSkillGroups.includes(groupValue)) {
-        if (activeSkillGroups.length <= 1) {
-          setActiveSkillGroups(null)
-          setActiveTypes(activeTypes.filter(type => type !== 'skill'))
-          return
-        }
-        setActiveSkillGroups(activeSkillGroups.filter(g => g !== groupValue))
+  const toggleGroup = (groupValue: string) => {
+    if (activeSkillGroups.includes(groupValue)) {
+      if (activeSkillGroups.length <= 1) {
+        setActiveGroups(null)
+        setActiveTypes(activeTypes.filter(type => type !== 'skill'))
         return
       }
-      setActiveSkillGroups([...activeSkillGroups, groupValue])
-    },
-    [activeSkillGroups, activeTypes, setActiveSkillGroups, setActiveTypes]
-  )
+      setActiveGroups(activeSkillGroups.filter(g => g !== groupValue))
+      return
+    }
+    setActiveGroups([...activeSkillGroups, groupValue])
+  }
 
-  const selectAll = useCallback(() => {
-    setActiveSkillGroups(defaultSkillGroups)
-  }, [defaultSkillGroups, setActiveSkillGroups])
+  const selectAll = () => {
+    setActiveGroups(defaultSkillGroups)
+  }
 
   if (!activeTypes.includes('skill')) {
     return null
@@ -54,7 +49,11 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
           <span className="flex flex-1 items-center gap-1.5">
             {t('skillGroup')}
             <span className="text-[13px] text-muted-foreground/70">
-              ({activeSkillGroups.length}/{skillGroups.length})
+              {'('}
+              {activeSkillGroups.length}
+              {'/'}
+              {skillGroups.length}
+              {')'}
             </span>
           </span>
           <ChevronDownIcon className="size-3 text-muted-foreground" />
@@ -87,4 +86,4 @@ export const CourseListGroupSelect = memo(({ ...props }: React.ComponentProps<ty
       </DropdownMenuContent>
     </DropdownMenu>
   )
-})
+}

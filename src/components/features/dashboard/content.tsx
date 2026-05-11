@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { BookOpenIcon, GraduationCapIcon, LayersIcon, LibraryIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -19,14 +17,11 @@ export const DashboardContent = () => {
   const { localize } = useI18n()
   const t = useTranslations('Dashboard')
 
-  const hour = useMemo(() => new Date().getHours(), [])
+  const hour = new Date().getHours()
 
-  const greetingKey = useMemo(
-    () => (hour < 12 ? 'greetingMorning' : hour < 18 ? 'greetingAfternoon' : 'greetingEvening'),
-    [hour]
-  )
+  const greetingKey = hour < 12 ? 'greetingMorning' : hour < 18 ? 'greetingAfternoon' : 'greetingEvening'
 
-  const subtitleKey = useMemo(() => {
+  const subtitleKey = (() => {
     if (user.isAdmin) return 'subtitleAdmin'
     if (user.canEdit) return 'subtitleEditor'
     if (user.isOrgAdmin) return 'subtitleOrgAdmin'
@@ -34,50 +29,44 @@ export const DashboardContent = () => {
     if (user.isTutor) return 'subtitleTutor'
     if (user.isVolunteer) return 'subtitleVolunteer'
     return 'subtitleLearner'
-  }, [user.canEdit, user.isAdmin, user.isOrgAdmin, user.isRepresentative, user.isTutor, user.isVolunteer])
+  })()
 
-  const publishedCourses = useMemo(() => courses.filter(c => c.publicationStatus === 'published'), [courses])
+  const publishedCourses = courses.filter(c => c.publicationStatus === 'published')
 
-  const totalLessons = useMemo(() => publishedCourses.reduce((sum, c) => sum + c.lessons.length, 0), [publishedCourses])
+  const totalLessons = publishedCourses.reduce((sum, c) => sum + c.lessons.length, 0)
 
-  const nonArchivedCount = useMemo(() => courses.filter(c => c.publicationStatus !== 'archived').length, [courses])
+  const nonArchivedCount = courses.filter(c => c.publicationStatus !== 'archived').length
 
-  const stats = useMemo(
-    () => [
-      { icon: BookOpenIcon, key: 'publishedCourses', label: t('publishedCourses'), value: publishedCourses.length },
-      { icon: GraduationCapIcon, key: 'totalLessons', label: t('totalLessons'), value: totalLessons },
-      { icon: LayersIcon, key: 'skillGroups', label: t('skillGroups'), value: skillGroups.length },
-      { icon: LibraryIcon, key: 'allCourses', label: t('allCourses'), value: nonArchivedCount },
-    ],
-    [nonArchivedCount, publishedCourses.length, skillGroups.length, t, totalLessons]
-  )
+  const stats = [
+    { icon: BookOpenIcon, key: 'publishedCourses', label: t('publishedCourses'), value: publishedCourses.length },
+    { icon: GraduationCapIcon, key: 'totalLessons', label: t('totalLessons'), value: totalLessons },
+    { icon: LayersIcon, key: 'skillGroups', label: t('skillGroups'), value: skillGroups.length },
+    { icon: LibraryIcon, key: 'allCourses', label: t('allCourses'), value: nonArchivedCount },
+  ]
 
-  const courseTypes = useMemo(
-    () => [
-      {
-        cardClass: 'border-info/30 bg-info/5',
-        countClass: 'text-info',
-        courses: publishedCourses.filter(c => c.type === 'intro'),
-        key: 'intro',
-        label: t('introductoryCourses'),
-      },
-      {
-        cardClass: 'border-brand/30 bg-brand/5',
-        countClass: 'text-brand',
-        courses: publishedCourses.filter(c => c.type === 'skill'),
-        key: 'skill',
-        label: t('skillCourses'),
-      },
-      {
-        cardClass: 'border-success/30 bg-success/5',
-        countClass: 'text-success',
-        courses: publishedCourses.filter(c => c.type === 'learner'),
-        key: 'learner',
-        label: t('learnerCourses'),
-      },
-    ],
-    [publishedCourses, t]
-  )
+  const courseTypes = [
+    {
+      cardClass: 'border-info/30 bg-info/5',
+      countClass: 'text-info',
+      courses: publishedCourses.filter(c => c.type === 'intro'),
+      key: 'intro',
+      label: t('introductoryCourses'),
+    },
+    {
+      cardClass: 'border-brand/30 bg-brand/5',
+      countClass: 'text-brand',
+      courses: publishedCourses.filter(c => c.type === 'skill'),
+      key: 'skill',
+      label: t('skillCourses'),
+    },
+    {
+      cardClass: 'border-success/30 bg-success/5',
+      countClass: 'text-success',
+      courses: publishedCourses.filter(c => c.type === 'learner'),
+      key: 'learner',
+      label: t('learnerCourses'),
+    },
+  ]
 
   return (
     <div className="flex flex-col gap-8 pt-6 pb-10">
@@ -131,7 +120,8 @@ export const DashboardContent = () => {
                       ))}
                       {typeCourses.length > 3 && (
                         <li className="text-xs text-muted-foreground/50">
-                          +{typeCourses.length - 3} {t('moreCourses')}
+                          {'+'}
+                          {typeCourses.length - 3} {t('moreCourses')}
                         </li>
                       )}
                     </ul>

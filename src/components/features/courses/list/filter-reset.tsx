@@ -1,7 +1,5 @@
 'use client'
 
-import { memo } from 'react'
-
 import { RotateCcwIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -9,7 +7,7 @@ import { useCourseListFilters } from '@/components/features/courses/list/use-par
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-export const CourseListFilterReset = memo((props: React.ComponentProps<typeof Button>) => {
+export const CourseListFilterReset = (props: React.ComponentProps<typeof Button>) => {
   const t = useTranslations('Courses')
 
   const { resetFilters, hasFilters } = useCourseListFilters()
@@ -28,4 +26,4 @@ export const CourseListFilterReset = memo((props: React.ComponentProps<typeof Bu
       <TooltipContent>{t('resetAllFilters')}</TooltipContent>
     </Tooltip>
   )
-})
+}

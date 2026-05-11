@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { BookOpenIcon, CheckCircle2Icon, CircleDashedIcon, ZapIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -17,50 +15,50 @@ export const PersonalProgress = () => {
   const { localize } = useI18n()
   const t = useTranslations('Dashboard')
 
-  const enrolledCourses = useMemo(() => courses.filter(c => c.enrolled), [courses])
-  const completedCourses = useMemo(() => enrolledCourses.filter(c => c.completed), [enrolledCourses])
-  const inProgressCourses = useMemo(
-    () => enrolledCourses.filter(c => c.progressStatus === 'inProgress'),
-    [enrolledCourses]
-  )
+  const enrolledCourses = courses.filter(c => c.enrolled)
+  const completedCourses = enrolledCourses.filter(c => c.completed)
+  const inProgressCourses = enrolledCourses.filter(c => c.progressStatus === 'inProgress')
 
-  const avgPersonalRating = useMemo(() => {
-    const ratings = courses
-      .filter(c => c.type === 'skill')
-      .flatMap(c => c.lessons.filter(l => l.assessment?.userRating !== undefined).map(l => l.assessment!.userRating!))
-    if (!ratings.length) return null
+  const avgPersonalRating = (() => {
+    const ratings: number[] = []
+    for (const course of courses) {
+      if (course.type === 'skill') {
+        for (const lesson of course.lessons) {
+          if (lesson.assessment?.userRating !== undefined) {
+            ratings.push(lesson.assessment.userRating)
+          }
+        }
+      }
+    }
     return Math.round((ratings.reduce((sum, v) => sum + v, 0) / ratings.length) * 10) / 10
-  }, [courses])
+  })()
 
-  const progressStats = useMemo(
-    () => [
-      {
-        icon: BookOpenIcon,
-        key: 'enrolled',
-        label: t('enrolledCourses'),
-        value: enrolledCourses.length,
-      },
-      {
-        icon: CheckCircle2Icon,
-        key: 'completed',
-        label: t('completedCourses'),
-        value: completedCourses.length,
-      },
-      {
-        icon: CircleDashedIcon,
-        key: 'inProgress',
-        label: t('inProgressCourses'),
-        value: inProgressCourses.length,
-      },
-      {
-        icon: ZapIcon,
-        key: 'avgRating',
-        label: t('avgPersonalRating'),
-        value: avgPersonalRating ? `${avgPersonalRating} / 5` : '—',
-      },
-    ],
-    [avgPersonalRating, completedCourses.length, enrolledCourses.length, inProgressCourses.length, t]
-  )
+  const progressStats = [
+    {
+      icon: BookOpenIcon,
+      key: 'enrolled',
+      label: t('enrolledCourses'),
+      value: enrolledCourses.length,
+    },
+    {
+      icon: CheckCircle2Icon,
+      key: 'completed',
+      label: t('completedCourses'),
+      value: completedCourses.length,
+    },
+    {
+      icon: CircleDashedIcon,
+      key: 'inProgress',
+      label: t('inProgressCourses'),
+      value: inProgressCourses.length,
+    },
+    {
+      icon: ZapIcon,
+      key: 'avgRating',
+      label: t('avgPersonalRating'),
+      value: avgPersonalRating ? `${avgPersonalRating} / 5` : '—',
+    },
+  ]
 
   if (enrolledCourses.length === 0) return null
 
@@ -105,7 +103,10 @@ export const PersonalProgress = () => {
                   <div className="flex w-32 shrink-0 flex-col gap-1.5">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] text-muted-foreground">{t('progress')}</span>
-                      <span className="text-[11px] font-medium tabular-nums">{course.progress}%</span>
+                      <span className="text-[11px] font-medium tabular-nums">
+                        {course.progress}
+                        {'%'}
+                      </span>
                     </div>
                     <Progress color="brand" value={course.progress} />
                   </div>

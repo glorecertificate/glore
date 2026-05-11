@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useEffect, useRef } from 'react'
 
-type PWADisplayMode = 'twa' | 'browser' | 'standalone' | 'minimal-ui' | 'fullscreen' | 'window-controls-overlay'
+import { PWAContext } from '@/components/providers/pwa-context'
 
-const getDisplayMode = (): PWADisplayMode | undefined => {
+const getDisplayMode = () => {
+  if (typeof window === 'undefined') return
   if (document.referrer.startsWith('android-app://')) return 'twa'
   if (window.matchMedia('(display-mode: browser)').matches) return 'browser'
   if (window.matchMedia('(display-mode: standalone)').matches) return 'standalone'
@@ -13,18 +14,18 @@ const getDisplayMode = (): PWADisplayMode | undefined => {
   if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return 'window-controls-overlay'
 }
 
-/**
- * Determines the progressive web application display.
- */
 export const usePWA = () => {
-  const [displayMode, setDisplayMode] = useState<PWADisplayMode | undefined>(undefined)
+  const context = use(PWAContext)
+  const displayModeRef = useRef<ReturnType<typeof getDisplayMode> | undefined>(undefined)
+  if (!context) throw new Error('usePWA must be used within a PWAContextProvider')
 
   useEffect(() => {
-    setDisplayMode(getDisplayMode())
+    displayModeRef.current = getDisplayMode()
   }, [])
 
   return {
-    displayMode,
-    isPWA: Boolean(displayMode),
+    ...context,
+    isPWA: Boolean(displayModeRef.current),
+    displayMode: displayModeRef.current,
   }
 }

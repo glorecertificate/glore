@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -67,14 +67,14 @@ const OrganizationDeleteDialog = ({
   const t = useTranslations('Organization')
   const [deleting, setDeleting] = useState(false)
 
-  const handleConfirm = useCallback(async () => {
+  const handleConfirm = async () => {
     try {
       setDeleting(true)
       await onConfirm()
     } finally {
       setDeleting(false)
     }
-  }, [onConfirm])
+  }
 
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
@@ -106,7 +106,7 @@ interface OrganizationSettingsProps {
 }
 
 export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: OrganizationSettingsProps) => {
-  const router = useRouter()
+  const { push } = useRouter()
   const { organization: sessionOrg } = useSession()
   const { localize } = useI18n()
   const t = useTranslations('Organization')
@@ -144,42 +144,36 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
     })
   }, [form, localize, organization])
 
-  const handleSettingsSubmit = useCallback(
-    async (values: z.infer<typeof organizationSettingsSchema>) => {
-      const { data: result, error } = await updateOrganization(values)
+  const handleSettingsSubmit = async (values: z.infer<typeof organizationSettingsSchema>) => {
+    const { data: result, error } = await updateOrganization(values)
 
-      if (error || !result) {
-        toast.error(error?.message ?? t('settingsUpdateError'))
-        return
-      }
+    if (error || !result) {
+      toast.error(error?.message ?? t('settingsUpdateError'))
+      return
+    }
 
-      onSyncUser(result.user)
-      toast.success(t('settingsUpdated'))
-      onRefresh()
-    },
-    [onRefresh, onSyncUser, t]
-  )
+    onSyncUser(result.user)
+    toast.success(t('settingsUpdated'))
+    onRefresh()
+  }
 
-  const handleAvatarUpload = useCallback(
-    async (file: File) => {
-      const formData = new FormData()
-      formData.append('file', file)
+  const handleAvatarUpload = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
 
-      const { data: result, error } = await uploadOrganizationAvatar(formData)
+    const { data: result, error } = await uploadOrganizationAvatar(formData)
 
-      if (error || !result) {
-        toast.error(error?.message ?? t('avatarUploadError'))
-        return
-      }
+    if (error || !result) {
+      toast.error(error?.message ?? t('avatarUploadError'))
+      return
+    }
 
-      onSyncUser(result.user)
-      toast.success(t('avatarUploaded'))
-      onRefresh()
-    },
-    [onRefresh, onSyncUser, t]
-  )
+    onSyncUser(result.user)
+    toast.success(t('avatarUploaded'))
+    onRefresh()
+  }
 
-  const handleAvatarRemove = useCallback(async () => {
+  const handleAvatarRemove = async () => {
     const { data: result, error } = await removeOrganizationAvatar()
 
     if (error || !result) {
@@ -190,9 +184,9 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
     onSyncUser(result.user)
     toast.success(t('avatarRemoved'))
     onRefresh()
-  }, [onRefresh, onSyncUser, t])
+  }
 
-  const handleDeleteOrganization = useCallback(async () => {
+  const handleDeleteOrganization = async () => {
     const { data: result, error } = await deleteOrganization()
 
     if (error || !result) {
@@ -203,9 +197,9 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
     onSyncUser(result.user)
     setDeleteOrganizationOpen(false)
     toast.success(t('organizationDeleted'))
-    router.push('/dashboard')
+    push('/dashboard')
     onRefresh()
-  }, [onRefresh, onSyncUser, router, t])
+  }
 
   const settingsDisabled = defaultFormDisabled(form)
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd'
 import { BlockSelectionPlugin } from '@platejs/selection/react'
@@ -26,7 +26,7 @@ const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td]
 export const BlockDraggable: RenderNodeWrapper = props => {
   const { editor, element, path } = props
 
-  const enabled = useMemo(() => {
+  const enabled = (() => {
     if (editor.dom.readOnly) {
       return false
     }
@@ -56,7 +56,7 @@ export const BlockDraggable: RenderNodeWrapper = props => {
       }
     }
     return false
-  }, [editor, element, path])
+  })()
 
   if (!enabled) {
     return
@@ -85,23 +85,25 @@ const Draggable = (props: PlateElementProps) => {
 
   const [previewTop, setPreviewTop] = useState(0)
 
-  const resetPreview = useCallback(() => {
+  const resetPreview = () => {
     if (previewRef.current) {
       previewRef.current.replaceChildren()
     }
-  }, [previewRef])
+  }
 
   useEffect(() => {
     if (isDragging) {
       return
     }
-    resetPreview()
-  }, [isDragging, resetPreview])
+    if (previewRef.current) {
+      previewRef.current.replaceChildren()
+    }
+  }, [isDragging, previewRef])
 
   const [dragButtonTop, setDragButtonTop] = useState(0)
 
-  const dragButtonStyle = useMemo(() => ({ top: `${dragButtonTop + 3}px` }), [dragButtonTop])
-  const previewStyle = useMemo(() => ({ top: `${-previewTop}px` }), [previewTop])
+  const dragButtonStyle = { top: `${dragButtonTop + 3}px` }
+  const previewStyle = { top: `${-previewTop}px` }
 
   return (
     <div
@@ -172,62 +174,60 @@ const Gutter = ({ children, className, ...props }: React.ComponentProps<'div'>) 
   )
 }
 
-const DragHandle = memo(
-  ({
-    isDragging,
-    previewRef,
-    setPreviewTop,
-  }: {
-    isDragging: boolean
-    previewRef: React.RefObject<HTMLDivElement | null>
-    setPreviewTop: (top: number) => void
-  }) => {
-    const editor = useEditorRef()
-    const element = useElement()
-    const t = useTranslations('Components.RichTextEditor.actions')
+const DragHandle = ({
+  isDragging,
+  previewRef,
+  setPreviewTop,
+}: {
+  isDragging: boolean
+  previewRef: React.RefObject<HTMLDivElement | null>
+  setPreviewTop: (top: number) => void
+}) => {
+  const editor = useEditorRef()
+  const element = useElement()
+  const t = useTranslations('Components.RichTextEditor.actions')
 
-    return (
-      <div
-        className="flex size-full items-center justify-center"
-        onClick={() => {
-          editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
-        }}
-        onMouseDown={e => {
-          if (e.button !== 0 || e.shiftKey) {
-            return
-          }
+  return (
+    <div
+      className="flex size-full items-center justify-center"
+      onClick={() => {
+        editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
+      }}
+      onMouseDown={e => {
+        if (e.button !== 0 || e.shiftKey) {
+          return
+        }
 
-          const elements = createDragPreviewElements(editor, { currentBlock: element })
-          previewRef.current?.append(...elements)
-          previewRef.current?.classList.remove('hidden')
-          editor.setOption(DndPlugin, 'multiplePreviewRef', previewRef)
-        }}
-        onMouseEnter={() => {
-          if (isDragging) {
-            return
-          }
-          const blockSelection = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes({ sort: true })
-          const selectedBlocks = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
-          const ids = selectedBlocks.map((block: NodeEntry<TElement>) => block[0].id as string)
-          if (ids.length > 1 && ids.includes(element.id as string)) {
-            const previewTop = calculatePreviewTop(editor, {
-              blocks: selectedBlocks.map((block: NodeEntry<TElement>) => block[0]),
-              element,
-            })
-            setPreviewTop(previewTop)
-            return
-          }
-          setPreviewTop(0)
-        }}
-        title={t('dragToMove')}
-      >
-        <GripVerticalIcon className="text-muted-foreground" />
-      </div>
-    )
-  }
-)
+        const elements = createDragPreviewElements(editor, { currentBlock: element })
+        previewRef.current?.append(...elements)
+        previewRef.current?.classList.remove('hidden')
+        editor.setOption(DndPlugin, 'multiplePreviewRef', previewRef)
+      }}
+      onMouseEnter={() => {
+        if (isDragging) {
+          return
+        }
+        const blockSelection = editor.getApi(BlockSelectionPlugin).blockSelection.getNodes({ sort: true })
+        const selectedBlocks = blockSelection.length > 0 ? blockSelection : editor.api.blocks({ mode: 'highest' })
+        const ids = selectedBlocks.map((block: NodeEntry<TElement>) => block[0].id as string)
+        if (ids.length > 1 && ids.includes(element.id as string)) {
+          const previewTop = calculatePreviewTop(editor, {
+            blocks: selectedBlocks.map((block: NodeEntry<TElement>) => block[0]),
+            element,
+          })
+          setPreviewTop(previewTop)
+          return
+        }
+        setPreviewTop(0)
+      }}
+      title={t('dragToMove')}
+    >
+      <GripVerticalIcon className="text-muted-foreground" />
+    </div>
+  )
+}
 
-const DropLine = memo(({ className, ...props }: React.ComponentProps<'div'>) => {
+const DropLine = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { dropLine } = useDropLine()
 
   if (!dropLine) {
@@ -245,7 +245,7 @@ const DropLine = memo(({ className, ...props }: React.ComponentProps<'div'>) => 
       )}
     />
   )
-})
+}
 
 const createDragPreviewElements = (
   editor: PlateEditor,

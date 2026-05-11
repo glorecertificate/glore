@@ -88,7 +88,6 @@ const nextConfig = {
       '@dnd-kit/sortable',
       '@dnd-kit/utilities',
       '@platejs/ai',
-      '@platejs/autoformat',
       '@platejs/basic-nodes',
       '@platejs/basic-styles',
       '@platejs/callout',

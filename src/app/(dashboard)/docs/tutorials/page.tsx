@@ -14,31 +14,30 @@ export const generateMetadata = () =>
     title: 'docsTutorials',
   })
 
-const TutorialsContent = async () => {
-  const [user, category, { data: allCategories }] = await Promise.all([
-    getAuthUser(),
-    findDocCategory('tutorials', { includeUnpublished: true }),
-    listDocCategories({ includeUnpublished: true }),
-  ])
-
+const DocsTutorialsContent = async () => {
+  const category = await findDocCategory('tutorials', { includeUnpublished: true })
   if (!category) return null
+
+  const [user, categories] = await Promise.all([getAuthUser(), listDocCategories({ includeUnpublished: true })])
 
   return (
     <DocsSection
-      allCategories={allCategories ?? []}
+      allCategories={categories.data ?? []}
       canEdit={user?.role === 'admin' || Boolean(user?.isEditor)}
       category={category}
     />
   )
 }
 
-export default () => (
+const DocsTutorialsPage = () => (
   <>
     <PageHeader />
     <PageMain>
       <Suspense fallback={<LoadingFallback />}>
-        <TutorialsContent />
+        <DocsTutorialsContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default DocsTutorialsPage

@@ -68,6 +68,6 @@ export const BreadcrumbEllipsis = ({ className, ...props }: React.ComponentProps
     {...props}
   >
     <MoreHorizontalIcon className="size-4" />
-    <span className="sr-only">More</span>
+    <span className="sr-only">{'More'}</span>
   </span>
 )

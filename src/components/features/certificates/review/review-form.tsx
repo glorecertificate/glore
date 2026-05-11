@@ -35,7 +35,7 @@ interface ReviewFormProps {
 
 export const ReviewForm = ({ certificate, onOpenChange, open }: ReviewFormProps) => {
   const t = useTranslations('Certificates')
-  const router = useRouter()
+  const { refresh } = useRouter()
 
   const form = useForm<ReviewCertificateValues>({
     resolver: zodResolver(reviewCertificateSchema),
@@ -67,7 +67,7 @@ export const ReviewForm = ({ certificate, onOpenChange, open }: ReviewFormProps)
     }
     toast.success(values.action === 'approve' ? t('reviewApproveSuccess') : t('reviewRequestChangesSuccess'))
     onOpenChange(false)
-    router.refresh()
+    refresh()
   }
 
   return (
@@ -237,7 +237,7 @@ export const ReviewForm = ({ certificate, onOpenChange, open }: ReviewFormProps)
                               control={form.control}
                               name="skillCourseIds"
                               render={({ field }) => (
-                                <FormItem className="flex items-center gap-2 space-y-0">
+                                <FormItem className="flex items-center gap-2 gap-y-0">
                                   <FormControl>
                                     <Checkbox
                                       checked={field.value?.includes(skill.course.id)}

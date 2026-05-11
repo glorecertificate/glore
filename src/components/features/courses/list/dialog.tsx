@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { memo, useEffect, useRef, useTransition } from 'react'
+import { useEffect, useRef, useTransition } from 'react'
 
 import { FilePlusCornerIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -20,8 +20,8 @@ import {
 import { Spinner } from '@/components/ui/spinner'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-export const CourseListDialog = memo(({ children, ...props }: React.ComponentProps<typeof Dialog>) => {
-  const router = useRouter()
+export const CourseListDialog = ({ children, ...props }: React.ComponentProps<typeof Dialog>) => {
+  const { push } = useRouter()
   const t = useTranslations('Courses')
 
   const [isPending, startTransition] = useTransition()
@@ -77,11 +77,11 @@ export const CourseListDialog = memo(({ children, ...props }: React.ComponentPro
               { duration: Infinity }
             )
             startTransition(() => {
-              router.push(`/courses/${slug}`)
+              push(`/courses/${slug}`)
             })
           }}
         />
       </DialogContent>
     </Dialog>
   )
-})
+}

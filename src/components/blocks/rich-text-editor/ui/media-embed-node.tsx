@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { parseTwitterUrl, parseVideoUrl } from '@platejs/media'
 import { MediaEmbedPlugin, useMediaState } from '@platejs/media/react'
 import { ResizableProvider, useResizableValue } from '@platejs/resizable'
@@ -36,11 +34,8 @@ export const MediaEmbedElement = withHOC(ResizableProvider, (props: PlateElement
   const width = useResizableValue('width')
   const provider = embed?.provider
 
-  const resizableOptions = useMemo(
-    () => ({ align, maxWidth: isTweet ? 550 : '100%', minWidth: isTweet ? 300 : 100 }),
-    [align, isTweet]
-  )
-  const captionStyle = useMemo(() => ({ width: width as string }), [width])
+  const resizableOptions = { align, maxWidth: isTweet ? 550 : '100%', minWidth: isTweet ? 300 : 100 }
+  const captionStyle = { width: width as string }
 
   return (
     <MediaToolbar plugin={MediaEmbedPlugin}>

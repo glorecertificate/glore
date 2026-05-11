@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { SearchIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -24,7 +24,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
   const tSearch = useTranslations('Search')
   const { localize } = useI18n()
 
-  const filteredCategories = useMemo(() => {
+  const filteredCategories = (() => {
     const normalizedQuery = query.trim().toLowerCase()
     if (!normalizedQuery) return categories
 
@@ -45,7 +45,7 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
       result.push({ ...category, articles })
       return result
     }, [])
-  }, [categories, localize, query])
+  })()
 
   return (
     <>

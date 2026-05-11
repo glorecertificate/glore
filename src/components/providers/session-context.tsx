@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useEffect, useRef, useState } from 'react'
 
 import { type User } from '@/db/queries/user'
 import { useCookies } from '@/hooks/use-cookies'
@@ -22,39 +22,30 @@ const useSessionContext = (value: SessionContextValue) => {
     setUser(value.user)
   }, [value.user])
 
-  const organization = useMemo(
-    () => user.organizations.find(({ id }) => id === organizationId) ?? null,
-    [organizationId, user.organizations]
-  )
+  const organization = user.organizations.find(({ id }) => id === organizationId) ?? null
   const role = organization?.role ?? null
 
-  const setOrganization = useCallback((id: number) => {
+  const setOrganization = (id: number) => {
     setOrganizationId(id)
     cookiesRef.current.set('org', id)
-  }, [])
+  }
 
-  const sessionUser = useMemo(
-    () => ({
-      ...user,
-      isLearner: role === 'learner',
-      isOrgAdmin: role === 'admin',
-      isRepresentative: role === 'representative',
-      isTutor: role === 'tutor',
-      isVolunteer: role === 'volunteer',
-      role,
-    }),
-    [user, role]
-  )
+  const sessionUser = {
+    ...user,
+    isLearner: role === 'learner',
+    isOrgAdmin: role === 'admin',
+    isRepresentative: role === 'representative',
+    isTutor: role === 'tutor',
+    isVolunteer: role === 'volunteer',
+    role,
+  }
 
-  return useMemo(
-    () => ({
-      organization,
-      setOrganization,
-      setUser,
-      user: sessionUser,
-    }),
-    [sessionUser, organization, setOrganization]
-  )
+  return {
+    organization,
+    setOrganization,
+    setUser,
+    user: sessionUser,
+  }
 }
 
 export const SessionContext = createContext<ReturnType<typeof useSessionContext> | null>(null)

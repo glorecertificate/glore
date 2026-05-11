@@ -1,3 +1,4 @@
+// eslint-disable react-doctor/nextjs-no-side-effect-in-get-handler
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { eq } from 'drizzle-orm'

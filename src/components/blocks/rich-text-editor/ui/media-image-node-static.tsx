@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { NodeApi, type TCaptionProps, type TImageElement, type TResizableProps } from 'platejs'
 import { SlateElement, type SlateElementProps } from 'platejs/static'
 
@@ -7,8 +5,8 @@ import { cn } from '@/lib/utils'
 
 export const ImageElementStatic = (props: SlateElementProps<TImageElement & TCaptionProps & TResizableProps>) => {
   const { align = 'center', caption, url, width } = props.element
-  const figureStyle = useMemo(() => ({ width }), [width])
-  const divStyle = useMemo(() => ({ textAlign: align as React.CSSProperties['textAlign'] }), [align])
+  const figureStyle = { width }
+  const divStyle = { textAlign: align as React.CSSProperties['textAlign'] }
 
   return (
     <SlateElement {...props} className="py-2.5">

@@ -107,7 +107,6 @@ export const IconPicker = memo(
     const debouncedSearch = useDebounce(search, 100)
     const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
     const [isOpen, setIsOpen] = useState(defaultOpen)
-    const [isPopoverVisible, setIsPopoverVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
 
     const iconsToUse = useMemo(() => iconsList || icons, [iconsList, icons])
@@ -219,6 +218,8 @@ export const IconPicker = memo(
     }, [virtualItems, categorizedIcons])
 
     const parentRef = useRef<HTMLDivElement>(null)
+    const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+    const resizeObserverRef = useRef<ResizeObserver>(undefined)
 
     const virtualizer = useVirtualizer({
       count: virtualItems.length,
@@ -274,13 +275,22 @@ export const IconPicker = memo(
         }
         onOpenChange?.(newOpen)
 
-        setIsPopoverVisible(newOpen)
+        if (!newOpen) {
+          clearTimeout(timerRef.current)
+          resizeObserverRef.current?.disconnect()
+          return
+        }
 
-        if (newOpen) {
-          setTimeout(() => {
-            virtualizer.measure()
-            setIsLoading(false)
-          }, 1)
+        setIsLoading(true)
+        timerRef.current = setTimeout(() => {
+          setIsLoading(false)
+          virtualizer.measure()
+        }, 10)
+        resizeObserverRef.current = new ResizeObserver(() => {
+          virtualizer.measure()
+        })
+        if (parentRef.current) {
+          resizeObserverRef.current.observe(parentRef.current)
         }
       },
       [open, onOpenChange, virtualizer]
@@ -419,29 +429,6 @@ export const IconPicker = memo(
       virtualizerStyle,
       virtualizer,
     ])
-
-    useEffect(() => {
-      if (isPopoverVisible) {
-        setIsLoading(true)
-        const timer = setTimeout(() => {
-          setIsLoading(false)
-          virtualizer.measure()
-        }, 10)
-
-        const resizeObserver = new ResizeObserver(() => {
-          virtualizer.measure()
-        })
-
-        if (parentRef.current) {
-          resizeObserver.observe(parentRef.current)
-        }
-
-        return () => {
-          clearTimeout(timer)
-          resizeObserver.disconnect()
-        }
-      }
-    }, [isPopoverVisible, virtualizer])
 
     const iconName = (value || selectedIcon) as IconName
 

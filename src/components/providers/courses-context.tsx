@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, use, useEffect, useState } from 'react'
 
 import {
   createCourse as createCourseAction,
@@ -26,70 +26,57 @@ const useCoursesContext = (value: CoursesContextValue) => {
     setCourses(value.courses)
   }, [value.courses])
 
-  const skillGroups = useMemo(
-    () =>
-      value.skillGroups.map(group => ({
-        ...group,
-        label: localize(group.name),
-        value: String(group.id),
-      })),
-    [localize, value.skillGroups]
-  )
+  const skillGroups = value.skillGroups.map(group => ({
+    ...group,
+    label: localize(group.name),
+    value: String(group.id),
+  }))
 
-  const setCourse = useCallback(
-    (handler: React.SetStateAction<Course>) =>
-      setCourses(prev =>
-        prev.map(course => {
-          const data = typeof handler === 'function' ? handler(course) : handler
-          return course.id === data.id ? { ...course, ...data } : course
-        })
-      ),
-    []
-  )
-
-  const createCourse = useCallback(
-    async (payload: Omit<TableInsert<'courses'>, 'creatorId'>) => {
-      const { data, error } = await createCourseAction({
-        ...payload,
-        sortOrder: courses.length + 1,
+  const setCourse = (handler: React.SetStateAction<Course>) =>
+    setCourses(prev =>
+      prev.map(course => {
+        const data = typeof handler === 'function' ? handler(course) : handler
+        return course.id === data.id ? { ...course, ...data } : course
       })
-      if (error) return { error }
-      setCourses(prev => [...prev, data])
-      return { data }
-    },
-    [courses.length]
-  )
+    )
 
-  const updateCourse = useCallback(async (id: number, payload: TableUpdate<'courses'>) => {
+  const createCourse = async (payload: Omit<TableInsert<'courses'>, 'creatorId'>) => {
+    const { data, error } = await createCourseAction({
+      ...payload,
+      sortOrder: courses.length + 1,
+    })
+    if (error) return { error }
+    setCourses(prev => [...prev, data])
+    return { data }
+  }
+
+  const updateCourse = async (id: number, payload: TableUpdate<'courses'>) => {
     setCourses(prev => prev.map(course => (course.id === id ? ({ ...course, ...payload } as Course) : course)))
     return await updateCourseAction(id, payload)
-  }, [])
+  }
 
-  const deleteCourse = useCallback(async (id: number) => {
+  const deleteCourse = async (id: number) => {
     const { error } = await deleteCouseAction(id)
     if (error) throw error
     setCourses(prev => prev.filter(c => c.id !== id))
-  }, [])
+  }
 
-  const refreshCourses = useCallback(async () => {
+  const refreshCourses = async () => {
     const { data, error } = await listCourses({ cache: false })
     if (error) return
     setCourses(data)
-  }, [])
+  }
 
-  return useMemo(
-    () => ({
-      courses,
-      skillGroups,
-      setCourses,
-      setCourse,
-      createCourse,
-      updateCourse,
-      deleteCourse,
-      refreshCourses,
-    }),
-    [courses, createCourse, deleteCourse, refreshCourses, setCourse, skillGroups, updateCourse]
-  )
+  return {
+    courses,
+    skillGroups,
+    setCourses,
+    setCourse,
+    createCourse,
+    updateCourse,
+    deleteCourse,
+    refreshCourses,
+  }
 }
 
 const CoursesContext = createContext<ReturnType<typeof useCoursesContext> | null>(null)
@@ -100,7 +87,7 @@ export const CoursesContextProvider = ({ value, ...props }: React.ProviderProps<
 }
 
 export const useCourses = () => {
-  const context = useContext(CoursesContext)
+  const context = use(CoursesContext)
   if (!context) throw new Error('useCourses must be used within a CoursesContextProvider')
   return context
 }

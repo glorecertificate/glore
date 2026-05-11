@@ -1,9 +1,6 @@
-import { Suspense } from 'react'
-
 import { AlertCircleIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
-import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Button } from '@/components/ui/button'
 import { AUTH_ROOT } from '@/lib/constants'
 import { intlMetadata } from '@/lib/metadata'
@@ -34,8 +31,4 @@ const OnboardingErrorPage = async () => {
   )
 }
 
-export default () => (
-  <Suspense fallback={<LoadingFallback />}>
-    <OnboardingErrorPage />
-  </Suspense>
-)
+export default OnboardingErrorPage

@@ -1,5 +1,3 @@
-import { useCallback, useMemo } from 'react'
-
 import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
@@ -24,40 +22,32 @@ const CourseQuestion = ({
   const { localize } = useI18n()
   const t = useTranslations('Courses')
 
-  const isCorrectUserAnswer = useMemo(
-    () => question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect),
-    [question]
-  )
+  const isCorrectUserAnswer =
+    question.answered && question.options.some(option => option.isUserAnswer && option.isCorrect)
 
-  const onOptionClick = useCallback(
-    (option: QuestionOption) => () => {
-      if (question.answered && !completed) {
-        return
-      }
-      if (!question.answered) {
-        return onComplete(question, option)
-      }
-      if (option.isUserAnswer || !option.isCorrect) {
-        return
-      }
+  const onOptionClick = (option: QuestionOption) => () => {
+    if (question.answered && !completed) {
+      return
+    }
+    if (!question.answered) {
+      return onComplete(question, option)
+    }
+    if (option.isUserAnswer || !option.isCorrect) {
+      return
+    }
 
-      toast.info(t('answerDisabled'), {
-        duration: 1200,
-      })
-    },
-    [onComplete, question, completed, t]
-  )
+    toast.info(t('answerDisabled'), {
+      duration: 1200,
+    })
+  }
 
-  const optionClassName = useCallback(
-    (option: QuestionOption) =>
-      cn(
-        'flex-1',
-        question.answered && 'cursor-default',
-        option.isUserAnswer && 'border-foreground/60 bg-accent',
-        question.answered && !option.isUserAnswer && 'text-muted-foreground'
-      ),
-    [question.answered]
-  )
+  const optionClassName = (option: QuestionOption) =>
+    cn(
+      'flex-1',
+      question.answered && 'cursor-default',
+      option.isUserAnswer && 'border-foreground/60 bg-accent',
+      question.answered && !option.isUserAnswer && 'text-muted-foreground'
+    )
 
   return (
     <>
@@ -127,7 +117,7 @@ export const CourseQuestions = ({
           <CourseQuestion completed={completed} key={question.id} onComplete={onComplete} question={question} />
         ))
       ) : (
-        <p className="text-muted-foreground">Admin.noQuestions</p>
+        <p className="text-muted-foreground">{'Admin.noQuestions'}</p>
       )}
     </div>
   )

@@ -17,7 +17,7 @@ export const generateMetadata = () =>
     title: 'title',
   })
 
-const OrganizationPageContent = async () => {
+const OrganizationContent = async () => {
   const { data, error } = await getOrganizationPanel()
   if (error || !data) notFound()
 
@@ -31,7 +31,7 @@ const OrganizationPageContent = async () => {
   )
 }
 
-export default async () => {
+const OrganizationPage = async () => {
   const user = await getCurrentUser()
 
   if (user.canEdit) {
@@ -47,7 +47,9 @@ export default async () => {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <OrganizationPageContent />
+      <OrganizationContent />
     </Suspense>
   )
 }
+
+export default OrganizationPage

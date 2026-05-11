@@ -15,7 +15,7 @@ export const generateMetadata = () =>
     title: 'title',
   })
 
-const AdminUsersPage = async () => {
+const AdminUsersContent = async () => {
   const user = await getCurrentUser()
   if (!user.isAdmin) return notFound()
 
@@ -24,13 +24,15 @@ const AdminUsersPage = async () => {
   return <AdminUsers users={data} />
 }
 
-export default () => (
+const AdminUsersPage = () => (
   <>
     <PageHeader namespace="Admin.users" titleKey="title" />
     <PageMain>
       <Suspense fallback={<LoadingFallback />}>
-        <AdminUsersPage />
+        <AdminUsersContent />
       </Suspense>
     </PageMain>
   </>
 )
+
+export default AdminUsersPage

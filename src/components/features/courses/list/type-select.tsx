@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useCallback, useMemo } from 'react'
-
 import { cva } from 'class-variance-authority'
 import { useTranslations } from 'next-intl'
 
@@ -27,64 +25,57 @@ export const courseTypeVariants = cva('border', {
   },
 })
 
-export const CourseListTypeSelect = memo(
-  (props: Omit<React.ComponentProps<typeof MultiSelect>, 'onChange' | 'options' | 'value'>) => {
-    const t = useTranslations('Courses')
-    const { activeTypes, setActiveTypes } = useCourseListTypes()
-    const { setActiveSkillGroups } = useCourseListSkillGroups()
+export const CourseListTypeSelect = (
+  props: Omit<React.ComponentProps<typeof MultiSelect>, 'onChange' | 'options' | 'value'>
+) => {
+  const t = useTranslations('Courses')
+  const { activeTypes, setActiveTypes } = useCourseListTypes()
+  const { setActiveSkillGroups } = useCourseListSkillGroups()
 
-    const typeItems = useMemo(
-      () =>
-        COURSE_TYPES.map(type => ({
-          label: t(`courseType-${type}`),
-          value: type,
-        })),
-      [t]
-    )
+  const items = COURSE_TYPES.map(type => ({
+    label: t(`courseType-${type}`),
+    value: type,
+  }))
 
-    const handleChange = useCallback(
-      (values: string[]) => {
-        const typedValues = values as EnumType<'course_type'>[]
-        if (typedValues.includes('skill') && !activeTypes.includes('skill')) {
-          setActiveSkillGroups(null)
-        }
-        setActiveTypes(typedValues)
-      },
-      [activeTypes, setActiveSkillGroups, setActiveTypes]
-    )
+  const activeItems = items.filter(type => activeTypes.includes(type.value))
 
-    return (
-      <MultiSelect
-        label={t('courseType')}
-        min={1}
-        onChange={handleChange}
-        options={COURSE_TYPES}
-        value={activeTypes}
-        {...props}
-      >
-        <MultiSelectTrigger position="start">
-          {typeItems
-            .filter(type => activeTypes.includes(type.value))
-            .map(({ label, value }) => (
-              <MultiSelectBadge
-                className={cn('py-1 text-xs font-medium', courseTypeVariants({ type: value }))}
-                key={value}
-                label={t('courseType').toLowerCase()}
-                value={value}
-                variant="ghost"
-              >
-                {label}
-              </MultiSelectBadge>
-            ))}
-        </MultiSelectTrigger>
-        <MultiSelectContent align="start">
-          {typeItems.map(({ label, value }) => (
-            <MultiSelectItem key={value} value={value}>
-              {label}
-            </MultiSelectItem>
-          ))}
-        </MultiSelectContent>
-      </MultiSelect>
-    )
+  const onTypeChange = (values: string[]) => {
+    const typedValues = values as EnumType<'course_type'>[]
+    if (typedValues.includes('skill') && !activeTypes.includes('skill')) {
+      setActiveSkillGroups(null)
+    }
+    setActiveTypes(typedValues)
   }
-)
+
+  return (
+    <MultiSelect
+      label={t('courseType')}
+      min={1}
+      onChange={onTypeChange}
+      options={COURSE_TYPES}
+      value={activeTypes}
+      {...props}
+    >
+      <MultiSelectTrigger position="start">
+        {activeItems.map(({ label, value }) => (
+          <MultiSelectBadge
+            className={cn('py-1 text-xs font-medium', courseTypeVariants({ type: value }))}
+            key={value}
+            label={t('courseType').toLowerCase()}
+            value={value}
+            variant="ghost"
+          >
+            {label}
+          </MultiSelectBadge>
+        ))}
+      </MultiSelectTrigger>
+      <MultiSelectContent align="start">
+        {items.map(({ label, value }) => (
+          <MultiSelectItem key={value} value={value}>
+            {label}
+          </MultiSelectItem>
+        ))}
+      </MultiSelectContent>
+    </MultiSelect>
+  )
+}

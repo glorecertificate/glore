@@ -1,4 +1,4 @@
-import { Suspense, lazy, memo, useMemo } from 'react'
+import { Suspense, lazy } from 'react'
 
 import { dynamicIconImports } from 'lucide-react/dynamic'
 
@@ -20,25 +20,23 @@ const getIconComponent = (name: IconName) => {
   return component
 }
 
-export const LucideIcon = memo(
-  ({
-    className,
-    fallback = null,
-    name,
-    ...props
-  }: IconProps<{
-    fallback?: React.ReactNode
-    name: IconName
-  }>) => {
-    const Icon = useMemo(() => getIconComponent(name), [name])
-    if (!Icon) {
-      return fallback
-    }
-
-    return (
-      <Suspense fallback={fallback ?? null}>
-        <Icon className={cn(className)} {...props} />
-      </Suspense>
-    )
+export const LucideIcon = ({
+  className,
+  fallback = null,
+  name,
+  ...props
+}: IconProps<{
+  fallback?: React.ReactNode
+  name: IconName
+}>) => {
+  const Icon = getIconComponent(name)
+  if (!Icon) {
+    return fallback
   }
-)
+
+  return (
+    <Suspense fallback={fallback ?? null}>
+      <Icon className={cn(className)} {...props} />
+    </Suspense>
+  )
+}

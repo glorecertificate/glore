@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 
-export default async () => {
+const NotFound = async () => {
   const [user, t] = await Promise.all([getAuthUser(), getTranslations('Common')])
   const message = user ? t('backToHome') : t('accessApp')
   const link = user ? APP_ROOT : AUTH_ROOT
@@ -19,3 +19,5 @@ export default async () => {
     </ErrorFallback>
   )
 }
+
+export default NotFound

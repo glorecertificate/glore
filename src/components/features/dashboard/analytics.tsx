@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -23,9 +21,9 @@ const computeCourseStats = (course: ReturnType<typeof useCourses>['courses'][num
       ? Math.round((Math.min(...course.lessons.map(l => (l.userLessons ?? []).length)) / enrollment) * 100)
       : 0
 
-  const ratingValues = course.lessons
-    .filter(l => l.assessment?.userAssessments?.length)
-    .flatMap(l => (l.assessment?.userAssessments ?? []).map(ua => ua.value))
+  const ratingValues = course.lessons.flatMap(l =>
+    l.assessment?.userAssessments?.length ? l.assessment.userAssessments.map(ua => ua.value) : []
+  )
 
   const avgRating =
     ratingValues.length > 0
@@ -40,18 +38,14 @@ export const CourseAnalytics = () => {
   const { localize } = useI18n()
   const t = useTranslations('Dashboard')
 
-  const publishedCourses = useMemo(() => courses.filter(c => c.publicationStatus === 'published'), [courses])
+  const publishedCourses = courses.filter(c => c.publicationStatus === 'published')
 
-  const rankedCourses = useMemo(
-    () =>
-      publishedCourses
-        .map(course => ({ course, stats: computeCourseStats(course) }))
-        .sort((a, b) => b.stats.enrollment - a.stats.enrollment)
-        .slice(0, 8),
-    [publishedCourses]
-  )
+  const rankedCourses = publishedCourses
+    .map(course => ({ course, stats: computeCourseStats(course) }))
+    .sort((a, b) => b.stats.enrollment - a.stats.enrollment)
+    .slice(0, 8)
 
-  const globalStats = useMemo(() => {
+  const globalStats = (() => {
     const totalEnrollments = publishedCourses.reduce((sum, c) => sum + c.enrollmentCount, 0)
 
     const completedCount = rankedCourses.reduce(
@@ -60,13 +54,13 @@ export const CourseAnalytics = () => {
       0
     )
 
-    const skillRatings = publishedCourses
-      .filter(c => c.type === 'skill')
-      .flatMap(c =>
-        c.lessons
-          .filter(l => l.assessment?.userAssessments?.length)
-          .flatMap(l => (l.assessment?.userAssessments ?? []).map(ua => ua.value))
-      )
+    const skillRatings = publishedCourses.flatMap(c => {
+      if (c.type !== 'skill') return []
+      return c.lessons.flatMap(l => {
+        if (!l.assessment?.userAssessments?.length) return []
+        return l.assessment.userAssessments.map(ua => ua.value)
+      })
+    })
 
     const platformRating =
       skillRatings.length > 0
@@ -74,31 +68,28 @@ export const CourseAnalytics = () => {
         : null
 
     return { completedCount, platformRating, totalEnrollments }
-  }, [publishedCourses, rankedCourses])
+  })()
 
-  const overviewStats = useMemo(
-    () => [
-      {
-        icon: UsersIcon,
-        key: 'totalEnrollments',
-        label: t('totalEnrollments'),
-        value: globalStats.totalEnrollments,
-      },
-      {
-        icon: TrendingUpIcon,
-        key: 'totalCompletions',
-        label: t('totalCompletions'),
-        value: globalStats.completedCount,
-      },
-      {
-        icon: StarIcon,
-        key: 'avgPlatformRating',
-        label: t('avgPlatformRating'),
-        value: globalStats.platformRating ? `${globalStats.platformRating} / 5` : t('noRatingsYet'),
-      },
-    ],
-    [globalStats, t]
-  )
+  const overviewStats = [
+    {
+      icon: UsersIcon,
+      key: 'totalEnrollments',
+      label: t('totalEnrollments'),
+      value: globalStats.totalEnrollments,
+    },
+    {
+      icon: TrendingUpIcon,
+      key: 'totalCompletions',
+      label: t('totalCompletions'),
+      value: globalStats.completedCount,
+    },
+    {
+      icon: StarIcon,
+      key: 'avgPlatformRating',
+      label: t('avgPlatformRating'),
+      value: globalStats.platformRating ? `${globalStats.platformRating} / 5` : t('noRatingsYet'),
+    },
+  ]
 
   if (publishedCourses.length === 0) return null
 
@@ -172,12 +163,13 @@ export const CourseAnalytics = () => {
                       {course.type === 'skill' && stats.avgRating !== null ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="text-[11px] font-medium text-foreground tabular-nums">
-                            ★ {stats.avgRating}
+                            {'★ '}
+                            {stats.avgRating}
                           </span>
                           <span className="text-[10px]">{t('avgRating')}</span>
                         </div>
                       ) : (
-                        <span className="text-[11px] text-muted-foreground/50">—</span>
+                        <span className="text-[11px] text-muted-foreground/50">{'—'}</span>
                       )}
                     </div>
                   </div>

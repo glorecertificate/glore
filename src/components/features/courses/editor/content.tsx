@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { type Value } from 'platejs'
 
@@ -17,80 +17,70 @@ import { useSession } from '@/hooks/use-session'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
-const CourseEditor = memo(
-  ({
-    initialValue,
-    onChange,
-    version,
-    flushRef,
-  }: {
-    initialValue: Value
-    onChange: (value: Value) => void
-    version: string
-    flushRef: React.RefObject<(() => void) | null>
-  }) => {
-    const onChangeRef = useRef(onChange)
-    const latestValueRef = useRef(initialValue)
-    const appliedRef = useRef(true)
+const CourseEditor = ({
+  initialValue,
+  onChange,
+  version,
+  flushRef,
+}: {
+  initialValue: Value
+  onChange: (value: Value) => void
+  version: string
+  flushRef: React.RefObject<(() => void) | null>
+}) => {
+  const onChangeRef = useRef(onChange)
+  const latestValueRef = useRef(initialValue)
+  const appliedRef = useRef(true)
 
-    useEffect(() => {
-      onChangeRef.current = onChange
-    })
+  useEffect(() => {
+    onChangeRef.current = onChange
+  })
 
-    const debouncedOnChange = useMemo(
-      () =>
-        debounce((value: Value) => {
-          onChangeRef.current(value)
-          appliedRef.current = true
-        }, 500),
-      []
-    )
+  const debouncedOnChange = debounce((value: Value) => {
+    onChangeRef.current(value)
+    appliedRef.current = true
+  }, 500)
 
-    useEffect(() => {
-      latestValueRef.current = initialValue
-      appliedRef.current = true
-      return () => {
-        debouncedOnChange.cancel()
+  useEffect(() => {
+    latestValueRef.current = initialValue
+    appliedRef.current = true
+    return () => {
+      debouncedOnChange.cancel()
+    }
+  }, [debouncedOnChange, initialValue])
+
+  useEffect(() => {
+    flushRef.current = () => {
+      debouncedOnChange.cancel()
+      if (!appliedRef.current) {
+        onChangeRef.current(latestValueRef.current)
       }
-    }, [debouncedOnChange, initialValue])
+    }
+    return () => {
+      flushRef.current = null
+    }
+  }, [flushRef, debouncedOnChange])
 
-    useEffect(() => {
-      flushRef.current = () => {
-        debouncedOnChange.cancel()
-        if (!appliedRef.current) {
-          onChangeRef.current(latestValueRef.current)
-        }
-      }
-      return () => {
-        flushRef.current = null
-      }
-    }, [flushRef, debouncedOnChange])
+  useEffect(
+    () => () => {
+      debouncedOnChange.cancel()
+    },
+    [debouncedOnChange]
+  )
 
-    useEffect(
-      () => () => {
-        debouncedOnChange.cancel()
-      },
-      [debouncedOnChange]
-    )
+  const setValue = (newValue: { value?: Value }) => {
+    const value = newValue.value ?? (newValue as unknown as Value)
+    latestValueRef.current = value
+    appliedRef.current = false
+    debouncedOnChange(value)
+  }
 
-    const handleChange = useCallback(
-      (newValue: { value?: Value }) => {
-        const value = newValue.value ?? (newValue as unknown as Value)
-        latestValueRef.current = value
-        appliedRef.current = false
-        debouncedOnChange(value)
-      },
-      [debouncedOnChange]
-    )
-
-    return (
-      <RichTextEditorProvider onChange={handleChange} value={initialValue} version={version}>
-        <RichTextEditor autoFocus variant="fullWidth" />
-      </RichTextEditorProvider>
-    )
-  },
-  (prev, next) => prev.version === next.version && prev.onChange === next.onChange
-)
+  return (
+    <RichTextEditorProvider onChange={setValue} value={initialValue} version={version}>
+      <RichTextEditor autoFocus variant="fullWidth" />
+    </RichTextEditorProvider>
+  )
+}
 
 export const CourseContent = () => {
   const { contentFlushRef, course, currentLesson, language, setCourse, setLesson, step } = useCourse()
@@ -100,83 +90,68 @@ export const CourseContent = () => {
   const currentLessonRef = useRef(currentLesson)
   currentLessonRef.current = currentLesson
 
-  const onQuestionAnswer = useCallback(
-    async (question: Question, option: QuestionOption) => {
-      setCourse(({ lessons, ...rest }) => ({
-        ...rest,
-        lessons: lessons?.map((lesson, i) =>
-          i === step - 1 && lesson.questions
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === question.id
-                    ? {
-                        ...q,
-                        answered: true,
-                        options: q.options.map(o => ({ ...o, isUserAnswer: o.id === option.id })),
-                      }
-                    : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-      try {
-        await submitAnswers([{ id: option.id }])
-      } catch (e) {
-        console.error(e)
-      }
-    },
-    [step, setCourse]
-  )
+  const onQuestionAnswer = async (question: Question, option: QuestionOption) => {
+    setCourse(({ lessons, ...rest }) => ({
+      ...rest,
+      lessons: lessons?.map((lesson, i) =>
+        i === step - 1 && lesson.questions
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === question.id
+                  ? {
+                      ...q,
+                      answered: true,
+                      options: q.options.map(o => ({ ...o, isUserAnswer: o.id === option.id })),
+                    }
+                  : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+    try {
+      await submitAnswers([{ id: option.id }])
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
-  const onEvaluation = useCallback(
-    (id: number, rating: number) => {
-      setCourse(({ lessons, ...rest }) => ({
-        ...rest,
-        lessons: lessons?.map((lesson, i) =>
-          i === step - 1 && lesson.evaluations
-            ? {
-                ...lesson,
-                evaluations: lesson.evaluations.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [step, setCourse]
-  )
+  const onEvaluation = (id: number, rating: number) => {
+    setCourse(({ lessons, ...rest }) => ({
+      ...rest,
+      lessons: lessons?.map((lesson, i) =>
+        i === step - 1 && lesson.evaluations
+          ? {
+              ...lesson,
+              evaluations: lesson.evaluations.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const onAssessment = useCallback(
-    (rating: number) => {
-      setCourse(({ lessons, ...rest }) => ({
-        ...rest,
-        lessons: lessons?.map((lesson, i) =>
-          i === step - 1 && lesson.assessment
-            ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }
-            : lesson
-        ),
-      }))
-    },
-    [step, setCourse]
-  )
+  const onAssessment = (rating: number) => {
+    setCourse(({ lessons, ...rest }) => ({
+      ...rest,
+      lessons: lessons?.map((lesson, i) =>
+        i === step - 1 && lesson.assessment
+          ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }
+          : lesson
+      ),
+    }))
+  }
 
-  const onContentChange = useCallback(
-    (value: Value) => {
-      setLesson({
-        content: {
-          ...currentLessonRef.current.content,
-          [language]: value,
-        } as IntlRecord,
-      })
-    },
-    [language, setLesson]
-  )
+  const onContentChange = (value: Value) => {
+    setLesson({
+      content: {
+        ...currentLessonRef.current.content,
+        [language]: value,
+      } as IntlRecord,
+    })
+  }
 
-  const initialContent = useMemo(
-    () => currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }],
-    [currentLesson.content, language]
-  )
+  const initialContent = currentLesson?.content?.[language] || [{ type: 'p', children: [{ text: '' }] }]
   const editorVersion = `${step}-${language}`
 
   return (

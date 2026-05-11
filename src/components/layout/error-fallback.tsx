@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { useTranslations } from 'next-intl'
 
 import { ErrorIcon } from '@/components/icons/error'
@@ -31,7 +29,7 @@ export const ErrorFallback = ({
   const t = useTranslations('Common')
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))
-  const errorMessage = useMemo(() => {
+  const errorMessage = (() => {
     if (message) return message
     return type === 'not-found'
       ? t('notFoundMessage')
@@ -42,7 +40,7 @@ export const ErrorFallback = ({
             </a>
           ),
         })
-  }, [message, t, type])
+  })()
 
   return (
     <>
@@ -61,7 +59,7 @@ export const ErrorFallback = ({
             <ErrorIcon className="w-40 sm:w-45" />
           )}
           <div className="text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">{errorTitle}</h2>
+            <h2 className="mb-4 text-3xl font-semibold tracking-tight text-foreground">{errorTitle}</h2>
             <p className="mb-8 text-base text-foreground/75">{errorMessage}</p>
             <div className="flex justify-center gap-4">{children}</div>
           </div>

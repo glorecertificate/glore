@@ -1,6 +1,6 @@
 'use client'
 
-import { memo, useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -22,7 +22,7 @@ import {
 import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
-export const CourseListSort = memo(() => {
+export const CourseListSort = () => {
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
 
@@ -32,39 +32,36 @@ export const CourseListSort = memo(() => {
 
   const [open, setOpen] = useState(false)
 
-  const options = useMemo<Record<CourseListSortType, string>>(() => {
+  const options = (() => {
     const sorts = user.canEdit ? COURSE_LIST_EDITOR_SORTS : COURSE_LIST_LEARNER_SORTS
     return sorts.reduce(
       (acc, sortItem) => ({ ...acc, [sortItem]: t(`sortBy-${sortItem}`) }),
       {} as Record<CourseListSortType, string>
     )
-  }, [t, user.canEdit])
+  })()
 
-  const icon = useMemo(() => {
+  const icon = (() => {
     if (!sort) {
       return <ChevronsUpDownIcon className="size-3.5" />
     }
     const Icon = sortDirection === 'asc' ? ArrowUpIcon : ArrowDownIcon
     return <Icon className="size-3 text-muted-foreground" />
-  }, [sortDirection, sort])
+  })()
 
-  const handleSortChange = useCallback(
-    (type: CourseListSortType) => () => {
-      if (type === sort) {
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-      }
-      if (!type || type !== sort) {
-        setSort(type)
-      }
-      setOpen(true)
-    },
-    [setSortDirection, setSort, sort, sortDirection]
-  )
+  const handleSortChange = (type: CourseListSortType) => () => {
+    if (type === sort) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    }
+    if (!type || type !== sort) {
+      setSort(type)
+    }
+    setOpen(true)
+  }
 
-  const clearSort = useCallback(() => {
+  const clearSort = () => {
     setSort(null)
     setSortDirection(null)
-  }, [setSortDirection, setSort])
+  }
 
   const ArrowIcon = sortDirection === 'asc' ? ArrowUpIcon : ArrowDownIcon
 
@@ -114,4 +111,4 @@ export const CourseListSort = memo(() => {
       </DropdownMenuContent>
     </DropdownMenu>
   )
-})
+}

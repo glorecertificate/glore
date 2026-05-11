@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { Trash2Icon, UserPlusIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -48,73 +48,61 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
   const [deleteMembershipId, setDeleteMembershipId] = useState<number | null>(null)
   const [inviteOpen, setInviteOpen] = useState(false)
 
-  const dateFormatter = useMemo(() => new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }), [locale])
-  const availableInviteRoles = useMemo<OrganizationMembershipRole[]>(
-    () => (isOrgAdmin ? [...MANAGEABLE_MEMBER_ROLES] : [...REPRESENTATIVE_INVITE_ROLES]),
-    [isOrgAdmin]
-  )
+  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
+  const availableInviteRoles = isOrgAdmin ? [...MANAGEABLE_MEMBER_ROLES] : [...REPRESENTATIVE_INVITE_ROLES]
 
-  const canDeleteMembership = useCallback(
-    (role: OrganizationMembershipRole, userId: string) => {
-      if (userId === currentUserId) {
-        return false
-      }
+  const canDeleteMembership = (role: OrganizationMembershipRole, userId: string) => {
+    if (userId === currentUserId) {
+      return false
+    }
 
-      if (isOrgAdmin) {
-        return true
-      }
+    if (isOrgAdmin) {
+      return true
+    }
 
-      return REPRESENTATIVE_INVITE_ROLES.some(item => item === role)
-    },
-    [currentUserId, isOrgAdmin]
-  )
+    return REPRESENTATIVE_INVITE_ROLES.some(item => item === role)
+  }
 
-  const handleInvite = useCallback(
-    async (values: {
-      email: string
-      firstName: string
-      lastName: string
-      locale: string
-      role: OrganizationMembershipRole
-    }) => {
-      const { data, error } = await inviteOrganizationMember(values)
+  const handleInvite = async (values: {
+    email: string
+    firstName: string
+    lastName: string
+    locale: string
+    role: OrganizationMembershipRole
+  }) => {
+    const { data, error } = await inviteOrganizationMember(values)
 
-      if (error || !data) {
-        toast.error(error?.message ?? t('inviteError'))
-        return
-      }
+    if (error || !data) {
+      toast.error(error?.message ?? t('inviteError'))
+      return
+    }
 
-      toast.success(t('inviteSuccess', { email: data.email }))
+    toast.success(t('inviteSuccess', { email: data.email }))
 
-      if (!data.emailSent) {
-        toast.warning(t('inviteEmailFailed'))
-      }
+    if (!data.emailSent) {
+      toast.warning(t('inviteEmailFailed'))
+    }
 
-      onRefresh()
-    },
-    [onRefresh, t]
-  )
+    onRefresh()
+  }
 
-  const handleRoleChange = useCallback(
-    async (membershipId: number, role: OrganizationMembershipRole) => {
-      setActiveMembershipId(membershipId)
+  const handleRoleChange = async (membershipId: number, role: OrganizationMembershipRole) => {
+    setActiveMembershipId(membershipId)
 
-      const { error } = await updateOrganizationMemberRole(membershipId, role)
+    const { error } = await updateOrganizationMemberRole(membershipId, role)
 
-      setActiveMembershipId(null)
+    setActiveMembershipId(null)
 
-      if (error) {
-        toast.error(error.message)
-        return
-      }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
 
-      toast.success(t('memberRoleUpdated'))
-      onRefresh()
-    },
-    [onRefresh, t]
-  )
+    toast.success(t('memberRoleUpdated'))
+    onRefresh()
+  }
 
-  const handleDeleteMember = useCallback(async () => {
+  const handleDeleteMember = async () => {
     if (!deleteMembershipId) {
       return
     }
@@ -131,7 +119,7 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
     setDeleteMembershipId(null)
     toast.success(t('memberRemoved'))
     onRefresh()
-  }, [deleteMembershipId, onRefresh, t])
+  }
 
   return (
     <>
@@ -170,8 +158,7 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
                       <AvatarFallback className="rounded-full text-sm font-medium">
                         {member.fullName
                           .split(' ')
-                          .filter(Boolean)
-                          .map(name => name.charAt(0).toUpperCase())
+                          .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
                           .slice(0, 2)
                           .join('') || member.user.email.slice(0, 2).toUpperCase()}
                       </AvatarFallback>

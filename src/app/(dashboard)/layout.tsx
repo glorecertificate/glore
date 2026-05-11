@@ -8,15 +8,13 @@ import { NotificationsProvider } from '@/components/providers/notifications-prov
 import { SessionProvider } from '@/components/providers/session-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
-const fallback = <LoadingFallback size="full" />
-
-export default async ({ children }: LayoutProps<'/'>) => {
+const DashboardLayout = async ({ children }: LayoutProps<'/'>) => {
   const { get } = await cookies()
   const sidebarOpen = get('sidebarOpen')
   const sidebarWidth = get('sidebarWidth')
 
   return (
-    <Suspense fallback={fallback}>
+    <Suspense fallback={<LoadingFallback size="full" />}>
       <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
         <SessionProvider>
           <NotificationsProvider>
@@ -30,3 +28,5 @@ export default async ({ children }: LayoutProps<'/'>) => {
     </Suspense>
   )
 }
+
+export default DashboardLayout

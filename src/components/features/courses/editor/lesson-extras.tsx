@@ -1,7 +1,5 @@
 'use client'
 
-import { memo, useCallback } from 'react'
-
 import { CheckIcon, ClipboardListIcon, MessageCircleQuestionIcon, PlusIcon, StarIcon, TrashIcon } from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 
@@ -16,25 +14,78 @@ import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, intlPlaceholder } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-const ExtraItem = memo(
-  ({
-    description,
-    label,
-    language,
-    onDescriptionChange,
-    onRemove,
-  }: {
-    description: string
-    label: string
-    language: Locale
-    onDescriptionChange: (value: string) => void
-    onRemove: () => void
-  }) => {
-    const tLang = useTranslations('Intl.Languages')
-    const t = useTranslations('Courses')
+const ExtraItem = ({
+  description,
+  label,
+  language,
+  onDescriptionChange,
+  onRemove,
+}: {
+  description: string
+  label: string
+  language: Locale
+  onDescriptionChange: (value: string) => void
+  onRemove: () => void
+}) => {
+  const tLang = useTranslations('Intl.Languages')
+  const t = useTranslations('Courses')
 
-    return (
-      <div className="group flex items-start gap-2">
+  return (
+    <div className="group flex items-start gap-2">
+      <div className="flex-1 space-y-1">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <Textarea
+          className="min-h-10 text-sm"
+          onChange={e => onDescriptionChange(e.target.value)}
+          placeholder={t('extraDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+          value={description}
+        />
+      </div>
+      <Button
+        className="mt-5 opacity-0 transition-opacity group-hover:opacity-100"
+        onClick={onRemove}
+        size="icon"
+        variant="ghost"
+      >
+        <TrashIcon className="size-4 text-destructive" />
+      </Button>
+    </div>
+  )
+}
+
+const QuestionItem = ({
+  description,
+  explanation,
+  label,
+  language,
+  onAddOption,
+  onDescriptionChange,
+  onExplanationChange,
+  onOptionContentChange,
+  onOptionCorrectToggle,
+  onRemove,
+  onRemoveOption,
+  options,
+}: {
+  description: string
+  explanation: string
+  label: string
+  language: Locale
+  onAddOption: () => void
+  onDescriptionChange: (value: string) => void
+  onExplanationChange: (value: string) => void
+  onOptionContentChange: (optionId: number, value: string) => void
+  onOptionCorrectToggle: (optionId: number) => void
+  onRemove: () => void
+  onRemoveOption: (optionId: number) => void
+  options: QuestionOption[]
+}) => {
+  const tLang = useTranslations('Intl.Languages')
+  const t = useTranslations('Courses')
+
+  return (
+    <div className="group/question space-y-3 rounded-lg border p-3">
+      <div className="flex items-start gap-2">
         <div className="flex-1 space-y-1">
           <p className="text-xs font-medium text-muted-foreground">{label}</p>
           <Textarea
@@ -45,7 +96,7 @@ const ExtraItem = memo(
           />
         </div>
         <Button
-          className="mt-5 opacity-0 transition-opacity group-hover:opacity-100"
+          className="mt-5 opacity-0 transition-opacity group-hover/question:opacity-100"
           onClick={onRemove}
           size="icon"
           variant="ghost"
@@ -53,112 +104,55 @@ const ExtraItem = memo(
           <TrashIcon className="size-4 text-destructive" />
         </Button>
       </div>
-    )
-  }
-)
 
-const QuestionItem = memo(
-  ({
-    description,
-    explanation,
-    label,
-    language,
-    onAddOption,
-    onDescriptionChange,
-    onExplanationChange,
-    onOptionContentChange,
-    onOptionCorrectToggle,
-    onRemove,
-    onRemoveOption,
-    options,
-  }: {
-    description: string
-    explanation: string
-    label: string
-    language: Locale
-    onAddOption: () => void
-    onDescriptionChange: (value: string) => void
-    onExplanationChange: (value: string) => void
-    onOptionContentChange: (optionId: number, value: string) => void
-    onOptionCorrectToggle: (optionId: number) => void
-    onRemove: () => void
-    onRemoveOption: (optionId: number) => void
-    options: QuestionOption[]
-  }) => {
-    const tLang = useTranslations('Intl.Languages')
-    const t = useTranslations('Courses')
-
-    return (
-      <div className="group/question space-y-3 rounded-lg border p-3">
-        <div className="flex items-start gap-2">
-          <div className="flex-1 space-y-1">
-            <p className="text-xs font-medium text-muted-foreground">{label}</p>
-            <Textarea
-              className="min-h-10 text-sm"
-              onChange={e => onDescriptionChange(e.target.value)}
-              placeholder={t('extraDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-              value={description}
+      <div className="space-y-2">
+        <p className="text-xs font-medium text-muted-foreground">{t('extraOptions')}</p>
+        {options.map(option => (
+          <div className="group/option flex items-center gap-2" key={option.id}>
+            <button
+              className={cn(
+                'flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors',
+                option.isCorrect ? 'border-brand-secondary bg-brand-secondary text-white' : 'border-input'
+              )}
+              onClick={() => onOptionCorrectToggle(option.id)}
+              type="button"
+            >
+              {option.isCorrect && <CheckIcon className="size-2.5" />}
+            </button>
+            <Input
+              className="h-8 flex-1 text-sm"
+              onChange={e => onOptionContentChange(option.id, e.target.value)}
+              placeholder={t('extraOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+              value={option.content[language] ?? ''}
             />
+            <Button
+              className="opacity-0 transition-opacity group-hover/option:opacity-100"
+              onClick={() => onRemoveOption(option.id)}
+              size="icon"
+              variant="ghost"
+            >
+              <TrashIcon className="size-3 text-destructive" />
+            </Button>
           </div>
-          <Button
-            className="mt-5 opacity-0 transition-opacity group-hover/question:opacity-100"
-            onClick={onRemove}
-            size="icon"
-            variant="ghost"
-          >
-            <TrashIcon className="size-4 text-destructive" />
-          </Button>
-        </div>
-
-        <div className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">{t('extraOptions')}</p>
-          {options.map(option => (
-            <div className="group/option flex items-center gap-2" key={option.id}>
-              <button
-                className={cn(
-                  'flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors',
-                  option.isCorrect ? 'border-brand-secondary bg-brand-secondary text-white' : 'border-input'
-                )}
-                onClick={() => onOptionCorrectToggle(option.id)}
-                type="button"
-              >
-                {option.isCorrect && <CheckIcon className="size-2.5" />}
-              </button>
-              <Input
-                className="h-8 flex-1 text-sm"
-                onChange={e => onOptionContentChange(option.id, e.target.value)}
-                placeholder={t('extraOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-                value={option.content[language] ?? ''}
-              />
-              <Button
-                className="opacity-0 transition-opacity group-hover/option:opacity-100"
-                onClick={() => onRemoveOption(option.id)}
-                size="icon"
-                variant="ghost"
-              >
-                <TrashIcon className="size-3 text-destructive" />
-              </Button>
-            </div>
-          ))}
-          <Button className="h-7 text-xs" onClick={onAddOption} size="sm" variant="ghost">
-            <PlusIcon className="size-3" />
-            {t('addExtraOption')}
-          </Button>
-        </div>
-
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">{t('extraExplanation')}</p>
-          <Textarea
-            className="min-h-10 text-sm"
-            onChange={e => onExplanationChange(e.target.value)}
-            placeholder={t('extraExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
-            value={explanation}
-          />
-        </div>
+        ))}
+        <Button className="h-7 text-xs" onClick={onAddOption} size="sm" variant="ghost">
+          <PlusIcon className="size-3" />
+          {t('addExtraOption')}
+        </Button>
       </div>
-    )
-  }
-)
+
+      <div className="space-y-1">
+        <p className="text-xs font-medium text-muted-foreground">{t('extraExplanation')}</p>
+        <Textarea
+          className="min-h-10 text-sm"
+          onChange={e => onExplanationChange(e.target.value)}
+          placeholder={t('extraExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
+          value={explanation}
+        />
+      </div>
+    </div>
+  )
+}
 
 export const LessonExtras = ({ className }: { className?: string }) => {
   const t = useTranslations('Courses')
@@ -172,7 +166,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
   const hasExtra =
     currentLesson.questions.length > 0 || currentLesson.evaluations.length > 0 || !!currentLesson.assessment
 
-  const addQuestion = useCallback(() => {
+  const addQuestion = () => {
     const question = {
       id: Date.now(),
       description: intlPlaceholder,
@@ -192,9 +186,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
           ),
         }) as Course
     )
-  }, [currentLesson.id, setCourse, step])
+  }
 
-  const addEvaluation = useCallback(() => {
+  const addEvaluation = () => {
     const evaluation = {
       id: Date.now() + 1,
       description: intlPlaceholder,
@@ -205,9 +199,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
         i === step - 1 ? { ...lesson, evaluations: [...lesson.evaluations, evaluation] } : lesson
       ),
     }))
-  }, [setCourse, step])
+  }
 
-  const addAssessment = useCallback(() => {
+  const addAssessment = () => {
     const assessment = {
       id: Date.now() + 2,
       description: intlPlaceholder,
@@ -221,234 +215,201 @@ export const LessonExtras = ({ className }: { className?: string }) => {
       ...prev,
       lessons: prev.lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, assessment } : lesson)),
     }))
-  }, [currentLesson.id, setCourse, step])
+  }
 
-  const updateQuestionDescription = useCallback(
-    (questionId: number, value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId ? { ...q, description: { ...q.description, [language]: value } } : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [language, setCourse, step]
-  )
+  const updateQuestionDescription = (questionId: number, value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId ? { ...q, description: { ...q.description, [language]: value } } : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const updateQuestionExplanation = useCallback(
-    (questionId: number, value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId
-                    ? {
-                        ...q,
-                        explanation: { ...((q.explanation ?? intlPlaceholder) as IntlRecord), [language]: value },
-                      }
-                    : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [language, setCourse, step]
-  )
+  const updateQuestionExplanation = (questionId: number, value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId
+                  ? {
+                      ...q,
+                      explanation: { ...((q.explanation ?? intlPlaceholder) as IntlRecord), [language]: value },
+                    }
+                  : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const addQuestionOption = useCallback(
-    (questionId: number) => {
-      const newOption = {
-        id: Date.now(),
-        content: { [language]: '' },
-        is_correct: false,
-        isUserAnswer: false,
-      } as unknown as QuestionOption
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId ? { ...q, options: [...q.options, newOption] } : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [setCourse, step, language]
-  )
+  const addQuestionOption = (questionId: number) => {
+    const newOption = {
+      id: Date.now(),
+      content: { [language]: '' },
+      is_correct: false,
+      isUserAnswer: false,
+    } as unknown as QuestionOption
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId ? { ...q, options: [...q.options, newOption] } : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const updateOptionContent = useCallback(
-    (questionId: number, optionId: number, value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId
-                    ? {
-                        ...q,
-                        options: q.options.map(o =>
-                          o.id === optionId
-                            ? {
-                                ...o,
-                                content: {
-                                  ...((o.content as unknown as IntlRecord) ?? intlPlaceholder),
-                                  [language]: value,
-                                },
-                              }
-                            : o
-                        ),
-                      }
-                    : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [language, setCourse, step]
-  )
+  const updateOptionContent = (questionId: number, optionId: number, value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId
+                  ? {
+                      ...q,
+                      options: q.options.map(o =>
+                        o.id === optionId
+                          ? {
+                              ...o,
+                              content: {
+                                ...((o.content as unknown as IntlRecord) ?? intlPlaceholder),
+                                [language]: value,
+                              },
+                            }
+                          : o
+                      ),
+                    }
+                  : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const toggleOptionCorrect = useCallback(
-    (questionId: number, optionId: number) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId
-                    ? {
-                        ...q,
-                        options: q.options.map(o => ({
-                          ...o,
-                          is_correct: o.id === optionId,
-                        })),
-                      }
-                    : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [setCourse, step]
-  )
+  const toggleOptionCorrect = (questionId: number, optionId: number) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId
+                  ? {
+                      ...q,
+                      options: q.options.map(o => ({
+                        ...o,
+                        is_correct: o.id === optionId,
+                      })),
+                    }
+                  : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const removeOption = useCallback(
-    (questionId: number, optionId: number) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                questions: lesson.questions.map(q =>
-                  q.id === questionId ? { ...q, options: q.options.filter(o => o.id !== optionId) } : q
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [setCourse, step]
-  )
+  const removeOption = (questionId: number, optionId: number) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              questions: lesson.questions.map(q =>
+                q.id === questionId ? { ...q, options: q.options.filter(o => o.id !== optionId) } : q
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const updateEvaluationDescription = useCallback(
-    (evaluationId: number, value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1
-            ? {
-                ...lesson,
-                evaluations: lesson.evaluations.map(e =>
-                  e.id === evaluationId ? { ...e, description: { ...e.description, [language]: value } } : e
-                ),
-              }
-            : lesson
-        ),
-      }))
-    },
-    [language, setCourse, step]
-  )
+  const updateEvaluationDescription = (evaluationId: number, value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1
+          ? {
+              ...lesson,
+              evaluations: lesson.evaluations.map(e =>
+                e.id === evaluationId ? { ...e, description: { ...e.description, [language]: value } } : e
+              ),
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const updateAssessmentDescription = useCallback(
-    (value: string) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1 && lesson.assessment
-            ? {
-                ...lesson,
-                assessment: {
-                  ...lesson.assessment,
-                  description: { ...lesson.assessment.description, [language]: value } as IntlRecord,
-                },
-              }
-            : lesson
-        ),
-      }))
-    },
-    [language, setCourse, step]
-  )
+  const updateAssessmentDescription = (value: string) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1 && lesson.assessment
+          ? {
+              ...lesson,
+              assessment: {
+                ...lesson.assessment,
+                description: { ...lesson.assessment.description, [language]: value } as IntlRecord,
+              },
+            }
+          : lesson
+      ),
+    }))
+  }
 
-  const removeQuestion = useCallback(
-    (questionId: number) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1 ? { ...lesson, questions: lesson.questions.filter(q => q.id !== questionId) } : lesson
-        ),
-      }))
-    },
-    [setCourse, step]
-  )
+  const removeQuestion = (questionId: number) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1 ? { ...lesson, questions: lesson.questions.filter(q => q.id !== questionId) } : lesson
+      ),
+    }))
+  }
 
-  const removeEvaluation = useCallback(
-    (evaluationId: number) => {
-      setCourse(prev => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) =>
-          i === step - 1 ? { ...lesson, evaluations: lesson.evaluations.filter(e => e.id !== evaluationId) } : lesson
-        ),
-      }))
-    },
-    [setCourse, step]
-  )
+  const removeEvaluation = (evaluationId: number) => {
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) =>
+        i === step - 1 ? { ...lesson, evaluations: lesson.evaluations.filter(e => e.id !== evaluationId) } : lesson
+      ),
+    }))
+  }
 
-  const removeAssessment = useCallback(() => {
+  const removeAssessment = () => {
     setCourse(prev => ({
       ...prev,
       lessons: prev.lessons.map((lesson, i) => (i === step - 1 ? { ...lesson, assessment: undefined } : lesson)),
     }))
-  }, [setCourse, step])
+  }
 
-  const onAddExtra = useCallback(
-    (type: LessonType) => {
-      if (type === 'questions') return addQuestion()
-      if (type === 'evaluations') return addEvaluation()
-      if (type === 'assessment') return addAssessment()
-    },
-    [addAssessment, addEvaluation, addQuestion]
-  )
+  const onAddExtra = (type: LessonType) => {
+    if (type === 'questions') return addQuestion()
+    if (type === 'evaluations') return addEvaluation()
+    if (type === 'assessment') return addAssessment()
+  }
 
   if (!(isSkillCourse && canEdit)) return null
 

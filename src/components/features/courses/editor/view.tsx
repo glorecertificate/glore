@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 
@@ -40,36 +40,32 @@ export const CourseView = () => {
   const [guardOpen, setGuardOpen] = useState(false)
   const resolverRef = useRef<((value: boolean) => void) | null>(null)
 
-  const unsavedLanguages = useMemo(
-    () => localeItems.filter(({ value }) => status[value as Locale].hasUpdates).map(({ label }) => label),
-    [localeItems, status]
+  const unsavedLanguages = localeItems.flatMap(({ label, value }) =>
+    status[value as Locale].hasUpdates ? [label] : []
   )
 
-  const handleBlock = useCallback(
-    () =>
-      new Promise<boolean>(resolve => {
-        resolverRef.current = resolve
-        setGuardOpen(true)
-      }),
-    []
-  )
+  const handleBlock = () =>
+    new Promise<boolean>(resolve => {
+      resolverRef.current = resolve
+      setGuardOpen(true)
+    })
 
   useNavigationGuard({
     isDirty: hasAnyUpdates,
     onBlock: handleBlock,
   })
 
-  const handleConfirm = useCallback(() => {
+  const handleConfirm = () => {
     resolverRef.current?.(true)
     resolverRef.current = null
     setGuardOpen(false)
-  }, [])
+  }
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = () => {
     resolverRef.current?.(false)
     resolverRef.current = null
     setGuardOpen(false)
-  }, [])
+  }
 
   return (
     <Tabs className="pt-2" onValueChange={value => setLanguage(value as Locale)} value={language}>

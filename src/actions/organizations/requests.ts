@@ -154,29 +154,29 @@ export const rejectOrganizationJoinRequest = async (requestId: number, reviewerC
 
     const nextComment = reviewerComment?.trim() || null
 
-    await db
-      .update(organizationJoinRequests)
-      .set({
-        rejectedAt: new Date().toISOString(),
-        reviewedAt: new Date().toISOString(),
-        reviewedBy: user.id,
+    await Promise.all([
+      db
+        .update(organizationJoinRequests)
+        .set({
+          rejectedAt: new Date().toISOString(),
+          reviewedAt: new Date().toISOString(),
+          reviewedBy: user.id,
+          reviewerComment: nextComment,
+          status: 'rejected',
+        })
+        .where(eq(organizationJoinRequests.id, request.id)),
+      sendJoinRequestDecisionEmail({
+        email: request.email,
+        organizationName: organization.name,
         reviewerComment: nextComment,
         status: 'rejected',
-      })
-      .where(eq(organizationJoinRequests.id, request.id))
-
-    await sendJoinRequestDecisionEmail({
-      email: request.email,
-      organizationName: organization.name,
-      reviewerComment: nextComment,
-      status: 'rejected',
-    })
-
-    await createNotificationByEmail(request.email, 'join_request_decided', {
-      comment: nextComment,
-      organizationName: organization.name,
-      status: 'rejected',
-    }).catch(() => null)
+      }),
+      createNotificationByEmail(request.email, 'join_request_decided', {
+        comment: nextComment,
+        organizationName: organization.name,
+        status: 'rejected',
+      }).catch(() => null),
+    ])
 
     return parseOrganizationJoinRequest({ ...request, reviewerComment: nextComment, status: 'rejected' })
   })
@@ -233,21 +233,22 @@ export const requestOrganizationRegistration = async ({
       throw new Error('Failed to create organization')
     }
 
-    await db.insert(organizationProfiles).values({
-      country: country.trim(),
-      organizationId: org.id,
-      url: url?.trim() || null,
-    })
-
-    await db.insert(organizationJoinRequests).values({
-      email: registrantEmail.trim().toLowerCase(),
-      firstName: firstName.trim(),
-      lastName: lastName?.trim() || null,
-      locale: locale ?? i18n.defaultLocale,
-      message: message?.trim() || null,
-      organizationId: org.id,
-      role: 'admin',
-    })
+    await Promise.all([
+      db.insert(organizationProfiles).values({
+        country: country.trim(),
+        organizationId: org.id,
+        url: url?.trim() || null,
+      }),
+      db.insert(organizationJoinRequests).values({
+        email: registrantEmail.trim().toLowerCase(),
+        firstName: firstName.trim(),
+        lastName: lastName?.trim() || null,
+        locale: locale ?? i18n.defaultLocale,
+        message: message?.trim() || null,
+        organizationId: org.id,
+        role: 'admin',
+      }),
+    ])
 
     await sendMail({
       locale: locale ?? undefined,

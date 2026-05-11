@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import { AIChatPlugin } from '@platejs/ai/react'
 import { type CursorData, type CursorOverlayState, useCursorOverlay } from '@platejs/selection/react'
 import { RangeApi } from 'platejs'
@@ -26,11 +24,8 @@ const Cursor = ({ caretPosition, data, id, selection, selectionRects }: CursorOv
   const { style, selectionStyle = style } = data ?? ({} as CursorData)
   const isCursor = RangeApi.isCollapsed(selection)
 
-  const rectStyles = useMemo(
-    () => selectionRects.map(position => ({ ...selectionStyle, ...position })),
-    [selectionRects, selectionStyle]
-  )
-  const caretStyle = useMemo(() => ({ ...caretPosition, ...style }), [caretPosition, style])
+  const rectStyles = selectionRects.map(position => ({ ...selectionStyle, ...position }))
+  const caretStyle = { ...caretPosition, ...style }
 
   if (streaming) {
     return null
@@ -38,14 +33,14 @@ const Cursor = ({ caretPosition, data, id, selection, selectionRects }: CursorOv
 
   return (
     <>
-      {selectionRects.map((_, i) => (
+      {selectionRects.map(({ top, left }, i) => (
         <div
           className={cn(
             'pointer-events-none absolute z-10',
             id === 'selection' && 'bg-brand/25',
             id === 'selection' && isCursor && 'bg-primary'
           )}
-          key={i}
+          key={`${top}-${left}`}
           style={rectStyles[i]}
         />
       ))}

@@ -15,18 +15,18 @@ import { docArticles, docCategories } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 
-const articlesWith = {
+const getArticlesWith = () => ({
   articles: {
     orderBy: [asc(docArticles.createdAt)],
   },
-}
+})
 
-const publishedArticlesWith = {
+const getPublishedArticlesWith = () => ({
   articles: {
     where: eq(docArticles.published, true),
     orderBy: [asc(docArticles.createdAt)],
   },
-}
+})
 
 const requireEditor = async () => {
   const user = await getAuthUser()
@@ -42,7 +42,7 @@ const fetchDocCategories = cache(async (includeUnpublished = false) => {
 
   return await safeQuery(async () => {
     const result = await db.query.docCategories.findMany({
-      with: includeUnpublished ? articlesWith : publishedArticlesWith,
+      with: includeUnpublished ? { articles: { orderBy: [asc(docArticles.createdAt)] } } : getPublishedArticlesWith(),
       orderBy: [asc(docCategories.createdAt)],
       limit: 100,
     })
@@ -56,7 +56,7 @@ export const listDocCategories = async ({ cache: useCache = true, includeUnpubli
 }> => {
   if (!useCache) {
     const result = await db.query.docCategories.findMany({
-      with: includeUnpublished ? articlesWith : publishedArticlesWith,
+      with: includeUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
       orderBy: [asc(docCategories.createdAt)],
       limit: 100,
     })
@@ -68,7 +68,7 @@ export const listDocCategories = async ({ cache: useCache = true, includeUnpubli
 export const findDocCategory = async (slug: string, { includeUnpublished = false } = {}) => {
   const result = await db.query.docCategories.findFirst({
     where: eq(docCategories.slug, slug),
-    with: includeUnpublished ? articlesWith : publishedArticlesWith,
+    with: includeUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
   })
   if (!result) return null
   return parseDocCategory(result)

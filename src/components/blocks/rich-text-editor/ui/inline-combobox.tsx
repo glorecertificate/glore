@@ -1,16 +1,6 @@
 'use client'
 
-import {
-  createContext,
-  forwardRef,
-  startTransition,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { createContext, startTransition, use, useEffect, useRef, useState } from 'react'
 
 import {
   Combobox,
@@ -85,16 +75,13 @@ export const InlineCombobox = ({
   const hasValueProp = valueProp !== undefined
   const value = hasValueProp ? valueProp : valueState
 
-  const setValue = useCallback(
-    (newValue: string) => {
-      setValueProp?.(newValue)
+  const setValue = (newValue: string) => {
+    setValueProp?.(newValue)
 
-      if (!hasValueProp) {
-        setValueState(newValue)
-      }
-    },
-    [setValueProp, hasValueProp]
-  )
+    if (!hasValueProp) {
+      setValueState(newValue)
+    }
+  }
 
   /**
    * Track the point just before the input element so we know where to
@@ -144,18 +131,15 @@ export const InlineCombobox = ({
 
   const [hasEmpty, setHasEmpty] = useState(false)
 
-  const contextValue: InlineComboboxContextValue = useMemo(
-    () => ({
-      filter,
-      inputProps,
-      inputRef,
-      removeInput,
-      setHasEmpty,
-      showTrigger,
-      trigger,
-    }),
-    [trigger, showTrigger, filter, inputProps, removeInput]
-  )
+  const contextValue: InlineComboboxContextValue = {
+    filter,
+    inputProps,
+    inputRef,
+    removeInput,
+    setHasEmpty,
+    showTrigger,
+    trigger,
+  }
 
   const store = useComboboxStore({
     // Open: ,
@@ -183,37 +167,35 @@ export const InlineCombobox = ({
   )
 }
 
-export const InlineComboboxInput = forwardRef<HTMLInputElement, React.HTMLAttributes<HTMLInputElement>>(
-  ({ className, ...props }, propRef) => {
-    const { inputProps, inputRef: contextRef, showTrigger, trigger } = useContext(InlineComboboxContext)
+export const InlineComboboxInput = ({ className, ref: propRef, ...props }: React.ComponentProps<typeof Combobox>) => {
+  const { inputProps, inputRef: contextRef, showTrigger, trigger } = use(InlineComboboxContext)
 
-    const store = useComboboxContext()!
-    const value = store.useState('value')
+  const store = useComboboxContext()!
+  const value = store.useState('value')
 
-    const ref = useComposedRef(propRef, contextRef)
+  const ref = useComposedRef(propRef, contextRef)
 
-    return (
-      <>
-        {showTrigger && trigger}
+  return (
+    <>
+      {showTrigger && trigger}
 
-        <span className="relative min-h-lh">
-          <span aria-hidden="true" className="invisible overflow-hidden text-nowrap">
-            {value || '\u200B'}
-          </span>
-
-          <Combobox
-            autoSelect
-            className={cn('absolute top-0 left-0 size-full bg-transparent outline-none', className)}
-            ref={ref}
-            value={value}
-            {...inputProps}
-            {...props}
-          />
+      <span className="relative min-h-lh">
+        <span aria-hidden="true" className="invisible overflow-hidden text-nowrap">
+          {value || '\u200B'}
         </span>
-      </>
-    )
-  }
-)
+
+        <Combobox
+          autoSelect
+          className={cn('absolute top-0 left-0 size-full bg-transparent outline-none', className)}
+          ref={ref}
+          value={value}
+          {...inputProps}
+          {...props}
+        />
+      </span>
+    </>
+  )
+}
 
 export const InlineComboboxContent: typeof ComboboxPopover = ({ className, ...props }) => (
   <Portal>
@@ -256,7 +238,7 @@ export const InlineComboboxItem = ({
   Required<Pick<ComboboxItemProps, 'value'>>) => {
   const { value } = props
 
-  const { filter, removeInput } = useContext(InlineComboboxContext)
+  const { filter, removeInput } = use(InlineComboboxContext)
 
   const store = useComboboxContext()!
 
@@ -265,10 +247,7 @@ export const InlineComboboxItem = ({
   // Optimization: Do not subscribe to value if filter is false
   const search = filter && state.value
 
-  const visible = useMemo(
-    () => !filter || filter({ group, keywords, label, value }, search as string),
-    [filter, group, keywords, label, value, search]
-  )
+  const visible = !filter || filter({ group, keywords, label, value }, search as string)
 
   if (!visible) {
     return null
@@ -287,7 +266,7 @@ export const InlineComboboxItem = ({
 }
 
 export const InlineComboboxEmpty = ({ children, className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const { setHasEmpty } = useContext(InlineComboboxContext)
+  const { setHasEmpty } = use(InlineComboboxContext)
   const store = useComboboxContext()!
   const items = store.useState('items')
 
@@ -307,7 +286,7 @@ export const InlineComboboxEmpty = ({ children, className }: React.HTMLAttribute
 }
 
 export const InlineComboboxGroup = ({ className, ...props }: React.ComponentProps<typeof ComboboxGroup>) => (
-  <ComboboxGroup {...props} className={cn('hidden py-1.5 not-last:border-b [&:has([role=option])]:block', className)} />
+  <ComboboxGroup {...props} className={cn('hidden py-1.5 not-last:border-b has-[[role=option]]:block', className)} />
 )
 
 export const InlineComboboxGroupLabel = ({ className, ...props }: React.ComponentProps<typeof ComboboxGroupLabel>) => (

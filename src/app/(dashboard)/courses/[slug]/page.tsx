@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic'
 import { notFound, redirect } from 'next/navigation'
 
 import { getLocale } from 'next-intl/server'
@@ -15,11 +14,6 @@ import { CourseView } from '@/components/features/courses/editor/view'
 import { PageHeader } from '@/components/layout/page-header'
 import { PageMain } from '@/components/layout/page-main'
 import { i18n, localizeRecord } from '@/lib/i18n'
-
-const TextEditorProvider = dynamic(async () => {
-  const { RichTextEditorProvider } = await import('@/components/blocks/rich-text-editor/provider')
-  return RichTextEditorProvider
-})
 
 const { parse } = createSearchParamsCache({
   [COURSE_PARAMS.LANGUAGE]: parseAsStringEnum(i18n.locales),
@@ -75,9 +69,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
 
 export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
   const { course, language, user } = await resolvePageData(props)
-  if (!(course && user)) {
-    return
-  }
+  if (!(course && user)) return
 
   return {
     description: course.description ? localizeRecord(course.description, language) : undefined,
@@ -85,8 +77,11 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
   }
 }
 
-export default async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, isViewer, language, step, user } = await resolvePageData(props)
+const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
+  const [{ course, isViewer, language, step, user }, { RichTextEditorProvider }] = await Promise.all([
+    resolvePageData(props),
+    import('@/components/blocks/rich-text-editor/provider'),
+  ])
 
   if (!course.enrolled && !user.canEdit && !isViewer) {
     await enrollCourse(course.id, language)
@@ -98,10 +93,12 @@ export default async (props: PageProps<'/courses/[slug]'>) => {
         <CourseBreadcrumb />
       </PageHeader>
       <PageMain>
-        <TextEditorProvider readOnly={!user.canEdit}>
+        <RichTextEditorProvider readOnly={!user.canEdit}>
           <CourseView />
-        </TextEditorProvider>
+        </RichTextEditorProvider>
       </PageMain>
     </CourseProvider>
   )
 }
+
+export default CoursePage

@@ -81,7 +81,7 @@ const footerStyle: CSSProperties = {
   color: 'rgba(255,255,255,0.55)',
 }
 
-export default async ({ params }: { params: Promise<{ username: string }> }) => {
+const UserOpengraphImage = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params
   const { data } = await findPublicCertificate(username)
   const { user, organization, skills = [] } = data ?? {}
@@ -96,8 +96,8 @@ export default async ({ params }: { params: Promise<{ username: string }> }) => 
     <div style={wrapperStyle}>
       {/* Header */}
       <div style={headerStyle}>
-        <span style={logoStyle}>GloRe Certificate</span>
-        <span style={badgeStyle}>✓ Verified</span>
+        <span style={logoStyle}>{'GloRe Certificate'}</span>
+        <span style={badgeStyle}>{'✓ Verified'}</span>
       </div>
       {/* Content */}
       <div style={contentStyle}>
@@ -105,8 +105,8 @@ export default async ({ params }: { params: Promise<{ username: string }> }) => 
         {organization?.name && <div style={orgStyle}>{organization.name}</div>}
         {skillList.length > 0 && (
           <div style={skillsRowStyle}>
-            {skillList.map((skill, i) => (
-              <span key={i} style={skillPillStyle}>
+            {skillList.map(skill => (
+              <span key={skill} style={skillPillStyle}>
                 {skill}
               </span>
             ))}
@@ -119,3 +119,5 @@ export default async ({ params }: { params: Promise<{ username: string }> }) => 
     { width: 1200, height: 630 }
   )
 }
+
+export default UserOpengraphImage

@@ -29,7 +29,7 @@ const CertificatesPageContent = async () => {
   return <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
 }
 
-export default () => (
+const CertificatesPage = () => (
   <>
     <PageHeader namespace="Layout" titleKey="certificates" />
     <PageMain>
@@ -39,3 +39,5 @@ export default () => (
     </PageMain>
   </>
 )
+
+export default CertificatesPage

@@ -8,7 +8,7 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**'],
+    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**', '.claude/**', 'drizzle/**'],
     arrowParens: 'avoid',
     semi: false,
     singleQuote: true,
@@ -48,6 +48,7 @@ export default defineConfig({
     ],
   },
   lint: {
+    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**', '.claude/**'],
     categories: {
       correctness: 'error',
       nursery: 'allow',

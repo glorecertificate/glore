@@ -3,7 +3,7 @@
 import { StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { courseTypeVariants } from '@/components/features/courses/list/type-select'
+import { courseTypeVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useCourses } from '@/components/providers/courses-context'
 import { Badge } from '@/components/ui/badge'

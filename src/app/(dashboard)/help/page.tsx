@@ -1,6 +1,7 @@
+import { getTranslations } from 'next-intl/server'
+
 import { HelpContent } from '@/components/features/help/content'
-import { PageHeader } from '@/components/layout/page-header'
-import { PageMain } from '@/components/layout/page-main'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -9,13 +10,14 @@ export const generateMetadata = () =>
     title: 'help',
   })
 
-const HelpPage = () => (
-  <>
-    <PageHeader namespace="Layout" titleKey="help" />
-    <PageMain>
+const HelpPage = async () => {
+  const t = await getTranslations('Layout')
+
+  return (
+    <DashboardPage title={t('help')}>
       <HelpContent />
-    </PageMain>
-  </>
-)
+    </DashboardPage>
+  )
+}
 
 export default HelpPage

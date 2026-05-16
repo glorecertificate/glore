@@ -20,9 +20,10 @@ export const courses = pgTable(
       .notNull()
       .references(() => users.id),
     sortOrder: integer(),
-    archivedAt: timestamp({ mode: 'string' }),
-    createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
-    updatedAt: timestamp({ mode: 'string' })
+    archivedAt: timestamp({ mode: 'string', withTimezone: true }),
+    archivedById: text().references(() => users.id),
+    createdAt: timestamp({ mode: 'string', withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp({ mode: 'string', withTimezone: true })
       .defaultNow()
       .notNull()
       .$onUpdate(() => new Date().toISOString()),

@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 import { Slot, Slottable } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
 
@@ -14,120 +12,23 @@ export interface ButtonProps
     Omit<React.ComponentProps<'button'>, keyof VariantProps<typeof buttonVariants>>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  /** @default 'default' */
-  disabledCursor?: 'default' | 'not-allowed'
   disabledTitle?: string
   icon?: Icon
   /** @default 'left' */
   iconPlacement?: 'left' | 'right'
   loading?: boolean
-  loadingSpinner?: React.ComponentProps<typeof Spinner>['size']
   loadingText?: string
   loadingTitle?: string
-}
-
-export const Button = ({
-  asChild = false,
-  children,
-  className,
-  disabled,
-  disabledCursor = 'not-allowed',
-  disabledTitle,
-  effect,
-  icon: Icon,
-  iconPlacement = 'left',
-  loading = false,
-  loadingSpinner,
-  loadingText,
-  loadingTitle,
-  onClick,
-  size,
-  title,
-  type,
-  variant,
-  ...props
-}: ButtonProps) => {
-  const Component = asChild ? Slot : 'button'
-  const hasLeftIcon = !loading && iconPlacement === 'left'
-  const hasRightIcon = !loading && iconPlacement === 'right'
-  const isDisabled = disabled || loading
-  const buttonTitle = loading ? loadingTitle : disabled ? disabledTitle : title
-
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (isDisabled) {
-        return
-      }
-      return onClick?.(e)
-    },
-    [isDisabled, onClick]
-  )
-
-  return (
-    <Component
-      className={cn(
-        buttonVariants({ effect, size, variant }),
-        isDisabled ? (disabledCursor === 'not-allowed' ? 'cursor-not-allowed' : 'cursor-default') : 'cursor-pointer',
-        loading && 'cursor-wait',
-        type === 'submit' ? 'transition-colors' : 'transition-all',
-        className
-      )}
-      disabled={isDisabled}
-      onClick={handleClick}
-      title={buttonTitle}
-      type={type}
-      {...props}
-    >
-      {Icon &&
-        hasLeftIcon &&
-        (effect === 'expandIcon' ? (
-          <div className="w-0 translate-x-[0%] pr-0 opacity-0 transition-all duration-100 group-hover:w-4 group-hover:translate-x-100 group-hover:pr-2 group-hover:opacity-100">
-            <Icon />
-          </div>
-        ) : (
-          <Icon />
-        ))}
-      <Slottable>
-        {loading ? (
-          <>
-            <Spinner size={loadingSpinner} />
-            {loadingText ? <span>{loadingText}</span> : children}
-          </>
-        ) : (
-          children
-        )}
-      </Slottable>
-      {Icon &&
-        hasRightIcon &&
-        (effect === 'expandIcon' ? (
-          <div className="w-0 translate-x-full pl-0 opacity-0 transition-all duration-100 group-hover:w-5 group-hover:translate-x-0 group-hover:pl-2 group-hover:opacity-100">
-            <Icon />
-          </div>
-        ) : (
-          <Icon />
-        ))}
-    </Component>
-  )
+  spinner?: string
 }
 
 export const buttonVariants = cva(
-  `inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4`,
+  [
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0',
+  ],
   {
-    compoundVariants: [
-      {
-        variant: [
-          'primary',
-          'secondary',
-          'destructive',
-          'warning',
-          'success',
-          'brand',
-          'brand-secondary',
-          'brand-tertiary',
-        ],
-        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
-      },
-    ],
     defaultVariants: {
       variant: 'primary',
       size: 'md',
@@ -172,5 +73,89 @@ export const buttonVariants = cva(
         hoverUnderline: `relative no-underline! after:absolute after:bottom-0 after:h-px after:w-[calc(100%-4px)] after:origin-bottom-right after:scale-x-0 after:bg-current/60 after:transition-transform after:duration-150 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100`,
       },
     },
+    compoundVariants: [
+      {
+        variant: [
+          'primary',
+          'secondary',
+          'destructive',
+          'warning',
+          'success',
+          'brand',
+          'brand-secondary',
+          'brand-tertiary',
+        ],
+        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
+      },
+    ],
   }
 )
+
+export const Button = ({
+  asChild = false,
+  children,
+  className,
+  disabled,
+  disabledTitle,
+  effect,
+  icon: Icon,
+  iconPlacement = 'left',
+  loading = false,
+  loadingText,
+  loadingTitle,
+  size,
+  spinner,
+  title,
+  type,
+  variant,
+  ...props
+}: ButtonProps) => {
+  const Component = asChild ? Slot : 'button'
+  const label = loading ? loadingTitle : disabled ? disabledTitle : title
+
+  return (
+    <Component
+      className={cn(
+        buttonVariants({ effect, size, variant }),
+        loading && 'cursor-wait',
+        type === 'submit' ? 'transition-colors' : 'transition-all',
+        className
+      )}
+      disabled={disabled || loading}
+      title={label}
+      type={type}
+      {...props}
+    >
+      {Icon &&
+        iconPlacement === 'left' &&
+        !loading &&
+        (effect === 'expandIcon' ? (
+          <div className="w-0 overflow-hidden pr-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pr-2 group-hover:opacity-100">
+            <Icon />
+          </div>
+        ) : (
+          <Icon />
+        ))}
+      <Slottable>
+        {loading ? (
+          <>
+            <Spinner className={spinner} />
+            {loadingText ? <span>{loadingText}</span> : children}
+          </>
+        ) : (
+          children
+        )}
+      </Slottable>
+      {Icon &&
+        iconPlacement === 'right' &&
+        !loading &&
+        (effect === 'expandIcon' ? (
+          <div className="w-0 overflow-hidden pl-0 opacity-0 transition-all duration-200 group-hover:w-5 group-hover:pl-2 group-hover:opacity-100">
+            <Icon />
+          </div>
+        ) : (
+          <Icon />
+        ))}
+    </Component>
+  )
+}

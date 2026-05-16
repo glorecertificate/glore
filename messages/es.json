@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe es una red abierta que pretende ampliar su audiencia tanto de voluntarios como de ONG de todo el mundo para poner los certificados a disposición de todo el mundo.",
     "keywords": "GloRe, voluntariado, red global, ONG, certificado, habilidades blandas, cursos, aprendizaje, comunidad",
-    "pwaDescription": "Instale GloRe en su dispositivo para acceder a cursos, recibir notificaciones y administrar sus certificados sin conexión.",
+    "pwaDescription": "Instale GloRe en su dispositivo para acceder a cursos y administrar sus certificados sin conexión.",
     "title": "GloRe - Red Mundial de Voluntariado"
   },
   "Common": {
@@ -682,8 +682,8 @@
       }
     },
     "Sidebar": {
-      "close": "Cerrar la barra lateral",
-      "open": "Abrir la barra lateral"
+      "close": "Cerrar barra lateral",
+      "open": "Abrir barra lateral"
     },
     "PasswordInput": {
       "hide": "Ocultar",
@@ -790,7 +790,7 @@
     "resendEmail": "Enviar otro correo",
     "resendTimer": "Enviar otro correo en {seconds}s",
     "signupDialogMessage": "<p>Los usuarios individuales solo pueden registrarse en GloRe con una invitación de su organización.</p><p>Si tu organización es parte de la red GloRe y deseas obtener acceso como voluntario, tutor o coordinador, pide a un representante que te envíe una invitación.</p><p>Si tu organización aún no está registrada en GloRe, puedes enviar una solicitud de registro a continuación.</p><p>Para más información, visita <link>nuestro sito web</link>.</p>",
-    "signupDialogRegister": "Registra tu organización →",
+    "signupDialogRegister": "Registra tu organización",
     "signupDialogTitle": "Regístrate en GloRe",
     "signupMessage": "¿No tienes una cuenta? Descubre <link>cómo inscribirte</link>",
     "skipAndLogin": "Omita y vaya a iniciar sesión",
@@ -813,6 +813,7 @@
     "answerDisabled": "No puedes modificar tu respuesta",
     "archive": "Archivo",
     "archived": "Archivados",
+    "archivedOnBy": "Archivado {date} por",
     "atTheMoment": "{message} en este momento",
     "backTo": "Mirar todos los cursos",
     "backToAll": "Volver a todos los cursos",
@@ -832,7 +833,7 @@
     "confirmDeleteMessage": "La eliminación de este curso es permanente y no se puede deshacer. \nTodos los datos asociados se perderán.",
     "confirmDeleteTitle": "¿Estás seguro de que deseas eliminar este curso?",
     "confirmUnarchiveMessage": "Al desarchivar este curso, volverá a estar visible en la lista de cursos activos.",
-    "confirmUnarchiveTitle": "¿Estás seguro de que deseas desarchivar este curso?",
+    "confirmUnarchiveTitle": "¿Desarchivar este curso?",
     "continueCourse": "Continuar curso",
     "correctAnswerMessage": "Bien hecho, has respondido correctamente.",
     "correctAnswerTitle": "¡Correcto!",
@@ -847,6 +848,8 @@
     "courseDescriptionSubtitle": "Describe de qué se trata el curso, sus objetivos y cualquier otra información relevante. ",
     "courseMetadata": "Metadata",
     "courseMetadataDescription": "Metadata y detalles del curso",
+    "coursePublishError": "No se pudo actualizar la publicación del curso",
+    "coursePublishedIn": "Curso publicado en {lang}",
     "courseSettingsUpdated": "La configuración del curso se actualiza correctamente",
     "courseSlug": "URL",
     "courseSlugDescription": "Dirección URL del curso, debe ser única y descriptiva.",
@@ -870,6 +873,8 @@
     "courseType-skill": "Soft skill",
     "courseTypeDescription-skill": "El curso se centra en verificar una habilidad blanda específica.",
     "courseUnarchived": "Curso desarchivado exitosamente",
+    "courseUnpublishError": "No se pudo actualizar la publicación del curso",
+    "courseUnpublishedFrom": "Curso despublicado de {lang}",
     "courses": "Cursos",
     "createCourse": "Crear curso",
     "createdBy": "Creado por",
@@ -915,6 +920,7 @@
     "iconDescription": "Icono que representa la habilidad o el tema del curso.",
     "iconPlaceholder": "Elegir un icono",
     "iconSearchPlaceholder": "Buscar un icono...",
+    "iconUpdateSuccess": "Icono actualizado correctamente",
     "inProgress": "En progreso",
     "info": "Información",
     "infoSettings": "Informaciónes",
@@ -949,7 +955,6 @@
     "notStarted": "No iniciados",
     "partial": "Parciales",
     "preview": "Avance",
-    "previewDraftIn": "Ver draft {lang}",
     "previewIn": "Ver en {lang}",
     "previewMessage": "Ver vista previa",
     "previous": "Anterior",
@@ -958,7 +963,7 @@
     "publicationStatus": "{type, select, active {Activo} draft {Draft} archived {Archivado} other {}}",
     "publishCourseMessage": "El curso se volverá visible en los idiomas seleccionados.",
     "publishIn": "Publicar en...",
-    "publishInLanguage": "Publicar en {lang}",
+    "publishInLanguage": "Publicar curso en {lang}?",
     "published": "Publicados",
     "publishedSingle": "Publicado",
     "questionsSubtitle": "Responde {count, plural, =1 {a la siguiente afirmación} other {a las siguientes afirmaciones}} y prueba tus conocimientos.",
@@ -1010,8 +1015,8 @@
     "trueAnswer": "Verdadero",
     "sortBy-type": "Tipo",
     "unpublish": "Despublicar",
-    "unpublishCourseMessage": "El curso no será visible en la plataforma",
-    "unpublishFromLanguage": "Despublicar en {lang}",
+    "unpublishCourseMessage": "El curso no será visible para los usuarios.",
+    "unpublishFromLanguage": "Despublicar en {lang}?",
     "untitledCourse": "Curso sin título",
     "untitledLesson": "Lección sin título",
     "updateFilters": "Intente actualizar los filtros para ver otros cursos",
@@ -1035,7 +1040,7 @@
     "publishInfo": "Cuando está activo, el curso es visible para los usuarios en este idioma.",
     "publishToggleLabel": "Publicado",
     "incompleteContent": "contenido de lección incompleto",
-    "unarchive": "Desarchivar",
+    "unarchive": "Restaurar",
     "cancel": "Cancelar",
     "continue": "Continuar",
     "delete": "Borrar",
@@ -1063,7 +1068,6 @@
     "extraExplanation": "Explicación",
     "extraExplanationPlaceholder": "Ingrese una explicación en {lang}",
     "archiveAction": "Archivar",
-
     "unsavedChangesTitle": "Cambios sin guardar",
     "unsavedChangesMessage": "La versión {languages} del curso tiene cambios sin guardar. ¿Seguro que quieres salir de la página? Se perderán todos los cambios.",
     "leavePage": "Salir",
@@ -1472,6 +1476,7 @@
     "contact": "Contactar {user}",
     "editor": "Utente editor",
     "speaks": "Habla {languages}",
+    "speaksMany": "Habla {first}, {second} y {count, plural, =1 {# idioma más} other {# idiomas más}}",
     "bio": "Biografía",
     "bioPlaceholder": "Cuéntanos sobre ti",
     "birthday": "Fecha de nacimiento",
@@ -1918,17 +1923,6 @@
       "signature": "El equipo de Glore"
     }
   },
-  "Notifications": {
-    "title": "Notificaciones",
-    "empty": "Aún no hay notificaciones",
-    "markAllRead": "Marcar todas como leídas",
-    "certificate_assigned": "Se te ha asignado un certificado para revisar",
-    "certificate_reviewed_approved": "Tu certificado ha sido aprobado",
-    "certificate_reviewed_changes": "Tu certificado requiere cambios",
-    "member_added": "Has sido añadido a {organization}",
-    "join_request_accepted": "Tu solicitud de unirte a {organization} ha sido aceptada",
-    "join_request_rejected": "Tu solicitud de unirte a {organization} ha sido rechazada"
-  },
   "PWA": {
     "installTitle": "Instalar GloRe",
     "installDescription": "Añade GloRe a tu pantalla de inicio para acceder rápidamente.",
@@ -1936,8 +1930,6 @@
     "installDismiss": "Ahora no",
     "offlineTitle": "Estás sin conexión",
     "offlineDescription": "Conéctate a internet para continuar usando GloRe.",
-    "offlineRetry": "Reintentar",
-    "pushNotifications": "Notificaciones push",
-    "pushDenied": "Las notificaciones están bloqueadas. Actívalas en la configuración de tu navegador."
+    "offlineRetry": "Reintentar"
   }
 }

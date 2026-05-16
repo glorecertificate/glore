@@ -1,7 +1,7 @@
 import { createSearchParamsCache, parseAsString } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
-import { AuthFlow } from '@/components/features/auth/auth-flow'
+import { AuthFlow } from '@/components/auth/auth-flow'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { intlMetadata } from '@/lib/metadata'
 import { AuthView } from '@/lib/types'

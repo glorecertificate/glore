@@ -12,7 +12,7 @@ export const config: ProxyConfig = {
 }
 
 const isCertificatePage = (pathname: string) =>
-  /^\/[a-zA-Z0-9.]+$/.test(pathname) && !DASHBOARD_ROOTS.some(r => pathname.startsWith(r))
+  /^\/[a-zA-Z0-9.]+$/u.test(pathname) && !DASHBOARD_ROOTS.some(r => pathname.startsWith(r))
 
 export const proxy: NextProxy = async request => {
   const { headers: reqHeaders, nextUrl } = request

@@ -15,17 +15,19 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[];
   const { locale } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Users')
+  const tCountries = useTranslations('Intl.Countries')
+  const tLanguages = useTranslations('Intl.Languages')
   const format = useFormatter()
 
   const resolveCountryLabel = (country: string | null | undefined) => {
     if (!country) return ''
-    const key = `Intl.Countries.${country}` as Any
-    return t.has?.(key) ? t(key) : country.toUpperCase()
+    const key = country as Any
+    return tCountries.has?.(key) ? tCountries(key) : country.toUpperCase()
   }
 
   const resolveLanguageLabel = (language: string) => {
-    const key = `Languages.${language}` as Any
-    return t.has?.(key) ? t(key) : language.toUpperCase()
+    const key = language as Any
+    return tLanguages.has?.(key) ? tLanguages(key) : language.toUpperCase()
   }
 
   const location = (() => {
@@ -39,7 +41,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[];
 
   const locationUrl = (() => {
     if (!location) return
-    const searchQuery = location.replace(/[^a-zA-Z0-9]+/g, '+').replace(/\++/g, '+')
+    const searchQuery = location.replace(/[^a-zA-Z0-9]+/gu, '+').replace(/\++/gu, '+')
     return `${app.mapsUrl}/${searchQuery}` as HttpUrl
   })()
 
@@ -47,8 +49,9 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[];
     if (!user.languages?.length) return
     const langs = user.languages.map((lang: string) => resolveLanguageLabel(lang))
     const list = locale === 'en' ? langs : langs.map((lang: string) => lang.toLowerCase())
-    const formatted = String(format.list(list))
-    return t('speaks', { languages: formatted })
+    if (list.length <= 3) return t('speaks', { languages: String(format.list(list)) })
+    const [first, second] = list
+    return t('speaksMany', { first, second, count: list.length - 2 })
   })()
 
   const contactTitle = (() => {

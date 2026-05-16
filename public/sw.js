@@ -56,29 +56,3 @@ self.addEventListener('fetch', event => {
     )
   }
 })
-
-self.addEventListener('push', event => {
-  if (!event.data) return
-  const data = event.data.json()
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/web-app-icon-192x192.png',
-      badge: '/favicon-96x96.png',
-      data: { url: data.url || '/dashboard' },
-    })
-  )
-})
-
-self.addEventListener('notificationclick', event => {
-  event.notification.close()
-  const url = event.notification.data?.url || '/dashboard'
-  event.waitUntil(
-    (async () => {
-      const list = await clients.matchAll({ type: 'window', includeUncontrolled: true })
-      const match = list.find(c => c.url.includes(url) && 'focus' in c)
-      if (match) return match.focus()
-      return clients.openWindow(url)
-    })()
-  )
-})

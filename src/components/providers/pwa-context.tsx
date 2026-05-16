@@ -7,14 +7,9 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-const urlBase64ToUint8Array = (base64: string) => {
-  const padding = '='.repeat((4 - (base64.length % 4)) % 4)
-  const b64 = `${base64}${padding}`.replace(/-/g, '+').replace(/_/g, '/')
-  return Uint8Array.from(atob(b64), c => c.charCodeAt(0))
-}
-
 const getBuildId = () => {
   if (typeof window === 'undefined') return 'dev'
+  // eslint-disable-next-line no-underscore-dangle
   const nextData = (window as typeof window & { __NEXT_DATA__?: { buildId?: string } }).__NEXT_DATA__
   return nextData?.buildId ?? 'dev'
 }
@@ -22,11 +17,9 @@ const getBuildId = () => {
 const usePWA = () => {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
-  const [pushSubscribed, setPushSubscribed] = useState(false)
-  const [pushPermission, setPushPermission] = useState<NotificationPermission | 'unsupported'>('default')
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
       const buildId = encodeURIComponent(getBuildId())
       void navigator.serviceWorker.register(`/sw.js?buildId=${buildId}`)
     }
@@ -41,20 +34,6 @@ const usePWA = () => {
       window.matchMedia('(display-mode: standalone)').matches ||
       ('standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true)
     setIsInstalled(standalone)
-
-    if ('Notification' in window) {
-      setPushPermission(Notification.permission)
-      if ('serviceWorker' in navigator) {
-        const checkSub = async () => {
-          const reg = await navigator.serviceWorker.ready
-          const sub = await reg.pushManager.getSubscription()
-          setPushSubscribed(!!sub)
-        }
-        void checkSub()
-      }
-    } else {
-      setPushPermission('unsupported')
-    }
 
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
@@ -71,51 +50,10 @@ const usePWA = () => {
     }
   }
 
-  const requestPushPermission = async () => {
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) return
-    const permission = await Notification.requestPermission()
-    setPushPermission(permission)
-    if (permission !== 'granted') return
-
-    const vapidRes = await fetch('/api/v1/push')
-    const { vapidKey } = (await vapidRes.json()) as { vapidKey: string | null }
-    if (!vapidKey) return
-
-    const reg = await navigator.serviceWorker.ready
-    const sub = await reg.pushManager.subscribe({
-      applicationServerKey: urlBase64ToUint8Array(vapidKey),
-      userVisibleOnly: true,
-    })
-    await fetch('/api/v1/push', {
-      body: JSON.stringify(sub.toJSON()),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    })
-    setPushSubscribed(true)
-  }
-
-  const unsubscribePush = async () => {
-    if (!('serviceWorker' in navigator)) return
-    const reg = await navigator.serviceWorker.ready
-    const sub = await reg.pushManager.getSubscription()
-    if (!sub) return
-    await sub.unsubscribe()
-    await fetch('/api/v1/push', {
-      body: JSON.stringify({ endpoint: sub.endpoint }),
-      headers: { 'Content-Type': 'application/json' },
-      method: 'DELETE',
-    })
-    setPushSubscribed(false)
-  }
-
   return {
     canInstall,
     isInstalled,
     promptInstall,
-    pushPermission,
-    pushSubscribed,
-    requestPushPermission,
-    unsubscribePush,
   }
 }
 

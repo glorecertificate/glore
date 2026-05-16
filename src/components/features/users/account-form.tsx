@@ -62,8 +62,8 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
   useEffect(() => {
     if (!user.username && user.firstName) {
       const parts = []
-      if (user.firstName) parts.push(user.firstName.toLowerCase().replace(/\s+/g, ''))
-      if (user.lastName) parts.push(user.lastName.toLowerCase().replace(/\s+/g, ''))
+      if (user.firstName) parts.push(user.firstName.toLowerCase().replace(/\s+/gu, ''))
+      if (user.lastName) parts.push(user.lastName.toLowerCase().replace(/\s+/gu, ''))
       const username = parts.join('.')
       if (username) accountForm.setValue('username', username, { shouldValidate: false })
     }

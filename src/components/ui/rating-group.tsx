@@ -1,5 +1,3 @@
-import { useCallback, useMemo } from 'react'
-
 import { type VariantProps, cva } from 'class-variance-authority'
 import { toast } from 'sonner'
 
@@ -27,22 +25,21 @@ export const RatingGroup = ({
   value,
   ...props
 }: RatingGroupProps) => {
-  const labelStyles = useMemo(() => ratingGroupVariants({ color, disabled }), [color, disabled])
-
-  const handleClick = useCallback(
-    (rating: number) => () => {
-      if (!(disabled && disabledToast) || value === rating) return
-      toast.info(disabledToast, { duration: 1200 })
-    },
-    [disabled, disabledToast, value]
-  )
+  const handleClick = (rating: number) => () => {
+    if (!(disabled && disabledToast) || value === rating) return
+    toast.info(disabledToast, { duration: 1200 })
+  }
 
   return (
     <RadioGroup className={cn('flex justify-between', className)} value={String(value)} {...props}>
       {[1, 2, 3, 4, 5].map(rating => (
         <div className="flex flex-col items-center gap-2" key={rating}>
           <RadioGroupItem className="peer sr-only" id={`${id}-${rating}`} value={rating.toString()} />
-          <Label className={labelStyles} htmlFor={`${id}-${rating}`} onClick={handleClick(rating)}>
+          <Label
+            className={ratingGroupVariants({ color, disabled })}
+            htmlFor={`${id}-${rating}`}
+            onClick={handleClick(rating)}
+          >
             {rating}
           </Label>
           {label && (

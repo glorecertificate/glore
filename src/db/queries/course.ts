@@ -13,6 +13,7 @@ type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name'> |
 interface CourseWithRelations extends CourseRow {
   skillGroup: SkillGroupRow
   creator: UserWithRelations
+  archivedBy: UserWithRelations | null
   lessons: LessonWithRelations[]
   userCourses: { id: number }[]
 }
@@ -40,6 +41,7 @@ export const parseCourse = (course: CourseWithRelations) => {
   const lessons = course.lessons.length > 0 ? course.lessons.map(parseLesson) : []
   const progress = Math.round((lessons.filter(lesson => lesson.completed).length / lessons.length) * 100)
   const creator = parseUser(course.creator)
+  const archivedBy = course.archivedBy ? parseUser(course.archivedBy) : null
 
   const contributions = [
     { id: 0, user: creator, createdAt: course.createdAt, updatedAt: course.updatedAt },
@@ -69,6 +71,7 @@ export const parseCourse = (course: CourseWithRelations) => {
     completed: progress === 100,
     publicationStatus,
     creator,
+    archivedBy,
     contributions,
     contributors: contributions.map(({ user }) => parseUser(user)),
   }

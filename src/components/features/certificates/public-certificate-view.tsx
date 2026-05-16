@@ -2,11 +2,11 @@ import { CalendarIcon, CheckCircle2Icon, DownloadIcon, GlobeIcon, MapPinIcon, Ti
 import { getLocale, getTranslations } from 'next-intl/server'
 import * as qrcode from 'qrcode'
 
-import { GloreIcon } from '@/components/icons/glore'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
+import { Logo } from '@/components/ui/logo'
 import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -40,7 +40,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <GloreIcon className="h-6 w-auto" />
+          <Logo className="h-6 w-auto" />
           <Button asChild size="sm" variant="outline">
             <a href={AUTH_ROOT}>{t('publicAccessApp')}</a>
           </Button>

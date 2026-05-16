@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useCallback, useId, useLayoutEffect, useMemo, useState } from 'react'
+import { createContext, use, useId, useLayoutEffect, useState } from 'react'
 
 import {
   type Announcements,
@@ -128,142 +128,118 @@ export const Sortable = <T,>(props: SortableProps<T>) => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
-  const config = useMemo(() => orientationConfig[orientation], [orientation])
+  const config = orientationConfig[orientation]
 
-  const getItemValue = useCallback(
-    (item: T): UniqueIdentifier => {
-      if (typeof item === 'object' && !getItemValueProp) {
-        throw new Error('getItemValue is required when using array of objects')
+  const getItemValue = (item: T): UniqueIdentifier => {
+    if (typeof item === 'object' && !getItemValueProp) {
+      throw new Error('getItemValue is required when using array of objects')
+    }
+    return getItemValueProp ? getItemValueProp(item) : (item as UniqueIdentifier)
+  }
+
+  const items = value.map(item => getItemValue(item))
+
+  const onDragStart = (event: DragStartEvent) => {
+    sortableProps.onDragStart?.(event)
+
+    if (event.activatorEvent.defaultPrevented) {
+      return
+    }
+
+    setActiveId(event.active.id)
+  }
+
+  const onDragEnd = (event: DragEndEvent) => {
+    sortableProps.onDragEnd?.(event)
+
+    if (event.activatorEvent.defaultPrevented) {
+      return
+    }
+
+    const { active, over } = event
+    if (over && active.id !== over?.id) {
+      const activeIndex = value.findIndex(item => getItemValue(item) === active.id)
+      const overIndex = value.findIndex(item => getItemValue(item) === over.id)
+
+      if (onMove) {
+        onMove({ ...event, activeIndex, overIndex })
+      } else {
+        onValueChange?.(arrayMove(value, activeIndex, overIndex))
       }
-      return getItemValueProp ? getItemValueProp(item) : (item as UniqueIdentifier)
+    }
+    setActiveId(null)
+  }
+
+  const onDragCancel = (event: DragEndEvent) => {
+    sortableProps.onDragCancel?.(event)
+    if (event.activatorEvent.defaultPrevented) return
+    setActiveId(null)
+  }
+
+  const announcements: Announcements = {
+    onDragCancel({ active }) {
+      const activeIndex = active.data.current?.sortable.index ?? 0
+      const activeValue = active.id.toString()
+      return `Sorting cancelled. Sortable item "${activeValue}" returned to position ${activeIndex + 1} of ${value.length}.`
     },
-    [getItemValueProp]
-  )
-
-  const items = useMemo(() => value.map(item => getItemValue(item)), [value, getItemValue])
-
-  const onDragStart = useCallback(
-    (event: DragStartEvent) => {
-      sortableProps.onDragStart?.(event)
-
-      if (event.activatorEvent.defaultPrevented) {
-        return
+    onDragEnd({ active, over }) {
+      const activeValue = active.id.toString()
+      if (over) {
+        const overIndex = over.data.current?.sortable.index ?? 0
+        return `Sortable item "${activeValue}" dropped at position ${overIndex + 1} of ${value.length}.`
       }
-
-      setActiveId(event.active.id)
+      return `Sortable item "${activeValue}" dropped. No changes were made.`
     },
-    [sortableProps]
-  )
-
-  const onDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      sortableProps.onDragEnd?.(event)
-
-      if (event.activatorEvent.defaultPrevented) {
-        return
-      }
-
-      const { active, over } = event
-      if (over && active.id !== over?.id) {
-        const activeIndex = value.findIndex(item => getItemValue(item) === active.id)
-        const overIndex = value.findIndex(item => getItemValue(item) === over.id)
-
-        if (onMove) {
-          onMove({ ...event, activeIndex, overIndex })
-        } else {
-          onValueChange?.(arrayMove(value, activeIndex, overIndex))
-        }
-      }
-      setActiveId(null)
-    },
-    [getItemValue, onMove, onValueChange, sortableProps, value]
-  )
-
-  const onDragCancel = useCallback(
-    (event: DragEndEvent) => {
-      sortableProps.onDragCancel?.(event)
-      if (event.activatorEvent.defaultPrevented) return
-      setActiveId(null)
-    },
-    [sortableProps]
-  )
-
-  const announcements: Announcements = useMemo(
-    () => ({
-      onDragCancel({ active }) {
+    onDragMove({ active, over }) {
+      if (over) {
+        const overIndex = over.data.current?.sortable.index ?? 0
         const activeIndex = active.data.current?.sortable.index ?? 0
+        const moveDirection = overIndex > activeIndex ? 'down' : 'up'
         const activeValue = active.id.toString()
-        return `Sorting cancelled. Sortable item "${activeValue}" returned to position ${activeIndex + 1} of ${value.length}.`
-      },
-      onDragEnd({ active, over }) {
+        return `Sortable item "${activeValue}" is moving ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
+      }
+      return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
+    },
+    onDragOver({ active, over }) {
+      if (over) {
+        const overIndex = over.data.current?.sortable.index ?? 0
+        const activeIndex = active.data.current?.sortable.index ?? 0
+        const moveDirection = overIndex > activeIndex ? 'down' : 'up'
         const activeValue = active.id.toString()
-        if (over) {
-          const overIndex = over.data.current?.sortable.index ?? 0
-          return `Sortable item "${activeValue}" dropped at position ${overIndex + 1} of ${value.length}.`
-        }
-        return `Sortable item "${activeValue}" dropped. No changes were made.`
-      },
-      onDragMove({ active, over }) {
-        if (over) {
-          const overIndex = over.data.current?.sortable.index ?? 0
-          const activeIndex = active.data.current?.sortable.index ?? 0
-          const moveDirection = overIndex > activeIndex ? 'down' : 'up'
-          const activeValue = active.id.toString()
-          return `Sortable item "${activeValue}" is moving ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
-        }
-        return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
-      },
-      onDragOver({ active, over }) {
-        if (over) {
-          const overIndex = over.data.current?.sortable.index ?? 0
-          const activeIndex = active.data.current?.sortable.index ?? 0
-          const moveDirection = overIndex > activeIndex ? 'down' : 'up'
-          const activeValue = active.id.toString()
-          return `Sortable item "${activeValue}" moved ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
-        }
-        return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
-      },
-      onDragStart({ active }) {
-        const activeValue = active.id.toString()
-        return `Grabbed sortable item "${activeValue}". Current position is ${active.data.current?.sortable.index + 1} of ${value.length}. Use arrow keys to move, space to drop.`
-      },
-    }),
-    [value]
-  )
+        return `Sortable item "${activeValue}" moved ${moveDirection} to position ${overIndex + 1} of ${value.length}.`
+      }
+      return 'Sortable item is no longer over a droppable area. Press escape to cancel.'
+    },
+    onDragStart({ active }) {
+      const activeValue = active.id.toString()
+      return `Grabbed sortable item "${activeValue}". Current position is ${active.data.current?.sortable.index + 1} of ${value.length}. Use arrow keys to move, space to drop.`
+    },
+  }
 
-  const screenReaderInstructions: ScreenReaderInstructions = useMemo(
-    () => ({
-      draggable: `
+  const screenReaderInstructions: ScreenReaderInstructions = {
+    draggable: `
         To pick up a sortable item, press space or enter.
         While dragging, use the ${orientation === 'vertical' ? 'up and down' : orientation === 'horizontal' ? 'left and right' : 'arrow'} keys to move the item.
         Press space or enter again to drop the item in its new position, or press escape to cancel.
       `,
-    }),
-    [orientation]
-  )
+  }
 
-  const sortableAccessibility = useMemo(
-    () => ({
-      announcements,
-      screenReaderInstructions,
-      ...accessibility,
-    }),
-    [accessibility, announcements, screenReaderInstructions]
-  )
+  const sortableAccessibility = {
+    announcements,
+    screenReaderInstructions,
+    ...accessibility,
+  }
 
-  const contextValue = useMemo(
-    () => ({
-      activeId,
-      flatCursor,
-      getItemValue,
-      id,
-      items,
-      modifiers: modifiers ?? config.modifiers,
-      setActiveId,
-      strategy: strategy ?? config.strategy,
-    }),
-    [id, items, modifiers, strategy, config.modifiers, config.strategy, activeId, getItemValue, flatCursor]
-  )
+  const contextValue = {
+    activeId,
+    flatCursor,
+    getItemValue,
+    id,
+    items,
+    modifiers: modifiers ?? config.modifiers,
+    setActiveId,
+    strategy: strategy ?? config.strategy,
+  }
 
   return (
     <SortableRootContext.Provider value={contextValue as SortableRootContextValue<unknown>}>
@@ -368,26 +344,20 @@ export const SortableItem = (
     }
   })
 
-  const composedStyle = useMemo<React.CSSProperties>(
-    () => ({
-      transform: CSS.Translate.toString(transform),
-      transition,
-      ...style,
-    }),
-    [transform, transition, style]
-  )
+  const composedStyle: React.CSSProperties = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    ...style,
+  }
 
-  const itemContext = useMemo<SortableItemContextValue>(
-    () => ({
-      attributes,
-      disabled,
-      id,
-      isDragging,
-      listeners,
-      setActivatorNodeRef,
-    }),
-    [id, attributes, listeners, setActivatorNodeRef, isDragging, disabled]
-  )
+  const itemContext: SortableItemContextValue = {
+    attributes,
+    disabled,
+    id,
+    isDragging,
+    listeners,
+    setActivatorNodeRef,
+  }
 
   const ItemPrimitive = asChild ? Slot : 'div'
 

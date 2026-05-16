@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { CalendarIcon } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
@@ -26,15 +26,15 @@ export const DatePicker = ({
   const locale = useLocale()
   const [open, setOpen] = useState(false)
 
-  const selectedDate = useMemo(() => {
+  const selectedDate = (() => {
     if (!value) {
       return undefined
     }
     const parsed = new Date(value)
     return Number.isNaN(parsed.getTime()) ? undefined : parsed
-  }, [value])
+  })()
 
-  const formatted = useMemo(() => {
+  const formatted = (() => {
     if (!selectedDate) {
       return null
     }
@@ -43,20 +43,17 @@ export const DatePicker = ({
       month: 'long',
       year: 'numeric',
     })
-  }, [selectedDate, locale])
+  })()
 
-  const handleSelect = useCallback(
-    (date: Date | undefined) => {
-      if (date) {
-        const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-        onChange?.(iso)
-      } else {
-        onChange?.('')
-      }
-      setOpen(false)
-    },
-    [onChange]
-  )
+  const handleSelect = (date: Date | undefined) => {
+    if (date) {
+      const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+      onChange?.(iso)
+    } else {
+      onChange?.('')
+    }
+    setOpen(false)
+  }
 
   return (
     <Popover onOpenChange={setOpen} open={open}>

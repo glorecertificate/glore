@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useId, useMemo } from 'react'
+import { createContext, use, useId } from 'react'
 
 import { Slot, type SlotProps } from '@radix-ui/react-slot'
 import {
@@ -33,15 +33,11 @@ export const FormField = <
 >({
   name,
   ...props
-}: ControllerProps<TFieldValues, TName>) => {
-  const value = useMemo(() => ({ name }), [name])
-
-  return (
-    <FormFieldContext.Provider value={value}>
-      <Controller {...props} {...value} />
-    </FormFieldContext.Provider>
-  )
-}
+}: ControllerProps<TFieldValues, TName>) => (
+  <FormFieldContext.Provider value={{ name }}>
+    <Controller {...props} name={name} />
+  </FormFieldContext.Provider>
+)
 
 export const useFormField = () => {
   const fieldContext = use(FormFieldContext)
@@ -74,10 +70,8 @@ const FormItemContext = createContext<FormItemContextValue>({} as FormItemContex
 
 export const FormItem = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const id = useId()
-  const value = useMemo(() => ({ id }), [id])
-
   return (
-    <FormItemContext.Provider value={value}>
+    <FormItemContext.Provider value={{ id }}>
       <div className={cn('grid gap-2', className)} data-slot="form-item" {...props} />
     </FormItemContext.Provider>
   )

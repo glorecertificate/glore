@@ -1,11 +1,9 @@
-import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { findDocCategory, listDocCategories } from '@/actions/doc'
 import { DocsSection } from '@/components/features/docs/docs-section'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageHeader } from '@/components/layout/page-header'
-import { PageMain } from '@/components/layout/page-main'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -28,15 +26,14 @@ const DocsFaqContent = async () => {
   )
 }
 
-const DocsFaqPage = () => (
-  <>
-    <PageHeader />
-    <PageMain>
-      <Suspense fallback={<LoadingFallback />}>
-        <DocsFaqContent />
-      </Suspense>
-    </PageMain>
-  </>
-)
+const DocsFaqPage = async () => {
+  const t = await getTranslations('Layout')
+
+  return (
+    <DashboardPage title={t('docsFaq')}>
+      <DocsFaqContent />
+    </DashboardPage>
+  )
+}
 
 export default DocsFaqPage

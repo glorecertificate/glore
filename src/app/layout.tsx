@@ -8,7 +8,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
-import { InstallBanner } from '@/components/features/pwa/install-banner'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n-context'
 import { PWAContextProvider } from '@/components/providers/pwa-context'
@@ -56,14 +55,17 @@ const LayoutContent = async ({ children }: LayoutProps<'/'>) => {
             <PWAContextProvider>
               <ThemeProvider>
                 {children}
-                <InstallBanner />
                 <Toaster />
               </ThemeProvider>
             </PWAContextProvider>
           </I18nProvider>
         </SearchParamsProvider>
-        <Analytics debug={false} />
-        <SpeedInsights debug={false} />
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
         <Script id="jsonLd" type="application/ld+json">
           {JSON.stringify(jsonLd)}
         </Script>

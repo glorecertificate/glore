@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { OnboardingForm } from '@/components/features/onboarding/onboarding-form'
-import { GloreIcon } from '@/components/icons/glore'
+import { Logo } from '@/components/ui/logo'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -32,7 +32,7 @@ const OnboardingPage = async () => {
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="mx-auto w-full max-w-lg space-y-8">
         <div className="flex flex-col items-center gap-8">
-          <GloreIcon className="w-40" />
+          <Logo className="w-40" />
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
             <p className="mt-2 text-sm text-muted-foreground">{t('description')}</p>

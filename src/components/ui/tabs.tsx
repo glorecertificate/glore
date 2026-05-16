@@ -1,67 +1,54 @@
 'use client'
 
-import { useMemo } from 'react'
+import { createContext, use } from 'react'
 
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { type VariantProps, cva } from 'class-variance-authority'
+import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@/lib/utils'
 
-export const Tabs = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) => (
-  <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
+const MotionList = motion.create(TabsPrimitive.List)
+const MotionTrigger = motion.create(TabsPrimitive.Trigger)
+
+const tabsTransition = {
+  duration: 0.2,
+  ease: 'easeOut',
+} as const
+
+const TabsContext = createContext(false)
+
+export const Tabs = ({
+  animated = false,
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Root> & {
+  animated?: boolean
+}) => (
+  <TabsContext.Provider value={animated}>
+    <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
+  </TabsContext.Provider>
 )
 
-export const TabsList = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.List>) => (
-  <TabsPrimitive.List
-    className={cn('inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/50 p-0.5', className)}
-    data-slot="tabs-list"
-    {...props}
-  />
-)
+export const TabsList = ({
+  className,
+  ...props
+}: Omit<
+  React.ComponentProps<typeof TabsPrimitive.List>,
+  'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag'
+>) => {
+  const animated = use(TabsContext)
+  const classNames = cn('inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/55 p-0.5', className)
+  if (!animated) return <TabsPrimitive.List className={classNames} data-slot="tabs-list" {...props} />
+  return <MotionList className={classNames} data-slot="tabs-list" layout transition={tabsTransition} {...props} />
+}
 
 export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) => (
   <TabsPrimitive.Content className={cn('flex-1 outline-none', className)} data-slot="tabs-content" {...props} />
 )
 
-export const TabsTrigger = ({
-  badgeProps,
-  children,
-  className,
-  count = 0,
-  effect,
-  showZero = false,
-  size,
-  variant,
-  ...props
-}: Omit<React.ComponentProps<typeof TabsPrimitive.Trigger>, keyof VariantProps<typeof tabsTriggerVariants>> &
-  VariantProps<typeof tabsTriggerVariants> & {
-    badgeProps?: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof tabsTriggerBadgeVariants>
-    count?: number
-    showZero?: boolean
-  }) => {
-  const showCount = useMemo(() => count !== undefined && (showZero || count > 0), [count, showZero])
-  const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
-
-  return (
-    <TabsPrimitive.Trigger
-      className={cn(tabsTriggerVariants({ effect, size, variant }), className)}
-      data-slot="tabs-trigger"
-      {...props}
-    >
-      {showCount ? (
-        <span className="flex items-center gap-1" {...badgeRest}>
-          {children}
-          <span className={cn(tabsTriggerBadgeVariants({ size: badgeSize, variant: badgeVariant }))}>{count}</span>
-        </span>
-      ) : (
-        children
-      )}
-    </TabsPrimitive.Trigger>
-  )
-}
-
 const tabsTriggerVariants = cva(
-  `group/tabs-trigger inline-flex h-full flex-1 cursor-pointer items-center justify-center rounded-md border border-transparent py-1 text-sm leading-0 whitespace-nowrap select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:pointer-events-none data-[state=active]:shadow-sm [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4`,
+  `group/tabs-trigger inline-flex h-full flex-1 items-center justify-center rounded-md border border-transparent py-1 text-sm leading-0 whitespace-nowrap select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:pointer-events-none data-[state=active]:shadow-sm [&_svg]:shrink-0 [&_svg:not([class*="size-"])]:size-4`,
   {
     defaultVariants: {
       size: 'md',
@@ -87,16 +74,16 @@ const tabsTriggerVariants = cva(
   }
 )
 
-export const tabsTriggerBadgeVariants = cva('text-stroke-0', {
+export const tabsTriggerBadgeVariants = cva('font-medium text-stroke-0', {
   defaultVariants: {
     size: 'md',
     variant: 'default',
   },
   variants: {
     size: {
-      sm: 'text-[10px]',
-      md: 'text-[11px]',
-      lg: 'text-xs',
+      sm: 'text-[11.5px]',
+      md: 'text-xs',
+      lg: 'text-[13px]',
     },
     variant: {
       default: 'text-muted-foreground/50 group-data-[state=active]/tabs-trigger:text-muted-foreground',
@@ -109,3 +96,72 @@ export const tabsTriggerBadgeVariants = cva('text-stroke-0', {
     },
   },
 })
+
+export const TabsTrigger = ({
+  badgeProps,
+  children,
+  className,
+  count = 0,
+  effect,
+  showZero = false,
+  size,
+  variant,
+  ...props
+}: Omit<
+  React.ComponentProps<typeof TabsPrimitive.Trigger>,
+  keyof VariantProps<typeof tabsTriggerVariants> | 'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag'
+> &
+  VariantProps<typeof tabsTriggerVariants> & {
+    badgeProps?: Omit<
+      React.HTMLAttributes<HTMLSpanElement>,
+      'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag'
+    > &
+      VariantProps<typeof tabsTriggerBadgeVariants>
+    count?: number
+    showZero?: boolean
+  }) => {
+  const animated = use(TabsContext)
+  const showCount = count !== undefined && (showZero || count > 0)
+  const { size: badgeSize = size, variant: badgeVariant = variant, ...badgeRest } = badgeProps ?? {}
+
+  const triggerClassName = cn(tabsTriggerVariants({ effect, size, variant }), className)
+  const badgeClassName = cn(tabsTriggerBadgeVariants({ size: badgeSize, variant: badgeVariant }))
+
+  if (!animated) {
+    return (
+      <TabsPrimitive.Trigger className={triggerClassName} data-slot="tabs-trigger" {...props}>
+        {showCount ? (
+          <span className="flex items-center gap-1.5" {...badgeRest}>
+            {children}
+            <span className={badgeClassName}>{count}</span>
+          </span>
+        ) : (
+          children
+        )}
+      </TabsPrimitive.Trigger>
+    )
+  }
+
+  return (
+    <MotionTrigger className={triggerClassName} data-slot="tabs-trigger" layout transition={tabsTransition} {...props}>
+      <motion.span className="flex items-center gap-1.5" layout transition={tabsTransition} {...badgeRest}>
+        {children}
+        <AnimatePresence initial={false} mode="popLayout">
+          {showCount ? (
+            <motion.span
+              animate={{ opacity: 1, scale: 1 }}
+              className={badgeClassName}
+              exit={{ opacity: 0, scale: 0.5 }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              key="count"
+              layout
+              transition={tabsTransition}
+            >
+              {count}
+            </motion.span>
+          ) : null}
+        </AnimatePresence>
+      </motion.span>
+    </MotionTrigger>
+  )
+}

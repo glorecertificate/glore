@@ -1,11 +1,9 @@
-import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { findDocCategory, listDocCategories } from '@/actions/doc'
 import { DocsSection } from '@/components/features/docs/docs-section'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageHeader } from '@/components/layout/page-header'
-import { PageMain } from '@/components/layout/page-main'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -17,7 +15,6 @@ export const generateMetadata = () =>
 const DocsTutorialsContent = async () => {
   const category = await findDocCategory('tutorials', { includeUnpublished: true })
   if (!category) return null
-
   const [user, categories] = await Promise.all([getAuthUser(), listDocCategories({ includeUnpublished: true })])
 
   return (
@@ -29,15 +26,14 @@ const DocsTutorialsContent = async () => {
   )
 }
 
-const DocsTutorialsPage = () => (
-  <>
-    <PageHeader />
-    <PageMain>
-      <Suspense fallback={<LoadingFallback />}>
-        <DocsTutorialsContent />
-      </Suspense>
-    </PageMain>
-  </>
-)
+const DocsTutorialsPage = async () => {
+  const t = await getTranslations('Layout')
+
+  return (
+    <DashboardPage title={t('docsTutorials')}>
+      <DocsTutorialsContent />
+    </DashboardPage>
+  )
+}
 
 export default DocsTutorialsPage

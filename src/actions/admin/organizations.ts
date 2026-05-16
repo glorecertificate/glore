@@ -290,8 +290,8 @@ export const inviteOrganization = async ({
     const handle = name
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+      .replace(/[^a-z0-9]+/gu, '-')
+      .replace(/^-+|-+$/gu, '')
 
     const existing = await db.query.organizations.findFirst({
       columns: { id: true },

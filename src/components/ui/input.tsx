@@ -25,7 +25,6 @@ export const inputVariants = cva(
   {
     defaultVariants: {
       size: 'default',
-      variant: 'default',
     },
     variants: {
       size: {
@@ -34,7 +33,6 @@ export const inputVariants = cva(
         lg: 'h-10 px-3.5 py-1.5 text-base placeholder:text-base',
       },
       variant: {
-        default: '',
         brand: 'focus-visible:border-brand focus-visible:ring-brand/50',
         floating: 'peer block appearance-none placeholder:text-transparent dark:bg-transparent',
       },
@@ -79,7 +77,7 @@ export const Input = ({
       />
       <Label
         className={cn(
-          'absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-[18.5px] peer-placeholder-shown:-translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:-translate-y-5 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-placeholder-shown:peer-aria-invalid:text-destructive/60 peer-focus:peer-aria-invalid:text-destructive peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:-translate-y-5 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive',
+          'absolute top-2 left-1.5 origin-left transform bg-transparent px-2 font-normal text-muted-foreground transition-[scale,top,translate] duration-180 peer-placeholder-shown:top-4.75 peer-placeholder-shown:-translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:cursor-text peer-focus:pointer-events-none peer-focus:top-2 peer-focus:-translate-y-5 peer-focus:scale-95 peer-focus:bg-background peer-focus:text-foreground peer-placeholder-shown:peer-aria-invalid:text-destructive/60 peer-focus:peer-aria-invalid:text-destructive peer-[:not(:placeholder-shown)]:pointer-events-none peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:-translate-y-5 peer-[:not(:placeholder-shown)]:scale-95 peer-[:not(:placeholder-shown)]:bg-background peer-[:not(:placeholder-shown)]:peer-aria-invalid:text-destructive',
           (open || (defaultOpen && !mounted)) &&
             'peer-placeholder-shown:top-2 peer-placeholder-shown:-translate-y-5 peer-placeholder-shown:scale-95 peer-placeholder-shown:bg-background peer-focus:text-foreground peer-aria-invalid:text-destructive'
         )}

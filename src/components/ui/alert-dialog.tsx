@@ -102,12 +102,14 @@ export const AlertDialogAction = ({
   loading,
   loadingText,
   size,
+  spinner,
   variant,
   ...props
 }: Omit<React.ComponentProps<typeof AlertDialogPrimitive.Action>, 'disabled'> &
   VariantProps<typeof Button> & {
     loading?: boolean
     loadingText?: string
+    spinner?: string
   }) => {
   const isDisabled = disabled || loading
 
@@ -117,6 +119,8 @@ export const AlertDialogAction = ({
         'cursor-pointer',
         buttonVariants({ effect, size, variant }),
         isDisabled && 'cursor-not-allowed',
+        loading && 'cursor-wait',
+        'transition-colors',
         className
       )}
       disabled={isDisabled}
@@ -124,8 +128,8 @@ export const AlertDialogAction = ({
     >
       {loading ? (
         <>
-          <Spinner />
           {loadingText ?? children}
+          <Spinner className={spinner} />
         </>
       ) : (
         children

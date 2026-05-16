@@ -128,7 +128,7 @@ export const LinkFloatingToolbar = ({ state }: { state?: LinkFloatingToolbarStat
 
 const LinkOpenButton = () => {
   const editor = useEditorRef()
-  const _selection = useEditorSelection() as string | undefined
+  const selection = useEditorSelection() as string | undefined
 
   const attributes = (() => {
     const entry = editor.api.node({
@@ -145,7 +145,7 @@ const LinkOpenButton = () => {
         size: 'sm',
         variant: 'ghost',
       })}
-      href={attributes.href || _selection}
+      href={attributes.href || selection}
       onFocus={e => {
         e.stopPropagation()
       }}

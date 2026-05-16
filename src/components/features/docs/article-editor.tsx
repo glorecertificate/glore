@@ -30,10 +30,10 @@ const slugify = (input: string) =>
   input
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-{2,}/g, '-')
-    .replace(/^-|-$/g, '')
+    .replace(/[^a-z0-9\s-]/gu, '')
+    .replace(/\s+/gu, '-')
+    .replace(/-{2,}/gu, '-')
+    .replace(/^-|-$/gu, '')
 
 interface EditorState {
   titles: IntlRecord

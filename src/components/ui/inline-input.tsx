@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { type VariantProps, cva } from 'class-variance-authority'
 
@@ -39,7 +39,7 @@ export const InlineInput = ({
   const composedRefs = useComposedRefs(ref, forwardedRef)
   const [staticValue, setStaticValue] = useState(value ?? defaultValue ?? '')
 
-  const adjustSize = useCallback(() => {
+  const adjustSize = () => {
     if (!ref.current) {
       return
     }
@@ -64,60 +64,47 @@ export const InlineInput = ({
     }
 
     ref.current.style.height = `${ref.current.scrollHeight}px`
-  }, [autoWidth, defaultValue, value])
+  }
 
   useLayoutEffect(adjustSize, [adjustSize])
 
-  const handleBlur = useCallback(
-    (e: React.FocusEvent<HTMLTextAreaElement>) => {
-      const empty = !e.target.value.trim()
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+    const empty = !e.target.value.trim()
 
-      if (keepFilled && empty) {
-        if (value !== undefined && onChange) {
-          e.target.value = staticValue.toString()
-          onChange(e)
-        } else if (ref.current) {
-          ref.current.value = staticValue.toString()
-        }
-
-        onBlur?.(e)
-        requestAnimationFrame(() => adjustSize())
-        return
+    if (keepFilled && empty) {
+      if (value !== undefined && onChange) {
+        e.target.value = staticValue.toString()
+        onChange(e)
+      } else if (ref.current) {
+        ref.current.value = staticValue.toString()
       }
-      setStaticValue(e.target.value)
+
       onBlur?.(e)
-    },
-    [keepFilled, onBlur, onChange, staticValue, value, adjustSize]
-  )
+      requestAnimationFrame(() => adjustSize())
+      return
+    }
+    setStaticValue(e.target.value)
+    onBlur?.(e)
+  }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (NAVIGATION_KEYS.includes(e.key)) {
+      e.stopPropagation()
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      ref.current?.blur()
+    }
+    if (e.key === 'Escape') {
+      ref.current?.blur()
+    }
+    onKeyDown?.(e)
+  }
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (NAVIGATION_KEYS.includes(e.key)) {
-        e.stopPropagation()
-      }
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        ref.current?.blur()
-      }
-      if (e.key === 'Escape') {
-        ref.current?.blur()
-      }
-      onKeyDown?.(e)
-    },
-    [onKeyDown]
-  )
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange?.(e)
+  }
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onChange?.(e)
-    },
-    [onChange]
-  )
-
-  const inputStyle = useMemo(
-    () => (autoWidth ? { width: 'auto', ...props.style } : props.style),
-    [autoWidth, props.style]
-  )
+  const inputStyle = autoWidth ? { width: 'auto', ...props.style } : props.style
 
   return (
     <textarea

@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useTransition } from 'react'
+import { useTransition } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 
@@ -50,28 +50,19 @@ export const LanguageSelect = ({
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')
 
-  const items = useMemo<LanguageSelectItem[]>(
-    () => localeItems.filter(item => values.includes(item.value)),
-    [localeItems, values]
-  )
+  const items: LanguageSelectItem[] = localeItems.filter(item => values.includes(item.value))
 
-  const activeItem = useMemo<LanguageSelectItem>(
-    () =>
-      localeItems.find(item => (controlled && value ? item.value === value : item.value === locale)) ?? localeItems[0]!,
-    [controlled, locale, localeItems, value]
-  )
+  const activeItem: LanguageSelectItem =
+    localeItems.find(item => (controlled && value ? item.value === value : item.value === locale)) ?? localeItems[0]!
 
   const activeItemValue = controlled ? value : locale
 
-  const onValueChange = useCallback(
-    (newLocale: Locale) => {
-      if (!controlled) {
-        startTransition(() => setLocale(newLocale))
-      }
-      onChange?.(newLocale)
-    },
-    [controlled, onChange, setLocale]
-  )
+  const onValueChange = (newLocale: Locale) => {
+    if (!controlled) {
+      startTransition(() => setLocale(newLocale))
+    }
+    onChange?.(newLocale)
+  }
 
   return (
     <Select onValueChange={onValueChange} value={activeItemValue}>

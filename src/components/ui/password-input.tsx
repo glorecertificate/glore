@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -30,10 +30,6 @@ export const PasswordInput = ({
   const textHide = hideLabel ?? t('hide')
   const textToggle = passwordVisible ? textHide : textShow
 
-  const togglePassword = useCallback(() => {
-    setPasswordVisible(prev => !prev)
-  }, [])
-
   return (
     <div className="relative">
       <Input
@@ -46,7 +42,7 @@ export const PasswordInput = ({
       <Button
         className="absolute top-1/2 right-1.5 size-6 -translate-y-1/2 rounded-full p-0 has-[>svg]:px-3"
         disabled={disabled}
-        onClick={togglePassword}
+        onClick={() => setPasswordVisible(prev => !prev)}
         size="sm"
         title={textToggle}
         type="button"

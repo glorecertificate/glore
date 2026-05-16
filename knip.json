@@ -3,7 +3,6 @@
   "entry": ["src/i18n.ts"],
   "project": ["src/**/*", "scripts/**/*"],
   "tags": ["-lintignore"],
-  "ignore": ["src/components/features/notifications/notification-bell.tsx"],
   "ignoreIssues": {
     "src/components/ui/**": ["exports"]
   },

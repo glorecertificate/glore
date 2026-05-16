@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Children, createContext, isValidElement, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Children, createContext, isValidElement, use, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -67,7 +67,7 @@ export const Stepper = ({
   const [activeStep, setActiveStep] = useState(defaultValue)
   const [triggerNodes, setTriggerNodes] = useState<HTMLButtonElement[]>([])
 
-  const registerTrigger = useCallback((node: HTMLButtonElement | null) => {
+  const registerTrigger = (node: HTMLButtonElement | null) => {
     setTriggerNodes(prev => {
       if (node && !prev.includes(node)) {
         return [...prev, node]
@@ -77,71 +77,44 @@ export const Stepper = ({
       }
       return prev
     })
-  }, [])
+  }
 
-  const handleSetActiveStep = useCallback(
-    (step: number) => {
-      if (value === undefined) {
-        setActiveStep(step)
-      }
-      onValueChange?.(step)
-    },
-    [value, onValueChange]
-  )
+  const handleSetActiveStep = (step: number) => {
+    if (value === undefined) {
+      setActiveStep(step)
+    }
+    onValueChange?.(step)
+  }
 
   const currentStep = value ?? activeStep
 
-  const focusTrigger = useCallback(
-    (idx: number) => {
-      if (triggerNodes[idx]) {
-        triggerNodes[idx].focus()
-      }
-    },
-    [triggerNodes]
-  )
+  const focusTrigger = (idx: number) => {
+    if (triggerNodes[idx]) {
+      triggerNodes[idx].focus()
+    }
+  }
 
-  const focusNext = useCallback(
-    (currentIdx: number) => focusTrigger((currentIdx + 1) % triggerNodes.length),
-    [focusTrigger, triggerNodes.length]
-  )
-  const focusPrev = useCallback(
-    (currentIdx: number) => focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length),
-    [focusTrigger, triggerNodes.length]
-  )
-  const focusFirst = useCallback(() => focusTrigger(0), [focusTrigger])
-  const focusLast = useCallback(() => focusTrigger(triggerNodes.length - 1), [focusTrigger, triggerNodes.length])
+  const focusNext = (currentIdx: number) => focusTrigger((currentIdx + 1) % triggerNodes.length)
+  const focusPrev = (currentIdx: number) => focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length)
+  const focusFirst = () => focusTrigger(0)
+  const focusLast = () => focusTrigger(triggerNodes.length - 1)
 
-  const contextValue = useMemo(
-    () => ({
-      activeStep: currentStep,
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-      indicators,
-      orientation,
-      registerTrigger,
-      setActiveStep: handleSetActiveStep,
-      stepsCount: Children.toArray(children).filter(
-        (child): child is React.ReactElement =>
-          isValidElement(child) && (child.type as { displayName?: string }).displayName === 'StepperItem'
-      ).length,
-      triggerNodes,
-    }),
-    [
-      currentStep,
-      handleSetActiveStep,
-      children,
-      orientation,
-      registerTrigger,
-      triggerNodes,
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-      indicators,
-    ]
-  )
+  const contextValue = {
+    activeStep: currentStep,
+    focusFirst,
+    focusLast,
+    focusNext,
+    focusPrev,
+    indicators,
+    orientation,
+    registerTrigger,
+    setActiveStep: handleSetActiveStep,
+    stepsCount: Children.toArray(children).filter(
+      (child): child is React.ReactElement =>
+        isValidElement(child) && (child.type as { displayName?: string }).displayName === 'StepperItem'
+    ).length,
+    triggerNodes,
+  }
 
   return (
     <StepperContext.Provider value={contextValue}>
@@ -177,10 +150,7 @@ export const StepperItem = ({
 
   const state: StepState = completed || step < activeStep ? 'completed' : activeStep === step ? 'active' : 'inactive'
   const isLoading = loading && step === activeStep
-  const contextValue = useMemo(
-    () => ({ step, state, isDisabled: disabled, isLoading }),
-    [step, state, disabled, isLoading]
-  )
+  const contextValue = { step, state, isDisabled: disabled, isLoading }
 
   return (
     <StepItemContext.Provider value={contextValue}>
@@ -229,63 +199,54 @@ export const StepperTrigger = ({
     }
   }, [registerTrigger])
 
-  const myIdx = useMemo(
-    () => (buttonRef.current ? triggerNodes.indexOf(buttonRef.current as unknown as HTMLButtonElement) : -1),
-    [triggerNodes]
-  )
+  const myIdx = buttonRef.current ? triggerNodes.indexOf(buttonRef.current as unknown as HTMLButtonElement) : -1
 
-  const setStep = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      onClick?.(e)
-      if (e.isDefaultPrevented()) return
-      if (!isDisabled) setActiveStep(step)
-    },
-    [isDisabled, onClick, setActiveStep, step]
-  )
+  const setStep = (e: React.MouseEvent<HTMLDivElement>) => {
+    onClick?.(e)
+    if (e.isDefaultPrevented()) return
+    if (!isDisabled) setActiveStep(step)
+  }
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      onKeyDown?.(e)
-      if (e.isDefaultPrevented()) {
-        return
-      }
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(e)
+    if (e.isDefaultPrevented()) {
+      return
+    }
 
-      switch (e.key) {
-        case 'ArrowRight':
-        case 'ArrowDown':
-          e.preventDefault()
-          if (myIdx !== -1 && focusNext) {
-            focusNext(myIdx)
-          }
-          break
-        case 'ArrowLeft':
-        case 'ArrowUp':
-          e.preventDefault()
-          if (myIdx !== -1 && focusPrev) {
-            focusPrev(myIdx)
-          }
-          break
-        case 'Home':
-          e.preventDefault()
-          if (focusFirst) {
-            focusFirst()
-          }
-          break
-        case 'End':
-          e.preventDefault()
-          if (focusLast) {
-            focusLast()
-          }
-          break
-        case 'Enter':
-        case ' ':
-          e.preventDefault()
-          setActiveStep(step)
-          break
-      }
-    },
-    [focusNext, focusPrev, focusFirst, focusLast, myIdx, onKeyDown, setActiveStep, step]
-  )
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        e.preventDefault()
+        if (myIdx !== -1 && focusNext) {
+          focusNext(myIdx)
+        }
+        break
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        e.preventDefault()
+        if (myIdx !== -1 && focusPrev) {
+          focusPrev(myIdx)
+        }
+        break
+      case 'Home':
+        e.preventDefault()
+        if (focusFirst) {
+          focusFirst()
+        }
+        break
+      case 'End':
+        e.preventDefault()
+        if (focusLast) {
+          focusLast()
+        }
+        break
+      case 'Enter':
+      case ' ':
+        e.preventDefault()
+        setActiveStep(step)
+        break
+    }
+  }
 
   if (asChild) {
     return (

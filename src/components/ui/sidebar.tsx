@@ -2,7 +2,7 @@
 
 import { Route } from 'next'
 import { usePathname } from 'next/navigation'
-import { createContext, startTransition, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, startTransition, use, useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { Slot } from '@radix-ui/react-slot'
 import { type VariantProps, cva } from 'class-variance-authority'
@@ -54,9 +54,7 @@ const SidebarContext = createContext<SidebarContext | null>(null)
 
 export const useSidebar = () => {
   const context = use(SidebarContext)
-  if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider.')
-  }
+  if (!context) throw new Error('useSidebar must be used within a SidebarProvider')
   return context
 }
 
@@ -94,98 +92,71 @@ export const SidebarProvider = ({
   const state = open ? 'expanded' : 'collapsed'
   const action = open ? t('close') : t('open')
 
-  const wrapperStyle = useMemo<React.CSSProperties>(
-    () => ({
-      '--sidebar-width': width,
-      '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
-      ...style,
-    }),
-    [width, style]
-  )
-
   useEffect(() => {
     openRef.current = open
     setOpenPropRef.current = setOpenProp
   })
 
-  const applyWidth = useCallback((value: string) => {
+  const applyWidth = (value: string) => {
     document.documentElement.style.setProperty('--sidebar-width', value)
-    if (wrapperRef.current) {
-      wrapperRef.current.style.setProperty('--sidebar-width', value)
-    }
-  }, [])
+    if (wrapperRef.current) wrapperRef.current.style.setProperty('--sidebar-width', value)
+  }
 
-  const setOpen = useCallback((value: boolean | ((value: boolean) => boolean)) => {
+  const setOpen = (value: boolean | ((value: boolean) => boolean)) => {
     const openState = typeof value === 'function' ? value(openRef.current) : value
-    ;(setOpenPropRef.current ?? setIsOpen)(openState)
+    const openAction = setOpenPropRef.current ?? setIsOpen
+    openAction(openState)
     setSidebarCookie('sidebarOpen', String(openState))
-  }, [])
+  }
 
-  const handleSetWidth = useCallback(
-    (value: string, options?: { syncState?: boolean }) => {
-      applyWidth(value)
-      if (options?.syncState ?? true) {
-        startTransition(() => {
-          setWidth(value)
-          setSidebarCookie('sidebarWidth', value)
-        })
-      }
-    },
-    [applyWidth]
-  )
+  const handleSetWidth = (value: string, options?: { syncState?: boolean }) => {
+    applyWidth(value)
+    if (options?.syncState ?? true) {
+      startTransition(() => {
+        setWidth(value)
+        setSidebarCookie('sidebarWidth', value)
+      })
+    }
+  }
 
-  const toggleSidebar = useCallback(() => {
+  const toggleSidebar = useEffectEvent(() => {
     const toggle = isMobile ? setOpenMobile : setOpen
     toggle(prev => !prev)
-  }, [isMobile, setOpen])
+  })
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault()
+      toggleSidebar()
+    }
+  }
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault()
-        toggleSidebar()
-      }
-    }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleSidebar])
+  }, [])
 
   useEffect(() => {
     setActivePath(pathname)
     window.scrollTo(0, 0)
   }, [pathname])
 
-  const contextValue = useMemo<SidebarContext>(
-    () => ({
-      action,
-      activePath,
-      isDraggingRail,
-      isMobile,
-      open,
-      openMobile,
-      setActivePath,
-      setIsDraggingRail,
-      setOpen,
-      setOpenMobile,
-      setWidth: handleSetWidth,
-      state,
-      toggleSidebar,
-      width,
-    }),
-    [
-      action,
-      activePath,
-      handleSetWidth,
-      isDraggingRail,
-      isMobile,
-      open,
-      openMobile,
-      setOpen,
-      state,
-      toggleSidebar,
-      width,
-    ]
-  )
+  const contextValue: SidebarContext = {
+    action,
+    activePath,
+    isDraggingRail,
+    isMobile,
+    open,
+    openMobile,
+    setActivePath,
+    setIsDraggingRail,
+    setOpen,
+    setOpenMobile,
+    setWidth: handleSetWidth,
+    state,
+    toggleSidebar,
+    width,
+  }
 
   return (
     <SidebarContext.Provider value={contextValue}>
@@ -193,7 +164,13 @@ export const SidebarProvider = ({
         <div
           className={cn('group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar', className)}
           ref={wrapperRef}
-          style={wrapperStyle}
+          style={
+            {
+              '--sidebar-width': width,
+              '--sidebar-width-icon': SIDEBAR_WIDTH_ICON,
+              ...style,
+            } as React.CSSProperties
+          }
           {...props}
         >
           {children}
@@ -218,14 +195,6 @@ export const Sidebar = ({
 }) => {
   const { isMobile, state, openMobile, setOpenMobile, isDraggingRail } = useSidebar()
 
-  const sidebarStyle = useMemo<React.CSSProperties>(
-    () => ({
-      '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
-      ...style,
-    }),
-    [style]
-  )
-
   if (collapsible === 'none') {
     return (
       <div
@@ -245,7 +214,12 @@ export const Sidebar = ({
           data-mobile="true"
           data-sidebar="sidebar"
           side={side}
-          style={sidebarStyle}
+          style={
+            {
+              '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
+              ...style,
+            } as React.CSSProperties
+          }
         >
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -301,13 +275,10 @@ export const Sidebar = ({
 export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) => {
   const { action, toggleSidebar } = useSidebar()
 
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      onClick?.(event)
-      toggleSidebar()
-    },
-    [onClick, toggleSidebar]
-  )
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+    toggleSidebar()
+  }
 
   return (
     <Button
@@ -335,7 +306,7 @@ export const SidebarRail = ({
 }) => {
   const { action, setIsDraggingRail, setWidth, state, toggleSidebar, width } = useSidebar()
 
-  const cursor = useMemo(() => {
+  const cursor = (() => {
     if (state === 'collapsed') {
       return 'e-resize'
     }
@@ -349,9 +320,9 @@ export const SidebarRail = ({
       return 'w-resize'
     }
     return 'ew-resize'
-  }, [state, width])
+  })()
 
-  const railStyle = useMemo(() => ({ cursor, ...style }), [cursor, style])
+  const railStyle = { cursor, ...style }
 
   const { dragRef, onMouseDown } = useSidebarResize({
     currentWidth: width,
@@ -365,27 +336,24 @@ export const SidebarRail = ({
     setIsDraggingRail,
   })
 
-  const combinedRef = useMemo<React.RefCallback<HTMLButtonElement>>(
-    () => value => {
-      for (const currentRef of [ref, dragRef]) {
-        if (!currentRef) {
-          continue
-        }
-        if (typeof currentRef === 'function') {
-          currentRef(value)
-          continue
-        }
-        currentRef.current = value
+  const combinedRef: React.RefCallback<HTMLButtonElement> = value => {
+    for (const currentRef of [ref, dragRef]) {
+      if (!currentRef) {
+        continue
       }
-    },
-    [ref, dragRef]
-  )
+      if (typeof currentRef === 'function') {
+        currentRef(value)
+        continue
+      }
+      currentRef.current = value
+    }
+  }
 
   return (
     <button
       aria-label={action}
       className={cn(
-        'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-1/2 after:w-0.5 hover:after:bg-sidebar-border sm:flex',
+        'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-0.75 after:w-0.5 hover:after:bg-sidebar-border sm:flex',
         'group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full hover:group-data-[collapsible=offcanvas]:bg-sidebar',
         '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
         '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
@@ -629,13 +597,10 @@ export const SidebarMenuSkeleton = ({
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean
 }) => {
-  const skeletonStyle = useMemo<React.CSSProperties>(
-    () => ({
-      '--skeleton-width': `${Math.floor(Math.random() * 40) + 50}%`,
-      ...style,
-    }),
-    [style]
-  )
+  const skeletonStyle = {
+    '--skeleton-width': `${Math.floor(Math.random() * 40) + 50}%`,
+    ...style,
+  }
 
   return (
     <div

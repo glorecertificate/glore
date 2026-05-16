@@ -40,21 +40,21 @@ interface AccountSessionsProps {
 const parseUserAgent = (ua: string | null) => {
   if (!ua) return { isMobile: false, label: 'Unknown device' }
 
-  const isMobile = /mobile|android|iphone|ipad/i.test(ua)
+  const isMobile = /mobile|android|iphone|ipad/iu.test(ua)
 
   let browser = 'Unknown browser'
-  if (/edg\//i.test(ua)) browser = 'Edge'
-  else if (/firefox/i.test(ua)) browser = 'Firefox'
-  else if (/opr\//i.test(ua)) browser = 'Opera'
-  else if (/chrome/i.test(ua)) browser = 'Chrome'
-  else if (/safari/i.test(ua)) browser = 'Safari'
+  if (/edg\//iu.test(ua)) browser = 'Edge'
+  else if (/firefox/iu.test(ua)) browser = 'Firefox'
+  else if (/opr\//iu.test(ua)) browser = 'Opera'
+  else if (/chrome/iu.test(ua)) browser = 'Chrome'
+  else if (/safari/iu.test(ua)) browser = 'Safari'
 
   let os = 'Unknown OS'
-  if (/windows/i.test(ua)) os = 'Windows'
-  else if (/ipad|iphone/i.test(ua)) os = 'iOS'
-  else if (/android/i.test(ua)) os = 'Android'
-  else if (/mac/i.test(ua)) os = 'macOS'
-  else if (/linux/i.test(ua)) os = 'Linux'
+  if (/windows/iu.test(ua)) os = 'Windows'
+  else if (/uipad|iphone/iu.test(ua)) os = 'iOS'
+  else if (/android/iu.test(ua)) os = 'Android'
+  else if (/mac/iu.test(ua)) os = 'macOS'
+  else if (/linux/iu.test(ua)) os = 'Linux'
 
   return { isMobile, label: `${browser} on ${os}` }
 }

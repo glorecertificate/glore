@@ -41,10 +41,7 @@ const useCoursesContext = (value: CoursesContextValue) => {
     )
 
   const createCourse = async (payload: Omit<TableInsert<'courses'>, 'creatorId'>) => {
-    const { data, error } = await createCourseAction({
-      ...payload,
-      sortOrder: courses.length + 1,
-    })
+    const { data, error } = await createCourseAction(payload)
     if (error) return { error }
     setCourses(prev => [...prev, data])
     return { data }

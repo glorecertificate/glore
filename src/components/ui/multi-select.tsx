@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useCallback, useMemo, useState } from 'react'
+import { createContext, use, useState } from 'react'
 
 import { CommandSeparator } from 'cmdk'
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react'
@@ -61,53 +61,44 @@ export const MultiSelect = ({
   const [open, setOpen] = useState(false)
   const [selectTime, setSelectTime] = useState<number | null>(null)
 
-  const unselectOption = useCallback(
-    (option: string) => {
-      if (value.length > min) {
-        return onChange(value.filter(v => v !== option))
-      }
-      if (selectTime && Date.now() - selectTime < 2000) {
-        return
-      }
-      toast.info(t('selectAtLeastOne', { item: (label ?? t('item')).toLowerCase() }), toastOptions)
-      setSelectTime(Date.now())
-    },
-    [label, min, onChange, selectTime, t, toastOptions, value]
-  )
+  const unselectOption = (option: string) => {
+    if (value.length > min) {
+      return onChange(value.filter(v => v !== option))
+    }
+    if (selectTime && Date.now() - selectTime < 2000) {
+      return
+    }
+    toast.info(t('selectAtLeastOne', { item: (label ?? t('item')).toLowerCase() }), toastOptions)
+    setSelectTime(Date.now())
+  }
 
-  const selectOption = useCallback(
-    (option: string) => {
-      if (value.includes(option)) {
-        return unselectOption(option)
-      }
-      const selected = options.find(o => o === option)
-      if (!selected) {
-        return
-      }
-      onChange([...value, selected])
-    },
-    [onChange, options, unselectOption, value]
-  )
+  const selectOption = (option: string) => {
+    if (value.includes(option)) {
+      return unselectOption(option)
+    }
+    const selected = options.find(o => o === option)
+    if (!selected) {
+      return
+    }
+    onChange([...value, selected])
+  }
 
-  const resetOptions = useCallback(() => {
+  const resetOptions = () => {
     onChange(options)
-  }, [options, onChange])
+  }
 
-  const contextValue = useMemo(
-    () => ({
-      disabled: Boolean(disabled),
-      label,
-      loading: Boolean(loading),
-      min,
-      open,
-      options,
-      resetOptions,
-      selectOption,
-      setOpen,
-      value,
-    }),
-    [disabled, label, loading, min, open, options, resetOptions, selectOption, value]
-  )
+  const contextValue = {
+    disabled: Boolean(disabled),
+    label,
+    loading: Boolean(loading),
+    min,
+    open,
+    options,
+    resetOptions,
+    selectOption,
+    setOpen,
+    value,
+  }
 
   return (
     <MultiSelectContext.Provider value={contextValue}>
@@ -140,25 +131,19 @@ export const MultiSelectTrigger = ({
   const { disabled: rootDisabled, open, setOpen, value } = useMultiSelect()
   const disabled = rootDisabled || triggerDisabled
 
-  const openDropdown = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation()
-      setOpen(!open)
-    },
-    [open, setOpen]
-  )
+  const openDropdown = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setOpen(!open)
+  }
 
-  const onTriggerClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (disabled) {
-        return
-      }
-      onClick?.(e)
-    },
-    [disabled, onClick]
-  )
+  const onTriggerClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (disabled) {
+      return
+    }
+    onClick?.(e)
+  }
 
   return (
     <PopoverTrigger
@@ -213,7 +198,7 @@ export const MultiSelectBadge = ({
   const { disabled: rootDisabled, label: rootLabel, selectOption } = useMultiSelect()
   const disabled = rootDisabled || badgeDisabled
 
-  const title = useMemo(() => {
+  const title = (() => {
     if (disabled) {
       return
     }
@@ -221,24 +206,18 @@ export const MultiSelectBadge = ({
       return t('removeItem')
     }
     return `${t('remove')} ${label ?? rootLabel}`
-  }, [disabled, label, rootLabel, t])
+  })()
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLSpanElement>) => {
-      if (disabled || e.key !== 'Enter') return
-      selectOption(value)
-      onKeyDown?.(e)
-    },
-    [disabled, onKeyDown, selectOption, value]
-  )
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (disabled || e.key !== 'Enter') return
+    selectOption(value)
+    onKeyDown?.(e)
+  }
 
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLSpanElement>) => {
-      selectOption(value)
-      onClick?.(e)
-    },
-    [onClick, selectOption, value]
-  )
+  const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    selectOption(value)
+    onClick?.(e)
+  }
 
   const badge = (
     <Badge
@@ -289,20 +268,17 @@ export const MultiSelectBadgeCount = ({ children, className, ...props }: React.C
   const t = useTranslations('Components.MultiSelect')
   const { open, setOpen } = useMultiSelect()
 
-  const toggleSelect = useCallback(() => {
+  const toggleSelect = () => {
     if (!open) {
       setOpen(true)
     }
-  }, [open, setOpen])
+  }
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        toggleSelect()
-      }
-    },
-    [toggleSelect]
-  )
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      toggleSelect()
+    }
+  }
 
   return (
     <Badge
@@ -331,7 +307,7 @@ export const MultiSelectItem = ({
   const { min, selectOption, value: rootValue } = useMultiSelect()
   const selected = rootValue.includes(value)
 
-  const onSelect = useCallback(() => selectOption(value), [selectOption, value])
+  const onSelect = () => selectOption(value)
 
   return (
     <CommandItem

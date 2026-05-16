@@ -43,9 +43,6 @@ Detailed technical reference for the GloRe Certificate codebase. Read the releva
 | `/api/v1/ai/copilot`  | POST     | AI copilot endpoint                            |
 | `/api/v1/join`        | GET      | Team invitation join endpoint                  |
 | `/api/v1/manifest`    | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
-| `/api/v1/push`        | GET      | Return VAPID public key                        |
-| `/api/v1/push`        | POST     | Save push subscription for authenticated user  |
-| `/api/v1/push`        | DELETE   | Remove push subscription                       |
 | `/api/v1/upload`      | POST     | R2 file upload                                 |
 | `/api/v1/health`      | GET      | Health check (returns `{ status: 'ok' }`)      |
 
@@ -172,7 +169,6 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 | `course`           | `fetchCourse`                                                                | Per-record |
 | `courses`          | `fetchCourses`                                                               | Global     |
 | `doc-categories`   | `fetchDocCategories`                                                         | Global     |
-| `notifications`    | `fetchNotifications`                                                         | Per-record |
 | `organizations`    | `fetchOrganizations`                                                         | Global     |
 | `skill-groups`     | `listSkillGroups`                                                            | Global     |
 | `team-members`     | `fetchTeamMembers`                                                           | Global     |
@@ -185,7 +181,6 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 | ---------------------------------- | --------------------------------- |
 | `userTag(id)`                      | `user-{id}`                       |
 | `courseTag(slug)`                   | `course-{slug}`                   |
-| `notificationsTag(userId)`         | `notifications-{userId}`          |
 | `certificatesUserTag(userId)`      | `certificates-user-{userId}`      |
 | `certificatesTutorTag(reviewerId)` | `certificates-tutor-{reviewerId}` |
 | `certificatesOrgTag(orgId)`        | `certificates-org-{orgId}`        |
@@ -242,7 +237,7 @@ SidebarProvider > SessionProvider > CoursesProvider
   - Uses `Map` cache for `lazy()` components to avoid re-creation
   - Wrapped in `Suspense` with fallback
   - Import as `LucideIcon` with `name` prop (type: `IconName`)
-- **Custom icons:** `src/components/icons/` (GloreIcon, DashboardIcon, ErrorIcon, etc.)
+- **Custom icons:** `src/components/icons/` (Logo, DashboardIcon, ErrorIcon, etc.)
 - **Database icon field:** Courses store icon as `IconName` string
 
 ### URL state management
@@ -342,7 +337,6 @@ Uses `nuqs` for URL search params with type-safe parsers. Feature-specific `para
 | `useI18n`          | Access i18n context                   | Reads from `I18nContext`; throws if outside provider                                                                                                                                                                           |
 | `useMetadata`      | Client-side document metadata updates | Updates `<meta>` tags, PWA title formatting, 100ms delay                                                                                                                                                                       |
 | `useMounted`       | Check if component has mounted        | For hydration-safe rendering                                                                                                                                                                                                   |
-| `useNotifications` | Manage push notifications             | Subscribe/unsubscribe, permission checks, service worker integration                                                                                                                                                           |
 | `usePWA`           | Detect PWA display mode               | Detects TWA, Standalone, MinimalUI, Fullscreen, Browser                                                                                                                                                                        |
 | `usePWA`    | Access PWA context                    | Reads from PWA context provider                                                                                                                                                                                                |
 | `useScroll`        | Track scroll position                 | Throttled at 100ms; returns `{ scroll, scrolled }`                                                                                                                                                                             |
@@ -426,9 +420,6 @@ Semantic token groups (all defined in `src/app/globals.css` with light/dark vari
 | `SMTP_USER`            | SMTP username                                    | Server | Yes         |
 | `SMTP_PASSWORD`        | SMTP password                                    | Server | Yes         |
 | `SMTP_SENDER`          | Email sender address                             | Server | Yes         |
-| `VAPID_PUBLIC_KEY`     | VAPID public key for push notifications          | Server | Yes         |
-| `VAPID_PRIVATE_KEY`    | VAPID private key for push notifications         | Server | Yes         |
-| `VAPID_SUBJECT`        | VAPID subject (mailto: or URL)                   | Server | Yes         |
 | `GITHUB_TOKEN`         | GitHub personal access token                     | Server | No          |
 | `VERCEL_TOKEN`         | Vercel CLI token                                 | Server | No          |
 

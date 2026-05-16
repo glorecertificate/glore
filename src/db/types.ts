@@ -12,10 +12,8 @@ import {
   type evaluations,
   type lessons,
   type memberships,
-  type notifications,
   type organizationJoinRequests,
   type organizations,
-  type pushSubscriptions,
   type questionOptions,
   type questions,
   type regions,
@@ -43,10 +41,8 @@ interface TableMap {
   evaluations: typeof evaluations
   lessons: typeof lessons
   memberships: typeof memberships
-  notifications: typeof notifications
   organization_join_requests: typeof organizationJoinRequests
   organizations: typeof organizations
-  push_subscriptions: typeof pushSubscriptions
   question_options: typeof questionOptions
   questions: typeof questions
   regions: typeof regions

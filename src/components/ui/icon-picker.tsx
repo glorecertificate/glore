@@ -1,10 +1,10 @@
 'use client'
 
-import { memo, useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual'
 import { type default as FuseType } from 'fuse.js'
-import { type IconName, dynamicIconImports } from 'lucide-react/dynamic'
+import { type IconName } from 'lucide-react/dynamic'
 import { useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
@@ -40,7 +40,7 @@ interface IconPickerProps extends ButtonProps {
   value?: IconName
 }
 
-const IconRenderer = memo(({ name }: { name: IconName }) => <LucideIcon name={name} />)
+const IconRenderer = ({ name }: { name: IconName }) => <LucideIcon name={name} />
 
 const IconsColumnSkeleton = () => (
   <div className="mt-1 flex w-full flex-col gap-2">
@@ -54,9 +54,17 @@ const IconsColumnSkeleton = () => (
 
 let cachedIcons: IconData[] | null = null
 
+const LIST_STYLE: React.CSSProperties = {
+  scrollbarColor: 'var(--color-brand)',
+  scrollbarWidth: 'thin',
+}
+
 const loadIconData = async () => {
   if (cachedIcons) return cachedIcons
-  const { default: icons } = await import('~/config/icons.json')
+  const [{ default: icons }, { dynamicIconImports }] = await Promise.all([
+    import('~/config/icons.json'),
+    import('lucide-react/dynamic'),
+  ])
   cachedIcons = icons.filter((icon: IconData) => icon.name in dynamicIconImports)
   return cachedIcons
 }
@@ -81,394 +89,343 @@ export const useIconData = () => {
   return { icons, isLoading }
 }
 
-export const IconPicker = memo(
-  ({
-    categorized = true,
-    children,
-    className,
-    defaultOpen,
-    defaultValue,
-    fallback,
-    iconsList,
-    modal = false,
-    onOpenChange,
-    onValueChange,
-    open,
-    searchable = true,
-    showLabels,
-    tooltips,
-    value,
-    ...props
-  }: IconPickerProps) => {
-    const t = useTranslations('Components.IconPicker')
-    const { icons } = useIconData()
+export const IconPicker = ({
+  categorized = false,
+  children,
+  className,
+  defaultOpen,
+  defaultValue,
+  fallback,
+  iconsList,
+  modal = false,
+  onOpenChange,
+  onValueChange,
+  open,
+  searchable = true,
+  showLabels,
+  tooltips,
+  value,
+  ...props
+}: IconPickerProps) => {
+  const t = useTranslations('Components.IconPicker')
+  const { icons } = useIconData()
 
-    const [search, setSearch] = useState('')
-    const debouncedSearch = useDebounce(search, 100)
-    const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
-    const [isOpen, setIsOpen] = useState(defaultOpen)
-    const [isLoading, setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 100)
+  const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  const [isLoading, setIsLoading] = useState(true)
 
-    const iconsToUse = useMemo(() => iconsList || icons, [iconsList, icons])
+  const iconsToUse = iconsList || icons
 
-    const [fuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
+  const [fuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
 
-    useEffect(() => {
-      const load = async () => {
-        const { default: F } = await import('fuse.js')
-        setFuseClass(() => F)
-      }
-      void load()
-    }, [])
+  useEffect(() => {
+    const load = async () => {
+      const { default: F } = await import('fuse.js')
+      setFuseClass(() => F)
+    }
+    void load()
+  }, [])
 
-    const fuseInstance = useMemo(
-      () =>
-        fuseClass
-          ? new fuseClass(iconsToUse, {
-              ignoreLocation: true,
-              includeScore: true,
-              keys: ['name', 'tags', 'categories'],
-              threshold: 0.3,
-            })
-          : null,
-      [fuseClass, iconsToUse]
-    )
+  const fuseInstance = fuseClass
+    ? new fuseClass(iconsToUse, {
+        ignoreLocation: true,
+        includeScore: true,
+        keys: ['name', 'tags', 'categories'],
+        threshold: 0.3,
+      })
+    : null
 
-    const filteredIcons = useMemo(() => {
-      if (debouncedSearch.trim() === '') {
-        return iconsToUse
-      }
+  const filteredIcons = (() => {
+    if (debouncedSearch.trim() === '') {
+      return iconsToUse
+    }
 
-      if (!fuseInstance) return iconsToUse
+    if (!fuseInstance) return iconsToUse
 
-      const results = fuseInstance.search(debouncedSearch.toLowerCase().trim())
-      return results.map(result => result.item)
-    }, [debouncedSearch, fuseInstance, iconsToUse])
+    const results = fuseInstance.search(debouncedSearch.toLowerCase().trim())
+    return results.map(result => result.item)
+  })()
 
-    const categorizedIcons = useMemo(() => {
-      if (!categorized || debouncedSearch.trim() !== '') {
-        return [{ icons: filteredIcons, name: 'All Icons' }]
-      }
+  const categorizedIcons = (() => {
+    if (!categorized || debouncedSearch.trim() !== '') {
+      return [{ id: 'all', icons: filteredIcons, name: 'All Icons' }]
+    }
 
-      const categories = new Map<string, IconData[]>()
+    const categories = new Map<string, IconData[]>()
 
-      for (const icon of filteredIcons) {
-        if (icon.categories && icon.categories.length > 0) {
-          for (const category of icon.categories) {
-            if (!categories.has(category)) {
-              categories.set(category, [])
-            }
-            categories.get(category)!.push(icon)
+    for (const icon of filteredIcons) {
+      if (icon.categories && icon.categories.length > 0) {
+        for (const category of icon.categories) {
+          if (!categories.has(category)) {
+            categories.set(category, [])
           }
-          continue
+          categories.get(category)!.push(icon)
         }
-        const category = 'Other'
-        if (!categories.has(category)) {
-          categories.set(category, [])
-        }
-        categories.get(category)!.push(icon)
+        continue
+      }
+      const category = 'Other'
+      if (!categories.has(category)) {
+        categories.set(category, [])
+      }
+      categories.get(category)!.push(icon)
+    }
+
+    return Array.from(categories.entries())
+      .map(([name, categoryIcons]) => ({ id: name, icons: categoryIcons, name: t(`categories.${name}` as Any) }))
+      .sort((a, b) => a.name.localeCompare(b.name))
+  })()
+
+  const virtualItems = (() => {
+    const items: Array<{
+      type: 'category' | 'row'
+      categoryIndex: number
+      rowIndex?: number
+      icons?: IconData[]
+    }> = []
+
+    for (const [categoryIndex, category] of categorizedIcons.entries()) {
+      if (categorized) {
+        items.push({ categoryIndex, type: 'category' })
       }
 
-      return Array.from(categories.entries())
-        .map(([name, categoryIcons]) => ({ icons: categoryIcons, name: t(`categories.${name}` as Any) }))
-        .sort((a, b) => a.name.localeCompare(b.name))
-    }, [filteredIcons, categorized, debouncedSearch, t])
-
-    const virtualItems = useMemo(() => {
-      const items: Array<{
-        type: 'category' | 'row'
-        categoryIndex: number
-        rowIndex?: number
-        icons?: IconData[]
-      }> = []
-
-      for (const [categoryIndex, category] of categorizedIcons.entries()) {
-        if (categorized) {
-          items.push({ categoryIndex, type: 'category' })
-        }
-
-        const rows = []
-        for (let i = 0; i < category.icons.length; i += 6) {
-          rows.push(category.icons.slice(i, i + 6))
-        }
-
-        for (const [rowIndex, rowIcons] of rows.entries()) {
-          items.push({
-            categoryIndex,
-            icons: rowIcons,
-            rowIndex,
-            type: 'row',
-          })
-        }
+      const rows = []
+      for (let i = 0; i < category.icons.length; i += 6) {
+        rows.push(category.icons.slice(i, i + 6))
       }
 
-      return items
-    }, [categorizedIcons, categorized])
-
-    const categoryIndices = useMemo(() => {
-      const indices: Record<string, number> = {}
-
-      for (const [index, item] of virtualItems.entries()) {
-        if (item.type === 'category') {
-          indices[categorizedIcons[item.categoryIndex].name] = index
-        }
-      }
-
-      return indices
-    }, [virtualItems, categorizedIcons])
-
-    const parentRef = useRef<HTMLDivElement>(null)
-    const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-    const resizeObserverRef = useRef<ResizeObserver>(undefined)
-
-    const virtualizer = useVirtualizer({
-      count: virtualItems.length,
-      estimateSize: index => (virtualItems[index].type === 'category' ? 25 : 40),
-      gap: 10,
-      getScrollElement: () => parentRef.current,
-      overscan: 5,
-      paddingEnd: 2,
-    })
-
-    const virtualizerStyle = useMemo(
-      () => ({
-        height: `${virtualizer.getTotalSize()}px`,
-      }),
-      [virtualizer]
-    )
-
-    const listStyle = useMemo<React.CSSProperties>(
-      () => ({
-        scrollbarColor: 'var(--color-brand)',
-        scrollbarWidth: 'thin',
-      }),
-      []
-    )
-
-    const getVirtualItemStyle = useCallback(
-      (virtualItem: VirtualItem) => ({
-        height: `${virtualItem.size}px`,
-        left: 0,
-        position: 'absolute' as const,
-        top: 0,
-        transform: `translateY(${virtualItem.start}px)`,
-        width: '100%',
-      }),
-      []
-    )
-
-    const handleValueChange = useCallback(
-      (icon: IconName) => {
-        if (value === undefined) {
-          setSelectedIcon(icon)
-        }
-        onValueChange?.(icon)
-      },
-      [value, onValueChange]
-    )
-
-    const handleOpenChange = useCallback(
-      (newOpen: boolean) => {
-        setSearch('')
-        if (open === undefined) {
-          setIsOpen(newOpen)
-        }
-        onOpenChange?.(newOpen)
-
-        if (!newOpen) {
-          clearTimeout(timerRef.current)
-          resizeObserverRef.current?.disconnect()
-          return
-        }
-
-        setIsLoading(true)
-        timerRef.current = setTimeout(() => {
-          setIsLoading(false)
-          virtualizer.measure()
-        }, 10)
-        resizeObserverRef.current = new ResizeObserver(() => {
-          virtualizer.measure()
+      for (const [rowIndex, rowIcons] of rows.entries()) {
+        items.push({
+          categoryIndex,
+          icons: rowIcons,
+          rowIndex,
+          type: 'row',
         })
-        if (parentRef.current) {
-          resizeObserverRef.current.observe(parentRef.current)
-        }
-      },
-      [open, onOpenChange, virtualizer]
-    )
-
-    const handleIconClick = useCallback(
-      (iconName: string) => () => {
-        handleValueChange(iconName as IconName)
-        setIsOpen(false)
-        setSearch('')
-      },
-      [handleValueChange]
-    )
-
-    const handleSearchChange = useCallback(
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value)
-
-        if (parentRef.current) {
-          parentRef.current.scrollTop = 0
-        }
-
-        virtualizer.scrollToOffset(0)
-      },
-      [virtualizer]
-    )
-
-    const scrollToCategory = useCallback(
-      (categoryName: string) => {
-        const categoryIndex = categoryIndices[categoryName]
-
-        if (categoryIndex !== undefined && virtualizer) {
-          virtualizer.scrollToIndex(categoryIndex, {
-            align: 'start',
-            behavior: 'smooth',
-          })
-        }
-      },
-      [categoryIndices, virtualizer]
-    )
-
-    const handleCategoryClick = useCallback(
-      (categoryName: string) => (e: React.MouseEvent) => {
-        e.stopPropagation()
-        scrollToCategory(categoryName)
-      },
-      [scrollToCategory]
-    )
-
-    const handleClose = useCallback((e: Event) => e.preventDefault(), [])
-
-    const categoryButtons = useMemo(() => {
-      if (!categorized || debouncedSearch.trim() !== '') return null
-
-      return categorizedIcons.map(category => (
-        <Button key={category.name} onClick={handleCategoryClick(category.name)} size="xs" variant="ghost">
-          {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
-        </Button>
-      ))
-    }, [categorized, categorizedIcons, debouncedSearch, handleCategoryClick])
-
-    const renderIcon = useCallback(
-      (icon: IconData) => {
-        if (!tooltips) {
-          return (
-            <Button
-              className="aspect-square w-full"
-              key={icon.name}
-              onClick={handleIconClick(icon.name)}
-              variant="outline"
-              title={icon.name.replace(/-/g, ' ')}
-            >
-              <IconRenderer name={icon.name as IconName} />
-            </Button>
-          )
-        }
-
-        return (
-          <TooltipProvider key={icon.name}>
-            <Tooltip>
-              <TooltipTrigger
-                className="flex aspect-square w-full items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
-                onClick={handleIconClick(icon.name)}
-              >
-                <IconRenderer name={icon.name as IconName} />
-              </TooltipTrigger>
-              <TooltipContent>{icon.name}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )
-      },
-      [handleIconClick, tooltips]
-    )
-
-    const renderVirtualContent = useCallback(() => {
-      if (filteredIcons.length === 0) {
-        return <p className="pt-1 text-sm text-muted-foreground">{t('noIconsFound')}</p>
       }
+    }
 
+    return items
+  })()
+
+  const categoryIndices = (() => {
+    const indices: Record<string, number> = {}
+
+    for (const [index, item] of virtualItems.entries()) {
+      if (item.type === 'category') {
+        indices[categorizedIcons[item.categoryIndex].name] = index
+      }
+    }
+
+    return indices
+  })()
+
+  const parentRef = useRef<HTMLDivElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const resizeObserverRef = useRef<ResizeObserver>(undefined)
+
+  const virtualizer = useVirtualizer({
+    count: virtualItems.length,
+    estimateSize: index => (virtualItems[index].type === 'category' ? 25 : 40),
+    gap: 10,
+    getScrollElement: () => parentRef.current,
+    overscan: 5,
+    paddingEnd: 2,
+  })
+
+  const virtualizerStyle = {
+    height: `${virtualizer.getTotalSize()}px`,
+  }
+
+  const getVirtualItemStyle = (virtualItem: VirtualItem) => ({
+    height: `${virtualItem.size}px`,
+    left: 0,
+    position: 'absolute' as const,
+    top: 0,
+    transform: `translateY(${virtualItem.start}px)`,
+    width: '100%',
+  })
+
+  const handleValueChange = (icon: IconName) => {
+    if (value === undefined) {
+      setSelectedIcon(icon)
+    }
+    onValueChange?.(icon)
+  }
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setSearch('')
+    if (open === undefined) {
+      setIsOpen(newOpen)
+    }
+    onOpenChange?.(newOpen)
+
+    if (!newOpen) {
+      clearTimeout(timerRef.current)
+      resizeObserverRef.current?.disconnect()
+      return
+    }
+
+    setIsLoading(true)
+    timerRef.current = setTimeout(() => {
+      setIsLoading(false)
+      virtualizer.measure()
+    }, 10)
+    resizeObserverRef.current = new ResizeObserver(() => {
+      virtualizer.measure()
+    })
+    if (parentRef.current) {
+      resizeObserverRef.current.observe(parentRef.current)
+    }
+  }
+
+  const handleIconClick = (iconName: string) => () => {
+    handleValueChange(iconName as IconName)
+    setIsOpen(false)
+    setSearch('')
+  }
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+
+    if (parentRef.current) {
+      parentRef.current.scrollTop = 0
+    }
+
+    virtualizer.scrollToOffset(0)
+  }
+
+  const scrollToCategory = (categoryName: string) => {
+    const categoryIndex = categoryIndices[categoryName]
+
+    if (categoryIndex !== undefined && virtualizer) {
+      virtualizer.scrollToIndex(categoryIndex, {
+        align: 'start',
+        behavior: 'smooth',
+      })
+    }
+  }
+
+  const handleCategoryClick = (categoryName: string) => (e: React.MouseEvent) => {
+    e.stopPropagation()
+    scrollToCategory(categoryName)
+  }
+
+  const handleClose = (e: Event) => e.preventDefault()
+
+  const categoryButtons = (() => {
+    if (!categorized || debouncedSearch.trim() !== '') return null
+
+    return categorizedIcons.map(category => (
+      <Button key={category.id} onClick={handleCategoryClick(category.name)} size="xs" variant="ghost">
+        {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+      </Button>
+    ))
+  })()
+
+  const renderIcon = (icon: IconData) => {
+    if (!tooltips) {
       return (
-        <div className="relative w-full overscroll-contain" style={virtualizerStyle}>
-          {virtualizer.getVirtualItems().map((virtualItem: VirtualItem) => {
-            const item = virtualItems[virtualItem.index]
-            if (!item) return null
-            const itemStyle = getVirtualItemStyle(virtualItem)
-
-            if (item.type === 'row') {
-              return (
-                <div data-index={virtualItem.index} key={virtualItem.key} style={itemStyle}>
-                  <div className="grid w-full grid-cols-6 gap-2">{item.icons!.map(renderIcon)}</div>
-                </div>
-              )
-            }
-
-            if (categorized) {
-              return (
-                <div className="top-0 z-10" key={virtualItem.key} style={itemStyle}>
-                  <h3 className="text-[13px] font-medium capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
-                  <Separator className="my-1.5" />
-                </div>
-              )
-            }
-
-            return null
-          })}
-        </div>
+        <Button
+          className="aspect-square w-full"
+          key={icon.name}
+          onClick={handleIconClick(icon.name)}
+          variant="outline"
+          title={icon.name.replace(/-/gu, ' ')}
+        >
+          <IconRenderer name={icon.name as IconName} />
+        </Button>
       )
-    }, [
-      categorized,
-      categorizedIcons,
-      filteredIcons.length,
-      getVirtualItemStyle,
-      renderIcon,
-      t,
-      virtualItems,
-      virtualizerStyle,
-      virtualizer,
-    ])
-
-    const iconName = (value || selectedIcon) as IconName
+    }
 
     return (
-      <Popover modal={modal} onOpenChange={handleOpenChange} open={open ?? isOpen}>
-        <PopoverTrigger asChild>
-          {children ?? (
-            <Button
-              className={cn(
-                'has-[>svg]:animate-none',
-                isOpen && 'cursor-default bg-accent/80 dark:bg-accent/50',
-                className
-              )}
-              variant="ghost"
-              {...props}
-            >
-              {iconName && (
-                <>
-                  <LucideIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
-                  {showLabels && t('updateIcon')}
-                </>
-              )}
-            </Button>
-          )}
-        </PopoverTrigger>
-        <PopoverContent
-          className="flex w-72 flex-col gap-2 rounded-lg border bg-card p-3 shadow-xs"
-          onCloseAutoFocus={handleClose}
-        >
-          {searchable && (
-            <Input type="search" onChange={handleSearchChange} placeholder={t('searchIcons')} value={search} />
-          )}
-          {categorized && debouncedSearch.trim() === '' && (
-            <div className="scrollbar-hide flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
-          )}
-          <div className="max-h-60 min-h-1 overflow-auto" ref={parentRef} style={listStyle}>
-            {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
-          </div>
-        </PopoverContent>
-      </Popover>
+      <TooltipProvider key={icon.name}>
+        <Tooltip>
+          <TooltipTrigger
+            className="flex aspect-square w-full items-center justify-center rounded-md border p-2 transition hover:bg-foreground/10"
+            onClick={handleIconClick(icon.name)}
+          >
+            <IconRenderer name={icon.name as IconName} />
+          </TooltipTrigger>
+          <TooltipContent>{icon.name}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     )
   }
-)
+
+  const renderVirtualContent = () => {
+    if (filteredIcons.length === 0) {
+      return <p className="pt-4 text-center text-sm text-muted-foreground">{t('noIconsFound')}</p>
+    }
+
+    return (
+      <div className="relative w-full" style={virtualizerStyle}>
+        {virtualizer.getVirtualItems().map((virtualItem: VirtualItem) => {
+          const item = virtualItems[virtualItem.index]
+          if (!item) return null
+          const itemStyle = getVirtualItemStyle(virtualItem)
+
+          if (item.type === 'row') {
+            return (
+              <div data-index={virtualItem.index} key={virtualItem.key} style={itemStyle}>
+                <div className="grid w-full grid-cols-6 gap-2">{item.icons!.map(renderIcon)}</div>
+              </div>
+            )
+          }
+
+          if (categorized) {
+            return (
+              <div className="top-0 z-10" key={virtualItem.key} style={itemStyle}>
+                <h3 className="text-[13px] font-medium capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
+                <Separator className="my-1.5" />
+              </div>
+            )
+          }
+
+          return null
+        })}
+      </div>
+    )
+  }
+
+  const iconName = (value || selectedIcon) as IconName
+
+  return (
+    <Popover modal={modal} onOpenChange={handleOpenChange} open={open ?? isOpen}>
+      <PopoverTrigger asChild>
+        {children ?? (
+          <Button
+            className={cn(
+              'has-[>svg]:animate-none',
+              isOpen && 'cursor-default bg-accent/80 dark:bg-accent/50',
+              className
+            )}
+            variant="ghost"
+            {...props}
+          >
+            {iconName && (
+              <>
+                <LucideIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
+                {showLabels && t('updateIcon')}
+              </>
+            )}
+          </Button>
+        )}
+      </PopoverTrigger>
+      <PopoverContent
+        className="flex w-72 flex-col gap-3 rounded-lg border bg-card p-3 shadow-xs"
+        onCloseAutoFocus={handleClose}
+      >
+        {searchable && (
+          <Input type="search" onChange={handleSearchChange} placeholder={t('searchIcons')} value={search} />
+        )}
+        {categorized && debouncedSearch.trim() === '' && (
+          <div className="scrollbar-hide flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
+        )}
+        <div className="h-60 overflow-y-auto overscroll-contain" ref={parentRef} style={LIST_STYLE}>
+          {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}

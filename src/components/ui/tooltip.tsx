@@ -38,33 +38,8 @@ export const TooltipTrigger = ({
   />
 )
 
-export const TooltipContent = ({
-  children,
-  className,
-  showArrow = false,
-  sideOffset = 4,
-  size,
-  variant,
-  ...props
-}: Omit<React.ComponentProps<typeof TooltipPrimitive.Content>, keyof VariantProps<typeof tooltipContentVariants>> &
-  VariantProps<typeof tooltipContentVariants> & {
-    showArrow?: boolean
-  }) => (
-  <TooltipPortal>
-    <TooltipPrimitive.Content
-      className={cn(tooltipContentVariants({ size, variant }), className)}
-      data-slot="tooltip-content"
-      sideOffset={sideOffset}
-      {...props}
-    >
-      {children}
-      {showArrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
-    </TooltipPrimitive.Content>
-  </TooltipPortal>
-)
-
 const tooltipContentVariants = cva(
-  `z-50 max-w-sm cursor-default rounded-md transition-none animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95`,
+  `z-50 max-w-sm cursor-default rounded-xl transition-none animate-in fade-in-0 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95`,
   {
     defaultVariants: {
       size: 'md',
@@ -73,8 +48,8 @@ const tooltipContentVariants = cva(
     variants: {
       size: {
         xs: 'px-1.75 py-[3.5px] text-[10.5px]',
-        sm: 'px-2 py-1 text-[11px]',
-        md: 'px-3 py-1.5 text-xs',
+        sm: 'px-2 py-0.5 text-[11px]',
+        md: 'px-2.5 py-1.5 text-xs',
         lg: 'px-4 py-2 text-sm',
       },
       variant: {
@@ -100,3 +75,28 @@ const tooltipArrowVariants = cva('z-50', {
     },
   },
 })
+
+export const TooltipContent = ({
+  children,
+  className,
+  showArrow = false,
+  sideOffset = 4,
+  size,
+  variant,
+  ...props
+}: Omit<React.ComponentProps<typeof TooltipPrimitive.Content>, keyof VariantProps<typeof tooltipContentVariants>> &
+  VariantProps<typeof tooltipContentVariants> & {
+    showArrow?: boolean
+  }) => (
+  <TooltipPortal>
+    <TooltipPrimitive.Content
+      className={cn(tooltipContentVariants({ size, variant }), className)}
+      data-slot="tooltip-content"
+      sideOffset={sideOffset}
+      {...props}
+    >
+      {children}
+      {showArrow && <TooltipPrimitive.Arrow className={tooltipArrowVariants({ variant })} />}
+    </TooltipPrimitive.Content>
+  </TooltipPortal>
+)

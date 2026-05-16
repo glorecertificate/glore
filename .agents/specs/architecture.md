@@ -30,7 +30,6 @@ src/
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── doc.ts          # Doc category + article CRUD, cached queries
-│   ├── notification.ts # Notification creation helpers
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
@@ -54,7 +53,6 @@ src/
 │   │   ├── dashboard/     # Dashboard page components
 │   │   ├── docs/          # Docs article cards, list/search, sheets, editor dialog
 │   │   ├── help/          # Help page components
-│   │   ├── notifications/ # Notification list and items
 │   │   ├── onboarding/    # Onboarding form steps
 │   │   ├── organization/  # Org panel header, tabs, management sections
 │   │   ├── pwa/           # PWA install prompts, offline UI
@@ -62,7 +60,7 @@ src/
 │   │   └── users/         # User profile components
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper
 │   ├── layout/         # Shell components (sidebar, page header, fallbacks)
-│   ├── providers/      # Context providers (session, i18n, theme, courses, notifications, PWA)
+│   ├── providers/      # Context providers (session, i18n, theme, courses, PWA)
 │   └── ui/             # shadcn/ui primitives and custom UI components
 ├── db/
 │   ├── client.ts       # Neon + Drizzle client (neon HTTP driver)
@@ -82,7 +80,6 @@ src/
 │   ├── env.ts          # Zod env schema, runtime validation, ProcessEnv augmentation
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
-│   ├── push.ts         # Web Push (VAPID) utilities
 │   ├── rate-limit.ts   # Rate limiting helpers
 │   ├── storage.ts      # R2 Put/Delete/URL helpers (r2Put, r2Delete, r2Url)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, etc.)
@@ -98,7 +95,7 @@ src/
 - All files: **kebab-case** (enforced by `unicorn/filename-case`)
 - Components: one component per file, named exports preferred
 - Feature components: grouped by domain under `features/<domain>/`, sub-features in sub-folders
-  - Drop domain prefix from filenames: `features/courses/editor/view.tsx` (not `course-editor-view.tsx`)
+  - Drop domain prefix from filenames: `features/courses/course-editor/view.tsx` (not `course-editor-view.tsx`)
   - Context/params at sub-feature root: `context.tsx`, `params.ts`, `use-params.ts`
 - Provider pattern: split into `*-context.tsx` + `*-provider.tsx`
 - Database queries: `src/db/queries/<table>.ts` with `parse*` function

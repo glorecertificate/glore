@@ -1,5 +1,7 @@
 import { type Config } from 'release-it'
 
+import { CommitScope, CommitType } from './commitlint.config'
+
 interface Commit {
   body?: string | null
   committerDate?: string | null
@@ -52,14 +54,19 @@ const commitTypes = [
   { type: 'feat', section: 'Features' },
   { type: 'fix', section: 'Fixes' },
   { type: 'perf', section: 'Performance' },
-  { type: 'build', section: 'Build', scopes: ['deps', 'dev-deps'] },
+  { type: 'build', section: 'Build', scopes: ['deps', 'deps-dev'] },
   { type: 'ci', section: 'CI' },
+  { type: 'test', section: 'CI' },
   { type: 'docs', section: 'Docs' },
-  { type: 'chore', section: 'Other' },
+  { type: 'chore', section: 'Other', scopes: ['release', 'security'] },
   { type: 'refactor', section: 'Other' },
   { type: 'revert', section: 'Other' },
   { type: 'style', section: 'Other' },
-]
+] satisfies {
+  type: CommitType
+  section: string
+  scopes?: CommitScope[]
+}[]
 
 export default {
   git: {
@@ -99,7 +106,7 @@ export default {
         types: commitTypes,
       },
       writerOpts: {
-        transform: (commit: Commit): Partial<Commit> | null => {
+        transform: (commit: Commit) => {
           const commitType = commitTypes.find(({ type }) => type === commit.type)
           if (!commitType) return null
           return {

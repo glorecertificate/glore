@@ -8,7 +8,6 @@ import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateWithUsers } from '@/actions/certificates/helpers'
-import { createNotification } from '@/actions/notification'
 import { getActiveOrgId } from '@/actions/user'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 import {
@@ -161,10 +160,6 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
     if (cert.userId) {
       revalidateTag(certificatesUserTag(cert.userId), 'max')
-      await createNotification(cert.userId, 'certificate_reviewed', {
-        certificateId: id,
-        status: isApprove ? 'approved' : 'changes_requested',
-      }).catch(() => null)
     }
 
     return updated
@@ -251,9 +246,6 @@ export const createCertificate = async (
           template: { name: 'certificate/assigned', props: {} },
         }).catch(() => null)
       }
-      await createNotification(reviewerId, 'certificate_assigned', {
-        certificateId: newCert.id,
-      }).catch(() => null)
     }
 
     revalidateTag(certificatesUserTag(authUser.id), 'max')
@@ -350,9 +342,6 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
           template: { name: 'certificate/assigned', props: {} },
         }).catch(() => null)
       }
-      await createNotification(reviewerId, 'certificate_assigned', {
-        certificateId: certId,
-      }).catch(() => null)
     }
 
     revalidateTag(certificatesOrgTag(cert.organizationId), 'max')

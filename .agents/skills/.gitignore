@@ -1,3 +1,4 @@
-*
-!agents-md
-!optimize-prompt
+/*/
+!/agents-md/
+!/i18n-audit/
+!/optimize-prompt/

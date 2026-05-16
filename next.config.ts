@@ -11,7 +11,7 @@ type PackageName = keyof typeof dependencies
 const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_PATH: Route = '/api/v1/manifest'
 
-const nextConfig = {
+const config = {
   reactStrictMode: true,
   reactCompiler: true,
   cacheComponents: true,
@@ -59,10 +59,6 @@ const nextConfig = {
           key: 'X-Content-Type-Options',
           value: 'nosniff',
         },
-        {
-          key: 'X-Frame-Options',
-          value: 'DENY',
-        },
       ],
     },
     {
@@ -75,54 +71,13 @@ const nextConfig = {
       ],
     },
   ],
-  serverExternalPackages: ['qrcode', 'web-push'] satisfies PackageName[],
-  typescript: {
-    tsconfigPath: './tsconfig.build.json',
-  },
+  serverExternalPackages: ['qrcode'] satisfies PackageName[],
   typedRoutes: true,
-  experimental: {
-    optimizePackageImports: [
-      '@ai-sdk/react',
-      '@dnd-kit/core',
-      '@dnd-kit/modifiers',
-      '@dnd-kit/sortable',
-      '@dnd-kit/utilities',
-      '@platejs/ai',
-      '@platejs/basic-nodes',
-      '@platejs/basic-styles',
-      '@platejs/callout',
-      '@platejs/caption',
-      '@platejs/combobox',
-      '@platejs/date',
-      '@platejs/dnd',
-      '@platejs/emoji',
-      '@platejs/floating',
-      '@platejs/indent',
-      '@platejs/juice',
-      '@platejs/layout',
-      '@platejs/link',
-      '@platejs/list',
-      '@platejs/markdown',
-      '@platejs/media',
-      '@platejs/resizable',
-      '@platejs/selection',
-      '@platejs/slash-command',
-      '@platejs/table',
-      '@platejs/toc',
-      '@platejs/toggle',
-      'better-auth',
-      'fuse.js',
-      'lucide-react',
-      'motion',
-      'next-intl',
-      'nuqs',
-      'platejs',
-      'sonner',
-    ] satisfies PackageName[],
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
-    turbopackFileSystemCacheForDev: true,
-    webpackBuildWorker: true,
+  logging: {
+    fetches: {
+      fullUrl: true,
+      hmrRefreshes: true,
+    },
   },
 } satisfies NextConfig
 
@@ -144,5 +99,5 @@ export default (phase: PHASE_TYPE) => {
   if ((phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) && !process.env.SKIP_ENV_VALIDATION) {
     schema.parse(process.env)
   }
-  return plugins.reduce<NextConfig>((acc, next) => next(acc), nextConfig)
+  return plugins.reduce<NextConfig>((acc, next) => next(acc), config)
 }

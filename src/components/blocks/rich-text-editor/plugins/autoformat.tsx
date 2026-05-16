@@ -52,7 +52,7 @@ const rule = (factory: (options: { enabled: typeof notInCodeBlock }) => AnyInput
 
 export const AutoformatKit = [
   createSlatePlugin({
-    key: 'autoformat',
+    key: 'typing-rules',
     inputRules: [
       rule(HeadingRules.markdown),
       rule(BlockquoteRules.markdown),

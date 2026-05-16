@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Button } from '@/components/ui/button'
@@ -34,16 +32,13 @@ export const InputGroupAddon = ({
   onClick,
   ...props
 }: React.ComponentProps<'div'> & VariantProps<typeof inputGroupAddonVariants>) => {
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLDivElement>) => {
-      if ((event.target as HTMLElement).closest('button')) {
-        return
-      }
-      event.currentTarget.parentElement?.querySelector('input')?.focus()
-      onClick?.(event)
-    },
-    [onClick]
-  )
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest('button')) {
+      return
+    }
+    event.currentTarget.parentElement?.querySelector('input')?.focus()
+    onClick?.(event)
+  }
 
   return (
     <div

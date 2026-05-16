@@ -30,7 +30,7 @@ export const EmojiInputElement = (props: PlateElementProps) => {
     if (debouncedValue.trim().length === 0) {
       return []
     }
-    return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(/:$/, '')).get()
+    return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(/:$/u, '')).get()
   })()
 
   return (

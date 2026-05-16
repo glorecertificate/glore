@@ -1,16 +1,20 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useEffectEvent, useRef } from 'react'
 
 import { cn } from '@/lib/utils'
 
 export const Textarea = ({ autoFocus, className, ...props }: React.ComponentProps<'textarea'>) => {
   const ref = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
-    if (autoFocus && ref.current) {
-      const { length } = ref.current.value
-      ref.current.setSelectionRange(length, length)
-    }
-  }, [autoFocus])
+  const focusTextarea = useEffectEvent(() => {
+    setTimeout(() => {
+      if (autoFocus && ref.current) {
+        const { length } = ref.current.value
+        ref.current?.setSelectionRange(length, length)
+      }
+    }, 100)
+  })
+
+  useEffect(focusTextarea)
 
   return (
     <textarea

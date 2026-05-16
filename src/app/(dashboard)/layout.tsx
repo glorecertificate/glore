@@ -1,10 +1,8 @@
 import { Suspense } from 'react'
 
 import { cookies } from '@/actions/cookies'
-import { AppSidebar } from '@/components/layout/app-sidebar'
+import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { CoursesProvider } from '@/components/providers/courses-provider'
-import { NotificationsProvider } from '@/components/providers/notifications-provider'
 import { SessionProvider } from '@/components/providers/session-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
@@ -17,12 +15,8 @@ const DashboardLayout = async ({ children }: LayoutProps<'/'>) => {
     <Suspense fallback={<LoadingFallback size="full" />}>
       <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
         <SessionProvider>
-          <NotificationsProvider>
-            <CoursesProvider>
-              <AppSidebar />
-              <SidebarInset>{children}</SidebarInset>
-            </CoursesProvider>
-          </NotificationsProvider>
+          <DashboardSidebar />
+          <SidebarInset>{children}</SidebarInset>
         </SessionProvider>
       </SidebarProvider>
     </Suspense>

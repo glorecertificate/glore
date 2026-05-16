@@ -1,7 +1,5 @@
 'use client'
 
-import { useMemo } from 'react'
-
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { type VariantProps, cva } from 'class-variance-authority'
 import { XIcon } from 'lucide-react'
@@ -31,21 +29,17 @@ export const DialogOverlay = ({
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Overlay> & {
   opacity?: number
-}) => {
-  const overlayStyle = useMemo(() => ({ opacity, ...style }), [opacity, style])
-
-  return (
-    <DialogPrimitive.Overlay
-      className={cn(
-        'fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
-        className
-      )}
-      data-slot="dialog-overlay"
-      style={overlayStyle}
-      {...props}
-    />
-  )
-}
+}) => (
+  <DialogPrimitive.Overlay
+    className={cn(
+      'fixed inset-0 z-50 bg-black data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
+      className
+    )}
+    data-slot="dialog-overlay"
+    style={{ opacity, ...style }}
+    {...props}
+  />
+)
 
 export const DialogContent = ({
   children,

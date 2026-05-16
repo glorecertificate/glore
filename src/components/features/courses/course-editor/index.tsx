@@ -1,0 +1,99 @@
+'use client'
+
+import { useRef, useState } from 'react'
+
+import { type Locale, useTranslations } from 'next-intl'
+
+import { CourseContent } from '@/components/features/courses/course-editor/content'
+import { useCourse } from '@/components/features/courses/course-editor/context'
+import { CourseFooter } from '@/components/features/courses/course-editor/footer'
+import { CourseHeader, CourseHeaderMobile } from '@/components/features/courses/course-editor/header'
+import { CourseSidebar } from '@/components/features/courses/course-editor/sidebar'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { Tabs } from '@/components/ui/tabs'
+import { useI18n } from '@/hooks/use-i18n'
+import { useMetadata } from '@/hooks/use-metadata'
+import { useNavigationGuard } from '@/hooks/use-navigation-guard'
+
+const COURSE_SIDEBAR_WIDTH = '18rem'
+const sidebarStyle = { width: COURSE_SIDEBAR_WIDTH }
+
+export const CourseEditor = () => {
+  const { course, hasAnyUpdates, language, setLanguage, status } = useCourse()
+  const { localeItems } = useI18n()
+  const t = useTranslations('Courses')
+  const hasFooter = course.lessons && course.lessons.length > 1
+
+  useMetadata({ title: course.title[language] })
+
+  const [guardOpen, setGuardOpen] = useState(false)
+  const resolverRef = useRef<((value: boolean) => void) | null>(null)
+
+  const unsavedLanguages = localeItems.flatMap(({ label, value }) =>
+    status[value as Locale].hasUpdates ? [label] : []
+  )
+
+  const handleBlock = () =>
+    new Promise<boolean>(resolve => {
+      resolverRef.current = resolve
+      setGuardOpen(true)
+    })
+
+  useNavigationGuard({
+    isDirty: hasAnyUpdates,
+    onBlock: handleBlock,
+  })
+
+  const handleConfirm = () => {
+    resolverRef.current?.(true)
+    resolverRef.current = null
+    setGuardOpen(false)
+  }
+
+  const handleCancel = () => {
+    resolverRef.current?.(false)
+    resolverRef.current = null
+    setGuardOpen(false)
+  }
+
+  return (
+    <Tabs className="pt-2" onValueChange={value => setLanguage(value as Locale)} value={language}>
+      <CourseHeader />
+      <div className="flex flex-col gap-2 pb-8 md:flex-row">
+        <CourseSidebar className="hidden md:block" style={sidebarStyle} />
+        <div className="flex grow flex-col">
+          <CourseHeaderMobile className="sticky top-18 md:hidden" />
+          <CourseContent />
+          {hasFooter && <CourseFooter />}
+        </div>
+      </div>
+      <AlertDialog onOpenChange={open => !open && handleCancel()} open={guardOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('unsavedChangesTitle')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('unsavedChangesMessage', { languages: unsavedLanguages.join(', ') })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancel} variant="outline">
+              {t('stayOnPage')}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirm} variant="destructive">
+              {t('leavePage')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Tabs>
+  )
+}

@@ -6,7 +6,6 @@ import { randomBytes } from 'node:crypto'
 
 import { and, eq } from 'drizzle-orm'
 
-import { createNotification } from '@/actions/notification'
 import {
   assertOrganizationAdmin,
   assertOrganizationManager,
@@ -107,11 +106,6 @@ export const inviteOrganizationMember = async ({
       organizationName: organization.name,
       role,
     })
-
-    await createNotification(invitee.id, 'member_added', {
-      organizationName: organization.name,
-      role,
-    }).catch(() => null)
 
     if (!existingUser || !existingUser.onboardedAt) {
       await auth.api

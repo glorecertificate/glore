@@ -1,7 +1,5 @@
 'use client'
 
-import { useCallback } from 'react'
-
 import * as ToolbarPrimitive from '@radix-ui/react-toolbar'
 import { type VariantProps, cva } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
@@ -185,30 +183,23 @@ export const ToolbarSplitButtonSecondary = ({
   size,
   variant,
   ...props
-}: React.ComponentPropsWithoutRef<'button'> & VariantProps<typeof dropdownArrowVariants>) => {
-  const handleClick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+}: React.ComponentPropsWithoutRef<'button'> & VariantProps<typeof dropdownArrowVariants>) => (
+  <button
+    className={cn(
+      dropdownArrowVariants({ size, variant }),
+      'group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground',
+      className
+    )}
+    onClick={e => {
       e.stopPropagation()
       onClick?.(e)
-    },
-    [onClick]
-  )
-
-  return (
-    <button
-      className={cn(
-        dropdownArrowVariants({ size, variant }),
-        'group-data-[pressed=true]:bg-accent group-data-[pressed=true]:text-accent-foreground',
-        className
-      )}
-      onClick={handleClick}
-      type="button"
-      {...props}
-    >
-      <ChevronDownIcon className="size-3.5 text-muted-foreground" data-icon />
-    </button>
-  )
-}
+    }}
+    type="button"
+    {...props}
+  >
+    <ChevronDownIcon className="size-3.5 text-muted-foreground" data-icon />
+  </button>
+)
 
 const dropdownArrowVariants = cva(
   `inline-flex items-center justify-center rounded-r-md text-sm font-medium text-foreground transition-colors disabled:pointer-events-none disabled:opacity-50`,

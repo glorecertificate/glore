@@ -1,14 +1,15 @@
 import { notFound, redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
+import { getTranslations } from 'next-intl/server'
+
 import { getCookie } from '@/actions/cookies'
 import { getOrganizationPanel } from '@/actions/organizations/queries'
 import { getCurrentUser } from '@/actions/user'
-import { OrganizationHeader } from '@/components/features/organization/header'
 import { OrganizationPanel } from '@/components/features/organization/panel'
-import { OrganizationTabs } from '@/components/features/organization/tabs'
+import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageMain } from '@/components/layout/page-main'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -21,22 +22,26 @@ const OrganizationContent = async () => {
   const { data, error } = await getOrganizationPanel()
   if (error || !data) notFound()
 
+  const t = await getTranslations('Organization')
+
   return (
     <OrganizationTabs>
-      <OrganizationHeader isOrgAdmin={data.isOrgAdmin} joinRequestCount={data.pendingJoinRequestsCount} />
-      <PageMain className="py-8">
+      <DashboardPage
+        title={t('title')}
+        className="py-8"
+        breadcrumb={
+          <OrganizationTabsList isOrgAdmin={data.isOrgAdmin} joinRequestCount={data.pendingJoinRequestsCount} />
+        }
+      >
         <OrganizationPanel initialData={data} />
-      </PageMain>
+      </DashboardPage>
     </OrganizationTabs>
   )
 }
 
 const OrganizationPage = async () => {
   const user = await getCurrentUser()
-
-  if (user.canEdit) {
-    redirect('/admin')
-  }
+  if (user.canEdit) redirect('/admin')
 
   const activeOrgId = await getCookie('org')
   const activeOrganization = user.organizations.find(({ id }) => id === activeOrgId) ?? user.organizations[0] ?? null

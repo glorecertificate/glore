@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
@@ -31,27 +31,21 @@ export const CountrySelect = ({
 
   const [open, setOpen] = useState(false)
 
-  const countries = useMemo(
-    () =>
-      keysOf(messages.Intl.Countries).sort((a, b) =>
-        messages.Intl.Countries[a].localeCompare(messages.Intl.Countries[b])
-      ),
-    [messages]
+  const countries = keysOf(messages.Intl.Countries).sort((a, b) =>
+    messages.Intl.Countries[a].localeCompare(messages.Intl.Countries[b])
   )
 
-  const translateCountry = useCallback(
-    (code: string) => {
-      const key = code as MessageKey<'Intl.Countries'>
-      return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
-    },
-    [tCountries]
-  )
+  const translateCountry = (code: string) => {
+    const key = code as MessageKey<'Intl.Countries'>
+    return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
+  }
 
   return (
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
           className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
+          // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
           role="combobox"
           aria-controls="#"
           aria-expanded={open}

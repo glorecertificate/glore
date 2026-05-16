@@ -4,7 +4,7 @@ import 'server-only'
 
 import { revalidateTag } from 'next/cache'
 
-import { and, eq, inArray, ne } from 'drizzle-orm'
+import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { buildCourseWith } from '@/actions/courses/helpers'
@@ -23,6 +23,23 @@ const requireEditor = async () => {
   return user
 }
 
+const nextActiveSortOrder = async () => {
+  const result = await db
+    .select({ value: max(courses.sortOrder) })
+    .from(courses)
+    .where(isNull(courses.archivedAt))
+  return (result[0]?.value ?? 0) + 1
+}
+
+const resolveCourseUpdate = async (
+  authUserId: string,
+  course: TableUpdate<'courses'>
+): Promise<TableUpdate<'courses'>> => {
+  if (!('archivedAt' in course)) return course
+  if (course.archivedAt) return { ...course, archivedById: authUserId, languages: [], sortOrder: null }
+  return { ...course, archivedById: null, sortOrder: await nextActiveSortOrder() }
+}
+
 export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
   await requireEditor()
 
@@ -35,11 +52,11 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 }
 
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
-  const authUser = await requireEditor()
+  const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
 
   const values = await db
     .insert(courses)
-    .values({ ...course, creatorId: authUser.id })
+    .values({ ...course, creatorId: authUser.id, sortOrder })
     .returning()
   const created = values[0]
   if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create course' } }
@@ -74,7 +91,10 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   const authUser = await requireEditor()
-  await db.update(courses).set(course).where(eq(courses.id, id))
+
+  const values = await resolveCourseUpdate(authUser.id, course)
+
+  await db.update(courses).set(values).where(eq(courses.id, id))
 
   const updated = await db.query.courses.findFirst({
     where: eq(courses.id, id),

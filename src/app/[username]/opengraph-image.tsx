@@ -114,7 +114,7 @@ const UserOpengraphImage = async ({ params }: { params: Promise<{ username: stri
         )}
       </div>
       {/* Footer */}
-      <div style={footerStyle}>{process.env.APP_URL.replace(/(https?:\/\/)/, '')}</div>
+      <div style={footerStyle}>{process.env.APP_URL.replace(/(https?:\/\/)/u, '')}</div>
     </div>,
     { width: 1200, height: 630 }
   )

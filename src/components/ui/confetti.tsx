@@ -1,11 +1,10 @@
 'use client'
 
-import { createContext, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react'
+import { createContext, useEffect, useEffectEvent, useRef } from 'react'
 
 import { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
-import { type Any } from '@/lib/types'
 
 const loadConfetti = async () => {
   const { default: canvasConfetti } = await import('canvas-confetti')
@@ -17,69 +16,82 @@ const ConfettiContext = createContext<{
 } | null>(null)
 
 export const Confetti = ({
+  angle = 90,
   children,
-  globalOptions = {
-    resize: true,
-    useWorker: true,
-  },
+  colors,
+  decay = 0.9,
+  disableForReducedMotion,
+  drift = 0,
+  flat,
+  gravity = 1,
   manual = false,
-  options,
+  origin,
+  particleCount = 50,
   ref,
+  resize,
+  scalar = 1,
+  shapes = ['square', 'circle'],
+  spread = 45,
+  startVelocity = 45,
+  ticks = 200,
+  useWorker,
+  zIndex = 100,
   ...props
-}: React.ComponentProps<'canvas'> & {
-  globalOptions?: GlobalOptions
-  manual?: boolean
-  options?: Options
-}) => {
+}: React.ComponentProps<'canvas'> &
+  GlobalOptions &
+  Options & {
+    manual?: boolean
+  }) => {
   const instanceRef = useRef<CreateTypes | null>(null)
 
-  const canvasRef = useCallback(
-    (node: HTMLCanvasElement | null) => {
-      if (node !== null) {
-        if (!instanceRef.current) {
-          void (async () => {
-            const canvasConfetti = await loadConfetti()
-            instanceRef.current = canvasConfetti.create(node, {
-              ...globalOptions,
-              resize: true,
-            })
-          })()
-        }
-        return
+  const globalOptions = { disableForReducedMotion, resize: true, useWorker }
+  const options = {
+    angle,
+    colors,
+    decay,
+    disableForReducedMotion,
+    drift,
+    flat,
+    gravity,
+    origin,
+    particleCount,
+    scalar,
+    shapes,
+    spread,
+    startVelocity,
+    ticks,
+    zIndex,
+  }
+
+  const canvasRef = (node: HTMLCanvasElement | null) => {
+    if (node !== null) {
+      if (!instanceRef.current) {
+        void (async () => {
+          const canvasConfetti = await loadConfetti()
+          instanceRef.current = canvasConfetti.create(node, globalOptions)
+        })()
       }
+      return
+    }
 
-      if (instanceRef.current) {
-        instanceRef.current.reset()
-        instanceRef.current = null
-      }
-    },
-    [globalOptions]
-  )
+    if (instanceRef.current) {
+      instanceRef.current.reset()
+      instanceRef.current = null
+    }
+  }
 
-  const fire = useCallback(
-    async (opts = {}) => {
-      await instanceRef.current?.({ ...options, ...opts })
-    },
-    [options]
-  )
-
-  const contextValue = useMemo(
-    () => ({
-      fire,
-    }),
-    [fire]
-  )
-
-  useImperativeHandle(ref, () => contextValue as Any, [contextValue])
+  const fire = useEffectEvent(async (opts?: Options) => {
+    await instanceRef.current?.({ ...options, ...opts })
+  })
 
   useEffect(() => {
     if (!manual) {
-      void (async () => await fire())()
+      void fire()
     }
-  }, [manual, fire])
+  }, [manual])
 
   return (
-    <ConfettiContext.Provider value={contextValue}>
+    <ConfettiContext.Provider value={{ fire }}>
       <canvas ref={canvasRef} {...props} />
       {children}
     </ConfettiContext.Provider>
@@ -98,7 +110,7 @@ export const ConfettiButton = ({
       canvas?: HTMLCanvasElement
     }
 }) => {
-  const triggerFireworks = useCallback(async () => {
+  const triggerFireworks = async () => {
     const confetti = await loadConfetti()
     const duration = 5 * 1000
     const animationEnd = Date.now() + duration
@@ -130,43 +142,37 @@ export const ConfettiButton = ({
         particleCount,
       })
     }, 250)
-  }, [options])
+  }
 
-  const triggerConfetti = useCallback(
-    async (event: React.MouseEvent<HTMLButtonElement>) => {
-      const confetti = await loadConfetti()
-      const rect = event.currentTarget.getBoundingClientRect()
-      const x = rect.left + rect.width / 2
-      const y = rect.top + rect.height / 2
+  const triggerConfetti = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const confetti = await loadConfetti()
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = rect.left + rect.width / 2
+    const y = rect.top + rect.height / 2
 
-      await confetti({
-        ...options,
-        origin: {
-          x: x / window.innerWidth,
-          y: y / window.innerHeight,
-        },
-      })
-    },
-    [options]
-  )
+    await confetti({
+      ...options,
+      origin: {
+        x: x / window.innerWidth,
+        y: y / window.innerHeight,
+      },
+    })
+  }
 
-  const triggerEvent = useCallback(
-    async (event: React.MouseEvent<HTMLButtonElement>) => {
-      switch (effect) {
-        case 'fireworks':
-          await triggerFireworks()
-          break
-        case 'confetti':
-          await triggerConfetti(event)
-          break
-      }
+  const triggerEvent = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    switch (effect) {
+      case 'fireworks':
+        await triggerFireworks()
+        break
+      case 'confetti':
+        await triggerConfetti(event)
+        break
+    }
 
-      if (onClick) {
-        onClick(event)
-      }
-    },
-    [effect, onClick, triggerConfetti, triggerFireworks]
-  )
+    if (onClick) {
+      onClick(event)
+    }
+  }
 
   return <Button onClick={triggerEvent} {...props} />
 }

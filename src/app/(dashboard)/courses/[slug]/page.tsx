@@ -1,18 +1,17 @@
 import { notFound, redirect } from 'next/navigation'
 
-import { getLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
 import { getCookie } from '@/actions/cookies'
 import { enrollCourse } from '@/actions/courses/progress'
 import { getCourse } from '@/actions/courses/queries'
 import { getCurrentUser } from '@/actions/user'
-import { CourseBreadcrumb } from '@/components/features/courses/editor/breadcrumb'
-import { CourseProvider } from '@/components/features/courses/editor/context'
-import { COURSE_PARAMS } from '@/components/features/courses/editor/params'
-import { CourseView } from '@/components/features/courses/editor/view'
-import { PageHeader } from '@/components/layout/page-header'
-import { PageMain } from '@/components/layout/page-main'
+import { CourseEditor } from '@/components/features/courses/course-editor'
+import { CourseBreadcrumb } from '@/components/features/courses/course-editor/breadcrumb'
+import { CourseProvider } from '@/components/features/courses/course-editor/context'
+import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { i18n, localizeRecord } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
@@ -24,9 +23,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   const { slug } = await params
 
   const { data: course, error } = await getCourse(slug)
-  if (error) {
-    return notFound()
-  }
+  if (error) return notFound()
 
   const resolvedSearchParams = await searchParams
   const { [COURSE_PARAMS.LANGUAGE]: languageParam, [COURSE_PARAMS.STEP]: stepParam } = await parse(resolvedSearchParams)
@@ -39,9 +36,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
   let step = stepParam
   if (!user.canEdit && !isViewer) {
     const max = course.lessons.findIndex(lesson => !lesson.completed)
-    if (max !== -1 && step - 1 > max) {
-      step = max + 1
-    }
+    if (max !== -1 && step - 1 > max) step = max + 1
   }
   step = step > 0 && step <= course.lessons.length ? step : 1
 
@@ -55,9 +50,7 @@ const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[sl
         }
         continue
       }
-      if (value) {
-        pageParams.set(key, value)
-      }
+      if (value) pageParams.set(key, value)
     }
 
     pageParams.set(COURSE_PARAMS.STEP, step.toString())
@@ -78,25 +71,19 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
 }
 
 const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
-  const [{ course, isViewer, language, step, user }, { RichTextEditorProvider }] = await Promise.all([
-    resolvePageData(props),
-    import('@/components/blocks/rich-text-editor/provider'),
-  ])
+  const { course, isViewer, language, step, user } = await resolvePageData(props)
 
   if (!course.enrolled && !user.canEdit && !isViewer) {
     await enrollCourse(course.id, language)
   }
 
+  const t = await getTranslations('Courses')
+
   return (
     <CourseProvider value={{ course, language, step }}>
-      <PageHeader href="/courses" namespace="Courses" titleKey="courses">
-        <CourseBreadcrumb />
-      </PageHeader>
-      <PageMain>
-        <RichTextEditorProvider readOnly={!user.canEdit}>
-          <CourseView />
-        </RichTextEditorProvider>
-      </PageMain>
+      <DashboardPage title={t('courses')} backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
+        <CourseEditor />
+      </DashboardPage>
     </CourseProvider>
   )
 }

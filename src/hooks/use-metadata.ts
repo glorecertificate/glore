@@ -66,7 +66,7 @@ interface UseMetadataOptions {
    * Whether to show the application name in the document title.
    * @default true
    */
-  applicationName?: boolean | 'full'
+  applicationName?: boolean | 'short' | 'full'
   /**
    * Delay in milliseconds before updating the metadata.
    * @default 100
@@ -100,7 +100,7 @@ export const useMetadata = ({ applicationName = true, delay = 100, ...options }:
   const setTitle = (newTitle: string) => {
     const content =
       displayMode === 'browser' && applicationName
-        ? `${newTitle} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
+        ? `${newTitle} ${metadata.separator} ${applicationName === 'short' ? metadata.shortName : metadata.name}`
         : newTitle
     document.title = content
     updateMetaContent('title', content)

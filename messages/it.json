@@ -2,7 +2,7 @@
   "Metadata": {
     "description": "GloRe è una rete aperta che mira ad ampliare il proprio pubblico sia di volontari che di ONG in tutto il mondo per rendere i certificati disponibili a tutti.",
     "keywords": "GloRe, volontariato, rete globale, ONG, certificato, competenze trasversali, corsi, apprendimento, comunità",
-    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi, ricevere notifiche e gestire i tuoi certificati offline.",
+    "pwaDescription": "Installa GloRe sul tuo dispositivo per accedere ai corsi e gestire i tuoi certificati offline.",
     "title": "GloRe - Rete globale di volontariato"
   },
   "Common": {
@@ -11,7 +11,7 @@
     "backToHome": "Torna alla home",
     "backToPrevious": "Torna indietro",
     "cancel": "Cancella",
-    "clearSort": "Rimuovi ordine",
+    "clearSort": "Rimuovi ordinamento",
     "completed": "Completato",
     "continue": "Continua",
     "delete": "Elimina",
@@ -345,7 +345,7 @@
       "remove": "Rimuovi",
       "removeItem": "Rimuovi elemento",
       "seeAllSelected": "Vedi tutti gli elementi selezionati",
-      "selectAtLeastOne": "Devi selezionare almeno un {item}"
+      "selectAtLeastOne": "È necessario selezionare almeno un {item}"
     },
     "RichTextEditor": {
       "actions": {
@@ -689,7 +689,7 @@
       }
     },
     "Sidebar": {
-      "close": "Chiudi la barra laterale",
+      "close": "Chiudi barra laterale",
       "open": "Apri la barra laterale"
     },
     "PasswordInput": {
@@ -790,7 +790,7 @@
     "resendEmail": "Invia un'altra email",
     "resendTimer": "Invia un'altra email tra {seconds}s",
     "signupDialogMessage": "<p>Gli utenti individuali possono registrarsi a GloRe solo con un invito dalla propria organizzazione.</p><p>Se la tua organizzazione fa parte della rete GloRe e desideri accedere come volontario, tutor o coordinatore, chiedi a un referente di mandarti un invito.</p><p>Se la tua organizzazione non è ancora registrata su GloRe, puoi inviare una richiesta di registrazione qui sotto.</p><p>Per ulteriori informazioni, visita il <link>nostro sito web</link>.</p>",
-    "signupDialogRegister": "Registra la tua organizzazione →",
+    "signupDialogRegister": "Registra la tua organizzazione",
     "signupDialogTitle": "Accedi al network di GloRe",
     "signupMessage": "Non hai un account? Scopri <link>come iscriverti</link>",
     "skipAndLogin": "Salta e vai al login",
@@ -813,6 +813,7 @@
     "answerDisabled": "Non puoi modificare la tua risposta",
     "archive": "Archivio",
     "archived": "Archiviato",
+    "archivedOnBy": "Archiviato {date} da",
     "atTheMoment": "{message} al momento",
     "backTo": "Vedi tutti i corsi",
     "backToAll": "Torna a tutti i corsi",
@@ -827,12 +828,12 @@
     "completedTitleAll": "Congratulazioni, hai completato tutti i corsi!",
     "completedVerifiedSkills": "Hai verificato le seguenti soft skills:",
     "completion": "Completamento",
-    "confirmArchiveMessage": "L'archiviazione di questo corso lo rimuoverà dall'elenco dei corsi attivi. \nTroverai il corso nella sezione archiviati, dove potrai ripristinarlo in seguito, se necessario.",
+    "confirmArchiveMessage": "L'archiviazione di questo corso annullerà la pubblicazione e le attuali iscrizioni. \nIl corso non sarà più visibile nell'elenco dei corsi attivi, ma potrai sempre accedervi e ripubblicarlo in futuro.",
     "confirmArchiveTitle": "Sei sicuro di voler archiviare questo corso?",
     "confirmDeleteMessage": "L'eliminazione di questo corso è permanente e non può essere annullata. \nTutti i dati associati andranno persi.",
     "confirmDeleteTitle": "Sei sicuro di voler eliminare questo corso?",
     "confirmUnarchiveMessage": "L'annullamento dell'archiviazione di questo corso lo renderà nuovamente visibile nell'elenco dei corsi attivi.",
-    "confirmUnarchiveTitle": "Sei sicuro di voler annullare l'archiviazione di questo corso?",
+    "confirmUnarchiveTitle": "Annullare l'archiviazione di questo corso?",
     "continueCourse": "Continua corso",
     "correctAnswerMessage": "Ottimo lavoro, hai risposto correttamente.",
     "correctAnswerTitle": "Corretto!",
@@ -847,6 +848,8 @@
     "courseDescriptionSubtitle": "Descrivi di cosa tratta il corso, i suoi obiettivi e qualsiasi altra informazione rilevante.",
     "courseMetadata": "Metadata",
     "courseMetadataDescription": "Metadata e dettagli del corso",
+    "coursePublishError": "Impossibile aggiornare la pubblicazione del corso",
+    "coursePublishedIn": "Corso pubblicato in {lang}",
     "courseSettingsUpdated": "Impostazioni del corso aggiornate correttamente",
     "courseSlug": "URL",
     "courseSlugDescription": "Indirizzo web del corso, deve essere univoco e descrittivo.",
@@ -870,6 +873,8 @@
     "courseType-skill": "Soft skill",
     "courseTypeDescription-skill": "Il corso è incentrato sulla verifica di una specifica soft skill.",
     "courseUnarchived": "Corso annullato con successo",
+    "courseUnpublishError": "Impossibile aggiornare la pubblicazione del corso",
+    "courseUnpublishedFrom": "Corso rimosso da {lang}",
     "courses": "Corsi",
     "createCourse": "Crea corso",
     "createdBy": "Creato da",
@@ -914,6 +919,7 @@
     "iconDescription": "Icona che rappresenta la competenza o l'argomento del corso.",
     "iconPlaceholder": "Scegli un'icona",
     "iconSearchPlaceholder": "Cerca un'icona...",
+    "iconUpdateSuccess": "Icona aggiornata con successo",
     "inProgress": "In corso",
     "info": "Informazioni",
     "infoSettings": "Informazioni",
@@ -948,16 +954,15 @@
     "notStarted": "Non iniziati",
     "partial": "Parziali",
     "preview": "Anteprima",
-    "previewDraftIn": "Anteprima draft {lang}",
     "previewIn": "Anteprima in {lang}",
     "previewMessage": "Visualizza anteprima",
     "previous": "Precedente",
     "proceedToNextLesson": "Procedi al passo successivo",
     "sortBy-progress": "Progresso",
     "publicationStatus": "{type, select, active {Attivo} draft {Draft} archived {Archiviato} other {}}",
-    "publishCourseMessage": "Il corso diventerà visibile nelle lingue selezionate",
+    "publishCourseMessage": "Il corso diventerà visibile e accessibile a tutti gli utenti della piattaforma.",
     "publishIn": "Pubblica in...",
-    "publishInLanguage": "Pubblica in {lang}",
+    "publishInLanguage": "Pubblicare corso in {lang}?",
     "published": "Pubblicati",
     "publishedSingle": "Pubblicato",
     "questionsSubtitle": "Rispondi vero o falso {count, plural, =1 {alla seguente affermazione} other {alle seguenti affermazioni}}.",
@@ -1009,8 +1014,8 @@
     "trueAnswer": "Vero",
     "sortBy-type": "Tipo",
     "unpublish": "Sospendi pubblicazione",
-    "unpublishCourseMessage": "Il corso non sarà visibile sulla piattaforma",
-    "unpublishFromLanguage": "Annulla pubblicazione in {lang}",
+    "unpublishCourseMessage": "Il corso non sarà più visibile o accessibile in questa lingua, ma rimarrà salvato come draft e potrai pubblicarlo di nuovo in qualsiasi momento.",
+    "unpublishFromLanguage": "Annullare pubblicazione in {lang}?",
     "untitledCourse": "Corso senza titolo",
     "untitledLesson": "Lezione senza titolo",
     "updateFilters": "Prova ad aggiornare i filtri per visualizzare altri corsi",
@@ -1034,9 +1039,9 @@
     "publishInfo": "Quando attivo, il corso è visibile agli utenti in questa lingua.",
     "publishToggleLabel": "Pubblicato",
     "incompleteContent": "contenuto della lezione incompleto",
-    "unarchive": "Annulla archiviazione",
+    "unarchive": "Ripristina",
     "cancel": "Cancella",
-    "continue": "Continuare",
+    "continue": "Continua",
     "delete": "Elimina",
     "followLink": "Segui il link",
     "resetAllFilters": "Reimposta i filtri",
@@ -1063,7 +1068,6 @@
     "extraExplanationPlaceholder": "Inserisci una spiegazione in {lang}",
     "emptyMessage-published": "Non ci sono corsi pubblicati",
     "archiveAction": "Archivia",
-
     "unsavedChangesTitle": "Modifiche non salvate",
     "unsavedChangesMessage": "La versione {languages} del corso ha modifiche non salvate. Sei sicuro di voler lasciare la pagina? Tutte le modifiche andranno perse.",
     "leavePage": "Lascia la pagina",
@@ -1472,6 +1476,7 @@
     "contact": "Contatta {user}",
     "editor": "Utente editor",
     "speaks": "Parla {languages}",
+    "speaksMany": "Parla {first}, {second} e {count, plural, =1 {un'altra lingua} other {altre # lingue}}",
     "bio": "Biografia",
     "bioPlaceholder": "Raccontaci di te",
     "birthday": "Data di nascita",
@@ -1918,17 +1923,6 @@
       "signature": "Il team GloRe"
     }
   },
-  "Notifications": {
-    "title": "Notifiche",
-    "empty": "Nessuna notifica",
-    "markAllRead": "Segna tutte come lette",
-    "certificate_assigned": "Ti è stato assegnato un certificato da revisionare",
-    "certificate_reviewed_approved": "Il tuo certificato è stato approvato",
-    "certificate_reviewed_changes": "Il tuo certificato richiede modifiche",
-    "member_added": "Sei stato aggiunto a {organization}",
-    "join_request_accepted": "La tua richiesta di unirsi a {organization} è stata accettata",
-    "join_request_rejected": "La tua richiesta di unirsi a {organization} è stata rifiutata"
-  },
   "PWA": {
     "installTitle": "Installa GloRe",
     "installDescription": "Aggiungi GloRe alla schermata Home per un accesso rapido.",
@@ -1936,8 +1930,6 @@
     "installDismiss": "Non ora",
     "offlineTitle": "Sei offline",
     "offlineDescription": "Connettiti a internet per continuare a usare GloRe.",
-    "offlineRetry": "Riprova",
-    "pushNotifications": "Notifiche push",
-    "pushDenied": "Le notifiche sono bloccate. Attivale nelle impostazioni del browser."
+    "offlineRetry": "Riprova"
   }
 }

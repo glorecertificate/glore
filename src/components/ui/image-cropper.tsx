@@ -2,7 +2,7 @@
 
 import 'react-image-crop/dist/ReactCrop.css'
 
-import { type SyntheticEvent, useCallback, useRef, useState } from 'react'
+import { type SyntheticEvent, useRef, useState } from 'react'
 
 import { Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -80,7 +80,7 @@ export const ImageCropper = ({
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const imageRef = useRef<HTMLImageElement | null>(null)
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
     if (!file) {
       return
@@ -88,7 +88,7 @@ export const ImageCropper = ({
     setSelectedFile(file)
     setPreviewUrl(URL.createObjectURL(file))
     setOpen(true)
-  }, [])
+  }
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -99,12 +99,12 @@ export const ImageCropper = ({
     onDrop,
   })
 
-  const onImageLoad = useCallback((e: SyntheticEvent<HTMLImageElement>) => {
+  const onImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget
     setCrop(centerCrop(makeAspectCrop({ unit: '%', width: 90 }, 1, width, height), width, height))
-  }, [])
+  }
 
-  const handleCrop = useCallback(async () => {
+  const handleCrop = async () => {
     if (imageRef.current && completedCrop?.width && completedCrop?.height && selectedFile) {
       try {
         setSaving(true)
@@ -119,7 +119,7 @@ export const ImageCropper = ({
         setSaving(false)
       }
     }
-  }, [completedCrop, onChange, selectedFile])
+  }
 
   return (
     <>

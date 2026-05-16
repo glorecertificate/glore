@@ -3,10 +3,9 @@ import { Suspense } from 'react'
 import { listUserSessions } from '@/actions/auth'
 import { AccountSessions } from '@/components/features/users/account-sessions'
 import { UserSettings } from '@/components/features/users/user-settings'
-import { UserSettingsHeader } from '@/components/features/users/user-settings-header'
-import { UserSettingsTabs } from '@/components/features/users/user-settings-tabs'
+import { UserSettingsTabs, UserSettingsTabsList } from '@/components/features/users/user-settings-tabs'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageMain } from '@/components/layout/page-main'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -22,8 +21,7 @@ const SessionsContent = async () => {
 
 const SettingsPage = () => (
   <UserSettingsTabs>
-    <UserSettingsHeader />
-    <PageMain className="py-8">
+    <DashboardPage breadcrumb={<UserSettingsTabsList />} title="Settings" className="py-8">
       <UserSettings
         sessionsContent={
           <Suspense fallback={<LoadingFallback />}>
@@ -31,7 +29,7 @@ const SettingsPage = () => (
           </Suspense>
         }
       />
-    </PageMain>
+    </DashboardPage>
   </UserSettingsTabs>
 )
 

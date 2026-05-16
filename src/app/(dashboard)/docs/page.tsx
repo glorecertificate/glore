@@ -1,14 +1,10 @@
-import { Suspense } from 'react'
-
 import { BookOpenIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { listDocCategories } from '@/actions/doc'
 import { DocsList } from '@/components/features/docs/docs-list'
-import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageHeader } from '@/components/layout/page-header'
-import { PageMain } from '@/components/layout/page-main'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { Card, CardContent } from '@/components/ui/card'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -24,7 +20,6 @@ const DocsPageContent = async () => {
     listDocCategories({ includeUnpublished: true }),
     getTranslations('Docs'),
   ])
-
   const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
   const allCategories = categories ?? []
 
@@ -47,15 +42,14 @@ const DocsPageContent = async () => {
   )
 }
 
-const DocsPage = () => (
-  <>
-    <PageHeader />
-    <PageMain className="space-y-10">
-      <Suspense fallback={<LoadingFallback />}>
-        <DocsPageContent />
-      </Suspense>
-    </PageMain>
-  </>
-)
+const DocsPage = async () => {
+  const t = await getTranslations('Layout')
+
+  return (
+    <DashboardPage className="space-y-10" title={t('docs')}>
+      <DocsPageContent />
+    </DashboardPage>
+  )
+}
 
 export default DocsPage

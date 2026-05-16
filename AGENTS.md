@@ -180,7 +180,7 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 11. **Lucide icon import:** Import types from `lucide-react`, but use `LucideIcon` from `@/components/icons/lucide` for rendering.
 12. **Build tsconfig:** Production builds use `tsconfig.build.json` which excludes dev types.
 13. **`cacheComponents: true`:** Enabled in `next.config.ts` for cached components.
-14. **React Compiler enabled:** `reactCompiler: true` at top level of `next.config.ts` (NOT inside `experimental`). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
+14. **React Compiler enabled in production only:** `reactCompiler` is set to `phase !== PHASE_DEVELOPMENT_SERVER` in `next.config.ts` — enabled for builds, disabled in dev to keep HMR fast (React Compiler relies on Babel which kills Turbopack HMR speed). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
 15. **Never edit generated files:** `env.d.ts` and everything under `drizzle/` are auto-generated. Use `pnpm typegen` or `pnpm db generate`/`pnpm db migrate`.
 16. **Remove unused translation keys:** After changes, scan all three translation files and source code. Remove unused keys from all three files simultaneously.
 17. **No comments in new code:** Never add inline or JSDoc comments. Exception: `{/* Section */}` dividers in long JSX components. Do NOT touch comments in existing code.
@@ -203,7 +203,7 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 - **Always `const` arrow functions**, never `function` keyword
 - **Never specify return types** unless required for type narrowing, overloads, or recursive types
 - **Named exports inline**: `export const Foo = () => ...` (never declare then export separately)
-- **Default exports direct**: `export default () => ...` or `export default async () => ...`
+- **Default exports defined first**: `const Component = () => { ... }` and `export default Component`
 
 ### Control flow
 

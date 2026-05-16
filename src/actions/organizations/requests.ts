@@ -6,7 +6,6 @@ import { randomBytes } from 'node:crypto'
 
 import { and, eq } from 'drizzle-orm'
 
-import { createNotification, createNotificationByEmail } from '@/actions/notification'
 import {
   assertOrganizationManager,
   canReviewRequestRole,
@@ -114,11 +113,6 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
       status: 'accepted',
     })
 
-    await createNotification(invitedUser.id, 'join_request_decided', {
-      organizationName: organization.name,
-      status: 'accepted',
-    }).catch(() => null)
-
     return parseOrganizationJoinRequest({ ...request, status: 'accepted' })
   })
 }
@@ -171,11 +165,6 @@ export const rejectOrganizationJoinRequest = async (requestId: number, reviewerC
         reviewerComment: nextComment,
         status: 'rejected',
       }),
-      createNotificationByEmail(request.email, 'join_request_decided', {
-        comment: nextComment,
-        organizationName: organization.name,
-        status: 'rejected',
-      }).catch(() => null),
     ])
 
     return parseOrganizationJoinRequest({ ...request, reviewerComment: nextComment, status: 'rejected' })
@@ -209,8 +198,8 @@ export const requestOrganizationRegistration = async ({
     const handle = name
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
+      .replace(/[^a-z0-9]+/gu, '-')
+      .replace(/^-+|-+$/gu, '')
 
     const existing = await db.query.organizations.findFirst({
       columns: { id: true },

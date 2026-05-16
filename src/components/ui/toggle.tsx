@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useMemo } from 'react'
+import { createContext, use } from 'react'
 
 import * as TogglePrimitive from '@radix-ui/react-toggle'
 import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
@@ -50,7 +50,7 @@ export const ToggleGroup = ({
   variant,
   ...props
 }: React.ComponentProps<typeof ToggleGroupPrimitive.Root> & VariantProps<typeof toggleVariants>) => {
-  const contextValue = useMemo(() => ({ size, variant }), [size, variant])
+  const contextValue = { size, variant }
 
   return (
     <ToggleGroupPrimitive.Root

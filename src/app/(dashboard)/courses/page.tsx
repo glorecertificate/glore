@@ -1,12 +1,11 @@
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
 
 import { getCookie } from '@/actions/cookies'
-import { CourseListContent } from '@/components/features/courses/list/content'
-import { CourseListHeader } from '@/components/features/courses/list/header'
-import { CourseListSkeleton } from '@/components/features/courses/list/skeleton'
-import { CourseListTabs } from '@/components/features/courses/list/tabs'
-import { PageMain } from '@/components/layout/page-main'
+import { CourseList } from '@/components/features/courses/course-list'
+import { CourseListHeader } from '@/components/features/courses/course-list/header'
+import { CourseListSkeleton } from '@/components/features/courses/course-list/skeleton'
+import { CourseListTabs } from '@/components/features/courses/course-list/tabs'
+import { DashboardPage } from '@/components/layout/dashboard-page'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -24,14 +23,14 @@ const CoursesPage = async ({ searchParams }: PageProps<'/courses'>) => {
   }
 
   return (
-    <Suspense fallback={<CourseListSkeleton />}>
-      <CourseListTabs>
-        <CourseListHeader />
-        <PageMain className="min-h-[calc(100vh-160px)]">
-          <CourseListContent className="pb-6" />
-        </PageMain>
-      </CourseListTabs>
-    </Suspense>
+    <DashboardPage
+      header={<CourseListHeader />}
+      fallback={<CourseListSkeleton />}
+      className="min-h-[calc(100vh-160px)]"
+      provider={CourseListTabs}
+    >
+      <CourseList className="pb-6" />
+    </DashboardPage>
   )
 }
 

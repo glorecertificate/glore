@@ -1,14 +1,15 @@
+import configConventional from '@commitlint/config-conventional'
 import { RuleConfigSeverity, type UserConfig } from '@commitlint/types'
+
+const COMMIT_SCOPES = ['release', 'deps', 'deps-dev', 'security'] as const
+
+export type CommitType = keyof typeof configConventional.prompt.questions.type.enum
+export type CommitScope = (typeof COMMIT_SCOPES)[number]
 
 export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
-    'type-enum': [
-      RuleConfigSeverity.Error,
-      'always',
-      ['feat', 'fix', 'docs', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'],
-    ],
-    'scope-enum': [RuleConfigSeverity.Error, 'always', ['release', 'deps', 'deps-dev', 'security']],
+    'scope-enum': [RuleConfigSeverity.Error, 'always', COMMIT_SCOPES],
     'subject-empty': [RuleConfigSeverity.Error, 'never'],
     'header-max-length': [RuleConfigSeverity.Error, 'always', 100],
     'body-max-line-length': [RuleConfigSeverity.Disabled],

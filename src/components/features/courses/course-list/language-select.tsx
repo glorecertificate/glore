@@ -1,0 +1,47 @@
+'use client'
+
+import { type Locale, useTranslations } from 'next-intl'
+
+import { useCourseListLanguages } from '@/components/features/courses/course-list/use-params'
+import {
+  MultiSelect,
+  MultiSelectBadge,
+  MultiSelectContent,
+  MultiSelectItem,
+  MultiSelectTrigger,
+} from '@/components/ui/multi-select'
+import { useI18n } from '@/hooks/use-i18n'
+import { i18n } from '@/lib/i18n'
+
+export const CourseListLanguageSelect = () => {
+  const { localeItems } = useI18n()
+  const t = useTranslations('Courses')
+  const { activeLanguages, setActiveLanguages } = useCourseListLanguages()
+
+  const activeLanguageItems = localeItems.filter(item => activeLanguages.includes(item.value))
+
+  return (
+    <MultiSelect
+      label={t('language')}
+      min={1}
+      onChange={(languages: string[]) => setActiveLanguages(languages as Locale[])}
+      options={i18n.locales}
+      value={activeLanguages}
+    >
+      <MultiSelectTrigger position="end">
+        {activeLanguageItems.map(({ displayLabel, icon, value }) => (
+          <MultiSelectBadge className="gap-0 bg-muted/80 py-0 text-sm" key={value} label={displayLabel} value={value}>
+            {icon && <span className="mr-1 inline-block">{icon}</span>}
+          </MultiSelectBadge>
+        ))}
+      </MultiSelectTrigger>
+      <MultiSelectContent align="end">
+        {localeItems.map(({ label, icon, value }) => (
+          <MultiSelectItem key={value} value={value}>
+            {label} {icon}
+          </MultiSelectItem>
+        ))}
+      </MultiSelectContent>
+    </MultiSelect>
+  )
+}

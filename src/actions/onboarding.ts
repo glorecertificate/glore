@@ -40,7 +40,7 @@ export const completeOnboarding = async ({
 
   const usernameParts: string[] = []
   for (const part of [firstName, lastName]) {
-    if (part) usernameParts.push(part.toLowerCase().replace(/\s+/g, ''))
+    if (part) usernameParts.push(part.toLowerCase().replace(/\s+/gu, ''))
   }
   const username = usernameParts.join('.')
 

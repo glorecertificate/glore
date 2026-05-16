@@ -11,12 +11,12 @@ import { checkRateLimit } from '@/lib/rate-limit'
 export const maxDuration = 60
 
 const CHUNKING_REGEXPS = {
-  line: /\n+/m,
-  list: /.{8}/m,
-  word: /\S+\s+/m,
+  line: /\n+/mu,
+  list: /.{8}/mu,
+  word: /\S+\s+/mu,
 }
 
-const CODE_BLOCK_REGEX = /```[^\s]+/
+const CODE_BLOCK_REGEX = /```[^\s]+/u
 
 type ChunkDetector = (buffer: string) => string | null | undefined
 

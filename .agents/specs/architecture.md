@@ -70,14 +70,12 @@ src/
 │   └── queries/        # Query parse functions per table
 ├── emails/             # React Email templates (auth, team, certificates, org)
 ├── hooks/              # Custom React hooks
-├── instrumentation.ts  # Next.js instrumentation hook (runtime env validation)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
 │   ├── constants.ts    # Route roots, regex validators
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail utility)
-│   ├── env.ts          # Zod env schema, runtime validation, ProcessEnv augmentation
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
 │   ├── rate-limit.ts   # Rate limiting helpers

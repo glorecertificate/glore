@@ -16,9 +16,13 @@ import { CacheTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
-const fetchAuthUser = cache(async () => {
-  const session = await auth.api.getSession({ headers: await headers() })
-  return session?.user ?? null
+export const getAuthUser = cache(async () => {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() })
+    return session?.user ?? null
+  } catch {
+    return null
+  }
 })
 
 export const login = async (body: { email: string; password: string }) => {
@@ -45,8 +49,6 @@ export const logout = async () => {
   await auth.api.signOut({ headers: await headers() })
   revalidateTag(CacheTag.AuthUserStatus, 'max')
 }
-
-export const getAuthUser = fetchAuthUser
 
 // const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
 //   const session = await auth.api.getSession({ headers: await headers() })

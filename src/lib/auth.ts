@@ -24,7 +24,13 @@ export const auth = betterAuth({
     async sendResetPassword({ user, url }) {
       await sendMail({
         to: user.email,
-        template: { name: 'auth/recovery', props: { url, userName: user.name || undefined } },
+        template: {
+          name: 'auth/recovery',
+          props: {
+            url,
+            userName: user.name || undefined,
+          },
+        },
       })
     },
   },
@@ -59,7 +65,13 @@ export const auth = betterAuth({
       }) {
         await sendMail({
           to: newEmail,
-          template: { name: 'auth/verify-email', props: { url, userName: user.name || undefined } },
+          template: {
+            name: 'auth/verify-email',
+            props: {
+              url,
+              userName: user.name || undefined,
+            },
+          },
         })
       },
     },
@@ -83,6 +95,14 @@ export const auth = betterAuth({
       maxAge: 5 * 60,
     },
     expiresIn: 7 * 24 * 60 * 60,
+  },
+  logger: {
+    log: (level, message, error, ...args) => {
+      const isAbortError =
+        error?.cause?.sourceError?.name === 'AbortError' || error?.cause?.message?.includes?.('AbortError')
+      if (level === 'error' && isAbortError) return
+      console[level](`${new Date().toISOString()} ${level.toUpperCase()} [Better Auth]: ${message}`, ...args)
+    },
   },
   advanced: {
     cookiePrefix: 'gl',

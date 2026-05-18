@@ -139,7 +139,7 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 
 Full source tree, file naming, and server/client rules: see `.agents/specs/architecture.md`.
 
-**Top-level `src/` layout:** `actions/` (server actions), `app/` (App Router), `components/` (UI + features), `db/` (schema + queries), `emails/` (React Email), `hooks/`, `lib/` (shared utils, types, constants), `proxy.ts`, `i18n.ts`, `instrumentation.ts`.
+**Top-level `src/` layout:** `actions/` (server actions), `app/` (App Router), `components/` (UI + features), `db/` (schema + queries), `emails/` (React Email), `hooks/`, `lib/` (shared utils, types, constants), `proxy.ts`, `i18n.ts`.
 
 ---
 
@@ -188,8 +188,8 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 19. **Org admin uniqueness:** One admin per org (owner/creator). Representatives have same management rights except deletion. Use `isOrgAdmin` for management checks; `membership.role === 'admin'` for owner-exclusive operations.
 20. **Certificate review workflow:** Only tutors review. Tutor auto-assigned as reviewer. Review form MUST allow editing activity fields and skills/evaluations. Status: `draft` > `submitted` > `in_review` > `approved` or `changes_requested`.
 21. **Registration creates org request:** New users register and request to join an existing org (status `pending`). Platform admin approves/rejects.
-22. **Env vars require env.ts entry:** Every env var used by Next.js MUST be in the Zod schema at `src/lib/env.ts`. See `.agents/specs/reference.md` for the full table.
-23. **`validateEnv` at startup only:** Called from `next.config.ts` (phase-guarded) and `src/instrumentation.ts`. Never from application code.
+22. **Env vars require schema entry:** Every env var used by Next.js MUST be in the Zod schema in `next.config.ts`. See `.agents/specs/reference.md` for the full table.
+23. **Env validation lives in `next.config.ts`:** The Zod schema is a module-scope constant there; `schema.parse(process.env)` runs at config load (skipped when `SKIP_ENV_VALIDATION` is set), and the file declares the global `ProcessEnv` type. NEVER import application code (anything under `src/`) into `next.config.ts` — Next watches the config's dependency graph and restarts the dev server on every change to a watched file, so a `src/` import makes every `src/**` edit trigger a full restart.
 24. **Organization profile table split:** Sparse profile fields in `organization_profiles`, core identity in `organizations`. Query parsers must flatten profile fields for downstream use.
 
 ---

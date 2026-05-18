@@ -1,19 +1,49 @@
 import { type NextConfig, Route } from 'next'
-import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type PHASE_TYPE } from 'next/constants'
+import { PHASE_DEVELOPMENT_SERVER, type PHASE_TYPE } from 'next/constants'
 
 import nextIntl from 'next-intl/plugin'
+import z from 'zod'
 
 import { type dependencies } from './package.json'
-import { schema } from './src/lib/env'
 
-type PackageName = keyof typeof dependencies
+const envSchema = z.object({
+  APP_URL: z.url(),
+  BETTER_AUTH_SECRET: z.string().regex(/^[A-Za-z0-9+/]{43}=$/u),
+  COOKIE_PREFIX: z.string().optional(),
+  DATABASE_URL: z
+    .string()
+    .startsWith('postgresql://')
+    .refine(url => url.includes('sslmode=require'), 'DATABASE_URL must include sslmode=require'),
+  GEMINI_API_KEY: z.string().min(1).optional(),
+  GEMINI_MODEL: z.string().min(1).optional(),
+  R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
+  R2_ACCESS_KEY_ID: z.string().regex(/^[0-9a-f]{32}$/u),
+  R2_SECRET_ACCESS_KEY: z.string().regex(/^[0-9a-f]{64}$/u),
+  R2_BUCKET_NAME: z.string().regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/u),
+  R2_PUBLIC_URL: z.url(),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.enum(['25', '465', '587']),
+  SMTP_SENDER: z.string().min(1),
+  SMTP_USER: z.email(),
+  SMTP_PASSWORD: z.string().min(1),
+})
+
+if (!process.env.SKIP_ENV_VALIDATION) envSchema.parse(process.env)
+
+declare global {
+  namespace NodeJS {
+    interface ProcessEnv extends z.infer<typeof envSchema> {}
+  }
+}
+
+type Package = keyof typeof dependencies
 
 const ROOT_REDIRECT: Route = '/dashboard'
-const MANIFEST_PATH: Route = '/api/v1/manifest'
+const MANIFEST_SOURCE: Route = '/api/v1/manifest'
+const EXTERNAL_PACKAGES: Package[] = ['qrcode']
 
 const config = {
   reactStrictMode: true,
-  reactCompiler: true,
   cacheComponents: true,
   trailingSlash: false,
   redirects: () => [
@@ -62,7 +92,7 @@ const config = {
       ],
     },
     {
-      source: MANIFEST_PATH,
+      source: MANIFEST_SOURCE,
       headers: [
         {
           key: 'cache-control',
@@ -71,7 +101,7 @@ const config = {
       ],
     },
   ],
-  serverExternalPackages: ['qrcode'] satisfies PackageName[],
+  serverExternalPackages: EXTERNAL_PACKAGES,
   typedRoutes: true,
   logging: {
     fetches: {
@@ -95,9 +125,8 @@ const plugins = [
   }),
 ]
 
-export default (phase: PHASE_TYPE) => {
-  if ((phase === PHASE_DEVELOPMENT_SERVER || phase === PHASE_PRODUCTION_BUILD) && !process.env.SKIP_ENV_VALIDATION) {
-    schema.parse(process.env)
-  }
-  return plugins.reduce<NextConfig>((acc, next) => next(acc), config)
-}
+export default (phase: PHASE_TYPE) =>
+  plugins.reduce<NextConfig>((acc, next) => next(acc), {
+    ...config,
+    reactCompiler: phase !== PHASE_DEVELOPMENT_SERVER,
+  })

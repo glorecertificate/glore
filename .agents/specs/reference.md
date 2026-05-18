@@ -400,9 +400,9 @@ Semantic token groups (all defined in `src/app/globals.css` with light/dark vari
 
 ## Environment Variables
 
-> **MANDATORY:** Every environment variable used by the Next.js app MUST be declared in `src/lib/env.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are excluded (external CLI tools only).
+> **MANDATORY:** Every environment variable used by the Next.js app MUST be declared in the Zod schema in `next.config.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are excluded (external CLI tools only).
 
-| Variable               | Purpose                                          | Scope  | In `env.ts` |
+| Variable               | Purpose                                          | Scope  | In schema   |
 | ---------------------- | ------------------------------------------------ | ------ | ----------- |
 | `APP_URL`              | Application base URL                             | Server | Yes         |
 | `BETTER_AUTH_SECRET`   | Better Auth secret key                           | Server | Yes         |
@@ -423,9 +423,9 @@ Semantic token groups (all defined in `src/app/globals.css` with light/dark vari
 | `GITHUB_TOKEN`         | GitHub personal access token                     | Server | No          |
 | `VERCEL_TOKEN`         | Vercel CLI token                                 | Server | No          |
 
-**Build-time validation:** `next.config.ts` exports a function that accepts the Next.js phase. `validateEnv` is imported from `'./src/lib/env'` (relative path required; `@/` aliases unavailable in `next.config.ts`) and called when `phase === PHASE_DEVELOPMENT_SERVER` or `phase === PHASE_PRODUCTION_BUILD`, AND `process.env.SKIP_ENV_VALIDATION` is not set. Static analysis tools import `next.config.ts` at module scope but never invoke the exported function, so validation is naturally skipped. The `scripts/typegen.ts` script sets `SKIP_ENV_VALIDATION=1` when calling `next typegen`.
+**Validation:** The Zod schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config is loaded (`next dev` start, `next build`, `next start`), unless `process.env.SKIP_ENV_VALIDATION` is set. `next.config.ts` also declares the global `ProcessEnv` augmentation, so `process.env` is typed app-wide. The `scripts/typegen.ts` script sets `SKIP_ENV_VALIDATION=1` when calling `next typegen`.
 
-**Runtime validation:** `src/instrumentation.ts` exports `register` as a sync function that calls `validateEnv()` when the Next.js server bootstraps.
+> **MANDATORY:** The schema must NOT be moved into `src/` or imported from a `src/` file. Next watches `next.config.ts`'s module-dependency graph and restarts the dev server whenever a watched file changes — importing a `src/` file makes every `src/**` edit trigger a full dev-server restart (cold 5-10s recompiles). Keep the schema inline; `zod` is the only allowed import for it.
 
 ---
 

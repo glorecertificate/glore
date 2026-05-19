@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { type User } from '@/db/queries/user'
 import { useI18n } from '@/hooks/use-i18n'
 import { type Any, type HttpUrl } from '@/lib/types'
+import { cn } from '@/lib/utils'
 import app from '~/config/app.json'
 
 const DEFAULT_HIDE: (keyof User)[] = []
@@ -67,7 +68,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[];
 
   return (
     <div className="flex items-start gap-3">
-      <Avatar className="size-7 rounded-full object-cover shadow-sm">
+      <Avatar className={cn('size-7.5 rounded-full object-cover shadow-sm', !user.avatarUrl && 'border')}>
         {user.avatarUrl && <AvatarImage alt={`${user.firstName} ${user.lastName}`} src={user.avatarUrl} />}
         <AvatarFallback className="text-xs font-semibold text-muted-foreground">{user.initials}</AvatarFallback>
       </Avatar>

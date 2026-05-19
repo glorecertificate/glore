@@ -301,7 +301,7 @@
         "emoji": "Emoji",
         "files": "File",
         "finance": "Finanza",
-        "food-beverage": "Cibo e Bevande",
+        "food-beverage": "Cibo e bevande",
         "gaming": "Giochi",
         "home": "Casa",
         "layout": "Layout",
@@ -331,7 +331,8 @@
       },
       "searchIcons": "Cerca un'icona...",
       "updateIcon": "Aggiorna icona",
-      "noIconsFound": "Nessuna icona trovata"
+      "noIconsFound": "Nessuna icona trovata",
+      "allIcons": "Tutte le icone"
     },
     "ImageCropper": {
       "cancel": "Annulla",

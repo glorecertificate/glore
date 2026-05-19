@@ -15,8 +15,15 @@ export const DropdownMenuPortal = (props: React.ComponentProps<typeof DropdownMe
   <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
 )
 
-export const DropdownMenuTrigger = (props: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) => (
-  <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />
+export const DropdownMenuTrigger = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) => (
+  <DropdownMenuPrimitive.Trigger
+    className={cn('select-none', className)}
+    data-slot="dropdown-menu-trigger"
+    {...props}
+  />
 )
 
 export const DropdownMenuContent = ({

@@ -31,6 +31,7 @@
   "js/ts.experimental.useTsgo": true,
   "js/ts.preferences.autoImportFileExcludePatterns": ["lucide-react"],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
   "oxc.configPath": "./vite.config.ts",
   "oxc.enable": true,
   "oxc.fixKind": "safe_fix_or_suggestion",
@@ -60,5 +61,7 @@
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   },
+  "typescript.native-preview.goMemLimit": "4GiB",
+  "typescript.native-preview.trace.server": "off",
   "typescript.native-preview.tsdk": "./node_modules/@typescript/native-preview"
 }

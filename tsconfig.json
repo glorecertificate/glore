@@ -1,5 +1,6 @@
 {
   "include": ["src", "scripts", "types", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
     "allowJs": false,

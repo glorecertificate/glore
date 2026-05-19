@@ -3,9 +3,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual'
-import { type default as FuseType } from 'fuse.js'
+import { type default as Fuse } from 'fuse.js'
 import { type IconName } from 'lucide-react/dynamic'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button, type ButtonProps } from '@/components/ui/button'
@@ -18,29 +18,33 @@ import { useDebounce } from '@/hooks/use-debounce'
 import { type Any } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
-interface IconData {
-  name: string
-  categories: string[]
-  tags: string[]
+type IconData = (typeof import('~/config/icons.json'))[number]
+
+let cachedIcons: IconData[]
+
+const loadIconData = async () => {
+  if (cachedIcons) return cachedIcons
+  const [{ default: icons }, { dynamicIconImports }] = await Promise.all([
+    import('~/config/icons.json'),
+    import('lucide-react/dynamic'),
+  ])
+  return (cachedIcons = (icons as IconData[]).filter(icon => icon.name in dynamicIconImports))
 }
 
-interface IconPickerProps extends ButtonProps {
-  categorized?: boolean
-  defaultOpen?: boolean
-  defaultValue?: IconName
-  fallback?: React.ReactNode
-  iconsList?: IconData[]
-  modal?: boolean
-  onOpenChange?: (open: boolean) => void
-  onValueChange?: (value: IconName) => void
-  open?: boolean
-  searchable?: boolean
-  showLabels?: boolean
-  tooltips?: boolean
-  value?: IconName
-}
+export const useIconData = () => {
+  const [icons, setIcons] = useState<IconData[]>(cachedIcons ?? [])
+  const [loading, setLoading] = useState(!cachedIcons)
 
-const IconRenderer = ({ name }: { name: IconName }) => <LucideIcon name={name} />
+  const loadIcons = useEffectEvent(async () => {
+    const data = await loadIconData()
+    setIcons(data)
+    setLoading(false)
+  })
+
+  useEffect(() => void loadIcons(), [])
+
+  return { icons, loading }
+}
 
 const IconsColumnSkeleton = () => (
   <div className="mt-1 flex w-full flex-col gap-2">
@@ -52,51 +56,15 @@ const IconsColumnSkeleton = () => (
   </div>
 )
 
-let cachedIcons: IconData[] | null = null
-
-const LIST_STYLE: React.CSSProperties = {
-  scrollbarColor: 'var(--color-brand)',
-  scrollbarWidth: 'thin',
-}
-
-const loadIconData = async () => {
-  if (cachedIcons) return cachedIcons
-  const [{ default: icons }, { dynamicIconImports }] = await Promise.all([
-    import('~/config/icons.json'),
-    import('lucide-react/dynamic'),
-  ])
-  cachedIcons = icons.filter((icon: IconData) => icon.name in dynamicIconImports)
-  return cachedIcons
-}
-
-export const useIconData = () => {
-  const [icons, setIcons] = useState<IconData[]>(cachedIcons ?? [])
-  const [isLoading, setIsLoading] = useState(!cachedIcons)
-
-  const loadIcons = useEffectEvent(async () => {
-    if (cachedIcons) {
-      setIcons(cachedIcons)
-      setIsLoading(false)
-      return
-    }
-    const data = await loadIconData()
-    setIcons(data)
-    setIsLoading(false)
-  })
-
-  useEffect(() => void loadIcons(), [])
-
-  return { icons, isLoading }
-}
+const IconRenderer = ({ name }: { name: IconName }) => <LucideIcon name={name} />
 
 export const IconPicker = ({
-  categorized = false,
+  categorized = true,
   children,
   className,
   defaultOpen,
   defaultValue,
   fallback,
-  iconsList,
   modal = false,
   onOpenChange,
   onValueChange,
@@ -106,51 +74,62 @@ export const IconPicker = ({
   tooltips,
   value,
   ...props
-}: IconPickerProps) => {
+}: Omit<ButtonProps, 'value'> & {
+  categorized?: boolean
+  defaultOpen?: boolean
+  defaultValue?: IconName
+  fallback?: React.ReactNode
+  modal?: boolean
+  onOpenChange?: (open: boolean) => void
+  onValueChange?: (value: IconName) => void
+  open?: boolean
+  searchable?: boolean
+  showLabels?: boolean
+  tooltips?: boolean
+  value?: IconName
+}) => {
   const t = useTranslations('Components.IconPicker')
+  const locale = useLocale()
   const { icons } = useIconData()
 
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 100)
   const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
-  const [isOpen, setIsOpen] = useState(defaultOpen)
-  const [isLoading, setIsLoading] = useState(true)
+  const [openState, setIsOpen] = useState(defaultOpen)
+  const [loading, setLoading] = useState(true)
+  const fuseRef = useRef<typeof Fuse | null>(null)
 
-  const iconsToUse = iconsList || icons
+  const loadFuse = useEffectEvent(async () => {
+    const { default: Fuse } = await import('fuse.js')
+    fuseRef.current = Fuse
+  })
 
-  const [fuseClass, setFuseClass] = useState<typeof FuseType | null>(null)
+  useEffect(() => void loadFuse(), [])
 
-  useEffect(() => {
-    const load = async () => {
-      const { default: F } = await import('fuse.js')
-      setFuseClass(() => F)
-    }
-    void load()
-  }, [])
+  const searchableIcons = icons.map(icon => ({
+    ...icon,
+    searchLabel: icon.label[locale] ?? icon.label.en,
+    searchTags: icon.tags[locale] ?? icon.tags.en,
+    categoryLabels: icon.categories.map(category => t(`categories.${category}` as Any)),
+  }))
 
-  const fuseInstance = fuseClass
-    ? new fuseClass(iconsToUse, {
+  const fuse = fuseRef.current
+    ? new fuseRef.current(searchableIcons, {
         ignoreLocation: true,
         includeScore: true,
-        keys: ['name', 'tags', 'categories'],
+        keys: ['name', 'searchLabel', 'searchTags', 'categoryLabels'],
         threshold: 0.3,
       })
     : null
 
   const filteredIcons = (() => {
-    if (debouncedSearch.trim() === '') {
-      return iconsToUse
-    }
-
-    if (!fuseInstance) return iconsToUse
-
-    const results = fuseInstance.search(debouncedSearch.toLowerCase().trim())
-    return results.map(result => result.item)
+    if (debouncedSearch.trim() === '' || !fuse) return icons
+    return fuse.search(debouncedSearch.toLowerCase().trim()).map(result => result.item)
   })()
 
   const categorizedIcons = (() => {
     if (!categorized || debouncedSearch.trim() !== '') {
-      return [{ id: 'all', icons: filteredIcons, name: 'All Icons' }]
+      return [{ id: 'all', icons: filteredIcons, name: '' }]
     }
 
     const categories = new Map<string, IconData[]>()
@@ -186,9 +165,7 @@ export const IconPicker = ({
     }> = []
 
     for (const [categoryIndex, category] of categorizedIcons.entries()) {
-      if (categorized) {
-        items.push({ categoryIndex, type: 'category' })
-      }
+      if (categorized) items.push({ categoryIndex, type: 'category' })
 
       const rows = []
       for (let i = 0; i < category.icons.length; i += 6) {
@@ -196,12 +173,7 @@ export const IconPicker = ({
       }
 
       for (const [rowIndex, rowIcons] of rows.entries()) {
-        items.push({
-          categoryIndex,
-          icons: rowIcons,
-          rowIndex,
-          type: 'row',
-        })
+        items.push({ categoryIndex, icons: rowIcons, rowIndex, type: 'row' })
       }
     }
 
@@ -233,10 +205,6 @@ export const IconPicker = ({
     paddingEnd: 2,
   })
 
-  const virtualizerStyle = {
-    height: `${virtualizer.getTotalSize()}px`,
-  }
-
   const getVirtualItemStyle = (virtualItem: VirtualItem) => ({
     height: `${virtualItem.size}px`,
     left: 0,
@@ -247,17 +215,13 @@ export const IconPicker = ({
   })
 
   const handleValueChange = (icon: IconName) => {
-    if (value === undefined) {
-      setSelectedIcon(icon)
-    }
+    if (value === undefined) setSelectedIcon(icon)
     onValueChange?.(icon)
   }
 
   const handleOpenChange = (newOpen: boolean) => {
     setSearch('')
-    if (open === undefined) {
-      setIsOpen(newOpen)
-    }
+    if (open === undefined) setIsOpen(newOpen)
     onOpenChange?.(newOpen)
 
     if (!newOpen) {
@@ -266,9 +230,9 @@ export const IconPicker = ({
       return
     }
 
-    setIsLoading(true)
+    setLoading(true)
     timerRef.current = setTimeout(() => {
-      setIsLoading(false)
+      setLoading(false)
       virtualizer.measure()
     }, 10)
     resizeObserverRef.current = new ResizeObserver(() => {
@@ -287,11 +251,7 @@ export const IconPicker = ({
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value)
-
-    if (parentRef.current) {
-      parentRef.current.scrollTop = 0
-    }
-
+    if (parentRef.current) parentRef.current.scrollTop = 0
     virtualizer.scrollToOffset(0)
   }
 
@@ -306,23 +266,6 @@ export const IconPicker = ({
     }
   }
 
-  const handleCategoryClick = (categoryName: string) => (e: React.MouseEvent) => {
-    e.stopPropagation()
-    scrollToCategory(categoryName)
-  }
-
-  const handleClose = (e: Event) => e.preventDefault()
-
-  const categoryButtons = (() => {
-    if (!categorized || debouncedSearch.trim() !== '') return null
-
-    return categorizedIcons.map(category => (
-      <Button key={category.id} onClick={handleCategoryClick(category.name)} size="xs" variant="ghost">
-        {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
-      </Button>
-    ))
-  })()
-
   const renderIcon = (icon: IconData) => {
     if (!tooltips) {
       return (
@@ -330,8 +273,8 @@ export const IconPicker = ({
           className="aspect-square w-full"
           key={icon.name}
           onClick={handleIconClick(icon.name)}
-          variant="outline"
-          title={icon.name.replace(/-/gu, ' ')}
+          variant="ghost"
+          title={icon.label[locale] ?? icon.label.en}
         >
           <IconRenderer name={icon.name as IconName} />
         </Button>
@@ -347,7 +290,7 @@ export const IconPicker = ({
           >
             <IconRenderer name={icon.name as IconName} />
           </TooltipTrigger>
-          <TooltipContent>{icon.name}</TooltipContent>
+          <TooltipContent>{icon.label[locale] ?? icon.label.en}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
     )
@@ -359,7 +302,7 @@ export const IconPicker = ({
     }
 
     return (
-      <div className="relative w-full" style={virtualizerStyle}>
+      <div className="relative w-full" style={{ height: `${virtualizer.getTotalSize()}px` }}>
         {virtualizer.getVirtualItems().map((virtualItem: VirtualItem) => {
           const item = virtualItems[virtualItem.index]
           if (!item) return null
@@ -376,7 +319,7 @@ export const IconPicker = ({
           if (categorized) {
             return (
               <div className="top-0 z-10" key={virtualItem.key} style={itemStyle}>
-                <h3 className="text-[13px] font-medium capitalize">{categorizedIcons[item.categoryIndex].name}</h3>
+                <h3 className="text-[13px] font-medium">{categorizedIcons[item.categoryIndex].name}</h3>
                 <Separator className="my-1.5" />
               </div>
             )
@@ -388,16 +331,16 @@ export const IconPicker = ({
     )
   }
 
-  const iconName = (value || selectedIcon) as IconName
+  const iconName = value ?? selectedIcon
 
   return (
-    <Popover modal={modal} onOpenChange={handleOpenChange} open={open ?? isOpen}>
+    <Popover modal={modal} onOpenChange={handleOpenChange} open={open ?? openState}>
       <PopoverTrigger asChild>
         {children ?? (
           <Button
             className={cn(
               'has-[>svg]:animate-none',
-              isOpen && 'cursor-default bg-accent/80 dark:bg-accent/50',
+              openState && 'cursor-default bg-accent/80 dark:bg-accent/50',
               className
             )}
             variant="ghost"
@@ -405,7 +348,7 @@ export const IconPicker = ({
           >
             {iconName && (
               <>
-                <LucideIcon className={cn(isOpen && 'text-foreground')} fallback={fallback} name={iconName} />
+                <LucideIcon className={cn(openState && 'text-foreground')} fallback={fallback} name={iconName} />
                 {showLabels && t('updateIcon')}
               </>
             )}
@@ -414,16 +357,39 @@ export const IconPicker = ({
       </PopoverTrigger>
       <PopoverContent
         className="flex w-72 flex-col gap-3 rounded-lg border bg-card p-3 shadow-xs"
-        onCloseAutoFocus={handleClose}
+        onCloseAutoFocus={e => e.preventDefault()}
       >
         {searchable && (
           <Input type="search" onChange={handleSearchChange} placeholder={t('searchIcons')} value={search} />
         )}
         {categorized && debouncedSearch.trim() === '' && (
-          <div className="scrollbar-hide flex flex-row gap-1 overflow-x-auto pb-2">{categoryButtons}</div>
+          <div className="scrollbar-hide flex flex-row gap-1 overflow-x-auto">
+            {categorized &&
+              debouncedSearch.trim() === '' &&
+              categorizedIcons.map(category => (
+                <Button
+                  key={category.id}
+                  onClick={e => {
+                    e.stopPropagation()
+                    scrollToCategory(category.name)
+                  }}
+                  size="xs"
+                  variant="outline"
+                >
+                  {category.name.charAt(0).toUpperCase() + category.name.slice(1)}
+                </Button>
+              ))}
+          </div>
         )}
-        <div className="h-60 overflow-y-auto overscroll-contain" ref={parentRef} style={LIST_STYLE}>
-          {isLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
+        <div
+          className="h-60 overflow-y-auto overscroll-contain"
+          ref={parentRef}
+          style={{
+            scrollbarColor: 'var(--color-brand)',
+            scrollbarWidth: 'thin',
+          }}
+        >
+          {loading ? <IconsColumnSkeleton /> : renderVirtualContent()}
         </div>
       </PopoverContent>
     </Popover>

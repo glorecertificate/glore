@@ -115,7 +115,7 @@
     --header-primary: oklch(0.488 0.243 264.376);
     --header-accent: oklch(0.269 0 0);
     --header-accent-foreground: oklch(0.985 0 0);
-    --header-border: oklch(1 0 0 / 10%);
+    --header-border: oklch(28.615% 0.00003 271.152);
     --header-ring: oklch(0.439 0 0);
   }
 }

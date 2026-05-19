@@ -53,7 +53,7 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run check:fix`      | Same as `check:ci` but with auto-fix enabled                    |
 | `pnpm run check:size`     | Bundle size check                                               |
 | `pnpm run typecheck`      | Type-check only (`tsgo --noEmit`)                               |
-| `pnpm run typegen`        | Generate route + public-file types into `env.d.ts`              |
+| `pnpm run typegen`        | Generate route + public-file types into `types/`               |
 | `pnpm run analyze`        | Next.js bundle analyzer                                         |
 | `pnpm run release`        | Create a release (release-it)                                   |
 | `pnpm run deploy:preview` | Deploy preview to Vercel                                        |
@@ -181,7 +181,7 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 12. **Build tsconfig:** Production builds use `tsconfig.build.json` which excludes dev types.
 13. **`cacheComponents: true`:** Enabled in `next.config.ts` for cached components.
 14. **React Compiler enabled in production only:** `reactCompiler` is set to `phase !== PHASE_DEVELOPMENT_SERVER` in `next.config.ts` — enabled for builds, disabled in dev to keep HMR fast (React Compiler relies on Babel which kills Turbopack HMR speed). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
-15. **Never edit generated files:** `env.d.ts` and everything under `drizzle/` are auto-generated. Use `pnpm typegen` or `pnpm db generate`/`pnpm db migrate`.
+15. **Never edit generated files:** `types/*.generated.d.ts` and everything under `drizzle/` are auto-generated. Use `pnpm typegen` or `pnpm db generate`/`pnpm db migrate`.
 16. **Remove unused translation keys:** After changes, scan all three translation files and source code. Remove unused keys from all three files simultaneously.
 17. **No comments in new code:** Never add inline or JSDoc comments. Exception: `{/* Section */}` dividers in long JSX components. Do NOT touch comments in existing code.
 18. **Certificate PDF template:** Inter font, teal `#0f766e`, GloRe header/logo, QR code linking to `/{username}?v={handle}`, reviewer signature block.

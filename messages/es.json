@@ -331,7 +331,8 @@
       },
       "searchIcons": "Busque un icono...",
       "updateIcon": "Actualizar icono",
-      "noIconsFound": "No se encontraron iconos"
+      "noIconsFound": "No se encontraron iconos",
+      "allIcons": "Todos los iconos"
     },
     "MultiSelect": {
       "item": "Artículo",

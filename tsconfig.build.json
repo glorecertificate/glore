@@ -1,5 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src", "*.ts", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src", "types", "*.ts", ".next/types/**/*.ts"]
 }

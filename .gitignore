@@ -4,6 +4,7 @@ node_modules/
 tmp/
 .env*
 !.env.example
-*.d.ts
+/*.d.ts
+*.generated.d.ts
 *.d.json.ts
 *.tsbuildinfo

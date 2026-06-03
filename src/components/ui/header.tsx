@@ -66,7 +66,7 @@ export const HeaderBreadcrumb = ({
           {description && (
             <Tooltip>
               <TooltipTrigger asChild>
-                <InfoIcon className="mt-0.5 size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground" />
+                <InfoIcon className="mt-px size-3.5 cursor-help text-foreground/60 not-data-[state=closed]:text-foreground hover:text-foreground" />
               </TooltipTrigger>
               <TooltipContent className="text-[13px]" showArrow>
                 {description}
@@ -100,7 +100,7 @@ export const Header = ({ children, className, ...props }: React.ComponentProps<'
     <header
       className={cn(
         'sticky top-0 z-5 flex min-h-12 w-full shrink-0 items-center justify-between gap-2 px-6 py-4',
-        'border-b border-header-border bg-header text-header-foreground transition-[width,height] ease-linear',
+        'border-b border-transparent bg-header text-header-foreground transition-[width,height] ease-linear',
         scrolled && 'border-header-border',
         className
       )}

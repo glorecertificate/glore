@@ -19,29 +19,79 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 
 ### Prerequisites
 
-You must download and activate the Node.js version specified in [`.node-version`](.node-version).
+- Node.js version specified in [`.node-version`](.node-version)
+- Docker (for the local Postgres used in development)
 
 ### Setup and run
 
 ```sh
-# Clone the repo
 git clone https://github.com/glorecertificate/glore.git && cd glore
-
-# Set up the environment
 cp .env.example .env
-
-# Enable pnpm and install dependencies
 corepack enable && corepack install && pnpm install
-
-# Install agent skills
 pnpm skills
-
-# Start the dev server at https://glore.localhost
-pnpm dev
-
-# Start the email preview server on https://glore-email.localhost
-pnpm email
+pnpm run db:up
+DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db migrate
+pnpm dev                # https://glore.localhost
+pnpm email              # https://glore-email.localhost (optional)
 ```
+
+### Local database
+
+Development uses a Postgres 17 container managed by [`compose.yaml`](compose.yaml). The dev server
+reads `DATABASE_URL` from `.env.development.local`, which Next.js loads only for `next dev` and
+overrides `.env` / `.env.local`. Production builds (`next build`, Vercel) ignore that file and use
+the Neon URL from `.env`. The driver in [`src/db/client.ts`](src/db/client.ts) selects `pg` for any
+`localhost`/`127.0.0.1` host and `neon-http` for everything else.
+
+**Connection (local):**
+
+| Field    | Value                                            |
+| -------- | ------------------------------------------------ |
+| Host     | `localhost`                                      |
+| Port     | `5433` (5432 is reserved to avoid host conflict) |
+| Database | `glore`                                          |
+| User     | `glore`                                          |
+| Password | `glore`                                          |
+| URL      | `postgresql://glore:glore@localhost:5433/glore`  |
+
+**Container lifecycle:**
+
+```sh
+pnpm run db:up      # start (or recreate) the Postgres container
+pnpm run db:down    # stop and remove the container (volume preserved)
+pnpm run db:logs    # tail Postgres logs
+pnpm run db:reset   # drop the data volume and restart with an empty database
+```
+
+**Schema:**
+
+`drizzle-kit` does not auto-load `.env.development.local`, so always pass `DATABASE_URL` explicitly when
+operating on the local DB:
+
+```sh
+DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db migrate    # apply pending migrations
+DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db generate   # generate a new migration from schema changes
+DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db studio     # open Drizzle Studio
+```
+
+**Seeding data from Neon:**
+
+`pnpm run db:pull [env-file]` dumps the database referenced in the given env file (defaults to `.env`)
+and replaces the local database with it. The script prints both source and target URLs (with passwords
+masked) and asks for confirmation before running. It uses `pg_dump --clean --if-exists` inside the
+`glore-postgres` container, so existing tables, rows, and types in the target are dropped.
+
+```sh
+pnpm run db:pull               # pull from the DATABASE_URL in .env
+pnpm run db:pull .env.local    # pull from a different env file
+```
+
+The Postgres container must be running first (`pnpm run db:up`).
+
+**Switching back to Neon in dev:**
+
+Comment out the `DATABASE_URL` line in `.env.development.local`. Next.js will then fall through to
+`.env.local` / `.env` on the next dev server restart.
 
 ### Deployment
 

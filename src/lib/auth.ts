@@ -6,7 +6,10 @@ import { nextCookies } from 'better-auth/next-js'
 import { admin, username } from 'better-auth/plugins'
 
 import { db } from '@/db/client'
-import * as schema from '@/db/schema'
+import { accounts } from '@/db/schema/accounts'
+import { sessions } from '@/db/schema/sessions'
+import { users } from '@/db/schema/users'
+import { verifications } from '@/db/schema/verifications'
 import { sendMail } from '@/lib/email'
 import metadata from '~/config/metadata.json'
 
@@ -16,7 +19,12 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(db, {
     provider: 'pg',
-    schema,
+    schema: {
+      accounts,
+      sessions,
+      users,
+      verifications,
+    },
     usePlural: true,
   }),
   emailAndPassword: {

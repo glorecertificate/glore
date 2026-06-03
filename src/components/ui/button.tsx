@@ -117,7 +117,7 @@ export const Button = ({
     <Component
       className={cn(
         buttonVariants({ effect, size, variant }),
-        loading && 'cursor-wait',
+        loading && 'cursor-wait disabled:cursor-wait',
         type === 'submit' ? 'transition-colors' : 'transition-all',
         className
       )}

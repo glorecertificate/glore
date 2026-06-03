@@ -12,6 +12,7 @@ import { type Locale } from 'next-intl'
 import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
 import { teamInvitations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
@@ -188,7 +189,7 @@ export const deleteTeamMember = async (userId: string) => {
   if (!currentUser.isAdmin) return { error: 'You must be an admin to remove team members' }
   if (currentUser.id === userId) return { error: 'You cannot remove yourself from the team' }
 
-  await db.delete(users).where(eq(users.id, userId))
+  await deleteUser(userId, { reassignTo: currentUser.id })
 
   return { data: { id: userId } }
 }

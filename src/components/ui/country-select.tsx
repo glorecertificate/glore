@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { type MessageKey } from '@/lib/i18n'
 import { cn, keysOf } from '@/lib/utils'
 
-const countryCodeToFlag = (code: string) =>
+export const countryCodeToFlag = (code: string) =>
   code
     .toUpperCase()
     .split('')

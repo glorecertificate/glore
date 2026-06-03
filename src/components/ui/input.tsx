@@ -16,7 +16,7 @@ export interface InputProps
 
 export const inputVariants = cva(
   [
-    'flex w-full min-w-0 rounded border border-input bg-transparent shadow-2xs transition-[color,box-shadow] outline-none',
+    'flex w-full min-w-0 rounded border border-input bg-transparent transition-[color,box-shadow] outline-none',
     'placeholder:text-muted-foreground disabled:pointer-events-none disabled:opacity-60 aria-invalid:border-destructive aria-invalid:ring-destructive/20',
     'focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30',
     'file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',

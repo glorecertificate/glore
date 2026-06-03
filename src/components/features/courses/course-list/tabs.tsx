@@ -10,6 +10,7 @@ import {
   useCourseListTab,
   useCourseListTabs,
 } from '@/components/features/courses/course-list/use-params'
+import { CourseLanguagesProvider } from '@/components/providers/course-languages-context'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { camelize, cn } from '@/lib/utils'
@@ -21,9 +22,11 @@ export const CourseListTabs = ({ children, ...props }: React.ComponentProps<type
   const handleTabChange = (value: string) => setTab(value as CourseListTab)
 
   return (
-    <Tabs animated className="gap-6" defaultValue="all" onValueChange={handleTabChange} value={tab} {...props}>
-      {children}
-    </Tabs>
+    <CourseLanguagesProvider>
+      <Tabs animated className="gap-6" defaultValue="all" onValueChange={handleTabChange} value={tab} {...props}>
+        {children}
+      </Tabs>
+    </CourseLanguagesProvider>
   )
 }
 

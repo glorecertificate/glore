@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { ArchiveIcon, BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon, UsersIcon } from 'lucide-react'
 import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
@@ -8,9 +8,10 @@ import { toast } from 'sonner'
 
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
 import { courseTypeVariants } from '@/components/features/courses/course-list/type-select'
-import { useCourseListTab } from '@/components/features/courses/course-list/use-params'
+import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
 import { UserCard } from '@/components/features/users/user-card'
 import { LucideIcon } from '@/components/icons/lucide'
+import { resolveCourseLanguage, useCourseLanguages } from '@/components/providers/course-languages-context'
 import { useCourses } from '@/components/providers/courses-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -20,9 +21,9 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { IconPicker } from '@/components/ui/icon-picker'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
+import { SearchHighlight } from '@/components/ui/search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
-import { useCookies } from '@/hooks/use-cookies'
 import { useI18n } from '@/hooks/use-i18n'
 import { useSession } from '@/hooks/use-session'
 import { i18n, localizeRecord } from '@/lib/i18n'
@@ -42,8 +43,9 @@ export const CourseListCard = ({
   const t = useTranslations('Courses')
   const { relativeTime } = useFormatter()
   const now = useNow({ updateInterval: 60_000 })
-  const cookies = useCookies()
   const { tab } = useCourseListTab()
+  const { search } = useCourseListSearch()
+  const { languages: cardLanguages, setLanguage: setCardLanguage } = useCourseLanguages()
 
   const { user } = useSession()
   const { updateCourse } = useCourses()
@@ -59,28 +61,11 @@ export const CourseListCard = ({
     toast.success(t('iconUpdateSuccess'))
   }
 
-  const [language, setLanguageState] = useState(() => {
-    const courseLanguages = cookies.get('courseListLanguages') ?? {}
-    const courseLanguage = courseLanguages[course.id]
-    if (courseLanguage && activeLanguages.includes(courseLanguage)) return courseLanguage
-    if (activeLanguages.includes(locale)) return locale
-    return activeLanguages[0]
-  })
+  const language = resolveCourseLanguage(cardLanguages, course.id, { activeLanguages, fallback: locale })
   const setLanguage = (value: Locale) => {
     if (value === language || !activeLanguages.includes(value)) return
-    setLanguageState(value)
-    const languageCookie = cookies.get('courseListLanguages') ?? {}
-    cookies.set('courseListLanguages', { ...languageCookie, [course.id]: value })
+    setCardLanguage(course.id, value)
   }
-
-  useEffect(() => {
-    if (activeLanguages.includes(language)) return
-    const value = activeLanguages[0]
-    if (!value || value === language) return
-    setLanguageState(value)
-    const languageCookie = cookies.get('courseListLanguages') ?? {}
-    cookies.set('courseListLanguages', { ...languageCookie, [course.id]: value })
-  }, [activeLanguages, cookies, course.id, language])
 
   const title = localizeRecord(course.title, language)
   const coursePath = `/courses/${course.slug}?lang=${language}` as const
@@ -111,18 +96,18 @@ export const CourseListCard = ({
 
     return translation.length > courseDescription.length ? (
       <>
-        {courseDescription}
+        <SearchHighlight query={search} value={courseDescription} />
         <Tooltip>
           <TooltipTrigger className="ml-1 inline-block cursor-help text-[10px] text-muted-foreground/80">
             {t('cardDescriptionMore')}
           </TooltipTrigger>
           <TooltipContent className="max-w-75 text-sm" side="bottom" sideOffset={4}>
-            {translation}
+            <SearchHighlight query={search} value={translation} />
           </TooltipContent>
         </Tooltip>
       </>
     ) : (
-      courseDescription
+      <SearchHighlight query={search} value={courseDescription} />
     )
   })()
 
@@ -160,14 +145,14 @@ export const CourseListCard = ({
                   prefetch
                   title={t('viewCourse')}
                 >
-                  {title}
+                  <SearchHighlight query={search} value={title} />
                 </Link>
               </div>
               <div className="flex items-center gap-1.5">
                 <LinkIcon className="size-2.5" />
                 <Link className="font-mono text-[11px] text-muted-foreground" href={coursePath} title={t('followLink')}>
                   {'/'}
-                  {course.slug}
+                  <SearchHighlight query={search} value={course.slug} />
                 </Link>
               </div>
             </div>
@@ -193,7 +178,7 @@ export const CourseListCard = ({
                 prefetch
                 title={t('viewCourse')}
               >
-                {title}
+                <SearchHighlight query={search} value={title} />
               </Link>
               {course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
             </div>

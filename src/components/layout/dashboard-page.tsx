@@ -32,19 +32,17 @@ export const DashboardPage = ({
     <Provider>
       {header ?? (
         <Header className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <HeaderTrigger />
             {breadcrumb ?? <HeaderBreadcrumb description={description} title={title} backHref={backHref} />}
           </div>
-          <div className="flex items-center gap-1">
-            <HeaderLogo href={APP_ROOT}>
-              <Logo className="mr-1 w-18 transition-[width,height]" />
-            </HeaderLogo>
-          </div>
+          <HeaderLogo href={APP_ROOT}>
+            <Logo className="mr-1 w-18 transition-[width,height]" />
+          </HeaderLogo>
         </Header>
       )}
       <Main {...props}>
-        <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>
+        {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>
     </Provider>
   )

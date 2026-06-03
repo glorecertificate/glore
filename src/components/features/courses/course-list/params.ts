@@ -1,5 +1,6 @@
 export const COURSE_LIST_PARAMS = {
   LANGUAGES: 'lang',
+  SEARCH: 'q',
   SKILL_GROUPS: 'groups',
   SORT: 'sort',
   SORT_DIRECTION: 'dir',

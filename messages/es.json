@@ -1047,6 +1047,7 @@
     "delete": "Borrar",
     "followLink": "Seguir enlace",
     "resetAllFilters": "Restablecer filtros",
+    "searchPlaceholder": "Buscar cursos...",
     "courseType-learner": "Learner",
     "courseTypeDescription-learner": "Un curso de learner está diseñado para adquirir conocimientos específicos sin el contexto de habilidades interpersonales.",
     "redirecting": "Redirigiendo...",
@@ -1068,11 +1069,7 @@
     "addExtraOption": "Agregar opción",
     "extraExplanation": "Explicación",
     "extraExplanationPlaceholder": "Ingrese una explicación en {lang}",
-    "archiveAction": "Archivar",
-    "unsavedChangesTitle": "Cambios sin guardar",
-    "unsavedChangesMessage": "La versión {languages} del curso tiene cambios sin guardar. ¿Seguro que quieres salir de la página? Se perderán todos los cambios.",
-    "leavePage": "Salir",
-    "stayOnPage": "Quedarse"
+    "archiveAction": "Archivar"
   },
   "Dashboard": {
     "allCourses": "Todos los cursos",

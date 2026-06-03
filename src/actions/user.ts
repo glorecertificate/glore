@@ -12,19 +12,9 @@ import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
-import {
-  certificates,
-  contributions,
-  memberships,
-  organizationJoinRequests,
-  userAnswers,
-  userAssessments,
-  userCourses,
-  userEvaluations,
-  userLessons,
-  users,
-} from '@/db/schema'
+import { certificates, memberships, users } from '@/db/schema'
 import { type TableUpdate } from '@/db/types'
 import { CacheTag, userTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
@@ -150,20 +140,7 @@ export const deleteAccount = async () => {
   })
   if (cert) throw new Error('HAS_CERTIFICATES')
 
-  await Promise.all([
-    db.delete(userAssessments).where(eq(userAssessments.userId, user.id)),
-    db.delete(userEvaluations).where(eq(userEvaluations.userId, user.id)),
-    db.delete(userAnswers).where(eq(userAnswers.userId, user.id)),
-    db.delete(userLessons).where(eq(userLessons.userId, user.id)),
-    db.delete(userCourses).where(eq(userCourses.userId, user.id)),
-    db.delete(contributions).where(eq(contributions.userId, user.id)),
-    db
-      .update(organizationJoinRequests)
-      .set({ reviewedBy: null })
-      .where(eq(organizationJoinRequests.reviewedBy, user.id)),
-    db.update(certificates).set({ reviewerId: null }).where(eq(certificates.reviewerId, user.id)),
-    db.delete(users).where(eq(users.id, user.id)),
-  ])
+  await deleteUser(user.id)
 
   redirect(AUTH_ROOT)
 }

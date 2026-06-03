@@ -8,3 +8,4 @@ tmp/
 *.generated.d.ts
 *.d.json.ts
 *.tsbuildinfo
+.vercel

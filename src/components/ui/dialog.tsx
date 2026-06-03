@@ -61,6 +61,7 @@ export const DialogContent = ({
       <DialogPrimitive.Content
         className={cn(dialogContentVariants({ size }), className)}
         data-slot="dialog-content"
+        aria-describedby={undefined}
         {...props}
       >
         {children}

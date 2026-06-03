@@ -19,7 +19,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { CountrySelect } from '@/components/ui/country-select'
+import { CountrySelect, countryCodeToFlag } from '@/components/ui/country-select'
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { type AdminOrganization } from '@/db/queries/organization'
+import { type MessageKey } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 export const OrgRow = ({
@@ -45,6 +46,15 @@ export const OrgRow = ({
   onReject: (org: AdminOrganization) => void
 }) => {
   const t = useTranslations('Admin.organizations')
+  const tCountries = useTranslations('Intl.Countries')
+
+  const translateCountry = (code: string) => {
+    const key = code as MessageKey<'Intl.Countries'>
+    return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
+  }
+
+  const country = org.country && `${translateCountry(org.country)} ${countryCodeToFlag(org.country)}`
+  const location = [org.city, country].filter(Boolean).join(', ')
 
   return (
     <div className="flex items-center justify-between rounded-lg border bg-card p-4 transition-colors hover:bg-accent/30">
@@ -56,7 +66,7 @@ export const OrgRow = ({
         </Avatar>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{org.name}</p>
-          <p className="truncate text-sm text-muted-foreground">{[org.city, org.country].filter(Boolean).join(', ')}</p>
+          <p className="truncate text-sm text-muted-foreground">{location}</p>
         </div>
       </div>
       <div className="flex items-center gap-3">

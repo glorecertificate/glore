@@ -61,6 +61,11 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run bump`           | Update pnpm and upgrade all dependencies                        |
 | `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
 | `pnpm run db <command>`   | Run drizzle-kit commands                                        |
+| `pnpm run db:up`          | Start local Postgres in Docker (used by `next dev`)             |
+| `pnpm run db:down`        | Stop local Postgres                                             |
+| `pnpm run db:logs`        | Tail local Postgres logs                                        |
+| `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                     |
+| `pnpm run db:pull [env]`  | Pull DB from env file (default `.env`) into local Postgres      |
 
 **Pre-commit validation:** Run `pnpm run check` before committing. **`pnpm run check` MUST exit with code 0 before any commit is made. No exceptions.**
 
@@ -91,7 +96,7 @@ Agents MUST proactively suggest switching when the current model is not the best
 | Language         | TypeScript (strict mode)                              |
 | Runtime          | React (with React Compiler enabled)                   |
 | Package manager  | pnpm                                                  |
-| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) |
+| Database         | Neon Serverless Postgres (`@neondatabase/serverless`) in prod; local Postgres (`pg`) in dev |
 | ORM              | Drizzle ORM + drizzle-kit                             |
 | Auth             | Better Auth (`better-auth`)                           |
 | Storage          | Cloudflare R2 (`@aws-sdk/client-s3`)                  |
@@ -191,6 +196,11 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 22. **Env vars require schema entry:** Every env var used by Next.js MUST be in the Zod schema in `next.config.ts`. See `.agents/specs/reference.md` for the full table.
 23. **Env validation lives in `next.config.ts`:** The Zod schema is a module-scope constant there; `schema.parse(process.env)` runs at config load (skipped when `SKIP_ENV_VALIDATION` is set), and the file declares the global `ProcessEnv` type. NEVER import application code (anything under `src/`) into `next.config.ts` — Next watches the config's dependency graph and restarts the dev server on every change to a watched file, so a `src/` import makes every `src/**` edit trigger a full restart.
 24. **Organization profile table split:** Sparse profile fields in `organization_profiles`, core identity in `organizations`. Query parsers must flatten profile fields for downstream use.
+25. **Turbopack persistent dev cache disabled:** `experimental.turbopackFileSystemCacheForDev: false` in `next.config.ts` is REQUIRED. Next 16 defaults this to `true`, which makes `.next/dev/cache/turbopack` balloon (1.4GB+ observed) and Turbopack's `turbopack-compaction`/`turbopack-persistence` passes stall every HMR by 5-10s. Do not remove this flag in refactors. To reclaim disk after toggling, run `pnpm run dev:clean`.
+26. **Oxlint `typeAware` split: on in CLI, off in LSP.** `vite.config.ts` keeps `typeAware: true` (so `vp check`, `vp lint`, pre-push, and CI run the full type-aware rule set including `no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, which the `oxc.oxc-vscode` extension forwards to the LSP as an explicit override — keeps the editor LSP off the slow `oxlint-tsgolint` path. Do not change either side without changing the other deliberately.
+27. **Editor save chain is minimal:** `.vscode/settings.json` `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was removed because `editor.formatOnSave: true` already runs oxfmt — running both serialized saves. `source.removeUnusedImports` was removed because it calls tsgo on every save. Knip uses `knip.deferSession: true` so the module graph is not built until manually started.
+28. **Dual DB driver (Neon HTTP in prod, `pg` in dev):** `src/db/client.ts` picks the driver by URL host: `localhost`/`127.0.0.1` uses `drizzle-orm/node-postgres` + `pg.Pool`, anything else uses `drizzle-orm/neon-http`. The `DATABASE_URL` validator in `next.config.ts` accepts either `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres is activated by `.env.development.local` (gitignored, dev-only) on **port 5433** (avoids a Mac/host Postgres on 5432). Provision with `pnpm run db:up`, then apply migrations with `DATABASE_URL=postgresql://glore:glore@localhost:5433/glore pnpm run db migrate` (drizzle-kit does not auto-load `.env.development.local`). Removes ~1.9s/HMR of Neon HTTP latency. Both drivers expose identical query API; no transactions are used, so the type cast in `client.ts` is safe.
+29. **Auth schema imports must stay slim:** `src/lib/auth.ts` imports only `accounts`, `sessions`, `users`, `verifications` from individual schema files (NOT `* as schema from '@/db/schema'`). `proxy.ts` calls `auth.api.getSession` on every request, so a barrel import here drags the entire schema graph into the proxy's compile + HMR cost.
 
 ---
 

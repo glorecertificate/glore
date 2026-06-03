@@ -67,7 +67,8 @@ src/
 │   ├── helpers.ts      # safeQuery(), queryError()
 │   ├── types.ts        # Drizzle table type helpers (InferInsertModel)
 │   ├── schema/         # Drizzle schema definitions per table
-│   └── queries/        # Query parse functions per table
+│   ├── queries/        # Query parse functions per table (pure: no @/db/client import)
+│   └── mutations/      # Server-only write primitives per table (server-only, no 'use server')
 ├── emails/             # React Email templates (auth, team, certificates, org)
 ├── hooks/              # Custom React hooks
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
@@ -96,7 +97,8 @@ src/
   - Drop domain prefix from filenames: `features/courses/course-editor/view.tsx` (not `course-editor-view.tsx`)
   - Context/params at sub-feature root: `context.tsx`, `params.ts`, `use-params.ts`
 - Provider pattern: split into `*-context.tsx` + `*-provider.tsx`
-- Database queries: `src/db/queries/<table>.ts` with `parse*` function
+- Database queries: `src/db/queries/<table>.ts` with `parse*` function (MUST stay pure: importing `@/db/client` here leaks `server-only` into client bundles via parser chains)
+- Database mutations: `src/db/mutations/<table>.ts` for shared server-only write primitives reused across actions (`import 'server-only'`, never `'use server'`)
 - Database schema: `src/db/schema/<table>.ts` with Drizzle table definitions
 
 ---

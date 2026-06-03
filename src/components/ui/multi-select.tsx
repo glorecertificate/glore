@@ -157,7 +157,7 @@ export const MultiSelectTrigger = ({
       {...props}
     >
       <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
-        <div className="flex flex-1 gap-1 overflow-x-auto p-2" style={scrollbarStyle}>
+        <div className="flex flex-1 gap-1 overflow-x-auto pr-2 pl-2.5" style={scrollbarStyle}>
           {value.length === 0 ? <span className="truncate text-muted-foreground">{placeholder}</span> : children}
         </div>
         <hr className="mx-0.5 my-auto h-6 border-l border-border" />

@@ -56,7 +56,7 @@ export const CourseListTypeSelect = (
       value={activeTypes}
       {...props}
     >
-      <MultiSelectTrigger position="start">
+      <MultiSelectTrigger position="end">
         {activeItems.map(({ label, value }) => (
           <MultiSelectBadge
             className={cn('py-0.75 text-xs font-medium', courseTypeVariants({ type: value }))}

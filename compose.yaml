@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: glore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: glore
+      POSTGRES_PASSWORD: glore
+      POSTGRES_DB: glore
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U glore -d glore']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c max_connections=50
+      -c fsync=off
+      -c synchronous_commit=off
+      -c full_page_writes=off
+
+volumes:
+  postgres-data:

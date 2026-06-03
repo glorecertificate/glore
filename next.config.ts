@@ -9,11 +9,13 @@ import { type dependencies } from './package.json'
 const envSchema = z.object({
   APP_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().regex(/^[A-Za-z0-9+/]{43}=$/u),
-  COOKIE_PREFIX: z.string().optional(),
   DATABASE_URL: z
     .string()
     .startsWith('postgresql://')
-    .refine(url => url.includes('sslmode=require'), 'DATABASE_URL must include sslmode=require'),
+    .refine(
+      url => url.includes('@localhost') || url.includes('@127.0.0.1') || url.includes('sslmode=require'),
+      'DATABASE_URL must include sslmode=require (Neon) or point at localhost (local Postgres)'
+    ),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
@@ -42,7 +44,7 @@ const ROOT_REDIRECT: Route = '/dashboard'
 const MANIFEST_SOURCE: Route = '/api/v1/manifest'
 const EXTERNAL_PACKAGES: Package[] = ['qrcode']
 
-const config = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   cacheComponents: true,
   trailingSlash: false,
@@ -103,30 +105,30 @@ const config = {
   ],
   serverExternalPackages: EXTERNAL_PACKAGES,
   typedRoutes: true,
-  logging: {
-    fetches: {
-      fullUrl: true,
-      hmrRefreshes: true,
-    },
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
   },
-} satisfies NextConfig
+}
 
-const plugins = [
-  nextIntl({
-    experimental: {
-      messages: {
-        path: './messages',
-        locales: 'infer',
-        format: 'json',
-        precompile: true,
+export default (phase: PHASE_TYPE) => {
+  const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
+
+  const plugins = [
+    nextIntl({
+      experimental: {
+        messages: {
+          path: './messages',
+          locales: 'infer',
+          format: 'json',
+          precompile: !isDevelopment,
+        },
       },
-    },
-    requestConfig: './src/i18n.ts',
-  }),
-]
+      requestConfig: './src/i18n.ts',
+    }),
+  ]
 
-export default (phase: PHASE_TYPE) =>
-  plugins.reduce<NextConfig>((acc, next) => next(acc), {
-    ...config,
-    reactCompiler: phase !== PHASE_DEVELOPMENT_SERVER,
+  return plugins.reduce<NextConfig>((config, next) => next(config), {
+    ...nextConfig,
+    reactCompiler: !isDevelopment,
   })
+}

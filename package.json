@@ -6,7 +6,6 @@
     "type": "git",
     "url": "git+https://github.com/glorecertificate/glore.git"
   },
-  "packageManager": "pnpm@11.1.2+sha512.415a1cc25974731e75455c1468371be74c5aa5fb7621b50d4056d222451609f11412f23fd602e6169f1e060466641f798597e1be961a10688836a67b16569499",
   "scripts": {
     "prepare": "vp config && tsx ./scripts/typegen.ts",
     "typegen": "tsx ./scripts/typegen.ts",
@@ -24,7 +23,12 @@
     "check:size": "size-limit",
     "deploy:preview": "dotenv -- sh -c 'vercel build && vercel --prebuilt'",
     "deploy:prod": "dotenv -- sh -c 'vercel build && vercel --prebuilt --prod'",
-    "db": "drizzle-kit",
+    "db": "dotenv -e .env.development.local -e .env -- drizzle-kit",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "db:reset": "docker compose down -v && docker compose up -d postgres",
+    "db:pull": "tsx ./scripts/db-pull.ts",
     "email": "portless glore-email dotenv -- email dev --dir src/emails --port 3031",
     "release": "dotenv -- release-it --config release.config.ts",
     "analyze": "next experimental-analyze",
@@ -110,6 +114,7 @@
     "next-themes": "^0.4.6",
     "nodemailer": "^8.0.7",
     "nuqs": "^2.8.9",
+    "pg": "^8.21.0",
     "platejs": "^53.0.3",
     "qrcode": "^1.5.4",
     "react": "^19.2.6",
@@ -134,6 +139,7 @@
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@commitlint/types": "^21.0.1",
+    "@next/env": "^16.2.6",
     "@release-it/bumper": "^7.0.5",
     "@release-it/conventional-changelog": "^11.0.0",
     "@size-limit/preset-app": "^12.1.0",
@@ -141,6 +147,7 @@
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^25.7.0",
     "@types/nodemailer": "^8.0.0",
+    "@types/pg": "^8.20.0",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -163,6 +170,7 @@
     "vercel": "^54.0.0",
     "vite-plus": "^0.1.21"
   },
+  "packageManager": "pnpm@11.1.2+sha512.415a1cc25974731e75455c1468371be74c5aa5fb7621b50d4056d222451609f11412f23fd602e6169f1e060466641f798597e1be961a10688836a67b16569499",
   "postcss": {
     "plugins": {
       "@tailwindcss/postcss": {}

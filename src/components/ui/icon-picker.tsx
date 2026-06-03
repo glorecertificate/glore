@@ -65,7 +65,7 @@ export const IconPicker = ({
   defaultOpen,
   defaultValue,
   fallback,
-  modal = false,
+  modal = true,
   onOpenChange,
   onValueChange,
   open,
@@ -90,7 +90,7 @@ export const IconPicker = ({
 }) => {
   const t = useTranslations('Components.IconPicker')
   const locale = useLocale()
-  const { icons } = useIconData()
+  const { icons, loading: iconsLoading } = useIconData()
 
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 100)
@@ -227,6 +227,10 @@ export const IconPicker = ({
     if (!newOpen) {
       clearTimeout(timerRef.current)
       resizeObserverRef.current?.disconnect()
+      setTimeout(() => {
+        if (parentRef.current) parentRef.current.scrollTop = 0
+        virtualizer.scrollToOffset(0)
+      }, 200)
       return
     }
 
@@ -389,7 +393,7 @@ export const IconPicker = ({
             scrollbarWidth: 'thin',
           }}
         >
-          {loading ? <IconsColumnSkeleton /> : renderVirtualContent()}
+          {loading || iconsLoading ? <IconsColumnSkeleton /> : renderVirtualContent()}
         </div>
       </PopoverContent>
     </Popover>

@@ -278,7 +278,7 @@ const DashboardSidebarMain = () => {
     <SidebarGroup>
       <SidebarMenu className="mt-4 gap-3">
         <DashboardSidebarItem label={t('dashboard')} route="/dashboard" />
-        {(user.isOrgAdmin || user.isRepresentative) && (
+        {(user.isOrgAdmin || user.isRepresentative) && !user.isAdmin && (
           <DashboardSidebarItem icon={Building2Icon} label={t('organization')} route={'/organization' as Route} />
         )}
         <DashboardSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />

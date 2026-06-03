@@ -851,7 +851,7 @@
     "courseMetadataDescription": "Metadata e dettagli del corso",
     "coursePublishError": "Impossibile aggiornare la pubblicazione del corso",
     "coursePublishedIn": "Corso pubblicato in {lang}",
-    "courseSettingsUpdated": "Impostazioni del corso aggiornate correttamente",
+    "courseSettingsUpdated": "Impostazioni del corso aggiornate",
     "courseSlug": "URL",
     "courseSlugDescription": "Indirizzo web del corso, deve essere univoco e descrittivo.",
     "courseSlugPlaceholder": "slug-del-corso",
@@ -1046,6 +1046,7 @@
     "delete": "Elimina",
     "followLink": "Segui il link",
     "resetAllFilters": "Reimposta i filtri",
+    "searchPlaceholder": "Cerca corsi...",
     "courseType-learner": "Learner",
     "courseTypeDescription-learner": "Un corso per learner è progettato per acquisire conoscenze specifiche senza il contesto delle soft skills.",
     "redirecting": "Reindirizzamento...",
@@ -1068,11 +1069,7 @@
     "extraExplanation": "Spiegazione",
     "extraExplanationPlaceholder": "Inserisci una spiegazione in {lang}",
     "emptyMessage-published": "Non ci sono corsi pubblicati",
-    "archiveAction": "Archivia",
-    "unsavedChangesTitle": "Modifiche non salvate",
-    "unsavedChangesMessage": "La versione {languages} del corso ha modifiche non salvate. Sei sicuro di voler lasciare la pagina? Tutte le modifiche andranno perse.",
-    "leavePage": "Lascia la pagina",
-    "stayOnPage": "Resta"
+    "archiveAction": "Archivia"
   },
   "Dashboard": {
     "allCourses": "Tutti i corsi",

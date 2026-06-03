@@ -17,13 +17,15 @@ import {
   type CourseListSortType,
   type CourseListTab,
 } from '@/components/features/courses/course-list/params'
+import { resolveCourseLanguage, useCourseLanguages } from '@/components/providers/course-languages-context'
 import { useCourses } from '@/components/providers/courses-context'
 import { COURSE_TYPES, type Course } from '@/db/queries/course'
 import { type EnumType } from '@/db/types'
 import { useCookies } from '@/hooks/use-cookies'
 import { useI18n } from '@/hooks/use-i18n'
+import { useSearch } from '@/hooks/use-search'
 import { useSession } from '@/hooks/use-session'
-import { i18n } from '@/lib/i18n'
+import { i18n, localizeRecord } from '@/lib/i18n'
 import { CamelCase, type Enum } from '@/lib/types'
 import { camelize, pluck } from '@/lib/utils'
 
@@ -76,6 +78,8 @@ export const useCourseListSkillGroups = () => {
   return { activeSkillGroups, setActiveSkillGroups, defaultSkillGroups }
 }
 
+export const useCourseListSearch = () => useSearch({ urlKey: COURSE_LIST_PARAMS.SEARCH })
+
 export const useCourseListSort = () => {
   const [sort, setSortRaw] = useQueryState(COURSE_LIST_PARAMS.SORT, { ...sortParser, ...paramsOptions })
   const [sortDirection, setSortDirectionRaw] = useQueryState(COURSE_LIST_PARAMS.SORT_DIRECTION, {
@@ -95,19 +99,22 @@ export const useCourseListFilters = () => {
   const { activeLanguages, setActiveLanguages } = useCourseListLanguages()
   const { activeSkillGroups, setActiveSkillGroups } = useCourseListSkillGroups()
   const { sort, setSort } = useCourseListSort()
+  const { searchValue, setSearch } = useCourseListSearch()
   const { skillGroups } = useCourses()
 
   const hasFilters =
     COURSE_TYPES.some(t => !activeTypes.includes(t)) ||
     activeLanguages.length < i18n.locales.length ||
     activeSkillGroups.length < skillGroups.length ||
-    sort !== null
+    sort !== null ||
+    searchValue.length > 0
 
   const resetFilters = () => {
     setActiveTypes(null)
     setActiveLanguages(null)
     setActiveSkillGroups(null)
     setSort(null)
+    setSearch(null)
   }
 
   return { hasFilters, resetFilters }
@@ -177,19 +184,22 @@ export const useCourseList = () => {
 }
 
 export const useDisplayCourses = () => {
-  const { localize } = useI18n()
+  const { locale, localize } = useI18n()
   const { skillGroups } = useCourses()
   const { tab } = useCourseListTab()
   const { activeTypes } = useCourseListTypes()
   const { activeLanguages } = useCourseListLanguages()
   const { activeSkillGroups } = useCourseListSkillGroups()
   const { sort, sortDirection } = useCourseListSort()
+  const { searching, matchSearch } = useCourseListSearch()
+  const { languages: cardLanguages } = useCourseLanguages()
   const { courseList } = useCourseList()
 
   const hasFilters =
     activeTypes.length < COURSE_TYPES.length ||
     activeLanguages.length < i18n.locales.length ||
-    activeSkillGroups.length < skillGroups.length
+    activeSkillGroups.length < skillGroups.length ||
+    searching
 
   const isDefaultView = !(sort || hasFilters)
 
@@ -215,6 +225,15 @@ export const useDisplayCourses = () => {
       values = values.filter(course => {
         const courseSkillGroup = course.skillGroup?.id.toString()
         return courseSkillGroup ? activeSkillGroups.includes(courseSkillGroup) : false
+      })
+    }
+
+    if (searching) {
+      values = values.filter(course => {
+        const language = resolveCourseLanguage(cardLanguages, course.id, { activeLanguages, fallback: locale })
+        const title = localizeRecord(course.title, language)
+        const description = course.description ? localizeRecord(course.description, language) : undefined
+        return matchSearch([course.slug, title, description])
       })
     }
 

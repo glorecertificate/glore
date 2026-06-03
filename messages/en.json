@@ -1047,6 +1047,7 @@
     "delete": "Delete",
     "followLink": "Follow link",
     "resetAllFilters": "Reset all filters",
+    "searchPlaceholder": "Search courses...",
     "courseType-learner": "Learner",
     "courseTypeDescription-learner": "A learner course is designed to acquire specific knowledge without the context of soft skills.",
     "redirecting": "Redirecting...",
@@ -1068,11 +1069,7 @@
     "addExtraOption": "Add option",
     "extraExplanation": "Explanation",
     "extraExplanationPlaceholder": "Enter an explanation in {lang}",
-    "archiveAction": "Archive",
-    "unsavedChangesTitle": "Unsaved changes",
-    "unsavedChangesMessage": "The {languages} course version has unsaved changes. Are you sure you want to leave the page? All changes will be lost.",
-    "leavePage": "Leave page",
-    "stayOnPage": "Stay on page"
+    "archiveAction": "Archive"
   },
   "Dashboard": {
     "allCourses": "All courses",

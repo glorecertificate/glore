@@ -1,5 +1,49 @@
 # Changelog
 
+## [0.6.9](https://github.com/glorecertificate/glore/compare/v0.6.8...v0.6.9) (2026-06-03)
+
+### Features
+
+- Add course search functionality with highlight ([cd41c31](https://github.com/glorecertificate/glore/commit/cd41c31f1af947c19d9224ab62a3bfdd3c1e76b1))
+- Improve auth flow, course management, and org registration ([a490ea8](https://github.com/glorecertificate/glore/commit/a490ea8133ba6eb8d9e777cdb477e5a4c873c8d6))
+- Improve course components ([ca23543](https://github.com/glorecertificate/glore/commit/ca235436e0321aa1f0366c86eb1af5664f5a1404))
+- Improve signup dialog and analytics components ([3b65993](https://github.com/glorecertificate/glore/commit/3b65993d907ba2a97018b14956f8efe6afc46558))
+- Unify course save/publish into single button with toggle ([084e917](https://github.com/glorecertificate/glore/commit/084e917c173e87d21f3d2180596ac0f4f94be759))
+
+### Fixes
+
+- Scope course editor leave-page guard to cross-path navigation ([2ac029d](https://github.com/glorecertificate/glore/commit/2ac029d9c5666a66bfa4597f9bf9d2242f38dfe9))
+- Unprefix i18n cookie ([cf95ef9](https://github.com/glorecertificate/glore/commit/cf95ef9b17fd124bc67cb7ecaa6b2d34766f7ce6))
+
+### Performance
+
+- Cache content stringify in course editor diff computation ([341b9b4](https://github.com/glorecertificate/glore/commit/341b9b43bd37bcc5bf6ae276b82a87b23f44a8e8))
+
+### Build
+
+- Bump all to latest version ([5c4a4c6](https://github.com/glorecertificate/glore/commit/5c4a4c688e88f5f1cd3bd77dff3d35baf9b44ae9))
+- Install typescript 7 and upgrade dependencies ([63acb21](https://github.com/glorecertificate/glore/commit/63acb212aef266d3cccb8acd85bc838a96eab13c))
+
+### CI
+
+- Add React Doctor and refactor patterns for React Compiler ([035dc82](https://github.com/glorecertificate/glore/commit/035dc820c308c4d107cbdfc7b2e1d0051adee481))
+- Migrate oxlint and oxfmt to vite+ ([54c2ca6](https://github.com/glorecertificate/glore/commit/54c2ca67abd934ecda131045180570c682e7653a))
+- Use ts config for release-it and update changelog format ([7689552](https://github.com/glorecertificate/glore/commit/768955282e58e33264299d73010bd3b0f88dc319))
+
+### Docs
+
+- Add optimize-prompt skill ([001ed56](https://github.com/glorecertificate/glore/commit/001ed56682ab919a7496cead2478ae508ebad43d))
+- Split AGENTS.md into specs to be loaded on demand ([933ad34](https://github.com/glorecertificate/glore/commit/933ad340414e946ca16efcbc097b070bec4c64c7))
+
+### Other
+
+- Add icon picker translations and review data import ([c68e98b](https://github.com/glorecertificate/glore/commit/c68e98b92a0dbd686077632c0c55c1012d07eab7))
+- Move env guard to next.config.ts and fix hmr ([6f80c3a](https://github.com/glorecertificate/glore/commit/6f80c3a93682c23b24a40a07d6ce2560c9eb8563))
+- Remove export from interface declarations ([d96c60e](https://github.com/glorecertificate/glore/commit/d96c60eb8f8dd2cce0408b9ad74b4a7aa4b7639e))
+- Track global dts and refactor git hooks ([340087a](https://github.com/glorecertificate/glore/commit/340087a06528fdc1834629b31721a75c738b74da))
+- Update type generation and declaration files organization ([5baf5c2](https://github.com/glorecertificate/glore/commit/5baf5c26f003687a7df018701ea35d87b2e7c55b))
+- Use portless to manage development server URLs ([3f71c55](https://github.com/glorecertificate/glore/commit/3f71c55a1525cef9d59806fc8a7c511d62dc53f2))
+
 ## [0.6.8](https://github.com/glorecertificate/glore/compare/v0.6.7...v0.6.8) (2026-03-28)
 
 ### Features

@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.10](https://github.com/glorecertificate/glore/compare/v0.6.9...v0.6.10) (2026-06-04)
+
+### Features
+
+- Add lesson activities to all courses ([6e5e48f](https://github.com/glorecertificate/glore/commit/6e5e48f82fd43d9d6de74a1309cb1b039c8d15c3))
+
 ## [0.6.9](https://github.com/glorecertificate/glore/compare/v0.6.8...v0.6.9) (2026-06-03)
 
 ### Features

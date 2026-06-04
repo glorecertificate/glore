@@ -45,7 +45,7 @@ export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof 
   return (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
-        <Button className="text-[13.5px]" variant="outline">
+        <Button className="text-[13.5px] font-normal" variant="outline">
           <span className="flex flex-1 items-center gap-1.5">
             {t('skillGroup')}
             <span className="text-[13px] leading-[normal] text-muted-foreground/70">

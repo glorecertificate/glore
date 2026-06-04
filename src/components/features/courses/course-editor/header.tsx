@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
-import { ChevronDownIcon, EyeIcon, HistoryIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
+import { ChevronDownIcon, EyeIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -22,14 +22,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+import { DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
@@ -72,8 +65,28 @@ export const CourseHeader = () => {
 
   const isSaveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
 
+  const validateQuiz = () => {
+    for (const lesson of course.lessons) {
+      for (const [index, question] of (lesson.questions ?? []).entries()) {
+        const number = index + 1
+        if (!((question.description as IntlRecord)?.[language] ?? '').trim()) return t('quizQuestionEmpty', { number })
+        if (question.options.length < 2) return t('quizMinOptions', { number })
+        if (question.options.some(option => !((option.content as IntlRecord)?.[language] ?? '').trim())) {
+          return t('quizOptionEmpty', { number })
+        }
+        if (!question.options.some(option => option.isCorrect)) return t('quizNoCorrect', { number })
+      }
+    }
+    return null
+  }
+
   const handleSave = async () => {
     if (isSaveDisabled) return
+    const quizError = validateQuiz()
+    if (quizError) {
+      toast.error(quizError)
+      return
+    }
     const publish =
       publishTarget && !languageStatus.published ? true : !publishTarget && languageStatus.published ? false : null
     if (publish === true && !languageStatus.hasContent) {
@@ -112,7 +125,7 @@ export const CourseHeader = () => {
   return (
     <div
       className={cn(
-        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pb-4 md:top-18 md:flex',
+        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pt-1 pb-4 md:top-16 md:flex',
         scrolled && 'border-b'
       )}
     >
@@ -143,29 +156,6 @@ export const CourseHeader = () => {
                   </TooltipContent>
                 </Tooltip>
               </CourseDialog>
-              <Dialog>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DialogTrigger asChild>
-                      <Button size="xs" variant="outline">
-                        <HistoryIcon className="size-4" />
-                      </Button>
-                    </DialogTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-72 text-center" sideOffset={6}>
-                    {t('history')}
-                  </TooltipContent>
-                </Tooltip>
-                <DialogContent size="lg">
-                  <DialogHeader className="flex-row items-center gap-2">
-                    <HistoryIcon className="size-5" />
-                    <DialogTitle>{t('history')}</DialogTitle>
-                  </DialogHeader>
-                  <DialogDescription className="mb-4 text-sm text-muted-foreground">
-                    {tCommon('comingSoonFeature')}
-                  </DialogDescription>
-                </DialogContent>
-              </Dialog>
               <CourseAnalyticsSheet />
             </div>
             <TabsList className="h-8 w-full sm:w-fit">
@@ -204,8 +194,14 @@ export const CourseHeader = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
-                    <Button className="transition-none" disabled loading={saving} spinner="size-3.5" variant="brand">
-                      <SaveIcon />
+                    <Button
+                      className="transition-none"
+                      disabled
+                      icon={SaveIcon}
+                      loading={saving}
+                      spinner="size-4"
+                      variant="brand"
+                    >
                       {t('save')}
                     </Button>
                   </span>
@@ -215,31 +211,45 @@ export const CourseHeader = () => {
             ) : (
               <Button
                 className="transition-none"
+                icon={SaveIcon}
                 loading={saving}
-                spinner="size-3.5"
                 onClick={handleSave}
+                spinner="size-4"
                 variant="brand"
               >
-                <SaveIcon />
                 {t('save')}
               </Button>
             )}
-            <Switch
-              checked={publishTarget}
-              className="data-[state=checked]:bg-success"
-              disabled={saving}
-              id="publish-toggle"
-              onCheckedChange={setPublishTarget}
-            />
-            <label className="cursor-pointer text-sm" htmlFor="publish-toggle">
-              {t('publishToggleLabel')}
-            </label>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <InfoIcon className="size-4 cursor-help text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-64 text-center">{t('publishInfo')}</TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-2 rounded-full border bg-muted/40 py-1 pr-2 pl-3 transition-colors">
+              <label
+                className="flex cursor-pointer items-center gap-1.5 text-sm font-medium select-none"
+                htmlFor="publish-toggle"
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    'size-1.5 rounded-full transition-colors',
+                    publishTarget ? 'bg-success' : 'bg-muted-foreground/40'
+                  )}
+                />
+                {t('publishToggleLabel')}
+              </label>
+              <Switch
+                checked={publishTarget}
+                className="data-[state=checked]:bg-success"
+                disabled={saving}
+                id="publish-toggle"
+                onCheckedChange={setPublishTarget}
+              />
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <InfoIcon className="size-3.5 cursor-help text-muted-foreground transition-colors hover:text-foreground" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-64 text-center" sideOffset={8}>
+                  {t('publishInfo')}
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </>
       ) : (

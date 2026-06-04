@@ -9,26 +9,37 @@ import { submitAnswers } from '@/actions/courses/progress'
 import { CourseAssessment } from '@/components/features/courses/course-editor/assessment'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseEvaluations } from '@/components/features/courses/course-editor/evaluations'
-import { LessonExtras } from '@/components/features/courses/course-editor/lesson-extras'
+import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
 import { CourseQuestions } from '@/components/features/courses/course-editor/questions'
+import { Skeleton } from '@/components/ui/skeleton'
 import { type Question, type QuestionOption } from '@/db/queries/lesson'
 import { useSession } from '@/hooks/use-session'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
+
+const EditorSkeleton = () => (
+  <div className="size-full space-y-4 px-8 pt-8 pb-72 sm:px-12">
+    <Skeleton className="h-8 w-2/5" />
+    <Skeleton className="h-4 w-full" />
+    <Skeleton className="h-4 w-11/12" />
+    <Skeleton className="h-4 w-4/5" />
+    <Skeleton className="h-4 w-3/4" />
+  </div>
+)
 
 const RichTextEditor = dynamic(
   async () => {
     const m = await import('@/components/blocks/rich-text-editor')
     return { default: m.RichTextEditor }
   },
-  { ssr: false }
+  { loading: () => <EditorSkeleton />, ssr: false }
 )
 const RichTextEditorProvider = dynamic(
   async () => {
     const m = await import('@/components/blocks/rich-text-editor/provider')
     return { default: m.RichTextEditorProvider }
   },
-  { ssr: false }
+  { loading: () => <EditorSkeleton />, ssr: false }
 )
 
 const CourseEditor = ({
@@ -179,7 +190,7 @@ export const CourseContent = () => {
         readOnly={!canEdit}
         version={editorVersion}
       />
-      {canEdit && <LessonExtras className="mt-4" />}
+      {canEdit && <LessonActivities className="mt-4" />}
       {!canEdit && currentLesson?.type === 'questions' && currentLesson.questions && (
         <CourseQuestions
           className={cn('mt-8 border-t-2 pt-6')}

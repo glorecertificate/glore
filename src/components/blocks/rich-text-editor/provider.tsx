@@ -104,13 +104,15 @@ export const RichTextEditorProvider = ({
     }),
   ].flat() as AnyPluginConfig[]
 
+  const excludeKey = Array.isArray(exclude) ? exclude.join(',') : exclude
+
   const editor = usePlateEditor(
     {
       id: id ?? randomId,
       plugins,
       ...props,
     },
-    [plugins, id]
+    [excludeKey, id]
   )
 
   const prevVersionRef = useRef(version)

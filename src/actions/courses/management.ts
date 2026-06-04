@@ -12,7 +12,7 @@ import { db } from '@/db/client'
 import { parseCourse } from '@/db/queries/course'
 import { type Course } from '@/db/queries/course'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
-import { assessments, courses, evaluations, lessons, questions } from '@/db/schema'
+import { assessments, courses, evaluations, lessons, questionOptions, questions } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag, courseTag } from '@/lib/cache'
 
@@ -187,6 +187,27 @@ export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
 export const deleteQuestions = async (ids: number[]) => {
   await requireEditor()
   await db.delete(questions).where(inArray(questions.id, ids))
+  return { data: true }
+}
+
+export const upsertQuestionOptions = async (values: Array<TableInsert<'question_options'> & { id?: number }>) => {
+  await requireEditor()
+  const result = await Promise.all(
+    values.map(({ id, ...set }) =>
+      id
+        ? db.update(questionOptions).set(set).where(eq(questionOptions.id, id)).returning({ id: questionOptions.id })
+        : db
+            .insert(questionOptions)
+            .values(set as TableInsert<'question_options'>)
+            .returning({ id: questionOptions.id })
+    )
+  )
+  return { data: result.flat() }
+}
+
+export const deleteQuestionOptions = async (ids: number[]) => {
+  await requireEditor()
+  await db.delete(questionOptions).where(inArray(questionOptions.id, ids))
   return { data: true }
 }
 

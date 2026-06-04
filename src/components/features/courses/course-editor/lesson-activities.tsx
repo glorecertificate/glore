@@ -14,7 +14,7 @@ import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, intlPlaceholder } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-const ExtraItem = ({
+const ActivityItem = ({
   description,
   label,
   language,
@@ -31,20 +31,21 @@ const ExtraItem = ({
   const t = useTranslations('Courses')
 
   return (
-    <div className="group flex items-start gap-2">
-      <div className="flex-1 space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+    <div className="group flex items-start gap-2 rounded-xl border bg-card p-4">
+      <div className="flex-1 space-y-1.5">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
         <Textarea
-          className="min-h-10 text-sm"
+          className="min-h-10 resize-none rounded-lg text-sm"
           onChange={e => onDescriptionChange(e.target.value)}
-          placeholder={t('extraDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+          placeholder={t('activityDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
           value={description}
         />
       </div>
       <Button
-        className="mt-5 opacity-0 transition-opacity group-hover:opacity-100"
+        className="opacity-0 transition-opacity group-hover:opacity-100"
         onClick={onRemove}
         size="icon"
+        type="button"
         variant="ghost"
       >
         <TrashIcon className="size-4 text-destructive" />
@@ -84,21 +85,22 @@ const QuestionItem = ({
   const t = useTranslations('Courses')
 
   return (
-    <div className="group/question space-y-3 rounded-lg border p-3">
+    <div className="group/question space-y-4 rounded-xl border bg-card p-4">
       <div className="flex items-start gap-2">
-        <div className="flex-1 space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <div className="flex-1 space-y-1.5">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
           <Textarea
-            className="min-h-10 text-sm"
+            className="min-h-10 resize-none rounded-lg text-sm"
             onChange={e => onDescriptionChange(e.target.value)}
-            placeholder={t('extraDescriptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+            placeholder={t('activityQuestionPlaceholder', { lang: tLang(language).toLowerCase() })}
             value={description}
           />
         </div>
         <Button
-          className="mt-5 opacity-0 transition-opacity group-hover/question:opacity-100"
+          className="opacity-0 transition-opacity group-hover/question:opacity-100"
           onClick={onRemove}
           size="icon"
+          type="button"
           variant="ghost"
         >
           <TrashIcon className="size-4 text-destructive" />
@@ -106,47 +108,58 @@ const QuestionItem = ({
       </div>
 
       <div className="space-y-2">
-        <p className="text-xs font-medium text-muted-foreground">{t('extraOptions')}</p>
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityOptions')}</p>
         {options.map(option => (
           <div className="group/option flex items-center gap-2" key={option.id}>
             <button
+              aria-label={t('activityOptionCorrect')}
+              aria-pressed={option.isCorrect}
               className={cn(
-                'flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors',
-                option.isCorrect ? 'border-brand-secondary bg-brand-secondary text-white' : 'border-input'
+                'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+                option.isCorrect
+                  ? 'border-brand-secondary bg-brand-secondary text-white'
+                  : 'border-input hover:border-brand-secondary/60'
               )}
               onClick={() => onOptionCorrectToggle(option.id)}
               type="button"
             >
-              {option.isCorrect && <CheckIcon className="size-2.5" />}
+              {option.isCorrect && <CheckIcon className="size-3" strokeWidth={3} />}
             </button>
             <Input
-              className="h-8 flex-1 text-sm"
+              className="h-9 flex-1 rounded-lg text-sm"
               onChange={e => onOptionContentChange(option.id, e.target.value)}
-              placeholder={t('extraOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+              placeholder={t('activityOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
               value={option.content[language] ?? ''}
             />
             <Button
               className="opacity-0 transition-opacity group-hover/option:opacity-100"
               onClick={() => onRemoveOption(option.id)}
               size="icon"
+              type="button"
               variant="ghost"
             >
-              <TrashIcon className="size-3 text-destructive" />
+              <TrashIcon className="size-3.5 text-destructive" />
             </Button>
           </div>
         ))}
-        <Button className="h-7 text-xs" onClick={onAddOption} size="sm" variant="ghost">
+        <Button
+          className="ml-7 h-7 text-xs text-muted-foreground"
+          onClick={onAddOption}
+          size="sm"
+          type="button"
+          variant="ghost"
+        >
           <PlusIcon className="size-3" />
-          {t('addExtraOption')}
+          {t('addActivityOption')}
         </Button>
       </div>
 
-      <div className="space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">{t('extraExplanation')}</p>
+      <div className="space-y-1.5">
+        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityExplanation')}</p>
         <Textarea
-          className="min-h-10 text-sm"
+          className="min-h-10 resize-none rounded-lg text-sm"
           onChange={e => onExplanationChange(e.target.value)}
-          placeholder={t('extraExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
+          placeholder={t('activityExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
           value={explanation}
         />
       </div>
@@ -154,25 +167,28 @@ const QuestionItem = ({
   )
 }
 
-export const LessonExtras = ({ className }: { className?: string }) => {
+export const LessonActivities = ({ className }: { className?: string }) => {
   const t = useTranslations('Courses')
 
   const { course, currentLesson, language, setCourse, step } = useCourse()
   const { user } = useSession()
 
-  const isSkillCourse = course.type === 'skill'
   const canEdit = user.canEdit && !course.archivedAt
 
-  const hasExtra =
+  const hasActivity =
     currentLesson.questions.length > 0 || currentLesson.evaluations.length > 0 || !!currentLesson.assessment
 
   const addQuestion = () => {
+    const now = Date.now()
     const question = {
-      id: Date.now(),
+      id: now,
       description: intlPlaceholder,
       explanation: null,
       answered: false,
-      options: [],
+      options: [
+        { id: now + 1, content: { [language]: '' }, isCorrect: true, isUserAnswer: false },
+        { id: now + 2, content: { [language]: '' }, isCorrect: false, isUserAnswer: false },
+      ] as unknown as QuestionOption[],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       lessonId: currentLesson.id,
@@ -255,21 +271,22 @@ export const LessonExtras = ({ className }: { className?: string }) => {
   }
 
   const addQuestionOption = (questionId: number) => {
-    const newOption = {
-      id: Date.now(),
-      content: { [language]: '' },
-      is_correct: false,
-      isUserAnswer: false,
-    } as unknown as QuestionOption
     setCourse(prev => ({
       ...prev,
       lessons: prev.lessons.map((lesson, i) =>
         i === step - 1
           ? {
               ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId ? { ...q, options: [...q.options, newOption] } : q
-              ),
+              questions: lesson.questions.map(q => {
+                if (q.id !== questionId) return q
+                const newOption = {
+                  id: Date.now(),
+                  content: { [language]: '' },
+                  isCorrect: !q.options.some(o => o.isCorrect),
+                  isUserAnswer: false,
+                } as unknown as QuestionOption
+                return { ...q, options: [...q.options, newOption] }
+              }),
             }
           : lesson
       ),
@@ -320,7 +337,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
                       ...q,
                       options: q.options.map(o => ({
                         ...o,
-                        is_correct: o.id === optionId,
+                        isCorrect: o.id === optionId,
                       })),
                     }
                   : q
@@ -338,9 +355,14 @@ export const LessonExtras = ({ className }: { className?: string }) => {
         i === step - 1
           ? {
               ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === questionId ? { ...q, options: q.options.filter(o => o.id !== optionId) } : q
-              ),
+              questions: lesson.questions.map(q => {
+                if (q.id !== questionId) return q
+                const options = q.options.filter(o => o.id !== optionId)
+                if (options.length > 0 && !options.some(o => o.isCorrect)) {
+                  options[0] = { ...options[0], isCorrect: true }
+                }
+                return { ...q, options }
+              }),
             }
           : lesson
       ),
@@ -405,17 +427,17 @@ export const LessonExtras = ({ className }: { className?: string }) => {
     }))
   }
 
-  const onAddExtra = (type: LessonType) => {
+  const onAddActivity = (type: LessonType) => {
     if (type === 'questions') return addQuestion()
     if (type === 'evaluations') return addEvaluation()
     if (type === 'assessment') return addAssessment()
   }
 
-  if (!(isSkillCourse && canEdit)) return null
+  if (!canEdit) return null
 
   return (
     <div className={cn('space-y-6', className)}>
-      {hasExtra && <div className="border-t-2" />}
+      {hasActivity && <div className="border-t-2" />}
 
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
@@ -429,7 +451,7 @@ export const LessonExtras = ({ className }: { className?: string }) => {
                 description={(question.description as IntlRecord)?.[language] ?? ''}
                 explanation={question.explanation?.[language] ?? ''}
                 key={question.id}
-                label={`${t('extraQuestion')} ${index + 1}`}
+                label={`${t('activityQuestion')} ${index + 1}`}
                 language={language}
                 onAddOption={() => addQuestionOption(question.id)}
                 onDescriptionChange={value => updateQuestionDescription(question.id, value)}
@@ -442,9 +464,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
               />
             ))}
           </div>
-          <Button className="h-7 text-xs" onClick={addQuestion} size="sm" variant="outline">
+          <Button className="h-7 text-xs" onClick={addQuestion} size="sm" type="button" variant="outline">
             <PlusIcon className="size-3" />
-            {t('addExtraQuestion')}
+            {t('addActivityQuestion')}
           </Button>
         </div>
       )}
@@ -458,9 +480,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
           <div className="space-y-4">
             {currentLesson.evaluations.map((evaluation, index) => (
               <div className="space-y-3" key={evaluation.id}>
-                <ExtraItem
+                <ActivityItem
                   description={(evaluation.description as IntlRecord)?.[language] ?? ''}
-                  label={`${t('extraEvaluation')} ${index + 1}`}
+                  label={`${t('activityEvaluation')} ${index + 1}`}
                   language={language}
                   onDescriptionChange={value => updateEvaluationDescription(evaluation.id, value)}
                   onRemove={() => removeEvaluation(evaluation.id)}
@@ -474,9 +496,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
               </div>
             ))}
           </div>
-          <Button className="h-7 text-xs" onClick={addEvaluation} size="sm" variant="outline">
+          <Button className="h-7 text-xs" onClick={addEvaluation} size="sm" type="button" variant="outline">
             <PlusIcon className="size-3" />
-            {t('addExtraEvaluation')}
+            {t('addActivityEvaluation')}
           </Button>
         </div>
       )}
@@ -487,9 +509,9 @@ export const LessonExtras = ({ className }: { className?: string }) => {
             <StarIcon className="size-4" />
             {t('skillEvaluationTitle')}
           </h4>
-          <ExtraItem
+          <ActivityItem
             description={(currentLesson.assessment.description as IntlRecord)?.[language] ?? ''}
-            label={t('extraAssessment')}
+            label={t('activityAssessment')}
             language={language}
             onDescriptionChange={updateAssessmentDescription}
             onRemove={removeAssessment}
@@ -503,26 +525,26 @@ export const LessonExtras = ({ className }: { className?: string }) => {
         </div>
       )}
 
-      {!hasExtra && (
+      {!hasActivity && (
         <div className="flex w-full items-center justify-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="rounded-full" size="icon" variant="brand">
+              <Button className="rounded-full" size="icon" type="button" variant="brand">
                 <PlusIcon className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => onAddExtra('questions')}>
+              <DropdownMenuItem onClick={() => onAddActivity('questions')}>
                 <MessageCircleQuestionIcon className="size-4" />
-                {t('addExtraQuestion')}
+                {t('addActivityQuestion')}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAddExtra('evaluations')}>
+              <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
                 <ClipboardListIcon className="size-4" />
-                {t('addExtraEvaluation')}
+                {t('addActivityEvaluation')}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAddExtra('assessment')}>
+              <DropdownMenuItem onClick={() => onAddActivity('assessment')}>
                 <StarIcon className="size-4" />
-                {t('addExtraAssessment')}
+                {t('addActivityAssessment')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -57,5 +57,5 @@ jobs:
       - name: Deploy to Vercel
         id: vercel
         run: |
-          pnpm exec vercel deploy --prebuilt --archive=tgz --target=${{ steps.env.outputs.target }} --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          pnpm exec vercel deploy --target=${{ steps.env.outputs.target }} --token=${{ secrets.VERCEL_TOKEN }} --yes > deployment-url.txt
           echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

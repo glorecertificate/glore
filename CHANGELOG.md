@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.11](https://github.com/glorecertificate/glore/compare/v0.6.10...v0.6.11) (2026-06-04)
+
+### CI
+
+- Update deploy workflow ([ad9504c](https://github.com/glorecertificate/glore/commit/ad9504cd30f17a47687fb488a23ad6cbdf585e2b))
+
 ## [0.6.10](https://github.com/glorecertificate/glore/compare/v0.6.9...v0.6.10) (2026-06-04)
 
 ### Features

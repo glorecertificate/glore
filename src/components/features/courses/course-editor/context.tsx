@@ -8,11 +8,13 @@ import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 import {
   deleteAssessment,
   deleteEvaluations,
+  deleteQuestionOptions,
   deleteQuestions,
   updateCourse,
   upsertAssessment,
   upsertEvaluations,
   upsertLessons,
+  upsertQuestionOptions,
   upsertQuestions,
 } from '@/actions/courses/management'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
@@ -125,6 +127,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   const courseRef = useRef(structuredClone(ensureLesson(options.course)))
   const [course, setCourse] = useState(() => ensureLesson(options.course))
 
+  // Bumped after a save so the derived status recomputes from the updated baseline ref.
+  const [, setSaveVersion] = useState(0)
+
   // Stable ref to current course for callbacks that shouldn't re-create on every edit
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
@@ -169,13 +174,29 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         const currentContent = (lesson.content as IntlRecord | undefined)?.[locale]
         if (stringifyContent(initialContent) !== stringifyContent(currentContent)) return true
 
-        const qs0 = (initialLesson.questions ?? []) as Array<{ id: number; description: IntlRecord }>
+        const qs0 = (initialLesson.questions ?? []) as Lesson['questions']
         const qs1 = lesson.questions ?? []
         if (qs0.length !== qs1.length) return true
         if (
-          qs0.some(
-            (q, j) => q.id !== qs1[j]?.id || q.description?.[locale] !== (qs1[j]?.description as IntlRecord)?.[locale]
-          )
+          qs1.some((q1, j) => {
+            const q0 = qs0[j]
+            if (!q0 || q0.id !== q1.id) return true
+            if ((q0.description as IntlRecord)?.[locale] !== (q1.description as IntlRecord)?.[locale]) return true
+            if ((q0.explanation?.[locale] ?? '') !== ((q1.explanation as IntlRecord | undefined)?.[locale] ?? '')) {
+              return true
+            }
+            const os0 = q0.options ?? []
+            const os1 = q1.options ?? []
+            if (os0.length !== os1.length) return true
+            return os1.some((o1, k) => {
+              const o0 = os0[k]
+              if (!o0 || o0.id !== o1.id) return true
+              if (((o0.content as IntlRecord)?.[locale] ?? '') !== ((o1.content as IntlRecord)?.[locale] ?? '')) {
+                return true
+              }
+              return !!o0.isCorrect !== !!o1.isCorrect
+            })
+          })
         ) {
           return true
         }
@@ -249,6 +270,8 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
     const lessonsPayload: Array<TableInsert<'lessons'> & { id?: number }> = []
     const idMap = new Map<number, number>()
+    const questionIdMap = new Map<number, number>()
+    const optionIdMap = new Map<number, number>()
     const initialLessonMap = new Map(initial.lessons.map(l => [l.id, l]))
 
     for (const [lessonIndex, lesson] of lessons.entries()) {
@@ -316,33 +339,96 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         const currentQuestionIds = new Set(lesson.questions.map(q => q.id))
         const removedQuestionIds = [...initialQuestionIds].filter(qId => !currentQuestionIds.has(qId))
 
-        const questionsToUpsert = lesson.questions.flatMap(q => {
-          const existing = initialQuestionMap.get(q.id)
-          if (
-            existing &&
-            existing.description?.[locale] === (q.description as IntlRecord | undefined)?.[locale] &&
-            existing.explanation?.[locale] === (q.explanation as IntlRecord | undefined)?.[locale]
-          ) {
-            return []
-          }
-          return [
-            {
-              id: existing ? q.id : undefined,
-              lessonId: lesson.id,
-              description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
-              explanation: mergeLocale(
-                q.explanation as IntlRecord | null | undefined,
-                existing?.explanation ?? null,
-                locale
-              ),
-            },
-          ]
-        })
-
-        if (questionsToUpsert.length > 0) {
-          await upsertQuestions(questionsToUpsert as unknown as TableInsert<'questions'>[])
+        if (removedQuestionIds.length > 0) {
+          const removedOptionIds = (initialLesson?.questions ?? []).reduce<number[]>((ids, q) => {
+            if (removedQuestionIds.includes(q.id)) ids.push(...q.options.map(o => o.id))
+            return ids
+          }, [])
+          if (removedOptionIds.length > 0) await deleteQuestionOptions(removedOptionIds)
+          await deleteQuestions(removedQuestionIds)
         }
-        if (removedQuestionIds.length > 0) await deleteQuestions(removedQuestionIds)
+
+        await Promise.all(
+          lesson.questions.map(async q => {
+            const existing = initialQuestionMap.get(q.id)
+            const questionChanged =
+              !existing ||
+              existing.description?.[locale] !== (q.description as IntlRecord | undefined)?.[locale] ||
+              (existing.explanation?.[locale] ?? null) !== ((q.explanation as IntlRecord | undefined)?.[locale] ?? null)
+
+            let questionId = q.id
+            if (!existing) {
+              const result = await upsertQuestions([
+                {
+                  lessonId: lesson.id,
+                  description: mergeLocale(q.description as IntlRecord, undefined, locale),
+                  explanation: mergeLocale(q.explanation as IntlRecord | null | undefined, null, locale),
+                },
+              ] as unknown as TableInsert<'questions'>[])
+              questionId = result.data[0]?.id ?? q.id
+              if (questionId !== q.id) questionIdMap.set(q.id, questionId)
+            } else if (questionChanged) {
+              await upsertQuestions([
+                {
+                  id: q.id,
+                  lessonId: lesson.id,
+                  description: mergeLocale(q.description as IntlRecord, existing.description, locale),
+                  explanation: mergeLocale(
+                    q.explanation as IntlRecord | null | undefined,
+                    existing.explanation ?? null,
+                    locale
+                  ),
+                },
+              ] as unknown as TableInsert<'questions'>[])
+            }
+
+            const initialOptions = existing?.options ?? []
+            const initialOptionMap = new Map(initialOptions.map(o => [o.id, o]))
+            const currentOptionIds = new Set(q.options.map(o => o.id))
+            const removedOptionIds = initialOptions.reduce<number[]>((ids, o) => {
+              if (!currentOptionIds.has(o.id)) ids.push(o.id)
+              return ids
+            }, [])
+
+            const optionsToUpsert = q.options.reduce<Array<{ tempId?: number; value: Record<string, unknown> }>>(
+              (rows, o) => {
+                const existingOption = initialOptionMap.get(o.id)
+                const changed =
+                  !existingOption ||
+                  (existingOption.content as IntlRecord | undefined)?.[locale] !==
+                    (o.content as IntlRecord | undefined)?.[locale] ||
+                  !!existingOption.isCorrect !== !!o.isCorrect
+                if (!changed) return rows
+                rows.push({
+                  tempId: existingOption ? undefined : o.id,
+                  value: {
+                    id: existingOption ? o.id : undefined,
+                    questionId,
+                    content: mergeLocale(
+                      o.content as IntlRecord,
+                      existingOption?.content as IntlRecord | undefined,
+                      locale
+                    ),
+                    isCorrect: !!o.isCorrect,
+                  },
+                })
+                return rows
+              },
+              []
+            )
+
+            if (optionsToUpsert.length > 0) {
+              const result = await upsertQuestionOptions(
+                optionsToUpsert.map(row => row.value) as unknown as TableInsert<'question_options'>[]
+              )
+              for (const [i, row] of optionsToUpsert.entries()) {
+                const realId = result.data[i]?.id
+                if (row.tempId !== undefined && realId !== undefined) optionIdMap.set(row.tempId, realId)
+              }
+            }
+            if (removedOptionIds.length > 0) await deleteQuestionOptions(removedOptionIds)
+          })
+        )
 
         const initialEvalIds = new Set((initialLesson?.evaluations ?? []).map(e => e.id))
         const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
@@ -389,6 +475,20 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         }
       })
     )
+
+    if (questionIdMap.size > 0 || optionIdMap.size > 0) {
+      setCourse(prev => ({
+        ...prev,
+        lessons: prev.lessons.map(l => ({
+          ...l,
+          questions: l.questions.map(q => ({
+            ...q,
+            id: questionIdMap.get(q.id) ?? q.id,
+            options: q.options.map(o => ({ ...o, id: optionIdMap.get(o.id) ?? o.id })),
+          })),
+        })),
+      }))
+    }
 
     const coursePayload: Record<string, unknown> = {}
 
@@ -455,8 +555,21 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           const existing = initialLesson?.questions.find(iq => iq.id === q.id)
           return {
             ...q,
+            id: questionIdMap.get(q.id) ?? q.id,
             description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
             explanation: mergeLocale(q.explanation as IntlRecord | null, existing?.explanation ?? null, locale),
+            options: q.options.map(o => {
+              const existingOption = existing?.options.find(io => io.id === o.id)
+              return {
+                ...o,
+                id: optionIdMap.get(o.id) ?? o.id,
+                content: mergeLocale(
+                  o.content as IntlRecord,
+                  existingOption?.content as IntlRecord | undefined,
+                  locale
+                ),
+              }
+            }),
           }
         }),
         evaluations: lesson.evaluations.map(e => {
@@ -486,6 +599,8 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       languages: nextLanguages ?? initial.languages,
       lessons: mergedLessons,
     }) as Course
+
+    setSaveVersion(version => version + 1)
   }
 
   const addLesson = (values: TableUpdate<'lessons'> = {}) => {

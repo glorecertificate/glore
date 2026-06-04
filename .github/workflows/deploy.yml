@@ -23,7 +23,6 @@ jobs:
   deploy:
     name: Deploy to ${{ inputs.environment }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     permissions:
       contents: read
       deployments: write
@@ -49,14 +48,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --dev --frozen-lockfile --ignore-scripts
       - name: Set environment
-        id: set-env
-        run: echo "env=$(echo ${{ inputs.environment }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
-      - name: Pull Vercel environment
-        run: pnpm exec vercel pull --yes --environment=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build project artifacts
-        run: pnpm exec vercel build --target=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
+        id: env
+        run: echo "target=$(echo ${{ inputs.environment }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+      # - name: Pull Vercel environment
+      #   run: pnpm exec vercel pull --yes --environment=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
+      # - name: Build project artifacts
+      #   run: pnpm exec vercel build --target=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel
         id: vercel
         run: |
-          pnpm exec vercel deploy --prebuilt --archive=tgz --target=${{ steps.set-env.outputs.env }} --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
+          pnpm exec vercel deploy --prebuilt --archive=tgz --target=${{ steps.env.outputs.target }} --token=${{ secrets.VERCEL_TOKEN }} > deployment-url.txt
           echo "deployment-url=$(cat deployment-url.txt)" >> $GITHUB_OUTPUT

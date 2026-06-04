@@ -23,7 +23,7 @@ export const CourseListTabs = ({ children, ...props }: React.ComponentProps<type
 
   return (
     <CourseLanguagesProvider>
-      <Tabs animated className="gap-6" defaultValue="all" onValueChange={handleTabChange} value={tab} {...props}>
+      <Tabs animated className="gap-2" defaultValue="all" onValueChange={handleTabChange} value={tab} {...props}>
         {children}
       </Tabs>
     </CourseLanguagesProvider>
@@ -60,7 +60,14 @@ const CourseListTabsTrigger = ({
   }
 
   return (
-    <TabsTrigger className={cn('rounded-lg', className)} count={count} size="sm" value={value} {...props}>
+    <TabsTrigger
+      effect="text-stroke"
+      className={cn('rounded-lg', className)}
+      count={count}
+      size="sm"
+      value={value}
+      {...props}
+    >
       {t(value)}
     </TabsTrigger>
   )

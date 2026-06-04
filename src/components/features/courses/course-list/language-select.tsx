@@ -28,14 +28,14 @@ export const CourseListLanguageSelect = () => {
       options={i18n.locales}
       value={activeLanguages}
     >
-      <MultiSelectTrigger position="end">
+      <MultiSelectTrigger position="start">
         {activeLanguageItems.map(({ displayLabel, icon, value }) => (
           <MultiSelectBadge className="gap-0 bg-muted/80 py-0 text-sm" key={value} label={displayLabel} value={value}>
             {icon && <span className="mr-1 inline-block">{icon}</span>}
           </MultiSelectBadge>
         ))}
       </MultiSelectTrigger>
-      <MultiSelectContent align="end">
+      <MultiSelectContent align="start">
         {localeItems.map(({ label, icon, value }) => (
           <MultiSelectItem key={value} value={value}>
             {label} {icon}

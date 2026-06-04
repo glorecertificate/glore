@@ -191,7 +191,8 @@
 }
 
 @utility text-stroke-* {
-  -webkit-text-stroke-width: --value(number) px;
+  /* prettier-ignore */
+  -webkit-text-stroke-width: --value(number)px;
   -webkit-text-stroke-color: --value(--color-*);
 }
 

@@ -9,7 +9,7 @@ import { CourseListGroupSelect } from '@/components/features/courses/course-list
 import { CourseListSort } from '@/components/features/courses/course-list/sort'
 import { CourseListTabsList } from '@/components/features/courses/course-list/tabs'
 import { CourseListTypeSelect } from '@/components/features/courses/course-list/type-select'
-import { Header, HeaderBreadcrumb, HeaderLogo, HeaderTrigger } from '@/components/ui/header'
+import { Header, HeaderBreadcrumb, HeaderTrigger } from '@/components/ui/header'
 import { SearchInput } from '@/components/ui/search'
 import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
@@ -26,25 +26,22 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
           <HeaderTrigger />
           <HeaderBreadcrumb description={description} title={t('courses')} />
         </div>
-        <div className="flex items-center gap-3 sm:mr-6 sm:-mb-1">
-          <CourseListTabsList />
+        <div className="flex items-center gap-3">
           <CourseListDialog />
+          <CourseListTabsList />
         </div>
-        <HeaderLogo href="/courses" className="hidden sm:block" />
       </div>
-      <div className="mb-1 flex w-full flex-wrap justify-between gap-4 sm:mt-2 sm:gap-2">
+      <div className="mb-1 flex w-full flex-wrap justify-between gap-4 sm:mt-1.5 sm:gap-2">
         <div className="flex flex-wrap items-center gap-1.5">
           <div className="flex flex-wrap items-center gap-2.5">
-            <SearchInput className="h-9 w-64" placeholder={t('searchPlaceholder')} urlKey="q" />
+            <SearchInput className="h-9 w-80" placeholder={t('searchPlaceholder')} urlKey="q" />
+            <CourseListLanguageSelect />
             <CourseListTypeSelect />
             <CourseListGroupSelect />
           </div>
           <CourseListFilterReset />
         </div>
-        <div className="flex w-full items-center justify-between gap-2.5 sm:w-auto">
-          <CourseListLanguageSelect />
-          <CourseListSort />
-        </div>
+        <CourseListSort />
       </div>
     </Header>
   )

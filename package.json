@@ -158,7 +158,7 @@
     "knip": "^6.13.1",
     "oxlint-tsgolint": "^0.22.1",
     "portless": "^0.13.0",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.15",
     "react-doctor": "^0.1.6",
     "react-email": "^6.1.4",
     "release-it": "^20.0.1",

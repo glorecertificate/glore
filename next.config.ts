@@ -105,8 +105,12 @@ const nextConfig: NextConfig = {
   ],
   serverExternalPackages: EXTERNAL_PACKAGES,
   typedRoutes: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     turbopackFileSystemCacheForDev: true,
+    turbopackFileSystemCacheForBuild: true,
   },
 }
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.12](https://github.com/glorecertificate/glore/compare/v0.6.11...v0.6.12) (2026-06-06)
+
+### Fixes
+
+- Fix auth catch blocks ([a92f7e9](https://github.com/glorecertificate/glore/commit/a92f7e93e9cb6dd43d2f0464af0a75ef449a3cb7))
+
+### CI
+
+- Run vercel deployments with github actions ([8707ccc](https://github.com/glorecertificate/glore/commit/8707ccced37e1f355325fba98715b5566cbc6dd1))
+
 ## [0.6.11](https://github.com/glorecertificate/glore/compare/v0.6.10...v0.6.11) (2026-06-04)
 
 ### CI

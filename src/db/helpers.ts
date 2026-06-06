@@ -1,3 +1,5 @@
+import { unstable_rethrow } from 'next/navigation'
+
 type DatabaseErrorCode =
   | 'CONFLICT'
   | 'CONNECTION_ERROR'
@@ -27,6 +29,7 @@ export const safeQuery = async <T>(callback: () => Promise<T>) => {
     const data = await callback()
     return { data, error: null }
   } catch (e) {
+    unstable_rethrow(e)
     const error = e instanceof Error ? e : new Error(String(e))
     return {
       data: null,
@@ -39,6 +42,7 @@ export const safeQuery = async <T>(callback: () => Promise<T>) => {
 }
 
 export const queryError = (e: unknown) => {
+  unstable_rethrow(e)
   const error = e instanceof Error ? e : new Error(String(e))
   return {
     code: classifyError(error),

@@ -64,7 +64,7 @@ export const findUser = async (id: string, { cache: useCache = true }: { cache?:
   }
 
   const { data, error } = await fetchUser(id)
-  if (error || !data) throw error || new Error('User not found')
+  if (error || !data) throw new Error(error?.message ?? 'User not found')
 
   return data
 }

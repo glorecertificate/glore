@@ -4,7 +4,7 @@ import 'server-only'
 
 import { revalidateTag } from 'next/cache'
 import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect, unstable_rethrow } from 'next/navigation'
 import { cache } from 'react'
 
 import { and, desc, eq, ne } from 'drizzle-orm'
@@ -20,7 +20,8 @@ export const getAuthUser = cache(async () => {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
     return session?.user ?? null
-  } catch {
+  } catch (e) {
+    unstable_rethrow(e)
     return null
   }
 })

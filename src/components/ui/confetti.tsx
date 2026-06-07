@@ -2,18 +2,15 @@
 
 import { createContext, useEffect, useEffectEvent, useRef } from 'react'
 
-import { type CreateTypes, type GlobalOptions, type Options } from 'canvas-confetti'
+import { type CreateTypes, type GlobalOptions, type Options, Shape } from 'canvas-confetti'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 
-const loadConfetti = async () => {
-  const { default: canvasConfetti } = await import('canvas-confetti')
-  return canvasConfetti
-}
+const DEFAULT_SHAPES: Shape[] = ['square', 'circle']
 
-const ConfettiContext = createContext<{
-  fire: (options?: Options) => void
-} | null>(null)
+const ConfettiContext = createContext<{ fire: (options?: Options) => void } | null>(null)
+
+const loadConfetti = async () => (await import('canvas-confetti')).default
 
 export const Confetti = ({
   angle = 90,
@@ -30,7 +27,7 @@ export const Confetti = ({
   ref,
   resize,
   scalar = 1,
-  shapes = ['square', 'circle'],
+  shapes = DEFAULT_SHAPES,
   spread = 45,
   startVelocity = 45,
   ticks = 200,

@@ -1,26 +1,13 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { cn } from '@/lib/utils'
 
-const NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
-
-interface InlineInputProps
-  extends Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'>, VariantProps<typeof inlineInputVariants> {
-  /**
-   * When true, the input width adapts to the content.
-   */
-  autoWidth?: boolean
-  /**
-   * When true, resets the value to `defaultValue` on blur.
-   * @default true
-   */
-  keepFilled?: boolean
-}
+const INPUT_NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
 export const InlineInput = ({
   autoWidth,
@@ -34,10 +21,21 @@ export const InlineInput = ({
   size,
   value,
   ...props
-}: InlineInputProps) => {
+}: Omit<React.ComponentProps<'textarea'>, 'rows' | 'size'> &
+  VariantProps<typeof inlineInputVariants> & {
+    /**
+     * When true, the input width adapts to the content.
+     */
+    autoWidth?: boolean
+    /**
+     * When true, resets the value to `defaultValue` on blur.
+     * @default true
+     */
+    keepFilled?: boolean
+  }) => {
   const ref = useRef<HTMLTextAreaElement>(null)
   const composedRefs = useComposedRefs(ref, forwardedRef)
-  const [staticValue, setStaticValue] = useState(value ?? defaultValue ?? '')
+  const staticValueRef = useRef(value ?? defaultValue ?? '')
 
   const adjustSize = () => {
     if (!ref.current) {
@@ -73,30 +71,26 @@ export const InlineInput = ({
 
     if (keepFilled && empty) {
       if (value !== undefined && onChange) {
-        e.target.value = staticValue.toString()
+        e.target.value = staticValueRef.current.toString()
         onChange(e)
       } else if (ref.current) {
-        ref.current.value = staticValue.toString()
+        ref.current.value = staticValueRef.current.toString()
       }
-
       onBlur?.(e)
       requestAnimationFrame(() => adjustSize())
       return
     }
-    setStaticValue(e.target.value)
+    staticValueRef.current = e.target.value
     onBlur?.(e)
   }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (NAVIGATION_KEYS.includes(e.key)) {
-      e.stopPropagation()
-    }
+    if (INPUT_NAVIGATION_KEYS.includes(e.key)) e.stopPropagation()
     if (e.key === 'Enter') {
       e.preventDefault()
       ref.current?.blur()
     }
-    if (e.key === 'Escape') {
-      ref.current?.blur()
-    }
+    if (e.key === 'Escape') ref.current?.blur()
     onKeyDown?.(e)
   }
 

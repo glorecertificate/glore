@@ -103,9 +103,9 @@ The app is hosted on [Vercel](https://vercel.com):
 The application can be also deployed manually:
 
 ```sh
-pnpm run deploy       # deploy a preview
-pnpm run deploy:prod  # deploy to production without a release
-pnpm run release      # release + trigger production deploy
+pnpm run deploy:preview     # deploy a preview
+pnpm run deploy:production  # deploy to production without a release
+pnpm run release            # release + trigger production deploy
 ```
 
 ## Contributing

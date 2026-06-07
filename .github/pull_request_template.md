@@ -21,8 +21,7 @@ Brief description of what this PR does and why.
 
 ## Checklist
 
-- [ ] `pnpm check` passes locally (lint + format + knip)
-- [ ] `pnpm typecheck` passes
+- [ ] `pnpm check` passes locally (types + lint + format + knip)
 - [ ] No new warnings or errors introduced
 - [ ] Translation keys added/updated in all three `messages/` files
 - [ ] `AGENTS.md` updated if architecture or conventions changed

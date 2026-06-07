@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
 
 import { AIChatPlugin } from '@platejs/ai/react'
 import { BLOCK_CONTEXT_MENU_ID, BlockMenuPlugin, BlockSelectionPlugin } from '@platejs/selection/react'
@@ -23,7 +23,7 @@ import { useDevice } from '@/hooks/use-device'
 export const BlockContextMenu = ({ children }: { children: React.ReactNode }) => {
   const t = useTranslations('Components.RichTextEditor')
   const { api, editor } = useEditorPlugin(BlockMenuPlugin)
-  const [value, setValue] = useState<'askAI' | null>(null)
+  const valueRef = useRef<'askAI' | null>(null)
   const { isTouch } = useDevice()
   const [readOnly] = usePlateState('readOnly')
 
@@ -77,17 +77,17 @@ export const BlockContextMenu = ({ children }: { children: React.ReactNode }) =>
           e.preventDefault()
           editor.getApi(BlockSelectionPlugin).blockSelection.focus()
 
-          if (value === 'askAI') {
+          if (valueRef.current === 'askAI') {
             editor.getApi(AIChatPlugin).aiChat.show()
           }
 
-          setValue(null)
+          valueRef.current = null
         }}
       >
         <ContextMenuGroup>
           <ContextMenuItem
             onClick={() => {
-              setValue('askAI')
+              valueRef.current = 'askAI'
             }}
           >
             {t('ai.askAI')}

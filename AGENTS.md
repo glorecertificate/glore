@@ -57,7 +57,7 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 | `pnpm run analyze`        | Next.js bundle analyzer                                         |
 | `pnpm run release`        | Create a release (release-it)                                   |
 | `pnpm run deploy:preview` | Deploy preview to Vercel                                        |
-| `pnpm run deploy:prod`    | Deploy to production on Vercel                                  |
+| `pnpm run deploy:production` | Deploy to production on Vercel                               |
 | `pnpm run bump`           | Update pnpm and upgrade all dependencies                        |
 | `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
 | `pnpm run db <command>`   | Run drizzle-kit commands                                        |

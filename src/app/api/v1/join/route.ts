@@ -39,14 +39,12 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.redirect(new URL('/onboarding/error', request.url))
   }
 
+  const redirectTo = user.onboardedAt ? APP_ROOT : ONBOARDING_ROOT
+
   await db
     .update(teamInvitations)
     .set({ acceptedAt: new Date().toISOString() })
     .where(eq(teamInvitations.id, invitation.id))
 
-  if (user.onboardedAt) {
-    return NextResponse.redirect(new URL(APP_ROOT, request.url))
-  }
-
-  return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
+  return NextResponse.redirect(new URL(redirectTo, request.url))
 }

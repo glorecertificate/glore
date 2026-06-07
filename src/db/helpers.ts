@@ -1,15 +1,6 @@
 import { unstable_rethrow } from 'next/navigation'
 
-type DatabaseErrorCode =
-  | 'CONFLICT'
-  | 'CONNECTION_ERROR'
-  | 'CONSTRAINT_VIOLATION'
-  | 'NOT_FOUND'
-  | 'QUERY_ERROR'
-  | 'TIMEOUT'
-  | 'UNAUTHORIZED'
-
-const classifyError = (error: Error): DatabaseErrorCode => {
+const errorCode = (error: Error) => {
   const message = error.message.toLowerCase()
   if (message.includes('not found') || message.includes('no rows')) return 'NOT_FOUND'
   if (message.includes('unique') || message.includes('duplicate') || message.includes('already exists')) {
@@ -24,9 +15,9 @@ const classifyError = (error: Error): DatabaseErrorCode => {
   return 'QUERY_ERROR'
 }
 
-export const safeQuery = async <T>(callback: () => Promise<T>) => {
+export const safeQuery = async <T>(query: () => Promise<T>) => {
   try {
-    const data = await callback()
+    const data = await query()
     return { data, error: null }
   } catch (e) {
     unstable_rethrow(e)
@@ -34,7 +25,7 @@ export const safeQuery = async <T>(callback: () => Promise<T>) => {
     return {
       data: null,
       error: {
-        code: classifyError(error),
+        code: errorCode(error),
         message: error.message,
       },
     }
@@ -45,7 +36,7 @@ export const queryError = (e: unknown) => {
   unstable_rethrow(e)
   const error = e instanceof Error ? e : new Error(String(e))
   return {
-    code: classifyError(error),
+    code: errorCode(error),
     message: error.message,
   }
 }

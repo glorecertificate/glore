@@ -37,7 +37,7 @@ jobs:
           key: tsc-${{ runner.os }}-${{ hashFiles('tsconfig.json', 'src/**/*.ts', 'src/**/*.tsx') }}
           restore-keys: tsc-${{ runner.os }}-
       - name: Run code checks
-        run: pnpm run check:ci
+        run: pnpm run check
 
   deploy:
     name: Deploy

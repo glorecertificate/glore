@@ -5,4 +5,4 @@ set -e
 REF=$(git rev-parse --abbrev-ref origin/HEAD)
 
 pnpm exec commitlint --from "$REF" --to HEAD --verbose
-pnpm run check:ci
+pnpm run check

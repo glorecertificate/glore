@@ -39,7 +39,6 @@ export const uploadAvatar = async (formData: FormData) => {
   const [user, mimeType] = await Promise.all([getAuthUser(), validateImageFile(file)])
   if (!user) throw new Error('Unauthorized')
   const ext = mimeType.split('/')[1]
-  // eslint-disable-next-line react-doctor/async-parallel
   const url = await r2Put(`avatars/${user.id}-${Date.now()}.${ext}`, file, mimeType)
 
   await db.update(users).set({ avatarUrl: url }).where(eq(users.id, user.id))

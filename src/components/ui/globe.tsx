@@ -6,6 +6,7 @@ import createGlobe, { type COBEOptions, type Marker } from 'cobe'
 import { useSpring } from 'react-spring'
 
 import { cn } from '@/lib/utils'
+
 export interface GlobeColorOptions {
   baseColor?: [number, number, number]
   glowColor?: [number, number, number]
@@ -316,6 +317,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
   return (
     <canvas
+      aria-label="Globe"
       className={cn('cursor-grab bg-transparent opacity-0 transition-opacity duration-300', className)}
       onPointerCancel={onPointerLeave}
       onPointerDown={onPointerDown}

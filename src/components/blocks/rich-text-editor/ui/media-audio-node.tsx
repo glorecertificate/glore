@@ -16,7 +16,7 @@ export const AudioElement = withHOC(ResizableProvider, (props: PlateElementProps
     <PlateElement {...props} className="mb-1">
       <figure className="group relative cursor-default" contentEditable={false}>
         <div className="h-16">
-          <audio className="size-full" controls src={unsafeUrl} />
+          <audio aria-label="Audio player" className="size-full" controls src={unsafeUrl} />
         </div>
 
         <Caption align={align} style={captionStyle}>

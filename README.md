@@ -1,8 +1,8 @@
 <div align="center">
   <h1><img src="public/logo.png" alt="" height="80"></h1>
+  <img src="https://img.shields.io/github/package-json/v/glorecertificate/glore?labelColor=%2339414a&color=%2352b6cb">
   <a href="https://github.com/glorecertificate/glore/actions/workflows/ci.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/ci.yml/badge.svg" /></a>
   <a href="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql"><img src="https://github.com/glorecertificate/glore/actions/workflows/github-code-scanning/codeql/badge.svg"></a>
-  <a href="https://github.com/glorecertificate/glore/actions/workflows/deploy"><img src="https://github.com/glorecertificate/glore/actions/workflows/deploy.yml/badge.svg" /></a>
   <a href="https://github.com/glorecertificate/glore/actions/workflows/release.yml"><img src="https://github.com/glorecertificate/glore/actions/workflows/release.yml/badge.svg" /></a>
 </div>
 <br>

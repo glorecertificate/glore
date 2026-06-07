@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.13](https://github.com/glorecertificate/glore/compare/v0.6.12...v0.6.13) (2026-06-07)
+
+### Build
+
+- Bump dependencies and resolve resulting lint issues ([1e187ee](https://github.com/glorecertificate/glore/commit/1e187ee3e0b05d94d79dd4e6bc1938f115457759))
+
+### CI
+
+- Add permissions for ci and release workflows ([ff01fd7](https://github.com/glorecertificate/glore/commit/ff01fd7a8e85f8cb34e77ae14077922c534cf95e))
+
+### Docs
+
+- Add version badge to README ([8a3050f](https://github.com/glorecertificate/glore/commit/8a3050f77d1b2d21a7648308fccede6f56236aa6))
+
 ## [0.6.12](https://github.com/glorecertificate/glore/compare/v0.6.11...v0.6.12) (2026-06-06)
 
 ### Fixes

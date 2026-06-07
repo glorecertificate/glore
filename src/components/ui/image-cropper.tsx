@@ -13,23 +13,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 
-const getCroppedImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
+const cropImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
   const canvas = document.createElement('canvas')
   const scaleX = image.naturalWidth / image.width
   const scaleY = image.naturalHeight / image.height
-
   canvas.width = crop.width * scaleX
   canvas.height = crop.height * scaleY
 
   const ctx = canvas.getContext('2d')
-
-  if (!ctx) {
-    throw new Error('No 2d context')
-  }
+  if (!ctx) throw new Error('Could not get canvas context')
 
   ctx.imageSmoothingEnabled = true
   ctx.imageSmoothingQuality = 'high'
-
   ctx.drawImage(
     image,
     crop.x * scaleX,
@@ -74,10 +69,10 @@ export const ImageCropper = ({
 
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
+  const selectedRef = useRef<File | null>(null)
+  const completedRef = useRef<PixelCrop | undefined>(undefined)
   const imageRef = useRef<HTMLImageElement | null>(null)
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -85,7 +80,7 @@ export const ImageCropper = ({
     if (!file) {
       return
     }
-    setSelectedFile(file)
+    selectedRef.current = file
     setPreviewUrl(URL.createObjectURL(file))
     setOpen(true)
   }
@@ -105,10 +100,12 @@ export const ImageCropper = ({
   }
 
   const handleCrop = async () => {
+    const completedCrop = completedRef.current
+    const selectedFile = selectedRef.current
     if (imageRef.current && completedCrop?.width && completedCrop?.height && selectedFile) {
       try {
         setSaving(true)
-        const blob = await getCroppedImage(imageRef.current, completedCrop)
+        const blob = await cropImage(imageRef.current, completedCrop)
         const file = new File([blob], selectedFile.name, { type: 'image/png' })
         await onChange?.(file)
         setOpen(false)
@@ -160,7 +157,7 @@ export const ImageCropper = ({
           setOpen(isOpen)
           if (!isOpen) {
             setPreviewUrl(null)
-            setSelectedFile(null)
+            selectedRef.current = null
           }
         }}
         open={open}
@@ -174,7 +171,9 @@ export const ImageCropper = ({
                 className="mx-auto"
                 crop={crop}
                 onChange={(_, percentCrop) => setCrop(percentCrop)}
-                onComplete={c => setCompletedCrop(c)}
+                onComplete={c => {
+                  completedRef.current = c
+                }}
               >
                 <img
                   alt="Crop preview"

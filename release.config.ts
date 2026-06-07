@@ -87,7 +87,7 @@ export default {
     publish: false,
   },
   hooks: {
-    'before:init': ['pnpm run check:ci', 'pnpm run build'],
+    'before:init': ['pnpm run check', 'pnpm run build'],
     'before:release': ['pnpm run format', 'git add .'],
   },
   plugins: {

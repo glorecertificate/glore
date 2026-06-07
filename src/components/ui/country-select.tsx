@@ -45,7 +45,6 @@ export const CountrySelect = ({
       <PopoverTrigger asChild>
         <Button
           className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
-          // eslint-disable-next-line jsx-a11y/prefer-tag-over-role
           role="combobox"
           aria-controls="#"
           aria-expanded={open}

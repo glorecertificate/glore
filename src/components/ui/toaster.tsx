@@ -5,15 +5,17 @@ import { Toaster as Sonner } from 'sonner'
 import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 
+const DEFAULT_HOTKEY = ['Escape']
+
 export const Toaster = ({
   className,
   duration = 2500,
-  hotkey = ['Escape'] as const,
+  hotkey = DEFAULT_HOTKEY,
   position = 'top-center',
   style,
   toastOptions,
   ...props
-}: Omit<React.ComponentProps<typeof Sonner>, 'closeButton'>) => {
+}: React.ComponentProps<typeof Sonner>) => {
   const { theme } = useTheme()
 
   return (

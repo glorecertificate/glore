@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.14](https://github.com/glorecertificate/glore/compare/v0.6.13...v0.6.14) (2026-06-08)
+
+### Features
+
+- Add organization management, dashboard analytics and onboarding overhaul ([28db4ac](https://github.com/glorecertificate/glore/commit/28db4ac529eced57f3e59bd53fc5d038b163bb8f))
+
+### Other
+
+- Add transaction support for user and certificate operations ([8be360f](https://github.com/glorecertificate/glore/commit/8be360f1fef02b866906ff8a71f11513df14e1c8))
+
 ## [0.6.13](https://github.com/glorecertificate/glore/compare/v0.6.12...v0.6.13) (2026-06-07)
 
 ### Build

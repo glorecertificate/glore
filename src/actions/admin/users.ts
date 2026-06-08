@@ -13,32 +13,27 @@ import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 
+const queryAdminUsers = async () => {
+  const result = await db.query.users.findMany({
+    orderBy: (u, { desc: orderDesc }) => [orderDesc(u.createdAt)],
+    with: userWith,
+    limit: 1000,
+  })
+  return result.map(parseUser)
+}
+
 const fetchAdminUsers = async () => {
   'use cache'
   cacheTag(CacheTag.AdminUsers)
 
-  return await safeQuery(async () => {
-    const result = await db.query.users.findMany({
-      orderBy: (u, { desc: orderDesc }) => [orderDesc(u.createdAt)],
-      with: userWith,
-      limit: 1000,
-    })
-    return result.map(parseUser)
-  })
+  return await safeQuery(queryAdminUsers)
 }
 
 export const getAdminUsers = async ({ cache = true }: { cache?: boolean } = {}) => {
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
 
-  if (!cache) {
-    const result = await db.query.users.findMany({
-      orderBy: (u, { desc: orderDesc }) => [orderDesc(u.createdAt)],
-      with: userWith,
-      limit: 1000,
-    })
-    return { data: result.map(parseUser), error: null }
-  }
+  if (!cache) return { data: await queryAdminUsers(), error: null }
   return await fetchAdminUsers()
 }
 

@@ -6,11 +6,11 @@ import { cacheTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-import { and, eq, ne, or } from 'drizzle-orm'
+import { and, eq, inArray, ne, or } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
@@ -20,18 +20,20 @@ import { CacheTag, userTag } from '@/lib/cache'
 import { AUTH_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
+const queryUserById = async (id: string) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, id),
+    with: userWith,
+  })
+  if (!user) throw new Error('User not found')
+  return parseUser(user)
+}
+
 const fetchUser = async (id: string) => {
   'use cache'
   cacheTag(userTag(id))
 
-  return await safeQuery(async () => {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, id),
-      with: userWith,
-    })
-    if (!user) throw new Error('User not found')
-    return parseUser(user)
-  })
+  return await safeQuery(() => queryUserById(id))
 }
 
 export const findUserEmail = async (username: string) => {
@@ -54,14 +56,7 @@ export const getCurrentUser = cache(async () => {
 })
 
 export const findUser = async (id: string, { cache: useCache = true }: { cache?: boolean } = {}) => {
-  if (!useCache) {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, id),
-      with: userWith,
-    })
-    if (!user) throw new Error('User not found')
-    return parseUser(user)
-  }
+  if (!useCache) return await queryUserById(id)
 
   const { data, error } = await fetchUser(id)
   if (error || !data) throw new Error(error?.message ?? 'User not found')
@@ -76,13 +71,7 @@ export const updateUser = async (id: string, values: TableUpdate<'users'>, previ
   const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
   if (!updated) throw new Error('Failed to update user')
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, id),
-    with: userWith,
-  })
-  if (!user) throw new Error('User not found')
-
-  const parsed = parseUser(user)
+  const parsed = await queryUserById(id)
 
   if (values.email && previousEmail && values.email !== previousEmail) {
     const userName = parsed.firstName ?? undefined
@@ -121,18 +110,21 @@ export const deleteAccount = async () => {
     .from(memberships)
     .where(and(eq(memberships.userId, user.id), eq(memberships.role, 'admin')))
 
-  const otherAdmins = await Promise.all(
-    adminMemberships.map(m =>
-      db.query.memberships.findFirst({
-        where: and(
-          eq(memberships.organizationId, m.organizationId),
+  if (adminMemberships.length > 0) {
+    const adminOrgIds = adminMemberships.map(m => m.organizationId)
+    const orgsWithOtherAdmin = await db
+      .selectDistinct({ organizationId: memberships.organizationId })
+      .from(memberships)
+      .where(
+        and(
+          inArray(memberships.organizationId, adminOrgIds),
           eq(memberships.role, 'admin'),
           ne(memberships.userId, user.id)
-        ),
-      })
-    )
-  )
-  if (otherAdmins.some(a => !a)) throw new Error('SOLE_ORG_ADMIN')
+        )
+      )
+    const covered = new Set(orgsWithOtherAdmin.map(m => m.organizationId))
+    if (adminOrgIds.some(orgId => !covered.has(orgId))) throw new Error('SOLE_ORG_ADMIN')
+  }
 
   const cert = await db.query.certificates.findFirst({
     where: eq(certificates.userId, user.id),
@@ -140,7 +132,7 @@ export const deleteAccount = async () => {
   })
   if (cert) throw new Error('HAS_CERTIFICATES')
 
-  await deleteUser(user.id)
+  await transaction(tx => deleteUser(tx, user.id))
 
   redirect(AUTH_ROOT)
 }

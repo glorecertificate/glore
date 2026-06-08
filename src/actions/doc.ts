@@ -12,6 +12,7 @@ import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type DocCategory, parseDocArticle, parseDocCategory } from '@/db/queries/doc'
 import { docArticles, docCategories } from '@/db/schema'
+import { docArticleInsertSchema, docArticleUpdateSchema, docCategoryInsertSchema } from '@/db/schemas'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
 
@@ -35,33 +36,28 @@ const requireEditor = async () => {
   return user
 }
 
+const queryDocCategories = async (includeUnpublished: boolean) => {
+  const result = await db.query.docCategories.findMany({
+    with: includeUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
+    orderBy: [asc(docCategories.createdAt)],
+    limit: 100,
+  })
+  return result.map(parseDocCategory)
+}
+
 const fetchDocCategories = cache(async (includeUnpublished = false) => {
   'use cache'
   cacheTag(CacheTag.DocCategories)
   cacheLife('max')
 
-  return await safeQuery(async () => {
-    const result = await db.query.docCategories.findMany({
-      with: includeUnpublished ? { articles: { orderBy: [asc(docArticles.createdAt)] } } : getPublishedArticlesWith(),
-      orderBy: [asc(docCategories.createdAt)],
-      limit: 100,
-    })
-    return result.map(parseDocCategory)
-  })
+  return await safeQuery(() => queryDocCategories(includeUnpublished))
 })
 
 export const listDocCategories = async ({ cache: useCache = true, includeUnpublished = false } = {}): Promise<{
   data: DocCategory[] | null
   error: unknown
 }> => {
-  if (!useCache) {
-    const result = await db.query.docCategories.findMany({
-      with: includeUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
-      orderBy: [asc(docCategories.createdAt)],
-      limit: 100,
-    })
-    return { data: result.map(parseDocCategory), error: null }
-  }
+  if (!useCache) return { data: await queryDocCategories(includeUnpublished), error: null }
   return await fetchDocCategories(includeUnpublished)
 }
 
@@ -77,6 +73,8 @@ export const findDocCategory = async (slug: string, { includeUnpublished = false
 export const createDocCategory = async (data: TableInsert<'doc_categories'>) => {
   try {
     await requireEditor()
+    const parsed = docCategoryInsertSchema.safeParse(data)
+    if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid category data' } }
     const [result] = await db.insert(docCategories).values(data).returning()
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: result, error: null }
@@ -102,6 +100,8 @@ export const deleteDocCategory = async (id: number) => {
 export const createDocArticle = async (data: TableInsert<'doc_articles'>) => {
   try {
     await requireEditor()
+    const parsed = docArticleInsertSchema.safeParse(data)
+    if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid article data' } }
     const [result] = await db.insert(docArticles).values(data).returning()
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: parseDocArticle(result), error: null }
@@ -116,6 +116,8 @@ export const createDocArticle = async (data: TableInsert<'doc_articles'>) => {
 export const updateDocArticle = async (id: number, data: TableUpdate<'doc_articles'>) => {
   try {
     await requireEditor()
+    const parsed = docArticleUpdateSchema.safeParse(data)
+    if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid article data' } }
     const [result] = await db.update(docArticles).set(data).where(eq(docArticles.id, id)).returning()
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: parseDocArticle(result), error: null }

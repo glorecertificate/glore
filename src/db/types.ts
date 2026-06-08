@@ -1,5 +1,6 @@
 import { type InferInsertModel } from 'drizzle-orm'
 
+import { certificateStatusEnum, courseTypeEnum, membershipRoleEnum, organizationRequestStatusEnum } from '@/db/schema'
 import {
   type accounts,
   type assessments,
@@ -62,10 +63,10 @@ export type TableInsert<T extends keyof TableMap> = InferInsertModel<TableMap[T]
 export type TableUpdate<T extends keyof TableMap> = Partial<InferInsertModel<TableMap[T]>>
 
 interface Enums {
-  certificate_status: 'draft' | 'submitted' | 'in_review' | 'changes_requested' | 'approved'
-  course_type: 'intro' | 'skill' | 'learner'
-  organization_request_status: 'accepted' | 'pending' | 'rejected'
-  role: 'admin' | 'learner' | 'tutor' | 'representative' | 'volunteer'
+  certificate_status: (typeof certificateStatusEnum.enumValues)[number]
+  course_type: (typeof courseTypeEnum.enumValues)[number]
+  organization_request_status: (typeof organizationRequestStatusEnum.enumValues)[number]
+  role: (typeof membershipRoleEnum.enumValues)[number]
 }
 
 export type EnumType<T extends keyof Enums> = Enums[T]

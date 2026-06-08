@@ -1,0 +1,2 @@
+ALTER TABLE "courses" ADD COLUMN "archived_by_id" text;--> statement-breakpoint
+ALTER TABLE "courses" ADD CONSTRAINT "courses_archived_by_id_users_id_fk" FOREIGN KEY ("archived_by_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;

@@ -16,9 +16,10 @@ import {
   type ResubmitCertificateValues,
   type ReviewCertificateValues,
 } from '@/components/features/certificates/schemas'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { certificateSkills, certificates, memberships, users } from '@/db/schema'
+import { applyCertificateReview, createCertificateWithSkills } from '@/db/mutations/certificate'
+import { certificates, memberships, users } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { i18n } from '@/lib/i18n'
@@ -66,15 +67,6 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     const activityLocation = values.activityLocation ?? cert.activityLocation
     const activityDescription = values.activityDescription ?? cert.activityDescription
 
-    if (values.skillCourseIds !== undefined) {
-      await db.delete(certificateSkills).where(eq(certificateSkills.certificateId, id))
-      if (values.skillCourseIds.length > 0) {
-        await db
-          .insert(certificateSkills)
-          .values(values.skillCourseIds.map(courseId => ({ certificateId: id, courseId })))
-      }
-    }
-
     const skillsToMap =
       values.skillCourseIds === undefined
         ? cert.skills
@@ -88,7 +80,6 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
 
     let documentUrl: string | undefined
     if (isApprove) {
-      const volunteerName = cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : ''
       const pdfBuffer = await generateCertificatePdf({
         values: {
           activityStartDate,
@@ -98,7 +89,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
           activityDescription,
           organizationRating: cert.organizationRating,
         },
-        volunteerName,
+        volunteerName: cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : '',
         orgName: cert.organization.name,
         orgLogoUrl: cert.organization.profile?.avatarUrl,
         skillNames,
@@ -115,31 +106,22 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
       activityDescription,
     }
 
-    const [updated] = await db
-      .update(certificates)
-      .set(
-        isApprove
+    const updated = await transaction(tx =>
+      applyCertificateReview(tx, {
+        id,
+        expectedUpdatedAt: cert.updatedAt,
+        userId: cert.userId,
+        updates: isApprove
           ? { ...activityUpdates, status: 'approved', issuedAt, documentUrl }
           : {
               ...activityUpdates,
               status: 'changes_requested',
               reviewerComment: 'comment' in values ? values.comment : undefined,
-            }
-      )
-      .where(and(eq(certificates.id, id), eq(certificates.updatedAt, cert.updatedAt)))
-      .returning()
-
-    if (!updated) throw new Error('Conflict: certificate was modified by another request')
-
-    if (isApprove) {
-      const existingDefault = await db.query.certificates.findFirst({
-        where: and(eq(certificates.userId, cert.userId), eq(certificates.isDefault, true)),
-        columns: { id: true },
+            },
+        skillCourseIds: values.skillCourseIds,
+        setDefaultIfNone: isApprove,
       })
-      if (!existingDefault) {
-        await db.update(certificates).set({ isDefault: true }).where(eq(certificates.id, id))
-      }
-    }
+    )
 
     if (cert.user?.email) {
       await sendMail({
@@ -208,35 +190,26 @@ export const createCertificate = async (
       }
     }
 
-    const [newCert] = await db
-      .insert(certificates)
-      .values({
-        handle,
-        userId: authUser.id,
-        organizationId: orgId,
-        language: values.language,
-        activityStartDate: values.activityStartDate || '',
-        activityEndDate: values.activityEndDate || '',
-        activityDuration: values.activityDuration || 0,
-        activityLocation: values.activityLocation || '',
-        activityDescription: values.activityDescription || '',
-        organizationRating: values.organizationRating || 0,
-        reviewerId,
-        status,
-      })
-      .returning()
-
-    if (!newCert) throw new Error('Failed to create certificate')
-
-    const skillCourseIds = values.skillCourseIds ?? []
-    if (skillCourseIds.length > 0) {
-      await db.insert(certificateSkills).values(
-        skillCourseIds.map(courseId => ({
-          certificateId: newCert.id,
-          courseId,
-        }))
+    const newCert = await transaction(tx =>
+      createCertificateWithSkills(
+        tx,
+        {
+          handle,
+          userId: authUser.id,
+          organizationId: orgId,
+          language: values.language,
+          activityStartDate: values.activityStartDate || '',
+          activityEndDate: values.activityEndDate || '',
+          activityDuration: values.activityDuration || 0,
+          activityLocation: values.activityLocation || '',
+          activityDescription: values.activityDescription || '',
+          organizationRating: values.organizationRating || 0,
+          reviewerId,
+          status,
+        },
+        values.skillCourseIds ?? []
       )
-    }
+    )
 
     if (!draft && reviewerId) {
       const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))

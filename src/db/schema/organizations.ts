@@ -64,6 +64,7 @@ export const memberships = pgTable(
   table => [
     index('memberships_user_id_idx').on(table.userId),
     index('memberships_organization_id_idx').on(table.organizationId),
+    index('memberships_user_id_organization_id_idx').on(table.userId, table.organizationId),
   ]
 )
 

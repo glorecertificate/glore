@@ -117,37 +117,57 @@ export type User = ReturnType<typeof parseUser>
 
 ### Drizzle query pattern
 
+Factor the actual `db.query` into a single private executor and reuse it from both the cached and the `{ cache: false }` branch (no copy-pasted query bodies):
+
 ```typescript
-// Server action with cache
+// Single source of truth for the query
+const queryUserById = async (id: string) => {
+  const user = await db.query.users.findFirst({ where: eq(users.id, id), with: userWith })
+  if (!user) throw new Error('User not found')
+  return parseUser(user)
+}
+
+// Cached inner fetch
 const fetchUser = async (id: string) => {
   'use cache'
   cacheTag(userTag(id))
-
-  return await safeQuery(async () => {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, id),
-      with: userWith,
-    })
-    if (!user) throw new Error('User not found')
-    return parseUser(user)
-  })
+  return await safeQuery(() => queryUserById(id))
 }
 
 // Exposed action with cache bypass option
 export const findUser = async (id: string, { cache = true } = {}) => {
-  if (!cache) {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, id),
-      with: userWith,
-    })
-    if (!user) throw new Error('User not found')
-    return parseUser(user)
-  }
+  if (!cache) return await queryUserById(id)
   const { data, error } = await fetchUser(id)
   if (error || !data) throw error || new Error('User not found')
   return data
 }
 ```
+
+### Transactions & the mutation layer
+
+Production runs on the **neon-http** driver, which has **no interactive transactions**. For any write that spans more than one statement, use the `transaction()` helper from `@/db/client` instead of firing statements at `db` directly:
+
+- `transaction(fn)` runs `fn(tx)` atomically. In dev (`pg`) it uses the pooled `node-postgres` transaction; in prod it reuses a lazily-initialized, module-scoped **neon-serverless** (WebSocket) pool (`max: 3`, shared across invocations in a warm function instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.14.0` via `.node-version`, with an `engines.node: ">=22"` floor). neon-http (the read path) cannot do interactive transactions, which is why writes need this separate driver.
+- Multi-statement write logic lives in `src/db/mutations/<domain>.ts` as composable units `(tx: Transaction, ...args) => ...` (Midday convention). The server action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
+- **Inside a transaction, statements MUST run sequentially** (`await` one at a time). All statements share one connection; `Promise.all` on a single `tx` corrupts the session. This is why `react-doctor/async-parallel` is disabled in transactional mutation files.
+- Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction; compute inputs first, then open a short transaction for the DB writes only.
+
+```typescript
+// src/db/mutations/certificate.ts
+export const createCertificateWithSkills = async (tx: Transaction, values: TableInsert<'certificates'>, skillCourseIds: number[]) => {
+  const [created] = await tx.insert(certificates).values(values).returning()
+  if (!created) throw new Error('Failed to create certificate')
+  if (skillCourseIds.length > 0) {
+    await tx.insert(certificateSkills).values(skillCourseIds.map(courseId => ({ certificateId: created.id, courseId })))
+  }
+  return created
+}
+
+// In the action:
+const cert = await transaction(tx => createCertificateWithSkills(tx, values, skillCourseIds))
+```
+
+**Tenancy:** authorization/tenant scoping stays at the action boundary (verify ownership / org membership before calling the mutation); mutations operate on already-authorized ids.
 
 ### Error handling
 
@@ -292,8 +312,16 @@ Uses `nuqs` for URL search params with type-safe parsers. Feature-specific `para
 | `TableName`      | Union of all table names (`keyof TableMap`)                  |
 | `TableInsert<T>` | `InferInsertModel` for a table                               |
 | `TableUpdate<T>` | `Partial<InferInsertModel>` for a table                      |
-| `Enums`          | Interface of database enum types                             |
+| `Enums`          | Interface of database enum types (derived from `pgEnum.enumValues`) |
 | `EnumType<T>`    | Extract a specific enum type                                 |
+
+The `Enums` interface is **derived from the `pgEnum` definitions** (`(typeof certificateStatusEnum.enumValues)[number]`, etc.), not hand-maintained. Adding/removing a value in `src/db/schema/enums.ts` updates `EnumType<...>` automatically — no parallel edit.
+
+### Validation schemas (`src/db/schemas.ts`)
+
+- `drizzle-zod` derives runtime validation from the table definitions (`createInsertSchema`/`createUpdateSchema`), keeping validation in lockstep with the schema.
+- Used to validate direct-DB-write inputs at server-action boundaries that take raw `TableInsert`/`TableUpdate` (e.g. doc category/article actions). Validate with `safeParse(data)`, then pass the typed `data` to the insert.
+- Form input (react-hook-form + zod in `src/components/features/**/schemas.ts`) is UI-shaped (coercion, refinements) and stays hand-written — do not replace it with drizzle-zod.
 
 ### Enum pattern
 

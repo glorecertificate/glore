@@ -4,7 +4,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 
 import { type SyntheticEvent, useRef, useState } from 'react'
 
-import { Trash2Icon, UploadCloudIcon } from 'lucide-react'
+import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useDropzone } from 'react-dropzone'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
@@ -12,6 +12,7 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 
 const cropImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
   const canvas = document.createElement('canvas')
@@ -57,12 +58,14 @@ export const ImageCropper = ({
   fallback,
   onChange,
   onRemove,
+  trigger,
   value,
 }: {
   disabled?: boolean
   fallback?: React.ReactNode
   onChange?: (file: File) => Promise<void> | void
   onRemove?: () => void
+  trigger?: React.ReactNode
   value?: string | null
 }) => {
   const t = useTranslations('Components.ImageCropper')
@@ -118,15 +121,83 @@ export const ImageCropper = ({
     }
   }
 
+  const cropDialog = (
+    <Dialog
+      onOpenChange={isOpen => {
+        setOpen(isOpen)
+        if (!isOpen) {
+          setPreviewUrl(null)
+          selectedRef.current = null
+        }
+      }}
+      open={open}
+    >
+      <DialogTitle className="hidden" />
+      <DialogContent aria-describedby={undefined} className="sm:max-w-md">
+        <div className="mt-4">
+          {previewUrl && (
+            <ReactCrop
+              aspect={1}
+              className="mx-auto"
+              crop={crop}
+              onChange={(_, percentCrop) => setCrop(percentCrop)}
+              onComplete={c => {
+                completedRef.current = c
+              }}
+            >
+              <img
+                alt="Crop preview"
+                className="max-h-[60vh] object-contain"
+                onLoad={onImageLoad}
+                ref={imageRef}
+                src={previewUrl}
+              />
+            </ReactCrop>
+          )}
+        </div>
+        <DialogFooter className="sm:justify-between">
+          <DialogClose asChild>
+            <Button disabled={saving} type="button" variant="ghost">
+              {t('cancel')}
+            </Button>
+          </DialogClose>
+          <Button disabled={saving} loading={saving} onClick={handleCrop} type="button">
+            {t('saveAvatar')}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+
+  if (trigger) {
+    return (
+      <>
+        <div {...getRootProps()} className={cn('w-fit', !disabled && 'cursor-pointer')}>
+          {trigger}
+          <input {...getInputProps()} />
+        </div>
+        {cropDialog}
+      </>
+    )
+  }
+
   return (
     <>
       <div className="flex items-center gap-4">
-        <div className="group relative">
-          <Avatar className="size-24 cursor-pointer rounded-xl border transition-opacity hover:opacity-50">
+        <div className="group relative size-24 shrink-0">
+          <Avatar className="size-24 rounded-2xl border shadow-2xs ring-0 ring-brand/20 transition-all group-hover:ring-4">
             <AvatarImage className="object-cover" src={value || undefined} />
-            <AvatarFallback className="text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
+            <AvatarFallback className="bg-muted/40 text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
           </Avatar>
-          <div {...getRootProps()} className="absolute inset-0 z-10 cursor-pointer rounded-xl" />
+          <div
+            {...getRootProps()}
+            className={cn(
+              'absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-foreground/0 transition-colors',
+              !disabled && 'cursor-pointer group-hover:bg-foreground/40'
+            )}
+          >
+            <CameraIcon className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+          </div>
           <input {...getInputProps()} />
         </div>
 
@@ -152,51 +223,7 @@ export const ImageCropper = ({
         </div>
       </div>
 
-      <Dialog
-        onOpenChange={isOpen => {
-          setOpen(isOpen)
-          if (!isOpen) {
-            setPreviewUrl(null)
-            selectedRef.current = null
-          }
-        }}
-        open={open}
-      >
-        <DialogTitle className="hidden" />
-        <DialogContent aria-describedby={undefined} className="sm:max-w-md">
-          <div className="mt-4">
-            {previewUrl && (
-              <ReactCrop
-                aspect={1}
-                className="mx-auto"
-                crop={crop}
-                onChange={(_, percentCrop) => setCrop(percentCrop)}
-                onComplete={c => {
-                  completedRef.current = c
-                }}
-              >
-                <img
-                  alt="Crop preview"
-                  className="max-h-[60vh] object-contain"
-                  onLoad={onImageLoad}
-                  ref={imageRef}
-                  src={previewUrl}
-                />
-              </ReactCrop>
-            )}
-          </div>
-          <DialogFooter className="sm:justify-between">
-            <DialogClose asChild>
-              <Button disabled={saving} type="button" variant="ghost">
-                {t('cancel')}
-              </Button>
-            </DialogClose>
-            <Button disabled={saving} loading={saving} onClick={handleCrop} type="button">
-              {t('saveAvatar')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {cropDialog}
     </>
   )
 }

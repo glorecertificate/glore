@@ -10,19 +10,20 @@ export const POST = async (request: NextRequest) => {
   const session = await auth.api.getSession({ headers: request.headers })
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const formData = await request.formData()
-  const file = formData.get('file') as File | null
-  if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+  const contentType = request.headers.get('content-type')
+  if (!contentType) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
 
-  if (file.size > MAX_FILE_SIZE) return NextResponse.json({ error: 'File too large' }, { status: 413 })
-
-  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+  if (!ALLOWED_MIME_TYPES.includes(contentType)) {
     return NextResponse.json({ error: 'Unsupported file type' }, { status: 415 })
   }
 
-  const ext = file.type.split('/')[1]?.replace('jpeg', 'jpg') ?? 'bin'
-  const key = `uploads/${crypto.randomUUID()}.${ext}`
-  const url = await r2Put(key, file, file.type)
+  const blob = await request.blob()
+  if (blob.size === 0) return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+  if (blob.size > MAX_FILE_SIZE) return NextResponse.json({ error: 'File too large' }, { status: 413 })
 
-  return NextResponse.json({ key, name: file.name, size: file.size, type: file.type, url })
+  const ext = contentType.split('/')[1]?.replace('jpeg', 'jpg') ?? 'bin'
+  const key = `uploads/${crypto.randomUUID()}.${ext}`
+  const url = await r2Put(key, blob, contentType)
+
+  return NextResponse.json({ contentType, pathname: key, url })
 }

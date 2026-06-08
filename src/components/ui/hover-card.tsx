@@ -39,7 +39,14 @@ export const HoverCardContent = ({
     >
       {children}
       {arrow && (
-        <HoverCardPrimitive.Arrow className={cn('-mt-px fill-popover stroke-border stroke-[1px]', arrowClassName)} />
+        <HoverCardPrimitive.Arrow asChild>
+          <span
+            className={cn(
+              'block size-2.5 -translate-y-1/2 rotate-45 rounded-[1px] border-r border-b bg-popover',
+              arrowClassName
+            )}
+          />
+        </HoverCardPrimitive.Arrow>
       )}
     </HoverCardPrimitive.Content>
   </HoverCardPrimitive.Portal>

@@ -18,9 +18,49 @@ import { cn } from '@/lib/utils'
 export const courseTypeVariants = cva('border', {
   variants: {
     type: {
-      intro: 'border-blue-500/25 bg-blue-500/15 text-blue-700 dark:text-blue-400',
-      learner: 'border-emerald-500/25 bg-emerald-500/15 text-emerald-700 dark:text-emerald-400',
-      skill: 'border-amber-500/25 bg-amber-500/15 text-amber-700 dark:text-amber-400',
+      intro:
+        'border-[oklch(0.52_0.17_255)]/25 bg-[oklch(0.52_0.17_255)]/10 text-[oklch(0.52_0.17_255)] dark:border-[oklch(0.72_0.15_255)]/25 dark:bg-[oklch(0.72_0.15_255)]/10 dark:text-[oklch(0.72_0.15_255)]',
+      learner:
+        'border-[oklch(0.5_0.18_305)]/25 bg-[oklch(0.5_0.18_305)]/10 text-[oklch(0.5_0.18_305)] dark:border-[oklch(0.72_0.16_305)]/25 dark:bg-[oklch(0.72_0.16_305)]/10 dark:text-[oklch(0.72_0.16_305)]',
+      skill:
+        'border-[oklch(0.55_0.15_150)]/25 bg-[oklch(0.55_0.15_150)]/10 text-[oklch(0.55_0.15_150)] dark:border-[oklch(0.76_0.15_150)]/25 dark:bg-[oklch(0.76_0.15_150)]/10 dark:text-[oklch(0.76_0.15_150)]',
+    },
+  },
+})
+
+export const courseIconVariants = cva('', {
+  compoundVariants: [
+    {
+      background: true,
+      className:
+        'bg-[oklch(0.52_0.17_255)]/12 hover:bg-[oklch(0.52_0.17_255)]/20! aria-expanded:bg-[oklch(0.52_0.17_255)]/20! dark:bg-[oklch(0.72_0.15_255)]/12 dark:hover:bg-[oklch(0.72_0.15_255)]/20! dark:aria-expanded:bg-[oklch(0.72_0.15_255)]/20!',
+      type: 'intro',
+    },
+    {
+      background: true,
+      className:
+        'bg-[oklch(0.5_0.18_305)]/12 hover:bg-[oklch(0.5_0.18_305)]/20! aria-expanded:bg-[oklch(0.5_0.18_305)]/20! dark:bg-[oklch(0.72_0.16_305)]/12 dark:hover:bg-[oklch(0.72_0.16_305)]/20! dark:aria-expanded:bg-[oklch(0.72_0.16_305)]/20!',
+      type: 'learner',
+    },
+    {
+      background: true,
+      className:
+        'bg-[oklch(0.55_0.15_150)]/12 hover:bg-[oklch(0.55_0.15_150)]/20! aria-expanded:bg-[oklch(0.55_0.15_150)]/20! dark:bg-[oklch(0.76_0.15_150)]/12 dark:hover:bg-[oklch(0.76_0.15_150)]/20! dark:aria-expanded:bg-[oklch(0.76_0.15_150)]/20!',
+      type: 'skill',
+    },
+  ],
+  defaultVariants: {
+    background: false,
+  },
+  variants: {
+    background: {
+      false: '',
+      true: '',
+    },
+    type: {
+      intro: 'text-[oklch(0.52_0.17_255)] dark:text-[oklch(0.72_0.15_255)]',
+      learner: 'text-[oklch(0.5_0.18_305)] dark:text-[oklch(0.72_0.16_305)]',
+      skill: 'text-[oklch(0.55_0.15_150)] dark:text-[oklch(0.76_0.15_150)]',
     },
   },
 })

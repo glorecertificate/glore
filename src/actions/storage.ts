@@ -39,7 +39,8 @@ export const uploadAvatar = async (formData: FormData) => {
   const [user, mimeType] = await Promise.all([getAuthUser(), validateImageFile(file)])
   if (!user) throw new Error('Unauthorized')
   const ext = mimeType.split('/')[1]
-  const url = await r2Put(`avatars/${user.id}-${Date.now()}.${ext}`, file, mimeType)
+  const buffer = Buffer.from(await file.arrayBuffer())
+  const url = await r2Put(`avatars/${user.id}-${Date.now()}.${ext}`, buffer, mimeType)
 
   await db.update(users).set({ avatarUrl: url }).where(eq(users.id, user.id))
 

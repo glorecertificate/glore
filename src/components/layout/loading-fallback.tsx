@@ -19,7 +19,7 @@ export const LoadingFallback = ({
   return (
     <div
       className={cn(
-        'flex cursor-wait items-center justify-center',
+        'flex cursor-wait items-center justify-center duration-500 animate-in fade-in',
         size === 'full' && 'h-full min-h-svh pb-8',
         className
       )}

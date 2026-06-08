@@ -79,9 +79,7 @@ export const deleteCookie = async (name: CookieName, options?: CookieOptions) =>
 
 export const getLocaleCookie = async () => {
   const value = await getCookie(i18n.cookie, { prefix: false })
-  if (value && i18n.locales.includes(value)) {
-    return value
-  }
+  if (value && i18n.locales.includes(value)) return value
 }
 
 export const setLocaleCookie = async (locale: Locale) => await setCookie(i18n.cookie, locale, { prefix: false })

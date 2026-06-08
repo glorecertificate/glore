@@ -10,6 +10,7 @@ import { accounts } from '@/db/schema/accounts'
 import { sessions } from '@/db/schema/sessions'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
+import { teamInvitationsPlugin } from '@/lib/auth-invitations'
 import { sendMail } from '@/lib/email'
 import metadata from '~/config/metadata.json'
 
@@ -29,6 +30,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    autoSignIn: false,
     async sendResetPassword({ user, url }) {
       await sendMail({
         to: user.email,
@@ -124,6 +126,7 @@ export const auth = betterAuth({
       defaultRole: 'user',
       adminRoles: ['admin'],
     }),
+    teamInvitationsPlugin(),
     nextCookies(),
   ],
 })

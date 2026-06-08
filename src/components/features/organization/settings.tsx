@@ -32,6 +32,7 @@ import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
+import { PhoneInput } from '@/components/ui/phone-input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { type User } from '@/db/queries/user'
@@ -255,7 +256,7 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
                   <FormItem>
                     <FormLabel>{t('phone')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('phonePlaceholder')} {...field} />
+                      <PhoneInput onChange={field.onChange} placeholder={t('phonePlaceholder')} value={field.value} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -1,6 +1,6 @@
 'use client'
 
-import { BookOpenIcon, GraduationCapIcon, PlusIcon } from 'lucide-react'
+import { AwardIcon, BookOpenIcon, GraduationCapIcon, PlusIcon, SearchXIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateEligibility } from '@/actions/certificates/queries'
@@ -8,6 +8,7 @@ import { CertificateCard } from '@/components/features/certificates/certificate-
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
 import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
@@ -48,24 +49,20 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
     const messageParams = completedSkillCount < minSkills ? { count: minSkills } : { rating: minRating }
 
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 py-20 text-center">
-        <div className="flex size-16 items-center justify-center rounded-full bg-muted">
-          {hasLowRatings ? (
-            <GraduationCapIcon className="size-7 text-muted-foreground" />
-          ) : (
-            <BookOpenIcon className="size-7 text-muted-foreground" />
-          )}
-        </div>
-        <div className="max-w-sm space-y-2">
-          <h2 className="text-lg font-semibold">{t(titleKey)}</h2>
-          <p className="text-sm text-muted-foreground">
+      <Empty className="flex-1 py-20">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">{hasLowRatings ? <GraduationCapIcon /> : <BookOpenIcon />}</EmptyMedia>
+          <EmptyTitle>{t(titleKey)}</EmptyTitle>
+          <EmptyDescription>
             {t(messageKey, messageParams as unknown as Record<string, string | number>)}
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link href="/courses">{t('goToCourses')}</Link>
-        </Button>
-      </div>
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button asChild variant="outline">
+            <Link href="/courses">{t('goToCourses')}</Link>
+          </Button>
+        </EmptyContent>
+      </Empty>
     )
   }
 
@@ -113,15 +110,28 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       )}
 
       {displayCertificates.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {displayCertificates.map(cert => (
-            <Link href={`/certificates/${cert.id}`} key={cert.id}>
-              <CertificateCard certificate={cert} />
-            </Link>
+            <CertificateCard certificate={cert} key={cert.id} />
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">{t('noCertificates')}</p>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">{status ? <SearchXIcon /> : <AwardIcon />}</EmptyMedia>
+            <EmptyTitle>{status ? t('noFilteredCertificates') : t('noCertificates')}</EmptyTitle>
+            <EmptyDescription>
+              {status ? t('noFilteredCertificatesMessage') : t('noCertificatesMessage')}
+            </EmptyDescription>
+          </EmptyHeader>
+          {status && (
+            <EmptyContent>
+              <Button onClick={() => setStatus(null)} size="sm" variant="outline">
+                {t('filterAll')}
+              </Button>
+            </EmptyContent>
+          )}
+        </Empty>
       )}
     </div>
   )

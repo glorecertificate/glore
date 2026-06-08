@@ -3,7 +3,7 @@ import { type ReactNode } from 'react'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from 'react-email'
 
-import { publicFile } from '@/lib/utils'
+import { EMAIL_BASE_URL } from '@/lib/constants'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
@@ -49,8 +49,8 @@ export const EmailLayout = ({
         <Body className="m-0 bg-[#f4f4f5] py-10 font-sans">
           <Container className="mx-auto max-w-140 px-4">
             <Section className="pb-6 text-center">
-              <Link className="no-underline" href={process.env.APP_URL}>
-                <Img alt={metadata.name} height={40} src={publicFile(`/logo.png`)} style={logoStyle} />
+              <Link className="no-underline" href={EMAIL_BASE_URL}>
+                <Img alt={metadata.name} height={45} src={`${EMAIL_BASE_URL}/logo.png`} style={logoStyle} />
               </Link>
             </Section>
             <Section className="rounded-2xl border border-[#e4e4e7] bg-white p-10">

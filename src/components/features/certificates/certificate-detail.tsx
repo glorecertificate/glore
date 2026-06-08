@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import { assignCertificateTutor } from '@/actions/certificates/management'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
 import { Button } from '@/components/ui/button'
@@ -88,6 +89,8 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
   return (
     <>
       <div className="flex flex-col gap-6 py-6">
+        {certificate.isApproved && <FeaturedCredentialCard certificate={certificate} />}
+
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-1">
             <h2 className="text-xl font-semibold">{certificate.organization.name}</h2>
@@ -168,65 +171,67 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
           </div>
         )}
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CalendarIcon className="size-4" />
-                {t('activityStartDate')} {'– '}
-                {t('activityEndDate')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm">
-                {start} {'– '}
-                {end}
-              </p>
-            </CardContent>
-          </Card>
+        {!certificate.isApproved && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <CalendarIcon className="size-4" />
+                  {t('activityStartDate')} {'– '}
+                  {t('activityEndDate')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">
+                  {start} {'– '}
+                  {end}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPinIcon className="size-4" />
-                {t('activityLocation')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm">{certificate.activityLocation}</p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPinIcon className="size-4" />
+                  {t('activityLocation')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{certificate.activityLocation}</p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <TimerIcon className="size-4" />
-                {t('activityDuration')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm">
-                {certificate.activityDuration}
-                {'h'}
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <TimerIcon className="size-4" />
+                  {t('activityDuration')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">
+                  {certificate.activityDuration}
+                  {'h'}
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-1">
-                {certificate.skills.map(s => (
-                  <li className="text-sm" key={s.id}>
-                    {s.course.title ? localize(s.course.title) : s.course.slug}
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-1">
+                  {certificate.skills.map(s => (
+                    <li className="text-sm" key={s.id}>
+                      {s.course.title ? localize(s.course.title) : s.course.slug}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         <Card>
           <CardHeader>

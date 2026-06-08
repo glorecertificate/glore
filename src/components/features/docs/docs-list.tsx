@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, SearchXIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { type DocCategory } from '@/db/queries/doc'
 import { useI18n } from '@/hooks/use-i18n'
@@ -61,7 +62,14 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
       </div>
 
       {filteredCategories.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">{tSearch('noResults')}</p>
+        <Empty className="py-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchXIcon />
+            </EmptyMedia>
+            <EmptyTitle>{tSearch('noResults')}</EmptyTitle>
+          </EmptyHeader>
+        </Empty>
       ) : (
         filteredCategories.map(category => (
           <DocsSection key={category.id} allCategories={categories} canEdit={canEdit} category={category} />

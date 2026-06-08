@@ -1,50 +1,12 @@
-// eslint-disable react-doctor/nextjs-no-side-effect-in-get-handler
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { eq } from 'drizzle-orm'
+import { ACCEPT_INVITATION_ROOT, ONBOARDING_ERROR_ROOT } from '@/lib/constants'
 
-import { db } from '@/db/client'
-import { teamInvitations, users } from '@/db/schema'
-import { auth } from '@/lib/auth'
-import { APP_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
-
-export const GET = async (request: NextRequest) => {
+export const GET = (request: NextRequest) => {
   const token = request.nextUrl.searchParams.get('token')
-  if (!token) return NextResponse.redirect(new URL('/onboarding/error', request.url))
+  if (!token) return NextResponse.redirect(new URL(ONBOARDING_ERROR_ROOT, process.env.APP_URL))
 
-  const invitation = await db.query.teamInvitations.findFirst({
-    columns: { id: true, userId: true, email: true, expiresAt: true, acceptedAt: true },
-    where: eq(teamInvitations.token, token),
-  })
-
-  if (!invitation) {
-    return NextResponse.redirect(new URL('/onboarding/error', request.url))
-  }
-
-  if (invitation.acceptedAt || new Date(invitation.expiresAt) < new Date()) {
-    return NextResponse.redirect(new URL('/onboarding/error', request.url))
-  }
-
-  const user = await db.query.users.findFirst({
-    columns: { id: true, onboardedAt: true },
-    where: eq(users.id, invitation.userId),
-  })
-
-  if (!user) {
-    return NextResponse.redirect(new URL('/onboarding/error', request.url))
-  }
-
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (session && session.user.id !== invitation.userId) {
-    return NextResponse.redirect(new URL('/onboarding/error', request.url))
-  }
-
-  const redirectTo = user.onboardedAt ? APP_ROOT : ONBOARDING_ROOT
-
-  await db
-    .update(teamInvitations)
-    .set({ acceptedAt: new Date().toISOString() })
-    .where(eq(teamInvitations.id, invitation.id))
-
-  return NextResponse.redirect(new URL(redirectTo, request.url))
+  const target = new URL(ACCEPT_INVITATION_ROOT, process.env.APP_URL)
+  target.searchParams.set('token', token)
+  return NextResponse.redirect(target)
 }

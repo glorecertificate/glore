@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 export const Card = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'group flex h-full flex-col justify-between gap-3 overflow-hidden rounded-xl border bg-card p-6 text-card-foreground shadow-xs',
+      'group flex h-full flex-col justify-between gap-3 overflow-hidden rounded-xl border bg-card p-6 text-card-foreground shadow-2xs',
       className
     )}
     data-slot="card"

@@ -5,14 +5,31 @@ import 'server-only'
 import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { eq } from 'drizzle-orm'
+import { and, eq, like, ne } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
-import { getAuthUser, setAuthPassword } from '@/actions/auth'
+import { getAuthUser, refreshAuthSession, setAuthPassword } from '@/actions/auth'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { CacheTag, userTag } from '@/lib/cache'
-import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { AUTH_ROOT } from '@/lib/constants'
+
+const uniqueUsername = async (base: string, userId: string) => {
+  const taken = new Set(
+    (
+      await db.query.users.findMany({
+        where: and(like(users.username, `${base}%`), ne(users.id, userId)),
+        columns: { username: true },
+      })
+    ).map(row => row.username)
+  )
+
+  if (!taken.has(base)) return base
+
+  let suffix = 2
+  while (taken.has(`${base}${suffix}`)) suffix += 1
+  return `${base}${suffix}`
+}
 
 export const completeOnboarding = async ({
   birthday,
@@ -42,14 +59,15 @@ export const completeOnboarding = async ({
   for (const part of [firstName, lastName]) {
     if (part) usernameParts.push(part.toLowerCase().replace(/\s+/gu, ''))
   }
-  const username = usernameParts.join('.')
+  const baseUsername = usernameParts.join('.')
+  const username = baseUsername ? await uniqueUsername(baseUsername, authUser.id) : null
 
   await db
     .update(users)
     .set({
       firstName: firstName.trim(),
       lastName: lastName.trim() || null,
-      username: username || null,
+      username,
       birthday: birthday || null,
       phone: phone || null,
       locale: (locale as Locale) || null,
@@ -57,8 +75,11 @@ export const completeOnboarding = async ({
     })
     .where(eq(users.id, authUser.id))
 
+  await refreshAuthSession()
+
   revalidateTag(userTag(authUser.id), 'max')
   revalidateTag(CacheTag.AuthUser, 'max')
   revalidateTag(CacheTag.TeamMembers, 'max')
-  redirect(APP_ROOT)
+
+  return { error: null }
 }

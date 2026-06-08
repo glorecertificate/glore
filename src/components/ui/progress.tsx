@@ -37,6 +37,7 @@ const progressVariants = cva(
         'brand-tertiary': 'bg-brand-tertiary/20 [&>div]:bg-brand-tertiary',
         default: 'bg-muted-foreground/20 [&>div]:bg-muted-foreground',
         success: 'bg-success/20 [&>div]:bg-success',
+        warning: 'bg-warning/20 [&>div]:bg-warning',
       },
     },
   }

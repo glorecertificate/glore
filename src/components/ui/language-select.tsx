@@ -52,10 +52,9 @@ export const LanguageSelect = ({
 
   const items: LanguageSelectItem[] = localeItems.filter(item => values.includes(item.value))
 
-  const activeItem: LanguageSelectItem =
-    localeItems.find(item => (controlled && value ? item.value === value : item.value === locale)) ?? localeItems[0]!
-
   const activeItemValue = controlled ? value : locale
+
+  const activeItem: LanguageSelectItem = localeItems.find(item => item.value === activeItemValue) ?? localeItems[0]!
 
   const onValueChange = (newLocale: Locale) => {
     if (!controlled) {
@@ -86,7 +85,7 @@ export const LanguageSelect = ({
       <SelectContent align="end" position="popper" {...contentProps}>
         {items.map(item => (
           <SelectItem
-            className={cn(item.value === activeItem?.value && 'pointer-events-none cursor-default bg-accent')}
+            className={cn(item.value === activeItemValue && 'pointer-events-none cursor-default bg-accent')}
             key={item.value}
             value={item.value}
           >

@@ -13,6 +13,7 @@ import {
 } from '@/components/features/courses/course-list/use-params'
 import { EmptyListIcon } from '@/components/icons/empty-list'
 import { useCourses } from '@/components/providers/courses-context'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
 import { TabsContent } from '@/components/ui/tabs'
 import { type Course } from '@/db/queries/course'
@@ -79,11 +80,13 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
   if (displayCourses.length === 0) {
     return (
       <TabsContent className={cn('grow space-y-4', className)} value={tab} {...props}>
-        <div className="flex h-full flex-col items-center justify-center gap-8 pb-8 text-center">
-          <EmptyListIcon className="w-68" />
-          <div className="flex flex-col items-center gap-1">
-            <h3 className="text-xl font-medium">{emptyTitle}</h3>
-            <p className="mt-1 text-muted-foreground">
+        <Empty className="h-full pb-8">
+          <EmptyHeader className="max-w-md gap-3">
+            <EmptyMedia>
+              <EmptyListIcon className="w-68" />
+            </EmptyMedia>
+            <EmptyTitle className="text-xl">{emptyTitle}</EmptyTitle>
+            <EmptyDescription>
               {emptyMessage}
               {hasFilters && (
                 <>
@@ -91,9 +94,9 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
                   {`${t('updateFilters')}.`}
                 </>
               )}
-            </p>
-          </div>
-        </div>
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       </TabsContent>
     )
   }

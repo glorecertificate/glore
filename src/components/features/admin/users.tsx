@@ -2,12 +2,13 @@
 
 import { useState } from 'react'
 
-import { FilterIcon, SearchIcon } from 'lucide-react'
+import { FilterIcon, SearchIcon, SearchXIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin/users'
 import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type User } from '@/db/queries/user'
@@ -155,9 +156,19 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
         {t('memberCount', { count: displayUsers.length, total: users.length })}
       </p>
       {displayUsers.length === 0 ? (
-        <div className="rounded-lg border bg-card p-8 text-center text-sm text-muted-foreground">
-          {hasFilters ? t('tryAdjustingFilters') : t('noUsers')}
-        </div>
+        <Empty className="border bg-card">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">{hasFilters ? <SearchXIcon /> : <UsersIcon />}</EmptyMedia>
+            <EmptyTitle>{hasFilters ? t('tryAdjustingFilters') : t('noUsers')}</EmptyTitle>
+          </EmptyHeader>
+          {hasFilters && (
+            <EmptyContent>
+              <Button onClick={handleClearFilters} size="sm" variant="outline">
+                {t('clearFilters')}
+              </Button>
+            </EmptyContent>
+          )}
+        </Empty>
       ) : (
         <div className="flex flex-col gap-2">
           {displayUsers.map(u => (

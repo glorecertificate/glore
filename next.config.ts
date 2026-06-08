@@ -41,6 +41,7 @@ declare global {
 type Package = keyof typeof dependencies
 
 const ROOT_REDIRECT: Route = '/dashboard'
+const ADMIN_REDIRECT: Route = '/admin/team'
 const MANIFEST_SOURCE: Route = '/api/v1/manifest'
 const EXTERNAL_PACKAGES: Package[] = ['qrcode']
 
@@ -52,6 +53,11 @@ const nextConfig: NextConfig = {
     {
       source: '/',
       destination: ROOT_REDIRECT,
+      permanent: true,
+    },
+    {
+      source: '/admin',
+      destination: ADMIN_REDIRECT,
       permanent: true,
     },
   ],

@@ -19,6 +19,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -33,10 +34,44 @@ import { Label } from '@/components/ui/label'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type User } from '@/db/queries/user'
+import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
+
+const STAT_ACCENTS = {
+  brand: 'border-brand/20 bg-brand/10 text-brand',
+  amber: 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-500',
+  success: 'border-success/25 bg-success/10 text-success',
+} as const
+
+export const TeamStatCard = ({
+  accent,
+  icon: StatIcon,
+  label,
+  value,
+}: {
+  accent?: keyof typeof STAT_ACCENTS
+  icon: Icon
+  label: string
+  value: number
+}) => (
+  <Card className="flex-row items-center justify-start gap-3.5 p-4">
+    <div
+      className={cn(
+        'flex size-10 shrink-0 items-center justify-center rounded-lg border',
+        accent && STAT_ACCENTS[accent]
+      )}
+    >
+      <StatIcon className="size-5" />
+    </div>
+    <div className="flex flex-col gap-1">
+      <span className="text-2xl leading-none font-semibold tabular-nums">{value}</span>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+    </div>
+  </Card>
+)
 
 export const getUserRole = (user: User): TeamRole => (user.isAdmin ? 'admin' : 'editor')
 
@@ -68,68 +103,72 @@ export const TeamMemberRow = ({
   const targetRole = role === 'admin' ? 'editor' : 'admin'
 
   return (
-    <div className="flex items-center justify-between rounded-lg border bg-card p-4 transition-colors hover:bg-accent/30">
-      <div className="flex items-center gap-4">
-        <Avatar className="size-10 rounded-full">
-          {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
-          <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
-            {user.initials || <UserIcon className="size-4" />}
-          </AvatarFallback>
-        </Avatar>
+    <div className="group flex items-center justify-between gap-4 px-5 py-3.5 transition-colors hover:bg-accent/40">
+      <div className="flex min-w-0 items-center gap-3.5">
+        <div className="relative shrink-0">
+          <Avatar className="size-10 rounded-full ring-2 ring-background">
+            {user.avatarUrl && <AvatarImage alt={getDisplayName(user)} src={user.avatarUrl} />}
+            <AvatarFallback className="rounded-full bg-muted text-sm font-medium">
+              {user.initials || <UserIcon className="size-4" />}
+            </AvatarFallback>
+          </Avatar>
+        </div>
         <div className="min-w-0">
-          <p className="flex items-center gap-1 truncate text-sm font-medium">
+          <p className="flex items-center gap-1.5 truncate text-sm font-medium">
             {getDisplayName(user)}
             {isCurrentUser && (
-              <Badge className="px-1.5" size="sm">
+              <Badge className="px-1.5" size="sm" variant="muted">
                 {t('you')}
               </Badge>
             )}
+            {status === 'pending' && (
+              <Badge
+                className="bg-amber-500/10 px-1.5 text-amber-600 capitalize dark:text-amber-500"
+                size="sm"
+                variant="ghost"
+              >
+                {t('status_pending')}
+              </Badge>
+            )}
           </p>
-          <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+          <p className="truncate text-[13px] text-muted-foreground">{user.email}</p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <Badge className="capitalize" variant="ghost">
+      <div className="flex items-center gap-2 sm:gap-2.5">
+        <Badge className={cn('gap-1 border capitalize')} variant="ghost">
           {role === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
           {t(`role_${role}`)}
         </Badge>
-        <Badge
-          className={cn(
-            'capitalize',
-            status === 'joined' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
-          )}
-          variant="ghost"
-        >
-          {t(`status_${status}`)}
-        </Badge>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label={t('actions')}
-              className={cn(isCurrentUser && 'pointer-events-none opacity-0')}
-              size="icon"
-              variant="ghost"
-            >
-              <MoreHorizontalIcon className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
-            <DropdownMenuItem className="text-[13px]" onClick={() => onChangeRole(user, targetRole)}>
-              {targetRole === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
-              {t('makeRole', { role: t(`role_${targetRole}`) })}
-            </DropdownMenuItem>
-            {status === 'pending' && (
-              <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
-                <MailIcon className="size-3" />
-                {t('resendInvite')}
+        {!isCurrentUser && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label={t('actions')}
+                className={cn(isCurrentUser && 'pointer-events-none opacity-0')}
+                size="icon"
+                variant="ghost"
+              >
+                <MoreHorizontalIcon className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
+              <DropdownMenuItem className="text-[13px]" onClick={() => onChangeRole(user, targetRole)}>
+                {targetRole === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
+                {t('makeRole', { role: t(`role_${targetRole}`) })}
               </DropdownMenuItem>
-            )}
-            <DropdownMenuItem className="text-[13px]" onClick={() => onDelete(user)} variant="destructive">
-              <Trash2Icon className="size-3" />
-              {t('removeMember')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {status === 'pending' && (
+                <DropdownMenuItem className="text-[13px]" onClick={() => onResend(user)}>
+                  <MailIcon className="size-3" />
+                  {t('resendInvite')}
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem className="text-[13px]" onClick={() => onDelete(user)} variant="destructive">
+                <Trash2Icon className="size-3" />
+                {t('removeMember')}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </div>
   )
@@ -253,8 +292,8 @@ export const TeamInviteDialog = ({
           <Button disabled={submitting} onClick={() => handleOpenChange(false)} variant="outline">
             {t('cancel')}
           </Button>
-          <Button disabled={submitting} onClick={handleSubmit} variant="brand">
-            {submitting ? t('sending') : t('sendInvite')}
+          <Button disabled={submitting} loading={submitting} onClick={handleSubmit} variant="brand">
+            {t('sendInvite')}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -276,7 +315,8 @@ export const DeleteDialog = ({
   const t = useTranslations('Admin.team')
   const [deleting, setDeleting] = useState(false)
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (event: React.MouseEvent) => {
+    event.preventDefault()
     try {
       setDeleting(true)
       await onConfirm()
@@ -287,7 +327,7 @@ export const DeleteDialog = ({
 
   return (
     <AlertDialog onOpenChange={onOpenChange} open={open}>
-      <AlertDialogContent>
+      <AlertDialogContent onEscapeKeyDown={event => deleting && event.preventDefault()}>
         <AlertDialogHeader>
           <AlertDialogTitle>{t('deleteTitle')}</AlertDialogTitle>
           <AlertDialogDescription>
@@ -296,12 +336,7 @@ export const DeleteDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={deleting}>{t('cancel')}</AlertDialogCancel>
-          <AlertDialogAction
-            loading={deleting}
-            loadingText={t('deleting')}
-            onClick={handleConfirm}
-            variant="destructive"
-          >
+          <AlertDialogAction loading={deleting} onClick={handleConfirm} variant="destructive">
             {t('confirmDelete')}
           </AlertDialogAction>
         </AlertDialogFooter>

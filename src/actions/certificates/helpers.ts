@@ -7,7 +7,7 @@ const certificateUserColumns = {
 
 export const certificateWith = {
   organization: {
-    columns: { id: true, name: true },
+    columns: { id: true, name: true, city: true },
     with: { profile: { columns: { avatarUrl: true } } },
   },
   skills: {

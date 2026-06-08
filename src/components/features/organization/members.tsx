@@ -26,6 +26,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 import { useI18n } from '@/hooks/use-i18n'
@@ -137,15 +138,21 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
 
         <div className="space-y-3">
           {members.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-                <UsersIcon className="size-8 text-muted-foreground/50" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium">{t('noMembers')}</p>
-                  <p className="text-xs text-muted-foreground">{t('noMembersDescription')}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <Empty className="border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <UsersIcon />
+                </EmptyMedia>
+                <EmptyTitle>{t('noMembers')}</EmptyTitle>
+                <EmptyDescription>{t('noMembersDescription')}</EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+                  <UserPlusIcon className="size-3.5" />
+                  {t('inviteMember')}
+                </Button>
+              </EmptyContent>
+            </Empty>
           ) : (
             members.map(member => (
               <Card key={member.id}>

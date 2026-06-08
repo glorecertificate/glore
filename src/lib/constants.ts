@@ -3,6 +3,8 @@ export const AUTH_ROOT = '/login'
 export const APP_ROOT = '/dashboard'
 export const JOIN_ROOT = '/api/v1/join'
 export const ONBOARDING_ROOT = '/onboarding'
+export const ONBOARDING_ERROR_ROOT = '/onboarding/error'
+export const ACCEPT_INVITATION_ROOT = '/api/auth/accept-invitation'
 export const REGISTER_ROOT = '/register'
 export const DASHBOARD_ROOTS = [
   '/about',
@@ -17,6 +19,9 @@ export const DASHBOARD_ROOTS = [
   '/register',
   '/settings',
 ]
+
+/* Email */
+export const EMAIL_BASE_URL = 'https://glorecertificate.xyz'
 
 /* App */
 export const AUTH_VIEWS = [

@@ -5,7 +5,7 @@ import { getAuthUser } from '@/actions/auth'
 import { listDocCategories } from '@/actions/doc'
 import { DocsList } from '@/components/features/docs/docs-list'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { Card, CardContent } from '@/components/ui/card'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { intlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = () =>
@@ -26,15 +26,15 @@ const DocsPageContent = async () => {
   return (
     <>
       {allCategories.length === 0 ? (
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-            <BookOpenIcon className="size-8 text-muted-foreground/50" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">{t('noCategories')}</p>
-              <p className="text-xs text-muted-foreground">{t('noCategoriesDescription')}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <Empty className="border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <BookOpenIcon />
+            </EmptyMedia>
+            <EmptyTitle>{t('noCategories')}</EmptyTitle>
+            <EmptyDescription>{t('noCategoriesDescription')}</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <DocsList canEdit={canEdit} categories={allCategories} />
       )}

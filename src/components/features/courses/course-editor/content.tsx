@@ -17,13 +17,37 @@ import { useSession } from '@/hooks/use-session'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
+const SKELETON_TOOLBAR_GROUPS = [
+  ['undo', 'redo'],
+  ['insert', 'turn-into', 'ai'],
+  ['bold', 'italic', 'underline'],
+]
+
+const SKELETON_TOOLBAR_WIDTH: Record<string, string> = {
+  'turn-into': 'w-24',
+}
+
+const SkeletonToolbar = () => (
+  <div className="flex w-full items-center gap-1 rounded-t-lg border border-b-0 border-border bg-input/30 p-1">
+    {SKELETON_TOOLBAR_GROUPS.map((group, i) => (
+      <div className="flex items-center gap-1" key={group.join('-')}>
+        {i > 0 && <div className="mr-1 h-5 w-px shrink-0 bg-border" />}
+        {group.map(id => (
+          <Skeleton className={cn('h-8 rounded-sm', SKELETON_TOOLBAR_WIDTH[id] ?? 'w-8')} key={id} />
+        ))}
+      </div>
+    ))}
+  </div>
+)
+
 const EditorSkeleton = () => (
-  <div className="size-full space-y-4 px-8 pt-8 pb-72 sm:px-12">
-    <Skeleton className="h-8 w-2/5" />
-    <Skeleton className="h-4 w-full" />
-    <Skeleton className="h-4 w-11/12" />
-    <Skeleton className="h-4 w-4/5" />
-    <Skeleton className="h-4 w-3/4" />
+  <div className="relative w-full cursor-wait select-none">
+    <SkeletonToolbar />
+    <div className="rounded-b-lg border px-8 pt-8 pb-72 text-base sm:px-12">
+      <div className="flex h-8 items-center">
+        <Skeleton className="h-3.5 w-2/5" />
+      </div>
+    </div>
   </div>
 )
 

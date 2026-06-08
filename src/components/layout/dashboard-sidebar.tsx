@@ -290,7 +290,7 @@ const DashboardSidebarMain = () => {
         </DashboardSidebarCollapsible>
         {user.isAdmin && (
           <DashboardSidebarCollapsible icon={CogIcon} label={t('admin')} route="/admin">
-            <DashboardSidebarItem label={t('adminTeam')} route="/admin" subItem />
+            <DashboardSidebarItem label={t('adminTeam')} route="/admin/team" subItem />
             <DashboardSidebarItem label={t('adminOrganizations')} route="/admin/organizations" subItem />
             <DashboardSidebarItem label={t('adminUsers')} route={'/admin/users' as Route} subItem />
           </DashboardSidebarCollapsible>

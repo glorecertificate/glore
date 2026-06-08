@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { BreadcrumbItem, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
@@ -126,7 +127,7 @@ export const CourseBreadcrumb = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <IconPicker
-                    className="size-4 shrink-0 text-muted-foreground/80 hover:text-foreground! dark:text-foreground/80 dark:hover:text-foreground! [&>svg]:size-4.5!"
+                    className={cn('size-4 shrink-0 [&>svg]:size-4.5!', courseIconVariants({ type: course.type }))}
                     defaultValue={(course.icon ?? undefined) as IconName | undefined}
                     fallback={<Skeleton className="size-4 rounded-md bg-foreground/15" />}
                     onValueChange={async icon => {
@@ -171,7 +172,7 @@ export const CourseBreadcrumb = () => {
           <>
             {course.icon && (
               <LucideIcon
-                className="size-4.5 text-muted-foreground/80 dark:text-foreground/80"
+                className={cn('size-4.5', courseIconVariants({ type: course.type }))}
                 name={course.icon as IconName}
               />
             )}

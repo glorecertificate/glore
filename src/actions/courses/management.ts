@@ -2,13 +2,14 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { buildCourseWith } from '@/actions/courses/helpers'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
+import { deleteCourse as deleteCourseRecord } from '@/db/mutations/course'
 import { parseCourse } from '@/db/queries/course'
 import { type Course } from '@/db/queries/course'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
@@ -38,6 +39,78 @@ const resolveCourseUpdate = async (
   if (!('archivedAt' in course)) return course
   if (course.archivedAt) return { ...course, archivedById: authUserId, languages: [], sortOrder: null }
   return { ...course, archivedById: null, sortOrder: await nextActiveSortOrder() }
+}
+
+const revalidateCourseSlugs = (slugs: string[]) => {
+  for (const slug of new Set(slugs)) updateTag(courseTag(slug))
+  updateTag(CacheTag.Courses)
+}
+
+const slugsByCourseIds = async (courseIds: number[]) => {
+  const ids = [...new Set(courseIds)]
+  if (ids.length === 0) return []
+  const rows = await db.query.courses.findMany({ where: inArray(courses.id, ids), columns: { slug: true } })
+  return rows.map(({ slug }) => slug)
+}
+
+const slugsByLessonIds = async (lessonIds: number[]) => {
+  const ids = [...new Set(lessonIds)]
+  if (ids.length === 0) return []
+  const rows = await db
+    .select({ slug: courses.slug })
+    .from(lessons)
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(inArray(lessons.id, ids))
+  return rows.map(({ slug }) => slug)
+}
+
+const slugsByQuestionIds = async (questionIds: number[]) => {
+  const ids = [...new Set(questionIds)]
+  if (ids.length === 0) return []
+  const rows = await db
+    .select({ slug: courses.slug })
+    .from(questions)
+    .innerJoin(lessons, eq(lessons.id, questions.lessonId))
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(inArray(questions.id, ids))
+  return rows.map(({ slug }) => slug)
+}
+
+const slugsByOptionIds = async (optionIds: number[]) => {
+  const ids = [...new Set(optionIds)]
+  if (ids.length === 0) return []
+  const rows = await db
+    .select({ slug: courses.slug })
+    .from(questionOptions)
+    .innerJoin(questions, eq(questions.id, questionOptions.questionId))
+    .innerJoin(lessons, eq(lessons.id, questions.lessonId))
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(inArray(questionOptions.id, ids))
+  return rows.map(({ slug }) => slug)
+}
+
+const slugsByEvaluationIds = async (evaluationIds: number[]) => {
+  const ids = [...new Set(evaluationIds)]
+  if (ids.length === 0) return []
+  const rows = await db
+    .select({ slug: courses.slug })
+    .from(evaluations)
+    .innerJoin(lessons, eq(lessons.id, evaluations.lessonId))
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(inArray(evaluations.id, ids))
+  return rows.map(({ slug }) => slug)
+}
+
+const slugsByAssessmentIds = async (assessmentIds: number[]) => {
+  const ids = [...new Set(assessmentIds)]
+  if (ids.length === 0) return []
+  const rows = await db
+    .select({ slug: courses.slug })
+    .from(assessments)
+    .innerJoin(lessons, eq(lessons.id, assessments.lessonId))
+    .innerJoin(courses, eq(courses.id, lessons.courseId))
+    .where(inArray(assessments.id, ids))
+  return rows.map(({ slug }) => slug)
 }
 
 export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
@@ -109,8 +182,8 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
     }
   }
 
-  revalidateTag(courseTag(updated.slug), 'max')
-  revalidateTag(CacheTag.Courses, 'max')
+  updateTag(courseTag(updated.slug))
+  updateTag(CacheTag.Courses)
 
   return {
     data: parseCourse({
@@ -123,7 +196,15 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
 export const deleteCourse = async (id: number) => {
   try {
     await requireEditor()
-    await db.delete(courses).where(eq(courses.id, id))
+
+    const course = await db.query.courses.findFirst({ where: eq(courses.id, id), columns: { slug: true } })
+    if (!course) return { data: null, error: { code: 'NOT_FOUND', message: 'Course not found' } }
+
+    await transaction(tx => deleteCourseRecord(tx, id))
+
+    updateTag(courseTag(course.slug))
+    updateTag(CacheTag.Courses)
+
     return { data: true, error: null }
   } catch (e) {
     return {
@@ -152,6 +233,9 @@ export const upsertLessons = async (values: Array<TableInsert<'lessons'> & { id?
       return [...promises, promise]
     }, [])
   )
+
+  revalidateCourseSlugs(await slugsByCourseIds(values.map(({ courseId }) => courseId)))
+
   return { data: result.flat().map(parseLesson) }
 }
 
@@ -165,28 +249,34 @@ export const reorderCourses = async (items: Course[]) => {
         .where(eq(courses.id, id))
     )
   )
+  revalidateCourseSlugs(items.map(({ slug }) => slug))
   return { data: true }
 }
 
-export const upsertQuestions = async (values: TableInsert<'questions'>[]) => {
+export const upsertQuestions = async (values: Array<TableInsert<'questions'> & { id?: number }>) => {
   await requireEditor()
-  const result = await db
-    .insert(questions)
-    .values(values)
-    .onConflictDoUpdate({
-      target: questions.id,
-      set: {
-        description: values[0]?.description,
-        explanation: values[0]?.explanation,
-      },
-    })
-    .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
-  return { data: result }
+  const result = await Promise.all(
+    values.map(({ id, ...set }) =>
+      id
+        ? db
+            .update(questions)
+            .set(set)
+            .where(eq(questions.id, id))
+            .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
+        : db
+            .insert(questions)
+            .values(set as TableInsert<'questions'>)
+            .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
+    )
+  )
+  revalidateCourseSlugs(await slugsByLessonIds(values.map(({ lessonId }) => lessonId)))
+  return { data: result.flat() }
 }
 
 export const deleteQuestions = async (ids: number[]) => {
-  await requireEditor()
+  const [, slugs] = await Promise.all([requireEditor(), slugsByQuestionIds(ids)])
   await db.delete(questions).where(inArray(questions.id, ids))
+  revalidateCourseSlugs(slugs)
   return { data: true }
 }
 
@@ -202,52 +292,64 @@ export const upsertQuestionOptions = async (values: Array<TableInsert<'question_
             .returning({ id: questionOptions.id })
     )
   )
+  revalidateCourseSlugs(await slugsByQuestionIds(values.map(({ questionId }) => questionId)))
   return { data: result.flat() }
 }
 
 export const deleteQuestionOptions = async (ids: number[]) => {
-  await requireEditor()
+  const [, slugs] = await Promise.all([requireEditor(), slugsByOptionIds(ids)])
   await db.delete(questionOptions).where(inArray(questionOptions.id, ids))
+  revalidateCourseSlugs(slugs)
   return { data: true }
 }
 
-export const upsertEvaluations = async (values: TableInsert<'evaluations'>[]) => {
+export const upsertEvaluations = async (values: Array<TableInsert<'evaluations'> & { id?: number }>) => {
   await requireEditor()
-  const result = await db
-    .insert(evaluations)
-    .values(values)
-    .onConflictDoUpdate({
-      target: evaluations.id,
-      set: {
-        description: values[0]?.description,
-      },
-    })
-    .returning({ id: evaluations.id, description: evaluations.description })
-  return { data: result }
+  const result = await Promise.all(
+    values.map(({ id, ...set }) =>
+      id
+        ? db
+            .update(evaluations)
+            .set(set)
+            .where(eq(evaluations.id, id))
+            .returning({ id: evaluations.id, description: evaluations.description })
+        : db
+            .insert(evaluations)
+            .values(set as TableInsert<'evaluations'>)
+            .returning({ id: evaluations.id, description: evaluations.description })
+    )
+  )
+  revalidateCourseSlugs(await slugsByLessonIds(values.map(({ lessonId }) => lessonId)))
+  return { data: result.flat() }
 }
 
 export const deleteEvaluations = async (ids: number[]) => {
-  await requireEditor()
+  const [, slugs] = await Promise.all([requireEditor(), slugsByEvaluationIds(ids)])
   await db.delete(evaluations).where(inArray(evaluations.id, ids))
+  revalidateCourseSlugs(slugs)
   return { data: true }
 }
 
-export const upsertAssessment = async (assessment: TableInsert<'assessments'>) => {
+export const upsertAssessment = async ({ id, ...set }: TableInsert<'assessments'> & { id?: number }) => {
   await requireEditor()
-  const results = await db
-    .insert(assessments)
-    .values(assessment)
-    .onConflictDoUpdate({
-      target: assessments.id,
-      set: { description: assessment.description },
-    })
-    .returning({ id: assessments.id, description: assessments.description })
+  const results = await (id
+    ? db
+        .update(assessments)
+        .set(set)
+        .where(eq(assessments.id, id))
+        .returning({ id: assessments.id, description: assessments.description })
+    : db
+        .insert(assessments)
+        .values(set as TableInsert<'assessments'>)
+        .returning({ id: assessments.id, description: assessments.description }))
   if (!results[0]) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
+  revalidateCourseSlugs(await slugsByLessonIds([set.lessonId]))
   return { data: results[0] }
 }
 
 export const deleteAssessment = async (id: number) => {
-  await requireEditor()
+  const [, slugs] = await Promise.all([requireEditor(), slugsByAssessmentIds([id])])
   await db.delete(assessments).where(eq(assessments.id, id))
+  revalidateCourseSlugs(slugs)
   return { data: true }
 }

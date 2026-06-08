@@ -89,12 +89,14 @@ const QuestionItem = ({
       <div className="flex items-start gap-2">
         <div className="flex-1 space-y-1.5">
           <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
-          <Textarea
-            className="min-h-10 resize-none rounded-lg text-sm"
-            onChange={e => onDescriptionChange(e.target.value)}
-            placeholder={t('activityQuestionPlaceholder', { lang: tLang(language).toLowerCase() })}
-            value={description}
-          />
+          <div className="pl-7">
+            <Textarea
+              className="min-h-10 resize-none rounded-lg text-sm"
+              onChange={e => onDescriptionChange(e.target.value)}
+              placeholder={t('activityQuestionPlaceholder', { lang: tLang(language).toLowerCase() })}
+              value={description}
+            />
+          </div>
         </div>
         <Button
           className="opacity-0 transition-opacity group-hover/question:opacity-100"
@@ -117,8 +119,8 @@ const QuestionItem = ({
               className={cn(
                 'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
                 option.isCorrect
-                  ? 'border-brand-secondary bg-brand-secondary text-white'
-                  : 'border-input hover:border-brand-secondary/60'
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-input hover:border-primary/60'
               )}
               onClick={() => onOptionCorrectToggle(option.id)}
               type="button"
@@ -156,12 +158,14 @@ const QuestionItem = ({
 
       <div className="space-y-1.5">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityExplanation')}</p>
-        <Textarea
-          className="min-h-10 resize-none rounded-lg text-sm"
-          onChange={e => onExplanationChange(e.target.value)}
-          placeholder={t('activityExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
-          value={explanation}
-        />
+        <div className="pl-7">
+          <Textarea
+            className="min-h-10 resize-none rounded-lg text-sm"
+            onChange={e => onExplanationChange(e.target.value)}
+            placeholder={t('activityExplanationPlaceholder', { lang: tLang(language).toLowerCase() })}
+            value={explanation}
+          />
+        </div>
       </div>
     </div>
   )
@@ -437,8 +441,6 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
   return (
     <div className={cn('space-y-6', className)}>
-      {hasActivity && <div className="border-t-2" />}
-
       {currentLesson.questions.length > 0 && (
         <div className="space-y-3">
           <h4 className="flex items-center gap-1.5 text-sm font-semibold">

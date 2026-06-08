@@ -11,7 +11,7 @@ import {
 import { type EnumType } from '@/db/types'
 
 type CertificateRow = InferSelectModel<typeof certificates>
-type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name'> & {
+type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name' | 'city'> & {
   profile: Pick<InferSelectModel<typeof organizationProfiles>, 'avatarUrl'> | null
 }
 type CourseRow = Pick<InferSelectModel<typeof courses>, 'id' | 'slug' | 'title'>

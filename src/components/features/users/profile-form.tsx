@@ -17,21 +17,21 @@ import { DatePicker } from '@/components/ui/date-picker'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
+import { PhoneInput } from '@/components/ui/phone-input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
 import { Textarea } from '@/components/ui/textarea'
-import { Toggle } from '@/components/ui/toggle'
 import { type TableUpdate } from '@/db/types'
 import { useSession } from '@/hooks/use-session'
 import { type Any } from '@/lib/types'
-import { cn, defaultFormDisabled } from '@/lib/utils'
+import { defaultFormDisabled } from '@/lib/utils'
 import i18nConfig from '~/config/i18n.json'
 
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
 export const ProfileForm = () => {
   const { user, setUser } = useSession()
-  const tGlobal = useTranslations()
   const t = useTranslations('Users')
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
@@ -155,18 +155,9 @@ export const ProfileForm = () => {
     }
   }
 
-  const translateLanguage = (language: string) => {
-    const key = `Intl.Languages.${language}` as Any
-    return tGlobal.has?.(key) ? tGlobal(key) : language.toUpperCase()
-  }
-
-  const toggleLanguage = (lang: string) => {
-    setLanguages(prev => (prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]))
-  }
-
   return (
     <Form {...form}>
-      <form className="space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mx-auto w-full space-y-0 duration-300 animate-in fade-in" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection description={t('profilePictureDescription')} title={t('profilePicture')}>
           <ImageCropper
             disabled={form.formState.isSubmitting}
@@ -303,11 +294,11 @@ export const ProfileForm = () => {
                 <FormItem>
                   <FormLabel>{t('phone')}</FormLabel>
                   <FormControl>
-                    <Input
+                    <PhoneInput
                       disabled={form.formState.isSubmitting}
+                      onChange={field.onChange}
                       placeholder={t('phonePlaceholder')}
-                      type="tel"
-                      {...field}
+                      value={field.value ?? ''}
                     />
                   </FormControl>
                   <FormMessage />
@@ -355,23 +346,12 @@ export const ProfileForm = () => {
         <Separator className="my-8" />
 
         <SettingsSection description={t('spokenLanguagesDescription')} title={t('spokenLanguages')}>
-          <div className="flex flex-wrap gap-2">
-            {i18nConfig.spokenLanguages.map(lang => (
-              <Toggle
-                className={cn(
-                  'rounded-full border px-3 py-1.5 text-sm transition-colors',
-                  'data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground',
-                  'data-[state=off]:border-border data-[state=off]:bg-background data-[state=off]:text-muted-foreground data-[state=off]:hover:border-primary/40 data-[state=off]:hover:text-foreground'
-                )}
-                disabled={form.formState.isSubmitting}
-                key={lang}
-                onPressedChange={() => toggleLanguage(lang)}
-                pressed={languages.includes(lang)}
-              >
-                {translateLanguage(lang)}
-              </Toggle>
-            ))}
-          </div>
+          <SpokenLanguagesSelect
+            disabled={form.formState.isSubmitting}
+            onChange={setLanguages}
+            options={i18nConfig.spokenLanguages}
+            value={languages}
+          />
         </SettingsSection>
 
         <Separator className="my-8" />

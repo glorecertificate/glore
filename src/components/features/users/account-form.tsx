@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
@@ -35,7 +35,7 @@ import { PASSWORD_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 
-export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }) => {
+export const AccountForm = () => {
   const { user, setUser } = useSession()
   const { setLocale } = useI18n()
   const t = useTranslations('Users')
@@ -167,7 +167,7 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
   }
 
   return (
-    <div className="space-y-0">
+    <div className="mx-auto w-full space-y-0 duration-300 animate-in fade-in">
       <Form {...accountForm}>
         <form className="space-y-0" onSubmit={accountForm.handleSubmit(onAccountSubmit)}>
           <SettingsSection description={t('preferencesDescription')} title={t('preferences')}>
@@ -321,16 +321,6 @@ export const AccountForm = ({ sessionsContent }: { sessionsContent?: ReactNode }
       </Form>
 
       <Separator className="my-10" />
-
-      {sessionsContent && (
-        <>
-          <SettingsSection description={t('sessionsDescription')} title={t('sessions')}>
-            {sessionsContent}
-          </SettingsSection>
-
-          <Separator className="my-10" />
-        </>
-      )}
 
       <SettingsSection description={t('dangerZoneDescription')} title={t('dangerZone')}>
         <Card className="border-destructive/20 bg-destructive/5">

@@ -7,13 +7,9 @@ import { headers } from 'next/headers'
 import { redirect, unstable_rethrow } from 'next/navigation'
 import { cache } from 'react'
 
-import { and, desc, eq, ne } from 'drizzle-orm'
-
-import { db } from '@/db/client'
-import { sessions } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
+import { APP_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 
 export const getAuthUser = cache(async () => {
@@ -68,9 +64,29 @@ export const setAuthPassword = async (newPassword: string) => {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) throw new Error('Not authenticated')
 
-  await auth.api.setPassword({
-    body: { newPassword },
+  const ctx = await auth.$context
+  const passwordHash = await ctx.password.hash(newPassword)
+  const credential = (await ctx.internalAdapter.findAccounts(session.user.id)).find(
+    account => account.providerId === 'credential' && account.password
+  )
+
+  if (credential) {
+    await ctx.internalAdapter.updatePassword(session.user.id, passwordHash)
+    return
+  }
+
+  await ctx.internalAdapter.linkAccount({
+    accountId: session.user.id,
+    providerId: 'credential',
+    password: passwordHash,
+    userId: session.user.id,
+  })
+}
+
+export const refreshAuthSession = async () => {
+  await auth.api.getSession({
     headers: await headers(),
+    query: { disableCookieCache: true },
   })
 }
 
@@ -130,37 +146,4 @@ export const changePassword = async (currentPassword: string, newPassword: strin
   })
 
   return { data: session.user }
-}
-
-export const listUserSessions = async () => {
-  const authUser = await getAuthUser()
-  if (!authUser) redirect(AUTH_ROOT)
-
-  const [currentSession, allSessions] = await Promise.all([
-    auth.api.getSession({ headers: await headers() }),
-    db.query.sessions.findMany({
-      where: eq(sessions.userId, authUser.id),
-      orderBy: [desc(sessions.createdAt)],
-      limit: 50,
-    }),
-  ])
-
-  return { sessions: allSessions, currentToken: currentSession?.session.token ?? null }
-}
-
-export const revokeUserSession = async (token: string) => {
-  const currentSession = await auth.api.getSession({ headers: await headers() })
-  if (!currentSession?.user) throw new Error('Not authenticated')
-  if (currentSession.session.token === token) return
-
-  await db.delete(sessions).where(and(eq(sessions.token, token), eq(sessions.userId, currentSession.user.id)))
-}
-
-export const revokeAllOtherSessions = async () => {
-  const currentSession = await auth.api.getSession({ headers: await headers() })
-  if (!currentSession?.user) throw new Error('Not authenticated')
-
-  await db
-    .delete(sessions)
-    .where(and(eq(sessions.userId, currentSession.user.id), ne(sessions.token, currentSession.session.token)))
 }

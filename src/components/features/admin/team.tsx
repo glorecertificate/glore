@@ -2,7 +2,19 @@
 
 import { useState } from 'react'
 
-import { ArrowUpDownIcon, CalendarIcon, CheckIcon, FilterIcon, ShieldIcon, UserIcon, UserPlusIcon } from 'lucide-react'
+import {
+  ArrowUpDownIcon,
+  CalendarIcon,
+  CheckIcon,
+  ClockIcon,
+  FilterIcon,
+  PencilIcon,
+  ShieldIcon,
+  ShieldUserIcon,
+  UserIcon,
+  UserPlusIcon,
+  UsersIcon,
+} from 'lucide-react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -13,8 +25,10 @@ import {
   resendInvitation,
   updateTeamMemberRole,
 } from '@/actions/admin/team'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type User } from '@/db/queries/user'
 import { useI18n } from '@/hooks/use-i18n'
@@ -25,6 +39,7 @@ import {
   TeamInviteDialog,
   TeamMemberRow,
   type TeamRole,
+  TeamStatCard,
   type TeamStatus,
   getDisplayName,
   getUserRole,
@@ -47,6 +62,13 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null)
 
   const activeUsers = users.filter(u => !deletedIds.has(u.id))
+
+  const stats = {
+    total: activeUsers.length,
+    admins: activeUsers.filter(u => getUserRole(u) === 'admin').length,
+    editors: activeUsers.filter(u => getUserRole(u) === 'editor').length,
+    pending: activeUsers.filter(u => getUserStatus(u) === 'pending').length,
+  }
 
   const displayUsers = (() => {
     let filtered = activeUsers
@@ -131,9 +153,29 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
   const hasActiveFilters = filterRole !== 'all' || filterStatus !== 'all'
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
+    <div className="space-y-6 pt-1">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <TeamStatCard accent="brand" icon={UsersIcon} label={t('statMembers')} value={stats.total} />
+        <TeamStatCard icon={ShieldUserIcon} label={t('statAdmins')} value={stats.admins} />
+        <TeamStatCard icon={PencilIcon} label={t('statEditors')} value={stats.editors} />
+        <TeamStatCard accent="amber" icon={ClockIcon} label={t('statPending')} value={stats.pending} />
+      </div>
+
+      <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">
+        <div className="flex items-center justify-between gap-3 border-b px-5 py-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold">{t('members')}</h2>
+            <Badge size="sm" variant="muted">
+              {activeUsers.length}
+            </Badge>
+          </div>
+          <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
+            <UserPlusIcon className="mr-1.5 size-3.5" />
+            {t('inviteMember')}
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-5 py-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="sm" variant="outline">
@@ -199,36 +241,53 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
           )}
         </div>
 
-        <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-          <UserPlusIcon className="mr-1.5 size-3.5" />
-          {t('inviteMember')}
-        </Button>
-      </div>
-
-      <div className="space-y-2">
         {displayUsers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
-            <UserIcon className="mb-3 size-8 text-muted-foreground/50" />
-            <p className="text-sm font-medium text-muted-foreground">{t('noMembers')}</p>
-            {hasActiveFilters && <p className="mt-1 text-xs text-muted-foreground/70">{t('tryAdjustingFilters')}</p>}
-          </div>
+          <Empty className="py-16">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <UserIcon />
+              </EmptyMedia>
+              <EmptyTitle>{t('noMembers')}</EmptyTitle>
+              {hasActiveFilters && <EmptyDescription>{t('tryAdjustingFilters')}</EmptyDescription>}
+            </EmptyHeader>
+            {hasActiveFilters && (
+              <EmptyContent>
+                <Button
+                  onClick={() => {
+                    setFilterRole('all')
+                    setFilterStatus('all')
+                  }}
+                  size="sm"
+                  variant="outline"
+                >
+                  {t('clearFilters')}
+                </Button>
+              </EmptyContent>
+            )}
+          </Empty>
         ) : (
-          displayUsers.map(user => (
-            <TeamMemberRow
-              isCurrentUser={user.id === currentUser.id}
-              key={user.id}
-              onChangeRole={handleChangeRole}
-              onDelete={setDeleteTarget}
-              onResend={handleResend}
-              user={user}
-            />
-          ))
+          <div className="divide-y">
+            {displayUsers.map(user => (
+              <TeamMemberRow
+                isCurrentUser={user.id === currentUser.id}
+                key={user.id}
+                onChangeRole={handleChangeRole}
+                onDelete={setDeleteTarget}
+                onResend={handleResend}
+                user={user}
+              />
+            ))}
+          </div>
+        )}
+
+        {displayUsers.length > 0 && (
+          <div className="border-t px-5 py-3">
+            <p className="text-xs text-muted-foreground">
+              {t('memberCount', { count: displayUsers.length, total: activeUsers.length })}
+            </p>
+          </div>
         )}
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        {t('memberCount', { count: displayUsers.length, total: activeUsers.length })}
-      </p>
 
       <TeamInviteDialog defaultLocale={locale} onInvite={handleInvite} onOpenChange={setInviteOpen} open={inviteOpen} />
 

@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { useI18n } from '@/hooks/use-i18n'
@@ -144,15 +145,15 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
         </div>
 
         {joinRequests.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-              <MailIcon className="size-8 text-muted-foreground/50" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium">{t('noJoinRequests')}</p>
-                <p className="text-xs text-muted-foreground">{t('noJoinRequestsDescription')}</p>
-              </div>
-            </CardContent>
-          </Card>
+          <Empty className="border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <MailIcon />
+              </EmptyMedia>
+              <EmptyTitle>{t('noJoinRequests')}</EmptyTitle>
+              <EmptyDescription>{t('noJoinRequestsDescription')}</EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         ) : (
           <div className="space-y-3">
             {joinRequests.map(request => (

@@ -352,7 +352,7 @@ export const IconPicker = ({
           >
             {iconName && (
               <>
-                <LucideIcon className={cn(openState && 'text-foreground')} fallback={fallback} name={iconName} />
+                <LucideIcon fallback={fallback} name={iconName} />
                 {showLabels && t('updateIcon')}
               </>
             )}

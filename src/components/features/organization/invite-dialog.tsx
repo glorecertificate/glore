@@ -198,13 +198,7 @@ export const InviteMemberDialog = ({
           <Button disabled={submitting} onClick={() => onOpenChange(false)} variant="outline">
             {t('cancel')}
           </Button>
-          <Button
-            disabled={submitting}
-            loading={submitting}
-            loadingText={t('sending')}
-            onClick={handleSubmit}
-            variant="brand"
-          >
+          <Button disabled={submitting} loading={submitting} onClick={handleSubmit} variant="brand">
             {t('sendInvite')}
           </Button>
         </DialogFooter>

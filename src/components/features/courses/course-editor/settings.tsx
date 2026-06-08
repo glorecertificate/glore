@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { checkSlugAvailable } from '@/actions/courses/management'
+import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
@@ -174,7 +175,10 @@ export const CourseSettings = ({
                     <Button className="w-fit animate-none text-[13px] font-normal" type="button" variant="outline">
                       {field.value && (
                         <div>
-                          <LucideIcon className="size-4" name={field.value as IconName} />
+                          <LucideIcon
+                            className={cn('size-4', courseIconVariants({ type: form.getValues('type') }))}
+                            name={field.value as IconName}
+                          />
                         </div>
                       )}
                       <span className="transition-colors duration-100">

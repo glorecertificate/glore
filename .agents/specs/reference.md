@@ -19,7 +19,8 @@ Detailed technical reference for the GloRe Certificate codebase. Read the releva
 | `/about`               | Auth               | Dashboard | About page                                         |
 | `/admin`               | Auth + `is_admin`  | Dashboard | Admin panel                                        |
 | `/admin/users`         | Auth + `is_admin`  | Dashboard | User moderation: ban/unban, platform role changes  |
-| `/admin/organizations` | Auth + `is_admin`  | Dashboard | Org approval workflow: approve/reject pending orgs |
+| `/admin/organizations` | Auth + `is_admin`  | Dashboard | Org list (tabs: all/pending/active), approve/reject, create (no rep), invite (with rep) |
+| `/admin/organizations/[id]` | Auth + `is_admin` | Dashboard | Org detail (tab in `?tab=`): members table (search/sort/role filter, role/remove/invite), settings (edit profile/avatar, delete org) |
 | `/organization`        | Auth + org manager | Dashboard | Organization panel                                 |
 | `/certificates`        | Auth + non-editor  | Dashboard | Certificate list                                   |
 | `/certificates/new`    | Auth + non-editor  | Dashboard | New certificate                                    |

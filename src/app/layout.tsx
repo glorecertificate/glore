@@ -1,5 +1,6 @@
 import './globals.css'
 
+import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
 
@@ -16,10 +17,20 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 import { Toaster } from '@/components/ui/toaster'
 import { i18n } from '@/lib/i18n'
 import { metadata } from '@/lib/metadata'
-import { publicFile } from '@/lib/utils'
+import { cn, publicFile } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 export { viewport } from '@/lib/metadata'
+
+const geistSans = Geist({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+})
 
 export const generateMetadata = async () => {
   const t = await getTranslations('Metadata')
@@ -49,7 +60,7 @@ const LayoutContent = async ({ children }: LayoutProps<'/'>) => {
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body suppressHydrationWarning>
+      <body className={cn(geistSans.variable, geistMono.variable)} suppressHydrationWarning>
         <SearchParamsProvider>
           <I18nProvider value={{ locale, messages }}>
             <PWAContextProvider>

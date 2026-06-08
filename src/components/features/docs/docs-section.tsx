@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 
-import { PlusIcon } from 'lucide-react'
+import { FileTextIcon, PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { ArticleCard } from '@/components/features/docs/article-card'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
 import { ArticleSheet } from '@/components/features/docs/article-sheet'
 import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
 import { useI18n } from '@/hooks/use-i18n'
 import { type IntlRecord } from '@/lib/i18n'
@@ -47,7 +48,22 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
       </div>
 
       {category.articles.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted-foreground">{t('empty')}</p>
+        <Empty className="py-10">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <FileTextIcon />
+            </EmptyMedia>
+            <EmptyTitle>{t('empty')}</EmptyTitle>
+          </EmptyHeader>
+          {canEdit && (
+            <EmptyContent>
+              <Button size="sm" variant="outline" onClick={() => setEditorOpen(true)}>
+                <PlusIcon className="size-4" />
+                {t('editor.newArticle')}
+              </Button>
+            </EmptyContent>
+          )}
+        </Empty>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {category.articles.map(article => (

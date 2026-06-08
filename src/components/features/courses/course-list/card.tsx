@@ -7,7 +7,7 @@ import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
-import { courseTypeVariants } from '@/components/features/courses/course-list/type-select'
+import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
 import { UserCard } from '@/components/features/users/user-card'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -129,7 +129,10 @@ export const CourseListCard = ({
                 <Tooltip delayDuration={500}>
                   <TooltipTrigger asChild>
                     <IconPicker
-                      className="peer -ml-0.5 size-7 rounded-full bg-muted/50 stroke-muted-foreground/80 p-0 hover:bg-muted! hover:text-accent-foreground aria-expanded:bg-muted!"
+                      className={cn(
+                        'peer -ml-0.5 size-7 rounded-full p-0',
+                        courseIconVariants({ background: true, type: course.type })
+                      )}
                       onValueChange={updateCourseIcon}
                       value={(course.icon ?? undefined) as IconName | undefined}
                       variant="ghost"
@@ -156,19 +159,21 @@ export const CourseListCard = ({
                 </Link>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
-                {t(`courseType-${course.type}`)}
-              </Badge>
-              {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
-            </div>
+            {course.skillGroup && (
+              <div className="flex items-center gap-1">
+                <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex grow flex-col gap-3">
             <div className="flex gap-1.5">
               {course.icon && (
                 <LucideIcon
-                  className="size-8 shrink-0 rounded-full bg-muted/50 stroke-muted-foreground/80 hover:bg-muted! hover:text-accent-foreground data-[state=open]:bg-muted!"
+                  className={cn(
+                    'size-8 shrink-0 rounded-full',
+                    courseIconVariants({ background: true, type: course.type })
+                  )}
                   name={course.icon as IconName}
                 />
               )}
@@ -182,12 +187,11 @@ export const CourseListCard = ({
               </Link>
               {course.completed && <span className="ml-0.5 text-success">{' ✔︎'}</span>}
             </div>
-            <div className="flex items-center gap-1">
-              <Badge className={cn('py-0.5', courseTypeVariants({ type: course.type }))} variant="ghost">
-                {t(`courseType-${course.type}`)}
-              </Badge>
-              {course.skillGroup && <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>}
-            </div>
+            {course.skillGroup && (
+              <div className="flex items-center gap-1">
+                <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>
+              </div>
+            )}
           </div>
         )}
       </CardHeader>

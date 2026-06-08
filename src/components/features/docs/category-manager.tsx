@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
-import { PlusIcon, Trash2Icon } from 'lucide-react'
+import { FolderOpenIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -20,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
@@ -86,7 +87,14 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
         <div className="mt-4 space-y-3">
           <p className="text-sm font-medium">{t('categories.existing')}</p>
           {categories.length === 0 ? (
-            <p className="text-sm text-muted-foreground">{t('categories.empty')}</p>
+            <Empty className="py-8">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <FolderOpenIcon />
+                </EmptyMedia>
+                <EmptyTitle>{t('categories.empty')}</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
           ) : (
             <ul className="divide-y rounded-md border">
               {categories.map(cat => (

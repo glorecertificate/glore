@@ -12,11 +12,14 @@ const s3 = new S3Client({
 const r2Url = (key: string) => `${process.env.R2_PUBLIC_URL}/${key}`
 
 export const r2Put = async (key: string, body: Buffer | Uint8Array | Blob | File, contentType: string) => {
+  const payload = body instanceof Blob ? Buffer.from(await body.arrayBuffer()) : body
+
   await s3.send(
     new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
-      Body: body,
+      Body: payload,
+      ContentLength: payload.byteLength,
       ContentType: contentType,
     })
   )

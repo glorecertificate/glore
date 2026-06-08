@@ -84,11 +84,13 @@ export const parseAdminOrganization = (
   org: OrganizationRow & {
     profile: OrganizationProfileRow | null
     registrationRequest: JoinRequestRow | null
+    memberCount?: number
   }
 ) => ({
   ...mergeOrganizationProfile(org),
   isApproved: !!org.approvedAt,
   isPending: !org.approvedAt,
+  memberCount: org.memberCount ?? 0,
   registrationRequest: org.registrationRequest
     ? {
         ...org.registrationRequest,

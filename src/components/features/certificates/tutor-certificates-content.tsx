@@ -11,6 +11,7 @@ import { selfAssignCertificate } from '@/actions/certificates/management'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
 import { useI18n } from '@/hooks/use-i18n'
@@ -42,15 +43,15 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
 
   if (assigned.length === 0 && unassigned.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-6 py-20 text-center">
-        <div className="flex size-16 items-center justify-center rounded-full bg-muted">
-          <ClipboardCheckIcon className="size-7 text-muted-foreground" />
-        </div>
-        <div className="max-w-sm space-y-2">
-          <h2 className="text-lg font-semibold">{t('noAssignedCertificatesTitle')}</h2>
-          <p className="text-sm text-muted-foreground">{t('noAssignedCertificatesMessage')}</p>
-        </div>
-      </div>
+      <Empty className="flex-1 py-20">
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <ClipboardCheckIcon />
+          </EmptyMedia>
+          <EmptyTitle>{t('noAssignedCertificatesTitle')}</EmptyTitle>
+          <EmptyDescription>{t('noAssignedCertificatesMessage')}</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

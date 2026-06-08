@@ -1,9 +1,10 @@
-import { CheckCircleIcon, XCircleIcon } from 'lucide-react'
+import { CheckCircleIcon, MessageCircleQuestionIcon, XCircleIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Markdown } from '@/components/ui/markdown'
 import { type Question, type QuestionOption } from '@/db/queries/lesson'
 import { useI18n } from '@/hooks/use-i18n'
@@ -117,7 +118,14 @@ export const CourseQuestions = ({
           <CourseQuestion completed={completed} key={question.id} onComplete={onComplete} question={question} />
         ))
       ) : (
-        <p className="text-muted-foreground">{'Admin.noQuestions'}</p>
+        <Empty className="py-10">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <MessageCircleQuestionIcon />
+            </EmptyMedia>
+            <EmptyTitle>{t('noQuestions')}</EmptyTitle>
+          </EmptyHeader>
+        </Empty>
       )}
     </div>
   )

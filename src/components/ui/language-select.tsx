@@ -17,19 +17,6 @@ import { useI18n } from '@/hooks/use-i18n'
 import { i18n } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-interface LanguageSelectProps extends Omit<SelectTriggerProps, 'onChange'> {
-  addLanguage?: (locale: Locale) => void
-  contentProps?: SelectContentProps
-  controlled?: boolean
-  onChange?: (locale: Locale) => void
-  status?: {
-    published?: Locale[]
-    draft?: Locale[]
-  }
-  value?: Locale
-  values?: Locale[]
-}
-
 type LanguageSelectItem = (typeof i18n.localeItems)[number] & {
   badge?: React.ReactNode
   status?: string | null
@@ -45,7 +32,18 @@ export const LanguageSelect = ({
   value,
   values = i18n.locales,
   ...props
-}: LanguageSelectProps) => {
+}: Omit<SelectTriggerProps, 'onChange'> & {
+  addLanguage?: (locale: Locale) => void
+  contentProps?: SelectContentProps
+  controlled?: boolean
+  onChange?: (locale: Locale) => void
+  status?: {
+    published?: Locale[]
+    draft?: Locale[]
+  }
+  value?: Locale
+  values?: Locale[]
+}) => {
   const { locale, localeItems, setLocale } = useI18n()
   const [isPending, startTransition] = useTransition()
   const t = useTranslations('Common')

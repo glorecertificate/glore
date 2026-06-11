@@ -16,17 +16,12 @@ import { i18n } from '@/lib/i18n'
 
 export const cookies = async () => {
   const { cookies: nextCookies } = await import('next/headers')
-  const { get, set, delete: removeCookieEntry } = await nextCookies()
+  const { get, set, delete: deleteCookie } = await nextCookies()
 
   return {
-    delete: (name: CookieName, options?: CookieOptions) => {
-      const { prefix = COOKIE_PREFIX } = options ?? {}
-      removeCookieEntry(prefixCookieName(name, prefix))
-    },
     get: <T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) => {
       const { fallback, prefix = COOKIE_PREFIX } = options ?? {}
       const value = get(prefixCookieName(name, prefix))?.value
-
       try {
         if (!value) throw Error()
         return JSON.parse(value) as CookieValue<T>
@@ -42,13 +37,16 @@ export const cookies = async () => {
       const { domain, expires, prefix = COOKIE_PREFIX, ...cookieOptions } = options ?? {}
       const cookieName = prefixCookieName(name, prefix)
       const cookieValue = typeof value === 'string' ? value : JSON.stringify(value)
-
       set(cookieName, cookieValue, {
         ...COOKIE_OPTIONS,
         ...cookieOptions,
         domain: domain ?? undefined,
         expires: expires ?? undefined,
       })
+    },
+    delete: (name: CookieName, options?: CookieOptions) => {
+      const { prefix = COOKIE_PREFIX } = options ?? {}
+      deleteCookie(prefixCookieName(name, prefix))
     },
   }
 }

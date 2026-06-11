@@ -806,7 +806,7 @@
     "userRequired": "Insert a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
-    "sessionExpired": "Your session has expired. Please sign in again."
+    "sessionExpired": "Your session has expired, please sign in again"
   },
   "Courses": {
     "active": "Active",

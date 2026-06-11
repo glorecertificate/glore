@@ -216,7 +216,7 @@
   html.theme-transition :where(*, *::before, *::after) {
     transition-property:
       color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow, outline-color;
-    @apply duration-250 motion-reduce:transition-none;
+    @apply duration-200 motion-reduce:transition-none;
   }
   html.theme-transition-view {
     view-transition-name: theme;
@@ -224,7 +224,7 @@
 
   ::view-transition-old(theme),
   ::view-transition-new(theme) {
-    @apply duration-300;
+    @apply duration-200;
   }
   ::selection {
     @apply bg-foreground/5;

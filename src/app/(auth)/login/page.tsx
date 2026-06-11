@@ -1,39 +1,27 @@
-import { createSearchParamsCache, parseAsString } from 'nuqs/server'
+import { createSearchParamsCache } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
 import { AuthFlow } from '@/components/auth/auth-flow'
+import { authParsers } from '@/components/auth/auth-params'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { intlMetadata } from '@/lib/metadata'
-import { AuthView } from '@/lib/types'
-import { camelize } from '@/lib/utils'
 
-const { parse } = createSearchParamsCache({ expired: parseAsString, token: parseAsString })
+const { parse } = createSearchParamsCache(authParsers)
 
-const resolveParams = async ({ searchParams }: PageProps<'/login'>) => {
-  const { expired, token } = await parse(searchParams)
-  const view: AuthView = token ? 'password_reset' : 'login'
-  return { expired: expired === 'true', resetToken: token, view }
+export const generateMetadata = async ({ searchParams }: PageProps<'/login'>) => {
+  const { token } = await parse(searchParams)
+  return intlMetadata({ namespace: 'Auth', title: `${token ? 'passwordReset' : 'login'}Title` })
 }
 
-export const generateMetadata = async (props: PageProps<'/login'>) => {
-  const { view } = await resolveParams(props)
-  return intlMetadata({ namespace: 'Auth', title: camelize(`${view}_title`) })
-}
-
-const LoginPage = async (props: PageProps<'/login'>) => {
+const LoginPage = async ({ searchParams }: PageProps<'/login'>) => {
   const { get } = await cookies()
-  const [username, theme, { expired, resetToken, view }] = await Promise.all([
-    get('loginUser'),
-    get('theme'),
-    resolveParams(props),
-  ])
-  const tooltip = Object.freeze({ showArrow: false, side: 'top' })
+  const [username, theme, params] = await Promise.all([get('loginUser'), get('theme'), parse(searchParams)])
 
   return (
     <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
-      <AuthFlow resetToken={resetToken} sessionExpired={expired} username={username} view={view} />
+      <AuthFlow params={params} username={username} />
       <div className="flex justify-end">
-        <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={tooltip} />
+        <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
       </div>
     </div>
   )

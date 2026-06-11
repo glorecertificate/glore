@@ -6,11 +6,15 @@
     "type": "git",
     "url": "git+https://github.com/glorecertificate/glore.git"
   },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
   "scripts": {
     "prepare": "vp config && tsx ./scripts/typegen.ts",
     "typegen": "tsx ./scripts/typegen.ts",
-    "dev": "portless run next dev",
-    "dev:clean": "rm -rf .next/dev/cache && portless run next dev",
+    "dev": "portless run --app-port 3030 next dev",
+    "dev:clean": "rm -rf .next/dev/cache && portless run --app-port 3030 next dev",
     "build": "next build",
     "start": "portless run next start",
     "typecheck": "tsgo",
@@ -167,10 +171,6 @@
     "vercel": "^54.9.1",
     "vite-plus": "^0.1.21"
   },
-  "engines": {
-    "node": ">=22"
-  },
-  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916",
   "postcss": {
     "plugins": {
       "@tailwindcss/postcss": {}

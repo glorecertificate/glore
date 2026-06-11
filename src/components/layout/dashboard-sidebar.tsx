@@ -362,7 +362,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
     await sleep(500)
     setTimeout(() => setMenuOpen(false), 1000)
-    redirect(AUTH_ROOT)
+    redirect(`${AUTH_ROOT}?loggedOut=true`)
   }
 
   useEffect(

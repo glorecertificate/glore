@@ -22,12 +22,14 @@ import { cn, isValidUsername } from '@/lib/utils'
 
 export const LoginForm = ({
   errored,
+  loggedOut,
   setErrored,
   setUsername,
   setView,
   username,
 }: {
   errored: boolean
+  loggedOut?: boolean
   setErrored: (errored: boolean) => void
   setUsername: (username?: string) => void
   setView: (view: AuthView) => void
@@ -35,6 +37,7 @@ export const LoginForm = ({
 }) => {
   const t = useTranslations('Auth')
   const [loading, setLoading] = useState(false)
+  const [passwordReadOnly, setPasswordReadOnly] = useState(Boolean(loggedOut))
 
   const formSchema = z.object({
     password: z
@@ -119,8 +122,28 @@ export const LoginForm = ({
   }
 
   useEffect(() => {
-    form.setFocus(username ? 'password' : 'username')
+    if (username) {
+      form.setFocus('password')
+      return
+    }
+    form.setFocus('username')
   }, [form, username])
+
+  useEffect(() => {
+    if (!loggedOut) return
+    const frame = requestAnimationFrame(() => {
+      setPasswordReadOnly(false)
+      form.setValue('password', '')
+      if (username) form.setFocus('password')
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [form, loggedOut, username])
+
+  useEffect(() => {
+    if (!errored) return
+    const { unsubscribe } = form.watch(() => setErrored(false))
+    return () => unsubscribe()
+  }, [errored, form, setErrored])
 
   useEffect(
     () => () => {
@@ -172,7 +195,13 @@ export const LoginForm = ({
                     </Button>
                   </div>
                   <FormControl>
-                    <PasswordInput autoFocus={Boolean(username)} disabled={loading} variant="floating" {...field} />
+                    <PasswordInput
+                      autoFocus={Boolean(username)}
+                      disabled={loading}
+                      readOnly={passwordReadOnly}
+                      variant="floating"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

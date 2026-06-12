@@ -268,3 +268,44 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 **When to update README.md:** Adding features, changing setup steps, modifying scripts, structural changes.
 
 **Rules:** Edit directly. Never edit `CLAUDE.md` (it only contains `@AGENTS.md`). Keep formatting and table structure.
+
+---
+
+<!-- engineering-guidelines:start -->
+
+## Engineering Guidelines
+
+Precedence: explicit user instruction > project conventions below > existing file style.
+
+### Think Before Coding
+
+- Surface assumptions and tradeoffs in the spec/plan phase. Ask questions there, not mid-implementation.
+- During implementation, proceed on explicitly stated assumptions; list them in the final report.
+- If multiple interpretations exist at spec time, present them — don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+
+### Simplicity First
+
+- Minimum code that solves the problem. No features, abstractions, or configurability beyond what was asked.
+- No abstractions for single-use code.
+- Handle realistic failures at boundaries (network, user input, third-party APIs, webhooks). No error handling for scenarios the type system or invariants already exclude.
+- If 200 lines could be 50, rewrite before presenting.
+
+### Surgical Changes
+
+- Touch only what the task requires. No drive-by refactors, comment edits, or reformatting.
+- Project conventions (guard clauses only, no if/else, Conventional Commits, one commit per task) apply to ALL code you write, including edits inside legacy files. Match existing style only where no convention exists.
+- Remove imports/variables/functions that YOUR changes orphaned. Leave pre-existing dead code; mention it instead.
+- Every changed line must trace to the request.
+
+### Goal-Driven Execution
+
+- Define success criteria before implementing, then loop until verified.
+- Verification ladder (run what applies, in order):
+  1. `pnpm run typecheck` — zero errors
+  2. `pnpm run lint` — zero errors
+  3. Unit/integration tests for logic changes — write the failing test first for bug fixes
+  4. UI/animation work: verify visually via Playwright MCP (screenshot or scripted interaction). A passing typecheck is not visual verification.
+- Report which rungs were run and their results.
+
+<!-- engineering-guidelines:end -->

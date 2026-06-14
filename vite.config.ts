@@ -15,7 +15,7 @@ const plugins = [
   },
 ] as const
 
-const createPluginRules = (plugin: (typeof plugins)[number]['name']) =>
+const pluginRules = (plugin: (typeof plugins)[number]['name']) =>
   Object.keys(plugins.find(({ name }) => name === plugin)!.rules).reduce(
     (rules, rule) => ({ ...rules, [`${plugin}/${rule}`]: 'error' }),
     {}
@@ -286,11 +286,11 @@ export default defineConfig({
       'react/rules-of-hooks': 'error',
       'react/self-closing-comp': 'error',
       'react/void-dom-elements-no-children': 'error',
-      ...createPluginRules('react-compiler'),
+      ...pluginRules('react-compiler'),
       'react-compiler/incompatible-library': 'off',
       'react-compiler/refs': 'off',
       'react-compiler/todo': 'off',
-      ...createPluginRules('react-doctor'),
+      ...pluginRules('react-doctor'),
       'react-doctor/design-no-space-on-flex-children': 'off',
       'react-doctor/forbid-component-props': 'off',
       'react-doctor/hook-use-state': 'off',

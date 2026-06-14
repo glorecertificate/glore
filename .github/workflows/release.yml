@@ -5,12 +5,14 @@ on:
     tags:
       - v*
 
-permissions:
-  contents: read
-
 jobs:
-  release:
-    name: Release
+  check:
+    name: Check
+    permissions:
+      contents: read
+    uses: ./.github/workflows/check.yml
+  deploy:
+    name: Deploy
     permissions:
       contents: read
       deployments: write

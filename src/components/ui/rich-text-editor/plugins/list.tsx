@@ -1,8 +1,8 @@
 import { ListPlugin } from '@platejs/list/react'
 import { KEYS } from 'platejs'
 
-import { IndentKit } from '@/components/blocks/rich-text-editor/plugins/indent'
-import { BlockList } from '@/components/blocks/rich-text-editor/ui/block-list'
+import { BlockList } from '@/components/ui/rich-text-editor/components/block-list'
+import { IndentKit } from '@/components/ui/rich-text-editor/plugins/indent'
 
 export const ListKit = [
   ...IndentKit,

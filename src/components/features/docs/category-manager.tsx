@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { createDocCategory, deleteDocCategory } from '@/actions/doc'
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,8 +29,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { type DocCategory } from '@/db/queries/doc'
-import { useI18n } from '@/hooks/use-i18n'
-import { type IntlRecord, i18n, intlPlaceholder } from '@/lib/i18n'
+import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALE_ITEMS } from '@/lib/i18n'
 
 interface CategoryManagerProps {
   categories: DocCategory[]
@@ -42,13 +42,13 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
   const { refresh } = useRouter()
   const { localize } = useI18n()
 
-  const [names, setNames] = useState<IntlRecord>({ ...intlPlaceholder })
-  const [descriptions, setDescriptions] = useState<IntlRecord>({ ...intlPlaceholder })
+  const [names, setNames] = useState<IntlRecord>({ ...INTL_PLACEHOLDER })
+  const [descriptions, setDescriptions] = useState<IntlRecord>({ ...INTL_PLACEHOLDER })
   const [slug, setSlug] = useState('')
   const [adding, setAdding] = useState(false)
 
   const handleAdd = async () => {
-    if (!names[i18n.defaultLocale] || !slug) {
+    if (!names[DEFAULT_LOCALE] || !slug) {
       toast.error(t('categories.requiredFields'))
       return
     }
@@ -60,8 +60,8 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
       return
     }
     toast.success(t('categories.created'))
-    setNames({ ...intlPlaceholder })
-    setDescriptions({ ...intlPlaceholder })
+    setNames({ ...INTL_PLACEHOLDER })
+    setDescriptions({ ...INTL_PLACEHOLDER })
     setSlug('')
     startTransition(() => refresh())
   }
@@ -139,16 +139,16 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
             <Input id="cat-slug" placeholder="category-slug" value={slug} onChange={e => setSlug(e.target.value)} />
           </div>
 
-          <Tabs defaultValue={i18n.defaultLocale}>
+          <Tabs defaultValue={DEFAULT_LOCALE}>
             <TabsList>
-              {i18n.localeItems.map(item => (
+              {LOCALE_ITEMS.map(item => (
                 <TabsTrigger key={item.value} value={item.value}>
                   {item.icon} {item.label}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {i18n.localeItems.map(item => (
+            {LOCALE_ITEMS.map(item => (
               <TabsContent key={item.value} className="grid gap-3 pt-2" value={item.value}>
                 <div className="space-y-1.5">
                   <Label>{t('categories.name')}</Label>

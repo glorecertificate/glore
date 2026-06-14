@@ -5,11 +5,11 @@ import { useEffect } from 'react'
 import { useLocale } from 'next-intl'
 
 import { usePWA } from '@/hooks/use-pwa'
-import { i18n } from '@/lib/i18n'
+import { LOCALES } from '@/lib/i18n'
 import { MANIFEST_URL } from '@/lib/metadata'
 import metadata from '~/config/metadata.json'
 
-const metaSelectors = {
+const METADATA_SELECTORS = {
   alternateLocale: '[property="og:locale:alternate"]',
   description: [
     '[name="description"]',
@@ -21,138 +21,121 @@ const metaSelectors = {
   locale: '[property="og:locale"]',
   manifest: '[rel="manifest"]',
   title: ['[property="og:title"]', '[name="twitter:title"]'],
-}
+} as const
 
-const getMetaContent = (selector: keyof typeof metaSelectors) => {
-  if (typeof document === 'undefined') {
-    return
-  }
-  const selectors = metaSelectors[selector]
+const getMetaContent = (selector: keyof typeof METADATA_SELECTORS) => {
+  if (typeof document === 'undefined') return
+  const selectors = METADATA_SELECTORS[selector]
   for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
-    if (element) {
-      return element.content
-    }
+    if (element) return element.content
   }
 }
 
-const updateMetaContent = (selector: keyof typeof metaSelectors, value: string) => {
-  if (typeof document === 'undefined') {
-    return
-  }
-  const selectors = metaSelectors[selector]
+const updateMetaContent = (selector: keyof typeof METADATA_SELECTORS, value: string) => {
+  if (typeof document === 'undefined') return
+  const selectors = METADATA_SELECTORS[selector]
   for (const attribute of Array.isArray(selectors) ? selectors : [selectors]) {
     const element = document.querySelector<HTMLMetaElement>(attribute)
-    if (element) {
-      element.content = value
-    }
+    if (element) element.content = value
   }
 }
 
-const updateLinkSelector = (selector: string | string[], value: string) => {
-  if (typeof document === 'undefined') {
-    return
-  }
+const updateLink = (selector: string | string[], value: string) => {
+  if (typeof document === 'undefined') return
   for (const attribute of Array.isArray(selector) ? selector : [selector]) {
     const element = document.querySelector<HTMLLinkElement>(attribute)
-    if (element) {
-      element.href = value
-    }
+    if (element) element.href = value
   }
 }
 
-interface UseMetadataOptions {
-  /**
-   * Whether to show the application name in the document title.
-   * @default true
-   */
-  applicationName?: boolean | 'short' | 'full'
-  /**
-   * Delay in milliseconds before updating the metadata.
-   * @default 100
-   */
-  delay?: number
-  /**
-   * Description for the metadata.
-   */
-  description?: string
-  /**
-   * Image URL for the metadata.
-   */
-  image?: string
-  /**
-   * Title for the metadata.
-   */
-  title?: string
-}
+const setDescription = (value: string) => updateMetaContent('description', value)
+
+const setImage = (value: string) => updateMetaContent('image', value)
 
 /**
  * Manage and update metadata title, description, and image.
  */
-export const useMetadata = ({ applicationName = true, delay = 100, ...options }: UseMetadataOptions) => {
+export const useMetadata = ({
+  delay = 100,
+  separator = metadata.separator,
+  suffix = metadata.name,
+  ...options
+}: {
+  /**
+   * Delay in milliseconds before updating the metadata.
+   * Useful to prevent layout shifts during page load.
+   * @default 100
+   */
+  delay?: number
+  /**
+   * Metadata description to be set.
+   */
+  description?: string
+  /**
+   * URL of the metadata image to be set.
+   */
+  image?: string
+  /**
+   * Separator to use between title and suffix in browser display mode.
+   * Defaults to {@link metadata.separator}.
+   */
+  separator?: string
+  /**
+   * Suffix to append to the title when in browser display mode.
+   * Defaults to {@link metadata.name}.
+   */
+  suffix?: string | false
+  /**
+   * Metadata title to be set.
+   * Use `suffix` to append other content in browser display mode.
+   */
+  title?: string
+}) => {
   const locale = useLocale()
   const { displayMode } = usePWA()
 
   const title = typeof document === 'undefined' ? undefined : document.title
+  const titleSuffix = displayMode === 'browser' && suffix !== false ? ` ${separator} ${suffix}` : ''
   const description = getMetaContent('description')
   const image = getMetaContent('image')
 
-  const setTitle = (newTitle: string) => {
-    const content =
-      displayMode === 'browser' && applicationName
-        ? `${newTitle} ${metadata.separator} ${applicationName === 'short' ? metadata.shortName : metadata.name}`
-        : newTitle
+  const setTitle = (value: string) => {
+    const content = `${value}${titleSuffix}`
     document.title = content
     updateMetaContent('title', content)
   }
 
-  const setDescription = (newDescription: string) => {
-    updateMetaContent('description', newDescription)
-  }
-
-  const setImage = (newImage: string) => updateMetaContent('image', newImage)
-
   useEffect(() => {
-    if (!(options.title || options.description || options.image)) {
-      return
-    }
+    if (!(options.title || options.description || options.image)) return
 
     const timeout = setTimeout(() => {
       if (options.title) {
-        const content =
-          displayMode === 'browser' && applicationName
-            ? `${options.title} ${metadata.separator} ${applicationName === 'full' ? metadata.name : metadata.shortName}`
-            : options.title
+        const content = `${options.title}${titleSuffix}`
         document.title = content
         updateMetaContent('title', content)
       }
-      if (options.description) {
-        updateMetaContent('description', options.description)
-      }
-      if (options.image) {
-        updateMetaContent('image', options.image)
-      }
+      if (options.description) updateMetaContent('description', options.description)
+      if (options.image) updateMetaContent('image', options.image)
     }, delay)
 
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [applicationName, delay, displayMode, options.description, options.image, options.title])
+    return () => clearTimeout(timeout)
+  }, [delay, options.description, options.image, options.title, titleSuffix])
 
   useEffect(() => {
     const html = document.querySelector('html')!
     html.setAttribute('lang', locale)
     updateMetaContent('locale', locale)
-    updateLinkSelector('manifest', `${MANIFEST_URL}?locale=${locale}`)
-    updateMetaContent('alternateLocale', i18n.locales.filter(l => l !== locale)[0])
+    updateLink('manifest', `${MANIFEST_URL}?locale=${locale}`)
+    updateMetaContent('alternateLocale', LOCALES.filter(alternate => alternate !== locale)[0])
   }, [locale])
 
   return {
-    description,
-    image,
-    setDescription,
-    setImage,
-    setTitle,
     title,
+    setTitle,
+    description,
+    setDescription,
+    image,
+    setImage,
   }
 }

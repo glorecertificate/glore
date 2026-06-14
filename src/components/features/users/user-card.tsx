@@ -1,11 +1,11 @@
 import { LanguagesIcon, MailIcon, MapPinIcon, PencilIcon, ShieldUserIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type User } from '@/db/queries/user'
-import { useI18n } from '@/hooks/use-i18n'
 import { type Any, type HttpUrl } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import app from '~/config/app.json'

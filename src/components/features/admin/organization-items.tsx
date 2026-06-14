@@ -7,6 +7,7 @@ import { CheckIcon, ChevronRightIcon, MailIcon, MapPinIcon, MoreHorizontalIcon, 
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +36,6 @@ import { Label } from '@/components/ui/label'
 import { SearchHighlight } from '@/components/ui/search'
 import { Textarea } from '@/components/ui/textarea'
 import { type AdminOrganization } from '@/db/queries/organization'
-import { useI18n } from '@/hooks/use-i18n'
 import { type MessageKey } from '@/lib/i18n'
 
 export const OrgRow = ({

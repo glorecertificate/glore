@@ -5,7 +5,7 @@ import { ResizableProvider } from '@platejs/resizable'
 import { type TAudioElement } from 'platejs'
 import { PlateElement, type PlateElementProps, withHOC } from 'platejs/react'
 
-import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
+import { Caption, CaptionTextarea } from '@/components/ui/rich-text-editor/components/caption'
 
 const captionStyle = { width: '100%' }
 

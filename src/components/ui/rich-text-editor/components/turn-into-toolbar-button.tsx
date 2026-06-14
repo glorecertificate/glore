@@ -23,7 +23,6 @@ import { useTranslations } from 'next-intl'
 import { KEYS, type TElement } from 'platejs'
 import { useEditorRef, useSelectionFragmentProp } from 'platejs/react'
 
-import { getBlockType, setBlockType } from '@/components/blocks/rich-text-editor/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +31,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { getBlockType, setBlockType } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
 
 export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {

@@ -11,6 +11,8 @@ import { z } from 'zod'
 import { changePassword } from '@/actions/auth'
 import { deleteAccount, updateUser } from '@/actions/user'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,8 +31,6 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Separator } from '@/components/ui/separator'
 import { type TableUpdate } from '@/db/types'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'

@@ -26,6 +26,13 @@ export const InputGroup = ({ className, ...props }: React.ComponentProps<'div'>)
   />
 )
 
+const focusInputOnKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  if ((event.target as HTMLElement).closest('button, input, textarea')) return
+  event.preventDefault()
+  event.currentTarget.parentElement?.querySelector('input')?.focus()
+}
+
 export const InputGroupAddon = ({
   align = 'inline-start',
   className,
@@ -46,6 +53,7 @@ export const InputGroupAddon = ({
       data-align={align}
       data-slot="input-group-addon"
       onClick={handleClick}
+      onKeyDown={focusInputOnKey}
       role="group"
       {...props}
     />

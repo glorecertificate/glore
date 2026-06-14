@@ -25,14 +25,14 @@ import {
   resendInvitation,
   updateTeamMemberRole,
 } from '@/actions/admin/team'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type User } from '@/db/queries/user'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 
 import {
   DeleteDialog,

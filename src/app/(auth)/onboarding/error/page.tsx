@@ -3,14 +3,13 @@ import { getTranslations } from 'next-intl/server'
 
 import { Button } from '@/components/ui/button'
 import { AUTH_ROOT } from '@/lib/constants'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 import metadata from '~/config/metadata.json'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Join',
-    title: 'errorTitle',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Join',
+  title: 'errorTitle',
+})
 
 const OnboardingErrorPage = async () => {
   const t = await getTranslations('Join')

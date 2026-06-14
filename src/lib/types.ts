@@ -1,9 +1,10 @@
-import { Route } from 'next'
+import { type Route } from 'next'
 
 import { type LucideProps } from 'lucide-react'
 import { type IconName } from 'lucide-react/dynamic'
 
-import { AUTH_VIEWS } from '@/lib/constants'
+import { type AUTH_VIEWS } from '@/lib/constants'
+import type theme from '~/config/theme.json'
 
 /*
   Overrides
@@ -29,6 +30,8 @@ export type CamelCase<S extends string> = S extends `${infer T}_${infer U}`
 /*
   Theme
 */
+export type Theme = keyof typeof theme.modes
+export type ResolvedTheme = Exclude<Theme, 'system'>
 export type Icon<T = {}> = (props: IconProps<T>) => React.ReactNode
 export type IconProps<T = {}> = React.ComponentProps<'svg'> & LucideProps & T
 export type { IconName }

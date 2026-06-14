@@ -7,6 +7,7 @@ import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Progress } from '@/components/ui/progress'
@@ -24,7 +25,6 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
 import { type Lesson } from '@/db/queries/lesson'
-import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
@@ -62,8 +62,10 @@ const CourseSidebarItem = ({
   const lessonRef = useRef(lesson)
   lessonRef.current = lesson
 
+  // eslint-disable-next-line react-doctor/no-reset-all-state-on-prop-change
   useEffect(() => {
     if (document.activeElement !== inputRef.current) {
+      // eslint-disable-next-line react-doctor/no-derived-state
       setDraftTitle(title)
     }
   }, [title])

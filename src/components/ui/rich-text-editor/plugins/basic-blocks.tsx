@@ -10,7 +10,7 @@ import {
 } from '@platejs/basic-nodes/react'
 import { ParagraphPlugin } from 'platejs/react'
 
-import { BlockquoteElement } from '@/components/blocks/rich-text-editor/ui/blockquote-node'
+import { BlockquoteElement } from '@/components/ui/rich-text-editor/components/blockquote-node'
 import {
   H1Element,
   H2Element,
@@ -18,9 +18,9 @@ import {
   H4Element,
   H5Element,
   H6Element,
-} from '@/components/blocks/rich-text-editor/ui/heading-node'
-import { HrElement } from '@/components/blocks/rich-text-editor/ui/hr-node'
-import { ParagraphElement } from '@/components/blocks/rich-text-editor/ui/paragraph-node'
+} from '@/components/ui/rich-text-editor/components/heading-node'
+import { HrElement } from '@/components/ui/rich-text-editor/components/hr-node'
+import { ParagraphElement } from '@/components/ui/rich-text-editor/components/paragraph-node'
 
 export const BasicBlocksKit = [
   ParagraphPlugin.withComponent(ParagraphElement),

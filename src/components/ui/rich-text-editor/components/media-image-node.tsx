@@ -6,13 +6,13 @@ import { ResizableProvider, useResizableValue } from '@platejs/resizable'
 import { type TImageElement } from 'platejs'
 import { PlateElement, type PlateElementProps, withHOC } from 'platejs/react'
 
-import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
-import { MediaToolbar } from '@/components/blocks/rich-text-editor/ui/media-toolbar'
+import { Caption, CaptionTextarea } from '@/components/ui/rich-text-editor/components/caption'
+import { MediaToolbar } from '@/components/ui/rich-text-editor/components/media-toolbar'
 import {
   Resizable,
   ResizeHandle,
   mediaResizeHandleVariants,
-} from '@/components/blocks/rich-text-editor/ui/resize-handle'
+} from '@/components/ui/rich-text-editor/components/resize-handle'
 import { cn } from '@/lib/utils'
 
 const leftResizeOptions = { direction: 'left' } as const

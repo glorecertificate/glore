@@ -4,8 +4,8 @@ import { useTranslations } from 'next-intl'
 import { type TDateElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly } from 'platejs/react'
 
-import { Calendar } from '@/components/blocks/rich-text-editor/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/rich-text-editor/components/calendar'
 import { cn } from '@/lib/utils'
 
 export const DateElement = (props: PlateElementProps<TDateElement>) => {

@@ -3,14 +3,13 @@ import { getTranslations } from 'next-intl/server'
 
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'about',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'about',
+})
 
 const ABOUT_SECTIONS = [
   { icon: AwardIcon, key: 'mission', accent: 'text-brand border-brand/20 bg-brand/5' },

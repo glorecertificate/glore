@@ -5,8 +5,8 @@ import { useId } from 'react'
 import { useAIChatEditor } from '@platejs/ai/react'
 import { usePlateEditor } from 'platejs/react'
 
-import { BaseEditorKit } from '@/components/blocks/rich-text-editor/plugins/editor-base'
-import { StaticEditor } from '@/components/blocks/rich-text-editor/ui/static-editor'
+import { StaticEditor } from '@/components/ui/rich-text-editor/components/static-editor'
+import { BaseEditorKit } from '@/components/ui/rich-text-editor/plugins/editor-base'
 
 export const AIChatEditor = ({ content }: { content: string }) => {
   const id = useId()

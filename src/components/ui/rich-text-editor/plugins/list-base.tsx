@@ -1,8 +1,8 @@
 import { BaseListPlugin } from '@platejs/list'
 import { KEYS } from 'platejs'
 
-import { BaseIndentKit } from '@/components/blocks/rich-text-editor/plugins/indent-base'
-import { BlockListStatic } from '@/components/blocks/rich-text-editor/ui/block-list-static'
+import { BlockListStatic } from '@/components/ui/rich-text-editor/components/block-list-static'
+import { BaseIndentKit } from '@/components/ui/rich-text-editor/plugins/indent-base'
 
 export const BaseListKit = [
   ...BaseIndentKit,

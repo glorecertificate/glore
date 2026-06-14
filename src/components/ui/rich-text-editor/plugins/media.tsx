@@ -9,14 +9,14 @@ import {
 } from '@platejs/media/react'
 import { KEYS } from 'platejs'
 
-import { AudioElement } from '@/components/blocks/rich-text-editor/ui/media-audio-node'
-import { MediaEmbedElement } from '@/components/blocks/rich-text-editor/ui/media-embed-node'
-import { FileElement } from '@/components/blocks/rich-text-editor/ui/media-file-node'
-import { ImageElement } from '@/components/blocks/rich-text-editor/ui/media-image-node'
-import { PlaceholderElement } from '@/components/blocks/rich-text-editor/ui/media-placeholder-node'
-import { MediaPreviewDialog } from '@/components/blocks/rich-text-editor/ui/media-preview-dialog'
-import { MediaUploadToast } from '@/components/blocks/rich-text-editor/ui/media-upload-toast'
-import { VideoElement } from '@/components/blocks/rich-text-editor/ui/media-video-node'
+import { AudioElement } from '@/components/ui/rich-text-editor/components/media-audio-node'
+import { MediaEmbedElement } from '@/components/ui/rich-text-editor/components/media-embed-node'
+import { FileElement } from '@/components/ui/rich-text-editor/components/media-file-node'
+import { ImageElement } from '@/components/ui/rich-text-editor/components/media-image-node'
+import { PlaceholderElement } from '@/components/ui/rich-text-editor/components/media-placeholder-node'
+import { MediaPreviewDialog } from '@/components/ui/rich-text-editor/components/media-preview-dialog'
+import { MediaUploadToast } from '@/components/ui/rich-text-editor/components/media-upload-toast'
+import { VideoElement } from '@/components/ui/rich-text-editor/components/media-video-node'
 
 export const MediaKit = [
   ImagePlugin.configure({

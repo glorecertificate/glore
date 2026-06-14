@@ -14,7 +14,9 @@ export const Textarea = ({ autoFocus, className, ...props }: React.ComponentProp
     }, 100)
   })
 
-  useEffect(focusTextarea)
+  useEffect(() => {
+    focusTextarea()
+  })
 
   return (
     <textarea

@@ -4,13 +4,12 @@ import { getAuthUser } from '@/actions/auth'
 import { findDocCategory, listDocCategories } from '@/actions/doc'
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'docsTutorials',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'docsTutorials',
+})
 
 const DocsTutorialsContent = async () => {
   const category = await findDocCategory('tutorials', { includeUnpublished: true })

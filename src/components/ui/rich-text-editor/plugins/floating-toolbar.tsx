@@ -2,8 +2,8 @@
 
 import { createPlatePlugin } from 'platejs/react'
 
-import { FloatingToolbar } from '@/components/blocks/rich-text-editor/ui/floating-toolbar'
-import { FloatingToolbarButtons } from '@/components/blocks/rich-text-editor/ui/floating-toolbar-buttons'
+import { FloatingToolbar } from '@/components/ui/rich-text-editor/components/floating-toolbar'
+import { FloatingToolbarButtons } from '@/components/ui/rich-text-editor/components/floating-toolbar-buttons'
 
 export const FloatingToolbarKit = [
   createPlatePlugin({

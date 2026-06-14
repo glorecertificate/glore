@@ -6,13 +6,15 @@ import { ArchiveIcon, BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenI
 import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useCourses } from '@/components/features/courses/context'
+import { resolveCourseLanguage, useCourseLanguages } from '@/components/features/courses/course-languages'
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
 import { UserCard } from '@/components/features/users/user-card'
 import { LucideIcon } from '@/components/icons/lucide'
-import { resolveCourseLanguage, useCourseLanguages } from '@/components/providers/course-languages-context'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,9 +26,7 @@ import { Progress } from '@/components/ui/progress'
 import { SearchHighlight } from '@/components/ui/search'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Course } from '@/db/queries/course'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
-import { i18n, localizeRecord } from '@/lib/i18n'
+import { LOCALES, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -87,7 +87,7 @@ export const CourseListCard = ({
       published: publishedSet.has(item.value),
     })
   }
-  languageItems.sort((a, b) => i18n.locales.indexOf(a.value) - i18n.locales.indexOf(b.value))
+  languageItems.sort((a, b) => LOCALES.indexOf(a.value) - LOCALES.indexOf(b.value))
 
   const description = (() => {
     const translation = course.description ? localizeRecord(course.description, language) : undefined

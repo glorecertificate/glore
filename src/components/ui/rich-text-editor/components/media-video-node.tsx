@@ -10,12 +10,12 @@ import { type TResizableProps, type TVideoElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useEditorMounted, withHOC } from 'platejs/react'
 import LiteYouTubeEmbed from 'react-lite-youtube-embed'
 
-import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
+import { Caption, CaptionTextarea } from '@/components/ui/rich-text-editor/components/caption'
 import {
   Resizable,
   ResizeHandle,
   mediaResizeHandleVariants,
-} from '@/components/blocks/rich-text-editor/ui/resize-handle'
+} from '@/components/ui/rich-text-editor/components/resize-handle'
 import { cn } from '@/lib/utils'
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })

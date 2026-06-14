@@ -3,16 +3,16 @@
 import { BookOpenIcon, CheckCircle2Icon, CircleDashedIcon, PlayIcon, ZapIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { useCourses } from '@/components/features/courses/context'
 import { courseIconVariants, courseTypeVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { RadialProgress } from '@/components/ui/radial-progress'
-import { useI18n } from '@/hooks/use-i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 

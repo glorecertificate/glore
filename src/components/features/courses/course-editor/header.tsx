@@ -10,6 +10,8 @@ import { toast } from 'sonner'
 import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,9 +31,7 @@ import { Switch } from '@/components/ui/switch'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Lesson } from '@/db/queries/lesson'
-import { useI18n } from '@/hooks/use-i18n'
 import { useScroll } from '@/hooks/use-scroll'
-import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
@@ -51,6 +51,7 @@ export const CourseHeader = () => {
   const alertResolverRef = useRef<((value: boolean) => void) | null>(null)
 
   useEffect(() => {
+    // eslint-disable-next-line react-compiler/set-state-in-effect
     setPublishTarget(languageStatus.published)
   }, [language, languageStatus.published])
 

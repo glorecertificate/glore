@@ -3,7 +3,7 @@ import { PlaceholderPlugin } from '@platejs/media/react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { BlockDraggable } from '@/components/blocks/rich-text-editor/ui/block-draggable'
+import { BlockDraggable } from '@/components/ui/rich-text-editor/components/block-draggable'
 
 export const DndKit = [
   DndPlugin.configure({

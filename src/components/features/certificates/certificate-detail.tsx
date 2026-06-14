@@ -18,18 +18,18 @@ import {
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { assignCertificateTutor } from '@/actions/certificates/management'
+import { assignCertificateTutor, claimCertificateReview } from '@/actions/certificates/management'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 
 interface OrgTutor {
   id: string
@@ -116,7 +116,15 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
               </Button>
             )}
             {canReview && (
-              <Button icon={ClipboardCheckIcon} onClick={() => setReviewOpen(true)} size="sm" variant="brand">
+              <Button
+                icon={ClipboardCheckIcon}
+                onClick={() => {
+                  if (certificate.isSubmitted) void claimCertificateReview(certificate.id)
+                  setReviewOpen(true)
+                }}
+                size="sm"
+                variant="brand"
+              >
                 {t('openReview')}
               </Button>
             )}

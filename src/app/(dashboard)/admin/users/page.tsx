@@ -6,13 +6,12 @@ import { getAdminUsers } from '@/actions/admin/users'
 import { getCurrentUser } from '@/actions/user'
 import { AdminUsers } from '@/components/features/admin/users'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Admin.users',
-    title: 'title',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Admin.users',
+  title: 'title',
+})
 
 const AdminUsersContent = async () => {
   const user = await getCurrentUser()

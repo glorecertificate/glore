@@ -4,6 +4,7 @@ import { useTransition } from 'react'
 
 import { type Locale, useTranslations } from 'next-intl'
 
+import { useI18n } from '@/components/providers/i18n'
 import {
   Select,
   SelectContent,
@@ -13,11 +14,10 @@ import {
   type SelectTriggerProps,
 } from '@/components/ui/select'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
-import { i18n } from '@/lib/i18n'
+import { LOCALES, LOCALE_ITEMS } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
-type LanguageSelectItem = (typeof i18n.localeItems)[number] & {
+type LanguageSelectItem = (typeof LOCALE_ITEMS)[number] & {
   badge?: React.ReactNode
   status?: string | null
 }
@@ -30,7 +30,7 @@ export const LanguageSelect = ({
   onChange,
   status,
   value,
-  values = i18n.locales,
+  values = LOCALES,
   ...props
 }: Omit<SelectTriggerProps, 'onChange'> & {
   addLanguage?: (locale: Locale) => void

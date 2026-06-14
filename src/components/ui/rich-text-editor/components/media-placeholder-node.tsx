@@ -46,9 +46,9 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
 
   const { api } = useEditorPlugin(PlaceholderPlugin)
 
-  const { isUploading, progress, uploadFile, uploadedFile, uploadingFile } = useFileUpload()
+  const { isUploading, progress, uploadFile, uploadedFile, file } = useFileUpload()
 
-  const loading = isUploading && uploadingFile
+  const loading = isUploading && file
 
   const currentContent = CONTENT[element.mediaType]
 
@@ -56,18 +56,18 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
 
   const imageRef = useRef<HTMLImageElement>(null)
 
-  const replaceCurrentPlaceholder = (file: File) => {
-    void uploadFile(file)
-    api.placeholder.addUploadingFile(element.id as string, file)
+  const replaceCurrentPlaceholder = (value: File) => {
+    void uploadFile(value)
+    api.placeholder.addUploadingFile(element.id as string, value)
   }
 
   const { openFilePicker } = useFilePicker({
     accept: currentContent.accept,
     multiple: true,
     onFilesSelected: (data: { plainFiles?: unknown }) => {
-      const [file, rest] = data.plainFiles as [File, FileList]
+      const [placeholder, rest] = data.plainFiles as [File, FileList]
 
-      replaceCurrentPlaceholder(file)
+      replaceCurrentPlaceholder(placeholder)
 
       if (rest.length > 0) {
         editor.getTransforms(PlaceholderPlugin).insert.media(rest)
@@ -90,7 +90,7 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
         initialHeight: imageRef.current?.height,
         initialWidth: imageRef.current?.width,
         isUpload: true,
-        name: element.mediaType === KEYS.file ? (uploadingFile?.name ?? '') : '',
+        name: element.mediaType === KEYS.file ? (file?.name ?? '') : '',
         placeholderId: element.id as string,
         type: element.mediaType,
         url: uploadedFile.url,
@@ -102,31 +102,16 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
     })
 
     api.placeholder.removeUploadingFile(element.id as string)
-  }, [
-    uploadedFile,
-    uploadingFile?.name,
-    element.id,
-    api.placeholder.removeUploadingFile,
-    editor,
-    element,
-    api.placeholder,
-  ])
+  }, [file?.name, uploadedFile, editor, element, api.placeholder])
 
-  // React dev mode will call useEffect twice
   const isReplaced = useRef(false)
 
-  /** Paste and drop */
   useEffect(() => {
-    if (isReplaced.current) {
-      return
-    }
-
+    if (isReplaced.current) return
     isReplaced.current = true
-    const currentFiles = api.placeholder.getUploadingFile(element.id as string)
 
-    if (!currentFiles) {
-      return
-    }
+    const currentFiles = api.placeholder.getUploadingFile(element.id as string)
+    if (!currentFiles) return
 
     void uploadFile(currentFiles)
     api.placeholder.addUploadingFile(element.id as string, currentFiles)
@@ -141,14 +126,21 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
           )}
           contentEditable={false}
           onClick={() => !loading && openFilePicker()}
+          onKeyDown={e => {
+            if (e.key !== 'Enter' && e.key !== ' ') return
+            e.preventDefault()
+            if (!loading) openFilePicker()
+          }}
+          role="button"
+          tabIndex={0}
         >
           <div className="relative mr-3 flex text-muted-foreground/80 [&_svg]:size-6">{currentContent.icon}</div>
           <div className="text-sm whitespace-nowrap text-muted-foreground">
-            <div>{loading ? uploadingFile?.name : currentContent.content}</div>
+            <div>{loading ? file?.name : currentContent.content}</div>
 
             {loading && !isImage && (
               <div className="mt-1 flex items-center gap-1.5">
-                <div>{formatBytes(uploadingFile?.size ?? 0)}</div>
+                <div>{formatBytes(file?.size ?? 0)}</div>
                 <div>{'–'}</div>
                 <div className="flex items-center">
                   <Loader2Icon className="mr-1 size-3.5 animate-spin text-muted-foreground" />
@@ -161,7 +153,7 @@ export const PlaceholderElement = withHOC(PlaceholderProvider, (props: PlateElem
         </div>
       )}
 
-      {isImage && loading && <ImageProgress file={uploadingFile} imageRef={imageRef} progress={progress} />}
+      {isImage && loading && <ImageProgress file={file} imageRef={imageRef} progress={progress} />}
 
       {props.children}
     </PlateElement>

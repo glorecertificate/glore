@@ -579,6 +579,11 @@ const PureColorPicker = ({
 
 const ColorPicker = PureColorPicker
 
+const updateCustomColorDebounced = <T,>(callback: T) => {
+  const handler = setTimeout(() => callback, 100)
+  return () => clearTimeout(handler)
+}
+
 const ColorCustom = ({
   className,
   color,
@@ -614,10 +619,6 @@ const ColorCustom = ({
         },
       ]
     : customColors
-  const updateCustomColorDebounced = <T,>(callback: T) => {
-    const handler = setTimeout(() => callback, 100)
-    return () => clearTimeout(handler)
-  }
 
   return (
     <div className={cn('relative flex flex-col gap-4', className)} {...props}>

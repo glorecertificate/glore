@@ -9,9 +9,10 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import { checkSlugAvailable } from '@/actions/courses/management'
+import { useCourses } from '@/components/features/courses/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Form, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { IconPicker } from '@/components/ui/icon-picker'
@@ -23,7 +24,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useI18n } from '@/hooks/use-i18n'
 import { SLUG_REGEX } from '@/lib/constants'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -34,6 +34,15 @@ const courseSettingsSchema = z.object({
   skillGroupId: z.number().nullable(),
   slug: z.string(),
 })
+
+const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { value } = e.target
+  const slug = value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/gu, '-')
+    .replace(/-+/gu, '-')
+  onChange(slug)
+}
 
 export const CourseSettings = ({
   className,
@@ -82,11 +91,13 @@ export const CourseSettings = ({
       !SLUG_REGEX.test(debouncedSlug) ||
       course?.slug === debouncedSlug
     ) {
+      // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
       setSlugStatus('idle')
       return
     }
 
     let cancelled = false
+    // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change
     setSlugStatus('checking')
 
     const doCheck = async () => {
@@ -128,15 +139,6 @@ export const CourseSettings = ({
     if (form.formState.isSubmitting) return course ? t('savingChange') : t('creatingCourse')
     return course ? t('saveChanges') : t('createCourse')
   })()
-
-  const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target
-    const slug = value
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/gu, '-')
-      .replace(/-+/gu, '-')
-    onChange(slug)
-  }
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     try {

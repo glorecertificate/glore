@@ -13,10 +13,12 @@ export const useScroll = () => {
   const [scroll, setScroll] = useState(getScroll)
   const scrolled = scroll > 0
 
-  const onScrollRef = useRef(throttle(() => setScroll(getScroll()), 100))
+  const onScrollRef = useRef<ReturnType<typeof throttle> | undefined>(undefined)
+  onScrollRef.current ??= throttle(() => setScroll(getScroll()), 100)
 
   useEffect(() => {
     const handler = onScrollRef.current
+    if (!handler) return
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])

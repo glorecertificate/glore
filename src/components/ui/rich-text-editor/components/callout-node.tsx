@@ -4,8 +4,8 @@ import { useCalloutEmojiPicker } from '@platejs/callout/react'
 import { useEmojiDropdownMenuState } from '@platejs/emoji/react'
 import { PlateElement } from 'platejs/react'
 
-import { EmojiPicker, EmojiPopover } from '@/components/blocks/rich-text-editor/ui/emoji-toolbar-button'
 import { Button } from '@/components/ui/button'
+import { EmojiPicker, EmojiPopover } from '@/components/ui/rich-text-editor/components/emoji-toolbar-button'
 import { cn } from '@/lib/utils'
 
 const emojiFontFamilyStyle: React.CSSProperties = {

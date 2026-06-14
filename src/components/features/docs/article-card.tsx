@@ -3,10 +3,10 @@
 import { CalendarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { type DocArticle } from '@/db/queries/doc'
-import { useI18n } from '@/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 interface ArticleCardProps {

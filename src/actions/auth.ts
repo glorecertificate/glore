@@ -47,35 +47,21 @@ export const logout = async () => {
   revalidateTag(CacheTag.AuthUserStatus, 'max')
 }
 
-// const updateAuthUser = async (attributes: { name?: string; image?: string }) => {
-//   const session = await auth.api.getSession({ headers: await headers() })
-//   if (!session?.user) throw new Error('Not authenticated')
-
-//   await auth.api.updateUser({
-//     body: attributes,
-//     headers: await headers(),
-//   })
-
-//   revalidateTag(CacheTag.AuthUser, 'max')
-//   return session.user
-// }
-
-export const setAuthPassword = async (newPassword: string) => {
+export const setAuthPassword = async (value: string) => {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user) throw new Error('Not authenticated')
 
-  const ctx = await auth.$context
-  const passwordHash = await ctx.password.hash(newPassword)
-  const credential = (await ctx.internalAdapter.findAccounts(session.user.id)).find(
+  const { internalAdapter, password } = await auth.$context
+  const passwordHash = await password.hash(value)
+  const credential = (await internalAdapter.findAccounts(session.user.id)).find(
     account => account.providerId === 'credential' && account.password
   )
 
   if (credential) {
-    await ctx.internalAdapter.updatePassword(session.user.id, passwordHash)
-    return
+    return await internalAdapter.updatePassword(session.user.id, passwordHash)
   }
 
-  await ctx.internalAdapter.linkAccount({
+  await internalAdapter.linkAccount({
     accountId: session.user.id,
     providerId: 'credential',
     password: passwordHash,

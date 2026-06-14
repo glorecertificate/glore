@@ -1,7 +1,7 @@
 import { SlashInputPlugin, SlashPlugin } from '@platejs/slash-command/react'
 import { KEYS } from 'platejs'
 
-import { SlashInputElement } from '@/components/blocks/rich-text-editor/ui/slash-node'
+import { SlashInputElement } from '@/components/ui/rich-text-editor/components/slash-node'
 
 export const SlashKit = [
   SlashPlugin.configure({

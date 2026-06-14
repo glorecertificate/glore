@@ -14,7 +14,7 @@ import {
   InlineComboboxGroup,
   InlineComboboxInput,
   InlineComboboxItem,
-} from '@/components/blocks/rich-text-editor/ui/inline-combobox'
+} from '@/components/ui/rich-text-editor/components/inline-combobox'
 import { useDebounce } from '@/hooks/use-debounce'
 
 export const EmojiInputElement = (props: PlateElementProps) => {

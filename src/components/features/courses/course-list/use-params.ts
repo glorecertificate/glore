@@ -6,6 +6,8 @@ import { startTransition, useEffect, useRef } from 'react'
 import { type Locale } from 'next-intl'
 import { parseAsArrayOf, parseAsString, parseAsStringEnum, useQueryState } from 'nuqs'
 
+import { useCourses } from '@/components/features/courses/context'
+import { resolveCourseLanguage, useCourseLanguages } from '@/components/features/courses/course-languages'
 import {
   COURSE_LIST_EDITOR_TABS,
   COURSE_LIST_LEARNER_TABS,
@@ -17,21 +19,19 @@ import {
   type CourseListSortType,
   type CourseListTab,
 } from '@/components/features/courses/course-list/params'
-import { resolveCourseLanguage, useCourseLanguages } from '@/components/providers/course-languages-context'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { COURSE_TYPES, type Course } from '@/db/queries/course'
 import { type EnumType } from '@/db/types'
 import { useCookies } from '@/hooks/use-cookies'
-import { useI18n } from '@/hooks/use-i18n'
 import { useSearch } from '@/hooks/use-search'
-import { useSession } from '@/hooks/use-session'
-import { i18n, localizeRecord } from '@/lib/i18n'
+import { LOCALES, localizeRecord } from '@/lib/i18n'
 import { CamelCase, type Enum } from '@/lib/types'
 import { camelize, pluck } from '@/lib/utils'
 
 const tabParser = parseAsStringEnum(COURSE_LIST_TABS).withDefault('all')
 const typesParser = parseAsArrayOf(parseAsStringEnum(COURSE_TYPES)).withDefault([...COURSE_TYPES])
-const languagesParser = parseAsArrayOf(parseAsStringEnum(i18n.locales)).withDefault(i18n.locales)
+const languagesParser = parseAsArrayOf(parseAsStringEnum(LOCALES)).withDefault(LOCALES)
 const skillGroupsParser = parseAsArrayOf(parseAsString)
 const sortParser = parseAsStringEnum(COURSE_LIST_SORTS)
 const sortDirectionParser = parseAsStringEnum<CourseListSortDirection>(['asc', 'desc']).withDefault('asc')
@@ -104,7 +104,7 @@ export const useCourseListFilters = () => {
 
   const hasFilters =
     COURSE_TYPES.some(t => !activeTypes.includes(t)) ||
-    activeLanguages.length < i18n.locales.length ||
+    activeLanguages.length < LOCALES.length ||
     activeSkillGroups.length < skillGroups.length ||
     sort !== null ||
     searchValue.length > 0
@@ -197,7 +197,7 @@ export const useDisplayCourses = () => {
 
   const hasFilters =
     activeTypes.length < COURSE_TYPES.length ||
-    activeLanguages.length < i18n.locales.length ||
+    activeLanguages.length < LOCALES.length ||
     activeSkillGroups.length < skillGroups.length ||
     searching
 
@@ -209,7 +209,7 @@ export const useDisplayCourses = () => {
 
     let values = data.values()
 
-    if (activeLanguages.length < i18n.locales.length) {
+    if (activeLanguages.length < LOCALES.length) {
       values = values.filter(course => {
         if (course.publicationStatus === 'draft') return false
         if (!course.languages || course.languages.length === 0) return false

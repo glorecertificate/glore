@@ -3,8 +3,8 @@
 import { ChevronDownIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { useCourses } from '@/components/features/courses/context'
 import { useCourseListSkillGroups, useCourseListTypes } from '@/components/features/courses/course-list/use-params'
-import { useCourses } from '@/components/providers/courses-context'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

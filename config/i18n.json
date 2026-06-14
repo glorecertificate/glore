@@ -14,7 +14,7 @@
     }
   },
   "defaultLocale": "en",
-  "titleCaseLocales": ["en"],
+  "titleizedLocales": ["en"],
   "spokenLanguages": [
     "en",
     "es",

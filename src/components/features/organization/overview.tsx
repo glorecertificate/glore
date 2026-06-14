@@ -14,8 +14,8 @@ import {
 import { useTranslations } from 'next-intl'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
+import { useI18n } from '@/components/providers/i18n'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useI18n } from '@/hooks/use-i18n'
 
 export const OrganizationOverview = ({ data }: { data: OrganizationPanelData }) => {
   const { localize } = useI18n()

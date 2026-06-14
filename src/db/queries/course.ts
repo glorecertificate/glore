@@ -5,7 +5,7 @@ import { type LessonWithRelations, parseLesson } from '@/db/queries/lesson'
 import { type UserWithRelations, parseUser } from '@/db/queries/user'
 import { type courses, type skillGroups } from '@/db/schema'
 import { type EnumType } from '@/db/types'
-import { type IntlRecord, i18n } from '@/lib/i18n'
+import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
 type CourseRow = InferSelectModel<typeof courses>
 type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name'> | null
@@ -52,7 +52,7 @@ export const parseCourse = (course: CourseWithRelations) => {
     ? 'archived'
     : languages.length === 0
       ? 'draft'
-      : languages.length < i18n.locales.length
+      : languages.length < LOCALES.length
         ? 'partial'
         : 'published'
 

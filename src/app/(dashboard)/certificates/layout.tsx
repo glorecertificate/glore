@@ -1,13 +1,12 @@
 import { notFound } from 'next/navigation'
 
 import { getCurrentUser } from '@/actions/user'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'certificates',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'certificates',
+})
 
 const CertificatesLayout = async ({ children }: LayoutProps<'/certificates'>) => {
   const user = await getCurrentUser()

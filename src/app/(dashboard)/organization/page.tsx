@@ -10,13 +10,12 @@ import { OrganizationPanel } from '@/components/features/organization/panel'
 import { OrganizationTabs, OrganizationTabsList } from '@/components/features/organization/tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Organization',
-    title: 'title',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Organization',
+  title: 'title',
+})
 
 const OrganizationContent = async () => {
   const { data, error } = await getOrganizationPanel()

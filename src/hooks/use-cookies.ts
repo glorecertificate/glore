@@ -1,30 +1,26 @@
 import { COOKIE_OPTIONS, type CookieName, type CookieOptions, type CookieValue, prefixCookieName } from '@/lib/cookies'
 
 /**
- * Returns a custom cookie store providing methods to manage cookies in the browser.
+ * Provides a custom cookie store providing methods to manage cookies in the browser.
  */
 export const useCookies = () => ({
   delete(names: CookieName | CookieName[], options?: CookieOptions) {
     if (typeof document === 'undefined') return
-
-    for (const name of [names].flat()) {
+    const list: CookieName[] = Array.isArray(names) ? names : [names]
+    for (const name of list) {
       if (!this.has(name, options)) return
       document.cookie = `${prefixCookieName(name, options?.prefix)}=;`
     }
   },
   get<T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) {
     if (typeof document === 'undefined') return options?.fallback as CookieValue<T>
-
     const cookieKey = prefixCookieName(name, options?.prefix)
     const chunks = decodeURIComponent(document.cookie).split(';')
     let value: CookieValue<T> | string | undefined
-
     for (let chunk of chunks) {
       while (chunk.startsWith(' ')) chunk = chunk.substring(1)
       if (!chunk.startsWith(`${cookieKey}=`)) continue
-
       const text = chunk.substring(cookieKey.length + 1, chunk.length)
-
       try {
         value = JSON.parse(text)
       } catch {
@@ -32,12 +28,10 @@ export const useCookies = () => ({
       }
       break
     }
-
     return (value ?? options?.fallback) as CookieValue<T>
   },
   has(name: CookieName, options?: CookieOptions) {
     if (typeof document === 'undefined') return false
-
     return document.cookie.split(';').some(key => key.trim().startsWith(`${prefixCookieName(name, options?.prefix)}=`))
   },
   set<T extends CookieName>(
@@ -46,17 +40,14 @@ export const useCookies = () => ({
     options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
   ) {
     if (typeof document === 'undefined') return
-
     const { prefix, ...params } = { ...COOKIE_OPTIONS, ...options }
     const serializedValue = typeof value === 'string' ? value : JSON.stringify(value)
     const args = [`${prefixCookieName(name, prefix)}=${serializedValue}`]
-
     for (const [key, paramValue] of Object.entries(params)) {
       if (!paramValue) continue
       const paramName = key === 'maxAge' ? 'Max-Age' : key.charAt(0).toUpperCase() + key.slice(1)
       args.push(`${paramName}=${String(paramValue)}`)
     }
-
     document.cookie = args.join('; ')
   },
 })

@@ -9,12 +9,12 @@ import { toast } from 'sonner'
 
 import { selfAssignCertificate } from '@/actions/certificates/management'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
-import { useI18n } from '@/hooks/use-i18n'
 
 interface TutorCertificatesContentProps {
   assigned: Certificate[]

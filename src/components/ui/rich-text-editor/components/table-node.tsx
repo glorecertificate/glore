@@ -54,17 +54,6 @@ import {
   withHOC,
 } from 'platejs/react'
 
-import { blockSelectionVariants } from '@/components/blocks/rich-text-editor/ui/block-selection'
-import { ColorDropdownMenuItems, useColors } from '@/components/blocks/rich-text-editor/ui/font-color-toolbar-button'
-import { ResizeHandle } from '@/components/blocks/rich-text-editor/ui/resize-handle'
-import {
-  BorderAllIcon,
-  BorderBottomIcon,
-  BorderLeftIcon,
-  BorderNoneIcon,
-  BorderRightIcon,
-  BorderTopIcon,
-} from '@/components/blocks/rich-text-editor/ui/table-icons'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -76,6 +65,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
+import { blockSelectionVariants } from '@/components/ui/rich-text-editor/components/block-selection'
+import {
+  ColorDropdownMenuItems,
+  useColors,
+} from '@/components/ui/rich-text-editor/components/font-color-toolbar-button'
+import { ResizeHandle } from '@/components/ui/rich-text-editor/components/resize-handle'
+import {
+  BorderAllIcon,
+  BorderBottomIcon,
+  BorderLeftIcon,
+  BorderNoneIcon,
+  BorderRightIcon,
+  BorderTopIcon,
+} from '@/components/ui/rich-text-editor/components/table-icons'
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarMenuGroup } from '@/components/ui/toolbar'
 import { cn } from '@/lib/utils'
 

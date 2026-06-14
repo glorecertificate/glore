@@ -1,14 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { claimCertificateReview, reviewCertificate } from '@/actions/certificates/management'
+import { reviewCertificate } from '@/actions/certificates/management'
 import { type ReviewCertificateValues, reviewCertificateSchema } from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -52,12 +51,6 @@ export const ReviewForm = ({ certificate, onOpenChange, open }: ReviewFormProps)
 
   const action = form.watch('action')
   const isSubmitting = form.formState.isSubmitting
-
-  useEffect(() => {
-    if (open && certificate.isSubmitted) {
-      void claimCertificateReview(certificate.id)
-    }
-  }, [certificate.id, certificate.isSubmitted, open])
 
   const onSubmit = async (values: ReviewCertificateValues) => {
     const { error } = await reviewCertificate(certificate.id, values)

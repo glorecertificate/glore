@@ -3,6 +3,7 @@
 import { type Locale, useTranslations } from 'next-intl'
 
 import { useCourseListLanguages } from '@/components/features/courses/course-list/use-params'
+import { useI18n } from '@/components/providers/i18n'
 import {
   MultiSelect,
   MultiSelectBadge,
@@ -10,8 +11,7 @@ import {
   MultiSelectItem,
   MultiSelectTrigger,
 } from '@/components/ui/multi-select'
-import { useI18n } from '@/hooks/use-i18n'
-import { i18n } from '@/lib/i18n'
+import { LOCALES } from '@/lib/i18n'
 
 export const CourseListLanguageSelect = () => {
   const { localeItems } = useI18n()
@@ -25,7 +25,7 @@ export const CourseListLanguageSelect = () => {
       label={t('language')}
       min={1}
       onChange={(languages: string[]) => setActiveLanguages(languages as Locale[])}
-      options={i18n.locales}
+      options={LOCALES}
       value={activeLanguages}
     >
       <MultiSelectTrigger position="start">

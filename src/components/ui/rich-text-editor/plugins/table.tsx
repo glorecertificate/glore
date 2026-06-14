@@ -5,7 +5,7 @@ import {
   TableCellHeaderElement,
   TableElement,
   TableRowElement,
-} from '@/components/blocks/rich-text-editor/ui/table-node'
+} from '@/components/ui/rich-text-editor/components/table-node'
 
 export const TableKit = [
   TablePlugin.withComponent(TableElement),

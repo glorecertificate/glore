@@ -1,13 +1,12 @@
 import { UserSettings } from '@/components/features/users/user-settings'
 import { UserSettingsTabs, UserSettingsTabsList } from '@/components/features/users/user-settings-tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'settings',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'settings',
+})
 
 const SettingsPage = () => (
   <UserSettingsTabs>

@@ -3,6 +3,7 @@
 import { ArchiveIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { CourseLanguagesProvider } from '@/components/features/courses/course-languages'
 import { type CourseListTab } from '@/components/features/courses/course-list/params'
 import {
   useCourseList,
@@ -10,7 +11,6 @@ import {
   useCourseListTab,
   useCourseListTabs,
 } from '@/components/features/courses/course-list/use-params'
-import { CourseLanguagesProvider } from '@/components/providers/course-languages-context'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { camelize, cn } from '@/lib/utils'

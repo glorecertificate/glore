@@ -22,7 +22,7 @@ import { applyCertificateReview, createCertificateWithSkills } from '@/db/mutati
 import { certificates, memberships, users } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
-import { i18n } from '@/lib/i18n'
+import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
 
@@ -75,7 +75,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     const skillNames = skillsToMap.map(s => {
       if (!s.course.title) return s.course.slug
       const titleMap = s.course.title as Record<string, string>
-      return titleMap[cert.language] ?? titleMap[i18n.defaultLocale] ?? s.course.slug
+      return titleMap[cert.language] ?? titleMap[DEFAULT_LOCALE] ?? s.course.slug
     })
 
     let documentUrl: string | undefined

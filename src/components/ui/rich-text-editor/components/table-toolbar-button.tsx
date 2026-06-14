@@ -232,6 +232,14 @@ const TablePicker = () => {
         tf.insert.table(tablePicker.size, { select: true })
         editor.tf.focus()
       }}
+      onKeyDown={e => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault()
+        tf.insert.table(tablePicker.size, { select: true })
+        editor.tf.focus()
+      }}
+      role="button"
+      tabIndex={0}
     >
       <div className="grid size-32.5 grid-cols-8 gap-0.5 p-1">
         {tablePicker.grid.map((rows, rowIndex) =>

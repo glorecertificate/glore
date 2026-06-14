@@ -1,12 +1,8 @@
 'use client'
 
 const setRef = <T>(ref: React.Ref<T> | undefined, value: T) => {
-  if (typeof ref === 'function') {
-    return ref(value)
-  }
-  if (ref !== null && ref !== undefined) {
-    ref.current = value
-  }
+  if (typeof ref === 'function') return ref(value)
+  if (ref !== null && ref !== undefined) ref.current = value
 }
 
 /**

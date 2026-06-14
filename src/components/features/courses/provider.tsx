@@ -1,5 +1,5 @@
 import { listCourses, listSkillGroups } from '@/actions/courses/queries'
-import { CoursesContextProvider } from '@/components/providers/courses-context'
+import { CoursesContextProvider } from '@/components/features/courses/context'
 
 export const CoursesProvider = async ({ children }: React.PropsWithChildren) => {
   const [{ data: courses, error: coursesError }, skillGroups] = await Promise.all([listCourses(), listSkillGroups()])

@@ -11,58 +11,38 @@ export const config: ProxyConfig = {
   ],
 }
 
-const isCertificatePage = (pathname: string) =>
-  /^\/[a-zA-Z0-9.]+$/u.test(pathname) && !DASHBOARD_ROOTS.some(r => pathname.startsWith(r))
+const isPublicPath = (pathname: string) =>
+  pathname === AUTH_ROOT ||
+  pathname === REGISTER_ROOT ||
+  pathname.startsWith(JOIN_ROOT) ||
+  (!DASHBOARD_ROOTS.some(root => pathname.startsWith(root)) && /^\/[a-zA-Z0-9.]+$/u.test(pathname))
+
+const expireSession = (request: Request) => {
+  const url = new URL(AUTH_ROOT, request.url)
+  if (request.headers.get('cookie')?.includes('session_token')) {
+    url.searchParams.set('expired', 'true')
+  }
+  return NextResponse.redirect(url)
+}
 
 export const proxy: NextProxy = async request => {
-  const { headers: reqHeaders, nextUrl } = request
-  const response = NextResponse.next({ request: { headers: reqHeaders } })
-
-  const isPublicPath =
-    nextUrl.pathname === AUTH_ROOT ||
-    nextUrl.pathname === REGISTER_ROOT ||
-    nextUrl.pathname.startsWith(JOIN_ROOT) ||
-    isCertificatePage(nextUrl.pathname)
-
-  const expiredRedirect = () => {
-    const url = new URL(AUTH_ROOT, request.url)
-    if (reqHeaders.get('cookie')?.includes('session_token')) {
-      url.searchParams.set('expired', 'true')
-    }
-    return NextResponse.redirect(url)
-  }
+  const { headers, nextUrl } = request
+  const response = NextResponse.next({ request: { headers } })
+  const isPublic = isPublicPath(nextUrl.pathname)
+  const isOnboarding = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
 
   try {
-    const session = await auth.api.getSession({ headers: reqHeaders })
+    const session = await auth.api.getSession({ headers })
 
-    if (!session?.user) {
-      if (isPublicPath) return response
-      return expiredRedirect()
-    }
-
-    if (session.user.banned) {
-      return expiredRedirect()
-    }
-
-    if (nextUrl.pathname === AUTH_ROOT) {
-      return NextResponse.redirect(new URL(APP_ROOT, request.url))
-    }
-
-    const onboardingComplete = !!session.user.onboardedAt
-    const isOnboardingPath = nextUrl.pathname.startsWith(ONBOARDING_ROOT)
-
-    if (!(onboardingComplete || isOnboardingPath)) {
-      return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
-    }
-
-    if (onboardingComplete && isOnboardingPath) {
-      return NextResponse.redirect(new URL(APP_ROOT, request.url))
-    }
+    if (!session?.user) return isPublic ? response : expireSession(request)
+    if (session.user.banned) return expireSession(request)
+    if (nextUrl.pathname === AUTH_ROOT) return NextResponse.redirect(new URL(APP_ROOT, request.url))
+    if (!(session.user.onboardedAt || isOnboarding)) return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
+    if (session.user.onboardedAt && isOnboarding) return NextResponse.redirect(new URL(APP_ROOT, request.url))
 
     return response
   } catch {
-    if (isPublicPath) return response
-
-    return expiredRedirect()
+    if (isPublic) return response
+    return expireSession(request)
   }
 }

@@ -11,6 +11,7 @@ import {
   type CourseListSortType,
 } from '@/components/features/courses/course-list/params'
 import { useCourseListSort, useCourseListTab } from '@/components/features/courses/course-list/use-params'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -19,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
 export const CourseListSort = () => {

@@ -3,13 +3,13 @@
 import { BookOpenIcon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useFormatter, useNow, useTranslations } from 'next-intl'
 
+import { useCourses } from '@/components/features/courses/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
 import { AreaChart } from '@/components/ui/area-chart'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { useI18n } from '@/hooks/use-i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 

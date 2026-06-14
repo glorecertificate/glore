@@ -9,6 +9,8 @@ import { toast } from 'sonner'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { Badge } from '@/components/ui/badge'
 import { BreadcrumbItem, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { HeaderBreadcrumb } from '@/components/ui/header'
@@ -18,8 +20,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn, debounce } from '@/lib/utils'
@@ -37,17 +37,13 @@ export const CourseBreadcrumb = () => {
 
   const title = localizeRecord(course.title, language)
   const description = course.description ? localizeRecord(course.description, language) : ''
-  const [draftTitle, setDraftTitle] = useState(title)
+  const [editingTitle, setEditingTitle] = useState<string | null>(null)
   const [draftDescription, setDraftDescription] = useState(description)
-  const [titleFocused, setTitleFocused] = useState(false)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const canEdit = user.canEdit && !course.archivedAt
 
-  useEffect(() => {
-    if (!titleFocused) {
-      setDraftTitle(title)
-    }
-  }, [title, titleFocused])
+  const titleFocused = editingTitle !== null
+  const draftTitle = editingTitle ?? title
 
   useEffect(() => {
     if (document.activeElement !== descriptionRef.current) {
@@ -82,23 +78,21 @@ export const CourseBreadcrumb = () => {
     if (e.target.value.length > MAX_TITLE_LENGTH) {
       toast.warning(t('titleTooLong'))
     }
-    setDraftTitle(value)
+    setEditingTitle(value)
     commitTitle(value)
   }
 
-  const onTitleFocus = () => setTitleFocused(true)
+  const onTitleFocus = () => setEditingTitle(title)
 
   const onTitleBlur = () => {
     commitTitle.cancel()
-    setTitleFocused(false)
-    const trimmed = draftTitle.trim()
-    if (trimmed === '' || trimmed === title) {
-      if (trimmed === '') setDraftTitle(title)
-      return
-    }
+    const value = editingTitle ?? title
+    setEditingTitle(null)
+    const trimmed = value.trim()
+    if (trimmed === '' || trimmed === title) return
     setCourse(prev => ({
       ...prev,
-      title: { ...prev.title, [language]: draftTitle } as IntlRecord,
+      title: { ...prev.title, [language]: value } as IntlRecord,
     }))
   }
 

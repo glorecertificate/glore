@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
+import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
-import { useSession } from '@/hooks/use-session'
 
 import { OrganizationJoinRequests } from './join-requests'
 import { OrganizationMembers } from './members'

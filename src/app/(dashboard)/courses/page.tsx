@@ -6,13 +6,12 @@ import { CourseListHeader } from '@/components/features/courses/course-list/head
 import { CourseListSkeleton } from '@/components/features/courses/course-list/skeleton'
 import { CourseListTabs } from '@/components/features/courses/course-list/tabs'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'courses',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'courses',
+})
 
 const CoursesPage = async ({ searchParams }: PageProps<'/courses'>) => {
   if (Object.keys(await searchParams).length === 0) {

@@ -9,9 +9,9 @@ import { CourseListGroupSelect } from '@/components/features/courses/course-list
 import { CourseListSort } from '@/components/features/courses/course-list/sort'
 import { CourseListTabsList } from '@/components/features/courses/course-list/tabs'
 import { CourseListTypeSelect } from '@/components/features/courses/course-list/type-select'
+import { useSession } from '@/components/providers/session'
 import { Header, HeaderBreadcrumb, HeaderTrigger } from '@/components/ui/header'
 import { SearchInput } from '@/components/ui/search'
-import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 
 export const CourseListHeader = ({ className, ...props }: React.ComponentProps<typeof Header>) => {

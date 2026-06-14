@@ -31,6 +31,15 @@ const loadIconData = async () => {
   return (cachedIcons = (icons as IconData[]).filter(icon => icon.name in dynamicIconImports))
 }
 
+const getVirtualItemStyle = (virtualItem: VirtualItem) => ({
+  height: `${virtualItem.size}px`,
+  left: 0,
+  position: 'absolute' as const,
+  top: 0,
+  transform: `translateY(${virtualItem.start}px)`,
+  width: '100%',
+})
+
 export const useIconData = () => {
   const [icons, setIcons] = useState<IconData[]>(cachedIcons ?? [])
   const [loading, setLoading] = useState(!cachedIcons)
@@ -95,7 +104,7 @@ export const IconPicker = ({
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 100)
   const [selectedIcon, setSelectedIcon] = useState<IconName | undefined>(defaultValue)
-  const [openState, setIsOpen] = useState(defaultOpen)
+  const [openState, setOpenState] = useState(defaultOpen)
   const [loading, setLoading] = useState(true)
   const fuseRef = useRef<typeof Fuse | null>(null)
 
@@ -205,15 +214,6 @@ export const IconPicker = ({
     paddingEnd: 2,
   })
 
-  const getVirtualItemStyle = (virtualItem: VirtualItem) => ({
-    height: `${virtualItem.size}px`,
-    left: 0,
-    position: 'absolute' as const,
-    top: 0,
-    transform: `translateY(${virtualItem.start}px)`,
-    width: '100%',
-  })
-
   const handleValueChange = (icon: IconName) => {
     if (value === undefined) setSelectedIcon(icon)
     onValueChange?.(icon)
@@ -221,7 +221,7 @@ export const IconPicker = ({
 
   const handleOpenChange = (newOpen: boolean) => {
     setSearch('')
-    if (open === undefined) setIsOpen(newOpen)
+    if (open === undefined) setOpenState(newOpen)
     onOpenChange?.(newOpen)
 
     if (!newOpen) {
@@ -249,7 +249,7 @@ export const IconPicker = ({
 
   const handleIconClick = (iconName: string) => () => {
     handleValueChange(iconName as IconName)
-    setIsOpen(false)
+    setOpenState(false)
     setSearch('')
   }
 

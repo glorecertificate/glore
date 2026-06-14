@@ -2,12 +2,12 @@ import { CheckCircleIcon, MessageCircleQuestionIcon, XCircleIcon } from 'lucide-
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Markdown } from '@/components/ui/markdown'
 import { type Question, type QuestionOption } from '@/db/queries/lesson'
-import { useI18n } from '@/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 const CourseQuestion = ({

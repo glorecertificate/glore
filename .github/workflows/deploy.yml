@@ -11,19 +11,19 @@ on:
       VERCEL_TOKEN:
         required: true
 
+concurrency:
+  group: deploy-${{ inputs.environment }}
+  cancel-in-progress: false
+
 env:
   NEXT_TELEMETRY_DISABLED: 1
   VERCEL_TELEMETRY_DISABLED: 1
   VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
 
-concurrency:
-  group: deploy-${{ inputs.environment }}
-  cancel-in-progress: false
-
 jobs:
   deploy:
-    name: Deploy to ${{ inputs.environment }}
+    name: Deploy ${{ inputs.environment }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -52,7 +52,7 @@ jobs:
             nextjs-${{ runner.os }}-
       - name: Install dependencies
         run: pnpm install --dev --frozen-lockfile --ignore-scripts
-      - name: Pull Vercel environment
+      - name: Pull environment
         run: pnpm exec vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build project artifacts
         run: |

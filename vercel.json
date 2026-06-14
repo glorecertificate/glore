@@ -1,8 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "NEXT_TELEMETRY_DISABLED=1 next build",
   "ignoreCommand": "if [[ $VERCEL_GIT_COMMIT_AUTHOR_LOGIN == 'dependabot[bot]' ]] || [[ $VERCEL_GIT_COMMIT_MESSAGE == 'chore(release)'* ]]; then exit 0; else exit 1; fi",
   "cleanUrls": true,
   "trailingSlash": false,

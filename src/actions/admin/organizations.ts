@@ -37,9 +37,10 @@ import {
 } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
+import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
-import { i18n } from '@/lib/i18n'
-import { r2Delete, r2Put } from '@/lib/storage'
+import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
 
 const loadOrganizations = () =>
   safeQuery(async () => {
@@ -154,7 +155,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
             email: request.email,
             firstName: request.firstName,
             lastName: request.lastName ?? undefined,
-            locale: request.locale ?? i18n.defaultLocale,
+            locale: request.locale ?? DEFAULT_LOCALE,
             name: [request.firstName, request.lastName].filter(Boolean).join(' '),
             password: randomBytes(16).toString('hex'),
           },
@@ -324,7 +325,7 @@ export const inviteOrganization = async ({
             email: registrantEmail.trim().toLowerCase(),
             firstName: firstName.trim(),
             lastName: lastName?.trim() ?? undefined,
-            locale: locale ?? i18n.defaultLocale,
+            locale: locale ?? DEFAULT_LOCALE,
             name: [firstName, lastName].filter(Boolean).join(' '),
             password: randomBytes(16).toString('hex'),
           },
@@ -521,35 +522,39 @@ export const updateAdminOrganization = async (
   return result
 }
 
-export const uploadAdminOrganizationAvatar = async (organizationId: number, formData: FormData) => {
+export const createAdminOrganizationAvatarUploadUrl = async (organizationId: number, contentType: string) => {
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Forbidden' }
+  if (!AVATAR_CONTENT_TYPES.includes(contentType)) return { error: 'Invalid image type' }
 
-  const file = formData.get('file') as File
+  const ext = contentType.split('/')[1]
+  const key = `organizations/${organizationId}-${Date.now()}.${ext}`
+  const url = await r2PresignPut(key, contentType)
+
+  return { data: { key, url } }
+}
+
+export const confirmAdminOrganizationAvatar = async (organizationId: number, key: string) => {
+  const currentUser = await getCurrentUser()
+  if (!currentUser.isAdmin) return { error: 'Forbidden' }
+  if (!key.startsWith(`organizations/${organizationId}-`)) return { error: 'Invalid key' }
 
   const result = await safeQuery(async () => {
-    if (!file) {
-      throw new Error('No file uploaded')
-    }
-
-    const [current, url] = await Promise.all([
-      db.query.organizationProfiles.findFirst({
-        columns: { avatarUrl: true },
-        where: eq(organizationProfiles.organizationId, organizationId),
-      }),
-      r2Put(`organizations/${organizationId}-${Date.now()}.png`, file, 'image/png'),
-    ])
+    const current = await db.query.organizationProfiles.findFirst({
+      columns: { avatarUrl: true },
+      where: eq(organizationProfiles.organizationId, organizationId),
+    })
 
     await db
       .insert(organizationProfiles)
-      .values({ avatarUrl: url, organizationId })
-      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: url } })
+      .values({ avatarUrl: r2Url(key), organizationId })
+      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: r2Url(key) } })
 
     if (current?.avatarUrl) {
       await r2Delete(current.avatarUrl).catch(() => null)
     }
 
-    return { avatarUrl: url }
+    return { avatarUrl: r2Url(key) }
   })
 
   if (!result.error) revalidateTag(CacheTag.Organizations, 'max')

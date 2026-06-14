@@ -6,13 +6,15 @@ import { type SyntheticEvent, useRef, useState } from 'react'
 
 import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useDropzone } from 'react-dropzone'
+import { type FileRejection, useDropzone } from 'react-dropzone'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
+import app from '~/config/app.json'
 
 const cropImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
   const canvas = document.createElement('canvas')
@@ -88,13 +90,20 @@ export const ImageCropper = ({
     setOpen(true)
   }
 
+  const onDropRejected = (rejections: FileRejection[]) => {
+    const tooLarge = rejections.some(rejection => rejection.errors.some(error => error.code === 'file-too-large'))
+    if (tooLarge) toast.error(t('avatarTooLarge', { size: app.maxAvatarSize / 1024 }))
+  }
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       'image/*': ['.png', '.jpg', '.jpeg', '.webp'],
     },
     disabled,
     maxFiles: 1,
+    maxSize: app.maxAvatarSize * 1024,
     onDrop,
+    onDropRejected,
   })
 
   const onImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
@@ -185,7 +194,7 @@ export const ImageCropper = ({
     <>
       <div className="flex items-center gap-4">
         <div className="group relative size-24 shrink-0">
-          <Avatar className="size-24 rounded-2xl border shadow-2xs ring-0 ring-brand/20 transition-all group-hover:ring-4">
+          <Avatar className="size-24 rounded-2xl border shadow-2xs ring-0 ring-ring/20 transition-all group-hover:ring-4">
             <AvatarImage className="object-cover" src={value || undefined} />
             <AvatarFallback className="bg-muted/40 text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
           </Avatar>
@@ -220,6 +229,10 @@ export const ImageCropper = ({
               {t('remove')}
             </Button>
           )}
+
+          <p className="text-[13px] leading-snug text-muted-foreground">
+            {t('maxSize', { size: app.maxAvatarSize / 1024 })}
+          </p>
         </div>
       </div>
 

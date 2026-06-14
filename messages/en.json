@@ -712,8 +712,10 @@
       "systemTitle": "Switch to system theme"
     },
     "ImageCropper": {
+      "avatarTooLarge": "Please upload a picture smaller than {size} MB",
       "cancel": "Cancel",
       "changeAvatar": "Update avatar",
+      "maxSize": "Max {size} MB",
       "remove": "Remove",
       "saveAvatar": "Save avatar",
       "uploadAvatar": "Upload avatar"

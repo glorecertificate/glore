@@ -11,11 +11,14 @@ import { type z } from 'zod'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import {
+  confirmOrganizationAvatar,
+  createOrganizationAvatarUploadUrl,
   deleteOrganization,
   removeOrganizationAvatar,
   updateOrganization,
-  uploadOrganizationAvatar,
 } from '@/actions/organizations/settings'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,8 +39,6 @@ import { PhoneInput } from '@/components/ui/phone-input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { type User } from '@/db/queries/user'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 import { defaultFormDisabled } from '@/lib/utils'
 
 import { organizationSettingsSchema } from './schemas'
@@ -159,10 +160,20 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
   }
 
   const handleAvatarUpload = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
+    const { data: presign, error: presignError } = await createOrganizationAvatarUploadUrl(file.type)
 
-    const { data: result, error } = await uploadOrganizationAvatar(formData)
+    if (presignError || !presign) {
+      toast.error(presignError?.message ?? t('avatarUploadError'))
+      return
+    }
+
+    const res = await fetch(presign.url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
+    if (!res.ok) {
+      toast.error(t('avatarUploadError'))
+      return
+    }
+
+    const { data: result, error } = await confirmOrganizationAvatar(presign.key)
 
     if (error || !result) {
       toast.error(error?.message ?? t('avatarUploadError'))

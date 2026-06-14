@@ -14,7 +14,8 @@ import {
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { certificates, organizationProfiles, organizations } from '@/db/schema'
-import { r2Delete, r2Put } from '@/lib/storage'
+import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
+import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
 
 export const updateOrganization = async ({
   address,
@@ -115,35 +116,53 @@ export const updateOrganization = async ({
   })
 }
 
-export const uploadOrganizationAvatar = async (formData: FormData) => {
-  const file = formData.get('file') as File
-  const { organization, role, user } = await getOrganizationContext()
+export const createOrganizationAvatarUploadUrl = async (contentType: string) => {
+  const { organization, role } = await getOrganizationContext()
 
   return await safeQuery(async () => {
-    if (!file) {
-      throw new Error('No file uploaded')
-    }
-
     if (!organization?.id) {
       throw new Error('No active organization found')
     }
 
     assertOrganizationAdmin(role)
 
-    const [current, url] = await Promise.all([
-      db.query.organizationProfiles.findFirst({
-        columns: { avatarUrl: true },
-        where: eq(organizationProfiles.organizationId, organization.id),
-      }),
-      r2Put(`organizations/${organization.id}-${Date.now()}.png`, file, 'image/png'),
-    ])
+    if (!AVATAR_CONTENT_TYPES.includes(contentType)) {
+      throw new Error('Invalid image type')
+    }
+
+    const ext = contentType.split('/')[1]
+    const key = `organizations/${organization.id}-${Date.now()}.${ext}`
+    const url = await r2PresignPut(key, contentType)
+
+    return { key, url }
+  })
+}
+
+export const confirmOrganizationAvatar = async (key: string) => {
+  const { organization, role, user } = await getOrganizationContext()
+
+  return await safeQuery(async () => {
+    if (!organization?.id) {
+      throw new Error('No active organization found')
+    }
+
+    assertOrganizationAdmin(role)
+
+    if (!key.startsWith(`organizations/${organization.id}-`)) {
+      throw new Error('Invalid key')
+    }
+
+    const current = await db.query.organizationProfiles.findFirst({
+      columns: { avatarUrl: true },
+      where: eq(organizationProfiles.organizationId, organization.id),
+    })
 
     await db
       .insert(organizationProfiles)
-      .values({ avatarUrl: url, organizationId: organization.id })
+      .values({ avatarUrl: r2Url(key), organizationId: organization.id })
       .onConflictDoUpdate({
         target: organizationProfiles.organizationId,
-        set: { avatarUrl: url },
+        set: { avatarUrl: r2Url(key) },
       })
 
     if (current?.avatarUrl) {

@@ -1,20 +1,21 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useState } from 'react'
 
 import { BookOpenIcon, GraduationCapIcon, LibraryIcon, PlayIcon, PlusIcon, TrendingUpIcon } from 'lucide-react'
 import { useFormatter, useTranslations } from 'next-intl'
 
+import { useCourses } from '@/components/features/courses/context'
 import { CourseAnalytics } from '@/components/features/dashboard/analytics'
 import { PersonalProgress } from '@/components/features/dashboard/progress'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { type GlobeColorOptions } from '@/components/ui/globe'
 import { Link } from '@/components/ui/link'
 import { Sparkline } from '@/components/ui/sparkline'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 import { useTheme } from '@/hooks/use-theme'
 import { cn, hexToRgb } from '@/lib/utils'
 import theme from '~/config/theme.json'
@@ -87,7 +88,7 @@ export const DashboardContent = () => {
 
   const resumeCourse = courses.find(c => c.enrolled && c.progressStatus === 'inProgress')
 
-  const now = Date.now()
+  const [now] = useState(() => Date.now())
 
   const heroAction = user.canEdit
     ? { icon: PlusIcon, label: t('newCourse') }
@@ -170,12 +171,12 @@ export const DashboardContent = () => {
   return (
     <div className="flex flex-col gap-8 pt-6 pb-10">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl border bg-gradient-to-br from-brand/8 via-card to-card p-6 shadow-2xs sm:p-7">
+      <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-card p-6 shadow-2xs sm:p-7">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-24 -right-20 opacity-25 select-none sm:-top-28 sm:-right-24 sm:opacity-30"
         >
-          <Globe className="size-80 sm:size-[28rem]" {...globeColorOptions} />
+          <Globe className="size-80 sm:size-112" {...globeColorOptions} />
         </div>
         <div className="relative z-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
           <div className="flex flex-col gap-1.5">

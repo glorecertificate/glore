@@ -5,7 +5,7 @@ export const organizationSettingsSchema = z.object({
   city: z.string().min(1),
   country: z.string(),
   description: z.string(),
-  email: z.string().email(),
+  email: z.email(),
   name: z.string().min(1),
   phone: z.string(),
   postcode: z.string(),

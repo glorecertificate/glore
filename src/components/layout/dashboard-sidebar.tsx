@@ -28,6 +28,7 @@ import { toast } from 'sonner'
 import { logout } from '@/actions/auth'
 import { DashboardIcon } from '@/components/icons/dashboard'
 import { SearchCommand } from '@/components/layout/search-command'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -70,7 +71,6 @@ import {
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
-import { useSession } from '@/hooks/use-session'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'

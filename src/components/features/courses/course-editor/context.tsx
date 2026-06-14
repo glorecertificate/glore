@@ -21,7 +21,7 @@ import { COURSE_PARAMS } from '@/components/features/courses/course-editor/param
 import { type Course } from '@/db/queries/course'
 import { Lesson, parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
-import { type IntlRecord, i18n } from '@/lib/i18n'
+import { type IntlRecord, LOCALES } from '@/lib/i18n'
 import { messages } from '~/config/i18n.json'
 
 interface CourseProviderOptions {
@@ -97,10 +97,7 @@ const ensureLesson = (course: Course): Course => {
   const defaultLesson = parseLesson({
     id: Date.now(),
     title: messages.defaultLessonTitle,
-    content: i18n.locales.reduce(
-      (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
-      {} as IntlRecord
-    ),
+    content: LOCALES.reduce((content, locale) => ({ ...content, [locale]: defaultLessonContent }), {} as IntlRecord),
     sortOrder: 1,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -116,24 +113,20 @@ const ensureLesson = (course: Course): Course => {
 const useCourseProvider = (options: CourseProviderOptions) => {
   const [language, setLanguage] = useQueryState(
     COURSE_PARAMS.LANGUAGE,
-    parseAsStringEnum(i18n.locales).withOptions(paramOptions).withDefault(options.language)
+    parseAsStringEnum(LOCALES).withOptions(paramOptions).withDefault(options.language)
   )
 
   const [step, setStep] = useQueryState(
     COURSE_PARAMS.STEP,
     parseAsInteger.withOptions(paramOptions).withDefault(options.step)
   )
-
-  const courseRef = useRef(structuredClone(ensureLesson(options.course)))
+  const [initialCourse] = useState(() => structuredClone(ensureLesson(options.course)))
+  const courseRef = useRef(initialCourse)
   const [course, setCourse] = useState(() => ensureLesson(options.course))
-
-  // Bumped after a save so the derived status recomputes from the updated baseline ref.
   const [, setSaveVersion] = useState(0)
 
-  // Stable ref to current course for callbacks that shouldn't re-create on every edit
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
-
   const contentFlushRef = useRef<(() => void) | null>(null)
 
   const currentLesson = {
@@ -142,7 +135,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     isLast: step === course.lessons.length,
   }
 
-  const status = i18n.locales.reduce(
+  const status = LOCALES.reduce(
     (courseState, locale) => {
       const published = !!course.languages?.includes(locale)
 
@@ -607,10 +600,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
     const lessonData = {
       id: Date.now(),
       title: messages.defaultLessonTitle,
-      content: i18n.locales.reduce(
-        (content, locale) => ({ ...content, [locale]: defaultLessonContent }),
-        {} as IntlRecord
-      ),
+      content: LOCALES.reduce((content, locale) => ({ ...content, [locale]: defaultLessonContent }), {} as IntlRecord),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       assessment: null,

@@ -6,13 +6,12 @@ import { listDocCategories } from '@/actions/doc'
 import { DocsList } from '@/components/features/docs/docs-list'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Layout',
-    title: 'docs',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Layout',
+  title: 'docs',
+})
 
 const DocsPageContent = async () => {
   const [user, { data: categories }, t] = await Promise.all([
@@ -23,22 +22,18 @@ const DocsPageContent = async () => {
   const canEdit = user?.role === 'admin' || Boolean(user?.isEditor)
   const allCategories = categories ?? []
 
-  return (
-    <>
-      {allCategories.length === 0 ? (
-        <Empty className="border">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <BookOpenIcon />
-            </EmptyMedia>
-            <EmptyTitle>{t('noCategories')}</EmptyTitle>
-            <EmptyDescription>{t('noCategoriesDescription')}</EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      ) : (
-        <DocsList canEdit={canEdit} categories={allCategories} />
-      )}
-    </>
+  return allCategories.length === 0 ? (
+    <Empty className="border">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <BookOpenIcon />
+        </EmptyMedia>
+        <EmptyTitle>{t('noCategories')}</EmptyTitle>
+        <EmptyDescription>{t('noCategoriesDescription')}</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  ) : (
+    <DocsList canEdit={canEdit} categories={allCategories} />
   )
 }
 

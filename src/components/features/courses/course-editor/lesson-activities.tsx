@@ -4,14 +4,14 @@ import { CheckIcon, ClipboardListIcon, MessageCircleQuestionIcon, PlusIcon, Star
 import { type Locale, useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { type Course } from '@/db/queries/course'
 import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
-import { useSession } from '@/hooks/use-session'
-import { type IntlRecord, intlPlaceholder } from '@/lib/i18n'
+import { INTL_PLACEHOLDER, type IntlRecord } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
 const ActivityItem = ({
@@ -186,7 +186,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
     const now = Date.now()
     const question = {
       id: now,
-      description: intlPlaceholder,
+      description: INTL_PLACEHOLDER,
       explanation: null,
       answered: false,
       options: [
@@ -211,7 +211,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
   const addEvaluation = () => {
     const evaluation = {
       id: Date.now() + 1,
-      description: intlPlaceholder,
+      description: INTL_PLACEHOLDER,
     } as Evaluation
     setCourse(prev => ({
       ...prev,
@@ -224,7 +224,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
   const addAssessment = () => {
     const assessment = {
       id: Date.now() + 2,
-      description: intlPlaceholder,
+      description: INTL_PLACEHOLDER,
       userRating: 0,
       userAssessments: [],
       createdAt: new Date().toISOString(),
@@ -264,7 +264,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
                 q.id === questionId
                   ? {
                       ...q,
-                      explanation: { ...((q.explanation ?? intlPlaceholder) as IntlRecord), [language]: value },
+                      explanation: { ...((q.explanation ?? INTL_PLACEHOLDER) as IntlRecord), [language]: value },
                     }
                   : q
               ),
@@ -313,7 +313,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
                           ? {
                               ...o,
                               content: {
-                                ...((o.content as unknown as IntlRecord) ?? intlPlaceholder),
+                                ...((o.content as unknown as IntlRecord) ?? INTL_PLACEHOLDER),
                                 [language]: value,
                               },
                             }

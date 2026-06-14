@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 
 import { deleteDocArticle } from '@/actions/doc'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +26,6 @@ import { Markdown } from '@/components/ui/markdown'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
-import { useI18n } from '@/hooks/use-i18n'
 
 interface ArticleSheetProps {
   article: DocArticle | null

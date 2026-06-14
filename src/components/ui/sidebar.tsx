@@ -95,7 +95,7 @@ export const SidebarProvider = ({
   useEffect(() => {
     openRef.current = open
     setOpenPropRef.current = setOpenProp
-  })
+  }, [open, setOpenProp])
 
   const applyWidth = (value: string) => {
     document.documentElement.style.setProperty('--sidebar-width', value)
@@ -127,6 +127,7 @@ export const SidebarProvider = ({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
       event.preventDefault()
+      // eslint-disable-next-line react-compiler/rules-of-hooks, react-doctor/rules-of-hooks
       toggleSidebar()
     }
   }
@@ -137,6 +138,7 @@ export const SidebarProvider = ({
   }, [])
 
   useEffect(() => {
+    // eslint-disable-next-line react-compiler/no-deriving-state-in-effects
     setActivePath(pathname)
     window.scrollTo(0, 0)
   }, [pathname])
@@ -154,6 +156,7 @@ export const SidebarProvider = ({
     setOpenMobile,
     setWidth: handleSetWidth,
     state,
+    // eslint-disable-next-line react-doctor/rules-of-hooks, react-compiler/rules-of-hooks -- exposing the stable toggle via context; compiler handles memoization in prod
     toggleSidebar,
     width,
   }
@@ -351,6 +354,7 @@ export const SidebarRail = ({
 
   return (
     <button
+      type="button"
       aria-label={action}
       className={cn(
         'absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:left-0.75 after:w-0.5 hover:after:bg-sidebar-border sm:flex',
@@ -597,8 +601,9 @@ export const SidebarMenuSkeleton = ({
 }: React.ComponentProps<'div'> & {
   showIcon?: boolean
 }) => {
+  const [skeletonWidth] = useState(() => `${Math.floor(Math.random() * 40) + 50}%`)
   const skeletonStyle = {
-    '--skeleton-width': `${Math.floor(Math.random() * 40) + 50}%`,
+    '--skeleton-width': skeletonWidth,
     ...style,
   }
 

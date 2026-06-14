@@ -1,5 +1,5 @@
 import { ColumnItemPlugin, ColumnPlugin } from '@platejs/layout/react'
 
-import { ColumnElement, ColumnGroupElement } from '@/components/blocks/rich-text-editor/ui/column-node'
+import { ColumnElement, ColumnGroupElement } from '@/components/ui/rich-text-editor/components/column-node'
 
 export const ColumnKit = [ColumnPlugin.withComponent(ColumnGroupElement), ColumnItemPlugin.withComponent(ColumnElement)]

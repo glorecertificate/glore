@@ -22,6 +22,7 @@ import {
   inviteOrganization,
   rejectOrganization,
 } from '@/actions/admin/organizations'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -30,7 +31,6 @@ import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type AdminOrganization } from '@/db/queries/organization'
-import { useI18n } from '@/hooks/use-i18n'
 import { type MessageKey } from '@/lib/i18n'
 
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'

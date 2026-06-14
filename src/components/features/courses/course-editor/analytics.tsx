@@ -7,13 +7,13 @@ import { useTranslations } from 'next-intl'
 
 import { type CourseAnalyticsStats, getCourseAnalytics } from '@/actions/courses/progress'
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useI18n } from '@/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 const AnalyticsSkeleton = () => (

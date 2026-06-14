@@ -12,10 +12,10 @@ import { CourseBreadcrumb } from '@/components/features/courses/course-editor/br
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { i18n, localizeRecord } from '@/lib/i18n'
+import { LOCALES, localizeRecord } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
-  [COURSE_PARAMS.LANGUAGE]: parseAsStringEnum(i18n.locales),
+  [COURSE_PARAMS.LANGUAGE]: parseAsStringEnum(LOCALES),
   [COURSE_PARAMS.STEP]: parseAsInteger.withDefault(1),
 })
 

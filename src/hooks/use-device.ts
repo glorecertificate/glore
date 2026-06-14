@@ -5,21 +5,19 @@ import { useEffect, useRef, useState } from 'react'
 import theme from '~/config/theme.json'
 
 /**
- * Detects the device type based on the window width.
+ * Returns the current device type (mobile or desktop) and whether the device supports touch input.
  */
 export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
   const detectType = () => {
-    if (typeof window === 'undefined') {
-      return
-    }
+    if (typeof window === 'undefined') return
     return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
   }
 
-  const [deviceType, setDeviceType] = useState<'mobile' | 'desktop' | undefined>(detectType)
+  const [type, setType] = useState<'mobile' | 'desktop' | undefined>(detectType)
   const [isTouch, setIsTouch] = useState(false)
 
   const handleResize = useRef(() => {
-    setDeviceType(detectType())
+    setType(detectType())
     setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0)
   })
 
@@ -32,9 +30,9 @@ export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
   }, [breakpoint])
 
   return {
-    deviceType,
-    isDesktop: deviceType === 'desktop',
-    isMobile: deviceType === 'mobile',
+    type,
+    isDesktop: type === 'desktop',
+    isMobile: type === 'mobile',
     isTouch,
   }
 }

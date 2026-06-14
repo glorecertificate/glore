@@ -31,6 +31,7 @@ export const LucideIcon = ({
 
   return (
     <Suspense fallback={fallback ?? null}>
+      {/* eslint-disable-next-line react-compiler/static-components */}
       <Icon className={cn(className)} {...props} />
     </Suspense>
   )

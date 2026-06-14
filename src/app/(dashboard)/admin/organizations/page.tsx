@@ -6,13 +6,12 @@ import { getOrganizations } from '@/actions/admin/organizations'
 import { getCurrentUser } from '@/actions/user'
 import { AdminOrganizations } from '@/components/features/admin/organizations'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Admin.organizations',
-    title: 'title',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Admin.organizations',
+  title: 'title',
+})
 
 const AdminOrganizationsContent = async () => {
   const user = await getCurrentUser()

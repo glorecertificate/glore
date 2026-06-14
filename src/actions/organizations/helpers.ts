@@ -3,6 +3,7 @@ import 'server-only'
 import { cache } from 'react'
 
 import { and, count, eq } from 'drizzle-orm'
+import { Locale } from 'next-intl'
 
 import { getCookie } from '@/actions/cookies'
 import { findUser, getCurrentUser } from '@/actions/user'
@@ -15,7 +16,7 @@ import {
 } from '@/db/queries/organization'
 import { memberships } from '@/db/schema'
 import { sendMail } from '@/lib/email'
-import { type IntlRecord, i18n } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 
 const MANAGER_ROLES: OrganizationMembershipRole[] = ['admin', 'representative']
 const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
@@ -129,14 +130,8 @@ export const getOrganizationAdminsCount = async (organizationId: number) => {
 export const getFreshCurrentUser = (userId: string) => findUser(userId, { cache: false })
 
 export const getDescriptionRecord = (description: string, locale?: string, previous?: IntlRecord | null) => {
-  const localeKey = i18n.locales.includes(locale as (typeof i18n.locales)[number])
-    ? (locale as (typeof i18n.locales)[number])
-    : i18n.defaultLocale
-
-  return {
-    ...(previous ?? {}),
-    [localeKey]: description,
-  } as IntlRecord
+  const key = LOCALES.includes(locale as Locale) ? (locale as Locale) : DEFAULT_LOCALE
+  return { ...(previous ?? {}), [key]: description } as IntlRecord
 }
 
 export const sendOrganizationAccessEmail = async ({

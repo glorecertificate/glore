@@ -37,9 +37,10 @@ export const generateMetadata = async ({ params, searchParams }: PageProps<'/[us
 
 const UserPage = async ({ params, searchParams }: PageProps<'/[username]'>) => {
   const [{ username }, { v: handle }] = await Promise.all([params, searchParams])
-  const { data: certificate } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
-  if (!certificate) notFound()
-  return <PublicCertificateView certificate={certificate} username={username} />
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await
+  const { data } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
+  if (!data) notFound()
+  return <PublicCertificateView certificate={data} username={username} />
 }
 
 export default UserPage

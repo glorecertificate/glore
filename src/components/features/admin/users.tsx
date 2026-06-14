@@ -7,12 +7,12 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin/users'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type User } from '@/db/queries/user'
-import { useSession } from '@/hooks/use-session'
 
 import {
   BanDialog,

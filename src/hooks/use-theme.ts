@@ -4,8 +4,8 @@ import { useRef } from 'react'
 
 import { useTheme as useNextTheme } from 'next-themes'
 
-import { type ResolvedTheme, type Theme } from '@/components/providers/theme-provider'
 import { useCookies } from '@/hooks/use-cookies'
+import { type ResolvedTheme, type Theme } from '@/lib/types'
 
 const THEME_TRANSITION_CLASS = 'theme-transition'
 

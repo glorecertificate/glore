@@ -7,18 +7,17 @@ import { getMessages } from 'next-intl/server'
 import { getAuthUser } from '@/actions/auth'
 import { getLocaleCookie } from '@/actions/cookies'
 import { OnboardingForm } from '@/components/features/onboarding/onboarding-form'
-import { I18nProvider } from '@/components/providers/i18n-context'
+import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
-import { i18n } from '@/lib/i18n'
-import { intlMetadata } from '@/lib/metadata'
+import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Onboarding',
-    title: 'title',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Onboarding',
+  title: 'title',
+})
 
 const OnboardingPage = async () => {
   const user = await getAuthUser()
@@ -30,13 +29,13 @@ const OnboardingPage = async () => {
     orderBy: desc(teamInvitations.createdAt),
   })
 
-  const locale = (invitation?.locale as Locale) ?? (await getLocaleCookie()) ?? i18n.defaultLocale
+  const locale = (invitation?.locale as Locale) ?? (await getLocaleCookie()) ?? DEFAULT_LOCALE
   const messages = await getMessages({ locale })
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="mx-auto w-full max-w-2xl space-y-8">
-        <I18nProvider value={{ locale, messages }}>
+        <I18nProvider locale={locale} messages={messages}>
           <OnboardingForm
             email={user.email}
             firstName={invitation?.firstName ?? ''}

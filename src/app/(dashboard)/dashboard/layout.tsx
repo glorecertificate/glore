@@ -1,4 +1,4 @@
-import { CoursesProvider } from '@/components/providers/courses-provider'
+import { CoursesProvider } from '@/components/features/courses/provider'
 
 const DashboardLayout = ({ children }: React.PropsWithChildren) => <CoursesProvider>{children}</CoursesProvider>
 

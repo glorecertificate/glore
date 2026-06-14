@@ -19,7 +19,7 @@ import { parseOrganizationJoinRequest } from '@/db/queries/organization'
 import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { sendMail } from '@/lib/email'
-import { i18n } from '@/lib/i18n'
+import { DEFAULT_LOCALE } from '@/lib/i18n'
 
 export const approveOrganizationJoinRequest = async (requestId: number) => {
   const { organization, role: managerRole, user } = await getOrganizationContext()
@@ -63,7 +63,7 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
             email: request.email,
             firstName: request.firstName,
             lastName: request.lastName ?? undefined,
-            locale: request.locale ?? i18n.defaultLocale,
+            locale: request.locale ?? DEFAULT_LOCALE,
             name: [request.firstName, request.lastName].filter(Boolean).join(' '),
             password: randomBytes(32).toString('hex'),
           },
@@ -232,7 +232,7 @@ export const requestOrganizationRegistration = async ({
         email: registrantEmail.trim().toLowerCase(),
         firstName: firstName.trim(),
         lastName: lastName?.trim() || null,
-        locale: locale ?? i18n.defaultLocale,
+        locale: locale ?? DEFAULT_LOCALE,
         message: message?.trim() || null,
         organizationId: org.id,
         role: 'admin',

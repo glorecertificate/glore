@@ -2,13 +2,12 @@ import { WifiOffIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { Button } from '@/components/ui/button'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'PWA',
-    title: 'offlineTitle',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'PWA',
+  title: 'offlineTitle',
+})
 
 const OfflinePage = async () => {
   const t = await getTranslations('PWA')

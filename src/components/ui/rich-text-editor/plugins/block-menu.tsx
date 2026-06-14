@@ -1,7 +1,7 @@
 import { BlockMenuPlugin } from '@platejs/selection/react'
 
-import { BlockSelectionKit } from '@/components/blocks/rich-text-editor/plugins/block-selection'
-import { BlockContextMenu } from '@/components/blocks/rich-text-editor/ui/block-context-menu'
+import { BlockContextMenu } from '@/components/ui/rich-text-editor/components/block-context-menu'
+import { BlockSelectionKit } from '@/components/ui/rich-text-editor/plugins/block-selection'
 
 export const BlockMenuKit = [
   ...BlockSelectionKit,

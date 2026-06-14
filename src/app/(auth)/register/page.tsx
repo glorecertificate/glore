@@ -1,12 +1,11 @@
 import { RegisterForm } from '@/components/auth/register-form'
 import { Logo } from '@/components/ui/logo'
-import { intlMetadata } from '@/lib/metadata'
+import { generateIntlMetadata } from '@/lib/metadata'
 
-export const generateMetadata = () =>
-  intlMetadata({
-    namespace: 'Register',
-    title: 'metaTitle',
-  })
+export const generateMetadata = generateIntlMetadata({
+  namespace: 'Register',
+  title: 'metaTitle',
+})
 
 const RegisterPage = () => (
   <div className="flex min-h-screen items-center justify-center p-6">

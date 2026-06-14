@@ -12,6 +12,7 @@ import {
   updateOrganizationMemberRole,
 } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,7 +30,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
-import { useI18n } from '@/hooks/use-i18n'
 
 import { InviteMemberDialog } from './invite-dialog'
 import { MANAGEABLE_MEMBER_ROLES, REPRESENTATIVE_INVITE_ROLES, formatRoleLabel, getDisplayName } from './utils'

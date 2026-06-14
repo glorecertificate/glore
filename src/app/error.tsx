@@ -13,7 +13,7 @@ import { Logo } from '@/components/ui/logo'
 import { Spinner } from '@/components/ui/spinner'
 import { APP_ROOT } from '@/lib/constants'
 
-const Error = ({ error, reset }: ErrorProps) => {
+const AppError = ({ error, reset }: ErrorProps) => {
   const pathname = usePathname()
   const { back, push } = useRouter()
   const t = useTranslations('Common')
@@ -72,4 +72,4 @@ const Error = ({ error, reset }: ErrorProps) => {
   )
 }
 
-export default Error
+export default AppError

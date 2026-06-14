@@ -8,9 +8,9 @@ import { toast } from 'sonner'
 
 import { FacebookIcon } from '@/components/icons/facebook'
 import { LinkedinIcon } from '@/components/icons/linkedin'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { type Certificate } from '@/db/queries/certificate'
-import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 import config from '~/config/metadata.json'
 

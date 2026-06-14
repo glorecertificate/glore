@@ -6,7 +6,7 @@ import { FileUpIcon } from 'lucide-react'
 import { type TFileElement } from 'platejs'
 import { PlateElement, type PlateElementProps, useReadOnly, withHOC } from 'platejs/react'
 
-import { Caption, CaptionTextarea } from '@/components/blocks/rich-text-editor/ui/caption'
+import { Caption, CaptionTextarea } from '@/components/ui/rich-text-editor/components/caption'
 
 export const FileElement = withHOC(ResizableProvider, (props: PlateElementProps<TFileElement>) => {
   const readOnly = useReadOnly()

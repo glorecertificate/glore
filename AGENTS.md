@@ -144,7 +144,9 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 
 Full source tree, file naming, and server/client rules: see `.agents/specs/architecture.md`.
 
-**Top-level `src/` layout:** `actions/` (server actions), `app/` (App Router), `components/` (UI + features), `db/` (schema + queries), `emails/` (React Email), `hooks/`, `lib/` (shared utils, types, constants), `proxy.ts`, `i18n.ts`.
+**Top-level `src/` layout:** `actions/` (server actions), `app/` (App Router), `components/` (UI + features), `db/` (schema + queries), `emails/` (React Email), `hooks/`, `lib/` (shared utils, types, constants), `providers/` (global context providers + their hooks), `proxy.ts`, `i18n.ts`.
+
+**Context/provider placement:** global, app-wide providers (i18n, theme, search-params, session) live in `src/providers/`, each module owning its `use<X>` hook (no separate hook file). Feature-scoped contexts (e.g. courses) live in `src/components/features/<domain>/`. Split a provider into `context.tsx` + `provider.tsx` + `index.ts` only when it needs a server-side data fetch; otherwise a single file. Barrels use named re-exports.
 
 ---
 

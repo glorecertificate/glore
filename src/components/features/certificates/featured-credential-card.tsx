@@ -5,10 +5,10 @@ import { useId } from 'react'
 import { AwardIcon, BadgeCheckIcon, CalendarIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/ui/logo'
 import { type Certificate } from '@/db/queries/certificate'
-import { useI18n } from '@/hooks/use-i18n'
 
 interface FeaturedCredentialCardProps {
   certificate: Certificate

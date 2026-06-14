@@ -167,6 +167,13 @@ export const MultiSelectTrigger = ({
             open && 'cursor-default bg-accent/50'
           )}
           onClick={openDropdown}
+          onKeyDown={e => {
+            if (e.key !== 'Enter' && e.key !== ' ') return
+            e.preventDefault()
+            e.stopPropagation()
+            setOpen(!open)
+          }}
+          role="button"
           tabIndex={0}
         >
           <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />

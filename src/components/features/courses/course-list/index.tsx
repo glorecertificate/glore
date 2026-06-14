@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { reorderCourses } from '@/actions/courses/management'
+import { useCourses } from '@/components/features/courses/context'
 import { CourseListCard } from '@/components/features/courses/course-list/card'
 import {
   useCourseListLanguages,
@@ -12,7 +13,6 @@ import {
   useDisplayCourses,
 } from '@/components/features/courses/course-list/use-params'
 import { EmptyListIcon } from '@/components/icons/empty-list'
-import { useCourses } from '@/components/providers/courses-context'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Sortable, SortableContent, SortableItem, SortableItemHandle } from '@/components/ui/sortable'
 import { TabsContent } from '@/components/ui/tabs'

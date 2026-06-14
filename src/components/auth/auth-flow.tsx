@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
@@ -234,17 +234,17 @@ export const AuthFlow = ({
   const [, setParams] = useQueryStates(authParsers, { history: 'replace' })
 
   const [height, setHeight] = useState<number>()
+  const [animate, setAnimate] = useState(false)
   const [errored, setErrored] = useState(false)
   const globeOptions = useGlobeOptions({ errored, view })
 
   const ref = useRef<HTMLDivElement>(null)
-  const animateHeight = useRef(false)
   const key = camelize(view)
   const title = view ? t(`${key}Title`) : null
 
   useMetadata({
-    applicationName: view === 'login' ? false : 'full',
     title: t(`${key}MetaTitle`),
+    suffix: view === 'login' ? false : undefined,
   })
 
   useLayoutEffect(() => {
@@ -258,7 +258,7 @@ export const AuthFlow = ({
     const element = ref.current
     if (!element) return
     const measure = () => {
-      const next = Math.round(element.getBoundingClientRect().height)
+      const next = element.offsetHeight
       if (next === 0) return
       setHeight(prev => (prev === next ? prev : next))
     }
@@ -268,9 +268,9 @@ export const AuthFlow = ({
     return () => observer.disconnect()
   }, [])
 
-  useEffect(() => {
-    if (height !== undefined) animateHeight.current = true
-  }, [height])
+  if (height !== undefined && !animate) {
+    setAnimate(true)
+  }
 
   return (
     <>
@@ -281,7 +281,7 @@ export const AuthFlow = ({
             animate={{ height: height ?? 'auto' }}
             className="overflow-hidden"
             initial={false}
-            transition={animateHeight.current ? { duration: 0.45, ease: [0.22, 1, 0.36, 1] } : { duration: 0 }}
+            transition={animate ? { type: 'spring', bounce: 0, duration: 0.2 } : { duration: 0 }}
           >
             <div className="flex min-h-137.5 flex-col gap-8" ref={ref}>
               <div className="flex flex-col gap-8">
@@ -293,7 +293,7 @@ export const AuthFlow = ({
                     exit={{ opacity: 0, y: -8 }}
                     initial={{ opacity: 0, y: 8 }}
                     key={`heading-${view}`}
-                    transition={{ duration: 0.15, ease: 'easeOut' }}
+                    transition={{ duration: 0.1, ease: 'easeOut' }}
                   >
                     {title && <h1 className="text-3xl font-semibold">{title}</h1>}
                     <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
@@ -307,7 +307,7 @@ export const AuthFlow = ({
                   exit={{ opacity: 0, y: -8 }}
                   initial={{ opacity: 0, y: 8 }}
                   key={`content-${view}`}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  transition={{ duration: 0.1, ease: 'easeOut' }}
                 >
                   <AuthContent
                     errored={errored}

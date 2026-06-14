@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl'
 
 import { completeLesson, submitAssessmentRating, submitEvaluationRatings } from '@/actions/courses/progress'
 import { useCourse } from '@/components/features/courses/course-editor/context'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { ConfettiButton } from '@/components/ui/confetti'
 import {
@@ -20,7 +21,6 @@ import {
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { useSession } from '@/hooks/use-session'
 import { cn } from '@/lib/utils'
 import settings from '~/config/app.json'
 

@@ -5,7 +5,7 @@ import {
   TableCellHeaderElementStatic,
   TableElementStatic,
   TableRowElementStatic,
-} from '@/components/blocks/rich-text-editor/ui/table-node-static'
+} from '@/components/ui/rich-text-editor/components/table-node-static'
 
 export const BaseTableKit = [
   BaseTablePlugin.withComponent(TableElementStatic),

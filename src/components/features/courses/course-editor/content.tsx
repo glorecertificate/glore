@@ -11,9 +11,9 @@ import { useCourse } from '@/components/features/courses/course-editor/context'
 import { CourseEvaluations } from '@/components/features/courses/course-editor/evaluations'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
 import { CourseQuestions } from '@/components/features/courses/course-editor/questions'
+import { useSession } from '@/components/providers/session'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type Question, type QuestionOption } from '@/db/queries/lesson'
-import { useSession } from '@/hooks/use-session'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
@@ -53,14 +53,14 @@ const EditorSkeleton = () => (
 
 const RichTextEditor = dynamic(
   async () => {
-    const m = await import('@/components/blocks/rich-text-editor')
+    const m = await import('@/components/ui/rich-text-editor')
     return { default: m.RichTextEditor }
   },
   { loading: () => <EditorSkeleton />, ssr: false }
 )
 const RichTextEditorProvider = dynamic(
   async () => {
-    const m = await import('@/components/blocks/rich-text-editor/provider')
+    const m = await import('@/components/ui/rich-text-editor/provider')
     return { default: m.RichTextEditorProvider }
   },
   { loading: () => <EditorSkeleton />, ssr: false }

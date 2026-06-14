@@ -4,13 +4,15 @@ import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
-import { type default as FuseType } from 'fuse.js'
+import { type default as Fuse } from 'fuse.js'
 import { BookOpenIcon, FileTextIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { listUserCertificates } from '@/actions/certificates/queries'
 import { listCourses } from '@/actions/courses/queries'
 import { getOrganizationPanel } from '@/actions/organizations/queries'
+import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import {
   Command,
   CommandEmpty,
@@ -26,8 +28,6 @@ import { type Certificate } from '@/db/queries/certificate'
 import { type Course } from '@/db/queries/course'
 import { type OrganizationMember } from '@/db/queries/organization'
 import { useDebounce } from '@/hooks/use-debounce'
-import { useI18n } from '@/hooks/use-i18n'
-import { useSession } from '@/hooks/use-session'
 
 export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentProps<typeof Dialog>) => {
   const t = useTranslations('Search')
@@ -40,7 +40,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
   const [certificates, setCertificates] = useState<Certificate[]>([])
   const [members, setMembers] = useState<OrganizationMember[]>([])
   const loaded = useRef(false)
-  const [Fuse, setFuse] = useState<typeof FuseType | null>(null)
+  const [fuse, setFuse] = useState<typeof Fuse | null>(null)
 
   useEffect(() => {
     if (!open || loaded.current) return
@@ -64,14 +64,15 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
     void load()
   }, [open, user.canEdit, user.isOrgAdmin])
 
-  useEffect(() => {
-    if (!open) setQuery('')
-  }, [open])
+  const handleOpenChange = (next: boolean) => {
+    if (!next) setQuery('')
+    onOpenChange?.(next)
+  }
 
   const searchableCourses = courses.map(c => ({ ...c, localTitle: localize(c.title) }))
 
-  const courseFuse = Fuse
-    ? new Fuse(searchableCourses, {
+  const courseSearch = fuse
+    ? new fuse(searchableCourses, {
         ignoreLocation: true,
         includeScore: true,
         keys: ['localTitle', 'slug'],
@@ -79,8 +80,8 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
       })
     : null
 
-  const certFuse = Fuse
-    ? new Fuse(certificates, {
+  const certificateSearch = fuse
+    ? new fuse(certificates, {
         ignoreLocation: true,
         includeScore: true,
         keys: ['handle', 'organization.name'],
@@ -88,8 +89,8 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
       })
     : null
 
-  const memberFuse = Fuse
-    ? new Fuse(members, {
+  const memberSearch = fuse
+    ? new fuse(members, {
         ignoreLocation: true,
         includeScore: true,
         keys: ['fullName', 'user.email'],
@@ -98,38 +99,38 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
     : null
 
   const courseResults =
-    debouncedQuery.trim() && courseFuse
-      ? courseFuse
+    debouncedQuery.trim() && courseSearch
+      ? courseSearch
           .search(debouncedQuery)
           .slice(0, 8)
           .map(r => r.item)
       : searchableCourses.slice(0, 5)
 
-  const certResults =
-    debouncedQuery.trim() && certFuse
-      ? certFuse
+  const certificateResults =
+    debouncedQuery.trim() && certificateSearch
+      ? certificateSearch
           .search(debouncedQuery)
           .slice(0, 5)
           .map(r => r.item)
       : certificates.slice(0, 5)
 
   const memberResults =
-    debouncedQuery.trim() && memberFuse
-      ? memberFuse
+    debouncedQuery.trim() && memberSearch
+      ? memberSearch
           .search(debouncedQuery)
           .slice(0, 5)
           .map(r => r.item)
       : members.slice(0, 5)
 
-  const hasResults = courseResults.length > 0 || certResults.length > 0 || memberResults.length > 0
+  const hasResults = courseResults.length > 0 || certificateResults.length > 0 || memberResults.length > 0
 
   const navigate = (href: Route) => {
-    onOpenChange?.(false)
+    handleOpenChange(false)
     push(href)
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange} {...props}>
+    <Dialog open={open} onOpenChange={handleOpenChange} {...props}>
       <DialogHeader className="sr-only">
         <DialogTitle>{t('trigger')}</DialogTitle>
         <DialogDescription>{t('placeholder')}</DialogDescription>
@@ -150,7 +151,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
                     key={course.id}
                     value={`course-${course.id}`}
                     onSelect={() => {
-                      onOpenChange?.(false)
+                      handleOpenChange(false)
                       push(`/courses/${course.slug}`)
                     }}
                   >
@@ -161,16 +162,16 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
               </CommandGroup>
             )}
 
-            {certResults.length > 0 && (
+            {certificateResults.length > 0 && (
               <>
                 <CommandSeparator />
                 <CommandGroup heading={t('certificates')}>
-                  {certResults.map(cert => (
+                  {certificateResults.map(cert => (
                     <CommandItem
                       key={cert.id}
                       value={`cert-${cert.id}`}
                       onSelect={() => {
-                        onOpenChange?.(false)
+                        handleOpenChange(false)
                         push(`/certificates/${cert.id}`)
                       }}
                     >

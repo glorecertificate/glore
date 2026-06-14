@@ -16,7 +16,7 @@ import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
-import { type IntlRecord, i18n, intlPlaceholder } from '@/lib/i18n'
+import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALE_ITEMS } from '@/lib/i18n'
 
 interface ArticleEditorProps {
   article?: DocArticle
@@ -58,7 +58,7 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
   if (action.type === 'INIT_ARTICLE') {
     return {
       titles: { ...(action.article.title as IntlRecord) },
-      excerpts: { ...((action.article.excerpt as IntlRecord) ?? intlPlaceholder) },
+      excerpts: { ...((action.article.excerpt as IntlRecord) ?? INTL_PLACEHOLDER) },
       contents: { ...(action.article.content as IntlRecord) },
       slug: action.article.slug,
       categoryId: action.article.categoryId,
@@ -68,9 +68,9 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
   }
   if (action.type === 'INIT_NEW') {
     return {
-      titles: { ...intlPlaceholder },
-      excerpts: { ...intlPlaceholder },
-      contents: { ...intlPlaceholder },
+      titles: { ...INTL_PLACEHOLDER },
+      excerpts: { ...INTL_PLACEHOLDER },
+      contents: { ...INTL_PLACEHOLDER },
       slug: '',
       categoryId: action.defaultCategoryId ?? null,
       published: false,
@@ -92,9 +92,9 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
   const { refresh: routerRefresh } = useRouter()
 
   const [state, dispatch] = useReducer(editorReducer, {
-    titles: { ...intlPlaceholder },
-    excerpts: { ...intlPlaceholder },
-    contents: { ...intlPlaceholder },
+    titles: { ...INTL_PLACEHOLDER },
+    excerpts: { ...INTL_PLACEHOLDER },
+    contents: { ...INTL_PLACEHOLDER },
     slug: '',
     categoryId: defaultCategoryId ?? null,
     published: false,
@@ -112,10 +112,10 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
     }
   }, [article, defaultCategoryId, open])
 
-  const generateSlug = () => dispatch({ type: 'SET_SLUG', value: slugify(titles[i18n.defaultLocale] ?? '') })
+  const generateSlug = () => dispatch({ type: 'SET_SLUG', value: slugify(titles[DEFAULT_LOCALE] ?? '') })
 
   const handleSave = async () => {
-    if (!titles[i18n.defaultLocale] || !slug) {
+    if (!titles[DEFAULT_LOCALE] || !slug) {
       toast.error(t('editor.requiredFields'))
       return
     }
@@ -197,16 +197,16 @@ export const ArticleEditor = ({ article, categories, defaultCategoryId, onOpenCh
         </div>
 
         {/* Per-locale fields */}
-        <Tabs defaultValue={i18n.defaultLocale}>
+        <Tabs defaultValue={DEFAULT_LOCALE}>
           <TabsList>
-            {i18n.localeItems.map(item => (
+            {LOCALE_ITEMS.map(item => (
               <TabsTrigger key={item.value} value={item.value}>
                 {item.icon} {item.label}
               </TabsTrigger>
             ))}
           </TabsList>
 
-          {i18n.localeItems.map(item => (
+          {LOCALE_ITEMS.map(item => (
             <TabsContent key={item.value} className="grid gap-4 pt-2" value={item.value}>
               <div className="space-y-1.5">
                 <Label>{t('editor.title')}</Label>

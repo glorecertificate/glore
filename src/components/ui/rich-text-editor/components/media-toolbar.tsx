@@ -21,9 +21,9 @@ import {
   useSelected,
 } from 'platejs/react'
 
-import { CaptionButton } from '@/components/blocks/rich-text-editor/ui/caption'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
+import { CaptionButton } from '@/components/ui/rich-text-editor/components/caption'
 import { Separator } from '@/components/ui/separator'
 
 const inputVariants = cva(
@@ -54,7 +54,7 @@ export const MediaToolbar = ({ children, plugin }: { children: React.ReactNode; 
   const urlInputOptions = { plugin }
 
   if (readOnly) {
-    return <>{children}</>
+    return children
   }
 
   return (

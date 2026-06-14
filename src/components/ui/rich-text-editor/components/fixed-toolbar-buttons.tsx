@@ -5,23 +5,26 @@ import { useTranslations } from 'next-intl'
 import { KEYS } from 'platejs'
 import { usePlateState } from 'platejs/react'
 
-import { AIToolbarButton } from '@/components/blocks/rich-text-editor/ui/ai-toolbar-button'
-import { AlignToolbarButton } from '@/components/blocks/rich-text-editor/ui/align-toolbar-button'
-import { EmojiToolbarButton } from '@/components/blocks/rich-text-editor/ui/emoji-toolbar-button'
-import { FontColorToolbarButton } from '@/components/blocks/rich-text-editor/ui/font-color-toolbar-button'
-import { RedoToolbarButton, UndoToolbarButton } from '@/components/blocks/rich-text-editor/ui/history-toolbar-button'
-import { InsertToolbarButton } from '@/components/blocks/rich-text-editor/ui/insert-toolbar-button'
-import { LinkToolbarButton } from '@/components/blocks/rich-text-editor/ui/link-toolbar-button'
+import { AIToolbarButton } from '@/components/ui/rich-text-editor/components/ai-toolbar-button'
+import { AlignToolbarButton } from '@/components/ui/rich-text-editor/components/align-toolbar-button'
+import { EmojiToolbarButton } from '@/components/ui/rich-text-editor/components/emoji-toolbar-button'
+import { FontColorToolbarButton } from '@/components/ui/rich-text-editor/components/font-color-toolbar-button'
+import {
+  RedoToolbarButton,
+  UndoToolbarButton,
+} from '@/components/ui/rich-text-editor/components/history-toolbar-button'
+import { InsertToolbarButton } from '@/components/ui/rich-text-editor/components/insert-toolbar-button'
+import { LinkToolbarButton } from '@/components/ui/rich-text-editor/components/link-toolbar-button'
 import {
   BulletedListToolbarButton,
   NumberedListToolbarButton,
   TodoListToolbarButton,
-} from '@/components/blocks/rich-text-editor/ui/list-toolbar-button'
-import { MarkToolbarButton } from '@/components/blocks/rich-text-editor/ui/mark-toolbar-button'
-import { MediaToolbarButton } from '@/components/blocks/rich-text-editor/ui/media-toolbar-button'
-import { TableToolbarButton } from '@/components/blocks/rich-text-editor/ui/table-toolbar-button'
-import { ToggleToolbarButton } from '@/components/blocks/rich-text-editor/ui/toggle-toolbar-button'
-import { TurnIntoToolbarButton } from '@/components/blocks/rich-text-editor/ui/turn-into-toolbar-button'
+} from '@/components/ui/rich-text-editor/components/list-toolbar-button'
+import { MarkToolbarButton } from '@/components/ui/rich-text-editor/components/mark-toolbar-button'
+import { MediaToolbarButton } from '@/components/ui/rich-text-editor/components/media-toolbar-button'
+import { TableToolbarButton } from '@/components/ui/rich-text-editor/components/table-toolbar-button'
+import { ToggleToolbarButton } from '@/components/ui/rich-text-editor/components/toggle-toolbar-button'
+import { TurnIntoToolbarButton } from '@/components/ui/rich-text-editor/components/turn-into-toolbar-button'
 import { ToolbarGroup } from '@/components/ui/toolbar'
 
 export const FixedToolbarButtons = () => {

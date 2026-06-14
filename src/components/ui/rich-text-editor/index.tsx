@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 
-import { Editor, EditorContainer, type EditorProps } from '@/components/blocks/rich-text-editor/ui/editor'
+import { Editor, EditorContainer, type EditorProps } from '@/components/ui/rich-text-editor/components/editor'
 
 export const RichTextEditor = ({ readOnly, ...props }: EditorProps) => {
   const t = useTranslations('Components.RichTextEditor.placeholders')

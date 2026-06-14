@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useEffect, useState } from 'react'
+import { createContext, use, useState } from 'react'
 
 import {
   createCourse as createCourseAction,
@@ -8,9 +8,9 @@ import {
   updateCourse as updateCourseAction,
 } from '@/actions/courses/management'
 import { listCourses } from '@/actions/courses/queries'
+import { useI18n } from '@/components/providers/i18n'
 import { type Course, type SkillGroup } from '@/db/queries/course'
 import { type TableInsert, type TableUpdate } from '@/db/types'
-import { useI18n } from '@/hooks/use-i18n'
 
 interface CoursesContextValue {
   courses: Course[]
@@ -21,10 +21,12 @@ const useCoursesContext = (value: CoursesContextValue) => {
   const { localize } = useI18n()
 
   const [courses, setCourses] = useState(value.courses)
+  const [prevCourses, setPrevCourses] = useState(value.courses)
 
-  useEffect(() => {
+  if (value.courses !== prevCourses) {
+    setPrevCourses(value.courses)
     setCourses(value.courses)
-  }, [value.courses])
+  }
 
   const skillGroups = value.skillGroups.map(group => ({
     ...group,

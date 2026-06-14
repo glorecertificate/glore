@@ -5,13 +5,13 @@ import { useTranslations } from 'next-intl'
 
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Image } from '@/components/ui/image'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
-import { useI18n } from '@/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 interface CertificateCardProps {

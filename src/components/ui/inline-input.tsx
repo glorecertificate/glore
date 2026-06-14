@@ -9,6 +9,51 @@ import { cn } from '@/lib/utils'
 
 const INPUT_NAVIGATION_KEYS = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', ' ']
 
+const adjustSize = (
+  element: HTMLTextAreaElement,
+  {
+    autoWidth,
+    defaultValue,
+    value,
+  }: Pick<React.ComponentProps<'textarea'>, 'defaultValue' | 'value'> & { autoWidth?: boolean }
+) => {
+  element.style.height = 'auto'
+
+  if (autoWidth) {
+    element.style.width = 'auto'
+    const computed = window.getComputedStyle(element)
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+
+    if (context) {
+      context.font = computed.font
+      const text = (value as string) || element.value || (typeof defaultValue === 'string' ? defaultValue : '') || ''
+      const metrics = context.measureText(text)
+      const paddingX = Number.parseFloat(computed.paddingLeft) + Number.parseFloat(computed.paddingRight)
+      const borderX = Number.parseFloat(computed.borderLeftWidth) + Number.parseFloat(computed.borderRightWidth)
+      element.style.width = `${Math.ceil(metrics.width + paddingX + borderX)}px`
+    }
+  }
+
+  element.style.height = `${element.scrollHeight}px`
+}
+
+const inlineInputVariants = cva(
+  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground/40 hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
+  {
+    defaultVariants: {
+      size: 'default',
+    },
+    variants: {
+      size: {
+        default: 'text-sm',
+        lg: 'text-base',
+        sm: 'text-xs',
+      },
+    },
+  }
+)
+
 export const InlineInput = ({
   autoWidth,
   className,
@@ -37,34 +82,11 @@ export const InlineInput = ({
   const composedRefs = useComposedRefs(ref, forwardedRef)
   const staticValueRef = useRef(value ?? defaultValue ?? '')
 
-  const adjustSize = () => {
-    if (!ref.current) {
-      return
+  useLayoutEffect(() => {
+    if (ref.current) {
+      adjustSize(ref.current, { autoWidth, defaultValue, value })
     }
-
-    ref.current.style.height = 'auto'
-
-    if (autoWidth) {
-      ref.current.style.width = 'auto'
-      const computed = window.getComputedStyle(ref.current)
-      const canvas = document.createElement('canvas')
-      const context = canvas.getContext('2d')
-
-      if (context) {
-        context.font = computed.font
-        const text =
-          (value as string) || ref.current.value || (typeof defaultValue === 'string' ? defaultValue : '') || ''
-        const metrics = context.measureText(text)
-        const paddingX = Number.parseFloat(computed.paddingLeft) + Number.parseFloat(computed.paddingRight)
-        const borderX = Number.parseFloat(computed.borderLeftWidth) + Number.parseFloat(computed.borderRightWidth)
-        ref.current.style.width = `${Math.ceil(metrics.width + paddingX + borderX)}px`
-      }
-    }
-
-    ref.current.style.height = `${ref.current.scrollHeight}px`
-  }
-
-  useLayoutEffect(adjustSize, [adjustSize])
+  }, [autoWidth, defaultValue, value])
 
   const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
     const empty = !e.target.value.trim()
@@ -77,7 +99,11 @@ export const InlineInput = ({
         ref.current.value = staticValueRef.current.toString()
       }
       onBlur?.(e)
-      requestAnimationFrame(() => adjustSize())
+      requestAnimationFrame(() => {
+        if (ref.current) {
+          adjustSize(ref.current, { autoWidth, defaultValue, value })
+        }
+      })
       return
     }
     staticValueRef.current = e.target.value
@@ -116,19 +142,3 @@ export const InlineInput = ({
     />
   )
 }
-
-const inlineInputVariants = cva(
-  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground/40 hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
-  {
-    defaultVariants: {
-      size: 'default',
-    },
-    variants: {
-      size: {
-        default: 'text-sm',
-        lg: 'text-base',
-        sm: 'text-xs',
-      },
-    },
-  }
-)

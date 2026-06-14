@@ -8,8 +8,9 @@ import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { deleteCourse as deleteCourseAction, updateCourse as updateCourseAction } from '@/actions/courses/management'
+import { useCourses } from '@/components/features/courses/context'
 import { CourseDialog } from '@/components/features/courses/course-dialog'
-import { useCourses } from '@/components/providers/courses-context'
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,7 +37,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Link } from '@/components/ui/link'
 import { type Course } from '@/db/queries/course'
-import { useI18n } from '@/hooks/use-i18n'
 import { cn } from '@/lib/utils'
 
 export const CourseCardActions = ({

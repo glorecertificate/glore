@@ -8,10 +8,10 @@ import { useTranslations } from 'next-intl'
 import { ArticleCard } from '@/components/features/docs/article-card'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
 import { ArticleSheet } from '@/components/features/docs/article-sheet'
+import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
-import { useI18n } from '@/hooks/use-i18n'
 import { type IntlRecord } from '@/lib/i18n'
 
 interface DocsSectionProps {

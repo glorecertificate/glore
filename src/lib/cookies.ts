@@ -1,7 +1,7 @@
 import { type Locale } from 'next-intl'
 
-import { type Theme } from '@/components/providers/theme-provider'
-import { i18n } from '@/lib/i18n'
+import { LOCALE_COOKIE } from '@/lib/i18n'
+import { type Theme } from '@/lib/types'
 
 export const COOKIE_PREFIX = 'gl_'
 
@@ -14,7 +14,7 @@ export const COOKIE_OPTIONS = {
 } as const
 
 interface Cookies {
-  [i18n.cookie]: Locale
+  [LOCALE_COOKIE]: Locale
   courseListLanguages: Record<number, Locale>
   courseListParams: string
   email: string

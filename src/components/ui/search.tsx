@@ -80,7 +80,7 @@ export const SearchHighlight = ({
 }) => {
   if (!value) return null
   const ranges = query?.trim() ? substringRanges(value, query.trim()) : []
-  if (ranges.length === 0) return <>{value}</>
+  if (ranges.length === 0) return value
 
   const segments: React.ReactNode[] = []
   let cursor = 0

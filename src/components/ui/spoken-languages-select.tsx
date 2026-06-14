@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 import { CheckIcon, PlusIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -49,14 +49,24 @@ const LANGUAGE_COUNTRIES: Record<string, string> = {
   zh: 'CN',
 }
 
-interface SpokenLanguagesSelectProps {
+const flag = (language: string) => {
+  const code = LANGUAGE_COUNTRIES[language]
+  return code ? countryCodeToFlag(code) : ''
+}
+
+export const SpokenLanguagesSelect = ({
+  className,
+  disabled,
+  onChange,
+  options,
+  value,
+  ...props
+}: Omit<React.ComponentProps<'div'>, 'onChange'> & {
   disabled?: boolean
   onChange: (value: string[]) => void
   options: string[]
   value: string[]
-}
-
-export const SpokenLanguagesSelect = ({ disabled, onChange, options, value }: SpokenLanguagesSelectProps) => {
+}) => {
   const t = useTranslations('Users')
   const tLanguages = useTranslations('Intl.Languages')
 
@@ -67,13 +77,7 @@ export const SpokenLanguagesSelect = ({ disabled, onChange, options, value }: Sp
     return tLanguages.has(key) ? tLanguages(key) : language.toUpperCase()
   }
 
-  const flag = (language: string) => {
-    const code = LANGUAGE_COUNTRIES[language]
-    return code ? countryCodeToFlag(code) : ''
-  }
-
   const sortByLabel = (a: string, b: string) => translate(a).localeCompare(translate(b))
-
   const sortedOptions = options.toSorted(sortByLabel)
   const sortedValue = value.toSorted(sortByLabel)
 
@@ -81,8 +85,8 @@ export const SpokenLanguagesSelect = ({ disabled, onChange, options, value }: Sp
     onChange(value.includes(language) ? value.filter(l => l !== language) : [...value, language])
 
   return (
-    <div className="space-y-3">
-      <Popover onOpenChange={setOpen} open={open}>
+    <div className={cn('space-y-3', className)} {...props}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             className={cn('w-full justify-between font-normal', value.length === 0 && 'text-muted-foreground')}
@@ -102,33 +106,30 @@ export const SpokenLanguagesSelect = ({ disabled, onChange, options, value }: Sp
             <CommandList>
               <CommandEmpty>{t('noLanguageFound')}</CommandEmpty>
               <CommandGroup>
-                {sortedOptions.map(language => {
-                  const selected = value.includes(language)
-                  return (
-                    <CommandItem
-                      className="cursor-pointer"
-                      key={language}
-                      onSelect={() => toggle(language)}
-                      value={translate(language)}
+                {sortedOptions.map(language => (
+                  <CommandItem
+                    className="cursor-pointer"
+                    key={language}
+                    onSelect={() => toggle(language)}
+                    value={translate(language)}
+                  >
+                    <div
+                      className={cn(
+                        'flex size-4 items-center justify-center rounded-sm border transition-colors',
+                        value.includes(language) ? 'border-primary bg-primary text-primary-foreground' : 'border-input'
+                      )}
                     >
-                      <div
+                      <CheckIcon
                         className={cn(
-                          'flex size-4 items-center justify-center rounded-[4px] border transition-colors',
-                          selected ? 'border-primary bg-primary text-primary-foreground' : 'border-input'
+                          'size-3 text-primary-foreground transition-opacity',
+                          value.includes(language) ? 'opacity-100' : 'opacity-0'
                         )}
-                      >
-                        <CheckIcon
-                          className={cn(
-                            'size-3 text-primary-foreground transition-opacity',
-                            selected ? 'opacity-100' : 'opacity-0'
-                          )}
-                        />
-                      </div>
-                      <span className="text-base leading-none">{flag(language)}</span>
-                      {translate(language)}
-                    </CommandItem>
-                  )
-                })}
+                      />
+                    </div>
+                    <span className="text-base leading-none">{flag(language)}</span>
+                    {translate(language)}
+                  </CommandItem>
+                ))}
               </CommandGroup>
             </CommandList>
           </Command>

@@ -2,10 +2,10 @@
 
 import { useTranslations } from 'next-intl'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { type Assessment } from '@/db/queries/lesson'
-import { useI18n } from '@/hooks/use-i18n'
 
 export const CourseAssessment = ({
   assessment,

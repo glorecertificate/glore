@@ -189,10 +189,18 @@ const DragHandle = ({
 
   return (
     <div
+      aria-label={t('dragToMove')}
       className="flex size-full items-center justify-center"
       onClick={() => {
         editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
       }}
+      onKeyDown={e => {
+        if (e.key !== 'Enter' && e.key !== ' ') return
+        e.preventDefault()
+        editor.getApi(BlockSelectionPlugin).blockSelection.set(element.id as string)
+      }}
+      role="button"
+      tabIndex={0}
       onMouseDown={e => {
         if (e.button !== 0 || e.shiftKey) {
           return

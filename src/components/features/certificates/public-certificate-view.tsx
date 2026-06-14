@@ -1,4 +1,5 @@
 import { CalendarIcon, CheckCircle2Icon, DownloadIcon, GlobeIcon, MapPinIcon, TimerIcon } from 'lucide-react'
+import { Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 import * as qrcode from 'qrcode'
 
@@ -10,7 +11,7 @@ import { Logo } from '@/components/ui/logo'
 import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
 import { AUTH_ROOT } from '@/lib/constants'
-import { type IntlRecord, i18n, localizeRecord } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import appConfig from '~/config/metadata.json'
 
 interface PublicCertificateViewProps {
@@ -20,14 +21,14 @@ interface PublicCertificateViewProps {
 
 export const PublicCertificateView = async ({ certificate, username }: PublicCertificateViewProps) => {
   const t = await getTranslations('Certificates')
-  const locale = (await getLocale()) as (typeof i18n.locales)[number]
+  const locale = (await getLocale()) as Locale
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const start = dateFormatter.format(new Date(certificate.activityStartDate))
   const end = dateFormatter.format(new Date(certificate.activityEndDate))
   const issuedAt = certificate.issuedAt ? dateFormatter.format(new Date(certificate.issuedAt)) : null
 
-  const certLocale = certificate.language as (typeof i18n.locales)[number]
+  const certLocale = certificate.language as Locale
 
   const volunteerName = certificate.user
     ? `${certificate.user.firstName} ${certificate.user.lastName}`
@@ -119,7 +120,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
                 {certificate.skills.map(s => (
                   <li className="text-sm" key={s.id}>
                     {s.course.title
-                      ? localizeRecord(s.course.title as IntlRecord, certLocale, i18n.defaultLocale)
+                      ? localizeRecord(s.course.title as IntlRecord, certLocale, DEFAULT_LOCALE)
                       : s.course.slug}
                   </li>
                 ))}

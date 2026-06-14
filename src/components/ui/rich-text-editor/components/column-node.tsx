@@ -144,7 +144,7 @@ const ColumnFloatingToolbar = ({ children }: React.PropsWithChildren) => {
   }
 
   if (readOnly) {
-    return <>{children}</>
+    return children
   }
 
   return (

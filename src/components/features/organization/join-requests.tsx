@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organizations/requests'
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -22,7 +23,6 @@ import {
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { useI18n } from '@/hooks/use-i18n'
 
 import { formatRoleLabel } from './utils'
 

@@ -31,8 +31,8 @@ import {
   InlineComboboxGroupLabel,
   InlineComboboxInput,
   InlineComboboxItem,
-} from '@/components/blocks/rich-text-editor/ui/inline-combobox'
-import { insertBlock, insertInlineElement } from '@/components/blocks/rich-text-editor/utils'
+} from '@/components/ui/rich-text-editor/components/inline-combobox'
+import { insertBlock, insertInlineElement } from '@/components/ui/rich-text-editor/utils'
 
 interface Group {
   group: string

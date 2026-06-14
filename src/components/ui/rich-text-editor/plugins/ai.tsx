@@ -5,11 +5,11 @@ import { AIChatPlugin, AIPlugin, streamInsertChunk, useChatChunk } from '@platej
 import { KEYS, PathApi } from 'platejs'
 import { usePluginOption } from 'platejs/react'
 
-import { aiChatPlugin as baseAiChatPlugin } from '@/components/blocks/rich-text-editor/plugins/ai-chat-plugin'
-import { CursorOverlayKit } from '@/components/blocks/rich-text-editor/plugins/cursor-overlay'
-import { MarkdownKit } from '@/components/blocks/rich-text-editor/plugins/markdown'
-import { AILoadingBar, AIMenu } from '@/components/blocks/rich-text-editor/ui/ai-menu'
-import { AIAnchorElement, AILeaf } from '@/components/blocks/rich-text-editor/ui/ai-node'
+import { AILoadingBar, AIMenu } from '@/components/ui/rich-text-editor/components/ai-menu'
+import { AIAnchorElement, AILeaf } from '@/components/ui/rich-text-editor/components/ai-node'
+import { aiChatPlugin as baseAiChatPlugin } from '@/components/ui/rich-text-editor/plugins/ai-chat-plugin'
+import { CursorOverlayKit } from '@/components/ui/rich-text-editor/plugins/cursor-overlay'
+import { MarkdownKit } from '@/components/ui/rich-text-editor/plugins/markdown'
 
 const aiChatPlugin = baseAiChatPlugin.extend({
   render: { afterContainer: AILoadingBar, afterEditable: AIMenu, node: AIAnchorElement },

@@ -24,7 +24,6 @@ import { useTranslations } from 'next-intl'
 import { KEYS } from 'platejs'
 import { type PlateEditor, useEditorRef } from 'platejs/react'
 
-import { insertBlock, insertInlineElement } from '@/components/blocks/rich-text-editor/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +31,7 @@ import {
   type DropdownMenuProps,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { insertBlock, insertInlineElement } from '@/components/ui/rich-text-editor/utils'
 import { ToolbarButton, ToolbarMenuGroup } from '@/components/ui/toolbar'
 
 interface Group {

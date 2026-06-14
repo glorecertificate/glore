@@ -7,10 +7,10 @@ import { useTranslations } from 'next-intl'
 
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
+import { useI18n } from '@/components/providers/i18n'
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { type DocCategory } from '@/db/queries/doc'
-import { useI18n } from '@/hooks/use-i18n'
 import { type IntlRecord } from '@/lib/i18n'
 
 interface DocsListProps {

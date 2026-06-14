@@ -12,7 +12,7 @@ import {
   type CookieValue,
   prefixCookieName,
 } from '@/lib/cookies'
-import { i18n } from '@/lib/i18n'
+import { LOCALES, LOCALE_COOKIE } from '@/lib/i18n'
 
 export const cookies = async () => {
   const { cookies: nextCookies } = await import('next/headers')
@@ -76,8 +76,8 @@ export const deleteCookie = async (name: CookieName, options?: CookieOptions) =>
 }
 
 export const getLocaleCookie = async () => {
-  const value = await getCookie(i18n.cookie, { prefix: false })
-  if (value && i18n.locales.includes(value)) return value
+  const value = await getCookie(LOCALE_COOKIE, { prefix: false })
+  if (value && LOCALES.includes(value)) return value
 }
 
-export const setLocaleCookie = async (locale: Locale) => await setCookie(i18n.cookie, locale, { prefix: false })
+export const setLocaleCookie = async (locale: Locale) => await setCookie(LOCALE_COOKIE, locale, { prefix: false })

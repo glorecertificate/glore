@@ -8,41 +8,30 @@ import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
-import { r2Delete, r2Put } from '@/lib/storage'
+import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
+import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
 
-const MAX_AVATAR_SIZE = 5 * 1024 * 1024
+export const createAvatarUploadUrl = async (contentType: string) => {
+  const user = await getAuthUser()
+  if (!user) throw new Error('Unauthorized')
+  if (!AVATAR_CONTENT_TYPES.includes(contentType)) throw new Error('Invalid image type')
 
-const validateImageFile = async (file: File) => {
-  if (file.size > MAX_AVATAR_SIZE) throw new Error('File too large (max 5 MB)')
+  const ext = contentType.split('/')[1]
+  const key = `avatars/${user.id}-${Date.now()}.${ext}`
+  const url = await r2PresignPut(key, contentType)
 
-  const IMAGE_SIGNATURES: [string, number[]][] = [
-    ['image/png', [0x89, 0x50, 0x4e, 0x47]],
-    ['image/jpeg', [0xff, 0xd8, 0xff]],
-    ['image/webp', [0x52, 0x49, 0x46, 0x46]],
-  ]
-
-  const buffer = new Uint8Array(await file.slice(0, 8).arrayBuffer())
-  const match = IMAGE_SIGNATURES.find(([, sig]) => {
-    if (sig.length > buffer.length) return false
-    // eslint-disable-next-line react-doctor/js-length-check-first
-    return sig.every((byte, i) => buffer[i] === byte)
-  })
-  if (!match) throw new Error('Invalid image file')
-
-  return match[0]
+  return { key, url }
 }
 
-export const uploadAvatar = async (formData: FormData) => {
-  const file = formData.get('file') as File
-  if (!file) throw new Error('No file uploaded')
-
-  const [user, mimeType] = await Promise.all([getAuthUser(), validateImageFile(file)])
+export const confirmAvatar = async (key: string) => {
+  const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
-  const ext = mimeType.split('/')[1]
-  const buffer = Buffer.from(await file.arrayBuffer())
-  const url = await r2Put(`avatars/${user.id}-${Date.now()}.${ext}`, buffer, mimeType)
+  if (!key.startsWith(`avatars/${user.id}-`)) throw new Error('Invalid key')
 
-  await db.update(users).set({ avatarUrl: url }).where(eq(users.id, user.id))
+  await db
+    .update(users)
+    .set({ avatarUrl: r2Url(key) })
+    .where(eq(users.id, user.id))
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),

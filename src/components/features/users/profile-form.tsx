@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
-import { removeAvatar, uploadAvatar } from '@/actions/storage'
+import { confirmAvatar, createAvatarUploadUrl, removeAvatar } from '@/actions/storage'
 import { updateUser } from '@/actions/user'
 import { SettingsSection } from '@/components/features/users/settings-section'
+import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -23,7 +24,6 @@ import { Separator } from '@/components/ui/separator'
 import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
 import { Textarea } from '@/components/ui/textarea'
 import { type TableUpdate } from '@/db/types'
-import { useSession } from '@/hooks/use-session'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 import i18nConfig from '~/config/i18n.json'
@@ -74,9 +74,11 @@ export const ProfileForm = () => {
 
   const handleAvatarUpload = async (file: File) => {
     try {
-      const formData = new FormData()
-      formData.append('file', file)
-      const { data, error } = await uploadAvatar(formData)
+      const { key, url } = await createAvatarUploadUrl(file.type)
+      const res = await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
+      if (!res.ok) throw new Error('Upload failed')
+
+      const { data, error } = await confirmAvatar(key)
       if (error || !data) {
         toast.error(t('avatarUploadError'))
         return

@@ -34,6 +34,9 @@ export const AUTH_VIEWS = [
   'invalid_password_reset',
 ] as const
 
+/* Storage */
+export const AVATAR_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+
 /* Validation */
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u
 export const USERNAME_REGEX = /^(?!\.)(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9.]+$/u

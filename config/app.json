@@ -1,6 +1,7 @@
 {
   "minSkills": 3,
   "minRating": 3,
+  "maxAvatarSize": 2048,
   "mapsUrl": "https://maps.google.com/search",
   "sidebarShortcut": "\\"
 }

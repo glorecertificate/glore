@@ -25,6 +25,8 @@ import { toast } from 'sonner'
 import { type z } from 'zod'
 
 import {
+  confirmAdminOrganizationAvatar,
+  createAdminOrganizationAvatarUploadUrl,
   deleteAdminOrganization,
   getAdminOrganization,
   inviteAdminOrganizationMember,
@@ -32,11 +34,11 @@ import {
   removeAdminOrganizationMember,
   updateAdminOrganization,
   updateAdminOrganizationMemberRole,
-  uploadAdminOrganizationAvatar,
 } from '@/actions/admin/organizations'
 import { InviteMemberDialog } from '@/components/features/organization/invite-dialog'
 import { organizationSettingsSchema } from '@/components/features/organization/schemas'
 import { getDisplayName } from '@/components/features/organization/utils'
+import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,7 +65,6 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { type Organization, type OrganizationMember, type OrganizationMembershipRole } from '@/db/queries/organization'
-import { useI18n } from '@/hooks/use-i18n'
 import { type MessageKey } from '@/lib/i18n'
 import { cn } from '@/lib/utils'
 
@@ -820,10 +821,20 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
   }
 
   const handleAvatarUpload = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
+    const { data: presign, error: presignError } = await createAdminOrganizationAvatarUploadUrl(data.id, file.type)
 
-    const { error } = await uploadAdminOrganizationAvatar(data.id, formData)
+    if (presignError || !presign) {
+      toast.error(typeof presignError === 'string' ? presignError : t('avatarUploadError'))
+      return
+    }
+
+    const res = await fetch(presign.url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
+    if (!res.ok) {
+      toast.error(t('avatarUploadError'))
+      return
+    }
+
+    const { error } = await confirmAdminOrganizationAvatar(data.id, presign.key)
 
     if (error) {
       toast.error(typeof error === 'string' ? error : error.message)

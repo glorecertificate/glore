@@ -10,6 +10,7 @@
     "@commitlint/cli",
     "@release-it/bumper",
     "@release-it/conventional-changelog",
+    "eslint-plugin-react-hooks",
     "oxlint-plugin-react-doctor",
     "oxlint-tsgolint",
     "react-doctor",

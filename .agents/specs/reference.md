@@ -389,6 +389,8 @@ Semantic token groups (all defined in `src/app/globals.css` with light/dark vari
 
 **Theme switching:** Uses `next-themes` with `class` attribute strategy. Supports `system`, `light`, `dark`. View Transitions API used for smooth theme changes (with fallback for browsers without support).
 
+**Route view transitions:** `experimental.viewTransition: true` (`next.config.ts`) enables React's `<ViewTransition>` for navigations. To keep all other navigations instant, `globals.css` globally suppresses the default `::view-transition-old(root)/new(root)` animation, so a navigation animates **only** when it carries a transition type and matches a named `<ViewTransition>`. Current use: creating a course navigates with `router.push(href, { transitionTypes: ['course-created'] })` (`course-dialog.tsx`), and the course page wraps `<CourseEditor>` in `<ViewTransition enter={{ 'course-created': 'course-enter', default: 'none' }} default="none">` to fade/slide the new page in (`.course-enter` keyframes in `globals.css`, disabled under `prefers-reduced-motion`). Do not remove the root suppression: without it, enabling the flag makes every navigation crossfade.
+
 **Mobile breakpoint:** 768px (from `config/theme.json`)
 
 ---

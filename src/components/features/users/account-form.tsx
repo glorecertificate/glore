@@ -167,7 +167,7 @@ export const AccountForm = () => {
   }
 
   return (
-    <div className="mx-auto w-full space-y-0 duration-300 animate-in fade-in">
+    <div className="mx-auto w-full space-y-0">
       <Form {...accountForm}>
         <form className="space-y-0" onSubmit={accountForm.handleSubmit(onAccountSubmit)}>
           <SettingsSection description={t('preferencesDescription')} title={t('preferences')}>

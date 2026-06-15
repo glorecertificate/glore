@@ -23,7 +23,7 @@ type ProgressStatus = 'notStarted' | 'inProgress' | 'completed'
 export type Course = ReturnType<typeof parseCourse>
 export type SkillGroup = Exclude<Course['skillGroup'], null>
 
-export const COURSE_TYPES = ['intro', 'skill', 'learner'] satisfies EnumType<'course_type'>[]
+export const COURSE_TYPES = ['intro', 'learner', 'skill'] satisfies EnumType<'course_type'>[]
 export const COURSE_SLUG_MIN_LENGTH = 3
 
 const DEFAULT_COURSE = {

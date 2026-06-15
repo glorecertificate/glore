@@ -15,15 +15,12 @@ import { COURSE_TYPES } from '@/db/queries/course'
 import { type EnumType } from '@/db/types'
 import { cn } from '@/lib/utils'
 
-export const courseTypeVariants = cva('border', {
+export const courseTypeVariants = cva('rounded-xl border text-stroke-0.25', {
   variants: {
     type: {
-      intro:
-        'border-[oklch(0.52_0.17_255)]/25 bg-[oklch(0.52_0.17_255)]/10 text-[oklch(0.52_0.17_255)] dark:border-[oklch(0.72_0.15_255)]/25 dark:bg-[oklch(0.72_0.15_255)]/10 dark:text-[oklch(0.72_0.15_255)]',
-      learner:
-        'border-[oklch(0.5_0.18_305)]/25 bg-[oklch(0.5_0.18_305)]/10 text-[oklch(0.5_0.18_305)] dark:border-[oklch(0.72_0.16_305)]/25 dark:bg-[oklch(0.72_0.16_305)]/10 dark:text-[oklch(0.72_0.16_305)]',
-      skill:
-        'border-[oklch(0.55_0.15_150)]/25 bg-[oklch(0.55_0.15_150)]/10 text-[oklch(0.55_0.15_150)] dark:border-[oklch(0.76_0.15_150)]/25 dark:bg-[oklch(0.76_0.15_150)]/10 dark:text-[oklch(0.76_0.15_150)]',
+      intro: 'bg-accent text-muted-foreground',
+      learner: 'border-brand-accent/40 bg-brand/10 text-brand-accent',
+      skill: 'border-brand-tertiary/25 bg-brand-tertiary/10 text-brand-tertiary',
     },
   },
 })
@@ -31,22 +28,19 @@ export const courseTypeVariants = cva('border', {
 export const courseIconVariants = cva('', {
   compoundVariants: [
     {
-      background: true,
-      className:
-        'bg-[oklch(0.52_0.17_255)]/12 hover:bg-[oklch(0.52_0.17_255)]/20! aria-expanded:bg-[oklch(0.52_0.17_255)]/20! dark:bg-[oklch(0.72_0.15_255)]/12 dark:hover:bg-[oklch(0.72_0.15_255)]/20! dark:aria-expanded:bg-[oklch(0.72_0.15_255)]/20!',
       type: 'intro',
+      background: true,
+      className: 'bg-muted-foreground/12 hover:bg-muted-foreground/20! aria-expanded:bg-muted-foreground/20!',
     },
     {
-      background: true,
-      className:
-        'bg-[oklch(0.5_0.18_305)]/12 hover:bg-[oklch(0.5_0.18_305)]/20! aria-expanded:bg-[oklch(0.5_0.18_305)]/20! dark:bg-[oklch(0.72_0.16_305)]/12 dark:hover:bg-[oklch(0.72_0.16_305)]/20! dark:aria-expanded:bg-[oklch(0.72_0.16_305)]/20!',
       type: 'learner',
+      background: true,
+      className: 'bg-brand/12 hover:bg-brand/20! aria-expanded:bg-brand/20!',
     },
     {
-      background: true,
-      className:
-        'bg-[oklch(0.55_0.15_150)]/12 hover:bg-[oklch(0.55_0.15_150)]/20! aria-expanded:bg-[oklch(0.55_0.15_150)]/20! dark:bg-[oklch(0.76_0.15_150)]/12 dark:hover:bg-[oklch(0.76_0.15_150)]/20! dark:aria-expanded:bg-[oklch(0.76_0.15_150)]/20!',
       type: 'skill',
+      background: true,
+      className: 'bg-brand-tertiary/12 hover:bg-brand-tertiary/20! aria-expanded:bg-brand-tertiary/20!',
     },
   ],
   defaultVariants: {
@@ -58,9 +52,9 @@ export const courseIconVariants = cva('', {
       true: '',
     },
     type: {
-      intro: 'text-[oklch(0.52_0.17_255)] dark:text-[oklch(0.72_0.15_255)]',
-      learner: 'text-[oklch(0.5_0.18_305)] dark:text-[oklch(0.72_0.16_305)]',
-      skill: 'text-[oklch(0.55_0.15_150)] dark:text-[oklch(0.76_0.15_150)]',
+      intro: 'text-muted-foreground',
+      learner: 'text-brand',
+      skill: 'text-brand-tertiary',
     },
   },
 })
@@ -99,7 +93,7 @@ export const CourseListTypeSelect = (
       <MultiSelectTrigger position="start">
         {activeItems.map(({ label, value }) => (
           <MultiSelectBadge
-            className={cn('py-0.75 text-xs font-medium', courseTypeVariants({ type: value }))}
+            className={cn('py-0.75 text-xs', courseTypeVariants({ type: value }))}
             key={value}
             label={t('courseType').toLowerCase()}
             value={value}

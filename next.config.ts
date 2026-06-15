@@ -115,8 +115,19 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    turbopackFileSystemCacheForDev: true,
+    optimizePackageImports: [
+      '@dnd-kit/core',
+      '@dnd-kit/sortable',
+      '@dnd-kit/utilities',
+      'cmdk',
+      'motion',
+      'nuqs',
+      'react-day-picker',
+      'react-hook-form',
+    ],
+    turbopackFileSystemCacheForDev: false,
     turbopackFileSystemCacheForBuild: true,
+    viewTransition: true,
   },
 }
 

@@ -1,6 +1,9 @@
+import { useEffect, useRef } from 'react'
+
 import { type VariantProps, cva } from 'class-variance-authority'
 
 import { Label } from '@/components/ui/label'
+import { useComposedRefs } from '@/hooks/use-composed-refs'
 import { useMounted } from '@/hooks/use-mounted'
 import { type Icon } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -9,7 +12,9 @@ export interface InputProps
   extends
     Omit<React.ComponentProps<'input'>, keyof VariantProps<typeof inputVariants>>,
     VariantProps<typeof inputVariants> {
+  blurOnEscape?: boolean
   defaultOpen?: boolean
+  hotkey?: string
   icon?: Icon
   open?: boolean
 }
@@ -41,18 +46,46 @@ export const inputVariants = cva(
 )
 
 export const Input = ({
+  blurOnEscape,
   className,
   defaultOpen,
   disabled,
+  hotkey,
   icon: Icon,
   id,
+  onKeyDown,
   open,
   placeholder,
+  ref,
   size,
   variant,
   ...props
 }: InputProps) => {
   const mounted = useMounted()
+  const inputRef = useRef<HTMLInputElement>(null)
+  const composedRef = useComposedRefs(inputRef, ref)
+
+  useEffect(() => {
+    if (!hotkey) return
+    const handleHotkey = (e: KeyboardEvent) => {
+      const active = document.activeElement
+      const isEditable =
+        active instanceof HTMLInputElement ||
+        active instanceof HTMLTextAreaElement ||
+        (active instanceof HTMLElement && active.isContentEditable)
+      if (e.key === hotkey && !isEditable) {
+        e.preventDefault()
+        inputRef.current?.focus()
+      }
+    }
+    document.addEventListener('keydown', handleHotkey)
+    return () => document.removeEventListener('keydown', handleHotkey)
+  }, [hotkey])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (blurOnEscape && e.key === 'Escape') inputRef.current?.blur()
+    onKeyDown?.(e)
+  }
 
   if (variant !== 'floating') {
     return (
@@ -60,7 +93,9 @@ export const Input = ({
         className={cn(inputVariants({ size, variant }), className)}
         disabled={disabled}
         id={id}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        ref={composedRef}
         {...props}
       />
     )
@@ -72,7 +107,9 @@ export const Input = ({
         className={cn(inputVariants({ size, variant }), className)}
         disabled={disabled}
         id={id}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
+        ref={composedRef}
         {...props}
       />
       <Label

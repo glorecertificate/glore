@@ -30,8 +30,13 @@ export const CourseListLanguageSelect = () => {
     >
       <MultiSelectTrigger position="start">
         {activeLanguageItems.map(({ displayLabel, icon, value }) => (
-          <MultiSelectBadge className="gap-0 bg-muted/80 py-0 text-sm" key={value} label={displayLabel} value={value}>
-            {icon && <span className="mr-1 inline-block">{icon}</span>}
+          <MultiSelectBadge
+            className="h-5 gap-0 rounded-xl bg-muted/80 py-0 text-sm"
+            key={value}
+            label={displayLabel}
+            value={value}
+          >
+            {icon && <span className="mr-1">{icon}</span>}
           </MultiSelectBadge>
         ))}
       </MultiSelectTrigger>

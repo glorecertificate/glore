@@ -159,7 +159,7 @@ export const ProfileForm = () => {
 
   return (
     <Form {...form}>
-      <form className="mx-auto w-full space-y-0 duration-300 animate-in fade-in" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="mx-auto w-full space-y-0" onSubmit={form.handleSubmit(onSubmit)}>
         <SettingsSection description={t('profilePictureDescription')} title={t('profilePicture')}>
           <ImageCropper
             disabled={form.formState.isSubmitting}

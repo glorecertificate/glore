@@ -47,13 +47,11 @@ const onSlugChange = (onChange: (slug: string) => void) => (e: React.ChangeEvent
 export const CourseSettings = ({
   className,
   course,
-  disabled: disabledProp,
   onError,
   onSuccess,
   ...props
 }: Omit<React.ComponentProps<'form'>, 'onError' | 'onSubmit'> & {
   course?: Course
-  disabled?: boolean
   onError?: (error: { code: string; message: string }) => void
   onSuccess?: (course: Course) => void
 }) => {
@@ -127,14 +125,9 @@ export const CourseSettings = ({
 
   const { isValid, isDirty, isSubmitting } = form.formState
   const disabled =
-    disabledProp ||
-    !(isValid && isDirty) ||
-    isSubmitting ||
-    (form.getValues('type') === 'skill' && !form.getValues('skillGroupId'))
+    !(isValid && isDirty) || isSubmitting || (form.getValues('type') === 'skill' && !form.getValues('skillGroupId'))
 
   const submitMessage = (() => {
-    if (disabledProp && form.formState.isSubmitSuccessful) return t('redirecting')
-    if (disabledProp) return course ? t('savingChange') : t('creatingCourse')
     if (course && !form.formState.isDirty) return t('noChangesToSave')
     if (form.formState.isSubmitting) return course ? t('savingChange') : t('creatingCourse')
     return course ? t('saveChanges') : t('createCourse')
@@ -309,7 +302,7 @@ export const CourseSettings = ({
               className="w-full [&_svg]:size-4"
               disabled={disabled}
               effect="gooeyLeft"
-              loading={disabledProp || form.formState.isSubmitting}
+              loading={form.formState.isSubmitting}
               type="submit"
               variant="brand"
             >

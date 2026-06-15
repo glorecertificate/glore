@@ -1,7 +1,7 @@
 'use client'
 
 import { GripVerticalIcon } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 
 import { reorderCourses } from '@/actions/courses/management'
@@ -28,6 +28,19 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
   const { displayCourses, hasFilters, isDefaultView } = useDisplayCourses()
 
   const isSortable = tab === 'all' && isDefaultView
+
+  const shouldReduceMotion = useReducedMotion()
+  const cardMotionProps = shouldReduceMotion
+    ? { transition: { duration: 0 } }
+    : {
+        animate: { opacity: 1, scale: 1 },
+        exit: { opacity: 0, scale: 0.92 },
+        initial: { opacity: 0, scale: 0.96 },
+        transition: {
+          default: { duration: 0.25, ease: [0.22, 1, 0.36, 1] as const },
+          layout: { type: 'spring' as const, bounce: 0.2, duration: 0.45 },
+        },
+      }
 
   const sortCourses = (orderedCourses: Course[]) => {
     const next = new Map(orderedCourses.map((course, index) => [course.id, index + 1]))
@@ -105,16 +118,9 @@ export const CourseList = ({ className, ...props }: Omit<React.ComponentProps<ty
     return (
       <TabsContent className={cn('grow space-y-4', className)} value={tab} {...props}>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence initial={false} mode="popLayout">
             {displayCourses.map(course => (
-              <motion.div
-                className="group/sortable-item relative h-full"
-                exit={{ opacity: 0, scale: 0.9 }}
-                initial={false}
-                key={course.slug}
-                layout
-                transition={{ duration: 0.2, ease: 'easeOut' }}
-              >
+              <motion.div className="group/sortable-item relative h-full" key={course.slug} layout {...cardMotionProps}>
                 <CourseListCard activeLanguages={activeLanguages} className="h-full" course={course} />
               </motion.div>
             ))}

@@ -14,7 +14,7 @@
     "prepare": "vp config && tsx ./scripts/typegen.ts",
     "typegen": "tsx ./scripts/typegen.ts",
     "dev": "portless run --app-port 3030 next dev",
-    "dev:clean": "rm -rf .next/dev/cache && portless run --app-port 3030 next dev",
+    "dev:clean": "rm -rf .next && portless run --app-port 3030 next dev",
     "build": "next build",
     "start": "portless run next start",
     "typecheck": "tsgo",

@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 import { PlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
@@ -10,9 +12,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 
 export const CourseListDialog = (props: React.ComponentProps<typeof CourseDialog>) => {
   const t = useTranslations('Courses')
+  const [open, setOpen] = useState(false)
 
   return (
-    <CourseDialog {...props}>
+    <CourseDialog {...props} onOpenChange={setOpen} open={open}>
       <Tooltip delayDuration={0} disableHoverableContent>
         <TooltipTrigger asChild>
           <DialogTrigger asChild>

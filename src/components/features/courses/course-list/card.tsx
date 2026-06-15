@@ -161,7 +161,7 @@ export const CourseListCard = ({
             </div>
             {course.skillGroup && (
               <div className="flex items-center gap-1">
-                <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>
+                <Badge variant="outline">{localizeRecord(course.skillGroup.name, language)}</Badge>
               </div>
             )}
           </div>
@@ -189,7 +189,7 @@ export const CourseListCard = ({
             </div>
             {course.skillGroup && (
               <div className="flex items-center gap-1">
-                <Badge>{localizeRecord(course.skillGroup.name, language)}</Badge>
+                <Badge variant="outline">{localizeRecord(course.skillGroup.name, language)}</Badge>
               </div>
             )}
           </div>

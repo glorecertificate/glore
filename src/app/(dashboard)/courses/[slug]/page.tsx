@@ -1,4 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
+import { ViewTransition } from 'react'
 
 import { getLocale, getTranslations } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
@@ -82,7 +83,9 @@ const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
   return (
     <CourseProvider value={{ course, language, step }}>
       <DashboardPage title={t('courses')} backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
-        <CourseEditor />
+        <ViewTransition default="none" enter={{ 'course-created': 'course-enter', default: 'none' }}>
+          <CourseEditor />
+        </ViewTransition>
       </DashboardPage>
     </CourseProvider>
   )

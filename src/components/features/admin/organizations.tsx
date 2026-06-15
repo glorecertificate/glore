@@ -213,6 +213,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-4 py-3">
           <SearchInput
             className="h-8 w-full sm:w-64"
+            hotkey="/"
             onValueChange={setSearch}
             placeholder={t('searchPlaceholder')}
             value={search}

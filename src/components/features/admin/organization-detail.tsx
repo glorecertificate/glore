@@ -328,6 +328,7 @@ const OrganizationMembersTab = ({
           <div className="flex flex-wrap items-center gap-2 border-b bg-muted/20 px-4 py-3">
             <SearchInput
               className="h-8 w-full bg-background sm:w-56"
+              hotkey="/"
               onValueChange={setSearch}
               placeholder={tAdmin('memberSearchPlaceholder')}
               value={search}

@@ -1,0 +1,88 @@
+name: Agent task
+description: A self-contained spec ready for a coding agent to implement
+title: 'feat: '
+labels:
+  - agent
+body:
+  - type: markdown
+    attributes:
+      value: 'Use this for work you intend to hand to a coding agent. Fill every required field so the issue is self-contained: the agent acts on it cold, with no memory of any prior conversation.'
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      description: Sets the conventional-commit prefix the agent should use. Update the title prefix above to match.
+      options:
+        - feat
+        - fix
+        - refactor
+        - chore
+        - docs
+        - test
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: One or two sentences. What should be true when this is done, in plain terms.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this is needed and anything non-obvious the agent cannot derive from the code, git history, or AGENTS.md. Link related issues or PRs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Machine-checkable outcomes. Each item should be something the agent can verify against (a passing test, a typecheck, an observed behavior).
+      placeholder: |
+        - [ ] First criterion
+        - [ ] Second criterion
+        - [ ] `pnpm run check` exits 0
+    validations:
+      required: true
+  - type: textarea
+    id: files
+    attributes:
+      label: Affected files / areas
+      description: Best-guess entry points so the agent does not have to rediscover them. Paths or feature names.
+      placeholder: |
+        - src/actions/courses.ts
+        - src/components/features/courses/
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the platform does this affect?
+      options:
+        - Authentication / onboarding
+        - Courses
+        - Certificates
+        - Admin
+        - Organizations
+        - Emails
+        - Internationalization
+        - Other / cross-cutting
+    validations:
+      required: false
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+      description: Explicitly list anything the agent should NOT touch, to keep the diff surgical.
+    validations:
+      required: false
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: Readiness
+      options:
+        - label: This issue is self-contained and ready for a coding agent to implement without further clarification.
+          required: true

@@ -1,0 +1,53 @@
+name: Feature request
+description: Propose a new feature or enhancement
+title: 'feat: '
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for suggesting an improvement. Describe the problem first, then the solution you have in mind.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: A clear description of the problem this feature addresses.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature you would like and how it should work.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the platform does this affect?
+      options:
+        - Authentication / onboarding
+        - Courses
+        - Certificates
+        - Admin
+        - Organizations
+        - Emails
+        - Internationalization
+        - Other / cross-cutting
+    validations:
+      required: false
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any alternative solutions or features you have considered.
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, references, or any other context to help evaluate the proposal.
+    validations:
+      required: false

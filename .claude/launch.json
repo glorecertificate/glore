@@ -6,6 +6,7 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "dev"],
       "port": 3030,
+      "autoPort": false,
       "env": {
         "NODE_ENV": "development"
       }

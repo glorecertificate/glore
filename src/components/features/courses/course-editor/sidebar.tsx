@@ -3,15 +3,25 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { CheckIcon, GripVerticalIcon, LoaderCircleIcon, PlusIcon, XIcon } from 'lucide-react'
+import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { useSession } from '@/components/providers/session'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Progress } from '@/components/ui/progress'
-import { Sortable, SortableContent, SortableItem, SortableItemHandle, SortableOverlay } from '@/components/ui/sortable'
+import {
+  Sortable,
+  SortableContent,
+  SortableItem,
+  SortableItemHandle,
+  SortableOverlay,
+  animateLayoutChangesAlways,
+  measureAlways,
+} from '@/components/ui/sortable'
 import {
   Stepper,
   StepperDescription,
@@ -207,9 +217,10 @@ const CourseSidebarItem = ({
 }
 
 export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
-  const { course, courseRef, language, step, setCourse, setLesson, setStep, addLesson, removeLesson } = useCourse()
-  const { user } = useSession()
   const t = useTranslations('Courses')
+  const { user } = useSession()
+  const { course, courseRef, language, step, setCourse, setLesson, setStep, addLesson, removeLesson } = useCourse()
+  const reducedMotion = useReducedMotion()
 
   const currentLessonId = course.lessons[step - 1]?.id
   const isStudent = user.isLearner || user.isVolunteer
@@ -250,7 +261,12 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </span>
         </div>
       )}
-      <Sortable getItemValue={lesson => lesson.id!} onValueChange={onReorder} value={course.lessons}>
+      <Sortable
+        getItemValue={lesson => lesson.id!}
+        measuring={measureAlways}
+        onValueChange={onReorder}
+        value={course.lessons}
+      >
         <Stepper
           className="sticky top-30 flex items-center gap-10 gap-y-2 pr-2"
           defaultValue={step}
@@ -261,36 +277,46 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
         >
           <SortableContent asChild>
             <StepperNav className="w-full items-start gap-4">
-              {course.lessons.map((lesson, index) => {
-                const itemStep = index + 1
-                const isCurrent = step === itemStep
-                const isPast = itemStep < step
-                const isFuture = itemStep > step
-                const isCompleted = user.canEdit || !!lesson.completed
-                const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
-                const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
+              <AnimatedList>
+                {course.lessons.map((lesson, index) => {
+                  const itemStep = index + 1
+                  const isCurrent = step === itemStep
+                  const isPast = itemStep < step
+                  const isFuture = itemStep > step
+                  const isCompleted = user.canEdit || !!lesson.completed
+                  const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
+                  const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
 
-                return (
-                  <SortableItem className="group/sortable relative w-full" key={lesson.id} value={lesson.id!}>
-                    {user.canEdit && (
-                      <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
-                        <GripVerticalIcon className="size-4" />
-                      </SortableItemHandle>
-                    )}
-                    <CourseSidebarItem
-                      initialCourse={courseRef.current}
-                      isSingleLesson={course.lessons.length === 1}
-                      language={language}
-                      lesson={lesson}
-                      lessonStatus={{ isCompleted, isCurrent, isReachable }}
-                      onRemove={removeLesson}
-                      onSelect={handleSelect}
-                      setLesson={setLesson}
-                      step={itemStep}
-                    />
-                  </SortableItem>
-                )
-              })}
+                  return (
+                    <SortableItem
+                      animateLayoutChanges={reducedMotion ? undefined : animateLayoutChangesAlways}
+                      asChild
+                      className="group/sortable relative w-full"
+                      key={lesson.id}
+                      value={lesson.id!}
+                    >
+                      <AnimatedListItem exitOnly>
+                        {user.canEdit && (
+                          <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
+                            <GripVerticalIcon className="size-4" />
+                          </SortableItemHandle>
+                        )}
+                        <CourseSidebarItem
+                          initialCourse={courseRef.current}
+                          isSingleLesson={course.lessons.length === 1}
+                          language={language}
+                          lesson={lesson}
+                          lessonStatus={{ isCompleted, isCurrent, isReachable }}
+                          onRemove={removeLesson}
+                          onSelect={handleSelect}
+                          setLesson={setLesson}
+                          step={itemStep}
+                        />
+                      </AnimatedListItem>
+                    </SortableItem>
+                  )
+                })}
+              </AnimatedList>
             </StepperNav>
           </SortableContent>
           <SortableOverlay>

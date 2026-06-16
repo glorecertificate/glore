@@ -23,6 +23,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -154,78 +155,82 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
               </EmptyContent>
             </Empty>
           ) : (
-            members.map(member => (
-              <Card key={member.id}>
-                <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="size-11 rounded-full">
-                      {member.user.avatarUrl && (
-                        <AvatarImage alt={member.fullName || member.user.email} src={member.user.avatarUrl} />
-                      )}
-                      <AvatarFallback className="rounded-full text-sm font-medium">
-                        {member.fullName
-                          .split(' ')
-                          .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
-                          .slice(0, 2)
-                          .join('') || member.user.email.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="space-y-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-sm font-medium">{getDisplayName(member.user)}</p>
-                        {member.user.id === currentUserId && (
-                          <Badge size="sm" variant="outline">
-                            {t('you')}
-                          </Badge>
+            <AnimatedList>
+              {members.map(member => (
+                <AnimatedListItem key={member.id} variant="row">
+                  <Card>
+                    <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-4">
+                        <Avatar className="size-11 rounded-full">
+                          {member.user.avatarUrl && (
+                            <AvatarImage alt={member.fullName || member.user.email} src={member.user.avatarUrl} />
+                          )}
+                          <AvatarFallback className="rounded-full text-sm font-medium">
+                            {member.fullName
+                              .split(' ')
+                              .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
+                              .slice(0, 2)
+                              .join('') || member.user.email.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="space-y-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="text-sm font-medium">{getDisplayName(member.user)}</p>
+                            {member.user.id === currentUserId && (
+                              <Badge size="sm" variant="outline">
+                                {t('you')}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground">{member.user.email}</p>
+                          <div className="flex flex-wrap gap-2 pt-1">
+                            <Badge variant="ghost">{formatRoleLabel(member.role, t)}</Badge>
+                            <Badge variant="ghost">{member.isPending ? t('statusPending') : t('statusJoined')}</Badge>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-3 sm:min-w-56 sm:items-end">
+                        {isOrgAdmin && member.user.id !== currentUserId ? (
+                          <Select
+                            disabled={activeMembershipId === member.id}
+                            onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
+                            value={member.role}
+                          >
+                            <SelectTrigger className="w-full sm:w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {MANAGEABLE_MEMBER_ROLES.map(role => (
+                                <SelectItem key={role} value={role}>
+                                  {t(`role_${role}`)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <p className="text-xs text-muted-foreground">
+                            {t('memberSince', { date: dateFormatter.format(new Date(member.createdAt)) })}
+                          </p>
+                        )}
+
+                        {canDeleteMembership(member.role, member.user.id) && (
+                          <Button
+                            disabled={activeMembershipId === member.id}
+                            onClick={() => setDeleteMembershipId(member.id)}
+                            size="sm"
+                            variant="outline"
+                          >
+                            <Trash2Icon className="size-3.5" />
+                            {t('removeMember')}
+                          </Button>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{member.user.email}</p>
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        <Badge variant="ghost">{formatRoleLabel(member.role, t)}</Badge>
-                        <Badge variant="ghost">{member.isPending ? t('statusPending') : t('statusJoined')}</Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-3 sm:min-w-56 sm:items-end">
-                    {isOrgAdmin && member.user.id !== currentUserId ? (
-                      <Select
-                        disabled={activeMembershipId === member.id}
-                        onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
-                        value={member.role}
-                      >
-                        <SelectTrigger className="w-full sm:w-48">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {MANAGEABLE_MEMBER_ROLES.map(role => (
-                            <SelectItem key={role} value={role}>
-                              {t(`role_${role}`)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    ) : (
-                      <p className="text-xs text-muted-foreground">
-                        {t('memberSince', { date: dateFormatter.format(new Date(member.createdAt)) })}
-                      </p>
-                    )}
-
-                    {canDeleteMembership(member.role, member.user.id) && (
-                      <Button
-                        disabled={activeMembershipId === member.id}
-                        onClick={() => setDeleteMembershipId(member.id)}
-                        size="sm"
-                        variant="outline"
-                      >
-                        <Trash2Icon className="size-3.5" />
-                        {t('removeMember')}
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+                    </CardContent>
+                  </Card>
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           )}
         </div>
       </div>

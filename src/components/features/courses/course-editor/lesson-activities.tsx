@@ -5,6 +5,7 @@ import { type Locale, useTranslations } from 'next-intl'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { useSession } from '@/components/providers/session'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -111,39 +112,41 @@ const QuestionItem = ({
 
       <div className="space-y-2">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('activityOptions')}</p>
-        {options.map(option => (
-          <div className="group/option flex items-center gap-2" key={option.id}>
-            <button
-              aria-label={t('activityOptionCorrect')}
-              aria-pressed={option.isCorrect}
-              className={cn(
-                'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
-                option.isCorrect
-                  ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-input hover:border-primary/60'
-              )}
-              onClick={() => onOptionCorrectToggle(option.id)}
-              type="button"
-            >
-              {option.isCorrect && <CheckIcon className="size-3" strokeWidth={3} />}
-            </button>
-            <Input
-              className="h-9 flex-1 rounded-lg text-sm"
-              onChange={e => onOptionContentChange(option.id, e.target.value)}
-              placeholder={t('activityOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
-              value={option.content[language] ?? ''}
-            />
-            <Button
-              className="opacity-0 transition-opacity group-hover/option:opacity-100"
-              onClick={() => onRemoveOption(option.id)}
-              size="icon"
-              type="button"
-              variant="ghost"
-            >
-              <TrashIcon className="size-3.5 text-destructive" />
-            </Button>
-          </div>
-        ))}
+        <AnimatedList>
+          {options.map(option => (
+            <AnimatedListItem className="group/option flex items-center gap-2" key={option.id} variant="row">
+              <button
+                aria-label={t('activityOptionCorrect')}
+                aria-pressed={option.isCorrect}
+                className={cn(
+                  'flex size-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors',
+                  option.isCorrect
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-input hover:border-primary/60'
+                )}
+                onClick={() => onOptionCorrectToggle(option.id)}
+                type="button"
+              >
+                {option.isCorrect && <CheckIcon className="size-3" strokeWidth={3} />}
+              </button>
+              <Input
+                className="h-9 flex-1 rounded-lg text-sm"
+                onChange={e => onOptionContentChange(option.id, e.target.value)}
+                placeholder={t('activityOptionPlaceholder', { lang: tLang(language).toLowerCase() })}
+                value={option.content[language] ?? ''}
+              />
+              <Button
+                className="opacity-0 transition-opacity group-hover/option:opacity-100"
+                onClick={() => onRemoveOption(option.id)}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
+                <TrashIcon className="size-3.5 text-destructive" />
+              </Button>
+            </AnimatedListItem>
+          ))}
+        </AnimatedList>
         <Button
           className="ml-7 h-7 text-xs text-muted-foreground"
           onClick={onAddOption}
@@ -448,23 +451,26 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             {t('questionsTitle')}
           </h4>
           <div className="space-y-4">
-            {currentLesson.questions.map((question, index) => (
-              <QuestionItem
-                description={(question.description as IntlRecord)?.[language] ?? ''}
-                explanation={question.explanation?.[language] ?? ''}
-                key={question.id}
-                label={`${t('activityQuestion')} ${index + 1}`}
-                language={language}
-                onAddOption={() => addQuestionOption(question.id)}
-                onDescriptionChange={value => updateQuestionDescription(question.id, value)}
-                onExplanationChange={value => updateQuestionExplanation(question.id, value)}
-                onOptionContentChange={(optionId, value) => updateOptionContent(question.id, optionId, value)}
-                onOptionCorrectToggle={optionId => toggleOptionCorrect(question.id, optionId)}
-                onRemove={() => removeQuestion(question.id)}
-                onRemoveOption={optionId => removeOption(question.id, optionId)}
-                options={question.options}
-              />
-            ))}
+            <AnimatedList>
+              {currentLesson.questions.map((question, index) => (
+                <AnimatedListItem key={question.id} variant="row">
+                  <QuestionItem
+                    description={(question.description as IntlRecord)?.[language] ?? ''}
+                    explanation={question.explanation?.[language] ?? ''}
+                    label={`${t('activityQuestion')} ${index + 1}`}
+                    language={language}
+                    onAddOption={() => addQuestionOption(question.id)}
+                    onDescriptionChange={value => updateQuestionDescription(question.id, value)}
+                    onExplanationChange={value => updateQuestionExplanation(question.id, value)}
+                    onOptionContentChange={(optionId, value) => updateOptionContent(question.id, optionId, value)}
+                    onOptionCorrectToggle={optionId => toggleOptionCorrect(question.id, optionId)}
+                    onRemove={() => removeQuestion(question.id)}
+                    onRemoveOption={optionId => removeOption(question.id, optionId)}
+                    options={question.options}
+                  />
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           </div>
           <Button className="h-7 text-xs" onClick={addQuestion} size="sm" type="button" variant="outline">
             <PlusIcon className="size-3" />
@@ -480,23 +486,25 @@ export const LessonActivities = ({ className }: { className?: string }) => {
             {t('subskillEvaluationsTitle')}
           </h4>
           <div className="space-y-4">
-            {currentLesson.evaluations.map((evaluation, index) => (
-              <div className="space-y-3" key={evaluation.id}>
-                <ActivityItem
-                  description={(evaluation.description as IntlRecord)?.[language] ?? ''}
-                  label={`${t('activityEvaluation')} ${index + 1}`}
-                  language={language}
-                  onDescriptionChange={value => updateEvaluationDescription(evaluation.id, value)}
-                  onRemove={() => removeEvaluation(evaluation.id)}
-                />
-                {/* <RatingGroup
-                  className="pointer-events-none opacity-50"
-                  color="brand"
-                  disabled
-                  id={`evaluation-${evaluation.id}`}
-                /> */}
-              </div>
-            ))}
+            <AnimatedList>
+              {currentLesson.evaluations.map((evaluation, index) => (
+                <AnimatedListItem className="space-y-3" key={evaluation.id} variant="row">
+                  <ActivityItem
+                    description={(evaluation.description as IntlRecord)?.[language] ?? ''}
+                    label={`${t('activityEvaluation')} ${index + 1}`}
+                    language={language}
+                    onDescriptionChange={value => updateEvaluationDescription(evaluation.id, value)}
+                    onRemove={() => removeEvaluation(evaluation.id)}
+                  />
+                  {/* <RatingGroup
+                    className="pointer-events-none opacity-50"
+                    color="brand"
+                    disabled
+                    id={`evaluation-${evaluation.id}`}
+                  /> */}
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           </div>
           <Button className="h-7 text-xs" onClick={addEvaluation} size="sm" type="button" variant="outline">
             <PlusIcon className="size-3" />

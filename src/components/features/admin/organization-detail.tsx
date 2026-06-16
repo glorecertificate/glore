@@ -49,6 +49,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -413,70 +414,76 @@ const OrganizationMembersTab = ({
                 </div>
 
                 <div className="divide-y">
-                  {displayMembers.map(member => (
-                    <div className={cn(MEMBER_GRID, 'py-2.5 transition-colors hover:bg-accent/40')} key={member.id}>
-                      <div className="flex min-w-0 items-center gap-3">
-                        <Avatar className="size-8 shrink-0 rounded-full">
-                          {member.user.avatarUrl && (
-                            <AvatarImage alt={member.fullName || member.user.email} src={member.user.avatarUrl} />
-                          )}
-                          <AvatarFallback className="rounded-full text-xs font-medium">
-                            {member.fullName
-                              .split(' ')
-                              .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
-                              .slice(0, 2)
-                              .join('') || member.user.email.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{getDisplayName(member.user)}</p>
-                          <p className="truncate text-xs text-muted-foreground">{member.user.email}</p>
+                  <AnimatedList>
+                    {displayMembers.map(member => (
+                      <AnimatedListItem
+                        className={cn(MEMBER_GRID, 'py-2.5 transition-colors hover:bg-accent/40')}
+                        key={member.id}
+                        variant="row"
+                      >
+                        <div className="flex min-w-0 items-center gap-3">
+                          <Avatar className="size-8 shrink-0 rounded-full">
+                            {member.user.avatarUrl && (
+                              <AvatarImage alt={member.fullName || member.user.email} src={member.user.avatarUrl} />
+                            )}
+                            <AvatarFallback className="rounded-full text-xs font-medium">
+                              {member.fullName
+                                .split(' ')
+                                .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
+                                .slice(0, 2)
+                                .join('') || member.user.email.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-medium">{getDisplayName(member.user)}</p>
+                            <p className="truncate text-xs text-muted-foreground">{member.user.email}</p>
+                          </div>
                         </div>
-                      </div>
 
-                      <Select
-                        disabled={activeMembershipId === member.id}
-                        onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
-                        value={member.role}
-                      >
-                        <SelectTrigger className="h-8 w-36">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ORG_ROLES.map(role => (
-                            <SelectItem key={role} value={role}>
-                              {t(`role_${role}`)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        <Select
+                          disabled={activeMembershipId === member.id}
+                          onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
+                          value={member.role}
+                        >
+                          <SelectTrigger className="h-8 w-36">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {ORG_ROLES.map(role => (
+                              <SelectItem key={role} value={role}>
+                                {t(`role_${role}`)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
 
-                      <Badge
-                        className={cn(
-                          'w-fit',
-                          member.isPending ? 'bg-amber-500/10 text-amber-600' : 'bg-emerald-500/10 text-emerald-600'
-                        )}
-                        variant="ghost"
-                      >
-                        {member.isPending ? t('statusPending') : t('statusJoined')}
-                      </Badge>
+                        <Badge
+                          className={cn(
+                            'w-fit',
+                            member.isPending ? 'bg-amber-500/10 text-amber-600' : 'bg-emerald-500/10 text-emerald-600'
+                          )}
+                          variant="ghost"
+                        >
+                          {member.isPending ? t('statusPending') : t('statusJoined')}
+                        </Badge>
 
-                      <span className="text-sm text-muted-foreground">
-                        {dateFormatter.format(new Date(member.createdAt))}
-                      </span>
+                        <span className="text-sm text-muted-foreground">
+                          {dateFormatter.format(new Date(member.createdAt))}
+                        </span>
 
-                      <Button
-                        aria-label={t('removeMember')}
-                        className="size-8 text-muted-foreground hover:text-destructive"
-                        disabled={activeMembershipId === member.id}
-                        onClick={() => setDeleteMembershipId(member.id)}
-                        size="icon"
-                        variant="ghost"
-                      >
-                        <Trash2Icon className="size-3.5" />
-                      </Button>
-                    </div>
-                  ))}
+                        <Button
+                          aria-label={t('removeMember')}
+                          className="size-8 text-muted-foreground hover:text-destructive"
+                          disabled={activeMembershipId === member.id}
+                          onClick={() => setDeleteMembershipId(member.id)}
+                          size="icon"
+                          variant="ghost"
+                        >
+                          <Trash2Icon className="size-3.5" />
+                        </Button>
+                      </AnimatedListItem>
+                    ))}
+                  </AnimatedList>
                 </div>
               </div>
             </div>

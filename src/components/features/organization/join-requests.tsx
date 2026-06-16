@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organizations/requests'
 import { useI18n } from '@/components/providers/i18n'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -156,43 +157,47 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
           </Empty>
         ) : (
           <div className="space-y-3">
-            {joinRequests.map(request => (
-              <Card key={request.id}>
-                <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-medium">{request.fullName}</p>
-                      <Badge variant="outline">{formatRoleLabel(request.role, t)}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{request.email}</p>
-                    {request.message && <p className="text-sm whitespace-pre-wrap">{request.message}</p>}
-                    <p className="text-xs text-muted-foreground">
-                      {t('requestedOn', { date: dateFormatter.format(new Date(request.createdAt)) })}
-                    </p>
-                  </div>
+            <AnimatedList>
+              {joinRequests.map(request => (
+                <AnimatedListItem key={request.id} variant="row">
+                  <Card>
+                    <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-medium">{request.fullName}</p>
+                          <Badge variant="outline">{formatRoleLabel(request.role, t)}</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">{request.email}</p>
+                        {request.message && <p className="text-sm whitespace-pre-wrap">{request.message}</p>}
+                        <p className="text-xs text-muted-foreground">
+                          {t('requestedOn', { date: dateFormatter.format(new Date(request.createdAt)) })}
+                        </p>
+                      </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      disabled={activeRequestId === request.id}
-                      loading={activeRequestId === request.id}
-                      onClick={() => handleApproveRequest(request.id)}
-                      size="sm"
-                      variant="success"
-                    >
-                      {t('approve')}
-                    </Button>
-                    <Button
-                      disabled={activeRequestId === request.id}
-                      onClick={() => setRejectRequestId(request.id)}
-                      size="sm"
-                      variant="outline"
-                    >
-                      {t('reject')}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      <div className="flex gap-2">
+                        <Button
+                          disabled={activeRequestId === request.id}
+                          loading={activeRequestId === request.id}
+                          onClick={() => handleApproveRequest(request.id)}
+                          size="sm"
+                          variant="success"
+                        >
+                          {t('approve')}
+                        </Button>
+                        <Button
+                          disabled={activeRequestId === request.id}
+                          onClick={() => setRejectRequestId(request.id)}
+                          size="sm"
+                          variant="outline"
+                        >
+                          {t('reject')}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           </div>
         )}
       </div>

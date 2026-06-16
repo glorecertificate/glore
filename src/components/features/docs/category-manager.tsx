@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
@@ -97,33 +98,41 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
             </Empty>
           ) : (
             <ul className="divide-y rounded-md border">
-              {categories.map(cat => (
-                <li key={cat.id} className="flex items-center justify-between gap-3 px-3 py-2.5">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{localize(cat.title as IntlRecord)}</p>
-                    <p className="truncate text-xs text-muted-foreground">{cat.slug}</p>
-                  </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button className="shrink-0 text-destructive hover:text-destructive" size="icon" variant="ghost">
-                        <Trash2Icon className="size-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>{t('categories.deleteConfirmTitle')}</AlertDialogTitle>
-                        <AlertDialogDescription>{t('categories.deleteConfirmMessage')}</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDelete(cat.id)}>
-                          {t('categories.delete')}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </li>
-              ))}
+              <AnimatedList>
+                {categories.map(cat => (
+                  <AnimatedListItem asChild key={cat.id} variant="row">
+                    <li className="flex items-center justify-between gap-3 px-3 py-2.5">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium">{localize(cat.title as IntlRecord)}</p>
+                        <p className="truncate text-xs text-muted-foreground">{cat.slug}</p>
+                      </div>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            className="shrink-0 text-destructive hover:text-destructive"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <Trash2Icon className="size-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>{t('categories.deleteConfirmTitle')}</AlertDialogTitle>
+                            <AlertDialogDescription>{t('categories.deleteConfirmMessage')}</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(cat.id)}>
+                              {t('categories.delete')}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </li>
+                  </AnimatedListItem>
+                ))}
+              </AnimatedList>
             </ul>
           )}
         </div>

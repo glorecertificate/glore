@@ -27,6 +27,7 @@ import {
 } from '@/actions/admin/team'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -267,16 +268,19 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
           </Empty>
         ) : (
           <div className="divide-y">
-            {displayUsers.map(user => (
-              <TeamMemberRow
-                isCurrentUser={user.id === currentUser.id}
-                key={user.id}
-                onChangeRole={handleChangeRole}
-                onDelete={setDeleteTarget}
-                onResend={handleResend}
-                user={user}
-              />
-            ))}
+            <AnimatedList>
+              {displayUsers.map(user => (
+                <AnimatedListItem key={user.id} variant="row">
+                  <TeamMemberRow
+                    isCurrentUser={user.id === currentUser.id}
+                    onChangeRole={handleChangeRole}
+                    onDelete={setDeleteTarget}
+                    onResend={handleResend}
+                    user={user}
+                  />
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           </div>
         )}
 

@@ -23,6 +23,7 @@ import {
   rejectOrganization,
 } from '@/actions/admin/organizations'
 import { useI18n } from '@/components/providers/i18n'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -293,9 +294,13 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
           </Empty>
         ) : (
           <div className="divide-y">
-            {displayOrgs.map(org => (
-              <OrgRow key={org.id} onApprove={setApproveTarget} onReject={setRejectTarget} org={org} query={search} />
-            ))}
+            <AnimatedList>
+              {displayOrgs.map(org => (
+                <AnimatedListItem key={org.id} variant="row">
+                  <OrgRow onApprove={setApproveTarget} onReject={setRejectTarget} org={org} query={search} />
+                </AnimatedListItem>
+              ))}
+            </AnimatedList>
           </div>
         )}
       </div>

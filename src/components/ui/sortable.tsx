@@ -13,6 +13,8 @@ import {
   type DraggableSyntheticListeners,
   type DropAnimation,
   KeyboardSensor,
+  type MeasuringConfiguration,
+  MeasuringStrategy,
   MouseSensor,
   type ScreenReaderInstructions,
   TouchSensor,
@@ -25,9 +27,11 @@ import {
 } from '@dnd-kit/core'
 import { restrictToHorizontalAxis, restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import {
+  type AnimateLayoutChanges,
   SortableContext,
   type SortableContextProps,
   arrayMove,
+  defaultAnimateLayoutChanges,
   horizontalListSortingStrategy,
   sortableKeyboardCoordinates,
   useSortable,
@@ -306,15 +310,21 @@ const useSortableItemContext = (consumerName: string) => {
   return context
 }
 
+export const animateLayoutChangesAlways: AnimateLayoutChanges = args =>
+  args.isSorting || args.wasDragging ? defaultAnimateLayoutChanges(args) : true
+
+export const measureAlways: MeasuringConfiguration = { droppable: { strategy: MeasuringStrategy.Always } }
+
 export const SortableItem = (
   props: React.ComponentProps<'div'> & {
     value: UniqueIdentifier
+    animateLayoutChanges?: AnimateLayoutChanges
     asHandle?: boolean
     asChild?: boolean
     disabled?: boolean
   }
 ) => {
-  const { value, style, asHandle, asChild, disabled, className, ref, ...itemProps } = props
+  const { value, animateLayoutChanges, style, asHandle, asChild, disabled, className, ref, ...itemProps } = props
 
   const inSortableContent = use(SortableContentContext)
   const inSortableOverlay = use(SortableOverlayContext)
@@ -330,6 +340,7 @@ export const SortableItem = (
   const context = useSortableContext(ITEM_NAME)
   const id = useId()
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+    animateLayoutChanges,
     disabled,
     id: value,
   })

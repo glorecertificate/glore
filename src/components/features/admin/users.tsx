@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 
 import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin/users'
 import { useSession } from '@/components/providers/session'
+import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
@@ -171,16 +172,19 @@ export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
         </Empty>
       ) : (
         <div className="flex flex-col gap-2">
-          {displayUsers.map(u => (
-            <UserRow
-              isCurrentUser={u.id === currentUser.id}
-              key={u.id}
-              onBan={setBanTarget}
-              onChangeRole={handleChangeRole}
-              onUnban={setUnbanTarget}
-              user={u}
-            />
-          ))}
+          <AnimatedList>
+            {displayUsers.map(u => (
+              <AnimatedListItem key={u.id} variant="row">
+                <UserRow
+                  isCurrentUser={u.id === currentUser.id}
+                  onBan={setBanTarget}
+                  onChangeRole={handleChangeRole}
+                  onUnban={setUnbanTarget}
+                  user={u}
+                />
+              </AnimatedListItem>
+            ))}
+          </AnimatedList>
         </div>
       )}
       <BanDialog

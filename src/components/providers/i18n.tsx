@@ -21,7 +21,6 @@ const useI18nContext = (value: I18nContextValue) => {
   const messageStoreRef = useRef(messageStore)
   messageStoreRef.current = messageStore
   const messages = messageStore[localeState]
-  // eslint-disable-next-line react-compiler/capitalized-calls
   const timeZone = value.timeZone ?? Intl.DateTimeFormat(localeState).resolvedOptions().timeZone
 
   const localeItems = LOCALE_ITEMS.map(item => {

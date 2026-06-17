@@ -88,7 +88,7 @@ export const Confetti = ({
   }, [manual])
 
   return (
-    // eslint-disable-next-line react-compiler/rules-of-hooks, react-doctor/rules-of-hooks
+    // eslint-disable-next-line react-compiler/rules-of-hooks
     <ConfettiContext.Provider value={{ fire }}>
       <canvas ref={canvasRef} {...props} />
       {children}

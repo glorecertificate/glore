@@ -127,7 +127,7 @@ export const SidebarProvider = ({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === settings.sidebarShortcut && (event.metaKey || event.ctrlKey)) {
       event.preventDefault()
-      // eslint-disable-next-line react-compiler/rules-of-hooks, react-doctor/rules-of-hooks
+      // eslint-disable-next-line react-compiler/rules-of-hooks  -- compiler handles memoization
       toggleSidebar()
     }
   }
@@ -138,7 +138,6 @@ export const SidebarProvider = ({
   }, [])
 
   useEffect(() => {
-    // eslint-disable-next-line react-compiler/no-deriving-state-in-effects
     setActivePath(pathname)
     window.scrollTo(0, 0)
   }, [pathname])
@@ -156,7 +155,7 @@ export const SidebarProvider = ({
     setOpenMobile,
     setWidth: handleSetWidth,
     state,
-    // eslint-disable-next-line react-doctor/rules-of-hooks, react-compiler/rules-of-hooks -- exposing the stable toggle via context; compiler handles memoization in prod
+    // eslint-disable-next-line react-compiler/rules-of-hooks
     toggleSidebar,
     width,
   }

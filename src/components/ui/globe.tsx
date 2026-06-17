@@ -312,7 +312,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
       globe.destroy()
       window.removeEventListener('resize', onResize)
     }
-    // eslint-disable-next-line react-compiler/exhaustive-deps, react-doctor/exhaustive-deps
+    // eslint-disable-next-line react-compiler/exhaustive-deps
   }, [])
 
   return (

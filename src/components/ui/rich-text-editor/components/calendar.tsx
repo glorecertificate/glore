@@ -31,7 +31,6 @@ export const Calendar = ({
       if (locale === 'en') return
       try {
         const { [locale]: localeData } = await import('react-day-picker/locale')
-        // eslint-disable-next-line react-compiler/invariant
         setCalendarLocale(localeData)
       } catch {
         setCalendarLocale(defaultLocale)

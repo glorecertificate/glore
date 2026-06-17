@@ -1,0 +1,47 @@
+name: Setup
+description: Set up pnpm with the Node.js runtime pinned in .node-version and install the dependencies.
+
+inputs:
+  dev-only:
+    description: Install only dev dependencies.
+    required: false
+    default: false
+  ignore-scripts:
+    description: Ignore lifecycle scripts when installing dependencies.
+    required: false
+    default: false
+  frozen-lockfile:
+    description: Fail if the lockfile is out of date.
+    required: false
+    default: true
+  strict-peer-dependencies:
+    description: Fail if peer dependencies are not met.
+    required: false
+    default: false
+
+runs:
+  using: composite
+  steps:
+    - name: Read Node.js version
+      id: node
+      shell: bash
+      run: echo "version=$(cat .node-version)" >> "$GITHUB_OUTPUT"
+    - uses: pnpm/setup@v1.0.0
+      with:
+        runtime: node@${{ steps.node.outputs.version }}
+        cache: true
+        install: false
+    - name: Install dependencies
+      shell: bash
+      run: |
+        OPTIONS=(
+          "${{ inputs.frozen-lockfile }}=--frozen-lockfile"
+          "${{ inputs.dev-only }}=--dev"
+          "${{ inputs.ignore-scripts }}=--ignore-scripts"
+          "${{ inputs.strict-peer-dependencies }}=--strict-peer-dependencies"
+        )
+        args=()
+        for option in "${OPTIONS[@]}"; do
+          [ "${option%%=*}" = "true" ] && args+=("${option#*=}")
+        done
+        pnpm install "${args[@]}"

@@ -1,32 +1,18 @@
-# Architecture Reference
+# Architecture reference
 
 Full source tree and structural conventions for the GloRe codebase.
 
 ---
 
-## Source Tree
+## Source tree
 
 ```
 src/
-├── actions/            # Server actions (mutations and cached queries)
-│   ├── admin/
-│   │   ├── organizations.ts    # Organization approvals, invitations
-│   │   ├── team.ts             # Team member management, invitations
-│   │   └── users.ts            # User moderation (ban/unban, role updates)
-│   ├── certificates/
-│   │   ├── management.ts       # Certificate mutations: review, create, submit, assign
-│   │   └── queries.ts          # Certificate reads: list, find, eligibility + column configs
-│   ├── courses/
-│   │   ├── helpers.ts          # Shared server-only helpers, courseWith, buildCourseWith (no 'use server')
-│   │   ├── management.ts       # Course and content CRUD (lessons, questions, evaluations)
-│   │   ├── progress.ts         # Learner progress and analytics (enroll, complete, submit)
-│   │   └── queries.ts          # Course read queries
-│   ├── organizations/
-│   │   ├── helpers.ts          # Shared server-only helpers, types, column configs (no 'use server')
-│   │   ├── members.ts          # Org member management: invite, role update, remove
-│   │   ├── queries.ts          # Org reads: getOrganizationPanel, listOrgTutors
-│   │   ├── requests.ts         # Org join requests: approve, reject, register
-│   │   └── settings.ts         # Org entity: update, avatar upload/remove, delete
+├── actions/            # Server actions ('use server'): mutations + cached queries
+│   ├── admin/          # organizations.ts, team.ts, users.ts
+│   ├── certificates/   # helpers.ts (server-only, no 'use server'), management.ts, queries.ts
+│   ├── courses/        # helpers.ts, management.ts, progress.ts, queries.ts
+│   ├── organizations/  # helpers.ts, members.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── doc.ts          # Doc category + article CRUD, cached queries
@@ -38,39 +24,36 @@ src/
 │   ├── error.tsx       # Global error boundary (client)
 │   ├── not-found.tsx   # Global 404 (server)
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
-│   ├── (auth)/         # Unauthenticated routes (login, onboarding)
-│   ├── (dashboard)/    # Authenticated routes (sidebar layout)
-│   ├── [username]/     # Public certificate page route
-│   └── api/            # API routes (auth catch-all + v1/)
+│   ├── (auth)/         # Unauthenticated routes: login, onboarding, register
+│   ├── (dashboard)/    # Authenticated routes (sidebar layout): about, admin, certificates,
+│   │                   #   courses, dashboard, docs, help, organization, settings
+│   ├── [username]/     # Public certificate page (page.tsx, opengraph-image.tsx, not-found.tsx)
+│   ├── api/            # API routes (auth catch-all + v1/)
+│   └── offline/        # Offline fallback page
 ├── components/
-│   ├── blocks/         # Complex composed blocks (rich-text-editor)
-│   ├── features/       # Domain components grouped by feature
-│   │   ├── about/         # About page components
-│   │   ├── admin/         # Admin panel components
-│   │   ├── auth/          # Auth forms, login/register UI
-│   │   ├── certificates/  # Certificate management UI
-│   │   ├── courses/       # Course viewer/editor components
-│   │   ├── dashboard/     # Dashboard page components
-│   │   ├── docs/          # Docs article cards, list/search, sheets, editor dialog
-│   │   ├── help/          # Help page components
-│   │   ├── onboarding/    # Onboarding form steps
-│   │   ├── organization/  # Org panel header, tabs, management sections
-│   │   ├── pwa/           # PWA install prompts, offline UI
-│   │   ├── search/        # Global command palette (SearchCommand) with Fuse.js
-│   │   └── users/         # User profile components
-│   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper
-│   ├── layout/         # Shell components (sidebar, page header, fallbacks)
-│   ├── providers/      # Context providers (session, i18n, theme, courses, PWA)
-│   └── ui/             # shadcn/ui primitives and custom UI components
+│   ├── auth/           # Auth flow + forms (login, register, password reset, signup dialog)
+│   ├── features/       # Domain components grouped by feature:
+│   │                   #   admin, certificates, courses, dashboard, docs, help,
+│   │                   #   onboarding, organization, users
+│   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
+│   ├── layout/         # dashboard-page, dashboard-sidebar, error-fallback,
+│   │                   #   loading-fallback, search-command (Fuse.js command palette)
+│   ├── providers/      # Flat single-file providers: i18n, search-params, session, theme
+│   └── ui/             # shadcn/ui primitives + custom UI (incl. rich-text-editor/)
 ├── db/
-│   ├── client.ts       # Neon + Drizzle client (neon HTTP driver)
+│   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
 │   ├── helpers.ts      # safeQuery(), queryError()
+│   ├── schemas.ts      # drizzle-zod schemas
 │   ├── types.ts        # Drizzle table type helpers (InferInsertModel)
-│   ├── schema/         # Drizzle schema definitions per table
-│   ├── queries/        # Query parse functions per table (pure: no @/db/client import)
-│   └── mutations/      # Server-only write primitives per table (server-only, no 'use server')
-├── emails/             # React Email templates (auth, team, certificates, org)
-├── hooks/              # Custom React hooks
+│   ├── schema/         # Per-table Drizzle definitions: accounts, assessments, certificates,
+│   │                   #   courses, docs, enums, helpers, index, organizations, progress,
+│   │                   #   regions, relations, sessions, skill-groups, teams, users, verifications
+│   ├── queries/        # parse* functions per table (pure: NO @/db/client import)
+│   │                   #   certificate, course, doc, lesson, organization, user
+│   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
+│                       #   certificate.ts, course.ts, organization.ts, user.ts
+├── emails/             # React Email templates: account, auth, certificate, organization, team
+├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
@@ -79,6 +62,7 @@ src/
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail utility)
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
+│   ├── phone.ts        # Phone number helpers
 │   ├── rate-limit.ts   # Rate limiting helpers
 │   ├── storage.ts      # R2 Put/Delete/URL helpers (r2Put, r2Delete, r2Url)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, etc.)
@@ -89,23 +73,35 @@ src/
 
 ---
 
-## File Naming
+## Database client
 
-- All files: **kebab-case** (enforced by `unicorn/filename-case`)
-- Components: one component per file, named exports preferred
-- Feature components: grouped by domain under `features/<domain>/`, sub-features in sub-folders
-  - Drop domain prefix from filenames: `features/courses/course-editor/view.tsx` (not `course-editor-view.tsx`)
-  - Context/params at sub-feature root: `context.tsx`, `params.ts`, `use-params.ts`
-- Provider pattern: split into `*-context.tsx` + `*-provider.tsx`
-- Database queries: `src/db/queries/<table>.ts` with `parse*` function (MUST stay pure: importing `@/db/client` here leaks `server-only` into client bundles via parser chains)
-- Database mutations: `src/db/mutations/<table>.ts` for shared server-only write primitives reused across actions (`import 'server-only'`, never `'use server'`)
-- Database schema: `src/db/schema/<table>.ts` with Drizzle table definitions
+`src/db/client.ts` picks the driver by `DATABASE_URL` host:
+
+- `localhost` / `127.0.0.1` uses `drizzle-orm/node-postgres` + `pg.Pool` (dev).
+- Anything else uses `drizzle-orm/neon-http` for reads (prod).
+
+Multi-statement writes go through `transaction()` (dev: the `pg` pool; prod: a module-scoped neon-serverless WebSocket pool). The module exports `db`, `transaction`, and the `Transaction` type. Write primitives live in `db/mutations/<domain>.ts` as composable `(tx, ...args) => ...` units that actions wrap.
 
 ---
 
-## Server vs Client Components
+## File naming
 
-- **Server Components** by default
-- `'use client'` only when interactivity is needed (hooks, event handlers, browser APIs)
-- Layout guards (admin, certificates) are server components that call `notFound()`
-- **Page Suspense pattern:** Pages that fetch data async MUST use an inner async component + outer sync page with `<Suspense fallback={<LoadingFallback />}>`. The page header renders immediately while data loads.
+- All files: kebab-case (enforced by `unicorn/filename-case`).
+- One component per file.
+- Feature components group by domain under `features/<domain>/`, dropping the domain prefix from filenames: `features/courses/course-editor/view.tsx`, not `course-editor-view.tsx`. Sub-features nest in sub-folders.
+- Database queries: `db/queries/<table>.ts` exporting `parse*` functions. These MUST stay pure: importing `@/db/client` here leaks `server-only` into client bundles via parser chains.
+- Database mutations: `db/mutations/<table>.ts` for shared server-only write primitives (`import 'server-only'`, never `'use server'`).
+- Database schema: `db/schema/<table>.ts` with Drizzle table definitions.
+
+### Provider pattern
+
+App-wide providers in `components/providers/` are single flat files (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its own `use<X>` hook (no separate hook file). Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it needs a server-side data fetch. Feature-scoped contexts live under `components/features/<domain>/` (the courses provider uses the split form: `context.tsx` + `provider.tsx`).
+
+---
+
+## Server vs client components
+
+- Server components by default.
+- `'use client'` only when interactivity is needed (hooks, event handlers, browser APIs).
+- Layout guards (admin, certificates) are server components that call `notFound()`.
+- Page Suspense pattern: pages that fetch data async use an inner async component plus an outer sync page wrapping it in `<Suspense fallback={<LoadingFallback />}>`, so the page header renders immediately while data loads.

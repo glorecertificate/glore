@@ -27,12 +27,14 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 ```sh
 git clone https://github.com/glorecertificate/glore.git && cd glore
 cp .env.example .env
-corepack enable && corepack install && pnpm install
+echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.development.local
+corepack enable && corepack install
+pnpm install
 pnpm skills
-pnpm run db:up
-DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db migrate
-pnpm dev                # https://glore.localhost
-pnpm email              # https://glore-email.localhost (optional)
+pnpm db:up
+pnpm db migrate
+pnpm dev     # https://glore.localhost
+pnpm email   # https://email.glore.localhost
 ```
 
 ### Local database
@@ -57,36 +59,37 @@ the Neon URL from `.env`. The driver in [`src/db/client.ts`](src/db/client.ts) s
 **Container lifecycle:**
 
 ```sh
-pnpm run db:up      # start (or recreate) the Postgres container
-pnpm run db:down    # stop and remove the container (volume preserved)
-pnpm run db:logs    # tail Postgres logs
-pnpm run db:reset   # drop the data volume and restart with an empty database
+pnpm db:up      # start (or recreate) the Postgres container
+pnpm db:down    # stop and remove the container (volume preserved)
+pnpm db:logs    # tail Postgres logs
+pnpm db:reset   # drop the data volume and restart with an empty database
 ```
 
 **Schema:**
 
-`drizzle-kit` does not auto-load `.env.development.local`, so always pass `DATABASE_URL` explicitly when
-operating on the local DB:
+The `db` script wraps `drizzle-kit` and reads `DATABASE_URL` from `.env.development.local` to target the local container automatically:
 
 ```sh
-DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db migrate    # apply pending migrations
-DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db generate   # generate a new migration from schema changes
-DATABASE_URL='postgresql://glore:glore@localhost:5433/glore' pnpm run db studio     # open Drizzle Studio
+pnpm db migrate    # apply pending migrations
+pnpm db generate   # generate a new migration from schema changes
+pnpm db studio     # open Drizzle Studio
 ```
+
+To run against a different database, prefix the command with an explicit `DATABASE_URL=...`.
 
 **Seeding data from Neon:**
 
-`pnpm run db:pull [env-file]` dumps the database referenced in the given env file (defaults to `.env`)
+`pnpm db:pull [env-file]` dumps the database referenced in the given env file (defaults to `.env`)
 and replaces the local database with it. The script prints both source and target URLs (with passwords
 masked) and asks for confirmation before running. It uses `pg_dump --clean --if-exists` inside the
 `glore-postgres` container, so existing tables, rows, and types in the target are dropped.
 
 ```sh
-pnpm run db:pull               # pull from the DATABASE_URL in .env
-pnpm run db:pull .env.local    # pull from a different env file
+pnpm db:pull               # pull from the DATABASE_URL in .env
+pnpm db:pull .env.local    # pull from a different env file
 ```
 
-The Postgres container must be running first (`pnpm run db:up`).
+The Postgres container must be running first (`pnpm db:up`).
 
 **Switching back to Neon in dev:**
 
@@ -103,9 +106,9 @@ The app is hosted on [Vercel](https://vercel.com):
 The application can be also deployed manually:
 
 ```sh
-pnpm run deploy:preview     # deploy a preview
-pnpm run deploy:production  # deploy to production without a release
-pnpm run release            # release + trigger production deploy
+pnpm deploy:preview     # deploy a preview
+pnpm deploy:production  # deploy to production without a release
+pnpm release            # release + trigger production deploy
 ```
 
 ## Contributing

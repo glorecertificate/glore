@@ -36,7 +36,8 @@
     "email": "portless email.glore dotenv -- email dev --dir src/emails --port 3031",
     "release": "dotenv -- release-it --config release.config.ts",
     "analyze": "next experimental-analyze",
-    "bump": "corepack use pnpm@latest && pnpm update -Li"
+    "bump": "corepack use pnpm@latest && pnpm update -Li",
+    "skills": "skills experimental_install --yes"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.81",
@@ -165,6 +166,7 @@
     "react-doctor": "^0.5.1",
     "react-email": "^6.6.0",
     "release-it": "^20.2.0",
+    "skills": "^1.5.11",
     "tailwind-scrollbar-hide": "^4.0.0",
     "tailwindcss": "^4.3.0",
     "tailwindcss-animate": "^1.0.7",

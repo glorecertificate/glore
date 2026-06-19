@@ -41,11 +41,9 @@
   "oxc.path.oxlint": "./node_modules/.bin/oxlint",
   "oxc.typeAware": false,
   "search.exclude": {
-    "**/.agents/**": true,
     "**/.claude/**": true,
     "**/.next/**": true,
     "**/.vercel/**": true,
-    "**/AGENTS.md": true,
     "**/CHANGELOG.md": true,
     "**/node_modules": true,
     "**/pnpm-lock.yaml": true,

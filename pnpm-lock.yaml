@@ -384,6 +384,9 @@ importers:
       release-it:
         specifier: ^20.2.0
         version: 20.2.0(@types/node@25.9.3)(magicast@0.5.3)
+      skills:
+        specifier: ^1.5.11
+        version: 1.5.11
       tailwind-scrollbar-hide:
         specifier: ^4.0.0
         version: 4.0.0(tailwindcss@4.3.0)
@@ -9161,6 +9164,11 @@ packages:
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
+
+  skills@1.5.11:
+    resolution: {integrity: sha512-QDGca7EqRpbFQFKESTZm0+rlY8yg4PTAQatvJu+jsTmtDLfApsHdNG+QaKc0MuRhzOH7OW0FdDRcSPTDM+KpNg==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   slate-dom@0.124.1:
     resolution: {integrity: sha512-D3yVibjLZM4Oj4MmXxOEXbjrlf4wJez3OvGABBNYrAP7gXb0d96tKNtWZ0hGm/5y84idw/LHjZ7W1uTYqFR9rQ==}
@@ -18952,6 +18960,10 @@ snapshots:
       totalist: 3.0.1
 
   sisteransi@1.0.5: {}
+
+  skills@1.5.11:
+    dependencies:
+      yaml: 2.9.0
 
   slate-dom@0.124.1(slate@0.124.1):
     dependencies:

@@ -1,7 +1,7 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@plugin 'tailwindcss-animate';
-@plugin 'tailwind-scrollbar-hide';
+@plugin "tailwindcss-animate";
+@plugin "tailwind-scrollbar-hide";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -125,10 +125,10 @@
 
 @theme inline {
   --font-sans:
-    var(--font-sans), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+    var(--font-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   --font-mono:
-    var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.5rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

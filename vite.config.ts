@@ -66,6 +66,12 @@ export default defineConfig({
           trailingComma: 'none',
         },
       },
+      {
+        files: ['**/*.css'],
+        options: {
+          singleQuote: false,
+        },
+      },
     ],
   },
   lint: {

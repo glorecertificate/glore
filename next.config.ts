@@ -14,7 +14,7 @@ const envSchema = z.object({
     .startsWith('postgresql://')
     .refine(
       url => url.includes('@localhost') || url.includes('@127.0.0.1') || url.includes('sslmode=require'),
-      'DATABASE_URL must include sslmode=require (Neon) or point at localhost (local Postgres)'
+      'DATABASE_URL must include sslmode=require or point at localhost'
     ),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
@@ -30,7 +30,9 @@ const envSchema = z.object({
   SMTP_PASSWORD: z.string().min(1),
 })
 
-if (!process.env.SKIP_ENV_VALIDATION) envSchema.parse(process.env)
+if (!process.env.SKIP_ENV_VALIDATION) {
+  envSchema.parse(process.env)
+}
 
 declare global {
   namespace NodeJS {
@@ -38,30 +40,38 @@ declare global {
   }
 }
 
+interface Redirect {
+  source: Route
+  destination: Route
+  permanent?: boolean
+}
+
+interface Header {
+  source: Route | '/(.*)'
+  headers: {
+    key: string
+    value: string
+  }[]
+}
+
 type Package = keyof typeof dependencies
 
-const ROOT_REDIRECT: Route = '/dashboard'
-const ADMIN_REDIRECT: Route = '/admin/team'
-const MANIFEST_SOURCE: Route = '/api/v1/manifest'
-const EXTERNAL_PACKAGES: Package[] = ['qrcode']
-
-const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  cacheComponents: true,
-  trailingSlash: false,
-  redirects: () => [
+const redirects = () =>
+  [
     {
       source: '/',
-      destination: ROOT_REDIRECT,
+      destination: '/dashboard',
       permanent: true,
     },
     {
       source: '/admin',
-      destination: ADMIN_REDIRECT,
+      destination: '/admin/team',
       permanent: true,
     },
-  ],
-  headers: () => [
+  ] satisfies Redirect[]
+
+const headers = () =>
+  [
     {
       source: '/(.*)',
       headers: [
@@ -100,7 +110,7 @@ const nextConfig: NextConfig = {
       ],
     },
     {
-      source: MANIFEST_SOURCE,
+      source: '/api/v1/manifest',
       headers: [
         {
           key: 'cache-control',
@@ -108,23 +118,31 @@ const nextConfig: NextConfig = {
         },
       ],
     },
-  ],
-  serverExternalPackages: EXTERNAL_PACKAGES,
+  ] satisfies Header[]
+
+const serverExternalPackages: Package[] = ['qrcode']
+
+const optimizePackageImports: Package[] = [
+  '@dnd-kit/core',
+  '@dnd-kit/sortable',
+  '@dnd-kit/utilities',
+  'cmdk',
+  'motion',
+  'nuqs',
+  'react-day-picker',
+  'react-hook-form',
+]
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  cacheComponents: true,
+  trailingSlash: false,
+  redirects,
+  headers,
+  serverExternalPackages,
   typedRoutes: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   experimental: {
-    optimizePackageImports: [
-      '@dnd-kit/core',
-      '@dnd-kit/sortable',
-      '@dnd-kit/utilities',
-      'cmdk',
-      'motion',
-      'nuqs',
-      'react-day-picker',
-      'react-hook-form',
-    ],
+    optimizePackageImports,
     turbopackFileSystemCacheForDev: false,
     turbopackFileSystemCacheForBuild: true,
     viewTransition: true,
@@ -133,9 +151,11 @@ const nextConfig: NextConfig = {
 
 export default (phase: PHASE_TYPE) => {
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
+  const allowedDevOrigins = isDevelopment ? [new URL(process.env.APP_URL).host] : undefined
 
   const plugins = [
     nextIntl({
+      requestConfig: './src/i18n.ts',
       experimental: {
         messages: {
           path: './messages',
@@ -144,12 +164,12 @@ export default (phase: PHASE_TYPE) => {
           precompile: !isDevelopment,
         },
       },
-      requestConfig: './src/i18n.ts',
     }),
   ]
 
   return plugins.reduce<NextConfig>((config, next) => next(config), {
     ...nextConfig,
+    allowedDevOrigins,
     reactCompiler: !isDevelopment,
   })
 }

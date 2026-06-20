@@ -20,9 +20,6 @@ export const DASHBOARD_ROOTS = [
   '/settings',
 ]
 
-/* Email */
-export const EMAIL_BASE_URL = 'https://glorecertificate.xyz'
-
 /* App */
 export const AUTH_VIEWS = [
   'login',

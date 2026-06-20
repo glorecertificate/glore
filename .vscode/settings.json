@@ -32,7 +32,6 @@
   "js/ts.preferences.autoImportFileExcludePatterns": ["lucide-react", "@platejs/**", "@radix-ui/**", "@aws-sdk/**"],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
-  "knip.deferSession": true,
   "oxc.configPath": "./vite.config.ts",
   "oxc.enable": true,
   "oxc.fixKind": "safe_fix_or_suggestion",

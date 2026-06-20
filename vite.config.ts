@@ -211,6 +211,7 @@ export default defineConfig({
       'eslint/operator-assignment': 'error',
       'eslint/prefer-const': 'error',
       'eslint/prefer-destructuring': 'off',
+      'eslint/prefer-named-capture-group': 'off',
       'eslint/prefer-promise-reject-errors': 'warn',
       'eslint/prefer-template': 'error',
       'eslint/radix': 'error',

@@ -81,7 +81,9 @@ Categories: `correctness`, `pedantic`, `perf`, `style`, `suspicious` all `error`
 
 ## Plugins and type-aware mode
 
-Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins: `react-compiler` (via `eslint-plugin-react-hooks`) and `react-doctor` (`oxlint-plugin-react-doctor`).
+Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins: `react-compiler` (via `eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), and `better-tailwindcss` (`eslint-plugin-better-tailwindcss`).
+
+**Tailwind rules (`better-tailwindcss`):** only the non-formatter correctness rules are on, all as `error` with `entryPoint: 'src/app/globals.css'`: `no-unknown-classes` (with `detectComponentClasses: true` and an `ignore` list for custom/3rd-party classes: `font-heading`, `slate-*`, `ignore-click-outside/*`, `prose-*`, `markdown`), `no-conflicting-classes`, `no-deprecated-classes`. All ordering/dedup/whitespace/wrapping rules are `off`: oxfmt's `sortTailwindcss` is the sole class sorter and writes last in `vp check --fix` (fmt > lint > fmt), so enabling them would conflict. The plugin is registered as a `jsPlugins` entry (not bulk-enabled via `pluginRules`) and listed in `knip.json` `ignoreDependencies` (it is imported only from the out-of-graph `vite.config.ts`).
 
 `typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see AGENTS.md gotcha 26). `typeCheck: false` (oxlint does not run tsgo type-checking; that is `tsgo` via `pnpm run typecheck`).
 

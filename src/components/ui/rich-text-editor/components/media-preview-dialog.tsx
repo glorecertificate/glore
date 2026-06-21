@@ -98,7 +98,7 @@ export const MediaPreviewDialog = () => {
               <div className="mx-px">
                 {isEditingScale ? (
                   <>
-                    <ScaleInput className="text-zinc w-10 rounded-sm px-1 outline" /> <span>{'%'}</span>
+                    <ScaleInput className="w-10 rounded-sm px-1 text-zinc-500 outline" /> <span>{'%'}</span>
                   </>
                 ) : (
                   <span {...scaleTextProps}>{`${scale * 100}%`}</span>

@@ -39,7 +39,7 @@ const adjustSize = (
 }
 
 const inlineInputVariants = cva(
-  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground/40 hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
+  `-mx-0.5 w-full min-w-0 resize-none overflow-hidden rounded-sm border border-transparent bg-transparent px-0.5 align-top transition-colors duration-150 outline-none placeholder:text-muted-foreground/40 hover:bg-muted/40 focus-visible:border focus-visible:bg-muted/70 disabled:pointer-events-none disabled:opacity-50`,
   {
     defaultVariants: {
       size: 'default',

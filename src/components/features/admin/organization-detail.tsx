@@ -185,7 +185,7 @@ const SortButton = ({
   onClick: () => void
 }) => (
   <button
-    className="-mx-1 inline-flex w-fit items-center gap-1 rounded px-1 py-0.5 transition-colors hover:text-foreground"
+    className="-mx-1 inline-flex w-fit items-center gap-1 rounded-sm px-1 py-0.5 transition-colors hover:text-foreground"
     onClick={onClick}
     type="button"
   >

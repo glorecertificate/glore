@@ -138,7 +138,7 @@ export const CourseListCard = ({
                       variant="ghost"
                     />
                   </TooltipTrigger>
-                  <span className="not:peer-data-[state=open]:invisible">
+                  <span className="peer-data-[state=open]:invisible">
                     <TooltipContent size="sm">{course.icon ? t('updateIcon') : t('addIcon')}</TooltipContent>
                   </span>
                 </Tooltip>

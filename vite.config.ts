@@ -1,25 +1,5 @@
-import reactHooks from 'eslint-plugin-react-hooks'
 import reactDoctor from 'oxlint-plugin-react-doctor'
 import { defineConfig } from 'vite-plus'
-
-const plugins = [
-  {
-    name: 'react-compiler',
-    specifier: 'eslint-plugin-react-hooks',
-    rules: reactHooks.rules,
-  },
-  {
-    name: 'react-doctor',
-    specifier: 'oxlint-plugin-react-doctor',
-    rules: reactDoctor.rules,
-  },
-] as const
-
-const pluginRules = (plugin: (typeof plugins)[number]['name']) =>
-  Object.keys(plugins.find(({ name }) => name === plugin)!.rules).reduce(
-    (rules, rule) => ({ ...rules, [`${plugin}/${rule}`]: 'error' }),
-    {}
-  )
 
 export default defineConfig({
   resolve: {
@@ -113,7 +93,20 @@ export default defineConfig({
         tagNamePreference: {},
       },
     },
-    jsPlugins: plugins.map(({ name, specifier }) => ({ name, specifier })),
+    jsPlugins: [
+      {
+        name: 'react-compiler',
+        specifier: 'eslint-plugin-react-hooks',
+      },
+      {
+        name: 'react-doctor',
+        specifier: 'oxlint-plugin-react-doctor',
+      },
+      {
+        name: 'better-tailwindcss',
+        specifier: 'eslint-plugin-better-tailwindcss',
+      },
+    ],
     rules: {
       curly: ['error', 'multi-line'],
       'func-style': ['error', 'expression'],
@@ -308,7 +301,7 @@ export default defineConfig({
       'react-compiler/unsupported-syntax': 'warn',
       'react-compiler/use-memo': 'error',
       'react-compiler/void-use-memo': 'error',
-      ...pluginRules('react-doctor'),
+      ...Object.fromEntries(Object.keys(reactDoctor.rules).map(rule => [`react-doctor/${rule}`, 'error'])),
       'react-doctor/design-no-space-on-flex-children': 'off',
       'react-doctor/exhaustive-deps': 'off',
       'react-doctor/forbid-component-props': 'off',
@@ -340,6 +333,27 @@ export default defineConfig({
       'react-perf/jsx-no-new-array-as-prop': 'off',
       'react-perf/jsx-no-new-function-as-prop': 'off',
       'react-perf/jsx-no-new-object-as-prop': 'off',
+      'better-tailwindcss/enforce-canonical-classes': 'off',
+      'better-tailwindcss/enforce-consistent-class-order': 'off',
+      'better-tailwindcss/enforce-consistent-important-position': 'off',
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      'better-tailwindcss/enforce-consistent-variable-syntax': 'off',
+      'better-tailwindcss/enforce-consistent-variant-order': 'off',
+      'better-tailwindcss/enforce-logical-properties': 'off',
+      'better-tailwindcss/enforce-shorthand-classes': 'off',
+      'better-tailwindcss/no-conflicting-classes': ['error', { entryPoint: 'src/app/globals.css' }],
+      'better-tailwindcss/no-deprecated-classes': ['error', { entryPoint: 'src/app/globals.css' }],
+      'better-tailwindcss/no-duplicate-classes': 'off',
+      'better-tailwindcss/no-restricted-classes': 'off',
+      'better-tailwindcss/no-unknown-classes': [
+        'error',
+        {
+          detectComponentClasses: true,
+          entryPoint: 'src/app/globals.css',
+          ignore: ['^font-heading$', '^slate-', '^ignore-click-outside/', '^prose(-|$)', '^markdown$'],
+        },
+      ],
+      'better-tailwindcss/no-unnecessary-whitespace': 'off',
       'typescript/array-type': [
         'error',
         {

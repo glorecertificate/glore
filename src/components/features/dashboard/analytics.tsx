@@ -162,7 +162,7 @@ export const CourseAnalytics = () => {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-sm">
-                <thead className="sticky top-0 z-10 bg-muted/30 backdrop-blur">
+                <thead className="sticky top-0 z-10 bg-muted/30 backdrop-blur-sm">
                   <tr className="text-[11px] tracking-wider text-muted-foreground uppercase">
                     <th className="px-4 py-2.5 text-left font-medium">{t('course')}</th>
                     <th className="px-4 py-2.5 text-right font-medium">{t('enrolled')}</th>

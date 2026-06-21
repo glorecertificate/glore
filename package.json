@@ -157,6 +157,7 @@
     "@typescript/native-preview": "7.0.0-dev.20260618.1",
     "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.31.10",
+    "eslint-plugin-better-tailwindcss": "^4.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "knip": "^6.17.1",
     "oxlint-plugin-react-doctor": "^0.5.6",

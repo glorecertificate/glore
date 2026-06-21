@@ -11,8 +11,8 @@
         "NODE_ENV": "development",
         "PORTLESS_APP_PORT": 24368,
         "APP_URL": "https://agent-preview.glore.localhost",
-        "NEXT_DIST_DIR": ".claude/.next",
-        "TSCONFIG_PATH": ".claude/tsconfig.json"
+        "NEXT_DIST_DIR": ".agents/.next",
+        "TSCONFIG_PATH": ".agents/tsconfig.json"
       }
     }
   ]

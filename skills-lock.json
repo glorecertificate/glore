@@ -7,12 +7,6 @@
       "skillPath": "skills/cloudflare/SKILL.md",
       "computedHash": "3db237b77d15da8ee3ee87b73f2d4b2bce1c43e4f066613fb3c7ea2ad626390c"
     },
-    "frontend-design": {
-      "source": "anthropics/skills",
-      "sourceType": "github",
-      "skillPath": "skills/frontend-design/SKILL.md",
-      "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
-    },
     "neon-drizzle": {
       "source": "neondatabase/ai-rules",
       "sourceType": "github",

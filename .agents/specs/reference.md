@@ -254,8 +254,8 @@ const fetchCourses = cache(async () => {
 | `DATABASE_URL`         | Postgres connection string (Neon or local)       | Yes       |
 | `GEMINI_API_KEY`       | Google Gemini API key                            | Yes       |
 | `GEMINI_MODEL`         | Gemini model name                                | Yes       |
-| `NEXT_DIST_DIR`        | Next.js `distDir` override (defaults to `.next`; agent preview sets `.claude/.next`) | Yes |
-| `TSCONFIG_PATH`        | `typescript.tsconfigPath` override (agent preview sets `.claude/tsconfig.json`) | Yes |
+| `NEXT_DIST_DIR`        | Next.js `distDir` override (defaults to `.next`; agent preview sets `.agents/.next`) | Yes |
+| `TSCONFIG_PATH`        | `typescript.tsconfigPath` override (agent preview sets `.agents/tsconfig.json`) | Yes |
 | `SMTP_HOST`            | SMTP server hostname                             | Yes       |
 | `SMTP_PORT`            | SMTP port                                        | Yes       |
 | `SMTP_USER`            | SMTP username                                    | Yes       |

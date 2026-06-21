@@ -3,13 +3,14 @@
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
-import { ChevronDownIcon, EyeIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
+import { ChevronDownIcon, EyeIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
+import { PublishSwitch } from '@/components/features/courses/course-editor/publish-switch'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import {
@@ -27,7 +28,6 @@ import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Progress } from '@/components/ui/progress'
-import { Switch } from '@/components/ui/switch'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type Lesson } from '@/db/queries/lesson'
@@ -43,7 +43,6 @@ export const CourseHeader = () => {
   const t = useTranslations('Courses')
   const { user } = useSession()
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
-
   const [incompleteAlertOpen, setIncompleteAlertOpen] = useState(false)
   const [publishTarget, setPublishTarget] = useState(languageStatus.published)
   const [saving, setSaving] = useState(false)
@@ -65,7 +64,7 @@ export const CourseHeader = () => {
     return acc
   }, [])
 
-  const isSaveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
+  const saveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
 
   const validateQuiz = () => {
     for (const lesson of course.lessons) {
@@ -83,7 +82,7 @@ export const CourseHeader = () => {
   }
 
   const handleSave = async () => {
-    if (isSaveDisabled) return
+    if (saveDisabled) return
     const quizError = validateQuiz()
     if (quizError) {
       toast.error(quizError)
@@ -190,9 +189,14 @@ export const CourseHeader = () => {
                 )
               })}
             </TabsList>
+            <PublishSwitch
+              disabled={saving}
+              onToggle={() => setPublishTarget(!publishTarget)}
+              published={publishTarget}
+            />
           </div>
           <div className="flex items-center gap-3">
-            {isSaveDisabled ? (
+            {saveDisabled ? (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
@@ -222,36 +226,6 @@ export const CourseHeader = () => {
                 {t('save')}
               </Button>
             )}
-            <div className="flex items-center gap-2 rounded-full border bg-muted/40 py-1 pr-2 pl-3 transition-colors">
-              <label
-                className="flex cursor-pointer items-center gap-1.5 text-sm font-medium select-none"
-                htmlFor="publish-toggle"
-              >
-                <span
-                  aria-hidden
-                  className={cn(
-                    'size-1.5 rounded-full transition-colors',
-                    publishTarget ? 'bg-success' : 'bg-muted-foreground/40'
-                  )}
-                />
-                {t('publishToggleLabel')}
-              </label>
-              <Switch
-                checked={publishTarget}
-                className="data-[state=checked]:bg-success"
-                disabled={saving}
-                id="publish-toggle"
-                onCheckedChange={setPublishTarget}
-              />
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <InfoIcon className="size-3.5 cursor-help text-muted-foreground transition-colors hover:text-foreground" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-64 text-center" sideOffset={8}>
-                  {t('publishInfo')}
-                </TooltipContent>
-              </Tooltip>
-            </div>
           </div>
         </>
       ) : (

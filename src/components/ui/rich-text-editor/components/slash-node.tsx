@@ -2,10 +2,8 @@
 
 import { AIChatPlugin } from '@platejs/ai/react'
 import {
-  CalendarIcon,
   ChevronRightIcon,
   Code2Icon,
-  Columns3Icon,
   Heading1Icon,
   Heading2Icon,
   Heading3Icon,
@@ -17,7 +15,6 @@ import {
   SparklesIcon,
   SquareIcon,
   TableIcon,
-  TableOfContentsIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { KEYS, type TComboboxInputElement } from 'platejs'
@@ -32,7 +29,7 @@ import {
   InlineComboboxInput,
   InlineComboboxItem,
 } from '@/components/ui/rich-text-editor/components/inline-combobox'
-import { insertBlock, insertInlineElement } from '@/components/ui/rich-text-editor/utils'
+import { insertBlock } from '@/components/ui/rich-text-editor/utils'
 
 interface Group {
   group: string
@@ -146,38 +143,6 @@ export const SlashInputElement = (props: PlateElementProps<TComboboxInputElement
           insertBlock(ed, value)
         },
       })),
-    },
-    {
-      group: t('advancedBlocks'),
-      items: [
-        {
-          icon: <TableOfContentsIcon />,
-          keywords: ['toc'],
-          label: t('tableOfContents'),
-          onSelect: (ed: PlateEditor, value) => {
-            insertBlock(ed, value)
-          },
-          value: KEYS.toc,
-        },
-        {
-          icon: <Columns3Icon />,
-          label: t('threeColumns'),
-          onSelect: (ed: PlateEditor, value) => {
-            insertBlock(ed, value)
-          },
-          value: 'action_three_columns',
-        },
-        {
-          focusEditor: true,
-          icon: <CalendarIcon />,
-          keywords: ['time'],
-          label: t('date'),
-          onSelect: (ed: PlateEditor, value) => {
-            insertInlineElement(ed, value)
-          },
-          value: KEYS.date,
-        },
-      ],
     },
   ]
 

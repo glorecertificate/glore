@@ -3,7 +3,6 @@
 import { useState } from 'react'
 
 import {
-  CalendarIcon,
   ChevronRightIcon,
   FilmIcon,
   Heading1Icon,
@@ -156,12 +155,6 @@ export const InsertToolbarButton = (props: DropdownMenuProps) => {
           icon: <Link2Icon />,
           label: t('blocks.link'),
           value: KEYS.link,
-        },
-        {
-          focusEditor: true,
-          icon: <CalendarIcon />,
-          label: t('blocks.date'),
-          value: KEYS.date,
         },
       ].map(item => ({
         ...item,

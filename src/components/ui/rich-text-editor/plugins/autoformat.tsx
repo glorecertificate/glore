@@ -1,15 +1,11 @@
 import {
   BlockquoteRules,
   BoldRules,
-  CodeRules,
   HeadingRules,
-  HighlightRules,
   HorizontalRuleRules,
   ItalicRules,
   MarkComboRules,
   StrikethroughRules,
-  SubscriptRules,
-  SuperscriptRules,
   UnderlineRules,
 } from '@platejs/basic-nodes'
 import { BulletedListRules, OrderedListRules, TaskListRules } from '@platejs/list'
@@ -65,10 +61,6 @@ export const AutoformatKit = [
       rule(ItalicRules.markdown),
       rule(UnderlineRules.markdown),
       rule(StrikethroughRules.markdown),
-      rule(CodeRules.markdown),
-      rule(SubscriptRules.markdown),
-      rule(SuperscriptRules.markdown),
-      rule(HighlightRules.markdown),
       rule(BulletedListRules.markdown),
       rule(OrderedListRules.markdown),
       rule(TaskListRules.markdown),

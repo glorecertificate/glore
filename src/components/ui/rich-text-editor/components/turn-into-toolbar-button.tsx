@@ -5,7 +5,6 @@ import { useState } from 'react'
 import {
   CheckIcon,
   ChevronRightIcon,
-  Columns3Icon,
   FileCodeIcon,
   Heading1Icon,
   Heading2Icon,
@@ -118,11 +117,6 @@ export const TurnIntoToolbarButton = (props: DropdownMenuProps) => {
       keywords: ['citation', 'blockquote', '>'],
       label: t('blocks.quote'),
       value: KEYS.blockquote,
-    },
-    {
-      icon: <Columns3Icon />,
-      label: t('blocks.threeColumns'),
-      value: 'action_three_columns',
     },
   ]
 

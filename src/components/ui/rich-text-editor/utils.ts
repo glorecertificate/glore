@@ -1,14 +1,9 @@
 import { insertCallout } from '@platejs/callout'
-import { insertDate } from '@platejs/date'
-import { insertColumnGroup, toggleColumnGroup } from '@platejs/layout'
 import { triggerFloatingLink } from '@platejs/link/react'
 import { insertAudioPlaceholder, insertFilePlaceholder, insertMedia, insertVideoPlaceholder } from '@platejs/media'
 import { TablePlugin } from '@platejs/table/react'
-import { insertToc } from '@platejs/toc'
 import { KEYS, type NodeEntry, type Path, PathApi, type TElement, isHotkey as isPlateHotkey } from 'platejs'
 import { type HotkeysOptions, type PlateEditor } from 'platejs/react'
-
-const ACTION_THREE_COLUMNS = 'action_three_columns'
 
 const insertList = (editor: PlateEditor, type: string) => {
   editor.tf.insertNodes(
@@ -24,7 +19,6 @@ const insertBlockMap: Record<string, (editor: PlateEditor, type: string) => void
   [KEYS.listTodo]: insertList,
   [KEYS.ol]: insertList,
   [KEYS.ul]: insertList,
-  [ACTION_THREE_COLUMNS]: editor => insertColumnGroup(editor, { columns: 3, select: true }),
   [KEYS.audio]: editor => insertAudioPlaceholder(editor, { select: true }),
   [KEYS.callout]: editor => insertCallout(editor, { select: true }),
   [KEYS.file]: editor => insertFilePlaceholder(editor, { select: true }),
@@ -39,12 +33,10 @@ const insertBlockMap: Record<string, (editor: PlateEditor, type: string) => void
       type: KEYS.mediaEmbed,
     }),
   [KEYS.table]: editor => editor.getTransforms(TablePlugin).insert.table({}, { select: true }),
-  [KEYS.toc]: editor => insertToc(editor, { select: true }),
   [KEYS.video]: editor => insertVideoPlaceholder(editor, { select: true }),
 }
 
 const insertInlineMap: Record<string, (editor: PlateEditor, type: string) => void> = {
-  [KEYS.date]: editor => insertDate(editor, { select: true }),
   [KEYS.link]: editor => triggerFloatingLink(editor, { focused: true }),
 }
 
@@ -82,7 +74,6 @@ const setBlockMap: Record<string, (editor: PlateEditor, type: string, entry: Nod
   [KEYS.listTodo]: setList,
   [KEYS.ol]: setList,
   [KEYS.ul]: setList,
-  [ACTION_THREE_COLUMNS]: editor => toggleColumnGroup(editor, { columns: 3 }),
 }
 
 export const setBlockType = (editor: PlateEditor, type: string, { at }: { at?: Path } = {}) =>

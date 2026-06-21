@@ -19,17 +19,13 @@ import { BasicBlocksKit } from '@/components/ui/rich-text-editor/plugins/basic-b
 import { BasicMarksKit } from '@/components/ui/rich-text-editor/plugins/basic-marks'
 import { BlockMenuKit } from '@/components/ui/rich-text-editor/plugins/block-menu'
 import { CalloutKit } from '@/components/ui/rich-text-editor/plugins/callout'
-import { ColumnKit } from '@/components/ui/rich-text-editor/plugins/column'
 import { CursorOverlayKit } from '@/components/ui/rich-text-editor/plugins/cursor-overlay'
-import { DateKit } from '@/components/ui/rich-text-editor/plugins/date'
 import { DndKit } from '@/components/ui/rich-text-editor/plugins/dnd'
-import { DocxKit } from '@/components/ui/rich-text-editor/plugins/docx'
 import { EmojiKit } from '@/components/ui/rich-text-editor/plugins/emoji'
 import { ExitBreakKit } from '@/components/ui/rich-text-editor/plugins/exit-break'
 import { FixedToolbarKit } from '@/components/ui/rich-text-editor/plugins/fixed-toolbar'
 import { FloatingToolbarKit } from '@/components/ui/rich-text-editor/plugins/floating-toolbar'
 import { FontKit } from '@/components/ui/rich-text-editor/plugins/font'
-import { LineHeightKit } from '@/components/ui/rich-text-editor/plugins/line-height'
 import { LinkKit } from '@/components/ui/rich-text-editor/plugins/link'
 import { ListKit } from '@/components/ui/rich-text-editor/plugins/list'
 import { MarkdownKit } from '@/components/ui/rich-text-editor/plugins/markdown'
@@ -48,17 +44,13 @@ const PLUGINS = {
   basicMarks: BasicMarksKit,
   blockMenu: BlockMenuKit,
   callout: CalloutKit,
-  column: ColumnKit,
   cursorOverlay: CursorOverlayKit,
-  date: DateKit,
   dnd: DndKit,
-  docx: DocxKit,
   emoji: EmojiKit,
   exitBreak: ExitBreakKit,
   fixedToolbar: FixedToolbarKit,
   floatingToolbar: FloatingToolbarKit,
   font: FontKit,
-  lineHeight: LineHeightKit,
   link: LinkKit,
   list: ListKit,
   markdown: MarkdownKit,

@@ -1,27 +1,3 @@
-import {
-  BaseBoldPlugin,
-  BaseCodePlugin,
-  BaseHighlightPlugin,
-  BaseItalicPlugin,
-  BaseKbdPlugin,
-  BaseStrikethroughPlugin,
-  BaseSubscriptPlugin,
-  BaseSuperscriptPlugin,
-  BaseUnderlinePlugin,
-} from '@platejs/basic-nodes'
+import { BaseBoldPlugin, BaseItalicPlugin, BaseStrikethroughPlugin, BaseUnderlinePlugin } from '@platejs/basic-nodes'
 
-import { CodeLeafStatic } from '@/components/ui/rich-text-editor/components/code-node-static'
-import { HighlightLeafStatic } from '@/components/ui/rich-text-editor/components/highlight-node-static'
-import { KbdLeafStatic } from '@/components/ui/rich-text-editor/components/kbd-node-static'
-
-export const BaseBasicMarksKit = [
-  BaseBoldPlugin,
-  BaseItalicPlugin,
-  BaseUnderlinePlugin,
-  BaseCodePlugin.withComponent(CodeLeafStatic),
-  BaseStrikethroughPlugin,
-  BaseSubscriptPlugin,
-  BaseSuperscriptPlugin,
-  BaseHighlightPlugin.withComponent(HighlightLeafStatic),
-  BaseKbdPlugin.withComponent(KbdLeafStatic),
-]
+export const BaseBasicMarksKit = [BaseBoldPlugin, BaseItalicPlugin, BaseUnderlinePlugin, BaseStrikethroughPlugin]

@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { type EmojiMartData } from '@emoji-mart/data'
 import { EmojiInlineIndexSearch, insertEmoji } from '@platejs/emoji'
-import { EmojiPlugin } from '@platejs/emoji/react'
 import { useTranslations } from 'next-intl'
-import { PlateElement, type PlateElementProps, usePluginOption } from 'platejs/react'
+import { PlateElement, type PlateElementProps } from 'platejs/react'
 
 import {
   InlineCombobox,
@@ -19,15 +19,27 @@ import { useDebounce } from '@/hooks/use-debounce'
 
 export const EmojiInputElement = (props: PlateElementProps) => {
   const { editor, element } = props
-  const data = usePluginOption(EmojiPlugin, 'data')!
   const t = useTranslations('Components.RichTextEditor.emoji')
 
+  const [data, setData] = useState<EmojiMartData>()
   const [value, setValue] = useState('')
   const debouncedValue = useDebounce(value, 100)
   const isPending = value !== debouncedValue
 
+  useEffect(() => {
+    let active = true
+    const load = async () => {
+      const m = await import('@emoji-mart/data')
+      if (active) setData(m.default as EmojiMartData)
+    }
+    void load()
+    return () => {
+      active = false
+    }
+  }, [])
+
   const filteredEmojis = (() => {
-    if (debouncedValue.trim().length === 0) {
+    if (!data || debouncedValue.trim().length === 0) {
       return []
     }
     return EmojiInlineIndexSearch.getInstance(data).search(debouncedValue.replace(/:$/u, '')).get()

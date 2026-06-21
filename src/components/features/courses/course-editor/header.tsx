@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { ChevronDownIcon, EyeIcon, InfoIcon, SaveIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -48,12 +48,13 @@ export const CourseHeader = () => {
   const [publishTarget, setPublishTarget] = useState(languageStatus.published)
   const [saving, setSaving] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const prevLanguageRef = useRef(language)
   const alertResolverRef = useRef<((value: boolean) => void) | null>(null)
 
-  useEffect(() => {
-    // eslint-disable-next-line react-compiler/set-state-in-effect
+  if (prevLanguageRef.current !== language) {
+    prevLanguageRef.current = language
     setPublishTarget(languageStatus.published)
-  }, [language, languageStatus.published])
+  }
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
 

@@ -38,35 +38,35 @@ Before any Next.js work, find and read the relevant doc in `node_modules/next/di
 
 ## Commands
 
-| Command                   | Description                                                     |
-| ------------------------- | --------------------------------------------------------------- |
-| `pnpm install`            | Install dependencies                                            |
-| `pnpm run dev`            | Start Next.js dev server on port 3030                           |
-| `pnpm run dev:clean`      | Wipe `.next` then start the dev server (reclaims Turbopack disk) |
-| `pnpm run build`          | Production build                                                |
-| `pnpm run start`          | Start production server on port 3030                            |
-| `pnpm run email`          | Preview email templates on port 3031                            |
-| `pnpm run lint`           | Lint with vp                                                    |
-| `pnpm run lint:fix`       | Auto-fix lint issues                                            |
-| `pnpm run format`         | Format with vp                                                  |
-| `pnpm run check`          | Run all `check:*` scripts in parallel                           |
-| `pnpm run check:types`    | Type-check only (`tsgo --noEmit`)                               |
-| `pnpm run check:lint`     | Lint + format check (`vp check`)                                |
-| `pnpm run check:knip`     | Unused files, exports, and dependencies (knip)                 |
-| `pnpm run typecheck`      | Type-check (`tsgo`)                                             |
-| `pnpm run typegen`        | Generate route + public-file types into `types/`               |
-| `pnpm run analyze`        | Next.js bundle analyzer                                         |
-| `pnpm run release`        | Create a release (release-it)                                   |
-| `pnpm run deploy:preview` | Deploy preview to Vercel                                        |
-| `pnpm run deploy:production` | Deploy to production on Vercel                               |
-| `pnpm run bump`           | Update pnpm and upgrade all dependencies                        |
-| `pnpm run skills`         | Install agent skills from `skills-lock.json`                    |
-| `pnpm run db <command>`   | Run drizzle-kit commands                                        |
-| `pnpm run db:up`          | Start local Postgres in Docker (used by `next dev`)             |
-| `pnpm run db:down`        | Stop local Postgres                                             |
-| `pnpm run db:logs`        | Tail local Postgres logs                                        |
-| `pnpm run db:reset`       | Wipe and recreate the local Postgres volume                     |
-| `pnpm run db:pull [env]`  | Pull DB from env file (default `.env`) into local Postgres      |
+| Command                      | Description                                                             |
+| -------------------------    | ----------------------------------------------------------------------- |
+| `pnpm install`               | Install dependencies                                                    |
+| `pnpm run dev`               | Start Next.js dev server on port 3030                                   |
+| `pnpm run dev:clean`         | Wipe `.next` then start the dev server (reclaims Turbopack disk)        |
+| `pnpm run build`             | Production build                                                        |
+| `pnpm run start`             | Start production server on port 3030                                    |
+| `pnpm run email`             | Preview email templates on port 3031                                    |
+| `pnpm run lint`              | Lint with vp                                                            |
+| `pnpm run lint:fix`          | Auto-fix lint issues                                                    |
+| `pnpm run format`            | Format with vp                                                          |
+| `pnpm run check`             | Run all `check:*` scripts in parallel                                   |
+| `pnpm run check:types`       | Type-check only (`tsgo --noEmit`)                                       |
+| `pnpm run check:lint`        | Lint + format check (`vp check`)                                        |
+| `pnpm run check:knip`        | Unused files, exports, and dependencies (knip)                          |
+| `pnpm run typecheck`         | Type-check (`tsgo`)                                                     |
+| `pnpm run typegen`           | Generate route + public-file types into `types/`                        |
+| `pnpm run analyze`           | Next.js bundle analyzer                                                 |
+| `pnpm run release`           | Create a release (release-it)                                           |
+| `pnpm run deploy:preview`    | Deploy preview to Vercel                                                |
+| `pnpm run deploy:production` | Deploy to production on Vercel                                          |
+| `pnpm run bump`              | Update pnpm and upgrade all dependencies                                |
+| `pnpm run skills`            | Install agent skills from `skills-lock.json`                            |
+| `pnpm run db <command>`      | Run drizzle-kit commands                                                |
+| `pnpm run db:up`             | Start local Postgres in Docker (used by `next dev`)                     |
+| `pnpm run db:down`           | Stop local Postgres                                                     |
+| `pnpm run db:logs`           | Tail local Postgres logs                                                |
+| `pnpm run db:reset`          | Wipe and recreate the local Postgres volume                             |
+| `pnpm run db:pull [env]`     | Pull DB from env file (default `.env`) into local Postgres              |
 
 **Pre-commit validation:** Run `pnpm run check` before committing. **`pnpm run check` MUST exit with code 0 before any commit is made. No exceptions.**
 
@@ -113,7 +113,9 @@ Skills live in `.agents/skills/`. External skills are tracked in `skills-lock.js
 
 > **MANDATORY:** The **only** skills folder to read or edit is `.agents/skills/`. Any `skills/` folder inside `.claude/` is a symlink. Always use `.agents/skills/` as the canonical path.
 
-**Installed skills:** external (in `skills-lock.json`): `cloudflare`, `frontend-design`, `neon-drizzle`, `neon-postgres`, `react-email`, `shadcn`, `skill-creator`, `vercel-react-best-practices`, `web-design-guidelines`. Custom (git-tracked): `i18n-audit`.
+**Installed skills:** external (in `skills-lock.json`): `cloudflare`, `frontend-design`, `neon-drizzle`, `neon-postgres`, `react-email`, `shadcn`, `vercel-react-best-practices`, `web-design-guidelines`. Custom (git-tracked): `i18n-audit`.
+
+**MCP servers** (`.mcp.json`): `better-auth` (auth setup), `cloudflare` (R2/Workers docs), `neon` (database ops), `shadcn` (component registry). They auto-connect for compatible agents; query them for live docs and operations in their domain.
 
 Agents MUST autonomously read and apply the relevant skill(s) before starting work:
 
@@ -126,7 +128,7 @@ Agents MUST autonomously read and apply the relevant skill(s) before starting wo
 7. **Cloudflare work** > Read `cloudflare/SKILL.md`.
 8. **Translation file audits** (`messages/`) > Run the `i18n-audit` skill.
 9. **Documentation updates** (AGENTS.md, `.agents/`, README) > Run the machine-wide `sync-docs` skill (`/sync-docs [focus]`); it auto-detects this project scope and reads the constraints declared here.
-10. **Creating or optimizing skills** > Read `skill-creator/SKILL.md`.
+10. **Creating or optimizing skills** > Run the machine-wide `skill-creator` skill.
 
 ---
 
@@ -194,9 +196,9 @@ Full formatter, import order, and lint rule details: see `.agents/specs/code.md`
 28. **Dual DB driver (Neon HTTP in prod, `pg` in dev):** `src/db/client.ts` picks the driver by URL host: `localhost`/`127.0.0.1` uses `drizzle-orm/node-postgres` + `pg.Pool`, anything else uses `drizzle-orm/neon-http`. The `DATABASE_URL` validator in `next.config.ts` accepts either `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres is activated by `.env.development.local` (gitignored, dev-only) on **port 5433** (avoids a Mac/host Postgres on 5432). Provision with `pnpm run db:up`, then `pnpm run db migrate` (the `db` script is `dotenv -e .env.development.local -e .env -- drizzle-kit`, so it loads the local `DATABASE_URL` from `.env.development.local`, which wins over `.env`; only pass `DATABASE_URL=...` inline before that file exists or its `DATABASE_URL` is set). Removes ~1.9s/HMR of Neon HTTP latency. Both drivers expose the same read/single-statement query API, so the `db` cast in `client.ts` is safe; multi-statement writes take the separate `transaction()` path (gotcha 31), which handles each driver explicitly.
 29. **Auth schema imports must stay slim:** `src/lib/auth.ts` imports only `accounts`, `sessions`, `users`, `verifications` from individual schema files (NOT `* as schema from '@/db/schema'`). `proxy.ts` calls `auth.api.getSession` on every request, so a barrel import here drags the entire schema graph into the proxy's compile + HMR cost.
 30. **Deploys are prebuilt in CI, not built on Vercel:** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull` + `vercel build` + `vercel deploy --prebuilt` on the 4-core CI runner with a warm `.next/cache` (`actions/cache`), so the Vercel "Building" step is a ~20s artifact upload, not a ~3min build. `VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` live in the workflow `env` (non-secret IDs) because `.vercel/` is gitignored. Two `next.config.ts` flags keep builds fast and MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (safe because the CI `validate` job runs `tsgo` before deploy; re-enabling adds 30-45s of redundant type-checking per build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored `.next/cache` actually speed up Turbopack compile; without it the cache is dead weight).
-31. **Multi-statement writes use `transaction()`, not raw `db`:** prod runs on neon-http which has NO interactive transactions, so any write spanning >1 statement MUST go through `transaction(fn)` from `@/db/client` (dev: `pg` pool; prod: a lazily-initialized, module-scoped neon-serverless WebSocket pool reused across invocations, `max: 3`, needs global `WebSocket` / Node 22+, pinned to `24.14.0` via `.node-version` with an `engines.node: ">=22"` floor). Write logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units; the action wraps it (`await transaction(tx => deleteUser(tx, id))`). **Statements inside a transaction run sequentially** (`await` one at a time) since they share one connection (`Promise.all` on a `tx` corrupts the session, hence `react-doctor/async-parallel` is disabled in those files). Keep PDF/email/R2 side effects OUTSIDE the transaction. See `.agents/specs/reference.md` ("Transactions & the mutation layer").
+31. **Multi-statement writes use `transaction()`, not raw `db`:** prod runs on neon-http which has NO interactive transactions, so any write spanning >1 statement MUST go through `transaction(fn)` from `@/db/client` (dev: `pg` pool; prod: a lazily-initialized, module-scoped neon-serverless WebSocket pool reused across invocations, `max: 3`, needs global `WebSocket` / Node 22+, pinned to `24.16.0` via `.node-version` with an `engines.node: ">=22"` floor). Write logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units; the action wraps it (`await transaction(tx => deleteUser(tx, id))`). **Statements inside a transaction run sequentially** (`await` one at a time) since they share one connection (`Promise.all` on a `tx` corrupts the session, hence `react-doctor/async-parallel` is disabled in those files). Keep PDF/email/R2 side effects OUTSIDE the transaction. See `.agents/specs/reference.md` ("Transactions & the mutation layer").
 32. **`emailAndPassword.autoSignIn` is `false` in `src/lib/auth.ts` and MUST stay false:** every `auth.api.signUpEmail` call in the app creates an account for *someone else* (team/org invites in `src/actions/admin/team.ts`, `src/actions/admin/organizations.ts`, `src/actions/organizations/members.ts`, `src/actions/organizations/requests.ts`), never for the actor. With `autoSignIn: true` (the Better Auth default), `signUpEmail` + the `nextCookies()` plugin write the *new* user's session cookie onto the inviter's response, so on the next request the proxy reads the invitee's session, sees `onboardedAt = null`, and redirects the admin into the invitee's onboarding. Self-registration does NOT use `signUpEmail` (it creates a `pending` join request), so disabling auto sign-in is safe. Do not re-enable it to "fix login": login uses `signInEmail`, which is unaffected.
-33. **Dev server runs on a fixed port behind portless; agents reuse it, never spawn:** the `dev` script is `portless run --app-port 3030 next dev`, so Next always binds **port 3030** (humans still reach it as `https://glore.localhost` via the portless proxy on 443). `.claude/launch.json` declares `"port": 3030` so the preview MCP probes that port, finds the running server, and **reuses** it instead of running `pnpm run dev`. Without the pinned `--app-port` + `port`, portless auto-assigns a random port and `preview_start` re-runs the dev command, which fails with `"glore.localhost" is already registered`. Do not drop `--app-port 3030` or the `port` field. Agents must use `preview_start` (name `preview`), never start the server via Bash.
+33. **The agent preview is a SEPARATE dev server, fully isolated from the human's; never share or spawn it via Bash:** the human `dev` script (`portless glore next dev`) binds **port 3030** as `https://glore.localhost`. The agent preview lives ENTIRELY in `.claude/launch.json` (no package.json script): it runs `pnpm exec portless agent-preview.glore next dev` on **port 24368** as `https://agent-preview.glore.localhost`, with env overrides `PORTLESS_APP_PORT=24368` (portless reads this instead of `--app-port`), `APP_URL=https://agent-preview.glore.localhost` (process env wins over `.env`, so `allowedDevOrigins` accepts the agent host), `NEXT_DIST_DIR=.claude/.next` (own Turbopack build dir), and `TSCONFIG_PATH=.claude/tsconfig.json` (own typecheck scope; `.claude/tsconfig.json` extends the root, points `include` + `tsBuildInfoFile` at `.claude/.next`). `next.config.ts` reads `NEXT_DIST_DIR` (`distDir`, falls back to `.next`) and `TSCONFIG_PATH` (`typescript.tsconfigPath`); both are in the Zod schema. Two Turbopack instances MUST use different dist dirs or they corrupt each other's cache. Isolation is mandatory because the preview MCP keys reuse/stop on the config `name`: a shared name means `preview_stop` would tear down the human's server (observed: killed 3030, dropped the `glore.localhost` route). Do NOT point `launch.json` at the `dev` script or reuse port 3030 or the `glore` name. `.claude/.next` is gitignored via `.claude/*`. Agents use `preview_start` (name `agent-preview`), never start either server via Bash.
 
 ---
 

@@ -148,7 +148,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 Production runs on the **neon-http** driver, which has **no interactive transactions**. For any write that spans more than one statement, use the `transaction()` helper from `@/db/client` instead of firing statements at `db` directly:
 
-- `transaction(fn)` runs `fn(tx)` atomically. In dev (`pg`) it uses the pooled `node-postgres` transaction; in prod it reuses a lazily-initialized, module-scoped **neon-serverless** (WebSocket) pool (`max: 3`, shared across invocations in a warm function instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.14.0` via `.node-version`, with an `engines.node: ">=22"` floor).
+- `transaction(fn)` runs `fn(tx)` atomically. In dev (`pg`) it uses the pooled `node-postgres` transaction; in prod it reuses a lazily-initialized, module-scoped **neon-serverless** (WebSocket) pool (`max: 3`, shared across invocations in a warm function instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.16.0` via `.node-version`, with an `engines.node: ">=22"` floor).
 - Multi-statement write logic lives in `src/db/mutations/<domain>.ts` as composable units `(tx: Transaction, ...args) => ...`. The server action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
 - **Inside a transaction, statements MUST run sequentially** (`await` one at a time). All statements share one connection; `Promise.all` on a single `tx` corrupts the session. This is why `react-doctor/async-parallel` is disabled in transactional mutation files.
 - Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction; compute inputs first, then open a short transaction for the DB writes only.
@@ -254,6 +254,8 @@ const fetchCourses = cache(async () => {
 | `DATABASE_URL`         | Postgres connection string (Neon or local)       | Yes       |
 | `GEMINI_API_KEY`       | Google Gemini API key                            | Yes       |
 | `GEMINI_MODEL`         | Gemini model name                                | Yes       |
+| `NEXT_DIST_DIR`        | Next.js `distDir` override (defaults to `.next`; agent preview sets `.claude/.next`) | Yes |
+| `TSCONFIG_PATH`        | `typescript.tsconfigPath` override (agent preview sets `.claude/tsconfig.json`) | Yes |
 | `SMTP_HOST`            | SMTP server hostname                             | Yes       |
 | `SMTP_PORT`            | SMTP port                                        | Yes       |
 | `SMTP_USER`            | SMTP username                                    | Yes       |

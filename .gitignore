@@ -1,6 +1,3 @@
-.claude/*
-!.claude/skills/
-!.claude/launch.json
 .next/
 .vercel/
 node_modules/

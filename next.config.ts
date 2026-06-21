@@ -1,5 +1,5 @@
 import { type NextConfig, Route } from 'next'
-import { PHASE_DEVELOPMENT_SERVER, type PHASE_TYPE } from 'next/constants'
+import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type PHASE_TYPE } from 'next/constants'
 
 import nextIntl from 'next-intl/plugin'
 import z from 'zod'
@@ -18,6 +18,7 @@ const envSchema = z.object({
     ),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
+  NEXT_DIST_DIR: z.string().min(1).default('.next'),
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_ACCESS_KEY_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_SECRET_ACCESS_KEY: z.string().regex(/^[0-9a-f]{64}$/u),
@@ -28,6 +29,7 @@ const envSchema = z.object({
   SMTP_SENDER: z.string().min(1),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
+  TSCONFIG_PATH: z.string().min(1).optional(),
 })
 
 if (!process.env.SKIP_ENV_VALIDATION) {
@@ -135,6 +137,7 @@ const optimizePackageImports: Package[] = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  distDir: process.env.NEXT_DIST_DIR ?? '.next',
   cacheComponents: true,
   trailingSlash: false,
   redirects,
@@ -150,8 +153,10 @@ const nextConfig: NextConfig = {
 }
 
 export default (phase: PHASE_TYPE) => {
-  const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
-  const allowedDevOrigins = isDevelopment ? [new URL(process.env.APP_URL).host] : undefined
+  const isDevServer = phase === PHASE_DEVELOPMENT_SERVER
+  const isProdBuild = phase === PHASE_PRODUCTION_BUILD
+  const allowedDevOrigins = isDevServer ? [new URL(process.env.APP_URL).host] : undefined
+  const tsconfigPath = process.env.TSCONFIG_PATH || (isProdBuild ? 'tsconfig.build.json' : 'tsconfig.json')
 
   const plugins = [
     nextIntl({
@@ -161,7 +166,7 @@ export default (phase: PHASE_TYPE) => {
           path: './messages',
           locales: 'infer',
           format: 'json',
-          precompile: !isDevelopment,
+          precompile: !isDevServer,
         },
       },
     }),
@@ -170,6 +175,9 @@ export default (phase: PHASE_TYPE) => {
   return plugins.reduce<NextConfig>((config, next) => next(config), {
     ...nextConfig,
     allowedDevOrigins,
-    reactCompiler: !isDevelopment,
+    reactCompiler: !isDevServer,
+    typescript: {
+      tsconfigPath,
+    },
   })
 }

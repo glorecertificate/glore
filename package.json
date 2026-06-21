@@ -15,7 +15,6 @@
     "typegen": "tsx ./scripts/typegen.ts",
     "dev": "portless glore next dev",
     "dev:clean": "rm -rf .next && pnpm run dev",
-    "dev:preview": "NEXT_DIST_DIR=.next-preview APP_URL=https://preview.glore.localhost portless preview.glore next dev",
     "build": "next build",
     "start": "portless run next start",
     "typecheck": "tsgo",

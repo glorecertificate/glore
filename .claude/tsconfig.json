@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": ".next/.tsbuildinfo"
+  },
+  "include": ["../src", "../scripts", "../types", "../*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"]
+}

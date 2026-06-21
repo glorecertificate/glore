@@ -2,13 +2,17 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "preview",
+      "name": "agent-preview",
       "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3030,
+      "runtimeArgs": ["exec", "portless", "agent-preview.glore", "next", "dev"],
+      "port": 24368,
       "autoPort": false,
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "PORTLESS_APP_PORT": 24368,
+        "APP_URL": "https://agent-preview.glore.localhost",
+        "NEXT_DIST_DIR": ".claude/.next",
+        "TSCONFIG_PATH": ".claude/tsconfig.json"
       }
     }
   ]

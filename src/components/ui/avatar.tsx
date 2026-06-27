@@ -50,8 +50,8 @@ export const AvatarStack = <
 
   return (
     <div className={cn('flex -space-x-0.5 hover:space-x-1', className)} {...props}>
-      {avatars.map(avatar => (
-        <HoverCard closeDelay={50} key={avatar.url} openDelay={300}>
+      {avatars.map((avatar, index) => (
+        <HoverCard closeDelay={50} key={avatar.url ?? avatar.placeholder ?? index} openDelay={300}>
           <HoverCardTrigger asChild>
             <Avatar
               className={cn(

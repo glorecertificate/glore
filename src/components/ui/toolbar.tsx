@@ -17,7 +17,7 @@ export const ToolbarToggleGroup = ({
   className,
   ...props
 }: React.ComponentProps<typeof ToolbarPrimitive.ToolbarToggleGroup>) => (
-  <ToolbarToggleGroup className={cn('flex items-center', className)} {...props} />
+  <ToolbarPrimitive.ToolbarToggleGroup className={cn('flex items-center', className)} {...props} />
 )
 
 export const ToolbarLink = ({ className, ...props }: React.ComponentProps<typeof ToolbarPrimitive.Link>) => (

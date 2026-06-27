@@ -264,7 +264,7 @@ const fetchCourses = cache(async () => {
 | `GITHUB_TOKEN`         | GitHub personal access token (CLI only)          | No        |
 | `VERCEL_TOKEN`         | Vercel CLI token (CLI only)                      | No        |
 
-**Validation:** the Zod schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`), unless `process.env.SKIP_ENV_VALIDATION` is set. `next.config.ts` also declares the global `ProcessEnv` augmentation, so `process.env` is typed app-wide. `scripts/typegen.ts` sets `SKIP_ENV_VALIDATION=1` when calling `next typegen`.
+**Validation:** the Zod schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`), unless `process.env.SKIP_ENV_VALIDATION` is set. `next.config.ts` also declares the global `ProcessEnv` augmentation, so `process.env` is typed app-wide. `scripts/typegen.mts` sets `SKIP_ENV_VALIDATION=1` when calling `next typegen`.
 
 > **MANDATORY:** The schema must NOT be moved into `src/` or imported from a `src/` file. Next watches `next.config.ts`'s module-dependency graph and restarts the dev server whenever a watched file changes; importing a `src/` file makes every `src/**` edit trigger a full dev-server restart (cold 5-10s recompiles). Keep the schema inline; `zod` is the only allowed import for it.
 

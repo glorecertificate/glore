@@ -4,6 +4,18 @@
 
 GloRe Certificate is a multilingual e-learning platform that helps volunteers get their soft skills recognized with an official certificate. Organizations onboard members who complete structured courses, accumulate skill ratings, and submit certificates reviewed by tutors. The platform supports platform-level team roles, five organization roles, a rich content editor with AI-assisted writing, full organization management, and a public certificate page per user. Available in English, Spanish, and Italian.
 
+## Domain context
+
+GloRe (short for "Global Recognition") certifies the soft skills people gain through volunteering, turning non-formal learning into a credential they can add to a CV. It exists because volunteering experience is real learning that traditional qualifications do not capture, and HR and educational institutions need a verifiable signal for it.
+
+The product is run by [Associazione Joint](https://associazionejoint.org), a Milan non-profit (founded 2003) active in youth mobility, European volunteering, and non-formal education through Erasmus+ and the European Solidarity Corps. GloRe started as an Erasmus+ Capacity Building project (2016 to 2018) and grew into the GloRe Network, an open, free-to-join set of NGOs across Europe and Latin America that issue certificates under shared quality standards.
+
+This repository is the new version of that platform, replacing the live public sites at `international.glorecertificate.net` and `local.glorecertificate.net` (launched March 2021). It is not a clone of them: terminology and flows here follow this codebase's data model, not the legacy sites. The domain shapes recurring concepts:
+
+- **Network of organizations.** Volunteers join through a member NGO, never as standalone users. The org/membership/role model and the registration-as-join-request flow follow from this.
+- **Soft skills as the unit of value.** Skill courses map to the transferable competences GloRe certifies (problem-solving, teamwork, leadership, empathy, and similar). Assessment ratings on those courses gate certificate eligibility.
+- **Recognition needs trust.** Tutor review, the approved-then-immutable certificate, the verified public page, and the QR-linked PDF all exist so a third party can trust the credential.
+
 ## Users and roles
 
 ### Team roles (platform-level)

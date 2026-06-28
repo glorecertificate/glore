@@ -2,6 +2,8 @@
 
 GloRe Certificate, multilingual e-learning platform for soft skills certification, built with Next.js 16, React 19, Neon (Postgres), Drizzle ORM, and Tailwind CSS 4.
 
+It is a real product by [Associazione Joint](https://associazionejoint.org) (a Milan youth-mobility non-profit) that certifies the soft skills people gain through volunteering. This repo is the new version of the live platform. For the domain background that motivates the data model and flows, read the "Domain context" section in `.agents/specs/app.md` before product work.
+
 > **Source of truth**: This file is the single source of truth for all AI agent instructions. `CLAUDE.md` redirects here via `@AGENTS.md`.
 
 > **Auto-update rule**: When making changes that affect the information documented here, update this file as part of the same change. Move detail to `.agents/specs/` and link here.

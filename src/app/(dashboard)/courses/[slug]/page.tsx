@@ -83,7 +83,7 @@ const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
   return (
     <CourseProvider value={{ course, language, step }}>
       <DashboardPage title={t('courses')} backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
-        <ViewTransition default="none" enter={{ 'course-created': 'course-enter', default: 'none' }}>
+        <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>
       </DashboardPage>

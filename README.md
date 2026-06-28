@@ -77,20 +77,6 @@ pnpm db studio     # open Drizzle Studio
 
 To run against a different database, prefix the command with an explicit `DATABASE_URL=...`.
 
-**Seeding data from Neon:**
-
-`pnpm db:pull [env-file]` dumps the database referenced in the given env file (defaults to `.env`)
-and replaces the local database with it. The script prints both source and target URLs (with passwords
-masked) and asks for confirmation before running. It uses `pg_dump --clean --if-exists` inside the
-`glore-postgres` container, so existing tables, rows, and types in the target are dropped.
-
-```sh
-pnpm db:pull               # pull from the DATABASE_URL in .env
-pnpm db:pull .env.local    # pull from a different env file
-```
-
-The Postgres container must be running first (`pnpm db:up`).
-
 **Switching back to Neon in dev:**
 
 Comment out the `DATABASE_URL` line in `.env.development.local`. Next.js will then fall through to

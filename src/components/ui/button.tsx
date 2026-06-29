@@ -26,7 +26,7 @@ export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-    'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:focus-visible:ring-0',
+    'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none focus-visible:disabled:ring-0',
   ],
   {
     defaultVariants: {
@@ -36,23 +36,23 @@ export const buttonVariants = cva(
     },
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground not-disabled:hover:bg-primary/90',
-        secondary: 'bg-secondary text-secondary-foreground not-disabled:hover:bg-secondary/80',
+        primary: 'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90',
+        secondary: 'bg-secondary text-secondary-foreground hover:not-disabled:bg-secondary/80',
         destructive:
-          'bg-destructive text-destructive-foreground not-disabled:hover:bg-destructive-accent not-disabled:focus-visible:ring-destructive/20 not-disabled:dark:focus-visible:ring-destructive/40',
+          'bg-destructive text-destructive-foreground hover:not-disabled:bg-destructive-accent focus-visible:not-disabled:ring-destructive/20 focus-visible:dark:not-disabled:ring-destructive/40',
         warning:
-          'bg-warning text-warning-foreground not-disabled:hover:bg-warning-accent not-disabled:focus-visible:ring-warning/20 not-disabled:dark:focus-visible:ring-warning/40',
+          'bg-warning text-warning-foreground hover:not-disabled:bg-warning-accent focus-visible:not-disabled:ring-warning/20 focus-visible:dark:not-disabled:ring-warning/40',
         success:
-          'bg-success text-success-foreground not-disabled:hover:bg-success-accent not-disabled:focus-visible:ring-success/20 not-disabled:dark:focus-visible:ring-success/40',
+          'bg-success text-success-foreground hover:not-disabled:bg-success-accent focus-visible:not-disabled:ring-success/20 focus-visible:dark:not-disabled:ring-success/40',
         brand:
-          'bg-brand text-brand-foreground not-disabled:hover:bg-brand-accent not-disabled:focus-visible:ring-brand/20 not-disabled:dark:focus-visible:ring-brand/40',
+          'bg-brand text-brand-foreground hover:not-disabled:bg-brand-accent focus-visible:not-disabled:ring-brand/20 focus-visible:dark:not-disabled:ring-brand/40',
         'brand-secondary':
-          'bg-brand-secondary text-brand-secondary-foreground not-disabled:hover:bg-brand-secondary-accent not-disabled:focus-visible:ring-brand-secondary/20 not-disabled:dark:focus-visible:ring-brand-secondary/40',
+          'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent focus-visible:not-disabled:ring-brand-secondary/20 focus-visible:dark:not-disabled:ring-brand-secondary/40',
         'brand-tertiary':
-          'bg-brand-tertiary text-brand-tertiary-foreground not-disabled:hover:bg-brand-tertiary-accent not-disabled:focus-visible:ring-brand-tertiary/20 not-disabled:dark:focus-visible:ring-brand-tertiary/40',
+          'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent focus-visible:not-disabled:ring-brand-tertiary/20 focus-visible:dark:not-disabled:ring-brand-tertiary/40',
         outline:
-          'border border-input bg-background text-foreground not-disabled:hover:bg-accent/60 dark:bg-input/30 not-disabled:dark:hover:bg-input/50',
-        ghost: 'text-foreground not-disabled:hover:bg-accent/80 dark:not-disabled:hover:bg-accent/50',
+          'border border-input bg-background text-foreground hover:not-disabled:bg-accent/60 dark:bg-input/30 hover:dark:not-disabled:bg-input/50',
+        ghost: 'text-foreground hover:not-disabled:bg-accent/80 hover:dark:not-disabled:bg-accent/50',
         link: 'hover:underline hover:underline-offset-2',
         transparent: 'bg-transparent text-current',
       },

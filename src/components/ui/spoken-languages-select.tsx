@@ -150,7 +150,7 @@ export const SpokenLanguagesSelect = ({
               {translate(language)}
               <button
                 aria-label={t('removeLanguage', { language: translate(language) })}
-                className="flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors not-disabled:cursor-pointer not-disabled:hover:bg-destructive/15 not-disabled:hover:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
+                className="flex size-4 items-center justify-center rounded-full text-muted-foreground transition-colors not-disabled:cursor-pointer hover:not-disabled:bg-destructive/15 hover:not-disabled:text-destructive focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:opacity-50"
                 disabled={disabled}
                 onClick={() => toggle(language)}
                 type="button"

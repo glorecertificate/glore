@@ -88,7 +88,7 @@ export const PersonalProgress = () => {
         <section className="flex flex-col gap-4">
           <h2 className="text-sm font-medium text-muted-foreground">{t('continueLearning')}</h2>
           <Card className="flex-row items-center gap-5 p-5">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand-tertiary text-white shadow-sm">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-brand to-brand-tertiary text-white shadow-sm">
               {featuredCourse.icon ? (
                 <LucideIcon className="size-7" name={featuredCourse.icon as IconName} />
               ) : (

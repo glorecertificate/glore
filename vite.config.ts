@@ -1,6 +1,8 @@
 import reactDoctor from 'oxlint-plugin-react-doctor'
 import { defineConfig } from 'vite-plus'
 
+const ignorePatterns = ['*.d.ts', 'drizzle/**', 'AGENTS.md', '.agents/**', '.claude/**']
+
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
@@ -9,7 +11,7 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ignorePatterns: ['*.d.ts', 'drizzle/**', 'AGENTS.md', '.agents/**', '.claude/**'],
+    ignorePatterns,
     arrowParens: 'avoid',
     semi: false,
     singleQuote: true,
@@ -55,7 +57,7 @@ export default defineConfig({
     ],
   },
   lint: {
-    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**', '.claude/**'],
+    ignorePatterns,
     categories: {
       correctness: 'error',
       nursery: 'allow',
@@ -82,6 +84,9 @@ export default defineConfig({
       next: {
         rootDir: '.',
       },
+      tailwindcss: {
+        entryPoint: 'src/app/globals.css',
+      },
       jsdoc: {
         augmentsExtendsReplacesDocs: false,
         exemptDestructuredRootsFromChecks: false,
@@ -103,8 +108,8 @@ export default defineConfig({
         specifier: 'oxlint-plugin-react-doctor',
       },
       {
-        name: 'better-tailwindcss',
-        specifier: 'eslint-plugin-better-tailwindcss',
+        name: 'tailwindcss',
+        specifier: 'oxlint-tailwindcss',
       },
     ],
     rules: {
@@ -113,12 +118,7 @@ export default defineConfig({
       'max-statements': ['error', 100],
       'no-ternary': 'off',
       'no-unused-vars': 'error',
-      'sort-imports': [
-        'error',
-        {
-          ignoreDeclarationSort: true,
-        },
-      ],
+      'sort-imports': ['error', { ignoreDeclarationSort: true }],
       'eslint/arrow-body-style': ['error', 'as-needed'],
       'eslint/capitalized-comments': 'off',
       'eslint/eqeqeq': 'error',
@@ -131,12 +131,7 @@ export default defineConfig({
       'eslint/new-cap': 'off',
       'eslint/no-await-in-loop': 'off',
       'eslint/no-cond-assign': 'error',
-      'eslint/no-console': [
-        'warn',
-        {
-          allow: ['info', 'warn', 'error'],
-        },
-      ],
+      'eslint/no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
       'eslint/no-const-assign': 'error',
       'eslint/no-continue': 'off',
       'eslint/no-debugger': 'error',
@@ -337,33 +332,31 @@ export default defineConfig({
       'react-perf/jsx-no-new-array-as-prop': 'off',
       'react-perf/jsx-no-new-function-as-prop': 'off',
       'react-perf/jsx-no-new-object-as-prop': 'off',
-      'better-tailwindcss/enforce-canonical-classes': 'off',
-      'better-tailwindcss/enforce-consistent-class-order': 'off',
-      'better-tailwindcss/enforce-consistent-important-position': 'off',
-      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
-      'better-tailwindcss/enforce-consistent-variable-syntax': 'off',
-      'better-tailwindcss/enforce-consistent-variant-order': 'off',
-      'better-tailwindcss/enforce-logical-properties': 'off',
-      'better-tailwindcss/enforce-shorthand-classes': 'off',
-      'better-tailwindcss/no-conflicting-classes': ['error', { entryPoint: 'src/app/globals.css' }],
-      'better-tailwindcss/no-deprecated-classes': ['error', { entryPoint: 'src/app/globals.css' }],
-      'better-tailwindcss/no-duplicate-classes': 'off',
-      'better-tailwindcss/no-restricted-classes': 'off',
-      'better-tailwindcss/no-unknown-classes': [
+      'tailwindcss/consistent-variant-order': 'error',
+      'tailwindcss/enforce-canonical': 'error',
+      'tailwindcss/enforce-consistent-important-position': 'error',
+      'tailwindcss/enforce-consistent-variable-syntax': 'error',
+      'tailwindcss/enforce-negative-arbitrary-values': 'error',
+      'tailwindcss/enforce-physical': 'error',
+      'tailwindcss/enforce-shorthand': 'error',
+      'tailwindcss/enforce-sort-order': 'error',
+      'tailwindcss/no-arbitrary-value': 'off',
+      'tailwindcss/no-conflicting-classes': 'error',
+      'tailwindcss/no-contradicting-variants': 'off',
+      'tailwindcss/no-deprecated-classes': 'error',
+      'tailwindcss/no-duplicate-classes': 'error',
+      'tailwindcss/no-hardcoded-colors': 'error',
+      'tailwindcss/no-unknown-classes': [
         'error',
         {
-          detectComponentClasses: true,
-          entryPoint: 'src/app/globals.css',
-          ignore: ['^font-heading$', '^slate-', '^ignore-click-outside/', '^prose(-|$)', '^markdown$'],
+          allowlist: ['font-heading', 'markdown', 'prose'],
+          ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-'],
         },
       ],
-      'better-tailwindcss/no-unnecessary-whitespace': 'off',
-      'typescript/array-type': [
-        'error',
-        {
-          default: 'array',
-        },
-      ],
+      'tailwindcss/no-unnecessary-arbitrary-value': 'error',
+      'tailwindcss/no-unnecessary-whitespace': 'error',
+      'tailwindcss/prefer-theme-tokens': 'error',
+      'typescript/array-type': ['error', { default: 'array' }],
       'typescript/ban-ts-comment': [
         'error',
         {
@@ -453,6 +446,12 @@ export default defineConfig({
           'react-doctor/no-pass-data-to-parent': 'off',
           'react-doctor/no-react-children': 'off',
           'react-doctor/prefer-tag-over-role': 'off',
+        },
+      },
+      {
+        files: ['src/emails/**'],
+        rules: {
+          'tailwindcss/no-hardcoded-colors': 'off',
         },
       },
       {

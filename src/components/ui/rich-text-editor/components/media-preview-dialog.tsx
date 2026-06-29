@@ -7,7 +7,7 @@ import { useEditorRef } from 'platejs/react'
 
 import { cn } from '@/lib/utils'
 
-const buttonVariants = cva('rounded-sm bg-[rgba(0,0,0,0.5)] px-1', {
+const buttonVariants = cva('rounded-sm bg-black/50 px-1', {
   defaultVariants: {
     variant: 'default',
   },

@@ -223,7 +223,7 @@ export const Sidebar = ({
             } as React.CSSProperties
           }
         >
-          <div className="flex h-full w-full flex-col">{children}</div>
+          <div className="flex size-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
     )
@@ -264,7 +264,7 @@ export const Sidebar = ({
         {...props}
       >
         <div
-          className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
+          className="flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow-sm"
           data-sidebar="sidebar"
         >
           {children}
@@ -284,7 +284,7 @@ export const SidebarTrigger = ({ className, onClick, ...props }: ButtonProps) =>
 
   return (
     <Button
-      className={cn('h-7 w-7', className)}
+      className={cn('size-7', className)}
       data-sidebar="trigger"
       onClick={handleClick}
       size="icon"
@@ -525,7 +525,7 @@ export const SidebarMenuButton = ({
 }
 
 export const sidebarMenuButtonVariants = cva(
-  `peer/menu-button flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-foreground/75 ring-sidebar-ring outline-hidden transition-[width,height,padding,color,background-color] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-sidebar-accent data-active:text-foreground! data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
+  `peer/menu-button flex w-full cursor-pointer items-center gap-2 overflow-hidden rounded-md p-2 text-left text-foreground/75 ring-sidebar-ring outline-hidden transition-[width,height,padding,color,background-color] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! hover:bg-sidebar-accent hover:text-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-active:bg-sidebar-accent data-active:text-foreground! hover:data-[state=open]:bg-sidebar-accent hover:data-[state=open]:text-foreground [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`,
   {
     defaultVariants: {
       variant: 'default',

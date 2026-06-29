@@ -56,7 +56,7 @@ export const CommandInput = ({ className, ...props }: React.ComponentProps<typeo
 
 export const CommandList = ({ className, ...props }: React.ComponentProps<typeof CommandPrimitive.List>) => (
   <CommandPrimitive.List
-    className={cn('max-h-[300px] scroll-py-1 overflow-x-hidden overflow-y-auto', className)}
+    className={cn('max-h-75 scroll-py-1 overflow-x-hidden overflow-y-auto', className)}
     data-slot="command-list"
     {...props}
   />

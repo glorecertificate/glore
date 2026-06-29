@@ -68,7 +68,7 @@ const editorContainerVariants = cva(
       variant: {
         comment: `flex flex-wrap justify-between gap-1 rounded-md border-[1.5px] border-transparent bg-transparent px-1 py-0.5 text-sm has-aria-disabled:border-input has-aria-disabled:bg-muted has-[[data-slate-editor]:focus]:border-brand/50 has-[[data-slate-editor]:focus]:ring-2 has-[[data-slate-editor]:focus]:ring-brand/30`,
         default: '',
-        select: `group rounded-md border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent has-data-readonly:focus-within:[box-shadow:none]`,
+        select: `group rounded-md border border-input ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 has-data-readonly:w-fit has-data-readonly:cursor-default has-data-readonly:border-transparent focus-within:has-data-readonly:[box-shadow:none]`,
       },
     },
   }

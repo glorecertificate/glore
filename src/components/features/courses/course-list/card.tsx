@@ -255,7 +255,7 @@ export const CourseListCard = ({
                 <HoverCard closeDelay={50} openDelay={300}>
                   <HoverCardTrigger asChild>
                     <Button
-                      className="peer/user-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:hover:bg-accent/50 dark:data-[state=open]:bg-accent/50"
+                      className="peer/user-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground hover:dark:bg-accent/50 dark:data-[state=open]:bg-accent/50"
                       size="text"
                       variant="ghost"
                     >
@@ -312,7 +312,7 @@ export const CourseListCard = ({
                 <HoverCard closeDelay={50} openDelay={300}>
                   <HoverCardTrigger asChild>
                     <Button
-                      className="peer/archived-by-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground dark:hover:bg-accent/50 dark:data-[state=open]:bg-accent/50"
+                      className="peer/archived-by-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground hover:dark:bg-accent/50 dark:data-[state=open]:bg-accent/50"
                       size="text"
                       variant="ghost"
                     >

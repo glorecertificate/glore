@@ -10,9 +10,9 @@
     "@commitlint/cli",
     "@release-it/bumper",
     "@release-it/conventional-changelog",
-    "eslint-plugin-better-tailwindcss",
     "eslint-plugin-react-hooks",
     "oxlint-plugin-react-doctor",
+    "oxlint-tailwindcss",
     "oxlint-tsgolint",
     "react-doctor",
     "server-only"

@@ -31,15 +31,16 @@ src/
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   └── offline/        # Offline fallback page
 ├── components/
-│   ├── auth/           # Auth flow + forms (login, register, password reset, signup dialog)
 │   ├── features/       # Domain components grouped by feature:
-│   │                   #   admin, certificates, courses, dashboard, docs, help,
+│   │                   #   admin, auth, certificates, courses, dashboard, docs, help,
 │   │                   #   onboarding, organization, users
+│   │                   #   (auth = login/register/password-reset/signup flow + params.ts)
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-sidebar, error-fallback,
 │   │                   #   loading-fallback, search-command (Fuse.js command palette)
 │   ├── providers/      # Flat single-file providers: i18n, search-params, session, theme
-│   └── ui/             # shadcn/ui primitives + custom UI (incl. rich-text-editor/)
+│   └── ui/             # shadcn/ui primitives + custom UI (incl. vendored rich-text-editor/)
+│                       #   domain-free only (lint-enforced: no features/app/actions imports)
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
 │   ├── helpers.ts      # safeQuery(), queryError()
@@ -89,13 +90,20 @@ Multi-statement writes go through `transaction()` (dev: the `pg` pool; prod: a m
 - All files: kebab-case (enforced by `unicorn/filename-case`).
 - One component per file.
 - Feature components group by domain under `features/<domain>/`, dropping the domain prefix from filenames: `features/courses/course-editor/view.tsx`, not `course-editor-view.tsx`. Sub-features nest in sub-folders.
+- A slice with a single aggregate/root view names it `index.tsx` (named export of the component); the route imports the slice folder, not a deeper file (`import { HelpContent } from '@/components/features/help'`). Used by `about/`, `dashboard/`, `help/`, `onboarding/`, `courses/course-list/`, `courses/course-editor/`. Slices with several peer entry points consumed by different routes (`certificates/`, `admin/`, `docs/`, `users/`, `organization/`) keep descriptively-named files, no forced `index.tsx`.
 - Database queries: `db/queries/<table>.ts` exporting `parse*` functions. These MUST stay pure: importing `@/db/client` here leaks `server-only` into client bundles via parser chains.
 - Database mutations: `db/mutations/<table>.ts` for shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - Database schema: `db/schema/<table>.ts` with Drizzle table definitions.
 
+### Layer boundaries (lint-enforced)
+
+Dependencies flow one way: **shared -> features -> app**. The shared layers (`components/ui/`, `components/icons/`, `hooks/`, `lib/`) are domain-free and must not import from `@/components/features/**`, `@/app/**`, or `@/actions/**` (scoped `no-restricted-imports` overrides in `vite.config.ts`; `src/lib/utils.ts` has its own override so it can re-export `cnfast`). Placement test: a component belongs in `ui/` only if you could ship it in a generic component library; the moment it knows the GloRe domain (binds to the data model, a feature enum, or a feature i18n namespace) it belongs in `features/<domain>/`. Cross-feature imports are NOT yet blocked (a few exist, e.g. `admin -> organization`, `dashboard -> courses`); prefer composing siblings at the route/page level.
+
+`ui/rich-text-editor/` is the vendored Plate.js editor (installed via the shadcn/Plate registry CLI, domain-free). It stays in `ui/` to keep CLI re-pull working; treat the whole subtree as one vendored unit and do not refactor its internals (a re-pull overwrites them). The app touches it only through the `index.tsx` barrel + `provider.tsx`.
+
 ### Provider pattern
 
-App-wide providers in `components/providers/` are single flat files (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its own `use<X>` hook (no separate hook file). Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it needs a server-side data fetch. Feature-scoped contexts live under `components/features/<domain>/` (the courses provider uses the split form: `context.tsx` + `provider.tsx`).
+App-wide providers in `components/providers/` are single flat files (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its own `use<X>` hook. Feature-scoped contexts live under `components/features/<domain>/`. Split into `context.tsx` + `provider.tsx` + `index.ts` ONLY for a server-side data fetch. Provider hierarchy and rules: see `patterns.md`.
 
 ---
 

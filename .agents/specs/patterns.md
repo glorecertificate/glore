@@ -15,7 +15,7 @@ const button = cva('inline-flex items-center', {
 })
 ```
 
-`cn` wraps `cx` + a `tailwind-merge` extended with custom `text-stroke-width` / `text-stroke-color` groups. oxfmt `sortTailwindcss` recognizes both `cn` and `cva`, so class strings inside them sort automatically.
+`cn` is re-exported from the `cnfast` package via `@/lib/utils`. oxfmt `sortTailwindcss` recognizes both `cn` and `cva`, so class strings inside them sort automatically.
 
 ### Forward root-element props
 
@@ -50,11 +50,14 @@ Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it n
 
 lucide-react icons are lazy-loaded through `src/components/icons/lucide.tsx`: a module `Map` caches `lazy()` components keyed by name, each rendered inside `Suspense`. Render with `<LucideIcon name={...} />` where `name` is an `IconName`; an optional `fallback` shows while loading.
 
-Import icon TYPES from `lucide-react` but RENDER via `LucideIcon` from `@/components/icons/lucide`. Custom (non-lucide) icons live as components in `src/components/icons/`. The course `icon` field is stored as an `IconName` string.
+Import icon TYPES from `lucide-react` but RENDER via `LucideIcon` from `@/components/icons/lucide`. Custom (non-lucide) icons live as components in `src/components/icons/`. The course `icon` field is stored as an `IconName` string. Two prop shapes coexist: a dynamic name (`icon?: IconName` rendered `<LucideIcon name={icon} />`) when the icon comes from data, or a static component (`icon: Icon` from `@/lib/types`, rendered `<Icon />`) when a config object hardcodes it.
 
 ### URL state (nuqs)
 
-Type-safe URL state via nuqs. Per feature: a `params.ts` declares parsers, a `use-params.ts` exposes the typed hook. Found in `certificates/`, `courses/course-editor/`, `courses/course-list/`.
+Type-safe URL state via nuqs, split by client/server boundary so a slice's param keys stay importable from a server `page.tsx`:
+
+- **`params.ts`** (no `'use client'`): the server-safe layer. Param-key constants, enum value tuples, and their types; for slices whose parsers run server-side (`createSearchParamsCache`), the parser objects too (e.g. `auth/params.ts` exports `authParsers`). A server page imports from here. Present in `auth/`, `certificates/`, `courses/course-editor/`, `courses/course-list/`.
+- **`use-params.ts`** (`'use client'`): the client hooks (`useQueryState` wrappers) built on `params.ts`. Add it ONLY when a slice has client param hooks worth extracting. `certificates/` and `courses/course-list/` have one; `auth/` does not (parsers are used server-side); `courses/course-editor/` does not (its param hooks live in the slice's existing `context.tsx`). Do not create an empty `use-params.ts` to satisfy symmetry.
 
 ### Performance patterns (React Compiler)
 
@@ -94,7 +97,7 @@ React Compiler auto-memoizes derived values, callbacks, and components (producti
 | Direct DB write  | `src/db/schemas.ts` (drizzle-zod)             | `createInsertSchema` / `createUpdateSchema`, DB-shaped   |
 | Form input       | `src/components/features/**/schemas.ts`       | hand-written zod, UI-shaped                              |
 
-At an action boundary that writes directly to the DB, `safeParse` the input with the drizzle-zod schema, then pass the typed data through. Form schemas stay separate because UI shapes diverge from table columns.
+drizzle-zod schemas are named `<table>InsertSchema` / `<table>UpdateSchema` (e.g. `docArticleInsertSchema`), imported from `@/db/schemas`. At an action boundary that writes directly to the DB, `safeParse` the input with the matching schema, then pass the typed data through. Form schemas stay separate because UI shapes diverge from table columns.
 
 ### Enum pattern
 
@@ -113,7 +116,7 @@ TS `enum` is used ONLY for `CacheTag` (`src/lib/cache.ts`). Every other "enum" u
 
 | Function              | Purpose                                                              |
 | --------------------- | ------------------------------------------------------------------- |
-| `cn`                  | Merge class names (cx + extended tailwind-merge)                    |
+| `cn`                  | Merge class names (re-export from `cnfast`)                         |
 | `hexToRgb`            | Map a record of hex strings to `Rgb` tuples                         |
 | `isValidUsername`     | True if value matches email or username regex                      |
 | `defaultFormDisabled` | Disable submit when form is pristine or has errors                 |
@@ -152,7 +155,7 @@ TS `enum` is used ONLY for `CacheTag` (`src/lib/cache.ts`). Every other "enum" u
 ## Theming & styling
 
 - Color in OKLCH via CSS custom properties in `src/app/globals.css`, with light and dark blocks. Token groups: surface, cards/popovers, primary/secondary/muted/accent, brand (`--brand` teal, `--brand-secondary` olive, `--brand-tertiary` navy), links, status (info/success/warning/destructive), borders, sidebar, editor highlight, 5 chart colors.
-- `--radius` is `0.625rem` with `sm`/`md`/`lg`/`xl` derivatives. `text-stroke-*` utilities are available (see `cn`).
+- `--radius` is `0.625rem` with `sm`/`md`/`lg`/`xl` derivatives. A `text-stroke-*` utility is defined in `globals.css` (`@utility text-stroke-*`).
 - Theme switching uses next-themes class strategy (`system`/`light`/`dark`) with the View Transitions API; respects `prefers-reduced-motion`.
 - Route view transitions: `experimental.viewTransition: true`. `globals.css` suppresses the default root transition so only a named `<ViewTransition>` with a transition type animates (e.g. `course-created` on course create).
 - `AnimatedList` / `AnimatedListItem` (`src/components/ui/animated-list.tsx`) wrap `AnimatePresence mode="popLayout"`: `variant` `card`/`row`, `asChild`, `exitOnly` for dnd-kit sortable lists (paired with `animateLayoutChangesAlways` + `measureAlways` from `src/components/ui/sortable.tsx`).

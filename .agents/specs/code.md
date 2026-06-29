@@ -11,7 +11,7 @@ Formatter, linter, and import conventions for the GloRe codebase. Configured in 
 | Quotes          | Single (`singleQuote: true`); double in CSS (`**/*.css` override) |
 | Semicolons      | None (`semi: false`)                                              |
 | Trailing commas | `es5`; `none` for `*.jsonc`                                       |
-| Arrow parens    | Avoid (`arrowParens: 'avoid'`)                                    |s
+| Arrow parens    | Avoid (`arrowParens: 'avoid'`)                                    |
 | Tailwind sort   | `sortTailwindcss` recognizes `clsx`, `cn`, `cva`                  |
 | Package.json    | Not sorted (`sortPackageJson: false`)                             |
 
@@ -45,12 +45,15 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 ## Restricted imports
 
-`eslint/no-restricted-imports` enforces exactly two rules (`vite.config.ts`):
+`eslint/no-restricted-imports` (`vite.config.ts`). Base rule, everywhere:
 
 | Import                        | Restriction | Alternative                   |
 | ----------------------------- | ----------- | ----------------------------- |
 | `cookies` from `next/headers` | Blocked     | `@/actions/cookies`           |
+| `cnfast`                      | Blocked     | `@/lib/utils` (re-exports `cn`) |
 | `../**` (parent imports)      | Blocked     | Use path aliases (`@/`, `~/`) |
+
+Scoped override for shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`): also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**` to keep those layers domain-free (dependencies flow shared -> features -> app). oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns/paths; `src/lib/utils.ts` has a further override that drops the `cnfast` restriction (it is the re-export source).
 
 Conventions enforced elsewhere or by review (not in `no-restricted-imports`): use `next/navigation` not `next/router`, `cn` from `@/lib/utils` not `@udecode/cn`, and the named `z` import from `zod`.
 
@@ -85,6 +88,6 @@ Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise
 
 **Tailwind rules (`better-tailwindcss`):** only the non-formatter correctness rules are on, all as `error` with `entryPoint: 'src/app/globals.css'`: `no-unknown-classes` (with `detectComponentClasses: true` and an `ignore` list for custom/3rd-party classes: `font-heading`, `slate-*`, `ignore-click-outside/*`, `prose-*`, `markdown`), `no-conflicting-classes`, `no-deprecated-classes`. All ordering/dedup/whitespace/wrapping rules are `off`: oxfmt's `sortTailwindcss` is the sole class sorter and writes last in `vp check --fix` (fmt > lint > fmt), so enabling them would conflict. The plugin is registered as a `jsPlugins` entry (not bulk-enabled via `pluginRules`) and listed in `knip.json` `ignoreDependencies` (it is imported only from the out-of-graph `vite.config.ts`).
 
-`typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see AGENTS.md gotcha 26). `typeCheck: false` (oxlint does not run tsgo type-checking; that is `tsgo` via `pnpm run typecheck`).
+`typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see AGENTS.md "Dev environment" pointer). `typeCheck: false` (oxlint does not run type-checking; that is `tsgo` via `pnpm run check:types`).
 
 **Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows anonymous default exports and template curlies in strings.

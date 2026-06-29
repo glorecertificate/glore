@@ -114,8 +114,9 @@ All commits must follow the Conventional Commits specification, which is enforce
 To open a pull request:
 
 1. Fork the repository, create a new branch and implement your changes
-2. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
-3. Make sure all CI checks pass and wait for a maintainer to review your PR
+2. Run `pnpm check` locally and make sure it passes (types, lint, format, and unused-code checks; also run on push)
+3. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
+4. Make sure all CI checks pass and wait for a maintainer to review your PR
 
 ## AI and agents
 

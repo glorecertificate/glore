@@ -19,11 +19,11 @@ Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`
 | `/[username]`               | Public             | Root      | Public certificate page                            |
 | `/dashboard`                | Auth               | Dashboard | Main dashboard                                     |
 | `/about`                    | Auth               | Dashboard | About page                                         |
-| `/admin`                    | Auth + `is_admin`  | Dashboard | Permanent redirect to `/admin/team` (no page)      |
-| `/admin/team`               | Auth + `is_admin`  | Dashboard | Team management                                    |
-| `/admin/users`              | Auth + `is_admin`  | Dashboard | User moderation: ban/unban, platform role changes  |
-| `/admin/organizations`      | Auth + `is_admin`  | Dashboard | Org list (tabs: all/pending/active), approve/reject, create (no rep), invite (with rep) |
-| `/admin/organizations/[id]` | Auth + `is_admin`  | Dashboard | Org detail (`?tab=`): members table (search/sort/role filter, role/remove/invite), settings (edit profile/avatar, delete org) |
+| `/admin`                    | Auth + `isAdmin`   | Dashboard | Permanent redirect to `/admin/team` (no page)      |
+| `/admin/team`               | Auth + `isAdmin`   | Dashboard | Team management                                    |
+| `/admin/users`              | Auth + `isAdmin`   | Dashboard | User moderation: ban/unban, platform role changes  |
+| `/admin/organizations`      | Auth + `isAdmin`   | Dashboard | Org list (tabs: all/pending/active), approve/reject, create (no rep), invite (with rep) |
+| `/admin/organizations/[id]` | Auth + `isAdmin`   | Dashboard | Org detail (`?tab=`): members table (search/sort/role filter, role/remove/invite), settings (edit profile/avatar, delete org) |
 | `/organization`             | Auth + org manager | Dashboard | Organization panel                                 |
 | `/certificates`             | Auth + non-editor  | Dashboard | Certificate list                                   |
 | `/certificates/new`         | Auth + non-editor  | Dashboard | New certificate                                    |
@@ -102,22 +102,7 @@ Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`
 
 ### Query pattern
 
-```typescript
-// 1. Define interface extending InferSelectModel (src/db/queries/<table>.ts)
-export interface Certificate extends InferSelectModel<typeof certificates> {
-  organization: InferSelectModel<typeof organizations>
-  reviewer: InferSelectModel<typeof users> | null
-}
-
-// 2. Define parser for computed fields
-export const parseUser = (data: InferSelectModel<typeof users> & { memberships: ..., regions: ... }) => ({
-  ...data,
-  canEdit: Boolean(data.isAdmin || data.isEditor),
-})
-
-// 3. Derive type from parser
-export type User = ReturnType<typeof parseUser>
-```
+Per table in `src/db/queries/<table>.ts`: (1) an `interface` extending `InferSelectModel<typeof table>` with the relations it loads; (2) a pure `parse<Table>` adding computed fields (e.g. `canEdit: Boolean(data.isAdmin || data.isEditor)`); (3) the row type as `ReturnType<typeof parse<Table>>`. Parsers must not import `@/db/client`.
 
 ### Drizzle query pattern
 
@@ -145,6 +130,8 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 ```
 
 ### Transactions and the mutation layer
+
+Single-statement writes go directly through `db` inside the server action (no mutation file): `safeParse` with the drizzle-zod schema, `db.insert/update(...).returning()`, `revalidateTag(...)`, return `{ data, error }` (see `createDocArticle` in `src/actions/doc.ts`). The `transaction()` path below is only for multi-statement writes.
 
 Production runs on the **neon-http** driver, which has **no interactive transactions**. For any write that spans more than one statement, use the `transaction()` helper from `@/db/client` instead of firing statements at `db` directly:
 
@@ -232,7 +219,7 @@ const fetchCourses = cache(async () => {
 
 **Global 404:** `src/app/not-found.tsx` (server component), checks auth to show the appropriate link.
 
-**Layout guards:** the admin layout calls `notFound()` if `!user.is_admin`; the certificates layout calls `notFound()` if `user.canEdit`.
+**Layout guards:** the admin layout calls `notFound()` if `!user.isAdmin`; the certificates layout calls `notFound()` if `user.canEdit`.
 
 **User feedback:** `sonner` toast notifications via `toast.success()`, `toast.error()`.
 
@@ -274,7 +261,7 @@ const fetchCourses = cache(async () => {
 
 | File                   | Purpose                                                                                       |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `mapsUrl`, `sidebarShortcut: "s"`)          |
+| `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `maxAvatarSize: 2048`, `mapsUrl`, `sidebarShortcut: "\\"`) |
 | `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages  |
 | `config/icons.json`    | Lucide icon metadata (~1,640 entries: name, categories, tags) for icon picker fuzzy search    |
 | `config/metadata.json` | App name, version, URL, email, keywords, authors                                              |
@@ -296,4 +283,4 @@ Non-obvious settings that keep dev HMR and CI builds fast; each maps to a number
 
 **Prebuilt CI deploys (30):** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull` + `build` + `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel's "Building" step is a ~20s upload, not a ~3min build. `VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` sit in the workflow `env` (non-secret IDs; `.vercel/` is gitignored). Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (CI's `validate` job runs `tsgo` first; re-enabling adds 30-45s/build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
 
-**Agent preview server (33):** a SEPARATE dev server from the human's, isolated end to end; never share or spawn it via Bash. The human server (`pnpm run dev`, `portless glore --app-port 45673 next dev`) binds Next on `127.0.0.1:45673`, routed by portless to `https://glore.localhost`. The agent server lives entirely in `.agents/launch.json` (no package.json script; `.claude/launch.json` resolves there via symlink): `pnpm exec portless agent-preview.glore next dev` on **port 24368** as `https://agent-preview.glore.localhost`, with env overrides `PORTLESS_APP_PORT=24368`, `APP_URL=https://agent-preview.glore.localhost` (so `allowedDevOrigins` accepts the agent host), `NEXT_DIST_DIR=.agents/.next`, `TSCONFIG_PATH=.agents/tsconfig.json` (both env vars in the Zod schema). Isolation is mandatory: two Turbopack instances need different dist dirs or they corrupt each other's cache, and the MCP keys reuse/stop on the config `name`, so a shared name would let `preview_stop` tear down the human's server (observed: killed it, dropped the route). Do NOT point `launch.json` at `dev` or reuse the `glore` name. **Lifecycle:** it is a full second Turbopack + DB stack and does NOT auto-stop. The MCP starts it lazily on the first `preview_start` (nothing else does); call `preview_stop` (serverId from `preview_list`) once done in a turn, and `preview_start` only when you need to look at the app. The MCP cannot attach to the human's server (errors on a foreign process, no connect-to-URL mode), so the isolated server is required to preview at all; the saving is keeping it short-lived.
+**Agent preview server (33):** a SEPARATE dev server from the human's, isolated end to end; never share or spawn it via Bash. The human server (`pnpm run dev`, `portless glore --app-port 45673 next dev`) binds Next on `127.0.0.1:45673`, routed by portless to `https://glore.localhost`. The agent server lives entirely in `.agents/launch.json` (no package.json script; `.claude/launch.json` resolves there via symlink): `pnpm exec portless agent-preview.glore next dev` on **port 24368** as `https://agent-preview.glore.localhost`, with env overrides `PORTLESS_APP_PORT=24368`, `APP_URL=https://agent-preview.glore.localhost` (so `allowedDevOrigins` accepts the agent host), `NEXT_DIST_DIR=.agents/.next`, `TSCONFIG_PATH=.agents/tsconfig.json` (both env vars in the Zod schema). Isolation is mandatory: two Turbopack instances need different dist dirs or they corrupt each other's cache, and the MCP keys reuse/stop on the config `name`, so a shared name would let `preview_stop` tear down the human's server (observed: killed it, dropped the route). Do NOT point `launch.json` at `dev` or reuse the `glore` name. **Lifecycle:** it is a full second Turbopack + DB stack and does NOT auto-stop. The MCP starts it lazily on the first `preview_start` (nothing else does); call `preview_stop` (serverId from `preview_list`) once done in a turn, and `preview_start` only when you need to look at the app. The MCP cannot attach to the human's server (errors on a foreign process, no connect-to-URL mode), so the isolated server is required to preview at all; the saving is keeping it short-lived. **Preview path preference (34):** prefer the Claude-in-Chrome MCP (`mcp__Claude_in_Chrome__*`) driving the human's already-open Chrome against `https://glore.localhost` for visual checks; use this agent-preview MCP only as fallback. Check `list_connected_browsers` first; with a connected browser and the human server up, reuse the human's EXISTING window (their profile + live session), never a fresh one. The MCP defaults to isolation, so `tabs_create_mcp` and `tabs_context_mcp{createIfEmpty:true}` both spawn a brand-new profile-less, session-less window (observed wrong behavior): do NOT use them. Instead: `tabs_context_mcp` with no `createIfEmpty` to list tabs, find the tab on `https://glore.localhost` to identify the human's session window, then open a new tab in THAT window and `navigate`/`screenshot` it (leaves their tabs untouched, inherits their session). If no `glore.localhost` tab exists, STOP and ask the human to open the app in the target window. Tradeoff: Claude-in-Chrome runs against the user's live session and cookies (no state isolation); the preview MCP is the only sandboxed option, so fall back to `preview_start` only when no browser is connected, the human server is down, or a clean unauthenticated state is needed. Browsers are tier-"read" under computer-use (screenshots only), so interact via the Chrome MCP's own `navigate`/`tabs_*`/`screenshot`, not computer-use clicks.

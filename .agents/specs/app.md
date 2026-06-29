@@ -20,7 +20,7 @@ This repository is the new version of that platform, replacing the live public s
 
 ### Team roles (platform-level)
 
-Set by `is_admin` / `is_editor` flags on the user record, independent of any organization. Team members always see the admin/editor interface, never the org member view.
+Set by `isAdmin` / `isEditor` flags on the user record, independent of any organization. Team members always see the admin/editor interface, never the org member view.
 
 | Role     | Permissions                                                                                              |
 | -------- | ------------------------------------------------------------------------------------------------------- |
@@ -100,7 +100,7 @@ Generated on approval and stored at `certificates/{handle}.pdf` in R2, public vi
 ## Business rules
 
 1. A user without `onboardedAt` cannot access dashboard routes; the proxy redirects to `/onboarding`. An onboarded user hitting `/onboarding` is sent to `/dashboard`.
-2. Only `is_admin` users access `/admin`. Only `is_editor` or `is_admin` users edit courses; others get viewer mode.
+2. Only `isAdmin` users access `/admin`. Only `isEditor` or `isAdmin` users edit courses; others get viewer mode.
 3. Certificates require at least `minSkills` (3) completed skill courses and an average assessment rating of at least `minRating` (3 of 5).
 4. One active organization per session (cookie). Switching org reloads dashboard context.
 5. A certificate must be `submitted` before a tutor begins review. Once `approved`, it is immutable and publicly visible.

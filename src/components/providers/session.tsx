@@ -32,6 +32,13 @@ const useSessionContext = (value: SessionContextValue) => {
     cookiesRef.current.set('org', id)
   }
 
+  const updateOrganization = (id: number, patch: Partial<User['organizations'][number]>) => {
+    setUser(current => ({
+      ...current,
+      organizations: current.organizations.map(org => (org.id === id ? { ...org, ...patch } : org)),
+    }))
+  }
+
   const user = {
     ...userState,
     isLearner: role === 'learner',
@@ -47,6 +54,7 @@ const useSessionContext = (value: SessionContextValue) => {
     setUser,
     organization,
     setOrganization,
+    updateOrganization,
   }
 }
 

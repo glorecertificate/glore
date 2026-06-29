@@ -144,6 +144,14 @@ const nextConfig: NextConfig = {
   headers,
   serverExternalPackages,
   typedRoutes: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: new URL(process.env.R2_PUBLIC_URL).hostname,
+      },
+    ],
+  },
   experimental: {
     optimizePackageImports,
     turbopackFileSystemCacheForDev: false,

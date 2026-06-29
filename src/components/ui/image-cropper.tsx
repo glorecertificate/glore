@@ -170,7 +170,7 @@ export const ImageCropper = ({
               {t('cancel')}
             </Button>
           </DialogClose>
-          <Button disabled={saving} loading={saving} onClick={handleCrop} type="button">
+          <Button disabled={saving} loading={saving} onClick={handleCrop} type="button" variant="brand">
             {t('saveAvatar')}
           </Button>
         </DialogFooter>
@@ -229,10 +229,6 @@ export const ImageCropper = ({
               {t('remove')}
             </Button>
           )}
-
-          <p className="text-[13px] leading-snug text-muted-foreground">
-            {t('maxSize', { size: app.maxAvatarSize / 1024 })}
-          </p>
         </div>
       </div>
 

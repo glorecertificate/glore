@@ -8,7 +8,7 @@
   "Common": {
     "accessApp": "Access GloRe",
     "archive": "Archive",
-    "backToHome": "Back to the homepage",
+    "backToHome": "Back to homepage",
     "backToPrevious": "Go back",
     "cancel": "Cancel",
     "clearSort": "Clear sort",
@@ -709,7 +709,6 @@
       "avatarTooLarge": "Please upload a picture smaller than {size} MB",
       "cancel": "Cancel",
       "changeAvatar": "Update avatar",
-      "maxSize": "Max {size} MB",
       "remove": "Remove",
       "saveAvatar": "Save avatar",
       "uploadAvatar": "Upload avatar"

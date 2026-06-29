@@ -39,6 +39,7 @@ import { InviteMemberDialog } from '@/components/features/organization/invite-di
 import { organizationSettingsSchema } from '@/components/features/organization/schemas'
 import { getDisplayName } from '@/components/features/organization/utils'
 import { useI18n } from '@/components/providers/i18n'
+import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -818,6 +819,7 @@ const OrganizationSettingsTab = ({
 export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrganizationData }) => {
   const { push, refresh: routerRefresh } = useRouter()
   const t = useTranslations('Organization')
+  const { updateOrganization } = useSession()
   const [tab, setTab] = useAdminOrgTab()
 
   const [data, setData] = useState(initialData)
@@ -842,13 +844,18 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
       return
     }
 
-    const { error } = await confirmAdminOrganizationAvatar(data.id, presign.key)
+    const result = await confirmAdminOrganizationAvatar(data.id, presign.key)
 
-    if (error) {
-      toast.error(typeof error === 'string' ? error : error.message)
+    if ('error' in result && result.error) {
+      toast.error(typeof result.error === 'string' ? result.error : result.error.message)
+      return
+    }
+    if (!('data' in result) || !result.data) {
+      toast.error(t('avatarUploadError'))
       return
     }
 
+    updateOrganization(data.id, { avatarUrl: result.data.avatarUrl })
     toast.success(t('avatarUploaded'))
     refresh()
   }
@@ -861,6 +868,7 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
       return
     }
 
+    updateOrganization(data.id, { avatarUrl: null })
     toast.success(t('avatarRemoved'))
     refresh()
   }

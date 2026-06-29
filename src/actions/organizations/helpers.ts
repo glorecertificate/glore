@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
 import { and, count, eq } from 'drizzle-orm'
@@ -15,6 +16,7 @@ import {
   type OrganizationMembershipRole,
 } from '@/db/queries/organization'
 import { memberships } from '@/db/schema'
+import { CacheTag, userTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 
@@ -29,6 +31,18 @@ const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
 const REQUESTABLE_ROLES: OrganizationMembershipRole[] = ['learner', 'volunteer']
 const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
 export const PENDING_CERTIFICATE_STATUSES = ['changes_requested', 'in_review', 'submitted'] as const
+
+export const revalidateOrganizationMembers = async (organizationId: number) => {
+  const members = await db.query.memberships.findMany({
+    columns: { userId: true },
+    where: eq(memberships.organizationId, organizationId),
+  })
+
+  revalidateTag(CacheTag.Organizations, 'max')
+  for (const { userId } of members) {
+    revalidateTag(userTag(userId), 'max')
+  }
+}
 
 export const memberUserColumns = {
   avatarUrl: true,

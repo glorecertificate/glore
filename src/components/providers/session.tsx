@@ -36,6 +36,21 @@ const useSessionContext = (value: SessionContextValue) => {
     setUser(current => ({
       ...current,
       organizations: current.organizations.map(org => (org.id === id ? { ...org, ...patch } : org)),
+      memberships: current.memberships.map(membership =>
+        membership.organization.id === id
+          ? {
+              ...membership,
+              ...(patch.role ? { role: patch.role } : {}),
+              organization: {
+                ...membership.organization,
+                ...(patch.name ? { name: patch.name } : {}),
+                ...('avatarUrl' in patch
+                  ? { profile: { ...membership.organization.profile, avatarUrl: patch.avatarUrl ?? null } }
+                  : {}),
+              },
+            }
+          : membership
+      ),
     }))
   }
 

@@ -10,6 +10,7 @@ import {
   getDescriptionRecord,
   getFreshCurrentUser,
   getOrganizationContext,
+  revalidateOrganizationMembers,
 } from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -169,7 +170,10 @@ export const confirmOrganizationAvatar = async (key: string) => {
       await r2Delete(current.avatarUrl).catch(() => null)
     }
 
-    const nextUser = await getFreshCurrentUser(user.id)
+    const [, nextUser] = await Promise.all([
+      revalidateOrganizationMembers(organization.id),
+      getFreshCurrentUser(user.id),
+    ])
 
     return {
       organizationId: organization.id,
@@ -205,7 +209,10 @@ export const removeOrganizationAvatar = async () => {
         set: { avatarUrl: null },
       })
 
-    const nextUser = await getFreshCurrentUser(user.id)
+    const [, nextUser] = await Promise.all([
+      revalidateOrganizationMembers(organization.id),
+      getFreshCurrentUser(user.id),
+    ])
 
     return {
       organizationId: organization.id,

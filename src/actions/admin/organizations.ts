@@ -12,6 +12,7 @@ import {
   getDescriptionRecord,
   getOrganizationAdminsCount,
   memberUserColumns,
+  revalidateOrganizationMembers,
   sendOrganizationAccessEmail,
 } from '@/actions/organizations/helpers'
 import { getCurrentUser } from '@/actions/user'
@@ -557,7 +558,7 @@ export const confirmAdminOrganizationAvatar = async (organizationId: number, key
     return { avatarUrl: r2Url(key) }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) await revalidateOrganizationMembers(organizationId)
 
   return result
 }
@@ -584,7 +585,7 @@ export const removeAdminOrganizationAvatar = async (organizationId: number) => {
     return { avatarUrl: null }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) await revalidateOrganizationMembers(organizationId)
 
   return result
 }

@@ -1,7 +1,4 @@
-import { cx } from 'class-variance-authority'
-import { type ClassValue } from 'class-variance-authority/types'
 import { type FieldValues, type UseFormReturn } from 'react-hook-form'
-import { extendTailwindMerge } from 'tailwind-merge'
 
 import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
 import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } from '@/lib/types'
@@ -14,16 +11,7 @@ export const publicFile = (file: PublicFile) => `${process.env.APP_URL}${file}`
 /*
   Theme
 */
-const twMerge = extendTailwindMerge<'text-stroke-width' | 'text-stroke-color'>({
-  extend: {
-    classGroups: {
-      'text-stroke-color': [{ 'text-stroke': [(n: string) => !Number(n)] }],
-      'text-stroke-width': [{ 'text-stroke': [(n: string) => Number(n) > 0] }],
-    },
-  },
-})
-
-export const cn = (...inputs: ClassValue[]) => twMerge(cx(inputs))
+export { cn } from 'cnfast'
 
 export const hexToRgb = <T extends AnyRecord>(record: T) =>
   Object.entries(record).reduce(

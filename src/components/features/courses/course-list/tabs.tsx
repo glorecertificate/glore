@@ -15,21 +15,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { camelize, cn } from '@/lib/utils'
 
-export const CourseListTabs = ({ children, ...props }: React.ComponentProps<typeof Tabs>) => {
-  const { tab, setTab } = useCourseListTab()
-  useCourseListParams()
-
-  const handleTabChange = (value: string) => setTab(value as CourseListTab)
-
-  return (
-    <CourseLanguagesProvider>
-      <Tabs animated className="gap-2" defaultValue="all" onValueChange={handleTabChange} value={tab} {...props}>
-        {children}
-      </Tabs>
-    </CourseLanguagesProvider>
-  )
-}
-
 const CourseListTabsTrigger = ({
   className,
   count,
@@ -73,7 +58,10 @@ const CourseListTabsTrigger = ({
   )
 }
 
-export const CourseListTabsList = ({ children, className, ...props }: React.ComponentProps<typeof TabsList>) => {
+export const CourseListTabsList = ({
+  className,
+  ...props
+}: Omit<React.ComponentProps<typeof TabsList>, 'children'>) => {
   const { tabs } = useCourseListTabs()
   const { courseList } = useCourseList()
 
@@ -83,5 +71,25 @@ export const CourseListTabsList = ({ children, className, ...props }: React.Comp
         <CourseListTabsTrigger count={courseList[camelize(tab)].length} key={tab} value={tab} />
       ))}
     </TabsList>
+  )
+}
+
+export const CourseListTabs = ({ children, ...props }: React.ComponentProps<typeof Tabs>) => {
+  const { tab, setTab } = useCourseListTab()
+  useCourseListParams()
+
+  return (
+    <CourseLanguagesProvider>
+      <Tabs
+        animated
+        className="gap-2"
+        defaultValue="all"
+        onValueChange={value => setTab(value as CourseListTab)}
+        value={tab}
+        {...props}
+      >
+        {children}
+      </Tabs>
+    </CourseLanguagesProvider>
   )
 }

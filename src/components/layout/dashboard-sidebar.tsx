@@ -196,8 +196,8 @@ const DashboardSidebarOrgs = ({ organization }: { organization: UserOrganization
             >
               <Avatar
                 className={cn(
-                  'flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-muted transition-all duration-150',
-                  !organization.avatarUrl && 'border'
+                  'flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-transparent bg-muted transition-all duration-150',
+                  !organization.avatarUrl && 'border-border'
                 )}
               >
                 {organization.avatarUrl ? (
@@ -218,7 +218,7 @@ const DashboardSidebarOrgs = ({ organization }: { organization: UserOrganization
                 asChild
                 className={cn(
                   'ml-auto flex size-6 items-center justify-center border border-transparent transition-none hover:border-border',
-                  !open && 'invisible'
+                  !open && 'hidden'
                 )}
                 variant="ghost"
               >
@@ -380,13 +380,19 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-hidden rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150 hover:bg-accent/50 data-[state=open]:bg-accent/50 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
+                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150 hover:bg-accent/50',
+                'data-[state=open]:bg-accent/50 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
               )}
               size="lg"
               variant="outline"
             >
-              <div className="relative ml-0 overflow-visible transition-all duration-150">
-                <Avatar className={cn('aspect-square size-8 rounded-lg border', !user.avatarUrl && 'border')}>
+              <div className="relative ml-0 transition-all duration-150">
+                <Avatar
+                  className={cn(
+                    'aspect-square size-8 rounded-lg border border-transparent',
+                    !user.avatarUrl && 'border-border'
+                  )}
+                >
                   {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
                   <AvatarFallback className="text-muted-foreground">{user.initials}</AvatarFallback>
                 </Avatar>
@@ -437,7 +443,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                 asChild
                 className={cn(
                   'ml-auto flex size-6 items-center justify-center border border-transparent transition-none hover:border-border',
-                  !open && 'invisible'
+                  !open && 'hidden'
                 )}
                 variant="ghost"
               >

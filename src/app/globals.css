@@ -77,8 +77,9 @@
 
 @utility text-stroke-* {
   /* prettier-ignore */
-  -webkit-text-stroke-width: --value(number)px;
-  -webkit-text-stroke-color: --value([color]);
+  -webkit-text-stroke-width: calc(--value(number, [number], --default(1)) * 0.25px);
+  -webkit-text-stroke-color: --value(--color-*, [color]);
+  color: --value(--color-*, [color]);
 }
 
 @layer base {

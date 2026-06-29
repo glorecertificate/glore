@@ -15,7 +15,7 @@ import { COURSE_TYPES } from '@/db/queries/course'
 import { type EnumType } from '@/db/types'
 import { cn } from '@/lib/utils'
 
-export const courseTypeVariants = cva('rounded-xl border text-stroke-0.25', {
+export const courseTypeVariants = cva('rounded-xl border text-stroke', {
   variants: {
     type: {
       intro: 'bg-accent text-muted-foreground',

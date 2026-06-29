@@ -36,8 +36,8 @@
   "oxc.enable": true,
   "oxc.fixKind": "safe_fix_or_suggestion",
   "oxc.fmt.configPath": "./vite.config.ts",
-  "oxc.path.oxfmt": "./node_modules/.bin/oxfmt",
-  "oxc.path.oxlint": "./node_modules/.bin/oxlint",
+  "oxc.path.oxfmt": "./node_modules/vite-plus/bin/oxfmt",
+  "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
   "oxc.typeAware": false,
   "search.exclude": {
     "**/.claude/**": true,
@@ -49,9 +49,14 @@
     "**/tmp": true
   },
   "tailwindCSS.experimental.classRegex": [
+    ["clsx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cva\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
-    ["(?:\\w+)?[Cc]lassName\\s*=\\s*[{]?[`'\"]([^`'\"]*)[`'\"][}]?"],
+    ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+    ["\\b\\w*Style\\b\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]"],
+    ["\\b\\w*ClassName\\b\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]"],
+    ["\\b\\w*ClassNames\\b\\s*=\\s*[\"'`]([^\"'`]*)[\"'`]"],
+    ["classList.(?:add|remove|toggle)\\(([^)]*)\\)", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
     ["fill=['\"]([^'\"]*)"],
     ["stroke=['\"]([^'\"]*)"]
   ],

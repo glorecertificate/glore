@@ -9,7 +9,7 @@ export default defineConfig({
     '*': 'vp check --fix',
   },
   fmt: {
-    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**', '.claude/**', 'drizzle/**'],
+    ignorePatterns: ['*.d.ts', 'drizzle/**', 'AGENTS.md', '.agents/**', '.claude/**'],
     arrowParens: 'avoid',
     semi: false,
     singleQuote: true,
@@ -37,7 +37,7 @@ export default defineConfig({
     },
     sortTailwindcss: {
       stylesheet: './src/app/globals.css',
-      functions: ['clsx', 'cn', 'cva'],
+      functions: ['clsx', 'cn', 'cva', 'twJoin', 'twMerge'],
     },
     overrides: [
       {
@@ -55,7 +55,7 @@ export default defineConfig({
     ],
   },
   lint: {
-    ignorePatterns: ['AGENTS.md', '.agents/**', '.claude/**', '*.d.ts'],
+    ignorePatterns: ['*.d.ts', 'AGENTS.md', '.agents/**', '.claude/**'],
     categories: {
       correctness: 'error',
       nursery: 'allow',
@@ -172,7 +172,11 @@ export default defineConfig({
             {
               name: 'next/headers',
               importNames: ['cookies'],
-              message: 'Import from @/actions/cookies instead.',
+              message: "Import from '@/actions/cookies' instead.",
+            },
+            {
+              name: 'cnfast',
+              message: "Import from '@/lib/utils' instead.",
             },
           ],
         },
@@ -456,6 +460,66 @@ export default defineConfig({
         rules: {
           'react-compiler/set-state-in-effect': 'off',
           'react-doctor/no-initialize-state': 'off',
+        },
+      },
+      {
+        files: ['src/components/ui/**', 'src/components/icons/**', 'src/hooks/**', 'src/lib/**'],
+        rules: {
+          'eslint/no-restricted-imports': [
+            'error',
+            {
+              patterns: [
+                {
+                  group: ['../**'],
+                  message: 'Parent imports are not allowed, use an alias instead.',
+                },
+                {
+                  group: ['@/components/features/**', '@/app/**', '@/actions/**'],
+                  message:
+                    'Shared layers (ui, icons, hooks, lib) must stay domain-free: do not import from features, app, or actions. Move domain-coupled code into a feature.',
+                },
+              ],
+              paths: [
+                {
+                  name: 'next/headers',
+                  importNames: ['cookies'],
+                  message: "Import from '@/actions/cookies' instead.",
+                },
+                {
+                  name: 'cnfast',
+                  message: "Import from '@/lib/utils' instead.",
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
+        files: ['src/lib/utils.ts'],
+        rules: {
+          'eslint/no-restricted-imports': [
+            'error',
+            {
+              patterns: [
+                {
+                  group: ['../**'],
+                  message: 'Parent imports are not allowed, use an alias instead.',
+                },
+                {
+                  group: ['@/components/features/**', '@/app/**', '@/actions/**'],
+                  message:
+                    'Shared layers (ui, icons, hooks, lib) must stay domain-free: do not import from features, app, or actions. Move domain-coupled code into a feature.',
+                },
+              ],
+              paths: [
+                {
+                  name: 'next/headers',
+                  importNames: ['cookies'],
+                  message: "Import from '@/actions/cookies' instead.",
+                },
+              ],
+            },
+          ],
         },
       },
     ],

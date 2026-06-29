@@ -6,7 +6,7 @@ import { getMessages } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
 import { getLocaleCookie } from '@/actions/cookies'
-import { OnboardingForm } from '@/components/features/onboarding/onboarding-form'
+import { OnboardingForm } from '@/components/features/onboarding'
 import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'

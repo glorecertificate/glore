@@ -1,4 +1,4 @@
-import { RegisterForm } from '@/components/auth/register-form'
+import { RegisterForm } from '@/components/features/auth/register-form'
 import { Logo } from '@/components/ui/logo'
 import { generateIntlMetadata } from '@/lib/metadata'
 

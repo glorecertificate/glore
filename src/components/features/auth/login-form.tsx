@@ -11,7 +11,7 @@ import { z } from 'zod'
 
 import { login } from '@/actions/auth'
 import { findUserEmail } from '@/actions/user'
-import { SignupDialog } from '@/components/auth/signup-dialog'
+import { SignupDialog } from '@/components/features/auth/signup-dialog'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'

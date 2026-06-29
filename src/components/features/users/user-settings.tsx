@@ -6,7 +6,6 @@ import { useUserSettingsTab } from '@/components/features/users/user-settings-ta
 
 export const UserSettings = () => {
   const { tab } = useUserSettingsTab()
-
   if (tab === 'profile') return <ProfileForm />
   if (tab === 'account') return <AccountForm />
   return null

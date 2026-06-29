@@ -1195,84 +1195,386 @@
   },
   "About": {
     "title": "About GloRe",
-    "description": "The Global Recognition Certificate for volunteering and non-formal learning.",
+    "intro": {
+      "tagline": "Give value to your volunteering experiences.",
+      "body": "GloRe is an open network of volunteering organizations that turns real experience into recognized competence. Volunteers learn and self-assess their soft skills online, a tutor from the host organization validates the result, and a personalized certificate documents the hours, tasks, and skills demonstrated."
+    },
     "sections": {
       "mission": {
-        "title": "Our Mission",
-        "description": "To provide global recognition for skills and competences gained through volunteering and non-formal learning experiences. GloRe bridges the gap between informal education and professional development."
+        "title": "Our mission",
+        "description": "To give professional recognition to the soft skills people develop through volunteering, so non-formal learning counts as much as formal study."
       },
       "vision": {
-        "title": "Our Vision",
-        "description": "A world where every learning experience is valued and recognized, regardless of where or how it was acquired. We believe in the transformative power of volunteering."
+        "title": "Our vision",
+        "description": "A world where every volunteering experience is valued, and where the skills it builds are visible to employers everywhere."
       },
       "values": {
-        "title": "Our Values",
-        "description": "Inclusivity, transparency, and empowerment through recognition of diverse learning paths. We are committed to making certification accessible to everyone."
+        "title": "Our values",
+        "description": "Openness, transparency, and trust. Recognition is free for volunteers, the network is open to organizations, and every certificate is validated by a real tutor."
       },
       "network": {
-        "title": "Our Network",
-        "description": "A growing network of organizations across Europe committed to recognizing non-formal learning. Partner organizations collaborate to ensure consistent quality and standards."
+        "title": "Our network",
+        "description": "An open network of volunteering organizations across Europe, Latin America, and beyond, working to consistent quality standards under a shared charter."
       }
     },
-    "howItWorks": {
-      "title": "How it works",
-      "description": "The GloRe Certificate process is simple and transparent. Follow these steps to get your certificate.",
-      "step1": {
-        "title": "Complete activities",
-        "description": "Participate in volunteering or non-formal learning activities with a GloRe partner organization."
-      },
-      "step2": {
-        "title": "Document learning",
-        "description": "Record your competences and skills gained through the experience using the GloRe platform."
-      },
-      "step3": {
-        "title": "Get certified",
-        "description": "Receive your GloRe Certificate, recognized across the European network of partner organizations."
+    "skills": {
+      "title": "Soft skills we recognize",
+      "description": "Courses are built around the transferable skills that volunteering develops.",
+      "items": {
+        "problemSolving": "Problem solving",
+        "communication": "Digital communication",
+        "conflict": "Conflict management",
+        "empathy": "Empathy",
+        "organization": "Organization & time management",
+        "creativity": "Creativity & innovation",
+        "teamwork": "Teamwork",
+        "leadership": "Leadership"
       }
     },
     "contact": {
       "title": "Get in touch",
-      "description": "Interested in joining the GloRe network or learning more? Reach out to us through your local partner organization."
+      "description": "Want to join the network or learn more? Reach out through your local partner organization or contact us at <email>info@glorecertificate.net</email>.",
+      "coordinator": "GloRe is coordinated by Associazione Joint, a Milan non-profit founded in 2003, with the support of the Erasmus+ programme."
+    },
+    "description": "GloRe, short for Global Recognition, turns volunteering and non-formal learning into a verifiable credential you can add to your CV.",
+    "story": {
+      "title": "Where GloRe comes from",
+      "description": "GloRe began as an Erasmus+ Capacity Building project (2016 to 2018) led by Associazione Joint, a Milan non-profit founded in 2003 and active in youth mobility and European volunteering. It grew into the GloRe Network, an open, free-to-join set of NGOs across Europe and Latin America that issue certificates under shared quality standards."
+    },
+    "howItWorks": {
+      "title": "How the certificate works",
+      "description": "GloRe complements tools like Youthpass with a flexible, validated record of soft skills.",
+      "step1": {
+        "title": "Learn and self-assess",
+        "description": "Complete the skill courses for the competences you practised and rate your own level for each one."
+      },
+      "step2": {
+        "title": "Qualify",
+        "description": "Once you have completed at least 3 skill courses with an average rating of 3 out of 5, you can request a certificate."
+      },
+      "step3": {
+        "title": "Get validated",
+        "description": "A tutor from your organization reviews your evaluations and the activity details, then approves or asks for changes."
+      },
+      "step4": {
+        "title": "Share a verifiable credential",
+        "description": "GloRe issues a signed PDF and a public page with a QR code, so anyone can confirm the certificate is genuine."
+      }
+    },
+    "trust": {
+      "title": "Why it can be trusted",
+      "description": "Recognition only works if a third party believes it.",
+      "items": {
+        "validation": {
+          "title": "Validated by a tutor",
+          "description": "Every certificate is reviewed and approved by a tutor from the issuing organization, who takes responsibility for its content."
+        },
+        "immutable": {
+          "title": "Immutable once approved",
+          "description": "After approval a certificate cannot be changed, so the record stays exactly as it was issued."
+        },
+        "verifiable": {
+          "title": "Publicly verifiable",
+          "description": "A public page and a QR-linked PDF let employers and institutions confirm a certificate without contacting anyone."
+        }
+      }
     }
   },
   "Help": {
     "title": "Help & Support",
-    "description": "Everything you need to get the most out of GloRe Certificate.",
-    "gettingStarted": {
-      "title": "Getting started",
-      "description": "Follow these steps to start your GloRe journey.",
-      "step1": {
-        "title": "Join an organization",
-        "description": "Register and request to join a GloRe partner organization. An admin will approve your membership and assign you a role."
-      },
-      "step2": {
-        "title": "Complete courses",
-        "description": "Enroll in skill courses, complete lessons, and submit your self-evaluations to build your competence profile."
-      },
-      "step3": {
-        "title": "Request your certificate",
-        "description": "Once you have completed at least 3 courses with a rating of 3 or above, you can request your GloRe Certificate."
-      }
-    },
-    "resources": {
-      "title": "Resources",
-      "description": "Browse the documentation to learn more about the platform.",
-      "intro": {
-        "title": "Introduction",
-        "description": "Learn the basics of GloRe Certificate, roles, and the certification process."
-      },
-      "faq": {
-        "title": "FAQs",
-        "description": "Answers to the most common questions about courses, certificates, and organizations."
-      },
-      "tutorials": {
-        "title": "Tutorials",
-        "description": "Step-by-step guides to help you navigate the platform and complete key tasks."
-      }
-    },
     "contact": {
-      "title": "Need more help?",
-      "description": "Contact us at {email} or visit our website at {website} for additional support."
+      "title": "Still need help?",
+      "description": "Reach out to your organization or contact the GloRe team at <email>info@glorecertificate.net</email>. You can also visit <website>glorecertificate.net</website> to learn more about the network.",
+      "emailLabel": "Email us",
+      "websiteLabel": "Visit the website"
+    },
+    "gettingStartedTitle": "Getting started",
+    "faqsTitle": "Frequently asked questions",
+    "faqsDescription": "Quick answers to the questions we hear most often.",
+    "description": "A complete guide to GloRe: your role, the certificate, and every part of the platform.",
+    "roles": {
+      "volunteer": {
+        "label": "Volunteer",
+        "intro": "As a volunteer you learn soft skills, evaluate yourself, and earn a certificate validated by a tutor.",
+        "steps": {
+          "step1": {
+            "title": "Join your organization",
+            "description": "Register and request to join a GloRe partner organization. Once an admin approves you, your courses appear on the dashboard."
+          },
+          "step2": {
+            "title": "Complete skill courses",
+            "description": "Work through skill courses and their lessons. Each one ends with a short assessment that rates the skill from 1 to 5."
+          },
+          "step3": {
+            "title": "Evaluate your skills",
+            "description": "Answer the self-evaluation prompts honestly. Your ratings build the competence profile your certificate is based on."
+          },
+          "step4": {
+            "title": "Request your certificate",
+            "description": "Once you qualify, submit a certificate for your volunteering experience. A tutor reviews it and either approves it or asks for changes."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "When can I request my certificate?",
+            "answer": "After you complete at least 3 skill courses with an average assessment rating of 3 out of 5 or higher. The button unlocks once you qualify."
+          },
+          "q2": {
+            "question": "What is a self-evaluation?",
+            "answer": "After a skill course you rate your own level on the skills it covers. These ratings form your competence profile and are confirmed by a tutor during review."
+          },
+          "q3": {
+            "question": "What happens after I submit a certificate?",
+            "answer": "It is assigned to a tutor and moves through in review to either approved or changes requested. If changes are requested, edit and resubmit it."
+          },
+          "q4": {
+            "question": "How do I join an organization?",
+            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+          },
+          "q5": {
+            "question": "I belong to more than one organization. How do I switch?",
+            "answer": "Use the organization switcher in the sidebar. Each organization is like a separate workspace, with its own courses, role, and certificates."
+          },
+          "q6": {
+            "question": "Which languages are available?",
+            "answer": "The platform is available in English, Italian, and Spanish. You can switch language at any time from your account."
+          }
+        }
+      },
+      "learner": {
+        "label": "Learner",
+        "intro": "As a learner you can take introductory and learner courses to explore soft skills at your own pace.",
+        "steps": {
+          "step1": {
+            "title": "Join your organization",
+            "description": "Register and request to join a GloRe partner organization. An admin approves your membership and sets your role."
+          },
+          "step2": {
+            "title": "Explore the courses",
+            "description": "Open the introductory and learner courses available to you and work through their lessons."
+          },
+          "step3": {
+            "title": "Track your progress",
+            "description": "Each lesson is marked complete as you finish it, so you can always pick up where you left off."
+          },
+          "step4": {
+            "title": "Ask about certification",
+            "description": "Certificates are reserved for the volunteer role. If you want to certify your soft skills, ask your organization about becoming a volunteer."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "Why can I not request a certificate?",
+            "answer": "Certificates are tied to the volunteer role and to skill courses. Learners take introductory and learner courses. Ask your organization if you want to become a volunteer."
+          },
+          "q2": {
+            "question": "What kinds of courses can I take?",
+            "answer": "Introductory courses explain how GloRe works, and learner courses are tailored to your path. Both let you explore soft skills without an assessment."
+          },
+          "q3": {
+            "question": "How do I join an organization?",
+            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+          },
+          "q4": {
+            "question": "I belong to more than one organization. How do I switch?",
+            "answer": "Use the organization switcher in the sidebar. Each organization is like a separate workspace, with its own courses, role, and certificates."
+          },
+          "q5": {
+            "question": "Which languages are available?",
+            "answer": "The platform is available in English, Italian, and Spanish. You can switch language at any time from your account."
+          }
+        }
+      },
+      "tutor": {
+        "label": "Tutor",
+        "intro": "As a tutor you review the certificates assigned to you and decide whether to approve them.",
+        "steps": {
+          "step1": {
+            "title": "Find your assignments",
+            "description": "New certificates are auto-assigned to the tutor with the fewest open reviews. You can also self-assign any unreviewed certificate."
+          },
+          "step2": {
+            "title": "Open the review",
+            "description": "Opening the review form moves the certificate to in review. Check the activity details and the skills with their evaluations."
+          },
+          "step3": {
+            "title": "Adjust if needed",
+            "description": "You can edit the activity dates, duration, location, description, and the skill evaluations so the certificate reflects what really happened."
+          },
+          "step4": {
+            "title": "Approve or request changes",
+            "description": "Approve to generate the signed PDF, or request changes with a comment. The volunteer can edit and resubmit to you."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "How are certificates assigned to me?",
+            "answer": "New certificates are auto-assigned to the tutor with the fewest open reviews. You can also self-assign any certificate that has not been reviewed yet."
+          },
+          "q2": {
+            "question": "What can I change during a review?",
+            "answer": "You can edit the activity dates, duration, location, and description, plus the skills and their evaluations, before you approve."
+          },
+          "q3": {
+            "question": "What does approving do?",
+            "answer": "It generates the signed PDF, records the issue date, and makes the certificate immutable and publicly verifiable. The first approved certificate becomes the volunteer default."
+          },
+          "q4": {
+            "question": "How do I join an organization?",
+            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+          },
+          "q5": {
+            "question": "I belong to more than one organization. How do I switch?",
+            "answer": "Use the organization switcher in the sidebar. Each organization is like a separate workspace, with its own courses, role, and certificates."
+          },
+          "q6": {
+            "question": "Which languages are available?",
+            "answer": "The platform is available in English, Italian, and Spanish. You can switch language at any time from your account."
+          }
+        }
+      },
+      "manager": {
+        "label": "Organization admin",
+        "intro": "As an owner or representative you manage your members, approve join requests, and keep reviews moving.",
+        "steps": {
+          "step1": {
+            "title": "Review join requests",
+            "description": "New people register and request to join your organization. Approve them from the organization page and assign each one a role."
+          },
+          "step2": {
+            "title": "Manage members and roles",
+            "description": "Invite members, change roles, and assign tutors. Volunteers earn certificates; learners take intro courses; tutors review."
+          },
+          "step3": {
+            "title": "Keep reviews balanced",
+            "description": "Certificates are auto-assigned to tutors by load. You can reassign a review, but only tutors can approve or request changes."
+          },
+          "step4": {
+            "title": "Maintain your profile",
+            "description": "Update your organization name, contact details, description, and logo in settings so certificates and the public page stay accurate."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "Who can review certificates?",
+            "answer": "Only tutors review. As an owner or representative you can assign or reassign reviews, but you cannot approve or request changes yourself."
+          },
+          "q2": {
+            "question": "How do I add a tutor?",
+            "answer": "Invite the person or change an existing member role to tutor on the organization page. Reviews are then load-balanced across your tutors."
+          },
+          "q3": {
+            "question": "Can I delete my organization?",
+            "answer": "Only the owner can delete an organization, and only when it has no certificates. Representatives have every other management right."
+          },
+          "q4": {
+            "question": "How do I join an organization?",
+            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+          },
+          "q5": {
+            "question": "I belong to more than one organization. How do I switch?",
+            "answer": "Use the organization switcher in the sidebar. Each organization is like a separate workspace, with its own courses, role, and certificates."
+          },
+          "q6": {
+            "question": "Which languages are available?",
+            "answer": "The platform is available in English, Italian, and Spanish. You can switch language at any time from your account."
+          }
+        }
+      },
+      "team": {
+        "label": "Team",
+        "intro": "As a team member you author courses and, as an admin, manage organizations and users across the platform.",
+        "steps": {
+          "step1": {
+            "title": "Author courses",
+            "description": "Create and translate courses in the editor, with AI assistance for writing, improving, and summarizing content."
+          },
+          "step2": {
+            "title": "Structure lessons",
+            "description": "Add lessons with rich text, questions, and self-evaluation prompts. Skill courses end with a final assessment."
+          },
+          "step3": {
+            "title": "Publish when ready",
+            "description": "A course becomes published, and visible to members, once every lesson has content. Use draft and partial states while you work."
+          },
+          "step4": {
+            "title": "Manage the platform",
+            "description": "Admins approve organizations, moderate users, and invite team members from the admin panel. Editors focus on course content."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "When does a course become visible?",
+            "answer": "A course is published, and visible to members, once all of its lessons have content. Draft and partial states keep it hidden while you work."
+          },
+          "q2": {
+            "question": "Who can edit courses?",
+            "answer": "Admins and editors edit courses. Everyone else sees them in viewer mode. Only admins reach the admin panel for organizations and users."
+          },
+          "q3": {
+            "question": "What is the AI assistant?",
+            "answer": "The course editor includes AI commands to generate, improve, summarize, and translate content, plus inline copilot suggestions while you write."
+          },
+          "q4": {
+            "question": "How do I join an organization?",
+            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+          },
+          "q5": {
+            "question": "I belong to more than one organization. How do I switch?",
+            "answer": "Use the organization switcher in the sidebar. Each organization is like a separate workspace, with its own courses, role, and certificates."
+          },
+          "q6": {
+            "question": "Which languages are available?",
+            "answer": "The platform is available in English, Italian, and Spanish. You can switch language at any time from your account."
+          }
+        }
+      }
+    },
+    "certificate": {
+      "title": "How certification works",
+      "description": "The certificate turns your volunteering into a verifiable credential.",
+      "eligibility": {
+        "title": "Eligibility",
+        "description": "Complete at least 3 skill courses with an average assessment rating of 3 out of 5 or higher to unlock the certificate request."
+      },
+      "lifecycle": {
+        "title": "Review lifecycle",
+        "description": "A certificate moves from submitted to in review, then to approved or changes requested. If changes are requested, you edit and resubmit."
+      },
+      "verification": {
+        "title": "Verification",
+        "description": "Each approved certificate has a public page and a QR code that links to it, so an employer can confirm it is genuine. The PDF is signed by the reviewing tutor."
+      }
+    },
+    "features": {
+      "title": "Around the platform",
+      "description": "A few things worth knowing beyond courses and certificates.",
+      "items": {
+        "organizations": {
+          "title": "Organizations as workspaces",
+          "description": "You always belong to GloRe through an organization. Switch between them in the sidebar, each with its own courses and role."
+        },
+        "onboarding": {
+          "title": "Onboarding",
+          "description": "On your first login you complete a short profile (name, birthday, phone, language) before reaching the dashboard."
+        },
+        "settings": {
+          "title": "Profile and account",
+          "description": "Manage your avatar, bio, contact details, and spoken languages in settings, and change your password or email there too."
+        },
+        "documentation": {
+          "title": "Documentation",
+          "description": "The docs section holds an introduction, FAQs, and step-by-step tutorials maintained by the GloRe team."
+        },
+        "notifications": {
+          "title": "Email updates",
+          "description": "You receive an email at key moments: invitations, certificate assignment, and every review decision."
+        },
+        "pwa": {
+          "title": "Install the app",
+          "description": "GloRe is a progressive web app, so you can install it on your phone or desktop and open it like a native app."
+        }
+      }
     }
   },
   "Certificates": {

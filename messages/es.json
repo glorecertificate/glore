@@ -1195,84 +1195,386 @@
   },
   "About": {
     "title": "Acerca de GloRe",
-    "description": "El Certificado de Reconocimiento Global para el voluntariado y el aprendizaje no formal.",
+    "intro": {
+      "tagline": "Da valor a tus experiencias de voluntariado.",
+      "body": "GloRe es una red abierta de organizaciones de voluntariado que convierte la experiencia real en competencia reconocida. Los voluntarios aprenden y autoevalúan sus habilidades blandas en línea, un tutor de la organización de acogida valida el resultado y un certificado personalizado documenta las horas, las tareas y las habilidades demostradas."
+    },
     "sections": {
       "mission": {
         "title": "Nuestra misión",
-        "description": "Proporcionar reconocimiento global para las competencias adquiridas a través del voluntariado y experiencias de aprendizaje no formal. GloRe conecta la educación informal con el desarrollo profesional."
+        "description": "Dar reconocimiento profesional a las habilidades blandas que las personas desarrollan a través del voluntariado, para que el aprendizaje no formal cuente tanto como los estudios formales."
       },
       "vision": {
         "title": "Nuestra visión",
-        "description": "Un mundo donde cada experiencia de aprendizaje sea valorada y reconocida, sin importar dónde o cómo se adquirió. Creemos en el poder transformador del voluntariado."
+        "description": "Un mundo en el que cada experiencia de voluntariado se valore y en el que las habilidades que genera sean visibles para los empleadores de todas partes."
       },
       "values": {
         "title": "Nuestros valores",
-        "description": "Inclusividad, transparencia y empoderamiento a través del reconocimiento de diversas trayectorias de aprendizaje. Estamos comprometidos con hacer la certificación accesible para todos."
+        "description": "Apertura, transparencia y confianza. El reconocimiento es gratuito para los voluntarios, la red está abierta a las organizaciones y cada certificado lo valida un tutor real."
       },
       "network": {
         "title": "Nuestra red",
-        "description": "Una red creciente de organizaciones en toda Europa comprometidas con el reconocimiento del aprendizaje no formal. Las organizaciones asociadas colaboran para garantizar calidad y estándares consistentes."
+        "description": "Una red abierta de organizaciones de voluntariado en Europa, América Latina y más allá, que trabajan con estándares de calidad uniformes bajo una carta común."
       }
     },
-    "howItWorks": {
-      "title": "Cómo funciona",
-      "description": "El proceso del Certificado GloRe es simple y transparente. Sigue estos pasos para obtener tu certificado.",
-      "step1": {
-        "title": "Completa actividades",
-        "description": "Participa en actividades de voluntariado o aprendizaje no formal con una organización asociada de GloRe."
-      },
-      "step2": {
-        "title": "Documenta tu aprendizaje",
-        "description": "Registra tus competencias y habilidades adquiridas a través de la experiencia usando la plataforma GloRe."
-      },
-      "step3": {
-        "title": "Obtén tu certificado",
-        "description": "Recibe tu Certificado GloRe, reconocido en toda la red europea de organizaciones asociadas."
+    "skills": {
+      "title": "Habilidades blandas que reconocemos",
+      "description": "Los cursos se construyen en torno a las habilidades transferibles que desarrolla el voluntariado.",
+      "items": {
+        "problemSolving": "Resolución de problemas",
+        "communication": "Comunicación digital",
+        "conflict": "Gestión de conflictos",
+        "empathy": "Empatía",
+        "organization": "Organización y gestión del tiempo",
+        "creativity": "Creatividad e innovación",
+        "teamwork": "Trabajo en equipo",
+        "leadership": "Liderazgo"
       }
     },
     "contact": {
-      "title": "Contáctanos",
-      "description": "¿Interesado en unirte a la red GloRe o saber más? Contacta con tu organización asociada local."
+      "title": "Ponte en contacto",
+      "description": "¿Quieres unirte a la red o saber más? Contacta a través de tu organización asociada local o escríbenos a <email>info@glorecertificate.net</email>.",
+      "coordinator": "GloRe está coordinada por Associazione Joint, una organización sin ánimo de lucro de Milán fundada en 2003, con el apoyo del programa Erasmus+."
+    },
+    "description": "GloRe, abreviatura de Global Recognition, convierte el voluntariado y el aprendizaje no formal en una credencial verificable que puedes añadir a tu CV.",
+    "story": {
+      "title": "De dónde viene GloRe",
+      "description": "GloRe comenzó como un proyecto Erasmus+ de Desarrollo de Capacidades (de 2016 a 2018) liderado por Associazione Joint, una organización sin ánimo de lucro de Milán fundada en 2003 y activa en la movilidad juvenil y el voluntariado europeo. Creció hasta convertirse en la GloRe Network, un conjunto abierto y de adhesión gratuita de ONG de Europa y América Latina que emiten certificados bajo estándares de calidad compartidos."
+    },
+    "howItWorks": {
+      "title": "Cómo funciona el certificado",
+      "description": "GloRe complementa herramientas como Youthpass con un registro flexible y validado de habilidades blandas.",
+      "step1": {
+        "title": "Aprende y autoevalúate",
+        "description": "Completa los cursos de habilidades de las competencias que practicaste y valora tu propio nivel en cada una."
+      },
+      "step2": {
+        "title": "Cumple los requisitos",
+        "description": "Una vez que hayas completado al menos 3 cursos de habilidades con una puntuación media de 3 sobre 5, puedes solicitar un certificado."
+      },
+      "step3": {
+        "title": "Obtén la validación",
+        "description": "Un tutor de tu organización revisa tus evaluaciones y los detalles de la actividad, y luego aprueba o solicita cambios."
+      },
+      "step4": {
+        "title": "Comparte una credencial verificable",
+        "description": "GloRe emite un PDF firmado y una página pública con un código QR, para que cualquiera pueda confirmar que el certificado es auténtico."
+      }
+    },
+    "trust": {
+      "title": "Por qué se puede confiar en él",
+      "description": "El reconocimiento solo funciona si un tercero lo cree.",
+      "items": {
+        "validation": {
+          "title": "Validado por un tutor",
+          "description": "Cada certificado lo revisa y aprueba un tutor de la organización emisora, que asume la responsabilidad de su contenido."
+        },
+        "immutable": {
+          "title": "Inmutable una vez aprobado",
+          "description": "Tras la aprobación, un certificado no se puede modificar, así que el registro queda exactamente como se emitió."
+        },
+        "verifiable": {
+          "title": "Verificable públicamente",
+          "description": "Una página pública y un PDF enlazado con un código QR permiten que empleadores e instituciones confirmen un certificado sin contactar con nadie."
+        }
+      }
     }
   },
   "Help": {
     "title": "Ayuda y soporte",
-    "description": "Todo lo que necesitas para sacar el máximo partido a GloRe Certificate.",
-    "gettingStarted": {
-      "title": "Primeros pasos",
-      "description": "Sigue estos pasos para comenzar tu camino con GloRe.",
-      "step1": {
-        "title": "Únete a una organización",
-        "description": "Regístrate y solicita unirte a una organización asociada de GloRe. Un administrador aprobará tu membresía y te asignará un rol."
-      },
-      "step2": {
-        "title": "Completa cursos",
-        "description": "Inscríbete en cursos de habilidades, completa lecciones y envía tus autoevaluaciones para desarrollar tu perfil de competencias."
-      },
-      "step3": {
-        "title": "Solicita tu certificado",
-        "description": "Una vez que hayas completado al menos 3 cursos con una calificación de 3 o superior, podrás solicitar tu Certificado GloRe."
-      }
-    },
-    "resources": {
-      "title": "Recursos",
-      "description": "Explora la documentación para aprender más sobre la plataforma.",
-      "intro": {
-        "title": "Introducción",
-        "description": "Aprende los conceptos básicos de GloRe Certificate, los roles y el proceso de certificación."
-      },
-      "faq": {
-        "title": "Preguntas frecuentes",
-        "description": "Respuestas a las preguntas más comunes sobre cursos, certificados y organizaciones."
-      },
-      "tutorials": {
-        "title": "Tutoriales",
-        "description": "Guías paso a paso para ayudarte a navegar la plataforma y completar tareas clave."
-      }
-    },
     "contact": {
-      "title": "¿Necesitas más ayuda?",
-      "description": "Contáctanos en {email} o visita nuestro sitio web en {website} para obtener soporte adicional."
+      "title": "¿Aún necesitas ayuda?",
+      "description": "Ponte en contacto con tu organización o escribe al equipo de GloRe a <email>info@glorecertificate.net</email>. También puedes visitar <website>glorecertificate.net</website> para conocer mejor la red.",
+      "emailLabel": "Escríbenos",
+      "websiteLabel": "Visita el sitio web"
+    },
+    "gettingStartedTitle": "Primeros pasos",
+    "faqsTitle": "Preguntas frecuentes",
+    "faqsDescription": "Respuestas rápidas a las preguntas que más recibimos.",
+    "description": "Una guía completa de GloRe: tu rol, el certificado y cada parte de la plataforma.",
+    "roles": {
+      "volunteer": {
+        "label": "Voluntario",
+        "intro": "Como voluntario aprendes habilidades blandas, te autoevalúas y obtienes un certificado validado por un tutor.",
+        "steps": {
+          "step1": {
+            "title": "Únete a tu organización",
+            "description": "Regístrate y solicita unirte a una organización asociada de GloRe. Una vez que un administrador te aprueba, tus cursos aparecen en el panel."
+          },
+          "step2": {
+            "title": "Completa los cursos de habilidades",
+            "description": "Avanza por los cursos de habilidades y sus lecciones. Cada uno termina con una breve evaluación que puntúa la habilidad de 1 a 5."
+          },
+          "step3": {
+            "title": "Evalúa tus habilidades",
+            "description": "Responde con sinceridad a las preguntas de autoevaluación. Tus puntuaciones conforman el perfil de competencias en el que se basa tu certificado."
+          },
+          "step4": {
+            "title": "Solicita tu certificado",
+            "description": "Una vez que cumples los requisitos, envía un certificado de tu experiencia de voluntariado. Un tutor lo revisa y lo aprueba o solicita cambios."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "¿Cuándo puedo solicitar mi certificado?",
+            "answer": "Cuando completes al menos 3 cursos de habilidades con una puntuación media de evaluación de 3 sobre 5 o superior. El botón se desbloquea en cuanto cumples los requisitos."
+          },
+          "q2": {
+            "question": "¿Qué es una autoevaluación?",
+            "answer": "Después de un curso de habilidades, valoras tu propio nivel en las habilidades que cubre. Estas puntuaciones forman tu perfil de competencias y las confirma un tutor durante la revisión."
+          },
+          "q3": {
+            "question": "¿Qué pasa después de enviar un certificado?",
+            "answer": "Se asigna a un tutor y pasa por el estado en revisión hasta quedar aprobado o con cambios solicitados. Si se piden cambios, edítalo y vuelve a enviarlo."
+          },
+          "q4": {
+            "question": "¿Cómo me uno a una organización?",
+            "answer": "Crea una cuenta y solicita unirte a una organización asociada durante el registro. Un administrador aprueba tu membresía y te asigna un rol antes de que puedas empezar."
+          },
+          "q5": {
+            "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+          },
+          "q6": {
+            "question": "¿Qué idiomas están disponibles?",
+            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+          }
+        }
+      },
+      "learner": {
+        "label": "Estudiante",
+        "intro": "Como estudiante puedes hacer cursos introductorios y de estudiante para explorar las habilidades blandas a tu propio ritmo.",
+        "steps": {
+          "step1": {
+            "title": "Únete a tu organización",
+            "description": "Regístrate y solicita unirte a una organización asociada de GloRe. Un administrador aprueba tu membresía y define tu rol."
+          },
+          "step2": {
+            "title": "Explora los cursos",
+            "description": "Abre los cursos introductorios y de estudiante disponibles para ti y avanza por sus lecciones."
+          },
+          "step3": {
+            "title": "Sigue tu progreso",
+            "description": "Cada lección se marca como completada a medida que la terminas, así siempre puedes retomar donde lo dejaste."
+          },
+          "step4": {
+            "title": "Pregunta sobre la certificación",
+            "description": "Los certificados están reservados al rol de voluntario. Si quieres certificar tus habilidades blandas, consulta a tu organización sobre cómo convertirte en voluntario."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "¿Por qué no puedo solicitar un certificado?",
+            "answer": "Los certificados están ligados al rol de voluntario y a los cursos de habilidades. Los estudiantes hacen cursos introductorios y de estudiante. Consulta a tu organización si quieres convertirte en voluntario."
+          },
+          "q2": {
+            "question": "¿Qué tipos de cursos puedo hacer?",
+            "answer": "Los cursos introductorios explican cómo funciona GloRe y los cursos de estudiante se adaptan a tu trayectoria. Ambos te permiten explorar las habilidades blandas sin una evaluación."
+          },
+          "q3": {
+            "question": "¿Cómo me uno a una organización?",
+            "answer": "Crea una cuenta y solicita unirte a una organización asociada durante el registro. Un administrador aprueba tu membresía y te asigna un rol antes de que puedas empezar."
+          },
+          "q4": {
+            "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+          },
+          "q5": {
+            "question": "¿Qué idiomas están disponibles?",
+            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+          }
+        }
+      },
+      "tutor": {
+        "label": "Tutor",
+        "intro": "Como tutor revisas los certificados que se te asignan y decides si aprobarlos.",
+        "steps": {
+          "step1": {
+            "title": "Encuentra tus asignaciones",
+            "description": "Los certificados nuevos se asignan automáticamente al tutor con menos revisiones pendientes. También puedes autoasignarte cualquier certificado sin revisar."
+          },
+          "step2": {
+            "title": "Abre la revisión",
+            "description": "Al abrir el formulario de revisión, el certificado pasa a estado en revisión. Comprueba los detalles de la actividad y las habilidades con sus evaluaciones."
+          },
+          "step3": {
+            "title": "Ajusta si es necesario",
+            "description": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, así como las evaluaciones de las habilidades, para que el certificado refleje lo que realmente ocurrió."
+          },
+          "step4": {
+            "title": "Aprueba o solicita cambios",
+            "description": "Aprueba para generar el PDF firmado, o solicita cambios con un comentario. El voluntario puede editar y volver a enviártelo."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "¿Cómo se me asignan los certificados?",
+            "answer": "Los certificados nuevos se asignan automáticamente al tutor con menos revisiones pendientes. También puedes autoasignarte cualquier certificado que aún no se haya revisado."
+          },
+          "q2": {
+            "question": "¿Qué puedo cambiar durante una revisión?",
+            "answer": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, además de las habilidades y sus evaluaciones, antes de aprobar."
+          },
+          "q3": {
+            "question": "¿Qué hace la aprobación?",
+            "answer": "Genera el PDF firmado, registra la fecha de emisión y hace que el certificado sea inmutable y verificable públicamente. El primer certificado aprobado se convierte en el predeterminado del voluntario."
+          },
+          "q4": {
+            "question": "¿Cómo me uno a una organización?",
+            "answer": "Crea una cuenta y solicita unirte a una organización asociada durante el registro. Un administrador aprueba tu membresía y te asigna un rol antes de que puedas empezar."
+          },
+          "q5": {
+            "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+          },
+          "q6": {
+            "question": "¿Qué idiomas están disponibles?",
+            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+          }
+        }
+      },
+      "manager": {
+        "label": "Administrador de la organización",
+        "intro": "Como propietario o representante gestionas a tus miembros, apruebas las solicitudes de ingreso y mantienes las revisiones en marcha.",
+        "steps": {
+          "step1": {
+            "title": "Revisa las solicitudes de ingreso",
+            "description": "Las personas nuevas se registran y solicitan unirse a tu organización. Apruébalas desde la página de la organización y asigna un rol a cada una."
+          },
+          "step2": {
+            "title": "Gestiona miembros y roles",
+            "description": "Invita a miembros, cambia roles y asigna tutores. Los voluntarios obtienen certificados; los estudiantes hacen cursos introductorios; los tutores revisan."
+          },
+          "step3": {
+            "title": "Mantén las revisiones equilibradas",
+            "description": "Los certificados se asignan automáticamente a los tutores según la carga. Puedes reasignar una revisión, pero solo los tutores pueden aprobar o solicitar cambios."
+          },
+          "step4": {
+            "title": "Mantén tu perfil",
+            "description": "Actualiza el nombre, los datos de contacto, la descripción y el logotipo de tu organización en los ajustes para que los certificados y la página pública sigan siendo precisos."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "¿Quién puede revisar los certificados?",
+            "answer": "Solo los tutores revisan. Como propietario o representante puedes asignar o reasignar revisiones, pero no puedes aprobar ni solicitar cambios por tu cuenta."
+          },
+          "q2": {
+            "question": "¿Cómo añado un tutor?",
+            "answer": "Invita a la persona o cambia el rol de un miembro existente a tutor en la página de la organización. Las revisiones se reparten entonces de forma equilibrada entre tus tutores."
+          },
+          "q3": {
+            "question": "¿Puedo eliminar mi organización?",
+            "answer": "Solo el propietario puede eliminar una organización, y solo cuando no tiene certificados. Los representantes tienen todos los demás derechos de gestión."
+          },
+          "q4": {
+            "question": "¿Cómo me uno a una organización?",
+            "answer": "Crea una cuenta y solicita unirte a una organización asociada durante el registro. Un administrador aprueba tu membresía y te asigna un rol antes de que puedas empezar."
+          },
+          "q5": {
+            "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+          },
+          "q6": {
+            "question": "¿Qué idiomas están disponibles?",
+            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+          }
+        }
+      },
+      "team": {
+        "label": "Equipo",
+        "intro": "Como miembro del equipo creas cursos y, como administrador, gestionas organizaciones y usuarios en toda la plataforma.",
+        "steps": {
+          "step1": {
+            "title": "Crea cursos",
+            "description": "Crea y traduce cursos en el editor, con asistencia de IA para redactar, mejorar y resumir contenidos."
+          },
+          "step2": {
+            "title": "Estructura las lecciones",
+            "description": "Añade lecciones con texto enriquecido, preguntas y preguntas de autoevaluación. Los cursos de habilidades terminan con una evaluación final."
+          },
+          "step3": {
+            "title": "Publica cuando esté listo",
+            "description": "Un curso se publica, y queda visible para los miembros, una vez que todas las lecciones tienen contenido. Usa los estados de borrador y parcial mientras trabajas."
+          },
+          "step4": {
+            "title": "Gestiona la plataforma",
+            "description": "Los administradores aprueban organizaciones, moderan usuarios e invitan a miembros del equipo desde el panel de administración. Los editores se centran en el contenido de los cursos."
+          }
+        },
+        "faqs": {
+          "q1": {
+            "question": "¿Cuándo se vuelve visible un curso?",
+            "answer": "Un curso se publica, y queda visible para los miembros, una vez que todas sus lecciones tienen contenido. Los estados de borrador y parcial lo mantienen oculto mientras trabajas."
+          },
+          "q2": {
+            "question": "¿Quién puede editar cursos?",
+            "answer": "Los administradores y los editores editan los cursos. Todos los demás los ven en modo de visualización. Solo los administradores acceden al panel de administración de organizaciones y usuarios."
+          },
+          "q3": {
+            "question": "¿Qué es el asistente de IA?",
+            "answer": "El editor de cursos incluye comandos de IA para generar, mejorar, resumir y traducir contenidos, además de sugerencias de copiloto en línea mientras escribes."
+          },
+          "q4": {
+            "question": "¿Cómo me uno a una organización?",
+            "answer": "Crea una cuenta y solicita unirte a una organización asociada durante el registro. Un administrador aprueba tu membresía y te asigna un rol antes de que puedas empezar."
+          },
+          "q5": {
+            "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
+            "answer": "Usa el selector de organización de la barra lateral. Cada organización es como un espacio de trabajo independiente, con sus propios cursos, rol y certificados."
+          },
+          "q6": {
+            "question": "¿Qué idiomas están disponibles?",
+            "answer": "La plataforma está disponible en inglés, italiano y español. Puedes cambiar de idioma en cualquier momento desde tu cuenta."
+          }
+        }
+      }
+    },
+    "certificate": {
+      "title": "Cómo funciona la certificación",
+      "description": "El certificado convierte tu voluntariado en una credencial verificable.",
+      "eligibility": {
+        "title": "Requisitos",
+        "description": "Completa al menos 3 cursos de habilidades con una puntuación media de evaluación de 3 de 5 o superior para desbloquear la solicitud de certificado."
+      },
+      "lifecycle": {
+        "title": "Ciclo de revisión",
+        "description": "Un certificado pasa de enviado a en revisión, y luego a aprobado o con cambios solicitados. Si se piden cambios, lo editas y lo vuelves a enviar."
+      },
+      "verification": {
+        "title": "Verificación",
+        "description": "Cada certificado aprobado tiene una página pública y un código QR que enlaza con ella, para que un empleador pueda confirmar que es auténtico. El PDF está firmado por el tutor revisor."
+      }
+    },
+    "features": {
+      "title": "Por la plataforma",
+      "description": "Algunas cosas que conviene conocer más allá de los cursos y los certificados.",
+      "items": {
+        "organizations": {
+          "title": "Organizaciones como espacios de trabajo",
+          "description": "Siempre perteneces a GloRe a través de una organización. Cambia entre ellas en la barra lateral, cada una con sus propios cursos y rol."
+        },
+        "onboarding": {
+          "title": "Bienvenida inicial",
+          "description": "En tu primer inicio de sesión completas un breve perfil (nombre, fecha de nacimiento, teléfono, idioma) antes de llegar al panel."
+        },
+        "settings": {
+          "title": "Perfil y cuenta",
+          "description": "Gestiona tu avatar, biografía, datos de contacto e idiomas que hablas en los ajustes, y cambia también allí tu contraseña o correo electrónico."
+        },
+        "documentation": {
+          "title": "Documentación",
+          "description": "La sección de documentación incluye una introducción, preguntas frecuentes y tutoriales paso a paso mantenidos por el equipo de GloRe."
+        },
+        "notifications": {
+          "title": "Avisos por correo",
+          "description": "Recibes un correo en los momentos clave: invitaciones, asignación de certificados y cada decisión de revisión."
+        },
+        "pwa": {
+          "title": "Instala la aplicación",
+          "description": "GloRe es una aplicación web progresiva (PWA), así que puedes instalarla en tu teléfono o escritorio y abrirla como una aplicación nativa."
+        }
+      }
     }
   },
   "Certificates": {

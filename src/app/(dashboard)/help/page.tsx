@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 
-import { HelpContent } from '@/components/features/help/content'
+import { HelpContent } from '@/components/features/help'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { generateIntlMetadata } from '@/lib/metadata'
 

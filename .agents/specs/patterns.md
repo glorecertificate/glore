@@ -17,6 +17,24 @@ const button = cva('inline-flex items-center', {
 
 `cn` wraps `cx` + a `tailwind-merge` extended with custom `text-stroke-width` / `text-stroke-color` groups. oxfmt `sortTailwindcss` recognizes both `cn` and `cva`, so class strings inside them sort automatically.
 
+### Forward root-element props
+
+Every component, exported or not, accepts the props of its root element, merges `className` via `cn()`, and spreads the rest. Type props as `React.ComponentProps<Root>` (`Root` is `'div'` etc. for a DOM root, or `typeof Inner` when the root is another component) intersected with the component's own props; destructure `className` + `...props`, then `<div className={cn('...', className)} {...props}>`. This keeps components restyleable and composable from the call site without editing them.
+
+```tsx
+const CourseCard = ({ className, course, ...props }: React.ComponentProps<'div'> & { course: Course }) => (
+  <div className={cn('rounded-md border p-3', className)} {...props}>
+    {/* ... */}
+  </div>
+)
+```
+
+A provider with no DOM root of its own is the only exemption: type its props as `React.PropsWithChildren<{...}>` and forward to whatever inner element has a root.
+
+### Compose, don't configure
+
+Build components by composition (compound components, context, slots, polymorphic `as` / `asChild`) over accreting boolean/config props. A growing list of `isX` / `showY` booleans is the signal to restructure into composed subcomponents; reaching for a third boolean prop means it should be composition instead.
+
 ### Context / provider hierarchy
 
 Global, app-wide providers are flat single files in `src/components/providers/` (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`); each module owns its `use<X>` hook. Feature-scoped contexts live in `src/components/features/<domain>/`.
@@ -37,6 +55,17 @@ Import icon TYPES from `lucide-react` but RENDER via `LucideIcon` from `@/compon
 ### URL state (nuqs)
 
 Type-safe URL state via nuqs. Per feature: a `params.ts` declares parsers, a `use-params.ts` exposes the typed hook. Found in `certificates/`, `courses/course-editor/`, `courses/course-list/`.
+
+### Performance patterns (React Compiler)
+
+React Compiler auto-memoizes derived values, callbacks, and components (production only), so do not add `useMemo` / `useCallback` / `React.memo` by hand. The Compiler keys on deps; single-pass sort/filter/map stays un-memoized. Treat `vercel-react-best-practices` as the authoritative checklist; the patterns below are how it applies here.
+
+- **Don't prop-drill a high-frequency subscription.** Subscribing at a parent and threading the value to every child re-renders every child on each tick. Isolate the subscription in a leaf component instead.
+- **Don't call `form.watch()` at the top of a form.** It re-renders the whole form on every keystroke. Lift the dependent UI into a subcomponent and call `useWatch({ control, name })` (see the auth forms in `src/components/auth/`).
+- **Split high-churn context.** When one provider mixes a fast-changing value with stable actions, split it so consumers subscribe only to what they use.
+- **Prefer derived state over a syncing effect.** Use `useDeferredValue` to gate expensive recomputation (see `src/hooks/use-search.ts`) or set-state-during-render to mirror a prop, not a `useEffect` that copies props into state.
+- **Stabilize interval/listener callbacks** that close over fresh values with a ref or `useEffectEvent`, so a long-lived `setInterval`/subscription doesn't restart every render.
+- **No dead cleanup.** Setting state in an unmount cleanup is a no-op. Reserve `return () => { ... }` for real teardown (`clearTimeout`, `removeEventListener`).
 
 ## Type system
 

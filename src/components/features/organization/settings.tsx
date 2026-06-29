@@ -33,7 +33,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CountrySelect } from '@/components/ui/country-select'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { Separator } from '@/components/ui/separator'
@@ -41,6 +40,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { type User } from '@/db/queries/user'
 import { defaultFormDisabled } from '@/lib/utils'
 
+import { OrganizationAvatarMenu } from './avatar-menu'
 import { organizationSettingsSchema } from './schemas'
 
 const SettingsSection = ({
@@ -220,10 +220,11 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
       <Form {...form}>
         <form className="space-y-0" onSubmit={form.handleSubmit(handleSettingsSubmit)}>
           <SettingsSection description={t('brandingDescription')} title={t('branding')}>
-            <ImageCropper
+            <OrganizationAvatarMenu
               fallback={sessionOrg?.name?.slice(0, 2).toUpperCase() ?? organization.name.slice(0, 2).toUpperCase()}
-              onChange={handleAvatarUpload}
-              onRemove={handleAvatarRemove}
+              name={sessionOrg?.name ?? organization.name}
+              onAvatarRemove={handleAvatarRemove}
+              onAvatarUpload={handleAvatarUpload}
               value={sessionOrg?.avatarUrl ?? organization.avatarUrl}
             />
           </SettingsSection>

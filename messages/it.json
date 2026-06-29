@@ -1500,7 +1500,11 @@
     "role_volunteer": "Volontario",
     "noMembers": "Nessun membro",
     "noMembersDescription": "Invita i membri nella tua organizzazione per iniziare.",
-    "inviteEmailFailed": "L'email di invito non è stata inviata. Il membro è stato aggiunto ma potrebbe essere necessario notificarlo manualmente."
+    "inviteEmailFailed": "L'email di invito non è stata inviata. Il membro è stato aggiunto ma potrebbe essere necessario notificarlo manualmente.",
+    "updateAvatar": "Aggiorna avatar",
+    "removeAvatar": "Rimuovi avatar",
+    "removeAvatarTitle": "Rimuovere l'avatar?",
+    "removeAvatarDescription": "Questa rimuoverà l'avatar dell'organizzazione. Puoi caricarne uno nuovo in qualsiasi momento."
   },
   "Users": {
     "admin": "Utente admin",
@@ -1609,7 +1613,9 @@
     "noLanguageFound": "Nessuna lingua trovata.",
     "noLanguagesSelected": "Nessuna lingua selezionata.",
     "languagesSelected": "{count, plural, =1 {# lingua selezionata} other {# lingue selezionate}}",
-    "removeLanguage": "Rimuovi {language}"
+    "removeLanguage": "Rimuovi {language}",
+    "removeAvatarTitle": "Rimuovere la foto?",
+    "removeAvatarDescription": "Questa rimuoverà la foto del tuo profilo. Puoi caricarne una nuova in qualsiasi momento."
   },
   "Register": {
     "alreadyHaveAccount": "Hai già un account?",

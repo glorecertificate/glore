@@ -12,6 +12,16 @@ import { confirmAvatar, createAvatarUploadUrl, removeAvatar } from '@/actions/st
 import { updateUser } from '@/actions/user'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
@@ -28,6 +38,7 @@ import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 import i18nConfig from '~/config/i18n.json'
 
+const FIELDS = ['firstName', 'lastName', 'bio', 'phone', 'birthday', 'sex', 'pronouns', 'city', 'country'] as const
 const PRONOUNS = ['she/her', 'he/him', 'they/them', 'ze/zir', 'other'] as const
 
 export const ProfileForm = () => {
@@ -36,6 +47,8 @@ export const ProfileForm = () => {
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatarUrl)
   const [languages, setLanguages] = useState<string[]>(user.languages ?? [])
+  const [removeAvatarOpen, setRemoveAvatarOpen] = useState(false)
+  const [removingAvatar, setRemovingAvatar] = useState(false)
 
   const formSchema = z.object({
     firstName: z.string().optional(),
@@ -94,6 +107,7 @@ export const ProfileForm = () => {
 
   const handleAvatarRemove = async () => {
     try {
+      setRemovingAvatar(true)
       const { data, error } = await removeAvatar()
       if (error) {
         toast.error(t('profileUpdateError'))
@@ -104,25 +118,16 @@ export const ProfileForm = () => {
       toast.success(t('profileUpdated'))
     } catch {
       toast.error(t('profileUpdateError'))
+    } finally {
+      setRemovingAvatar(false)
     }
   }
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     try {
       const updates: TableUpdate<'users'> = {}
-      const fields = [
-        'firstName',
-        'lastName',
-        'bio',
-        'phone',
-        'birthday',
-        'sex',
-        'pronouns',
-        'city',
-        'country',
-      ] as const
 
-      for (const key of fields) {
+      for (const key of FIELDS) {
         const value = schema[key]
         if (value !== (user[key] ?? '')) {
           updates[key] = (value || null) as never
@@ -135,7 +140,6 @@ export const ProfileForm = () => {
 
       if (Object.keys(updates).length > 0) {
         const data = await updateUser(user.id, updates)
-
         setUser(data)
         form.reset({
           firstName: data.firstName ?? '',
@@ -165,196 +169,197 @@ export const ProfileForm = () => {
             disabled={form.formState.isSubmitting}
             fallback={user.initials}
             onChange={handleAvatarUpload}
-            onRemove={handleAvatarRemove}
+            onRemove={() => setRemoveAvatarOpen(true)}
             value={avatarPreview}
           />
         </SettingsSection>
 
-        <Separator className="my-8" />
+        <Separator className="mt-4 mb-8" />
 
-        <SettingsSection description={t('personalInfoDescription')} title={t('personalInfo')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('firstName')}</FormLabel>
-                  <FormControl>
-                    <Input disabled={form.formState.isSubmitting} placeholder={t('firstNamePlaceholder')} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('lastName')}</FormLabel>
-                  <FormControl>
-                    <Input disabled={form.formState.isSubmitting} placeholder={t('lastNamePlaceholder')} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('bio')}</FormLabel>
-                <FormControl>
-                  <Textarea
-                    className="min-h-24 resize-none"
-                    disabled={form.formState.isSubmitting}
-                    placeholder={t('bioPlaceholder')}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </SettingsSection>
-
-        <Separator className="my-8" />
-
-        <SettingsSection description={t('personalDetailsDescription')} title={t('personalDetails')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="birthday"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('birthday')}</FormLabel>
-                  <DatePicker
-                    disabled={form.formState.isSubmitting}
-                    onChange={field.onChange}
-                    value={field.value ?? ''}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="sex"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('sex')}</FormLabel>
-                  <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+        <div className="flex flex-col gap-8">
+          {/* Personal information */}
+          <SettingsSection description={t('personalInfoDescription')} title={t('personalInfo')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('firstName')}</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('selectSex')} />
-                      </SelectTrigger>
+                      <Input
+                        disabled={form.formState.isSubmitting}
+                        placeholder={t('firstNamePlaceholder')}
+                        {...field}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="female">{t('female')}</SelectItem>
-                      <SelectItem value="male">{t('male')}</SelectItem>
-                      <SelectItem value="non-binary">{t('nonBinary')}</SelectItem>
-                      <SelectItem value="unspecified">{t('unspecified')}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="pronouns"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('pronouns')}</FormLabel>
-                  <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('lastName')}</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('selectPronouns')} />
-                      </SelectTrigger>
+                      <Input disabled={form.formState.isSubmitting} placeholder={t('lastNamePlaceholder')} {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {PRONOUNS.map(p => (
-                        <SelectItem key={p} value={p}>
-                          {t(`pronouns_${p.replace('/', '')}` as Any)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="phone"
+              name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('phone')}</FormLabel>
+                  <FormLabel>{t('bio')}</FormLabel>
                   <FormControl>
-                    <PhoneInput
+                    <Textarea
+                      className="min-h-24 resize-none"
                       disabled={form.formState.isSubmitting}
-                      onChange={field.onChange}
-                      placeholder={t('phonePlaceholder')}
-                      value={field.value ?? ''}
+                      placeholder={t('bioPlaceholder')}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-        </SettingsSection>
-
-        <Separator className="my-8" />
-
-        <SettingsSection description={t('locationDescription')} title={t('location')}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="city"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('city')}</FormLabel>
-                  <FormControl>
-                    <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+          </SettingsSection>
+          {/* Personal details */}
+          <SettingsSection description={t('personalDetailsDescription')} title={t('personalDetails')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="birthday"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('birthday')}</FormLabel>
+                    <DatePicker
+                      disabled={form.formState.isSubmitting}
+                      onChange={field.onChange}
+                      value={field.value ?? ''}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sex"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('sex')}</FormLabel>
+                    <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('selectSex')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="female">{t('female')}</SelectItem>
+                        <SelectItem value="male">{t('male')}</SelectItem>
+                        <SelectItem value="non-binary">{t('nonBinary')}</SelectItem>
+                        <SelectItem value="unspecified">{t('unspecified')}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="pronouns"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('pronouns')}</FormLabel>
+                    <Select disabled={form.formState.isSubmitting} onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t('selectPronouns')} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {PRONOUNS.map(p => (
+                          <SelectItem key={p} value={p}>
+                            {t(`pronouns_${p.replace('/', '')}` as Any)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('phone')}</FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        disabled={form.formState.isSubmitting}
+                        onChange={field.onChange}
+                        placeholder={t('phonePlaceholder')}
+                        value={field.value ?? ''}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </SettingsSection>
+          {/* Location */}
+          <SettingsSection description={t('locationDescription')} title={t('location')}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('city')}</FormLabel>
+                    <FormControl>
+                      <Input disabled={form.formState.isSubmitting} placeholder={t('cityPlaceholder')} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('country')}</FormLabel>
+                    <CountrySelect
+                      disabled={form.formState.isSubmitting}
+                      onChange={field.onChange}
+                      value={field.value ?? ''}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </SettingsSection>
+          {/* Languages */}
+          <SettingsSection description={t('spokenLanguagesDescription')} title={t('spokenLanguages')}>
+            <SpokenLanguagesSelect
+              disabled={form.formState.isSubmitting}
+              onChange={setLanguages}
+              options={i18nConfig.spokenLanguages}
+              value={languages}
             />
-            <FormField
-              control={form.control}
-              name="country"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('country')}</FormLabel>
-                  <CountrySelect
-                    disabled={form.formState.isSubmitting}
-                    onChange={field.onChange}
-                    value={field.value ?? ''}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </SettingsSection>
-
-        <Separator className="my-8" />
-
-        <SettingsSection description={t('spokenLanguagesDescription')} title={t('spokenLanguages')}>
-          <SpokenLanguagesSelect
-            disabled={form.formState.isSubmitting}
-            onChange={setLanguages}
-            options={i18nConfig.spokenLanguages}
-            value={languages}
-          />
-        </SettingsSection>
+          </SettingsSection>
+        </div>
 
         <Separator className="my-8" />
 
@@ -374,6 +379,21 @@ export const ProfileForm = () => {
             {t('saveChanges')}
           </Button>
         </div>
+
+        <AlertDialog onOpenChange={setRemoveAvatarOpen} open={removeAvatarOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('removeAvatarTitle')}</AlertDialogTitle>
+              <AlertDialogDescription>{t('removeAvatarDescription')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={removingAvatar}>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction loading={removingAvatar} onClick={handleAvatarRemove} variant="destructive">
+                {t('removeAvatar')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </form>
     </Form>
   )

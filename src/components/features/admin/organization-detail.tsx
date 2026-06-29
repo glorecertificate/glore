@@ -8,7 +8,6 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   CalendarIcon,
-  CameraIcon,
   ChevronsUpDownIcon,
   GlobeIcon,
   MailIcon,
@@ -35,6 +34,7 @@ import {
   updateAdminOrganization,
   updateAdminOrganizationMemberRole,
 } from '@/actions/admin/organizations'
+import { OrganizationAvatarMenu } from '@/components/features/organization/avatar-menu'
 import { InviteMemberDialog } from '@/components/features/organization/invite-dialog'
 import { organizationSettingsSchema } from '@/components/features/organization/schemas'
 import { getDisplayName } from '@/components/features/organization/utils'
@@ -58,7 +58,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { CountrySelect, countryCodeToFlag } from '@/components/ui/country-select'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { ImageCropper } from '@/components/ui/image-cropper'
 import { Input } from '@/components/ui/input'
 import { PhoneInput } from '@/components/ui/phone-input'
 import { SearchInput } from '@/components/ui/search'
@@ -84,9 +83,11 @@ const useAdminOrgTab = () =>
   })
 
 const OrganizationHeader = ({
+  onAvatarRemove,
   onAvatarUpload,
   organization,
 }: {
+  onAvatarRemove: () => Promise<void>
   onAvatarUpload: (file: File) => Promise<void>
   organization: AdminOrganizationData
 }) => {
@@ -108,21 +109,12 @@ const OrganizationHeader = ({
     <div className="overflow-hidden rounded-xl border bg-card">
       <div className="h-20 bg-linear-to-r from-brand/15 via-brand/5 to-transparent" />
       <div className="flex flex-col gap-4 px-6 pb-5 sm:flex-row sm:items-end">
-        <ImageCropper
-          onChange={onAvatarUpload}
-          trigger={
-            <div className="group relative -mt-12 size-20 shrink-0">
-              <Avatar className="size-20 rounded-2xl border border-border shadow-2xs">
-                {organization.avatarUrl && <AvatarImage alt={organization.name} src={organization.avatarUrl} />}
-                <AvatarFallback className="rounded-2xl bg-muted text-2xl font-semibold">
-                  {organization.name.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-foreground/0 transition-colors group-hover:bg-foreground/40">
-                <CameraIcon className="size-5 text-white opacity-0 transition-opacity group-hover:opacity-100" />
-              </div>
-            </div>
-          }
+        <OrganizationAvatarMenu
+          fallback={organization.name.slice(0, 2).toUpperCase()}
+          name={organization.name}
+          onAvatarRemove={onAvatarRemove}
+          onAvatarUpload={onAvatarUpload}
+          overlap
           value={organization.avatarUrl}
         />
         <div className="min-w-0 flex-1 space-y-1.5">
@@ -604,10 +596,11 @@ const OrganizationSettingsTab = ({
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(handleSubmit)}>
           <SettingsSection description={t('brandingDescription')} title={t('branding')}>
-            <ImageCropper
+            <OrganizationAvatarMenu
               fallback={organization.name.slice(0, 2).toUpperCase()}
-              onChange={onAvatarUpload}
-              onRemove={onAvatarRemove}
+              name={organization.name}
+              onAvatarRemove={onAvatarRemove}
+              onAvatarUpload={onAvatarUpload}
               value={organization.avatarUrl}
             />
           </SettingsSection>
@@ -880,7 +873,7 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
 
   return (
     <div className="space-y-6 pb-12">
-      <OrganizationHeader onAvatarUpload={handleAvatarUpload} organization={data} />
+      <OrganizationHeader onAvatarRemove={handleAvatarRemove} onAvatarUpload={handleAvatarUpload} organization={data} />
       <Tabs onValueChange={value => setTab(value as 'members' | 'settings')} value={tab}>
         <TabsList>
           <TabsTrigger count={data.memberships.length} showZero value="members">

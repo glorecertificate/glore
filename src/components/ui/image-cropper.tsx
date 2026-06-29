@@ -2,12 +2,12 @@
 
 import 'react-image-crop/dist/ReactCrop.css'
 
-import { type SyntheticEvent, useRef, useState } from 'react'
+import { type SyntheticEvent, useImperativeHandle, useRef, useState } from 'react'
 
 import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { type FileRejection, useDropzone } from 'react-dropzone'
-import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
+import ReactCrop, { type Crop, type PixelCrop, centerCrop } from 'react-image-crop'
 import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -55,11 +55,16 @@ const cropImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
   })
 }
 
+export interface ImageCropperHandle {
+  open: () => void
+}
+
 export const ImageCropper = ({
   disabled,
   fallback,
   onChange,
   onRemove,
+  pickerRef,
   trigger,
   value,
 }: {
@@ -67,6 +72,7 @@ export const ImageCropper = ({
   fallback?: React.ReactNode
   onChange?: (file: File) => Promise<void> | void
   onRemove?: () => void
+  pickerRef?: React.Ref<ImageCropperHandle>
   trigger?: React.ReactNode
   value?: string | null
 }) => {
@@ -95,7 +101,11 @@ export const ImageCropper = ({
     if (tooLarge) toast.error(t('avatarTooLarge', { size: app.maxAvatarSize / 1024 }))
   }
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    open: openPicker,
+  } = useDropzone({
     accept: {
       'image/*': ['.png', '.jpg', '.jpeg', '.webp'],
     },
@@ -106,9 +116,14 @@ export const ImageCropper = ({
     onDropRejected,
   })
 
+  useImperativeHandle(pickerRef, () => ({ open: openPicker }), [openPicker])
+
   const onImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget
-    setCrop(centerCrop(makeAspectCrop({ unit: '%', width: 90 }, 1, width, height), width, height))
+    const side = Math.min(width, height)
+    const nextCrop = centerCrop({ unit: 'px', width: side, height: side, x: 0, y: 0 }, width, height)
+    setCrop(nextCrop)
+    completedRef.current = nextCrop
   }
 
   const handleCrop = async () => {
@@ -142,21 +157,21 @@ export const ImageCropper = ({
       open={open}
     >
       <DialogTitle className="hidden" />
-      <DialogContent aria-describedby={undefined} className="sm:max-w-md">
-        <div className="mt-4">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-2xl">
+        <div className="mt-4 flex justify-center">
           {previewUrl && (
             <ReactCrop
               aspect={1}
-              className="mx-auto"
+              className="max-h-[70vh]"
               crop={crop}
-              onChange={(_, percentCrop) => setCrop(percentCrop)}
+              onChange={(pixelCrop, _) => setCrop(pixelCrop)}
               onComplete={c => {
                 completedRef.current = c
               }}
             >
               <img
                 alt="Crop preview"
-                className="max-h-[60vh] object-contain"
+                className="max-h-[70vh] w-auto object-contain"
                 onLoad={onImageLoad}
                 ref={imageRef}
                 src={previewUrl}
@@ -179,6 +194,18 @@ export const ImageCropper = ({
   )
 
   if (trigger) {
+    if (pickerRef) {
+      return (
+        <>
+          <div className="w-fit">
+            {trigger}
+            <input {...getInputProps()} />
+          </div>
+          {cropDialog}
+        </>
+      )
+    }
+
     return (
       <>
         <div {...getRootProps()} className={cn('w-fit', !disabled && 'cursor-pointer')}>

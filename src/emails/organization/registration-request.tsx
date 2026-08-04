@@ -3,7 +3,6 @@ import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type MessageKey } from '@/lib/i18n'
-import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
@@ -68,7 +67,7 @@ const OrganizationRegistrationRequestEmail = ({
       <Section className="my-6 text-center">
         <Button
           className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={`${metadata.url}/admin/organizations/${organizationId}`}
+          href={`${process.env.APP_URL}/admin/organizations/${organizationId}`}
         >
           {t('button')}
         </Button>

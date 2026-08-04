@@ -7,7 +7,7 @@ import { FolderOpenIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { createDocCategory, deleteDocCategory } from '@/actions/doc'
+import { createDocCategory, deleteDocCategory } from '@/actions/docs'
 import { useI18n } from '@/components/providers/i18n'
 import {
   AlertDialog,

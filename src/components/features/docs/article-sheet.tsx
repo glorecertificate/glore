@@ -7,7 +7,7 @@ import { CalendarIcon, PencilIcon, Trash2Icon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { deleteDocArticle } from '@/actions/doc'
+import { deleteDocArticle } from '@/actions/docs'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
 import { useI18n } from '@/components/providers/i18n'
 import {

@@ -51,7 +51,7 @@ const OrganizationMemberAddedEmail = ({
       <Section className="my-6 text-center">
         <Button
           className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={url ?? `${metadata.url}/login`}
+          href={url ?? `${process.env.APP_URL}/login`}
         >
           {url ? t('buttonNewUser') : t('button')}
         </Button>

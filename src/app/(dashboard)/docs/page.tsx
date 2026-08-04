@@ -2,9 +2,10 @@ import { BookOpenIcon } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
 
 import { getAuthUser } from '@/actions/auth'
-import { listDocCategories } from '@/actions/doc'
+import { listDocCategories } from '@/actions/docs'
 import { DocsList } from '@/components/features/docs/docs-list'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { PageTitle } from '@/components/layout/page-title'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -37,14 +38,10 @@ const DocsPageContent = async () => {
   )
 }
 
-const DocsPage = async () => {
-  const t = await getTranslations('Layout')
-
-  return (
-    <DashboardPage className="space-y-10" title={t('docs')}>
-      <DocsPageContent />
-    </DashboardPage>
-  )
-}
+const DocsPage = () => (
+  <DashboardPage className="space-y-10" title={<PageTitle namespace="Layout" name="docs" />}>
+    <DocsPageContent />
+  </DashboardPage>
+)
 
 export default DocsPage

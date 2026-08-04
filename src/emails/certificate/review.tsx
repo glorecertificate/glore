@@ -71,7 +71,7 @@ const CertificateReviewEmail = ({
             <Section className="my-6 text-center">
               <Button
                 className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-                href={`${metadata.url}/certificates`}
+                href={`${process.env.APP_URL}/certificates`}
               >
                 {t('buttonApproved')}
               </Button>
@@ -86,7 +86,7 @@ const CertificateReviewEmail = ({
           <Section className="my-6 text-center">
             <Button
               className="rounded-lg bg-[#ef4444] px-6 py-3 text-[14px] font-semibold text-white no-underline"
-              href={`${metadata.url}/certificates`}
+              href={`${process.env.APP_URL}/certificates`}
             >
               {t('buttonChanges')}
             </Button>

@@ -6,9 +6,7 @@
     "editor.defaultFormatter": "oxc.oxc-vscode"
   },
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxc": "explicit",
-    "source.organizeImports": "explicit",
-    "source.removeUnusedImports": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
@@ -29,6 +27,7 @@
   "i18n-ally.localesPaths": ["./messages"],
   "i18n-ally.namespace": true,
   "js/ts.experimental.useTsgo": true,
+  "js/ts.format.semicolons": "remove",
   "js/ts.preferences.autoImportFileExcludePatterns": ["lucide-react", "@platejs/**", "@radix-ui/**", "@aws-sdk/**"],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.server.goMemLimit": "4GiB",

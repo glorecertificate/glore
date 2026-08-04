@@ -1,3 +1,7 @@
+.agents/*
+!.agents/specs/
+.claude/*
+!.claude/skills
 .next/
 .vercel/
 node_modules/

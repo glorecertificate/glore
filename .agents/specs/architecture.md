@@ -2,8 +2,6 @@
 
 Full source tree and structural conventions for the GloRe codebase.
 
----
-
 ## Source tree
 
 ```
@@ -67,12 +65,10 @@ src/
 │   ├── rate-limit.ts   # Rate limiting helpers
 │   ├── storage.ts      # R2 Put/Delete/URL helpers (r2Put, r2Delete, r2Url)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, etc.)
-│   └── utils.ts        # cn(), debounce(), throttle(), camelize(), etc.
+│   └── utils.ts        # cn(), debounce(), throttle(), camelize(), tempId()/isTempId(), etc.
 ├── i18n.ts             # next-intl request config
 └── proxy.ts            # NextProxy middleware (auth guard)
 ```
-
----
 
 ## Database client
 
@@ -82,8 +78,6 @@ src/
 - Anything else uses `drizzle-orm/neon-http` for reads (prod).
 
 Multi-statement writes go through `transaction()` (dev: the `pg` pool; prod: a module-scoped neon-serverless WebSocket pool). The module exports `db`, `transaction`, and the `Transaction` type. Write primitives live in `db/mutations/<domain>.ts` as composable `(tx, ...args) => ...` units that actions wrap.
-
----
 
 ## File naming
 
@@ -104,8 +98,6 @@ Dependencies flow one way: **shared -> features -> app**. The shared layers (`co
 ### Provider pattern
 
 App-wide providers in `components/providers/` are single flat files (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its own `use<X>` hook. Feature-scoped contexts live under `components/features/<domain>/`. Split into `context.tsx` + `provider.tsx` + `index.ts` ONLY for a server-side data fetch. Provider hierarchy and rules: see `patterns.md`.
-
----
 
 ## Server vs client components
 

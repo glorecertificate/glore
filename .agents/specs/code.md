@@ -2,8 +2,6 @@
 
 Formatter, linter, and import conventions for the GloRe codebase. Configured in `vite.config.ts` (oxlint + oxfmt via vite-plus).
 
----
-
 ## Formatter (oxfmt)
 
 | Setting         | Value                                                             |
@@ -16,8 +14,6 @@ Formatter, linter, and import conventions for the GloRe codebase. Configured in 
 | Package.json    | Not sorted (`sortPackageJson: false`)                             |
 
 Ignored by the formatter: `*.d.ts`, `AGENTS.md`, `.agents/**`, `.claude/**`, `drizzle/**`.
-
----
 
 ## Import order (oxfmt `sortImports`)
 
@@ -41,8 +37,6 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 **Type imports:** inline only (`import { type Foo }`, not `import type { Foo }`). Enforced by `import/consistent-type-specifier-style: prefer-inline` and `typescript/consistent-type-imports` (`fixStyle: inline-type-imports`).
 
----
-
 ## Restricted imports
 
 `eslint/no-restricted-imports` (`vite.config.ts`). Base rule, everywhere:
@@ -56,8 +50,6 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 Scoped override for shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`): also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**` to keep those layers domain-free (dependencies flow shared -> features -> app). oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns/paths; `src/lib/utils.ts` has a further override that drops the `cnfast` restriction (it is the re-export source).
 
 Conventions enforced elsewhere or by review (not in `no-restricted-imports`): use `next/navigation` not `next/router`, `cn` from `@/lib/utils` not `@udecode/cn`, and the named `z` import from `zod`.
-
----
 
 ## Key lint rules (oxlint)
 
@@ -80,14 +72,12 @@ Categories: `correctness`, `pedantic`, `perf`, `style`, `suspicious` all `error`
 | `react/jsx-curly-brace-presence`         | Error: no braces on props, always on children    |
 | `eslint/prefer-template`                 | Error: template literals over concatenation      |
 
----
-
 ## Plugins and type-aware mode
 
-Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins: `react-compiler` (via `eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), and `better-tailwindcss` (`eslint-plugin-better-tailwindcss`).
+Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins (`jsPlugins` entries, each listed in `knip.json` `ignoreDependencies` because only the out-of-graph `vite.config.ts` imports them): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
 
-**Tailwind rules (`better-tailwindcss`):** only the non-formatter correctness rules are on, all as `error` with `entryPoint: 'src/app/globals.css'`: `no-unknown-classes` (with `detectComponentClasses: true` and an `ignore` list for custom/3rd-party classes: `font-heading`, `slate-*`, `ignore-click-outside/*`, `prose-*`, `markdown`), `no-conflicting-classes`, `no-deprecated-classes`. All ordering/dedup/whitespace/wrapping rules are `off`: oxfmt's `sortTailwindcss` is the sole class sorter and writes last in `vp check --fix` (fmt > lint > fmt), so enabling them would conflict. The plugin is registered as a `jsPlugins` entry (not bulk-enabled via `pluginRules`) and listed in `knip.json` `ignoreDependencies` (it is imported only from the out-of-graph `vite.config.ts`).
+**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, including the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), and `no-hardcoded-colors` + `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/components/ui/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in `vp check --fix` (fmt > lint > fmt), so class order comes out of the formatter.
 
-`typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see AGENTS.md "Dev environment" pointer). `typeCheck: false` (oxlint does not run type-checking; that is `tsgo` via `pnpm run check:types`).
+`typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see "Dev environment and performance" in `reference.md`). `typeCheck: false` (oxlint does not run type-checking; that is `tsgo` via `pnpm run check:types`).
 
 **Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows anonymous default exports and template curlies in strings.

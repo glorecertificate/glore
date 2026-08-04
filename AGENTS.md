@@ -8,7 +8,7 @@ Stack picks an agent would otherwise guess wrong: Better Auth, Cloudflare R2, Pl
 
 > **Source of truth:** this file governs agent behavior here; `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
-> **Budget:** keep this file under 2,000 estimated tokens and each `.agents/specs/*.md` under 4,000. Over budget means moving detail into a spec, never dropping a fact. Facts the code already states belong in the code, not here.
+> **Budget:** this file loads on every session, so keep it under 3,200 estimated tokens and each `.agents/specs/*.md` under 4,500. Over budget means moving detail into the most relevant spec, never dropping a fact. Inventories the code already enumerates (hook lists, env var tables, cache tags) belong in the code with a pointer here, not copied.
 
 ## Reference specs
 
@@ -26,28 +26,26 @@ In `.agents/specs/`. Load the one you need, not the set.
 
 > **MANDATORY:** always `pnpm run <script>`, never bare `pnpm <script>`, so nothing collides with a built-in pnpm command. Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
 
-| Command                 | Description                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------ |
-| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)                        |
-| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                                |
-| `pnpm run check`        | `check:types` (tsgo), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip`, in parallel |
-| `pnpm run build`        | Production build                                                                      |
-| `pnpm run typegen`      | Generate route and public-file types into `types/`                                    |
-| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                                    |
-| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                            |
-| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                           |
-| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                            |
-| `pnpm run skills`       | Install agent skills from `skills-lock.json`                                          |
+| Command                 | Description                                                              |
+| ----------------------- | -------------------------------------------------------------------------- |
+| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)            |
+| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                    |
+| `pnpm run check`        | Parallel `check:types` (tsgo), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
+| `pnpm run build`        | Production build                                                          |
+| `pnpm run typegen`      | Generate route and public-file types into `types/`                        |
+| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                        |
+| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                |
+| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                               |
+| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                |
+| `pnpm run skills`       | Install agent skills from `skills-lock.json`                              |
 
 Remaining scripts (`start`, `analyze`, `release`, `deploy:preview`, `deploy:production`, `bump`, `db:down`, `db:logs`) are in `package.json`.
 
-**Committing:** only when the current prompt asks for it. `pnpm run check` MUST exit 0 first, no exceptions, and one logical task is one commit (never split a task into partial commits). Conventional Commits with sentence-case subjects, header max 100, allowed scopes `release`, `deps`, `deps-dev`, `security`. Hooks live in `.githooks`, wired by `scripts/prepare.mts` setting `core.hooksPath` on install: `pre-commit` formats and autofixes staged files with oxfmt and oxlint then restages them, `commit-msg` runs commitlint, `pre-push` runs commitlint then `pnpm run check`. A file with both staged and unstaged changes is reported and skipped, never reformatted, so staging a single hunk still commits.
+**Committing:** only when the current prompt asks for it. `pnpm run check` MUST exit 0 first, no exceptions, and one logical task is one commit (never split a task into partial commits). Conventional Commits with sentence-case subjects, header max 100, allowed scopes `release`, `deps`, `deps-dev`, `security`. Hook mechanics: `code.md`.
 
 ## Skills and MCP
 
-Skills install into `.agents/skills/` from `skills-lock.json` (`pnpm run skills`) and are gitignored: the tree behaves like `node_modules` and is never committed. `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `neon-postgres`, `react-email`, `shadcn`, `vercel-react-best-practices`, `web-design-guidelines`.
-
-MCP servers (`.mcp.json`): `better-auth` (auth setup), `cloudflare` (R2 and Workers docs), `neon` (database ops), `shadcn` (component registry). Query them for live docs and operations.
+Skills install into gitignored `.agents/skills/` (`pnpm run skills`), which behaves like `node_modules`; `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `neon-postgres`, `react-email`, `shadcn`, `vercel-react-best-practices`, `web-design-guidelines`. MCP servers in `.mcp.json`: `better-auth`, `cloudflare` (R2 and Workers docs), `neon` (database ops), `shadcn` (component registry).
 
 Read and apply the matching skill before starting. `*` marks machine-wide skills invoked by name.
 
@@ -72,9 +70,7 @@ Dependencies flow one way, shared > features > app. The shared layers (`ui/`, `i
 
 ## Internationalization
 
-next-intl. Locales `en` (default), `es`, `it`, title-case for `en` only. Locale lives in the `NEXT_LOCALE` cookie (no path prefix); messages in `messages/{locale}.json`; config in `src/lib/i18n.ts` from `config/i18n.json`, request config in `src/i18n.ts`.
-
-Top-level namespaces match feature domains (`Auth`, `Courses`, `Certificates`, `Admin`, `Layout`, `Common`, `Metadata`). `Components.<Name>` is reserved for generic primitives in `src/components/ui/`, `Intl.Countries.*` and `Intl.Languages.*` for i18n data, `Email.*` for email. Add a key to all three catalogs in the same change, remove unused keys from all three together, and read keys with `useTranslations()` (client) or `getTranslations()` (server).
+next-intl. Locales `en` (default), `es`, `it`, title-case for `en` only. Locale lives in the `NEXT_LOCALE` cookie (no path prefix); messages in `messages/{locale}.json`. Read keys with `useTranslations()` (client) or `getTranslations()` (server), and add or remove a key in all three catalogs in the same change. Namespace scheme and config files: `patterns.md`.
 
 ## Conventions
 

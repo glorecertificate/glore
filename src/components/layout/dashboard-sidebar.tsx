@@ -40,6 +40,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
@@ -75,15 +76,47 @@ import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'
 
+interface PendingCounts {
+  organizations: number
+  team: number
+}
+
 interface DashboardSidebarItemProps extends React.ComponentProps<typeof SidebarMenuButton> {
+  badge?: number
   icon?: Icon
   label: string
   route: Route
   subItem?: boolean
 }
 
+const DashboardSidebarBadge = ({ count }: { count: number }) => {
+  const { isMobile, open } = useSidebar()
+  const t = useTranslations('Layout')
+
+  if (!open && !isMobile) {
+    return (
+      <span
+        aria-label={t('pendingRequests', { count })}
+        className="absolute top-1 right-1 size-2 rounded-full bg-brand"
+      />
+    )
+  }
+
+  return (
+    <Badge
+      aria-label={t('pendingRequests', { count })}
+      className="size-4.25 rounded-full p-0"
+      size="sm"
+      variant="brand"
+    >
+      {count}
+    </Badge>
+  )
+}
+
 const DashboardSidebarItem = ({
   asChild = false,
+  badge = 0,
   className,
   icon: Icon,
   label,
@@ -118,6 +151,7 @@ const DashboardSidebarItem = ({
             ? 'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-border/50 data-active:font-medium data-active:text-sidebar-foreground'
             : 'py-3 font-medium data-active:shadow-[inset_3px_0_0_var(--color-primary)]',
           isActivePath && 'pointer-events-none',
+          badge > 0 && 'relative',
           className
         )}
         onClick={setPath}
@@ -130,13 +164,14 @@ const DashboardSidebarItem = ({
             <Icon className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-foreground/80')} />
           ) : null}
           {label}
+          {badge > 0 && <DashboardSidebarBadge count={badge} />}
         </Link>
       </SidebarMenuButton>
     </Component>
   )
 }
 
-const DashboardSidebarCollapsible = ({ children, icon, label, route }: DashboardSidebarItemProps) => {
+const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }: DashboardSidebarItemProps) => {
   const { activePath } = useSidebar()
   const [open, setOpen] = useState(() => activePath.startsWith(route))
 
@@ -146,6 +181,7 @@ const DashboardSidebarCollapsible = ({ children, icon, label, route }: Dashboard
         <CollapsibleTrigger asChild>
           <DashboardSidebarItem
             asChild
+            badge={open ? 0 : badge}
             icon={icon}
             label={label}
             onClick={() => !open && setOpen(true)}
@@ -270,7 +306,7 @@ const DashboardSidebarOrgs = ({ organization }: { organization: UserOrganization
   )
 }
 
-const DashboardSidebarMain = () => {
+const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const { user } = useSession()
   const t = useTranslations('Layout')
 
@@ -289,9 +325,19 @@ const DashboardSidebarMain = () => {
           <DashboardSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </DashboardSidebarCollapsible>
         {user.isAdmin && (
-          <DashboardSidebarCollapsible icon={CogIcon} label={t('admin')} route="/admin">
-            <DashboardSidebarItem label={t('adminTeam')} route="/admin/team" subItem />
-            <DashboardSidebarItem label={t('adminOrganizations')} route="/admin/organizations" subItem />
+          <DashboardSidebarCollapsible
+            badge={pending.organizations + pending.team}
+            icon={CogIcon}
+            label={t('admin')}
+            route="/admin"
+          >
+            <DashboardSidebarItem badge={pending.team} label={t('adminTeam')} route="/admin/team" subItem />
+            <DashboardSidebarItem
+              badge={pending.organizations}
+              label={t('adminOrganizations')}
+              route="/admin/organizations"
+              subItem
+            />
             <DashboardSidebarItem label={t('adminUsers')} route={'/admin/users' as Route} subItem />
           </DashboardSidebarCollapsible>
         )}
@@ -554,7 +600,7 @@ const DashboardSidebarSearch = () => {
   )
 }
 
-export const DashboardSidebar = () => {
+export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
   const { organization } = useSession()
 
   return (
@@ -562,7 +608,7 @@ export const DashboardSidebar = () => {
       <SidebarHeader>{organization && <DashboardSidebarOrgs organization={organization} />}</SidebarHeader>
       <SidebarContent>
         <DashboardSidebarSearch />
-        <DashboardSidebarMain />
+        <DashboardSidebarMain pending={pending} />
       </SidebarContent>
       <SidebarFooter>
         <DashboardSidebarUser organization={organization} />

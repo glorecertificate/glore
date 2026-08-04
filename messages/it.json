@@ -745,6 +745,7 @@
     "logoutLoading": "Disconnessione in corso...",
     "organization": "Organizzazione",
     "organizations": "Organizzazioni",
+    "pendingRequests": "{count, plural, =1 {# richiesta in sospeso} other {# richieste in sospeso}}",
     "settings": "Impostazioni"
   },
   "Auth": {

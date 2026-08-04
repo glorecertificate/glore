@@ -4,7 +4,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { cacheTag } from 'next/cache'
+import { cacheTag, revalidateTag } from 'next/cache'
 
 import { and, desc, eq, isNull, or } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
@@ -121,6 +121,8 @@ export const inviteTeamMember = async ({
     return { error: error instanceof Error ? error.message : 'Failed to send invitation email' }
   }
 
+  revalidateTag(CacheTag.TeamMembers, 'max')
+
   return { data: { id: result.user.id, email, role } }
 }
 
@@ -190,6 +192,8 @@ export const deleteTeamMember = async (userId: string) => {
   if (currentUser.id === userId) return { error: 'You cannot remove yourself from the team' }
 
   await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
+
+  revalidateTag(CacheTag.TeamMembers, 'max')
 
   return { data: { id: userId } }
 }

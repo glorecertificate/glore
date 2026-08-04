@@ -740,6 +740,7 @@
     "logoutLoading": "Logging you out...",
     "organization": "Organization",
     "organizations": "Organizations",
+    "pendingRequests": "{count, plural, =1 {# pending request} other {# pending requests}}",
     "settings": "Settings",
     "errorTitle": "Something went wrong",
     "errorMessage": "An unexpected error occurred. Try again or contact us if the problem persists.",

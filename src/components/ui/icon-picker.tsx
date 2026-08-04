@@ -83,7 +83,7 @@ export const IconPicker = ({
   tooltips,
   value,
   ...props
-}: Omit<ButtonProps, 'value'> & {
+}: Omit<ButtonProps, 'defaultValue' | 'value'> & {
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName

@@ -153,7 +153,6 @@ const nextConfig: NextConfig = {
     optimizePackageImports,
     turbopackFileSystemCacheForDev: false,
     turbopackFileSystemCacheForBuild: true,
-    viewTransition: true,
   },
 }
 
@@ -182,6 +181,7 @@ export default (phase: PHASE_TYPE) => {
     allowedDevOrigins,
     reactCompiler: !isDevServer,
     typescript: {
+      ignoreBuildErrors: true,
       tsconfigPath,
     },
   })

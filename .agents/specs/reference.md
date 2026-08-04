@@ -1,106 +1,68 @@
 # Technical reference: runtime and data
 
-Runtime and data-layer reference for the GloRe Certificate codebase. Read the relevant section when working on a specific area.
-
-Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`.
+Runtime and data-layer reference. Read the section you need. Component, type, hook, util, theming, form, and email conventions: `patterns.md`.
 
 ## Routing
 
-### Route table
+Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond root) and `(dashboard)` for authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider > CoursesProvider`.
 
-| Path                        | Auth               | Layout    | Description                                        |
-| --------------------------- | ------------------ | --------- | -------------------------------------------------- |
-| `/login`                    | Public             | Root      | Login page                                         |
-| `/register`                 | Public             | Root      | Registration: creates a `pending` org join request |
-| `/onboarding`               | Auth (pre-onboard) | Root      | Onboarding form                                    |
-| `/onboarding/error`         | Auth (pre-onboard) | Root      | Onboarding error                                   |
-| `/[username]`               | Public             | Root      | Public certificate page                            |
-| `/dashboard`                | Auth               | Dashboard | Main dashboard                                     |
-| `/about`                    | Auth               | Dashboard | About page                                         |
-| `/admin`                    | Auth + `isAdmin`   | Dashboard | Permanent redirect to `/admin/team` (no page)      |
-| `/admin/team`               | Auth + `isAdmin`   | Dashboard | Team management                                    |
-| `/admin/users`              | Auth + `isAdmin`   | Dashboard | User moderation: ban/unban, platform role changes  |
-| `/admin/organizations`      | Auth + `isAdmin`   | Dashboard | Org list (tabs: all/pending/active), approve/reject, create (no rep), invite (with rep) |
-| `/admin/organizations/[id]` | Auth + `isAdmin`   | Dashboard | Org detail (`?tab=`): members table (search/sort/role filter, role/remove/invite), settings (edit profile/avatar, delete org) |
-| `/organization`             | Auth + org manager | Dashboard | Organization panel                                 |
-| `/certificates`             | Auth + non-editor  | Dashboard | Certificate list                                   |
-| `/certificates/new`         | Auth + non-editor  | Dashboard | New certificate                                    |
-| `/certificates/[id]`        | Auth + non-editor  | Dashboard | Certificate detail                                 |
-| `/courses`                  | Auth               | Dashboard | Course list                                        |
-| `/courses/[slug]`           | Auth               | Dashboard | Course detail/editor                               |
-| `/docs`                     | Auth               | Dashboard | Documentation                                      |
-| `/docs/intro`               | Auth               | Dashboard | Introduction docs                                  |
-| `/docs/faq`                 | Auth               | Dashboard | FAQ docs                                           |
-| `/docs/tutorials`           | Auth               | Dashboard | Tutorial docs                                      |
-| `/help`                     | Auth               | Dashboard | Help page                                          |
-| `/settings`                 | Auth               | Dashboard | User settings                                      |
-| `/offline`                  | Public             | Root      | PWA offline fallback page                          |
+**Public:** `/login`, `/register` (submits org details and creates a `pending` org join request), `/[username]` (public certificate page), `/offline` (PWA fallback).
 
-`/admin` has no page: `next.config.ts` permanently redirects it to `/admin/team`, the panel landing.
+**Authenticated, pre-onboarding:** `/onboarding`, `/onboarding/error`.
+
+**Authenticated, dashboard layout, no extra gate:** `/dashboard`, `/about`, `/courses`, `/courses/[slug]` (detail and editor), `/docs` plus `/docs/intro`, `/docs/faq`, `/docs/tutorials`, `/help`, `/settings`.
+
+**Authenticated, dashboard layout, extra gate:**
+
+| Route                       | Gate        | Notes                                                                                                       |
+| --------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
+| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                          |
+| `/admin/team`               | `isAdmin`   | Team management                                                                                             |
+| `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                           |
+| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active; approve, reject, create (no rep), invite (with rep)                                 |
+| `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org) |
+| `/organization`             | org manager | Organization panel                                                                                          |
+| `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                       |
+
+`/` permanently redirects to `/dashboard` (`next.config.ts`).
 
 ### API routes
 
-| Path                  | Method   | Description                                       |
-| --------------------- | -------- | ------------------------------------------------- |
-| `/api/auth/[...all]`  | GET/POST | Better Auth catch-all handler                     |
-| `/api/v1/ai/command`  | POST     | AI command endpoint                               |
-| `/api/v1/ai/copilot`  | POST     | AI copilot endpoint                               |
-| `/api/v1/join`        | GET      | Team invitation join endpoint                     |
-| `/api/v1/manifest`    | GET      | Dynamic PWA manifest (locale-aware, cached 1h)    |
-| `/api/v1/upload`      | POST     | R2 file upload                                    |
-| `/api/v1/health`      | GET      | Health check (returns `{ status: 'ok' }`)         |
+| Path                 | Method   | Description                                    |
+| -------------------- | -------- | ---------------------------------------------- |
+| `/api/auth/[...all]` | GET/POST | Better Auth catch-all handler                  |
+| `/api/v1/ai/command` | POST     | AI command endpoint                            |
+| `/api/v1/ai/copilot` | POST     | AI copilot endpoint                            |
+| `/api/v1/join`       | GET      | Team invitation join endpoint                  |
+| `/api/v1/manifest`   | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
+| `/api/v1/upload`     | POST     | R2 file upload                                 |
+| `/api/v1/health`     | GET      | Health check (returns `{ status: 'ok' }`)      |
 
-### Route groups
+## Authentication
 
-| Group         | Purpose                                                                                            |
-| ------------- | -------------------------------------------------------------------------------------------------- |
-| `(auth)`      | Unauthenticated pages (login, register, onboarding). No shared layout beyond root.                 |
-| `(dashboard)` | Authenticated pages with sidebar. Wrapped in `SidebarProvider > SessionProvider > CoursesProvider`. |
+Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter. The `auth` instance is exported from `src/lib/auth.ts`, server-only, used in server components, server actions, and the proxy. It imports only `accounts`, `sessions`, `users`, `verifications` from individual schema files (never the schema barrel), because `proxy.ts` calls `auth.api.getSession` on every request.
 
-### Redirects
+**Request lifecycle** in `proxy.ts` (NextProxy), which intercepts all non-static requests:
 
-- `/` > `/dashboard` (permanent redirect in `next.config.ts`)
+1. `auth.api.getSession()` validates the session from signed HTTP-only cookies.
+2. Unauthenticated > redirect to `/login`.
+3. Authenticated but `onboardedAt` is null > redirect to `/onboarding`.
+4. Onboarded and hitting `/onboarding` > redirect to `/dashboard`.
+5. Authenticated and hitting `/login` > redirect to `/dashboard`.
 
-## Authentication flow
+**Cookies:** Better Auth manages session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls. All app cookies use the `gl` prefix, Better Auth via `advanced.cookiePrefix`.
 
-**Provider:** Better Auth (`better-auth`), stores users/sessions/accounts in the Neon database via the Drizzle adapter.
+**`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team and org invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
 
-**Request lifecycle:**
-
-1. `proxy.ts` (NextProxy) intercepts all non-static requests.
-2. `auth.api.getSession()` validates the session via signed HTTP-only cookies.
-3. Unauthenticated > redirect to `/login`.
-4. Authenticated but not onboarded (`onboardedAt` is null) > redirect to `/onboarding`.
-5. Onboarded accessing `/onboarding` > redirect to `/dashboard`.
-6. Authenticated accessing `/login` > redirect to `/dashboard`.
-
-**Token storage:** Better Auth manages session tokens in signed HTTP-only cookies. Session data is cached in cookies (5-minute TTL) to reduce API calls.
-
-**Cookie prefix:** All app cookies use the `gl` prefix. Better Auth session cookies use `gl` via `advanced.cookiePrefix`.
-
-**Auth instance:** `auth` exported from `src/lib/auth.ts`, server-only (`betterAuth()`). Used in server components, server actions, and the proxy. It imports only `accounts`, `sessions`, `users`, `verifications` from individual schema files (never the schema barrel), because `proxy.ts` calls `auth.api.getSession` on every request.
-
-**`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team/org invites), never the actor. With auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so login (`signInEmail`) is unaffected.
-
-**Plugins:**
-
-| Plugin          | Purpose                              |
-| --------------- | ------------------------------------ |
-| `username()`    | Username/display username support    |
-| `admin()`       | Admin role management, user creation |
-| `nextCookies()` | Next.js cookie integration           |
-
-**Auth API route:** `src/app/api/auth/[...all]/route.ts` (catch-all for all auth requests).
+**Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation), `nextCookies()` (Next.js cookie integration). Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
 ## Data fetching
 
 ### Query pattern
 
-Per table in `src/db/queries/<table>.ts`: (1) an `interface` extending `InferSelectModel<typeof table>` with the relations it loads; (2) a pure `parse<Table>` adding computed fields (e.g. `canEdit: Boolean(data.isAdmin || data.isEditor)`); (3) the row type as `ReturnType<typeof parse<Table>>`. Parsers must not import `@/db/client`.
+Per table in `src/db/queries/<table>.ts`: an `interface` extending `InferSelectModel<typeof table>` with the relations it loads, a pure `parse<Table>` adding computed fields (e.g. `canEdit: Boolean(data.isAdmin || data.isEditor)`), and the row type as `ReturnType<typeof parse<Table>>`. Parsers must not import `@/db/client`.
 
-### Drizzle query pattern
-
-Factor the actual `db.query` into a single private executor and reuse it from both the cached and the `{ cache: false }` branch (no copy-pasted query bodies):
+Factor the real `db.query` into one private executor and reuse it from both the cached and the `{ cache: false }` branch, never copy-pasting the query body:
 
 ```typescript
 const queryUserById = async (id: string) => {
@@ -125,14 +87,14 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 ### Transactions and the mutation layer
 
-Single-statement writes go directly through `db` inside the server action (no mutation file): `safeParse` with the drizzle-zod schema, `db.insert/update(...).returning()`, `revalidateTag(...)`, return `{ data, error }` (see `createDocArticle` in `src/actions/doc.ts`). The `transaction()` path below is only for multi-statement writes.
+Single-statement writes go straight through `db` inside the server action, with no mutation file: `safeParse` with the drizzle-zod schema, `db.insert/update(...).returning()`, `revalidateTag(...)`, return `{ data, error }` (see `createDocArticle` in `src/actions/doc.ts`).
 
-Production runs on the **neon-http** driver, which has **no interactive transactions**. For any write that spans more than one statement, use the `transaction()` helper from `@/db/client` instead of firing statements at `db` directly:
+Production runs the **neon-http** driver, which has **no interactive transactions**, so any write spanning more than one statement uses `transaction()` from `@/db/client`:
 
-- `transaction(fn)` runs `fn(tx)` atomically. In dev (`pg`) it uses the pooled `node-postgres` transaction; in prod it reuses a lazily-initialized, module-scoped **neon-serverless** (WebSocket) pool (`max: 3`, shared across invocations in a warm function instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.16.0` via `.node-version`, with an `engines.node: ">=22"` floor).
-- Multi-statement write logic lives in `src/db/mutations/<domain>.ts` as composable units `(tx: Transaction, ...args) => ...`. The server action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
-- **Inside a transaction, statements MUST run sequentially** (`await` one at a time). All statements share one connection; `Promise.all` on a single `tx` corrupts the session. This is why `react-doctor/async-parallel` is disabled in transactional mutation files.
-- Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction; compute inputs first, then open a short transaction for the DB writes only.
+- `transaction(fn)` runs `fn(tx)` atomically. Dev (`pg`) uses the pooled `node-postgres` transaction; prod reuses a lazily-initialized, module-scoped **neon-serverless** WebSocket pool (`max: 3`, shared across invocations in a warm instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.16.0` via `.node-version` with an `engines.node: ">=22"` floor).
+- Multi-statement logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units. The action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
+- **Inside a transaction, statements MUST run sequentially**, one `await` at a time. All statements share one connection, so `Promise.all` on a single `tx` corrupts the session. This is why `react-doctor/async-parallel` is disabled in transactional mutation files.
+- Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction: compute inputs first, then open a short transaction for the DB writes only.
 
 ```typescript
 // src/db/mutations/certificate.ts
@@ -144,50 +106,17 @@ export const createCertificateWithSkills = async (tx: Transaction, values: Table
   }
   return created
 }
-
-// In the action:
-const cert = await transaction(tx => createCertificateWithSkills(tx, values, skillCourseIds))
 ```
 
-**Tenancy:** authorization/tenant scoping stays at the action boundary (verify ownership/org membership before calling the mutation); mutations operate on already-authorized ids.
+**Tenancy:** authorization and tenant scoping stay at the action boundary (verify ownership or org membership before calling the mutation); mutations operate on already-authorized ids.
 
 ### Cache strategy
 
-**Cache tags** (`src/lib/cache.ts`, `CacheTag` enum):
+Tags are the `CacheTag` enum in `src/lib/cache.ts`, which also holds the per-record helpers: `userTag(id)` gives `user-{id}`, `courseTag(slug)` gives `course-{slug}`, `certificatesUserTag(userId)` gives `certificates-user-{userId}`, `certificatesTutorTag(reviewerId)` gives `certificates-tutor-{reviewerId}`, and `certificatesOrgTag(orgId)` gives `certificates-org-{orgId}`. Global tags cover a whole collection (`admin-users`, `auth-user`, `auth-user-status`, `courses`, `doc-categories`, `organizations`, `skill-groups`, `team-members`, `user-email`); per-record tags are `user`, `course`, and `certificates`. Read the file for the current set and which query owns each tag.
 
-| Tag                | Used by                                                                      | Pattern    |
-| ------------------ | ---------------------------------------------------------------------------- | ---------- |
-| `admin-users`      | `fetchAdminUsers`                                                            | Global     |
-| `auth-user`        | `fetchAuthUser`                                                              | Global     |
-| `auth-user-status` | `logout`                                                                     | Global     |
-| `certificates`     | `fetchUserCertificates`, `fetchTutorCertificates`, `fetchUnassignedOrgCerts` | Per-record |
-| `course`           | `fetchCourse`                                                                | Per-record |
-| `courses`          | `fetchCourses`                                                               | Global     |
-| `doc-categories`   | `fetchDocCategories`                                                         | Global     |
-| `organizations`    | `fetchOrganizations`                                                         | Global     |
-| `skill-groups`     | `listSkillGroups`                                                            | Global     |
-| `team-members`     | `fetchTeamMembers`                                                           | Global     |
-| `user`             | `fetchUser`                                                                  | Per-record |
-| `user-email`       | `fetchUserEmail`                                                             | Global     |
-
-**Per-record tag helpers** (`src/lib/cache.ts`):
-
-| Helper                             | Tag format                        |
-| ---------------------------------- | --------------------------------- |
-| `userTag(id)`                      | `user-{id}`                       |
-| `courseTag(slug)`                  | `course-{slug}`                   |
-| `certificatesUserTag(userId)`      | `certificates-user-{userId}`      |
-| `certificatesTutorTag(reviewerId)` | `certificates-tutor-{reviewerId}` |
-| `certificatesOrgTag(orgId)`        | `certificates-org-{orgId}`        |
-
-**Patterns:**
-
-- `'use cache'` directive on inner fetch functions.
-- `cacheTag()` to tag cached data.
-- `cacheLife('max')` for long-lived caches.
-- `revalidateTag(tag, 'max')` after mutations.
-- React `cache()` for request-level deduplication.
-- `{ cache: false }` option to bypass `'use cache'` in actions.
+- `'use cache'` goes on the inner fetch function, never the exported one.
+- `cacheTag()` tags the data, `cacheLife('max')` for long-lived caches, `revalidateTag(tag, 'max')` after mutations.
+- React `cache()` for request-level deduplication; `{ cache: false }` on the exported function to bypass.
 
 ```typescript
 const fetchCourses = cache(async () => {
@@ -202,72 +131,48 @@ const fetchCourses = cache(async () => {
 
 ## Error handling
 
-- `safeQuery()` wraps a query function in try/catch, returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
-- `queryError()` normalizes unknown errors into the `{ code, message }` shape.
-- Server actions return `{ data, error }` or `{ error }`; callers must check for errors.
+- `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`; `queryError()` normalizes unknown errors into that `{ code, message }` shape.
+- Server actions return `{ data, error }` or `{ error }`, and callers must check.
 - **Mutations that fail throw; queries that fail return error objects.**
-
-**Global error boundary:** `src/app/error.tsx` (client component), logs the error, offers "go back" / "back to home" / "refresh page" actions.
-
-**Global 404:** `src/app/not-found.tsx` (server component), checks auth to show the appropriate link.
-
-**Layout guards:** the admin layout calls `notFound()` if `!user.isAdmin`; the certificates layout calls `notFound()` if `user.canEdit`.
-
-**User feedback:** `sonner` toast notifications via `toast.success()`, `toast.error()`.
+- Global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, refresh. Global 404 `src/app/not-found.tsx` (server) checks auth to pick the right link.
+- Layout guards: the admin layout calls `notFound()` if `!user.isAdmin`, the certificates layout if `user.canEdit`.
+- User feedback is `sonner`: `toast.success()`, `toast.error()`.
 
 ## Environment variables
 
-> **MANDATORY:** Every environment variable used by the Next.js app MUST be declared in the Zod schema in `next.config.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are excluded (external CLI tools only).
+> **MANDATORY:** every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
 
-| Variable               | Purpose                                          | In schema |
-| ---------------------- | ------------------------------------------------ | --------- |
-| `APP_URL`              | Application base URL                             | Yes       |
-| `BETTER_AUTH_SECRET`   | Better Auth secret key                           | Yes       |
-| `R2_ACCOUNT_ID`        | Cloudflare account ID                            | Yes       |
-| `R2_ACCESS_KEY_ID`     | R2 API token access key                          | Yes       |
-| `R2_SECRET_ACCESS_KEY` | R2 API token secret                              | Yes       |
-| `R2_BUCKET_NAME`       | R2 bucket name                                   | Yes       |
-| `R2_PUBLIC_URL`        | R2 public base URL (custom domain or r2.dev URL) | Yes       |
-| `DATABASE_URL`         | Postgres connection string (Neon or local)       | Yes       |
-| `GEMINI_API_KEY`       | Google Gemini API key                            | Yes       |
-| `GEMINI_MODEL`         | Gemini model name                                | Yes       |
-| `SMTP_HOST`            | SMTP server hostname                             | Yes       |
-| `SMTP_PORT`            | SMTP port                                        | Yes       |
-| `SMTP_USER`            | SMTP username                                    | Yes       |
-| `SMTP_PASSWORD`        | SMTP password                                    | Yes       |
-| `SMTP_SENDER`          | Email sender address                             | Yes       |
-| `GITHUB_TOKEN`         | GitHub personal access token (CLI only)          | No        |
-| `VERCEL_TOKEN`         | Vercel CLI token (CLI only)                      | No        |
+The schema covers `APP_URL`, `BETTER_AUTH_SECRET`, `DATABASE_URL`, the R2 set (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`), the Gemini set (`GEMINI_API_KEY`, `GEMINI_MODEL`), and the SMTP set (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SENDER`). Read `next.config.ts` for the current validators.
 
-**Validation:** the Zod schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`), unless `process.env.SKIP_ENV_VALIDATION` is set. `next.config.ts` also declares the global `ProcessEnv` augmentation, so `process.env` is typed app-wide. `scripts/typegen.mts` sets `SKIP_ENV_VALIDATION=1` when calling `next typegen`.
+**Validation:** the schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`) unless `SKIP_ENV_VALIDATION` is set; `scripts/typegen.mts` sets it when calling `next typegen`. The same file declares the global `ProcessEnv` augmentation, so `process.env` is typed app-wide.
 
-> **MANDATORY:** The schema must NOT be moved into `src/` or imported from a `src/` file. Next watches `next.config.ts`'s module-dependency graph and restarts the dev server whenever a watched file changes; importing a `src/` file makes every `src/**` edit trigger a full dev-server restart (cold 5-10s recompiles). Keep the schema inline; `zod` is the only allowed import for it.
+> **MANDATORY:** the schema must NOT move into `src/` or be imported from a `src/` file. Next watches the module-dependency graph of `next.config.ts` and restarts the dev server whenever a watched file changes, so importing from `src/` makes every `src/**` edit trigger a full restart (cold 5-10s recompiles). Keep the schema inline; `zod` is its only allowed import.
 
 ## Static data
 
-| File                   | Purpose                                                                                       |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
+| File                   | Purpose                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `maxAvatarSize: 2048`, `mapsUrl`, `sidebarShortcut: "\\"`) |
-| `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages  |
-| `config/icons.json`    | Lucide icon metadata (~1,640 entries: name, categories, tags) for icon picker fuzzy search    |
-| `config/metadata.json` | App name, version, URL, email, keywords, authors                                              |
-| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light/dark                                    |
+| `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages                 |
+| `config/icons.json`    | Lucide icon metadata (~1,640 entries: name, categories, tags) for icon picker fuzzy search                   |
+| `config/metadata.json` | App name, version, URL, email, keywords, authors                                                            |
+| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light and dark                                              |
 
 ## Dev environment and performance
 
-Non-obvious settings that keep dev HMR and CI builds fast. They back the "Dev-performance flags" gotcha in `AGENTS.md` and MUST NOT be reverted in refactors.
+Non-obvious settings that keep dev HMR and CI builds fast. They back the dev-performance gotcha in `AGENTS.md` and MUST NOT be reverted in refactors.
 
-**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev (Babel kills Turbopack HMR). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
+**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev, because Babel kills Turbopack HMR. Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
 
-**Turbopack dev cache:** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s via the `turbopack-compaction`/`turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
+**Turbopack dev cache:** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s through the `turbopack-compaction` and `turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
 
 **Oxlint typeAware split:** `.oxlintrc.json` keeps `typeAware: true` so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
 
-**Editor save chain:** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped (`editor.formatOnSave` already runs oxfmt); `source.removeUnusedImports` was dropped (it calls tsgo every save). `knip.deferSession: true` defers the module graph until started manually.
+**Editor save chain:** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped because `editor.formatOnSave` already runs oxfmt; `source.removeUnusedImports` was dropped because it calls tsgo on every save. `knip.deferSession: true` defers the module graph until started manually.
 
-**Dual DB driver:** `src/db/client.ts` picks by URL host: `localhost`/`127.0.0.1` uses `node-postgres` + `pg.Pool`, anything else uses `neon-http`. The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres runs on **port 5433** via `.env.development.local` (gitignored, dev-only; avoids a host Postgres on 5432); provision with `pnpm run db:up` then `pnpm run db migrate`. Saves ~1.9s/HMR of Neon HTTP latency. Both drivers share the read/single-statement API (the `db` cast is safe); multi-statement writes take the `transaction()` path above.
+**Dual DB driver:** `src/db/client.ts` picks by URL host: `localhost` or `127.0.0.1` uses `node-postgres` + `pg.Pool`, anything else uses `neon-http`. The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres runs on **port 5433** via `.env.development.local` (gitignored, dev-only, avoids a host Postgres on 5432); provision with `pnpm run db:up` then `pnpm run db migrate`. Saves roughly 1.9s per HMR of Neon HTTP latency. Both drivers share the read and single-statement API (the `db` cast is safe); multi-statement writes take the `transaction()` path above.
 
-**Prebuilt CI deploys:** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull` + `build` + `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel's "Building" step is a ~20s upload, not a ~3min build. `VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` sit in the workflow `env` (non-secret IDs; `.vercel/` is gitignored). Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (CI's `validate` job runs `tsgo` first; re-enabling adds 30-45s/build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
+**Prebuilt CI deploys:** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull`, `build`, and `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel's "Building" step is a ~20s upload rather than a ~3min build. `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` sit in the workflow `env` as non-secret IDs (`.vercel/` is gitignored). Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (CI's `validate` job runs `tsgo` first; re-enabling adds 30-45s per build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
 
 ## Framework docs
 

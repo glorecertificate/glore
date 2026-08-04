@@ -1,0 +1,35 @@
+#!/bin/sh
+# shellcheck disable=SC2086
+
+set -euf
+
+IFS='
+'
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.([cm]?[jt]sx?|css|jsonc?|md)$' || true)
+
+[ -n "$staged" ] || exit 0
+
+files=''
+skipped=''
+
+for file in $staged; do
+  if git diff --quiet -- "$file"; then
+    files="${files:+$files$IFS}$file"
+    continue
+  fi
+  skipped="${skipped:+$skipped$IFS}$file"
+done
+
+if [ -n "$skipped" ]; then
+  echo 'Skipping partially staged files, they will not be formatted:' >&2
+  echo "$skipped" >&2
+fi
+
+[ -n "$files" ] || exit 0
+
+pnpm exec oxfmt --no-error-on-unmatched-pattern $files
+pnpm exec oxlint --no-error-on-unmatched-pattern --fix $files
+pnpm exec oxfmt --no-error-on-unmatched-pattern $files
+
+git add -- $files

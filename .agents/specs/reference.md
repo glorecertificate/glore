@@ -261,7 +261,7 @@ Non-obvious settings that keep dev HMR and CI builds fast. They back the "Dev-pe
 
 **Turbopack dev cache:** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s via the `turbopack-compaction`/`turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
 
-**Oxlint typeAware split:** `vite.config.ts` keeps `typeAware: true` so CLI runs (`vp check`, `vp lint`, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
+**Oxlint typeAware split:** `.oxlintrc.json` keeps `typeAware: true` so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
 
 **Editor save chain:** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped (`editor.formatOnSave` already runs oxfmt); `source.removeUnusedImports` was dropped (it calls tsgo every save). `knip.deferSession: true` defers the module graph until started manually.
 

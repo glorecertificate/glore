@@ -1,6 +1,6 @@
 # Code style reference
 
-Formatter, linter, and import conventions for the GloRe codebase. Configured in `vite.config.ts` (oxlint + oxfmt via vite-plus).
+Formatter, linter, and import conventions for the GloRe codebase. Configured in `.oxfmtrc.json` (oxfmt) and `.oxlintrc.json` (oxlint), both standalone and both auto-discovered, so no invocation passes `-c`.
 
 ## Formatter (oxfmt)
 
@@ -39,7 +39,7 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 ## Restricted imports
 
-`eslint/no-restricted-imports` (`vite.config.ts`). Base rule, everywhere:
+`eslint/no-restricted-imports` (`.oxlintrc.json`). Base rule, everywhere:
 
 | Import                        | Restriction | Alternative                   |
 | ----------------------------- | ----------- | ----------------------------- |
@@ -74,10 +74,10 @@ Categories: `correctness`, `pedantic`, `perf`, `style`, `suspicious` all `error`
 
 ## Plugins and type-aware mode
 
-Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins (`jsPlugins` entries, each listed in `knip.json` `ignoreDependencies` because only the out-of-graph `vite.config.ts` imports them): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
+Loaded oxlint plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins (`jsPlugins` entries in `.oxlintrc.json`, which knip resolves natively as an oxlint config, so they need no `ignoreDependencies` entry): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`). All 379 `react-doctor` rules are listed explicitly (352 `error`, 27 `off`), because oxlint runs a JS-plugin rule only when it is named in `rules`: there is no wildcard or category shorthand, and an unlisted rule is simply disabled. A `react-doctor` upgrade therefore does NOT pick up new rules on its own; regenerate the block with `node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys((m.default ?? m).rules).join('\n')))"` and diff it against the config.
 
-**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, including the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), and `no-hardcoded-colors` + `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/components/ui/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in `vp check --fix` (fmt > lint > fmt), so class order comes out of the formatter.
+**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, including the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), and `no-hardcoded-colors` + `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/components/ui/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt > lint > fmt), so class order comes out of the formatter.
 
-`typeAware: true` in `vite.config.ts`, so CLI runs (`vp check`, `vp lint`, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see "Dev environment and performance" in `reference.md`). `typeCheck: false` (oxlint does not run type-checking; that is `tsgo` via `pnpm run check:types`).
+`typeAware: true` in `.oxlintrc.json`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include type-aware rules: `no-floating-promises`, `no-misused-promises`, `unbound-method`. The editor LSP has `typeAware` off for speed (see "Dev environment and performance" in `reference.md`). `typeCheck: false` (oxlint does not run type-checking; that is `tsgo` via `pnpm run check:types`).
 
 **Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows anonymous default exports and template curlies in strings.

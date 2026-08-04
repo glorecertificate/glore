@@ -32,12 +32,7 @@
   "js/ts.preferences.autoImportFileExcludePatterns": ["lucide-react", "@platejs/**", "@radix-ui/**", "@aws-sdk/**"],
   "js/ts.preferences.importModuleSpecifier": "non-relative",
   "js/ts.tsserver.automaticTypeAcquisition.enabled": false,
-  "oxc.configPath": "./vite.config.ts",
-  "oxc.enable": true,
   "oxc.fixKind": "safe_fix_or_suggestion",
-  "oxc.fmt.configPath": "./vite.config.ts",
-  "oxc.path.oxfmt": "./node_modules/vite-plus/bin/oxfmt",
-  "oxc.path.oxlint": "./node_modules/vite-plus/bin/oxlint",
   "oxc.typeAware": false,
   "search.exclude": {
     "**/.claude/**": true,

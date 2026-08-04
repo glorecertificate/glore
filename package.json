@@ -24,7 +24,7 @@
     "check:knip": "knip",
     "deploy:preview": "dotenv -- sh -c 'vercel build && vercel --prebuilt'",
     "deploy:production": "dotenv -- sh -c 'vercel build && vercel --prebuilt --prod'",
-    "db": "dotenv -e .env.development.local -e .env -- drizzle-kit",
+    "db": "dotenv -e .env.local -e .env -- drizzle-kit",
     "db:up": "docker compose up -d postgres",
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f postgres",

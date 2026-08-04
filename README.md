@@ -27,7 +27,7 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 ```sh
 git clone https://github.com/glorecertificate/glore.git && cd glore
 cp .env.example .env
-echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.development.local
+echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.local
 corepack enable && corepack install
 pnpm install
 pnpm skills
@@ -40,10 +40,7 @@ pnpm email   # https://email.glore.localhost
 ### Local database
 
 Development uses a Postgres 17 container managed by [`compose.yaml`](compose.yaml). The dev server
-reads `DATABASE_URL` from `.env.development.local`, which Next.js loads only for `next dev` and
-overrides `.env` / `.env.local`. Production builds (`next build`, Vercel) ignore that file and use
-the Neon URL from `.env`. The driver in [`src/db/client.ts`](src/db/client.ts) selects `pg` for any
-`localhost`/`127.0.0.1` host and `neon-http` for everything else.
+reads `DATABASE_URL` from `.env.local`, which Next.js loads for every command (`next dev`, `next build`, `next typegen`, `next start`) and which overrides `.env`. Use `.env.local` for machine-local values and `.env` for values shared by every environment; on Vercel the injected project variables always win, since Next never overwrites a variable already present in `process.env`. The driver in [`src/db/client.ts`](src/db/client.ts) selects `pg` for any `localhost`/`127.0.0.1` host and `neon-http` for everything else.
 
 **Connection (local):**
 
@@ -67,7 +64,7 @@ pnpm db:reset   # drop the data volume and restart with an empty database
 
 **Schema:**
 
-The `db` script wraps `drizzle-kit` and reads `DATABASE_URL` from `.env.development.local` to target the local container automatically:
+The `db` script wraps `drizzle-kit` and reads `DATABASE_URL` from `.env.local` to target the local container automatically:
 
 ```sh
 pnpm db migrate    # apply pending migrations
@@ -79,8 +76,7 @@ To run against a different database, prefix the command with an explicit `DATABA
 
 **Switching back to Neon in dev:**
 
-Comment out the `DATABASE_URL` line in `.env.development.local`. Next.js will then fall through to
-`.env.local` / `.env` on the next dev server restart.
+Comment out the `DATABASE_URL` line in `.env.local`. Next.js will then fall through to `.env` on the next dev server restart. When a file defines the same variable twice, the last occurrence wins, so keep one active block and comment out the rest.
 
 ### Deployment
 

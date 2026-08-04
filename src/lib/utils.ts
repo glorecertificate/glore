@@ -120,3 +120,10 @@ export const throttle = <F extends AnyFunction>(callback: F, limit: number): F =
 }
 
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+/*
+  Misc
+*/
+let sequence = 0
+export const tempId = () => (sequence -= 1)
+export const isTempId = (id: number | null | undefined) => (id ?? 0) <= 0

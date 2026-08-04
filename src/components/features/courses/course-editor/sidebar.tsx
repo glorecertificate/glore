@@ -261,108 +261,112 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           </span>
         </div>
       )}
-      <Sortable
-        getItemValue={lesson => lesson.id!}
-        measuring={measureAlways}
-        onValueChange={onReorder}
-        value={course.lessons}
-      >
-        <Stepper
-          className="sticky top-30 flex items-center gap-10 gap-y-2 pr-2"
-          defaultValue={step}
-          indicators={indicators}
-          onValueChange={setStep}
-          orientation="vertical"
-          value={step}
+      <div className="sticky top-30">
+        <Sortable
+          getItemValue={lesson => lesson.id!}
+          measuring={measureAlways}
+          onValueChange={onReorder}
+          value={course.lessons}
         >
-          <SortableContent asChild>
-            <StepperNav className="w-full items-start gap-4">
-              <AnimatedList>
-                {course.lessons.map((lesson, index) => {
-                  const itemStep = index + 1
-                  const isCurrent = step === itemStep
-                  const isPast = itemStep < step
-                  const isFuture = itemStep > step
-                  const isCompleted = user.canEdit || !!lesson.completed
-                  const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
-                  const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
+          <Stepper
+            className="flex items-center gap-10 gap-y-2 pr-2"
+            defaultValue={step}
+            indicators={indicators}
+            onValueChange={setStep}
+            orientation="vertical"
+            value={step}
+          >
+            <SortableContent asChild>
+              <StepperNav className="w-full items-start gap-4">
+                <AnimatedList>
+                  {course.lessons.map((lesson, index) => {
+                    const itemStep = index + 1
+                    const isCurrent = step === itemStep
+                    const isPast = itemStep < step
+                    const isFuture = itemStep > step
+                    const isCompleted = user.canEdit || !!lesson.completed
+                    const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
+                    const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
 
-                  return (
-                    <SortableItem
-                      animateLayoutChanges={reducedMotion ? undefined : animateLayoutChangesAlways}
-                      asChild
-                      className="group/sortable relative w-full"
-                      key={lesson.id}
-                      value={lesson.id!}
-                    >
-                      <AnimatedListItem exitOnly>
-                        {user.canEdit && (
-                          <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
-                            <GripVerticalIcon className="size-4" />
-                          </SortableItemHandle>
-                        )}
-                        <CourseSidebarItem
-                          initialCourse={courseRef.current}
-                          isSingleLesson={course.lessons.length === 1}
-                          language={language}
-                          lesson={lesson}
-                          lessonStatus={{ isCompleted, isCurrent, isReachable }}
-                          onRemove={removeLesson}
-                          onSelect={handleSelect}
-                          setLesson={setLesson}
-                          step={itemStep}
-                        />
-                      </AnimatedListItem>
-                    </SortableItem>
-                  )
-                })}
-              </AnimatedList>
-            </StepperNav>
-          </SortableContent>
-          <SortableOverlay>
-            {({ value }) => {
-              const lesson = course.lessons.find(({ id }) => id === value)
-              if (!lesson) return null
+                    return (
+                      <SortableItem
+                        animateLayoutChanges={reducedMotion ? undefined : animateLayoutChangesAlways}
+                        asChild
+                        className="group/sortable relative w-full"
+                        key={lesson.id}
+                        value={lesson.id!}
+                      >
+                        <AnimatedListItem exitOnly>
+                          {user.canEdit && (
+                            <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
+                              <GripVerticalIcon className="size-4" />
+                            </SortableItemHandle>
+                          )}
+                          <CourseSidebarItem
+                            initialCourse={courseRef.current}
+                            isSingleLesson={course.lessons.length === 1}
+                            language={language}
+                            lesson={lesson}
+                            lessonStatus={{ isCompleted, isCurrent, isReachable }}
+                            onRemove={removeLesson}
+                            onSelect={handleSelect}
+                            setLesson={setLesson}
+                            step={itemStep}
+                          />
+                        </AnimatedListItem>
+                      </SortableItem>
+                    )
+                  })}
+                </AnimatedList>
+              </StepperNav>
+            </SortableContent>
+            <SortableOverlay>
+              {({ value }) => {
+                const lesson = course.lessons.find(({ id }) => id === value)
+                if (!lesson) return null
 
-              const index = course.lessons.indexOf(lesson)
-              const itemStep = index + 1
-              const isCurrent = step === itemStep
-              const isPast = itemStep < step
-              const isFuture = itemStep > step
-              const isCompleted = user.canEdit || !!lesson.completed
-              const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
-              const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
+                const index = course.lessons.indexOf(lesson)
+                const itemStep = index + 1
+                const isCurrent = step === itemStep
+                const isPast = itemStep < step
+                const isFuture = itemStep > step
+                const isCompleted = user.canEdit || !!lesson.completed
+                const previousCompleted = index > 0 ? !!course.lessons[index - 1].completed : true
+                const isReachable = user.canEdit || isCurrent || isPast || (isFuture && previousCompleted)
 
-              return (
-                <div className="group/sortable relative w-full">
-                  <CourseSidebarItem
-                    initialCourse={courseRef.current}
-                    isSingleLesson={course.lessons.length === 1}
-                    language={language}
-                    lesson={lesson}
-                    lessonStatus={{ isCompleted, isCurrent, isReachable }}
-                    onRemove={removeLesson}
-                    onSelect={handleSelect}
-                    setLesson={setLesson}
-                    step={itemStep}
-                  />
-                </div>
-              )
-            }}
-          </SortableOverlay>
-        </Stepper>
-      </Sortable>
-      <div className="flex h-16 items-center pl-3">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
-              <PlusIcon className="size-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right" sideOffset={8}>
-            {t('addLesson')}
-          </TooltipContent>
-        </Tooltip>
+                return (
+                  <div className="group/sortable relative w-full">
+                    <CourseSidebarItem
+                      initialCourse={courseRef.current}
+                      isSingleLesson={course.lessons.length === 1}
+                      language={language}
+                      lesson={lesson}
+                      lessonStatus={{ isCompleted, isCurrent, isReachable }}
+                      onRemove={removeLesson}
+                      onSelect={handleSelect}
+                      setLesson={setLesson}
+                      step={itemStep}
+                    />
+                  </div>
+                )
+              }}
+            </SortableOverlay>
+          </Stepper>
+        </Sortable>
+        {user.canEdit && (
+          <div className="flex h-16 items-center pl-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
+                  <PlusIcon className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right" sideOffset={8}>
+                {t('addLesson')}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        )}
       </div>
     </div>
   )

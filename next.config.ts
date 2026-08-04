@@ -18,7 +18,6 @@ const envSchema = z.object({
     ),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
-  NEXT_DIST_DIR: z.string().min(1).default('.next'),
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_ACCESS_KEY_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_SECRET_ACCESS_KEY: z.string().regex(/^[0-9a-f]{64}$/u),
@@ -29,7 +28,6 @@ const envSchema = z.object({
   SMTP_SENDER: z.string().min(1),
   SMTP_USER: z.email(),
   SMTP_PASSWORD: z.string().min(1),
-  TSCONFIG_PATH: z.string().min(1).optional(),
 })
 
 if (!process.env.SKIP_ENV_VALIDATION) {
@@ -137,7 +135,6 @@ const optimizePackageImports: Package[] = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  distDir: process.env.NEXT_DIST_DIR ?? '.next',
   cacheComponents: true,
   trailingSlash: false,
   redirects,
@@ -164,7 +161,7 @@ export default (phase: PHASE_TYPE) => {
   const isDevServer = phase === PHASE_DEVELOPMENT_SERVER
   const isProdBuild = phase === PHASE_PRODUCTION_BUILD
   const allowedDevOrigins = isDevServer ? [new URL(process.env.APP_URL).host] : undefined
-  const tsconfigPath = process.env.TSCONFIG_PATH || (isProdBuild ? 'tsconfig.build.json' : 'tsconfig.json')
+  const tsconfigPath = isProdBuild ? 'tsconfig.build.json' : 'tsconfig.json'
 
   const plugins = [
     nextIntl({

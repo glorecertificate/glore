@@ -4,8 +4,6 @@ Runtime and data-layer reference for the GloRe Certificate codebase. Read the re
 
 Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`.
 
----
-
 ## Routing
 
 ### Route table
@@ -63,8 +61,6 @@ Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`
 
 - `/` > `/dashboard` (permanent redirect in `next.config.ts`)
 
----
-
 ## Authentication flow
 
 **Provider:** Better Auth (`better-auth`), stores users/sessions/accounts in the Neon database via the Drizzle adapter.
@@ -95,8 +91,6 @@ Component/type/hook/util/theming/form/email/snippet reference: see `patterns.md`
 | `nextCookies()` | Next.js cookie integration           |
 
 **Auth API route:** `src/app/api/auth/[...all]/route.ts` (catch-all for all auth requests).
-
----
 
 ## Data fetching
 
@@ -206,8 +200,6 @@ const fetchCourses = cache(async () => {
 })
 ```
 
----
-
 ## Error handling
 
 - `safeQuery()` wraps a query function in try/catch, returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
@@ -222,8 +214,6 @@ const fetchCourses = cache(async () => {
 **Layout guards:** the admin layout calls `notFound()` if `!user.isAdmin`; the certificates layout calls `notFound()` if `user.canEdit`.
 
 **User feedback:** `sonner` toast notifications via `toast.success()`, `toast.error()`.
-
----
 
 ## Environment variables
 
@@ -241,8 +231,6 @@ const fetchCourses = cache(async () => {
 | `DATABASE_URL`         | Postgres connection string (Neon or local)       | Yes       |
 | `GEMINI_API_KEY`       | Google Gemini API key                            | Yes       |
 | `GEMINI_MODEL`         | Gemini model name                                | Yes       |
-| `NEXT_DIST_DIR`        | Next.js `distDir` override (defaults to `.next`; agent preview sets `.agents/.next`) | Yes |
-| `TSCONFIG_PATH`        | `typescript.tsconfigPath` override (agent preview sets `.agents/tsconfig.json`) | Yes |
 | `SMTP_HOST`            | SMTP server hostname                             | Yes       |
 | `SMTP_PORT`            | SMTP port                                        | Yes       |
 | `SMTP_USER`            | SMTP username                                    | Yes       |
@@ -255,8 +243,6 @@ const fetchCourses = cache(async () => {
 
 > **MANDATORY:** The schema must NOT be moved into `src/` or imported from a `src/` file. Next watches `next.config.ts`'s module-dependency graph and restarts the dev server whenever a watched file changes; importing a `src/` file makes every `src/**` edit trigger a full dev-server restart (cold 5-10s recompiles). Keep the schema inline; `zod` is the only allowed import for it.
 
----
-
 ## Static data
 
 | File                   | Purpose                                                                                       |
@@ -267,20 +253,33 @@ const fetchCourses = cache(async () => {
 | `config/metadata.json` | App name, version, URL, email, keywords, authors                                              |
 | `config/theme.json`    | Theme modes, breakpoints, hex color palette for light/dark                                    |
 
----
-
 ## Dev environment and performance
 
-Non-obvious settings that keep dev HMR and CI builds fast; each maps to a numbered AGENTS.md gotcha and MUST NOT be reverted in refactors. **React Compiler (14):** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev (Babel kills Turbopack HMR). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
+Non-obvious settings that keep dev HMR and CI builds fast. They back the "Dev-performance flags" gotcha in `AGENTS.md` and MUST NOT be reverted in refactors.
 
-**Turbopack dev cache (25):** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s via the `turbopack-compaction`/`turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
+**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev (Babel kills Turbopack HMR). Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
 
-**Oxlint typeAware split (26):** `vite.config.ts` keeps `typeAware: true` so CLI runs (`vp check`, `vp lint`, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
+**Turbopack dev cache:** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s via the `turbopack-compaction`/`turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
 
-**Editor save chain (27):** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped (`editor.formatOnSave` already runs oxfmt); `source.removeUnusedImports` was dropped (it calls tsgo every save). `knip.deferSession: true` defers the module graph until started manually.
+**Oxlint typeAware split:** `vite.config.ts` keeps `typeAware: true` so CLI runs (`vp check`, `vp lint`, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`, `unbound-method`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
 
-**Dual DB driver (28):** `src/db/client.ts` picks by URL host: `localhost`/`127.0.0.1` uses `node-postgres` + `pg.Pool`, anything else uses `neon-http`. The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres runs on **port 5433** via `.env.development.local` (gitignored, dev-only; avoids a host Postgres on 5432); provision with `pnpm run db:up` then `pnpm run db migrate`. Saves ~1.9s/HMR of Neon HTTP latency. Both drivers share the read/single-statement API (the `db` cast is safe); multi-statement writes take the `transaction()` path above.
+**Editor save chain:** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped (`editor.formatOnSave` already runs oxfmt); `source.removeUnusedImports` was dropped (it calls tsgo every save). `knip.deferSession: true` defers the module graph until started manually.
 
-**Prebuilt CI deploys (30):** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull` + `build` + `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel's "Building" step is a ~20s upload, not a ~3min build. `VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` sit in the workflow `env` (non-secret IDs; `.vercel/` is gitignored). Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (CI's `validate` job runs `tsgo` first; re-enabling adds 30-45s/build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
+**Dual DB driver:** `src/db/client.ts` picks by URL host: `localhost`/`127.0.0.1` uses `node-postgres` + `pg.Pool`, anything else uses `neon-http`. The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres runs on **port 5433** via `.env.development.local` (gitignored, dev-only; avoids a host Postgres on 5432); provision with `pnpm run db:up` then `pnpm run db migrate`. Saves ~1.9s/HMR of Neon HTTP latency. Both drivers share the read/single-statement API (the `db` cast is safe); multi-statement writes take the `transaction()` path above.
 
-**Agent preview server (33):** a SEPARATE dev server from the human's, isolated end to end; never share or spawn it via Bash. The human server (`pnpm run dev`, `portless glore --app-port 45673 next dev`) binds Next on `127.0.0.1:45673`, routed by portless to `https://glore.localhost`. The agent server lives entirely in `.agents/launch.json` (no package.json script; `.claude/launch.json` resolves there via symlink): `pnpm exec portless agent-preview.glore next dev` on **port 24368** as `https://agent-preview.glore.localhost`, with env overrides `PORTLESS_APP_PORT=24368`, `APP_URL=https://agent-preview.glore.localhost` (so `allowedDevOrigins` accepts the agent host), `NEXT_DIST_DIR=.agents/.next`, `TSCONFIG_PATH=.agents/tsconfig.json` (both env vars in the Zod schema). Isolation is mandatory: two Turbopack instances need different dist dirs or they corrupt each other's cache, and the MCP keys reuse/stop on the config `name`, so a shared name would let `preview_stop` tear down the human's server (observed: killed it, dropped the route). Do NOT point `launch.json` at `dev` or reuse the `glore` name. **Lifecycle:** it is a full second Turbopack + DB stack and does NOT auto-stop. The MCP starts it lazily on the first `preview_start` (nothing else does); call `preview_stop` (serverId from `preview_list`) once done in a turn, and `preview_start` only when you need to look at the app. The MCP cannot attach to the human's server (errors on a foreign process, no connect-to-URL mode), so the isolated server is required to preview at all; the saving is keeping it short-lived. **Preview path preference (34):** prefer the Claude-in-Chrome MCP (`mcp__Claude_in_Chrome__*`) driving the human's already-open Chrome against `https://glore.localhost` for visual checks; use this agent-preview MCP only as fallback. Check `list_connected_browsers` first; with a connected browser and the human server up, reuse the human's EXISTING window (their profile + live session), never a fresh one. The MCP defaults to isolation, so `tabs_create_mcp` and `tabs_context_mcp{createIfEmpty:true}` both spawn a brand-new profile-less, session-less window (observed wrong behavior): do NOT use them. Instead: `tabs_context_mcp` with no `createIfEmpty` to list tabs, find the tab on `https://glore.localhost` to identify the human's session window, then open a new tab in THAT window and `navigate`/`screenshot` it (leaves their tabs untouched, inherits their session). If no `glore.localhost` tab exists, STOP and ask the human to open the app in the target window. Tradeoff: Claude-in-Chrome runs against the user's live session and cookies (no state isolation); the preview MCP is the only sandboxed option, so fall back to `preview_start` only when no browser is connected, the human server is down, or a clean unauthenticated state is needed. Browsers are tier-"read" under computer-use (screenshots only), so interact via the Chrome MCP's own `navigate`/`tabs_*`/`screenshot`, not computer-use clicks.
+**Prebuilt CI deploys:** `vercel.json` sets `git.deploymentEnabled: false`; `.github/workflows/deploy.yml` runs `vercel pull` + `build` + `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel's "Building" step is a ~20s upload, not a ~3min build. `VERCEL_ORG_ID`/`VERCEL_PROJECT_ID` sit in the workflow `env` (non-secret IDs; `.vercel/` is gitignored). Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (CI's `validate` job runs `tsgo` first; re-enabling adds 30-45s/build) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
+
+## Framework docs
+
+Next.js is the only dependency here that ships its own documentation, under `node_modules/next/dist/docs/`. It always matches the installed version, so grep it for API pages instead of trusting recall.
+
+context7 covers the rest of the stack and serves the same Next.js pages, but resolve the pinned id (`/vercel/next.js/v<installed version>`) rather than the bare `/vercel/next.js`. The unpinned id follows a moving default, and this app runs `cacheComponents`, Cached Components, and `NextProxy`, which are v16-only surface where a v15 answer is wrong rather than merely dated.
+
+## Browser verification
+
+Visual checks run through the machine-wide `agent-browser` skill against the dev server that is already running, never a second app stack. There is no agent-owned preview server, no isolated dist dir, and no preview MCP in this repo.
+
+- Start the app with `pnpm run dev` if nothing is listening, then drive `https://glore.localhost` (portless routes it to Next on `127.0.0.1:45673`).
+- Name the session after the task or worktree, act on snapshot refs, and close the session in the same turn that finishes with it. An orphaned session holds roughly 900MB of Chrome processes.
+- Authenticated flows use a persistent `--session-name` profile so cookies survive across runs. Full flow, cleanup, and auth escalation rules: the user's `browser.instructions.md` and the `agent-browser` skill.
+- `APP_URL` must match the host being driven, since `allowedDevOrigins` is derived from it.

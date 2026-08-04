@@ -12,7 +12,7 @@
     },
     "neon": {
       "type": "http",
-      "url": "https://mcp.neon.tech/sse"
+      "url": "https://mcp.neon.tech/mcp"
     },
     "shadcn": {
       "type": "stdio",

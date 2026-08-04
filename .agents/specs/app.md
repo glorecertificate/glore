@@ -1,4 +1,4 @@
-# GloRe Certificate, app specification
+# GloRe Certificate app specification
 
 ## Overview
 

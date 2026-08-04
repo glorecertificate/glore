@@ -30,7 +30,7 @@ In `.agents/specs/`. Load the one you need, not the set.
 | ----------------------- | -------------------------------------------------------------------------- |
 | `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)            |
 | `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                    |
-| `pnpm run check`        | Parallel `check:types` (tsgo), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
+| `pnpm run check`        | Parallel `check:types` (tsc), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
 | `pnpm run build`        | Production build                                                          |
 | `pnpm run typegen`      | Generate route and public-file types into `types/`                        |
 | `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                        |

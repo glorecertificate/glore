@@ -9,13 +9,13 @@ import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 import { getAuthUser } from '@/actions/auth'
 import { buildCourseWith } from '@/actions/courses/helpers'
 import { db, transaction } from '@/db/client'
-import { deleteCourse as deleteCourseRecord } from '@/db/mutations/course'
-import { parseCourse } from '@/db/queries/course'
-import { type Course } from '@/db/queries/course'
+import { deleteCourse as deleteCourseRecord, deleteLessons as deleteLessonRecords } from '@/db/mutations/course'
+import { type Course, parseCourse } from '@/db/queries/course'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { assessments, courses, evaluations, lessons, questionOptions, questions } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag, courseTag } from '@/lib/cache'
+import { isTempId } from '@/lib/utils'
 
 const requireEditor = async () => {
   const user = await getAuthUser()
@@ -46,15 +46,17 @@ const revalidateCourseSlugs = (slugs: string[]) => {
   updateTag(CacheTag.Courses)
 }
 
+const persistedIds = (ids: number[]) => [...new Set(ids)].filter(id => !isTempId(id))
+
 const slugsByCourseIds = async (courseIds: number[]) => {
-  const ids = [...new Set(courseIds)]
+  const ids = persistedIds(courseIds)
   if (ids.length === 0) return []
   const rows = await db.query.courses.findMany({ where: inArray(courses.id, ids), columns: { slug: true } })
   return rows.map(({ slug }) => slug)
 }
 
 const slugsByLessonIds = async (lessonIds: number[]) => {
-  const ids = [...new Set(lessonIds)]
+  const ids = persistedIds(lessonIds)
   if (ids.length === 0) return []
   const rows = await db
     .select({ slug: courses.slug })
@@ -65,7 +67,7 @@ const slugsByLessonIds = async (lessonIds: number[]) => {
 }
 
 const slugsByQuestionIds = async (questionIds: number[]) => {
-  const ids = [...new Set(questionIds)]
+  const ids = persistedIds(questionIds)
   if (ids.length === 0) return []
   const rows = await db
     .select({ slug: courses.slug })
@@ -77,7 +79,7 @@ const slugsByQuestionIds = async (questionIds: number[]) => {
 }
 
 const slugsByOptionIds = async (optionIds: number[]) => {
-  const ids = [...new Set(optionIds)]
+  const ids = persistedIds(optionIds)
   if (ids.length === 0) return []
   const rows = await db
     .select({ slug: courses.slug })
@@ -90,7 +92,7 @@ const slugsByOptionIds = async (optionIds: number[]) => {
 }
 
 const slugsByEvaluationIds = async (evaluationIds: number[]) => {
-  const ids = [...new Set(evaluationIds)]
+  const ids = persistedIds(evaluationIds)
   if (ids.length === 0) return []
   const rows = await db
     .select({ slug: courses.slug })
@@ -102,7 +104,7 @@ const slugsByEvaluationIds = async (evaluationIds: number[]) => {
 }
 
 const slugsByAssessmentIds = async (assessmentIds: number[]) => {
-  const ids = [...new Set(assessmentIds)]
+  const ids = persistedIds(assessmentIds)
   if (ids.length === 0) return []
   const rows = await db
     .select({ slug: courses.slug })
@@ -226,17 +228,29 @@ const createLesson = async (lesson: TableInsert<'lessons'>) => {
 export const upsertLessons = async (values: Array<TableInsert<'lessons'> & { id?: number }>) => {
   await requireEditor()
   const result = await Promise.all(
-    values.reduce<Promise<(typeof lessons.$inferSelect)[]>[]>((promises, { id, ...set }) => {
-      const promise = id
-        ? db.update(lessons).set(set).where(eq(lessons.id, id)).returning()
-        : db.insert(lessons).values(set).returning()
-      return [...promises, promise]
-    }, [])
+    values.map(({ id, ...set }) =>
+      isTempId(id)
+        ? db.insert(lessons).values(set).returning()
+        : db
+            .update(lessons)
+            .set(set)
+            .where(eq(lessons.id, id as number))
+            .returning()
+    )
   )
 
   revalidateCourseSlugs(await slugsByCourseIds(values.map(({ courseId }) => courseId)))
 
-  return { data: result.flat().map(parseLesson) }
+  return { data: result.map(rows => (rows[0] ? parseLesson(rows[0]) : null)) }
+}
+
+export const deleteLessons = async (rawIds: number[]) => {
+  const ids = persistedIds(rawIds)
+  if (ids.length === 0) return { data: true }
+  const [, slugs] = await Promise.all([requireEditor(), slugsByLessonIds(ids)])
+  await transaction(tx => deleteLessonRecords(tx, ids))
+  revalidateCourseSlugs(slugs)
+  return { data: true }
 }
 
 export const reorderCourses = async (items: Course[]) => {
@@ -257,23 +271,25 @@ export const upsertQuestions = async (values: Array<TableInsert<'questions'> & {
   await requireEditor()
   const result = await Promise.all(
     values.map(({ id, ...set }) =>
-      id
+      isTempId(id)
         ? db
-            .update(questions)
-            .set(set)
-            .where(eq(questions.id, id))
-            .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
-        : db
             .insert(questions)
             .values(set as TableInsert<'questions'>)
+            .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
+        : db
+            .update(questions)
+            .set(set)
+            .where(eq(questions.id, id as number))
             .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
     )
   )
   revalidateCourseSlugs(await slugsByLessonIds(values.map(({ lessonId }) => lessonId)))
-  return { data: result.flat() }
+  return { data: result.map(rows => rows[0] ?? null) }
 }
 
-export const deleteQuestions = async (ids: number[]) => {
+export const deleteQuestions = async (rawIds: number[]) => {
+  const ids = persistedIds(rawIds)
+  if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByQuestionIds(ids)])
   await db.delete(questions).where(inArray(questions.id, ids))
   revalidateCourseSlugs(slugs)
@@ -284,19 +300,25 @@ export const upsertQuestionOptions = async (values: Array<TableInsert<'question_
   await requireEditor()
   const result = await Promise.all(
     values.map(({ id, ...set }) =>
-      id
-        ? db.update(questionOptions).set(set).where(eq(questionOptions.id, id)).returning({ id: questionOptions.id })
-        : db
+      isTempId(id)
+        ? db
             .insert(questionOptions)
             .values(set as TableInsert<'question_options'>)
+            .returning({ id: questionOptions.id })
+        : db
+            .update(questionOptions)
+            .set(set)
+            .where(eq(questionOptions.id, id as number))
             .returning({ id: questionOptions.id })
     )
   )
   revalidateCourseSlugs(await slugsByQuestionIds(values.map(({ questionId }) => questionId)))
-  return { data: result.flat() }
+  return { data: result.map(rows => rows[0] ?? null) }
 }
 
-export const deleteQuestionOptions = async (ids: number[]) => {
+export const deleteQuestionOptions = async (rawIds: number[]) => {
+  const ids = persistedIds(rawIds)
+  if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByOptionIds(ids)])
   await db.delete(questionOptions).where(inArray(questionOptions.id, ids))
   revalidateCourseSlugs(slugs)
@@ -307,23 +329,25 @@ export const upsertEvaluations = async (values: Array<TableInsert<'evaluations'>
   await requireEditor()
   const result = await Promise.all(
     values.map(({ id, ...set }) =>
-      id
+      isTempId(id)
         ? db
-            .update(evaluations)
-            .set(set)
-            .where(eq(evaluations.id, id))
-            .returning({ id: evaluations.id, description: evaluations.description })
-        : db
             .insert(evaluations)
             .values(set as TableInsert<'evaluations'>)
+            .returning({ id: evaluations.id, description: evaluations.description })
+        : db
+            .update(evaluations)
+            .set(set)
+            .where(eq(evaluations.id, id as number))
             .returning({ id: evaluations.id, description: evaluations.description })
     )
   )
   revalidateCourseSlugs(await slugsByLessonIds(values.map(({ lessonId }) => lessonId)))
-  return { data: result.flat() }
+  return { data: result.map(rows => rows[0] ?? null) }
 }
 
-export const deleteEvaluations = async (ids: number[]) => {
+export const deleteEvaluations = async (rawIds: number[]) => {
+  const ids = persistedIds(rawIds)
+  if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByEvaluationIds(ids)])
   await db.delete(evaluations).where(inArray(evaluations.id, ids))
   revalidateCourseSlugs(slugs)
@@ -332,22 +356,24 @@ export const deleteEvaluations = async (ids: number[]) => {
 
 export const upsertAssessment = async ({ id, ...set }: TableInsert<'assessments'> & { id?: number }) => {
   await requireEditor()
-  const results = await (id
+  const results = await (isTempId(id)
     ? db
-        .update(assessments)
-        .set(set)
-        .where(eq(assessments.id, id))
-        .returning({ id: assessments.id, description: assessments.description })
-    : db
         .insert(assessments)
         .values(set as TableInsert<'assessments'>)
+        .returning({ id: assessments.id, description: assessments.description })
+    : db
+        .update(assessments)
+        .set(set)
+        .where(eq(assessments.id, id as number))
         .returning({ id: assessments.id, description: assessments.description }))
-  if (!results[0]) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
+  const assessment = results[0]
+  if (!assessment) return { error: { code: 'INSERT_FAILED', message: 'Failed to upsert assessment' } }
   revalidateCourseSlugs(await slugsByLessonIds([set.lessonId]))
-  return { data: results[0] }
+  return { data: assessment }
 }
 
 export const deleteAssessment = async (id: number) => {
+  if (isTempId(id)) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByAssessmentIds([id])])
   await db.delete(assessments).where(eq(assessments.id, id))
   revalidateCourseSlugs(slugs)

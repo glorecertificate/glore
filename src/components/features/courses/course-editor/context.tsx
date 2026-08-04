@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, startTransition, use, useMemo, useRef, useState } from 'react'
+import { createContext, use, useMemo, useRef, useState } from 'react'
 
 import { type Locale } from 'next-intl'
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
@@ -8,6 +8,7 @@ import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs'
 import {
   deleteAssessment,
   deleteEvaluations,
+  deleteLessons,
   deleteQuestionOptions,
   deleteQuestions,
   updateCourse,
@@ -22,6 +23,7 @@ import { type Course } from '@/db/queries/course'
 import { Lesson, parseLesson } from '@/db/queries/lesson'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
+import { isTempId, tempId } from '@/lib/utils'
 import { messages } from '~/config/i18n.json'
 
 interface CourseProviderOptions {
@@ -95,7 +97,7 @@ const mergeLocale = <T,>(
 const ensureLesson = (course: Course): Course => {
   if (course.lessons.length > 0) return course
   const defaultLesson = parseLesson({
-    id: Date.now(),
+    id: tempId(),
     title: messages.defaultLessonTitle,
     content: LOCALES.reduce((content, locale) => ({ ...content, [locale]: defaultLessonContent }), {} as IntlRecord),
     sortOrder: 1,
@@ -127,10 +129,10 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   const courseSnapshotRef = useRef(course)
   courseSnapshotRef.current = course
-  const contentFlushRef = useRef<(() => void) | null>(null)
+  const contentFlushRef = useRef<(() => unknown) | null>(null)
 
   const currentLesson = {
-    ...course.lessons[step - 1],
+    ...(course.lessons[step - 1] ?? course.lessons[0]),
     isFirst: step === 1,
     isLast: step === course.lessons.length,
   }
@@ -163,6 +165,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
             return lesson.title?.[locale] && lesson.title[locale].trim().length > 0 && hasText
           })
+          const hasRemovedLessons = course.lessons.length !== savedCourse.lessons.length
           const hasContentUpdates = course.lessons.some((lesson, i) => {
             const initialLesson = savedCourse.lessons[i] || {}
 
@@ -218,7 +221,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
             )
           })
 
-          const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates
+          const hasUpdates = hasTitleUpdates || hasContentUpdates || hasDescriptionUpdates || hasRemovedLessons
           const isFulfilled = hasTitle && hasContent
 
           return {
@@ -262,24 +265,43 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   }
 
   const saveCourse = async ({ locale, publish }: { locale: Locale; publish?: boolean | null }) => {
-    if (contentFlushRef.current) {
-      startTransition(() => {
-        contentFlushRef.current?.()
-      })
-    }
+    const pendingContent = contentFlushRef.current?.() ?? null
 
-    const current = courseSnapshotRef.current
+    const snapshot = courseSnapshotRef.current
+    const current = pendingContent
+      ? {
+          ...snapshot,
+          lessons: snapshot.lessons.map((lesson, i) =>
+            i === step - 1
+              ? { ...lesson, content: { ...(lesson.content as IntlRecord), [locale]: pendingContent } as IntlRecord }
+              : lesson
+          ),
+        }
+      : snapshot
     const initial = courseRef.current
     const { id, lessons } = current
 
-    const lessonsPayload: Array<TableInsert<'lessons'> & { id?: number }> = []
+    const lessonsPayload: Array<{ tempKey?: number; value: TableInsert<'lessons'> & { id?: number } }> = []
     const idMap = new Map<number, number>()
     const questionIdMap = new Map<number, number>()
     const optionIdMap = new Map<number, number>()
+    const evaluationIdMap = new Map<number, number>()
+    const assessmentIdMap = new Map<number, number>()
     const initialLessonMap = new Map(initial.lessons.map(l => [l.id, l]))
 
+    const removedLessonIds = initial.lessons.reduce<number[]>((ids, lesson) => {
+      if (isTempId(lesson.id)) return ids
+      if (lessons.some(({ id: lessonId }) => lessonId === lesson.id)) return ids
+      ids.push(lesson.id!)
+      return ids
+    }, [])
+    if (removedLessonIds.length > 0) {
+      const result = await deleteLessons(removedLessonIds)
+      if (result && 'error' in result) throw result.error
+    }
+
     for (const [lessonIndex, lesson] of lessons.entries()) {
-      const initialLesson = initialLessonMap.get(lesson.id)
+      const initialLesson = isTempId(lesson.id) ? undefined : initialLessonMap.get(lesson.id)
       const isNew = !initialLesson
       const lessonUpdates: Record<string, unknown> = {}
 
@@ -305,21 +327,24 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
       if (Object.keys(lessonUpdates).length > 0) {
         lessonsPayload.push({
-          ...lessonUpdates,
-          id: lesson.id,
-          title: (lessonUpdates.title ?? lesson.title) as IntlRecord,
-          courseId: id,
-          sortOrder: (lessonUpdates.sortOrder as number | undefined) ?? lesson.sortOrder ?? lessonIndex + 1,
-        } as TableInsert<'lessons'> & { id?: number })
+          tempKey: isNew ? lesson.id : undefined,
+          value: {
+            ...lessonUpdates,
+            id: isNew ? undefined : lesson.id,
+            title: (lessonUpdates.title ?? lesson.title) as IntlRecord,
+            courseId: id,
+            sortOrder: (lessonUpdates.sortOrder as number | undefined) ?? lesson.sortOrder ?? lessonIndex + 1,
+          } as TableInsert<'lessons'> & { id?: number },
+        })
       }
     }
 
     if (lessonsPayload.length > 0) {
-      const result = await upsertLessons(lessonsPayload)
+      const result = await upsertLessons(lessonsPayload.map(({ value }) => value))
       if (result && 'error' in result) throw result.error
-      for (const [i, payload] of lessonsPayload.entries()) {
+      for (const [i, { tempKey }] of lessonsPayload.entries()) {
         const realId = result.data[i]?.id
-        if (payload.id && realId && payload.id !== realId) idMap.set(payload.id, realId)
+        if (tempKey !== undefined && realId !== undefined && tempKey !== realId) idMap.set(tempKey, realId)
       }
       if (idMap.size > 0) {
         setCourse(prev => ({
@@ -335,7 +360,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
     await Promise.all(
       lessons.map(async lesson => {
-        const initialLesson = initialLessonMap.get(lesson.id)
+        const lessonId = idMap.get(lesson.id!) ?? lesson.id!
+        if (isTempId(lessonId)) return
+        const initialLesson = isTempId(lesson.id) ? undefined : initialLessonMap.get(lesson.id)
         const initialQuestionMap = new Map((initialLesson?.questions ?? []).map(q => [q.id, q]))
         const initialEvalMap = new Map((initialLesson?.evaluations ?? []).map(e => [e.id, e]))
 
@@ -364,18 +391,20 @@ const useCourseProvider = (options: CourseProviderOptions) => {
             if (!existing) {
               const result = await upsertQuestions([
                 {
-                  lessonId: lesson.id,
+                  lessonId,
                   description: mergeLocale(q.description as IntlRecord, undefined, locale),
                   explanation: mergeLocale(q.explanation as IntlRecord | null | undefined, null, locale),
                 },
               ] as unknown as TableInsert<'questions'>[])
               questionId = result.data[0]?.id ?? q.id
               if (questionId !== q.id) questionIdMap.set(q.id, questionId)
-            } else if (questionChanged) {
+            }
+
+            if (existing && questionChanged) {
               await upsertQuestions([
                 {
                   id: q.id,
-                  lessonId: lesson.id,
+                  lessonId,
                   description: mergeLocale(q.description as IntlRecord, existing.description, locale),
                   explanation: mergeLocale(
                     q.explanation as IntlRecord | null | undefined,
@@ -385,6 +414,8 @@ const useCourseProvider = (options: CourseProviderOptions) => {
                 },
               ] as unknown as TableInsert<'questions'>[])
             }
+
+            if (isTempId(questionId)) return
 
             const initialOptions = existing?.options ?? []
             const initialOptionMap = new Map(initialOptions.map(o => [o.id, o]))
@@ -438,21 +469,34 @@ const useCourseProvider = (options: CourseProviderOptions) => {
         const currentEvalIds = new Set(lesson.evaluations.map(e => e.id))
         const removedEvalIds = [...initialEvalIds].filter(eId => !currentEvalIds.has(eId))
 
-        const evalsToUpsert = lesson.evaluations.flatMap(e => {
-          const existing = initialEvalMap.get(e.id)
-          if (existing && existing.description?.[locale] === (e.description as IntlRecord | undefined)?.[locale]) {
-            return []
-          }
-          return [
-            {
-              id: existing ? e.id : undefined,
-              lessonId: lesson.id,
-              description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
-            },
-          ]
-        })
+        const evalsToUpsert = lesson.evaluations.reduce<Array<{ tempKey?: number; value: Record<string, unknown> }>>(
+          (rows, e) => {
+            const existing = initialEvalMap.get(e.id)
+            if (existing && existing.description?.[locale] === (e.description as IntlRecord | undefined)?.[locale]) {
+              return rows
+            }
+            rows.push({
+              tempKey: existing ? undefined : e.id,
+              value: {
+                id: existing ? e.id : undefined,
+                lessonId,
+                description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
+              },
+            })
+            return rows
+          },
+          []
+        )
 
-        if (evalsToUpsert.length > 0) await upsertEvaluations(evalsToUpsert as unknown as TableInsert<'evaluations'>[])
+        if (evalsToUpsert.length > 0) {
+          const result = await upsertEvaluations(
+            evalsToUpsert.map(({ value }) => value) as unknown as TableInsert<'evaluations'>[]
+          )
+          for (const [i, { tempKey }] of evalsToUpsert.entries()) {
+            const realId = result.data[i]?.id
+            if (tempKey !== undefined && realId !== undefined) evaluationIdMap.set(tempKey, realId)
+          }
+        }
         if (removedEvalIds.length > 0) await deleteEvaluations(removedEvalIds)
 
         const hadAssessment = !!initialLesson?.assessment
@@ -464,32 +508,42 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           const descriptionChanged = !hadAssessment || initialDesc !== currentDesc
 
           if (descriptionChanged && lesson.assessment) {
-            await upsertAssessment({
+            const result = await upsertAssessment({
               id: hadAssessment ? lesson.assessment.id : undefined,
-              lessonId: lesson.id,
+              lessonId,
               description: mergeLocale(
                 lesson.assessment.description as IntlRecord,
                 initialLesson?.assessment?.description,
                 locale
               ),
             } as TableInsert<'assessments'>)
+            const realId = 'data' in result ? result.data?.id : undefined
+            if (realId !== undefined && realId !== lesson.assessment.id) {
+              assessmentIdMap.set(lesson.assessment.id, realId)
+            }
           }
-        } else if (hadAssessment && initialLesson?.assessment) {
+        }
+
+        if (!hasAssessment && hadAssessment && initialLesson?.assessment) {
           await deleteAssessment(initialLesson.assessment.id)
         }
       })
     )
 
-    if (questionIdMap.size > 0 || optionIdMap.size > 0) {
+    const remapId = (map: Map<number, number>, value: number) => map.get(value) ?? value
+
+    if (questionIdMap.size > 0 || optionIdMap.size > 0 || evaluationIdMap.size > 0 || assessmentIdMap.size > 0) {
       setCourse(prev => ({
         ...prev,
         lessons: prev.lessons.map(l => ({
           ...l,
           questions: l.questions.map(q => ({
             ...q,
-            id: questionIdMap.get(q.id) ?? q.id,
-            options: q.options.map(o => ({ ...o, id: optionIdMap.get(o.id) ?? o.id })),
+            id: remapId(questionIdMap, q.id),
+            options: q.options.map(o => ({ ...o, id: remapId(optionIdMap, o.id) })),
           })),
+          evaluations: l.evaluations.map(e => ({ ...e, id: remapId(evaluationIdMap, e.id) })),
+          assessment: l.assessment ? { ...l.assessment, id: remapId(assessmentIdMap, l.assessment.id) } : l.assessment,
         })),
       }))
     }
@@ -533,17 +587,16 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       setCourse(prev => ({ ...prev, languages: nextLanguages }))
     }
 
-    const snapshot = courseSnapshotRef.current
     const remapped =
       idMap.size > 0
         ? {
-            ...snapshot,
-            lessons: snapshot.lessons.map(l => {
+            ...current,
+            lessons: current.lessons.map(l => {
               const newId = idMap.get(l.id!)
               return newId === undefined ? l : { ...l, id: newId }
             }),
           }
-        : snapshot
+        : current
 
     const mergedLessons = remapped.lessons.map(lesson => {
       const initialLesson = initial.lessons.find(({ id: lessonId }) => lessonId === lesson.id)
@@ -559,14 +612,14 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           const existing = initialLesson?.questions.find(iq => iq.id === q.id)
           return {
             ...q,
-            id: questionIdMap.get(q.id) ?? q.id,
+            id: remapId(questionIdMap, q.id),
             description: mergeLocale(q.description as IntlRecord, existing?.description, locale),
             explanation: mergeLocale(q.explanation as IntlRecord | null, existing?.explanation ?? null, locale),
             options: q.options.map(o => {
               const existingOption = existing?.options.find(io => io.id === o.id)
               return {
                 ...o,
-                id: optionIdMap.get(o.id) ?? o.id,
+                id: remapId(optionIdMap, o.id),
                 content: mergeLocale(
                   o.content as IntlRecord,
                   existingOption?.content as IntlRecord | undefined,
@@ -580,12 +633,14 @@ const useCourseProvider = (options: CourseProviderOptions) => {
           const existing = initialLesson?.evaluations.find(ie => ie.id === e.id)
           return {
             ...e,
+            id: remapId(evaluationIdMap, e.id),
             description: mergeLocale(e.description as IntlRecord, existing?.description, locale),
           }
         }),
         assessment: lesson.assessment
           ? {
               ...lesson.assessment,
+              id: remapId(assessmentIdMap, lesson.assessment.id),
               description: mergeLocale(
                 lesson.assessment.description as IntlRecord,
                 initialLesson?.assessment?.description,
@@ -609,7 +664,7 @@ const useCourseProvider = (options: CourseProviderOptions) => {
 
   const addLesson = (values: TableUpdate<'lessons'> = {}) => {
     const lessonData = {
-      id: Date.now(),
+      id: tempId(),
       title: messages.defaultLessonTitle,
       content: LOCALES.reduce((content, locale) => ({ ...content, [locale]: defaultLessonContent }), {} as IntlRecord),
       createdAt: new Date().toISOString(),
@@ -621,53 +676,44 @@ const useCourseProvider = (options: CourseProviderOptions) => {
       contributions: [],
       ...values,
     }
-    setCourse(prev => {
-      const lessons = [
-        ...prev.lessons,
-        parseLesson({
-          ...lessonData,
-          sortOrder: prev.lessons.length + 1,
-        }),
-      ]
-      return { ...prev, lessons }
-    })
-    setCourse(prev => {
-      setStep(prev.lessons.length)
-      return prev
-    })
+    const nextStep = courseSnapshotRef.current.lessons.length + 1
+    setCourse(prev => ({
+      ...prev,
+      lessons: [...prev.lessons, parseLesson({ ...lessonData, sortOrder: prev.lessons.length + 1 })],
+    }))
+    setStep(nextStep)
     return parseLesson({ ...lessonData, sortOrder: 0 })
   }
 
   const setLesson = (data: TableUpdate<'lessons'> & { id?: number }) => {
-    setCourse(prev => {
-      if (prev.lessons.length === 0) {
-        addLesson(data)
-        return prev
-      }
-      return {
-        ...prev,
-        lessons: prev.lessons.map((lesson, i) => {
-          if (data.id && lesson.id === data.id) return { ...lesson, ...data }
-          if (!data.id && i === step - 1) return { ...lesson, ...data }
-          return lesson
-        }),
-      }
-    })
+    if (courseSnapshotRef.current.lessons.length === 0) {
+      addLesson(data)
+      return
+    }
+    setCourse(prev => ({
+      ...prev,
+      lessons: prev.lessons.map((lesson, i) => {
+        if (data.id && lesson.id === data.id) return { ...lesson, ...data }
+        if (!data.id && i === step - 1) return { ...lesson, ...data }
+        return lesson
+      }),
+    }))
   }
 
   const removeLesson = (lessonId: number) => {
+    const removedIndex = courseSnapshotRef.current.lessons.findIndex(lesson => lesson.id === lessonId)
+    if (removedIndex === -1) return
+
     setCourse(prev => {
       const lessons: Lesson[] = []
-      for (const [i, lesson] of prev.lessons.entries()) {
-        if (lesson.id !== lessonId) {
-          lessons.push({ ...lesson, sortOrder: i + 1 })
-        }
+      for (const lesson of prev.lessons) {
+        if (lesson.id !== lessonId) lessons.push({ ...lesson, sortOrder: lessons.length + 1 })
       }
       return { ...prev, lessons }
     })
-    if (step > 1) {
-      setStep(i => i - 1)
-    }
+
+    const nextLength = Math.max(1, courseSnapshotRef.current.lessons.length - 1)
+    setStep(removedIndex < step - 1 ? step - 1 : Math.min(step, nextLength))
   }
 
   const previous = () => {
@@ -677,12 +723,9 @@ const useCourseProvider = (options: CourseProviderOptions) => {
   }
 
   const next = () => {
-    setCourse(prev => {
-      if (step < prev.lessons.length) {
-        setStep(i => i + 1)
-      }
-      return prev
-    })
+    if (step < courseSnapshotRef.current.lessons.length) {
+      setStep(i => i + 1)
+    }
   }
 
   return {

@@ -77,7 +77,7 @@ const CourseEditor = ({
   onChange: (value: Value) => void
   readOnly: boolean
   version: string
-  flushRef: React.RefObject<(() => void) | null>
+  flushRef: React.RefObject<(() => unknown) | null>
 }) => {
   const onChangeRef = useRef(onChange)
   const latestValueRef = useRef(initialValue)
@@ -103,9 +103,10 @@ const CourseEditor = ({
   useEffect(() => {
     flushRef.current = () => {
       debouncedOnChange.cancel()
-      if (!appliedRef.current) {
-        onChangeRef.current(latestValueRef.current)
-      }
+      if (appliedRef.current) return null
+      appliedRef.current = true
+      onChangeRef.current(latestValueRef.current)
+      return latestValueRef.current
     }
     return () => {
       flushRef.current = null

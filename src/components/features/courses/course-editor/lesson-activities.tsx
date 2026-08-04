@@ -13,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { type Course } from '@/db/queries/course'
 import { type Assessment, type Evaluation, type LessonType, type QuestionOption } from '@/db/queries/lesson'
 import { INTL_PLACEHOLDER, type IntlRecord } from '@/lib/i18n'
-import { cn } from '@/lib/utils'
+import { cn, tempId } from '@/lib/utils'
 
 const ActivityItem = ({
   description,
@@ -182,19 +182,15 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
   const canEdit = user.canEdit && !course.archivedAt
 
-  const hasActivity =
-    currentLesson.questions.length > 0 || currentLesson.evaluations.length > 0 || !!currentLesson.assessment
-
   const addQuestion = () => {
-    const now = Date.now()
     const question = {
-      id: now,
+      id: tempId(),
       description: INTL_PLACEHOLDER,
       explanation: null,
       answered: false,
       options: [
-        { id: now + 1, content: { [language]: '' }, isCorrect: true, isUserAnswer: false },
-        { id: now + 2, content: { [language]: '' }, isCorrect: false, isUserAnswer: false },
+        { id: tempId(), content: { [language]: '' }, isCorrect: true, isUserAnswer: false },
+        { id: tempId(), content: { [language]: '' }, isCorrect: false, isUserAnswer: false },
       ] as unknown as QuestionOption[],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -213,7 +209,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
   const addEvaluation = () => {
     const evaluation = {
-      id: Date.now() + 1,
+      id: tempId(),
       description: INTL_PLACEHOLDER,
     } as Evaluation
     setCourse(prev => ({
@@ -226,7 +222,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
 
   const addAssessment = () => {
     const assessment = {
-      id: Date.now() + 2,
+      id: tempId(),
       description: INTL_PLACEHOLDER,
       userRating: 0,
       userAssessments: [],
@@ -287,7 +283,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
               questions: lesson.questions.map(q => {
                 if (q.id !== questionId) return q
                 const newOption = {
-                  id: Date.now(),
+                  id: tempId(),
                   content: { [language]: '' },
                   isCorrect: !q.options.some(o => o.isCorrect),
                   isUserAnswer: false,
@@ -535,31 +531,31 @@ export const LessonActivities = ({ className }: { className?: string }) => {
         </div>
       )}
 
-      {!hasActivity && (
-        <div className="flex w-full items-center justify-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="rounded-full" size="icon" type="button" variant="brand">
-                <PlusIcon className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem onClick={() => onAddActivity('questions')}>
-                <MessageCircleQuestionIcon className="size-4" />
-                {t('addActivityQuestion')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
-                <ClipboardListIcon className="size-4" />
-                {t('addActivityEvaluation')}
-              </DropdownMenuItem>
+      <div className="flex w-full items-center justify-center gap-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="rounded-full" size="icon" type="button" variant="brand">
+              <PlusIcon className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem onClick={() => onAddActivity('questions')}>
+              <MessageCircleQuestionIcon className="size-4" />
+              {t('addActivityQuestion')}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAddActivity('evaluations')}>
+              <ClipboardListIcon className="size-4" />
+              {t('addActivityEvaluation')}
+            </DropdownMenuItem>
+            {!currentLesson.assessment && (
               <DropdownMenuItem onClick={() => onAddActivity('assessment')}>
                 <StarIcon className="size-4" />
                 {t('addActivityAssessment')}
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )}
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   )
 }

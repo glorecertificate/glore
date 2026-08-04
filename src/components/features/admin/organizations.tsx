@@ -36,7 +36,7 @@ import { type MessageKey } from '@/lib/i18n'
 
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'
 
-type OrgFilter = 'all' | 'pending' | 'active'
+type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
 type SortField = 'name' | 'country' | 'members'
 
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
@@ -76,6 +76,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
     if (filter === 'pending') list = list.filter(o => o.isPending)
     if (filter === 'active') list = list.filter(o => o.isApproved)
+    if (filter === 'rejected') list = list.filter(o => o.isRejected)
     if (country !== 'all') list = list.filter(o => o.country === country)
 
     const needle = search.trim().toLowerCase()
@@ -118,35 +119,37 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   }
 
   const handleApprove = async (comment?: string) => {
-    if (!approveTarget) return
+    if (!approveTarget) return false
 
     const { error } = await approveOrganization(approveTarget.id, comment)
 
     if (error) {
       console.error(error)
       toast.error(t('approveError'))
-      return
+      return false
     }
 
-    toast.success(t('approveSuccess', { name: approveTarget.name }))
+    await refreshOrgs()
     setApproveTarget(null)
-    refreshOrgs()
+    toast.success(t('approveSuccess', { name: approveTarget.name }))
+    return true
   }
 
   const handleReject = async (comment?: string) => {
-    if (!rejectTarget) return
+    if (!rejectTarget) return false
 
     const { error } = await rejectOrganization(rejectTarget.id, comment)
 
     if (error) {
       console.error(error)
       toast.error(t('rejectError'))
-      return
+      return false
     }
 
-    toast.success(t('rejectSuccess', { name: rejectTarget.name }))
+    await refreshOrgs()
     setRejectTarget(null)
-    refreshOrgs()
+    toast.success(t('rejectSuccess', { name: rejectTarget.name }))
+    return true
   }
 
   const handleInvite = async (data: {
@@ -196,6 +199,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
               {t('filter_pending')}
             </TabsTrigger>
             <TabsTrigger value="active">{t('filter_active')}</TabsTrigger>
+            <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
           </TabsList>
         </Tabs>
         <div className="flex items-center gap-2">

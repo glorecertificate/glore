@@ -81,6 +81,11 @@ export const OrgRow = ({
               {t('statusPending')}
             </Badge>
           )}
+          {org.isRejected && (
+            <Badge className="shrink-0 bg-red-500/10 text-red-600 capitalize" size="sm" variant="ghost">
+              {t('statusRejected')}
+            </Badge>
+          )}
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-xs text-muted-foreground">
           {location && (
@@ -135,23 +140,26 @@ export const ApproveDialog = ({
   org: AdminOrganization | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  onConfirm: (comment?: string) => Promise<void>
+  onConfirm: (comment?: string) => Promise<boolean>
 }) => {
   const t = useTranslations('Admin.organizations')
   const [comment, setComment] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (event: React.MouseEvent) => {
+    event.preventDefault()
+
     try {
       setLoading(true)
-      await onConfirm(comment.trim() || undefined)
-      setComment('')
+      const succeeded = await onConfirm(comment.trim() || undefined)
+      if (succeeded) setComment('')
     } finally {
       setLoading(false)
     }
   }
 
   const handleOpenChange = (isOpen: boolean) => {
+    if (loading) return
     if (!isOpen) setComment('')
     onOpenChange(isOpen)
   }
@@ -201,23 +209,26 @@ export const RejectDialog = ({
   org: AdminOrganization | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  onConfirm: (comment?: string) => Promise<void>
+  onConfirm: (comment?: string) => Promise<boolean>
 }) => {
   const t = useTranslations('Admin.organizations')
   const [comment, setComment] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (event: React.MouseEvent) => {
+    event.preventDefault()
+
     try {
       setLoading(true)
-      await onConfirm(comment.trim() || undefined)
-      setComment('')
+      const succeeded = await onConfirm(comment.trim() || undefined)
+      if (succeeded) setComment('')
     } finally {
       setLoading(false)
     }
   }
 
   const handleOpenChange = (isOpen: boolean) => {
+    if (loading) return
     if (!isOpen) setComment('')
     onOpenChange(isOpen)
   }

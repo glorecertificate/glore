@@ -86,15 +86,20 @@ export const parseAdminOrganization = (
     registrationRequest: JoinRequestRow | null
     memberCount?: number
   }
-) => ({
-  ...mergeOrganizationProfile(org),
-  isApproved: !!org.approvedAt,
-  isPending: !org.approvedAt,
-  memberCount: org.memberCount ?? 0,
-  registrationRequest: org.registrationRequest
-    ? {
-        ...org.registrationRequest,
-        fullName: [org.registrationRequest.firstName, org.registrationRequest.lastName].filter(Boolean).join(' '),
-      }
-    : null,
-})
+) => {
+  const isRejected = org.registrationRequest?.status === 'rejected'
+
+  return {
+    ...mergeOrganizationProfile(org),
+    isApproved: !!org.approvedAt,
+    isPending: !org.approvedAt && !isRejected,
+    isRejected,
+    memberCount: org.memberCount ?? 0,
+    registrationRequest: org.registrationRequest
+      ? {
+          ...org.registrationRequest,
+          fullName: [org.registrationRequest.firstName, org.registrationRequest.lastName].filter(Boolean).join(' '),
+        }
+      : null,
+  }
+}

@@ -19,7 +19,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 | `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                          |
 | `/admin/team`               | `isAdmin`   | Team management                                                                                             |
 | `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                           |
-| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active; approve, reject, create (no rep), invite (with rep)                                 |
+| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep) |
 | `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org) |
 | `/organization`             | org manager | Organization panel                                                                                          |
 | `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                       |

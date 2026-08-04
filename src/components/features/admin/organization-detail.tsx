@@ -105,6 +105,16 @@ const OrganizationHeader = ({
   const location = [organization.city, country].filter(Boolean).join(', ')
   const createdAt = new Intl.DateTimeFormat(locale, { dateStyle: 'long' }).format(new Date(organization.createdAt))
 
+  const isRejected =
+    !organization.approvedAt &&
+    organization.joinRequests.some(request => request.role === 'admin' && request.isRejected)
+  const statusLabel = organization.approvedAt ? 'filter_active' : isRejected ? 'statusRejected' : 'statusPending'
+  const statusClassName = organization.approvedAt
+    ? 'bg-emerald-500/10 text-emerald-600'
+    : isRejected
+      ? 'bg-red-500/10 text-red-600'
+      : 'bg-amber-500/10 text-amber-600'
+
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
       <div className="h-20 bg-linear-to-r from-brand/15 via-brand/5 to-transparent" />
@@ -120,14 +130,8 @@ const OrganizationHeader = ({
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl font-semibold tracking-tight">{organization.name}</h1>
-            <Badge
-              className={cn(
-                'capitalize',
-                organization.approvedAt ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
-              )}
-              variant="ghost"
-            >
-              {organization.approvedAt ? t('filter_active') : t('statusPending')}
+            <Badge className={cn('capitalize', statusClassName)} variant="ghost">
+              {t(statusLabel)}
             </Badge>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">

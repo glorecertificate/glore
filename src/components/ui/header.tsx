@@ -35,7 +35,7 @@ export const HeaderBreadcrumb = ({
   description,
   title,
   ...props
-}: React.ComponentProps<typeof Breadcrumb> & {
+}: Omit<React.ComponentProps<typeof Breadcrumb>, 'title'> & {
   backHref?: Route
   description?: React.ReactNode
   title?: React.ReactNode

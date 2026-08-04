@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
 import { findPublicCertificate } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import config from '~/config/metadata.json'
 
 export const generateMetadata = async ({ params, searchParams }: PageProps<'/[username]'>) => {
@@ -35,12 +37,18 @@ export const generateMetadata = async ({ params, searchParams }: PageProps<'/[us
   }
 }
 
-const UserPage = async ({ params, searchParams }: PageProps<'/[username]'>) => {
+const UserPageContent = async ({ params, searchParams }: PageProps<'/[username]'>) => {
   const [{ username }, { v: handle }] = await Promise.all([params, searchParams])
   // eslint-disable-next-line react-doctor/server-sequential-independent-await
   const { data } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
   if (!data) notFound()
   return <PublicCertificateView certificate={data} username={username} />
 }
+
+const UserPage = (props: PageProps<'/[username]'>) => (
+  <Suspense fallback={<LoadingFallback size="full" />}>
+    <UserPageContent {...props} />
+  </Suspense>
+)
 
 export default UserPage

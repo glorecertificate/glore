@@ -1,7 +1,6 @@
-import { getTranslations } from 'next-intl/server'
-
 import { DashboardContent } from '@/components/features/dashboard'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -9,14 +8,10 @@ export const generateMetadata = generateIntlMetadata({
   title: 'dashboard',
 })
 
-const DashboardPageContent = async () => {
-  const t = await getTranslations('Layout')
-
-  return (
-    <DashboardPage title={t('dashboard')}>
-      <DashboardContent />
-    </DashboardPage>
-  )
-}
+const DashboardPageContent = () => (
+  <DashboardPage title={<PageTitle namespace="Layout" name="dashboard" />}>
+    <DashboardContent />
+  </DashboardPage>
+)
 
 export default DashboardPageContent

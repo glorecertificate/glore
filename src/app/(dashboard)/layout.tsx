@@ -8,7 +8,7 @@ import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { SessionProvider } from '@/components/providers/session'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
-const DashboardLayout = async ({ children }: LayoutProps<'/'>) => {
+const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const [user, { get }, pending] = await Promise.all([getCurrentUser(), cookies(), getPendingCounts()])
   const org = get('org')
   const organizationId = org ? user.organizations.find(({ id }) => id === org)?.id : user.organizations[0]?.id
@@ -16,15 +16,19 @@ const DashboardLayout = async ({ children }: LayoutProps<'/'>) => {
   const sidebarWidth = get('sidebarWidth')
 
   return (
-    <Suspense fallback={<LoadingFallback size="full" />}>
-      <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
-        <SessionProvider user={user} organizationId={organizationId}>
-          <DashboardSidebar pending={pending} />
-          <SidebarInset>{children}</SidebarInset>
-        </SessionProvider>
-      </SidebarProvider>
-    </Suspense>
+    <SidebarProvider defaultOpen={sidebarOpen} defaultWidth={sidebarWidth}>
+      <SessionProvider user={user} organizationId={organizationId}>
+        <DashboardSidebar pending={pending} />
+        <SidebarInset>{children}</SidebarInset>
+      </SessionProvider>
+    </SidebarProvider>
   )
 }
+
+const DashboardLayout = ({ children }: LayoutProps<'/'>) => (
+  <Suspense fallback={<LoadingFallback size="full" />}>
+    <DashboardLayoutContent>{children}</DashboardLayoutContent>
+  </Suspense>
+)
 
 export default DashboardLayout

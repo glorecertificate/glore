@@ -1,8 +1,11 @@
+import { Suspense } from 'react'
+
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
 import { AuthFlow } from '@/components/features/auth/auth-flow'
 import { authParsers } from '@/components/features/auth/params'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { intlMetadata } from '@/lib/metadata'
 
@@ -13,18 +16,26 @@ export const generateMetadata = async ({ searchParams }: PageProps<'/login'>) =>
   return intlMetadata({ namespace: 'Auth', title: `${token ? 'passwordReset' : 'login'}Title` })
 }
 
-const LoginPage = async ({ searchParams }: PageProps<'/login'>) => {
+const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'>['searchParams'] }) => {
   const { get } = await cookies()
   const [username, theme, params] = await Promise.all([get('loginUser'), get('theme'), parse(searchParams)])
 
   return (
-    <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
+    <>
       <AuthFlow params={params} username={username} />
       <div className="flex justify-end">
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
       </div>
-    </div>
+    </>
   )
 }
+
+const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
+  <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
+    <Suspense fallback={<LoadingFallback size="full" />}>
+      <LoginContent searchParams={searchParams} />
+    </Suspense>
+  </div>
+)
 
 export default LoginPage

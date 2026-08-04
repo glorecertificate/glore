@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
-import { ViewTransition } from 'react'
+import { Suspense, ViewTransition } from 'react'
 
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
 import { getCookie } from '@/actions/cookies'
@@ -13,6 +13,8 @@ import { CourseBreadcrumb } from '@/components/features/courses/course-editor/br
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { PageTitle } from '@/components/layout/page-title'
 import { LOCALES, localizeRecord } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
@@ -71,18 +73,20 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
   }
 }
 
-const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
+const CoursePageContent = async (props: PageProps<'/courses/[slug]'>) => {
   const { course, isViewer, language, step, user } = await resolvePageData(props)
 
   if (!course.enrolled && !user.canEdit && !isViewer) {
     await enrollCourse(course.id, language)
   }
 
-  const t = await getTranslations('Courses')
-
   return (
     <CourseProvider value={{ course, language, step }}>
-      <DashboardPage title={t('courses')} backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
+      <DashboardPage
+        title={<PageTitle namespace="Courses" name="courses" />}
+        backHref="/courses"
+        breadcrumb={<CourseBreadcrumb />}
+      >
         <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>
@@ -90,5 +94,11 @@ const CoursePage = async (props: PageProps<'/courses/[slug]'>) => {
     </CourseProvider>
   )
 }
+
+const CoursePage = (props: PageProps<'/courses/[slug]'>) => (
+  <Suspense fallback={<LoadingFallback size="full" />}>
+    <CoursePageContent {...props} />
+  </Suspense>
+)
 
 export default CoursePage

@@ -1,11 +1,10 @@
 import { notFound } from 'next/navigation'
 
-import { getTranslations } from 'next-intl/server'
-
 import { getTeamMembers } from '@/actions/admin/team'
 import { getCurrentUser } from '@/actions/user'
 import { AdminTeam } from '@/components/features/admin/team'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { PageTitle } from '@/components/layout/page-title'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -21,14 +20,10 @@ const AdminContent = async () => {
   return <AdminTeam users={data} />
 }
 
-const AdminPage = async () => {
-  const t = await getTranslations('Admin.team')
-
-  return (
-    <DashboardPage title={t('title')}>
-      <AdminContent />
-    </DashboardPage>
-  )
-}
+const AdminPage = () => (
+  <DashboardPage title={<PageTitle namespace="Admin.team" name="title" />}>
+    <AdminContent />
+  </DashboardPage>
+)
 
 export default AdminPage

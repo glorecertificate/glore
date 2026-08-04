@@ -13,7 +13,7 @@ export const generateMetadata = generateIntlMetadata({
   title: 'courses',
 })
 
-const CoursesPage = async ({ searchParams }: PageProps<'/courses'>) => {
+const CoursesPageContent = async ({ searchParams }: { searchParams: PageProps<'/courses'>['searchParams'] }) => {
   if (Object.keys(await searchParams).length === 0) {
     const params = await getCookie('courseListParams')
     if (params) {
@@ -21,16 +21,18 @@ const CoursesPage = async ({ searchParams }: PageProps<'/courses'>) => {
     }
   }
 
-  return (
-    <DashboardPage
-      header={<CourseListHeader />}
-      fallback={<CourseListSkeleton />}
-      className="min-h-[calc(100vh-160px)]"
-      provider={CourseListTabs}
-    >
-      <CourseList className="pb-6" />
-    </DashboardPage>
-  )
+  return <CourseList className="pb-6" />
 }
+
+const CoursesPage = ({ searchParams }: PageProps<'/courses'>) => (
+  <DashboardPage
+    header={<CourseListHeader />}
+    fallback={<CourseListSkeleton />}
+    className="min-h-[calc(100vh-160px)]"
+    provider={CourseListTabs}
+  >
+    <CoursesPageContent searchParams={searchParams} />
+  </DashboardPage>
+)
 
 export default CoursesPage

@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { desc, eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
@@ -7,6 +8,7 @@ import { getMessages } from 'next-intl/server'
 import { getAuthUser } from '@/actions/auth'
 import { getLocaleCookie } from '@/actions/cookies'
 import { OnboardingForm } from '@/components/features/onboarding'
+import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'
@@ -19,7 +21,7 @@ export const generateMetadata = generateIntlMetadata({
   title: 'title',
 })
 
-const OnboardingPage = async () => {
+const OnboardingContent = async () => {
   const user = await getAuthUser()
   if (!user?.email) redirect(AUTH_ROOT)
 
@@ -47,5 +49,11 @@ const OnboardingPage = async () => {
     </div>
   )
 }
+
+const OnboardingPage = () => (
+  <Suspense fallback={<LoadingFallback size="full" />}>
+    <OnboardingContent />
+  </Suspense>
+)
 
 export default OnboardingPage

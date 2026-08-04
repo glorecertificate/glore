@@ -1,5 +1,3 @@
-import { getTranslations } from 'next-intl/server'
-
 import {
   getCertificateEligibility,
   listTutorCertificates,
@@ -10,6 +8,7 @@ import { getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
 import { DashboardPage } from '@/components/layout/dashboard-page'
+import { PageTitle } from '@/components/layout/page-title'
 
 const CertificatesPageContent = async () => {
   const user = await getCurrentUser()
@@ -27,14 +26,10 @@ const CertificatesPageContent = async () => {
   return <CertificatesContent certificates={certificates ?? []} eligibility={eligibility} />
 }
 
-const CertificatesPage = async () => {
-  const t = await getTranslations('Layout')
-
-  return (
-    <DashboardPage title={t('certificates')}>
-      <CertificatesPageContent />
-    </DashboardPage>
-  )
-}
+const CertificatesPage = () => (
+  <DashboardPage title={<PageTitle namespace="Layout" name="certificates" />}>
+    <CertificatesPageContent />
+  </DashboardPage>
+)
 
 export default CertificatesPage

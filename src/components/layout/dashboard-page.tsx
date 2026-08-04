@@ -17,7 +17,7 @@ export const DashboardPage = ({
   provider,
   title,
   ...props
-}: React.ComponentProps<typeof Main> & {
+}: Omit<React.ComponentProps<typeof Main>, 'title'> & {
   backHref?: Route
   breadcrumb?: React.ReactNode
   description?: React.ReactNode

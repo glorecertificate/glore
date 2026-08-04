@@ -11,6 +11,7 @@ interface OrganizationJoinRequestEmailProps {
   organizationName: string
   status: 'accepted' | 'pending' | 'rejected'
   comment?: string | null
+  url?: string
   userName?: string
   locale?: string
   messages?: AbstractIntlMessages
@@ -20,6 +21,7 @@ const OrganizationJoinRequestEmail = ({
   organizationName,
   status,
   comment,
+  url,
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
@@ -58,27 +60,36 @@ const OrganizationJoinRequestEmail = ({
       </Text>
       <Text className="text-[14px] leading-6 text-[#0a0a0a]">{intro}</Text>
       {isPending && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsPending')}</Text>}
-      {isAccepted && <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsAccepted')}</Text>}
-      {!isAccepted && !isPending && comment && (
-        <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsRejected', { comment })}</Text>
+      {isAccepted && (
+        <Text className="text-[13px] leading-5.5 text-[#71717a]">
+          {url ? t('detailsAcceptedNew') : t('detailsAccepted')}
+        </Text>
+      )}
+      {!isPending && comment && (
+        <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('detailsComment', { comment })}</Text>
       )}
       {isAccepted && (
-        <Section className="my-6 text-center">
-          <Button
-            className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-            href={`${metadata.url}/login`}
-          >
-            {t('button')}
-          </Button>
-        </Section>
+        <>
+          <Section className="my-6 text-center">
+            <Button
+              className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
+              href={url ?? `${metadata.url}/login`}
+            >
+              {url ? t('buttonSetup') : t('button')}
+            </Button>
+          </Section>
+          {url && <Text className="text-[12px] leading-5 text-[#71717a]">{t('expiry')}</Text>}
+        </>
       )}
     </EmailLayout>
   )
 }
 
 OrganizationJoinRequestEmail.PreviewProps = {
+  comment: 'Welcome to GloRe! Reach out to us any time if you need a hand getting started.',
   organizationName: 'Acme Corp',
   status: 'accepted',
+  url: `${metadata.url}/api/v1/join?token=preview-token`,
   userName: 'Jane',
 } satisfies OrganizationJoinRequestEmailProps
 

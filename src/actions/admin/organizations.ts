@@ -9,6 +9,7 @@ import { cacheTag, revalidateTag } from 'next/cache'
 import { and, count, eq } from 'drizzle-orm'
 
 import {
+  createInvitationUrl,
   getDescriptionRecord,
   getOrganizationAdminsCount,
   memberUserColumns,
@@ -113,7 +114,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can approve organizations' }
 
-  return await safeQuery(async () => {
+  const result = await safeQuery(async () => {
     const org = await db.query.organizations.findFirst({
       where: eq(organizations.id, organizationId),
     })
@@ -179,45 +180,59 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
       })
     }
 
+    const nextComment = reviewerComment?.trim() || null
+
     await db
       .update(organizationJoinRequests)
       .set({
         acceptedAt: new Date().toISOString(),
         reviewedAt: new Date().toISOString(),
         reviewedBy: currentUser.id,
-        reviewerComment: reviewerComment?.trim() || null,
+        reviewerComment: nextComment,
         status: 'accepted',
       })
       .where(eq(organizationJoinRequests.id, request.id))
 
-    if (!existingUser || !existingUser.onboardedAt) {
-      await auth.api
-        .requestPasswordReset({
-          body: {
-            email: request.email,
-            redirectTo: `${process.env.APP_URL}/login`,
-          },
+    const invitationUrl = existingUser?.onboardedAt
+      ? undefined
+      : await createInvitationUrl({
+          email: request.email,
+          firstName: request.firstName,
+          invitedBy: currentUser.id,
+          lastName: request.lastName,
+          locale: request.locale,
+          role: request.role,
+          userId: orgAdmin.id,
         })
-        .catch(() => null)
-    }
 
     await sendMail({
       to: request.email,
+      locale: request.locale ?? undefined,
       template: {
         name: 'organization/join-request',
-        props: { organizationName: org.name, status: 'accepted', userName: request.firstName },
+        props: {
+          organizationName: org.name,
+          status: 'accepted',
+          comment: nextComment,
+          url: invitationUrl,
+          userName: request.firstName,
+        },
       },
     }).catch(() => null)
 
     return { organizationId, organizationName: org.name }
   })
+
+  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+
+  return result
 }
 
 export const rejectOrganization = async (organizationId: number, reviewerComment?: string) => {
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can reject organizations' }
 
-  return await safeQuery(async () => {
+  const result = await safeQuery(async () => {
     const org = await db.query.organizations.findFirst({
       where: eq(organizations.id, organizationId),
     })
@@ -234,22 +249,39 @@ export const rejectOrganization = async (organizationId: number, reviewerComment
       ),
     })
 
-    const nextComment = reviewerComment?.trim() || null
-
-    if (request) {
-      await sendMail({
-        to: request.email,
-        template: {
-          name: 'organization/join-request',
-          props: { organizationName: org.name, status: 'rejected', comment: nextComment, userName: request.firstName },
-        },
-      }).catch(() => null)
+    if (!request) {
+      throw new Error('Registration request not found')
     }
 
-    await db.delete(organizations).where(eq(organizations.id, organizationId))
+    const nextComment = reviewerComment?.trim() || null
+    const now = new Date().toISOString()
 
-    return { organizationId }
+    await db
+      .update(organizationJoinRequests)
+      .set({
+        rejectedAt: now,
+        reviewedAt: now,
+        reviewedBy: currentUser.id,
+        reviewerComment: nextComment,
+        status: 'rejected',
+      })
+      .where(eq(organizationJoinRequests.id, request.id))
+
+    await sendMail({
+      to: request.email,
+      locale: request.locale ?? undefined,
+      template: {
+        name: 'organization/join-request',
+        props: { organizationName: org.name, status: 'rejected', comment: nextComment, userName: request.firstName },
+      },
+    }).catch(() => null)
+
+    return { organizationId, organizationName: org.name }
   })
+
+  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+
+  return result
 }
 
 export const inviteOrganization = async ({
@@ -349,16 +381,17 @@ export const inviteOrganization = async ({
       })
     }
 
-    if (!existingUser || !existingUser.onboardedAt) {
-      await auth.api
-        .requestPasswordReset({
-          body: {
-            email: registrantEmail.trim().toLowerCase(),
-            redirectTo: `${process.env.APP_URL}/login`,
-          },
+    const invitationUrl = existingUser?.onboardedAt
+      ? undefined
+      : await createInvitationUrl({
+          email: registrantEmail.trim().toLowerCase(),
+          firstName: firstName.trim(),
+          invitedBy: currentUser.id,
+          lastName: lastName?.trim() || null,
+          locale,
+          role: 'admin',
+          userId: orgAdmin.id,
         })
-        .catch(() => null)
-    }
 
     const inviterFullName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'GloRe Admin'
     await sendMail({
@@ -369,7 +402,7 @@ export const inviteOrganization = async ({
           organizationName: org.name,
           inviterName: inviterFullName,
           role: 'admin',
-          isNewUser: !existingUser || !existingUser.onboardedAt,
+          url: invitationUrl,
           userName: firstName,
         },
       },
@@ -435,7 +468,7 @@ export const getAdminOrganization = async (organizationId: number) => {
   return await safeQuery(async () => {
     const [record, membershipRecords] = await Promise.all([
       db.query.organizations.findFirst({
-        with: { profile: true },
+        with: { joinRequests: true, profile: true },
         where: eq(organizations.id, organizationId),
       }),
       db.query.memberships.findMany({
@@ -451,7 +484,7 @@ export const getAdminOrganization = async (organizationId: number) => {
     }
 
     return {
-      ...parseOrganization({ ...record, joinRequests: [], memberships: membershipRecords }),
+      ...parseOrganization({ ...record, memberships: membershipRecords }),
       currentUserId: currentUser.id,
     }
   })
@@ -666,21 +699,25 @@ export const inviteAdminOrganizationMember = async (
 
     const inviterName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.email
 
+    const invitationUrl = existingUser?.onboardedAt
+      ? undefined
+      : await createInvitationUrl({
+          email: normalizedEmail,
+          firstName: normalizedFirstName,
+          invitedBy: currentUser.id,
+          lastName: normalizedLastName || null,
+          locale,
+          role,
+          userId: invitee.id,
+        })
+
     const emailSent = await sendOrganizationAccessEmail({
       email: normalizedEmail,
       inviterName,
-      isNewUser: !existingUser || !existingUser.onboardedAt,
       organizationName: org.name,
       role,
+      url: invitationUrl,
     })
-
-    if (!existingUser || !existingUser.onboardedAt) {
-      await auth.api
-        .requestPasswordReset({
-          body: { email: normalizedEmail, redirectTo: `${process.env.APP_URL}/login` },
-        })
-        .catch(() => null)
-    }
 
     return { email: normalizedEmail, emailSent, userId: invitee.id }
   })

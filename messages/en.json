@@ -2045,6 +2045,7 @@
       "filter_active": "Active",
       "filter_all": "All",
       "filter_pending": "Pending",
+      "filter_rejected": "Rejected",
       "filterCountry": "Country",
       "filterRole": "Role",
       "inviteCity": "City",
@@ -2079,10 +2080,10 @@
       "optional": "optional",
       "reject": "Reject",
       "rejectCommentPlaceholder": "Please explain why the registration was not approved...",
-      "rejectDescription": "Reject the registration request for {name}? This action cannot be undone and will permanently delete the organization record.",
+      "rejectDescription": "Reject the registration request for {name}? The representative will be notified by email and the organization will be listed as rejected.",
       "rejectError": "Failed to reject the organization. Please try again.",
       "rejecting": "Rejecting...",
-      "rejectSuccess": "{name} has been rejected and removed.",
+      "rejectSuccess": "{name} has been rejected.",
       "rejectTitle": "Reject organization",
       "resultsCount": "{count, plural, =0 {No organizations} one {# organization} other {# organizations}}",
       "searchPlaceholder": "Search organizations",
@@ -2090,7 +2091,8 @@
       "sort_members": "Members",
       "sort_name": "Name",
       "sortBy": "Sort",
-      "statusPending": "Pending"
+      "statusPending": "Pending",
+      "statusRejected": "Rejected"
     },
     "users": {
       "title": "Users",
@@ -2248,9 +2250,12 @@
     },
     "organization/join-request": {
       "button": "Sign in to GloRe",
+      "buttonSetup": "Set up your account",
       "detailsAccepted": "You can now access the organization on the GloRe platform.",
+      "detailsAcceptedNew": "Use the button below to set up your account and start using the platform.",
+      "detailsComment": "Message from the reviewer: {comment}",
       "detailsPending": "Our team will review your request and notify you by email once a decision has been made.",
-      "detailsRejected": "Message from the organization: {comment}",
+      "expiry": "This link is valid for the next 7 days.",
       "footer": "You're receiving this email because you submitted a request to join an organization on GloRe.",
       "introAccepted": "Your request to join {organizationName} has been approved.",
       "introPending": "We have received your registration request for {organizationName}.",
@@ -2266,11 +2271,22 @@
       "button": "Sign in to GloRe",
       "buttonNewUser": "Create your account",
       "detailsExisting": "You can access the GloRe platform using your existing account.",
-      "detailsNew": "A password setup email has also been sent to help you access your account.",
+      "detailsNew": "Use the button below to set up your account and start using the platform.",
+      "expiry": "This link is valid for the next 7 days.",
       "footer": "You're receiving this email because you were added to an organization on GloRe.",
       "intro": "{inviterName} has added you to {organizationName} as {role}.",
       "preview": "You have been added to {organizationName} on the GloRe platform.",
       "subject": "You've been added to {organizationName} on GloRe"
+    },
+    "organization/registration-request": {
+      "button": "Review the request",
+      "details": "Submitted by {registrantName} ({registrantEmail}).",
+      "footer": "You're receiving this email because you are an administrator on the GloRe platform.",
+      "intro": "{organizationName} has submitted a request to join the GloRe network.",
+      "location": "Based in {location}.",
+      "message": "Message from the applicant: {message}",
+      "preview": "{organizationName} has requested to join GloRe and is waiting for review.",
+      "subject": "New registration request from {organizationName}"
     },
     "common": {
       "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italy",

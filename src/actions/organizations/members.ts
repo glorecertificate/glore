@@ -11,6 +11,7 @@ import {
   assertOrganizationManager,
   canInviteRole,
   canManageMemberRole,
+  createInvitationUrl,
   getOrganizationAdminsCount,
   getOrganizationContext,
   memberUserColumns,
@@ -99,24 +100,25 @@ export const inviteOrganizationMember = async ({
 
     const inviterName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email
 
+    const invitationUrl = existingUser?.onboardedAt
+      ? undefined
+      : await createInvitationUrl({
+          email: normalizedEmail,
+          firstName: normalizedFirstName,
+          invitedBy: user.id,
+          lastName: normalizedLastName || null,
+          locale,
+          role,
+          userId: invitee.id,
+        })
+
     const emailSent = await sendOrganizationAccessEmail({
       email: normalizedEmail,
       inviterName,
-      isNewUser: !existingUser || !existingUser.onboardedAt,
       organizationName: organization.name,
       role,
+      url: invitationUrl,
     })
-
-    if (!existingUser || !existingUser.onboardedAt) {
-      await auth.api
-        .requestPasswordReset({
-          body: {
-            email: normalizedEmail,
-            redirectTo: `${process.env.APP_URL}/login`,
-          },
-        })
-        .catch(() => null)
-    }
 
     return { email: normalizedEmail, emailSent, userId: invitee.id }
   })

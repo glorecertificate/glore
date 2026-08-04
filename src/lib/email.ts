@@ -15,6 +15,7 @@ import CertificateAssignedEmail from '@/emails/certificate/assigned'
 import CertificateReviewEmail from '@/emails/certificate/review'
 import OrganizationJoinRequestEmail from '@/emails/organization/join-request'
 import OrganizationMemberAddedEmail from '@/emails/organization/member-added'
+import OrganizationRegistrationRequestEmail from '@/emails/organization/registration-request'
 import TeamInviteEmail from '@/emails/team/invite'
 import defaultMessages from '~/messages/en.json'
 
@@ -37,13 +38,24 @@ interface TemplatePropsMap {
     organizationName: string
     status: 'accepted' | 'pending' | 'rejected'
     comment?: string | null
+    url?: string
     userName?: string
   }
   'organization/member-added': {
     organizationName: string
     inviterName: string
     role: string
-    isNewUser?: boolean
+    url?: string
+    userName?: string
+  }
+  'organization/registration-request': {
+    city: string
+    organizationId: number
+    organizationName: string
+    registrantEmail: string
+    registrantName: string
+    country?: string | null
+    message?: string | null
     userName?: string
   }
   'team/invite': { url: string; inviteeName: string; role: 'admin' | 'editor'; userName?: string }
@@ -132,6 +144,14 @@ const buildEmail = (template: EmailTemplate, messages: Messages, locale: Locale)
       return {
         subject,
         element: createElement(OrganizationMemberAddedEmail, { ...template.props, locale, messages: m }),
+      }
+    }
+    case 'organization/registration-request': {
+      const t = createTranslator({ locale, messages, namespace: 'Email.organization/registration-request' })
+      const subject = t('subject', { organizationName: template.props.organizationName })
+      return {
+        subject,
+        element: createElement(OrganizationRegistrationRequestEmail, { ...template.props, locale, messages: m }),
       }
     }
     case 'team/invite': {

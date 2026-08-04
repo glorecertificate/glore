@@ -1,22 +1,26 @@
 import 'server-only'
 
+import { randomBytes } from 'node:crypto'
+
 import { revalidateTag } from 'next/cache'
 import { cache } from 'react'
 
-import { and, count, eq } from 'drizzle-orm'
+import { and, count, eq, isNull, or } from 'drizzle-orm'
 import { Locale } from 'next-intl'
 
 import { getCookie } from '@/actions/cookies'
 import { findUser, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
+import { safeQuery } from '@/db/helpers'
 import {
   type Organization,
   type OrganizationJoinRequest,
   type OrganizationMember,
   type OrganizationMembershipRole,
 } from '@/db/queries/organization'
-import { memberships } from '@/db/schema'
+import { memberships, teamInvitations, users } from '@/db/schema'
 import { CacheTag, userTag } from '@/lib/cache'
+import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 
@@ -148,18 +152,52 @@ export const getDescriptionRecord = (description: string, locale?: string, previ
   return { ...(previous ?? {}), [key]: description } as IntlRecord
 }
 
+export const createInvitationUrl = async ({
+  email,
+  firstName,
+  invitedBy,
+  lastName,
+  locale,
+  role,
+  userId,
+}: {
+  email: string
+  firstName: string
+  invitedBy: string
+  role: string
+  userId: string
+  lastName?: string | null
+  locale?: string | null
+}) => {
+  const token = randomBytes(16).toString('hex')
+
+  await db.insert(teamInvitations).values({
+    email,
+    expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+    firstName,
+    invitedBy,
+    lastName: lastName ?? null,
+    locale: locale ?? null,
+    role,
+    token,
+    userId,
+  })
+
+  return `${process.env.APP_URL}${JOIN_ROOT}?token=${token}`
+}
+
 export const sendOrganizationAccessEmail = async ({
   email,
   inviterName,
-  isNewUser,
   organizationName,
   role,
+  url,
 }: {
   email: string
   inviterName: string
-  isNewUser: boolean
   organizationName: string
   role: OrganizationMembershipRole
+  url?: string
 }) => {
   const roleLabel = role.replace('_', ' ')
 
@@ -168,7 +206,7 @@ export const sendOrganizationAccessEmail = async ({
       to: email,
       template: {
         name: 'organization/member-added',
-        props: { organizationName, inviterName, role: roleLabel, isNewUser },
+        props: { organizationName, inviterName, role: roleLabel, url },
       },
     })
     return true
@@ -177,22 +215,80 @@ export const sendOrganizationAccessEmail = async ({
   }
 }
 
+export const sendRegistrationRequestEmails = async ({
+  city,
+  country,
+  message,
+  organizationId,
+  organizationName,
+  registrantEmail,
+  registrantName,
+}: {
+  city: string
+  organizationId: number
+  organizationName: string
+  registrantEmail: string
+  registrantName: string
+  country?: string | null
+  message?: string | null
+}) => {
+  const { data: admins } = await safeQuery(() =>
+    db.query.users.findMany({
+      columns: { email: true, firstName: true, locale: true },
+      where: and(eq(users.role, 'admin'), or(isNull(users.banned), eq(users.banned, false))),
+    })
+  )
+
+  if (!admins?.length) {
+    console.error('No platform admin found to notify of a registration request')
+    return
+  }
+
+  await Promise.all(
+    admins.map(async admin => {
+      try {
+        await sendMail({
+          to: admin.email,
+          locale: admin.locale ?? DEFAULT_LOCALE,
+          template: {
+            name: 'organization/registration-request',
+            props: {
+              city,
+              country,
+              message,
+              organizationId,
+              organizationName,
+              registrantEmail,
+              registrantName,
+              userName: admin.firstName,
+            },
+          },
+        })
+      } catch (error) {
+        console.error(`Failed to notify admin ${admin.email} of a registration request:`, error)
+      }
+    })
+  )
+}
+
 export const sendJoinRequestDecisionEmail = async ({
   email,
   organizationName,
   reviewerComment,
   status,
+  url,
 }: {
   email: string
   organizationName: string
   reviewerComment?: string | null
   status: 'accepted' | 'rejected'
+  url?: string
 }) => {
   await sendMail({
     to: email,
     template: {
       name: 'organization/join-request',
-      props: { organizationName, status, comment: reviewerComment },
+      props: { organizationName, status, comment: reviewerComment, url },
     },
   }).catch(() => null)
 }

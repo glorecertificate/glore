@@ -31,6 +31,9 @@ export const AUTH_VIEWS = [
   'invalid_password_reset',
 ] as const
 
+/* Invitations */
+export const INVITATION_EXPIRY_DAYS = 7
+
 /* Storage */
 export const AVATAR_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 

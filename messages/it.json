@@ -2045,6 +2045,7 @@
       "filter_active": "Attive",
       "filter_all": "Tutte",
       "filter_pending": "In attesa",
+      "filter_rejected": "Rifiutate",
       "filterCountry": "Paese",
       "filterRole": "Ruolo",
       "inviteCity": "Città",
@@ -2079,10 +2080,10 @@
       "optional": "opzionale",
       "reject": "Rifiuta",
       "rejectCommentPlaceholder": "Spiega perché la registrazione non è stata approvata...",
-      "rejectDescription": "Rifiutare la richiesta di registrazione di {name}? Questa azione non può essere annullata e cancellerà permanentemente il record dell'organizzazione.",
+      "rejectDescription": "Rifiutare la richiesta di registrazione di {name}? Il rappresentante riceverà una notifica via email e l'organizzazione risulterà rifiutata.",
       "rejectError": "Impossibile rifiutare l'organizzazione. Riprova.",
       "rejecting": "Rifiuto in corso...",
-      "rejectSuccess": "{name} è stata rifiutata e rimossa.",
+      "rejectSuccess": "{name} è stata rifiutata.",
       "rejectTitle": "Rifiuta organizzazione",
       "resultsCount": "{count, plural, =0 {Nessuna organizzazione} one {# organizzazione} other {# organizzazioni}}",
       "searchPlaceholder": "Cerca organizzazioni",
@@ -2090,7 +2091,8 @@
       "sort_members": "Membri",
       "sort_name": "Nome",
       "sortBy": "Ordina",
-      "statusPending": "In attesa"
+      "statusPending": "In attesa",
+      "statusRejected": "Rifiutata"
     },
     "users": {
       "title": "Utenti",
@@ -2248,9 +2250,12 @@
     },
     "organization/join-request": {
       "button": "Accedi a GloRe",
+      "buttonSetup": "Configura il tuo account",
       "detailsAccepted": "Ora puoi accedere all'organizzazione sulla piattaforma GloRe.",
+      "detailsAcceptedNew": "Usa il pulsante qui sotto per configurare il tuo account e iniziare a usare la piattaforma.",
+      "detailsComment": "Messaggio del revisore: {comment}",
       "detailsPending": "Il nostro team esaminerà la tua richiesta e ti notificherà via email non appena sarà presa una decisione.",
-      "detailsRejected": "Messaggio dall'organizzazione: {comment}",
+      "expiry": "Questo link è valido per i prossimi 7 giorni.",
       "footer": "Ricevi questa email perché hai inviato una richiesta di adesione a un'organizzazione su GloRe.",
       "introAccepted": "La tua richiesta di unirti a {organizationName} è stata approvata.",
       "introPending": "Abbiamo ricevuto la tua richiesta di registrazione per {organizationName}.",
@@ -2266,11 +2271,22 @@
       "button": "Accedi a GloRe",
       "buttonNewUser": "Crea il tuo account",
       "detailsExisting": "Puoi accedere alla piattaforma GloRe con il tuo account esistente.",
-      "detailsNew": "È stata inviata anche un'email per la configurazione della password per accedere al tuo account.",
+      "detailsNew": "Usa il pulsante qui sotto per configurare il tuo account e iniziare a usare la piattaforma.",
+      "expiry": "Questo link è valido per i prossimi 7 giorni.",
       "footer": "Ricevi questa email perché sei stato aggiunto a un'organizzazione su GloRe.",
       "intro": "{inviterName} ti ha aggiunto a {organizationName} come {role}.",
       "preview": "Sei stato aggiunto a {organizationName} sulla piattaforma GloRe.",
       "subject": "Sei stato aggiunto a {organizationName} su GloRe"
+    },
+    "organization/registration-request": {
+      "button": "Esamina la richiesta",
+      "details": "Inviata da {registrantName} ({registrantEmail}).",
+      "footer": "Ricevi questa email perché sei un amministratore della piattaforma GloRe.",
+      "intro": "{organizationName} ha inviato una richiesta per unirsi alla rete GloRe.",
+      "location": "Con sede a {location}.",
+      "message": "Messaggio del richiedente: {message}",
+      "preview": "{organizationName} ha richiesto di unirsi a GloRe ed è in attesa di revisione.",
+      "subject": "Nuova richiesta di registrazione da {organizationName}"
     },
     "common": {
       "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italia",

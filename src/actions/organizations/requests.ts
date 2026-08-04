@@ -4,20 +4,25 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
+import { revalidateTag } from 'next/cache'
+
 import { and, eq } from 'drizzle-orm'
 
 import {
   assertOrganizationManager,
   canReviewRequestRole,
+  createInvitationUrl,
   getOrganizationContext,
   reviewerColumns,
   sendJoinRequestDecisionEmail,
+  sendRegistrationRequestEmails,
 } from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseOrganizationJoinRequest } from '@/db/queries/organization'
 import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
+import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 
@@ -96,21 +101,23 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
       })
       .where(eq(organizationJoinRequests.id, request.id))
 
-    if (!existingUser || !existingUser.onboardedAt) {
-      await auth.api
-        .requestPasswordReset({
-          body: {
-            email: request.email,
-            redirectTo: `${process.env.APP_URL}/login`,
-          },
+    const invitationUrl = existingUser?.onboardedAt
+      ? undefined
+      : await createInvitationUrl({
+          email: request.email,
+          firstName: request.firstName,
+          invitedBy: user.id,
+          lastName: request.lastName,
+          locale: request.locale,
+          role: request.role,
+          userId: invitedUser.id,
         })
-        .catch(() => null)
-    }
 
     await sendJoinRequestDecisionEmail({
       email: request.email,
       organizationName: organization.name,
       status: 'accepted',
+      url: invitationUrl,
     })
 
     return parseOrganizationJoinRequest({ ...request, status: 'accepted' })
@@ -193,8 +200,8 @@ export const requestOrganizationRegistration = async ({
   name: string
   registrantEmail: string
   url?: string
-}) =>
-  await safeQuery(async () => {
+}) => {
+  const result = await safeQuery(async () => {
     const handle = name
       .toLowerCase()
       .trim()
@@ -239,14 +246,30 @@ export const requestOrganizationRegistration = async ({
       }),
     ])
 
-    await sendMail({
-      locale: locale ?? undefined,
-      template: {
-        name: 'organization/join-request',
-        props: { organizationName: org.name, status: 'pending', userName: firstName.trim() },
-      },
-      to: registrantEmail.trim().toLowerCase(),
-    }).catch(() => null)
+    await Promise.all([
+      sendMail({
+        locale: locale ?? undefined,
+        template: {
+          name: 'organization/join-request',
+          props: { organizationName: org.name, status: 'pending', userName: firstName.trim() },
+        },
+        to: registrantEmail.trim().toLowerCase(),
+      }).catch(() => null),
+      sendRegistrationRequestEmails({
+        city: city.trim(),
+        country: country.trim(),
+        message: message?.trim() || null,
+        organizationId: org.id,
+        organizationName: org.name,
+        registrantEmail: registrantEmail.trim().toLowerCase(),
+        registrantName: [firstName.trim(), lastName?.trim()].filter(Boolean).join(' '),
+      }),
+    ])
 
     return { organizationId: org.id, organizationName: org.name }
   })
+
+  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+
+  return result
+}

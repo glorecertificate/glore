@@ -17,10 +17,8 @@ import { parseUser, userWith } from '@/db/queries/user'
 import { teamInvitations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { JOIN_ROOT } from '@/lib/constants'
+import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
-
-const INVITATION_EXPIRY_DAYS = 7
 
 const fetchTeamMembers = async () => {
   'use cache'

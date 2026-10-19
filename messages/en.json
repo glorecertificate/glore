@@ -772,6 +772,7 @@
     "loginMetaTitle": "Join the GloRe Network",
     "loginTitle": "Join the GloRe Network",
     "networkError": "A network error occurred, please try again or contact us",
+    "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again.",
     "newPasswordRequired": "Insert your new password",
     "passwordInvalid": "Invalid password",
     "passwordRequestMessage": "Enter your email or username to receive a password reset link.",
@@ -798,7 +799,6 @@
     "submit": "Submit",
     "submitting": "Submitting...",
     "userLabel": "Email or username",
-    "userNotFound": "User not found",
     "userRequired": "Insert a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
@@ -1872,6 +1872,7 @@
     "updatePassword": "Update password",
     "username": "Username",
     "usernameInvalid": "Username must be at least 3 characters",
+    "usernameTaken": "This username is already taken",
     "usernamePlaceholder": "Choose a username",
     "notFound": "User not found",
     "unauthenticated": "User unauthenticated",
@@ -1894,6 +1895,7 @@
     "accountDescription": "Your account email address and username.",
     "accountUpdated": "Account updated successfully",
     "accountUpdateError": "Failed to update account",
+    "emailChangeRequested": "Check {email} and open the link to confirm your new address.",
     "usernameDescription": "Auto-generated from your name.",
     "searchCountry": "Search country...",
     "noCountryFound": "No country found.",
@@ -2208,14 +2210,12 @@
       "footer": "You're receiving this email because your GloRe account password was changed. If you didn't make this change, please <emailLink>contact us immediately</emailLink>."
     },
     "account/email-changed": {
-      "subject": "Your email address has been changed",
-      "preview": "Your GloRe account email was recently updated.",
-      "introNew": "Your email address has been updated to {email}.",
-      "introOld": "Your GloRe account email has been changed to {email}.",
-      "detailsNew": "Your account email was changed from {oldEmail} to {newEmail}. You will now use this new address to sign in.",
-      "detailsOld": "Your account email was changed from {oldEmail} to {newEmail}. You will no longer receive emails at this address.",
+      "subject": "An email change was requested for your account",
+      "preview": "Someone asked to change the email address of your GloRe account.",
+      "intro": "We received a request to change your GloRe account email to {email}.",
+      "details": "The change takes effect once {newEmail} is confirmed. Until then, keep signing in with {oldEmail}.",
       "security": "If you did not make this change, please contact support immediately.",
-      "footer": "You're receiving this email because your GloRe account email was changed. If you didn't make this change, please <emailLink>contact us immediately</emailLink>."
+      "footer": "You're receiving this email because a change of your GloRe account email was requested. If you didn't request it, please <emailLink>contact us immediately</emailLink>."
     },
     "auth/verify-email": {
       "button": "Verify email address",

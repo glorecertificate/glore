@@ -17,7 +17,7 @@ export const createOrganization = async (
     name,
     url,
   }: {
-    approvedAt: string
+    approvedAt?: string | null
     city: string
     country?: string | null
     email: string
@@ -28,7 +28,7 @@ export const createOrganization = async (
 ) => {
   const [org] = await tx
     .insert(organizations)
-    .values({ approvedAt, city, email, handle, name })
+    .values({ approvedAt: approvedAt ?? null, city, email, handle, name })
     .returning({ id: organizations.id, name: organizations.name })
 
   if (!org) {

@@ -9,6 +9,7 @@ import { cacheTag, revalidateTag } from 'next/cache'
 import { and, desc, eq, isNull, or } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
+import { revalidateUserAccess } from '@/actions/admin/helpers'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -169,6 +170,7 @@ export const resendInvitation = async (userId: string) => {
 }
 
 export const updateTeamMemberRole = async (userId: string, role: 'admin' | 'editor') => {
+  if (!['admin', 'editor'].includes(role)) return { error: 'Invalid role' }
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can update team member roles' }
   if (currentUser.id === userId) return { error: 'You cannot change your own role' }
@@ -180,6 +182,7 @@ export const updateTeamMemberRole = async (userId: string, role: 'admin' | 'edit
       isEditor: role === 'editor',
     })
     .where(eq(users.id, userId))
+  revalidateUserAccess(userId)
 
   return { data: { id: userId, role } }
 }
@@ -191,7 +194,7 @@ export const deleteTeamMember = async (userId: string) => {
 
   await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
 
-  revalidateTag(CacheTag.TeamMembers, 'max')
+  revalidateUserAccess(userId)
 
   return { data: { id: userId } }
 }

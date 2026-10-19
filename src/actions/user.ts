@@ -2,11 +2,13 @@
 
 import 'server-only'
 
-import { cacheTag } from 'next/cache'
+import { cacheTag, revalidateTag } from 'next/cache'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-import { and, eq, inArray, ne, or } from 'drizzle-orm'
+import { and, eq, inArray, ne } from 'drizzle-orm'
+import { z } from 'zod'
 
 import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
@@ -15,10 +17,11 @@ import { safeQuery } from '@/db/helpers'
 import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
 import { certificates, memberships, users } from '@/db/schema'
-import { type TableUpdate } from '@/db/types'
-import { CacheTag, userTag } from '@/lib/cache'
-import { AUTH_ROOT } from '@/lib/constants'
+import { auth } from '@/lib/auth'
+import { userTag } from '@/lib/cache'
+import { AUTH_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
+import { LOCALES } from '@/lib/i18n'
 
 const queryUserById = async (id: string) => {
   const user = await db.query.users.findFirst({
@@ -36,19 +39,6 @@ const fetchUser = async (id: string) => {
   return await safeQuery(() => queryUserById(id))
 }
 
-export const findUserEmail = async (username: string) => {
-  'use cache'
-  cacheTag(CacheTag.UserEmail)
-
-  return await safeQuery(async () => {
-    const user = await db.query.users.findFirst({
-      columns: { email: true },
-      where: or(eq(users.email, username), eq(users.username, username)),
-    })
-    return user ?? null
-  })
-}
-
 export const getCurrentUser = cache(async () => {
   const user = await getAuthUser()
   if (!user) redirect(AUTH_ROOT)
@@ -64,36 +54,89 @@ export const findUser = async (id: string, { cache: useCache = true }: { cache?:
   return data
 }
 
-export const updateUser = async (id: string, values: TableUpdate<'users'>, previousEmail?: string) => {
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .transform(value => value || null)
+    .nullable()
+    .optional()
+
+const profileSchema = z.strictObject({
+  bio: optionalText(1000),
+  birthday: z
+    .union([z.iso.date(), z.literal('')])
+    .transform(value => value || null)
+    .nullable()
+    .optional(),
+  city: optionalText(100),
+  country: optionalText(3),
+  firstName: z.string().trim().min(1).max(100).optional(),
+  languages: z.array(z.string().max(10)).max(30).nullable().optional(),
+  lastName: optionalText(100),
+  phone: optionalText(40),
+  pronouns: optionalText(40),
+  sex: z.enum(['female', 'male', 'non-binary', 'unspecified']).nullable().optional(),
+})
+
+const accountSchema = z.strictObject({
+  email: z.email().trim().toLowerCase().optional(),
+  locale: z.enum(LOCALES).nullable().optional(),
+  username: z.string().trim().toLowerCase().min(3).max(40).regex(USERNAME_REGEX).optional(),
+})
+
+export const updateProfile = async (values: z.input<typeof profileSchema>) => {
   const currentUser = await getCurrentUser()
-  if (currentUser.id !== id && !currentUser.isAdmin) throw new Error('Forbidden')
+  const parsed = profileSchema.safeParse(values)
+  if (!parsed.success) throw new Error('Invalid profile data')
 
-  const [updated] = await db.update(users).set(values).where(eq(users.id, id)).returning()
-  if (!updated) throw new Error('Failed to update user')
+  if (Object.keys(parsed.data).length > 0) {
+    await db.update(users).set(parsed.data).where(eq(users.id, currentUser.id))
+    revalidateTag(userTag(currentUser.id), 'max')
+  }
 
-  const parsed = await queryUserById(id)
+  return await queryUserById(currentUser.id)
+}
 
-  if (values.email && previousEmail && values.email !== previousEmail) {
-    const userName = parsed.firstName ?? undefined
+export const updateAccount = async (values: z.input<typeof accountSchema>) => {
+  const currentUser = await getCurrentUser()
+  const parsed = accountSchema.safeParse(values)
+  if (!parsed.success) throw new Error('Invalid account data')
 
-    await sendMail({
-      to: values.email,
-      template: {
-        name: 'account/email-changed',
-        props: { oldEmail: previousEmail, newEmail: values.email, type: 'new', userName },
-      },
+  const { email, ...fields } = parsed.data
+
+  if (fields.username && fields.username !== currentUser.username) {
+    const taken = await db.query.users.findFirst({
+      columns: { id: true },
+      where: and(eq(users.username, fields.username), ne(users.id, currentUser.id)),
     })
+    if (taken) throw new Error('USERNAME_TAKEN')
+  }
 
+  const pendingEmail = email && email !== currentUser.email ? email : null
+
+  if (pendingEmail) {
+    await auth.api.changeEmail({
+      body: { newEmail: pendingEmail, callbackURL: SETTINGS_ROOT },
+      headers: await headers(),
+    })
     await sendMail({
-      to: previousEmail,
+      locale: currentUser.locale ?? undefined,
+      to: currentUser.email,
       template: {
         name: 'account/email-changed',
-        props: { oldEmail: previousEmail, newEmail: values.email, type: 'old', userName },
+        props: { newEmail: pendingEmail, oldEmail: currentUser.email, userName: currentUser.firstName },
       },
     })
   }
 
-  return parsed
+  if (Object.keys(fields).length > 0) {
+    await db.update(users).set(fields).where(eq(users.id, currentUser.id))
+    revalidateTag(userTag(currentUser.id), 'max')
+  }
+
+  return { pendingEmail, user: await queryUserById(currentUser.id) }
 }
 
 export const getActiveOrgId = async () => {

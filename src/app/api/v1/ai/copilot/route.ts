@@ -2,20 +2,24 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { generateText } from 'ai'
+import { z } from 'zod'
 
-import { auth } from '@/lib/auth'
-import { checkRateLimit } from '@/lib/rate-limit'
+import { authorizeEditorRequest, readJsonBody } from '@/lib/api'
 
 export const maxDuration = 60
 
+const bodySchema = z.object({
+  prompt: z.string().min(1).max(20_000),
+  system: z.string().max(5000).optional(),
+})
+
 export const POST = async (request: NextRequest) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { response } = await authorizeEditorRequest(request, 'ai:copilot', 30)
+  if (response) return response
 
-  const { limited } = checkRateLimit(`ai:copilot:${session.user.id}`, 20, 60_000)
-  if (limited) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-
-  const { prompt, system } = await request.json()
+  const body = bodySchema.safeParse(await readJsonBody(request))
+  if (!body.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  const { prompt, system } = body.data
 
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

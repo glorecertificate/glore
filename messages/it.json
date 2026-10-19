@@ -772,6 +772,7 @@
     "loginMetaTitle": "Accedi al GloRe Network",
     "loginTitle": "Accedi al GloRe Network",
     "networkError": "Si è verificato un errore di connessione, riprova o contattaci",
+    "tooManyAttempts": "Troppi tentativi. Attendi qualche minuto e riprova.",
     "newPasswordRequired": "Inserisci la tua nuova password",
     "passwordInvalid": "Password non valida",
     "passwordRequestMessage": "Inserisci la tua e-mail o nome utente per ricevere un link e reimpostarla.",
@@ -798,7 +799,6 @@
     "submit": "Invia",
     "submitting": "Inviando...",
     "userLabel": "Email o username",
-    "userNotFound": "Utente non trovato",
     "userRequired": "Inserire un'email o un nome utente valido",
     "userTooShort": "Il nome utente è troppo breve",
     "userInvalid": "Email o nome utente non validi",
@@ -1872,6 +1872,7 @@
     "updatePassword": "Aggiorna password",
     "username": "Nome utente",
     "usernameInvalid": "Il nome utente deve essere di almeno 3 caratteri",
+    "usernameTaken": "Questo nome utente è già in uso",
     "usernamePlaceholder": "Scegli un nome utente",
     "notFound": "Utente non trovato",
     "unauthenticated": "Utente non autenticato",
@@ -1894,6 +1895,7 @@
     "accountDescription": "Il tuo indirizzo email e nome utente.",
     "accountUpdated": "Account aggiornato con successo",
     "accountUpdateError": "Errore nell'aggiornamento dell'account",
+    "emailChangeRequested": "Controlla {email} e apri il link per confermare il nuovo indirizzo.",
     "usernameDescription": "Generato automaticamente dal tuo nome.",
     "searchCountry": "Cerca paese...",
     "noCountryFound": "Nessun paese trovato.",
@@ -2208,14 +2210,12 @@
       "footer": "Ricevi questa email perché la password del tuo account GloRe è stata cambiata. Se non hai effettuato questa modifica, <emailLink>contattaci immediatamente</emailLink>."
     },
     "account/email-changed": {
-      "subject": "Il tuo indirizzo email è stato cambiato",
-      "preview": "L'email del tuo account GloRe è stata aggiornata di recente.",
-      "introNew": "Il tuo indirizzo email è stato aggiornato a {email}.",
-      "introOld": "L'email del tuo account GloRe è stata cambiata in {email}.",
-      "detailsNew": "L'email del tuo account è stata cambiata da {oldEmail} a {newEmail}. Da ora utilizzerai questo nuovo indirizzo per accedere.",
-      "detailsOld": "L'email del tuo account è stata cambiata da {oldEmail} a {newEmail}. Non riceverai più email a questo indirizzo.",
+      "subject": "È stata richiesta una modifica dell'email del tuo account",
+      "preview": "Qualcuno ha chiesto di cambiare l'indirizzo email del tuo account GloRe.",
+      "intro": "Abbiamo ricevuto una richiesta di cambiare l'email del tuo account GloRe in {email}.",
+      "details": "La modifica sarà effettiva quando {newEmail} verrà confermato. Fino ad allora, continua ad accedere con {oldEmail}.",
       "security": "Se non hai effettuato questa modifica, contatta immediatamente l'assistenza.",
-      "footer": "Ricevi questa email perché l'email del tuo account GloRe è stata cambiata. Se non hai effettuato questa modifica, <emailLink>contattaci immediatamente</emailLink>."
+      "footer": "Ricevi questa email perché è stata richiesta una modifica dell'email del tuo account GloRe. Se non l'hai richiesta, <emailLink>contattaci immediatamente</emailLink>."
     },
     "auth/verify-email": {
       "button": "Verifica indirizzo email",

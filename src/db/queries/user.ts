@@ -18,15 +18,35 @@ type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name
 }
 type RegionRow = Pick<InferSelectModel<typeof regions>, 'id' | 'name' | 'icon'>
 
-export interface UserWithRelations extends UserRow {
+export const publicUserColumns = {
+  avatarUrl: true,
+  city: true,
+  country: true,
+  email: true,
+  firstName: true,
+  id: true,
+  isEditor: true,
+  languages: true,
+  lastName: true,
+  pronouns: true,
+  role: true,
+  username: true,
+} as const
+
+interface UserRelations {
   memberships: (MembershipRow & { organization: OrganizationRow })[]
   regions: RegionRow[]
 }
 
-export type User = ReturnType<typeof parseUser>
+interface UserWithRelations extends UserRow, UserRelations {}
+
+export interface PublicUserWithRelations extends Pick<UserRow, keyof typeof publicUserColumns>, UserRelations {}
+
+export type User = ReturnType<typeof parseUser<UserWithRelations>>
+export type PublicUser = ReturnType<typeof parseUser<PublicUserWithRelations>>
 export type UserOrganization = User['organizations'][number]
 
-export const parseUser = (user: UserWithRelations) => ({
+export const parseUser = <T extends PublicUserWithRelations>(user: T) => ({
   ...user,
   isAdmin: user.role === 'admin',
   canEdit: user.role === 'admin' || user.isEditor,

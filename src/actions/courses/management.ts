@@ -6,8 +6,8 @@ import { updateTag } from 'next/cache'
 
 import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 
-import { getAuthUser } from '@/actions/auth'
 import { buildCourseWith } from '@/actions/courses/helpers'
+import { requireEditor } from '@/actions/guards'
 import { db, transaction } from '@/db/client'
 import { deleteCourse as deleteCourseRecord, deleteLessons as deleteLessonRecords } from '@/db/mutations/course'
 import { type Course, parseCourse } from '@/db/queries/course'
@@ -16,13 +16,6 @@ import { assessments, courses, evaluations, lessons, questionOptions, questions 
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag, courseTag } from '@/lib/cache'
 import { isTempId } from '@/lib/utils'
-
-const requireEditor = async () => {
-  const user = await getAuthUser()
-  if (!user) throw new Error('Not authenticated')
-  if (user.role !== 'admin' && !user.isEditor) throw new Error('Not authorized')
-  return user
-}
 
 const nextActiveSortOrder = async () => {
   const result = await db

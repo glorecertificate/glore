@@ -3,10 +3,18 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
-import { type TextStreamPart, type ToolSet, convertToModelMessages, streamText } from 'ai'
+import { type TextStreamPart, type ToolSet, type UIMessage, convertToModelMessages, streamText } from 'ai'
+import { z } from 'zod'
 
-import { auth } from '@/lib/auth'
-import { checkRateLimit } from '@/lib/rate-limit'
+import { authorizeEditorRequest, readJsonBody } from '@/lib/api'
+
+const bodySchema = z.object({
+  messages: z
+    .array(z.custom<UIMessage>(value => typeof value === 'object' && value !== null))
+    .min(1)
+    .max(50),
+  system: z.string().max(5000).optional(),
+})
 
 export const maxDuration = 60
 
@@ -100,13 +108,12 @@ const smoothStream = <TOOLS extends ToolSet>({
 }
 
 export const POST = async (request: NextRequest) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { response } = await authorizeEditorRequest(request, 'ai:command', 20)
+  if (response) return response
 
-  const { limited } = checkRateLimit(`ai:command:${session.user.id}`, 20, 60_000)
-  if (limited) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-
-  const { messages, system } = await request.json()
+  const body = bodySchema.safeParse(await readJsonBody(request))
+  if (!body.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  const { messages, system } = body.data
 
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

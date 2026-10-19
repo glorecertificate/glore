@@ -22,7 +22,7 @@ import defaultMessages from '~/messages/en.json'
 type Messages = typeof defaultMessages
 
 interface TemplatePropsMap {
-  'account/email-changed': { oldEmail: string; newEmail: string; type: 'new' | 'old'; userName?: string }
+  'account/email-changed': { oldEmail: string; newEmail: string; userName?: string }
   'account/password-changed': { userName?: string }
   'auth/invite': { url: string; userName?: string }
   'auth/recovery': { url: string; userName?: string }

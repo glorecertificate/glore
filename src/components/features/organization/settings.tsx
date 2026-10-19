@@ -160,7 +160,7 @@ export const OrganizationSettings = ({ onRefresh, onSyncUser, organization }: Or
   }
 
   const handleAvatarUpload = async (file: File) => {
-    const { data: presign, error: presignError } = await createOrganizationAvatarUploadUrl(file.type)
+    const { data: presign, error: presignError } = await createOrganizationAvatarUploadUrl(file.type, file.size)
 
     if (presignError || !presign) {
       toast.error(presignError?.message ?? t('avatarUploadError'))

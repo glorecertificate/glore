@@ -2,25 +2,30 @@
 
 import 'server-only'
 
+import { revalidateTag } from 'next/cache'
+
 import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
-import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
-import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
+import { userTag } from '@/lib/cache'
+import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
-export const createAvatarUploadUrl = async (contentType: string) => {
+const deleteQuietly = async (url: string) => {
+  try {
+    await r2Delete(url)
+  } catch (error) {
+    console.error('Failed to delete avatar', error)
+  }
+}
+
+export const createAvatarUploadUrl = async (contentType: string, size: number) => {
   const user = await getAuthUser()
   if (!user) throw new Error('Unauthorized')
-  if (!AVATAR_CONTENT_TYPES.includes(contentType)) throw new Error('Invalid image type')
 
-  const ext = contentType.split('/')[1]
-  const key = `avatars/${user.id}-${Date.now()}.${ext}`
-  const url = await r2PresignPut(key, contentType)
-
-  return { key, url }
+  return await r2PresignAvatar(`avatars/${user.id}`, contentType, size)
 }
 
 export const confirmAvatar = async (key: string) => {
@@ -28,10 +33,12 @@ export const confirmAvatar = async (key: string) => {
   if (!user) throw new Error('Unauthorized')
   if (!key.startsWith(`avatars/${user.id}-`)) throw new Error('Invalid key')
 
-  await db
-    .update(users)
-    .set({ avatarUrl: r2Url(key) })
-    .where(eq(users.id, user.id))
+  const avatarUrl = await r2VerifyAvatar(key)
+  const current = await db.query.users.findFirst({ columns: { avatarUrl: true }, where: eq(users.id, user.id) })
+
+  await db.update(users).set({ avatarUrl }).where(eq(users.id, user.id))
+  if (current?.avatarUrl && current.avatarUrl !== avatarUrl) await deleteQuietly(current.avatarUrl)
+  revalidateTag(userTag(user.id), 'max')
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),
@@ -50,11 +57,9 @@ export const removeAvatar = async () => {
     columns: { avatarUrl: true },
     where: eq(users.id, user.id),
   })
-  if (current?.avatarUrl) {
-    await r2Delete(current.avatarUrl).catch(console.error)
-  }
-
   await db.update(users).set({ avatarUrl: null }).where(eq(users.id, user.id))
+  if (current?.avatarUrl) await deleteQuietly(current.avatarUrl)
+  revalidateTag(userTag(user.id), 'max')
 
   const updated = await db.query.users.findFirst({
     where: eq(users.id, user.id),

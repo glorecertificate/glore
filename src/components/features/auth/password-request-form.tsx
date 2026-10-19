@@ -9,7 +9,6 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { resetPassword } from '@/actions/auth'
-import { findUserEmail } from '@/actions/user'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -55,22 +54,14 @@ export const PasswordRequestForm = ({
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     const inputUsername = schema.username.trim()
-    const { data: emailData, error: emailError } = await findUserEmail(inputUsername)
+    const { error } = await resetPassword(inputUsername)
 
-    if (emailError?.code === 'NOT_FOUND' || !emailData) {
-      form.setError('username', { message: t('userNotFound') }, { shouldFocus: true })
-      setTimeout(() => inputRef.current?.focus(), 20)
+    if (error?.code === 'RATE_LIMITED') {
+      toast.error(t('tooManyAttempts'))
       return
     }
-    if (emailError) {
-      toast.error(t('networkError'))
-      return
-    }
-
-    const { error } = await resetPassword(emailData.email, { redirectTo: `${window.location.origin}/login` })
     if (error) {
       toast.error(t('networkError'))
-      console.error('Reset password error:', error)
       return
     }
 

@@ -4,17 +4,22 @@ import 'server-only'
 
 import { revalidateTag } from 'next/cache'
 
-import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateWithUsers } from '@/actions/certificates/helpers'
-import { getActiveOrgId } from '@/actions/user'
+import { getCertificateEligibility } from '@/actions/certificates/queries'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 import {
   type CertificateFormValues,
   type DraftCertificateValues,
   type ResubmitCertificateValues,
   type ReviewCertificateValues,
+  certificateFormSchema,
+  draftCertificateSchema,
+  resubmitCertificateSchema,
+  reviewCertificateSchema,
 } from '@/components/features/certificates/schemas'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -22,9 +27,24 @@ import { applyCertificateReview, createCertificateWithSkills } from '@/db/mutati
 import { certificates, memberships, users } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
-import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
+import appConfig from '~/config/app.json'
+
+const RATE_LIMIT_WINDOW = 60 * 60 * 1000
+
+const invalidInput = () => ({ data: null, error: { code: 'INVALID_INPUT', message: 'Invalid certificate values' } })
+
+const isOrgTutor = async (userId: string, organizationId: number) =>
+  !!(await db.query.memberships.findFirst({
+    where: and(
+      eq(memberships.userId, userId),
+      eq(memberships.organizationId, organizationId),
+      eq(memberships.role, 'tutor')
+    ),
+    columns: { id: true },
+  }))
 
 export const claimCertificateReview = async (id: number) => {
   const authUser = await getAuthUser()
@@ -35,28 +55,48 @@ export const claimCertificateReview = async (id: number) => {
       .update(certificates)
       .set({ status: 'in_review' })
       .where(
-        and(eq(certificates.id, id), eq(certificates.reviewerId, authUser.id), eq(certificates.status, 'submitted'))
+        and(
+          eq(certificates.id, id),
+          eq(certificates.reviewerId, authUser.id),
+          ne(certificates.userId, authUser.id),
+          eq(certificates.status, 'submitted')
+        )
       )
       .returning()
     return updated ?? null
   })
 }
 
-export const reviewCertificate = async (id: number, values: ReviewCertificateValues) => {
+export const reviewCertificate = async (id: number, input: ReviewCertificateValues) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
-  const rl = checkRateLimit(`review-cert:${authUser.id}`, 10, 60 * 60 * 1000)
+  const parsed = reviewCertificateSchema.safeParse(input)
+  if (!parsed.success) return invalidInput()
+  const values = parsed.data
+
+  const rl = await checkRateLimit(`review-cert:${authUser.id}`, 10, RATE_LIMIT_WINDOW)
   if (rl.limited) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many certificate reviews. Try again later.' } }
   }
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
-      where: and(eq(certificates.id, id), eq(certificates.reviewerId, authUser.id)),
+      where: and(
+        eq(certificates.id, id),
+        eq(certificates.reviewerId, authUser.id),
+        ne(certificates.userId, authUser.id),
+        inArray(certificates.status, ['submitted', 'in_review'])
+      ),
       with: certificateWithUsers,
     })
-    if (!cert) throw new Error('Certificate not found or not assigned to you')
+    if (!cert) throw new Error('Certificate not found or not reviewable')
+    if (!(await isOrgTutor(authUser.id, cert.organizationId))) throw new Error('Not a tutor in this organization')
+
+    const certSkillIds = new Set(cert.skills.map(s => s.course.id))
+    if (values.skillCourseIds?.some(courseId => !certSkillIds.has(courseId))) {
+      throw new Error('Skills must belong to the certificate')
+    }
 
     const isApprove = values.action === 'approve'
     const issuedAt = new Date().toISOString()
@@ -70,7 +110,12 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
     const skillsToMap =
       values.skillCourseIds === undefined
         ? cert.skills
-        : cert.skills.filter(s => values.skillCourseIds!.includes(s.course.id))
+        : cert.skills.filter(s => values.skillCourseIds?.includes(s.course.id))
+
+    if (isApprove && skillsToMap.length < appConfig.minSkills) throw new Error('Not enough skills to approve')
+    if (!(activityStartDate && activityEndDate && activityStartDate <= activityEndDate)) {
+      throw new Error('Invalid activity dates')
+    }
 
     const skillNames = skillsToMap.map(s => {
       if (!s.course.title) return s.course.slug
@@ -118,7 +163,7 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
               status: 'changes_requested',
               reviewerComment: 'comment' in values ? values.comment : undefined,
             },
-        skillCourseIds: values.skillCourseIds,
+        skillCourseIds: values.skillCourseIds && [...new Set(values.skillCourseIds)],
         setDefaultIfNone: isApprove,
       })
     )
@@ -149,21 +194,46 @@ export const reviewCertificate = async (id: number, values: ReviewCertificateVal
 }
 
 export const createCertificate = async (
-  values: CertificateFormValues | DraftCertificateValues,
+  input: CertificateFormValues | DraftCertificateValues,
   { draft = false } = {}
 ) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
-  const orgId = await getActiveOrgId()
+  const parsed = (draft ? draftCertificateSchema : certificateFormSchema).safeParse(input)
+  if (!(parsed.success && (LOCALES as readonly string[]).includes(parsed.data.language))) return invalidInput()
+  const values = parsed.data
+
+  const [user, orgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
   if (!orgId) return { data: null, error: { code: 'NO_ORG', message: 'No active organization' } }
 
-  const rl = checkRateLimit(`create-cert:${authUser.id}`, 5, 60 * 60 * 1000)
+  const role = user.organizations.find(({ id }) => id === orgId)?.role
+  if (!role || role === 'learner') return { data: null, error: { code: 'FORBIDDEN', message: 'Not allowed' } }
+
+  const rl = await checkRateLimit(`create-cert:${authUser.id}`, 5, RATE_LIMIT_WINDOW)
   if (rl.limited) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many certificates submitted. Try again later.' } }
   }
 
   return await safeQuery(async () => {
+    const { completedSkillCourseIds, eligible } = await getCertificateEligibility({ cache: false })
+    if (!(draft || eligible)) throw new Error('Not eligible for a certificate')
+
+    const skillCourseIds = [...new Set(values.skillCourseIds ?? [])]
+    if (skillCourseIds.some(courseId => !completedSkillCourseIds.includes(courseId))) {
+      throw new Error('Skills must be completed skill courses')
+    }
+
+    const existing = await db.query.certificates.findFirst({
+      where: and(
+        eq(certificates.userId, authUser.id),
+        eq(certificates.organizationId, orgId),
+        ne(certificates.status, 'draft')
+      ),
+      columns: { id: true },
+    })
+    if (existing) throw new Error('A certificate already exists for this organization')
+
     const handle = `${authUser.id}-${orgId}-${Date.now()}`
     const status = draft ? 'draft' : 'submitted'
 
@@ -173,14 +243,16 @@ export const createCertificate = async (
       const tutors = await db
         .select({ userId: memberships.userId })
         .from(memberships)
-        .where(and(eq(memberships.organizationId, orgId), eq(memberships.role, 'tutor')))
+        .where(
+          and(eq(memberships.organizationId, orgId), eq(memberships.role, 'tutor'), ne(memberships.userId, authUser.id))
+        )
 
       if (tutors.length > 0) {
         const tutorIds = tutors.map(t => t.userId)
         const assignmentCounts = await db
           .select({ reviewerId: certificates.reviewerId, total: count() })
           .from(certificates)
-          .where(and(eq(certificates.organizationId, orgId)))
+          .where(eq(certificates.organizationId, orgId))
           .groupBy(certificates.reviewerId)
           .orderBy(asc(count()))
 
@@ -207,7 +279,7 @@ export const createCertificate = async (
           reviewerId,
           status,
         },
-        values.skillCourseIds ?? []
+        skillCourseIds
       )
     )
 
@@ -231,11 +303,15 @@ export const createCertificate = async (
   })
 }
 
-export const resubmitCertificate = async (id: number, values: ResubmitCertificateValues) => {
+export const resubmitCertificate = async (id: number, input: ResubmitCertificateValues) => {
   const authUser = await getAuthUser()
   if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
 
-  const rl = checkRateLimit(`resubmit-cert:${authUser.id}`, 10, 60 * 60 * 1000)
+  const parsed = resubmitCertificateSchema.safeParse(input)
+  if (!parsed.success) return invalidInput()
+  const values = parsed.data
+
+  const rl = await checkRateLimit(`resubmit-cert:${authUser.id}`, 10, RATE_LIMIT_WINDOW)
   if (rl.limited) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many resubmissions. Try again later.' } }
   }
@@ -277,10 +353,10 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
       where: eq(certificates.id, certId),
-      columns: { id: true, organizationId: true, reviewerId: true, status: true },
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
     })
     if (!cert) throw new Error('Certificate not found')
-    if (cert.status === 'approved') throw new Error('Cannot reassign an approved certificate')
+    if (cert.status === 'approved' || cert.status === 'draft') throw new Error('Cannot reassign this certificate')
 
     const membership = await db.query.memberships.findFirst({
       where: and(
@@ -293,16 +369,9 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
     const isCurrentReviewer = cert.reviewerId === authUser.id
     if (!membership && !isCurrentReviewer) throw new Error('Not authorized to reassign this certificate')
 
-    if (reviewerId) {
-      const tutorMembership = await db.query.memberships.findFirst({
-        where: and(
-          eq(memberships.userId, reviewerId),
-          eq(memberships.organizationId, cert.organizationId),
-          eq(memberships.role, 'tutor')
-        ),
-        columns: { id: true },
-      })
-      if (!tutorMembership) throw new Error('Selected user is not a tutor in this organization')
+    if (reviewerId === cert.userId) throw new Error('Volunteers cannot review their own certificate')
+    if (reviewerId && !(await isOrgTutor(reviewerId, cert.organizationId))) {
+      throw new Error('Selected user is not a tutor in this organization')
     }
 
     const [updated] = await db.update(certificates).set({ reviewerId }).where(eq(certificates.id, certId)).returning()
@@ -336,26 +405,19 @@ export const selfAssignCertificate = async (certId: number) => {
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
       where: eq(certificates.id, certId),
-      columns: { id: true, organizationId: true, reviewerId: true, status: true },
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
     })
     if (!cert) throw new Error('Certificate not found')
+    if (cert.userId === authUser.id) throw new Error('Volunteers cannot review their own certificate')
     if (cert.reviewerId !== null) throw new Error('Certificate already has an assigned reviewer')
     if (cert.status !== 'submitted') throw new Error('Certificate cannot be claimed at this stage')
 
-    const membership = await db.query.memberships.findFirst({
-      where: and(
-        eq(memberships.userId, authUser.id),
-        eq(memberships.organizationId, cert.organizationId),
-        eq(memberships.role, 'tutor')
-      ),
-      columns: { id: true },
-    })
-    if (!membership) throw new Error('Not a tutor in this organization')
+    if (!(await isOrgTutor(authUser.id, cert.organizationId))) throw new Error('Not a tutor in this organization')
 
     const [updated] = await db
       .update(certificates)
       .set({ reviewerId: authUser.id })
-      .where(and(eq(certificates.id, certId), isNull(certificates.reviewerId)))
+      .where(and(eq(certificates.id, certId), isNull(certificates.reviewerId), eq(certificates.status, 'submitted')))
       .returning()
     if (!updated) throw new Error('Certificate was already claimed by another tutor')
 

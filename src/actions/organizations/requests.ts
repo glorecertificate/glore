@@ -7,24 +7,30 @@ import { randomBytes } from 'node:crypto'
 import { revalidateTag } from 'next/cache'
 
 import { and, eq } from 'drizzle-orm'
+import { z } from 'zod'
 
 import {
   assertOrganizationManager,
   canReviewRequestRole,
   createInvitationUrl,
+  expireUserAccess,
   getOrganizationContext,
   reviewerColumns,
   sendJoinRequestDecisionEmail,
   sendRegistrationRequestEmails,
 } from '@/actions/organizations/helpers'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { createOrganization } from '@/db/mutations/organization'
 import { parseOrganizationJoinRequest } from '@/db/queries/organization'
-import { memberships, organizationJoinRequests, organizationProfiles, organizations, users } from '@/db/schema'
+import { memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
-import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
+import { clientAddress, isRateLimited } from '@/lib/rate-limit'
+
+const REGISTRATION_RATE_LIMIT_WINDOW = 60 * 60 * 1000
 
 export const approveOrganizationJoinRequest = async (requestId: number) => {
   const { organization, role: managerRole, user } = await getOrganizationContext()
@@ -90,6 +96,7 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
         userId: invitedUser.id,
       })
     }
+    expireUserAccess([invitedUser.id])
 
     await db
       .update(organizationJoinRequests)
@@ -178,91 +185,91 @@ export const rejectOrganizationJoinRequest = async (requestId: number, reviewerC
   })
 }
 
-export const requestOrganizationRegistration = async ({
-  city,
-  country,
-  email: orgEmail,
-  firstName,
-  lastName,
-  locale,
-  message,
-  name,
-  registrantEmail,
-  url,
-}: {
-  city: string
-  country: string
-  email: string
-  firstName: string
-  lastName?: string
-  locale?: string
-  message?: string
-  name: string
-  registrantEmail: string
-  url?: string
-}) => {
-  const result = await safeQuery(async () => {
-    const handle = name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/gu, '-')
-      .replace(/^-+|-+$/gu, '')
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .transform(value => value || null)
 
+const registrationSchema = z.object({
+  city: z.string().trim().min(1).max(100),
+  country: z.string().trim().min(2).max(2),
+  email: z.email().max(254).toLowerCase(),
+  firstName: z.string().trim().min(1).max(100),
+  lastName: optionalText(100),
+  locale: z.enum(LOCALES).optional(),
+  message: optionalText(2000),
+  name: z.string().trim().min(2).max(150),
+  registrantEmail: z.email().max(254).toLowerCase(),
+  url: optionalText(500),
+})
+
+const toHandle = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/gu, '-')
+    .replace(/^-+|-+$/gu, '')
+    .slice(0, 60) || 'organization'
+
+export const requestOrganizationRegistration = async (input: z.input<typeof registrationSchema>) => {
+  const parsed = registrationSchema.safeParse(input)
+  if (!parsed.success) return { data: null, error: { code: 'INVALID_INPUT', message: 'Invalid registration values' } }
+  const { city, country, email, firstName, lastName, locale, message, name, registrantEmail, url } = parsed.data
+
+  const address = await clientAddress()
+  const [byAddress, byEmail] = await Promise.all([
+    isRateLimited(`register:ip:${address}`, 5, REGISTRATION_RATE_LIMIT_WINDOW),
+    isRateLimited(`register:email:${registrantEmail}`, 3, REGISTRATION_RATE_LIMIT_WINDOW),
+  ])
+  if (byAddress || byEmail) return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many requests' } }
+
+  const result = await safeQuery(async () => {
+    const handle = toHandle(name)
     const existing = await db.query.organizations.findFirst({
       columns: { id: true },
       where: eq(organizations.handle, handle),
     })
 
-    const finalHandle = existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle
-
-    const [org] = await db
-      .insert(organizations)
-      .values({
-        city: city.trim(),
-        email: orgEmail.trim().toLowerCase(),
-        handle: finalHandle,
-        name: name.trim(),
+    const org = await transaction(async tx => {
+      const created = await createOrganization(tx, {
+        city,
+        country,
+        email,
+        handle: existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle,
+        name,
+        url,
       })
-      .returning({ id: organizations.id, name: organizations.name })
-
-    if (!org) {
-      throw new Error('Failed to create organization')
-    }
-
-    await Promise.all([
-      db.insert(organizationProfiles).values({
-        country: country.trim(),
-        organizationId: org.id,
-        url: url?.trim() || null,
-      }),
-      db.insert(organizationJoinRequests).values({
-        email: registrantEmail.trim().toLowerCase(),
-        firstName: firstName.trim(),
-        lastName: lastName?.trim() || null,
+      await tx.insert(organizationJoinRequests).values({
+        email: registrantEmail,
+        firstName,
+        lastName,
         locale: locale ?? DEFAULT_LOCALE,
-        message: message?.trim() || null,
-        organizationId: org.id,
+        message,
+        organizationId: created.id,
         role: 'admin',
-      }),
-    ])
+      })
+      return created
+    })
 
     await Promise.all([
       sendMail({
-        locale: locale ?? undefined,
+        locale,
         template: {
           name: 'organization/join-request',
-          props: { organizationName: org.name, status: 'pending', userName: firstName.trim() },
+          props: { organizationName: org.name, status: 'pending', userName: firstName },
         },
-        to: registrantEmail.trim().toLowerCase(),
+        to: registrantEmail,
       }).catch(() => null),
       sendRegistrationRequestEmails({
-        city: city.trim(),
-        country: country.trim(),
-        message: message?.trim() || null,
+        city,
+        country,
+        message,
         organizationId: org.id,
         organizationName: org.name,
-        registrantEmail: registrantEmail.trim().toLowerCase(),
-        registrantName: [firstName.trim(), lastName?.trim()].filter(Boolean).join(' '),
+        registrantEmail,
+        registrantName: [firstName, lastName].filter(Boolean).join(' '),
       }),
     ])
 

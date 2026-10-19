@@ -26,6 +26,8 @@ export const getOrganizationPanel = async () => {
       throw new Error('No active organization found')
     }
 
+    const isManager = role === 'admin' || role === 'representative'
+
     const [organizationRecord, membershipRecords, joinRequestRecords, pendingCertificates, approvedCertificates] =
       await Promise.all([
         db.query.organizations.findFirst({
@@ -42,17 +44,18 @@ export const getOrganizationPanel = async () => {
           orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
           limit: 500,
         }),
-        db.query.organizationJoinRequests.findMany({
-          where: and(
-            eq(organizationJoinRequests.organizationId, organization.id),
-            eq(organizationJoinRequests.status, 'pending')
-          ),
-          with: {
-            reviewer: { columns: reviewerColumns },
-          },
-          orderBy: (records, { desc }) => [desc(records.createdAt)],
-          limit: 200,
-        }),
+        isManager &&
+          db.query.organizationJoinRequests.findMany({
+            where: and(
+              eq(organizationJoinRequests.organizationId, organization.id),
+              eq(organizationJoinRequests.status, 'pending')
+            ),
+            with: {
+              reviewer: { columns: reviewerColumns },
+            },
+            orderBy: (records, { desc }) => [desc(records.createdAt)],
+            limit: 200,
+          }),
         db
           .select({ total: count() })
           .from(certificates)
@@ -74,7 +77,7 @@ export const getOrganizationPanel = async () => {
 
     const parsedOrganization = parseOrganization({
       ...organizationRecord,
-      joinRequests: joinRequestRecords,
+      joinRequests: joinRequestRecords || [],
       memberships: membershipRecords,
     })
 
@@ -117,7 +120,11 @@ export const getOrganizationPanel = async () => {
 }
 
 export const listOrgTutors = async (organizationId: number) => {
-  await getCurrentUser()
+  const user = await getCurrentUser()
+  const isManager = user.organizations.some(
+    ({ id, role }) => id === organizationId && (role === 'admin' || role === 'representative')
+  )
+  if (!isManager) return { data: null, error: null }
   return await safeQuery(async () => {
     const result = await db.query.memberships.findMany({
       where: and(eq(memberships.organizationId, organizationId), eq(memberships.role, 'tutor')),

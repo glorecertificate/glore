@@ -8,9 +8,9 @@ import { cache } from 'react'
 import { and, eq, isNull } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { certificateWith, certificateWithUsers } from '@/actions/certificates/helpers'
+import { certificatePublicWith, certificateWith, certificateWithUsers } from '@/actions/certificates/helpers'
 import { listCourses } from '@/actions/courses/queries'
-import { getActiveOrgId } from '@/actions/user'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
@@ -87,8 +87,7 @@ export const listTutorCertificates = async ({ cache: useCache = true }: { cache?
 }
 
 export const findCertificate = async (id: number) => {
-  const authUser = await getAuthUser()
-  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  const user = await getCurrentUser()
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
@@ -96,6 +95,14 @@ export const findCertificate = async (id: number) => {
       with: certificateWithUsers,
     })
     if (!cert) throw new Error('Certificate not found')
+
+    const isOrgManager = user.organizations.some(
+      ({ id: orgId, role }) => orgId === cert.organizationId && (role === 'admin' || role === 'representative')
+    )
+    if (!(cert.userId === user.id || cert.reviewerId === user.id || isOrgManager)) {
+      throw new Error('Certificate not found')
+    }
+
     return parseCertificate(cert)
   })
 }
@@ -112,11 +119,11 @@ export const findPublicCertificate = async (username: string, handle?: string) =
       where: handle
         ? and(eq(certificates.userId, user.id), eq(certificates.handle, handle), eq(certificates.status, 'approved'))
         : and(eq(certificates.userId, user.id), eq(certificates.isDefault, true), eq(certificates.status, 'approved')),
-      with: certificateWithUsers,
+      with: certificatePublicWith,
     })
     if (!cert) throw new Error('Certificate not found')
 
-    return parseCertificate(cert)
+    return parseCertificate({ ...cert, reviewerComment: null, reviewerId: null })
   })
 
 export interface CertificateEligibility {
@@ -126,40 +133,53 @@ export interface CertificateEligibility {
   minRating: number
   hasLowRatings: boolean
   avgRating: number | null
+  completedSkillCourseIds: number[]
 }
 
-export const getCertificateEligibility = cache(async (): Promise<CertificateEligibility> => {
-  const { minSkills, minRating } = appConfig
-  const { data: courses, error } = await listCourses()
-  if (error || !courses) {
-    return {
-      eligible: false,
-      completedSkillCount: 0,
-      minSkills,
-      minRating,
-      hasLowRatings: false,
-      avgRating: null,
+export const getCertificateEligibility = cache(
+  async ({ cache: useCache = true } = {}): Promise<CertificateEligibility> => {
+    const { minSkills, minRating } = appConfig
+    const { data: courses, error } = await listCourses({ cache: useCache })
+    if (error || !courses) {
+      return {
+        eligible: false,
+        completedSkillCount: 0,
+        minSkills,
+        minRating,
+        hasLowRatings: false,
+        avgRating: null,
+        completedSkillCourseIds: [],
+      }
     }
+
+    const completedSkillCourses = courses.filter(c => c.type === 'skill' && c.completed)
+    const completedSkillCount = completedSkillCourses.length
+    const completedSkillCourseIds = completedSkillCourses.map(c => c.id)
+
+    if (completedSkillCount === 0) {
+      return {
+        eligible: false,
+        completedSkillCount,
+        minSkills,
+        minRating,
+        hasLowRatings: false,
+        avgRating: null,
+        completedSkillCourseIds,
+      }
+    }
+
+    const ratings = completedSkillCourses.flatMap(c =>
+      c.lessons.flatMap(l => (l.assessment?.userRating === undefined ? [] : [l.assessment.userRating]))
+    )
+
+    const avgRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : null
+    const hasLowRatings = avgRating !== null && avgRating < minRating
+
+    const eligible = completedSkillCount >= minSkills && !hasLowRatings
+
+    return { eligible, completedSkillCount, minSkills, minRating, hasLowRatings, avgRating, completedSkillCourseIds }
   }
-
-  const completedSkillCourses = courses.filter(c => c.type === 'skill' && c.completed)
-  const completedSkillCount = completedSkillCourses.length
-
-  if (completedSkillCount === 0) {
-    return { eligible: false, completedSkillCount, minSkills, minRating, hasLowRatings: false, avgRating: null }
-  }
-
-  const ratings = completedSkillCourses.flatMap(c =>
-    c.lessons.flatMap(l => (l.assessment?.userRating === undefined ? [] : [l.assessment.userRating]))
-  )
-
-  const avgRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : null
-  const hasLowRatings = avgRating !== null && avgRating < minRating
-
-  const eligible = completedSkillCount >= minSkills && !hasLowRatings
-
-  return { eligible, completedSkillCount, minSkills, minRating, hasLowRatings, avgRating }
-})
+)
 
 const fetchUnassignedOrgCertificates = cache(async (orgId: number) => {
   'use cache'
@@ -185,11 +205,11 @@ export const listUnassignedOrgCertificates = async ({ cache: useCache = true }: 
   data: Certificate[] | null
   error: unknown
 }> => {
-  const authUser = await getAuthUser()
-  if (!authUser) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
-
-  const orgId = await getActiveOrgId()
+  const [user, orgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
   if (!orgId) return { data: null, error: { code: 'NO_ORG', message: 'No active organization' } }
+
+  const role = user.organizations.find(({ id }) => id === orgId)?.role
+  if (!(role === 'admin' || role === 'representative' || role === 'tutor')) return { data: [], error: null }
 
   if (!useCache) {
     const result = await db.query.certificates.findMany({

@@ -828,7 +828,11 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
   }
 
   const handleAvatarUpload = async (file: File) => {
-    const { data: presign, error: presignError } = await createAdminOrganizationAvatarUploadUrl(data.id, file.type)
+    const { data: presign, error: presignError } = await createAdminOrganizationAvatarUploadUrl(
+      data.id,
+      file.type,
+      file.size
+    )
 
     if (presignError || !presign) {
       toast.error(typeof presignError === 'string' ? presignError : t('avatarUploadError'))

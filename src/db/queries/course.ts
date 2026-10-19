@@ -2,7 +2,7 @@ import { type InferSelectModel } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
 import { type LessonWithRelations, parseLesson } from '@/db/queries/lesson'
-import { type UserWithRelations, parseUser } from '@/db/queries/user'
+import { type PublicUserWithRelations, parseUser } from '@/db/queries/user'
 import { type courses, type skillGroups } from '@/db/schema'
 import { type EnumType } from '@/db/types'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
@@ -12,8 +12,8 @@ type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name'> |
 
 interface CourseWithRelations extends CourseRow {
   skillGroup: SkillGroupRow
-  creator: UserWithRelations
-  archivedBy: UserWithRelations | null
+  creator: PublicUserWithRelations
+  archivedBy: PublicUserWithRelations | null
   lessons: LessonWithRelations[]
   userCourses: { id: number }[]
 }

@@ -1,25 +1,36 @@
 import 'server-only'
 
-interface RateLimitEntry {
-  count: number
-  resetAt: number
-}
+import { headers } from 'next/headers'
 
-const windows = new Map<string, RateLimitEntry>()
+import { sql } from 'drizzle-orm'
 
-export const checkRateLimit = (key: string, max: number, windowMs: number) => {
+import { db } from '@/db/client'
+import { rateLimits } from '@/db/schema/rate-limits'
+
+export const checkRateLimit = async (key: string, max: number, windowMs: number) => {
   const now = Date.now()
-  const entry = windows.get(key)
+  const expired = sql`${rateLimits.lastRequest} <= ${now - windowMs}`
 
-  if (!entry || entry.resetAt <= now) {
-    windows.set(key, { count: 1, resetAt: now + windowMs })
-    return { limited: false, remaining: max - 1 }
-  }
+  const [entry] = await db
+    .insert(rateLimits)
+    .values({ id: crypto.randomUUID(), key: `app:${key}`, count: 1, lastRequest: now })
+    .onConflictDoUpdate({
+      target: rateLimits.key,
+      set: {
+        count: sql`case when ${expired} then 1 else ${rateLimits.count} + 1 end`,
+        lastRequest: sql`case when ${expired} then ${now} else ${rateLimits.lastRequest} end`,
+      },
+    })
+    .returning({ count: rateLimits.count })
 
-  if (entry.count >= max) {
-    return { limited: true, remaining: 0, resetAt: entry.resetAt }
-  }
-
-  entry.count++
-  return { limited: false, remaining: max - entry.count }
+  const count = entry?.count ?? 1
+  return { limited: count > max, remaining: Math.max(max - count, 0) }
 }
+
+export const clientAddress = async () => {
+  const list = await headers()
+  return list.get('x-forwarded-for')?.split(',')[0]?.trim() || list.get('x-real-ip') || 'unknown'
+}
+
+export const isRateLimited = async (key: string, max: number, windowMs: number) =>
+  (await checkRateLimit(key, max, windowMs)).limited

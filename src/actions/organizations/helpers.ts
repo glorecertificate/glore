@@ -2,7 +2,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, updateTag } from 'next/cache'
 import { cache } from 'react'
 
 import { and, count, eq, isNull, or } from 'drizzle-orm'
@@ -35,6 +35,20 @@ const MANAGEABLE_MEMBER_ROLES: OrganizationMembershipRole[] = [
 const REQUESTABLE_ROLES: OrganizationMembershipRole[] = ['learner', 'volunteer']
 const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
 export const PENDING_CERTIFICATE_STATUSES = ['changes_requested', 'in_review', 'submitted'] as const
+
+export const expireUserAccess = (userIds: string[]) => {
+  for (const userId of new Set(userIds)) {
+    updateTag(userTag(userId))
+  }
+}
+
+export const listOrganizationMemberIds = async (organizationId: number) => {
+  const members = await db.query.memberships.findMany({
+    columns: { userId: true },
+    where: eq(memberships.organizationId, organizationId),
+  })
+  return members.map(({ userId }) => userId)
+}
 
 export const revalidateOrganizationMembers = async (organizationId: number) => {
   const members = await db.query.memberships.findMany({

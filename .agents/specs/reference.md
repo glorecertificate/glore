@@ -31,11 +31,11 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 | Path                 | Method   | Description                                    |
 | -------------------- | -------- | ---------------------------------------------- |
 | `/api/auth/[...all]` | GET/POST | Better Auth catch-all handler                  |
-| `/api/v1/ai/command` | POST     | AI command endpoint                            |
-| `/api/v1/ai/copilot` | POST     | AI copilot endpoint                            |
+| `/api/v1/ai/command` | POST     | AI command (editors, rate limited)             |
+| `/api/v1/ai/copilot` | POST     | AI copilot (editors, rate limited)             |
 | `/api/v1/join`       | GET      | Team invitation join endpoint                  |
 | `/api/v1/manifest`   | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
-| `/api/v1/upload`     | POST     | R2 file upload                                 |
+| `/api/v1/upload`     | POST     | R2 file upload (editors, rate limited)         |
 | `/api/v1/health`     | GET      | Health check (returns `{ status: 'ok' }`)      |
 
 ## Authentication
@@ -55,6 +55,8 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 **`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team and org invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
 
 **Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation), `nextCookies()` (Next.js cookie integration). Catch-all route: `src/app/api/auth/[...all]/route.ts`.
+
+**Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
 
 ## Data fetching
 

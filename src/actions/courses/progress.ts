@@ -2,25 +2,71 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { revalidateTag, updateTag } from 'next/cache'
 
-import { and, asc, count, eq, inArray } from 'drizzle-orm'
+import { and, asc, count, eq, inArray, isNull } from 'drizzle-orm'
+import { z } from 'zod'
 
 import { getAuthUser } from '@/actions/auth'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import {
   assessments,
+  courses,
   evaluations,
   lessons,
+  questionOptions,
+  questions,
   userAnswers,
   userAssessments,
   userCourses,
   userEvaluations,
   userLessons,
 } from '@/db/schema'
-import { certificatesUserTag } from '@/lib/cache'
-import { type IntlRecord } from '@/lib/i18n'
+import { type EnumType } from '@/db/types'
+import { certificatesUserTag, progressUserTag } from '@/lib/cache'
+import { type IntlRecord, LOCALES } from '@/lib/i18n'
+
+const allowedCourseTypes = (role: EnumType<'role'>): EnumType<'course_type'>[] | null => {
+  if (role === 'learner') return ['intro', 'learner']
+  if (role === 'volunteer') return ['intro', 'skill']
+  return null
+}
+
+const MAX_BATCH = 100
+
+const unauthorized = () => ({ error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } })
+const forbidden = () => ({ error: { code: 'FORBIDDEN', message: 'Not allowed' } })
+const invalidInput = () => ({ error: { code: 'INVALID_INPUT', message: 'Invalid values' } })
+
+const ratingSchema = z.number().int().min(1).max(5)
+const idSchema = z.number().int().positive()
+const evaluationRatingsSchema = z
+  .array(z.object({ evaluationId: idSchema, value: ratingSchema }))
+  .min(1)
+  .max(MAX_BATCH)
+
+const isCourseEditor = (user: { isEditor?: boolean | null; role?: string | null }) =>
+  user.role === 'admin' || !!user.isEditor
+
+const hasLessonAccess = async (
+  user: { id: string; isEditor?: boolean | null; role?: string | null },
+  ids: number[]
+) => {
+  const lessonIds = [...new Set(ids)]
+  if (lessonIds.length === 0) return false
+
+  const rows = isCourseEditor(user)
+    ? await db.select({ id: lessons.id }).from(lessons).where(inArray(lessons.id, lessonIds))
+    : await db
+        .select({ id: lessons.id })
+        .from(lessons)
+        .innerJoin(userCourses, and(eq(userCourses.courseId, lessons.courseId), eq(userCourses.userId, user.id)))
+        .where(inArray(lessons.id, lessonIds))
+
+  return new Set(rows.map(({ id }) => id)).size === lessonIds.length
+}
 
 const hasCompletedLessons = async (userId: string, lessonIds: number[]) => {
   if (lessonIds.length === 0) return false
@@ -35,33 +81,71 @@ const hasCompletedLessons = async (userId: string, lessonIds: number[]) => {
 
 export const submitAnswers = async (options: { id: number }[]) => {
   const user = await getAuthUser()
-  if (!user) return { error: new Error('Unauthorized') }
+  if (!user) return unauthorized()
+
+  const parsed = z
+    .array(idSchema)
+    .min(1)
+    .max(MAX_BATCH)
+    .safeParse(options.map(({ id }) => id))
+  if (!parsed.success) return invalidInput()
+  const optionIds = [...new Set(parsed.data)]
+
+  const rows = await db
+    .select({ id: questionOptions.id, lessonId: questions.lessonId })
+    .from(questionOptions)
+    .innerJoin(questions, eq(questions.id, questionOptions.questionId))
+    .where(inArray(questionOptions.id, optionIds))
+  if (rows.length !== optionIds.length) return invalidInput()
+  const lessonIds = rows.map(({ lessonId }) => lessonId)
+  if (!(await hasLessonAccess(user, lessonIds))) return forbidden()
 
   const result = await db
     .insert(userAnswers)
-    .values(options.map(({ id }) => ({ optionId: id, userId: user.id })))
+    .values(optionIds.map(optionId => ({ optionId, userId: user.id })))
     .returning({ id: userAnswers.id })
 
   return { data: result }
 }
 
 export const enrollCourse = async (courseId: number, locale: string) => {
-  const user = await getAuthUser()
-  if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  const parsed = z.object({ courseId: idSchema, locale: z.enum(LOCALES) }).safeParse({ courseId, locale })
+  if (!parsed.success) return invalidInput()
+
+  const user = await getCurrentUser()
+  if (user.banned) return forbidden()
 
   const existing = await db.query.userCourses.findFirst({
     where: and(eq(userCourses.userId, user.id), eq(userCourses.courseId, courseId)),
   })
   if (existing) return { data: existing }
 
-  const [result] = await db.insert(userCourses).values({ userId: user.id, courseId, locale }).returning()
+  const course = await db.query.courses.findFirst({
+    where: and(eq(courses.id, courseId), isNull(courses.archivedAt)),
+    columns: { languages: true, type: true },
+  })
+  const enrollmentLocale = course?.languages?.includes(parsed.data.locale) ? parsed.data.locale : course?.languages?.[0]
+  if (!(course && enrollmentLocale)) return forbidden()
+
+  const orgId = await getActiveOrgId()
+  const role = user.organizations.find(({ id }) => id === orgId)?.role
+  if (!role) return forbidden()
+  const allowedTypes = allowedCourseTypes(role)
+  if (allowedTypes && !allowedTypes.includes(course.type ?? 'intro')) return forbidden()
+
+  const [result] = await db
+    .insert(userCourses)
+    .values({ userId: user.id, courseId, locale: enrollmentLocale })
+    .returning()
 
   return { data: result }
 }
 
 export const completeLesson = async (lessonId: number) => {
   const user = await getAuthUser()
-  if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  if (!user) return unauthorized()
+  if (!idSchema.safeParse(lessonId).success) return invalidInput()
+  if (!(await hasLessonAccess(user, [lessonId]))) return forbidden()
 
   const existing = await db.query.userLessons.findFirst({
     where: and(eq(userLessons.userId, user.id), eq(userLessons.lessonId, lessonId)),
@@ -71,30 +155,31 @@ export const completeLesson = async (lessonId: number) => {
   const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
+  updateTag(progressUserTag(user.id))
   return { data: result }
 }
 
-export const submitEvaluationRatings = async (ratings: { evaluationId: number; value: number }[]) => {
+export const submitEvaluationRatings = async (input: { evaluationId: number; value: number }[]) => {
   const user = await getAuthUser()
-  if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  if (!user) return unauthorized()
+
+  const parsed = evaluationRatingsSchema.safeParse(input)
+  if (!parsed.success) return invalidInput()
+  const ratings = [...new Map(parsed.data.map(rating => [rating.evaluationId, rating])).values()]
 
   const ratingIds = ratings.map(({ evaluationId }) => evaluationId)
   const evaluationRows = await db.query.evaluations.findMany({
     where: inArray(evaluations.id, ratingIds),
     columns: { id: true, lessonId: true },
   })
+  if (evaluationRows.length !== ratingIds.length) return invalidInput()
+
   const lessonIds = [...new Set(evaluationRows.map(({ lessonId }) => lessonId))]
   const canRate = await hasCompletedLessons(user.id, lessonIds)
   if (!canRate) return { error: { code: 'FORBIDDEN', message: 'Complete the lesson before submitting ratings' } }
 
   const existing = await db.query.userEvaluations.findMany({
-    where: and(
-      eq(userEvaluations.userId, user.id),
-      inArray(
-        userEvaluations.evaluationId,
-        ratings.map(r => r.evaluationId)
-      )
-    ),
+    where: and(eq(userEvaluations.userId, user.id), inArray(userEvaluations.evaluationId, ratingIds)),
   })
   const existingIds = new Set(existing.map(e => e.evaluationId))
   const newRatings = ratings.filter(r => !existingIds.has(r.evaluationId))
@@ -107,12 +192,14 @@ export const submitEvaluationRatings = async (ratings: { evaluationId: number; v
     .returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
+  updateTag(progressUserTag(user.id))
   return { data: [...existing, ...result] }
 }
 
 export const submitAssessmentRating = async (assessmentId: number, value: number) => {
   const user = await getAuthUser()
-  if (!user) return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+  if (!user) return unauthorized()
+  if (!(idSchema.safeParse(assessmentId).success && ratingSchema.safeParse(value).success)) return invalidInput()
 
   const assessment = await db.query.assessments.findFirst({
     where: eq(assessments.id, assessmentId),
@@ -131,6 +218,7 @@ export const submitAssessmentRating = async (assessmentId: number, value: number
   const [result] = await db.insert(userAssessments).values({ userId: user.id, assessmentId, value }).returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
+  updateTag(progressUserTag(user.id))
   return { data: result }
 }
 
@@ -150,8 +238,7 @@ export interface CourseAnalyticsStats {
 
 export const getCourseAnalytics = async (courseId: number) => {
   const authUser = await getAuthUser()
-  const isEditor = authUser?.role === 'admin' || authUser?.isEditor
-  if (!isEditor) return { error: { code: 'UNAUTHORIZED', message: 'Not authorized' } }
+  if (!(authUser && isCourseEditor(authUser))) return { error: { code: 'UNAUTHORIZED', message: 'Not authorized' } }
 
   return await safeQuery(async () => {
     const [enrollmentResult, lessonsData] = await Promise.all([

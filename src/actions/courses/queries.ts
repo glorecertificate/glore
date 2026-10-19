@@ -13,11 +13,11 @@ import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseCourse } from '@/db/queries/course'
 import { courses, skillGroups } from '@/db/schema'
-import { CacheTag, courseTag } from '@/lib/cache'
+import { CacheTag, courseTag, progressUserTag } from '@/lib/cache'
 
 const fetchCourse = cache(async (slug: string, userId?: string) => {
   'use cache'
-  cacheTag(courseTag(slug))
+  cacheTag(courseTag(slug), ...(userId ? [progressUserTag(userId)] : []))
 
   return await safeQuery(async () => {
     const course = await db.query.courses.findFirst({
@@ -37,7 +37,7 @@ const fetchCourse = cache(async (slug: string, userId?: string) => {
 
 const fetchCourses = cache(async (userId?: string) => {
   'use cache'
-  cacheTag(CacheTag.Courses)
+  cacheTag(CacheTag.Courses, ...(userId ? [progressUserTag(userId)] : []))
 
   return await safeQuery(async () => {
     const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })

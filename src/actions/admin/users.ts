@@ -6,6 +6,7 @@ import { cacheTag } from 'next/cache'
 
 import { eq } from 'drizzle-orm'
 
+import { revalidateUserAccess, revokeUserSessions } from '@/actions/admin/helpers'
 import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
@@ -44,8 +45,10 @@ export const banUser = async (userId: string, reason?: string) => {
 
   await db
     .update(users)
-    .set({ banned: true, banReason: reason?.trim() || null })
+    .set({ banned: true, banReason: reason?.trim().slice(0, 500) || null })
     .where(eq(users.id, userId))
+  await revokeUserSessions(userId)
+  revalidateUserAccess(userId)
 
   return { data: { id: userId } }
 }
@@ -55,11 +58,13 @@ export const unbanUser = async (userId: string) => {
   if (!currentUser.isAdmin) return { error: 'Only admins can unban users' }
 
   await db.update(users).set({ banned: false, banReason: null, banExpires: null }).where(eq(users.id, userId))
+  revalidateUserAccess(userId)
 
   return { data: { id: userId } }
 }
 
 export const updateUserRole = async (userId: string, role: 'admin' | 'editor' | 'user') => {
+  if (!['admin', 'editor', 'user'].includes(role)) return { error: 'Invalid role' }
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can update user roles' }
   if (currentUser.id === userId) return { error: 'You cannot change your own role' }
@@ -71,6 +76,7 @@ export const updateUserRole = async (userId: string, role: 'admin' | 'editor' | 
       isEditor: role === 'editor',
     })
     .where(eq(users.id, userId))
+  revalidateUserAccess(userId)
 
   return { data: { id: userId, role } }
 }

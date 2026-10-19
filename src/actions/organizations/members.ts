@@ -12,6 +12,7 @@ import {
   canInviteRole,
   canManageMemberRole,
   createInvitationUrl,
+  expireUserAccess,
   getOrganizationAdminsCount,
   getOrganizationContext,
   memberUserColumns,
@@ -97,6 +98,7 @@ export const inviteOrganizationMember = async ({
       role,
       userId: invitee.id,
     })
+    expireUserAccess([invitee.id])
 
     const inviterName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email
 
@@ -166,6 +168,7 @@ export const updateOrganizationMemberRole = async (membershipId: number, role: O
     }
 
     await db.update(memberships).set({ role }).where(eq(memberships.id, membership.id))
+    expireUserAccess([membership.userId])
 
     return parseOrganizationMember({ ...membership, role })
   })
@@ -209,6 +212,7 @@ export const removeOrganizationMember = async (membershipId: number) => {
     }
 
     await db.delete(memberships).where(eq(memberships.id, membership.id))
+    expireUserAccess([membership.userId])
 
     return { id: membership.id, userId: membership.userId }
   })

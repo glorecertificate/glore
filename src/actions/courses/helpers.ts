@@ -2,18 +2,19 @@ import 'server-only'
 
 import { eq } from 'drizzle-orm'
 
-import { userWith } from '@/db/queries/user'
+import { publicUserColumns, userWith } from '@/db/queries/user'
 import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
 
 const courseWith = {
   skillGroup: { columns: { id: true, name: true } },
-  creator: { with: userWith },
-  archivedBy: { with: userWith },
+  creator: { columns: publicUserColumns, with: userWith },
+  archivedBy: { columns: publicUserColumns, with: userWith },
   lessons: {
     with: {
       contributions: {
         with: {
           user: {
+            columns: publicUserColumns,
             with: {
               memberships: {
                 with: {

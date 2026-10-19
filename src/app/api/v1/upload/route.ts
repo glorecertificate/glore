@@ -1,14 +1,17 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { auth } from '@/lib/auth'
+import { authorizeEditorRequest } from '@/lib/api'
 import { r2Put } from '@/lib/storage'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
 
 export const POST = async (request: NextRequest) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { response } = await authorizeEditorRequest(request, 'upload', 30)
+  if (response) return response
+
+  const declaredLength = Number(request.headers.get('content-length') ?? 0)
+  if (declaredLength > MAX_FILE_SIZE) return NextResponse.json({ error: 'File too large' }, { status: 413 })
 
   const contentType = request.headers.get('content-type')
   if (!contentType) return NextResponse.json({ error: 'No file provided' }, { status: 400 })

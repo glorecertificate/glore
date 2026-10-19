@@ -17,6 +17,11 @@ export const certificateWith = {
   },
 } as const
 
+export const certificatePublicWith = {
+  ...certificateWith,
+  user: { columns: { id: true, firstName: true, lastName: true } },
+} as const
+
 export const certificateWithUsers = {
   ...certificateWith,
   user: { columns: certificateUserColumns },

@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { ArrowLeftIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 import { completeLesson, submitAssessmentRating, submitEvaluationRatings } from '@/actions/courses/progress'
 import { useCourse } from '@/components/features/courses/course-editor/context'
@@ -64,19 +65,23 @@ export const CourseFooter = () => {
     if (!user.canEdit && !isViewer && currentLesson.id && !currentLesson.completed) {
       setSaving(true)
       try {
-        await completeLesson(currentLesson.id)
+        const results: { data?: unknown; error?: unknown }[] = [await completeLesson(currentLesson.id)]
         if (currentLesson.type === 'evaluations' && currentLesson.evaluations?.length) {
           const ratings = currentLesson.evaluations.flatMap(e =>
             e.userRating !== null && e.userRating !== undefined ? [{ evaluationId: e.id, value: e.userRating }] : []
           )
-          if (ratings.length > 0) await submitEvaluationRatings(ratings)
+          if (ratings.length > 0) results.push(await submitEvaluationRatings(ratings))
         }
         if (
           currentLesson.type === 'assessment' &&
           currentLesson.assessment?.userRating !== null &&
           currentLesson.assessment?.userRating !== undefined
         ) {
-          await submitAssessmentRating(currentLesson.assessment.id, currentLesson.assessment.userRating)
+          results.push(await submitAssessmentRating(currentLesson.assessment.id, currentLesson.assessment.userRating))
+        }
+        if (results.some(({ error }) => error)) {
+          toast.error(t('saveError'))
+          return
         }
         setCourse(prev => ({
           ...prev,

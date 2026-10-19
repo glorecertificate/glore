@@ -8,6 +8,7 @@ import { cache } from 'react'
 import { asc, eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
+import { isEditorUser, requireEditor } from '@/actions/guards'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type DocCategory, parseDocArticle, parseDocCategory } from '@/db/queries/doc'
@@ -28,13 +29,6 @@ const getPublishedArticlesWith = () => ({
     orderBy: [asc(docArticles.createdAt)],
   },
 })
-
-const requireEditor = async () => {
-  const user = await getAuthUser()
-  if (!user) throw new Error('Not authenticated')
-  if (user.role !== 'admin' && !user.isEditor) throw new Error('Not authorized')
-  return user
-}
 
 const queryDocCategories = async (includeUnpublished: boolean) => {
   const result = await db.query.docCategories.findMany({
@@ -57,14 +51,16 @@ export const listDocCategories = async ({ cache: useCache = true, includeUnpubli
   data: DocCategory[] | null
   error: unknown
 }> => {
-  if (!useCache) return { data: await queryDocCategories(includeUnpublished), error: null }
-  return await fetchDocCategories(includeUnpublished)
+  const withUnpublished = includeUnpublished && isEditorUser(await getAuthUser())
+  if (!useCache) return { data: await queryDocCategories(withUnpublished), error: null }
+  return await fetchDocCategories(withUnpublished)
 }
 
 export const findDocCategory = async (slug: string, { includeUnpublished = false } = {}) => {
+  const withUnpublished = includeUnpublished && isEditorUser(await getAuthUser())
   const result = await db.query.docCategories.findFirst({
     where: eq(docCategories.slug, slug),
-    with: includeUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
+    with: withUnpublished ? getArticlesWith() : getPublishedArticlesWith(),
   })
   if (!result) return null
   return parseDocCategory(result)
@@ -75,7 +71,7 @@ export const createDocCategory = async (data: TableInsert<'doc_categories'>) => 
     await requireEditor()
     const parsed = docCategoryInsertSchema.safeParse(data)
     if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid category data' } }
-    const [result] = await db.insert(docCategories).values(data).returning()
+    const [result] = await db.insert(docCategories).values(parsed.data).returning()
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: result, error: null }
   } catch (e) {
@@ -102,7 +98,7 @@ export const createDocArticle = async (data: TableInsert<'doc_articles'>) => {
     await requireEditor()
     const parsed = docArticleInsertSchema.safeParse(data)
     if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid article data' } }
-    const [result] = await db.insert(docArticles).values(data).returning()
+    const [result] = await db.insert(docArticles).values(parsed.data).returning()
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: parseDocArticle(result), error: null }
   } catch (e) {
@@ -118,7 +114,8 @@ export const updateDocArticle = async (id: number, data: TableUpdate<'doc_articl
     await requireEditor()
     const parsed = docArticleUpdateSchema.safeParse(data)
     if (!parsed.success) return { data: null, error: { code: 'VALIDATION', message: 'Invalid article data' } }
-    const [result] = await db.update(docArticles).set(data).where(eq(docArticles.id, id)).returning()
+    const [result] = await db.update(docArticles).set(parsed.data).where(eq(docArticles.id, id)).returning()
+    if (!result) return { data: null, error: { code: 'NOT_FOUND', message: 'Article not found' } }
     revalidateTag(CacheTag.DocCategories, 'max')
     return { data: parseDocArticle(result), error: null }
   } catch (e) {

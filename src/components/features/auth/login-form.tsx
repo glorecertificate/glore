@@ -1,6 +1,5 @@
 'use client'
 
-import { redirect } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -10,13 +9,12 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { login } from '@/actions/auth'
-import { findUserEmail } from '@/actions/user'
 import { SignupDialog } from '@/components/features/auth/signup-dialog'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
-import { APP_ROOT, PASSWORD_REGEX } from '@/lib/constants'
+import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
 import { cn, isValidUsername } from '@/lib/utils'
 
@@ -80,21 +78,6 @@ export const LoginForm = ({
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     setLoading(true)
 
-    const { data, error } = await findUserEmail(schema.username.trim())
-
-    if (error?.code === 'NOT_FOUND' || !data) {
-      setLoading(false)
-      setErrored(true)
-      form.setError('username', { message: t('userNotFound') })
-      form.setFocus('username')
-      return
-    }
-    if (error) {
-      console.error(error)
-      toast.error(t('networkError'))
-      return
-    }
-
     const password = schema.password.trim()
 
     if (!PASSWORD_REGEX.test(password)) {
@@ -104,21 +87,20 @@ export const LoginForm = ({
       return
     }
 
-    const { error: loginError } = await login({ email: data.email, password })
+    const { error } = await login({ password, username: schema.username.trim() })
+    setLoading(false)
 
-    if (loginError) {
-      setLoading(false)
+    if (error.code === 'AUTH_ERROR') {
       setErrored(true)
-      if (loginError.code === 'AUTH_ERROR') {
-        setPasswordInvalid()
-        return
-      }
-      console.error(loginError)
-      toast.error(t('networkError'))
+      setPasswordInvalid()
       return
     }
-
-    redirect(APP_ROOT)
+    if (error.code === 'RATE_LIMITED') {
+      toast.error(t('tooManyAttempts'))
+      return
+    }
+    console.error(error)
+    toast.error(t('networkError'))
   }
 
   useEffect(() => {

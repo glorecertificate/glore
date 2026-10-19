@@ -12,7 +12,8 @@ const CertificatesNewContent = async () => {
   if (!eligible) redirect('/certificates')
 
   const [activeOrgId, { data: certificates }] = await Promise.all([getActiveOrgId(), listUserCertificates()])
-  if (certificates?.find(({ organization }) => organization?.id === activeOrgId)) redirect('/certificates')
+  const hasCertificate = certificates?.some(({ isDraft, organization }) => !isDraft && organization?.id === activeOrgId)
+  if (hasCertificate) redirect('/certificates')
 
   const [user, { data: courses }] = await Promise.all([getCurrentUser(), listCourses()])
   const activeOrg = user.organizations.find(o => o.id === activeOrgId) ?? user.organizations[0]

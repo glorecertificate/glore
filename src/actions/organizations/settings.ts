@@ -7,16 +7,17 @@ import { and, count, eq } from 'drizzle-orm'
 import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
   assertOrganizationAdmin,
+  expireUserAccess,
   getDescriptionRecord,
   getFreshCurrentUser,
   getOrganizationContext,
+  listOrganizationMemberIds,
   revalidateOrganizationMembers,
 } from '@/actions/organizations/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { certificates, organizationProfiles, organizations } from '@/db/schema'
-import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
-import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
+import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 export const updateOrganization = async ({
   address,
@@ -117,7 +118,7 @@ export const updateOrganization = async ({
   })
 }
 
-export const createOrganizationAvatarUploadUrl = async (contentType: string) => {
+export const createOrganizationAvatarUploadUrl = async (contentType: string, size: number) => {
   const { organization, role } = await getOrganizationContext()
 
   return await safeQuery(async () => {
@@ -127,15 +128,7 @@ export const createOrganizationAvatarUploadUrl = async (contentType: string) => 
 
     assertOrganizationAdmin(role)
 
-    if (!AVATAR_CONTENT_TYPES.includes(contentType)) {
-      throw new Error('Invalid image type')
-    }
-
-    const ext = contentType.split('/')[1]
-    const key = `organizations/${organization.id}-${Date.now()}.${ext}`
-    const url = await r2PresignPut(key, contentType)
-
-    return { key, url }
+    return await r2PresignAvatar(`organizations/${organization.id}`, contentType, size)
   })
 }
 
@@ -153,18 +146,16 @@ export const confirmOrganizationAvatar = async (key: string) => {
       throw new Error('Invalid key')
     }
 
+    const avatarUrl = await r2VerifyAvatar(key)
     const current = await db.query.organizationProfiles.findFirst({
       columns: { avatarUrl: true },
       where: eq(organizationProfiles.organizationId, organization.id),
     })
 
-    await db
-      .insert(organizationProfiles)
-      .values({ avatarUrl: r2Url(key), organizationId: organization.id })
-      .onConflictDoUpdate({
-        target: organizationProfiles.organizationId,
-        set: { avatarUrl: r2Url(key) },
-      })
+    await db.insert(organizationProfiles).values({ avatarUrl, organizationId: organization.id }).onConflictDoUpdate({
+      target: organizationProfiles.organizationId,
+      set: { avatarUrl },
+    })
 
     if (current?.avatarUrl) {
       await r2Delete(current.avatarUrl).catch(() => null)
@@ -236,7 +227,9 @@ export const deleteOrganization = async () => {
       throw new Error('Organizations with certificates cannot be deleted')
     }
 
+    const memberIds = await listOrganizationMemberIds(organization.id)
     await db.delete(organizations).where(eq(organizations.id, organization.id))
+    expireUserAccess(memberIds)
 
     const nextUser = await getFreshCurrentUser(user.id)
     const nextOrganization = nextUser.organizations[0]

@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTranslations } from 'next-intl'
+import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { changePassword } from '@/actions/auth'
-import { deleteAccount, updateUser } from '@/actions/user'
+import { deleteAccount, updateAccount } from '@/actions/user'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -30,7 +30,6 @@ import { Input } from '@/components/ui/input'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Separator } from '@/components/ui/separator'
-import { type TableUpdate } from '@/db/types'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
@@ -72,34 +71,29 @@ export const AccountForm = () => {
   const accountDisabled = defaultFormDisabled(accountForm)
 
   const onAccountSubmit = async (schema: z.infer<typeof accountSchema>) => {
+    const updates: { email?: string; locale?: Locale | null; username?: string } = {}
+    if (schema.email !== user.email) updates.email = schema.email
+    if (schema.locale !== (user.locale ?? '')) updates.locale = (schema.locale || null) as Locale | null
+    if (schema.username && schema.username !== (user.username ?? '')) updates.username = schema.username
+    if (Object.keys(updates).length === 0) return
+
     try {
-      const updates: TableUpdate<'users'> = {}
-      const fields = ['locale', 'email', 'username'] as const
+      const { pendingEmail, user: data } = await updateAccount(updates)
 
-      for (const key of fields) {
-        const value = schema[key]
-        if (value !== (user[key] ?? '')) {
-          updates[key] = (value || null) as never
-        }
-      }
+      if (updates.locale && updates.locale !== user.locale) setLocale(updates.locale)
 
-      if (Object.keys(updates).length > 0) {
-        const previousEmail = updates.email && updates.email !== user.email ? user.email : undefined
-        const data = await updateUser(user.id, updates, previousEmail ?? undefined)
-
-        if (updates.locale && updates.locale !== user.locale) {
-          setLocale(updates.locale as Any)
-        }
-
-        setUser(data)
-        accountForm.reset({
-          locale: (data.locale ?? '') as '' | 'en' | 'es' | 'it',
-          email: data.email ?? '',
-          username: data.username ?? '',
-        })
-        toast.success(t('accountUpdated'))
-      }
+      setUser(data)
+      accountForm.reset({
+        locale: (data.locale ?? '') as '' | 'en' | 'es' | 'it',
+        email: data.email ?? '',
+        username: data.username ?? '',
+      })
+      toast.success(pendingEmail ? t('emailChangeRequested', { email: pendingEmail }) : t('accountUpdated'))
     } catch (error) {
+      if (error instanceof Error && error.message === 'USERNAME_TAKEN') {
+        accountForm.setError('username', { message: t('usernameTaken') })
+        return
+      }
       console.error(error)
       toast.error(t('accountUpdateError'))
     }

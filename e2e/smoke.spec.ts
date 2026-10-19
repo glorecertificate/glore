@@ -8,6 +8,13 @@ test.describe('anonymous', () => {
     await expect(page).toHaveURL(/\/login/u)
     await expect(page.locator('input[name="username"]')).toBeVisible()
   })
+
+  test('cannot self-register through the auth API', async ({ request }) => {
+    const response = await request.post('/api/auth/sign-up/email', {
+      data: { email: 'intruder@seed.glore.test', firstName: 'Intruder', name: 'Intruder', password: 'Intruder-2026!' },
+    })
+    expect(response.status()).toBe(404)
+  })
 })
 
 test.describe('platform admin', () => {

@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { resetPassword } from '@/actions/auth'
-import { findUserEmail } from '@/actions/user'
 import { Button } from '@/components/ui/button'
 
 export const ResendEmailButton = ({ username }: { username?: string }) => {
@@ -33,19 +32,12 @@ export const ResendEmailButton = ({ username }: { username?: string }) => {
 
     setLoading(true)
     try {
-      const { data, error: emailError } = await findUserEmail(username)
-
-      if (emailError || !data) {
-        toast.error(t('networkError'))
+      const { error } = await resetPassword(username)
+      if (error) {
+        toast.error(t(error.code === 'RATE_LIMITED' ? 'tooManyAttempts' : 'networkError'))
         return
       }
-
-      const { error } = await resetPassword(data.email, { redirectTo: window.location.origin })
-      if (error) {
-        toast.error(t('networkError'))
-      } else {
-        setTimeLeft(30)
-      }
+      setTimeLeft(30)
     } catch {
       toast.error(t('networkError'))
     } finally {

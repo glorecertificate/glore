@@ -16,7 +16,8 @@ type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name
 }
 type CourseRow = Pick<InferSelectModel<typeof courses>, 'id' | 'slug' | 'title'>
 type CertificateSkillRow = Omit<InferSelectModel<typeof certificateSkills>, 'courseId'> & { course: CourseRow }
-type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName' | 'email'>
+type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName'> &
+  Partial<Pick<InferSelectModel<typeof users>, 'email'>>
 
 export type CertificateStatus = EnumType<'certificate_status'>
 

@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { and, eq } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
 import { certificateSkills, certificates } from '@/db/schema'
@@ -11,6 +11,22 @@ export const createCertificateWithSkills = async (
   values: TableInsert<'certificates'>,
   skillCourseIds: number[]
 ) => {
+  const drafts = await tx
+    .select({ id: certificates.id })
+    .from(certificates)
+    .where(
+      and(
+        eq(certificates.userId, values.userId),
+        eq(certificates.organizationId, values.organizationId),
+        eq(certificates.status, 'draft')
+      )
+    )
+  const draftIds = drafts.map(({ id }) => id)
+  if (draftIds.length > 0) {
+    await tx.delete(certificateSkills).where(inArray(certificateSkills.certificateId, draftIds))
+    await tx.delete(certificates).where(inArray(certificates.id, draftIds))
+  }
+
   const [created] = await tx.insert(certificates).values(values).returning()
   if (!created) throw new Error('Failed to create certificate')
 

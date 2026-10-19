@@ -9,7 +9,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { confirmAvatar, createAvatarUploadUrl, removeAvatar } from '@/actions/storage'
-import { updateUser } from '@/actions/user'
+import { updateProfile } from '@/actions/user'
 import { SettingsSection } from '@/components/features/users/settings-section'
 import { useSession } from '@/components/providers/session'
 import {
@@ -33,7 +33,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator'
 import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
 import { Textarea } from '@/components/ui/textarea'
-import { type TableUpdate } from '@/db/types'
 import { type Any } from '@/lib/types'
 import { defaultFormDisabled } from '@/lib/utils'
 import i18nConfig from '~/config/i18n.json'
@@ -87,7 +86,7 @@ export const ProfileForm = () => {
 
   const handleAvatarUpload = async (file: File) => {
     try {
-      const { key, url } = await createAvatarUploadUrl(file.type)
+      const { key, url } = await createAvatarUploadUrl(file.type, file.size)
       const res = await fetch(url, { method: 'PUT', body: file, headers: { 'Content-Type': file.type } })
       if (!res.ok) throw new Error('Upload failed')
 
@@ -125,7 +124,7 @@ export const ProfileForm = () => {
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     try {
-      const updates: TableUpdate<'users'> = {}
+      const updates: Parameters<typeof updateProfile>[0] = {}
 
       for (const key of FIELDS) {
         const value = schema[key]
@@ -139,7 +138,7 @@ export const ProfileForm = () => {
       }
 
       if (Object.keys(updates).length > 0) {
-        const data = await updateUser(user.id, updates)
+        const data = await updateProfile(updates)
         setUser(data)
         form.reset({
           firstName: data.firstName ?? '',

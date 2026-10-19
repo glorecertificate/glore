@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { db } from '@/db/client'
 import { teamInvitations } from '@/db/schema'
 import { accounts } from '@/db/schema/accounts'
+import { rateLimits } from '@/db/schema/rate-limits'
 import { sessions } from '@/db/schema/sessions'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
@@ -76,12 +77,14 @@ export const auth = betterAuth({
     provider: 'pg',
     schema: {
       accounts,
+      rateLimits,
       sessions,
       users,
       verifications,
     },
     usePlural: true,
   }),
+  disabledPaths: ['/sign-up/email', '/update-user'],
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
@@ -118,33 +121,27 @@ export const auth = betterAuth({
     },
     changeEmail: {
       enabled: true,
-      async sendChangeEmailVerification({
-        user,
-        newEmail,
-        url,
-      }: {
-        user: { name: string }
-        newEmail: string
-        url: string
-      }) {
-        await sendMail({
-          to: newEmail,
-          template: {
-            name: 'auth/verify-email',
-            props: {
-              url,
-              userName: user.name || undefined,
-            },
+    },
+  },
+  emailVerification: {
+    async sendVerificationEmail({ user, url }) {
+      await sendMail({
+        to: user.email,
+        template: {
+          name: 'auth/verify-email',
+          props: {
+            url,
+            userName: user.name || undefined,
           },
-        })
-      },
+        },
+      })
     },
   },
   rateLimit: {
     enabled: true,
     window: 10,
     max: 100,
-    storage: 'memory',
+    storage: 'database',
     customRules: {
       '/api/auth/sign-in/email': { window: 60, max: 5 },
       '/api/auth/sign-up/email': { window: 60, max: 5 },

@@ -5,14 +5,14 @@ import { useI18n } from '@/components/providers/i18n'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { type User } from '@/db/queries/user'
+import { type PublicUser } from '@/db/queries/user'
 import { type Any, type HttpUrl } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import app from '~/config/app.json'
 
-const DEFAULT_HIDE: (keyof User)[] = []
+const DEFAULT_HIDE: (keyof PublicUser)[] = []
 
-export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[]; user: User }) => {
+export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUser)[]; user: PublicUser }) => {
   const { locale } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Users')
@@ -60,7 +60,7 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof User)[];
     return t('contact', { user: user.firstName })
   })()
 
-  const isVisible = (key: keyof User) => {
+  const isVisible = (key: keyof PublicUser) => {
     const isVisibleKey = !hide.includes(key)
     const hasValue = Array.isArray(user[key]) ? user[key]?.length > 0 : Boolean(user[key])
     return isVisibleKey && hasValue

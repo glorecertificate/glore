@@ -10,7 +10,6 @@ type Messages = typeof defaultMessages
 interface AccountEmailChangedEmailProps {
   oldEmail: string
   newEmail: string
-  type: 'new' | 'old'
   userName?: string
   locale?: string
   messages?: AbstractIntlMessages
@@ -19,7 +18,6 @@ interface AccountEmailChangedEmailProps {
 const AccountEmailChangedEmail = ({
   oldEmail,
   newEmail,
-  type,
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
@@ -48,12 +46,8 @@ const AccountEmailChangedEmail = ({
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">
-        {type === 'new' ? t('introNew', { email: newEmail }) : t('introOld', { email: newEmail })}
-      </Text>
-      <Text className="text-[13px] leading-5.5 text-[#71717a]">
-        {type === 'new' ? t('detailsNew', { oldEmail, newEmail }) : t('detailsOld', { oldEmail, newEmail })}
-      </Text>
+      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro', { email: newEmail })}</Text>
+      <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('details', { oldEmail, newEmail })}</Text>
       <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('security')}</Text>
     </EmailLayout>
   )
@@ -62,7 +56,6 @@ const AccountEmailChangedEmail = ({
 AccountEmailChangedEmail.PreviewProps = {
   oldEmail: 'old@example.com',
   newEmail: 'new@example.com',
-  type: 'new',
   userName: 'Jane',
 } satisfies AccountEmailChangedEmailProps
 

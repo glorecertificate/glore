@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2Icon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -22,6 +22,7 @@ import { defaultFormDisabled } from '@/lib/utils'
 
 export const RegisterForm = () => {
   const t = useTranslations('Register')
+  const locale = useLocale()
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
@@ -62,6 +63,7 @@ export const RegisterForm = () => {
       city: values.orgCity,
       country: values.orgCountry,
       email: values.orgEmail,
+      locale,
       name: values.orgName,
       url: values.orgUrl,
     })

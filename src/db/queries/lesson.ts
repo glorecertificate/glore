@@ -1,6 +1,6 @@
 import { type InferSelectModel } from 'drizzle-orm'
 
-import { type UserWithRelations, parseUser } from '@/db/queries/user'
+import { type PublicUserWithRelations, parseUser } from '@/db/queries/user'
 import {
   type assessments,
   type contributions,
@@ -20,7 +20,7 @@ type EvaluationRow = InferSelectModel<typeof evaluations>
 type AssessmentRow = InferSelectModel<typeof assessments>
 type UserAssessmentRow = Pick<InferSelectModel<typeof userAssessments>, 'id' | 'value'>
 type UserEvaluationRow = Pick<InferSelectModel<typeof userEvaluations>, 'id' | 'value'>
-type ContributionRow = InferSelectModel<typeof contributions> & { user: UserWithRelations }
+type ContributionRow = InferSelectModel<typeof contributions> & { user: PublicUserWithRelations }
 type UserLessonCount = { id: number }[]
 
 export interface LessonWithRelations extends LessonRow {

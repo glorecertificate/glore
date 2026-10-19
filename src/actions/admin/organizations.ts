@@ -10,8 +10,10 @@ import { and, count, eq } from 'drizzle-orm'
 
 import {
   createInvitationUrl,
+  expireUserAccess,
   getDescriptionRecord,
   getOrganizationAdminsCount,
+  listOrganizationMemberIds,
   memberUserColumns,
   revalidateOrganizationMembers,
   sendOrganizationAccessEmail,
@@ -39,10 +41,9 @@ import {
 } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
-import { r2Delete, r2PresignPut, r2Url } from '@/lib/storage'
+import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 const loadOrganizations = () =>
   safeQuery(async () => {
@@ -179,6 +180,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
         userId: orgAdmin.id,
       })
     }
+    expireUserAccess([orgAdmin.id])
 
     const nextComment = reviewerComment?.trim() || null
 
@@ -380,6 +382,7 @@ export const inviteOrganization = async ({
         userId: orgAdmin.id,
       })
     }
+    expireUserAccess([orgAdmin.id])
 
     const invitationUrl = existingUser?.onboardedAt
       ? undefined
@@ -556,16 +559,19 @@ export const updateAdminOrganization = async (
   return result
 }
 
-export const createAdminOrganizationAvatarUploadUrl = async (organizationId: number, contentType: string) => {
+export const createAdminOrganizationAvatarUploadUrl = async (
+  organizationId: number,
+  contentType: string,
+  size: number
+) => {
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Forbidden' }
-  if (!AVATAR_CONTENT_TYPES.includes(contentType)) return { error: 'Invalid image type' }
 
-  const ext = contentType.split('/')[1]
-  const key = `organizations/${organizationId}-${Date.now()}.${ext}`
-  const url = await r2PresignPut(key, contentType)
-
-  return { data: { key, url } }
+  try {
+    return { data: await r2PresignAvatar(`organizations/${organizationId}`, contentType, size) }
+  } catch {
+    return { error: 'Invalid image' }
+  }
 }
 
 export const confirmAdminOrganizationAvatar = async (organizationId: number, key: string) => {
@@ -574,6 +580,7 @@ export const confirmAdminOrganizationAvatar = async (organizationId: number, key
   if (!key.startsWith(`organizations/${organizationId}-`)) return { error: 'Invalid key' }
 
   const result = await safeQuery(async () => {
+    const avatarUrl = await r2VerifyAvatar(key)
     const current = await db.query.organizationProfiles.findFirst({
       columns: { avatarUrl: true },
       where: eq(organizationProfiles.organizationId, organizationId),
@@ -581,14 +588,14 @@ export const confirmAdminOrganizationAvatar = async (organizationId: number, key
 
     await db
       .insert(organizationProfiles)
-      .values({ avatarUrl: r2Url(key), organizationId })
-      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: r2Url(key) } })
+      .values({ avatarUrl, organizationId })
+      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl } })
 
     if (current?.avatarUrl) {
       await r2Delete(current.avatarUrl).catch(() => null)
     }
 
-    return { avatarUrl: r2Url(key) }
+    return { avatarUrl }
   })
 
   if (!result.error) await revalidateOrganizationMembers(organizationId)
@@ -696,6 +703,7 @@ export const inviteAdminOrganizationMember = async (
     }
 
     await db.insert(memberships).values({ organizationId, role, userId: invitee.id })
+    expireUserAccess([invitee.id])
 
     const inviterName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.email
 
@@ -760,6 +768,7 @@ export const updateAdminOrganizationMemberRole = async (
     }
 
     await db.update(memberships).set({ role }).where(eq(memberships.id, membership.id))
+    expireUserAccess([membership.userId])
 
     return parseOrganizationMember({ ...membership, role })
   })
@@ -790,6 +799,7 @@ export const removeAdminOrganizationMember = async (organizationId: number, memb
     }
 
     await db.delete(memberships).where(eq(memberships.id, membership.id))
+    expireUserAccess([membership.userId])
 
     return { id: membership.id, userId: membership.userId }
   })
@@ -822,7 +832,9 @@ export const deleteAdminOrganization = async (organizationId: number) => {
       throw new Error('Organizations with certificates cannot be deleted')
     }
 
+    const memberIds = await listOrganizationMemberIds(organizationId)
     await db.delete(organizations).where(eq(organizations.id, organizationId))
+    expireUserAccess(memberIds)
 
     return { organizationId }
   })

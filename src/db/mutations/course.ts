@@ -19,7 +19,6 @@ import {
   userLessons,
 } from '@/db/schema'
 
-/* eslint-disable react-doctor/async-parallel */
 export const deleteLessons = async (tx: Transaction, lessonIds: number[]) => {
   if (lessonIds.length === 0) return
 
@@ -59,4 +58,38 @@ export const deleteCourse = async (tx: Transaction, courseId: number) => {
   await tx.delete(userCourses).where(eq(userCourses.courseId, courseId))
   await tx.delete(certificateSkills).where(eq(certificateSkills.courseId, courseId))
   await tx.delete(courses).where(eq(courses.id, courseId))
+}
+
+export const deleteQuestionOptions = async (tx: Transaction, optionIds: number[]) => {
+  if (optionIds.length === 0) return
+
+  await tx.delete(userAnswers).where(inArray(userAnswers.optionId, optionIds))
+  await tx.delete(questionOptions).where(inArray(questionOptions.id, optionIds))
+}
+
+export const deleteQuestions = async (tx: Transaction, questionIds: number[]) => {
+  if (questionIds.length === 0) return
+
+  const optionIds = tx
+    .select({ id: questionOptions.id })
+    .from(questionOptions)
+    .where(inArray(questionOptions.questionId, questionIds))
+
+  await tx.delete(userAnswers).where(inArray(userAnswers.optionId, optionIds))
+  await tx.delete(questionOptions).where(inArray(questionOptions.questionId, questionIds))
+  await tx.delete(questions).where(inArray(questions.id, questionIds))
+}
+
+export const deleteEvaluations = async (tx: Transaction, evaluationIds: number[]) => {
+  if (evaluationIds.length === 0) return
+
+  await tx.delete(userEvaluations).where(inArray(userEvaluations.evaluationId, evaluationIds))
+  await tx.delete(evaluations).where(inArray(evaluations.id, evaluationIds))
+}
+
+export const deleteAssessments = async (tx: Transaction, assessmentIds: number[]) => {
+  if (assessmentIds.length === 0) return
+
+  await tx.delete(userAssessments).where(inArray(userAssessments.assessmentId, assessmentIds))
+  await tx.delete(assessments).where(inArray(assessments.id, assessmentIds))
 }

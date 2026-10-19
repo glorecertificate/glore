@@ -90,11 +90,14 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
     })
 
     if (!existingMembership) {
-      await db.insert(memberships).values({
-        organizationId: organization.id,
-        role: request.role,
-        userId: invitedUser.id,
-      })
+      await db
+        .insert(memberships)
+        .values({
+          organizationId: organization.id,
+          role: request.role,
+          userId: invitedUser.id,
+        })
+        .onConflictDoNothing()
     }
     expireUserAccess([invitedUser.id])
 

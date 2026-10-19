@@ -1,4 +1,4 @@
-import { index, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { index, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { users } from './users'
 
@@ -29,5 +29,6 @@ export const teamInvitations = pgTable(
   table => [
     index('team_invitations_user_id_idx').on(table.userId),
     index('team_invitations_invited_by_idx').on(table.invitedBy),
+    uniqueIndex('team_invitations_token_key').on(table.token),
   ]
 )

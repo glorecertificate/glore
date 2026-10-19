@@ -224,16 +224,6 @@ export const createCertificate = async (
       throw new Error('Skills must be completed skill courses')
     }
 
-    const existing = await db.query.certificates.findFirst({
-      where: and(
-        eq(certificates.userId, authUser.id),
-        eq(certificates.organizationId, orgId),
-        ne(certificates.status, 'draft')
-      ),
-      columns: { id: true },
-    })
-    if (existing) throw new Error('A certificate already exists for this organization')
-
     const handle = `${authUser.id}-${orgId}-${Date.now()}`
     const status = draft ? 'draft' : 'submitted'
 

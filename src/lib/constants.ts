@@ -17,7 +17,6 @@ export const DASHBOARD_ROOTS = [
   '/help',
   '/organization',
   '/register',
-  '/register',
   '/settings',
 ]
 

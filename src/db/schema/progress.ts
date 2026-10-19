@@ -1,4 +1,4 @@
-import { index, integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { index, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { assessments, evaluations, questionOptions } from './assessments'
 import { courses, lessons } from './courses'
@@ -21,7 +21,11 @@ export const userCourses = pgTable(
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
   },
-  table => [index('user_courses_user_id_idx').on(table.userId), index('user_courses_course_id_idx').on(table.courseId)]
+  table => [
+    index('user_courses_user_id_idx').on(table.userId),
+    index('user_courses_course_id_idx').on(table.courseId),
+    uniqueIndex('user_courses_user_id_course_id_key').on(table.userId, table.courseId),
+  ]
 )
 
 export const userLessons = pgTable(
@@ -38,7 +42,11 @@ export const userLessons = pgTable(
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
   },
-  table => [index('user_lessons_user_id_idx').on(table.userId), index('user_lessons_lesson_id_idx').on(table.lessonId)]
+  table => [
+    index('user_lessons_user_id_idx').on(table.userId),
+    index('user_lessons_lesson_id_idx').on(table.lessonId),
+    uniqueIndex('user_lessons_user_id_lesson_id_key').on(table.userId, table.lessonId),
+  ]
 )
 
 export const userAnswers = pgTable(
@@ -57,7 +65,11 @@ export const userAnswers = pgTable(
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
   },
-  table => [index('user_answers_user_id_idx').on(table.userId), index('user_answers_option_id_idx').on(table.optionId)]
+  table => [
+    index('user_answers_user_id_idx').on(table.userId),
+    index('user_answers_option_id_idx').on(table.optionId),
+    uniqueIndex('user_answers_user_id_option_id_key').on(table.userId, table.optionId),
+  ]
 )
 
 export const userAssessments = pgTable(
@@ -78,6 +90,7 @@ export const userAssessments = pgTable(
   table => [
     index('user_assessments_user_id_idx').on(table.userId),
     index('user_assessments_assessment_id_idx').on(table.assessmentId),
+    uniqueIndex('user_assessments_user_id_assessment_id_key').on(table.userId, table.assessmentId),
   ]
 )
 
@@ -101,5 +114,6 @@ export const userEvaluations = pgTable(
   table => [
     index('user_evaluations_user_id_idx').on(table.userId),
     index('user_evaluations_evaluation_id_idx').on(table.evaluationId),
+    uniqueIndex('user_evaluations_user_id_evaluation_id_key').on(table.userId, table.evaluationId),
   ]
 )

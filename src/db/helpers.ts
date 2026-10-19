@@ -40,3 +40,11 @@ export const queryError = (e: unknown) => {
     message: error.message,
   }
 }
+
+export const mapSequential = async <T, R>(items: T[], fn: (item: T) => Promise<R>) => {
+  const results: R[] = []
+  for (const item of items) {
+    results.push(await fn(item))
+  }
+  return results
+}

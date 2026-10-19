@@ -2,7 +2,8 @@
 
 import 'server-only'
 
-import { and, count, eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
+import { z } from 'zod'
 
 import { deleteCookie, setCookie } from '@/actions/cookies'
 import {
@@ -14,34 +15,33 @@ import {
   listOrganizationMemberIds,
   revalidateOrganizationMembers,
 } from '@/actions/organizations/helpers'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { updateOrganization as updateOrganizationRecord } from '@/db/mutations/organization'
 import { certificates, organizationProfiles, organizations } from '@/db/schema'
 import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
-export const updateOrganization = async ({
-  address,
-  city,
-  country,
-  description,
-  email,
-  name,
-  phone,
-  postcode,
-  region,
-  url,
-}: {
-  address: string
-  city: string
-  country: string
-  description: string
-  email: string
-  name: string
-  phone: string
-  postcode: string
-  region: string
-  url: string
-}) => {
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .transform(value => value || null)
+
+const organizationSchema = z.object({
+  address: optionalText(300),
+  city: z.string().trim().min(1).max(100),
+  country: optionalText(2),
+  description: z.string().trim().max(5000),
+  email: z.email().max(254).toLowerCase(),
+  name: z.string().trim().min(2).max(150),
+  phone: optionalText(40),
+  postcode: optionalText(20),
+  region: optionalText(100),
+  url: optionalText(500),
+})
+
+export const updateOrganization = async (input: z.input<typeof organizationSchema>) => {
   const { organization, role, user } = await getOrganizationContext()
 
   return await safeQuery(async () => {
@@ -50,6 +50,8 @@ export const updateOrganization = async ({
     }
 
     assertOrganizationAdmin(role)
+
+    const { description, ...values } = organizationSchema.parse(input)
 
     const current = await db.query.organizations.findFirst({
       with: {
@@ -66,48 +68,13 @@ export const updateOrganization = async ({
       throw new Error('Organization not found')
     }
 
-    await Promise.all([
-      db
-        .update(organizations)
-        .set({
-          city: city.trim(),
-          email: email.trim().toLowerCase(),
-          name: name.trim(),
-        })
-        .where(and(eq(organizations.id, organization.id), eq(organizations.updatedAt, current.updatedAt))),
-      db
-        .insert(organizationProfiles)
-        .values({
-          organizationId: organization.id,
-          address: address.trim() || null,
-          country: country.trim() || null,
-          description: getDescriptionRecord(
-            description.trim(),
-            user.locale ?? undefined,
-            current.profile?.description ?? null
-          ),
-          phone: phone.trim() || null,
-          postcode: postcode.trim() || null,
-          region: region.trim() || null,
-          url: url.trim() || null,
-        })
-        .onConflictDoUpdate({
-          target: organizationProfiles.organizationId,
-          set: {
-            address: address.trim() || null,
-            country: country.trim() || null,
-            description: getDescriptionRecord(
-              description.trim(),
-              user.locale ?? undefined,
-              current.profile?.description ?? null
-            ),
-            phone: phone.trim() || null,
-            postcode: postcode.trim() || null,
-            region: region.trim() || null,
-            url: url.trim() || null,
-          },
-        }),
-    ])
+    await transaction(tx =>
+      updateOrganizationRecord(tx, organization.id, {
+        ...values,
+        description: getDescriptionRecord(description, user.locale ?? undefined, current.profile?.description ?? null),
+        expectedUpdatedAt: current.updatedAt,
+      })
+    )
 
     const nextUser = await getFreshCurrentUser(user.id)
 

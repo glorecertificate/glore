@@ -174,11 +174,14 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
     })
 
     if (!existingMembership) {
-      await db.insert(memberships).values({
-        organizationId,
-        role: 'admin',
-        userId: orgAdmin.id,
-      })
+      await db
+        .insert(memberships)
+        .values({
+          organizationId,
+          role: 'admin',
+          userId: orgAdmin.id,
+        })
+        .onConflictDoNothing()
     }
     expireUserAccess([orgAdmin.id])
 
@@ -376,11 +379,14 @@ export const inviteOrganization = async ({
     })
 
     if (!existingMembership) {
-      await db.insert(memberships).values({
-        organizationId: org.id,
-        role: 'admin',
-        userId: orgAdmin.id,
-      })
+      await db
+        .insert(memberships)
+        .values({
+          organizationId: org.id,
+          role: 'admin',
+          userId: orgAdmin.id,
+        })
+        .onConflictDoNothing()
     }
     expireUserAccess([orgAdmin.id])
 
@@ -702,7 +708,7 @@ export const inviteAdminOrganizationMember = async (
       throw new Error('This user is already a member of the organization')
     }
 
-    await db.insert(memberships).values({ organizationId, role, userId: invitee.id })
+    await db.insert(memberships).values({ organizationId, role, userId: invitee.id }).onConflictDoNothing()
     expireUserAccess([invitee.id])
 
     const inviterName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.email

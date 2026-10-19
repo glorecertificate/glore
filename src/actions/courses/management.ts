@@ -9,13 +9,21 @@ import { and, eq, inArray, isNull, max, ne } from 'drizzle-orm'
 import { buildCourseWith } from '@/actions/courses/helpers'
 import { requireEditor } from '@/actions/guards'
 import { db, transaction } from '@/db/client'
-import { deleteCourse as deleteCourseRecord, deleteLessons as deleteLessonRecords } from '@/db/mutations/course'
+import { mapSequential } from '@/db/helpers'
+import {
+  deleteAssessments as deleteAssessmentRecords,
+  deleteCourse as deleteCourseRecord,
+  deleteEvaluations as deleteEvaluationRecords,
+  deleteLessons as deleteLessonRecords,
+  deleteQuestionOptions as deleteQuestionOptionRecords,
+  deleteQuestions as deleteQuestionRecords,
+} from '@/db/mutations/course'
 import { type Course, parseCourse } from '@/db/queries/course'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { assessments, courses, evaluations, lessons, questionOptions, questions } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag, courseTag } from '@/lib/cache'
-import { isTempId } from '@/lib/utils'
+import { isTempId, omit } from '@/lib/utils'
 
 const nextActiveSortOrder = async () => {
   const result = await db
@@ -122,23 +130,34 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
   const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
 
-  const values = await db
-    .insert(courses)
-    .values({ ...course, creatorId: authUser.id, sortOrder })
-    .returning()
-  const created = values[0]
-  if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create course' } }
+  const values = omit(course as TableInsert<'courses'> & { id?: number }, [
+    'archivedAt',
+    'archivedById',
+    'creatorId',
+    'id',
+  ])
+  const { created, lesson } = await transaction(async tx => {
+    const [createdCourse] = await tx
+      .insert(courses)
+      .values({ ...values, creatorId: authUser.id, sortOrder })
+      .returning()
+    if (!createdCourse) throw new Error('Failed to create course')
 
-  const { data: lesson, error: lessonError } = await createLesson({
-    courseId: created.id,
-    sortOrder: 1,
-    title: DEFAULT_LESSON.title,
-    content: DEFAULT_LESSON.content,
+    const [createdLesson] = await tx
+      .insert(lessons)
+      .values({
+        courseId: createdCourse.id,
+        sortOrder: 1,
+        title: DEFAULT_LESSON.title,
+        content: DEFAULT_LESSON.content,
+      })
+      .returning()
+    if (!createdLesson) throw new Error('Failed to create lesson')
+
+    return { created: createdCourse, lesson: parseLesson(createdLesson) }
   })
-  if (lessonError) {
-    await db.delete(courses).where(eq(courses.id, created.id))
-    return { error: lessonError }
-  }
+
+  updateTag(CacheTag.Courses)
 
   const full = await db.query.courses.findFirst({
     where: eq(courses.id, created.id),
@@ -160,7 +179,10 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
   const authUser = await requireEditor()
 
-  const values = await resolveCourseUpdate(authUser.id, course)
+  const values = await resolveCourseUpdate(
+    authUser.id,
+    omit(course as TableUpdate<'courses'> & { id?: number }, ['archivedById', 'createdAt', 'creatorId', 'id'])
+  )
 
   await db.update(courses).set(values).where(eq(courses.id, id))
 
@@ -209,22 +231,13 @@ export const deleteCourse = async (id: number) => {
   }
 }
 
-const createLesson = async (lesson: TableInsert<'lessons'>) => {
-  await requireEditor()
-  const values = await db.insert(lessons).values(lesson).returning()
-  const created = values[0]
-  if (!created) return { error: { code: 'INSERT_FAILED', message: 'Failed to create lesson' } }
-
-  return { data: parseLesson(created) }
-}
-
 export const upsertLessons = async (values: Array<TableInsert<'lessons'> & { id?: number }>) => {
   await requireEditor()
-  const result = await Promise.all(
-    values.map(({ id, ...set }) =>
+  const result = await transaction(tx =>
+    mapSequential(values, ({ id, ...set }) =>
       isTempId(id)
-        ? db.insert(lessons).values(set).returning()
-        : db
+        ? tx.insert(lessons).values(set).returning()
+        : tx
             .update(lessons)
             .set(set)
             .where(eq(lessons.id, id as number))
@@ -248,12 +261,10 @@ export const deleteLessons = async (rawIds: number[]) => {
 
 export const reorderCourses = async (items: Course[]) => {
   await requireEditor()
-  await Promise.all(
-    items.map(({ id }, i) =>
-      db
-        .update(courses)
-        .set({ sortOrder: i + 1 })
-        .where(eq(courses.id, id))
+  await transaction(tx =>
+    mapSequential(
+      items.map(({ id }, i) => ({ id, sortOrder: i + 1 })),
+      ({ id, sortOrder }) => tx.update(courses).set({ sortOrder }).where(eq(courses.id, id))
     )
   )
   revalidateCourseSlugs(items.map(({ slug }) => slug))
@@ -262,14 +273,14 @@ export const reorderCourses = async (items: Course[]) => {
 
 export const upsertQuestions = async (values: Array<TableInsert<'questions'> & { id?: number }>) => {
   await requireEditor()
-  const result = await Promise.all(
-    values.map(({ id, ...set }) =>
+  const result = await transaction(tx =>
+    mapSequential(values, ({ id, ...set }) =>
       isTempId(id)
-        ? db
+        ? tx
             .insert(questions)
             .values(set as TableInsert<'questions'>)
             .returning({ id: questions.id, description: questions.description, explanation: questions.explanation })
-        : db
+        : tx
             .update(questions)
             .set(set)
             .where(eq(questions.id, id as number))
@@ -284,21 +295,21 @@ export const deleteQuestions = async (rawIds: number[]) => {
   const ids = persistedIds(rawIds)
   if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByQuestionIds(ids)])
-  await db.delete(questions).where(inArray(questions.id, ids))
+  await transaction(tx => deleteQuestionRecords(tx, ids))
   revalidateCourseSlugs(slugs)
   return { data: true }
 }
 
 export const upsertQuestionOptions = async (values: Array<TableInsert<'question_options'> & { id?: number }>) => {
   await requireEditor()
-  const result = await Promise.all(
-    values.map(({ id, ...set }) =>
+  const result = await transaction(tx =>
+    mapSequential(values, ({ id, ...set }) =>
       isTempId(id)
-        ? db
+        ? tx
             .insert(questionOptions)
             .values(set as TableInsert<'question_options'>)
             .returning({ id: questionOptions.id })
-        : db
+        : tx
             .update(questionOptions)
             .set(set)
             .where(eq(questionOptions.id, id as number))
@@ -313,21 +324,21 @@ export const deleteQuestionOptions = async (rawIds: number[]) => {
   const ids = persistedIds(rawIds)
   if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByOptionIds(ids)])
-  await db.delete(questionOptions).where(inArray(questionOptions.id, ids))
+  await transaction(tx => deleteQuestionOptionRecords(tx, ids))
   revalidateCourseSlugs(slugs)
   return { data: true }
 }
 
 export const upsertEvaluations = async (values: Array<TableInsert<'evaluations'> & { id?: number }>) => {
   await requireEditor()
-  const result = await Promise.all(
-    values.map(({ id, ...set }) =>
+  const result = await transaction(tx =>
+    mapSequential(values, ({ id, ...set }) =>
       isTempId(id)
-        ? db
+        ? tx
             .insert(evaluations)
             .values(set as TableInsert<'evaluations'>)
             .returning({ id: evaluations.id, description: evaluations.description })
-        : db
+        : tx
             .update(evaluations)
             .set(set)
             .where(eq(evaluations.id, id as number))
@@ -342,7 +353,7 @@ export const deleteEvaluations = async (rawIds: number[]) => {
   const ids = persistedIds(rawIds)
   if (ids.length === 0) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByEvaluationIds(ids)])
-  await db.delete(evaluations).where(inArray(evaluations.id, ids))
+  await transaction(tx => deleteEvaluationRecords(tx, ids))
   revalidateCourseSlugs(slugs)
   return { data: true }
 }
@@ -368,7 +379,7 @@ export const upsertAssessment = async ({ id, ...set }: TableInsert<'assessments'
 export const deleteAssessment = async (id: number) => {
   if (isTempId(id)) return { data: true }
   const [, slugs] = await Promise.all([requireEditor(), slugsByAssessmentIds([id])])
-  await db.delete(assessments).where(eq(assessments.id, id))
+  await transaction(tx => deleteAssessmentRecords(tx, [id]))
   revalidateCourseSlugs(slugs)
   return { data: true }
 }

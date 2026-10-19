@@ -2,10 +2,13 @@ import 'server-only'
 
 import { createElement } from 'react'
 
+import { eq } from 'drizzle-orm'
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 import { createTransport } from 'nodemailer'
 import { render } from 'react-email'
 
+import { db } from '@/db/client'
+import { users } from '@/db/schema/users'
 import AccountEmailChangedEmail from '@/emails/account/email-changed'
 import AccountPasswordChangedEmail from '@/emails/account/password-changed'
 import AuthInviteEmail from '@/emails/auth/invite'
@@ -17,6 +20,7 @@ import OrganizationJoinRequestEmail from '@/emails/organization/join-request'
 import OrganizationMemberAddedEmail from '@/emails/organization/member-added'
 import OrganizationRegistrationRequestEmail from '@/emails/organization/registration-request'
 import TeamInviteEmail from '@/emails/team/invite'
+import { DEFAULT_LOCALE } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
@@ -174,15 +178,25 @@ const transporter = createTransport({
   },
 })
 
+const recipientLocale = async (to: string | string[]) => {
+  if (Array.isArray(to)) return DEFAULT_LOCALE
+  const recipient = await db.query.users.findFirst({
+    columns: { locale: true },
+    where: eq(users.email, to.trim().toLowerCase()),
+  })
+  return recipient?.locale ?? DEFAULT_LOCALE
+}
+
 export const sendMail = async ({
   to,
   template,
-  locale = 'en',
+  locale: requestedLocale,
 }: {
   to: string | string[]
   template: EmailTemplate
   locale?: string
 }) => {
+  const locale = requestedLocale ?? (await recipientLocale(to))
   const messages = await messagesFor(locale)
   const { subject, element } = buildEmail(template, messages, locale as Locale)
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])

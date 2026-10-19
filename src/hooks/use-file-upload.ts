@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 interface UploadedFile {
@@ -20,6 +21,7 @@ export const useFileUpload = ({
   onComplete?: (file: UploadedFile) => void
   onError?: (error: unknown) => void
 } = {}) => {
+  const t = useTranslations('Common')
   const [uploadedFile, setUploadedFile] = useState<UploadedFile>()
   const [file, setFile] = useState<File>()
   const [progress, setProgress] = useState<number>(0)
@@ -27,7 +29,7 @@ export const useFileUpload = ({
 
   const uploadFile = async (body: File) => {
     setIsUploading(true)
-    setFile(file)
+    setFile(body)
     setProgress(0)
     try {
       const response = await fetch('/api/v1/upload', { method: 'POST', headers: { 'Content-Type': body.type }, body })
@@ -38,8 +40,7 @@ export const useFileUpload = ({
       onComplete?.(uploaded)
       return uploaded
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Something went wrong, please try again later.'
-      toast.error(message)
+      toast.error(t('uploadFailed'))
       onError?.(error)
     } finally {
       setProgress(0)

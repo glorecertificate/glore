@@ -6,7 +6,7 @@ import { createAuthEndpoint, getSessionFromCtx } from 'better-auth/api'
 import { setSessionCookie } from 'better-auth/cookies'
 import { nextCookies } from 'better-auth/next-js'
 import { admin, username } from 'better-auth/plugins'
-import { eq } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { db } from '@/db/client'
@@ -52,10 +52,12 @@ const teamInvitationsPlugin = () => ({
         const user = await ctx.context.internalAdapter.findUserById(invitation.userId)
         if (!user) return redirectTo(ONBOARDING_ERROR_ROOT)
 
-        await db
+        const [accepted] = await db
           .update(teamInvitations)
           .set({ acceptedAt: new Date().toISOString() })
-          .where(eq(teamInvitations.id, invitation.id))
+          .where(and(eq(teamInvitations.id, invitation.id), isNull(teamInvitations.acceptedAt)))
+          .returning({ id: teamInvitations.id })
+        if (!accepted) return redirectTo(ONBOARDING_ERROR_ROOT)
 
         const session = await ctx.context.internalAdapter.createSession(user.id)
         if (!session) return redirectTo(ONBOARDING_ERROR_ROOT)

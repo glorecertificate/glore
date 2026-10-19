@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
 import { organizationProfiles, organizations } from '@/db/schema'
@@ -53,6 +53,7 @@ export const updateOrganization = async (
     country,
     description,
     email,
+    expectedUpdatedAt,
     name,
     phone,
     postcode,
@@ -69,9 +70,19 @@ export const updateOrganization = async (
     postcode: string | null
     region: string | null
     url: string | null
+    expectedUpdatedAt?: string
   }
 ) => {
-  await tx.update(organizations).set({ city, email, name }).where(eq(organizations.id, organizationId))
+  const [updated] = await tx
+    .update(organizations)
+    .set({ city, email, name })
+    .where(
+      expectedUpdatedAt
+        ? and(eq(organizations.id, organizationId), eq(organizations.updatedAt, expectedUpdatedAt))
+        : eq(organizations.id, organizationId)
+    )
+    .returning({ id: organizations.id })
+  if (!updated) throw new Error('Conflict: organization was modified by another request')
 
   await tx
     .insert(organizationProfiles)

@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray, ne, sql } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
 import { certificateSkills, certificates } from '@/db/schema'
@@ -11,6 +11,19 @@ export const createCertificateWithSkills = async (
   values: TableInsert<'certificates'>,
   skillCourseIds: number[]
 ) => {
+  const lockKey = `certificate:${values.userId}:${values.organizationId}`
+  await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`)
+
+  const existing = await tx.query.certificates.findFirst({
+    where: and(
+      eq(certificates.userId, values.userId),
+      eq(certificates.organizationId, values.organizationId),
+      ne(certificates.status, 'draft')
+    ),
+    columns: { id: true },
+  })
+  if (existing) throw new Error('A certificate already exists for this organization')
+
   const drafts = await tx
     .select({ id: certificates.id })
     .from(certificates)

@@ -20,7 +20,6 @@ import {
   users,
 } from '@/db/schema'
 
-/* eslint-disable react-doctor/async-parallel */
 export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }: { reassignTo?: string } = {}) => {
   const userCertificates = tx.select({ id: certificates.id }).from(certificates).where(eq(certificates.userId, userId))
 

@@ -18,6 +18,7 @@
     "duration": "Durata",
     "endDate": "Data di fine",
     "errorMessage": "Per favore riprova o <contactUs>contattaci</contactUs> se il problema persiste",
+    "uploadFailed": "Caricamento non riuscito. Riprova.",
     "errorTitle": "Ooops! Qualcosa è andato storto",
     "hours": "Ore",
     "notFound": "Pagina non trovata",

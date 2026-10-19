@@ -8,8 +8,8 @@ export const useCookies = () => ({
     if (typeof document === 'undefined') return
     const list: CookieName[] = Array.isArray(names) ? names : [names]
     for (const name of list) {
-      if (!this.has(name, options)) return
-      document.cookie = `${prefixCookieName(name, options?.prefix)}=;`
+      if (!this.has(name, options)) continue
+      document.cookie = `${prefixCookieName(name, options?.prefix)}=; Max-Age=0; Path=${COOKIE_OPTIONS.path}`
     }
   },
   get<T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) {

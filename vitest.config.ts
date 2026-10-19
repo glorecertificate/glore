@@ -1,4 +1,11 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { parseEnv } from 'node:util'
+
 import { defineConfig } from 'vitest/config'
+
+const env = ['.env', '.env.local']
+  .filter(file => existsSync(file))
+  .reduce((acc, file) => ({ ...acc, ...parseEnv(readFileSync(file, 'utf8')) }), {}) as Partial<NodeJS.ProcessEnv>
 
 export default defineConfig({
   resolve: {
@@ -9,6 +16,7 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    env,
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
     restoreMocks: true,
   },

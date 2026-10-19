@@ -103,6 +103,7 @@ export const submitAnswers = async (options: { id: number }[]) => {
   const result = await db
     .insert(userAnswers)
     .values(optionIds.map(optionId => ({ optionId, userId: user.id })))
+    .onConflictDoNothing()
     .returning({ id: userAnswers.id })
 
   return { data: result }
@@ -136,6 +137,7 @@ export const enrollCourse = async (courseId: number, locale: string) => {
   const [result] = await db
     .insert(userCourses)
     .values({ userId: user.id, courseId, locale: enrollmentLocale })
+    .onConflictDoNothing()
     .returning()
 
   return { data: result }
@@ -152,7 +154,7 @@ export const completeLesson = async (lessonId: number) => {
   })
   if (existing) return { data: existing }
 
-  const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).returning()
+  const [result] = await db.insert(userLessons).values({ userId: user.id, lessonId }).onConflictDoNothing().returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
   updateTag(progressUserTag(user.id))
@@ -189,6 +191,7 @@ export const submitEvaluationRatings = async (input: { evaluationId: number; val
   const result = await db
     .insert(userEvaluations)
     .values(newRatings.map(({ evaluationId, value }) => ({ userId: user.id, evaluationId, value })))
+    .onConflictDoNothing()
     .returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
@@ -215,7 +218,11 @@ export const submitAssessmentRating = async (assessmentId: number, value: number
   })
   if (existing) return { data: existing }
 
-  const [result] = await db.insert(userAssessments).values({ userId: user.id, assessmentId, value }).returning()
+  const [result] = await db
+    .insert(userAssessments)
+    .values({ userId: user.id, assessmentId, value })
+    .onConflictDoNothing()
+    .returning()
 
   revalidateTag(certificatesUserTag(user.id), 'max')
   updateTag(progressUserTag(user.id))

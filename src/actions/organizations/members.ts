@@ -93,11 +93,14 @@ export const inviteOrganizationMember = async ({
       throw new Error('This user is already a member of the organization')
     }
 
-    await db.insert(memberships).values({
-      organizationId: organization.id,
-      role,
-      userId: invitee.id,
-    })
+    await db
+      .insert(memberships)
+      .values({
+        organizationId: organization.id,
+        role,
+        userId: invitee.id,
+      })
+      .onConflictDoNothing()
     expireUserAccess([invitee.id])
 
     const inviterName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email

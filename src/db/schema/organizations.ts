@@ -1,4 +1,4 @@
-import { index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { membershipRoleEnum, organizationRequestStatusEnum } from './enums'
 import { type IntlJsonbNullable } from './helpers'
@@ -64,7 +64,7 @@ export const memberships = pgTable(
   table => [
     index('memberships_user_id_idx').on(table.userId),
     index('memberships_organization_id_idx').on(table.organizationId),
-    index('memberships_user_id_organization_id_idx').on(table.userId, table.organizationId),
+    uniqueIndex('memberships_user_id_organization_id_key').on(table.userId, table.organizationId),
   ]
 )
 

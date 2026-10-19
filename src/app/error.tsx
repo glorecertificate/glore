@@ -1,7 +1,7 @@
 'use client'
 
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useEffectEvent, useState, useSyncExternalStore } from 'react'
 
 import { ArrowLeftIcon, RefreshCwIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -13,6 +13,11 @@ import { Logo } from '@/components/ui/logo'
 import { Spinner } from '@/components/ui/spinner'
 import { APP_ROOT } from '@/lib/constants'
 
+const subscribe = () => () => {}
+const getCanGoBack = () =>
+  document.referrer.startsWith(window.location.origin) && document.referrer !== window.location.href
+const getServerCanGoBack = () => false
+
 const AppError = ({ error, reset }: ErrorProps) => {
   const pathname = usePathname()
   const { back, push } = useRouter()
@@ -20,7 +25,7 @@ const AppError = ({ error, reset }: ErrorProps) => {
 
   const [retrying, setRetrying] = useState(false)
 
-  const canGoBack = document.referrer?.startsWith(window.location.origin) && document.referrer !== window.location.href
+  const canGoBack = useSyncExternalStore(subscribe, getCanGoBack, getServerCanGoBack)
   const backAction = canGoBack ? back : () => push(APP_ROOT)
 
   const logError = useEffectEvent(() => {

@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag, revalidateTag, updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
@@ -19,16 +19,18 @@ import { parseUser, userWith } from '@/db/queries/user'
 import { certificates, memberships, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { userTag } from '@/lib/cache'
-import { AUTH_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
+import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
+
+const USER_NOT_FOUND = 'User not found'
 
 const queryUserById = async (id: string) => {
   const user = await db.query.users.findFirst({
     where: eq(users.id, id),
     with: userWith,
   })
-  if (!user) throw new Error('User not found')
+  if (!user) throw new Error(USER_NOT_FOUND)
   return parseUser(user)
 }
 
@@ -40,16 +42,21 @@ const fetchUser = async (id: string) => {
 }
 
 export const getCurrentUser = cache(async () => {
-  const user = await getAuthUser()
-  if (!user) redirect(AUTH_ROOT)
-  return await findUser(user.id)
+  const authUser = await getAuthUser()
+  if (!authUser) redirect(AUTH_ROOT)
+
+  const { data, error } = await fetchUser(authUser.id)
+  if (error?.message === USER_NOT_FOUND) redirect(SESSION_ROOT)
+  if (error || !data) throw new Error(error?.message ?? USER_NOT_FOUND)
+
+  return data
 })
 
 export const findUser = async (id: string, { cache: useCache = true }: { cache?: boolean } = {}) => {
   if (!useCache) return await queryUserById(id)
 
   const { data, error } = await fetchUser(id)
-  if (error || !data) throw new Error(error?.message ?? 'User not found')
+  if (error || !data) throw new Error(error?.message ?? USER_NOT_FOUND)
 
   return data
 }
@@ -176,6 +183,8 @@ export const deleteAccount = async () => {
   if (cert) throw new Error('HAS_CERTIFICATES')
 
   await transaction(tx => deleteUser(tx, user.id))
+  await auth.api.signOut({ headers: await headers() })
+  updateTag(userTag(user.id))
 
   redirect(AUTH_ROOT)
 }

@@ -35,6 +35,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 | `/api/v1/ai/copilot` | POST     | AI copilot (editors, rate limited)             |
 | `/api/v1/join`       | GET      | Team invitation join endpoint                  |
 | `/api/v1/manifest`   | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
+| `/api/v1/session`    | GET      | Clears cookies of a stale session, then login  |
 | `/api/v1/upload`     | POST     | R2 file upload (editors, rate limited)         |
 | `/api/v1/health`     | GET      | Health check (returns `{ status: 'ok' }`)      |
 

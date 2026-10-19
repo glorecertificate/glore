@@ -5,13 +5,13 @@ import { getLocale } from 'next-intl/server'
 import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
 
 import { getCookie } from '@/actions/cookies'
-import { enrollCourse } from '@/actions/courses/progress'
 import { getCourse } from '@/actions/courses/queries'
 import { getCurrentUser } from '@/actions/user'
 import { CourseEditor } from '@/components/features/courses/course-editor'
 import { CourseBreadcrumb } from '@/components/features/courses/course-editor/breadcrumb'
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
+import { CourseEnrollment } from '@/components/features/courses/course-enrollment'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
@@ -75,13 +75,11 @@ export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
 
 const CoursePageContent = async (props: PageProps<'/courses/[slug]'>) => {
   const { course, isViewer, language, step, user } = await resolvePageData(props)
-
-  if (!course.enrolled && !user.canEdit && !isViewer) {
-    await enrollCourse(course.id, language)
-  }
+  const shouldEnroll = !(course.enrolled || user.canEdit || isViewer)
 
   return (
     <CourseProvider value={{ course, language, step }}>
+      {shouldEnroll && <CourseEnrollment courseId={course.id} language={language} />}
       <DashboardPage
         title={<PageTitle namespace="Courses" name="courses" />}
         backHref="/courses"

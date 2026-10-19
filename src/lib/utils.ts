@@ -6,7 +6,7 @@ import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } 
 /*
   App
 */
-export const publicFile = (file: PublicFile) => `${process.env.APP_URL}${file}`
+export const publicFile = (file: PublicFile) => `${process.env.APP_URL ?? ''}${file}`
 
 /*
   Theme

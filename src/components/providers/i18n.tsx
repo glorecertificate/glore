@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, use, useEffect, useRef, useState } from 'react'
+import { createContext, use, useState } from 'react'
 
 import { type Locale, type Messages, NextIntlClientProvider } from 'next-intl'
 
@@ -18,8 +18,6 @@ const useI18nContext = (value: I18nContextValue) => {
   const [messageStore, setMessageStore] = useState<Partial<Record<Locale, Messages>>>(
     value.messages ? { [localeState]: value.messages } : {}
   )
-  const messageStoreRef = useRef(messageStore)
-  messageStoreRef.current = messageStore
   const messages = messageStore[localeState]
   const timeZone = value.timeZone ?? Intl.DateTimeFormat(localeState).resolvedOptions().timeZone
 
@@ -29,23 +27,16 @@ const useI18nContext = (value: I18nContextValue) => {
     return { ...item, displayLabel, label }
   })
 
-  const setMessages = async (locale: Locale) => {
-    if (messageStoreRef.current[locale]) return
-    const messagesModule = await import(`~/messages/${locale}`)
-    setMessageStore(prev => ({ ...prev, [locale]: messagesModule.default }))
-  }
-
   const setLocale = async (locale: Locale) => {
-    await setMessages(locale)
+    if (!messageStore[locale]) {
+      const messagesModule = await import(`~/messages/${locale}`)
+      setMessageStore(prev => ({ ...prev, [locale]: messagesModule.default }))
+    }
     setLocaleState(locale)
-    setLocaleCookie(locale)
+    await setLocaleCookie(locale)
   }
 
   const localize = <T,>(record: IntlRecord<T>, fallback?: Locale) => localizeRecord(record, localeState, fallback)
-
-  useEffect(() => {
-    void setMessages(localeState)
-  }, [localeState])
 
   return { locale: localeState, localeItems, localize, messages, setLocale, timeZone }
 }

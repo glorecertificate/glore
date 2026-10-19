@@ -140,6 +140,7 @@ export const enrollCourse = async (courseId: number, locale: string) => {
     .onConflictDoNothing()
     .returning()
 
+  updateTag(progressUserTag(user.id))
   return { data: result }
 }
 

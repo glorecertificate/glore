@@ -1,6 +1,7 @@
 import { Route } from 'next'
 import React, { Fragment, Suspense } from 'react'
 
+import { DynamicMarker } from '@/components/layout/dynamic-marker'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { Header, HeaderBreadcrumb, HeaderLogo, HeaderTrigger } from '@/components/ui/header'
 import { Logo } from '@/components/ui/logo'
@@ -44,6 +45,7 @@ export const DashboardPage = ({
       <Main {...props}>
         {fallback === null ? children : <Suspense fallback={fallback ?? <LoadingFallback />}>{children}</Suspense>}
       </Main>
+      <DynamicMarker />
     </Provider>
   )
 }

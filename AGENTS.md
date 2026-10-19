@@ -14,30 +14,30 @@ Stack picks an agent would otherwise guess wrong: Better Auth, Cloudflare R2, Pl
 
 In `.agents/specs/`. Load the one you need, not the set.
 
-| File              | Read when                                                                     |
-| ----------------- | ----------------------------------------------------------------------------- |
-| `app.md`          | Product requirements: domain, roles, features, certificate lifecycle, rules   |
-| `architecture.md` | Navigating `src/`, adding files, naming, layer boundaries, server vs client   |
-| `code.md`         | Formatter, import order, restricted imports, lint rules                       |
-| `reference.md`    | Routes, auth, queries, transactions, cache, env vars, dev performance         |
-| `patterns.md`     | Authoring components, types, hooks, utils, theming, forms, emails             |
+| File              | Read when                                                                   |
+| ----------------- | --------------------------------------------------------------------------- |
+| `app.md`          | Product requirements: domain, roles, features, certificate lifecycle, rules |
+| `architecture.md` | Navigating `src/`, adding files, naming, layer boundaries, server vs client |
+| `code.md`         | Formatter, import order, restricted imports, lint rules                     |
+| `reference.md`    | Routes, auth, queries, transactions, cache, env vars, dev performance       |
+| `patterns.md`     | Authoring components, types, hooks, utils, theming, forms, emails           |
 
 ## Commands
 
 > **MANDATORY:** always `pnpm run <script>`, never bare `pnpm <script>`, so nothing collides with a built-in pnpm command. Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
 
-| Command                 | Description                                                              |
-| ----------------------- | -------------------------------------------------------------------------- |
-| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)            |
-| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                    |
+| Command                 | Description                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------- |
+| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)                            |
+| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                                    |
 | `pnpm run check`        | Parallel `check:types` (tsc), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
-| `pnpm run build`        | Production build                                                          |
-| `pnpm run typegen`      | Generate route and public-file types into `types/`                        |
-| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                        |
-| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                |
-| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                               |
-| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                |
-| `pnpm run skills`       | Install agent skills from `skills-lock.json`                              |
+| `pnpm run build`        | Production build                                                                          |
+| `pnpm run typegen`      | Generate route and public-file types into `types/`                                        |
+| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                                        |
+| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                                |
+| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                               |
+| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                                |
+| `pnpm run skills`       | Install agent skills from `skills-lock.json`                                              |
 
 Remaining scripts (`start`, `analyze`, `release`, `deploy:preview`, `deploy:production`, `bump`, `db:down`, `db:logs`) are in `package.json`.
 
@@ -45,22 +45,22 @@ Remaining scripts (`start`, `analyze`, `release`, `deploy:preview`, `deploy:prod
 
 ## Skills and MCP
 
-Skills install into gitignored `.agents/skills/` (`pnpm run skills`), which behaves like `node_modules`; `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `neon-postgres`, `react-email`, `shadcn`, `vercel-react-best-practices`, `web-design-guidelines`. MCP servers in `.mcp.json`: `better-auth`, `cloudflare` (R2 and Workers docs), `neon` (database ops), `shadcn` (component registry).
+Skills install into gitignored `.agents/skills/` (`pnpm run skills`), which behaves like `node_modules`; `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `react-email`, `shadcn`, `vercel-composition-patterns`, `vercel-react-best-practices`, `web-design-guidelines`. MCP servers in `.mcp.json`: `cloudflare` (R2 and Workers docs), `neon` (database ops).
 
-Read and apply the matching skill before starting. `*` marks machine-wide skills invoked by name.
+Read and apply the matching skill before starting. `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name.
 
-| Working on                       | Read / run                                                          |
-| -------------------------------- | ------------------------------------------------------------------- |
+| Working on                       | Read / run                                                           |
+| -------------------------------- | -------------------------------------------------------------------- |
 | Any React or Next.js code        | `vercel-react-best-practices` (apply CRITICAL > HIGH > MEDIUM > LOW) |
 | Next.js APIs and config          | `node_modules/next/dist/docs/` (version-exact, see `reference.md`)   |
 | UI and visual review             | `vercel-react-best-practices` + `web-design-guidelines`              |
-| Driving or verifying the real UI | `agent-browser`*                                                     |
+| Driving or verifying the real UI | `agent-browser`                                                      |
 | shadcn/ui components             | `shadcn`                                                             |
-| Database and schema              | `neon-drizzle` + `neon-postgres`                                     |
+| Database and schema              | `neon-drizzle`                                                       |
 | Email (`src/emails/`)            | `react-email`                                                        |
 | Cloudflare                       | `cloudflare`                                                         |
-| Translations (`messages/`)       | `sync-i18n`*                                                         |
-| Docs (README, `.agents/`)        | `sync-docs`, or `sync-agents` for agentic files*                     |
+| Translations (`messages/`)       | `sync-i18n`                                                          |
+| Docs (README, `.agents/`)        | `sync-docs`, or `sync-agents` for agentic files                      |
 
 ## Architecture
 

@@ -24,11 +24,7 @@
       "~/messages/*": ["./messages/*"],
       "@/*": ["./src/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "removeComments": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,

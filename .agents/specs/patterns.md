@@ -38,9 +38,9 @@ Build components by composition (compound components, context, slots, polymorphi
 App-wide providers are flat single files in `src/components/providers/` (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its `use<X>` hook. Feature-scoped contexts live in `src/components/features/<domain>/`. Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it needs a server-side data fetch; otherwise keep it one file. Barrels use named re-exports.
 
 | Layout    | Provider order, outer to inner                            |
-| --------- | ----------------------------------------------------------- |
-| Root      | `SearchParamsProvider` > `I18nProvider` > `ThemeProvider`  |
-| Dashboard | `SidebarProvider` > `SessionProvider` > `CoursesProvider`  |
+| --------- | --------------------------------------------------------- |
+| Root      | `SearchParamsProvider` > `I18nProvider` > `ThemeProvider` |
+| Dashboard | `SidebarProvider` > `SessionProvider` > `CoursesProvider` |
 
 ### Icon system
 

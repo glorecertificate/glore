@@ -7,12 +7,6 @@
     "neon": {
       "type": "http",
       "url": "https://mcp.neon.tech/mcp"
-    },
-    "shadcn": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["shadcn", "mcp"],
-      "env": {}
     }
   }
 }

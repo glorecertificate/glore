@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["*.d.ts", "drizzle/**", "AGENTS.md", ".agents/**", ".claude/**"],
+  "ignorePatterns": ["*.d.ts", "drizzle/**", ".agents/skills/**", ".claude/skills/**"],
   "arrowParens": "avoid",
   "semi": false,
   "singleQuote": true,
@@ -31,12 +31,6 @@
     "functions": ["clsx", "cn", "cva", "twJoin", "twMerge"]
   },
   "overrides": [
-    {
-      "files": ["**/*.jsonc"],
-      "options": {
-        "trailingComma": "none"
-      }
-    },
     {
       "files": ["**/*.css"],
       "options": {

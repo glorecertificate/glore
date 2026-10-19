@@ -14,15 +14,15 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 **Authenticated, dashboard layout, extra gate:**
 
-| Route                       | Gate        | Notes                                                                                                       |
-| --------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
-| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                          |
-| `/admin/team`               | `isAdmin`   | Team management                                                                                             |
-| `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                           |
-| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep) |
+| Route                       | Gate        | Notes                                                                                                                 |
+| --------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------- |
+| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                                   |
+| `/admin/team`               | `isAdmin`   | Team management                                                                                                       |
+| `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                                     |
+| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep)    |
 | `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org) |
-| `/organization`             | org manager | Organization panel                                                                                          |
-| `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                       |
+| `/organization`             | org manager | Organization panel                                                                                                    |
+| `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                                |
 
 `/` permanently redirects to `/dashboard` (`next.config.ts`).
 
@@ -98,7 +98,11 @@ Production runs the **neon-http** driver, which has **no interactive transaction
 
 ```typescript
 // src/db/mutations/certificate.ts
-export const createCertificateWithSkills = async (tx: Transaction, values: TableInsert<'certificates'>, skillCourseIds: number[]) => {
+export const createCertificateWithSkills = async (
+  tx: Transaction,
+  values: TableInsert<'certificates'>,
+  skillCourseIds: number[]
+) => {
   const [created] = await tx.insert(certificates).values(values).returning()
   if (!created) throw new Error('Failed to create certificate')
   if (skillCourseIds.length > 0) {
@@ -152,13 +156,13 @@ The schema covers `APP_URL`, `BETTER_AUTH_SECRET`, `DATABASE_URL`, the R2 set (`
 
 ## Static data
 
-| File                   | Purpose                                                                                                     |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| File                   | Purpose                                                                                                      |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
 | `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `maxAvatarSize: 2048`, `mapsUrl`, `sidebarShortcut: "\\"`) |
 | `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages                 |
 | `config/icons.json`    | Lucide icon metadata (~1,640 entries: name, categories, tags) for icon picker fuzzy search                   |
-| `config/metadata.json` | App name, version, URL, email, keywords, authors                                                            |
-| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light and dark                                              |
+| `config/metadata.json` | App name, version, URL, email, keywords, authors                                                             |
+| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light and dark                                               |
 
 ## Dev environment and performance
 

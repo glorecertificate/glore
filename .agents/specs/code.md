@@ -47,7 +47,7 @@ Enforced elsewhere or by review: `next/navigation` not `next/router`, `cn` from 
 Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all `error`; `nursery` and `restriction` are `allow`. `denyWarnings: true`, so warnings fail CLI runs.
 
 | Rule                                     | Setting                                        |
-| ---------------------------------------- | ------------------------------------------------ |
+| ---------------------------------------- | ---------------------------------------------- |
 | `unicorn/no-array-for-each`              | Error: use `for..of`, `map`, `reduce`          |
 | `eslint/no-else-return`                  | Error: use early returns                       |
 | `func-style`                             | Error, `expression`: arrow functions only      |

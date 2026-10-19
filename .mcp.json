@@ -1,11 +1,5 @@
 {
   "mcpServers": {
-    "better-auth": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@better-auth/mcp"],
-      "env": {}
-    },
     "cloudflare": {
       "type": "http",
       "url": "https://mcp.cloudflare.com/mcp"

@@ -33,6 +33,7 @@ pnpm install
 pnpm skills
 pnpm db:up
 pnpm db migrate
+pnpm db:seed  # one test user per role, password in scripts/seed-data.ts
 pnpm dev     # https://glore.localhost
 pnpm email   # https://email.glore.localhost
 ```
@@ -60,6 +61,7 @@ pnpm db:up      # start (or recreate) the Postgres container
 pnpm db:down    # stop and remove the container (volume preserved)
 pnpm db:logs    # tail Postgres logs
 pnpm db:reset   # drop the data volume and restart with an empty database
+pnpm db:seed    # upsert the seeded organization and one user per role
 ```
 
 **Schema:**
@@ -73,6 +75,13 @@ pnpm db studio     # open Drizzle Studio
 ```
 
 To run against a different database, prefix the command with an explicit `DATABASE_URL=...`.
+
+**Tests:**
+
+```sh
+pnpm test       # Vitest unit tests
+pnpm test:e2e   # Playwright against the running dev server, as seeded users
+```
 
 **Switching back to Neon in dev:**
 

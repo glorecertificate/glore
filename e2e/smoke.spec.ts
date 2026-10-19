@@ -1,0 +1,47 @@
+import { expect, test } from '@playwright/test'
+
+import { authFile } from './helpers'
+
+test.describe('anonymous', () => {
+  test('redirects protected routes to login', async ({ page }) => {
+    await page.goto('/dashboard')
+    await expect(page).toHaveURL(/\/login/u)
+    await expect(page.locator('input[name="username"]')).toBeVisible()
+  })
+})
+
+test.describe('platform admin', () => {
+  test.use({ storageState: authFile('admin') })
+
+  test('opens the admin users panel', async ({ page }) => {
+    const response = await page.goto('/admin/users')
+    expect(response?.ok()).toBe(true)
+    await expect(page).toHaveURL(/\/admin\/users/u)
+    await expect(page.getByRole('heading', { name: 'Not found' })).toBeHidden()
+  })
+})
+
+test.describe('organization owner', () => {
+  test.use({ storageState: authFile('owner') })
+
+  test('opens the organization panel', async ({ page }) => {
+    await page.goto('/organization')
+    await expect(page).toHaveURL(/\/organization/u)
+    await expect(page.getByText('GloRe Seed Organization').first()).toBeVisible()
+  })
+})
+
+test.describe('volunteer', () => {
+  test.use({ storageState: authFile('volunteer') })
+
+  test('cannot reach the admin panel', async ({ page }) => {
+    await page.goto('/admin/users')
+    await expect(page.getByRole('heading', { name: 'Not found' })).toBeVisible()
+  })
+
+  test('sees the dashboard', async ({ page }) => {
+    await page.goto('/dashboard')
+    await expect(page).toHaveURL(/\/dashboard/u)
+    await expect(page.locator('main')).toBeVisible()
+  })
+})

@@ -22,6 +22,9 @@
     "check:lint": "oxlint",
     "check:format": "oxfmt --check",
     "check:knip": "knip",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "deploy:preview": "dotenv -- sh -c 'vercel build && vercel --prebuilt'",
     "deploy:production": "dotenv -- sh -c 'vercel build && vercel --prebuilt --prod'",
     "db": "dotenv -e .env.local -e .env -- drizzle-kit",
@@ -29,6 +32,7 @@
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f postgres",
     "db:reset": "docker compose down -v && docker compose up -d postgres",
+    "db:seed": "dotenv -e .env.local -e .env -- node scripts/seed.mts",
     "email": "portless email.glore dotenv -- email dev --dir src/emails --port 45674",
     "release": "dotenv -- release-it --config release.config.ts",
     "analyze": "next experimental-analyze",
@@ -135,6 +139,7 @@
     "@commitlint/cli": "^21.0.2",
     "@commitlint/config-conventional": "^21.0.2",
     "@commitlint/types": "^21.0.1",
+    "@playwright/test": "^1.64.1",
     "@release-it/bumper": "^7.0.6",
     "@release-it/conventional-changelog": "^11.0.1",
     "@tailwindcss/postcss": "^4.3.1",
@@ -164,7 +169,8 @@
     "tailwindcss": "^4.3.1",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^7.0.2",
-    "vercel": "^54.14.2"
+    "vercel": "^54.14.2",
+    "vitest": "^5.0.5"
   },
   "postcss": {
     "plugins": {

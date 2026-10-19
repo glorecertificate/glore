@@ -23,3 +23,5 @@ jobs:
           restore-keys: tsc-${{ runner.os }}-
       - name: Run code checks
         run: pnpm run check
+      - name: Run unit tests
+        run: pnpm run test

@@ -134,6 +134,7 @@ const optimizePackageImports: Package[] = [
 ]
 
 const nextConfig: NextConfig = {
+  agentRules: false,
   reactStrictMode: true,
   cacheComponents: true,
   trailingSlash: false,

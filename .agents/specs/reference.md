@@ -192,5 +192,11 @@ Visual checks run through the machine-wide `agent-browser` skill against the dev
 
 - Start the app with `pnpm run dev` if nothing is listening, then drive `https://glore.localhost` (portless routes it to Next on `127.0.0.1:45673`).
 - Name the session after the task or worktree, act on snapshot refs, and close the session in the same turn that finishes with it. An orphaned session holds roughly 900MB of Chrome processes.
-- Authenticated flows use a persistent `--session-name` profile so cookies survive across runs. Full flow, cleanup, and auth escalation rules: the user's `browser.instructions.md` and the `agent-browser` skill.
+- Authenticated flows use a persistent `--session-name` profile so cookies survive across runs, logged in as a seeded user (see Testing). Full flow and cleanup rules: the `agent-browser` skill.
 - `APP_URL` must match the host being driven, since `allowedDevOrigins` is derived from it.
+
+## Testing
+
+- `pnpm run test` runs Vitest in the Node environment over `src/**/*.test.ts` and `scripts/**/*.test.ts`. `vitest.config.ts` resolves tsconfig paths and aliases `server-only` to an empty module, so server actions import cleanly; mock `@/actions/auth` and `next/cache` per test.
+- `pnpm run db:seed` (`scripts/seed.mts`) upserts the org `glore-seed` and one user per role at `<role>@seed.glore.test`: `admin` (platform admin), `editor`, `owner` (org admin), `representative`, `tutor`, `volunteer`, `learner`. The shared password and roles live in `scripts/seed-data.ts`. It runs in one transaction, is idempotent, and exits non-zero unless `DATABASE_URL` points to localhost.
+- `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). The `setup` project logs in `admin`, `owner`, and `volunteer` and stores their state in `tmp/playwright/.auth/`; specs pick one with `test.use({ storageState: authFile(role) })`. Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs.

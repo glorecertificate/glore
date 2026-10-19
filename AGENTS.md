@@ -31,11 +31,14 @@ In `.agents/specs/`. Load the one you need, not the set.
 | `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)                            |
 | `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                                    |
 | `pnpm run check`        | Parallel `check:types` (tsc), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
+| `pnpm run test`         | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                            |
+| `pnpm run test:e2e`     | Playwright e2e against the running dev server, logged in as seeded users                  |
 | `pnpm run build`        | Production build                                                                          |
 | `pnpm run typegen`      | Generate route and public-file types into `types/`                                        |
 | `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                                        |
 | `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                                |
 | `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                               |
+| `pnpm run db:seed`      | Upsert one test user per role into the local DB (refuses non-local URLs)                  |
 | `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                                |
 | `pnpm run skills`       | Install agent skills from `skills-lock.json`                                              |
 
@@ -119,7 +122,7 @@ Non-obvious rules that break a change if missed. Domain rules are in `app.md`; r
 Machine-checkable rungs first, in order, and report which ones actually ran:
 
 1. `pnpm run check` exits 0.
-2. Tests for logic changes, writing the failing test first for bug fixes.
-3. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`). A passing typecheck is not visual verification.
+2. `pnpm run test` for logic changes, writing the failing test first for bug fixes; `pnpm run test:e2e` for auth, routing, and role flows (needs `pnpm run db:seed` once).
+3. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`), logged in as a seeded user. A passing typecheck is not visual verification.
 
 Keep `AGENTS.md` and `README.md` in sync with the code in the same change, no confirmation needed, whenever routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure change. Edit `AGENTS.md` directly and never `CLAUDE.md`; push detail into `.agents/specs/` to stay inside the budget.

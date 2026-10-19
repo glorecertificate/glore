@@ -1,8 +1,9 @@
 {
-  "include": ["src", "scripts", "types", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "include": ["src", "scripts", "e2e", "types", "*.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
     "allowArbitraryExtensions": true,
+    "allowImportingTsExtensions": true,
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
@@ -22,6 +23,7 @@
     "paths": {
       "~/config/*": ["./config/*"],
       "~/messages/*": ["./messages/*"],
+      "~/scripts/*": ["./scripts/*"],
       "@/*": ["./src/*"]
     },
     "plugins": [{ "name": "next" }],

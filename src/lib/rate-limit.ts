@@ -2,7 +2,7 @@ import 'server-only'
 
 import { headers } from 'next/headers'
 
-import { sql } from 'drizzle-orm'
+import { lt, sql } from 'drizzle-orm'
 
 import { db } from '@/db/client'
 import { rateLimits } from '@/db/schema/rate-limits'
@@ -34,3 +34,11 @@ export const clientAddress = async () => {
 
 export const isRateLimited = async (key: string, max: number, windowMs: number) =>
   (await checkRateLimit(key, max, windowMs)).limited
+
+export const pruneRateLimits = async (maxAgeMs: number) => {
+  const deleted = await db
+    .delete(rateLimits)
+    .where(lt(rateLimits.lastRequest, Date.now() - maxAgeMs))
+    .returning({ id: rateLimits.id })
+  return deleted.length
+}

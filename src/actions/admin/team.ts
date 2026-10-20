@@ -20,6 +20,7 @@ import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
+import { r2DeleteQuietly } from '@/lib/storage'
 
 const fetchTeamMembers = async () => {
   'use cache'
@@ -192,7 +193,8 @@ export const deleteTeamMember = async (userId: string) => {
   if (!currentUser.isAdmin) return { error: 'You must be an admin to remove team members' }
   if (currentUser.id === userId) return { error: 'You cannot remove yourself from the team' }
 
-  await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
+  const deleted = await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
+  if (deleted?.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
 
   revalidateUserAccess(userId)
 

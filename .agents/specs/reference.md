@@ -28,16 +28,17 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 ### API routes
 
-| Path                 | Method   | Description                                    |
-| -------------------- | -------- | ---------------------------------------------- |
-| `/api/auth/[...all]` | GET/POST | Better Auth catch-all handler                  |
-| `/api/v1/ai/command` | POST     | AI command (editors, rate limited)             |
-| `/api/v1/ai/copilot` | POST     | AI copilot (editors, rate limited)             |
-| `/api/v1/join`       | GET      | Team invitation join endpoint                  |
-| `/api/v1/manifest`   | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
-| `/api/v1/session`    | GET      | Clears cookies of a stale session, then login  |
-| `/api/v1/upload`     | POST     | R2 file upload (editors, rate limited)         |
-| `/api/v1/health`     | GET      | Health check (returns `{ status: 'ok' }`)      |
+| Path                   | Method   | Description                                    |
+| ---------------------- | -------- | ---------------------------------------------- |
+| `/api/auth/[...all]`   | GET/POST | Better Auth catch-all handler                  |
+| `/api/v1/ai/command`   | POST     | AI command (editors, rate limited)             |
+| `/api/v1/ai/copilot`   | POST     | AI copilot (editors, rate limited)             |
+| `/api/v1/join`         | GET      | Team invitation join endpoint                  |
+| `/api/v1/manifest`     | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
+| `/api/v1/session`      | GET      | Clears cookies of a stale session, then login  |
+| `/api/v1/upload`       | POST     | R2 file upload (editors, rate limited)         |
+| `/api/v1/health`       | GET      | Health check (returns `{ status: 'ok' }`)      |
+| `/api/v1/cron/cleanup` | GET      | Daily cleanup (Vercel Cron, `CRON_SECRET`)     |
 
 ## Authentication
 
@@ -57,7 +58,7 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 
 **Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation), `nextCookies()` (Next.js cookie integration). Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
-**Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
+**Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. A daily Vercel Cron (`vercel.json`) calls `/api/v1/cron/cleanup`, which prunes `rate_limits` rows idle for 24h and deletes R2 avatars older than 24h that no row references; deleting a user, organization, or avatar removes the object at once. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
 
 **Stale sessions:** when the cookie cache outlives the user row, `getCurrentUser` redirects to `/api/v1/session`, which re-reads the session without the cache and clears auth cookies only when it is invalid, so a forged link cannot sign out a live user. `deleteAccount` signs out and expires `userTag` itself.
 
@@ -129,7 +130,7 @@ Read `envSchema` in `next.config.ts` for the current set and validators. `MAIL_T
 
 **Validation:** the schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`) unless `SKIP_ENV_VALIDATION` is set; `scripts/typegen.mts` sets it when calling `next typegen`, so a fresh clone with no secrets can still run `pnpm install`.
 
-**File loading:** `@next/env` picks env files by phase, not by `NODE_ENV`. `next dev` reads `.env.development.local`, `.env.local`, `.env.development`, `.env`; every other command, `next build` and `next typegen` and `next start`, loads the config with `PHASE_PRODUCTION_BUILD` and reads `.env.production.local`, `.env.local`, `.env.production`, `.env`. Machine-local values therefore belong in `.env.local`, the only local file both sets share. Putting a required variable in `.env.development.local` makes `next build` and `next typegen` fail Zod validation even though `next dev` works, and `NODE_ENV=development` does not change the selection (the loader only special-cases `NODE_ENV=test`). Within one file the last definition of a variable wins, and a variable already in `process.env`, as on Vercel, is never overwritten by any file.
+**File loading:** `@next/env` picks env files by phase, not by `NODE_ENV`. `next dev` reads `.env.development.local`, `.env.local`, `.env.development`, `.env`; every other command, `next build` and `next typegen` and `next start`, loads the config with `PHASE_PRODUCTION_BUILD` and reads `.env.production.local`, `.env.local`, `.env.production`, `.env`. Machine-local values therefore belong in `.env.local`, the only file both sets share: a required variable only in `.env.development.local` fails `next build` validation, whatever `NODE_ENV` says. Within one file the last definition of a variable wins, and a variable already in `process.env`, as on Vercel, is never overwritten by any file.
 
 > **MANDATORY:** the schema must NOT move into `src/` or be imported from a `src/` file. Next watches the module-dependency graph of `next.config.ts` and restarts the dev server whenever a watched file changes, so importing from `src/` makes every `src/**` edit trigger a full restart (cold 5-10s recompiles). Keep the schema inline; `zod` is its only allowed import.
 

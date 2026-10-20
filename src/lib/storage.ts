@@ -1,4 +1,10 @@
-import { DeleteObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import {
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  ListObjectsV2Command,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
@@ -68,3 +74,40 @@ export const r2Delete = async (urlOrKey: string) => {
   const key = urlOrKey.startsWith(publicPrefix) ? urlOrKey.slice(publicPrefix.length) : urlOrKey
   await s3.send(new DeleteObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: key }))
 }
+
+export const r2DeleteQuietly = async (urlOrKey: string) => {
+  try {
+    await r2Delete(urlOrKey)
+  } catch (error) {
+    console.error('Failed to delete R2 object', error)
+  }
+}
+
+export interface R2Object {
+  key: string
+  lastModified: Date
+}
+
+export const r2List = async (prefix: string) => {
+  const objects: R2Object[] = []
+  let token: string | undefined
+
+  do {
+    const page = await s3.send(
+      new ListObjectsV2Command({ Bucket: process.env.R2_BUCKET_NAME, Prefix: prefix, ContinuationToken: token })
+    )
+    objects.push(
+      ...(page.Contents ?? []).flatMap(({ Key, LastModified }) =>
+        Key && LastModified ? [{ key: Key, lastModified: LastModified }] : []
+      )
+    )
+    token = page.NextContinuationToken
+  } while (token)
+
+  return objects
+}
+
+export const selectOrphanKeys = (objects: R2Object[], referencedUrls: string[], cutoff: Date) =>
+  objects.flatMap(({ key, lastModified }) =>
+    lastModified < cutoff && !referencedUrls.some(url => url.endsWith(`/${key}`)) ? [key] : []
+  )

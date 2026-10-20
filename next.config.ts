@@ -9,6 +9,7 @@ import { type dependencies } from './package.json'
 const envSchema = z.object({
   APP_URL: z.url(),
   BETTER_AUTH_SECRET: z.string().regex(/^[A-Za-z0-9+/]{43}=$/u),
+  CRON_SECRET: z.string().min(16).optional(),
   DATABASE_URL: z
     .string()
     .startsWith('postgresql://')

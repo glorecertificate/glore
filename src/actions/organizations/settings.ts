@@ -19,7 +19,7 @@ import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { updateOrganization as updateOrganizationRecord } from '@/db/mutations/organization'
 import { certificates, organizationProfiles, organizations } from '@/db/schema'
-import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
+import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 const optionalText = (max: number) =>
   z
@@ -125,7 +125,7 @@ export const confirmOrganizationAvatar = async (key: string) => {
     })
 
     if (current?.avatarUrl) {
-      await r2Delete(current.avatarUrl).catch(() => null)
+      await r2DeleteQuietly(current.avatarUrl)
     }
 
     const [, nextUser] = await Promise.all([
@@ -155,10 +155,6 @@ export const removeOrganizationAvatar = async () => {
       where: eq(organizationProfiles.organizationId, organization.id),
     })
 
-    if (current?.avatarUrl) {
-      await r2Delete(current.avatarUrl).catch(() => null)
-    }
-
     await db
       .insert(organizationProfiles)
       .values({ avatarUrl: null, organizationId: organization.id })
@@ -166,6 +162,10 @@ export const removeOrganizationAvatar = async () => {
         target: organizationProfiles.organizationId,
         set: { avatarUrl: null },
       })
+
+    if (current?.avatarUrl) {
+      await r2DeleteQuietly(current.avatarUrl)
+    }
 
     const [, nextUser] = await Promise.all([
       revalidateOrganizationMembers(organization.id),
@@ -194,9 +194,16 @@ export const deleteOrganization = async () => {
       throw new Error('Organizations with certificates cannot be deleted')
     }
 
-    const memberIds = await listOrganizationMemberIds(organization.id)
+    const [memberIds, profile] = await Promise.all([
+      listOrganizationMemberIds(organization.id),
+      db.query.organizationProfiles.findFirst({
+        columns: { avatarUrl: true },
+        where: eq(organizationProfiles.organizationId, organization.id),
+      }),
+    ])
     await db.delete(organizations).where(eq(organizations.id, organization.id))
     expireUserAccess(memberIds)
+    if (profile?.avatarUrl) await r2DeleteQuietly(profile.avatarUrl)
 
     const nextUser = await getFreshCurrentUser(user.id)
     const nextOrganization = nextUser.organizations[0]

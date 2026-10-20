@@ -22,6 +22,7 @@ import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
+import { r2DeleteQuietly } from '@/lib/storage'
 
 const USER_NOT_FOUND = 'User not found'
 
@@ -182,8 +183,9 @@ export const deleteAccount = async () => {
   })
   if (cert) throw new Error('HAS_CERTIFICATES')
 
-  await transaction(tx => deleteUser(tx, user.id))
+  const deleted = await transaction(tx => deleteUser(tx, user.id))
   await auth.api.signOut({ headers: await headers() })
+  if (deleted?.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
   updateTag(userTag(user.id))
 
   redirect(AUTH_ROOT)

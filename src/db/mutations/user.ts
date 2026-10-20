@@ -46,5 +46,6 @@ export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }
   await tx.delete(contributions).where(eq(contributions.userId, userId))
   await tx.delete(teamInvitations).where(eq(teamInvitations.userId, userId))
   await tx.delete(memberships).where(eq(memberships.userId, userId))
-  await tx.delete(users).where(eq(users.id, userId))
+  const [deleted] = await tx.delete(users).where(eq(users.id, userId)).returning({ avatarUrl: users.avatarUrl })
+  return deleted
 }

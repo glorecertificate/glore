@@ -8,5 +8,11 @@
     "deploymentEnabled": {
       "main": false
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/v1/cron/cleanup",
+      "schedule": "0 3 * * *"
+    }
+  ]
 }

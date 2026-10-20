@@ -11,15 +11,7 @@ import { db } from '@/db/client'
 import { parseUser, userWith } from '@/db/queries/user'
 import { users } from '@/db/schema'
 import { userTag } from '@/lib/cache'
-import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
-
-const deleteQuietly = async (url: string) => {
-  try {
-    await r2Delete(url)
-  } catch (error) {
-    console.error('Failed to delete avatar', error)
-  }
-}
+import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 export const createAvatarUploadUrl = async (contentType: string, size: number) => {
   const user = await getAuthUser()
@@ -37,7 +29,7 @@ export const confirmAvatar = async (key: string) => {
   const current = await db.query.users.findFirst({ columns: { avatarUrl: true }, where: eq(users.id, user.id) })
 
   await db.update(users).set({ avatarUrl }).where(eq(users.id, user.id))
-  if (current?.avatarUrl && current.avatarUrl !== avatarUrl) await deleteQuietly(current.avatarUrl)
+  if (current?.avatarUrl && current.avatarUrl !== avatarUrl) await r2DeleteQuietly(current.avatarUrl)
   revalidateTag(userTag(user.id), 'max')
 
   const updated = await db.query.users.findFirst({
@@ -58,7 +50,7 @@ export const removeAvatar = async () => {
     where: eq(users.id, user.id),
   })
   await db.update(users).set({ avatarUrl: null }).where(eq(users.id, user.id))
-  if (current?.avatarUrl) await deleteQuietly(current.avatarUrl)
+  if (current?.avatarUrl) await r2DeleteQuietly(current.avatarUrl)
   revalidateTag(userTag(user.id), 'max')
 
   const updated = await db.query.users.findFirst({

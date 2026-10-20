@@ -43,7 +43,7 @@ import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
-import { r2Delete, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
+import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 
 const loadOrganizations = () =>
   safeQuery(async () => {
@@ -598,7 +598,7 @@ export const confirmAdminOrganizationAvatar = async (organizationId: number, key
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl } })
 
     if (current?.avatarUrl) {
-      await r2Delete(current.avatarUrl).catch(() => null)
+      await r2DeleteQuietly(current.avatarUrl)
     }
 
     return { avatarUrl }
@@ -619,14 +619,14 @@ export const removeAdminOrganizationAvatar = async (organizationId: number) => {
       where: eq(organizationProfiles.organizationId, organizationId),
     })
 
-    if (current?.avatarUrl) {
-      await r2Delete(current.avatarUrl).catch(() => null)
-    }
-
     await db
       .insert(organizationProfiles)
       .values({ avatarUrl: null, organizationId })
       .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: null } })
+
+    if (current?.avatarUrl) {
+      await r2DeleteQuietly(current.avatarUrl)
+    }
 
     return { avatarUrl: null }
   })
@@ -838,9 +838,16 @@ export const deleteAdminOrganization = async (organizationId: number) => {
       throw new Error('Organizations with certificates cannot be deleted')
     }
 
-    const memberIds = await listOrganizationMemberIds(organizationId)
+    const [memberIds, profile] = await Promise.all([
+      listOrganizationMemberIds(organizationId),
+      db.query.organizationProfiles.findFirst({
+        columns: { avatarUrl: true },
+        where: eq(organizationProfiles.organizationId, organizationId),
+      }),
+    ])
     await db.delete(organizations).where(eq(organizations.id, organizationId))
     expireUserAccess(memberIds)
+    if (profile?.avatarUrl) await r2DeleteQuietly(profile.avatarUrl)
 
     return { organizationId }
   })

@@ -31,7 +31,12 @@ const latestMessageId = async (request: APIRequestContext, to: string) => {
 }
 
 export const latestMailText = async (request: APIRequestContext, to: string) => {
-  await expect.poll(() => latestMessageId(request, to), { timeout: 15_000 }).not.toBe('')
+  await expect
+    .poll(() => latestMessageId(request, to), {
+      message: `No email to ${to} reached Mailpit: run the app with MAIL_TRANSPORT=mailpit`,
+      timeout: 15_000,
+    })
+    .not.toBe('')
   const response = await request.get(`${MAILPIT_URL}/api/v1/message/${await latestMessageId(request, to)}`)
   const { Text } = (await response.json()) as MailpitMessage
   return Text

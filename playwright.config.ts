@@ -7,6 +7,7 @@ const playwrightConfig = defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
+  expect: { timeout: process.env.CI ? 5000 : 20_000 },
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
     ignoreHTTPSErrors: true,

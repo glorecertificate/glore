@@ -14,7 +14,7 @@ const STATUS_CONFIG: Record<CertificateStatus, { labelKey: string; className: st
   in_review: { labelKey: 'statusInReview', className: 'bg-info/15 text-info', icon: ClockIcon },
   changes_requested: {
     labelKey: 'statusChangesRequested',
-    className: 'bg-warning/15 text-warning',
+    className: 'bg-warning/15 text-warning-text',
     icon: CircleAlertIcon,
   },
   approved: { labelKey: 'statusApproved', className: 'bg-success/15 text-success', icon: CircleCheckIcon },

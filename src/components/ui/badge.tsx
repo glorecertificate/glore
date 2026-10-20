@@ -40,7 +40,7 @@ const badgeVariants = cva(
         brand: 'bg-brand text-brand-foreground shadow-xs',
         success: 'bg-success/10 text-success',
         warning: 'bg-warning/15 text-warning-text',
-        destructive: 'bg-destructive/10 text-destructive',
+        destructive: 'bg-destructive/10 text-destructive-text',
         info: 'bg-info/10 text-info',
       },
     },

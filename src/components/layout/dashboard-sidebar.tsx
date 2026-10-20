@@ -95,21 +95,16 @@ const DashboardSidebarBadge = ({ count }: { count: number }) => {
 
   if (!open && !isMobile) {
     return (
-      <span
-        aria-label={t('pendingRequests', { count })}
-        className="absolute top-1 right-1 size-2 rounded-full bg-brand"
-      />
+      <span className="absolute top-1 right-1 size-2 rounded-full bg-brand">
+        <span className="sr-only">{t('pendingRequests', { count })}</span>
+      </span>
     )
   }
 
   return (
-    <Badge
-      aria-label={t('pendingRequests', { count })}
-      className="size-4.25 rounded-full p-0"
-      size="sm"
-      variant="brand"
-    >
-      {count}
+    <Badge className="size-4.25 rounded-full p-0" size="sm" variant="brand">
+      <span aria-hidden>{count}</span>
+      <span className="sr-only">{t('pendingRequests', { count })}</span>
     </Badge>
   )
 }

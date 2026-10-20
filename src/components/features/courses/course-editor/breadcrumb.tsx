@@ -182,7 +182,7 @@ export const CourseBreadcrumb = () => {
                   className={cn(
                     '-ml-1 size-3.5',
                     languageStatus.hasDescriptionUpdates
-                      ? 'text-warning hover:text-warning-accent data-[state=open]:text-warning-accent'
+                      ? 'text-warning-text hover:text-warning-text/80 data-[state=open]:text-warning-text/80'
                       : 'text-muted-foreground/80 hover:text-foreground data-[state=open]:text-foreground'
                   )}
                 />

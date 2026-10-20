@@ -39,8 +39,8 @@ const SECTIONS = [
   {
     icon: HeartIcon,
     key: 'values',
-    accent: 'text-brand-secondary-accent',
-    chip: 'bg-brand-secondary/15 text-brand-secondary-accent',
+    accent: 'text-brand-secondary-text',
+    chip: 'bg-brand-secondary/15 text-brand-secondary-text',
     ring: 'border-brand-secondary/25 bg-brand-secondary/[0.04]',
   },
   {

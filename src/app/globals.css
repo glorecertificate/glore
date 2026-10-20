@@ -36,6 +36,7 @@
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-secondary-accent: var(--brand-secondary-accent);
   --color-brand-secondary-foreground: var(--brand-secondary-foreground);
+  --color-brand-secondary-text: var(--brand-secondary-text);
   --color-brand-tertiary: var(--brand-tertiary);
   --color-brand-tertiary-accent: var(--brand-tertiary-accent);
   --color-brand-tertiary-foreground: var(--brand-tertiary-foreground);
@@ -54,6 +55,7 @@
   --color-destructive: var(--destructive);
   --color-destructive-accent: var(--destructive-accent);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-text: var(--destructive-text);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -123,6 +125,7 @@
     --brand-secondary: oklch(0.77 0.165 122.4);
     --brand-secondary-accent: oklch(0.72 0.16 122.4);
     --brand-secondary-foreground: oklch(0.2 0.03 256);
+    --brand-secondary-text: oklch(0.52 0.13 125);
     --brand-tertiary: oklch(0.346 0.074 256);
     --brand-tertiary-accent: oklch(0.3 0.065 256);
     --brand-tertiary-foreground: oklch(1 0 0);
@@ -141,6 +144,7 @@
     --destructive: oklch(0.577 0.215 27);
     --destructive-accent: oklch(0.52 0.2 27);
     --destructive-foreground: oklch(1 0 0);
+    --destructive-text: oklch(0.577 0.215 27);
     --sidebar: oklch(0.985 0.003 256);
     --sidebar-foreground: oklch(0.2 0.02 256);
     --sidebar-primary: oklch(0.54 0.09 226.6);
@@ -184,6 +188,7 @@
     --brand-accent: oklch(0.78 0.1 221.7);
     --brand-foreground: oklch(0.2 0.04 256);
     --brand-secondary-accent: oklch(0.81 0.15 122.4);
+    --brand-secondary-text: oklch(0.81 0.15 122.4);
     --brand-tertiary: oklch(0.42 0.085 256);
     --brand-tertiary-accent: oklch(0.47 0.09 256);
     --link: oklch(0.75 0.1 240);
@@ -195,6 +200,7 @@
     --success-accent: oklch(0.7 0.14 150);
     --success-foreground: oklch(0.17 0.012 256);
     --warning-text: oklch(0.82 0.14 82);
+    --destructive-text: oklch(0.72 0.17 25);
     --border: oklch(1 0 0 / 9%);
     --input: oklch(1 0 0 / 14%);
     --ring: oklch(0.726 0.114 221.7);

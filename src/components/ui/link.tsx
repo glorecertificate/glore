@@ -22,7 +22,7 @@ const linkVariants = cva('cursor-pointer no-underline transition-all', {
       link: 'text-link',
       muted: 'text-muted-foreground hover:text-foreground/90',
       primary: 'text-brand hover:text-brand-accent',
-      secondary: 'text-brand-secondary hover:text-brand-secondary-accent',
+      secondary: 'text-brand-secondary-text hover:text-brand-secondary-text/80',
       success: 'text-success hover:text-success',
       tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',
       transparent: 'text-transparent hover:text-foreground',

@@ -14,7 +14,7 @@ export const Switch = ({ className, ...props }: React.ComponentProps<typeof Swit
     {...props}
   >
     <SwitchPrimitive.Thumb
-      className="pointer-events-none block size-4.5 rounded-full bg-white ring-0 transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0.5 motion-reduce:transition-none dark:data-[state=checked]:bg-brand-secondary-foreground dark:data-[state=unchecked]:bg-foreground"
+      className="pointer-events-none block size-4.5 rounded-full bg-white ring-0 transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)] data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=checked]:bg-brand-secondary-foreground data-[state=unchecked]:translate-x-0.5 motion-reduce:transition-none dark:data-[state=unchecked]:bg-foreground"
       data-slot="switch-thumb"
     />
   </SwitchPrimitive.Root>

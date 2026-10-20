@@ -77,12 +77,12 @@ export const OrgRow = ({
             <SearchHighlight query={query} value={org.name} />
           </p>
           {org.isPending && (
-            <Badge className="shrink-0 bg-amber-500/10 text-amber-600 capitalize" size="sm" variant="ghost">
+            <Badge className="shrink-0 capitalize" size="sm" variant="warning">
               {t('statusPending')}
             </Badge>
           )}
           {org.isRejected && (
-            <Badge className="shrink-0 bg-red-500/10 text-red-600 capitalize" size="sm" variant="ghost">
+            <Badge className="shrink-0 capitalize" size="sm" variant="destructive">
               {t('statusRejected')}
             </Badge>
           )}

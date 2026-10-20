@@ -109,6 +109,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
+                            aria-label={t('categories.delete')}
                             className="shrink-0 text-destructive hover:text-destructive"
                             size="icon"
                             variant="ghost"

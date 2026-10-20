@@ -10,17 +10,18 @@ import {
   useReducedMotion,
 } from 'motion/react'
 
+import { EASE_OUT, SPRING } from '@/lib/motion'
+
 type AnimatedListVariant = 'card' | 'row'
 
 const TRANSITION: Transition = {
   default: {
-    duration: 0.26,
-    ease: [0.22, 1, 0.36, 1],
+    duration: 0.24,
+    ease: EASE_OUT,
   },
   layout: {
-    type: 'spring',
-    bounce: 0.18,
-    duration: 0.5,
+    ...SPRING,
+    duration: 0.4,
   },
 }
 

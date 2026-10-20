@@ -23,7 +23,7 @@ export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<type
       </TooltipTrigger>
       <TooltipContent showArrow side="right">
         <p className="text-xs font-medium">{action}</p>
-        <p className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">{`⌘ + ${settings.sidebarShortcut.toUpperCase()}`}</p>
+        <p className="font-mono text-[11px] text-muted-foreground">{`⌘ + ${settings.sidebarShortcut.toUpperCase()}`}</p>
       </TooltipContent>
     </Tooltip>
   )

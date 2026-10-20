@@ -65,15 +65,18 @@ const CourseQuestion = ({
 
       {question.answered && (
         <Card
-          className={cn('mt-4 border-[1.5px] shadow-none', isCorrectUserAnswer ? 'border-green-500' : 'border-red-500')}
+          className={cn(
+            'mt-4 border-[1.5px] shadow-none',
+            isCorrectUserAnswer ? 'border-success' : 'border-destructive'
+          )}
         >
           <CardContent>
             <div className="flex items-start gap-2">
               <div className="flex items-start pt-0.5">
                 {isCorrectUserAnswer ? (
-                  <CheckCircleIcon className="size-5 text-green-500" />
+                  <CheckCircleIcon className="size-5 text-success" />
                 ) : (
-                  <XCircleIcon className="size-5 text-red-500" />
+                  <XCircleIcon className="size-5 text-destructive" />
                 )}
               </div>
               <div>

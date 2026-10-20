@@ -87,7 +87,7 @@ export const RegisterForm = () => {
 
   return submitted ? (
     <div className="flex flex-col items-center gap-8 rounded-lg border p-8 text-center">
-      <CheckCircle2Icon className="size-12 text-green-500" />
+      <CheckCircle2Icon className="size-12 text-success" />
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">{t('successTitle')}</h2>
         <p className="text-sm text-muted-foreground">{t('successMessage')}</p>

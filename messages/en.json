@@ -1060,6 +1060,7 @@
     "updateDescription": "Update description",
     "addActivityQuestion": "Question",
     "addActivityEvaluation": "Evaluation",
+    "addActivity": "Add activity",
     "addActivityAssessment": "Assessment",
     "activityQuestion": "Question",
     "activityEvaluation": "Evaluation",
@@ -1076,7 +1077,8 @@
     "quizMinOptions": "Question {number} must have at least 2 options",
     "quizOptionEmpty": "All options in question {number} must be filled in",
     "quizNoCorrect": "Select the correct option for question {number}",
-    "archiveAction": "Archive"
+    "archiveAction": "Archive",
+    "moreActions": "More actions"
   },
   "Dashboard": {
     "allCourses": "All courses",

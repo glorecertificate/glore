@@ -183,6 +183,7 @@ export const CourseSettings = ({
                   </IconPicker>
                   {field.value && (
                     <Button
+                      aria-label={t('removeIcon')}
                       className="size-7 text-muted-foreground transition-colors hover:text-destructive"
                       size="icon"
                       type="button"

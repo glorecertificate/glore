@@ -142,7 +142,7 @@ export const SpokenLanguagesSelect = ({
         <div className="flex flex-wrap gap-1.5">
           {sortedValue.map(language => (
             <Badge
-              className="group/lang gap-1 py-1 pr-1 pl-2.5 duration-200 animate-in fade-in zoom-in-95"
+              className="group/lang animate-in gap-1 py-1 pr-1 pl-2.5 duration-200 zoom-in-95 fade-in"
               key={language}
               variant="muted"
             >

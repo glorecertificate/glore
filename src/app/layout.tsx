@@ -11,6 +11,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { getLocaleCookie } from '@/actions/cookies'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
+import { MotionProvider } from '@/components/providers/motion'
 import { SearchParamsProvider } from '@/components/providers/search-params'
 import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
@@ -62,8 +63,10 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
         <SearchParamsProvider>
           <I18nProvider locale={locale} messages={messages}>
             <ThemeProvider>
-              {children}
-              <Toaster />
+              <MotionProvider>
+                {children}
+                <Toaster />
+              </MotionProvider>
             </ThemeProvider>
           </I18nProvider>
         </SearchParamsProvider>

@@ -11,7 +11,7 @@ const tailwindConfig = {
   theme: {
     extend: {
       colors: {
-        brand: '#3bb5da',
+        brand: '#267997',
       },
     },
   },

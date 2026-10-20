@@ -43,7 +43,8 @@ const ActivityItem = ({
         />
       </div>
       <Button
-        className="opacity-0 transition-opacity group-hover:opacity-100"
+        aria-label={t('delete')}
+        className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
         onClick={onRemove}
         size="icon"
         type="button"
@@ -100,7 +101,8 @@ const QuestionItem = ({
           </div>
         </div>
         <Button
-          className="opacity-0 transition-opacity group-hover/question:opacity-100"
+          aria-label={t('delete')}
+          className="opacity-0 transition-opacity group-hover/question:opacity-100 focus-visible:opacity-100"
           onClick={onRemove}
           size="icon"
           type="button"
@@ -534,7 +536,7 @@ export const LessonActivities = ({ className }: { className?: string }) => {
       <div className="flex w-full items-center justify-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="rounded-full" size="icon" type="button" variant="brand">
+            <Button aria-label={t('addActivity')} className="rounded-full" size="icon" type="button" variant="brand">
               <PlusIcon className="size-4" />
             </Button>
           </DropdownMenuTrigger>

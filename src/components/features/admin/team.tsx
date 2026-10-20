@@ -159,7 +159,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
         <TeamStatCard accent="brand" icon={UsersIcon} label={t('statMembers')} value={stats.total} />
         <TeamStatCard icon={ShieldUserIcon} label={t('statAdmins')} value={stats.admins} />
         <TeamStatCard icon={PencilIcon} label={t('statEditors')} value={stats.editors} />
-        <TeamStatCard accent="amber" icon={ClockIcon} label={t('statPending')} value={stats.pending} />
+        <TeamStatCard accent="warning" icon={ClockIcon} label={t('statPending')} value={stats.pending} />
       </div>
 
       <div className="overflow-hidden rounded-xl border bg-card shadow-2xs">

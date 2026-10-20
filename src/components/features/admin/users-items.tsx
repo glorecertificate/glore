@@ -106,13 +106,7 @@ export const UserRow = ({
           {role === 'user' && <UserIcon className="size-3" />}
           {t(`role_${role}`)}
         </Badge>
-        <Badge
-          className={cn(
-            'capitalize',
-            status === 'active' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-red-500/10 text-red-600'
-          )}
-          variant="ghost"
-        >
+        <Badge className="capitalize" variant={status === 'active' ? 'success' : 'destructive'}>
           {t(`status_${status}`)}
         </Badge>
         <DropdownMenu>

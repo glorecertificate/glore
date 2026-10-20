@@ -114,7 +114,7 @@ export const SearchHighlight = ({
   for (const [start, end] of ranges) {
     if (start > cursor) segments.push(value.slice(cursor, start))
     segments.push(
-      <mark className="rounded-[3px] bg-amber-200/40 text-current dark:bg-amber-500/20" key={start}>
+      <mark className="rounded-[3px] bg-warning/25 text-current dark:bg-warning/20" key={start}>
         {value.slice(start, end + 1)}
       </mark>
     )

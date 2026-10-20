@@ -284,7 +284,7 @@ const DashboardSidebarOrgs = ({ organization }: { organization: UserOrganization
                     <span className="flex items-center truncate font-semibold">
                       {name}
                       {id === organization.id && (
-                        <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-green-500" />
+                        <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-success" />
                       )}
                     </span>
                     <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>

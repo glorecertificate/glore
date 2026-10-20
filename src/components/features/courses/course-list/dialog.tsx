@@ -19,11 +19,7 @@ export const CourseListDialog = (props: React.ComponentProps<typeof CourseDialog
       <Tooltip delayDuration={0} disableHoverableContent>
         <TooltipTrigger asChild>
           <DialogTrigger asChild>
-            <Button
-              className="size-8 rounded-full text-[13px] hover:scale-102 focus:scale-102"
-              size="icon"
-              variant="brand"
-            >
+            <Button aria-label={t('createCourse')} className="size-8 rounded-full" size="icon" variant="brand">
               <PlusIcon className="size-4" />
             </Button>
           </DialogTrigger>

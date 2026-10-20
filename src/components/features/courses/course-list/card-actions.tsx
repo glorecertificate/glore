@@ -181,7 +181,7 @@ export const CourseCardActions = ({
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="outline">
+                <Button aria-label={t('moreActions')} size="icon" variant="outline">
                   <MoreHorizontalIcon />
                 </Button>
               </DropdownMenuTrigger>

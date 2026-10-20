@@ -24,8 +24,9 @@ export interface ButtonProps
 
 export const buttonVariants = cva(
   [
-    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+    'active:not-disabled:scale-[0.97] active:motion-reduce:not-disabled:scale-100',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none focus-visible:disabled:ring-0',
   ],
   {
@@ -66,11 +67,7 @@ export const buttonVariants = cva(
       },
       effect: {
         expandIcon: 'group relative gap-0',
-        ringHover: 'transition-all duration-300 hover:ring-2 hover:ring-brand-secondary/90 hover:ring-offset-2',
-        gooeyRight: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 before:absolute before:inset-0 before:-z-10 before:translate-x-[150%] before:translate-y-[150%] before:scale-[2.5] before:rounded-[100%] before:bg-linear-to-r before:transition-transform before:duration-1000 hover:before:translate-x-[0%] hover:before:translate-y-[0%]`,
         gooeyLeft: `relative z-0 overflow-hidden from-white/40 transition-all duration-500 after:absolute after:inset-0 after:-z-10 after:translate-x-[-150%] after:translate-y-[150%] after:scale-[2.5] after:rounded-[100%] after:bg-linear-to-l after:transition-transform after:duration-1000 hover:after:translate-x-[0%] hover:after:translate-y-[0%]`,
-        underline: `relative no-underline! after:absolute after:bottom-2 after:h-px after:w-2/3 after:origin-bottom-left after:scale-x-100 after:bg-brand-secondary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-0`,
-        hoverUnderline: `relative no-underline! after:absolute after:bottom-0 after:h-px after:w-[calc(100%-4px)] after:origin-bottom-right after:scale-x-0 after:bg-current/60 after:transition-transform after:duration-150 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100`,
       },
     },
     compoundVariants: [
@@ -118,7 +115,6 @@ export const Button = ({
       className={cn(
         buttonVariants({ effect, size, variant }),
         loading && 'cursor-wait disabled:cursor-wait',
-        type === 'submit' ? 'transition-colors' : 'transition-all',
         className
       )}
       disabled={disabled || loading}

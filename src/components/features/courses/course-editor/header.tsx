@@ -164,7 +164,7 @@ export const CourseHeader = () => {
                 const isPublished = status[value].published
                 return (
                   <TabsTrigger
-                    className={cn('relative flex', status[value].hasUpdates && 'text-yellow-600!')}
+                    className={cn('relative flex', status[value].hasUpdates && 'text-warning-text!')}
                     key={value}
                     size="sm"
                     value={value}

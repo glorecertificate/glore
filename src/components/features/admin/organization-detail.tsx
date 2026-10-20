@@ -109,11 +109,7 @@ const OrganizationHeader = ({
     !organization.approvedAt &&
     organization.joinRequests.some(request => request.role === 'admin' && request.isRejected)
   const statusLabel = organization.approvedAt ? 'filter_active' : isRejected ? 'statusRejected' : 'statusPending'
-  const statusClassName = organization.approvedAt
-    ? 'bg-emerald-500/10 text-emerald-600'
-    : isRejected
-      ? 'bg-red-500/10 text-red-600'
-      : 'bg-amber-500/10 text-amber-600'
+  const statusVariant = organization.approvedAt ? 'success' : isRejected ? 'destructive' : 'warning'
 
   return (
     <div className="overflow-hidden rounded-xl border bg-card">
@@ -130,7 +126,7 @@ const OrganizationHeader = ({
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl font-semibold tracking-tight">{organization.name}</h1>
-            <Badge className={cn('capitalize', statusClassName)} variant="ghost">
+            <Badge className="capitalize" variant={statusVariant}>
               {t(statusLabel)}
             </Badge>
           </div>
@@ -454,13 +450,7 @@ const OrganizationMembersTab = ({
                           </SelectContent>
                         </Select>
 
-                        <Badge
-                          className={cn(
-                            'w-fit',
-                            member.isPending ? 'bg-amber-500/10 text-amber-600' : 'bg-emerald-500/10 text-emerald-600'
-                          )}
-                          variant="ghost"
-                        >
+                        <Badge className="w-fit" variant={member.isPending ? 'warning' : 'success'}>
                           {member.isPending ? t('statusPending') : t('statusJoined')}
                         </Badge>
 

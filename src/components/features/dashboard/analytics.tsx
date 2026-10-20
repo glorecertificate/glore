@@ -217,7 +217,7 @@ export const CourseAnalytics = () => {
                                   <StarIcon
                                     className={cn(
                                       'size-3.5',
-                                      index < ratingRounded ? 'fill-amber-400 text-amber-400' : 'fill-muted text-muted'
+                                      index < ratingRounded ? 'fill-warning text-warning' : 'fill-muted text-muted'
                                     )}
                                     key={index}
                                   />

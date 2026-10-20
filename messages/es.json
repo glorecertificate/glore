@@ -1060,6 +1060,7 @@
     "updateDescription": "Actualizar descripción",
     "addActivityQuestion": "Pregunta",
     "addActivityEvaluation": "Evaluación",
+    "addActivity": "Añadir actividad",
     "addActivityAssessment": "Autoevaluación",
     "activityQuestion": "Pregunta",
     "activityEvaluation": "Evaluación",
@@ -1076,7 +1077,8 @@
     "quizMinOptions": "La pregunta {number} debe tener al menos 2 opciones",
     "quizOptionEmpty": "Todas las opciones de la pregunta {number} deben completarse",
     "quizNoCorrect": "Seleccione la opción correcta para la pregunta {number}",
-    "archiveAction": "Archivar"
+    "archiveAction": "Archivar",
+    "moreActions": "Más acciones"
   },
   "Dashboard": {
     "allCourses": "Todos los cursos",

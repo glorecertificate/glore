@@ -42,7 +42,7 @@ export type TeamStatus = 'joined' | 'pending'
 
 const STAT_ACCENTS = {
   brand: 'border-brand/20 bg-brand/10 text-brand',
-  amber: 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-500',
+  warning: 'border-warning/25 bg-warning/15 text-warning-text',
   success: 'border-success/25 bg-success/10 text-success',
 } as const
 
@@ -122,11 +122,7 @@ export const TeamMemberRow = ({
               </Badge>
             )}
             {status === 'pending' && (
-              <Badge
-                className="bg-amber-500/10 px-1.5 text-amber-600 capitalize dark:text-amber-500"
-                size="sm"
-                variant="ghost"
-              >
+              <Badge className="px-1.5 capitalize" size="sm" variant="warning">
                 {t('status_pending')}
               </Badge>
             )}

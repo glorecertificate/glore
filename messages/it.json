@@ -1059,6 +1059,7 @@
     "updateDescription": "Aggiorna descrizione",
     "addActivityQuestion": "Domanda",
     "addActivityEvaluation": "Valutazione",
+    "addActivity": "Aggiungi attività",
     "addActivityAssessment": "Autovalutazione",
     "activityQuestion": "Domanda",
     "activityEvaluation": "Valutazione",
@@ -1076,7 +1077,8 @@
     "quizOptionEmpty": "Tutte le opzioni della domanda {number} devono essere compilate",
     "quizNoCorrect": "Seleziona l'opzione corretta per la domanda {number}",
     "emptyMessage-published": "Non ci sono corsi pubblicati",
-    "archiveAction": "Archivia"
+    "archiveAction": "Archivia",
+    "moreActions": "Altre azioni"
   },
   "Dashboard": {
     "allCourses": "Tutti i corsi",

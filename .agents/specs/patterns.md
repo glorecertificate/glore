@@ -101,8 +101,12 @@ Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexTo
 
 ## Theming and styling
 
-- Color is OKLCH via CSS custom properties in `src/app/globals.css`, with light and dark blocks. Token groups: surface, cards and popovers, primary/secondary/muted/accent, brand (`--brand` teal, `--brand-secondary` olive, `--brand-tertiary` navy), links, status (info, success, warning, destructive), borders, sidebar, editor highlight, and 5 chart colors.
-- `--radius` is `0.625rem` with `sm`/`md`/`lg`/`xl` derivatives. `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
+- Color is OKLCH via CSS custom properties in `src/app/globals.css`, with light and dark blocks. The palette comes from the logo: `--brand` is the mid teal in light mode and the logo light-blue in dark mode, `--brand-secondary` is olive (dark foreground), `--brand-tertiary` is navy. Neutrals carry a faint navy tint (hue 256). Every text and fill pair meets WCAG AA; check new pairs before adding them.
+- Status colors are tokens only (`success`, `warning`, `destructive`, `info`, plus `warning-text` for amber text on light surfaces). Never use raw Tailwind palette colors (`amber-500`, `green-500`) for state; use the `Badge` status variants (`success`, `warning`, `destructive`, `info`) or `bg-<status>/10 text-<status>`.
+- Elevation: the Tailwind shadow scale (`shadow-2xs` to `shadow-lg`) is overridden with layered shadows tinted by `--shadow-ink` and per-theme alpha tokens, so components keep standard classes.
+- Motion: `--ease-out` and `--ease-in-out` replace the weak Tailwind defaults. JS animation uses `EASE_OUT`, `SPRING`, and `TRANSITION` from `src/lib/motion.ts`; `MotionProvider` sets `MotionConfig reducedMotion="user"` app-wide. Enter and exit animations come from `tw-animate-css`. Never use `transition-all`; list the animated properties.
+- `--radius` is `0.6rem` with `sm`/`md`/`lg`/`xl` derivatives. `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
+- Email templates use their own Tailwind config in `src/emails/layout.tsx`; keep its `brand` hex in sync with the light `--brand`.
 - Theme switching uses the next-themes class strategy (`system`/`light`/`dark`) with the View Transitions API, respecting `prefers-reduced-motion`.
 - Route view transitions run under `experimental.viewTransition: true`. `globals.css` suppresses the default root transition so only a named `<ViewTransition>` with a transition type animates (e.g. `course-created` on course create).
 - `AnimatedList` and `AnimatedListItem` (`src/components/ui/animated-list.tsx`) wrap `AnimatePresence mode="popLayout"`: `variant` `card` or `row`, plus `asChild` and `exitOnly` for dnd-kit sortable lists, paired with `animateLayoutChangesAlways` and `measureAlways` from `src/components/ui/sortable.tsx`.

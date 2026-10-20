@@ -44,11 +44,13 @@ In `.agents/specs/`. Load the one you need, not the set.
 
 Remaining scripts (`start`, `analyze`, `release`, `deploy:preview`, `deploy:production`, `bump`, `db:down`, `db:logs`) are in `package.json`.
 
-**Committing:** only when the current prompt asks for it. `pnpm run check` MUST exit 0 first, no exceptions, and one logical task is one commit (never split a task into partial commits). Conventional Commits with sentence-case subjects, header max 100, allowed scopes `release`, `deps`, `deps-dev`, `security`. Hook mechanics: `code.md`.
+**Committing:** only when the current prompt asks for it. `pnpm run check` MUST exit 0 first, no exceptions, and one logical task is one commit (never split a task into partial commits). Conventional Commits with lower-case subjects (commitlint rejects sentence case), header max 100, allowed scopes `release`, `deps`, `deps-dev`, `security`. Hook mechanics: `code.md`.
 
 ## Skills and MCP
 
 Skills install into gitignored `.agents/skills/` (`pnpm run skills`), which behaves like `node_modules`; `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `react-email`, `shadcn`, `vercel-composition-patterns`, `vercel-react-best-practices`, `web-design-guidelines`. MCP servers in `.mcp.json`: `cloudflare` (R2 and Workers docs), `neon` (database ops).
+
+Tracked `.claude/settings.json` allowlists the check and test scripts, denies local env reads, and runs oxfmt on every edited file; put personal overrides in `.claude/settings.local.json`.
 
 Read and apply the matching skill before starting. `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name.
 
@@ -123,6 +125,7 @@ Machine-checkable rungs first, in order, and report which ones actually ran:
 
 1. `pnpm run check` exits 0.
 2. `pnpm run test` for logic changes, writing the failing test first for bug fixes; `pnpm run test:e2e` for auth, routing, and role flows (needs `pnpm run db:seed` once).
-3. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`), logged in as a seeded user. A passing typecheck is not visual verification.
+3. Before driving auth, invite, or certificate flows locally, confirm `MAIL_TRANSPORT=log` is set: dev otherwise sends real email through SMTP.
+4. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`), logged in as a seeded user. A passing typecheck is not visual verification.
 
 Keep `AGENTS.md` and `README.md` in sync with the code in the same change, no confirmation needed, whenever routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure change. Edit `AGENTS.md` directly and never `CLAUDE.md`; push detail into `.agents/specs/` to stay inside the budget.

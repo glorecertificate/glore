@@ -19,5 +19,6 @@ export default defineConfig({
     env,
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
     restoreMocks: true,
+    unstubEnvs: true,
   },
 })

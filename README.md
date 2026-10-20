@@ -28,6 +28,7 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 git clone https://github.com/glorecertificate/glore.git && cd glore
 cp .env.example .env
 echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.local
+echo MAIL_TRANSPORT=log >> .env.local  # log emails instead of sending them
 corepack enable && corepack install
 pnpm install
 pnpm skills

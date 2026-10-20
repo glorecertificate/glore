@@ -33,14 +33,14 @@ jobs:
       name: ${{ inputs.environment }}
       url: ${{ steps.vercel.outputs.url }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 1
       - uses: ./.github/actions/setup
         with:
           dev-only: true
           ignore-scripts: true
-      - uses: actions/cache@v5
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
         with:
           path: .next/cache
           key: nextjs-${{ runner.os }}-${{ inputs.environment }}-${{ github.sha }}
@@ -48,13 +48,22 @@ jobs:
             nextjs-${{ runner.os }}-${{ inputs.environment }}-
             nextjs-${{ runner.os }}-
       - name: Pull environment
-        run: pnpm exec vercel pull --yes --environment=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          TARGET: ${{ inputs.environment }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: pnpm exec vercel pull --yes --environment="$TARGET" --token="$VERCEL_TOKEN"
       - name: Build project artifacts
+        env:
+          TARGET: ${{ inputs.environment }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
           set -a
-          . .vercel/.env.${{ inputs.environment }}.local
+          . ".vercel/.env.$TARGET.local"
           set +a
-          pnpm exec vercel build --target=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }}
+          pnpm exec vercel build --target="$TARGET" --token="$VERCEL_TOKEN"
       - name: Deploy to Vercel
         id: vercel
-        run: echo "url=$(pnpm exec vercel deploy --prebuilt --archive=tgz --target=${{ inputs.environment }} --token=${{ secrets.VERCEL_TOKEN }})" >> "$GITHUB_OUTPUT"
+        env:
+          TARGET: ${{ inputs.environment }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: echo "url=$(pnpm exec vercel deploy --prebuilt --archive=tgz --target="$TARGET" --token="$VERCEL_TOKEN")" >> "$GITHUB_OUTPUT"

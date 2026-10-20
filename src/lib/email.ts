@@ -168,15 +168,19 @@ const buildEmail = (template: EmailTemplate, messages: Messages, locale: Locale)
   }
 }
 
-const transporter = createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: Number(process.env.SMTP_PORT) === 465,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-})
+const logsMail = () => process.env.NODE_ENV !== 'production' && process.env.MAIL_TRANSPORT === 'log'
+
+const transporter = logsMail()
+  ? createTransport({ jsonTransport: true })
+  : createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: Number(process.env.SMTP_PORT) === 465,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    })
 
 const recipientLocale = async (to: string | string[]) => {
   if (Array.isArray(to)) return DEFAULT_LOCALE
@@ -200,11 +204,13 @@ export const sendMail = async ({
   const messages = await messagesFor(locale)
   const { subject, element } = buildEmail(template, messages, locale as Locale)
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
+  const recipients = Array.isArray(to) ? to.join(', ') : to
   await transporter.sendMail({
     from: process.env.SMTP_SENDER,
-    to: Array.isArray(to) ? to.join(', ') : to,
+    to: recipients,
     subject,
     html,
     text,
   })
+  if (logsMail()) console.info(`[mail] ${template.name} to ${recipients}: ${subject}`)
 }

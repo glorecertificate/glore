@@ -6,7 +6,7 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 
 `singleQuote: true` (double in CSS via a `**/*.css` override), `semi: false`, `es5` trailing commas (`none` for `*.jsonc`), `arrowParens: 'avoid'`, `sortPackageJson: false`. `sortTailwindcss` recognizes `clsx`, `cn`, and `cva`.
 
-Ignored by the formatter: `*.d.ts`, `AGENTS.md`, `.agents/**`, `.claude/**`, `drizzle/**`.
+Ignored by the formatter: `*.d.ts`, `drizzle/**`, `.agents/skills/**`, `.claude/skills/**`. `AGENTS.md`, `.agents/specs/`, and `.claude/settings.json` are formatted and checked.
 
 ## Git hooks
 

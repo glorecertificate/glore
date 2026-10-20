@@ -21,3 +21,17 @@ updates:
       prefix: build
       prefix-development: build
       include: scope
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /.github/actions/*
+    schedule:
+      interval: quarterly
+    labels:
+      - build
+    groups:
+      actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: ci

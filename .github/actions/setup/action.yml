@@ -26,7 +26,7 @@ runs:
       id: node
       shell: bash
       run: echo "version=$(cat .node-version)" >> "$GITHUB_OUTPUT"
-    - uses: pnpm/setup@v1.0.0
+    - uses: pnpm/setup@5d160c5bc68a09337ad0d5654e237e03253b5879 # v1.0.0
       with:
         runtime: node@${{ steps.node.outputs.version }}
         cache: true

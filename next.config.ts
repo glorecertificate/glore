@@ -18,6 +18,7 @@ const envSchema = z.object({
     ),
   GEMINI_API_KEY: z.string().min(1).optional(),
   GEMINI_MODEL: z.string().min(1).optional(),
+  MAIL_TRANSPORT: z.enum(['smtp', 'log']).optional(),
   R2_ACCOUNT_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_ACCESS_KEY_ID: z.string().regex(/^[0-9a-f]{32}$/u),
   R2_SECRET_ACCESS_KEY: z.string().regex(/^[0-9a-f]{64}$/u),

@@ -46,7 +46,7 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 **Request lifecycle** in `proxy.ts` (NextProxy), which intercepts all non-static requests:
 
 1. `auth.api.getSession()` validates the session from signed HTTP-only cookies.
-2. Unauthenticated > redirect to `/login`.
+2. Unauthenticated or banned > redirect to `/login` (`?expired=true` when a session cookie was present).
 3. Authenticated but `onboardedAt` is null > redirect to `/onboarding`.
 4. Onboarded and hitting `/onboarding` > redirect to `/dashboard`.
 5. Authenticated and hitting `/login` > redirect to `/dashboard`.
@@ -58,6 +58,8 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 **Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation), `nextCookies()` (Next.js cookie integration). Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
 **Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
+
+**Stale sessions:** when the cookie cache outlives the user row, `getCurrentUser` redirects to `/api/v1/session`, which re-reads the session without the cache and clears auth cookies only when it is invalid, so a forged link cannot sign out a live user. `deleteAccount` signs out and expires `userTag` itself.
 
 ## Data fetching
 
@@ -99,42 +101,16 @@ Production runs the **neon-http** driver, which has **no interactive transaction
 - **Inside a transaction, statements MUST run sequentially**, one `await` at a time. All statements share one connection, so `Promise.all` on a single `tx` corrupts the session. `.oxlintrc.json` turns off `react-doctor/async-parallel` and `async-await-in-loop` for `src/db/mutations/**` and `src/db/helpers.ts`; batch writes inside one transaction use `mapSequential` from `@/db/helpers`. Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`, and `createCertificateWithSkills` takes a transaction-scoped advisory lock to keep one non-draft certificate per user and organization.
 - Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction: compute inputs first, then open a short transaction for the DB writes only.
 
-```typescript
-// src/db/mutations/certificate.ts
-export const createCertificateWithSkills = async (
-  tx: Transaction,
-  values: TableInsert<'certificates'>,
-  skillCourseIds: number[]
-) => {
-  const [created] = await tx.insert(certificates).values(values).returning()
-  if (!created) throw new Error('Failed to create certificate')
-  if (skillCourseIds.length > 0) {
-    await tx.insert(certificateSkills).values(skillCourseIds.map(courseId => ({ certificateId: created.id, courseId })))
-  }
-  return created
-}
-```
-
 **Tenancy:** authorization and tenant scoping stay at the action boundary (verify ownership or org membership before calling the mutation); mutations operate on already-authorized ids.
 
 ### Cache strategy
 
-Tags are the `CacheTag` enum in `src/lib/cache.ts`, which also holds the per-record helpers: `userTag(id)` gives `user-{id}`, `courseTag(slug)` gives `course-{slug}`, `certificatesUserTag(userId)` gives `certificates-user-{userId}`, `certificatesTutorTag(reviewerId)` gives `certificates-tutor-{reviewerId}`, and `certificatesOrgTag(orgId)` gives `certificates-org-{orgId}`. Global tags cover a whole collection (`admin-users`, `auth-user`, `auth-user-status`, `courses`, `doc-categories`, `organizations`, `skill-groups`, `team-members`, `user-email`); per-record tags are `user`, `course`, and `certificates`. Read the file for the current set and which query owns each tag.
+Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`) in `src/lib/cache.ts`; read it for the current set and owners.
 
-- `'use cache'` goes on the inner fetch function, never the exported one.
-- `cacheTag()` tags the data, `cacheLife('max')` for long-lived caches, `revalidateTag(tag, 'max')` after mutations.
-- React `cache()` for request-level deduplication; `{ cache: false }` on the exported function to bypass.
-
-```typescript
-const fetchCourses = cache(async () => {
-  'use cache'
-  cacheTag(CacheTag.Courses)
-  return await safeQuery(async () => {
-    const result = await db.query.courses.findMany({ with: courseWith })
-    return result.map(parseCourse)
-  })
-})
-```
+- `'use cache'` (with `cacheLife('max')` for long-lived data) goes on the inner fetch function, never the exported one; the exported one takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
+- In a server action whose caller must see its own write, use `updateTag(tag)`; elsewhere use `revalidateTag(tag, 'max')`. `updateTag` throws outside server actions.
+- Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions); progress writes expire `progressUserTag(userId)`.
+- Never mutate during render: a page that must record a visit (course enrollment) does it from a client effect calling the action (`CourseEnrollment`).
 
 ## Error handling
 
@@ -149,7 +125,7 @@ const fetchCourses = cache(async () => {
 
 > **MANDATORY:** every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
 
-The schema covers `APP_URL`, `BETTER_AUTH_SECRET`, `DATABASE_URL`, the R2 set (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_PUBLIC_URL`), the Gemini set (`GEMINI_API_KEY`, `GEMINI_MODEL`), and the SMTP set (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_SENDER`). Read `next.config.ts` for the current validators.
+Read `envSchema` in `next.config.ts` for the current set and validators. `MAIL_TRANSPORT=log` (ignored in production) swaps SMTP for a JSON transport that only logs `[mail] <template> to <recipient>`; set it in `.env.local` for dev and e2e so flows never mail real addresses.
 
 **Validation:** the schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`) unless `SKIP_ENV_VALIDATION` is set; `scripts/typegen.mts` sets it when calling `next typegen`, so a fresh clone with no secrets can still run `pnpm install`.
 
@@ -159,13 +135,7 @@ The schema covers `APP_URL`, `BETTER_AUTH_SECRET`, `DATABASE_URL`, the R2 set (`
 
 ## Static data
 
-| File                   | Purpose                                                                                                      |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `config/app.json`      | Feature settings (`minSkills: 3`, `minRating: 3`, `maxAvatarSize: 2048`, `mapsUrl`, `sidebarShortcut: "\\"`) |
-| `config/i18n.json`     | Locale definitions, default locale, title-case locales, spoken languages, hardcoded messages                 |
-| `config/icons.json`    | Lucide icon metadata (~1,640 entries: name, categories, tags) for icon picker fuzzy search                   |
-| `config/metadata.json` | App name, version, URL, email, keywords, authors                                                             |
-| `config/theme.json`    | Theme modes, breakpoints, hex color palette for light and dark                                               |
+`config/*.json` holds feature settings (`app.json`: `minSkills`, `minRating`, `maxAvatarSize`), locales (`i18n.json`), icon-picker metadata (`icons.json`), app metadata (`metadata.json`), and breakpoints (`theme.json`).
 
 ## Dev environment and performance
 
@@ -185,21 +155,19 @@ Non-obvious settings that keep dev HMR and CI builds fast. They back the dev-per
 
 ## Framework docs
 
-Next.js is the only dependency here that ships its own documentation, under `node_modules/next/dist/docs/`. It always matches the installed version, so grep it for API pages instead of trusting recall.
-
-context7 covers the rest of the stack and serves the same Next.js pages, but resolve the pinned id (`/vercel/next.js/v<installed version>`) rather than the bare `/vercel/next.js`. The unpinned id follows a moving default, and this app runs `cacheComponents`, Cached Components, and `NextProxy`, which are v16-only surface where a v15 answer is wrong rather than merely dated.
+- Grep `node_modules/next/dist/docs/` for Next.js APIs; it always matches the installed version.
+- For context7, use the pinned id `/vercel/next.js/v<installed version>`: `cacheComponents` and `NextProxy` are v16-only, so a v15 answer is wrong.
 
 ## Browser verification
 
-Visual checks run through the machine-wide `agent-browser` skill against the dev server that is already running, never a second app stack. There is no agent-owned preview server, no isolated dist dir, and no preview MCP in this repo.
-
-- Start the app with `pnpm run dev` if nothing is listening, then drive `https://glore.localhost` (portless routes it to Next on `127.0.0.1:45673`).
-- Name the session after the task or worktree, act on snapshot refs, and close the session in the same turn that finishes with it. An orphaned session holds roughly 900MB of Chrome processes.
-- Authenticated flows use a persistent `--session-name` profile so cookies survive across runs, logged in as a seeded user (see Testing). Full flow and cleanup rules: the `agent-browser` skill.
-- `APP_URL` must match the host being driven, since `allowedDevOrigins` is derived from it.
+- Drive the running dev server at `https://glore.localhost` with the machine-wide `agent-browser` skill; never start a second app stack or preview server.
+- Reuse Playwright auth state (`--state tmp/playwright/.auth/<role>.json --ignore-https-errors`) to act as a seeded user.
+- Close each named session in the turn that finishes with it; an orphan holds about 900MB of Chrome.
+- `APP_URL` must match the driven host, since `allowedDevOrigins` and Better Auth `baseURL` derive from it.
 
 ## Testing
 
 - `pnpm run test` runs Vitest in the Node environment over `src/**/*.test.ts` and `scripts/**/*.test.ts`. `vitest.config.ts` resolves tsconfig paths and aliases `server-only` to an empty module, so server actions import cleanly; mock `@/actions/auth` and `next/cache` per test. It loads `.env` and `.env.local`, so DB-backed tests (for example `src/db/mutations/certificate.test.ts`) run against the seeded local DB and skip themselves when `DATABASE_URL` is not local.
 - `pnpm run db:seed` (`scripts/seed.mts`) upserts the org `glore-seed` and one user per role at `<role>@seed.glore.test`: `admin` (platform admin), `editor`, `owner` (org admin), `representative`, `tutor`, `volunteer`, `learner`. The shared password and roles live in `scripts/seed-data.ts`. It runs in one transaction, is idempotent, and exits non-zero unless `DATABASE_URL` points to localhost.
+- Claude Code: tracked `.claude/settings.json` allowlists the check, test, typegen, and seed scripts, denies reads of local env files, and runs `oxfmt` on every edited file through a `PostToolUse` hook.
 - `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). The `setup` project logs in `admin`, `owner`, and `volunteer` and stores their state in `tmp/playwright/.auth/`; specs pick one with `test.use({ storageState: authFile(role) })`. Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs.

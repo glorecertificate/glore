@@ -1,6 +1,7 @@
 .agents/*
 !.agents/specs/
 .claude/*
+!.claude/settings.json
 !.claude/skills
 .next/
 .vercel/

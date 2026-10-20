@@ -171,7 +171,11 @@ export const CourseBreadcrumb = () => {
               />
             )}
             {title}
-            {course.archivedAt && <Badge size="sm">{t('archived')}</Badge>}
+            {course.archivedAt && (
+              <Badge size="sm" variant="muted">
+                {t('archived')}
+              </Badge>
+            )}
           </>
         )}
         <Popover>

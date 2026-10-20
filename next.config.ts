@@ -135,6 +135,8 @@ const optimizePackageImports: Package[] = [
   'react-hook-form',
 ]
 
+const storageHost = URL.parse(process.env.R2_PUBLIC_URL ?? '')?.hostname
+
 const nextConfig: NextConfig = {
   agentRules: false,
   reactStrictMode: true,
@@ -145,12 +147,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages,
   typedRoutes: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: new URL(process.env.R2_PUBLIC_URL).hostname,
-      },
-    ],
+    remotePatterns: storageHost ? [{ protocol: 'https', hostname: storageHost }] : [],
   },
   experimental: {
     optimizePackageImports,

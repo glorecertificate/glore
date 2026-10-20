@@ -90,3 +90,4 @@ Cross-feature imports are NOT yet blocked and a few exist (`admin -> organizatio
 - Server components by default. Add `'use client'` only for interactivity: hooks, event handlers, browser APIs.
 - Layout guards (admin, certificates) are server components that call `notFound()`.
 - Pages that fetch data async use an inner async component plus an outer sync page wrapping it in `<Suspense fallback={<LoadingFallback />}>`, so the page header renders immediately while data loads.
+- `(dashboard)/loading.tsx` is the skeleton that client navigations show at once. Segment layouts that await uncached data (`CoursesProvider` in `dashboard/` and `courses/`) rely on it, so never remove it; `next dev` logs a blocking-route error when a navigation would wait on uncached data.

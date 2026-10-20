@@ -25,5 +25,16 @@ services:
       -c synchronous_commit=off
       -c full_page_writes=off
 
+  mailpit:
+    image: axllent/mailpit:v1.30
+    container_name: glore-mailpit
+    restart: unless-stopped
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
 volumes:
   postgres-data:

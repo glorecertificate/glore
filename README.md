@@ -20,7 +20,7 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 ### Prerequisites
 
 - Node.js version specified in [`.node-version`](.node-version)
-- Docker (for the local Postgres used in development)
+- Docker (for the local Postgres and Mailpit used in development)
 
 ### Setup and run
 
@@ -28,11 +28,12 @@ This project is a multi-language Next.js 16 application written in TypeScript, u
 git clone https://github.com/glorecertificate/glore.git && cd glore
 cp .env.example .env
 echo DATABASE_URL=postgresql://glore:glore@localhost:5433/glore > .env.local
-echo MAIL_TRANSPORT=log >> .env.local  # log emails instead of sending them
+echo MAIL_TRANSPORT=mailpit >> .env.local  # deliver emails to the local Mailpit inbox
 corepack enable && corepack install
 pnpm install
 pnpm skills
 pnpm db:up
+pnpm mail:up  # Mailpit inbox at http://localhost:8025
 pnpm db migrate
 pnpm db:seed  # one test user per role, password in scripts/seed-data.ts
 pnpm dev     # https://glore.localhost
@@ -83,6 +84,8 @@ To run against a different database, prefix the command with an explicit `DATABA
 pnpm test       # Vitest unit tests
 pnpm test:e2e   # Playwright against the running dev server, as seeded users
 ```
+
+The recovery spec reads its email from Mailpit, so run `pnpm mail:up` and set `MAIL_TRANSPORT=mailpit` first. CI runs the same suite against a production build, with Postgres and Mailpit as service containers ([`.github/workflows/e2e.yml`](.github/workflows/e2e.yml)).
 
 **Switching back to Neon in dev:**
 

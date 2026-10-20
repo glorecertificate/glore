@@ -168,11 +168,11 @@ const buildEmail = (template: EmailTemplate, messages: Messages, locale: Locale)
   }
 }
 
-const logsMail = () => process.env.NODE_ENV !== 'production' && process.env.MAIL_TRANSPORT === 'log'
-
-const transporter = logsMail()
-  ? createTransport({ jsonTransport: true })
-  : createTransport({
+const transports = {
+  log: () => createTransport({ jsonTransport: true }),
+  mailpit: () => createTransport({ host: 'localhost', port: 1025, secure: false }),
+  smtp: () =>
+    createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT),
       secure: Number(process.env.SMTP_PORT) === 465,
@@ -180,7 +180,12 @@ const transporter = logsMail()
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
       },
-    })
+    }),
+}
+
+const mailTransport = process.env.NODE_ENV === 'production' ? 'smtp' : (process.env.MAIL_TRANSPORT ?? 'smtp')
+
+const transporter = transports[mailTransport]()
 
 const recipientLocale = async (to: string | string[]) => {
   if (Array.isArray(to)) return DEFAULT_LOCALE
@@ -212,5 +217,5 @@ export const sendMail = async ({
     html,
     text,
   })
-  if (logsMail()) console.info(`[mail] ${template.name} to ${recipients}: ${subject}`)
+  if (mailTransport !== 'smtp') console.info(`[mail] ${template.name} to ${recipients}: ${subject}`)
 }

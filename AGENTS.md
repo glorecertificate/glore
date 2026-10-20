@@ -39,6 +39,7 @@ In `.agents/specs/`. Load the one you need, not the set.
 | `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                                |
 | `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                               |
 | `pnpm run db:seed`      | Upsert one test user per role into the local DB (refuses non-local URLs)                  |
+| `pnpm run mail:up`      | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`                  |
 | `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                                |
 | `pnpm run skills`       | Install agent skills from `skills-lock.json`                                              |
 
@@ -125,7 +126,7 @@ Machine-checkable rungs first, in order, and report which ones actually ran:
 
 1. `pnpm run check` exits 0.
 2. `pnpm run test` for logic changes, writing the failing test first for bug fixes; `pnpm run test:e2e` for auth, routing, and role flows (needs `pnpm run db:seed` once).
-3. Before driving auth, invite, or certificate flows locally, confirm `MAIL_TRANSPORT=log` is set: dev otherwise sends real email through SMTP.
+3. Before driving auth, invite, or certificate flows locally, confirm `MAIL_TRANSPORT` is `mailpit` (read links via `http://localhost:8025/api/v1/search`) or `log`: dev otherwise sends real email through SMTP.
 4. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`), logged in as a seeded user. A passing typecheck is not visual verification.
 
 Keep `AGENTS.md` and `README.md` in sync with the code in the same change, no confirmation needed, whenever routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure change. Edit `AGENTS.md` directly and never `CLAUDE.md`; push detail into `.agents/specs/` to stay inside the budget.

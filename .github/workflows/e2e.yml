@@ -1,0 +1,84 @@
+name: E2E
+
+on: workflow_call
+
+jobs:
+  e2e:
+    name: E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: glore
+          POSTGRES_PASSWORD: glore
+          POSTGRES_DB: glore
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U glore -d glore"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      mailpit:
+        image: axllent/mailpit:v1.30
+        env:
+          MP_SMTP_AUTH_ACCEPT_ANY: 1
+          MP_SMTP_AUTH_ALLOW_INSECURE: 1
+        ports:
+          - 587:1025
+          - 8025:8025
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      APP_URL: http://localhost:3000
+      DATABASE_URL: postgresql://glore:glore@localhost:5433/glore
+      E2E_BASE_URL: http://localhost:3000
+      R2_ACCOUNT_ID: 00000000000000000000000000000000
+      R2_ACCESS_KEY_ID: 00000000000000000000000000000000
+      R2_SECRET_ACCESS_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+      R2_BUCKET_NAME: glore-e2e
+      R2_PUBLIC_URL: https://r2.glore.test
+      SMTP_HOST: localhost
+      SMTP_PORT: 587
+      SMTP_SENDER: GloRe <noreply@glore.test>
+      SMTP_USER: e2e@glore.test
+      SMTP_PASSWORD: e2e
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/setup
+      - name: Generate auth secret
+        run: |
+          SECRET="$(openssl rand -base64 32)"
+          echo "::add-mask::$SECRET"
+          echo "BETTER_AUTH_SECRET=$SECRET" >> "$GITHUB_ENV"
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-e2e-${{ github.sha }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-e2e-
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Migrate and seed the database
+        run: |
+          pnpm run db migrate
+          pnpm run db:seed
+      - name: Build
+        run: pnpm run build
+      - name: Run e2e tests
+        run: pnpm run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-traces
+          path: tmp/playwright
+          retention-days: 7

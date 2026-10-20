@@ -18,9 +18,14 @@ jobs:
     permissions:
       contents: read
     uses: ./.github/workflows/check.yml
+  e2e:
+    name: E2E
+    permissions:
+      contents: read
+    uses: ./.github/workflows/e2e.yml
   deploy:
     name: Deploy
-    needs: check
+    needs: [check, e2e]
     permissions:
       contents: read
       deployments: write

@@ -20,6 +20,7 @@ export const SEED_USERS: SeedUser[] = [
   { key: 'tutor', firstName: 'Tomas', membership: 'tutor' },
   { key: 'volunteer', firstName: 'Valentina', membership: 'volunteer' },
   { key: 'learner', firstName: 'Leo', membership: 'learner' },
+  { key: 'recovery', firstName: 'Rita', membership: 'learner' },
 ]
 
 export const seedEmail = (key: string) => `${key}@${SEED_DOMAIN}`

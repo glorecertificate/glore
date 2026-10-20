@@ -12,6 +12,13 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     trace: 'retain-on-failure',
   },
+  webServer: process.env.CI
+    ? {
+        command: 'pnpm exec next start --port 3000',
+        url: 'http://localhost:3000/api/v1/health',
+        timeout: 60_000,
+      }
+    : undefined,
   projects: [
     { name: 'setup', testMatch: /auth\.setup\.ts/u },
     {

@@ -156,7 +156,7 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default (phase: PHASE_TYPE) => {
+const createNextConfig = (phase: PHASE_TYPE) => {
   const isDevServer = phase === PHASE_DEVELOPMENT_SERVER
   const isProdBuild = phase === PHASE_PRODUCTION_BUILD
   const allowedDevOrigins = isDevServer ? [new URL(process.env.APP_URL).host] : undefined
@@ -186,3 +186,5 @@ export default (phase: PHASE_TYPE) => {
     },
   })
 }
+
+export default createNextConfig

@@ -58,7 +58,7 @@ Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all 
 | `typescript/no-inferrable-types`         | Error: omit inferrable type annotations        |
 | `typescript/no-explicit-any`             | Warn (only `src/lib/types.ts` may use `any`)   |
 | `unicorn/filename-case`                  | Error: kebab-case (ignores `$`-prefixed)       |
-| `import/no-anonymous-default-export`     | Error (off for `*.config.ts`)                  |
+| `import/no-anonymous-default-export`     | Error everywhere, call expressions included    |
 | `promise/prefer-await-to-then`           | Error: `await`, not `.then()` chains           |
 | `react/jsx-curly-brace-presence`         | Error: no braces on props, always on children  |
 | `eslint/prefer-template`                 | Error: template literals over concatenation    |
@@ -77,4 +77,4 @@ node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys(
 
 `typeAware: true`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include `no-floating-promises`, `no-misused-promises`, and `unbound-method`. The editor LSP has `typeAware` off for speed, explained under "Dev environment and performance" in `reference.md`. `typeCheck: false`: oxlint does not type-check, `tsc` does via `pnpm run check:types`.
 
-**Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows anonymous default exports and template curlies in strings.
+**Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows template curlies in strings.

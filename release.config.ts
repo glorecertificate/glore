@@ -68,7 +68,7 @@ const commitTypes = [
   scopes?: CommitScope[]
 }[]
 
-export default {
+const releaseConfig = {
   git: {
     commitMessage: 'chore(release): v${version}',
     push: true,
@@ -120,3 +120,5 @@ export default {
     },
   },
 } satisfies ReleaseItConfig
+
+export default releaseConfig

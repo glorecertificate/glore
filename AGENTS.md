@@ -85,7 +85,7 @@ Full style detail and the lint table are in `code.md`. These shape first-pass ou
 - **Guard clauses only.** `if/else`, `else if`, and `else` are forbidden.
 - **No comments in new code.** The only exception is a `{/* Section */}` divider in long JSX. Never touch existing comments.
 - **No JSX string literals.** All user-facing text goes through next-intl.
-- **Functions:** `const` arrow functions only, named exports inline (`export const Foo = ...`). A default-exported component is defined first, then `export default Component`. Pages and layouts use a direct anonymous default export.
+- **Functions:** `const` arrow functions only, named exports inline (`export const Foo = ...`). Every default export, pages, layouts, and config files included, is assigned to a named `const` first, then `export default Name` (an inline `export default () => ...` or `export default defineConfig(...)` breaks HMR and is lint-blocked).
 - **Types:** `interface` over `type` for object shapes, inline type imports (`import { type Foo }`), `string[]` over `Array<string>`. Omit return types and inferrable annotations unless narrowing needs them. `any` is allowed only in `src/lib/types.ts`.
 - **Iteration and promises:** `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. `await`, never `.then()`/`.catch()` chains. `Promise.all()` for independent parallel work.
 - **Modules:** one component per file, `@/` and `~/` aliases (`../**` is blocked), shadcn/ui new-york with `cva` variants and `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components before adding new ones.

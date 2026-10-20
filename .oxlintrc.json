@@ -160,7 +160,7 @@
     "import/group-exports": "off",
     "import/max-dependencies": "off",
     "import/no-absolute-path": "error",
-    "import/no-anonymous-default-export": "error",
+    "import/no-anonymous-default-export": ["error", { "allowCallExpression": false }],
     "import/no-commonjs": "error",
     "import/no-cycle": "error",
     "import/no-duplicates": "error",
@@ -716,8 +716,7 @@
     {
       "files": ["*.config.ts"],
       "rules": {
-        "eslint/no-template-curly-in-string": "off",
-        "import/no-anonymous-default-export": "off"
+        "eslint/no-template-curly-in-string": "off"
       }
     },
     {

@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-export default defineConfig({
+const playwrightConfig = defineConfig({
   testDir: 'e2e',
   outputDir: 'tmp/playwright',
   fullyParallel: true,
@@ -28,3 +28,5 @@ export default defineConfig({
     },
   ],
 })
+
+export default playwrightConfig

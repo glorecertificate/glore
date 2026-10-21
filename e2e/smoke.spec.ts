@@ -51,4 +51,10 @@ test.describe('volunteer', () => {
     await expect(page).toHaveURL(/\/dashboard/u)
     await expect(page.locator('main')).toBeVisible()
   })
+
+  test('opens the course list with progress tabs', async ({ page }) => {
+    await page.goto('/courses')
+    await expect(page.getByRole('tab', { name: /Not started/u })).toBeVisible()
+    await expect(page.getByText('Something went wrong')).toBeHidden()
+  })
 })

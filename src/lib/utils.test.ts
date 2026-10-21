@@ -6,6 +6,11 @@ describe('camelize', () => {
   it('joins separated words in camel case', () => {
     expect(camelize('hello_big-world')).toBe('helloBigWorld')
   })
+
+  it('keeps camel case input unchanged', () => {
+    expect(camelize('notStarted')).toBe('notStarted')
+    expect(camelize('in_progress')).toBe('inProgress')
+  })
 })
 
 describe('isValidUsername', () => {

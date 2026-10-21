@@ -46,8 +46,7 @@ export const titleize = (input: string) =>
 export const camelize = <T extends string>(input: T) =>
   input.split(CAMEL_CASE_REGEX).reduce<string>((acc, word) => {
     if (!word) return acc
-    const cleanWord = word.toLowerCase()
-    return acc + (acc.length === 0 ? cleanWord : cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1))
+    return acc + (acc.length === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1))
   }, '') as CamelCase<T>
 
 /*

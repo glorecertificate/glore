@@ -1,6 +1,6 @@
 import { defineConfig } from 'drizzle-kit'
 
-const drizzleConfig = defineConfig({
+export default defineConfig({
   dialect: 'postgresql',
   schema: './src/db/schema',
   out: './drizzle',
@@ -9,5 +9,3 @@ const drizzleConfig = defineConfig({
     url: process.env.DATABASE_URL,
   },
 })
-
-export default drizzleConfig

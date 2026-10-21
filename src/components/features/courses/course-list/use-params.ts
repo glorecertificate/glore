@@ -285,9 +285,16 @@ export const useDisplayCourses = () => {
 export const useCourseListParams = () => {
   const searchParams = useSearchParams()
   const { current: cookies } = useRef(useCookies())
+  const restoredRef = useRef(false)
 
   useEffect(() => {
     const params = searchParams.toString()
+    const saved = restoredRef.current ? undefined : cookies.get('courseListParams')
+    restoredRef.current = true
+    if (!params && saved) {
+      window.history.replaceState(null, '', `?${saved}`)
+      return
+    }
     if (params) {
       cookies.set('courseListParams', params)
       return

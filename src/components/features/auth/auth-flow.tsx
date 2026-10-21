@@ -3,7 +3,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
-import { AnimatePresence, type Variants, motion, useIsPresent } from 'motion/react'
+import { AnimatePresence, type Variants, m, useIsPresent } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Values, useQueryStates } from 'nuqs'
 import { toast } from 'sonner'
@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Globe, type GlobeColorOptions } from '@/components/ui/globe'
 import { LanguageSelect } from '@/components/ui/language-select'
 import { Logo } from '@/components/ui/logo'
+import { MotionFeatures } from '@/components/ui/motion-features'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
 import { MessageKey } from '@/lib/i18n'
@@ -37,9 +38,9 @@ const STEP_ITEM_VARIANTS = {
   visible: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.3, ease: EASE_OUT }, y: 0 },
 } satisfies Variants
 
-const AuthStep = (props: React.ComponentProps<typeof motion.div>) => {
+const AuthStep = (props: React.ComponentProps<typeof m.div>) => {
   const isPresent = useIsPresent()
-  return <motion.div inert={!isPresent} {...props} />
+  return <m.div inert={!isPresent} {...props} />
 }
 
 const AuthHeader = ({
@@ -289,11 +290,11 @@ export const AuthFlow = ({
   }
 
   return (
-    <>
+    <MotionFeatures>
       <AuthHeader contentRef={ref} onLogoClick={() => setView('login')} view={view} />
       <div className="flex flex-1 items-center justify-center">
         <div className="w-full max-w-md">
-          <motion.div
+          <m.div
             animate={{ height: height ?? 'auto' }}
             className="overflow-hidden"
             initial={false}
@@ -310,11 +311,11 @@ export const AuthFlow = ({
                   key={view}
                   variants={STEP_VARIANTS}
                 >
-                  <motion.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
+                  <m.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
                     {title && <h1 className="text-3xl font-semibold">{title}</h1>}
                     <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
-                  </motion.div>
-                  <motion.div className="mx-auto flex w-full max-w-88 flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
+                  </m.div>
+                  <m.div className="mx-auto flex w-full max-w-88 flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
                     <AuthContent
                       errored={errored}
                       loggedOut={params.loggedOut}
@@ -325,13 +326,13 @@ export const AuthFlow = ({
                       username={username}
                       view={view}
                     />
-                  </motion.div>
+                  </m.div>
                 </AuthStep>
               </AnimatePresence>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
-    </>
+    </MotionFeatures>
   )
 }

@@ -6,7 +6,7 @@ const COMMIT_SCOPES = ['release', 'deps', 'deps-dev', 'security'] as const
 export type CommitType = keyof typeof configConventional.prompt.questions.type.enum
 export type CommitScope = (typeof COMMIT_SCOPES)[number]
 
-const commitlintConfig = {
+export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'scope-enum': [RuleConfigSeverity.Error, 'always', COMMIT_SCOPES],
@@ -18,5 +18,3 @@ const commitlintConfig = {
     'footer-leading-blank': [RuleConfigSeverity.Warning, 'always'],
   },
 } satisfies UserConfig
-
-export default commitlintConfig

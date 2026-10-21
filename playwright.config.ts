@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 
 const playwrightConfig = defineConfig({
   testDir: 'e2e',
-  outputDir: 'tmp/playwright',
+  outputDir: '.playwright',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,

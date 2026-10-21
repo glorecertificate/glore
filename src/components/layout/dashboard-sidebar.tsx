@@ -1,6 +1,7 @@
 'use client'
 
 import { Route } from 'next'
+import dynamic from 'next/dynamic'
 import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { Fragment, Suspense, useEffect, useState } from 'react'
 
@@ -27,7 +28,6 @@ import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import { DashboardIcon } from '@/components/icons/dashboard'
-import { SearchCommand } from '@/components/layout/search-command'
 import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
@@ -75,6 +75,14 @@ import { type UserOrganization } from '@/db/queries/user'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
 import { type Icon } from '@/lib/types'
 import { cn, sleep, titleize } from '@/lib/utils'
+
+const loadSearchCommand = async () => (await import('@/components/layout/search-command')).SearchCommand
+
+const SearchCommand = dynamic(loadSearchCommand, { ssr: false })
+
+const preloadSearchCommand = () => {
+  void loadSearchCommand()
+}
 
 interface PendingCounts {
   organizations: number
@@ -152,7 +160,7 @@ const DashboardSidebarItem = ({
         onClick={setPath}
         tooltip={label}
       >
-        <Link href={route} prefetch>
+        <Link href={route}>
           {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
           ) : Icon ? (
@@ -560,11 +568,18 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
   const [open, setOpen] = useState(false)
+  const [activated, setActivated] = useState(false)
+
+  const openSearch = () => {
+    setActivated(true)
+    setOpen(true)
+  }
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault()
+        setActivated(true)
         setOpen(prev => !prev)
       }
     }
@@ -577,7 +592,12 @@ const DashboardSidebarSearch = () => {
       <SidebarGroup>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={t('trigger')} onClick={() => setOpen(true)}>
+            <SidebarMenuButton
+              onClick={openSearch}
+              onFocus={preloadSearchCommand}
+              onPointerEnter={preloadSearchCommand}
+              tooltip={t('trigger')}
+            >
               <SearchIcon />
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
@@ -590,7 +610,7 @@ const DashboardSidebarSearch = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>
-      <SearchCommand open={open} onOpenChange={setOpen} />
+      {activated && <SearchCommand onOpenChange={setOpen} open={open} />}
     </>
   )
 }

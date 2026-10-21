@@ -6,10 +6,11 @@ import {
   type HTMLMotionProps,
   type MotionNodeAnimationOptions,
   type Transition,
-  motion,
+  m,
   useReducedMotion,
 } from 'motion/react'
 
+import { MotionFeatures } from '@/components/ui/motion-features'
 import { EASE_OUT, SPRING } from '@/lib/motion'
 
 type AnimatedListVariant = 'card' | 'row'
@@ -60,7 +61,7 @@ const ANIMATIONS: Record<AnimatedListVariant, MotionNodeAnimationOptions> = {
   },
 }
 
-const AnimatedListSlot = motion.create(Slot)
+const AnimatedListSlot = m.create(Slot)
 
 export const AnimatedList = ({
   children,
@@ -68,9 +69,11 @@ export const AnimatedList = ({
   mode = 'popLayout',
   ...props
 }: React.ComponentProps<typeof AnimatePresence>) => (
-  <AnimatePresence initial={initial} mode={mode} {...props}>
-    {children}
-  </AnimatePresence>
+  <MotionFeatures>
+    <AnimatePresence initial={initial} mode={mode} {...props}>
+      {children}
+    </AnimatePresence>
+  </MotionFeatures>
 )
 
 export const AnimatedListItem = ({
@@ -86,7 +89,7 @@ export const AnimatedListItem = ({
   exitOnly?: boolean
   variant?: AnimatedListVariant
 }) => {
-  const Item = asChild ? AnimatedListSlot : motion.div
+  const Item = asChild ? AnimatedListSlot : m.div
   const reducedMotion = useReducedMotion()
 
   if (reducedMotion) {

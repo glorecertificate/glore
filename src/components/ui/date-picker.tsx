@@ -1,15 +1,27 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
 import { CalendarIcon } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import { FormControl } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
+
+const loadCalendar = async () => (await import('@/components/ui/calendar')).Calendar
+
+const Calendar = dynamic(loadCalendar, {
+  loading: () => <Skeleton className="h-75 w-64" />,
+  ssr: false,
+})
+
+const preloadCalendar = () => {
+  void loadCalendar()
+}
 
 export const DatePicker = ({
   disabled,
@@ -62,6 +74,8 @@ export const DatePicker = ({
           <Button
             className={cn('w-full justify-start font-normal', !selectedDate && 'text-muted-foreground')}
             disabled={disabled}
+            onFocus={preloadCalendar}
+            onPointerEnter={preloadCalendar}
             type="button"
             variant="outline"
           >

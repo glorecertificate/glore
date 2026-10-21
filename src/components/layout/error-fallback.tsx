@@ -1,11 +1,17 @@
 'use client'
 
+import dynamic from 'next/dynamic'
+
 import { useTranslations } from 'next-intl'
 
 import { ErrorIcon } from '@/components/icons/error'
-import { NotFoundIcon } from '@/components/icons/not-found'
 import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
+
+const NotFoundIcon = dynamic(async () => (await import('@/components/icons/not-found')).NotFoundIcon, {
+  loading: () => <div className="mb-8 aspect-659/357 w-80 sm:w-90" />,
+  ssr: false,
+})
 
 export interface ErrorProps {
   error: { digest?: string } & Error

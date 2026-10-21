@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { startTransition } from 'react'
 
@@ -7,11 +8,12 @@ import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
 
-import { OrganizationJoinRequests } from './join-requests'
-import { OrganizationMembers } from './members'
 import { OrganizationOverview } from './overview'
-import { OrganizationSettings } from './settings'
 import { useOrganizationTab } from './tabs'
+
+const OrganizationJoinRequests = dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests)
+const OrganizationMembers = dynamic(async () => (await import('./members')).OrganizationMembers)
+const OrganizationSettings = dynamic(async () => (await import('./settings')).OrganizationSettings)
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
   const { refresh: routerRefresh } = useRouter()

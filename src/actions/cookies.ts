@@ -32,7 +32,7 @@ export const cookies = async () => {
     set: <T extends CookieName>(
       name: T,
       value: CookieValue<T>,
-      options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
+      options?: CookieOptions<Omit<CookieInit, 'name' | 'value'> & { httpOnly?: boolean }>
     ) => {
       const { domain, expires, prefix = COOKIE_PREFIX, ...cookieOptions } = options ?? {}
       const cookieName = prefixCookieName(name, prefix)
@@ -64,7 +64,7 @@ export const getCookie = async <T extends CookieName>(
 export const setCookie = async <T extends CookieName>(
   name: T,
   value: CookieValue<T>,
-  options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
+  options?: CookieOptions<Omit<CookieInit, 'name' | 'value'> & { httpOnly?: boolean }>
 ) => {
   const { set } = await cookies()
   set(name, value, options)

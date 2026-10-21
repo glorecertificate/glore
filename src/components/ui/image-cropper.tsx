@@ -1,58 +1,25 @@
 'use client'
 
-import 'react-image-crop/dist/ReactCrop.css'
-
-import { type SyntheticEvent, useImperativeHandle, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
+import { useImperativeHandle, useState } from 'react'
 
 import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { type FileRejection, useDropzone } from 'react-dropzone'
-import ReactCrop, { type Crop, type PixelCrop, centerCrop } from 'react-image-crop'
 import { toast } from 'sonner'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import app from '~/config/app.json'
 
-const cropImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
-  const canvas = document.createElement('canvas')
-  const scaleX = image.naturalWidth / image.width
-  const scaleY = image.naturalHeight / image.height
-  canvas.width = crop.width * scaleX
-  canvas.height = crop.height * scaleY
+const ImageCropDialog = dynamic(async () => (await import('@/components/ui/image-crop-dialog')).ImageCropDialog, {
+  ssr: false,
+})
 
-  const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Could not get canvas context')
-
-  ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(
-    image,
-    crop.x * scaleX,
-    crop.y * scaleY,
-    crop.width * scaleX,
-    crop.height * scaleY,
-    0,
-    0,
-    crop.width * scaleX,
-    crop.height * scaleY
-  )
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      blob => {
-        if (!blob) {
-          reject(new Error('Canvas is empty'))
-          return
-        }
-        resolve(blob)
-      },
-      'image/png',
-      1.0
-    )
-  })
+interface SelectedImage {
+  file: File
+  previewUrl: string
 }
 
 export interface ImageCropperHandle {
@@ -78,22 +45,17 @@ export const ImageCropper = ({
 }) => {
   const t = useTranslations('Components.ImageCropper')
 
-  const [open, setOpen] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [crop, setCrop] = useState<Crop>()
-  const selectedRef = useRef<File | null>(null)
-  const completedRef = useRef<PixelCrop | undefined>(undefined)
-  const imageRef = useRef<HTMLImageElement | null>(null)
+  const [selected, setSelected] = useState<SelectedImage | null>(null)
 
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
-    if (!file) {
-      return
-    }
-    selectedRef.current = file
-    setPreviewUrl(URL.createObjectURL(file))
-    setOpen(true)
+    if (!file) return
+    setSelected({ file, previewUrl: URL.createObjectURL(file) })
+  }
+
+  const closeCropDialog = () => {
+    if (selected) URL.revokeObjectURL(selected.previewUrl)
+    setSelected(null)
   }
 
   const onDropRejected = (rejections: FileRejection[]) => {
@@ -118,80 +80,14 @@ export const ImageCropper = ({
 
   useImperativeHandle(pickerRef, () => ({ open: openPicker }), [openPicker])
 
-  const onImageLoad = (e: SyntheticEvent<HTMLImageElement>) => {
-    const { width, height } = e.currentTarget
-    const side = Math.min(width, height)
-    const nextCrop = centerCrop({ unit: 'px', width: side, height: side, x: 0, y: 0 }, width, height)
-    setCrop(nextCrop)
-    completedRef.current = nextCrop
-  }
-
-  const handleCrop = async () => {
-    const completedCrop = completedRef.current
-    const selectedFile = selectedRef.current
-    if (imageRef.current && completedCrop?.width && completedCrop?.height && selectedFile) {
-      try {
-        setSaving(true)
-        const blob = await cropImage(imageRef.current, completedCrop)
-        const file = new File([blob], selectedFile.name, { type: 'image/png' })
-        await onChange?.(file)
-        setOpen(false)
-        setPreviewUrl(null)
-      } catch (e) {
-        console.error(e)
-      } finally {
-        setSaving(false)
-      }
-    }
-  }
-
-  const cropDialog = (
-    <Dialog
-      onOpenChange={isOpen => {
-        setOpen(isOpen)
-        if (!isOpen) {
-          setPreviewUrl(null)
-          selectedRef.current = null
-        }
-      }}
-      open={open}
-    >
-      <DialogTitle className="hidden" />
-      <DialogContent aria-describedby={undefined} className="sm:max-w-2xl">
-        <div className="mt-4 flex justify-center">
-          {previewUrl && (
-            <ReactCrop
-              aspect={1}
-              className="max-h-[70vh]"
-              crop={crop}
-              onChange={(pixelCrop, _) => setCrop(pixelCrop)}
-              onComplete={c => {
-                completedRef.current = c
-              }}
-            >
-              <img
-                alt="Crop preview"
-                className="max-h-[70vh] w-auto object-contain"
-                onLoad={onImageLoad}
-                ref={imageRef}
-                src={previewUrl}
-              />
-            </ReactCrop>
-          )}
-        </div>
-        <DialogFooter className="sm:justify-between">
-          <DialogClose asChild>
-            <Button disabled={saving} type="button" variant="ghost">
-              {t('cancel')}
-            </Button>
-          </DialogClose>
-          <Button disabled={saving} loading={saving} onClick={handleCrop} type="button" variant="brand">
-            {t('saveAvatar')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
+  const cropDialog = selected ? (
+    <ImageCropDialog
+      file={selected.file}
+      onChange={onChange}
+      onClose={closeCropDialog}
+      previewUrl={selected.previewUrl}
+    />
+  ) : null
 
   if (trigger) {
     if (pickerRef) {

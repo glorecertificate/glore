@@ -151,7 +151,6 @@ export const CourseListCard = ({
                 <Link
                   className={cn('leading-[normal] font-medium transition-none')}
                   href={coursePath}
-                  prefetch
                   title={t('viewCourse')}
                 >
                   <SearchHighlight query={search} value={title} />
@@ -186,7 +185,6 @@ export const CourseListCard = ({
               <Link
                 className={cn('leading-[normal] font-medium transition-none')}
                 href={coursePath}
-                prefetch
                 title={t('viewCourse')}
               >
                 <SearchHighlight query={search} value={title} />

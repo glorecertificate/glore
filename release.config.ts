@@ -24,7 +24,7 @@ interface Commit {
   version?: string | null
 }
 
-interface ReleaseItConfig extends Config {
+interface ReleaseConfig extends Config {
   github?: Config['github'] & {
     releaseNotes?: string | ((context: { changelog: string }) => string)
   }
@@ -68,7 +68,7 @@ const commitTypes = [
   scopes?: CommitScope[]
 }[]
 
-const releaseConfig = {
+export default {
   git: {
     commitMessage: 'chore(release): v${version}',
     push: true,
@@ -119,6 +119,4 @@ const releaseConfig = {
       },
     },
   },
-} satisfies ReleaseItConfig
-
-export default releaseConfig
+} satisfies ReleaseConfig

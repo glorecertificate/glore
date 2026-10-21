@@ -15,12 +15,12 @@ export const useCookies = () => ({
   get<T extends CookieName>(name: T, options?: CookieOptions<{ fallback?: CookieValue<T> }>) {
     if (typeof document === 'undefined') return options?.fallback as CookieValue<T>
     const cookieKey = prefixCookieName(name, options?.prefix)
-    const chunks = decodeURIComponent(document.cookie).split(';')
+    const chunks = document.cookie.split(';')
     let value: CookieValue<T> | string | undefined
     for (let chunk of chunks) {
       while (chunk.startsWith(' ')) chunk = chunk.substring(1)
       if (!chunk.startsWith(`${cookieKey}=`)) continue
-      const text = chunk.substring(cookieKey.length + 1, chunk.length)
+      const text = decodeURIComponent(chunk.substring(cookieKey.length + 1, chunk.length))
       try {
         value = JSON.parse(text)
       } catch {
@@ -40,9 +40,9 @@ export const useCookies = () => ({
     options?: CookieOptions<Omit<CookieInit, 'name' | 'value'>>
   ) {
     if (typeof document === 'undefined') return
-    const { prefix, ...params } = { ...COOKIE_OPTIONS, ...options }
+    const { httpOnly: _httpOnly, prefix, ...params } = { ...COOKIE_OPTIONS, ...options }
     const serializedValue = typeof value === 'string' ? value : JSON.stringify(value)
-    const args = [`${prefixCookieName(name, prefix)}=${serializedValue}`]
+    const args = [`${prefixCookieName(name, prefix)}=${encodeURIComponent(serializedValue)}`]
     for (const [key, paramValue] of Object.entries(params)) {
       if (!paramValue) continue
       const paramName = key === 'maxAge' ? 'Max-Age' : key.charAt(0).toUpperCase() + key.slice(1)

@@ -716,7 +716,8 @@
     {
       "files": ["*.config.ts"],
       "rules": {
-        "eslint/no-template-curly-in-string": "off"
+        "eslint/no-template-curly-in-string": "off",
+        "import/no-anonymous-default-export": "off"
       }
     },
     {

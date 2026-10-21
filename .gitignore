@@ -1,15 +1,11 @@
-.agents/*
-!.agents/specs/
-.claude/*
-!.claude/settings.json
-!.claude/skills
 .next/
+.playwright/
 .vercel/
 node_modules/
 tmp/
 .env*
 !.env.example
-/*.d.ts
+next-env.d.ts
 *.generated.d.ts
 *.d.json.ts
 *.tsbuildinfo

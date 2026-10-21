@@ -6,6 +6,7 @@ import { Suspense } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { type Messages } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
@@ -53,6 +54,7 @@ const geistMono = Geist_Mono({
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
   const locale = await getLocaleCookie()
   const messages = await getMessages({ locale })
+  const { About: _about, Email: _email, Metadata: _metadata, ...clientMessages } = messages
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -70,7 +72,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
     >
       <body suppressHydrationWarning>
         <SearchParamsProvider>
-          <I18nProvider locale={locale} messages={messages}>
+          <I18nProvider locale={locale} messages={clientMessages as Messages}>
             <ThemeProvider>
               <MotionProvider>
                 {children}

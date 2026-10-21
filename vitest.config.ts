@@ -7,7 +7,7 @@ const env = ['.env', '.env.local']
   .filter(file => existsSync(file))
   .reduce((acc, file) => ({ ...acc, ...parseEnv(readFileSync(file, 'utf8')) }), {}) as Partial<NodeJS.ProcessEnv>
 
-const vitestConfig = defineConfig({
+export default defineConfig({
   resolve: {
     tsconfigPaths: true,
     alias: {
@@ -22,5 +22,3 @@ const vitestConfig = defineConfig({
     unstubEnvs: true,
   },
 })
-
-export default vitestConfig

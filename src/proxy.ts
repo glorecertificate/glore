@@ -1,9 +1,10 @@
 import 'server-only'
 
-import { type NextProxy, NextResponse, type ProxyConfig } from 'next/server'
+import { type NextProxy, type NextRequest, NextResponse, type ProxyConfig } from 'next/server'
 
 import { auth } from '@/lib/auth'
 import { APP_ROOT, AUTH_ROOT, DASHBOARD_ROOTS, JOIN_ROOT, ONBOARDING_ROOT, REGISTER_ROOT } from '@/lib/constants'
+import { prefixCookieName } from '@/lib/cookies'
 
 export const config: ProxyConfig = {
   matcher: [
@@ -25,6 +26,16 @@ const expireSession = (request: Request) => {
   return NextResponse.redirect(url)
 }
 
+const restoreCourseListParams = (request: NextRequest) => {
+  const { cookies, headers, nextUrl, url } = request
+  if (nextUrl.pathname !== '/courses' || nextUrl.search || headers.has('rsc')) return null
+  const params = cookies.get(prefixCookieName('courseListParams'))?.value
+  if (!params) return null
+  const target = new URL(nextUrl.pathname, url)
+  target.search = params
+  return NextResponse.redirect(target)
+}
+
 export const proxy: NextProxy = async request => {
   const { headers, nextUrl } = request
   const response = NextResponse.next({ request: { headers } })
@@ -40,7 +51,7 @@ export const proxy: NextProxy = async request => {
     if (!(session.user.onboardedAt || isOnboarding)) return NextResponse.redirect(new URL(ONBOARDING_ROOT, request.url))
     if (session.user.onboardedAt && isOnboarding) return NextResponse.redirect(new URL(APP_ROOT, request.url))
 
-    return response
+    return restoreCourseListParams(request) ?? response
   } catch {
     if (isPublic) return response
     return expireSession(request)

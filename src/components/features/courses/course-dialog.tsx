@@ -1,14 +1,20 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 
 import { FilePlusCornerIcon, SettingsIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { CourseSettings } from '@/components/features/courses/course-editor/settings'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 import { type Course } from '@/db/queries/course'
+
+const CourseSettings = dynamic(
+  async () => (await import('@/components/features/courses/course-editor/settings')).CourseSettings,
+  { loading: () => <Skeleton className="h-96 w-full rounded-lg" /> }
+)
 
 export const CourseDialog = ({
   children,

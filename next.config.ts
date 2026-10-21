@@ -1,10 +1,19 @@
-import { type NextConfig, Route } from 'next'
+import { type NextConfig } from 'next'
 import { PHASE_DEVELOPMENT_SERVER, PHASE_PRODUCTION_BUILD, type PHASE_TYPE } from 'next/constants'
 
 import nextIntl from 'next-intl/plugin'
 import z from 'zod'
 
 import { type dependencies } from './package.json'
+
+type Dependency = keyof typeof dependencies
+
+interface TypedNextConfig extends Omit<NextConfig, 'experimental' | 'serverExternalPackages'> {
+  serverExternalPackages?: Dependency[]
+  experimental?: NextConfig['experimental'] & {
+    optimizePackageImports?: Dependency[]
+  }
+}
 
 const envSchema = z.object({
   APP_URL: z.url(),
@@ -42,24 +51,16 @@ declare global {
   }
 }
 
-interface Redirect {
-  source: Route
-  destination: Route
-  permanent?: boolean
-}
+const hostname = URL.parse(process.env.R2_PUBLIC_URL ?? '')?.hostname
+const remotePatterns = hostname ? [{ protocol: 'https', hostname } as const] : []
 
-interface Header {
-  source: Route | '/(.*)'
-  headers: {
-    key: string
-    value: string
-  }[]
-}
-
-type Package = keyof typeof dependencies
-
-const redirects = () =>
-  [
+const nextConfig: TypedNextConfig = {
+  agentRules: false,
+  reactStrictMode: true,
+  cacheComponents: true,
+  partialPrefetching: true,
+  trailingSlash: false,
+  redirects: () => [
     {
       source: '/',
       destination: '/dashboard',
@@ -70,10 +71,8 @@ const redirects = () =>
       destination: '/admin/team',
       permanent: true,
     },
-  ] satisfies Redirect[]
-
-const headers = () =>
-  [
+  ],
+  headers: () => [
     {
       source: '/(.*)',
       headers: [
@@ -120,37 +119,21 @@ const headers = () =>
         },
       ],
     },
-  ] satisfies Header[]
-
-const serverExternalPackages: Package[] = ['qrcode']
-
-const optimizePackageImports: Package[] = [
-  '@dnd-kit/core',
-  '@dnd-kit/sortable',
-  '@dnd-kit/utilities',
-  'cmdk',
-  'motion',
-  'nuqs',
-  'react-day-picker',
-  'react-hook-form',
-]
-
-const storageHost = URL.parse(process.env.R2_PUBLIC_URL ?? '')?.hostname
-
-const nextConfig: NextConfig = {
-  agentRules: false,
-  reactStrictMode: true,
-  cacheComponents: true,
-  trailingSlash: false,
-  redirects,
-  headers,
-  serverExternalPackages,
+  ],
+  serverExternalPackages: ['qrcode'],
   typedRoutes: true,
-  images: {
-    remotePatterns: storageHost ? [{ protocol: 'https', hostname: storageHost }] : [],
-  },
+  images: { remotePatterns },
   experimental: {
-    optimizePackageImports,
+    optimizePackageImports: [
+      '@dnd-kit/core',
+      '@dnd-kit/sortable',
+      '@dnd-kit/utilities',
+      'cmdk',
+      'motion',
+      'nuqs',
+      'react-day-picker',
+      'react-hook-form',
+    ],
     turbopackFileSystemCacheForDev: false,
     turbopackFileSystemCacheForBuild: true,
   },

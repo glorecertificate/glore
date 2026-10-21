@@ -4,12 +4,13 @@ import { createContext, use } from 'react'
 
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { type VariantProps, cva } from 'class-variance-authority'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 
+import { MotionFeatures } from '@/components/ui/motion-features'
 import { cn } from '@/lib/utils'
 
-const MotionList = motion.create(TabsPrimitive.List)
-const MotionTrigger = motion.create(TabsPrimitive.Trigger)
+const MotionList = m.create(TabsPrimitive.List)
+const MotionTrigger = m.create(TabsPrimitive.Trigger)
 
 const TABS_TRANSITION = {
   duration: 0.2,
@@ -25,9 +26,11 @@ export const Tabs = ({
 }: React.ComponentProps<typeof TabsPrimitive.Root> & {
   animated?: boolean
 }) => (
-  <TabsContext.Provider value={animated}>
-    <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
-  </TabsContext.Provider>
+  <MotionFeatures>
+    <TabsContext.Provider value={animated}>
+      <TabsPrimitive.Root className={cn('flex flex-col gap-2', className)} data-slot="tabs" {...props} />
+    </TabsContext.Provider>
+  </MotionFeatures>
 )
 
 export const TabsList = ({
@@ -124,11 +127,11 @@ export const TabsTrigger = ({
 
   return (
     <MotionTrigger className={triggerClassName} data-slot="tabs-trigger" layout transition={TABS_TRANSITION} {...props}>
-      <motion.span className="flex items-center gap-1.5" layout transition={TABS_TRANSITION}>
+      <m.span className="flex items-center gap-1.5" layout transition={TABS_TRANSITION}>
         {children}
         <AnimatePresence initial={false} mode="popLayout">
           {showCount ? (
-            <motion.span
+            <m.span
               animate={{ opacity: 1, scale: 1 }}
               className={badgeClassName}
               exit={{ opacity: 0, scale: 0.5 }}
@@ -138,10 +141,10 @@ export const TabsTrigger = ({
               transition={TABS_TRANSITION}
             >
               {count}
-            </motion.span>
+            </m.span>
           ) : null}
         </AnimatePresence>
-      </motion.span>
+      </m.span>
     </MotionTrigger>
   )
 }

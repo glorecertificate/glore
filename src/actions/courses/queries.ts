@@ -8,7 +8,7 @@ import { cache } from 'react'
 import { eq } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { buildCourseWith } from '@/actions/courses/helpers'
+import { buildCourseWith, fetchCourses } from '@/actions/courses/helpers'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseCourse } from '@/db/queries/course'
@@ -32,24 +32,6 @@ const fetchCourse = cache(async (slug: string, userId?: string) => {
         assessment: lesson.assessments[0] ?? null,
       })),
     })
-  })
-})
-
-const fetchCourses = cache(async (userId?: string) => {
-  'use cache'
-  cacheTag(CacheTag.Courses, ...(userId ? [progressUserTag(userId)] : []))
-
-  return await safeQuery(async () => {
-    const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })
-    return result.map(course =>
-      parseCourse({
-        ...course,
-        lessons: course.lessons.map(lesson => ({
-          ...lesson,
-          assessment: lesson.assessments[0] ?? null,
-        })),
-      })
-    )
   })
 })
 

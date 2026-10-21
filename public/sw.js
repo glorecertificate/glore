@@ -1,7 +1,7 @@
+const buildId = new URL(self.location.href).searchParams.get('buildId') || 'dev'
+
 const CACHE_NAME = `glore-${buildId}`
 const OFFLINE_URL = '/offline'
-
-const buildId = new URL(self.location.href).searchParams.get('buildId') || 'dev'
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -19,6 +19,7 @@ self.addEventListener('activate', event => {
       const cachesKeys = await caches.keys()
       const keys = cachesKeys.filter(key => key !== CACHE_NAME)
       await Promise.all(keys.map(key => caches.delete(key)))
+      await self.registration.navigationPreload?.enable()
     })()
   )
   self.clients.claim()
@@ -33,7 +34,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       (async () => {
         try {
-          return await fetch(request)
+          return (await event.preloadResponse) || (await fetch(request))
         } catch {
           return await caches.match(OFFLINE_URL)
         }
@@ -42,12 +43,13 @@ self.addEventListener('fetch', event => {
     return
   }
 
-  if (['image', 'font'].includes(request.destination)) {
+  if (['image', 'font'].includes(request.destination) && new URL(request.url).origin === self.location.origin) {
     event.respondWith(
       (async () => {
         const cached = await caches.match(request)
         if (cached) return cached
         const response = await fetch(request)
+        if (!response.ok) return response
         const copy = response.clone()
         const cache = await caches.open(CACHE_NAME)
         await cache.put(request, copy)

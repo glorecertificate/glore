@@ -6,7 +6,7 @@ export const AUTH_ROLES = ['admin', 'owner', 'volunteer'] as const
 
 export type AuthRole = (typeof AUTH_ROLES)[number]
 
-export const authFile = (role: AuthRole) => `tmp/playwright/.auth/${role}.json`
+export const authFile = (role: AuthRole) => `.playwright/.auth/${role}.json`
 
 export const login = async (page: Page, key: string) => {
   await page.goto('/login')

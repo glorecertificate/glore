@@ -10,7 +10,7 @@ Ignored by the formatter: `*.d.ts`, `drizzle/**`, `.agents/skills/**`, `.claude/
 
 ## Git hooks
 
-Hooks live in `.githooks`, wired by `scripts/prepare.mts` setting `core.hooksPath` on install. `pre-commit` formats and autofixes staged files with oxfmt and oxlint, then restages them; `commit-msg` runs commitlint; `pre-push` runs commitlint then `pnpm run check`. A file with both staged and unstaged changes is reported and skipped, never reformatted, so staging a single hunk still commits.
+Hooks are defined in `lefthook.yml` and installed by `scripts/prepare.mts` (`lefthook install --reset-hooks-path`) on install. Jobs call `node_modules/.bin` binaries directly, because `pnpm exec` adds a dependency check to every call. `pre-commit` formats, lint-fixes, and reformats staged files (oxfmt, oxlint, oxfmt), then restages them; lefthook hides the unstaged hunks of partially staged files while it runs, so staging a single hunk still commits. `commit-msg` runs commitlint. `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, plus oxlint and `oxfmt --check` on pushed files only. CI's `pnpm run check` stays the full gate, catching type-aware lint errors that a pushed change causes in files the push did not touch.
 
 ## Import order (oxfmt `sortImports`)
 

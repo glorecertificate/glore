@@ -1,0 +1,36 @@
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: node_modules/.bin/commitlint --edit {1}
+
+pre-commit:
+  jobs:
+    - name: fix
+      glob: '*.{js,jsx,ts,tsx,cjs,cts,mjs,mts,css,json,jsonc,md}'
+      group:
+        piped: true
+        jobs:
+          - name: format
+            run: node_modules/.bin/oxfmt --no-error-on-unmatched-pattern {staged_files}
+          - name: lint
+            glob: '*.{js,jsx,ts,tsx,cjs,cts,mjs,mts}'
+            run: node_modules/.bin/oxlint --no-error-on-unmatched-pattern --fix {staged_files}
+          - name: reformat
+            run: node_modules/.bin/oxfmt --no-error-on-unmatched-pattern {staged_files}
+            stage_fixed: true
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: commitlint
+      run: node_modules/.bin/commitlint --from "$(git rev-parse --abbrev-ref origin/HEAD)" --to HEAD
+    - name: types
+      run: node_modules/.bin/tsc --noEmit
+    - name: lint
+      glob: '*.{js,jsx,ts,tsx,cjs,cts,mjs,mts}'
+      run: node_modules/.bin/oxlint --no-error-on-unmatched-pattern {push_files}
+    - name: format
+      glob: '*.{js,jsx,ts,tsx,cjs,cts,mjs,mts,css,json,jsonc,md}'
+      run: node_modules/.bin/oxfmt --check --no-error-on-unmatched-pattern {push_files}
+    - name: knip
+      run: node_modules/.bin/knip

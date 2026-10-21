@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -eu
-
-case "$(cat "$1")" in
-  \#*) exit 0;;
-esac
-
-pnpm exec commitlint --edit "$1"

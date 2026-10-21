@@ -4,7 +4,7 @@ GloRe Certificate, a multilingual e-learning platform that certifies the soft sk
 
 A real product by [Associazione Joint](https://associazionejoint.org), a Milan youth-mobility non-profit; this repo is the new version of the live platform. Read "Domain context" in `.agents/specs/app.md` before product work.
 
-Stack picks an agent would otherwise guess wrong: Better Auth, Cloudflare R2, Plate.js editor, next-intl, react-hook-form + zod, nuqs for URL state, React Email + Nodemailer, Vercel AI SDK with Google Gemini, motion, @dnd-kit, shadcn/ui (new-york), standalone oxlint + oxfmt (`.oxlintrc.json`, `.oxfmtrc.json`, both auto-discovered), portless for local HTTPS hosts.
+Stack picks an agent would otherwise guess wrong: Better Auth, Cloudflare R2, Plate.js editor, next-intl, react-hook-form + zod, nuqs for URL state, React Email + Nodemailer, Vercel AI SDK with Google Gemini, motion, @dnd-kit, shadcn/ui (new-york), standalone oxlint + oxfmt (`.oxlintrc.json`, `.oxfmtrc.json`, both auto-discovered), lefthook (`lefthook.yml`) for git hooks, portless for local HTTPS hosts.
 
 > **Source of truth:** this file governs agent behavior here; `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 

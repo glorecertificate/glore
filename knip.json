@@ -6,11 +6,5 @@
   "ignoreIssues": {
     "src/components/ui/**": ["exports"]
   },
-  "ignoreDependencies": [
-    "@commitlint/cli",
-    "@release-it/bumper",
-    "@release-it/conventional-changelog",
-    "react-doctor",
-    "server-only"
-  ]
+  "ignoreDependencies": ["@release-it/bumper", "@release-it/conventional-changelog", "react-doctor", "server-only"]
 }

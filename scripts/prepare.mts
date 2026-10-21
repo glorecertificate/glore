@@ -2,8 +2,6 @@
 
 import { execSync } from 'node:child_process'
 
-const HOOKS_PATH = '.githooks'
-
 const red = (text: string) => `\u001b[31m${text}\u001b[0m`
 const green = (text: string) => `\u001b[32m${text}\u001b[0m`
 
@@ -22,10 +20,10 @@ const configureHooks = () => {
   if (!inGitRepository()) return
 
   try {
-    execSync(`git config core.hooksPath ${HOOKS_PATH}`, { stdio: 'ignore' })
-    if (!ci) console.info(`${green('✓')} Git hooks configured in ${HOOKS_PATH}`)
+    execSync('lefthook install --reset-hooks-path', { stdio: 'ignore' })
+    if (!ci) console.info(`${green('✓')} Git hooks installed with lefthook`)
   } catch (e) {
-    console.error(`${red('✗')} Failed to set core.hooksPath to ${HOOKS_PATH}\n`)
+    console.error(`${red('✗')} Failed to install Git hooks with lefthook\n`)
     if (e instanceof Error) console.error(red(e.message))
     process.exit(1)
   }

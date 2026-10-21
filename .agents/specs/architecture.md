@@ -7,13 +7,14 @@ Source tree and structural conventions. Provider hierarchy and component authori
 ```
 src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
-│   ├── admin/          # organizations.ts, team.ts, users.ts
+│   ├── admin/          # helpers.ts, organizations.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # helpers.ts (server-only, no 'use server'), management.ts, queries.ts
 │   ├── courses/        # helpers.ts, management.ts, progress.ts, queries.ts
 │   ├── organizations/  # helpers.ts, members.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
-│   ├── doc.ts          # Doc category + article CRUD, cached queries
+│   ├── docs.ts         # Doc category + article CRUD, cached queries
+│   ├── guards.ts       # requireEditor and other action guards
 │   ├── onboarding.ts   # Complete onboarding flow
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
@@ -30,11 +31,11 @@ src/
 │   └── offline/        # Offline fallback page
 ├── components/
 │   ├── features/       # Domain components by feature: admin, auth, certificates, courses,
-│   │                   #   dashboard, docs, help, onboarding, organization, users
+│   │                   #   about, dashboard, docs, help, onboarding, organization, users
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
-│   ├── layout/         # dashboard-page, dashboard-sidebar, error-fallback,
-│   │                   #   loading-fallback, search-command (Fuse.js command palette)
-│   ├── providers/      # Flat single-file providers: i18n, search-params, session, theme
+│   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
+│   │                   #   loading-fallback, offline-fallback, page-title, search-command
+│   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, theme
 │   └── ui/             # shadcn/ui primitives + custom UI (incl. vendored rich-text-editor/)
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
@@ -43,7 +44,7 @@ src/
 │   ├── types.ts        # Drizzle table type helpers
 │   ├── schema/         # Per-table Drizzle definitions: accounts, assessments, certificates,
 │   │                   #   courses, docs, enums, helpers, index, organizations, progress,
-│   │                   #   regions, relations, sessions, skill-groups, teams, users, verifications
+│   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): certificate,
 │   │                   #   course, doc, lesson, organization, user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
@@ -51,6 +52,7 @@ src/
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
+│   ├── api.ts          # API route helpers (authorizeEditorRequest)
 │   ├── auth.ts         # Better Auth server instance
 │   ├── cache.ts        # CacheTag enum, per-record tag helpers
 │   ├── constants.ts    # Route roots, regex validators
@@ -58,9 +60,10 @@ src/
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail)
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
+│   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers
 │   ├── rate-limit.ts   # Rate limiting helpers
-│   ├── storage.ts      # R2 helpers (r2Put, r2Delete, r2Url)
+│   ├── storage.ts      # R2 helpers (r2Put, r2Delete, r2List, r2PresignAvatar, ...)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, ...)
 │   └── utils.ts        # cn(), debounce(), camelize(), tempId()/isTempId(), ...
 ├── i18n.ts             # next-intl request config

@@ -4,7 +4,7 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 
 ## Formatter (oxfmt)
 
-`singleQuote: true` (double in CSS via a `**/*.css` override), `semi: false`, `es5` trailing commas (`none` for `*.jsonc`), `arrowParens: 'avoid'`, `sortPackageJson: false`. `sortTailwindcss` recognizes `clsx`, `cn`, and `cva`.
+`singleQuote: true` (double in CSS via a `**/*.css` override), `semi: false`, `es5` trailing commas, `arrowParens: 'avoid'`, `sortPackageJson: false`. `sortTailwindcss` recognizes `clsx`, `cn`, and `cva`.
 
 Ignored by the formatter: `*.d.ts`, `drizzle/**`, `.agents/skills/**`, `.claude/skills/**`. `AGENTS.md`, `.agents/specs/`, and `.claude/settings.json` are formatted and checked.
 
@@ -67,14 +67,14 @@ Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all 
 
 Loaded plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins (`jsPlugins` entries, which knip resolves natively as an oxlint config, so they need no `ignoreDependencies` entry): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
 
-All 379 `react-doctor` rules are listed explicitly (352 `error`, 27 `off`) because oxlint runs a JS-plugin rule only when it is named in `rules`: there is no wildcard or category shorthand, and an unlisted rule is simply disabled. A `react-doctor` upgrade therefore does NOT pick up new rules on its own. Regenerate the block and diff it against the config with:
+All 380 `react-doctor` rules are listed explicitly (352 `error`, 28 `off`) because oxlint runs a JS-plugin rule only when it is named in `rules`: there is no wildcard or category shorthand, and an unlisted rule is simply disabled. A `react-doctor` upgrade therefore does NOT pick up new rules on its own. Regenerate the block and diff it against the config with:
 
 ```sh
 node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys((m.default ?? m).rules).join('\n')))"
 ```
 
-**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, covering the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), plus `no-hardcoded-colors` and `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/components/ui/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt, lint, fmt), so class order comes out of the formatter.
+**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, covering the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), plus `no-hardcoded-colors` and `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/emails/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt, lint, fmt), so class order comes out of the formatter.
 
-`typeAware: true`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include `no-floating-promises`, `no-misused-promises`, and `unbound-method`. The editor LSP has `typeAware` off for speed, explained under "Dev environment and performance" in `reference.md`. `typeCheck: false`: oxlint does not type-check, `tsc` does via `pnpm run check:types`.
+`typeAware: true`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include `no-floating-promises` and `no-misused-promises`. The editor LSP has `typeAware` off for speed, explained under "Dev environment and performance" in `reference.md`. `typeCheck: false`: oxlint does not type-check, `tsc` does via `pnpm run check:types`.
 
-**Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows template curlies in strings.
+**Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows template curlies in strings; `src/components/**` and `src/emails/**` turn off the hydration-time rule; `src/emails/**` allows hardcoded colors; `src/db/helpers.ts` and `src/db/mutations/**` relax the react-doctor async rules; `src/lib/utils.ts` may import `cnfast`.

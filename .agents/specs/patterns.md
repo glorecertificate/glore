@@ -35,12 +35,12 @@ Build components by composition (compound components, context, slots, polymorphi
 
 ### Context and provider hierarchy
 
-App-wide providers are flat single files in `src/components/providers/` (`i18n.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its `use<X>` hook. Feature-scoped contexts live in `src/components/features/<domain>/`. Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it needs a server-side data fetch; otherwise keep it one file. Barrels use named re-exports.
+App-wide providers are flat single files in `src/components/providers/` (`i18n.tsx`, `motion.tsx`, `search-params.tsx`, `session.tsx`, `theme.tsx`), each owning its `use<X>` hook. Feature-scoped contexts live in `src/components/features/<domain>/`. Split a provider into `context.tsx` + `provider.tsx` + `index.ts` ONLY when it needs a server-side data fetch; otherwise keep it one file. Barrels use named re-exports.
 
-| Layout    | Provider order, outer to inner                            |
-| --------- | --------------------------------------------------------- |
-| Root      | `SearchParamsProvider` > `I18nProvider` > `ThemeProvider` |
-| Dashboard | `SidebarProvider` > `SessionProvider` > `CoursesProvider` |
+| Layout    | Provider order, outer to inner                                                                           |
+| --------- | -------------------------------------------------------------------------------------------------------- |
+| Root      | `SearchParamsProvider` > `I18nProvider` > `ThemeProvider` > `MotionProvider`                             |
+| Dashboard | `SidebarProvider` > `SessionProvider`, plus `CoursesProvider` in the `dashboard/` and `courses/` layouts |
 
 ### Icon system
 
@@ -97,7 +97,7 @@ Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexTo
 
 `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-file-upload` (presigned R2 PUT flow), `use-metadata`, `use-mounted`, `use-navigation-guard` (blocks navigation on unsaved changes), `use-pwa`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
 
-`useI18n` and `useSession` are NOT in `src/hooks/`: each is owned by its provider module in `src/components/providers/`. `useSession` exposes `isOrgAdmin` (admin OR representative), `isLearner`, `isTutor`, and `isVolunteer`; use `membership.role === 'admin'` for owner-exclusive operations. A client feature component typically pairs `useTranslations('<Namespace>')` with `useI18n()` for `localize` and `useSession()` for role checks.
+`useI18n` and `useSession` are NOT in `src/hooks/`: each is owned by its provider module in `src/components/providers/`. `useSession` exposes `isOrgAdmin` (owner only, membership role `admin`), `isRepresentative`, `isLearner`, `isTutor`, and `isVolunteer`; use `membership.role === 'admin'` for owner-exclusive operations. A client feature component typically pairs `useTranslations('<Namespace>')` with `useI18n()` for `localize` and `useSession()` for role checks.
 
 ## Theming and styling
 
@@ -109,7 +109,7 @@ Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexTo
 - `--radius` is `0.6rem` with `sm`/`md`/`lg`/`xl` derivatives. `globals.css` also defines a `text-stroke-*` utility (`@utility text-stroke-*`).
 - Email templates use their own Tailwind config in `src/emails/layout.tsx`; its `brand` hex stays the deep teal `#267997`, because email buttons carry white text.
 - Theme switching uses the next-themes class strategy (`system`/`light`/`dark`) with the View Transitions API, respecting `prefers-reduced-motion`.
-- Route view transitions run under `experimental.viewTransition: true`. `globals.css` suppresses the default root transition so only a named `<ViewTransition>` with a transition type animates (e.g. `course-created` on course create).
+- Route view transitions use React `<ViewTransition>` with no Next.js flag. `globals.css` suppresses the default root transition so only a named `<ViewTransition>` with a transition type animates (e.g. `course-created` on course create).
 - `AnimatedList` and `AnimatedListItem` (`src/components/ui/animated-list.tsx`) wrap `AnimatePresence mode="popLayout"`: `variant` `card` or `row`, plus `asChild` and `exitOnly` for dnd-kit sortable lists, paired with `animateLayoutChangesAlways` and `measureAlways` from `src/components/ui/sortable.tsx`.
 - The mobile breakpoint is 768px, sourced from `config/theme.json`.
 
@@ -125,4 +125,4 @@ react-hook-form with `@hookform/resolvers` and zod. Disable the submit button wi
 
 ## Email templates
 
-`src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite`, `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`.
+`src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite`, `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`, `organization/registration-request` (new organization registration, sent to platform admins).

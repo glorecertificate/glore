@@ -35,7 +35,7 @@ Non-team users hold a role per organization. A user can hold different roles acr
 | `volunteer`      | Enroll in courses, complete lessons, submit evaluations and assessments, request certificates     |
 | `learner`        | Enroll in intro and learner courses only. No skill courses, no certificates                       |
 
-The single `admin` is set at registration or by team invitation, and the last admin cannot be removed or demoted. Use `isOrgAdmin` for management checks and `membership.role === 'admin'` for owner-exclusive operations such as deletion.
+The single `admin` is set at registration or by team invitation, and the last admin cannot be removed or demoted. Use `isOrgAdmin || isRepresentative` for management checks (`isOrgAdmin` alone is owner-only) and `membership.role === 'admin'` for owner-exclusive operations such as deletion.
 
 ## Core features
 

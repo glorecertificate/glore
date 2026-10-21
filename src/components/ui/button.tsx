@@ -26,7 +26,7 @@ export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     'focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
-    'active:not-disabled:scale-[0.97] active:motion-reduce:not-disabled:scale-100',
+    'active:not-disabled:scale-[0.985] active:motion-reduce:not-disabled:scale-100',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none focus-visible:disabled:ring-0',
   ],
   {

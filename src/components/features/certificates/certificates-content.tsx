@@ -71,7 +71,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
       {eligible && (
         <div className="flex items-start justify-between gap-4 rounded-xl border border-brand/30 bg-brand/5 p-5">
           <div className="space-y-1">
-            <p className="font-semibold text-brand">{t('requestCertificateTitle')}</p>
+            <p className="font-semibold text-brand-text">{t('requestCertificateTitle')}</p>
             <p className="text-sm text-muted-foreground">{t('requestCertificateMessage')}</p>
           </div>
           <Button asChild icon={PlusIcon} size="sm" variant="brand">

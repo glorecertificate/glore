@@ -25,13 +25,13 @@ const Globe = dynamic(async () => (await import('@/components/ui/globe')).Globe,
 type StatTone = 'brand' | 'success' | 'warning'
 
 const STAT_CHIP: Record<StatTone, string> = {
-  brand: 'bg-brand/10 text-brand',
+  brand: 'bg-brand/10 text-brand-text',
   success: 'bg-success/10 text-success',
   warning: 'bg-warning/15 text-warning-accent',
 }
 
 const STAT_SPARK: Record<StatTone, string> = {
-  brand: 'text-brand',
+  brand: 'text-brand-text',
   success: 'text-success',
   warning: 'text-warning-accent',
 }
@@ -154,7 +154,7 @@ export const DashboardContent = () => {
     },
     {
       cardClass: 'border-brand/30 bg-brand/5',
-      countClass: 'text-brand',
+      countClass: 'text-brand-text',
       courses: publishedCourses.filter(c => c.type === 'skill'),
       key: 'skill',
       label: t('skillCourses'),

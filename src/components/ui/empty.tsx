@@ -56,7 +56,7 @@ export const EmptyTitle = ({ className, ...props }: React.ComponentProps<'div'>)
 export const EmptyDescription = ({ className, ...props }: React.ComponentProps<'p'>) => (
   <div
     className={cn(
-      'text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary',
+      'text-sm/relaxed text-muted-foreground [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-brand-text',
       className
     )}
     data-slot="empty-description"

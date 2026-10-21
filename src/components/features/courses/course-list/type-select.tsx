@@ -53,7 +53,7 @@ export const courseIconVariants = cva('', {
     },
     type: {
       intro: 'text-muted-foreground',
-      learner: 'text-brand',
+      learner: 'text-brand-text',
       skill: 'text-brand-tertiary',
     },
   },

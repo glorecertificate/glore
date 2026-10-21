@@ -48,7 +48,7 @@ export const CertificateCard = ({ certificate }: CertificateCardProps) => {
                 width={40}
               />
             ) : (
-              <Building2Icon className="size-5 text-brand" />
+              <Building2Icon className="size-5 text-brand-text" />
             )}
           </div>
           <div className="min-w-0 flex-1 space-y-0.5">

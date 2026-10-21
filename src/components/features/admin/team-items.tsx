@@ -41,7 +41,7 @@ export type TeamRole = 'admin' | 'editor'
 export type TeamStatus = 'joined' | 'pending'
 
 const STAT_ACCENTS = {
-  brand: 'border-brand/20 bg-brand/10 text-brand',
+  brand: 'border-brand/20 bg-brand/10 text-brand-text',
   warning: 'border-warning/25 bg-warning/15 text-warning-text',
   success: 'border-success/25 bg-success/10 text-success',
 } as const

@@ -12,7 +12,7 @@ export const Link = <T,>({ className, variant, ...props }: LinkProps<T>) => (
   <NextLink className={cn(linkVariants({ variant }), className)} {...props} />
 )
 
-const linkVariants = cva('cursor-pointer no-underline transition-all', {
+const linkVariants = cva('cursor-pointer no-underline transition-colors', {
   defaultVariants: {
     variant: null,
   },
@@ -21,7 +21,7 @@ const linkVariants = cva('cursor-pointer no-underline transition-all', {
       destructive: 'text-destructive hover:text-destructive',
       link: 'text-link',
       muted: 'text-muted-foreground hover:text-foreground/90',
-      primary: 'text-brand hover:text-brand-accent',
+      primary: 'text-brand-text hover:text-brand-text/80',
       secondary: 'text-brand-secondary-text hover:text-brand-secondary-text/80',
       success: 'text-success hover:text-success',
       tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',

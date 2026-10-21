@@ -33,7 +33,7 @@ export const ErrorFallback = ({
       ? t('notFoundMessage')
       : t.rich('errorMessage', {
           contactUs: content => (
-            <a className="text-brand underline" href={`mailto:${metadata.email}`}>
+            <a className="text-brand-text underline" href={`mailto:${metadata.email}`}>
               {content}
             </a>
           ),

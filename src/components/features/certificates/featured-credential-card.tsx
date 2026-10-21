@@ -68,7 +68,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
             {certificate.skills.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {certificate.skills.map(s => (
-                  <Badge className="border-brand/20 bg-brand/5 text-brand" key={s.id} variant="outline">
+                  <Badge className="border-brand/20 bg-brand/5 text-brand-text" key={s.id} variant="outline">
                     {s.course.title ? localize(s.course.title) : s.course.slug}
                   </Badge>
                 ))}
@@ -77,7 +77,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
           </div>
 
           <div className="relative size-28 shrink-0 self-center sm:size-32">
-            <svg className="size-full text-brand" viewBox="0 0 120 120">
+            <svg className="size-full text-brand-text" viewBox="0 0 120 120">
               <defs>
                 <path d="M60,60 m0,-46 a46,46 0 1,1 0,92 a46,46 0 1,1 0,-92" fill="none" id={`${sealId}-path`} />
               </defs>
@@ -95,7 +95,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-brand/10 ring-1 ring-brand/20">
-                <AwardIcon className="size-6 text-brand" />
+                <AwardIcon className="size-6 text-brand-text" />
               </div>
             </div>
           </div>
@@ -106,7 +106,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
             const Icon = m.icon
             return (
               <div className="flex items-center gap-3 bg-card p-4" key={m.key}>
-                <Icon className="size-4 shrink-0 text-brand" />
+                <Icon className="size-4 shrink-0 text-brand-text" />
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">{m.label}</p>
                   <p className="truncate text-sm font-medium">{m.value}</p>

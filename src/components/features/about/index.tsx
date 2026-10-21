@@ -25,8 +25,8 @@ const SECTIONS = [
   {
     icon: AwardIcon,
     key: 'mission',
-    accent: 'text-brand',
-    chip: 'bg-brand/10 text-brand',
+    accent: 'text-brand-text',
+    chip: 'bg-brand/10 text-brand-text',
     ring: 'border-brand/20 bg-brand/[0.03]',
   },
   {
@@ -64,7 +64,7 @@ const SKILL_KEYS = [
 ] as const
 
 const TRUST_ITEMS = [
-  { icon: UserCheckIcon, key: 'validation', chip: 'bg-brand/10 text-brand' },
+  { icon: UserCheckIcon, key: 'validation', chip: 'bg-brand/10 text-brand-text' },
   { icon: LockIcon, key: 'immutable', chip: 'bg-info/10 text-info' },
   { icon: QrCodeIcon, key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary' },
 ] as const
@@ -83,7 +83,7 @@ export const AboutContent = async () => {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-14 pt-8 pb-16">
       <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-brand-tertiary/5 p-8 sm:p-10">
         <div className="flex flex-col items-start gap-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-3 py-1 text-xs font-medium text-brand-text">
             <SparklesIcon className="size-3.5" />
             {content.intro.tagline}
           </span>

@@ -143,7 +143,7 @@ export const CourseAnalytics = () => {
           height={180}
           series={[
             { className: 'text-success', data: monthlyCompletions },
-            { className: 'text-brand', data: monthlyEnrollments },
+            { className: 'text-brand-text', data: monthlyEnrollments },
           ]}
         />
         <div className="flex justify-between text-[10px] text-muted-foreground/70">

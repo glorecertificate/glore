@@ -5,12 +5,13 @@ import { useEffect, useRef } from 'react'
 import createGlobe, { type COBEOptions, type Marker } from 'cobe'
 import { useSpring } from 'react-spring'
 
+import { type Rgb } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export interface GlobeColorOptions {
-  baseColor?: [number, number, number]
-  glowColor?: [number, number, number]
-  markerColor?: [number, number, number] | [number, number, number][]
+  baseColor?: Rgb | Rgb[]
+  glowColor?: Rgb
+  markerColor?: Rgb | Rgb[]
 }
 
 export interface GlobeOptions
@@ -37,21 +38,22 @@ const MAX_THETA = Math.PI / 2 - 0.1
 const PHI_SENSITIVITY = 120
 const THETA_SENSITIVITY = 120
 const AUTO_ROTATE_SPEED = 0.005
+const PALETTE_CYCLE_MS = 4000
 
 const NO_MARKERS: Marker[] = []
 
 const GLOBE_OPTIONS = {
-  baseColor: [1, 1, 1] as [number, number, number],
+  baseColor: [1, 1, 1] as Rgb,
   dark: 0,
   devicePixelRatio: 2,
   diffuse: 0,
   friction: 26,
-  glowColor: [1, 1, 1] as [number, number, number],
+  glowColor: [1, 1, 1] as Rgb,
   height: 400,
   mapBaseBrightness: 0,
   mapBrightness: 12,
   mapSamples: 15000,
-  markerColor: [1, 1, 1] as [number, number, number],
+  markerColor: [1, 1, 1] as Rgb,
   markerElevation: 0,
   mass: 0.1,
   offset: [0, 0] as [number, number],
@@ -68,18 +70,28 @@ const GLOBE_OPTIONS = {
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
-const normalizeRgb = (color: [number, number, number]) =>
-  color.map(n => Math.min(Math.max(n, 0), 255) / 255) as [number, number, number]
+const normalizeRgb = (color: Rgb) => color.map(n => Math.min(Math.max(n, 0), 255) / 255) as Rgb
 
-const toPalette = (color: [number, number, number] | [number, number, number][]) => {
-  const palette = (Array.isArray(color[0]) ? color : [color]) as [number, number, number][]
+const toPalette = (color: Rgb | Rgb[]) => {
+  const palette = (Array.isArray(color[0]) ? color : [color]) as Rgb[]
   return palette.map(normalizeRgb)
+}
+
+const mix = (from: Rgb, to: Rgb, amount: number) => from.map((value, i) => value + (to[i]! - value) * amount) as Rgb
+
+const smoothstep = (t: number) => t * t * (3 - 2 * t)
+
+const paletteColorAt = (palette: Rgb[], time: number) => {
+  if (palette.length === 1) return palette[0]!
+  const position = (time / PALETTE_CYCLE_MS) % palette.length
+  const index = Math.floor(position)
+  return mix(palette[index]!, palette[(index + 1) % palette.length]!, smoothstep(position - index))
 }
 
 export const Globe = ({ className, ...options }: GlobeProps) => {
   const merged = { ...GLOBE_OPTIONS, ...options }
 
-  const baseColor = normalizeRgb(merged.baseColor)
+  const baseColor = toPalette(merged.baseColor)
   const glowColor = normalizeRgb(merged.glowColor)
   const markerColor = toPalette(merged.markerColor)[0]!
 
@@ -98,6 +110,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     offset: merged.offset,
     opacity: merged.opacity,
     scale: merged.scale,
+    transitionDuration: merged.transitionDuration,
   })
 
   propsRef.current = {
@@ -115,6 +128,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     offset: merged.offset,
     opacity: merged.opacity,
     scale: merged.scale,
+    transitionDuration: merged.transitionDuration,
   }
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -239,9 +253,12 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
     const initialWidth = (widthRef.current || merged.width) * 2
 
+    let color = propsRef.current.baseColor[0]!
+    let lastTime = performance.now()
+
     const globe = createGlobe(canvas, {
       arcs: [],
-      baseColor: propsRef.current.baseColor,
+      baseColor: color,
       dark: propsRef.current.dark,
       devicePixelRatio: propsRef.current.devicePixelRatio,
       diffuse: propsRef.current.diffuse,
@@ -264,16 +281,20 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
     sentMarkersRef.current = propsRef.current.markers
 
     let frame = 0
-    const tick = () => {
+    const tick = (time: number) => {
       if (!pointerRef.current) {
         baseRotationRef.current.phi += AUTO_ROTATE_SPEED
       }
+
+      const easing = 1 - Math.exp(-(time - lastTime) / Math.max(propsRef.current.transitionDuration / 4, 1))
+      color = mix(color, paletteColorAt(propsRef.current.baseColor, time), easing)
+      lastTime = time
 
       const w = widthRef.current * 2
       const nextTheta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)
 
       const state: Partial<COBEOptions> = {
-        baseColor: propsRef.current.baseColor,
+        baseColor: color,
         dark: propsRef.current.dark,
         diffuse: propsRef.current.diffuse,
         glowColor: propsRef.current.glowColor,

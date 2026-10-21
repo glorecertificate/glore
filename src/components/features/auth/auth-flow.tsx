@@ -3,7 +3,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, type Variants, motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Values, useQueryStates } from 'nuqs'
 import { toast } from 'sonner'
@@ -21,9 +21,21 @@ import { Logo } from '@/components/ui/logo'
 import { useMetadata } from '@/hooks/use-metadata'
 import { useTheme } from '@/hooks/use-theme'
 import { MessageKey } from '@/lib/i18n'
+import { EASE_IN_OUT, EASE_OUT } from '@/lib/motion'
 import { AuthView, type Enum } from '@/lib/types'
 import { camelize, cn, hexToRgb } from '@/lib/utils'
 import theme from '~/config/theme.json'
+
+const STEP_VARIANTS = {
+  exit: { filter: 'blur(2px)', opacity: 0, transition: { duration: 0.15, ease: EASE_OUT }, y: -4 },
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.06 } },
+} satisfies Variants
+
+const STEP_ITEM_VARIANTS = {
+  hidden: { filter: 'blur(2px)', opacity: 0, y: 6 },
+  visible: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.3, ease: EASE_OUT }, y: 0 },
+} satisfies Variants
 
 const AuthHeader = ({
   className,
@@ -189,7 +201,7 @@ const AuthMessage = ({
   return (
     <div>
       {t.rich('emailSentMessage', {
-        email: () => <span className={cn('text-brand', className)} {...props}>{` ${username} `}</span>,
+        email: () => <span className={cn('text-brand-text', className)} {...props}>{` ${username} `}</span>,
       })}
     </div>
   )
@@ -206,9 +218,8 @@ const useGlobeOptions = ({ errored, view }: { errored: boolean; view: Enum<AuthV
 
   switch (view) {
     case 'login':
-      return { ...options, baseColor: colors.brand }
+      return { ...options, baseColor: [colors.brand, colors.brandSecondary, colors.brandTertiary] }
     case 'password_request':
-      return { ...options, baseColor: colors.neutral }
     case 'password_reset':
       return { ...options, baseColor: colors.warning }
     case 'password_updated':
@@ -281,44 +292,35 @@ export const AuthFlow = ({
             animate={{ height: height ?? 'auto' }}
             className="overflow-hidden"
             initial={false}
-            transition={animate ? { type: 'spring', bounce: 0, duration: 0.2 } : { duration: 0 }}
+            transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
           >
-            <div className="flex min-h-137.5 flex-col gap-8" ref={ref}>
-              <div className="flex flex-col gap-8">
-                <Globe className="mx-auto size-80" transitionDuration={200} {...globeOptions} />
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col gap-2 text-center"
-                    exit={{ opacity: 0, y: -8 }}
-                    initial={{ opacity: 0, y: 8 }}
-                    key={`heading-${view}`}
-                    transition={{ duration: 0.1, ease: 'easeOut' }}
-                  >
+            <div className="flex min-h-164 flex-col gap-8" ref={ref}>
+              <Globe className="mx-auto size-80" transitionDuration={600} {...globeOptions} />
+              <AnimatePresence initial={false} mode="wait">
+                <motion.div
+                  animate="visible"
+                  className="flex flex-col gap-8"
+                  exit="exit"
+                  initial="hidden"
+                  key={view}
+                  variants={STEP_VARIANTS}
+                >
+                  <motion.div className="flex flex-col gap-2 text-center" variants={STEP_ITEM_VARIANTS}>
                     {title && <h1 className="text-3xl font-semibold">{title}</h1>}
                     <AuthMessage messageKey={`${key}Message`} username={username} view={view} />
                   </motion.div>
-                </AnimatePresence>
-              </div>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mx-auto flex w-full max-w-88 flex-col gap-0"
-                  exit={{ opacity: 0, y: -8 }}
-                  initial={{ opacity: 0, y: 8 }}
-                  key={`content-${view}`}
-                  transition={{ duration: 0.1, ease: 'easeOut' }}
-                >
-                  <AuthContent
-                    errored={errored}
-                    loggedOut={params.loggedOut}
-                    resetToken={params.token}
-                    setErrored={setErrored}
-                    setUsername={setUsername}
-                    setView={setView}
-                    username={username}
-                    view={view}
-                  />
+                  <motion.div className="mx-auto flex w-full max-w-88 flex-col gap-0" variants={STEP_ITEM_VARIANTS}>
+                    <AuthContent
+                      errored={errored}
+                      loggedOut={params.loggedOut}
+                      resetToken={params.token}
+                      setErrored={setErrored}
+                      setUsername={setUsername}
+                      setView={setView}
+                      username={username}
+                      view={view}
+                    />
+                  </motion.div>
                 </motion.div>
               </AnimatePresence>
             </div>

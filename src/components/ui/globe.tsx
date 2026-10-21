@@ -38,7 +38,7 @@ const MAX_THETA = Math.PI / 2 - 0.1
 const PHI_SENSITIVITY = 120
 const THETA_SENSITIVITY = 120
 const AUTO_ROTATE_SPEED = 0.005
-const PALETTE_CYCLE_MS = 4000
+const PALETTE_CYCLE_MS = 2800
 
 const NO_MARKERS: Marker[] = []
 
@@ -255,6 +255,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
     let color = propsRef.current.baseColor[0]!
     let lastTime = performance.now()
+    let paletteTime = 0
 
     const globe = createGlobe(canvas, {
       arcs: [],
@@ -282,13 +283,15 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
     let frame = 0
     const tick = (time: number) => {
+      const elapsed = time - lastTime
+      lastTime = time
+
       if (!pointerRef.current) {
         baseRotationRef.current.phi += AUTO_ROTATE_SPEED
+        paletteTime += elapsed
+        const easing = 1 - Math.exp(-elapsed / Math.max(propsRef.current.transitionDuration / 4, 1))
+        color = mix(color, paletteColorAt(propsRef.current.baseColor, paletteTime), easing)
       }
-
-      const easing = 1 - Math.exp(-(time - lastTime) / Math.max(propsRef.current.transitionDuration / 4, 1))
-      color = mix(color, paletteColorAt(propsRef.current.baseColor, time), easing)
-      lastTime = time
 
       const w = widthRef.current * 2
       const nextTheta = clamp(baseRotationRef.current.theta + thetaDelta.get(), MIN_THETA, MAX_THETA)

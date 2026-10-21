@@ -46,7 +46,7 @@ export const buttonVariants = cva(
         success:
           'bg-success text-success-foreground hover:not-disabled:bg-success-accent focus-visible:not-disabled:ring-success/20 focus-visible:dark:not-disabled:ring-success/40',
         brand:
-          'bg-brand text-brand-foreground hover:not-disabled:bg-brand-accent focus-visible:not-disabled:ring-brand/20 focus-visible:dark:not-disabled:ring-brand/40',
+          'bg-primary text-primary-foreground hover:not-disabled:bg-primary/90 focus-visible:not-disabled:ring-brand/20 focus-visible:dark:not-disabled:ring-brand/40',
         'brand-secondary':
           'bg-brand-secondary text-brand-secondary-foreground hover:not-disabled:bg-brand-secondary-accent focus-visible:not-disabled:ring-brand-secondary/20 focus-visible:dark:not-disabled:ring-brand-secondary/40',
         'brand-tertiary':

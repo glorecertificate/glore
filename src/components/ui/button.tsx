@@ -82,7 +82,8 @@ export const buttonVariants = cva(
           'brand-secondary',
           'brand-tertiary',
         ],
-        className: 'not-disabled:shadow-xs not-disabled:[:active,[data-pressed]]:shadow-none',
+        className:
+          'bg-linear-to-b from-white/12 to-transparent not-disabled:shadow-xs not-disabled:inset-shadow-2xs not-disabled:inset-shadow-white/20 not-disabled:[:active,[data-pressed]]:shadow-none',
       },
     ],
   }

@@ -120,7 +120,13 @@ export const CourseListCard = ({
   })()
 
   return (
-    <Card className={cn('min-h-80', className)} {...props}>
+    <Card
+      className={cn(
+        'min-h-80 transition-[border-color,box-shadow] duration-200 hover:border-brand/30 hover:shadow-sm',
+        className
+      )}
+      {...props}
+    >
       <CardHeader className="gap-12">
         {user.canEdit ? (
           <div className="flex grow flex-col gap-4">

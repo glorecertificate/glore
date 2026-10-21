@@ -1,6 +1,6 @@
 import './globals.css'
 
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Bricolage_Grotesque, Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
 
@@ -37,12 +37,17 @@ export { viewport } from '@/lib/metadata'
 
 const geistSans = Geist({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-geist-sans',
+})
+
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-bricolage',
 })
 
 const geistMono = Geist_Mono({
   subsets: ['latin'],
-  variable: '--font-mono',
+  variable: '--font-geist-mono',
 })
 
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
@@ -58,8 +63,12 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <body className={cn(geistSans.variable, geistMono.variable)} suppressHydrationWarning>
+    <html
+      className={cn(geistSans.variable, bricolage.variable, geistMono.variable)}
+      lang={locale}
+      suppressHydrationWarning
+    >
+      <body suppressHydrationWarning>
         <SearchParamsProvider>
           <I18nProvider locale={locale} messages={messages}>
             <ThemeProvider>

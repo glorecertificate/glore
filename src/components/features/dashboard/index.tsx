@@ -22,18 +22,18 @@ import theme from '~/config/theme.json'
 
 const Globe = dynamic(async () => (await import('@/components/ui/globe')).Globe, { ssr: false })
 
-type StatTone = 'brand' | 'success' | 'warning'
+type StatTone = 'brand' | 'brandSecondary' | 'brandTertiary'
 
 const STAT_CHIP: Record<StatTone, string> = {
   brand: 'bg-brand/10 text-brand-text',
-  success: 'bg-success/10 text-success',
-  warning: 'bg-warning/15 text-warning-accent',
+  brandSecondary: 'bg-brand-secondary/15 text-brand-secondary-text',
+  brandTertiary: 'bg-brand-tertiary/10 text-brand-tertiary-text dark:bg-brand-tertiary/40',
 }
 
 const STAT_SPARK: Record<StatTone, string> = {
-  brand: 'text-brand-text',
-  success: 'text-success',
-  warning: 'text-warning-accent',
+  brand: 'text-brand',
+  brandSecondary: 'text-brand-secondary',
+  brandTertiary: 'text-brand-tertiary-text',
 }
 
 const TREND_BUCKETS = 8
@@ -64,7 +64,10 @@ export const DashboardContent = () => {
   const t = useTranslations('Dashboard')
 
   const globeColors = hexToRgb(theme.colors[resolvedTheme ?? 'light'])
-  const globeColorOptions: GlobeColorOptions = { baseColor: globeColors.brand, glowColor: globeColors.background }
+  const globeColorOptions: GlobeColorOptions = {
+    baseColor: [globeColors.brand, globeColors.brandSecondary, globeColors.brandTertiary],
+    glowColor: globeColors.background,
+  }
 
   const hour = new Date().getHours()
 
@@ -113,7 +116,7 @@ export const DashboardContent = () => {
       key: 'totalLessons',
       label: t('totalLessons'),
       period: t('trendPeriod1Month'),
-      tone: 'success',
+      tone: 'brandSecondary',
       trend: buildTrend(
         publishedCourses.flatMap(c => c.lessons.flatMap(l => (l.createdAt ? [new Date(l.createdAt).getTime()] : []))),
         1,
@@ -126,7 +129,7 @@ export const DashboardContent = () => {
       key: 'allCourses',
       label: t('allCourses'),
       period: t('trendPeriod3Months'),
-      tone: 'warning',
+      tone: 'brandTertiary',
       trend: buildTrend(
         nonArchivedCourses.map(c => new Date(c.createdAt).getTime()),
         3,
@@ -160,8 +163,8 @@ export const DashboardContent = () => {
       label: t('skillCourses'),
     },
     {
-      cardClass: 'border-success/30 bg-success/5',
-      countClass: 'text-success',
+      cardClass: 'border-brand-secondary/40 bg-brand-secondary/8',
+      countClass: 'text-brand-secondary-text',
       courses: publishedCourses.filter(c => c.type === 'learner'),
       key: 'learner',
       label: t('learnerCourses'),
@@ -171,7 +174,7 @@ export const DashboardContent = () => {
   return (
     <div className="flex flex-col gap-8 pt-6 pb-10">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/8 via-card to-card p-6 shadow-2xs sm:p-7">
+      <section className="relative overflow-hidden rounded-2xl border bg-linear-to-br from-brand/10 via-card to-brand-secondary/8 p-6 shadow-2xs sm:p-7">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-24 -right-20 opacity-25 select-none sm:-top-28 sm:-right-24 sm:opacity-30"

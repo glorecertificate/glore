@@ -143,8 +143,8 @@ const DashboardSidebarItem = ({
         asChild
         className={cn(
           subItem
-            ? 'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-border/50 data-active:font-medium data-active:text-sidebar-foreground'
-            : 'py-3 font-medium data-active:shadow-[inset_3px_0_0_var(--color-primary)]',
+            ? 'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-brand data-active:font-medium data-active:text-sidebar-foreground'
+            : 'py-3 font-medium data-active:bg-brand/10 data-active:shadow-[inset_3px_0_0_var(--color-brand)] hover:data-active:bg-brand/12',
           isActivePath && 'pointer-events-none',
           badge > 0 && 'relative',
           className
@@ -156,7 +156,7 @@ const DashboardSidebarItem = ({
           {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
           ) : Icon ? (
-            <Icon className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-foreground/80')} />
+            <Icon className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-brand-text')} />
           ) : null}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}

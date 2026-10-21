@@ -25,7 +25,10 @@ export const AvatarImage = ({ className, ...props }: React.ComponentProps<typeof
 
 export const AvatarFallback = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) => (
   <AvatarPrimitive.Fallback
-    className={cn('pointer-events-none flex size-full items-center justify-center overflow-hidden bg-muted', className)}
+    className={cn(
+      'pointer-events-none flex size-full items-center justify-center overflow-hidden bg-brand/12 font-medium text-brand-text',
+      className
+    )}
     data-slot="avatar-fallback"
     {...props}
   />

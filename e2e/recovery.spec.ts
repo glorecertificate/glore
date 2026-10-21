@@ -12,7 +12,10 @@ test('resets a password through the emailed link', async ({ page, request }) => 
   await clearMail(request, email)
 
   await page.goto('/login')
-  await page.getByRole('button', { name: 'Forgot your password?' }).click()
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Forgot your password?' }).click()
+    await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible({ timeout: 1000 })
+  }).toPass()
   await page.locator('input[name="username"]').fill(email)
   await page.locator('form button[type="submit"]').click()
 

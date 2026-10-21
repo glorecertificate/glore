@@ -8,6 +8,8 @@ export interface SeedUser {
   membership?: MembershipRole
 }
 
+export const LOCAL_DATABASE_REGEX = /@(localhost|127\.0\.0\.1)(:|\/)/u
+
 export const SEED_PASSWORD = 'Glore-Seed-2026'
 const SEED_DOMAIN = 'seed.glore.test'
 export const SEED_ORG_HANDLE = 'glore-seed'

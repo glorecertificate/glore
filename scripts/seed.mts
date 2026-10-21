@@ -5,9 +5,14 @@ import { randomUUID } from 'node:crypto'
 import { hashPassword } from 'better-auth/crypto'
 import { Pool, type PoolClient } from 'pg'
 
-import { SEED_ORG_HANDLE, SEED_PASSWORD, SEED_USERS, type SeedUser, seedEmail } from './seed-data.ts'
-
-const LOCAL_DATABASE_REGEX = /@(localhost|127\.0\.0\.1)(:|\/)/u
+import {
+  LOCAL_DATABASE_REGEX,
+  SEED_ORG_HANDLE,
+  SEED_PASSWORD,
+  SEED_USERS,
+  type SeedUser,
+  seedEmail,
+} from './seed-data.ts'
 
 interface UpsertUserOptions {
   user: SeedUser
@@ -98,6 +103,7 @@ const seed = async () => {
       )
     }
 
+    await client.query('delete from rate_limits')
     await client.query('commit')
   } catch (e) {
     await client.query('rollback')

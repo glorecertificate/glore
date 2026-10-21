@@ -33,7 +33,7 @@ const latestMessageId = async (request: APIRequestContext, to: string) => {
 export const latestMailText = async (request: APIRequestContext, to: string) => {
   await expect
     .poll(() => latestMessageId(request, to), {
-      message: `No email to ${to} reached Mailpit: run the app with MAIL_TRANSPORT=mailpit`,
+      message: `No email to ${to} reached Mailpit: run the app with MAIL_TRANSPORT=mailpit, or clear the auth rate limit (3 resets per account per 15 min) with pnpm run db:seed`,
       timeout: 15_000,
     })
     .not.toBe('')

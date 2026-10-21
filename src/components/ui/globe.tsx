@@ -283,7 +283,7 @@ export const Globe = ({ className, ...options }: GlobeProps) => {
 
     let frame = 0
     const tick = (time: number) => {
-      const elapsed = time - lastTime
+      const elapsed = Math.max(time - lastTime, 0)
       lastTime = time
 
       if (!pointerRef.current) {

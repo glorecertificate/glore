@@ -3,7 +3,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react'
 
 import { ArrowRightIcon } from 'lucide-react'
-import { AnimatePresence, type Variants, motion } from 'motion/react'
+import { AnimatePresence, type Variants, motion, useIsPresent } from 'motion/react'
 import { useTranslations } from 'next-intl'
 import { Values, useQueryStates } from 'nuqs'
 import { toast } from 'sonner'
@@ -36,6 +36,11 @@ const STEP_ITEM_VARIANTS = {
   hidden: { filter: 'blur(2px)', opacity: 0, y: 6 },
   visible: { filter: 'blur(0px)', opacity: 1, transition: { duration: 0.3, ease: EASE_OUT }, y: 0 },
 } satisfies Variants
+
+const AuthStep = (props: React.ComponentProps<typeof motion.div>) => {
+  const isPresent = useIsPresent()
+  return <motion.div inert={!isPresent} {...props} />
+}
 
 const AuthHeader = ({
   className,
@@ -297,7 +302,7 @@ export const AuthFlow = ({
             <div className="flex min-h-164 flex-col gap-8" ref={ref}>
               <Globe className="mx-auto size-80" transitionDuration={600} {...globeOptions} />
               <AnimatePresence initial={false} mode="wait">
-                <motion.div
+                <AuthStep
                   animate="visible"
                   className="flex flex-col gap-8"
                   exit="exit"
@@ -321,7 +326,7 @@ export const AuthFlow = ({
                       view={view}
                     />
                   </motion.div>
-                </motion.div>
+                </AuthStep>
               </AnimatePresence>
             </div>
           </motion.div>

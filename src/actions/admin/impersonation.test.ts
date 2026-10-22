@@ -16,6 +16,10 @@ vi.mock('next/headers', async importOriginal => ({
   ...(await importOriginal<typeof import('next/headers')>()),
   headers: () => Promise.resolve(current.jar?.headers() ?? new Headers()),
 }))
+vi.mock('next/server', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  connection: () => Promise.resolve(),
+}))
 vi.mock('next/cache', async importOriginal => ({
   ...(await importOriginal<typeof import('next/cache')>()),
   cacheLife: vi.fn(),

@@ -4,6 +4,7 @@ import 'server-only'
 
 import { headers } from 'next/headers'
 import { redirect, unstable_rethrow } from 'next/navigation'
+import { connection } from 'next/server'
 import { cache } from 'react'
 
 import { eq, or } from 'drizzle-orm'
@@ -19,6 +20,7 @@ const AUTH_RATE_LIMIT_WINDOW = 15 * 60 * 1000
 
 export const getAuthUser = cache(async () => {
   try {
+    await connection()
     const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
     return session?.user ?? null
   } catch (e) {

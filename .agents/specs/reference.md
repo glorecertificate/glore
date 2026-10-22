@@ -145,9 +145,9 @@ Read `envSchema` in `next.config.ts` for the current set and validators. `MAIL_T
 
 Non-obvious settings that keep dev HMR and CI builds fast. They back the dev-performance gotcha in `AGENTS.md` and MUST NOT be reverted in refactors.
 
-**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev, because Babel kills Turbopack HMR. Do not add manual `useMemo`/`useCallback` unless the compiler cannot handle the pattern.
+**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev, because Babel kills Turbopack HMR.
 
-**Turbopack dev cache:** `experimental.turbopackFileSystemCacheForDev: false` is REQUIRED. The Next 16 `true` default balloons `.next/dev/cache/turbopack` (1.4GB+ observed) and stalls every HMR by 5-10s through the `turbopack-compaction` and `turbopack-persistence` passes. Reclaim disk after toggling with `pnpm run dev:clean`.
+**Dev memory:** the `dev` script loads `scripts/dev-preload.mts` and caps the heap at 4 GB. The preload disables React's dev-only async debug hook, which retained about 0.8 MB per request (18 GB observed); its test fails when an upgrade stops matching it. `turbopackFileSystemCacheForDev`, `turbopackGc`, and `turbopackMemoryEviction: 'auto'` hold Turbopack near 1.5 GB on Next 16.4. Wipe the cache with `pnpm run dev:clean`.
 
 **Oxlint typeAware split:** `.oxlintrc.json` keeps `typeAware: true` so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include the type-aware rules (`no-floating-promises`, `no-misused-promises`). `.vscode/settings.json` sets `oxc.typeAware: false`, forwarded to the LSP by `oxc.oxc-vscode`, keeping the editor off the slow `oxlint-tsgolint` path. Change one side only by deliberately changing the other.
 

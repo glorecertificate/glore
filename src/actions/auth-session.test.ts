@@ -11,6 +11,7 @@ vi.mock('@/db/client', () => ({ db: {} }))
 vi.mock('@/lib/email', () => ({ sendMail: vi.fn() }))
 vi.mock('@/lib/rate-limit', () => ({ clientAddress: vi.fn(), isRateLimited: vi.fn() }))
 vi.mock('next/headers', () => ({ headers: () => Promise.resolve(new Headers()) }))
+vi.mock('next/server', () => ({ connection: () => Promise.resolve() }))
 vi.mock('next/navigation', () => ({ redirect: vi.fn(), unstable_rethrow: () => undefined }))
 
 describe('getAuthUser', () => {

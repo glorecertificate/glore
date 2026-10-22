@@ -1,19 +1,34 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { InvalidArgumentError } from '@ai-sdk/provider'
 import { delay as originalDelay } from '@ai-sdk/provider-utils'
-import { type TextStreamPart, type ToolSet, type UIMessage, convertToModelMessages, streamText } from 'ai'
+import { type TextStreamPart, type ToolSet } from 'ai'
+import { type Value } from 'platejs'
 import { z } from 'zod'
 
+import { buildCommandPrompt } from '@/app/api/v1/ai/command/prompt'
+import { AI_ERROR, resolveAiModels, streamTextWithFallback } from '@/lib/ai'
 import { authorizeEditorRequest, readJsonBody } from '@/lib/api'
 
+const pointSchema = z.object({
+  offset: z.number().int().min(0),
+  path: z.array(z.number().int().min(0)).max(32),
+})
+
 const bodySchema = z.object({
+  ctx: z.object({
+    children: z.array(z.record(z.string(), z.unknown())).min(1).max(5000),
+    selection: z.object({ anchor: pointSchema, focus: pointSchema }).nullable(),
+  }),
   messages: z
-    .array(z.custom<UIMessage>(value => typeof value === 'object' && value !== null))
+    .array(
+      z.object({
+        parts: z.array(z.object({ text: z.string().max(20_000).optional(), type: z.string().max(64) })).max(20),
+        role: z.enum(['assistant', 'system', 'user']),
+      })
+    )
     .min(1)
     .max(50),
-  system: z.string().max(5000).optional(),
 })
 
 export const maxDuration = 60
@@ -113,69 +128,68 @@ export const POST = async (request: NextRequest) => {
 
   const body = bodySchema.safeParse(await readJsonBody(request))
   if (!body.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
-  const { messages, system } = body.data
+  const { ctx, messages } = body.data
 
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  const models = resolveAiModels()
+  if (!models) return NextResponse.json({ error: AI_ERROR.notConfigured }, { status: 503 })
 
-  const gemini = createGoogleGenerativeAI({ apiKey })
+  let prompt: string
+  try {
+    prompt = buildCommandPrompt({ ctx: { children: ctx.children as Value, selection: ctx.selection }, messages })
+  } catch {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
 
   let isInCodeBlock = false
   let isInTable = false
   let isInList = false
   let isInLink = false
 
-  try {
-    const result = streamText({
-      experimental_transform: smoothStream({
-        chunking: buffer => {
-          if (CODE_BLOCK_REGEX.test(buffer)) {
-            isInCodeBlock = true
-          } else if (isInCodeBlock && buffer.includes('```')) {
-            isInCodeBlock = false
-          }
-          if (buffer.includes('http')) {
-            isInLink = true
-          } else if (buffer.includes('https')) {
-            isInLink = true
-          } else if (buffer.includes('\n') && isInLink) {
-            isInLink = false
-          }
-          if (buffer.includes('*') || buffer.includes('-')) {
-            isInList = true
-          } else if (buffer.includes('\n') && isInList) {
-            isInList = false
-          }
-          if (!isInTable && buffer.includes('|')) {
-            isInTable = true
-          } else if (isInTable && buffer.includes('\n\n')) {
-            isInTable = false
-          }
+  return streamTextWithFallback({
+    abortSignal: request.signal,
+    experimental_transform: smoothStream({
+      chunking: buffer => {
+        if (CODE_BLOCK_REGEX.test(buffer)) {
+          isInCodeBlock = true
+        } else if (isInCodeBlock && buffer.includes('```')) {
+          isInCodeBlock = false
+        }
+        if (buffer.includes('http')) {
+          isInLink = true
+        } else if (buffer.includes('https')) {
+          isInLink = true
+        } else if (buffer.includes('\n') && isInLink) {
+          isInLink = false
+        }
+        if (buffer.includes('*') || buffer.includes('-')) {
+          isInList = true
+        } else if (buffer.includes('\n') && isInList) {
+          isInList = false
+        }
+        if (!isInTable && buffer.includes('|')) {
+          isInTable = true
+        } else if (isInTable && buffer.includes('\n\n')) {
+          isInTable = false
+        }
 
-          let match: RegExpExecArray | null
-          if (isInCodeBlock || isInTable || isInLink) {
-            match = CHUNKING_REGEXPS.line.exec(buffer)
-          } else if (isInList) {
-            match = CHUNKING_REGEXPS.list.exec(buffer)
-          } else {
-            match = CHUNKING_REGEXPS.word.exec(buffer)
-          }
-          if (!match) {
-            return null
-          }
+        let match: RegExpExecArray | null
+        if (isInCodeBlock || isInTable || isInLink) {
+          match = CHUNKING_REGEXPS.line.exec(buffer)
+        } else if (isInList) {
+          match = CHUNKING_REGEXPS.list.exec(buffer)
+        } else {
+          match = CHUNKING_REGEXPS.word.exec(buffer)
+        }
+        if (!match) {
+          return null
+        }
 
-          return buffer.slice(0, match.index) + match?.[0]
-        },
-        delayInMs: () => (isInCodeBlock || isInTable ? 100 : 30),
-      }),
-      maxOutputTokens: 2048,
-      messages: await convertToModelMessages(messages),
-      model: gemini(process.env.GEMINI_MODEL ?? 'gemini-2.0-flash'),
-      system,
-    })
-
-    return result.toUIMessageStreamResponse()
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
+        return buffer.slice(0, match.index) + match?.[0]
+      },
+      delayInMs: () => (isInCodeBlock || isInTable ? 100 : 30),
+    }),
+    maxOutputTokens: 4096,
+    models,
+    prompt,
+  })
 }

@@ -1,9 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { generateText } from 'ai'
 import { z } from 'zod'
 
+import { AI_ERROR, generateTextWithFallback, resolveAiModels } from '@/lib/ai'
 import { authorizeEditorRequest, readJsonBody } from '@/lib/api'
 
 export const maxDuration = 60
@@ -21,26 +20,23 @@ export const POST = async (request: NextRequest) => {
   if (!body.success) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   const { prompt, system } = body.data
 
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-
-  const gemini = createGoogleGenerativeAI({ apiKey })
+  const models = resolveAiModels()
+  if (!models) return NextResponse.json({ error: AI_ERROR.notConfigured }, { status: 503 })
 
   try {
-    return NextResponse.json(
-      await generateText({
-        abortSignal: request.signal,
-        maxOutputTokens: 2048,
-        model: gemini(process.env.GEMINI_MODEL ?? 'gemini-2.0-flash'),
-        prompt,
-        system,
-        temperature: 0.7,
-      })
-    )
+    const { text } = await generateTextWithFallback({
+      abortSignal: request.signal,
+      maxOutputTokens: 4096,
+      models,
+      prompt,
+      system,
+      temperature: 0.7,
+    })
+    return NextResponse.json({ text })
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       return NextResponse.json({ error: 'Request aborted' }, { status: 499 })
     }
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: AI_ERROR.unavailable }, { status: 503 })
   }
 }

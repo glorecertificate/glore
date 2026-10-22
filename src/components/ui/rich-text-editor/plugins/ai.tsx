@@ -10,10 +10,13 @@ import { AIAnchorElement, AILeaf } from '@/components/ui/rich-text-editor/compon
 import { aiChatPlugin as baseAiChatPlugin } from '@/components/ui/rich-text-editor/plugins/ai-chat-plugin'
 import { CursorOverlayKit } from '@/components/ui/rich-text-editor/plugins/cursor-overlay'
 import { MarkdownKit } from '@/components/ui/rich-text-editor/plugins/markdown'
+import { useChat } from '@/components/ui/rich-text-editor/use-chat'
 
 const aiChatPlugin = baseAiChatPlugin.extend({
   render: { afterContainer: AILoadingBar, afterEditable: AIMenu, node: AIAnchorElement },
   useHooks: ({ editor, getOption }) => {
+    useChat()
+
     const mode = usePluginOption({ key: KEYS.aiChat }, 'mode') as 'insert' | 'select' | 'block-select'
 
     useChatChunk({

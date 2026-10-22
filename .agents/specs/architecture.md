@@ -107,7 +107,7 @@ Dependencies flow one way: **shared > features > app**. The shared layers (`comp
 
 Cross-feature imports are NOT yet blocked and a few exist (`admin -> organization`, `dashboard -> courses`); prefer composing siblings at the route or page level.
 
-`ui/rich-text-editor/` is the vendored Plate.js editor, installed through the shadcn/Plate registry CLI and domain-free. It stays in `ui/` so a CLI re-pull keeps working: treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them. The app touches it only through the `index.tsx` barrel and `provider.tsx`.
+`ui/rich-text-editor/` is the vendored Plate.js editor, installed through the shadcn/Plate registry CLI and domain-free. It stays in `ui/` so a CLI re-pull keeps working: treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them. The app touches it only through the `index.tsx` barrel and `provider.tsx`. The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`); keep it when re-pulling.
 
 ## Server vs client components
 

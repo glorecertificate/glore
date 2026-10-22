@@ -2,12 +2,12 @@
 
 import { useEffect, useEffectEvent, useState } from 'react'
 
-import { useChat as useBaseChat } from '@ai-sdk/react'
 import { AIChatPlugin, AIPlugin, useEditorChat, useLastAssistantMessage } from '@platejs/ai/react'
 import { BlockSelectionPlugin, useIsSelecting } from '@platejs/selection/react'
 import { Command as CommandPrimitive } from 'cmdk'
 import {
   AlbumIcon,
+  AlertCircleIcon,
   BadgeHelpIcon,
   CheckIcon,
   CornerUpLeftIcon,
@@ -30,7 +30,6 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { AIChatEditor } from '@/components/ui/rich-text-editor/components/ai-chat-editor'
-import { aiChatPlugin } from '@/components/ui/rich-text-editor/plugins/ai-chat-plugin'
 import { isHotkey } from '@/components/ui/rich-text-editor/utils'
 import { cn } from '@/lib/utils'
 
@@ -209,9 +208,36 @@ const useAIChatItems = () => {
   } satisfies Record<string, AIChatItem>
 }
 
-const useChat = () => {
-  const options = usePluginOption(aiChatPlugin, 'chatOptions')
-  return useBaseChat({ id: 'editor', ...options })
+const useAIErrorMessage = (error?: Error) => {
+  const t = useTranslations('Components.RichTextEditor.ai')
+  if (error?.message.includes('ai_not_configured')) return t('notConfigured')
+  if (error?.message.includes('Too many requests')) return t('rateLimited')
+  return t('error')
+}
+
+const AIMenuError = ({ error }: { error?: Error }) => {
+  const t = useTranslations('Components.RichTextEditor.ai')
+  const { api } = useEditorPlugin(AIChatPlugin)
+  const message = useAIErrorMessage(error)
+
+  return (
+    <div className="flex flex-col gap-2 p-2 text-sm" role="alert">
+      <div className="flex items-start gap-2 text-destructive">
+        <AlertCircleIcon className="mt-0.5 size-4 shrink-0" />
+        <span>{message}</span>
+      </div>
+      <div className="flex justify-end gap-2">
+        <Button onClick={() => api.aiChat.hide()} size="sm" variant="ghost">
+          <XIcon />
+          {t('discard')}
+        </Button>
+        <Button onClick={() => api.aiChat.reload()} size="sm" variant="outline">
+          <CornerUpLeftIcon />
+          {t('tryAgain')}
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 export const AIMenu = () => {
@@ -225,9 +251,9 @@ export const AIMenu = () => {
   const [value, setValue] = useState('')
   const [input, setInput] = useState('')
 
-  const chat = useChat()
+  const chat = usePluginOption(AIChatPlugin, 'chat')
 
-  const { messages, status } = chat
+  const { error, messages, status } = chat
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null)
 
   const lastMessage = useLastAssistantMessage()
@@ -296,6 +322,7 @@ export const AIMenu = () => {
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
+  const hasError = !isLoading && !!error
 
   const anchorVirtualRef = { current: anchorElement! }
   const popoverStyle = { width: anchorElement?.offsetWidth }
@@ -321,7 +348,9 @@ export const AIMenu = () => {
         <Command className="w-full rounded-lg border shadow-md" onValueChange={setValue} value={value}>
           {mode === 'chat' && isSelecting && content && <AIChatEditor content={content} />}
 
-          {isLoading ? (
+          {hasError ? (
+            <AIMenuError error={error} />
+          ) : isLoading ? (
             <div className="flex grow items-center gap-2 p-2 text-sm text-muted-foreground select-none">
               <Loader2Icon className="size-4 animate-spin" />
               {messages.length > 1 ? t('ai.editing') : t('ai.thinking')}
@@ -349,7 +378,7 @@ export const AIMenu = () => {
             />
           )}
 
-          {!isLoading && (
+          {!isLoading && !hasError && (
             <CommandList>
               <AIMenuItems setValue={setValue} />
             </CommandList>

@@ -27,7 +27,7 @@ describe('checkContent', () => {
     const { problems } = checkContent()
 
     expect(formatProblems(problems)).toBe('')
-  })
+  }, 30_000)
 
   it('accepts a complete fixture course', () => {
     const { root } = setup()

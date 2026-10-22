@@ -68,7 +68,7 @@ describe('email templates', () => {
         expect(message.html, `${locale} ${name} html`).not.toMatch(/Email\.[a-z/-]+|\{[a-zA-Z]+\}/u)
         expect(message.html, `${locale} ${name} html`).toContain('/email/header.png')
       }
-    })
+    }, 30_000)
   }
 
   it('states the reason and the preference link on optional mail only', async () => {

@@ -1,132 +1,92 @@
 # `AGENTS.md`
 
-GloRe Certificate, a multilingual e-learning platform that certifies the soft skills people gain through volunteering. Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres, Drizzle ORM, Tailwind CSS 4.
+GloRe Certificate, a multilingual e-learning platform that certifies the soft skills people gain through volunteering.
 
-A real product by [Associazione Joint](https://associazionejoint.org), a Milan youth-mobility non-profit; this repo is the new version of the live platform. Read "Domain context" in `.agents/specs/app.md` before product work.
+Stack: Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres, Drizzle ORM, Tailwind CSS 4.
 
-Stack picks an agent would otherwise guess wrong: Better Auth, Cloudflare R2, Plate.js editor, next-intl, react-hook-form + zod, nuqs for URL state, React Email + Nodemailer, Vercel AI SDK with Google Gemini, motion, @dnd-kit, shadcn/ui (new-york), standalone oxlint + oxfmt (`.oxlintrc.json`, `.oxfmtrc.json`, both auto-discovered), lefthook (`lefthook.yml`) for git hooks, portless for local HTTPS hosts.
+A real product by [Associazione Joint](https://associazionejoint.org), a Milan youth-mobility non-profit; this repo is the new version of the live platform.
 
-> **Source of truth:** this file governs agent behavior here; `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
+Read "Domain context" in `.agents/specs/app.md` before product work.
 
-> **Budget:** this file loads on every session, so keep it under 3,200 estimated tokens and each `.agents/specs/*.md` under 4,500. Over budget means moving detail into the most relevant spec, never dropping a fact. Inventories the code already enumerates (hook lists, env var tables, cache tags) belong in the code with a pointer here, not copied.
+Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
 
-## Reference specs
+Tooling: oxlint + oxfmt, lefthook, portless.
 
-In `.agents/specs/`. Load the one you need, not the set.
+This file governs agents here; `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
-| File              | Read when                                                                   |
-| ----------------- | --------------------------------------------------------------------------- |
-| `app.md`          | Product requirements: domain, roles, features, certificate lifecycle, rules |
-| `architecture.md` | Navigating `src/`, adding files, naming, layer boundaries, server vs client |
-| `code.md`         | Formatter, import order, restricted imports, lint rules                     |
-| `reference.md`    | Routes, auth, queries, transactions, cache, env vars, dev performance       |
-| `patterns.md`     | Authoring components, types, hooks, utils, theming, forms, emails           |
+Budget: keep this file under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
 
-Plans live in gitignored `.agents/plan/`, one file per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
+## Specs and plans
 
-## Commands
+Load only the spec you need from `.agents/specs/`:
 
-> **MANDATORY:** always `pnpm run <script>`, never bare `pnpm <script>`, so nothing collides with a built-in pnpm command. Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
+- `app.md`: product requirements, roles, features, certificate lifecycle, domain rules.
+- `architecture.md`: `src/` tree, adding files, naming, layer boundaries, server vs client.
+- `code.md`: formatter, import order, restricted imports, lint rules, git hooks.
+- `reference.md`: routes, auth, queries, transactions, cache, env vars, dev performance, testing.
+- `patterns.md`: components, types, hooks, utils, theming, i18n, forms, emails.
+- `workflow.md`: commands, skills, MCP, committing, email verification, docs sync.
 
-| Command                 | Description                                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------- |
-| `pnpm run dev`          | Dev server at `https://glore.localhost` (portless, port 45673)                            |
-| `pnpm run dev:clean`    | Wipe `.next`, then start dev (reclaims Turbopack disk)                                    |
-| `pnpm run check`        | Parallel `check:types` (tsc), `check:lint` (oxlint), `check:format` (oxfmt), `check:knip` |
-| `pnpm run test`         | Vitest unit tests (`src/**/*.test.ts`, `scripts/**/*.test.ts`)                            |
-| `pnpm run test:e2e`     | Playwright e2e against the running dev server, logged in as seeded users                  |
-| `pnpm run build`        | Production build                                                                          |
-| `pnpm run typegen`      | Generate route and public-file types into `types/`                                        |
-| `pnpm run db <command>` | drizzle-kit (`migrate`, `generate`, `studio`, ...)                                        |
-| `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                                |
-| `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                               |
-| `pnpm run db:seed`      | Upsert one test user per role into the local DB (refuses non-local URLs)                  |
-| `pnpm run mail:up`      | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`                  |
-| `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                                |
-| `pnpm run skills`       | Install agent skills from `skills-lock.json`                                              |
+Plans live in tracked `.agents/plan/`, one file per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 
-**Committing:** only when the current prompt asks for it. `pnpm run check` MUST exit 0 first, no exceptions, and one logical task is one commit (never split a task into partial commits). Conventional Commits with lower-case subjects (commitlint rejects sentence case), header max 100, allowed scopes `release`, `deps`, `deps-dev`, `security`. Hook mechanics: `code.md`.
+## Commands and commits
 
-## Skills and MCP
+- Always run `pnpm run <script>`, never bare `pnpm <script>`; `pnpm install` is the exception. Full table: `workflow.md`.
+- Gate: `pnpm run check` (tsc, oxlint, oxfmt, knip). Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
+- Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
+- Commit headers are Conventional Commits, lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 
-Skills install into gitignored `.agents/skills/` (`pnpm run skills`), which behaves like `node_modules`; `.claude/skills` symlinks to it, so `.agents/skills/` is the only path to read or edit. Installed: `cloudflare`, `neon-drizzle`, `react-email`, `shadcn`, `vercel-composition-patterns`, `vercel-react-best-practices`, `web-design-guidelines`. MCP servers in `.mcp.json`: `cloudflare` (R2 and Workers docs), `neon` (database ops).
+## Skills
 
-Tracked `.claude/settings.json` allowlists the check and test scripts, denies local env reads, and runs oxfmt on edited code, JSON, CSS, Markdown, and YAML files; put personal overrides in `.claude/settings.local.json`.
-
-Read and apply the matching skill before starting. `agent-browser`, `sync-i18n`, `sync-docs`, and `sync-agents` are machine-wide skills invoked by name.
-
-| Working on                       | Read / run                                                           |
-| -------------------------------- | -------------------------------------------------------------------- |
-| Any React or Next.js code        | `vercel-react-best-practices` (apply CRITICAL > HIGH > MEDIUM > LOW) |
-| Next.js APIs and config          | `node_modules/next/dist/docs/` (version-exact, see `reference.md`)   |
-| UI and visual review             | `vercel-react-best-practices` + `web-design-guidelines`              |
-| Driving or verifying the real UI | `agent-browser`                                                      |
-| shadcn/ui components             | `shadcn`                                                             |
-| Database and schema              | `neon-drizzle`                                                       |
-| Email (`src/emails/`)            | `react-email`                                                        |
-| Cloudflare                       | `cloudflare`                                                         |
-| Translations (`messages/`)       | `sync-i18n`                                                          |
-| Docs (README, `.agents/`)        | `sync-docs`, or `sync-agents` for agentic files                      |
+- Before starting, read and apply the matching skill from the routing table in `workflow.md`. Any React or Next.js code needs `vercel-react-best-practices`.
+- Vendored skills in `.agents/skills/` are tracked; never hand-edit them.
+- `pnpm run skills` pulls upstream default branches and can rewrite every tracked skill: review its diff and `git restore` unintended updates.
 
 ## Architecture
 
-`src/`: `actions/` (server actions), `app/` (App Router), `components/` (`features/`, `icons/`, `layout/`, `providers/`, `ui/`), `db/` (`schema/`, `queries/`, `mutations/`, `client.ts`), `emails/`, `hooks/`, `lib/`, `proxy.ts`, `i18n.ts`.
-
-Dependencies flow one way, shared > features > app. The shared layers (`ui/`, `icons/`, `hooks/`, `lib/`) are domain-free and lint-blocked from importing `@/components/features/**`, `@/app/**`, or `@/actions/**`. `ui/rich-text-editor/` is a vendored Plate.js block: treat the subtree as one unit and never refactor its internals, since a registry re-pull overwrites them. Full tree, naming, placement test, provider layout, and server/client rules: `architecture.md`.
-
-## Internationalization
-
-next-intl. Locales `en` (default), `es`, `it`, title-case for `en` only. Locale lives in the `NEXT_LOCALE` cookie (no path prefix); messages in `messages/{locale}.json`. Read keys with `useTranslations()` (client) or `getTranslations()` (server), and add or remove a key in all three catalogs in the same change. Namespace scheme and config files: `patterns.md`.
+- Dependencies flow shared > features > app. `ui/`, `icons/`, `hooks/`, `lib/` are domain-free and lint-blocked from `@/components/features/**`, `@/app/**`, `@/actions/**`.
+- `ui/rich-text-editor/` is a vendored Plate.js block: never refactor its internals, since a registry re-pull overwrites them.
+- i18n: locales `en` (default), `es`, `it`. Add or remove a key in all three `messages/{locale}.json` catalogs in the same change.
 
 ## Conventions
 
-Full style detail and the lint table are in `code.md`. These shape first-pass output, so apply them everywhere you write code, legacy files included.
+Apply these on the first pass in every file, legacy included. Lint detail: `code.md`.
 
-- **Guard clauses only.** `if/else`, `else if`, and `else` are forbidden.
-- **No comments in new code.** The only exception is a `{/* Section */}` divider in long JSX. Never touch existing comments.
-- **No JSX string literals.** All user-facing text goes through next-intl.
-- **Functions:** `const` arrow functions only, named exports inline (`export const Foo = ...`). Every default export, pages, layouts, and config files included, is assigned to a named `const` first, then `export default Name` (an inline `export default () => ...` or `export default defineConfig(...)` breaks HMR and is lint-blocked).
-- **Types:** `interface` over `type` for object shapes, inline type imports (`import { type Foo }`), `string[]` over `Array<string>`. Omit return types and inferrable annotations unless narrowing needs them. `any` is allowed only in `src/lib/types.ts`.
-- **Iteration and promises:** `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. `await`, never `.then()`/`.catch()` chains. `Promise.all()` for independent parallel work.
-- **Modules:** one component per file, `@/` and `~/` aliases (`../**` is blocked), shadcn/ui new-york with `cva` variants and `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components before adding new ones.
-- **Other:** hook dependency arrays alphabetically ordered. Import icon TYPES from `lucide-react` but render them through `LucideIcon` from `@/components/icons/lucide`.
+- Guard clauses only: `if/else`, `else if`, and `else` are forbidden.
+- No comments in new code, except a `{/* Section */}` divider in long JSX. Never touch existing comments.
+- No JSX string literals: user-facing text goes through `useTranslations()` or `getTranslations()`.
+- `const` arrow functions with inline named exports. A default export is a named `const` first, then `export default Name`; inline forms break HMR.
+- `interface` over `type`, inline type imports, `string[]` over `Array<string>`, no return types or inferrable annotations unless narrowing needs them, `any` only in `src/lib/types.ts`.
+- Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
+- One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
+- Order hook dependency arrays alphabetically. Render icons through `LucideIcon` from `@/components/icons/lucide`, importing only types from `lucide-react`.
 
-## Gotchas
+## Gotchas: imports and data
 
-Non-obvious rules that break a change if missed. Domain rules are in `app.md`; runtime and dev-performance detail in `reference.md`.
-
-**Imports and modules**
-
-1. Never import `cookies` from `next/headers`. Use `@/actions/cookies`.
-2. `src/lib/auth.ts` imports tables only from individual schema files (`@/db/schema/<table>`), never the `@/db/schema` barrel, because `proxy.ts` calls `getSession` on every request.
+1. Lint blocks `cookies` from `next/headers` (use `@/actions/cookies`), direct `cnfast` (use `@/lib/utils`), and `../**` imports.
+2. `src/lib/auth.ts` imports tables from `@/db/schema/<table>`, never the barrel, because `proxy.ts` calls `getSession` on every request.
 3. `db/queries/<table>.ts` parsers MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles.
-4. Import `cn` from `@/lib/utils`, never `cnfast` directly. `src/lib/utils.ts` holds its own lint override because it is the re-export source.
+4. The app uses `NextProxy` (`src/proxy.ts`), not `middleware.ts`.
+5. Cached queries wrap the DB call in an inner `'use cache'` + `cacheTag` function; the outer takes `{ cache: boolean }`. `safeQuery()` returns `{ data, error }`.
+6. Multi-statement writes use `transaction(fn)` from `@/db/client` with `(tx, ...args)` units in `src/db/mutations/`; statements inside run sequentially.
+7. Client-created course-tree records use negative `tempId()` ids (never `Date.now()`). Never send a placeholder id or foreign key to the DB; resolve the real parent id first.
 
-**Data and runtime**
+## Gotchas: runtime and config
 
-5. The app uses `NextProxy` (`src/proxy.ts`), not Next.js `middleware.ts`.
-6. Cached queries are inner `'use cache'` + `cacheTag` functions wrapping the DB call; the outer function takes `{ cache: boolean }` to bypass. `safeQuery()` returns `{ data, error }`: mutations throw, queries return error objects.
-7. Multi-statement writes go through `transaction(fn)` from `@/db/client` (prod neon-http has no interactive transactions). Logic lives in `src/db/mutations/<domain>.ts` as `(tx, ...args) => ...` units, and statements inside a transaction MUST run sequentially.
-8. All course-tree primary keys are Postgres `integer` identity columns. Records created client-side get a placeholder id from `tempId()` in `src/lib/utils.ts` (negative, never `Date.now()`, which overflows `int4`), and `isTempId()` decides insert vs. update. Never send a placeholder id or a placeholder foreign key to the database: resolve the parent's real id from the insert result first.
-9. Many DB text fields are `IntlRecord` (locale-keyed JSON); read them with `localize(record)` from `useI18n()`.
-10. Org data is split: identity in `organizations`, sparse fields in `organization_profiles`. Query parsers flatten the profile fields.
-11. `emailAndPassword.autoSignIn` is `false` and MUST stay false: `signUpEmail` only ever creates accounts for invitees, so auto sign-in would write their session onto the inviter's response.
-12. Every env var used by the app MUST be in the Zod schema in `next.config.ts`, and `next.config.ts` MUST never import from `src/` (it would restart the dev server on every source edit).
-
-**Generated files and config**
-
-13. Never edit generated files: `types/*.generated.d.ts` and everything under `drizzle/`. Regenerate with `pnpm run typegen`, `pnpm run db generate`, `pnpm run db migrate`.
-14. New `drizzle/*.sql` migrations need `git add -f`: a global gitignore rule for `*.sql` silently skips them.
-15. `cacheComponents: true` and the React Compiler (builds only, off in dev) are set in `next.config.ts`. Do not add manual `useMemo`/`useCallback`.
-16. Dev-performance flags that MUST NOT be reverted (Turbopack dev cache off, prebuilt CI deploys, dual DB driver on port 5433, oxlint typeAware split, minimal editor save chain): full list and rationale in `reference.md`, "Dev environment and performance".
+8. Read `IntlRecord` fields with `localize(record)` from `useI18n()`. Org identity lives in `organizations`, sparse fields in `organization_profiles`.
+9. `emailAndPassword.autoSignIn` MUST stay `false`: auto sign-in would write an invitee's session onto the inviter's response.
+10. Every env var MUST be in the Zod schema in `next.config.ts`, which MUST never import from `src/` (that restarts dev on every edit).
+11. Never edit `types/*.generated.d.ts` or `drizzle/`. Regenerate with `pnpm run typegen`, `pnpm run db generate`, `pnpm run db migrate`.
+12. The React Compiler runs in builds, so never add manual `useMemo`/`useCallback`.
+13. Never revert the dev-performance flags listed in `reference.md`, "Dev environment and performance".
 
 ## Verification
 
-Machine-checkable rungs first, in order, and report which ones actually ran:
+Run the rungs in order and report which ones ran:
 
 1. `pnpm run check` exits 0.
-2. `pnpm run test` for logic changes, writing the failing test first for bug fixes; `pnpm run test:e2e` for auth, routing, and role flows (needs `pnpm run db:seed` once).
-3. Email flows (auth, invite, certificate, account) are tested autonomously, never handed to the user: run `pnpm run mail:up`, confirm delivery with `pnpm run test:e2e -- e2e/recovery.spec.ts` (it fails when no mail reaches Mailpit, usually because `.env.local` lacks `MAIL_TRANSPORT=mailpit`; ask the user to set it, since env files are unreadable and dev otherwise sends real SMTP email), then drive the flow and read the message and its links from `http://localhost:8025/api/v1/search?query=to:"<email>"`.
-4. UI, layout, or animation work is verified in a real browser with the `agent-browser` skill against the running dev server (`https://glore.localhost`), logged in as a seeded user. A passing typecheck is not visual verification.
+2. `pnpm run test` for logic, failing test first for bug fixes; `pnpm run test:e2e` for auth, routing, and role flows.
+3. Test email flows yourself with Mailpit, never handing them to the user: procedure in `workflow.md`.
+4. Verify UI, layout, or animation in a real browser with `agent-browser` at `https://glore.localhost` as a seeded user; a typecheck is not visual verification.
 
-Keep `AGENTS.md` and `README.md` in sync with the code in the same change, no confirmation needed, whenever routes, API endpoints, server actions, hooks, utils, env vars, components, providers, skills, commands, or structure change. Edit `AGENTS.md` directly and never `CLAUDE.md`; push detail into `.agents/specs/` to stay inside the budget.
+When routes, actions, hooks, utils, env vars, components, providers, skills, commands, or structure change, update `AGENTS.md`, `README.md`, and specs in the same change.

@@ -1,6 +1,6 @@
 # Technical reference: runtime and data
 
-Runtime and data-layer reference. Read the section you need. Component, type, hook, util, theming, form, and email conventions: `patterns.md`.
+Component, type, hook, util, theming, form, and email conventions: `patterns.md`.
 
 ## Routing
 

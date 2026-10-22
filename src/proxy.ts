@@ -28,11 +28,12 @@ const expireSession = (request: Request) => {
 
 const restoreCourseListParams = (request: NextRequest) => {
   const { cookies, headers, nextUrl, url } = request
-  if (nextUrl.pathname !== '/courses' || nextUrl.search || headers.has('rsc')) return null
+  if (request.method !== 'GET' || nextUrl.pathname !== '/courses' || nextUrl.search || headers.has('rsc')) return null
   const params = cookies.get(prefixCookieName('courseListParams'))?.value
   if (!params) return null
   const target = new URL(nextUrl.pathname, url)
   target.search = params
+  if (!target.search) return null
   return NextResponse.redirect(target)
 }
 

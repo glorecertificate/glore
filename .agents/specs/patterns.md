@@ -65,6 +65,9 @@ React Compiler auto-memoizes derived values, callbacks, and components in produc
 - **Prefer derived state over a syncing effect.** Use `useDeferredValue` to gate expensive recomputation (see `src/hooks/use-search.ts`), or set state during render to mirror a prop, rather than a `useEffect` that copies props into state.
 - **Stabilize interval and listener callbacks** that close over fresh values with a ref or `useEffectEvent`, so a long-lived `setInterval` or subscription does not restart every render.
 - **No dead cleanup.** Setting state in an unmount cleanup is a no-op. Reserve `return () => { ... }` for real teardown (`clearTimeout`, `removeEventListener`).
+- **Lazy-load only heavy, conditional UI** with `next/dynamic`: the editor sortable grid, course settings, account and organization tabs, the image crop dialog, the calendar, and the search palette. Keep small pieces that render on every card static: lazy per-card actions moved hydration into one 150ms task (4x CPU) to save 3KB.
+- **`next/dynamic` without `loading` adds no Suspense boundary** while `ssr` is on, so it suspends to the nearest parent and can show a page skeleton. Wrap it in a local `<Suspense>` or pass `loading`. Use `ssr: false` for client-only widgets and inside `notFound()` renders, where an SSR dynamic import caused React error #419.
+- **Motion:** render `m.*` components inside `MotionFeatures` (`src/components/ui/motion-features.tsx`, a scoped `LazyMotion` with synchronous `domMax`), never `motion.*`. Never add a root `LazyMotion` (11KB on routes without animation) or load features asynchronously (their activation lands in one long task after hydration).
 
 ## Type system
 
@@ -93,9 +96,11 @@ A TS `enum` is used ONLY for `CacheTag` in `src/lib/cache.ts`. Every other enum 
 
 ## Utilities and hooks
 
-Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `titleize`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce` (default 500ms, with `.cancel()` and `.flush()`), `throttle`, `sleep`, and the `tempId()` / `isTempId()` pair for client-created records (see gotcha 8 in `AGENTS.md`).
+Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `titleize`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce` (default 500ms, with `.cancel()` and `.flush()`), `throttle`, `sleep`, and the `tempId()` / `isTempId()` pair for client-created records. Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder (never `Date.now()`, which overflows `int4`) and `isTempId()` decides insert vs. update.
 
 `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-file-upload` (presigned R2 PUT flow), `use-metadata`, `use-mounted`, `use-navigation-guard` (blocks navigation on unsaved changes), `use-pwa`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
+
+`useCookies` writes script-visible cookies (no `HttpOnly`, URI-encoded values). A server `setCookie` for a cookie the client also writes passes `{ httpOnly: false }`, because a script cannot overwrite an `HttpOnly` cookie.
 
 `useI18n` and `useSession` are NOT in `src/hooks/`: each is owned by its provider module in `src/components/providers/`. `useSession` exposes `isOrgAdmin` (owner only, membership role `admin`), `isRepresentative`, `isLearner`, `isTutor`, and `isVolunteer`; use `membership.role === 'admin'` for owner-exclusive operations. A client feature component typically pairs `useTranslations('<Namespace>')` with `useI18n()` for `localize` and `useSession()` for role checks.
 
@@ -115,7 +120,7 @@ Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexTo
 
 ## Internationalization
 
-Config lives in `src/lib/i18n.ts`, sourced from `config/i18n.json`; the next-intl request config is `src/i18n.ts`.
+Config lives in `src/lib/i18n.ts`, sourced from `config/i18n.json`; the next-intl request config is `src/i18n.ts`. The locale lives in the `NEXT_LOCALE` cookie with no path prefix, and only `en` copy uses title case.
 
 Top-level namespaces match feature domains: `Auth`, `Courses`, `Certificates`, `Admin`, `Layout`, `Common`, `Metadata`. `Components.<Name>` is reserved for generic primitives in `src/components/ui/`, `Intl.Countries.*` and `Intl.Languages.*` carry i18n data, and `Email.*` covers email templates.
 

@@ -338,6 +338,7 @@
       "avatarTooLarge": "Carica un'immagine più piccola di {size} MB",
       "cancel": "Annulla",
       "changeAvatar": "Cambia avatar",
+      "cropTitle": "Ritaglia la tua immagine",
       "remove": "Rimuovi",
       "saveAvatar": "Salva avatar",
       "uploadAvatar": "Aggiungi avatar"

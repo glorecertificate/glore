@@ -710,6 +710,7 @@
       "avatarTooLarge": "Please upload a picture smaller than {size} MB",
       "cancel": "Cancel",
       "changeAvatar": "Update avatar",
+      "cropTitle": "Crop your picture",
       "remove": "Remove",
       "saveAvatar": "Save avatar",
       "uploadAvatar": "Upload avatar"

@@ -51,8 +51,7 @@ self.addEventListener('fetch', event => {
         const response = await fetch(request)
         if (!response.ok) return response
         const copy = response.clone()
-        const cache = await caches.open(CACHE_NAME)
-        await cache.put(request, copy)
+        event.waitUntil((async () => (await caches.open(CACHE_NAME)).put(request, copy))())
         return response
       })()
     )

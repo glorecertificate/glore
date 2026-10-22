@@ -702,6 +702,7 @@
       "avatarTooLarge": "Sube una imagen de menos de {size} MB",
       "cancel": "Cancelar",
       "changeAvatar": "Actualizar avatar",
+      "cropTitle": "Recorta tu imagen",
       "remove": "Eliminar",
       "saveAvatar": "Guardar avatar",
       "uploadAvatar": "Subir avatar"

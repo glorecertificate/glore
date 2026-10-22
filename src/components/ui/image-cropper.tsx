@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useImperativeHandle, useState } from 'react'
+import { useEffect, useImperativeHandle, useState } from 'react'
 
 import { CameraIcon, Trash2Icon, UploadCloudIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -47,16 +47,18 @@ export const ImageCropper = ({
 
   const [selected, setSelected] = useState<SelectedImage | null>(null)
 
+  useEffect(() => {
+    if (!selected) return
+    return () => URL.revokeObjectURL(selected.previewUrl)
+  }, [selected])
+
   const onDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
     if (!file) return
     setSelected({ file, previewUrl: URL.createObjectURL(file) })
   }
 
-  const closeCropDialog = () => {
-    if (selected) URL.revokeObjectURL(selected.previewUrl)
-    setSelected(null)
-  }
+  const closeCropDialog = () => setSelected(null)
 
   const onDropRejected = (rejections: FileRejection[]) => {
     const tooLarge = rejections.some(rejection => rejection.errors.some(error => error.code === 'file-too-large'))
@@ -117,7 +119,7 @@ export const ImageCropper = ({
     <>
       <div className="flex items-center gap-4">
         <div className="group relative size-24 shrink-0">
-          <Avatar className="size-24 rounded-2xl border shadow-2xs ring-0 ring-ring/20 transition-all group-hover:ring-4">
+          <Avatar className="size-24 rounded-2xl border shadow-2xs ring-0 ring-ring/20 transition-shadow group-hover:ring-4">
             <AvatarImage className="object-cover" src={value || undefined} />
             <AvatarFallback className="bg-muted/40 text-3xl text-muted-foreground">{fallback ?? '?'}</AvatarFallback>
           </Avatar>
@@ -139,7 +141,7 @@ export const ImageCropper = ({
             {value ? t('changeAvatar') : t('uploadAvatar')}
           </Button>
 
-          {value && onRemove && (
+          {value && onRemove ? (
             <Button
               className="w-fit text-destructive hover:bg-destructive/10 hover:text-destructive"
               disabled={disabled}
@@ -151,7 +153,7 @@ export const ImageCropper = ({
               <Trash2Icon className="mr-2 size-4" />
               {t('remove')}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
 

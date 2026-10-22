@@ -3,7 +3,9 @@ import { type APIRequestContext, expect } from '@playwright/test'
 const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025'
 
 interface MailpitSearch {
-  messages: { ID: string }[]
+  messages: {
+    ID: string
+  }[]
 }
 
 interface MailpitMessage {

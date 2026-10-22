@@ -92,7 +92,7 @@ export const ImageCropDialog = ({
 
   return (
     <Dialog onOpenChange={isOpen => !isOpen && onClose()} open>
-      <DialogTitle className="hidden" />
+      <DialogTitle className="sr-only">{t('cropTitle')}</DialogTitle>
       <DialogContent aria-describedby={undefined} className="sm:max-w-2xl">
         <div className="mt-4 flex justify-center">
           <ReactCrop
@@ -105,7 +105,7 @@ export const ImageCropDialog = ({
             }}
           >
             <img
-              alt="Crop preview"
+              alt={t('cropTitle')}
               className="max-h-[70vh] w-auto object-contain"
               onLoad={onImageLoad}
               ref={imageRef}

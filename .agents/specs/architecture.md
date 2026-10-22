@@ -9,13 +9,15 @@ src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
 │   ├── admin/          # helpers.ts, organizations.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # helpers.ts (server-only, no 'use server'), management.ts, queries.ts
-│   ├── courses/        # helpers.ts, management.ts, progress.ts, queries.ts
+│   ├── courses/        # helpers.ts (server-only: fetchCourses, listSessionCourses), management.ts,
+│   │                   #   progress.ts, queries.ts
 │   ├── organizations/  # helpers.ts, members.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
 │   ├── guards.ts       # requireEditor and other action guards
 │   ├── onboarding.ts   # Complete onboarding flow
+│   ├── session.ts      # getSessionUser: render-only private-cached session (server-only, no 'use server')
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
 ├── app/                # App Router pages and layouts
@@ -46,7 +48,7 @@ src/
 │   │                   #   courses, docs, enums, helpers, index, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): certificate,
-│   │                   #   course, doc, lesson, organization, user
+│   │                   #   course, doc, lesson, organization (flattens organization_profiles), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
 │                       #   certificate.ts, course.ts, organization.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
@@ -67,7 +69,7 @@ src/
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, ...)
 │   └── utils.ts        # cn(), debounce(), camelize(), tempId()/isTempId(), ...
 ├── i18n.ts             # next-intl request config
-└── proxy.ts            # NextProxy middleware (auth guard)
+└── proxy.ts            # NextProxy middleware (auth guard, saved course-list filter redirect)
 ```
 
 ## File naming
@@ -93,4 +95,8 @@ Cross-feature imports are NOT yet blocked and a few exist (`admin -> organizatio
 - Server components by default. Add `'use client'` only for interactivity: hooks, event handlers, browser APIs.
 - Layout guards (admin, certificates) are server components that call `notFound()`.
 - Pages that fetch data async use an inner async component plus an outer sync page wrapping it in `<Suspense fallback={<LoadingFallback />}>`, so the page header renders immediately while data loads.
-- `(dashboard)/loading.tsx` is the skeleton that client navigations show at once. Segment layouts that await uncached data (`CoursesProvider` in `dashboard/` and `courses/`) rely on it, so never remove it; `next dev` logs a blocking-route error when a navigation would wait on uncached data.
+- `(dashboard)/loading.tsx` is the skeleton that client navigations show at once while a segment awaits uncached data, so never remove it; `next dev` logs a blocking-route error when a navigation would wait on uncached data.
+- Partial Prefetching is on (`partialPrefetching: true`): every `<Link>` prefetches the route's App Shell, so never pass `prefetch` to a `Link`. Content joins the shell only behind `'use cache'` with a stale time of at least 5 minutes or behind `'use cache: private'`; uncached reads, `params`, and `searchParams` stream in after the click.
+- Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache with the 5 minute stale time of the Better Auth cookie cache), which keeps `CoursesProvider` in the shell. Actions and guards keep the uncached `getAuthUser()`.
+- Keep cached render helpers in server-only modules. Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
+- A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`. The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.

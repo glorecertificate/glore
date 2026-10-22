@@ -4,10 +4,10 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { type VirtualItem, useVirtualizer } from '@tanstack/react-virtual'
 import { type default as Fuse } from 'fuse.js'
-import { type IconName } from 'lucide-react/dynamic'
 import { useLocale, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { type IconName, isIconName } from '@/components/icons/registry'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -24,11 +24,8 @@ let cachedIcons: IconData[]
 
 const loadIconData = async () => {
   if (cachedIcons) return cachedIcons
-  const [{ default: icons }, { dynamicIconImports }] = await Promise.all([
-    import('~/config/icons.json'),
-    import('lucide-react/dynamic'),
-  ])
-  return (cachedIcons = (icons as IconData[]).filter(icon => icon.name in dynamicIconImports))
+  const { default: icons } = await import('~/config/icons.json')
+  return (cachedIcons = (icons as IconData[]).filter(icon => isIconName(icon.name)))
 }
 
 const getVirtualItemStyle = (virtualItem: VirtualItem) => ({
@@ -73,7 +70,6 @@ export const IconPicker = ({
   className,
   defaultOpen,
   defaultValue,
-  fallback,
   modal = true,
   onOpenChange,
   onValueChange,
@@ -87,7 +83,6 @@ export const IconPicker = ({
   categorized?: boolean
   defaultOpen?: boolean
   defaultValue?: IconName
-  fallback?: React.ReactNode
   modal?: boolean
   onOpenChange?: (open: boolean) => void
   onValueChange?: (value: IconName) => void
@@ -352,7 +347,7 @@ export const IconPicker = ({
           >
             {iconName && (
               <>
-                <LucideIcon fallback={fallback} name={iconName} />
+                <LucideIcon name={iconName} />
                 {showLabels && t('updateIcon')}
               </>
             )}

@@ -42,7 +42,7 @@ src/
 ├── components/
 │   ├── features/       # Domain components by feature: admin, auth, certificates, courses,
 │   │                   #   about, dashboard, docs, help, notifications, onboarding, organization, users
-│   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
+│   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title,
 │   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels

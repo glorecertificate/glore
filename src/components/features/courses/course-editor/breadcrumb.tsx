@@ -17,7 +17,6 @@ import { HeaderBreadcrumb } from '@/components/ui/header'
 import { IconPicker } from '@/components/ui/icon-picker'
 import { InlineInput } from '@/components/ui/inline-input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
@@ -123,7 +122,6 @@ export const CourseBreadcrumb = () => {
                   <IconPicker
                     className={cn('size-4 shrink-0 [&>svg]:size-4.5!', courseIconVariants({ type: course.type }))}
                     defaultValue={(course.icon ?? undefined) as IconName | undefined}
-                    fallback={<Skeleton className="size-4 rounded-md bg-foreground/15" />}
                     onValueChange={async icon => {
                       const result = await editCourse({ icon })
                       if ('error' in result) return

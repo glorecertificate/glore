@@ -44,9 +44,9 @@ App-wide providers are flat single files in `src/components/providers/` (`i18n.t
 
 ### Icon system
 
-lucide-react icons are lazy-loaded through `src/components/icons/lucide.tsx`: a module `Map` caches `lazy()` components keyed by name, each rendered inside `Suspense`. Render with `<LucideIcon name={...} />` where `name` is an `IconName`; an optional `fallback` shows while loading.
+lucide-react icons render from the static registry `src/components/icons/registry.ts` (`ICONS`, `IconName`, `isIconName`, `iconNodeOf` for the PDF). Never use `lucide-react/dynamic` or `dynamicIconImports`: they made Turbopack compile all ~1,900 icons as separate client and SSR chunks for every route, which blew up dev memory. To use a new icon, add it to `ICONS`. Render with `<LucideIcon name={...} />`; a name from data that is not in the registry renders `circle-help`. The icon picker offers the registry icons only.
 
-Import icon TYPES from `lucide-react` but RENDER through `LucideIcon`. Custom, non-lucide icons live as components in `src/components/icons/`. The course `icon` field is stored as an `IconName` string. Two prop shapes coexist: a dynamic name (`icon?: IconName`, rendered `<LucideIcon name={icon} />`) when the icon comes from data, and a static component (`icon: Icon` from `@/lib/types`, rendered `<Icon />`) when a config object hardcodes it.
+Import icon TYPES from `lucide-react` but RENDER through `LucideIcon`; only `registry.ts` imports icon components. Custom, non-lucide icons live as components in `src/components/icons/`. The course `icon` field is stored as an `IconName` string. Two prop shapes coexist: a dynamic name (`icon?: IconName`, rendered `<LucideIcon name={icon} />`) when the icon comes from data, and a static component (`icon: Icon` from `@/lib/types`, rendered `<Icon />`) when a config object hardcodes it.
 
 ### URL state (nuqs)
 

@@ -64,7 +64,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 - `interface` over `type`, inline type imports, `string[]` over `Array<string>`, no return types or inferrable annotations unless narrowing needs them, `any` only in `src/lib/types.ts`.
 - Use `for..of`, `map`, `filter`, `reduce`, never `.forEach()`. Use `await`, never `.then()` chains, and `Promise.all()` for independent work.
 - One component per file, `@/` and `~/` aliases, `cva` variants, `cn()` from `@/lib/utils`. Reuse existing utils, hooks, and components.
-- Order hook dependency arrays alphabetically. Render icons through `LucideIcon` from `@/components/icons/lucide`, importing only types from `lucide-react`.
+- Order hook dependency arrays alphabetically. Render icons through `LucideIcon` from `@/components/icons/lucide`; add new icons to `icons/registry.ts`, never `lucide-react/dynamic`.
 
 ## Gotchas: imports and data
 

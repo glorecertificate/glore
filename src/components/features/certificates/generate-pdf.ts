@@ -2,7 +2,6 @@ import 'server-only'
 
 import { createElement } from 'react'
 
-import { type IconNode } from 'lucide-react'
 import { createTranslator } from 'next-intl'
 
 import {
@@ -12,6 +11,7 @@ import {
   type CertificatePdfSkill,
 } from '@/components/features/certificates/document'
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
+import { iconNodeOf } from '@/components/icons/registry'
 import { SKILL_LEVELS } from '@/lib/constants'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 
@@ -34,14 +34,7 @@ export const certificatePdfLabels = async (language: string) => {
   )
 }
 
-const iconNodeOf = async (icon: string | null) => {
-  if (!icon) return null
-  const { default: dynamicIconImports } = await import('lucide-react/dynamicIconImports')
-  const importer = dynamicIconImports[icon as keyof typeof dynamicIconImports]
-  if (!importer) return null
-  const iconNode: IconNode | undefined = Reflect.get(await importer(), '__iconNode')
-  return (iconNode ?? null) as CertificatePdfSkill['iconNode']
-}
+const pdfIconNodeOf = (icon: string | null) => (icon ? iconNodeOf(icon) : null) as CertificatePdfSkill['iconNode']
 
 const qrOf = async (url: string | null) => {
   if (!url) return { qrPath: null, qrSize: 0 }
@@ -68,10 +61,9 @@ const render = async (data: CertificatePdfData, labels: CertificatePdfLabels) =>
 
 export const generateCertificatePdf = async (input: PdfInput, language: string) => {
   const verifyUrl = verifyUrlOf(input.code)
-  const [labels, qr, iconNodes] = await Promise.all([
+  const [labels, qr] = await Promise.all([
     certificatePdfLabels(language),
     qrOf(input.code ? `${process.env.APP_URL ?? ''}/verify/${input.code}` : null),
-    Promise.all(input.skills.map(async skill => await iconNodeOf(skill.icon))),
   ])
   const data: CertificatePdfData = {
     ...input,
@@ -81,7 +73,7 @@ export const generateCertificatePdf = async (input: PdfInput, language: string) 
       logoUrl: pdfImage(input.organization.logoUrl),
       signatureUrl: pdfImage(input.organization.signatureUrl),
     },
-    skills: input.skills.map(({ icon: _icon, ...skill }, index) => ({ ...skill, iconNode: iconNodes[index] })),
+    skills: input.skills.map(({ icon, ...skill }) => ({ ...skill, iconNode: pdfIconNodeOf(icon) })),
     verifyUrl,
   }
   try {

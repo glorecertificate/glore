@@ -1,8 +1,8 @@
 import { type Route } from 'next'
 
 import { type LucideProps } from 'lucide-react'
-import { type IconName } from 'lucide-react/dynamic'
 
+import { type IconName } from '@/components/icons/registry'
 import { type AUTH_VIEWS } from '@/lib/constants'
 import type theme from '~/config/theme.json'
 

@@ -7,6 +7,7 @@ const slug = `e2e-course-${Date.now().toString(36)}`
 
 test.describe('course editor', () => {
   test.use({ storageState: authFile('editor') })
+  test.describe.configure({ mode: 'serial' })
 
   test.afterAll(async () => {
     await deleteCourseBySlug(slug)

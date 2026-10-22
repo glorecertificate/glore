@@ -4,7 +4,8 @@ import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
-import { authFile, login } from './helpers'
+import { pruneSessions } from './db'
+import { authFile, hydrated, login } from './helpers'
 
 test.describe('settings', () => {
   test.use({ storageState: authFile('learner') })
@@ -14,45 +15,53 @@ test.describe('settings', () => {
     await page.goto('/settings?tab=privacy')
     const toggle = page.getByRole('switch', { name: 'Make my profile public' })
     await expect(toggle).not.toBeChecked()
+    await hydrated(toggle)
 
-    await expect(async () => {
-      await toggle.check()
-      await expect(page.getByText('Privacy settings saved')).toBeVisible({ timeout: 3000 })
-    }).toPass()
+    await toggle.click()
+    await expect(page.getByText('Privacy settings saved')).toBeVisible()
+    await expect(toggle).toBeChecked()
     await page.reload()
-    await expect(page.getByRole('switch', { name: 'Make my profile public' })).toBeChecked()
+    await expect(toggle).toBeChecked()
+    await hydrated(toggle)
 
-    await page.getByRole('switch', { name: 'Make my profile public' }).click()
-    await expect(page.getByRole('switch', { name: 'Make my profile public' })).not.toBeChecked()
+    await toggle.click()
+    await expect(page.getByText('Privacy settings saved')).toBeVisible()
+    await expect(toggle).not.toBeChecked()
   })
 
   test('turns an email category off and on', async ({ page }) => {
     await page.goto('/settings?tab=notifications')
     const reminders = page.getByRole('switch', { name: 'Reminders' })
     await expect(reminders).toBeChecked()
+    await hydrated(reminders)
 
-    await expect(async () => {
-      await reminders.uncheck()
-      await expect(page.getByText('Notification settings saved')).toBeVisible({ timeout: 3000 })
-    }).toPass()
+    await reminders.click()
+    await expect(page.getByText('Notification settings saved')).toBeVisible()
+    await expect(reminders).not.toBeChecked()
     await page.reload()
-    await expect(page.getByRole('switch', { name: 'Reminders' })).not.toBeChecked()
+    await expect(reminders).not.toBeChecked()
+    await hydrated(reminders)
 
-    await page.getByRole('switch', { name: 'Reminders' }).click()
-    await expect(page.getByRole('switch', { name: 'Reminders' })).toBeChecked()
+    await reminders.click()
+    await expect(page.getByText('Notification settings saved')).toBeVisible()
+    await expect(reminders).toBeChecked()
   })
 
   test('rejects a reserved username', async ({ page }) => {
     await page.goto('/settings?tab=account')
-    await page.getByLabel('Username').fill('terms')
+    const username = page.getByLabel('Username')
+    await hydrated(username)
+    await username.fill('terms')
     await page.getByRole('button', { name: 'Save changes' }).click()
     await expect(page.getByText('This username is reserved. Choose another one.')).toBeVisible()
   })
 
   test('downloads the personal data as JSON', async ({ page }) => {
     await page.goto('/settings?tab=data')
+    const button = page.getByRole('button', { name: 'Download my data' })
+    await hydrated(button)
     const download = page.waitForEvent('download')
-    await page.getByRole('button', { name: 'Download my data' }).click()
+    await button.click()
 
     const file = await (await download).path()
     const exported = JSON.parse(await readFile(file, 'utf8'))
@@ -62,7 +71,8 @@ test.describe('settings', () => {
   })
 
   test('lists the sessions and signs out another device', async ({ browser, page }) => {
-    const other = await browser.newContext()
+    await pruneSessions(seedEmail('learner'), 3)
+    const other = await browser.newContext({ storageState: { cookies: [], origins: [] } })
     const otherPage = await other.newPage()
     await login(otherPage, 'learner')
 

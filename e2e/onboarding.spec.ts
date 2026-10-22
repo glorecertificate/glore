@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { createSeedInvitation, deleteUserByEmail } from './db'
+import { hydrated } from './helpers'
 import { clearMail, isMailpitUp, latestMailText, mailLinkPath } from './mail'
 
 const email = `onboarding-${Date.now()}@seed.glore.test`
@@ -18,11 +19,15 @@ test('takes an invited volunteer from the invitation to the dashboard', async ({
   const token = await createSeedInvitation(email, 'volunteer')
 
   await page.goto(`/invite/${token}`)
-  await page.getByRole('button', { name: 'Send me a confirmation link' }).click()
+  const send = page.getByRole('button', { name: 'Send me a confirmation link' })
+  await hydrated(send)
+  await send.click()
   await expect(page.getByText(`We sent a confirmation link to ${email}`)).toBeVisible()
 
   await page.goto(mailLinkPath(await latestMailText(request, email), '/invite/'))
-  await page.getByRole('button', { name: 'Create account and accept' }).click()
+  const accept = page.getByRole('button', { name: 'Create account and accept' })
+  await hydrated(accept)
+  await accept.click()
   await expect(page).toHaveURL(/\/onboarding/u)
 
   await expect(page.getByRole('heading', { name: "What's your name?" })).toBeVisible()
@@ -36,12 +41,12 @@ test('takes an invited volunteer from the invitation to the dashboard', async ({
   await page.getByRole('button', { name: 'Continue' }).click()
   await expect(page.getByText('Birthday is required.')).toBeVisible()
   await page.getByRole('button', { name: 'Birthday' }).click()
-  await page.getByRole('combobox').first().selectOption({ label: '1990' })
+  await page.getByRole('combobox', { name: 'Choose the Year' }).selectOption({ label: '1990' })
   await page.getByRole('gridcell', { name: '15' }).first().click()
   await page.getByLabel('Place of birth').fill('London, United Kingdom')
-  await page.getByRole('combobox', { name: /Select your country/u }).click()
+  await page.getByRole('combobox', { name: 'Nationality' }).click()
   await page.getByPlaceholder('Search country...').fill('United Kingdom')
-  await page.getByRole('option', { name: /United Kingdom/u }).click()
+  await page.getByRole('option', { name: '🇬🇧 United Kingdom' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { name: 'How can we reach you?' })).toBeVisible()

@@ -120,6 +120,25 @@ export const setPublicProfile = async ({
   }
 }
 
+export const pruneSessions = async (email: string, keep: number) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    await pool.query(
+      `delete from sessions
+       where user_id = (select id from users where email = $1)
+         and id not in (
+           select id from sessions
+           where user_id = (select id from users where email = $1)
+           order by created_at desc
+           limit $2
+         )`,
+      [email, keep]
+    )
+  } finally {
+    await pool.end()
+  }
+}
+
 export const createSeedInvitation = async (email: string, role: string) => {
   const connectionString = process.env.DATABASE_URL
   if (!(connectionString && LOCAL_DATABASE_REGEX.test(connectionString))) throw new Error('Local database required')

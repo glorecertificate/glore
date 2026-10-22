@@ -4,11 +4,11 @@ import { seedEmail } from '~/scripts/seed-data'
 
 import { clearRateLimits, removePublicCertificates, seedPublicCertificate, setPublicProfile } from './db'
 
-const VALID = 'E2E0-VAL1-D000'
+const VALID = 'E2E0-VA11-D000'
 const REVOKED = 'E2E0-REV0-KED0'
 const UNKNOWN = 'E2E0-N0NE-X1ST'
 const VOLUNTEER = seedEmail('volunteer')
-const USERNAME = 'e2e-public-volunteer'
+const USERNAME = 'e2e.public.volunteer'
 
 test.describe.configure({ mode: 'serial' })
 
@@ -33,7 +33,7 @@ test.describe('certificate verification', () => {
     await expect(page.getByText(VALID)).toBeVisible()
     await expect(page.getByText('E2E statement').first()).toBeVisible()
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/u)
-    await expect(page.locator('script[type="application/ld+json"]').last()).toContainText(VALID)
+    await expect.poll(() => page.locator('#verification-json-ld').textContent()).toContain(VALID)
   })
 
   test('accepts a code typed in lower case without dashes', async ({ page }) => {
@@ -62,8 +62,9 @@ test.describe('certificate verification', () => {
   })
 
   test('hides a private profile and redirects legacy links to the verify page', async ({ page }) => {
-    const profile = await page.goto(`/${USERNAME}`)
-    expect(profile?.status()).toBe(404)
+    await page.goto(`/${USERNAME}`)
+    await expect(page.getByText('This certificate does not exist or is no longer publicly available.')).toBeVisible()
+    await expect(page.getByText('Verified certificate')).toBeHidden()
 
     await page.goto(`/${USERNAME}?v=e2e-${VALID.toLowerCase()}`)
     await expect(page).toHaveURL(new RegExp(`/verify/${VALID}$`, 'u'))

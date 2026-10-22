@@ -1,4 +1,4 @@
-import { type Page, expect } from '@playwright/test'
+import { type Locator, type Page, expect } from '@playwright/test'
 
 import { SEED_PASSWORD, seedEmail } from '~/scripts/seed-data'
 
@@ -14,4 +14,10 @@ export const login = async (page: Page, key: string) => {
   await page.locator('input[name="password"]').fill(SEED_PASSWORD)
   await page.locator('form button[type="submit"]').click()
   await expect(page).toHaveURL(/\/dashboard/u)
+}
+
+export const hydrated = async (locator: Locator) => {
+  await expect
+    .poll(() => locator.evaluate(element => Object.keys(element).some(key => key.startsWith('__reactProps'))))
+    .toBe(true)
 }

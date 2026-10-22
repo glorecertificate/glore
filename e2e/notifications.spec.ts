@@ -41,7 +41,9 @@ test.describe('notifications', () => {
 
   test('shows an empty state when everything is read', async ({ page }) => {
     await page.goto('/notifications')
+    await expect(page.getByRole('listitem').getByText('Unread', { exact: true })).toHaveCount(2)
     await page.getByRole('button', { name: 'Mark all as read' }).click()
+    await expect(page.getByRole('listitem').getByText('Unread', { exact: true })).toHaveCount(0)
     await page.goto('/notifications?filter=unread')
     await expect(page.getByText('No unread notifications')).toBeVisible()
   })

@@ -370,6 +370,7 @@ export const AIMenu = () => {
                 if (isHotkey('enter')(e) && !e.shiftKey && !value) {
                   e.preventDefault()
                   void api.aiChat.submit(input)
+                  setInput('')
                 }
               }}
               onValueChange={setInput}
@@ -445,7 +446,7 @@ const AIMenuItems = ({ setValue }: { setValue: (value: string) => void }) => {
 
   useEffect(() => {
     syncMenuValue()
-  }, [menuGroups])
+  }, [menuState])
 
   return (
     <>

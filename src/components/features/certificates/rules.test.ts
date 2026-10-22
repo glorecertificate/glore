@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest'
 
 import {
   addMonths,
+  ageTone,
   chooseTutor,
+  daysBetween,
   generateCertificateCode,
+  journeySteps,
+  linkedInProfileUrl,
   meetsActivityRule,
   mergeCertificateValues,
   missingPersonalData,
+  normalizeCertificateCode,
+  pdfDate,
 } from '@/components/features/certificates/rules'
 
 const period = (activityStartDate: string, activityEndDate: string, activityDuration = 10) => ({
@@ -128,5 +134,98 @@ describe('mergeCertificateValues', () => {
     const merged = mergeCertificateValues(stored, { rating: { comment: 'Great' }, skills: [{ courseId: 9 }] })
     expect(merged.skills).toEqual([{ courseId: 9 }])
     expect(merged.rating).toMatchObject({ comment: 'Great', experience: 4 })
+  })
+})
+
+describe('review age', () => {
+  const now = new Date('2026-03-10T12:00:00Z')
+
+  it('counts whole days and never goes negative', () => {
+    expect(daysBetween('2026-03-05T12:00:00Z', now)).toBe(5)
+    expect(daysBetween('2026-03-10T00:00:00Z', now)).toBe(0)
+    expect(daysBetween('2026-03-12T00:00:00Z', now)).toBe(0)
+  })
+
+  it('maps days to the reminder thresholds', () => {
+    expect(ageTone(0)).toBe('fresh')
+    expect(ageTone(2)).toBe('fresh')
+    expect(ageTone(3)).toBe('due')
+    expect(ageTone(6)).toBe('due')
+    expect(ageTone(7)).toBe('overdue')
+    expect(ageTone(4, [5, 10])).toBe('fresh')
+  })
+})
+
+describe('journeySteps', () => {
+  it('marks the current stage of an open request', () => {
+    expect(journeySteps('submitted').map(({ state }) => state)).toEqual(['done', 'current', 'upcoming', 'upcoming'])
+    expect(journeySteps('draft')[0]).toMatchObject({ stage: 'draft', state: 'current' })
+  })
+
+  it('keeps changes requested on the review stage with an outcome', () => {
+    expect(journeySteps('changes_requested')[2]).toEqual({
+      outcome: 'changes_requested',
+      stage: 'review',
+      state: 'current',
+    })
+  })
+
+  it('fails the stage where a request ended', () => {
+    expect(journeySteps('rejected')[3]).toMatchObject({ outcome: 'rejected', state: 'failed' })
+    expect(journeySteps('revoked')[3]).toMatchObject({ outcome: 'revoked', state: 'failed' })
+    expect(journeySteps('withdrawn')[2]).toMatchObject({ outcome: 'withdrawn', state: 'failed' })
+  })
+
+  it('completes every stage once approved', () => {
+    const steps = journeySteps('approved')
+    expect(steps.every(({ outcome, state }) => state === 'done' && outcome === null)).toBe(true)
+  })
+})
+
+describe('pdfDate', () => {
+  it('formats ISO dates like the PDF', () => {
+    expect(pdfDate('2026-01-10')).toBe('10.01.2026')
+    expect(pdfDate(null)).toBeNull()
+  })
+})
+
+describe('linkedInProfileUrl', () => {
+  it('builds the add to profile link without a company page', () => {
+    const url = new URL(
+      linkedInProfileUrl({
+        code: 'ABCD-EFGH-JKMN',
+        issuedAt: '2026-03-14T10:00:00.000Z',
+        name: 'GloRe Certificate',
+        organizationName: 'Associazione Joint',
+        url: 'https://example.test/verify/ABCD-EFGH-JKMN',
+      })
+    )
+    expect(url.origin + url.pathname).toBe('https://www.linkedin.com/profile/add')
+    expect(url.searchParams.get('startTask')).toBe('CERTIFICATION_NAME')
+    expect(url.searchParams.get('organizationName')).toBe('Associazione Joint')
+    expect(url.searchParams.get('issueYear')).toBe('2026')
+    expect(url.searchParams.get('issueMonth')).toBe('3')
+    expect(url.searchParams.get('certId')).toBe('ABCD-EFGH-JKMN')
+    expect(url.searchParams.has('organizationId')).toBe(false)
+  })
+})
+
+describe('normalizeCertificateCode', () => {
+  it('accepts a code typed in any case, with spaces or without dashes', () => {
+    expect(normalizeCertificateCode('abcd-efgh-jkmn')).toBe('ABCD-EFGH-JKMN')
+    expect(normalizeCertificateCode(' abcd efgh jkmn ')).toBe('ABCD-EFGH-JKMN')
+    expect(normalizeCertificateCode('ABCDEFGHJKMN')).toBe('ABCD-EFGH-JKMN')
+  })
+
+  it('maps the characters Crockford treats as look-alikes', () => {
+    expect(normalizeCertificateCode('o0il-1111-2222')).toBe('0011-1111-2222')
+  })
+
+  it('rejects codes that cannot exist', () => {
+    expect(normalizeCertificateCode('')).toBeNull()
+    expect(normalizeCertificateCode('ABCD-EFGH')).toBeNull()
+    expect(normalizeCertificateCode('ABCD-EFGH-JKMN-PQRS')).toBeNull()
+    expect(normalizeCertificateCode('ABCD-EFGH-JKMU')).toBeNull()
+    expect(normalizeCertificateCode("ABCD-EFGH-JK'; --")).toBeNull()
   })
 })

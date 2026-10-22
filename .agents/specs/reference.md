@@ -4,7 +4,7 @@
 
 Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond root) and `(dashboard)` for authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`; the `dashboard/` and `courses/` layouts add `CoursesProvider`.
 
-**Public:** `/login`, `/register` (submits org details and creates a `pending` org join request), `/invite/[token]`, `/join/[token]` (token pages, see `app.md`), `/[username]` (public certificate page), `/offline` (PWA fallback).
+**Public:** `/login`, `/register` (submits org details and creates a `pending` org join request), `/invite/[token]`, `/join/[token]` (token pages, see `app.md`), `/verify` and `/verify/[code]` (certificate verification), `/[username]` (opt-in public profile), `/offline` (PWA fallback).
 
 **Authenticated, pre-onboarding:** `/onboarding`, `/onboarding/error`.
 
@@ -12,15 +12,15 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 **Authenticated, dashboard layout, extra gate:**
 
-| Route                       | Gate        | Notes                                                                                                                 |
-| --------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------- |
-| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                                   |
-| `/admin/team`               | `isAdmin`   | Team management                                                                                                       |
-| `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                                     |
-| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep)    |
-| `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org) |
-| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, settings                                                            |
-| `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                                |
+| Route                       | Gate        | Notes                                                                                                                                                               |
+| --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                                                                                 |
+| `/admin/team`               | `isAdmin`   | Team management                                                                                                                                                     |
+| `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                                                                                   |
+| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep)                                                  |
+| `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org)                                               |
+| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, settings                                                                                                          |
+| `/certificates`             | non-editor  | List (tutors: queue tabs; org admins and representatives: pipeline); `/certificates/new`, `/certificates/[id]`, and `/certificates/[id]/review` share the same gate |
 
 `/` permanently redirects to `/dashboard` (`next.config.ts`).
 

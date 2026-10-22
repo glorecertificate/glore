@@ -43,6 +43,7 @@ export const session = {
   authUser: null as { id: string; role: string | null } | null,
   courses: [] as CourseStub[],
   organizationId: null as number | null,
+  rateLimited: false,
 }
 
 export const stubCourses = (courseIds: number[], userRating = 4): CourseStub[] =>
@@ -57,7 +58,11 @@ export const mocks = {
   cache: { cacheLife: vi.fn(), cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() },
   courses: { listCourses: () => Promise.resolve({ data: session.courses, error: null }) },
   notify: { notify: notifyMock },
-  rateLimit: { checkRateLimit: () => Promise.resolve({ limited: false, remaining: 100 }) },
+  rateLimit: {
+    checkRateLimit: () => Promise.resolve({ limited: false, remaining: 100 }),
+    clientAddress: () => Promise.resolve('127.0.0.1'),
+    isRateLimited: () => Promise.resolve(session.rateLimited),
+  },
   storage: { r2DeleteQuietly: deleteMock, r2Put: putMock },
   user: {
     getActiveOrgId: () => Promise.resolve(session.organizationId),
@@ -202,7 +207,7 @@ export const createFixture = async () => {
   const reload = async (id: number) => {
     const row = await db.query.certificates.findFirst({
       where: eq(schema.certificates.id, id),
-      with: { reviews: true, skills: true },
+      with: { reviews: true, skills: { orderBy: schema.certificateSkills.sortOrder } },
     })
     if (!row) throw new Error('Certificate disappeared')
     return row
@@ -244,6 +249,7 @@ export const createFixture = async () => {
     session.authUser = null
     session.courses = stubCourses(courseIds)
     session.organizationId = organizationId
+    session.rateLimited = false
     notifyMock.mockClear()
     putMock.mockClear()
     putMock.mockImplementation((key: string) => Promise.resolve(`https://r2.test/${key}`))

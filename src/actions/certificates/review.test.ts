@@ -557,6 +557,55 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
     })
   })
 
+  describe('preview', () => {
+    it('renders the pdf of the pending edits without changing anything', async () => {
+      const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
+      fixture.as('tutorA')
+      const { data, error } = await review.previewCertificatePdf(cert.id, {
+        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 5, statement: 'Led the desk' })),
+        tasks: ['Welcomed new volunteers'],
+      })
+
+      expect(error).toBeNull()
+      expect(
+        Buffer.from(data?.pdf ?? '', 'base64')
+          .subarray(0, 4)
+          .toString()
+      ).toBe('%PDF')
+      const saved = await fixture.reload(cert.id)
+      expect(saved).toMatchObject({ code: null, documentUrl: null, snapshot: null, status: 'in_review' })
+      expect(saved.reviews).toHaveLength(0)
+      expect(await fixture.eventsFor(cert.id)).toEqual([])
+      expect(putMock).not.toHaveBeenCalled()
+      expect(notifyMock).not.toHaveBeenCalled()
+    })
+
+    it('applies the same rules as an approval', async () => {
+      const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
+      fixture.as('tutorA')
+      const low = await review.previewCertificatePdf(cert.id, {
+        skills: fixture.courseIds.slice(0, 3).map(courseId => ({ courseId, level: 1 })),
+      })
+      expect(low.error?.code).toBe('INVALID_INPUT')
+      const short = await review.previewCertificatePdf(cert.id, { activityDuration: 10, activityEndDate: '2026-01-20' })
+      expect(short.error?.code).toBe('ACTIVITY_TOO_SHORT')
+    })
+
+    it('is limited to the assigned tutor and to requests waiting for a review', async () => {
+      const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
+      for (const key of ['tutorB', 'author', 'manager'] as const) {
+        fixture.as(key)
+        expect((await review.previewCertificatePdf(cert.id, {})).error?.code).toBe('FORBIDDEN')
+      }
+      fixture.as('outsider')
+      expect((await review.previewCertificatePdf(cert.id, {})).error?.code).toBe('NOT_FOUND')
+
+      const approved = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'approved', user: 'otherAuthor' })
+      fixture.as('tutorA')
+      expect((await review.previewCertificatePdf(approved.id, {})).error?.code).toBe('INVALID_STATE')
+    })
+  })
+
   describe('revoke', () => {
     const approved = async (user: 'author' | 'otherAuthor' = 'author', issuedAt = '2026-07-01 10:00:00') => {
       const cert = await fixture.insertCertificate({

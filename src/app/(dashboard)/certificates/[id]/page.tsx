@@ -1,10 +1,12 @@
 import { notFound } from 'next/navigation'
 
-import { findCertificate } from '@/actions/certificates/queries'
+import { findCertificate, findCertificateActivity } from '@/actions/certificates/queries'
 import { listOrgTutors } from '@/actions/organizations/queries'
+import { getCurrentUser } from '@/actions/user'
 import { CertificateDetail } from '@/components/features/certificates/certificate-detail'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
+import { VERIFY_ROOT } from '@/lib/constants'
 
 const CertificatePageContent = async ({ params }: { params: PageProps<'/certificates/[id]'>['params'] }) => {
   const { id } = await params
@@ -14,9 +16,27 @@ const CertificatePageContent = async ({ params }: { params: PageProps<'/certific
   const { data: certificate } = await findCertificate(certificateId)
   if (!certificate) notFound()
 
-  const { data: tutors } = await listOrgTutors(certificate.organizationId)
+  const [user, { data: tutors }, { data: activity }] = await Promise.all([
+    getCurrentUser(),
+    listOrgTutors(certificate.organizationId),
+    findCertificateActivity(certificate.id),
+  ])
+  const canManage =
+    user.isAdmin ||
+    user.organizations.some(
+      ({ id: orgId, role }) => orgId === certificate.organizationId && (role === 'admin' || role === 'representative')
+    )
 
-  return <CertificateDetail certificate={certificate} tutors={tutors ?? undefined} />
+  return (
+    <CertificateDetail
+      canManage={canManage}
+      certificate={certificate}
+      events={activity?.events ?? []}
+      notes={activity?.review ?? null}
+      tutors={tutors ?? undefined}
+      verifyUrl={certificate.code ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}` : null}
+    />
+  )
 }
 
 const CertificatePage = ({ params }: PageProps<'/certificates/[id]'>) => (

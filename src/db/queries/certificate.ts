@@ -5,6 +5,7 @@ import {
   type certificates,
   type courses,
   type organizationProfiles,
+  type organizationRatings,
   type organizations,
   type users,
 } from '@/db/schema'
@@ -14,6 +15,7 @@ type CertificateRow = InferSelectModel<typeof certificates>
 type OrganizationRow = Pick<InferSelectModel<typeof organizations>, 'id' | 'name' | 'city'> & {
   profile: Pick<InferSelectModel<typeof organizationProfiles>, 'avatarUrl'> | null
 }
+type RatingRow = InferSelectModel<typeof organizationRatings>
 type CourseRow = Pick<InferSelectModel<typeof courses>, 'id' | 'slug' | 'title'>
 type CertificateSkillRow = Omit<InferSelectModel<typeof certificateSkills>, 'courseId'> & { course: CourseRow }
 type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName' | 'lastName'> &
@@ -29,6 +31,7 @@ export const OPEN_CERTIFICATE_STATUSES = [
 
 interface CertificateWithRelations extends CertificateRow {
   organization: OrganizationRow
+  rating?: RatingRow | null
   skills: CertificateSkillRow[]
   user?: CertificateUserRow | null
   reviewer?: CertificateUserRow | null
@@ -38,6 +41,7 @@ export type Certificate = ReturnType<typeof parseCertificate>
 
 export const parseCertificate = (cert: CertificateWithRelations) => ({
   ...cert,
+  rating: cert.rating ?? null,
   organization: ((organization: OrganizationRow) => {
     const { profile, ...rest } = organization
     return {

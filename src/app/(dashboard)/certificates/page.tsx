@@ -1,20 +1,31 @@
 import {
   getCertificateEligibility,
+  listOrganizationCertificates,
   listTutorCertificates,
   listUnassignedOrgCertificates,
   listUserCertificates,
 } from '@/actions/certificates/queries'
-import { getCurrentUser } from '@/actions/user'
+import { listOrgTutors } from '@/actions/organizations/queries'
+import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { CertificatesContent } from '@/components/features/certificates/certificates-content'
+import { OrganizationCertificates } from '@/components/features/certificates/organization-certificates'
 import { TutorCertificatesContent } from '@/components/features/certificates/tutor-certificates-content'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
 
 const CertificatesPageContent = async () => {
-  const user = await getCurrentUser()
-  const isTutor = user.organizations.some(({ role }) => role === 'tutor')
+  const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  const role = user.organizations.find(({ id }) => id === activeOrgId)?.role
 
-  if (isTutor) {
+  if (activeOrgId && (role === 'admin' || role === 'representative')) {
+    const [{ data: certificates }, { data: tutors }] = await Promise.all([
+      listOrganizationCertificates(activeOrgId),
+      listOrgTutors(activeOrgId),
+    ])
+    return <OrganizationCertificates certificates={certificates ?? []} tutors={tutors ?? []} />
+  }
+
+  if (role === 'tutor') {
     const [{ data: assigned }, { data: unassigned }] = await Promise.all([
       listTutorCertificates(),
       listUnassignedOrgCertificates(),

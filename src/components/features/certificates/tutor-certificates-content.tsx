@@ -1,135 +1,128 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-
-import { ClipboardCheckIcon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
-import { selfAssignCertificate } from '@/actions/certificates/assignment'
-import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
-import { useI18n } from '@/components/providers/i18n'
-import { Button } from '@/components/ui/button'
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { Link } from '@/components/ui/link'
+import { CertificateQueue, certificateAge } from '@/components/features/certificates/certificate-queue'
+import {
+  TUTOR_QUEUE_AGES,
+  TUTOR_QUEUE_STATUSES,
+  TUTOR_QUEUE_TABS,
+  type TutorQueueAge,
+  type TutorQueueTab,
+} from '@/components/features/certificates/params'
+import { ageTone } from '@/components/features/certificates/rules'
+import { useTutorQueueAge, useTutorQueueStatus, useTutorQueueTab } from '@/components/features/certificates/use-params'
+import { SearchInput } from '@/components/ui/search'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type Certificate } from '@/db/queries/certificate'
+import { useSearch } from '@/hooks/use-search'
 import { fullName } from '@/lib/utils'
 
-interface TutorCertificatesContentProps {
+const ALL = 'all'
+
+const STATUS_LABEL_KEYS = {
+  approved: 'statusApproved',
+  changes_requested: 'statusChangesRequested',
+  in_review: 'statusInReview',
+  rejected: 'statusRejected',
+  revoked: 'statusRevoked',
+  submitted: 'statusSubmitted',
+  withdrawn: 'statusWithdrawn',
+} as const
+
+export const TutorCertificatesContent = ({
+  assigned,
+  unassigned,
+}: {
   assigned: Certificate[]
   unassigned: Certificate[]
-}
-
-export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertificatesContentProps) => {
+}) => {
   const t = useTranslations('Certificates')
-  const { refresh } = useRouter()
-  const { locale } = useI18n()
-  const [isPending, startTransition] = useTransition()
+  const { setTab, tab } = useTutorQueueTab()
+  const { setStatus, status } = useTutorQueueStatus()
+  const { age, setAge } = useTutorQueueAge()
+  const { matchSearch } = useSearch()
 
-  const formatter = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' })
+  const open = assigned.filter(({ isOpen }) => isOpen)
+  const completed = assigned.filter(({ isOpen }) => !isOpen)
+  const sources = { assigned: open, completed, pool: unassigned } satisfies Record<TutorQueueTab, Certificate[]>
+  const counts = {
+    assigned: open.length,
+    completed: completed.length,
+    pool: unassigned.length,
+  } satisfies Record<TutorQueueTab, number>
 
-  const handleSelfAssign = (certId: number) => {
-    startTransition(async () => {
-      const { error } = await selfAssignCertificate(certId)
-      if (error) {
-        toast.error(t('selfAssignError'))
-        return
-      }
-      toast.success(t('selfAssignSuccess'))
-      refresh()
+  const filter = (tabKey: TutorQueueTab) =>
+    sources[tabKey].filter(certificate => {
+      if (!matchSearch([certificate.user ? fullName(certificate.user) : null, certificate.user?.email])) return false
+      if (tabKey !== 'pool' && status && certificate.status !== status) return false
+      if (!age || !certificate.isPending) return !age
+      const tone = ageTone(certificateAge(certificate))
+      return age === 'overdue' ? tone === 'overdue' : tone !== 'fresh'
     })
-  }
 
-  if (assigned.length === 0 && unassigned.length === 0) {
-    return (
-      <Empty className="flex-1 py-20">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <ClipboardCheckIcon />
-          </EmptyMedia>
-          <EmptyTitle>{t('noAssignedCertificatesTitle')}</EmptyTitle>
-          <EmptyDescription>{t('noAssignedCertificatesMessage')}</EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-    )
-  }
+  const statusOptions: readonly string[] = TUTOR_QUEUE_STATUSES[tab]
 
-  return (
-    <div className="flex flex-col gap-8 py-6">
-      {assigned.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {assigned.map(cert => (
-              <Link href={`/certificates/${cert.id}`} key={cert.id}>
-                <Card className="transition-shadow hover:shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {cert.user ? fullName(cert.user) : t('unknownVolunteer')}
-                    </CardTitle>
-                    <CardAction>
-                      <CertificateStatusBadge status={cert.status} />
-                    </CardAction>
-                  </CardHeader>
-                  <CardContent className="flex flex-col gap-1">
-                    <p className="text-sm text-muted-foreground">{cert.organization.name}</p>
-                    {cert.updatedAt && (
-                      <p className="text-xs text-muted-foreground">
-                        {t('updatedOn')}
-                        {': '}
-                        {formatter.format(new Date(cert.updatedAt))}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </Link>
+  const filters = (
+    <div className="flex flex-wrap items-center gap-2">
+      <SearchInput aria-label={t('queue.search')} placeholder={t('queue.search')} />
+      {statusOptions.length > 0 && (
+        <Select onValueChange={value => setStatus(value === ALL ? null : value)} value={status ?? ALL}>
+          <SelectTrigger aria-label={t('queue.status')} className="w-44">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>{t('queue.allStatuses')}</SelectItem>
+            {statusOptions.map(option => (
+              <SelectItem key={option} value={option}>
+                {t(STATUS_LABEL_KEYS[option as keyof typeof STATUS_LABEL_KEYS])}
+              </SelectItem>
             ))}
-          </div>
-        </div>
+          </SelectContent>
+        </Select>
       )}
-
-      {unassigned.length > 0 && (
-        <div className="flex flex-col gap-4">
-          <div className="space-y-1">
-            <h3 className="text-sm font-semibold">{t('unassignedCertificatesTitle')}</h3>
-            <p className="text-xs text-muted-foreground">{t('unassignedCertificatesMessage')}</p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {unassigned.map(cert => (
-              <Card key={cert.id}>
-                <CardHeader>
-                  <CardTitle className="text-base">{cert.user ? fullName(cert.user) : t('unknownVolunteer')}</CardTitle>
-                  <CardAction>
-                    <CertificateStatusBadge status={cert.status} />
-                  </CardAction>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-3">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-sm text-muted-foreground">{cert.organization.name}</p>
-                    {cert.createdAt && (
-                      <p className="text-xs text-muted-foreground">
-                        {t('submittedOn')}
-                        {': '}
-                        {formatter.format(new Date(cert.createdAt))}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    disabled={isPending}
-                    icon={UserPlusIcon}
-                    onClick={() => handleSelfAssign(cert.id)}
-                    size="sm"
-                    variant="outline"
-                  >
-                    {t('selfAssign')}
-                  </Button>
-                </CardContent>
-              </Card>
+      {tab !== 'completed' && (
+        <Select onValueChange={value => setAge(value === ALL ? null : (value as TutorQueueAge))} value={age ?? ALL}>
+          <SelectTrigger aria-label={t('queue.age')} className="w-44">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>{t('queue.allAges')}</SelectItem>
+            {TUTOR_QUEUE_AGES.map(option => (
+              <SelectItem key={option} value={option}>
+                {t(`queue.age_${option}`)}
+              </SelectItem>
             ))}
-          </div>
-        </div>
+          </SelectContent>
+        </Select>
       )}
     </div>
+  )
+
+  return (
+    <Tabs
+      className="gap-4 py-6"
+      onValueChange={value => {
+        setTab(value as TutorQueueTab)
+        setStatus(null)
+        setAge(null)
+      }}
+      value={tab}
+    >
+      <TabsList>
+        {TUTOR_QUEUE_TABS.map(key => (
+          <TabsTrigger key={key} value={key}>
+            {t(`queue.tabs.${key}`)}
+            <span className="ml-1.5 text-xs text-muted-foreground tabular-nums">{counts[key]}</span>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {TUTOR_QUEUE_TABS.map(key => (
+        <TabsContent key={key} value={key}>
+          <CertificateQueue filters={filters} rows={filter(key)} tab={key} />
+        </TabsContent>
+      ))}
+    </Tabs>
   )
 }

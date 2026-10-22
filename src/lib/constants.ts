@@ -10,6 +10,7 @@ export const REGISTER_ROOT = '/register'
 export const INVITE_ROOT = '/invite'
 export const JOIN_LINK_ROOT = '/join'
 export const SETTINGS_ROOT = '/settings'
+export const VERIFY_ROOT = '/verify'
 export const DASHBOARD_ROOTS = [
   '/about',
   '/admin',

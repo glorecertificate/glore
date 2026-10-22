@@ -1,24 +1,25 @@
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { Suspense } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
+import { findLegacyCertificateCode } from '@/actions/certificates/public'
 import { findPublicCertificate } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { VERIFY_ROOT } from '@/lib/constants'
 import { fullName } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
-export const generateMetadata = async ({ params, searchParams }: PageProps<'/[username]'>) => {
-  const [{ username }, { v: handle }, t] = await Promise.all([params, searchParams, getTranslations('Certificates')])
-  const resolvedHandle = typeof handle === 'string' ? handle : handle?.[0]
-  const { data: cert } = await findPublicCertificate(username, resolvedHandle)
+export const generateMetadata = async ({ params }: PageProps<'/[username]'>) => {
+  const { username } = await params
+  const [{ data: cert }, t] = await Promise.all([findPublicCertificate(username), getTranslations('Certificates')])
 
-  if (!cert) return { title: t('publicNotFound') }
+  if (!cert) return { robots: { follow: false, index: false }, title: t('publicNotFound') }
 
   const volunteerName = cert.user ? fullName(cert.user) : username
   const description = t('publicOgDescription', { name: volunteerName, org: cert.organization.name })
-  const url = resolvedHandle ? `/${username}?v=${resolvedHandle}` : `/${username}`
+  const url = `/${username}`
 
   return {
     title: volunteerName,
@@ -40,8 +41,15 @@ export const generateMetadata = async ({ params, searchParams }: PageProps<'/[us
 
 const UserPageContent = async ({ params, searchParams }: PageProps<'/[username]'>) => {
   const [{ username }, { v: handle }] = await Promise.all([params, searchParams])
-  // eslint-disable-next-line react-doctor/server-sequential-independent-await
-  const { data } = await findPublicCertificate(username, typeof handle === 'string' ? handle : handle?.[0])
+  const legacyHandle = typeof handle === 'string' ? handle : handle?.[0]
+
+  if (legacyHandle) {
+    const code = await findLegacyCertificateCode(username, legacyHandle)
+    if (!code) notFound()
+    permanentRedirect(`${VERIFY_ROOT}/${code}`)
+  }
+
+  const { data } = await findPublicCertificate(username)
   if (!data) notFound()
   return <PublicCertificateView certificate={data} username={username} />
 }

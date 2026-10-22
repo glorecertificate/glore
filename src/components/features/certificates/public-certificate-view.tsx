@@ -10,7 +10,7 @@ import { Logo } from '@/components/ui/logo'
 import { QrCode } from '@/components/ui/qr-code'
 import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
-import { AUTH_ROOT, SKILL_LEVELS } from '@/lib/constants'
+import { AUTH_ROOT, SKILL_LEVELS, VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
 import appConfig from '~/config/metadata.json'
@@ -36,7 +36,9 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
   const volunteerName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
-  const verificationUrl = `${appConfig.url}/${username}?v=${certificate.handle}`
+  const verificationUrl = certificate.code
+    ? `${process.env.APP_URL}${VERIFY_ROOT}/${certificate.code}`
+    : `${process.env.APP_URL}/${username}`
 
   return (
     <div className="min-h-screen bg-background">

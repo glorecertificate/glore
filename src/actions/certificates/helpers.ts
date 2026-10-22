@@ -25,7 +25,7 @@ const certificateUserColumns = {
   email: true,
 } as const
 
-export const certificateWith = {
+const certificateWith = {
   organization: {
     columns: { id: true, name: true, city: true },
     with: { profile: { columns: { avatarUrl: true } } },
@@ -35,6 +35,12 @@ export const certificateWith = {
       course: { columns: { id: true, slug: true, title: true } },
     },
   },
+} as const
+
+export const certificateOwnerWith = {
+  ...certificateWith,
+  rating: true,
+  user: { columns: certificateUserColumns },
 } as const
 
 export const certificatePublicWith = {

@@ -332,6 +332,33 @@ describe.skipIf(!isLocalDatabase)('certificate requests', () => {
     })
   })
 
+  describe('feature', () => {
+    it('moves the featured flag to another approved certificate of the author', async () => {
+      const first = await fixture.insertCertificate({ code: 'LANE-A-FEAT-0001', status: 'approved' })
+      const second = await fixture.insertCertificate({ code: 'LANE-A-FEAT-0002', status: 'approved' })
+      await fixture.db
+        .update(fixture.schema.certificates)
+        .set({ isDefault: true })
+        .where(eq(fixture.schema.certificates.id, first.id))
+
+      const { error } = await requests.featureCertificate(second.id)
+
+      expect(error).toBeNull()
+      expect((await fixture.reload(first.id)).isDefault).toBe(false)
+      expect((await fixture.reload(second.id)).isDefault).toBe(true)
+    })
+
+    it('rejects unapproved and foreign certificates', async () => {
+      const open = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'submitted' })
+      expect((await requests.featureCertificate(open.id)).error?.code).toBe('INVALID_STATE')
+
+      const approved = await fixture.insertCertificate({ code: 'LANE-A-FEAT-0003', status: 'approved' })
+      fixture.as('otherAuthor')
+      expect((await requests.featureCertificate(approved.id)).error?.code).toBe('NOT_FOUND')
+      expect((await fixture.reload(approved.id)).isDefault).toBe(false)
+    })
+  })
+
   describe('withdraw', () => {
     it.each(['submitted', 'in_review', 'changes_requested'] as const)('withdraws a %s request', async status => {
       const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status })

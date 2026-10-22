@@ -36,6 +36,7 @@ import { db, transaction } from '@/db/client'
 import {
   CertificateError,
   createCertificateDraft,
+  recordFeaturedCertificate,
   removeCertificateDraft,
   submitCertificateRequest,
   updateCertificateDraft,
@@ -253,4 +254,14 @@ export const withdrawCertificate = async (id: number) =>
     )
     expireCertificateCaches(row, row.reviewerId)
     return row
+  })
+
+export const featureCertificate = async (id: number) =>
+  await certificateAction(async () => {
+    const authUser = await requireRateLimitedUser('feature', 30)
+    const certificateId = parseId(id)
+
+    const row = await transaction(tx => recordFeaturedCertificate(tx, { id: certificateId, userId: authUser.id }))
+    expireCertificateCaches({ organizationId: row.organizationId, userId: authUser.id })
+    return { id: row.id }
   })

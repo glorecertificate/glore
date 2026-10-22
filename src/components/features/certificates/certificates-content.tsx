@@ -1,10 +1,12 @@
 'use client'
 
-import { AwardIcon, BookOpenIcon, GraduationCapIcon, PlusIcon, SearchXIcon } from 'lucide-react'
+import { AwardIcon, PlusIcon, SearchXIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { type CertificateEligibility } from '@/actions/certificates/queries'
 import { CertificateCard } from '@/components/features/certificates/certificate-card'
+import { EligibilityPanel } from '@/components/features/certificates/eligibility-panel'
+import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
 import { Banner } from '@/components/ui/banner'
@@ -26,15 +28,19 @@ const STATUS_LABEL_KEYS: Record<CertListStatus, string> = {
   changes_requested: 'statusChangesRequested',
   draft: 'statusDraft',
   in_review: 'statusInReview',
+  rejected: 'statusRejected',
+  revoked: 'statusRevoked',
   submitted: 'statusSubmitted',
+  withdrawn: 'statusWithdrawn',
 }
 
 export const CertificatesContent = ({ certificates, eligibility }: CertificatesContentProps) => {
   const t = useTranslations('Certificates')
+  const tDetail = useTranslations('Certificates.detail')
   const { setStatus, status } = useCertListStatus()
   const { setSort, sort } = useCertListSort()
 
-  const { eligible, completedSkillCount, minSkills, minRating, hasLowRatings } = eligibility
+  const { eligible } = eligibility
   const hasCertificates = certificates.length > 0
 
   const displayCertificates = (() => {
@@ -46,32 +52,14 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
     })
   })()
 
-  if (!eligible && !hasCertificates) {
-    const titleKey = completedSkillCount < minSkills ? 'missingCoursesTitle' : 'invalidCoursesTitle'
-    const messageKey = completedSkillCount < minSkills ? 'missingCoursesMessage' : 'invalidCoursesMessage'
-    const messageParams = completedSkillCount < minSkills ? { count: minSkills } : { rating: minRating }
+  if (!eligible && !hasCertificates) return <EligibilityPanel eligibility={eligibility} />
 
-    return (
-      <Empty className="flex-1 py-20">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">{hasLowRatings ? <GraduationCapIcon /> : <BookOpenIcon />}</EmptyMedia>
-          <EmptyTitle>{t(titleKey)}</EmptyTitle>
-          <EmptyDescription>
-            {t(messageKey, messageParams as unknown as Record<string, string | number>)}
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <Button asChild variant="outline">
-            <Link href="/courses">{t('goToCourses')}</Link>
-          </Button>
-        </EmptyContent>
-      </Empty>
-    )
-  }
+  const featured = certificates.find(({ isApproved, isDefault }) => isApproved && isDefault)
+  const hasOpenRequest = certificates.some(({ isOpen }) => isOpen)
 
   return (
     <div className="flex flex-col gap-8 py-6">
-      {eligible && (
+      {eligible && !hasOpenRequest && (
         <Banner className="flex-wrap items-center justify-between" variant="info">
           <div className="space-y-1">
             <p className="font-semibold text-brand-text">{t('requestCertificateTitle')}</p>
@@ -81,6 +69,17 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             <Link href="/certificates/new">{t('requestCertificate')}</Link>
           </Button>
         </Banner>
+      )}
+
+      {featured && (
+        <section aria-labelledby="featured-certificate" className="flex flex-col gap-3">
+          <h2 className="text-sm font-semibold" id="featured-certificate">
+            {tDetail('featuredTitle')}
+          </h2>
+          <Link href={`/certificates/${featured.id}`}>
+            <FeaturedCredentialCard certificate={featured} />
+          </Link>
+        </section>
       )}
 
       {hasCertificates && (

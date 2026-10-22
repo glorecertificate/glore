@@ -1,302 +1,108 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
-
-import {
-  CalendarIcon,
-  ClipboardCheckIcon,
-  DownloadIcon,
-  MapPinIcon,
-  MessageSquareIcon,
-  PartyPopperIcon,
-  PencilIcon,
-  TimerIcon,
-  UserCheckIcon,
-  UserIcon,
-} from 'lucide-react'
+import { Building2Icon, StarIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
-import { assignCertificateTutor, unassignCertificate } from '@/actions/certificates/assignment'
-import { claimCertificateReview } from '@/actions/certificates/review'
+import { type CertificateActivityEvent, type CertificateReviewNotes } from '@/actions/certificates/queries'
+import { CertificateActions } from '@/components/features/certificates/certificate-actions'
+import { CertificateCelebration } from '@/components/features/certificates/certificate-celebration'
+import { CertificateFeedback } from '@/components/features/certificates/certificate-feedback'
+import { CertificateJourney } from '@/components/features/certificates/certificate-journey'
+import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
+import { CertificateReviewer, type OrgTutor } from '@/components/features/certificates/certificate-reviewer'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
-import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
-import { ResubmitForm } from '@/components/features/certificates/resubmit/resubmit-form'
-import { ReviewForm } from '@/components/features/certificates/review/review-form'
-import { useI18n } from '@/components/providers/i18n'
+import { CertificateSummary } from '@/components/features/certificates/certificate-summary'
+import { CertificateTimeline } from '@/components/features/certificates/certificate-timeline'
 import { useSession } from '@/components/providers/session'
-import { Banner } from '@/components/ui/banner'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Timeline } from '@/components/ui/timeline'
-import { TimelineItem } from '@/components/ui/timeline-item'
+import { Image } from '@/components/ui/image'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
-interface OrgTutor {
-  id: string
-  firstName: string | null
-  lastName: string | null
-}
-
-interface CertificateDetailProps {
+export const CertificateDetail = ({
+  canManage,
+  certificate,
+  events,
+  notes,
+  tutors,
+  verifyUrl,
+}: {
+  canManage: boolean
   certificate: Certificate
+  events: CertificateActivityEvent[]
+  notes: CertificateReviewNotes | null
   tutors?: OrgTutor[]
-}
-
-export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProps) => {
+  verifyUrl: string | null
+}) => {
   const t = useTranslations('Certificates')
-  const { refresh } = useRouter()
-  const { locale, localize } = useI18n()
+  const tDetail = useTranslations('Certificates.detail')
   const { user } = useSession()
-  const [reviewOpen, setReviewOpen] = useState(false)
-  const [resubmitOpen, setResubmitOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-
-  const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
-  const start = dateFormatter.format(new Date(certificate.activityStartDate))
-  const end = dateFormatter.format(new Date(certificate.activityEndDate))
-
-  const isTutorReviewer = user.isTutor && certificate.reviewerId === user.id
-  const canReview = isTutorReviewer && (certificate.isSubmitted || certificate.isInReview)
   const isOwner = certificate.userId === user.id
-  const canResubmit = isOwner && certificate.isChangesRequested
-  const canAssignTutor = Array.isArray(tutors) && certificate.isOpen
-  const canReleaseSelf = isTutorReviewer && certificate.isOpen && !canAssignTutor
-
-  const handleAssignTutor = (value: string) => {
-    startTransition(async () => {
-      const { error } = await (value
-        ? assignCertificateTutor(certificate.id, value)
-        : unassignCertificate(certificate.id))
-      if (error) {
-        toast.error(t('assignTutorError'))
-        return
-      }
-      toast.success(t('assignTutorSuccess'))
-      refresh()
-    })
-  }
-
-  const handleReleaseSelf = () => {
-    startTransition(async () => {
-      const { error } = await unassignCertificate(certificate.id)
-      if (error) {
-        toast.error(t('assignTutorError'))
-        return
-      }
-      toast.success(t('selfReleaseSuccess'))
-      refresh()
-    })
-  }
 
   return (
-    <>
-      <div className="flex flex-col gap-6 py-6">
-        {certificate.isApproved && <FeaturedCredentialCard certificate={certificate} />}
+    <div className="flex flex-col gap-6 py-6">
+      {isOwner && certificate.isApproved && <CertificateCelebration id={certificate.id} />}
 
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold">{certificate.organization.name}</h2>
-            {certificate.user && (
-              <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <UserIcon className="size-3.5 shrink-0" />
-                {fullName(certificate.user)}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            <CertificateStatusBadge status={certificate.status} />
-            {(certificate.isApproved || canReview) && (
-              <Button asChild icon={DownloadIcon} size="sm" variant="outline">
-                <a href={`/api/v1/certificates/${certificate.id}/pdf`} rel="noopener noreferrer" target="_blank">
-                  {certificate.isApproved ? t('download') : t('previewPdf')}
-                </a>
-              </Button>
-            )}
-            {canResubmit && (
-              <Button icon={PencilIcon} onClick={() => setResubmitOpen(true)} size="sm" variant="outline">
-                {t('resubmitButton')}
-              </Button>
-            )}
-            {canReview && (
-              <Button
-                icon={ClipboardCheckIcon}
-                onClick={() => {
-                  if (certificate.isSubmitted) void claimCertificateReview(certificate.id)
-                  setReviewOpen(true)
-                }}
-                size="sm"
-                variant="brand"
-              >
-                {t('openReview')}
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between gap-3 rounded-lg border px-4 py-2.5">
-          <div className="flex items-center gap-2 text-sm">
-            <UserCheckIcon className="size-4 shrink-0 text-muted-foreground" />
-            <span className="text-muted-foreground">
-              {t('reviewer')}
-              {':'}
-            </span>
-            <span className="font-medium">
-              {certificate.reviewer ? fullName(certificate.reviewer) : t('reviewerUnassigned')}
-            </span>
-          </div>
-          {canAssignTutor &&
-            (tutors!.length === 0 ? (
-              <p className="text-xs text-muted-foreground">{t('noTutorsAvailable')}</p>
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-card">
+            {certificate.organization.avatarUrl ? (
+              <Image
+                alt=""
+                className="size-full object-cover"
+                height={48}
+                src={certificate.organization.avatarUrl}
+                unoptimized
+                width={48}
+              />
             ) : (
-              <Select disabled={isPending} onValueChange={handleAssignTutor} value={certificate.reviewerId ?? ''}>
-                <SelectTrigger className="h-8 w-48">
-                  <SelectValue placeholder={t('reviewerUnassigned')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">{t('reviewerUnassigned')}</SelectItem>
-                  {tutors!.map(tutor => (
-                    <SelectItem key={tutor.id} value={tutor.id}>
-                      {fullName(tutor)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ))}
-          {canReleaseSelf && (
-            <Button disabled={isPending} onClick={handleReleaseSelf} size="sm" variant="ghost">
-              {t('selfRelease')}
-            </Button>
-          )}
-        </div>
-
-        {certificate.isApproved && isOwner && (
-          <Banner className="flex-col sm:flex-row sm:items-center sm:justify-between" variant="success">
-            <div className="flex items-center gap-2 text-sm font-medium text-success">
-              <PartyPopperIcon className="size-4 shrink-0" />
-              {t('approvedBanner')}
-            </div>
-            <CertificateShare certificate={certificate} />
-          </Banner>
-        )}
-
-        {!certificate.isApproved && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CalendarIcon className="size-4" />
-                  {t('activityStartDate')} {'– '}
-                  {t('activityEndDate')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">
-                  {start} {'– '}
-                  {end}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPinIcon className="size-4" />
-                  {t('activityLocation')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">{certificate.activityLocation}</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <TimerIcon className="size-4" />
-                  {t('activityDuration')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">
-                  {certificate.activityDuration}
-                  {'h'}
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-1">
-                  {certificate.skills.map(s => (
-                    <li className="text-sm" key={s.id}>
-                      {s.course.title ? localize(s.course.title) : s.course.slug}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+              <Building2Icon className="size-5 text-brand-text" />
+            )}
           </div>
-        )}
+          <div className="min-w-0 space-y-1">
+            <h2 className="text-xl font-semibold">{certificate.organization.name}</h2>
+            {!isOwner && certificate.user && (
+              <p className="text-sm text-muted-foreground">{fullName(certificate.user)}</p>
+            )}
+            <div className="flex flex-wrap items-center gap-2">
+              <CertificateStatusBadge status={certificate.status} />
+              {certificate.isApproved && certificate.isDefault && (
+                <Badge className="gap-1" variant="outline">
+                  <StarIcon className="size-3" />
+                  {tDetail('featuredBadge')}
+                </Badge>
+              )}
+            </div>
+            <p className="text-sm text-muted-foreground">{tDetail(`statusMessage.${certificate.status}`)}</p>
+          </div>
+        </div>
+        <CertificateActions canManage={canManage} certificate={certificate} />
+      </header>
 
-        <Timeline aria-label={t('timeline')}>
-          <TimelineItem
-            dateTime={new Date(certificate.createdAt).toISOString()}
-            time={dateFormatter.format(new Date(certificate.createdAt))}
-          >
-            {t('requestCreated')}
-          </TimelineItem>
-          {certificate.submittedAt && (
-            <TimelineItem
-              dateTime={new Date(certificate.submittedAt).toISOString()}
-              time={dateFormatter.format(new Date(certificate.submittedAt))}
-            >
-              {t('statusSubmitted')}
-            </TimelineItem>
-          )}
-          {certificate.issuedAt && (
-            <TimelineItem
-              dateTime={new Date(certificate.issuedAt).toISOString()}
-              time={dateFormatter.format(new Date(certificate.issuedAt))}
-            >
-              {t('statusApproved')}
-            </TimelineItem>
-          )}
-        </Timeline>
+      <CertificateJourney status={certificate.status} />
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">{t('activityDescription')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm whitespace-pre-wrap">{certificate.activityDescription}</p>
-          </CardContent>
-        </Card>
+      {isOwner && verifyUrl && <CertificateShare certificate={certificate} url={verifyUrl} />}
 
-        {certificate.isChangesRequested && certificate.reviewerComment && (
-          <Card className="border-destructive/30 bg-destructive/5">
+      <CertificateFeedback certificate={certificate} notes={notes} />
+
+      {!certificate.isDraft && <CertificateReviewer certificate={certificate} tutors={tutors} />}
+
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+        <CertificatePreview certificate={certificate} className="lg:sticky lg:top-20" />
+        <div className="flex flex-col gap-6">
+          <CertificateSummary certificate={certificate} />
+          <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm text-destructive">
-                <MessageSquareIcon className="size-4" />
-                {t('reviewerCommentLabel')}
-              </CardTitle>
+              <CardTitle className="text-sm text-muted-foreground">{t('timeline')}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm whitespace-pre-wrap">{certificate.reviewerComment}</p>
+              <CertificateTimeline certificate={certificate} events={events} />
             </CardContent>
           </Card>
-        )}
+        </div>
       </div>
-
-      {canReview && <ReviewForm certificate={certificate} onOpenChange={setReviewOpen} open={reviewOpen} />}
-      {canResubmit && <ResubmitForm certificate={certificate} onOpenChange={setResubmitOpen} open={resubmitOpen} />}
-    </>
+    </div>
   )
 }

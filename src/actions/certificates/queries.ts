@@ -5,16 +5,25 @@ import 'server-only'
 import { cacheLife, cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-import { and, eq, isNull, ne } from 'drizzle-orm'
+import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
-import { certificatePublicWith, certificateWith, certificateWithUsers } from '@/actions/certificates/helpers'
+import { certificateOwnerWith, certificatePublicWith, certificateWithUsers } from '@/actions/certificates/helpers'
 import { listCourses } from '@/actions/courses/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { type Certificate, parseCertificate } from '@/db/queries/certificate'
-import { certificates, users } from '@/db/schema'
+import {
+  activityEvents,
+  assessments,
+  certificateReviews,
+  certificates,
+  lessons,
+  userAssessments,
+  userCourses,
+  users,
+} from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 import appConfig from '~/config/app.json'
 
@@ -26,7 +35,7 @@ const fetchUserCertificates = cache(async (userId: string) => {
   return await safeQuery(async () => {
     const result = await db.query.certificates.findMany({
       where: eq(certificates.userId, userId),
-      with: certificateWith,
+      with: certificateOwnerWith,
       orderBy: (certs, { desc }) => [desc(certs.createdAt)],
       limit: 500,
     })
@@ -43,7 +52,7 @@ export const listUserCertificates = async ({ cache: useCache = true }: { cache?:
   if (!useCache) {
     const result = await db.query.certificates.findMany({
       where: eq(certificates.userId, authUser.id),
-      with: certificateWith,
+      with: certificateOwnerWith,
       orderBy: (certs, { desc }) => [desc(certs.createdAt)],
       limit: 500,
     })
@@ -92,41 +101,143 @@ export const listTutorCertificates = async ({ cache: useCache = true }: { cache?
   return await fetchTutorCertificates(authUser.id, orgId)
 }
 
+interface Viewer {
+  id: string
+  isAdmin: boolean
+  organizations: { id: number; role: string }[]
+}
+
+const canViewCertificate = (
+  user: Viewer,
+  cert: { organizationId: number; reviewerId: string | null; status: string; userId: string }
+) => {
+  const role = user.organizations.find(({ id: orgId }) => orgId === cert.organizationId)?.role
+  const isOwner = cert.userId === user.id
+  if (cert.status === 'draft') return isOwner
+  const isManager = role === 'admin' || role === 'representative'
+  const isReviewer = cert.reviewerId === user.id
+  const isPoolTutor = role === 'tutor' && cert.reviewerId === null && cert.status === 'submitted'
+  return isOwner || isManager || isReviewer || isPoolTutor || user.isAdmin
+}
+
 export const findCertificate = async (id: number) => {
   const user = await getCurrentUser()
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
       where: eq(certificates.id, id),
-      with: certificateWithUsers,
+      with: { ...certificateWithUsers, rating: true },
     })
-    if (!cert) throw new Error('Certificate not found')
+    if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
 
-    const role = user.organizations.find(({ id: orgId }) => orgId === cert.organizationId)?.role
-    const isOwner = cert.userId === user.id
-    const isManager = role === 'admin' || role === 'representative'
-    const isReviewer = cert.reviewerId === user.id
-    const isPoolTutor = role === 'tutor' && cert.reviewerId === null && cert.status === 'submitted'
-    const canView =
-      cert.status === 'draft' ? isOwner : isOwner || isManager || isReviewer || isPoolTutor || user.isAdmin
-    if (!canView) throw new Error('Certificate not found')
-
-    return parseCertificate(cert)
+    const parsed = parseCertificate(cert)
+    return cert.userId === user.id ? parsed : { ...parsed, rating: null }
   })
 }
 
-export const findPublicCertificate = async (username: string, handle?: string) =>
+export interface CertificateActivityEvent {
+  action: string
+  actor: { firstName: string; lastName: string | null } | null
+  comment: string | null
+  createdAt: string
+  id: number
+  reason: string | null
+  tutor: { firstName: string; lastName: string | null } | null
+}
+
+export interface CertificateReviewNotes {
+  comment: string | null
+  createdAt: string
+  decision: 'approved' | 'changes_requested' | 'rejected'
+  sectionComments: Partial<Record<'experience' | 'personal' | 'skills' | 'tasks', string>>
+}
+
+const metadataText = (metadata: unknown, key: string) => {
+  if (!metadata || typeof metadata !== 'object') return null
+  const value = Reflect.get(metadata, key)
+  return typeof value === 'string' && value ? value : null
+}
+
+export const findCertificateActivity = async (id: number) => {
+  const user = await getCurrentUser()
+
+  return await safeQuery(async () => {
+    const cert = await db.query.certificates.findFirst({
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      where: eq(certificates.id, id),
+    })
+    if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
+
+    const [rows, reviews] = await Promise.all([
+      db
+        .select({
+          action: activityEvents.action,
+          actorFirstName: users.firstName,
+          actorLastName: users.lastName,
+          createdAt: activityEvents.createdAt,
+          id: activityEvents.id,
+          metadata: activityEvents.metadata,
+        })
+        .from(activityEvents)
+        .leftJoin(users, eq(users.id, activityEvents.actorId))
+        .where(and(eq(activityEvents.subjectType, 'certificate'), eq(activityEvents.subjectId, String(id))))
+        .orderBy(asc(activityEvents.createdAt), asc(activityEvents.id)),
+      db.query.certificateReviews.findMany({
+        columns: { comment: true, createdAt: true, decision: true, sectionComments: true },
+        orderBy: (review, { desc: byDesc }) => [byDesc(review.createdAt)],
+        where: and(eq(certificateReviews.certificateId, id), ne(certificateReviews.decision, 'approved')),
+      }),
+    ])
+
+    const tutorIds = [...new Set(rows.flatMap(({ metadata }) => metadataText(metadata, 'tutorId') ?? []))]
+    const tutors =
+      tutorIds.length > 0
+        ? await db
+            .select({ firstName: users.firstName, id: users.id, lastName: users.lastName })
+            .from(users)
+            .where(inArray(users.id, tutorIds))
+        : []
+    const tutorById = new Map(tutors.map(({ id: tutorId, ...name }) => [tutorId, name]))
+
+    const events: CertificateActivityEvent[] = rows.map(row => {
+      const tutorId = metadataText(row.metadata, 'tutorId')
+      return {
+        action: row.action,
+        actor: row.actorFirstName ? { firstName: row.actorFirstName, lastName: row.actorLastName } : null,
+        comment: metadataText(row.metadata, 'comment'),
+        createdAt: row.createdAt,
+        id: row.id,
+        reason: metadataText(row.metadata, 'reason'),
+        tutor: tutorId ? (tutorById.get(tutorId) ?? null) : null,
+      }
+    })
+    const [latest] = reviews
+    const review: CertificateReviewNotes | null = latest
+      ? {
+          comment: latest.comment,
+          createdAt: latest.createdAt,
+          decision: latest.decision,
+          sectionComments: latest.sectionComments,
+        }
+      : null
+    return { events, review }
+  })
+}
+
+export const findPublicCertificate = async (username: string) =>
   await safeQuery(async () => {
     const user = await db.query.users.findFirst({
-      columns: { id: true },
+      columns: { id: true, publicProfile: true },
       where: eq(users.username, username),
     })
-    if (!user) throw new Error('User not found')
+    if (!user?.publicProfile) throw new Error('User not found')
 
     const cert = await db.query.certificates.findFirst({
-      where: handle
-        ? and(eq(certificates.userId, user.id), eq(certificates.handle, handle), eq(certificates.status, 'approved'))
-        : and(eq(certificates.userId, user.id), eq(certificates.isDefault, true), eq(certificates.status, 'approved')),
+      where: and(
+        eq(certificates.userId, user.id),
+        eq(certificates.isDefault, true),
+        eq(certificates.status, 'approved')
+      ),
       with: certificatePublicWith,
     })
     if (!cert) throw new Error('Certificate not found')
@@ -246,4 +357,115 @@ export const listUnassignedOrgCertificates = async ({ cache: useCache = true }: 
     ? await fetchUnassignedOrgCertificates(orgId)
     : { data: await queryUnassignedOrgCertificates(orgId), error: null }
   return { data: data?.filter(({ userId }) => userId !== user.id) ?? null, error }
+}
+
+const queryOrganizationCertificates = async (organizationId: number) => {
+  const result = await db.query.certificates.findMany({
+    where: and(eq(certificates.organizationId, organizationId), ne(certificates.status, 'draft')),
+    with: certificateWithUsers,
+    orderBy: (c, { desc: byDesc }) => [byDesc(c.updatedAt)],
+    limit: 500,
+  })
+  return result.map(parseCertificate)
+}
+
+const fetchOrganizationCertificates = cache(async (organizationId: number) => {
+  'use cache'
+  cacheTag(certificatesOrgTag(organizationId))
+  cacheLife('max')
+
+  return await safeQuery(() => queryOrganizationCertificates(organizationId))
+})
+
+export const listOrganizationCertificates = async (
+  organizationId: number,
+  { cache: useCache = true }: { cache?: boolean } = {}
+): Promise<{ data: Certificate[] | null; error: unknown }> => {
+  const user = await getCurrentUser()
+  const role = user.organizations.find(({ id }) => id === organizationId)?.role
+  if (!(user.isAdmin || role === 'admin' || role === 'representative')) return { data: [], error: null }
+
+  if (!useCache) return { data: await queryOrganizationCertificates(organizationId), error: null }
+  return await fetchOrganizationCertificates(organizationId)
+}
+
+const holderAssessments = async (userId: string) =>
+  await db
+    .select({ courseId: lessons.courseId, reflection: userAssessments.reflection, value: userAssessments.value })
+    .from(userAssessments)
+    .innerJoin(assessments, eq(assessments.id, userAssessments.assessmentId))
+    .innerJoin(lessons, eq(lessons.id, assessments.lessonId))
+    .where(eq(userAssessments.userId, userId))
+    .orderBy(asc(userAssessments.updatedAt))
+
+export const listSkillReflections = async () => {
+  const authUser = await getAuthUser()
+  if (!authUser) return {} as Record<number, string>
+
+  const rows = await holderAssessments(authUser.id)
+  return Object.fromEntries(rows.flatMap(({ courseId, reflection }) => (reflection ? [[courseId, reflection]] : [])))
+}
+
+export interface ReviewHolder {
+  birthPlace: string | null
+  birthday: string | null
+  email: string
+  firstName: string
+  lastName: string | null
+  nationality: string | null
+}
+
+export interface HolderCourseResult {
+  completedAt: string | null
+  rating: number | null
+  reflection: string | null
+}
+
+export const findReviewContext = async (certificateId: number) => {
+  const user = await getCurrentUser()
+
+  return await safeQuery(async () => {
+    const cert = await db.query.certificates.findFirst({
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      where: eq(certificates.id, certificateId),
+      with: {
+        skills: { columns: { courseId: true } },
+        user: {
+          columns: {
+            birthPlace: true,
+            birthday: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            nationality: true,
+          },
+        },
+      },
+    })
+    if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
+
+    const courseIds = cert.skills.map(({ courseId }) => courseId)
+    const [completions, assessmentRows] = await Promise.all([
+      db
+        .select({ completedAt: userCourses.completedAt, courseId: userCourses.courseId })
+        .from(userCourses)
+        .where(and(eq(userCourses.userId, cert.userId), inArray(userCourses.courseId, courseIds))),
+      holderAssessments(cert.userId),
+    ])
+
+    const results: Record<number, HolderCourseResult> = Object.fromEntries(
+      courseIds.map(courseId => {
+        const mine = assessmentRows.filter(row => row.courseId === courseId)
+        const rated = mine.map(({ value }) => value)
+        const result: HolderCourseResult = {
+          completedAt: completions.find(row => row.courseId === courseId)?.completedAt ?? null,
+          rating: rated.length > 0 ? rated.reduce((sum, value) => sum + value, 0) / rated.length : null,
+          reflection: mine.findLast(row => row.reflection)?.reflection ?? null,
+        }
+        return [courseId, result]
+      })
+    )
+    const holder: ReviewHolder = cert.user
+    return { holder, results }
+  })
 }

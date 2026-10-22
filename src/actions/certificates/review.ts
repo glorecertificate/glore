@@ -188,6 +188,54 @@ const issuedSkills = (source: PdfSource, requested: SkillPick[] | undefined) => 
   })
 }
 
+const prepareApproval = async (certificateId: number, values: CertificateApprovalValues) => {
+  const source = await findCertificatePdfSource(certificateId)
+  if (!source) throw new CertificateError('NOT_FOUND', 'Certificate not found')
+
+  const experience = {
+    activityDescription: values.activityDescription ?? source.activityDescription,
+    activityDuration: values.activityDuration ?? source.activityDuration,
+    activityEndDate: values.activityEndDate ?? source.activityEndDate,
+    activityLocation: values.activityLocation ?? source.activityLocation,
+    activityStartDate: values.activityStartDate ?? source.activityStartDate,
+    tasks: values.tasks ?? source.tasks,
+  }
+  if (experience.activityEndDate < experience.activityStartDate) {
+    throw new CertificateError('INVALID_INPUT', 'The end date must not precede the start date')
+  }
+  if (experience.tasks.length === 0) throw new CertificateError('INVALID_INPUT', 'A certificate needs a task')
+  if (!meetsActivityRule(experience)) {
+    throw new CertificateError('ACTIVITY_TOO_SHORT', 'The activity is too short for a certificate')
+  }
+
+  const skills = issuedSkills(source, values.skills)
+  const issuedAt = new Date().toISOString()
+  const code = source.code ?? generateCertificateCode()
+  const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt)
+  return { code, experience, issuedAt, skills, snapshot, source }
+}
+
+const requireReviewable = (cert: { status: string }) => {
+  if (cert.status !== 'submitted' && cert.status !== 'in_review') {
+    throw new CertificateError('INVALID_STATE', 'Certificate cannot be approved at this stage')
+  }
+}
+
+export const previewCertificatePdf = async (id: number, input: CertificateApprovalValues) =>
+  await certificateAction(async () => {
+    const authUser = await requireRateLimitedUser('preview', 60)
+    const certificateId = parse(idSchema, id)
+    const values = parse(certificateApprovalSchema, input)
+
+    const cert = await findCertificateRow(certificateId)
+    await requireAssignedTutor(authUser.id, cert)
+    requireReviewable(cert)
+
+    const { code, snapshot } = await prepareApproval(certificateId, values)
+    const pdf = await renderCertificatePdf(snapshot, code)
+    return { pdf: pdf.toString('base64') }
+  })
+
 export const approveCertificate = async (id: number, input: CertificateApprovalValues) =>
   await certificateAction(async () => {
     const authUser = await requireRateLimitedUser('review', 120)
@@ -196,33 +244,9 @@ export const approveCertificate = async (id: number, input: CertificateApprovalV
 
     const cert = await findCertificateRow(certificateId)
     await requireAssignedTutor(authUser.id, cert)
-    if (cert.status !== 'submitted' && cert.status !== 'in_review') {
-      throw new CertificateError('INVALID_STATE', 'Certificate cannot be approved at this stage')
-    }
+    requireReviewable(cert)
 
-    const source = await findCertificatePdfSource(certificateId)
-    if (!source) throw new CertificateError('NOT_FOUND', 'Certificate not found')
-
-    const experience = {
-      activityDescription: values.activityDescription ?? source.activityDescription,
-      activityDuration: values.activityDuration ?? source.activityDuration,
-      activityEndDate: values.activityEndDate ?? source.activityEndDate,
-      activityLocation: values.activityLocation ?? source.activityLocation,
-      activityStartDate: values.activityStartDate ?? source.activityStartDate,
-      tasks: values.tasks ?? source.tasks,
-    }
-    if (experience.activityEndDate < experience.activityStartDate) {
-      throw new CertificateError('INVALID_INPUT', 'The end date must not precede the start date')
-    }
-    if (experience.tasks.length === 0) throw new CertificateError('INVALID_INPUT', 'A certificate needs a task')
-    if (!meetsActivityRule(experience)) {
-      throw new CertificateError('ACTIVITY_TOO_SHORT', 'The activity is too short for a certificate')
-    }
-
-    const skills = issuedSkills(source, values.skills)
-    const issuedAt = new Date().toISOString()
-    const code = source.code ?? generateCertificateCode()
-    const snapshot = certificateSnapshot({ ...source, ...experience, skills }, issuedAt)
+    const { code, experience, issuedAt, skills, snapshot, source } = await prepareApproval(certificateId, values)
     const pdf = await renderCertificatePdf(snapshot, code)
 
     const backup = {

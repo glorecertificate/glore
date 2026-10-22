@@ -313,6 +313,23 @@ export const withdrawCertificateRequest = async (tx: Transaction, { id, userId }
     set: { status: 'withdrawn', withdrawnAt: now() },
   })
 
+export const recordFeaturedCertificate = async (tx: Transaction, { id, userId }: { id: number; userId: string }) => {
+  const row = await tx.query.certificates.findFirst({
+    columns: { id: true, organizationId: true, status: true },
+    where: and(eq(certificates.id, id), eq(certificates.userId, userId)),
+  })
+  if (!row) throw new CertificateError('NOT_FOUND', 'Certificate not found')
+  const featurable = row.status === 'approved'
+  if (!featurable) throw new CertificateError('INVALID_STATE', 'Only approved certificates can be featured')
+
+  await tx
+    .update(certificates)
+    .set({ isDefault: false })
+    .where(and(eq(certificates.userId, userId), eq(certificates.isDefault, true), ne(certificates.id, id)))
+  await tx.update(certificates).set({ isDefault: true }).where(eq(certificates.id, id))
+  return row
+}
+
 export const startCertificateReview = async (tx: Transaction, { id, reviewerId }: { id: number; reviewerId: string }) =>
   await transition(tx, {
     from: ['submitted'],

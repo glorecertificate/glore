@@ -1,101 +1,16 @@
 import { z } from 'zod'
 
+import { type PersonalField } from '@/components/features/certificates/rules'
 import { LOCALES } from '@/lib/i18n'
 import appConfig from '~/config/app.json'
 
-const MAX_DURATION_HOURS = 8760
+export const MAX_DURATION_HOURS = 8760
 
-export const certificateFormSchema = z
-  .object({
-    activityStartDate: z.string().min(1, 'Start date is required'),
-    activityEndDate: z.string().min(1, 'End date is required'),
-    activityDuration: z.coerce
-      .number({ message: 'Duration is required' })
-      .int('Duration must be a whole number')
-      .positive('Duration must be at least 1 hour')
-      .max(MAX_DURATION_HOURS, `Duration cannot exceed ${MAX_DURATION_HOURS.toLocaleString()} hours`),
-    activityLocation: z.string().min(1, 'Location is required').max(255, 'Location must be at most 255 characters'),
-    activityDescription: z
-      .string()
-      .min(10, 'Description must be at least 10 characters')
-      .max(2000, 'Description must be at most 2,000 characters'),
-    organizationRating: z.coerce.number().int().min(1, 'Rating is required').max(5, 'Rating must be between 1 and 5'),
-    language: z.string().min(1, 'Language is required'),
-    skillCourseIds: z.array(z.number()).min(appConfig.minSkills, `Select at least ${appConfig.minSkills} skills`),
-    nationality: z.string().optional().default(''),
-    birthPlace: z.string().optional().default(''),
-  })
-  .refine(data => new Date(data.activityEndDate) >= new Date(data.activityStartDate), {
-    path: ['activityEndDate'],
-    message: 'End date must be after start date',
-  })
-
-export type CertificateFormValues = z.infer<typeof certificateFormSchema>
-
-export const draftCertificateSchema = z.object({
-  activityStartDate: z.string().optional().default(''),
-  activityEndDate: z.string().optional().default(''),
-  activityDuration: z.coerce.number().int().nonnegative().max(MAX_DURATION_HOURS).optional().default(0),
-  activityLocation: z.string().max(255).optional().default(''),
-  activityDescription: z.string().max(2000).optional().default(''),
-  organizationRating: z.coerce.number().int().min(0).max(5).optional().default(0),
-  language: z.string().min(1, 'Language is required'),
-  skillCourseIds: z.array(z.number()).optional().default([]),
-  nationality: z.string().optional().default(''),
-  birthPlace: z.string().optional().default(''),
-})
-
-export type DraftCertificateValues = z.infer<typeof draftCertificateSchema>
-
-const reviewActivitySchema = z.object({
-  activityStartDate: z.string().optional(),
-  activityEndDate: z.string().optional(),
-  activityDuration: z.number().int().positive('Duration must be at least 1 hour').optional(),
-  activityLocation: z.string().max(255, 'Location must be at most 255 characters').optional(),
-  activityDescription: z.string().max(2000, 'Description must be at most 2,000 characters').optional(),
-  skillCourseIds: z.array(z.number()).optional(),
-})
-
-export const reviewCertificateSchema = z.discriminatedUnion('action', [
-  reviewActivitySchema.extend({ action: z.literal('approve') }),
-  reviewActivitySchema.extend({
-    action: z.literal('request_changes'),
-    comment: z
-      .string()
-      .min(10, 'Feedback must be at least 10 characters')
-      .max(2000, 'Feedback must be at most 2,000 characters'),
-  }),
-])
-
-export type ReviewCertificateValues = z.infer<typeof reviewCertificateSchema>
-
-export const resubmitCertificateSchema = z
-  .object({
-    activityStartDate: z.string().min(1, 'Start date is required'),
-    activityEndDate: z.string().min(1, 'End date is required'),
-    activityDuration: z.coerce
-      .number({ message: 'Duration is required' })
-      .int('Duration must be a whole number')
-      .positive('Duration must be at least 1 hour')
-      .max(MAX_DURATION_HOURS, `Duration cannot exceed ${MAX_DURATION_HOURS.toLocaleString()} hours`),
-    activityLocation: z.string().min(1, 'Location is required').max(255, 'Location must be at most 255 characters'),
-    activityDescription: z
-      .string()
-      .min(10, 'Description must be at least 10 characters')
-      .max(2000, 'Description must be at most 2,000 characters'),
-  })
-  .refine(data => new Date(data.activityEndDate) >= new Date(data.activityStartDate), {
-    path: ['activityEndDate'],
-    message: 'End date must be after start date',
-  })
-
-export type ResubmitCertificateValues = z.infer<typeof resubmitCertificateSchema>
-
-const CERTIFICATE_SECTIONS = ['experience', 'personal', 'skills', 'tasks'] as const
+export const CERTIFICATE_SECTIONS = ['experience', 'personal', 'skills', 'tasks'] as const
 
 export const MAX_CERTIFICATE_TASKS = 4
 export const MAX_TASK_LENGTH = 110
-const MAX_STATEMENT_LENGTH = 200
+export const MAX_STATEMENT_LENGTH = 200
 export const MIN_ISSUED_LEVEL = 2
 
 const isoDate = z.iso.date()
@@ -205,3 +120,126 @@ export type PersonalDataValues = z.infer<typeof personalDataSchema>
 export type CertificateApprovalValues = z.infer<typeof certificateApprovalSchema>
 export type CertificateChangesValues = z.infer<typeof certificateChangesSchema>
 export type CertificateReasonValues = z.infer<typeof certificateReasonSchema>
+
+export const MAX_EVIDENCE_LENGTH = 1000
+export const MAX_RATING_COMMENT_LENGTH = 400
+
+const formLevel = z.number({ message: 'required' }).int('required').min(1, 'required').max(5, 'required')
+
+export const wizardSchema = (missing: readonly PersonalField[] = []) =>
+  z
+    .object({
+      activityDuration: z
+        .number({ message: 'required' })
+        .int('invalidNumber')
+        .min(1, 'invalidNumber')
+        .max(MAX_DURATION_HOURS, 'invalidNumber'),
+      activityEndDate: z.iso.date({ message: 'required' }),
+      activityLocation: z.string().trim().min(1, 'required').max(255, 'tooLong'),
+      activityStartDate: z.iso.date({ message: 'required' }),
+      language,
+      personal: z.object({
+        birthPlace: z.string().trim().max(100, 'tooLong'),
+        birthday: z.string(),
+        lastName: z.string().trim().max(100, 'tooLong'),
+        nationality: z.string().trim().max(2, 'required'),
+      }),
+      rating: z.object({
+        certificationSupport: formLevel.nullish(),
+        comment: z.string().trim().max(MAX_RATING_COMMENT_LENGTH, 'tooLong').nullish(),
+        experience: formLevel,
+        support: formLevel.nullish(),
+        wouldRecommend: z.boolean().nullish(),
+      }),
+      skills: z
+        .array(
+          z.object({
+            courseId: z.number().int().positive(),
+            evidence: z.string().trim().max(MAX_EVIDENCE_LENGTH, 'tooLong'),
+            selfLevel: formLevel,
+          })
+        )
+        .min(appConfig.minSkills, 'minSkills')
+        .max(appConfig.maxSkills, 'maxSkills'),
+      tasks: z
+        .array(z.object({ text: z.string().trim().min(1, 'required').max(MAX_TASK_LENGTH, 'tooLong') }))
+        .min(1, 'required')
+        .max(MAX_CERTIFICATE_TASKS, 'tooLong'),
+    })
+    .superRefine((values, context) => {
+      if (values.activityEndDate < values.activityStartDate) {
+        context.addIssue({ code: 'custom', message: 'endBeforeStart', path: ['activityEndDate'] })
+      }
+      for (const field of missing) {
+        if (field === 'birthday' && !/^\d{4}-\d{2}-\d{2}$/u.test(values.personal.birthday)) {
+          context.addIssue({ code: 'custom', message: 'required', path: ['personal', field] })
+          continue
+        }
+        if (field === 'nationality' && !/^[A-Za-z]{2}$/u.test(values.personal.nationality)) {
+          context.addIssue({ code: 'custom', message: 'required', path: ['personal', field] })
+          continue
+        }
+        if (!values.personal[field].trim()) {
+          context.addIssue({ code: 'custom', message: 'required', path: ['personal', field] })
+        }
+      }
+    })
+
+export type WizardValues = z.infer<ReturnType<typeof wizardSchema>>
+
+const MAX_SECTION_COMMENT_LENGTH = 1000
+const MAX_REVIEW_COMMENT_LENGTH = 2000
+
+const sectionField = z.string().trim().max(MAX_SECTION_COMMENT_LENGTH, 'tooLong')
+
+export const reviewFormSchema = z
+  .object({
+    activityDuration: z
+      .number({ message: 'required' })
+      .int('invalidNumber')
+      .min(1, 'invalidNumber')
+      .max(MAX_DURATION_HOURS, 'invalidNumber'),
+    activityEndDate: z.iso.date({ message: 'required' }),
+    activityLocation: z.string().trim().min(1, 'required').max(255, 'tooLong'),
+    activityStartDate: z.iso.date({ message: 'required' }),
+    comment: z.string().trim().max(MAX_REVIEW_COMMENT_LENGTH, 'tooLong'),
+    scores: z.object({
+      engagement: formLevel,
+      evidence: formLevel,
+      growth: formLevel,
+      reflection: formLevel,
+    }),
+    sectionComments: z.object({
+      experience: sectionField,
+      personal: sectionField,
+      skills: sectionField,
+      tasks: sectionField,
+    }),
+    skills: z.array(
+      z.object({
+        courseId: z.number().int().positive(),
+        include: z.boolean(),
+        level: z.number().int().min(1).max(5).optional(),
+        statement: z.string().trim().max(MAX_STATEMENT_LENGTH, 'tooLong'),
+      })
+    ),
+    tasks: z
+      .array(z.object({ text: z.string().trim().min(1, 'required').max(MAX_TASK_LENGTH, 'tooLong') }))
+      .min(1, 'required')
+      .max(MAX_CERTIFICATE_TASKS, 'tooLong'),
+  })
+  .superRefine((values, context) => {
+    if (values.activityEndDate < values.activityStartDate) {
+      context.addIssue({ code: 'custom', message: 'endBeforeStart', path: ['activityEndDate'] })
+    }
+    const included = values.skills.filter(({ include }) => include).length
+    if (included < appConfig.minSkills) context.addIssue({ code: 'custom', message: 'minSkills', path: ['skills'] })
+    if (included > appConfig.maxSkills) context.addIssue({ code: 'custom', message: 'maxSkills', path: ['skills'] })
+    for (const [index, skill] of values.skills.entries()) {
+      if (skill.include && !(skill.level && skill.level >= MIN_ISSUED_LEVEL)) {
+        context.addIssue({ code: 'custom', message: 'levelRequired', path: ['skills', index, 'level'] })
+      }
+    }
+  })
+
+export type ReviewFormValues = z.infer<typeof reviewFormSchema>

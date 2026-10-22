@@ -12,6 +12,7 @@ import {
   JOIN_ROOT,
   ONBOARDING_ROOT,
   REGISTER_ROOT,
+  VERIFY_ROOT,
 } from '@/lib/constants'
 import { prefixCookieName } from '@/lib/cookies'
 
@@ -27,6 +28,8 @@ const isPublicPath = (pathname: string) =>
   pathname.startsWith(JOIN_ROOT) ||
   pathname.startsWith(`${INVITE_ROOT}/`) ||
   pathname.startsWith(`${JOIN_LINK_ROOT}/`) ||
+  pathname === VERIFY_ROOT ||
+  pathname.startsWith(`${VERIFY_ROOT}/`) ||
   (!DASHBOARD_ROOTS.some(root => pathname.startsWith(root)) && /^\/[a-zA-Z0-9.]+$/u.test(pathname))
 
 const expireSession = (request: Request) => {

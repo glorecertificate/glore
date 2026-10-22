@@ -87,7 +87,7 @@ const UserOpengraphImage = async ({ params }: { params: Promise<{ username: stri
   const { data } = await findPublicCertificate(username)
   const { user, organization, skills = [] } = data ?? {}
 
-  const volunteerName = user ? fullName(user) : username
+  const volunteerName = user ? fullName(user) : 'GloRe Certificate'
   const skillList = skills.slice(0, 4).map(({ course }) => {
     const title = course.title
     return title ? (title.en ?? Object.values(title)[0] ?? course.slug) : course.slug
@@ -98,7 +98,7 @@ const UserOpengraphImage = async ({ params }: { params: Promise<{ username: stri
       {/* Header */}
       <div style={headerStyle}>
         <span style={logoStyle}>{'GloRe Certificate'}</span>
-        <span style={badgeStyle}>{'✓ Verified'}</span>
+        {data && <span style={badgeStyle}>{'✓ Verified'}</span>}
       </div>
       {/* Content */}
       <div style={contentStyle}>

@@ -19,7 +19,7 @@ const AUTH_RATE_LIMIT_WINDOW = 15 * 60 * 1000
 
 export const getAuthUser = cache(async () => {
   try {
-    const session = await auth.api.getSession({ headers: await headers() })
+    const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
     return session?.user ?? null
   } catch (e) {
     unstable_rethrow(e)

@@ -27,7 +27,7 @@ const listPublicDir = (dir = '') => {
   for (const dirent of readdirSync(`./public${dir ? `/${dir}` : ''}`, { withFileTypes: true })) {
     if (dirent.name.startsWith('.')) continue
     if (dirent.isDirectory()) {
-      files.push(...listPublicDir(dirent.name))
+      files.push(...listPublicDir(dir ? `${dir}/${dirent.name}` : dirent.name))
       continue
     }
     files.push(dir ? `${dir}/${dirent.name}` : dirent.name)

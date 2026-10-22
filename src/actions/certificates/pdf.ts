@@ -16,8 +16,11 @@ const pdfSourceWith = {
   user: { columns: { birthPlace: true, birthday: true, firstName: true, lastName: true, nationality: true } },
 } as const
 
-export const findCertificatePdfSource = async (id: number) =>
-  await db.query.certificates.findFirst({ where: eq(certificates.id, id), with: pdfSourceWith })
+export const findCertificatePdfSource = async (id: number) => {
+  const cert = await db.query.certificates.findFirst({ where: eq(certificates.id, id), with: pdfSourceWith })
+  if (!cert?.user) return null
+  return { ...cert, user: cert.user }
+}
 
 type CertificatePdfSource = NonNullable<Awaited<ReturnType<typeof findCertificatePdfSource>>>
 

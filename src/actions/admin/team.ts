@@ -9,6 +9,7 @@ import { cacheTag, revalidateTag } from 'next/cache'
 import { and, desc, eq, isNull, or } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 
+import { releaseUserFiles } from '@/actions/account/deletion'
 import { revalidateUserAccess } from '@/actions/admin/helpers'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
@@ -20,7 +21,6 @@ import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
 import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
-import { r2DeleteQuietly } from '@/lib/storage'
 import { fullName } from '@/lib/utils'
 
 const fetchTeamMembers = async () => {
@@ -195,7 +195,7 @@ export const deleteTeamMember = async (userId: string) => {
   if (currentUser.id === userId) return { error: 'You cannot remove yourself from the team' }
 
   const deleted = await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
-  if (deleted?.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
+  await releaseUserFiles(deleted)
 
   revalidateUserAccess(userId)
 

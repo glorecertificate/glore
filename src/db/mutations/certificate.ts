@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { type SQL, and, count, desc, eq, inArray, isNull, ne, notInArray, or, sql } from 'drizzle-orm'
+import { type SQL, and, count, desc, eq, inArray, isNotNull, isNull, ne, notInArray, or, sql } from 'drizzle-orm'
 
 import { chooseTutor } from '@/components/features/certificates/rules'
 import {
@@ -70,10 +70,10 @@ const transition = async (tx: Transaction, { from, guard, id, set }: Transition)
   const [row] = await tx
     .update(certificates)
     .set(set)
-    .where(and(eq(certificates.id, id), inArray(certificates.status, [...from]), guard))
+    .where(and(eq(certificates.id, id), inArray(certificates.status, [...from]), isNotNull(certificates.userId), guard))
     .returning()
-  if (!row) throw new CertificateError('INVALID_STATE', 'Certificate is not in a state that allows this action')
-  return row
+  if (!row?.userId) throw new CertificateError('INVALID_STATE', 'Certificate is not in a state that allows this action')
+  return { ...row, userId: row.userId }
 }
 
 const contentColumns = (edit: CertificateEditValues) => ({

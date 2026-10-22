@@ -57,7 +57,7 @@ We use only essential cookies: they keep you signed in, remember your language a
 
 ## How long we keep data
 
-We keep your data while your account is active. Expired, revoked, or declined invitations are deleted after 30 days, and expired sessions and verification links are deleted every day. You can delete your account in your settings. Approved certificates are public records that an organization has issued, so deleting your account may be subject to additional conditions.
+We keep your data while your account is active. Expired, revoked, or declined invitations are deleted after 30 days, and expired sessions and verification links are deleted every day. You can delete your account in your settings. When you delete your account, your profile, drafts, open requests, and progress are deleted. Certificates that were already issued stay in the records of the organization that issued them, but without your name, personal details, activity description, and comments. Their PDF is deleted from our storage and their verification page shows that the certificate is no longer valid because the holder deleted the account.
 
 ## Your rights
 

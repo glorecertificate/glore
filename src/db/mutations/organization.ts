@@ -47,21 +47,23 @@ const releaseTutorAssignments = async (
   tx: Transaction,
   { actorId, organizationId, tutorId }: { actorId: string; organizationId: number; tutorId: string }
 ) => {
-  const open = await tx
-    .select({
-      id: certificates.id,
-      reviewerId: certificates.reviewerId,
-      status: certificates.status,
-      userId: certificates.userId,
-    })
-    .from(certificates)
-    .where(
-      and(
-        eq(certificates.organizationId, organizationId),
-        eq(certificates.reviewerId, tutorId),
-        inArray(certificates.status, [...OPEN_CERTIFICATE_STATUSES])
+  const open = (
+    await tx
+      .select({
+        id: certificates.id,
+        reviewerId: certificates.reviewerId,
+        status: certificates.status,
+        userId: certificates.userId,
+      })
+      .from(certificates)
+      .where(
+        and(
+          eq(certificates.organizationId, organizationId),
+          eq(certificates.reviewerId, tutorId),
+          inArray(certificates.status, [...OPEN_CERTIFICATE_STATUSES])
+        )
       )
-    )
+  ).flatMap(({ userId, ...row }) => (userId ? [{ ...row, userId }] : []))
   const events: AppEvent<'certificate.unassigned'>[] = []
   for (const row of open) {
     await assignCertificate(tx, { expected: row, id: row.id, reviewerId: null })

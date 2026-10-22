@@ -63,9 +63,8 @@ export const certificates = pgTable(
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     handle: text().notNull(),
     code: text().unique(),
-    userId: text()
-      .notNull()
-      .references(() => users.id),
+    userId: text().references(() => users.id),
+    holderDeletedAt: timestamp({ mode: 'string' }),
     organizationId: integer()
       .notNull()
       .references(() => organizations.id),

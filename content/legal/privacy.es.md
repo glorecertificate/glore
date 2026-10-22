@@ -57,7 +57,7 @@ Solo usamos cookies esenciales: te mantienen con la sesión iniciada, recuerdan 
 
 ## Cuánto tiempo guardamos los datos
 
-Conservamos tus datos mientras tu cuenta esté activa. Las invitaciones caducadas, revocadas o rechazadas se eliminan a los 30 días, y las sesiones y los enlaces de verificación caducados se eliminan cada día. Puedes eliminar tu cuenta en los ajustes. Los certificados aprobados son registros públicos emitidos por una organización, por lo que eliminar tu cuenta puede estar sujeto a condiciones adicionales.
+Conservamos tus datos mientras tu cuenta esté activa. Las invitaciones caducadas, revocadas o rechazadas se eliminan a los 30 días, y las sesiones y los enlaces de verificación caducados se eliminan cada día. Puedes eliminar tu cuenta en los ajustes. Cuando eliminas tu cuenta, se eliminan tu perfil, tus borradores, tus solicitudes abiertas y tu progreso. Los certificados que ya se habían emitido permanecen en los registros de la organización que los emitió, pero sin tu nombre, tus datos personales, la descripción de la actividad ni los comentarios. Su PDF se elimina de nuestro almacenamiento y su página de verificación indica que el certificado ya no es válido porque la persona titular eliminó la cuenta.
 
 ## Tus derechos
 

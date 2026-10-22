@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { updateTag } from 'next/cache'
+
 import { and, eq, inArray, ne } from 'drizzle-orm'
 
 import { notify } from '@/actions/notifications/notify'
@@ -8,6 +10,7 @@ import { recordEvent } from '@/db/mutations/activity-event'
 import { deleteUser } from '@/db/mutations/user'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { memberships, organizations } from '@/db/schema'
+import { certificatesOrgTag, certificatesTutorTag } from '@/lib/cache'
 import { r2DeleteQuietly } from '@/lib/storage'
 
 export const soleAdminOrganizations = async (userId: string) => {
@@ -35,6 +38,18 @@ export const soleAdminOrganizations = async (userId: string) => {
   return owned.filter(({ id }) => !coveredIds.has(id))
 }
 
+export const releaseUserFiles = async (deleted: Awaited<ReturnType<typeof deleteUser>>) => {
+  if (!deleted) return
+  const files = [deleted.avatarUrl, ...deleted.anonymized.map(({ documentUrl }) => documentUrl)]
+  await Promise.all(files.flatMap(file => (file ? [r2DeleteQuietly(file)] : [])))
+  for (const organizationId of new Set(deleted.anonymized.map(item => item.organizationId))) {
+    updateTag(certificatesOrgTag(organizationId))
+  }
+  for (const reviewerId of new Set(deleted.anonymized.map(item => item.reviewerId))) {
+    if (reviewerId) updateTag(certificatesTutorTag(reviewerId))
+  }
+}
+
 export const eraseAccount = async (user: { email: string; firstName: string; id: string; locale: string | null }) => {
   const blockers = await soleAdminOrganizations(user.id)
   if (blockers.length > 0) return { blockers, deleted: false }
@@ -50,7 +65,7 @@ export const eraseAccount = async (user: { email: string; firstName: string; id:
     await recordEvent(tx, event)
     return await deleteUser(tx, user.id)
   })
-  if (deleted?.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
+  await releaseUserFiles(deleted)
   await notify(event)
 
   return { blockers: [], deleted: true }

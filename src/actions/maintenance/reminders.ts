@@ -39,7 +39,7 @@ export const sendReviewReminders = async (now = new Date()) => {
       })
       .from(certificates)
       .where(and(inArray(certificates.status, ['submitted', 'in_review']), isNotNull(certificates.submittedAt)))
-  ).flatMap(({ submittedAt, ...row }) => (submittedAt ? [{ ...row, submittedAt }] : []))
+  ).flatMap(({ holderId, submittedAt, ...row }) => (holderId && submittedAt ? [{ ...row, holderId, submittedAt }] : []))
   if (open.length === 0) return { escalated: 0, reminders: 0 }
 
   const events = await db

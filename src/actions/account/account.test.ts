@@ -235,18 +235,21 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
     expect(await deletion.soleAdminOrganizations(ids.subject)).toEqual([])
   })
 
-  it('erases an account that owns certificates and records the event once', async () => {
+  it('erases an account that owns certificates, keeps them anonymized, and records the event once', async () => {
     const { client, deletion, schema } = context
     const user = { email: `${ids.subject}@account.test`, firstName: 'Acct', id: ids.subject, locale: 'en' }
 
     expect((await deletion.eraseAccount(user)).deleted).toBe(true)
 
     expect(await client.db.query.users.findFirst({ where: eq(schema.users.id, ids.subject) })).toBeUndefined()
-    expect(
-      await client.db.query.certificates.findMany({
-        where: like(schema.certificates.handle, `${handles.certificate}%`),
-      })
-    ).toEqual([])
+    const kept = await client.db.query.certificates.findMany({
+      where: like(schema.certificates.handle, `${handles.certificate}%`),
+    })
+    expect(kept).toHaveLength(2)
+    for (const certificate of kept) {
+      expect(certificate).toMatchObject({ activityDescription: '', status: 'approved', userId: null })
+      expect(certificate.holderDeletedAt).toBeTruthy()
+    }
     expect(await client.db.query.memberships.findMany({ where: eq(schema.memberships.userId, ids.subject) })).toEqual(
       []
     )

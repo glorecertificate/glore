@@ -57,7 +57,7 @@ Usiamo solo cookie essenziali: ti mantengono connesso, ricordano la tua lingua e
 
 ## Per quanto tempo conserviamo i dati
 
-Conserviamo i tuoi dati finché il tuo account è attivo. Gli inviti scaduti, revocati o rifiutati vengono eliminati dopo 30 giorni, e le sessioni e i link di verifica scaduti vengono eliminati ogni giorno. Puoi eliminare il tuo account dalle impostazioni. I certificati approvati sono registri pubblici rilasciati da un'organizzazione, quindi l'eliminazione dell'account può essere soggetta a condizioni aggiuntive.
+Conserviamo i tuoi dati finché il tuo account è attivo. Gli inviti scaduti, revocati o rifiutati vengono eliminati dopo 30 giorni, e le sessioni e i link di verifica scaduti vengono eliminati ogni giorno. Puoi eliminare il tuo account dalle impostazioni. Quando elimini il tuo account, vengono eliminati il tuo profilo, le bozze, le richieste aperte e i progressi. I certificati già emessi restano nei registri dell'organizzazione che li ha rilasciati, ma senza il tuo nome, i tuoi dati personali, la descrizione dell'attività e i commenti. Il loro PDF viene eliminato dal nostro archivio e la loro pagina di verifica indica che il certificato non è più valido perché il titolare ha eliminato l'account.
 
 ## I tuoi diritti
 

@@ -67,6 +67,7 @@ const queryTutorCertificates = async (reviewerId: string, organizationId: number
       eq(certificates.reviewerId, reviewerId),
       eq(certificates.organizationId, organizationId),
       ne(certificates.userId, reviewerId),
+      isNull(certificates.holderDeletedAt),
       ne(certificates.status, 'draft')
     ),
     with: certificateWithUsers,
@@ -109,8 +110,15 @@ interface Viewer {
 
 const canViewCertificate = (
   user: Viewer,
-  cert: { organizationId: number; reviewerId: string | null; status: string; userId: string }
+  cert: {
+    holderDeletedAt?: string | null
+    organizationId: number
+    reviewerId: string | null
+    status: string
+    userId: string | null
+  }
 ) => {
+  if (cert.holderDeletedAt) return false
   const role = user.organizations.find(({ id: orgId }) => orgId === cert.organizationId)?.role
   const isOwner = cert.userId === user.id
   if (cert.status === 'draft') return isOwner
@@ -163,7 +171,7 @@ export const findCertificateActivity = async (id: number) => {
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
-      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      columns: { holderDeletedAt: true, id: true, organizationId: true, reviewerId: true, status: true, userId: true },
       where: eq(certificates.id, id),
     })
     if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
@@ -426,7 +434,7 @@ export const findReviewContext = async (certificateId: number) => {
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
-      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      columns: { holderDeletedAt: true, id: true, organizationId: true, reviewerId: true, status: true, userId: true },
       where: eq(certificates.id, certificateId),
       with: {
         skills: { columns: { courseId: true } },
@@ -442,15 +450,16 @@ export const findReviewContext = async (certificateId: number) => {
         },
       },
     })
-    if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
+    if (!cert?.userId || !cert.user || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
+    const { user: holder, userId } = cert
 
     const courseIds = cert.skills.map(({ courseId }) => courseId)
     const [completions, assessmentRows] = await Promise.all([
       db
         .select({ completedAt: userCourses.completedAt, courseId: userCourses.courseId })
         .from(userCourses)
-        .where(and(eq(userCourses.userId, cert.userId), inArray(userCourses.courseId, courseIds))),
-      holderAssessments(cert.userId),
+        .where(and(eq(userCourses.userId, userId), inArray(userCourses.courseId, courseIds))),
+      holderAssessments(userId),
     ])
 
     const results: Record<number, HolderCourseResult> = Object.fromEntries(
@@ -465,7 +474,7 @@ export const findReviewContext = async (certificateId: number) => {
         return [courseId, result]
       })
     )
-    const holder: ReviewHolder = cert.user
-    return { holder, results }
+    const reviewHolder: ReviewHolder = holder
+    return { holder: reviewHolder, results }
   })
 }

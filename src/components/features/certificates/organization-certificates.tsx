@@ -98,8 +98,14 @@ export const OrganizationCertificates = ({
           {
             cell: certificate => (
               <div className="flex flex-col gap-0.5">
-                <span className="font-medium">{holderName(certificate) || tCertificates('unknownVolunteer')}</span>
-                <span className="text-xs text-muted-foreground">{certificate.user?.email}</span>
+                <span className="font-medium">
+                  {certificate.isHolderDeleted
+                    ? tCertificates('deletedUser')
+                    : holderName(certificate) || tCertificates('unknownVolunteer')}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {certificate.isHolderDeleted ? t('holderDeleted') : certificate.user?.email}
+                </span>
               </div>
             ),
             header: t('volunteer'),

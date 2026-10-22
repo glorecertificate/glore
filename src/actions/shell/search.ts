@@ -84,7 +84,7 @@ const searchCertificates = async (query: string, scopes: CertificateScope[], vie
     .from(certificates)
     .innerJoin(users, eq(users.id, certificates.userId))
     .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
-    .where(and(or(...scopes.map(scopeCondition)), or(...matches)))
+    .where(and(or(...scopes.map(scopeCondition)), isNull(certificates.holderDeletedAt), or(...matches)))
     .orderBy(desc(certificates.updatedAt))
     .limit(SEARCH_LIMIT)
 

@@ -11,7 +11,7 @@ import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 
 const PUBLIC_STATUSES = ['approved', 'revoked'] as const
 
-export interface Verification {
+export interface ActiveVerification {
   activity: CertificateSnapshot['activity']
   code: string
   documentUrl: string | null
@@ -24,7 +24,18 @@ export interface Verification {
   status: 'revoked' | 'valid'
 }
 
-export type VerificationResult = ({ outcome: 'found' } & Verification) | { outcome: 'limited' } | { outcome: 'unknown' }
+export interface HolderDeletedVerification {
+  code: string
+  status: 'holder_deleted'
+}
+
+export type Verification = ActiveVerification | HolderDeletedVerification
+
+export type VerificationResult =
+  | ({ outcome: 'found' } & ActiveVerification)
+  | { code: string; outcome: 'holder_deleted' }
+  | { outcome: 'limited' }
+  | { outcome: 'unknown' }
 
 const toIntlRecord = (value: unknown): IntlRecord => ({
   ...INTL_PLACEHOLDER,
@@ -52,6 +63,8 @@ const findVerification = async (code: string): Promise<Verification | null> => {
     },
   })
   if (!row?.code) return null
+  if (row.holderDeletedAt) return { code: row.code, status: 'holder_deleted' }
+  if (!row.user) return null
 
   const snapshot = row.snapshot
   const status = row.status === 'revoked' ? 'revoked' : 'valid'
@@ -124,16 +137,19 @@ export const verifyCertificate = cache(async (code: string): Promise<Verificatio
   if (await isRateLimited(`verify:${address}`, 60, 60_000)) return { outcome: 'limited' }
 
   const verification = await findCertificateByCode(code)
-  return verification ? { outcome: 'found', ...verification } : { outcome: 'unknown' }
+  if (!verification) return { outcome: 'unknown' }
+  if (verification.status === 'holder_deleted') return { code: verification.code, outcome: 'holder_deleted' }
+  return { outcome: 'found', ...verification }
 })
 
 export const isLookupLimited = async () => await isRateLimited(`verify-lookup:${await clientAddress()}`, 30, 60_000)
 
 export const findLegacyCertificateCode = async (username: string, handle: string) => {
   const row = await db.query.certificates.findFirst({
-    columns: { code: true },
+    columns: { code: true, holderDeletedAt: true },
     where: and(eq(certificates.handle, handle), inArray(certificates.status, [...PUBLIC_STATUSES])),
     with: { user: { columns: { username: true } } },
   })
-  return row?.code && row.user.username === username ? row.code : null
+  if (!row?.code) return null
+  return row.holderDeletedAt || row.user?.username === username ? row.code : null
 }

@@ -6,6 +6,7 @@ import { getTranslations } from 'next-intl/server'
 
 import { verifyCertificate } from '@/actions/certificates/public'
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
+import { HolderDeletedView } from '@/components/features/certificates/verify/holder-deleted-view'
 import { VerificationView } from '@/components/features/certificates/verify/verification-view'
 import { VerifyShell } from '@/components/features/certificates/verify/verify-shell'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -21,6 +22,7 @@ export const generateMetadata = async ({ params }: PageProps<'/verify/[code]'>) 
   const normalized = normalizeCertificateCode(code)
   const result = normalized ? await verifyCertificate(normalized) : null
 
+  if (result?.outcome === 'holder_deleted') return { robots: ROBOTS, title: t('holderDeletedTitle') }
   if (result?.outcome !== 'found') return { robots: ROBOTS, title: t('title') }
 
   const name = fullName(result.holder)
@@ -52,6 +54,8 @@ const VerifyCodeContent = async ({ params }: Pick<PageProps<'/verify/[code]'>, '
           <ShieldAlertIcon className="size-4 shrink-0" />
           {t('tooManyRequests')}
         </Banner>
+      ) : result.outcome === 'holder_deleted' ? (
+        <HolderDeletedView code={result.code} />
       ) : (
         <VerificationView verification={result} />
       )}

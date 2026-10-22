@@ -162,6 +162,13 @@
       "when": 1792654934897,
       "tag": "0022_skill_group_slug_required",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1792682222418,
+      "tag": "0023_anonymize_deleted_holders",
+      "breakpoints": true
     }
   ]
 }

@@ -4,7 +4,7 @@ import { CalendarIcon, CircleCheckIcon, MapPinIcon, ShieldAlertIcon, TimerIcon }
 import { type Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
-import { type Verification } from '@/actions/certificates/public'
+import { type ActiveVerification } from '@/actions/certificates/public'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,7 +16,7 @@ import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
-const structuredData = (verification: Verification, url: string, name: string) => ({
+const structuredData = (verification: ActiveVerification, url: string, name: string) => ({
   '@context': 'https://schema.org',
   '@type': 'EducationalOccupationalCredential',
   credentialCategory: 'certificate',
@@ -28,7 +28,7 @@ const structuredData = (verification: Verification, url: string, name: string) =
   url,
 })
 
-export const VerificationView = async ({ verification }: { verification: Verification }) => {
+export const VerificationView = async ({ verification }: { verification: ActiveVerification }) => {
   const [t, tCommon, locale] = await Promise.all([
     getTranslations('Certificates.verify'),
     getTranslations('Common'),

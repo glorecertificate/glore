@@ -103,8 +103,8 @@ const isManagerRole = (role: Role | null) => role === 'admin' || role === 'repre
 
 export const findCertificateRow = async (id: number) => {
   const row = await db.query.certificates.findFirst({ where: eq(certificates.id, id) })
-  if (!row) throw new CertificateError('NOT_FOUND', 'Certificate not found')
-  return row
+  if (!row?.userId) throw new CertificateError('NOT_FOUND', 'Certificate not found')
+  return { ...row, userId: row.userId }
 }
 
 export const requireCertificateManager = async (
@@ -164,10 +164,10 @@ export const commitTransition = async <T>(work: (tx: Transaction) => Promise<T>,
 }
 
 export const expireCertificateCaches = (
-  { organizationId, userId }: { organizationId: number; userId: string },
+  { organizationId, userId }: { organizationId: number; userId: string | null },
   ...tutorIds: (string | null | undefined)[]
 ) => {
-  updateTag(certificatesUserTag(userId))
+  if (userId) updateTag(certificatesUserTag(userId))
   updateTag(certificatesOrgTag(organizationId))
   for (const tutorId of new Set(tutorIds)) {
     if (tutorId) updateTag(certificatesTutorTag(tutorId))
@@ -180,5 +180,5 @@ export const findAuthoredCertificate = async (id: number, userId: string) => {
     with: { rating: true, skills: true },
   })
   if (!row) throw new CertificateError('NOT_FOUND', 'Certificate not found')
-  return row
+  return { ...row, userId }
 }

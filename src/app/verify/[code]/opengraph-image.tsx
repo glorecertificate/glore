@@ -31,7 +31,9 @@ const pillStyle: CSSProperties = {
 const VerifyOpengraphImage = async ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = await params
   const normalized = normalizeCertificateCode(code)
-  const verification = normalized ? await findCertificateByCode(normalized) : null
+  const found = normalized ? await findCertificateByCode(normalized) : null
+  const verification = found && found.status !== 'holder_deleted' ? found : null
+  const holderDeleted = found?.status === 'holder_deleted'
   const revoked = verification?.status === 'revoked'
   const name = verification ? fullName(verification.holder) : 'GloRe Certificate'
   const skills = (verification?.skills ?? [])
@@ -42,18 +44,18 @@ const VerifyOpengraphImage = async ({ params }: { params: Promise<{ code: string
     <div style={wrapperStyle}>
       <div style={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
         <span style={{ color: '#ffffff', fontSize: 26, fontWeight: 700 }}>{'GloRe Certificate'}</span>
-        {verification && (
+        {found && (
           <span
             style={{
-              backgroundColor: revoked ? '#b3261e' : '#7fbf73',
+              backgroundColor: revoked || holderDeleted ? '#b3261e' : '#7fbf73',
               borderRadius: 20,
-              color: revoked ? '#ffffff' : '#1d3a2a',
+              color: revoked || holderDeleted ? '#ffffff' : '#1d3a2a',
               fontSize: 15,
               fontWeight: 600,
               padding: '8px 18px',
             }}
           >
-            {revoked ? 'Revoked' : 'Verified'}
+            {holderDeleted ? 'No longer valid' : revoked ? 'Revoked' : 'Verified'}
           </span>
         )}
       </div>

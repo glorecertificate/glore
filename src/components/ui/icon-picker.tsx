@@ -337,6 +337,7 @@ export const IconPicker = ({
       <PopoverTrigger asChild>
         {children ?? (
           <Button
+            aria-label={t('updateIcon')}
             className={cn(
               'has-[>svg]:animate-none',
               openState && 'cursor-default bg-accent/80 dark:bg-accent/50',

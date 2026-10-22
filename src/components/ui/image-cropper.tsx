@@ -80,6 +80,8 @@ export const ImageCropper = ({
     onDropRejected,
   })
 
+  const { role: _role, tabIndex: _tabIndex, ...buttonProps } = getRootProps()
+
   useImperativeHandle(pickerRef, () => ({ open: openPicker }), [openPicker])
 
   const cropDialog = selected ? (
@@ -136,7 +138,7 @@ export const ImageCropper = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          <Button size="sm" type="button" variant="outline" {...getRootProps()} className="w-fit" disabled={disabled}>
+          <Button size="sm" type="button" variant="outline" {...buttonProps} className="w-fit" disabled={disabled}>
             <UploadCloudIcon className="mr-2 size-4" />
             {value ? t('changeAvatar') : t('uploadAvatar')}
           </Button>

@@ -36,6 +36,7 @@ const STATUS_LABEL_KEYS: Record<CertListStatus, string> = {
 
 export const CertificatesContent = ({ certificates, eligibility }: CertificatesContentProps) => {
   const t = useTranslations('Certificates')
+  const tCommon = useTranslations('Common')
   const tDetail = useTranslations('Certificates.detail')
   const { setStatus, status } = useCertListStatus()
   const { setSort, sort } = useCertListSort()
@@ -97,7 +98,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
             ))}
           </SegmentedControl>
           <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
-            <SelectTrigger className="h-8 w-auto gap-1.5 px-3 text-xs">
+            <SelectTrigger aria-label={tCommon('sortBy')} className="h-8 w-auto gap-1.5 px-3 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="end">

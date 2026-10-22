@@ -730,7 +730,8 @@
     "CountrySelect": {
       "noCountryFound": "Nessun paese trovato",
       "searchCountry": "Cerca paese…",
-      "countryPlaceholder": "Seleziona il tuo paese"
+      "countryPlaceholder": "Seleziona il tuo paese",
+      "countryLabel": "Paese"
     },
     "DatePicker": {
       "selectDate": "Seleziona data"

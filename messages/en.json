@@ -306,7 +306,8 @@
     "CountrySelect": {
       "noCountryFound": "No country found",
       "searchCountry": "Search country…",
-      "countryPlaceholder": "Select your country"
+      "countryPlaceholder": "Select your country",
+      "countryLabel": "Country"
     },
     "DatePicker": {
       "selectDate": "Select date"

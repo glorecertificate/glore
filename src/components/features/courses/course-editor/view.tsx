@@ -12,7 +12,6 @@ import { CourseBreadcrumb } from '@/components/features/courses/course-editor/br
 import { CourseProvider } from '@/components/features/courses/course-editor/context'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
 import { DashboardPage } from '@/components/layout/dashboard-page'
-import { PageTitle } from '@/components/layout/page-title'
 import { LOCALES } from '@/lib/i18n'
 
 const { parse } = createSearchParamsCache({
@@ -76,11 +75,7 @@ export const CourseEditorView = async (props: {
 
   return (
     <CourseProvider value={{ course, language, step }}>
-      <DashboardPage
-        title={<PageTitle namespace="Courses" name="courses" />}
-        backHref="/courses"
-        breadcrumb={<CourseBreadcrumb />}
-      >
+      <DashboardPage backHref="/courses" breadcrumb={<CourseBreadcrumb />}>
         <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
           <CourseEditor />
         </ViewTransition>

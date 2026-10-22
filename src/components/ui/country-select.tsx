@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
@@ -30,6 +30,7 @@ export const CountrySelect = ({
   const tCountries = useTranslations('Intl.Countries')
   const messages = useMessages()
 
+  const contentId = useId()
   const [open, setOpen] = useState(false)
 
   const countries = keysOf(messages.Intl.Countries).sort((a, b) =>
@@ -45,10 +46,11 @@ export const CountrySelect = ({
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
+          aria-label={props.id ? undefined : t('countryLabel')}
           {...props}
+          aria-controls={contentId}
           className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
           role="combobox"
-          aria-controls="#"
           aria-expanded={open}
           variant="outline"
         >
@@ -62,7 +64,7 @@ export const CountrySelect = ({
           <ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
+      <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
         <Command>
           <CommandInput placeholder={t('searchCountry')} />
           <CommandList>

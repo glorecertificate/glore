@@ -9,7 +9,7 @@ import { type ToastT, toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -118,69 +118,48 @@ export const MultiSelectTrigger = ({
   children,
   disabled: triggerDisabled,
   className,
-  onClick,
   placeholder,
   position = 'end',
   ...props
-}: React.ComponentProps<typeof PopoverTrigger> & {
+}: React.ComponentProps<'div'> & {
   disabled?: boolean
   placeholder?: string
   /** @default 'start' */
   position?: 'start' | 'end'
 }) => {
-  const { disabled: rootDisabled, label, open, setOpen, value } = useMultiSelect()
+  const { disabled: rootDisabled, label, open, value } = useMultiSelect()
   const disabled = rootDisabled || triggerDisabled
 
-  const openDropdown = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setOpen(!open)
-  }
-
-  const onTriggerClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (disabled) {
-      return
-    }
-    onClick?.(e)
-  }
-
   return (
-    <PopoverTrigger
-      aria-expanded={open}
-      className={cn(
-        'flex h-9 w-fit items-center justify-between rounded-md border border-input bg-background text-sm transition-all disabled:cursor-not-allowed disabled:opacity-50',
-        className
-      )}
-      disabled={disabled}
-      onClick={onTriggerClick}
-      {...props}
-    >
-      <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
-        <div className="flex flex-1 items-center gap-1 overflow-x-auto pr-2 pl-2.5" style={scrollbarStyle}>
-          {value.length === 0 ? <span className="truncate text-muted-foreground">{placeholder}</span> : children}
+    <PopoverAnchor asChild>
+      <div
+        aria-disabled={disabled || undefined}
+        className={cn(
+          'flex h-9 w-fit items-center justify-between rounded-md border border-input bg-background text-sm transition-all aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+          className
+        )}
+        data-slot="multi-select-trigger"
+        {...props}
+      >
+        <div className={cn('flex flex-1 justify-between overflow-hidden', position === 'start' && 'flex-row-reverse')}>
+          <div className="flex flex-1 items-center gap-1 overflow-x-auto pr-2 pl-2.5" style={scrollbarStyle}>
+            {value.length === 0 ? <span className="truncate text-muted-foreground">{placeholder}</span> : children}
+          </div>
+          <hr className="mx-0.5 my-auto h-6 border-l border-border" />
+          <PopoverTrigger
+            aria-label={label}
+            className={cn(
+              'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed',
+              open && 'cursor-default bg-accent/50'
+            )}
+            disabled={disabled}
+            type="button"
+          >
+            <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
+          </PopoverTrigger>
         </div>
-        <hr className="mx-0.5 my-auto h-6 border-l border-border" />
-        <span
-          className={cn(
-            'my-auto mr-1 ml-1.5 h-full cursor-pointer rounded-sm p-1 outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-            open && 'cursor-default bg-accent/50'
-          )}
-          onClick={openDropdown}
-          onKeyDown={e => {
-            if (e.key !== 'Enter' && e.key !== ' ') return
-            e.preventDefault()
-            e.stopPropagation()
-            setOpen(!open)
-          }}
-          aria-label={label}
-          role="button"
-          tabIndex={0}
-        >
-          <ChevronsUpDownIcon className="size-4 shrink-0 opacity-50" />
-        </span>
       </div>
-    </PopoverTrigger>
+    </PopoverAnchor>
   )
 }
 
@@ -217,7 +196,8 @@ export const MultiSelectBadge = ({
   })()
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
-    if (disabled || e.key !== 'Enter') return
+    if (disabled || (e.key !== 'Enter' && e.key !== ' ')) return
+    e.preventDefault()
     selectOption(value)
     onKeyDown?.(e)
   }
@@ -236,7 +216,10 @@ export const MultiSelectBadge = ({
         className
       )}
       onClick={handleClick}
+      aria-disabled={disabled || undefined}
+      aria-label={title}
       onKeyDown={handleKeyDown}
+      role="button"
       tabIndex={0}
       title={title}
       {...props}

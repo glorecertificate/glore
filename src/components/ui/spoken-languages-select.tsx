@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useId, useState } from 'react'
 
 import { CheckIcon, PlusIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
@@ -70,6 +70,7 @@ export const SpokenLanguagesSelect = ({
   const t = useTranslations('Users')
   const tLanguages = useTranslations('Intl.Languages')
 
+  const contentId = useId()
   const [open, setOpen] = useState(false)
 
   const translate = (language: string) => {
@@ -89,9 +90,10 @@ export const SpokenLanguagesSelect = ({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            aria-controls={contentId}
+            aria-label={t('spokenLanguages')}
             className={cn('w-full justify-between font-normal', value.length === 0 && 'text-muted-foreground')}
             role="combobox"
-            aria-controls="#"
             aria-expanded={open}
             disabled={disabled}
             variant="outline"
@@ -100,7 +102,7 @@ export const SpokenLanguagesSelect = ({
             <PlusIcon className="ml-2 size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
+        <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0" id={contentId}>
           <Command>
             <CommandInput placeholder={t('searchLanguage')} />
             <CommandList>

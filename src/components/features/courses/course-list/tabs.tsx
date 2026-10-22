@@ -28,11 +28,11 @@ const CourseListTabsTrigger = ({
 
   if (value === 'archived') {
     return (
-      <TabsTrigger className={cn('p-0', className)} value={value} {...props}>
+      <TabsTrigger aria-label={t(value)} className={cn('p-0', className)} value={value} {...props}>
         <Tooltip delayDuration={0}>
           <TooltipTrigger asChild>
             <span className="inline-block px-3.5">
-              <ArchiveIcon />
+              <ArchiveIcon aria-hidden />
             </span>
           </TooltipTrigger>
           <TooltipContent className="flex items-center gap-1 leading-[normal]" sideOffset={16}>

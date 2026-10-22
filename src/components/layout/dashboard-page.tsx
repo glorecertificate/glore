@@ -37,6 +37,7 @@ export const DashboardPage = ({
           <div className="flex min-w-0 flex-1 items-center gap-2.5">
             <HeaderTrigger />
             {breadcrumb ?? <HeaderBreadcrumb description={description} title={title} backHref={backHref} />}
+            {breadcrumb && title && <h1 className="sr-only">{title}</h1>}
           </div>
           <HeaderLogo className={cn(breadcrumb && 'max-sm:hidden')} href={APP_ROOT}>
             <Logo className="mr-1 w-18 transition-[width,height]" />

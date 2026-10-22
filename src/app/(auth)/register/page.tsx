@@ -1,4 +1,5 @@
 import { ApplicationForm } from '@/components/features/organization/application/application-form'
+import { PageTitle } from '@/components/layout/page-title'
 import { Logo } from '@/components/ui/logo'
 import { generateIntlMetadata } from '@/lib/metadata'
 
@@ -13,6 +14,9 @@ const RegisterPage = () => (
       <div className="flex flex-col items-center gap-8">
         <Logo className="w-40" />
       </div>
+      <h1 className="sr-only">
+        <PageTitle namespace="Register" name="metaTitle" />
+      </h1>
       <ApplicationForm />
     </div>
   </main>

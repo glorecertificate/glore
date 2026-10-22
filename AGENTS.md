@@ -24,6 +24,7 @@ Load only the spec you need from `.agents/specs/`:
 - `certificates.md`: certificate lifecycle, screens, PDF, public verification.
 - `architecture.md`: `src/` tree, adding files, naming, layer boundaries, server vs client.
 - `code.md`: formatter, import order, restricted imports, lint rules, git hooks.
+- `admin.md`: admin area, moderation, impersonation.
 - `organizations.md`: invitations, members, ownership, settings, insights, applications.
 - `reference.md`: routes, auth, queries, transactions, cache, env vars, dev performance.
 - `patterns.md`: components, types, hooks, utils, theming, i18n, forms, emails.
@@ -36,7 +37,7 @@ References live in `.agents/references/`: the certificate PDF template and the p
 ## Commands and commits
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`; `pnpm install` is the exception. Full table: `workflow.md`.
-- Gate: `pnpm run check` (tsc, oxlint, oxfmt, knip, translations). Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
+- Gate: `pnpm run check`. Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
 - Commit headers are Conventional Commits, lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 
@@ -87,6 +88,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 14. Certificate state changes go through `certificateAction` and `commitTransition` in `@/actions/certificates/helpers` (guard, transaction, `recordEvent`, then `notify`); approval alone renders the PDF and uploads to R2 after its transaction and reverts it on failure.
 15. Invitations never create memberships; accepting does (`db/mutations/invitation.ts`). Never `signUpEmail` or insert a membership for an invitee.
 16. Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` (`memberError` codes). Org actions take an optional `organizationId` that `getOrganizationAccess` accepts only for platform admins and members of that org.
+17. Impersonation is a local plugin; call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin`.
 
 ## Verification
 

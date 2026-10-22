@@ -4,24 +4,50 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag } from 'next/cache'
 
-import { and, desc, eq, isNull, or } from 'drizzle-orm'
-import { type Locale } from 'next-intl'
+import { eq, or } from 'drizzle-orm'
+import { z } from 'zod'
 
 import { releaseUserFiles } from '@/actions/account/deletion'
-import { revalidateUserAccess } from '@/actions/admin/helpers'
+import { adminAction, requireAdminWithLimit, revalidateUserAccess } from '@/actions/admin/helpers'
+import { notify } from '@/actions/notifications/notify'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { adminError, setPlatformRole } from '@/db/mutations/moderation'
+import { createTeamInvitation, refreshTeamInvitation } from '@/db/mutations/team-invitation'
 import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
-import { teamInvitations, users } from '@/db/schema'
+import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag } from '@/lib/cache'
-import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
-import { sendMail } from '@/lib/email'
+import { LOCALES } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
+import config from '~/config/app.json'
+
+const TEAM_ROLES = ['admin', 'editor'] as const
+
+const ROLE_FIELDS = {
+  admin: { isEditor: false, role: 'admin' },
+  editor: { isEditor: true, role: 'user' },
+} as const satisfies Record<(typeof TEAM_ROLES)[number], { isEditor: boolean; role: string }>
+
+const inviteSchema = z.object({
+  email: z.email().trim().toLowerCase(),
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z
+    .string()
+    .trim()
+    .max(100)
+    .transform(value => value || null)
+    .nullish()
+    .transform(value => value ?? null),
+  locale: z.enum(LOCALES),
+  role: z.enum(TEAM_ROLES),
+})
+
+const teamRoleSchema = z.object({ role: z.enum(TEAM_ROLES), userId: z.string().min(1).max(200) })
 
 const fetchTeamMembers = async () => {
   'use cache'
@@ -52,152 +78,84 @@ export const getTeamMembers = async ({ cache = true }: { cache?: boolean } = {})
   return await fetchTeamMembers()
 }
 
-export const inviteTeamMember = async ({
-  email,
-  firstName,
-  lastName,
-  locale,
-  role,
-}: {
-  email: string
-  firstName: string
-  lastName: string
-  locale: Locale
-  role: 'admin' | 'editor'
-}) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Only admins can invite team members' }
+export const inviteTeamMember = async (input: z.input<typeof inviteSchema>) =>
+  await adminAction(async () => {
+    const actor = await requireAdminWithLimit('team-invite', 30)
+    const parsed = inviteSchema.safeParse(input)
+    if (!parsed.success) throw adminError('INVALID_INPUT')
+    const { email, firstName, lastName, locale, role } = parsed.data
 
-  const name = fullName({ firstName, lastName })
+    const existing = await db.query.users.findFirst({ columns: { id: true }, where: eq(users.email, email) })
+    if (existing) throw adminError('EMAIL_TAKEN')
 
-  const result = await auth.api.signUpEmail({
-    body: {
-      name,
-      email,
-      password: randomBytes(32).toString('hex'),
-      firstName: firstName.trim(),
-      lastName: lastName.trim() || undefined,
-      locale,
-    },
-  })
-  if (!result?.user) return { error: 'Failed to create user' }
-
-  await db
-    .update(users)
-    .set({
-      role: role === 'admin' ? 'admin' : 'user',
-      isEditor: role === 'editor',
-    })
-    .where(eq(users.id, result.user.id))
-
-  const token = randomBytes(16).toString('hex')
-  const expiresAt = new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString()
-
-  await db.insert(teamInvitations).values({
-    userId: result.user.id,
-    token,
-    email,
-    firstName: firstName.trim(),
-    lastName: lastName.trim() || null,
-    role,
-    locale,
-    invitedBy: currentUser.id,
-    expiresAt,
-  })
-
-  const displayName = fullName({ firstName, lastName })
-  const joinUrl = `${process.env.APP_URL}${JOIN_ROOT}?token=${token}`
-
-  try {
-    await sendMail({
-      to: email,
-      template: {
-        name: 'team/invite',
-        props: { url: joinUrl, inviteeName: displayName, role: role as 'admin' | 'editor', userName: displayName },
+    const created = await auth.api.signUpEmail({
+      body: {
+        email,
+        firstName,
+        lastName: lastName ?? undefined,
+        locale,
+        name: fullName({ firstName, lastName }),
+        password: randomBytes(32).toString('hex'),
       },
-      locale: locale ?? undefined,
     })
-  } catch (error) {
-    console.error('Failed to send team invite email:', error)
-    return { error: error instanceof Error ? error.message : 'Failed to send invitation email' }
-  }
 
-  revalidateTag(CacheTag.TeamMembers, 'max')
+    const { event } = await transaction(async tx => {
+      await tx.update(users).set(ROLE_FIELDS[role]).where(eq(users.id, created.user.id))
+      return await createTeamInvitation(tx, {
+        actorId: actor.id,
+        email,
+        expiryDays: config.invitationExpiryDays,
+        firstName,
+        lastName,
+        locale,
+        role,
+        userId: created.user.id,
+      })
+    })
+    revalidateUserAccess(created.user.id)
 
-  return { data: { id: result.user.id, email, role } }
-}
-
-export const resendInvitation = async (userId: string) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Only admins can resend invitations' }
-
-  const existing = await db.query.teamInvitations.findFirst({
-    columns: { id: true, email: true, firstName: true, lastName: true, role: true, locale: true },
-    where: and(eq(teamInvitations.userId, userId), isNull(teamInvitations.acceptedAt)),
-    orderBy: desc(teamInvitations.createdAt),
+    const delivery = await notify(event)
+    if (delivery.emailed === 0) throw adminError('SEND_FAILED')
+    return { email, id: created.user.id, role }
   })
-  if (!existing) return { error: 'No pending invitation found for this user' }
 
-  const token = randomBytes(16).toString('hex')
-  const expiresAt = new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString()
+export const resendInvitation = async (userId: string) =>
+  await adminAction(async () => {
+    if (!userId || typeof userId !== 'string') throw adminError('INVALID_INPUT')
+    const actor = await requireAdminWithLimit('team-resend', 30)
 
-  await db
-    .update(teamInvitations)
-    .set({ token, expiresAt, updatedAt: new Date().toISOString() })
-    .where(eq(teamInvitations.id, existing.id))
+    const { event, invitation } = await transaction(tx =>
+      refreshTeamInvitation(tx, { actorId: actor.id, expiryDays: config.invitationExpiryDays, userId })
+    )
 
-  const displayName = fullName(existing)
-  const joinUrl = `${process.env.APP_URL}/api/v1/join?token=${token}`
+    const delivery = await notify(event)
+    if (delivery.emailed === 0) throw adminError('SEND_FAILED')
+    return { email: invitation.email, expiresAt: invitation.expiresAt }
+  })
 
-  try {
-    await sendMail({
-      to: existing.email,
-      template: {
-        name: 'team/invite',
-        props: {
-          url: joinUrl,
-          inviteeName: displayName,
-          role: existing.role as 'admin' | 'editor',
-          userName: displayName,
-        },
-      },
-      locale: existing.locale ?? undefined,
-    })
-  } catch (error) {
-    console.error('Failed to resend team invite email:', error)
-    return { error: error instanceof Error ? error.message : 'Failed to resend invitation email' }
-  }
+export const updateTeamMemberRole = async (userId: string, role: string) =>
+  await adminAction(async () => {
+    const actor = await requireAdminWithLimit('role', 60)
+    const parsed = teamRoleSchema.safeParse({ role, userId })
+    if (!parsed.success) throw adminError('INVALID_INPUT')
 
-  return { data: { email: existing.email } }
-}
+    const result = await transaction(tx =>
+      setPlatformRole(tx, { actorId: actor.id, role: parsed.data.role, userId: parsed.data.userId })
+    )
+    revalidateUserAccess(parsed.data.userId)
+    await notify(result.event)
+    return { id: parsed.data.userId, role: result.role }
+  })
 
-export const updateTeamMemberRole = async (userId: string, role: 'admin' | 'editor') => {
-  if (!['admin', 'editor'].includes(role)) return { error: 'Invalid role' }
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Only admins can update team member roles' }
-  if (currentUser.id === userId) return { error: 'You cannot change your own role' }
+export const deleteTeamMember = async (userId: string) =>
+  await adminAction(async () => {
+    if (!userId || typeof userId !== 'string') throw adminError('INVALID_INPUT')
+    const actor = await requireAdminWithLimit('team-delete', 30)
+    if (actor.id === userId) throw adminError('SELF')
 
-  await db
-    .update(users)
-    .set({
-      role: role === 'admin' ? 'admin' : 'user',
-      isEditor: role === 'editor',
-    })
-    .where(eq(users.id, userId))
-  revalidateUserAccess(userId)
+    const deleted = await transaction(tx => deleteUser(tx, userId, { reassignTo: actor.id }))
+    await releaseUserFiles(deleted)
 
-  return { data: { id: userId, role } }
-}
-
-export const deleteTeamMember = async (userId: string) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'You must be an admin to remove team members' }
-  if (currentUser.id === userId) return { error: 'You cannot remove yourself from the team' }
-
-  const deleted = await transaction(tx => deleteUser(tx, userId, { reassignTo: currentUser.id }))
-  await releaseUserFiles(deleted)
-
-  revalidateUserAccess(userId)
-
-  return { data: { id: userId } }
-}
+    revalidateUserAccess(userId)
+    return { id: userId }
+  })

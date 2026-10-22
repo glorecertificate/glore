@@ -10,6 +10,7 @@ export enum CacheTag {
   SkillGroups = 'skill-groups',
   TeamMembers = 'team-members',
   User = 'user',
+  AdminOverview = 'admin-overview',
 }
 
 export const userTag = (id: string) => `${CacheTag.User}-${id}` as const

@@ -455,6 +455,9 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
       }),
     },
   },
+  'account.reinstated': {},
+  'impersonation.started': {},
+  'impersonation.stopped': {},
   'account.deleted': {
     email: {
       category: 'mandatory',

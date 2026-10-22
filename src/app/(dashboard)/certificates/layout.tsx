@@ -12,7 +12,7 @@ export const generateMetadata = generateIntlMetadata({
 
 const CertificatesLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const user = await getCurrentUser()
-  if (user.canEdit) return notFound()
+  if (user.canEdit && !user.isAdmin) return notFound()
   return children
 }
 

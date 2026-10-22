@@ -1,4 +1,4 @@
-const CLOSED_AUTH_PREFIX = '/api/auth/admin'
+const CLOSED_AUTH_PREFIXES = ['/api/auth/admin', '/api/auth/impersonation']
 
 export const readLimitedBody = async (body: ReadableStream<Uint8Array> | null, maxBytes: number) => {
   const chunks: Uint8Array[] = []
@@ -27,5 +27,5 @@ export const isClosedAuthPath = (url: string) => {
     }
   })()
   const normalized = decoded.replaceAll(/\/{2,}/gu, '/').toLowerCase()
-  return normalized === CLOSED_AUTH_PREFIX || normalized.startsWith(`${CLOSED_AUTH_PREFIX}/`)
+  return CLOSED_AUTH_PREFIXES.some(prefix => normalized === prefix || normalized.startsWith(`${prefix}/`))
 }

@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+
 import {
   getCertificateEligibility,
   listOrganizationCertificates,
@@ -15,6 +17,7 @@ import { PageTitle } from '@/components/layout/page-title'
 
 const CertificatesPageContent = async () => {
   const [user, activeOrgId] = await Promise.all([getCurrentUser(), getActiveOrgId()])
+  if (user.isAdmin) redirect('/admin/certificates')
   const role = user.organizations.find(({ id }) => id === activeOrgId)?.role
 
   if (activeOrgId && (role === 'admin' || role === 'representative')) {

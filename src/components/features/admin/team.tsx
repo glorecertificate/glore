@@ -46,6 +46,7 @@ import {
   getUserRole,
   getUserStatus,
 } from './team-items'
+import { useAdminError } from './use-admin-error'
 
 type SortField = 'name' | 'role' | 'date'
 
@@ -53,6 +54,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
   const t = useTranslations('Admin.team')
   const { locale } = useI18n()
   const { user: currentUser } = useSession()
+  const adminError = useAdminError()
 
   const [users, setUsers] = useState(initialUsers)
   const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
@@ -104,8 +106,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
     const { error } = await inviteTeamMember(data)
 
     if (error) {
-      console.error(error)
-      toast.error(t('inviteError'))
+      toast.error(adminError(error.code))
       return
     }
 
@@ -117,7 +118,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
     const { error } = await updateTeamMemberRole(user.id, role)
 
     if (error) {
-      toast.error(error)
+      toast.error(adminError(error.code))
       return
     }
 
@@ -129,7 +130,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
     const { error, data } = await resendInvitation(user.id)
 
     if (error) {
-      toast.error(t('resendError'))
+      toast.error(adminError(error.code))
       return
     }
 
@@ -142,7 +143,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
     const { error } = await deleteTeamMember(deleteTarget.id)
 
     if (error) {
-      toast.error(error)
+      toast.error(adminError(error.code))
       return
     }
 

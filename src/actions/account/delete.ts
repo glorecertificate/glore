@@ -9,6 +9,7 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 
 import { eraseAccount, soleAdminOrganizations } from '@/actions/account/deletion'
+import { isImpersonating } from '@/actions/admin/impersonation-state'
 import { getAuthUser } from '@/actions/auth'
 import { getCurrentUser } from '@/actions/user'
 import { queryError } from '@/db/helpers'
@@ -33,6 +34,12 @@ export const getDeletionBlockers = async () => {
 }
 
 export const deleteAccount = async (confirmation: string) => {
+  if (await isImpersonating()) {
+    return {
+      data: null,
+      error: { code: 'NOT_ALLOWED_WHILE_IMPERSONATING', message: 'Not allowed while impersonating' },
+    }
+  }
   const user = await getCurrentUser()
   if (await isRateLimited(`delete-account:${user.id}`, 5, HOUR)) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }

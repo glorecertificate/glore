@@ -55,6 +55,8 @@ describe('palette entries', () => {
       'admin-team',
       'admin-organizations',
       'admin-users',
+      'admin-certificates',
+      'admin-audit',
       'admin-emails',
     ])
     expect(ids(viewer({ canEdit: true, role: null }), 'admin')).toEqual(['admin-emails'])

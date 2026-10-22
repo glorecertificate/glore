@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { parseAsStringEnum, useQueryState } from 'nuqs'
 
 import { type getAdminOrganization } from '@/actions/admin/organizations'
-import { OrganizationCertificatesSlot } from '@/components/features/organization/certificates-slot'
+import { OrganizationCertificatesPanel } from '@/components/features/organization/certificates-panel'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { ApplicationSummary } from './application-summary'
@@ -100,7 +100,7 @@ export const AdminOrganizationDetail = ({ initialData }: { initialData: AdminOrg
           />
         </TabsContent>
         <TabsContent className="pt-4" value="certificates">
-          <OrganizationCertificatesSlot pipeline={initialData.pipeline} />
+          <OrganizationCertificatesPanel organizationId={initialData.id} />
         </TabsContent>
         <TabsContent className="pt-4" value="activity">
           <OrganizationActivity initial={initialData.activity} organizationId={initialData.id} />

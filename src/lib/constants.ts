@@ -39,9 +39,6 @@ export const AUTH_VIEWS = [
   'invalid_password_reset',
 ] as const
 
-/* Invitations */
-export const INVITATION_EXPIRY_DAYS = 7
-
 /* Auth */
 export const AUTH_LINK_EXPIRY_SECONDS = 60 * 60
 

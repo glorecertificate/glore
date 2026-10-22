@@ -43,6 +43,11 @@ describe('isClosedAuthPath', () => {
     expect(isClosedAuthPath('https://glore.localhost/api/auth/admin')).toBe(true)
   })
 
+  it('closes the impersonation plugin endpoints', () => {
+    expect(isClosedAuthPath('https://glore.localhost/api/auth/impersonation/start')).toBe(true)
+    expect(isClosedAuthPath('https://glore.localhost/api/auth//Impersonation/stop')).toBe(true)
+  })
+
   it('closes encoded, doubled, and upper-case variants', () => {
     expect(isClosedAuthPath('https://glore.localhost/api/auth//admin/ban-user')).toBe(true)
     expect(isClosedAuthPath('https://glore.localhost/api/auth/%61dmin/set-role')).toBe(true)

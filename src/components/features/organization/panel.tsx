@@ -8,7 +8,7 @@ import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
 
-import { OrganizationCertificatesSlot } from './certificates-slot'
+import { OrganizationCertificatesPanel } from './certificates-panel'
 import { OrganizationOverview } from './overview'
 import { useOrganizationTab } from './tabs'
 
@@ -73,7 +73,7 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
   }
 
   if (currentTab === 'certificates') {
-    return <OrganizationCertificatesSlot pipeline={data.pipeline} />
+    return <OrganizationCertificatesPanel organizationId={data.organization.id} />
   }
 
   if (currentTab === 'insights') {

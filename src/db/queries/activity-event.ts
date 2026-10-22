@@ -89,6 +89,9 @@ interface EventPayloads {
   'team.role_changed': { role: 'admin' | 'editor' | null; userId: string }
   'account.welcome': { userId: string }
   'account.suspended': { expiresAt: string | null; reason: string | null; userId: string }
+  'account.reinstated': { userId: string }
+  'impersonation.started': { expiresAt: string; reason: string; sessionId: string; userId: string }
+  'impersonation.stopped': { reason: string; sessionId: string; userId: string }
   'account.deleted': { email: string; firstName: string; locale: string | null; userId: string }
 }
 

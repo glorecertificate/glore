@@ -1,204 +1,233 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { startTransition as startNavigation, useState, useTransition } from 'react'
 
-import { FilterIcon, SearchIcon, SearchXIcon, UsersIcon } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useFormatter, useTranslations } from 'next-intl'
+import { debounce, useQueryStates } from 'nuqs'
 import { toast } from 'sonner'
 
-import { banUser, getAdminUsers, unbanUser, updateUserRole } from '@/actions/admin/users'
+import { updateUserRole } from '@/actions/admin/users'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useSession } from '@/components/providers/session'
-import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
-import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { type User } from '@/db/queries/user'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { DataTable } from '@/components/ui/data-table'
+import { type AdminPage, type AdminUserRow, type PlatformRole, isBanActive } from '@/db/queries/admin-user'
+import { timestampMillis } from '@/db/queries/organization'
+import { type IconName } from '@/lib/types'
+import { cn } from '@/lib/utils'
 
-import {
-  BanDialog,
-  type PlatformRole,
-  UnbanDialog,
-  UserRow,
-  type UserStatus,
-  getDisplayName,
-  getUserPlatformRole,
-  getUserStatus,
-} from './users-items'
+import { BanDialog } from './ban-dialog'
+import { ImpersonateDialog } from './impersonate-dialog'
+import { UnbanDialog } from './unban-dialog'
+import { useAdminError } from './use-admin-error'
+import { UserActions } from './user-actions'
+import { type UsersFilterValues, UsersFilters } from './users-filters'
+import { adminUsersParsers } from './users-params'
+import { userInitials, userLabel } from './utils'
 
-export const AdminUsers = ({ users: initialUsers }: { users: User[] }) => {
+const ROLE_ICONS = {
+  admin: 'shield-user',
+  editor: 'pencil',
+  user: 'user',
+} as const satisfies Record<PlatformRole, IconName>
+
+const SEARCH_DEBOUNCE_MS = 300
+
+type Dialog = { kind: 'ban' | 'impersonate' | 'unban'; user: AdminUserRow }
+
+export const AdminUsers = ({
+  organizations,
+  page,
+}: {
+  organizations: { id: number; name: string }[]
+  page: AdminPage<AdminUserRow>
+}) => {
   const t = useTranslations('Admin.users')
+  const { refresh } = useRouter()
+  const { dateTime } = useFormatter()
   const { user: currentUser } = useSession()
+  const adminError = useAdminError()
+  const [pending, startTransition] = useTransition()
+  const [params, setParams] = useQueryStates(adminUsersParsers, {
+    clearOnDefault: true,
+    shallow: false,
+    startTransition,
+  })
+  const [search, setSearch] = useState(params.q)
+  const [dialog, setDialog] = useState<Dialog | null>(null)
+  const [busyId, setBusyId] = useState<string | null>(null)
 
-  const [users, setUsers] = useState(initialUsers)
-  const [search, setSearch] = useState('')
-  const [filterRole, setFilterRole] = useState<PlatformRole | 'all'>('all')
-  const [filterStatus, setFilterStatus] = useState<UserStatus | 'all'>('all')
-  const [banTarget, setBanTarget] = useState<User | null>(null)
-  const [unbanTarget, setUnbanTarget] = useState<User | null>(null)
+  const filtersActive = Boolean(params.banned || params.org || params.q || params.role || params.status)
 
-  const displayUsers = (() => {
-    let filtered = users
-
-    if (search.trim()) {
-      const q = search.trim().toLowerCase()
-      filtered = filtered.filter(
-        u =>
-          getDisplayName(u).toLowerCase().includes(q) ||
-          u.email.toLowerCase().includes(q) ||
-          (u.username?.toLowerCase().includes(q) ?? false)
-      )
-    }
-
-    if (filterRole !== 'all') {
-      filtered = filtered.filter(u => getUserPlatformRole(u) === filterRole)
-    }
-
-    if (filterStatus !== 'all') {
-      filtered = filtered.filter(u => getUserStatus(u) === filterStatus)
-    }
-
-    return filtered
-  })()
-
-  const refreshUsers = async () => {
-    const { data } = await getAdminUsers({ cache: false })
-    if (data) setUsers(data)
+  const handleSearch = (value: string) => {
+    setSearch(value)
+    setParams({ page: 1, q: value }, { limitUrlUpdates: debounce(SEARCH_DEBOUNCE_MS) })
   }
 
-  const handleChangeRole = async (user: User, role: PlatformRole) => {
-    const { error } = await updateUserRole(user.id, role)
-    if (error) {
-      console.error(error)
-      toast.error(t('roleUpdateError'))
-      return
-    }
-    toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`) }))
-    refreshUsers()
-  }
+  const handleFilter = (patch: Partial<UsersFilterValues>) => setParams({ ...patch, page: 1 })
 
-  const handleBanConfirm = async (reason?: string) => {
-    if (!banTarget) return
-    const { error } = await banUser(banTarget.id, reason)
-    if (error) {
-      console.error(error)
-      toast.error(t('banError'))
-      return
-    }
-    toast.success(t('banSuccess', { name: getDisplayName(banTarget) }))
-    setBanTarget(null)
-    refreshUsers()
-  }
-
-  const handleUnbanConfirm = async () => {
-    if (!unbanTarget) return
-    const { error } = await unbanUser(unbanTarget.id)
-    if (error) {
-      console.error(error)
-      toast.error(t('unbanError'))
-      return
-    }
-    toast.success(t('unbanSuccess', { name: getDisplayName(unbanTarget) }))
-    setUnbanTarget(null)
-    refreshUsers()
-  }
-
-  const hasFilters = search.trim() !== '' || filterRole !== 'all' || filterStatus !== 'all'
-
-  const handleClearFilters = () => {
+  const handleClear = () => {
     setSearch('')
-    setFilterRole('all')
-    setFilterStatus('all')
+    setParams({ banned: null, org: null, page: 1, q: null, role: null, status: null })
+  }
+
+  const handleRole = async (user: AdminUserRow, role: PlatformRole) => {
+    setBusyId(user.id)
+    const { error } = await updateUserRole(user.id, role)
+    setBusyId(null)
+
+    if (error) {
+      toast.error(adminError(error.code))
+      return
+    }
+
+    toast.success(t('roleUpdateSuccess', { name: userLabel(user), role: t(`role_${role}`) }))
+    startNavigation(refresh)
+  }
+
+  const handleDialog = (open: boolean) => {
+    if (!open) setDialog(null)
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="relative min-w-48 flex-1">
-          <SearchIcon className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            className="pl-9"
-            onChange={e => setSearch(e.target.value)}
-            placeholder={t('searchPlaceholder')}
-            value={search}
+    <>
+      <DataTable
+        className={cn(pending && 'opacity-60 transition-opacity')}
+        columns={[
+          {
+            cell: user => (
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar className="size-9 rounded-full">
+                  {user.avatarUrl && <AvatarImage alt="" src={user.avatarUrl} />}
+                  <AvatarFallback className="rounded-full">
+                    {userInitials(user) || <LucideIcon name="user" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-col">
+                  <span className="flex items-center gap-1.5 truncate font-medium">
+                    {userLabel(user)}
+                    {user.id === currentUser.id && (
+                      <Badge size="sm" variant="outline">
+                        {t('you')}
+                      </Badge>
+                    )}
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                </div>
+              </div>
+            ),
+            header: t('columns.user'),
+            id: 'user',
+          },
+          {
+            cell: user => (
+              <Badge variant="ghost">
+                <LucideIcon name={ROLE_ICONS[user.platformRole]} />
+                {t(`role_${user.platformRole}`)}
+              </Badge>
+            ),
+            header: t('columns.role'),
+            id: 'role',
+          },
+          {
+            cell: user => {
+              if (isBanActive(user)) {
+                return (
+                  <div className="flex flex-col items-start gap-1">
+                    <Badge variant="destructive">{t('status_banned')}</Badge>
+                    {user.banExpires && (
+                      <span className="text-xs text-muted-foreground">
+                        {t('bannedUntil', {
+                          date: dateTime(new Date(timestampMillis(user.banExpires)), { dateStyle: 'medium' }),
+                        })}
+                      </span>
+                    )}
+                    {user.banReason && (
+                      <span className="max-w-56 truncate text-xs text-muted-foreground" title={user.banReason}>
+                        {t('bannedReason', { reason: user.banReason })}
+                      </span>
+                    )}
+                  </div>
+                )
+              }
+              if (!user.onboardedAt) return <Badge variant="warning">{t('status_pending')}</Badge>
+              return <Badge variant="success">{t('status_active')}</Badge>
+            },
+            header: t('columns.status'),
+            id: 'status',
+          },
+          {
+            cell: user => {
+              const [first] = user.organizations
+              if (!first) return <span className="text-muted-foreground">{t('noOrganizations')}</span>
+              if (user.organizations.length === 1) return first.name
+              return t('organizationsMore', { count: user.organizations.length - 1, name: first.name })
+            },
+            className: 'max-w-56 truncate',
+            header: t('columns.organizations'),
+            id: 'organizations',
+          },
+          {
+            cell: user => dateTime(new Date(timestampMillis(user.createdAt)), { dateStyle: 'medium' }),
+            header: t('columns.joined'),
+            id: 'joined',
+          },
+        ]}
+        emptyDescription={filtersActive ? t('tryAdjustingFiltersDescription') : t('noUsersDescription')}
+        emptyTitle={filtersActive ? t('tryAdjustingFilters') : t('noUsers')}
+        filters={
+          <UsersFilters
+            active={filtersActive}
+            onClear={handleClear}
+            onFilter={handleFilter}
+            onSearch={handleSearch}
+            organizations={organizations}
+            search={search}
+            values={{ banned: params.banned, org: params.org, role: params.role, status: params.status }}
           />
-        </div>
-        <div className="flex items-center gap-2">
-          <FilterIcon className="size-4 text-muted-foreground" />
-          <Select onValueChange={v => setFilterRole(v as PlatformRole | 'all')} value={filterRole}>
-            <SelectTrigger className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filter_allRoles')}</SelectItem>
-              <SelectItem value="admin">{t('role_admin')}</SelectItem>
-              <SelectItem value="editor">{t('role_editor')}</SelectItem>
-              <SelectItem value="user">{t('role_user')}</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select onValueChange={v => setFilterStatus(v as UserStatus | 'all')} value={filterStatus}>
-            <SelectTrigger className="w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t('filter_allStatuses')}</SelectItem>
-              <SelectItem value="active">{t('status_active')}</SelectItem>
-              <SelectItem value="banned">{t('status_banned')}</SelectItem>
-            </SelectContent>
-          </Select>
-          {hasFilters && (
-            <Button onClick={handleClearFilters} size="sm" variant="ghost">
-              {t('clearFilters')}
-            </Button>
-          )}
-        </div>
-      </div>
-      <p className="text-sm text-muted-foreground">
-        {t('memberCount', { count: displayUsers.length, total: users.length })}
-      </p>
-      {displayUsers.length === 0 ? (
-        <Empty className="border bg-card">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">{hasFilters ? <SearchXIcon /> : <UsersIcon />}</EmptyMedia>
-            <EmptyTitle>{hasFilters ? t('tryAdjustingFilters') : t('noUsers')}</EmptyTitle>
-          </EmptyHeader>
-          {hasFilters && (
-            <EmptyContent>
-              <Button onClick={handleClearFilters} size="sm" variant="outline">
-                {t('clearFilters')}
-              </Button>
-            </EmptyContent>
-          )}
-        </Empty>
-      ) : (
-        <div className="flex flex-col gap-2">
-          <AnimatedList>
-            {displayUsers.map(u => (
-              <AnimatedListItem key={u.id} variant="row">
-                <UserRow
-                  isCurrentUser={u.id === currentUser.id}
-                  onBan={setBanTarget}
-                  onChangeRole={handleChangeRole}
-                  onUnban={setUnbanTarget}
-                  user={u}
-                />
-              </AnimatedListItem>
-            ))}
-          </AnimatedList>
-        </div>
-      )}
+        }
+        getRowId={user => user.id}
+        label={t('tableLabel')}
+        pageSize={page.pageSize}
+        pagination={{
+          onPageChange: next => setParams({ page: next }),
+          page: page.page,
+          pageCount: page.pageCount,
+          total: page.total,
+        }}
+        rowActions={user =>
+          user.id === currentUser.id ? null : (
+            <UserActions
+              busy={busyId === user.id}
+              onBan={target => setDialog({ kind: 'ban', user: target })}
+              onImpersonate={target => setDialog({ kind: 'impersonate', user: target })}
+              onRole={handleRole}
+              onUnban={target => setDialog({ kind: 'unban', user: target })}
+              user={user}
+            />
+          )
+        }
+        rows={page.rows}
+      />
+
       <BanDialog
-        onConfirm={handleBanConfirm}
-        onOpenChange={open => !open && setBanTarget(null)}
-        open={banTarget !== null}
-        user={banTarget}
+        key={dialog?.kind === 'ban' ? dialog.user.id : 'ban'}
+        onDone={() => startNavigation(refresh)}
+        onOpenChange={handleDialog}
+        user={dialog?.kind === 'ban' ? dialog.user : null}
       />
       <UnbanDialog
-        onConfirm={handleUnbanConfirm}
-        onOpenChange={open => !open && setUnbanTarget(null)}
-        open={unbanTarget !== null}
-        user={unbanTarget}
+        onDone={() => startNavigation(refresh)}
+        onOpenChange={handleDialog}
+        user={dialog?.kind === 'unban' ? dialog.user : null}
       />
-    </div>
+      <ImpersonateDialog
+        key={dialog?.kind === 'impersonate' ? dialog.user.id : 'impersonate'}
+        onOpenChange={handleDialog}
+        user={dialog?.kind === 'impersonate' ? dialog.user : null}
+      />
+    </>
   )
 }

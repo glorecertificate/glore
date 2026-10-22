@@ -163,9 +163,9 @@ export const getOrganizationPanel = async () => {
 
 export const listOrgTutors = async (organizationId: number) => {
   const user = await getCurrentUser()
-  const isManager = user.organizations.some(
-    ({ id, role }) => id === organizationId && (role === 'admin' || role === 'representative')
-  )
+  const isManager =
+    user.isAdmin ||
+    user.organizations.some(({ id, role }) => id === organizationId && (role === 'admin' || role === 'representative'))
   if (!isManager) return { data: null, error: null }
   return await safeQuery(async () => {
     const result = await db.query.memberships.findMany({

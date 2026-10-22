@@ -19,6 +19,13 @@ export interface DataTableColumn<T> {
   sortValue?: (row: T) => string | number | Date | null
 }
 
+export interface DataTablePagination {
+  onPageChange: (page: number) => void
+  page: number
+  pageCount: number
+  total: number
+}
+
 export const DataTable = <T,>({
   className,
   columns,
@@ -29,6 +36,7 @@ export const DataTable = <T,>({
   label,
   loading = false,
   pageSize = 10,
+  pagination,
   rowActions,
   rows,
   ...props
@@ -41,6 +49,7 @@ export const DataTable = <T,>({
   label: string
   loading?: boolean
   pageSize?: number
+  pagination?: DataTablePagination
   rowActions?: (row: T) => React.ReactNode
   rows: T[]
 }) => {
@@ -67,10 +76,16 @@ export const DataTable = <T,>({
       })
     : rows
   const limit = Math.max(1, Math.trunc(pageSize) || 10)
-  const pageCount = Math.max(1, Math.ceil(sorted.length / limit))
-  const currentPage = Math.min(page, pageCount - 1)
-  const visible = sorted.slice(currentPage * limit, (currentPage + 1) * limit)
+  const pageCount = pagination ? Math.max(1, pagination.pageCount) : Math.max(1, Math.ceil(sorted.length / limit))
+  const currentPage = pagination ? Math.min(Math.max(pagination.page, 1), pageCount) - 1 : Math.min(page, pageCount - 1)
+  const visible = pagination ? sorted : sorted.slice(currentPage * limit, (currentPage + 1) * limit)
+  const total = pagination ? pagination.total : rows.length
   const columnCount = columns.length + (rowActions ? 1 : 0)
+
+  const goToPage = (index: number) => {
+    if (pagination) return pagination.onPageChange(index + 1)
+    setPage(index)
+  }
 
   const toggleSort = (id: string) => {
     setSort(current => ({ id, descending: current?.id === id ? !current.descending : false }))
@@ -82,7 +97,7 @@ export const DataTable = <T,>({
       <div className="flex flex-wrap items-center justify-between gap-3">
         {filters}
         <span aria-live="polite" className="text-sm text-muted-foreground" role="status">
-          {t('count', { count: rows.length })}
+          {t('count', { count: total })}
         </span>
       </div>
       <div className="overflow-hidden rounded-lg border">
@@ -173,7 +188,7 @@ export const DataTable = <T,>({
         <div className="flex gap-2">
           <Button
             disabled={loading || currentPage === 0}
-            onClick={() => setPage(currentPage - 1)}
+            onClick={() => goToPage(currentPage - 1)}
             size="sm"
             type="button"
             variant="outline"
@@ -183,7 +198,7 @@ export const DataTable = <T,>({
           </Button>
           <Button
             disabled={loading || currentPage >= pageCount - 1}
-            onClick={() => setPage(currentPage + 1)}
+            onClick={() => goToPage(currentPage + 1)}
             size="sm"
             type="button"
             variant="outline"

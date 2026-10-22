@@ -9,6 +9,7 @@
   "invitationRetentionDays": 30,
   "reviewReminderDays": [3, 7],
   "maxBulkInvites": 50,
+  "impersonationMinutes": 15,
   "maxAvatarSize": 2048,
   "mapsUrl": "https://maps.google.com/search",
   "searchShortcut": "k",

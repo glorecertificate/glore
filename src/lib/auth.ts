@@ -18,6 +18,7 @@ import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
+import { impersonation } from '@/lib/impersonation'
 import metadata from '~/config/metadata.json'
 
 const teamInvitationsPlugin = () => ({
@@ -182,6 +183,7 @@ export const auth = betterAuth({
       adminRoles: ['admin'],
     }),
     teamInvitationsPlugin(),
+    impersonation(),
     nextCookies(),
   ],
 })

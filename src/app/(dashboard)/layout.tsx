@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { getPendingCounts } from '@/actions/admin/pending'
 import { cookies } from '@/actions/cookies'
 import { getCurrentUser } from '@/actions/user'
+import { ImpersonationBanner } from '@/components/features/admin/impersonation-banner'
 import { DashboardSidebar } from '@/components/layout/dashboard-sidebar'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { SessionProvider } from '@/components/providers/session'
@@ -20,6 +21,7 @@ const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => 
       <SessionProvider user={user} organizationId={organizationId}>
         <DashboardSidebar pending={pending} />
         <SidebarInset>{children}</SidebarInset>
+        <ImpersonationBanner />
       </SessionProvider>
     </SidebarProvider>
   )

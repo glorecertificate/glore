@@ -1,6 +1,9 @@
+import { randomUUID } from 'node:crypto'
+
+import { hashPassword } from 'better-auth/crypto'
 import { Pool } from 'pg'
 
-import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE } from '~/scripts/seed-data'
+import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, SEED_PASSWORD } from '~/scripts/seed-data'
 
 export const clearRateLimits = async () => {
   const connectionString = process.env.DATABASE_URL
@@ -139,4 +142,47 @@ export const deleteUserByEmail = async (email: string) => {
   await pool.query('delete from organization_invitations where lower(email) = lower($1)', [email])
   await pool.query('delete from users where lower(email) = lower($1)', [email])
   await pool.end()
+}
+
+export const createLoginUser = async ({ email, firstName }: { email: string; firstName: string }) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  const id = randomUUID()
+  try {
+    await pool.query(
+      `insert into users (id, name, email, email_verified, first_name, last_name, onboarded_at, role)
+       values ($1, $2, $3, true, $2, 'E2E', now(), 'user')`,
+      [id, firstName, email]
+    )
+    await pool.query(
+      `insert into accounts (id, account_id, provider_id, user_id, password, created_at, updated_at)
+       values ($1, $1, 'credential', $2, $3, now(), now())`,
+      [randomUUID(), id, await hashPassword(SEED_PASSWORD)]
+    )
+  } finally {
+    await pool.end()
+  }
+  return { email, id }
+}
+
+export const removeLoginUsers = async (ids: string[]) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    await pool.query('delete from activity_events where actor_id = any($1) or subject_id = any($1)', [ids])
+    await pool.query('delete from users where id = any($1)', [ids])
+  } finally {
+    await pool.end()
+  }
+}
+
+export const listSubjectEvents = async (action: string, subjectId: string) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    const result = await pool.query<{ actor_id: string; metadata: Record<string, unknown> }>(
+      'select actor_id, metadata from activity_events where action = $1 and subject_id = $2 order by id',
+      [action, subjectId]
+    )
+    return result.rows
+  } finally {
+    await pool.end()
+  }
 }

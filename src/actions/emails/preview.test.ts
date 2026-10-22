@@ -4,7 +4,10 @@ const state = vi.hoisted(() => ({ user: { canEdit: false, id: 'u1', isAdmin: fal
 
 vi.mock('nodemailer', () => ({ createTransport: () => ({ sendMail: vi.fn() }) }))
 vi.mock('next/cache', () => ({ cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
-vi.mock('@/lib/auth', () => ({ auth: { api: {} } }))
+vi.mock('@/lib/auth', () => ({
+  auth: { api: { getSession: () => Promise.resolve({ user: { banned: false, id: 'u1', role: 'user' } }) } },
+}))
+vi.mock('next/headers', () => ({ headers: () => Promise.resolve(new Headers()) }))
 vi.mock('@/db/client', () => ({ db: { query: {} }, transaction: vi.fn() }))
 vi.mock('@/actions/user', () => ({ getCurrentUser: vi.fn(() => Promise.resolve(state.user)) }))
 
@@ -52,9 +55,9 @@ describe('admin data for editors', () => {
 
   it('refuses the team and user lists, which only platform admins load', async () => {
     const { getTeamMembers } = await import('@/actions/admin/team')
-    const { getAdminUsers } = await import('@/actions/admin/users')
+    const { listAdminUsers } = await import('@/actions/admin/users')
 
     expect(await getTeamMembers({ cache: false })).toEqual({ data: null, error: 'Forbidden' })
-    expect(await getAdminUsers({ cache: false })).toEqual({ data: null, error: 'Forbidden' })
+    expect(await listAdminUsers({})).toMatchObject({ data: null, error: { code: 'FORBIDDEN' } })
   })
 })

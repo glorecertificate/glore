@@ -128,6 +128,7 @@ const SKILL_TOPS = [226.5, 355.1, 482.7, 610.3]
 const DOT_LEFTS = [269.3, 304.8, 340.4, 375.9, 411.5]
 const STATEMENT_OFFSET = 27.8
 const LEVEL_OFFSET = 86.25
+const LEVEL_RIGHT = 595.28 - 544.4
 const TASK_TOP = 550.6
 const TASK_PITCH = 40
 
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     textOverflow: 'ellipsis',
     width: 280.4,
   },
-  levelText: { color: LEVEL_GRAY, left: 501.5, position: 'absolute' },
+  levelText: { color: LEVEL_GRAY, position: 'absolute', right: LEVEL_RIGHT, textAlign: 'right' },
   levelWord: { color: GREEN, fontWeight: 900, textTransform: 'lowercase' },
   emblem: { height: 34.1, left: 397.5, position: 'absolute', top: 767.9, width: 150.1 },
 })

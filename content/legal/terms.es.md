@@ -8,7 +8,7 @@ Estos términos describen cómo puedes usar GloRe Certificate. Son un texto temp
 
 ## Quiénes somos
 
-GloRe Certificate lo gestiona Associazione Joint, una organización sin ánimo de lucro de movilidad juvenil de Milán. Contacto: [correo de contacto por confirmar].
+GloRe Certificate lo gestiona Associazione Joint, una organización sin ánimo de lucro de movilidad juvenil de Milán. Contacto: info@glorecertificate.net.
 
 ## Cuentas
 
@@ -48,11 +48,11 @@ Nos esforzamos por mantener la plataforma disponible, pero no podemos prometer q
 
 ## Responsabilidad
 
-No respondemos de pérdidas que no hayamos causado o que no pudiéramos prever razonablemente, ni de cómo terceros usen un certificado. Nada de estos términos limita una responsabilidad que la ley no permita limitar. [Redacción sobre responsabilidad por confirmar.]
+No respondemos de pérdidas que no hayamos causado o que no pudiéramos prever razonablemente, ni de cómo terceros usen un certificado. Nada de estos términos limita una responsabilidad que la ley no permita limitar.
 
 ## Ley aplicable
 
-[Ley aplicable y jurisdicción por confirmar.]
+Estos términos se rigen por la ley italiana. Los conflictos corresponden a los tribunales de Milán, salvo que la ley te permita acudir a los tribunales de tu lugar de residencia.
 
 ## Cambios
 
@@ -60,4 +60,4 @@ Podemos actualizar estos términos. La fecha al inicio de la página muestra la 
 
 ## Contacto
 
-[Correo de contacto por confirmar.] Consulta también la [Política de privacidad](/privacy) y la [Carta de calidad](/quality-charter).
+Preguntas sobre estos términos: info@glorecertificate.net. Consulta también la [Política de privacidad](/privacy) y la [Carta de calidad](/quality-charter).

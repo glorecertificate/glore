@@ -14,7 +14,7 @@ A GloRe certificate is only worth something if people can trust it. Every organi
 
 - Honest support and assessment. We support volunteers in their learning and judge their experience and skills fairly and truthfully. We do not approve a certificate that does not match what the volunteer did.
 - A named tutor. Every certificate request is reviewed by a tutor of our organization who knows the volunteer's activity and whose name appears on the review.
-- Timely reviews. We answer requests within a reasonable time, and we give clear reasons when we ask for changes or reject a request. [Target review time to be confirmed.]
+- Timely reviews. We answer requests within a reasonable time, and we give clear reasons when we ask for changes or reject a request. A tutor gets a reminder when a request has waited 3 days, and the organization is alerted after 7 days.
 - The activity rules. We only approve certificates for activities that meet the platform's rules: at least 100 hours of activity, or an activity that lasts at least three months.
 - Data protection. We treat volunteers' personal data with care, use it only for the certification, and follow the data protection law that applies to us.
 - Fair access. Volunteers do not pay us a fee for certification through GloRe.
@@ -26,7 +26,7 @@ To be treated fairly, to know who reviews their request, to get a reply with rea
 
 ## If the charter is not respected
 
-Concerns can be sent to the GloRe team at [contact email to be confirmed]. A repeated or serious breach can lead to the suspension of an organization's right to issue certificates. [Process to be confirmed.]
+Concerns can be sent to the GloRe team at info@glorecertificate.net. A repeated or serious breach can lead to the suspension of an organization's right to issue certificates. Before any suspension, the GloRe team contacts the organization and lets it respond.
 
 ## Changes
 

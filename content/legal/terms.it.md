@@ -8,7 +8,7 @@ Questi termini descrivono come puoi usare GloRe Certificate. Sono un testo tempo
 
 ## Chi siamo
 
-GloRe Certificate è gestito da Associazione Joint, un'organizzazione non profit di mobilità giovanile di Milano. Contatto: [email di contatto da confermare].
+GloRe Certificate è gestito da Associazione Joint, un'organizzazione non profit di mobilità giovanile di Milano. Contatto: info@glorecertificate.net.
 
 ## Account
 
@@ -48,11 +48,11 @@ Ci impegniamo a mantenere la piattaforma disponibile, ma non possiamo promettere
 
 ## Responsabilità
 
-Non rispondiamo di perdite che non abbiamo causato o che non potevamo ragionevolmente prevedere, né di come terzi usano un certificato. Nulla in questi termini limita una responsabilità che la legge non consente di limitare. [Formulazione sulla responsabilità da confermare.]
+Non rispondiamo di perdite che non abbiamo causato o che non potevamo ragionevolmente prevedere, né di come terzi usano un certificato. Nulla in questi termini limita una responsabilità che la legge non consente di limitare.
 
 ## Legge applicabile
 
-[Legge applicabile e foro competente da confermare.]
+Questi termini sono regolati dalla legge italiana. Per le controversie è competente il foro di Milano, salvo che la legge ti consenta di rivolgerti al giudice del luogo in cui risiedi.
 
 ## Modifiche
 
@@ -60,4 +60,4 @@ Possiamo aggiornare questi termini. La data in cima alla pagina indica l'ultimo 
 
 ## Contatti
 
-[Email di contatto da confermare.] Consulta anche l'[Informativa sulla privacy](/privacy) e la [Carta della qualità](/quality-charter).
+Domande su questi termini: info@glorecertificate.net. Consulta anche l'[Informativa sulla privacy](/privacy) e la [Carta della qualità](/quality-charter).

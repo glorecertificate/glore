@@ -8,7 +8,7 @@ This text explains how GloRe Certificate handles personal data. It is a temporar
 
 ## Who is responsible
 
-The data controller is Associazione Joint, a youth-mobility non-profit in Milan, which runs GloRe Certificate. Registered address: [registered address to be confirmed]. Contact: [contact email to be confirmed].
+The data controller is Associazione Joint, a youth-mobility non-profit in Milan, which runs GloRe Certificate. Contact: info@glorecertificate.net.
 
 ## What data we store
 
@@ -33,7 +33,7 @@ An approved certificate is public by design. Its page shows your name, your orga
 - To measure how the platform is used with analytics that do not use cookies and do not identify you (legitimate interest).
 - To meet legal obligations (legal obligation).
 
-[Legal bases to be confirmed by the GloRe team.]
+We process your data to provide the service you use (performance of a contract), to keep the platform secure and send service emails (legitimate interest), to meet legal obligations, and, where we ask for it, with your consent.
 
 ## Who processes data for us
 
@@ -42,14 +42,14 @@ We use these providers to run the platform:
 - Vercel, which hosts the application.
 - Neon, which provides the PostgreSQL database.
 - Cloudflare R2, which stores uploaded files and certificate PDFs.
-- An email service provider, reached over SMTP, which delivers service emails. Provider: [email provider to be confirmed].
+- An email service provider, reached over SMTP, which delivers service emails.
 - Google Gemini, used only as a writing assistant in the course editor. It receives the text an editor asks it to work on, and it is not used for learners' data.
 
 Organizations you belong to can see the data about you that the platform shows to their members and tutors.
 
 ## Transfers outside the European Economic Area
 
-The application servers and the database are configured in the European Union. Some providers listed above may process data outside the European Economic Area. Where this happens we rely on appropriate safeguards. [Details of transfer safeguards to be confirmed.]
+The application servers and the database are configured in the European Union. Some providers listed above may process data outside the European Economic Area. Where this happens we rely on appropriate safeguards, such as the European Commission's standard contractual clauses.
 
 ## Cookies and analytics
 
@@ -57,17 +57,17 @@ We use only essential cookies: they keep you signed in, remember your language a
 
 ## How long we keep data
 
-[Data retention periods to be confirmed.] You can delete your account in your settings. Approved certificates are public records that an organization has issued, so deleting your account may be subject to additional conditions. [Conditions to be confirmed.]
+We keep your data while your account is active. Expired, revoked, or declined invitations are deleted after 30 days, and expired sessions and verification links are deleted every day. You can delete your account in your settings. Approved certificates are public records that an organization has issued, so deleting your account may be subject to additional conditions.
 
 ## Your rights
 
-Under the General Data Protection Regulation (GDPR) you can ask us to give you access to your data, correct it, delete it, restrict or object to its use, and give you a copy in a portable format. Where we rely on your consent, you can withdraw it at any time. You can edit most of your data directly in your settings. For anything else, write to [contact email to be confirmed].
+Under the General Data Protection Regulation (GDPR) you can ask us to give you access to your data, correct it, delete it, restrict or object to its use, and give you a copy in a portable format. Where we rely on your consent, you can withdraw it at any time. You can edit most of your data directly in your settings. For anything else, write to info@glorecertificate.net.
 
 You also have the right to lodge a complaint with a data protection authority. In Italy this is the Garante per la protezione dei dati personali. You can also contact the authority in your own country.
 
 ## Contact
 
-Questions about this policy: [contact email to be confirmed]. Data protection officer, if appointed: [to be confirmed].
+Questions about this policy: info@glorecertificate.net.
 
 ## Changes
 

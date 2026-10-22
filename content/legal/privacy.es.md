@@ -8,7 +8,7 @@ Este texto explica cómo trata GloRe Certificate los datos personales. Es un tex
 
 ## Quién es el responsable
 
-El responsable del tratamiento es Associazione Joint, una organización sin ánimo de lucro de movilidad juvenil de Milán que gestiona GloRe Certificate. Domicilio social: [domicilio social por confirmar]. Contacto: [correo de contacto por confirmar].
+El responsable del tratamiento es Associazione Joint, una organización sin ánimo de lucro de movilidad juvenil de Milán que gestiona GloRe Certificate. Contacto: info@glorecertificate.net.
 
 ## Qué datos guardamos
 
@@ -33,7 +33,7 @@ Un certificado aprobado es público por diseño. Su página muestra tu nombre, t
 - Para medir el uso de la plataforma con analítica que no usa cookies y no te identifica (interés legítimo).
 - Para cumplir obligaciones legales (obligación legal).
 
-[Bases jurídicas por confirmar por el equipo de GloRe.]
+Tratamos tus datos para prestarte el servicio que usas (ejecución de un contrato), para mantener la plataforma segura y enviar correos del servicio (interés legítimo), para cumplir obligaciones legales y, cuando te lo pedimos, con tu consentimiento.
 
 ## Quién trata datos por nosotros
 
@@ -42,14 +42,14 @@ Usamos estos proveedores para hacer funcionar la plataforma:
 - Vercel, que aloja la aplicación.
 - Neon, que ofrece la base de datos PostgreSQL.
 - Cloudflare R2, que guarda los archivos subidos y los PDF de certificados.
-- Un proveedor de correo electrónico, al que se accede por SMTP, que entrega los correos del servicio. Proveedor: [proveedor de correo por confirmar].
+- Un proveedor de correo electrónico, al que se accede por SMTP, que entrega los correos del servicio.
 - Google Gemini, que se usa solo como asistente de escritura en el editor de cursos. Recibe el texto que una persona editora le pide trabajar, y no se usa con datos del alumnado.
 
 Las organizaciones a las que perteneces pueden ver los datos sobre ti que la plataforma muestra a sus miembros y tutores.
 
 ## Transferencias fuera del Espacio Económico Europeo
 
-Los servidores de la aplicación y la base de datos están configurados en la Unión Europea. Algunos de los proveedores indicados pueden tratar datos fuera del Espacio Económico Europeo. Cuando ocurre, nos apoyamos en garantías adecuadas. [Detalles de las garantías de transferencia por confirmar.]
+Los servidores de la aplicación y la base de datos están configurados en la Unión Europea. Algunos de los proveedores indicados pueden tratar datos fuera del Espacio Económico Europeo. Cuando ocurre, nos apoyamos en garantías adecuadas, como las cláusulas contractuales tipo de la Comisión Europea.
 
 ## Cookies y analítica
 
@@ -57,17 +57,17 @@ Solo usamos cookies esenciales: te mantienen con la sesión iniciada, recuerdan 
 
 ## Cuánto tiempo guardamos los datos
 
-[Plazos de conservación de los datos por confirmar.] Puedes eliminar tu cuenta en los ajustes. Los certificados aprobados son registros públicos emitidos por una organización, por lo que eliminar tu cuenta puede estar sujeto a condiciones adicionales. [Condiciones por confirmar.]
+Conservamos tus datos mientras tu cuenta esté activa. Las invitaciones caducadas, revocadas o rechazadas se eliminan a los 30 días, y las sesiones y los enlaces de verificación caducados se eliminan cada día. Puedes eliminar tu cuenta en los ajustes. Los certificados aprobados son registros públicos emitidos por una organización, por lo que eliminar tu cuenta puede estar sujeto a condiciones adicionales.
 
 ## Tus derechos
 
-Según el Reglamento General de Protección de Datos (RGPD) puedes pedirnos acceso a tus datos, su rectificación o supresión, la limitación o la oposición a su uso y una copia en formato portable. Cuando nos basamos en tu consentimiento, puedes retirarlo en cualquier momento. Puedes editar la mayoría de tus datos directamente en los ajustes. Para cualquier otra cosa, escribe a [correo de contacto por confirmar].
+Según el Reglamento General de Protección de Datos (RGPD) puedes pedirnos acceso a tus datos, su rectificación o supresión, la limitación o la oposición a su uso y una copia en formato portable. Cuando nos basamos en tu consentimiento, puedes retirarlo en cualquier momento. Puedes editar la mayoría de tus datos directamente en los ajustes. Para cualquier otra cosa, escribe a info@glorecertificate.net.
 
 También tienes derecho a presentar una reclamación ante una autoridad de protección de datos. En Italia es el Garante per la protezione dei dati personali. También puedes acudir a la autoridad de tu propio país.
 
 ## Contacto
 
-Preguntas sobre esta política: [correo de contacto por confirmar]. Delegado de protección de datos, si se nombra: [por confirmar].
+Preguntas sobre esta política: info@glorecertificate.net.
 
 ## Cambios
 

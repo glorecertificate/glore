@@ -8,7 +8,7 @@ These terms describe how you may use GloRe Certificate. They are a temporary tex
 
 ## Who we are
 
-GloRe Certificate is run by Associazione Joint, a youth-mobility non-profit in Milan. Contact: [contact email to be confirmed].
+GloRe Certificate is run by Associazione Joint, a youth-mobility non-profit in Milan. Contact: info@glorecertificate.net.
 
 ## Accounts
 
@@ -48,11 +48,11 @@ We work to keep the platform available, but we cannot promise it will always be 
 
 ## Liability
 
-We are not liable for losses that are not caused by us or that we could not reasonably foresee, or for how third parties use a certificate. Nothing in these terms limits liability that the law does not allow us to limit. [Liability wording to be confirmed.]
+We are not liable for losses that are not caused by us or that we could not reasonably foresee, or for how third parties use a certificate. Nothing in these terms limits liability that the law does not allow us to limit.
 
 ## Governing law
 
-[Governing law and jurisdiction to be confirmed.]
+These terms are governed by Italian law. Disputes go to the courts of Milan, unless the law gives you the right to use the courts where you live.
 
 ## Changes
 
@@ -60,4 +60,4 @@ We may update these terms. The date at the top of the page shows the latest upda
 
 ## Contact
 
-[Contact email to be confirmed.] See also the [Privacy policy](/privacy) and the [Quality Charter](/quality-charter).
+Questions about these terms: info@glorecertificate.net. See also the [Privacy policy](/privacy) and the [Quality Charter](/quality-charter).

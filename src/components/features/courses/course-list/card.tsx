@@ -165,6 +165,7 @@ export const CourseListCard = ({
                   className={cn('leading-[normal] font-medium transition-none')}
                   href={coursePath}
                   title={t('viewCourse')}
+                  suppressHydrationWarning
                 >
                   <SearchHighlight query={search} value={title} />
                 </Link>
@@ -201,6 +202,7 @@ export const CourseListCard = ({
                 className={cn('leading-[normal] font-medium transition-none')}
                 href={coursePath}
                 title={t('viewCourse')}
+                suppressHydrationWarning
               >
                 <SearchHighlight query={search} value={title} />
               </Link>

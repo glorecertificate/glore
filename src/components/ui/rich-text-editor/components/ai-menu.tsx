@@ -450,7 +450,7 @@ const AIMenuItems = ({ setValue }: { setValue: (value: string) => void }) => {
   return (
     <>
       {menuGroups.map(group => (
-        <CommandGroup heading={group.heading} key={group.heading}>
+        <CommandGroup key={group.items[0].value} heading={group.heading}>
           {group.items.map(menuItem => (
             <CommandItem
               className="[&_svg]:text-muted-foreground"

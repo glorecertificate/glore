@@ -6,9 +6,7 @@ const DEMO_TARGETS = ['local', 'staging'] as const
 
 export type DemoTarget = (typeof DEMO_TARGETS)[number]
 
-export const STAGING_SETTING = 'glore.environment'
-
-export const STAGING_MARKER = 'staging'
+export const STAGING_COMMENT = 'glore:staging'
 
 export const DEMO_USAGE = 'Usage: pnpm run db:seed:demo --target <local|staging>'
 

@@ -30,7 +30,7 @@ Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
 
 - `pnpm run db:seed` (`scripts/seed.mts`) upserts the org `glore-seed` and one user per role at `<role>@seed.glore.test`: `admin` (platform admin), `editor`, `owner` (org admin), `representative`, `tutor`, `volunteer`, `learner`, plus `holder` (a volunteer for demo certificates, which tests that wipe `volunteer` leave alone) and `recovery` (password reset spec). The shared password and roles live in `scripts/seed-data.ts`. It runs in one transaction, is idempotent, and exits non-zero unless `DATABASE_URL` points to localhost.
 - `pnpm run db:seed:demo --target <local|staging>` (`scripts/seed-demo.mts`) upserts the demo organizations and the accounts of `.agents/references/manual-testing.md` at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`. Data lives in `scripts/seed-demo-data.ts`; shared upserts in `scripts/seed-db.mts`.
-- Guard: `local` needs a localhost `DATABASE_URL`; `staging` needs a remote one whose database has `glore.environment = 'staging'` (set with `ALTER DATABASE` on the Neon `staging` branch only). Production never has the setting, so it is never seeded.
+- Guard: `local` needs a localhost `DATABASE_URL`; `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings). Production never has the setting, so it is never seeded.
 
 ## Committing
 

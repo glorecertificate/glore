@@ -9,8 +9,7 @@ import {
   DEMO_ORGANIZATIONS,
   DEMO_USAGE,
   DEMO_USERS,
-  STAGING_MARKER,
-  STAGING_SETTING,
+  STAGING_COMMENT,
   demoEmail,
   demoUsername,
   guardDemoTarget,
@@ -35,11 +34,11 @@ const seedDemo = async () => {
   const now = new Date().toISOString()
 
   try {
-    const { rows } = await client.query<{ value: string | null }>('select current_setting($1, true) as value', [
-      STAGING_SETTING,
-    ])
-    if (args.target === 'staging' && rows[0]?.value !== STAGING_MARKER) {
-      return fail(`Refusing to seed: the database lacks ${STAGING_SETTING} = '${STAGING_MARKER}'.`)
+    const { rows } = await client.query<{ value: string | null }>(
+      "select shobj_description(oid, 'pg_database') as value from pg_database where datname = current_database()"
+    )
+    if (args.target === 'staging' && rows[0]?.value !== STAGING_COMMENT) {
+      return fail(`Refusing to seed: the database comment is not '${STAGING_COMMENT}'.`)
     }
 
     const passwordHash = await hashPassword(SEED_PASSWORD)

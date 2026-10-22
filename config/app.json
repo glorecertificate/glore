@@ -1,4 +1,5 @@
 {
+  "aiFirstTokenMs": 8000,
   "aiModels": ["gemini-3.8-flash", "gemini-3.5-flash-lite"],
   "minSkills": 3,
   "minRating": 3,

@@ -96,9 +96,15 @@ describe('POST /api/v1/ai/command', () => {
           Promise.reject(Object.assign(new Error('This model is no longer available'), { statusCode: 404 })),
       })
     )
-    state.models.set(second, streaming('Better words'))
+    state.models.set(second, streaming('Better words for everyone'))
     const response = await call(valid)
     expect(response.status).toBe(200)
-    expect(await response.text()).toContain('Better')
+    const body = await response.text()
+    const deltas = body
+      .split('\n')
+      .filter(line => line.startsWith('data: {'))
+      .map(line => JSON.parse(line.slice(6)) as { delta?: string; type: string })
+    expect(deltas.map(part => part.delta ?? '').join('')).toBe('Better words for everyone')
+    expect(deltas.some(part => part.type === 'error')).toBe(false)
   })
 })

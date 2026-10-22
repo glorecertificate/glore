@@ -51,6 +51,18 @@ const failing = (statusCode: number) =>
     doStream: () => Promise.reject(apiError(statusCode)),
   })
 
+const stalled = () =>
+  new MockLanguageModelV3({
+    doGenerate: ({ abortSignal }) =>
+      new Promise((_resolve, reject) => {
+        abortSignal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
+      }),
+    doStream: ({ abortSignal }) =>
+      new Promise((_resolve, reject) => {
+        abortSignal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
+      }),
+  })
+
 const generating = (text: string) =>
   new MockLanguageModelV3({
     doGenerate: {
@@ -61,8 +73,8 @@ const generating = (text: string) =>
     },
   })
 
-const run = async (models: MockLanguageModelV3[]) => {
-  const response = streamTextWithFallback({ models, prompt: 'Hello' })
+const run = async (models: MockLanguageModelV3[], firstTokenTimeoutMs?: number) => {
+  const response = streamTextWithFallback({ firstTokenTimeoutMs, models, prompt: 'Hello' })
   return await response.text()
 }
 
@@ -125,6 +137,33 @@ describe('streamTextWithFallback', () => {
     expect(second.doStreamCalls).toHaveLength(0)
   })
 
+  it('falls back when a model sends no text before the first token timeout', async () => {
+    const second = streaming('Fast')
+    const body = await run([stalled(), second], 50)
+    expect(body).toContain('Fast')
+    expect(body).not.toContain(AI_ERROR.unavailable)
+    expect(second.doStreamCalls).toHaveLength(1)
+  })
+
+  it('gives the last model no first token timeout', async () => {
+    const slow = new MockLanguageModelV3({
+      doStream: {
+        stream: simulateReadableStream({
+          chunks: [
+            { type: 'stream-start', warnings: [] },
+            { id: 't', type: 'text-start' },
+            { delta: 'Late', id: 't', type: 'text-delta' },
+            { id: 't', type: 'text-end' },
+            finish,
+          ] as LanguageModelV3StreamPart[],
+          initialDelayInMs: 120,
+        }),
+      },
+    })
+    const body = await run([failing(404), slow], 50)
+    expect(body).toContain('Late')
+  })
+
   it('falls back when a model finishes without any text', async () => {
     const empty = streaming()
     const second = streaming('Filled')
@@ -145,6 +184,15 @@ describe('generateTextWithFallback', () => {
   it.each([404, 429, 500])('falls back after a %i', async status => {
     const result = await generateTextWithFallback({
       models: [failing(status), generating('Second')],
+      prompt: 'Hello',
+    })
+    expect(result.text).toBe('Second')
+  })
+
+  it('falls back when a model does not answer before the timeout', async () => {
+    const result = await generateTextWithFallback({
+      firstTokenTimeoutMs: 50,
+      models: [stalled(), generating('Second')],
       prompt: 'Hello',
     })
     expect(result.text).toBe('Second')

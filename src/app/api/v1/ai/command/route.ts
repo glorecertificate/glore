@@ -95,24 +95,26 @@ const smoothStream = <TOOLS extends ToolSet>({
 
   return () => {
     let buffer = ''
+    let id = ''
 
     return new TransformStream<TextStreamPart<TOOLS>, TextStreamPart<TOOLS>>({
       async transform(chunk, controller) {
         if (chunk.type !== 'text-delta') {
           if (buffer.length > 0) {
-            controller.enqueue({ text: buffer, type: 'text-delta' } as TextStreamPart<TOOLS>)
+            controller.enqueue({ id, text: buffer, type: 'text-delta' } as TextStreamPart<TOOLS>)
             buffer = ''
           }
           controller.enqueue(chunk)
           return
         }
 
+        id = chunk.id
         buffer += chunk.text
         let match: string | null | undefined
         match = detectChunk(buffer)
 
         while (match) {
-          controller.enqueue({ text: match, type: 'text-delta' } as TextStreamPart<TOOLS>)
+          controller.enqueue({ id, text: match, type: 'text-delta' } as TextStreamPart<TOOLS>)
           buffer = buffer.slice(match.length)
           await delay(typeof delayInMs === 'number' ? delayInMs : (delayInMs?.(buffer) ?? 10))
           match = detectChunk(buffer)

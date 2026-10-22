@@ -751,7 +751,10 @@
       "loading": "Cargando resultados",
       "page": "Página {page} de {total}",
       "previous": "Anterior",
-      "next": "Siguiente"
+      "next": "Siguiente",
+      "sortBy": "Ordenar por",
+      "sortAscending": "Orden ascendente",
+      "sortDescending": "Orden descendente"
     },
     "Chart": {
       "empty": "Todavía no hay datos",

@@ -75,13 +75,13 @@ Shared primitives live in `src/components/ui/`. They accept root props and local
 
 - `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
 - `LevelDots` takes a level from 1 to 5 and a localized level label. `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
-- `DataTable` takes rows, stable row IDs, columns with optional sort accessors, a filters slot, and a row-actions slot. It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states. Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows. Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable.
+- `DataTable` takes rows, stable row IDs, columns with optional sort accessors, a filters slot, and a row-actions slot. It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states. Pass `pagination` (page, pageCount, total, onPageChange) for server-paged rows. Below `sm` each row becomes a labeled card (cells carry `data-label`), so status and actions stay reachable, and a compact sort select plus direction toggle replaces the hidden column sorts (`data-table-sort.ts`).
 - `StatCard` composes `NumberTicker`; formatting follows next-intl, and the ticker respects reduced motion. `Banner` supplies semantic status variants. `SegmentedControl` and `SegmentedControlItem` use Radix radio semantics and keyboard navigation.
 - `CopyButton` handles clipboard failures and ignores stale completions after its value changes. `QrCode` imports the QR encoder on demand and provides loading and error states. `AvatarStack` lives in `avatar-stack.tsx`, requires stable avatar IDs and labels, and always renders a fallback.
 - `Chart` loads `chart-renderer.tsx` through `next/dynamic` with a local skeleton. Only the renderer imports Recharts; its targeted lint override accounts for this boundary. Charts use semantic chart tokens, localize values, disable chart animation, and include an accessible data table. Mount charts only on analytics surfaces with real data.
 - Personal skills use the AA-checked `brand-quaternary` teal tokens; chart colors use text variants to preserve contrast in both themes.
 
-The organization roster uses `DataTable`; its overview uses `StatCard` and `AvatarStack`. Certificate views consume the sharing, timeline, and level primitives. These are foundation integrations; the later feature lanes still own their release flows.
+The organization roster uses `DataTable`; its overview uses `StatCard` and `AvatarStack`. Certificate views consume the sharing, timeline, and level primitives.
 
 ## Type system
 

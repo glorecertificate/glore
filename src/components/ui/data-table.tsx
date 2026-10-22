@@ -6,7 +6,17 @@ import { useFormatter, useLocale, useTranslations } from 'next-intl'
 
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
+import {
+  type DataTableSort,
+  type DataTableSortValue,
+  flipSort,
+  selectSort,
+  sortRows,
+  sortableColumns,
+  toggleSort,
+} from '@/components/ui/data-table-sort'
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
@@ -32,7 +42,7 @@ export interface DataTableColumn<T> {
   className?: string
   header: string
   id: string
-  sortValue?: (row: T) => string | number | Date | null
+  sortValue?: (row: T) => DataTableSortValue
 }
 
 export interface DataTablePagination {
@@ -73,24 +83,11 @@ export const DataTable = <T,>({
   const locale = useLocale()
   const { number } = useFormatter()
   const [page, setPage] = useState(0)
-  const [sort, setSort] = useState<{ id: string; descending: boolean } | null>(null)
+  const [sort, setSort] = useState<DataTableSort | null>(null)
   const column = columns.find(item => item.id === sort?.id)
   const collator = new Intl.Collator(locale, { numeric: true, sensitivity: 'base' })
-  const sorted = column?.sortValue
-    ? rows.toSorted((left, right) => {
-        const a = column.sortValue?.(left) ?? null
-        const b = column.sortValue?.(right) ?? null
-        if (a === null) return b === null ? 0 : 1
-        if (b === null) return -1
-        const comparison =
-          typeof a === 'number' && typeof b === 'number'
-            ? a - b
-            : a instanceof Date && b instanceof Date
-              ? a.getTime() - b.getTime()
-              : collator.compare(String(a), String(b))
-        return sort?.descending ? -comparison : comparison
-      })
-    : rows
+  const sorted = sortRows({ collator, column, rows, sort })
+  const sortable = sortableColumns(columns)
   const limit = Math.max(1, Math.trunc(pageSize) || 10)
   const pageCount = pagination ? Math.max(1, pagination.pageCount) : Math.max(1, Math.ceil(sorted.length / limit))
   const currentPage = pagination ? Math.min(Math.max(pagination.page, 1), pageCount) - 1 : Math.min(page, pageCount - 1)
@@ -103,8 +100,18 @@ export const DataTable = <T,>({
     setPage(index)
   }
 
-  const toggleSort = (id: string) => {
-    setSort(current => ({ id, descending: current?.id === id ? !current.descending : false }))
+  const onToggleSort = (id: string) => {
+    setSort(current => toggleSort(current, id))
+    setPage(0)
+  }
+
+  const onSelectSort = (id: string) => {
+    setSort(current => selectSort(current, id))
+    setPage(0)
+  }
+
+  const onFlipSort = () => {
+    setSort(current => flipSort(current))
     setPage(0)
   }
 
@@ -116,6 +123,32 @@ export const DataTable = <T,>({
           {t('count', { count: total })}
         </span>
       </div>
+      {sortable.length > 0 && (
+        <div className="flex items-center gap-2 sm:hidden" data-slot="data-table-sort">
+          <Select onValueChange={onSelectSort} value={sort?.id ?? ''}>
+            <SelectTrigger aria-label={t('sortBy')} className="h-8 min-w-0 flex-1 text-xs">
+              <SelectValue placeholder={t('sortBy')} />
+            </SelectTrigger>
+            <SelectContent>
+              {sortable.map(item => (
+                <SelectItem key={item.id} value={item.id}>
+                  {item.header}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            aria-label={sort?.descending ? t('sortDescending') : t('sortAscending')}
+            disabled={!sort}
+            onClick={onFlipSort}
+            size="icon"
+            type="button"
+            variant="outline"
+          >
+            <LucideIcon name={sort?.descending ? 'arrow-down' : 'arrow-up'} />
+          </Button>
+        </div>
+      )}
       <div className="overflow-hidden rounded-lg border">
         <Table aria-label={label} className={MOBILE_TABLE}>
           <TableHeader className={MOBILE_HEAD}>
@@ -138,7 +171,7 @@ export const DataTable = <T,>({
                   {item.sortValue ? (
                     <Button
                       className="-ml-2"
-                      onClick={() => toggleSort(item.id)}
+                      onClick={() => onToggleSort(item.id)}
                       size="sm"
                       type="button"
                       variant="ghost"

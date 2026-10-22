@@ -1,0 +1,41 @@
+{
+  "slug": "leadership",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "flag",
+  "title": {
+    "en": "Leadership",
+    "es": "Liderazgo",
+    "it": "Leadership"
+  },
+  "description": {
+    "en": "Help a group see where it is going, take action together, and make sure everyone has a voice and a part.",
+    "es": "Ayuda a un grupo a ver hacia dónde va, a actuar unido y a que todas las personas tengan voz y un papel.",
+    "it": "Aiuta un gruppo a vedere dove sta andando, ad agire insieme e a far sì che ognuno abbia voce e un ruolo."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Present a clear common goal and explain why it matters",
+      "Motivate people by recognising their effort",
+      "Turn a goal into clear tasks that match people's strengths",
+      "Involve quieter members and invite different contributions",
+      "Share the lead and step back when someone else can lead"
+    ],
+    "es": [
+      "Presentar un objetivo común claro y explicar por qué importa",
+      "Motivar a las personas reconociendo su esfuerzo",
+      "Convertir un objetivo en tareas claras que encajen con los puntos fuertes de cada una",
+      "Implicar a quienes hablan menos e invitar a contribuciones distintas",
+      "Compartir el liderazgo y dar un paso atrás cuando otra persona puede liderar"
+    ],
+    "it": [
+      "Presentare un obiettivo comune chiaro e spiegare perché è importante",
+      "Motivare le persone riconoscendo il loro impegno",
+      "Trasformare un obiettivo in compiti chiari adatti ai punti di forza di ciascuno",
+      "Coinvolgere chi parla meno e invitare contributi diversi",
+      "Condividere la guida e fare un passo indietro quando può guidare qualcun altro"
+    ]
+  },
+  "sortOrder": 5
+}

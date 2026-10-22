@@ -1,0 +1,41 @@
+{
+  "slug": "self-awareness",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "scan-face",
+  "title": {
+    "en": "Self-awareness",
+    "es": "Autoconocimiento",
+    "it": "Autoconsapevolezza"
+  },
+  "description": {
+    "en": "Get to know what you do well and what you find hard, learn from your experiences, and choose small steps to grow.",
+    "es": "Descubre en qué eres bueno y qué se te hace difícil, aprende de tus experiencias y elige pequeños pasos para crecer.",
+    "it": "Scopri in cosa sei bravo e cosa trovi difficile, impara dalle tue esperienze e scegli piccoli passi per crescere."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Name your strengths and difficulties with concrete examples",
+      "Use your reactions and other people's feedback to understand yourself",
+      "Reflect on an experience to find out what it taught you",
+      "Turn a weakness into a small, specific goal",
+      "Use a strength to support an area you want to improve"
+    ],
+    "es": [
+      "Nombrar tus puntos fuertes y tus dificultades con ejemplos concretos",
+      "Usar tus reacciones y los comentarios de los demás para conocerte mejor",
+      "Reflexionar sobre una experiencia para ver qué te ha enseñado",
+      "Convertir un punto débil en un objetivo pequeño y concreto",
+      "Apoyarte en un punto fuerte para mejorar un área que quieres trabajar"
+    ],
+    "it": [
+      "Indicare i tuoi punti di forza e le tue difficoltà con esempi concreti",
+      "Usare le tue reazioni e il feedback degli altri per conoscerti meglio",
+      "Riflettere su un'esperienza per capire cosa ti ha insegnato",
+      "Trasformare un punto debole in un obiettivo piccolo e concreto",
+      "Appoggiarti a un punto di forza per migliorare un'area su cui vuoi lavorare"
+    ]
+  },
+  "sortOrder": 2
+}

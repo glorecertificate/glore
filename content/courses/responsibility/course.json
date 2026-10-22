@@ -1,0 +1,41 @@
+{
+  "slug": "responsibility",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "shield-check",
+  "title": {
+    "en": "Responsibility",
+    "es": "Responsabilidad",
+    "it": "Responsabilità"
+  },
+  "description": {
+    "en": "Own what you do and promise, say so early when something goes wrong, and put it right.",
+    "es": "Asume lo que haces y prometes, avisa pronto cuando algo sale mal y arréglalo.",
+    "it": "Assumiti ciò che fai e prometti, avvisa presto quando qualcosa va storto e rimedia."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Keep your commitments, or warn people early when you cannot",
+      "Say clearly what you did, including when something went wrong",
+      "Repair the effects of a mistake instead of looking for excuses",
+      "Separate what you control from what you do not",
+      "Take responsibility without blaming yourself or others"
+    ],
+    "es": [
+      "Cumplir tus compromisos o avisar pronto cuando no puedas",
+      "Decir con claridad lo que hiciste, también cuando algo salió mal",
+      "Reparar los efectos de un error en lugar de buscar excusas",
+      "Separar lo que controlas de lo que no controlas",
+      "Asumir la responsabilidad sin culparte ni culpar a los demás"
+    ],
+    "it": [
+      "Mantenere gli impegni, oppure avvisare presto quando non puoi",
+      "Dire con chiarezza ciò che hai fatto, anche quando qualcosa è andato storto",
+      "Rimediare agli effetti di un errore invece di cercare scuse",
+      "Separare ciò che controlli da ciò che non controlli",
+      "Assumerti la responsabilità senza dare la colpa a te stesso o agli altri"
+    ]
+  },
+  "sortOrder": 4
+}

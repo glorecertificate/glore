@@ -1,0 +1,41 @@
+{
+  "slug": "critical-thinking",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "brain",
+  "title": {
+    "en": "Critical thinking",
+    "es": "Pensamiento crítico",
+    "it": "Pensiero critico"
+  },
+  "description": {
+    "en": "Question what you read and hear, look at a situation from several sides, and reach your own conclusions based on evidence.",
+    "es": "Cuestiona lo que lees y oyes, mira una situación desde varios lados y llega a tus propias conclusiones a partir de las pruebas.",
+    "it": "Metti in discussione ciò che leggi e ascolti, guarda una situazione da più lati e arriva alle tue conclusioni a partire dalle prove."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Check the source and evidence of information before you believe or share it",
+      "Form your own opinion after looking at the facts",
+      "Break a situation into parts and look for several possible causes",
+      "Look for views different from yours and try to understand them",
+      "Notice when you accept something only because it agrees with you"
+    ],
+    "es": [
+      "Comprobar la fuente y las pruebas de una información antes de creerla o compartirla",
+      "Formarte tu propia opinión después de mirar los hechos",
+      "Dividir una situación en partes y buscar varias causas posibles",
+      "Buscar opiniones distintas a la tuya e intentar entenderlas",
+      "Darte cuenta de cuándo aceptas algo solo porque coincide contigo"
+    ],
+    "it": [
+      "Controllare la fonte e le prove di un'informazione prima di crederci o condividerla",
+      "Farti la tua opinione dopo aver guardato i fatti",
+      "Scomporre una situazione in parti e cercare più cause possibili",
+      "Cercare opinioni diverse dalla tua e provare a capirle",
+      "Accorgerti di quando accetti qualcosa solo perché concorda con te"
+    ]
+  },
+  "sortOrder": 3
+}

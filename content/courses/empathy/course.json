@@ -1,0 +1,41 @@
+{
+  "slug": "empathy",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "heart",
+  "title": {
+    "en": "Empathy",
+    "es": "Empatía",
+    "it": "Empatia"
+  },
+  "description": {
+    "en": "Notice what other people are going through, picture it from their side, and respond with care without taking over.",
+    "es": "Fíjate en lo que están viviendo los demás, imagínalo desde su lugar y responde con cuidado sin quedarte con su problema.",
+    "it": "Accorgiti di ciò che stanno vivendo gli altri, immaginalo dal loro punto di vista e rispondi con cura senza prenderti carico del loro problema."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice how people feel from their words, tone and silences",
+      "Imagine a situation from the other person's side before you judge",
+      "Respond to someone's difficulty with care and without taking over",
+      "Check that you understood a person correctly instead of assuming",
+      "Tell the difference between understanding a feeling and agreeing with it"
+    ],
+    "es": [
+      "Notar cómo se sienten las personas por sus palabras, su tono y sus silencios",
+      "Imaginar una situación desde el lugar de la otra persona antes de juzgar",
+      "Responder con cuidado a la dificultad de alguien sin quedarte con su problema",
+      "Comprobar que has entendido bien a una persona en lugar de suponerlo",
+      "Distinguir entre comprender un sentimiento y estar de acuerdo con él"
+    ],
+    "it": [
+      "Cogliere come si sentono le persone dalle loro parole, dal tono e dai silenzi",
+      "Immaginare una situazione dal punto di vista dell'altra persona prima di giudicare",
+      "Rispondere con cura alla difficoltà di qualcuno senza prenderti carico del suo problema",
+      "Verificare di aver capito bene una persona invece di darlo per scontato",
+      "Distinguere tra capire un sentimento e condividerlo"
+    ]
+  },
+  "sortOrder": 1
+}

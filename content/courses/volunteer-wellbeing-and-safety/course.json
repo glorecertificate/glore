@@ -1,0 +1,37 @@
+{
+  "slug": "volunteer-wellbeing-and-safety",
+  "type": "learner",
+  "icon": "life-buoy",
+  "title": {
+    "en": "Volunteer wellbeing and safety",
+    "es": "Bienestar y seguridad en el voluntariado",
+    "it": "Benessere e sicurezza nel volontariato"
+  },
+  "description": {
+    "en": "Look after yourself while you help others, set healthy limits, and know who to turn to when something does not feel safe.",
+    "es": "Cuídate mientras ayudas a otras personas, pon límites sanos y sabe a quién acudir cuando algo no te parece seguro.",
+    "it": "Prenditi cura di te mentre aiuti gli altri, fissa limiti sani e sappi a chi rivolgerti quando qualcosa non ti sembra sicuro."
+  },
+  "durationMinutes": 30,
+  "outcomes": {
+    "en": [
+      "Recognise early signs of tiredness and stress in your volunteering",
+      "Set limits on your time and tasks and say them out loud",
+      "Speak to your coordinator or safeguarding contact first when something feels unsafe",
+      "Support a fellow volunteer who is struggling without taking on their problem"
+    ],
+    "es": [
+      "Reconocer las primeras señales de cansancio y estrés en tu voluntariado",
+      "Poner límites a tu tiempo y a tus tareas y decirlos en voz alta",
+      "Hablar primero con tu coordinación o con la persona de contacto de protección cuando algo no te parezca seguro",
+      "Apoyar a una persona voluntaria que lo está pasando mal sin cargar con su problema"
+    ],
+    "it": [
+      "Riconoscere i primi segnali di stanchezza e stress nel tuo volontariato",
+      "Fissare limiti al tuo tempo e ai tuoi compiti e dirli ad alta voce",
+      "Parlare come prima cosa con il tuo coordinatore o con il referente per la tutela quando qualcosa non ti sembra sicuro",
+      "Sostenere un altro volontario in difficoltà senza prenderti carico del suo problema"
+    ]
+  },
+  "sortOrder": 3
+}

@@ -1,0 +1,37 @@
+{
+  "slug": "soft-skills-and-volunteering",
+  "type": "intro",
+  "icon": "hand-heart",
+  "title": {
+    "en": "Soft skills and volunteering",
+    "es": "Habilidades sociales y voluntariado",
+    "it": "Competenze trasversali e volontariato"
+  },
+  "description": {
+    "en": "Learn what soft skills are, why volunteering builds them, and how to notice your own.",
+    "es": "Aprende qué son las habilidades sociales, por qué el voluntariado las desarrolla y cómo reconocer las tuyas.",
+    "it": "Scopri cosa sono le competenze trasversali, perché il volontariato le sviluppa e come riconoscere le tue."
+  },
+  "durationMinutes": 25,
+  "outcomes": {
+    "en": [
+      "Explain what a soft skill is and how it differs from a technical skill",
+      "Name soft skills you use in a volunteering role",
+      "Describe how learning outside school or work happens",
+      "Turn an everyday volunteering moment into a skill you can name"
+    ],
+    "es": [
+      "Explicar qué es una habilidad social y en qué se diferencia de una técnica",
+      "Nombrar habilidades sociales que usas en tu rol de voluntariado",
+      "Describir cómo se aprende fuera de la escuela o del trabajo",
+      "Convertir un momento cotidiano de voluntariado en una habilidad con nombre"
+    ],
+    "it": [
+      "Spiegare cos'è una competenza trasversale e in cosa differisce da una tecnica",
+      "Nominare le competenze trasversali che usi nel tuo ruolo di volontariato",
+      "Descrivere come avviene l'apprendimento fuori dalla scuola o dal lavoro",
+      "Trasformare un momento quotidiano di volontariato in una competenza che sai nominare"
+    ]
+  },
+  "sortOrder": 2
+}

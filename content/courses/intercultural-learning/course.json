@@ -1,0 +1,37 @@
+{
+  "slug": "intercultural-learning",
+  "type": "learner",
+  "icon": "earth",
+  "title": {
+    "en": "Intercultural learning",
+    "es": "Aprendizaje intercultural",
+    "it": "Apprendimento interculturale"
+  },
+  "description": {
+    "en": "Learn to notice cultural differences, question your first reactions, and work well with people from other backgrounds.",
+    "es": "Aprende a notar las diferencias culturales, a cuestionar tus primeras reacciones y a trabajar bien con personas de otros entornos.",
+    "it": "Impara a notare le differenze culturali, a mettere in discussione le prime reazioni e a lavorare bene con persone di altri contesti."
+  },
+  "durationMinutes": 30,
+  "outcomes": {
+    "en": [
+      "Describe culture as shared habits and values rather than a label for a person",
+      "Notice your own first reactions to unfamiliar behaviour",
+      "Ask curious questions instead of making assumptions",
+      "Adapt how you communicate in a mixed group"
+    ],
+    "es": [
+      "Describir la cultura como hábitos y valores compartidos y no como una etiqueta para una persona",
+      "Notar tus primeras reacciones ante comportamientos desconocidos",
+      "Hacer preguntas con curiosidad en lugar de suponer",
+      "Adaptar tu forma de comunicar en un grupo diverso"
+    ],
+    "it": [
+      "Descrivere la cultura come abitudini e valori condivisi e non come un'etichetta per una persona",
+      "Notare le tue prime reazioni di fronte a comportamenti sconosciuti",
+      "Fare domande con curiosità invece di dare per scontato",
+      "Adattare il tuo modo di comunicare in un gruppo misto"
+    ]
+  },
+  "sortOrder": 2
+}

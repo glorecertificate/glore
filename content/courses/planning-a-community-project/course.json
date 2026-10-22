@@ -1,0 +1,37 @@
+{
+  "slug": "planning-a-community-project",
+  "type": "learner",
+  "icon": "clipboard-list",
+  "title": {
+    "en": "Planning a community project",
+    "es": "Planificar un proyecto comunitario",
+    "it": "Pianificare un progetto di comunità"
+  },
+  "description": {
+    "en": "Turn an idea for your neighbourhood into a simple plan with a clear goal, a team, steps and a way to learn from the result.",
+    "es": "Convierte una idea para tu barrio en un plan sencillo con un objetivo claro, un equipo, pasos y una forma de aprender del resultado.",
+    "it": "Trasforma un'idea per il tuo quartiere in un piano semplice con un obiettivo chiaro, una squadra, dei passi e un modo per imparare dal risultato."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Start from a real need in a community by listening before you plan",
+      "Write a clear goal that says what will change and for whom",
+      "Break a project into steps, roles and a realistic timeline",
+      "Check at the end what worked and what to change next time"
+    ],
+    "es": [
+      "Partir de una necesidad real de una comunidad escuchando antes de planificar",
+      "Escribir un objetivo claro que diga qué va a cambiar y para quién",
+      "Dividir un proyecto en pasos, roles y un calendario realista",
+      "Revisar al final qué funcionó y qué cambiar la próxima vez"
+    ],
+    "it": [
+      "Partire da un bisogno reale di una comunità ascoltando prima di pianificare",
+      "Scrivere un obiettivo chiaro che dica cosa cambierà e per chi",
+      "Dividere un progetto in passi, ruoli e tempi realistici",
+      "Verificare alla fine cosa ha funzionato e cosa cambiare la prossima volta"
+    ]
+  },
+  "sortOrder": 4
+}

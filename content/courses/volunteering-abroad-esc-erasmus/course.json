@@ -1,0 +1,37 @@
+{
+  "slug": "volunteering-abroad-esc-erasmus",
+  "type": "learner",
+  "icon": "plane",
+  "title": {
+    "en": "Volunteering abroad with ESC and Erasmus+",
+    "es": "Voluntariado en el extranjero con el CES y Erasmus+",
+    "it": "Volontariato all'estero con ESC ed Erasmus+"
+  },
+  "description": {
+    "en": "Understand what the European Solidarity Corps and Erasmus+ offer young people and how to prepare before you go.",
+    "es": "Entiende qué ofrecen el Cuerpo Europeo de Solidaridad y Erasmus+ a la gente joven y cómo prepararte antes de ir.",
+    "it": "Capisci cosa offrono il Corpo europeo di solidarietà ed Erasmus+ ai giovani e come prepararti prima di partire."
+  },
+  "durationMinutes": 30,
+  "outcomes": {
+    "en": [
+      "Describe in general terms what the European Solidarity Corps and Erasmus+ are",
+      "Tell the two programmes apart by what they are for",
+      "Name the questions to ask a hosting organization before you commit",
+      "Find official information on the European Youth Portal"
+    ],
+    "es": [
+      "Describir en términos generales qué son el Cuerpo Europeo de Solidaridad y Erasmus+",
+      "Distinguir los dos programas por su finalidad",
+      "Nombrar las preguntas que hacer a una organización de acogida antes de comprometerte",
+      "Encontrar información oficial en el Portal Europeo de la Juventud"
+    ],
+    "it": [
+      "Descrivere in termini generali cosa sono il Corpo europeo di solidarietà ed Erasmus+",
+      "Distinguere i due programmi in base al loro scopo",
+      "Indicare le domande da fare a un'organizzazione ospitante prima di impegnarti",
+      "Trovare informazioni ufficiali sul Portale europeo per i giovani"
+    ]
+  },
+  "sortOrder": 1
+}

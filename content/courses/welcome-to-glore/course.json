@@ -1,0 +1,37 @@
+{
+  "slug": "welcome-to-glore",
+  "type": "intro",
+  "icon": "sparkles",
+  "title": {
+    "en": "Welcome to GloRe",
+    "es": "Bienvenida a GloRe",
+    "it": "Benvenuto in GloRe"
+  },
+  "description": {
+    "en": "See how GloRe turns what you learn while volunteering into a certificate that anyone can check.",
+    "es": "Descubre cómo GloRe convierte lo que aprendes como voluntario o voluntaria en un certificado que cualquiera puede comprobar.",
+    "it": "Scopri come GloRe trasforma ciò che impari facendo volontariato in un certificato che chiunque può verificare."
+  },
+  "durationMinutes": 20,
+  "outcomes": {
+    "en": [
+      "Explain what GloRe certifies and why volunteering counts as learning",
+      "Describe the steps from joining a course to holding a certificate",
+      "Tell which courses you can take with your role",
+      "Explain how a tutor review makes a certificate trustworthy"
+    ],
+    "es": [
+      "Explicar qué certifica GloRe y por qué el voluntariado cuenta como aprendizaje",
+      "Describir los pasos desde empezar un curso hasta tener un certificado",
+      "Saber qué cursos puedes hacer según tu rol",
+      "Explicar cómo la revisión de un tutor o tutora da fiabilidad a un certificado"
+    ],
+    "it": [
+      "Spiegare cosa certifica GloRe e perché il volontariato conta come apprendimento",
+      "Descrivere i passaggi dall'inizio di un corso al certificato",
+      "Sapere quali corsi puoi seguire in base al tuo ruolo",
+      "Spiegare come la revisione di un tutor rende affidabile un certificato"
+    ]
+  },
+  "sortOrder": 1
+}

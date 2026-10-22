@@ -1,12 +1,21 @@
 import { relations } from 'drizzle-orm'
 
 import { accounts } from './accounts'
+import { activityEvents } from './activity-events'
 import { assessments, evaluations, questionOptions, questions } from './assessments'
-import { certificateSkills, certificates } from './certificates'
-import { contributions, courses, lessons } from './courses'
+import { certificateReviews, certificateSkills, certificates, organizationRatings } from './certificates'
+import { contributions, courseRatings, courses, lessons } from './courses'
 import { docArticles, docCategories } from './docs'
-import { memberships, organizationJoinRequests, organizationProfiles, organizations } from './organizations'
-import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from './progress'
+import { notifications } from './notifications'
+import {
+  memberships,
+  organizationInvitations,
+  organizationInviteLinks,
+  organizationJoinRequests,
+  organizationProfiles,
+  organizations,
+} from './organizations'
+import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons, userSkillCompass } from './progress'
 import { regions } from './regions'
 import { sessions } from './sessions'
 import { skillGroups } from './skill-groups'
@@ -32,6 +41,15 @@ export const usersRelations = relations(users, ({ many }) => ({
   userEvaluations: many(userEvaluations),
   createdCourses: many(courses, { relationName: 'courseCreator' }),
   archivedCourses: many(courses, { relationName: 'courseArchivedBy' }),
+  courseRatings: many(courseRatings),
+  skillCompass: many(userSkillCompass),
+  notifications: many(notifications),
+  organizationInvitations: many(organizationInvitations, { relationName: 'organizationInvitationInvitee' }),
+  joinRequests: many(organizationJoinRequests, { relationName: 'organizationJoinRequestUser' }),
+}))
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, { fields: [notifications.userId], references: [users.id] }),
 }))
 
 /* Sessions */
@@ -48,6 +66,10 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 export const organizationsRelations = relations(organizations, ({ many, one }) => ({
   memberships: many(memberships),
   joinRequests: many(organizationJoinRequests),
+  invitations: many(organizationInvitations),
+  inviteLinks: many(organizationInviteLinks),
+  ratings: many(organizationRatings),
+  activityEvents: many(activityEvents),
   profile: one(organizationProfiles, {
     fields: [organizations.id],
     references: [organizationProfiles.organizationId],
@@ -76,6 +98,46 @@ export const organizationJoinRequestsRelations = relations(organizationJoinReque
     references: [users.id],
     relationName: 'organizationJoinRequestReviewer',
   }),
+  user: one(users, {
+    fields: [organizationJoinRequests.userId],
+    references: [users.id],
+    relationName: 'organizationJoinRequestUser',
+  }),
+  inviteLink: one(organizationInviteLinks, {
+    fields: [organizationJoinRequests.inviteLinkId],
+    references: [organizationInviteLinks.id],
+  }),
+}))
+
+export const organizationInvitationsRelations = relations(organizationInvitations, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [organizationInvitations.organizationId],
+    references: [organizations.id],
+  }),
+  invitedBy: one(users, {
+    fields: [organizationInvitations.invitedById],
+    references: [users.id],
+    relationName: 'organizationInvitationInviter',
+  }),
+  user: one(users, {
+    fields: [organizationInvitations.userId],
+    references: [users.id],
+    relationName: 'organizationInvitationInvitee',
+  }),
+}))
+
+export const organizationInviteLinksRelations = relations(organizationInviteLinks, ({ many, one }) => ({
+  organization: one(organizations, {
+    fields: [organizationInviteLinks.organizationId],
+    references: [organizations.id],
+  }),
+  createdBy: one(users, { fields: [organizationInviteLinks.createdById], references: [users.id] }),
+  joinRequests: many(organizationJoinRequests),
+}))
+
+export const activityEventsRelations = relations(activityEvents, ({ one }) => ({
+  actor: one(users, { fields: [activityEvents.actorId], references: [users.id] }),
+  organization: one(organizations, { fields: [activityEvents.organizationId], references: [organizations.id] }),
 }))
 
 /* Regions */
@@ -99,6 +161,12 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
   skillGroup: one(skillGroups, { fields: [courses.skillGroupId], references: [skillGroups.id] }),
   lessons: many(lessons),
   userCourses: many(userCourses),
+  ratings: many(courseRatings),
+}))
+
+export const courseRatingsRelations = relations(courseRatings, ({ one }) => ({
+  user: one(users, { fields: [courseRatings.userId], references: [users.id] }),
+  course: one(courses, { fields: [courseRatings.courseId], references: [courses.id] }),
 }))
 
 export const lessonsRelations = relations(lessons, ({ one, many }) => ({
@@ -140,6 +208,12 @@ export const assessmentsRelations = relations(assessments, ({ one, many }) => ({
 export const userCoursesRelations = relations(userCourses, ({ one }) => ({
   user: one(users, { fields: [userCourses.userId], references: [users.id] }),
   course: one(courses, { fields: [userCourses.courseId], references: [courses.id] }),
+  lastLesson: one(lessons, { fields: [userCourses.lastLessonId], references: [lessons.id] }),
+}))
+
+export const userSkillCompassRelations = relations(userSkillCompass, ({ one }) => ({
+  user: one(users, { fields: [userSkillCompass.userId], references: [users.id] }),
+  course: one(courses, { fields: [userSkillCompass.courseId], references: [courses.id] }),
 }))
 
 export const userLessonsRelations = relations(userLessons, ({ one }) => ({
@@ -171,7 +245,30 @@ export const certificatesRelations = relations(certificates, ({ one, many }) => 
     references: [users.id],
     relationName: 'certificateReviewer',
   }),
+  revokedBy: one(users, {
+    fields: [certificates.revokedById],
+    references: [users.id],
+    relationName: 'certificateRevokedBy',
+  }),
   skills: many(certificateSkills),
+  reviews: many(certificateReviews),
+  rating: one(organizationRatings, {
+    fields: [certificates.id],
+    references: [organizationRatings.certificateId],
+  }),
+}))
+
+export const certificateReviewsRelations = relations(certificateReviews, ({ one }) => ({
+  certificate: one(certificates, { fields: [certificateReviews.certificateId], references: [certificates.id] }),
+  reviewer: one(users, { fields: [certificateReviews.reviewerId], references: [users.id] }),
+}))
+
+export const organizationRatingsRelations = relations(organizationRatings, ({ one }) => ({
+  certificate: one(certificates, { fields: [organizationRatings.certificateId], references: [certificates.id] }),
+  organization: one(organizations, {
+    fields: [organizationRatings.organizationId],
+    references: [organizations.id],
+  }),
 }))
 
 export const certificateSkillsRelations = relations(certificateSkills, ({ one }) => ({

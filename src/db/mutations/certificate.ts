@@ -3,13 +3,13 @@ import 'server-only'
 import { and, eq, inArray, ne, sql } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
-import { certificateSkills, certificates } from '@/db/schema'
+import { certificateSkills, certificates, organizationRatings } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 
 export const createCertificateWithSkills = async (
   tx: Transaction,
   values: TableInsert<'certificates'>,
-  skillCourseIds: number[]
+  { organizationRating, skillCourseIds }: { organizationRating?: number; skillCourseIds: number[] }
 ) => {
   const lockKey = `certificate:${values.userId}:${values.organizationId}`
   await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`)
@@ -45,6 +45,12 @@ export const createCertificateWithSkills = async (
 
   if (skillCourseIds.length > 0) {
     await tx.insert(certificateSkills).values(skillCourseIds.map(courseId => ({ certificateId: created.id, courseId })))
+  }
+
+  if (organizationRating && organizationRating >= 1 && organizationRating <= 5) {
+    await tx
+      .insert(organizationRatings)
+      .values({ certificateId: created.id, experience: organizationRating, organizationId: created.organizationId })
   }
 
   return created

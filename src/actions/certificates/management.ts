@@ -132,7 +132,6 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
           activityDuration,
           activityLocation,
           activityDescription,
-          organizationRating: cert.organizationRating,
         },
         volunteerName: cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : '',
         orgName: cert.organization.name,
@@ -265,11 +264,10 @@ export const createCertificate = async (
           activityDuration: values.activityDuration || 0,
           activityLocation: values.activityLocation || '',
           activityDescription: values.activityDescription || '',
-          organizationRating: values.organizationRating || 0,
           reviewerId,
           status,
         },
-        skillCourseIds
+        { organizationRating: values.organizationRating, skillCourseIds }
       )
     )
 

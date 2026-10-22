@@ -13,3 +13,7 @@ export const timestamps = {
 export type IntlJsonb = IntlRecord
 
 export type IntlJsonbNullable = IntlRecord | null
+
+export type IntlListJsonb = Partial<IntlRecord<string[]>>
+
+export type JsonbObject = Record<string, unknown>

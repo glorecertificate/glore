@@ -1,4 +1,4 @@
-import { boolean, index, integer, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { type IntlJsonb, type IntlJsonbNullable } from './helpers'
 
@@ -15,7 +15,7 @@ export const docCategories = pgTable(
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
   },
-  table => [index('doc_categories_slug_idx').on(table.slug)]
+  table => [uniqueIndex('doc_categories_slug_key').on(table.slug)]
 )
 
 export const docArticles = pgTable(
@@ -34,5 +34,8 @@ export const docArticles = pgTable(
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
   },
-  table => [index('doc_articles_category_id_idx').on(table.categoryId)]
+  table => [
+    index('doc_articles_category_id_idx').on(table.categoryId),
+    uniqueIndex('doc_articles_slug_key').on(table.slug),
+  ]
 )

@@ -37,13 +37,22 @@ const mergeOrganizationProfile = <T extends OrganizationRow & { profile: Organiz
     ...rest,
     address: profile?.address ?? null,
     avatarUrl: profile?.avatarUrl ?? null,
+    charterAcceptedAt: profile?.charterAcceptedAt ?? null,
+    contactEmail: profile?.contactEmail ?? null,
+    contactName: profile?.contactName ?? null,
     country: profile?.country ?? null,
     description: profile?.description ?? null,
+    legalName: profile?.legalName ?? null,
+    legalRepresentative: profile?.legalRepresentative ?? null,
+    motivation: profile?.motivation ?? null,
     phone: profile?.phone ?? null,
     postcode: profile?.postcode ?? null,
     rating: profile?.rating ?? null,
     region: profile?.region ?? null,
+    registryId: profile?.registryId ?? null,
+    signatureUrl: profile?.signatureUrl ?? null,
     url: profile?.url ?? null,
+    volunteersPerYear: profile?.volunteersPerYear ?? null,
   }
 }
 

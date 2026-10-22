@@ -2,6 +2,7 @@ import { index, integer, pgTable, text, timestamp, uniqueIndex } from 'drizzle-o
 
 import { assessments, evaluations, questionOptions } from './assessments'
 import { courses, lessons } from './courses'
+import { skillCompassKindEnum } from './enums'
 import { users } from './users'
 
 export const userCourses = pgTable(
@@ -15,6 +16,8 @@ export const userCourses = pgTable(
       .notNull()
       .references(() => courses.id),
     locale: text().notNull(),
+    lastLessonId: integer().references(() => lessons.id, { onDelete: 'set null' }),
+    completedAt: timestamp({ mode: 'string' }),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })
       .defaultNow()
@@ -81,6 +84,7 @@ export const userAssessments = pgTable(
       .references(() => users.id),
     assessmentId: integer().references(() => assessments.id),
     value: integer().notNull(),
+    reflection: text(),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })
       .defaultNow()
@@ -115,5 +119,24 @@ export const userEvaluations = pgTable(
     index('user_evaluations_user_id_idx').on(table.userId),
     index('user_evaluations_evaluation_id_idx').on(table.evaluationId),
     uniqueIndex('user_evaluations_user_id_evaluation_id_key').on(table.userId, table.evaluationId),
+  ]
+)
+
+export const userSkillCompass = pgTable(
+  'user_skill_compass',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    userId: text()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    courseId: integer()
+      .notNull()
+      .references(() => courses.id, { onDelete: 'cascade' }),
+    kind: skillCompassKindEnum().notNull(),
+    createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
+  },
+  table => [
+    index('user_skill_compass_course_id_idx').on(table.courseId),
+    uniqueIndex('user_skill_compass_user_id_course_id_kind_key').on(table.userId, table.courseId, table.kind),
   ]
 )

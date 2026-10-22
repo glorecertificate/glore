@@ -41,6 +41,16 @@ Generate with `pnpm run db generate`, apply with `pnpm run db migrate`, never ha
 | 16  | Progress tables              | `user_assessments` adds `reflection`. `user_courses` adds `last_lesson_id` (set null) and `completed_at`. New `user_skill_compass` (user, course, kind `strength` or `goal`, unique triple).                            |
 | 17  | Hygiene                      | Unique doc slugs. Drop the redundant index on `organization_profiles.organization_id`. `courses.creator_id` and `team_invitations.invited_by` become nullable with `on delete set null`.                                |
 
+### Batch notes (W0.2)
+
+- Migrations: `0017_v1_additive`, `0018_v1_backfill` (custom: codes, ratings), `0019_v1_drops`.
+- `certificates.code` is nullable and unique: the backfill gives every existing row a code, and A1 sets it at submit.
+- `organization_invitations` adds `declined_at` for B1's decline; "open" means not accepted, declined, or revoked.
+- The four blind scores are `score_engagement`, `score_evidence`, `score_reflection`, `score_growth`; A3 owns their labels.
+- `certificate_skills.certificate_id` now cascades on delete, so deleting a draft or account needs no manual skill cleanup.
+- The old single org rating moved to `organization_ratings.experience`; the PDF no longer prints it (D9).
+- knip fails on unused exports, so zod schemas, parsers, and `CacheTag` entries for new tables land with their first consumer.
+
 ### Schema requests
 
 Lanes never change the schema. They append a request here (date, lane, change, reason) and the orchestrator batches it.

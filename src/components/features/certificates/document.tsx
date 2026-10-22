@@ -171,23 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#94a3b8',
   },
-  ratingRow: {
-    flexDirection: 'row',
-    gap: 2,
-    marginTop: 2,
-  },
-  ratingDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#0f766e',
-  },
-  ratingDotEmpty: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#e2e8f0',
-  },
 })
 
 export interface CertificateDocumentProps {
@@ -262,14 +245,6 @@ export const CertificateDocument = ({
           <View style={styles.col}>
             <Text style={styles.metaLabel}>{'Location'}</Text>
             <Text style={styles.metaValue}>{values.activityLocation || '—'}</Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.metaLabel}>{'Organization rating'}</Text>
-            <View style={styles.ratingRow}>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <View key={i} style={i < (values.organizationRating ?? 0) ? styles.ratingDot : styles.ratingDotEmpty} />
-              ))}
-            </View>
           </View>
         </View>
 

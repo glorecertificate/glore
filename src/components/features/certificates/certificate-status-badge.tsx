@@ -1,6 +1,15 @@
 'use client'
 
-import { CircleAlertIcon, CircleCheckIcon, ClockIcon, FilePenLineIcon, SendIcon } from 'lucide-react'
+import {
+  BanIcon,
+  CircleAlertIcon,
+  CircleCheckIcon,
+  CircleXIcon,
+  ClockIcon,
+  FilePenLineIcon,
+  SendIcon,
+  Undo2Icon,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Badge } from '@/components/ui/badge'
@@ -18,6 +27,9 @@ const STATUS_CONFIG: Record<CertificateStatus, { labelKey: string; className: st
     icon: CircleAlertIcon,
   },
   approved: { labelKey: 'statusApproved', className: 'bg-success/15 text-success', icon: CircleCheckIcon },
+  rejected: { labelKey: 'statusRejected', className: 'bg-destructive/15 text-destructive', icon: CircleXIcon },
+  withdrawn: { labelKey: 'statusWithdrawn', className: 'bg-muted text-muted-foreground', icon: Undo2Icon },
+  revoked: { labelKey: 'statusRevoked', className: 'bg-destructive/15 text-destructive', icon: BanIcon },
 }
 
 interface CertificateStatusBadgeProps {

@@ -44,5 +44,9 @@ export const parseCertificate = (cert: CertificateWithRelations) => ({
   isInReview: cert.status === 'in_review',
   isChangesRequested: cert.status === 'changes_requested',
   isApproved: cert.status === 'approved',
+  isRejected: cert.status === 'rejected',
+  isWithdrawn: cert.status === 'withdrawn',
+  isRevoked: cert.status === 'revoked',
   isPending: cert.status === 'submitted' || cert.status === 'in_review',
+  isOpen: cert.status === 'submitted' || cert.status === 'in_review' || cert.status === 'changes_requested',
 })

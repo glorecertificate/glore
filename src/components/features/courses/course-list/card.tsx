@@ -256,26 +256,28 @@ export const CourseListCard = ({
               <UserPenIcon className="size-3.5 text-muted-foreground" />
               <div className="flex items-center gap-1.5">
                 <span suppressHydrationWarning>{createdOn}</span>
-                <HoverCard closeDelay={50} openDelay={300}>
-                  <HoverCardTrigger asChild>
-                    <Button
-                      className="peer/user-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground hover:dark:bg-accent/50 dark:data-[state=open]:bg-accent/50"
-                      size="text"
-                      variant="ghost"
-                    >
-                      <Avatar className="size-4.75 rounded-full border">
-                        {course.creator.avatarUrl && (
-                          <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
-                        )}
-                        <AvatarFallback className="text-[8.5px]">{course.creator.initials}</AvatarFallback>
-                      </Avatar>
-                      {course.creator.shortName}
-                    </Button>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="bg-popover" side="top">
-                    <UserCard user={course.creator} />
-                  </HoverCardContent>
-                </HoverCard>
+                {course.creator && (
+                  <HoverCard closeDelay={50} openDelay={300}>
+                    <HoverCardTrigger asChild>
+                      <Button
+                        className="peer/user-card cursor-default gap-1 rounded-xl pr-0.5 text-xs font-normal text-muted-foreground hover:bg-accent/80 hover:text-accent-foreground data-[state=open]:bg-accent/80 data-[state=open]:text-accent-foreground hover:dark:bg-accent/50 dark:data-[state=open]:bg-accent/50"
+                        size="text"
+                        variant="ghost"
+                      >
+                        <Avatar className="size-4.75 rounded-full border">
+                          {course.creator.avatarUrl && (
+                            <AvatarImage className="rounded-full" src={course.creator.avatarUrl} />
+                          )}
+                          <AvatarFallback className="text-[8.5px]">{course.creator.initials}</AvatarFallback>
+                        </Avatar>
+                        {course.creator.shortName}
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="bg-popover" side="top">
+                      <UserCard user={course.creator} />
+                    </HoverCardContent>
+                  </HoverCard>
+                )}
               </div>
             </div>
           )}

@@ -73,6 +73,8 @@ const loadOrganizations = () =>
           reviewedAt: true,
           reviewedBy: true,
           reviewerComment: true,
+          userId: true,
+          inviteLinkId: true,
         },
         where: eq(organizationJoinRequests.role, 'admin'),
         limit: 1000,

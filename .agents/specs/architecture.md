@@ -44,8 +44,8 @@ src/
 │   ├── helpers.ts      # safeQuery(), queryError()
 │   ├── schemas.ts      # drizzle-zod schemas
 │   ├── types.ts        # Drizzle table type helpers
-│   ├── schema/         # Per-table Drizzle definitions: accounts, assessments, certificates,
-│   │                   #   courses, docs, enums, helpers, index, organizations, progress,
+│   ├── schema/         # Per-table Drizzle definitions: accounts, activity-events, assessments, certificates,
+│   │                   #   courses, docs, enums, helpers, index, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): certificate,
 │   │                   #   course, doc, lesson, organization (flattens organization_profiles), user

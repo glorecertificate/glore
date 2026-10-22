@@ -92,7 +92,7 @@ Two layers, deliberately separate because UI shapes diverge from table columns:
 
 ### Enum pattern
 
-A TS `enum` is used ONLY for `CacheTag` in `src/lib/cache.ts`. Every other enum uses `satisfies ... as const`. The `pgEnum` values are `certificate_status` (`draft`, `submitted`, `in_review`, `changes_requested`, `approved`), `course_type` (`intro`, `skill`, `learner`), `organization_request_status` (`pending`, `accepted`, `rejected`), and `role` (`admin`, `learner`, `tutor`, `representative`, `volunteer`).
+A TS `enum` is used ONLY for `CacheTag` in `src/lib/cache.ts`. Every other enum uses `satisfies ... as const`. The `pgEnum` values are `certificate_status` (`draft`, `submitted`, `in_review`, `changes_requested`, `approved`, `rejected`, `withdrawn`, `revoked`), `certificate_review_decision` (`approved`, `changes_requested`, `rejected`), `course_type` (`intro`, `skill`, `learner`), `organization_request_status` (`pending`, `accepted`, `rejected`), `role` (`admin`, `learner`, `tutor`, `representative`, `volunteer`), and `skill_compass_kind` (`strength`, `goal`).
 
 ## Utilities and hooks
 

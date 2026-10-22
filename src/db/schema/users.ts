@@ -1,4 +1,10 @@
-import { boolean, date, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, date, jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+
+interface NotificationPreferences {
+  learning?: boolean
+  organization?: boolean
+  reminders?: boolean
+}
 
 export const users = pgTable('users', {
   id: text().primaryKey(),
@@ -12,6 +18,8 @@ export const users = pgTable('users', {
   lastName: text(),
   bio: text(),
   birthday: date({ mode: 'string' }),
+  birthPlace: text(),
+  nationality: text(),
   sex: text(),
   pronouns: text(),
   country: text(),
@@ -24,6 +32,8 @@ export const users = pgTable('users', {
   banReason: text(),
   banExpires: timestamp({ mode: 'string' }),
   isEditor: boolean().default(false).notNull(),
+  publicProfile: boolean().default(false).notNull(),
+  notificationPreferences: jsonb().$type<NotificationPreferences>().default({}).notNull(),
   onboardedAt: timestamp({ mode: 'string' }),
   createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
   updatedAt: timestamp({ mode: 'string' })

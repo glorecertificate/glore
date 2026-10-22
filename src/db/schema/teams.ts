@@ -15,9 +15,7 @@ export const teamInvitations = pgTable(
     lastName: text(),
     role: text().notNull(),
     locale: text(),
-    invitedBy: text()
-      .notNull()
-      .references(() => users.id),
+    invitedBy: text().references(() => users.id, { onDelete: 'set null' }),
     expiresAt: timestamp({ mode: 'string' }).notNull(),
     acceptedAt: timestamp({ mode: 'string' }),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),

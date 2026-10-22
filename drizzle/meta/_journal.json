@@ -120,6 +120,27 @@
       "when": 1792451087269,
       "tag": "0016_unique_rows",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792654624950,
+      "tag": "0017_v1_additive",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792654635942,
+      "tag": "0018_v1_backfill",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792654654843,
+      "tag": "0019_v1_drops",
+      "breakpoints": true
     }
   ]
 }

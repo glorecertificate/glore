@@ -12,7 +12,6 @@ const activity = {
   activityLocation: 'Milan',
   activityStartDate: '2026-01-01',
   language: 'en',
-  organizationRating: 4,
 }
 
 describe.skipIf(!isLocalDatabase)('createCertificateWithSkills', () => {
@@ -63,7 +62,7 @@ describe.skipIf(!isLocalDatabase)('createCertificateWithSkills', () => {
         mutations.createCertificateWithSkills(
           tx,
           { ...activity, handle: `test-${userId}-${suffix}`, organizationId, status: 'submitted', userId },
-          []
+          { skillCourseIds: [] }
         )
       )
 

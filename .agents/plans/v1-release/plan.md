@@ -49,6 +49,7 @@ Generate with `pnpm run db generate`, apply with `pnpm run db migrate`, never ha
 - The four blind scores are `score_engagement`, `score_evidence`, `score_reflection`, `score_growth`; A3 owns their labels.
 - `certificate_skills.certificate_id` now cascades on delete, so deleting a draft or account needs no manual skill cleanup.
 - The old single org rating moved to `organization_ratings.experience`; the PDF no longer prints it (D9).
+- `skill_groups.slug` (`0020` to `0022`) is the importer's upsert key; the old "Work" row became `work-skills`.
 - knip fails on unused exports, so zod schemas, parsers, and `CacheTag` entries for new tables land with their first consumer.
 
 ### Schema requests

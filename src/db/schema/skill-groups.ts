@@ -4,6 +4,7 @@ import { type IntlJsonb, type IntlJsonbNullable } from './helpers'
 
 export const skillGroups = pgTable('skill_groups', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  slug: text().notNull().unique(),
   name: jsonb().$type<IntlJsonb>().notNull(),
   description: jsonb().$type<IntlJsonbNullable>(),
   icon: text(),

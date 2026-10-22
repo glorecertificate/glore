@@ -1,0 +1,1 @@
+ALTER TABLE "skill_groups" ALTER COLUMN "slug" SET NOT NULL;

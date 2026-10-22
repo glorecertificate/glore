@@ -6,8 +6,8 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W0.
-- Next up: W0.6.
-- Branch: local `release/v1` from `main` at `8384bd1e`, created in W0.1.
+- Next up: W0.7. W0.6 waits on Neon `staging` (branch limit, see log).
+- Branch: local `release/v1` from `main` at `8384bd1e`, created in W0.1. Work after the PDF demo continues on `release/v1-next` in `.claude/worktrees/v1`, against the local database `glore_v1`; `release/v1` fast-forwards to it after the demo.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
 Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task is done when its acceptance holds and `pnpm run check` exits 0.
@@ -23,7 +23,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 | W0.5 | [x] b8d3e625                 | UI kit in `src/components/ui/`: `ArrowsMotif`, `LevelDots`, `Timeline`, shadcn `table` plus `DataTable` (sort, filters slot, pagination, row actions, empty and loading), `StatCard` with `NumberTicker`, `Chart` (lazy), `CopyButton`, `QrCode`, `SegmentedControl`, `Banner`, `AvatarStack`, `--brand-quaternary`. | AA contrast checked; screenshot of each.                               |
 | W0.6 | [~] orchestrator, 2026-10-22 | `SEED_PASSWORD` becomes `Password1!`; e2e `AUTH_ROLES` adds tutor, representative, learner, editor. Scaffold `scripts/seed-demo.mts` (`db:seed:demo`) with accounts, `TEST_EMAIL` derivation, and the staging guard. Create Neon `staging` and migrate it.                                                           | `db:seed` and e2e still pass; `staging` branch exists and is migrated. |
 | W0.7 | [ ]                          | Close `/api/auth/admin/*` over HTTP. Move `react-email` to dependencies. Drop `react-spring` if unused. Upload route checks size before reading the body. Fix the manifest locale param.                                                                                                                             | e2e asserts the admin endpoints answer 404.                            |
-| W0.8 | [ ]                          | `reference.md` documents `TEST_EMAIL` (scripts only, excluded from the env schema). `.env.example` already lists it (user).                                                                                                                                                                                          | Docs match code.                                                       |
+| W0.8 | [x]                          | `reference.md` documents `TEST_EMAIL` (scripts only, excluded from the env schema). `.env.example` already lists it (user).                                                                                                                                                                                          | Docs match code.                                                       |
 
 ## W1 feature lanes (parallel worktrees)
 
@@ -153,3 +153,7 @@ Each row runs in the browser as the demo account from `manual-testing.md` and ha
 - 2026-10-22, W0.5: UI kit built by a resumed session and committed by the orchestrator; `ArrowsMotif` waits in `knip` `ignoreFiles` for its first consumer.
 - 2026-10-22, A5 (demo priority): template-faithful PDF via `GET /api/v1/certificates/[id]/pdf`, snapshot and code on approval; en, es, it checked against the template. `/verify/[code]` stays with A6.
 - 2026-10-22, W0.6 partial: `SEED_PASSWORD` is `Password1!`, a `holder` seed volunteer keeps demo certificates away from tests that wipe the volunteer, and `AUTH_ROLES` adds tutor. Remaining: representative, learner, editor roles, `seed-demo.mts`, Neon `staging`.
+- 2026-10-22, orchestrator: committed the UI kit, PDF, seed, org-cookie fix, and `.env.example` on `release/v1` (demo server keeps running there); fixed `typegen` for nested `public/` folders.
+- 2026-10-22, W0.6: `db:seed:demo --target <local|staging>` with the manual-testing accounts on `TEST_EMAIL` plus-addresses; staging needs the database setting `glore.environment = 'staging'`. `AUTH_ROLES` covers all seven seed roles; e2e not rerun while the demo server is reserved.
+- 2026-10-22, W0.6 blocked: Neon refused `staging` with "branches limit exceeded". Freeing a slot means deleting a branch (archived Vercel previews are candidates); asked the user.
+- 2026-10-22, W0.8: `TEST_EMAIL` documented in `reference.md`; seed docs moved to `workflow.md` "Seeds" for the budget.

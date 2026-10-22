@@ -33,6 +33,7 @@
     "db:logs": "docker compose logs -f postgres",
     "db:reset": "docker compose down -v && docker compose up -d postgres",
     "db:seed": "dotenv -e .env.local -e .env -- node scripts/seed.mts",
+    "db:seed:demo": "dotenv -e .env.local -e .env -- node scripts/seed-demo.mts",
     "mail:up": "docker compose up -d mailpit",
     "email": "portless email.glore dotenv -- email dev --dir src/emails --port 45674",
     "release": "dotenv -- release-it --config release.config.ts",

@@ -1,4 +1,4 @@
-type MembershipRole = 'admin' | 'learner' | 'representative' | 'tutor' | 'volunteer'
+export type MembershipRole = 'admin' | 'learner' | 'representative' | 'tutor' | 'volunteer'
 
 export interface SeedUser {
   key: string

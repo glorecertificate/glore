@@ -6,10 +6,11 @@ They describe the target behavior in `.agents/plans/v1-release/`, so a step pass
 
 ## Setup
 
-1. Local: run `pnpm run db:up`, `pnpm run mail:up`, `pnpm run db:seed:demo`, `pnpm run content:import`, and `pnpm run dev`.
+1. Local: run `pnpm run db:up`, `pnpm run mail:up`, `pnpm run db:seed:demo --target local`, `pnpm run content:import`, and `pnpm run dev`.
 2. Open `https://glore.localhost`; local email lands in Mailpit at `http://localhost:8025`.
 3. Staging: open the Vercel preview of the `staging` branch; email reaches the real `TEST_EMAIL` inbox.
 4. Staging needs preview env vars scoped to git branch `staging`: `DATABASE_URL` (Neon `staging`) and `APP_URL` (the preview URL).
+5. Seed staging with its `DATABASE_URL` in front of `pnpm run db:seed:demo --target staging`; the script refuses any database without `glore.environment = 'staging'`.
 
 ## Accounts
 

@@ -8,10 +8,15 @@ import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateWithUsers } from '@/actions/certificates/helpers'
+import {
+  certificateSnapshot,
+  findCertificatePdfSource,
+  generateCertificateCode,
+  renderCertificatePdf,
+} from '@/actions/certificates/pdf'
 import { getCertificateEligibility } from '@/actions/certificates/queries'
 import { notify } from '@/actions/notifications/notify'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
-import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 import {
   type CertificateFormValues,
   type DraftCertificateValues,
@@ -26,12 +31,11 @@ import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { recordEvent } from '@/db/mutations/activity-event'
 import { applyCertificateReview, createCertificateWithSkills } from '@/db/mutations/certificate'
-import { certificates, memberships } from '@/db/schema'
+import { type CertificateSnapshot, certificates, memberships } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
-import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
+import { LOCALES } from '@/lib/i18n'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
-import { fullName } from '@/lib/utils'
 import appConfig from '~/config/app.json'
 
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000
@@ -119,29 +123,31 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
       throw new Error('Invalid activity dates')
     }
 
-    const skillNames = skillsToMap.map(s => {
-      if (!s.course.title) return s.course.slug
-      const titleMap = s.course.title as Record<string, string>
-      return titleMap[cert.language] ?? titleMap[DEFAULT_LOCALE] ?? s.course.slug
-    })
-
     let documentUrl: string | undefined
+    let approval: { code: string; snapshot: CertificateSnapshot } | undefined
     if (isApprove) {
-      const pdfBuffer = await generateCertificatePdf({
-        values: {
-          activityStartDate,
-          activityEndDate,
+      const source = await findCertificatePdfSource(id)
+      if (!source) throw new Error('Certificate not found')
+      const keptCourseIds = new Set(skillsToMap.map(s => s.course.id))
+      const snapshot = certificateSnapshot(
+        {
+          ...source,
           activityDuration,
+          activityEndDate,
           activityLocation,
-          activityDescription,
+          activityStartDate,
+          skills: source.skills.filter(s => keptCourseIds.has(s.course.id)),
         },
-        volunteerName: cert.user ? fullName(cert.user) : '',
-        orgName: cert.organization.name,
-        orgLogoUrl: cert.organization.profile?.avatarUrl,
-        skillNames,
-        issuedDate: issuedAt,
-      })
-      documentUrl = await r2Put(`certificates/${cert.handle}.pdf`, pdfBuffer, 'application/pdf')
+        issuedAt
+      )
+      const code = cert.code ?? generateCertificateCode()
+      approval = { code, snapshot }
+      const pdfBuffer = await renderCertificatePdf(snapshot, code)
+      try {
+        documentUrl = await r2Put(`certificates/${cert.handle}.pdf`, pdfBuffer, 'application/pdf')
+      } catch (error) {
+        console.error('[certificates] PDF upload failed, serving it on demand instead', error)
+      }
     }
 
     const activityUpdates = {
@@ -177,7 +183,7 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
         expectedUpdatedAt: cert.updatedAt,
         userId: cert.userId,
         updates: isApprove
-          ? { ...activityUpdates, status: 'approved', issuedAt, documentUrl }
+          ? { ...activityUpdates, ...approval, status: 'approved', issuedAt, documentUrl }
           : {
               ...activityUpdates,
               status: 'changes_requested',

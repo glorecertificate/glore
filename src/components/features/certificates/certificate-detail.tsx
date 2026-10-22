@@ -107,10 +107,10 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
           </div>
           <div className="flex items-center gap-3">
             <CertificateStatusBadge status={certificate.status} />
-            {certificate.isApproved && certificate.documentUrl && (
+            {(certificate.isApproved || canReview) && (
               <Button asChild icon={DownloadIcon} size="sm" variant="outline">
-                <a download href={certificate.documentUrl} rel="noopener noreferrer" target="_blank">
-                  {t('download')}
+                <a href={`/api/v1/certificates/${certificate.id}/pdf`} rel="noopener noreferrer" target="_blank">
+                  {certificate.isApproved ? t('download') : t('previewPdf')}
                 </a>
               </Button>
             )}

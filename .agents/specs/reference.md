@@ -1,7 +1,5 @@
 # Technical reference: runtime and data
 
-Component, type, hook, util, theming, form, and email conventions: `patterns.md`.
-
 ## Routing
 
 Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond root) and `(dashboard)` for authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`; the `dashboard/` and `courses/` layouts add `CoursesProvider`.
@@ -28,17 +26,18 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 ### API routes
 
-| Path                   | Method   | Description                                    |
-| ---------------------- | -------- | ---------------------------------------------- |
-| `/api/auth/[...all]`   | GET/POST | Better Auth catch-all handler                  |
-| `/api/v1/ai/command`   | POST     | AI command (editors, rate limited)             |
-| `/api/v1/ai/copilot`   | POST     | AI copilot (editors, rate limited)             |
-| `/api/v1/join`         | GET      | Team invitation join endpoint                  |
-| `/api/v1/manifest`     | GET      | Dynamic PWA manifest (locale-aware, cached 1h) |
-| `/api/v1/session`      | GET      | Clears cookies of a stale session, then login  |
-| `/api/v1/upload`       | POST     | R2 file upload (editors, rate limited)         |
-| `/api/v1/health`       | GET      | Health check (returns `{ status: 'ok' }`)      |
-| `/api/v1/cron/cleanup` | GET      | Daily cleanup (Vercel Cron, `CRON_SECRET`)     |
+| Path                            | Method   | Description                                                |
+| ------------------------------- | -------- | ---------------------------------------------------------- |
+| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all handler                              |
+| `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
+| `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
+| `/api/v1/join`                  | GET      | Team invitation join endpoint                              |
+| `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)             |
+| `/api/v1/session`               | GET      | Clears cookies of a stale session, then login              |
+| `/api/v1/upload`                | POST     | R2 file upload (editors, rate limited)                     |
+| `/api/v1/certificates/[id]/pdf` | GET      | Certificate PDF on demand (holder, reviewer, org managers) |
+| `/api/v1/health`                | GET      | Health check (returns `{ status: 'ok' }`)                  |
+| `/api/v1/cron/cleanup`          | GET      | Daily cleanup (Vercel Cron, `CRON_SECRET`)                 |
 
 ## Authentication
 

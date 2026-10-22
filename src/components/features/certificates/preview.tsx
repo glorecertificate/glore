@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-import { type CertificateDocumentProps } from './document'
+import { type CertificateDocumentProps } from '@/components/features/certificates/document'
 
 const pdfViewerStyle = { border: 'none', borderRadius: 8 }
 
@@ -16,7 +16,7 @@ const PDFViewer = dynamic(
 
 const CertificateDocument = dynamic(
   async () => {
-    const mod = await import('./document')
+    const mod = await import('@/components/features/certificates/document')
     return mod.CertificateDocument
   },
   { ssr: false }

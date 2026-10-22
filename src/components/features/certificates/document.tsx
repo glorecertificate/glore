@@ -1,277 +1,404 @@
 // eslint-disable-next-line react-doctor/prefer-dynamic-import
-import { Document, Font, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer'
+import {
+  Circle,
+  Document,
+  Font,
+  Image,
+  Line,
+  Page,
+  Path,
+  Polygon,
+  Polyline,
+  Rect,
+  StyleSheet,
+  Svg,
+  Text,
+  View,
+} from '@react-pdf/renderer'
 
-import { type CertificateFormValues } from '@/components/features/certificates/schemas'
+import { ARROW_PATHS, LOGO_PATHS } from '@/components/features/certificates/pdf-assets'
 
-Font.register({
-  family: 'Inter',
-  fonts: [
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiJ-Ek-_EeA.woff',
-      fontWeight: 600,
-    },
-    {
-      src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff',
-      fontWeight: 700,
-    },
-  ],
-})
+type IconNode = [string, Record<string, string>][]
 
-const styles = StyleSheet.create({
-  page: {
-    fontFamily: 'Inter',
-    backgroundColor: '#ffffff',
-    padding: 0,
-  },
-  header: {
-    backgroundColor: '#0f766e',
-    paddingHorizontal: 48,
-    paddingVertical: 32,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 22,
-    fontWeight: 700,
-    letterSpacing: 1,
-  },
-  headerSubtitle: {
-    color: '#99f6e4',
-    fontSize: 9,
-    fontWeight: 400,
-    marginTop: 3,
-    letterSpacing: 0.5,
-  },
-  orgLogo: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
-  },
-  body: {
-    paddingHorizontal: 48,
-    paddingTop: 36,
-    paddingBottom: 48,
-  },
-  certifyRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  certifyLine: {
-    height: 1,
-    flex: 1,
-    backgroundColor: '#e2e8f0',
-  },
-  certifyText: {
-    fontSize: 10,
-    color: '#64748b',
-    fontWeight: 400,
-    marginHorizontal: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-  },
-  volunteeerName: {
-    fontSize: 28,
-    fontWeight: 700,
-    color: '#0f172a',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  orgName: {
-    fontSize: 13,
-    color: '#0f766e',
-    fontWeight: 600,
-    textAlign: 'center',
-    marginBottom: 24,
-  },
-  descriptionText: {
-    fontSize: 11,
-    color: '#334155',
-    textAlign: 'center',
-    lineHeight: 1.7,
-    marginBottom: 32,
-    paddingHorizontal: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#e2e8f0',
-    marginBottom: 28,
-  },
-  twoCol: {
-    flexDirection: 'row',
-    gap: 24,
-    marginBottom: 24,
-  },
-  col: {
-    flex: 1,
-  },
-  metaLabel: {
-    fontSize: 8,
-    fontWeight: 600,
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    marginBottom: 4,
-  },
-  metaValue: {
-    fontSize: 11,
-    color: '#0f172a',
-    fontWeight: 400,
-  },
-  skillsSection: {
-    marginBottom: 24,
-  },
-  skillsTitle: {
-    fontSize: 8,
-    fontWeight: 600,
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: 1.2,
-    marginBottom: 10,
-  },
-  skillsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-  },
-  skillChip: {
-    backgroundColor: '#f0fdf4',
-    borderRadius: 100,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderWidth: 1,
-    borderColor: '#bbf7d0',
-  },
-  skillChipText: {
-    fontSize: 9,
-    color: '#166534',
-    fontWeight: 600,
-  },
-  footer: {
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
-    paddingHorizontal: 48,
-    paddingVertical: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  footerText: {
-    fontSize: 8,
-    color: '#94a3b8',
-  },
-})
+export interface CertificatePdfSkill {
+  iconNode?: IconNode | null
+  level: number
+  name: string
+  statement: string | null
+}
+
+export interface CertificatePdfData {
+  activity: {
+    duration: number | null
+    endDate: string | null
+    location: string | null
+    startDate: string | null
+    tasks: string[]
+  }
+  code: string | null
+  holder: {
+    birthPlace: string | null
+    birthday: string | null
+    firstName: string
+    lastName: string | null
+    nationality: string | null
+  }
+  issuedAt: string | null
+  organization: {
+    legalRepresentative: string | null
+    logoUrl: string | null
+    name: string
+    signatureUrl: string | null
+  }
+  qrPath: string | null
+  qrSize: number
+  skills: CertificatePdfSkill[]
+  verifyUrl: string | null
+}
+
+export interface CertificatePdfLabels {
+  at: string
+  date: string
+  dateOfBirth: string
+  from: string
+  headingAfter: string
+  headingBefore: string
+  headingHighlight: string
+  hours: string
+  level: string
+  levels: string[]
+  mainTasks: string
+  nationality: string
+  partnership: string
+  placeOfBirth: string
+  representedBy: string
+  tasksIntro: string
+  title: string
+  to: string
+  verify: string
+  volunteering: string
+}
 
 export interface CertificateDocumentProps {
-  values: Partial<CertificateFormValues>
-  volunteerName: string
-  orgName: string
-  orgLogoUrl?: string | null
-  skillNames: string[]
-  issuedDate?: string
+  data: CertificatePdfData
+  labels: CertificatePdfLabels
 }
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr)
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+const NAVY = '#315070'
+const GREEN = '#7fbf73'
+const GRAY = '#f0f0f0'
+const LEVEL_GRAY = '#3c4045'
+const BANNER = '#345372'
+const ARROW_OPACITY = 0.12
+
+const assetSource = (file: string) => (typeof window === 'undefined' ? `${process.cwd()}/public${file}` : file)
+
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    { src: assetSource('/fonts/roboto/Roboto-Regular.ttf'), fontWeight: 400 },
+    { src: assetSource('/fonts/roboto/Roboto-Bold.ttf'), fontWeight: 700 },
+    { src: assetSource('/fonts/roboto/Roboto-Black.ttf'), fontWeight: 900 },
+  ],
+})
+Font.registerHyphenationCallback(word => [word])
+
+const fade = (hex: string) => {
+  const channel = (index: number) => {
+    const value = Number.parseInt(hex.slice(index, index + 2), 16)
+    return Math.round(255 - ARROW_OPACITY * (255 - value))
+      .toString(16)
+      .padStart(2, '0')
+  }
+  return `#${channel(1)}${channel(3)}${channel(5)}`
 }
 
-export const CertificateDocument = ({
-  values,
-  volunteerName,
-  orgName,
-  orgLogoUrl,
-  skillNames,
-  issuedDate,
-}: CertificateDocumentProps) => (
-  <Document title={`GloRe Certificate — ${volunteerName}`} author="GloRe" subject="Volunteering Certificate">
-    <Page size="A4" style={styles.page}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.headerTitle}>{'GloRe Certificate'}</Text>
-          <Text style={styles.headerSubtitle}>{'Global Volunteering Network'}</Text>
+const FADED_ARROWS = ARROW_PATHS.map(path => ({ ...path, fill: fade(path.fill) }))
+
+const SKILL_TOPS = [226.5, 355.1, 482.7, 610.3]
+const DOT_LEFTS = [269.3, 304.8, 340.4, 375.9, 411.5]
+const TASK_TOP = 550.6
+const TASK_PITCH = 40
+
+const styles = StyleSheet.create({
+  page: { backgroundColor: '#ffffff', color: NAVY, fontFamily: 'Roboto', fontSize: 10, fontWeight: 400 },
+  absolute: { position: 'absolute' },
+  banner: {
+    backgroundColor: BANNER,
+    height: 22.7,
+    justifyContent: 'center',
+    left: 24.7,
+    minWidth: 194.3,
+    paddingHorizontal: 4.7,
+    position: 'absolute',
+    top: 105.3,
+  },
+  bannerText: { color: '#ffffff', textTransform: 'uppercase' },
+  name: { color: '#305071', fontSize: 36, left: 23.6, position: 'absolute', width: 230 },
+  bar: { backgroundColor: NAVY, left: 26.9, position: 'absolute', width: 2.8 },
+  personalLine: { fontSize: 9, left: 45.3, position: 'absolute' },
+  strong: { fontWeight: 900, textTransform: 'uppercase' },
+  heading: { fontSize: 13.2, fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase' },
+  row: { alignItems: 'flex-start', flexDirection: 'row', left: 46.1, position: 'absolute', width: 176.3 },
+  rowLine: {
+    borderBottomColor: NAVY,
+    borderBottomWidth: 0.75,
+    marginHorizontal: 1.5,
+    minHeight: 10,
+    paddingLeft: 3,
+  },
+  rowValue: { fontSize: 10, fontWeight: 700, lineHeight: 1, maxLines: 1, textOverflow: 'ellipsis' },
+  partnerName: {
+    fontSize: 10,
+    fontWeight: 900,
+    lineHeight: 1.21,
+    left: 46.1,
+    position: 'absolute',
+    top: 417.2,
+    width: 68,
+  },
+  partnerLogo: { height: 54.6, left: 119.2, objectFit: 'contain', position: 'absolute', top: 418, width: 90.7 },
+  partnerPlaceholder: { backgroundColor: GRAY, height: 54.6, left: 119.2, position: 'absolute', top: 418, width: 90.7 },
+  tasksIntro: { fontSize: 10, left: 46.3, lineHeight: 1.3, position: 'absolute', top: 521.6, width: 172 },
+  task: { fontSize: 10, left: 46.3, lineHeight: 1.2, position: 'absolute', width: 158.7 },
+  bullet: { color: GREEN, fontWeight: 900 },
+  signatureImage: { height: 28, left: 112, objectFit: 'contain', position: 'absolute', top: 646, width: 100 },
+  date: { fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase', top: 708.3 },
+  qr: { left: 46.1, position: 'absolute', top: 735 },
+  verify: { fontSize: 7.5, left: 106, position: 'absolute', top: 742, width: 130 },
+  verifyCode: { fontSize: 8, fontWeight: 900, marginTop: 2 },
+  headingRight: {
+    fontSize: 11,
+    fontWeight: 700,
+    left: 264.8,
+    lineHeight: 1.2,
+    position: 'absolute',
+    top: 187,
+    width: 290,
+  },
+  highlight: { color: GREEN, textTransform: 'uppercase' },
+  skillLabel: {
+    alignItems: 'center',
+    backgroundColor: GREEN,
+    flexDirection: 'row',
+    height: 22.9,
+    left: 269.3,
+    paddingBottom: 2,
+    paddingLeft: 7,
+    paddingRight: 9,
+    position: 'absolute',
+  },
+  skillName: { color: '#ffffff', fontSize: 11, fontWeight: 900, marginLeft: 6.7, textTransform: 'uppercase' },
+  statement: {
+    fontSize: 10,
+    left: 269.1,
+    lineHeight: 1.4,
+    maxLines: 3,
+    position: 'absolute',
+    textOverflow: 'ellipsis',
+    width: 280.4,
+  },
+  levelText: { color: LEVEL_GRAY, flexDirection: 'row', fontSize: 9, left: 501.5, position: 'absolute' },
+  levelWord: { color: GREEN, fontWeight: 900, marginLeft: 1, textTransform: 'lowercase' },
+  emblem: { height: 34.1, left: 397.5, position: 'absolute', top: 767.9, width: 150.1 },
+})
+
+const formatDate = (value: string | null) => {
+  if (!value) return ''
+  const [year, month, day] = value.slice(0, 10).split('-')
+  if (!(year && month && day)) return ''
+  return `${day}.${month}.${year}`
+}
+
+const nameSize = (value: string) => Math.min(36, Math.floor(400 / Math.max(value.length, 1)))
+
+const skillNameSize = (value: string) => Math.min(11, Math.floor(3300 / Math.max(value.length, 1)) / 10)
+
+const ICON_STROKE = {
+  fill: 'none',
+  stroke: '#ffffff',
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  strokeWidth: 2,
+} as const
+
+const IconShape = ({ attrs, tag }: { attrs: Record<string, string>; tag: string }) => {
+  const number = (key: string) => Number(attrs[key] ?? 0)
+  if (tag === 'path') return <Path d={attrs.d ?? ''} {...ICON_STROKE} />
+  if (tag === 'circle') return <Circle cx={number('cx')} cy={number('cy')} r={number('r')} {...ICON_STROKE} />
+  if (tag === 'rect') {
+    return (
+      <Rect
+        height={number('height')}
+        rx={number('rx')}
+        width={number('width')}
+        x={number('x')}
+        y={number('y')}
+        {...ICON_STROKE}
+      />
+    )
+  }
+  if (tag === 'line') {
+    return <Line x1={number('x1')} x2={number('x2')} y1={number('y1')} y2={number('y2')} {...ICON_STROKE} />
+  }
+  if (tag === 'polyline') return <Polyline points={attrs.points ?? ''} {...ICON_STROKE} />
+  if (tag === 'polygon') return <Polygon points={attrs.points ?? ''} {...ICON_STROKE} />
+  return null
+}
+
+const SkillIcon = ({ iconNode }: { iconNode?: IconNode | null }) => {
+  if (!iconNode) return <View style={{ height: 14.3, width: 14.6 }} />
+  return (
+    <Svg height={14.3} viewBox="0 0 24 24" width={14.6}>
+      {iconNode.map(([tag, attrs]) => (
+        <IconShape
+          attrs={attrs}
+          key={attrs.key ?? `${tag}-${attrs.d ?? attrs.points ?? attrs.cx ?? attrs.x ?? ''}`}
+          tag={tag}
+        />
+      ))}
+    </Svg>
+  )
+}
+
+const RowLine = ({ flex, inset = 1.5, value }: { flex: number; inset?: number; value: string }) => (
+  <View style={[styles.rowLine, { flexBasis: 0, flexGrow: flex, marginLeft: inset }]}>
+    <Text style={styles.rowValue}>{value}</Text>
+  </View>
+)
+
+export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) => {
+  const { activity, holder, organization } = data
+  const lastName = holder.lastName ?? ''
+  const tasks = activity.tasks.filter(Boolean).slice(0, 4)
+  const skills = data.skills.slice(0, 4)
+  const titleSize = Math.min(15.9, (15.9 * 23) / Math.max(labels.title.length, 1))
+
+  return (
+    <Document author="GloRe" title={`${labels.title}: ${holder.firstName} ${lastName}`.trim()}>
+      <Page size="A4" style={styles.page}>
+        <Svg height={306.5} style={[styles.absolute, { left: 256, top: 19.5 }]} viewBox="0 0 319.5 306.5" width={319.5}>
+          {FADED_ARROWS.map(path => (
+            <Path d={path.d} fill={path.fill} key={path.d.slice(0, 24)} />
+          ))}
+        </Svg>
+
+        {/* Header */}
+        <Svg height={86} style={[styles.absolute, { left: 20, top: 18 }]} viewBox="0 0 218 86" width={218}>
+          {LOGO_PATHS.map(path => (
+            <Path d={path.d} fill={path.fill} key={path.d.slice(0, 24)} />
+          ))}
+        </Svg>
+        <View style={styles.banner}>
+          <Text style={[styles.bannerText, { fontSize: titleSize }]}>{labels.title}</Text>
         </View>
-        {orgLogoUrl ? <Image src={orgLogoUrl} style={styles.orgLogo} /> : null}
-      </View>
+        <Text style={[styles.name, { fontSize: nameSize(holder.firstName), top: 137 }]}>{holder.firstName}</Text>
+        <Text style={[styles.name, { fontSize: nameSize(lastName), fontWeight: 700, top: 173 }]}>{lastName}</Text>
 
-      {/* Body */}
-      <View style={styles.body}>
-        <View style={styles.certifyRow}>
-          <View style={styles.certifyLine} />
-          <Text style={styles.certifyText}>{'This is to certify that'}</Text>
-          <View style={styles.certifyLine} />
-        </View>
-
-        <Text style={styles.volunteeerName}>{volunteerName || 'Your Name'}</Text>
-        <Text style={styles.orgName}>{orgName || 'Your Organization'}</Text>
-
-        <Text style={styles.descriptionText}>
-          {values.activityDescription ||
-            'Your volunteering activity description will appear here once you fill in the form.'}
+        {/* Personal */}
+        <View style={[styles.bar, { backgroundColor: GREEN, height: 38.7, top: 230.3 }]} />
+        <Text style={[styles.personalLine, { top: 227 }]}>
+          {`${labels.nationality} `}
+          <Text style={styles.strong}>{holder.nationality ?? ''}</Text>
+        </Text>
+        <Text style={[styles.personalLine, { top: 243 }]}>
+          {`${labels.dateOfBirth} `}
+          <Text style={styles.strong}>{formatDate(holder.birthday)}</Text>
+        </Text>
+        <Text style={[styles.personalLine, { top: 259 }]}>
+          {`${labels.placeOfBirth} `}
+          <Text style={styles.strong}>{holder.birthPlace ?? ''}</Text>
         </Text>
 
-        <View style={styles.divider} />
-
-        {/* Activity details */}
-        <View style={styles.twoCol}>
-          <View style={styles.col}>
-            <Text style={styles.metaLabel}>{'Activity period'}</Text>
-            <Text style={styles.metaValue}>
-              {values.activityStartDate && values.activityEndDate
-                ? `${formatDate(values.activityStartDate)} – ${formatDate(values.activityEndDate)}`
-                : '—'}
-            </Text>
-          </View>
-          <View style={styles.col}>
-            <Text style={styles.metaLabel}>{'Duration'}</Text>
-            <Text style={styles.metaValue}>{values.activityDuration ? `${values.activityDuration} hours` : '—'}</Text>
-          </View>
+        {/* Volunteering */}
+        <View style={[styles.bar, { height: 173.9, top: 299 }]} />
+        <Text style={[styles.heading, { top: 296.1 }]}>{labels.volunteering}</Text>
+        <View style={[styles.row, { top: 322.8 }]}>
+          <Text>{labels.from}</Text>
+          <RowLine flex={53.9} value={formatDate(activity.startDate)} />
+          <Text>{labels.to}</Text>
+          <RowLine flex={82.1} value={formatDate(activity.endDate)} />
         </View>
-
-        <View style={styles.twoCol}>
-          <View style={styles.col}>
-            <Text style={styles.metaLabel}>{'Location'}</Text>
-            <Text style={styles.metaValue}>{values.activityLocation || '—'}</Text>
-          </View>
+        <View style={[styles.row, { top: 340.8, width: 79.5 }]}>
+          <Text>{labels.hours}</Text>
+          <RowLine flex={1} value={activity.duration ? String(activity.duration) : ''} />
         </View>
+        <View style={[styles.row, { top: 358.8 }]}>
+          <Text>{labels.at}</Text>
+          <RowLine flex={1} value={activity.location ?? ''} />
+        </View>
+        <Text style={[styles.absolute, { left: 46.1, top: 385.1 }]}>{labels.partnership}</Text>
+        <Text style={styles.partnerName}>{organization.name}</Text>
+        {organization.logoUrl ? (
+          <Image src={organization.logoUrl} style={styles.partnerLogo} />
+        ) : (
+          <View style={styles.partnerPlaceholder} />
+        )}
 
-        {/* Skills */}
-        {skillNames.length > 0 ? (
-          <View style={styles.skillsSection}>
-            <Text style={styles.skillsTitle}>{'Certified Skills'}</Text>
-            <View style={styles.skillsGrid}>
-              {skillNames.map(name => (
-                <View key={name} style={styles.skillChip}>
-                  <Text style={styles.skillChipText}>{name}</Text>
-                </View>
-              ))}
-            </View>
+        {/* Main tasks */}
+        <View style={[styles.bar, { height: 184.4, top: 503.3 }]} />
+        <Text style={[styles.heading, { top: 499 }]}>{labels.mainTasks}</Text>
+        <Text style={styles.tasksIntro}>{labels.tasksIntro}</Text>
+        {tasks.map((task, index) => (
+          <Text key={task} style={[styles.task, { top: TASK_TOP + index * TASK_PITCH }]}>
+            <Text style={styles.bullet}>{'• '}</Text>
+            {task}
+          </Text>
+        ))}
+        {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
+        <View style={[styles.row, { top: 676.8, width: 172.8 }]}>
+          <Text>{labels.representedBy}</Text>
+          <RowLine flex={1} inset={5.7} value={organization.legalRepresentative ?? ''} />
+        </View>
+        <Text style={styles.date}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
+
+        {/* Verification */}
+        {data.qrPath ? (
+          <Svg height={52} style={styles.qr} viewBox={`0 0 ${data.qrSize} ${data.qrSize}`} width={52}>
+            <Path d={data.qrPath} fill={NAVY} />
+          </Svg>
+        ) : null}
+        {data.verifyUrl ? (
+          <View style={styles.verify}>
+            <Text>{labels.verify}</Text>
+            <Text style={styles.verifyCode}>{data.verifyUrl}</Text>
           </View>
         ) : null}
-      </View>
 
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>{'GloRe — Global Volunteering Network'}</Text>
-        <Text style={styles.footerText}>
-          {issuedDate
-            ? `Issued on ${formatDate(issuedDate)}`
-            : `Issued on ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}`}
+        {/* Skills */}
+        <Text style={styles.headingRight}>
+          {labels.headingBefore}
+          <Text style={styles.highlight}>{labels.headingHighlight}</Text>
+          {labels.headingAfter}
         </Text>
-      </View>
-    </Page>
-  </Document>
-)
+        {skills.map((skill, index) => {
+          const top = SKILL_TOPS[index] ?? 0
+          const level = Math.max(0, Math.min(5, skill.level))
+          return (
+            <View key={skill.name}>
+              <View style={[styles.skillLabel, { top }]}>
+                <SkillIcon iconNode={skill.iconNode} />
+                <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
+              </View>
+              {skill.statement ? <Text style={[styles.statement, { top: top + 27.8 }]}>{skill.statement}</Text> : null}
+              <Svg height={11.2} style={[styles.absolute, { left: DOT_LEFTS[0], top: top + 85.1 }]} width={153.4}>
+                {DOT_LEFTS.map((left, dot) => (
+                  <Circle cx={left - 269.3 + 5.6} cy={5.6} fill={dot < level ? GREEN : GRAY} key={left} r={5.6} />
+                ))}
+              </Svg>
+              {level > 0 ? (
+                <View style={[styles.levelText, { top: top + 86 }]}>
+                  <Text>{labels.level}</Text>
+                  <Text style={styles.levelWord}>{labels.levels[level - 1] ?? ''}</Text>
+                </View>
+              ) : null}
+            </View>
+          )
+        })}
+
+        {/* Footer */}
+        <Image src={assetSource('/certificate/erasmus-plus.png')} style={styles.emblem} />
+      </Page>
+    </Document>
+  )
+}

@@ -120,6 +120,7 @@ const nextConfig: TypedNextConfig = {
       ],
     },
   ],
+  outputFileTracingIncludes: { '/**': ['./public/certificate/**', './public/fonts/roboto/**'] },
   serverExternalPackages: ['qrcode'],
   typedRoutes: true,
   images: { remotePatterns },

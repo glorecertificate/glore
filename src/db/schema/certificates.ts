@@ -19,7 +19,7 @@ import { type IntlJsonb } from './helpers'
 import { organizations } from './organizations'
 import { users } from './users'
 
-interface CertificateSnapshot {
+export interface CertificateSnapshot {
   holder: {
     birthPlace: string | null
     birthday: string | null
@@ -43,6 +43,7 @@ interface CertificateSnapshot {
   }
   skills: {
     courseId: number
+    icon: string | null
     level: number
     name: IntlJsonb
     statement: string | null

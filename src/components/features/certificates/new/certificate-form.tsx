@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { createCertificate } from '@/actions/certificates/management'
+import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
 import { CertificatePreview } from '@/components/features/certificates/preview'
 import {
   type CertificateFormValues,
@@ -25,6 +26,7 @@ import { RatingGroup } from '@/components/ui/rating-group'
 import { Textarea } from '@/components/ui/textarea'
 import { type Course } from '@/db/queries/course'
 import { type User } from '@/db/queries/user'
+import { SKILL_LEVELS } from '@/lib/constants'
 
 interface CertificateFormProps {
   user: User
@@ -35,6 +37,8 @@ interface CertificateFormProps {
 
 export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCourses }: CertificateFormProps) => {
   const t = useTranslations('Certificates')
+  const tPdf = useTranslations('CertificatePdf')
+  const tCommon = useTranslations('Common')
   const { push } = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
@@ -299,11 +303,38 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
         <p className="mb-2 text-sm font-medium text-muted-foreground">{t('preview')}</p>
         <div className="min-h-0 flex-1 overflow-hidden rounded-lg bg-muted">
           <CertificatePreview
-            values={values}
-            volunteerName={user.shortName}
-            orgName={orgName}
-            orgLogoUrl={orgLogoUrl}
-            skillNames={selectedSkillNames}
+            data={{
+              activity: {
+                duration: values.activityDuration ?? null,
+                endDate: values.activityEndDate || null,
+                location: values.activityLocation || null,
+                startDate: values.activityStartDate || null,
+                tasks: [],
+              },
+              code: null,
+              holder: {
+                birthPlace: user.birthPlace ?? null,
+                birthday: user.birthday ?? null,
+                firstName: user.firstName ?? '',
+                lastName: user.lastName ?? null,
+                nationality: user.nationality ?? null,
+              },
+              issuedAt: null,
+              organization: {
+                legalRepresentative: null,
+                logoUrl: pdfImage(orgLogoUrl),
+                name: orgName,
+                signatureUrl: null,
+              },
+              qrPath: null,
+              qrSize: 0,
+              skills: selectedSkillNames.map(name => ({ level: 0, name, statement: null })),
+              verifyUrl: null,
+            }}
+            labels={pdfLabels(
+              key => tPdf(key),
+              SKILL_LEVELS.map(level => tCommon(`skillLevels.${level}`))
+            )}
           />
         </div>
       </div>

@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { and, eq, inArray, ne, sql } from 'drizzle-orm'
+import { and, eq, inArray, ne, notInArray, sql } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
 import { certificateSkills, certificates, organizationRatings } from '@/db/schema'
@@ -70,9 +70,18 @@ export const applyCertificateReview = async (
   { id, expectedUpdatedAt, userId, updates, skillCourseIds, setDefaultIfNone }: ApplyCertificateReviewParams
 ) => {
   if (skillCourseIds !== undefined) {
-    await tx.delete(certificateSkills).where(eq(certificateSkills.certificateId, id))
+    await tx
+      .delete(certificateSkills)
+      .where(
+        skillCourseIds.length > 0
+          ? and(eq(certificateSkills.certificateId, id), notInArray(certificateSkills.courseId, skillCourseIds))
+          : eq(certificateSkills.certificateId, id)
+      )
     if (skillCourseIds.length > 0) {
-      await tx.insert(certificateSkills).values(skillCourseIds.map(courseId => ({ certificateId: id, courseId })))
+      await tx
+        .insert(certificateSkills)
+        .values(skillCourseIds.map(courseId => ({ certificateId: id, courseId })))
+        .onConflictDoNothing()
     }
   }
 

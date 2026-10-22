@@ -4,10 +4,11 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { cacheTag, updateTag } from 'next/cache'
+import { cacheTag } from 'next/cache'
 
 import { count, eq } from 'drizzle-orm'
 
+import { expireOrganizations } from '@/actions/admin/expire'
 import { notify } from '@/actions/notifications/notify'
 import { listOrganizationActivity } from '@/actions/organizations/activity-core'
 import { memberUserColumns, reviewerColumns } from '@/actions/organizations/helpers'
@@ -118,7 +119,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
     return { organizationId, organizationName: event.data.organizationName }
   })
 
-  if (!result.error) updateTag(CacheTag.Organizations)
+  if (!result.error) expireOrganizations()
 
   return result
 }
@@ -140,7 +141,7 @@ export const rejectOrganization = async (organizationId: number, reviewerComment
     return { organizationId, organizationName: event.data.organizationName }
   })
 
-  if (!result.error) updateTag(CacheTag.Organizations)
+  if (!result.error) expireOrganizations()
 
   return result
 }
@@ -199,7 +200,7 @@ export const inviteOrganization = async ({
     return { organizationId: organization.id, organizationName: organization.name }
   })
 
-  if (!result.error) updateTag(CacheTag.Organizations)
+  if (!result.error) expireOrganizations()
 
   return result
 }
@@ -247,7 +248,7 @@ export const createOrganization = async ({
     )
   })
 
-  if (!result.error) updateTag(CacheTag.Organizations)
+  if (!result.error) expireOrganizations()
 
   return result
 }

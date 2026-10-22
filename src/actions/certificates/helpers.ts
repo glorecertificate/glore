@@ -6,6 +6,7 @@ import { unstable_rethrow } from 'next/navigation'
 import { and, eq } from 'drizzle-orm'
 import { type ZodError } from 'zod'
 
+import { expireAdminOverview } from '@/actions/admin/expire'
 import { getAuthUser } from '@/actions/auth'
 import { notify } from '@/actions/notifications/notify'
 import { type Transaction, db, transaction } from '@/db/client'
@@ -169,6 +170,7 @@ export const expireCertificateCaches = (
 ) => {
   if (userId) updateTag(certificatesUserTag(userId))
   updateTag(certificatesOrgTag(organizationId))
+  expireAdminOverview()
   for (const tutorId of new Set(tutorIds)) {
     if (tutorId) updateTag(certificatesTutorTag(tutorId))
   }

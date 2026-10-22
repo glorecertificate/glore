@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation'
 import { and, eq, like, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { expireTeam } from '@/actions/admin/expire'
 import { getAuthUser, refreshAuthSession } from '@/actions/auth'
 import { notify } from '@/actions/notifications/notify'
 import { db, transaction } from '@/db/client'
@@ -17,7 +18,7 @@ import { type AppEvent } from '@/db/queries/activity-event'
 import { onboardingNextStep } from '@/db/queries/onboarding'
 import { memberships, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
-import { CacheTag, userTag } from '@/lib/cache'
+import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, PASSWORD_REGEX } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
 import { pickUsername, usernameBase } from '@/lib/username'
@@ -117,7 +118,7 @@ export const completeOnboarding = async (values: OnboardingValues) => {
 
     await refreshAuthSession()
     revalidateTag(userTag(authUser.id), 'max')
-    revalidateTag(CacheTag.TeamMembers, 'max')
+    expireTeam()
     await notify(event)
 
     const roles = await db.query.memberships.findMany({

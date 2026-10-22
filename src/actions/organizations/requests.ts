@@ -8,6 +8,7 @@ import { revalidateTag } from 'next/cache'
 
 import { and, eq } from 'drizzle-orm'
 
+import { expireOrganizations } from '@/actions/admin/expire'
 import { notify } from '@/actions/notifications/notify'
 import {
   assertOrganizationManager,
@@ -111,7 +112,7 @@ export const requestOrganizationRegistration = async (input: ApplicationInput) =
     return { organizationId: organization.id, organizationName: organization.name }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) expireOrganizations()
 
   return result
 }

@@ -6,6 +6,7 @@ import { unstable_rethrow } from 'next/navigation'
 
 import { APIError } from 'better-auth/api'
 
+import { expireTeam } from '@/actions/admin/expire'
 import { queryError } from '@/db/helpers'
 import { adminError, isAdminError } from '@/db/mutations/moderation'
 import { auth } from '@/lib/auth'
@@ -17,8 +18,7 @@ const HOUR = 60 * 60 * 1000
 export const revalidateUserAccess = (userId: string) => {
   updateTag(userTag(userId))
   revalidateTag(CacheTag.AdminUsers, 'max')
-  revalidateTag(CacheTag.TeamMembers, 'max')
-  revalidateTag(CacheTag.AdminOverview, 'max')
+  expireTeam()
 }
 
 export const requireAdmin = async () => {

@@ -115,8 +115,19 @@ const fade = (hex: string) => {
 
 const FADED_ARROWS = ARROW_PATHS.map(path => ({ ...path, fill: fade(path.fill) }))
 
+const TEMPLATE_FONT_ASCENT = 1.056
+const ROBOTO_FONT_ASCENT = 1900 / 2048
+const BANNER_TRACKING = -0.0123
+const HEADING_TRACKING = 0.73
+
+const textShift = (fontSize: number) => (TEMPLATE_FONT_ASCENT - ROBOTO_FONT_ASCENT) * fontSize
+
+const placed = (top: number, fontSize: number) => ({ fontSize, top: top + textShift(fontSize) })
+
 const SKILL_TOPS = [226.5, 355.1, 482.7, 610.3]
 const DOT_LEFTS = [269.3, 304.8, 340.4, 375.9, 411.5]
+const STATEMENT_OFFSET = 27.8
+const LEVEL_OFFSET = 86.25
 const TASK_TOP = 550.6
 const TASK_PITCH = 40
 
@@ -129,17 +140,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     left: 24.7,
     minWidth: 194.3,
-    paddingHorizontal: 4.7,
+    paddingHorizontal: 4,
     position: 'absolute',
     top: 105.3,
   },
   bannerText: { color: '#ffffff', textTransform: 'uppercase' },
-  name: { color: '#305071', fontSize: 36, left: 23.6, position: 'absolute', width: 230 },
+  name: { color: '#305071', left: 23.6, position: 'absolute', width: 230 },
   bar: { backgroundColor: NAVY, left: 26.9, position: 'absolute', width: 2.8 },
-  personalLine: { fontSize: 9, left: 45.3, position: 'absolute' },
+  personalLine: { left: 45.3, position: 'absolute' },
   strong: { fontWeight: 900, textTransform: 'uppercase' },
-  heading: { fontSize: 13.2, fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase' },
+  heading: {
+    fontWeight: 900,
+    left: 46.1,
+    letterSpacing: HEADING_TRACKING,
+    position: 'absolute',
+    textTransform: 'uppercase',
+  },
   row: { alignItems: 'flex-start', flexDirection: 'row', left: 46.1, position: 'absolute', width: 176.3 },
+  rowLabel: { marginTop: textShift(10) },
   rowLine: {
     borderBottomColor: NAVY,
     borderBottomWidth: 0.75,
@@ -148,34 +166,18 @@ const styles = StyleSheet.create({
     paddingLeft: 3,
   },
   rowValue: { fontSize: 10, fontWeight: 700, lineHeight: 1, maxLines: 1, textOverflow: 'ellipsis' },
-  partnerName: {
-    fontSize: 10,
-    fontWeight: 900,
-    lineHeight: 1.21,
-    left: 46.1,
-    position: 'absolute',
-    top: 417.2,
-    width: 68,
-  },
+  partnerName: { fontWeight: 900, lineHeight: 1.21, left: 46.1, position: 'absolute', width: 68 },
   partnerLogo: { height: 54.6, left: 119.2, objectFit: 'contain', position: 'absolute', top: 418, width: 90.7 },
   partnerPlaceholder: { backgroundColor: GRAY, height: 54.6, left: 119.2, position: 'absolute', top: 418, width: 90.7 },
-  tasksIntro: { fontSize: 10, left: 46.3, lineHeight: 1.3, position: 'absolute', top: 521.6, width: 172 },
-  task: { fontSize: 10, left: 46.3, lineHeight: 1.2, position: 'absolute', width: 158.7 },
+  tasksIntro: { left: 46.3, lineHeight: 1.3, position: 'absolute', width: 172 },
+  task: { left: 46.3, lineHeight: 1.2, position: 'absolute', width: 158.7 },
   bullet: { color: GREEN, fontWeight: 900 },
   signatureImage: { height: 28, left: 112, objectFit: 'contain', position: 'absolute', top: 646, width: 100 },
-  date: { fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase', top: 708.3 },
+  date: { fontWeight: 900, left: 46.1, position: 'absolute', textTransform: 'uppercase' },
   qr: { left: 46.1, position: 'absolute', top: 735 },
   verify: { fontSize: 7.5, left: 106, position: 'absolute', top: 742, width: 130 },
   verifyCode: { fontSize: 8, fontWeight: 900, marginTop: 2 },
-  headingRight: {
-    fontSize: 11,
-    fontWeight: 700,
-    left: 264.8,
-    lineHeight: 1.2,
-    position: 'absolute',
-    top: 187,
-    width: 290,
-  },
+  headingRight: { fontWeight: 700, left: 264.8, lineHeight: 1.2, position: 'absolute', width: 290 },
   highlight: { color: GREEN, textTransform: 'uppercase' },
   skillLabel: {
     alignItems: 'center',
@@ -183,14 +185,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 22.9,
     left: 269.3,
-    paddingBottom: 2,
     paddingLeft: 7,
-    paddingRight: 9,
+    paddingRight: 14.8,
+    paddingTop: 1,
     position: 'absolute',
   },
   skillName: { color: '#ffffff', fontSize: 11, fontWeight: 900, marginLeft: 6.7, textTransform: 'uppercase' },
   statement: {
-    fontSize: 10,
     left: 269.1,
     lineHeight: 1.4,
     maxLines: 3,
@@ -198,8 +199,8 @@ const styles = StyleSheet.create({
     textOverflow: 'ellipsis',
     width: 280.4,
   },
-  levelText: { color: LEVEL_GRAY, flexDirection: 'row', fontSize: 9, left: 501.5, position: 'absolute' },
-  levelWord: { color: GREEN, fontWeight: 900, marginLeft: 1, textTransform: 'lowercase' },
+  levelText: { color: LEVEL_GRAY, left: 501.5, position: 'absolute' },
+  levelWord: { color: GREEN, fontWeight: 900, textTransform: 'lowercase' },
   emblem: { height: 34.1, left: 397.5, position: 'absolute', top: 767.9, width: 150.1 },
 })
 
@@ -290,45 +291,47 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
           ))}
         </Svg>
         <View style={styles.banner}>
-          <Text style={[styles.bannerText, { fontSize: titleSize }]}>{labels.title}</Text>
+          <Text style={[styles.bannerText, { fontSize: titleSize, letterSpacing: BANNER_TRACKING * titleSize }]}>
+            {labels.title}
+          </Text>
         </View>
-        <Text style={[styles.name, { fontSize: nameSize(holder.firstName), top: 137 }]}>{holder.firstName}</Text>
-        <Text style={[styles.name, { fontSize: nameSize(lastName), fontWeight: 700, top: 173 }]}>{lastName}</Text>
+        <Text style={[styles.name, placed(137, nameSize(holder.firstName))]}>{holder.firstName}</Text>
+        <Text style={[styles.name, { fontWeight: 700 }, placed(173, nameSize(lastName))]}>{lastName}</Text>
 
         {/* Personal */}
         <View style={[styles.bar, { backgroundColor: GREEN, height: 38.7, top: 230.3 }]} />
-        <Text style={[styles.personalLine, { top: 227 }]}>
+        <Text style={[styles.personalLine, placed(227, 9)]}>
           {`${labels.nationality} `}
           <Text style={styles.strong}>{holder.nationality ?? ''}</Text>
         </Text>
-        <Text style={[styles.personalLine, { top: 243 }]}>
+        <Text style={[styles.personalLine, placed(243, 9)]}>
           {`${labels.dateOfBirth} `}
           <Text style={styles.strong}>{formatDate(holder.birthday)}</Text>
         </Text>
-        <Text style={[styles.personalLine, { top: 259 }]}>
+        <Text style={[styles.personalLine, placed(259, 9)]}>
           {`${labels.placeOfBirth} `}
           <Text style={styles.strong}>{holder.birthPlace ?? ''}</Text>
         </Text>
 
         {/* Volunteering */}
         <View style={[styles.bar, { height: 173.9, top: 299 }]} />
-        <Text style={[styles.heading, { top: 296.1 }]}>{labels.volunteering}</Text>
+        <Text style={[styles.heading, placed(296.1, 13.2)]}>{labels.volunteering}</Text>
         <View style={[styles.row, { top: 322.8 }]}>
-          <Text>{labels.from}</Text>
+          <Text style={styles.rowLabel}>{labels.from}</Text>
           <RowLine flex={53.9} value={formatDate(activity.startDate)} />
-          <Text>{labels.to}</Text>
+          <Text style={styles.rowLabel}>{labels.to}</Text>
           <RowLine flex={82.1} value={formatDate(activity.endDate)} />
         </View>
         <View style={[styles.row, { top: 340.8, width: 79.5 }]}>
-          <Text>{labels.hours}</Text>
+          <Text style={styles.rowLabel}>{labels.hours}</Text>
           <RowLine flex={1} value={activity.duration ? String(activity.duration) : ''} />
         </View>
         <View style={[styles.row, { top: 358.8 }]}>
-          <Text>{labels.at}</Text>
+          <Text style={styles.rowLabel}>{labels.at}</Text>
           <RowLine flex={1} value={activity.location ?? ''} />
         </View>
-        <Text style={[styles.absolute, { left: 46.1, top: 385.1 }]}>{labels.partnership}</Text>
-        <Text style={styles.partnerName}>{organization.name}</Text>
+        <Text style={[styles.absolute, { left: 46.1 }, placed(385.1, 10)]}>{labels.partnership}</Text>
+        <Text style={[styles.partnerName, placed(417.2, 10)]}>{organization.name}</Text>
         {organization.logoUrl ? (
           <Image src={organization.logoUrl} style={styles.partnerLogo} />
         ) : (
@@ -337,20 +340,20 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
 
         {/* Main tasks */}
         <View style={[styles.bar, { height: 184.4, top: 503.3 }]} />
-        <Text style={[styles.heading, { top: 499 }]}>{labels.mainTasks}</Text>
-        <Text style={styles.tasksIntro}>{labels.tasksIntro}</Text>
+        <Text style={[styles.heading, placed(499, 13.2)]}>{labels.mainTasks}</Text>
+        <Text style={[styles.tasksIntro, placed(521.6, 10)]}>{labels.tasksIntro}</Text>
         {tasks.map((task, index) => (
-          <Text key={task} style={[styles.task, { top: TASK_TOP + index * TASK_PITCH }]}>
+          <Text key={task} style={[styles.task, placed(TASK_TOP + index * TASK_PITCH, 10)]}>
             <Text style={styles.bullet}>{'• '}</Text>
             {task}
           </Text>
         ))}
         {organization.signatureUrl ? <Image src={organization.signatureUrl} style={styles.signatureImage} /> : null}
         <View style={[styles.row, { top: 676.8, width: 172.8 }]}>
-          <Text>{labels.representedBy}</Text>
+          <Text style={styles.rowLabel}>{labels.representedBy}</Text>
           <RowLine flex={1} inset={5.7} value={organization.legalRepresentative ?? ''} />
         </View>
-        <Text style={styles.date}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
+        <Text style={[styles.date, placed(708.3, 10)]}>{`${labels.date} ${formatDate(data.issuedAt)}`}</Text>
 
         {/* Verification */}
         {data.qrPath ? (
@@ -366,7 +369,7 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
         ) : null}
 
         {/* Skills */}
-        <Text style={styles.headingRight}>
+        <Text style={[styles.headingRight, placed(187, 11)]}>
           {labels.headingBefore}
           <Text style={styles.highlight}>{labels.headingHighlight}</Text>
           {labels.headingAfter}
@@ -380,17 +383,19 @@ export const CertificateDocument = ({ data, labels }: CertificateDocumentProps) 
                 <SkillIcon iconNode={skill.iconNode} />
                 <Text style={[styles.skillName, { fontSize: skillNameSize(skill.name) }]}>{skill.name}</Text>
               </View>
-              {skill.statement ? <Text style={[styles.statement, { top: top + 27.8 }]}>{skill.statement}</Text> : null}
+              {skill.statement ? (
+                <Text style={[styles.statement, placed(top + STATEMENT_OFFSET, 10)]}>{skill.statement}</Text>
+              ) : null}
               <Svg height={11.2} style={[styles.absolute, { left: DOT_LEFTS[0], top: top + 85.1 }]} width={153.4}>
                 {DOT_LEFTS.map((left, dot) => (
                   <Circle cx={left - 269.3 + 5.6} cy={5.6} fill={dot < level ? GREEN : GRAY} key={left} r={5.6} />
                 ))}
               </Svg>
               {level > 0 ? (
-                <View style={[styles.levelText, { top: top + 86 }]}>
-                  <Text>{labels.level}</Text>
+                <Text style={[styles.levelText, placed(top + LEVEL_OFFSET, 9)]}>
+                  {`${labels.level} `}
                   <Text style={styles.levelWord}>{labels.levels[level - 1] ?? ''}</Text>
-                </View>
+                </Text>
               ) : null}
             </View>
           )

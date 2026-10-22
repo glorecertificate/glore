@@ -18,6 +18,13 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 | Logo fonts  | Avenir Next Condensed DemiBold and Tw Cen MT: ship the logo as vector paths, never as text     |
 | Dates       | `DD.MM.YYYY` in every language                                                                 |
 
+## Text placement
+
+- A template "top" is the PyMuPDF line bbox top, which uses the template font descriptor ascent (1.056 x font size). react-pdf puts the first baseline at top plus the Roboto hhea ascent (1900 / 2048 = 0.928 x font size) whatever the line height, so `placed(top, size)` in `document.tsx` adds 0.128 x size to every template top.
+- The template is slightly irregular: its first skill block sits 1 pt higher relative to its statement, dots, and level line than blocks 2 to 4 do. Statement and level text use the midpoint of both, the dots keep the first block's 85.1, so blocks 2 to 4 have dots 1 pt low.
+- Headings carry +0.73 pt tracking, the banner text about -0.2 pt, and skill labels end 14.8 pt after the name. The level line is one text run, "level: good", with a regular word space.
+- Underlines in the From, hours, at, and Represent rows sit 0.7 pt above the template lines, kept in place so values still sit on them.
+
 ## Left column
 
 | Element              | Spec                                                                                                                                             |

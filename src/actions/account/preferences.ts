@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { revalidateTag } from 'next/cache'
+import { updateTag } from 'next/cache'
 
 import { and, desc, eq } from 'drizzle-orm'
 import { z } from 'zod'
@@ -40,7 +40,7 @@ export const updateNotificationPreferences = async (values: z.input<typeof prefe
 
   try {
     await mergeNotificationPreferences(user.id, parsed.data)
-    revalidateTag(userTag(user.id), 'max')
+    updateTag(userTag(user.id))
     return { data: parsed.data, error: null }
   } catch (error) {
     return { data: null, error: queryError(error) }
@@ -63,7 +63,7 @@ export const updatePrivacy = async (values: z.input<typeof privacySchema>) => {
       if (featuredCertificateId === undefined) return null
       return await recordFeaturedCertificate(tx, { id: featuredCertificateId, userId: user.id })
     })
-    revalidateTag(userTag(user.id), 'max')
+    updateTag(userTag(user.id))
     if (featured) expireCertificateCaches({ organizationId: featured.organizationId, userId: user.id })
     return { data: parsed.data, error: null }
   } catch (error) {

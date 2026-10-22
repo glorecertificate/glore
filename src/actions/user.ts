@@ -2,7 +2,7 @@
 
 import 'server-only'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag, updateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
@@ -104,7 +104,7 @@ export const updateProfile = async (values: z.input<typeof profileSchema>) => {
 
   if (Object.keys(parsed.data).length > 0) {
     await db.update(users).set(parsed.data).where(eq(users.id, currentUser.id))
-    revalidateTag(userTag(currentUser.id), 'max')
+    updateTag(userTag(currentUser.id))
   }
 
   return await queryUserById(currentUser.id)
@@ -150,7 +150,7 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
       if (fields.username && isUniqueViolation(error)) throw new Error('USERNAME_TAKEN', { cause: error })
       throw error
     }
-    revalidateTag(userTag(currentUser.id), 'max')
+    updateTag(userTag(currentUser.id))
   }
 
   return { pendingEmail, user: await queryUserById(currentUser.id) }

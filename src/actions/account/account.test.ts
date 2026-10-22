@@ -1,8 +1,11 @@
 import { randomUUID } from 'node:crypto'
 
+import { revalidateTag, updateTag } from 'next/cache'
+
 import { and, eq, inArray, like } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
+import { userTag } from '@/lib/cache'
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE } from '~/scripts/seed-data'
 
 const authUser = vi.hoisted(() => ({ current: null as { id: string } | null }))
@@ -29,6 +32,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
     preferences: typeof import('@/actions/account/preferences')
     schema: typeof import('@/db/schema')
     sessions: typeof import('@/actions/account/sessions')
+    user: typeof import('@/actions/user')
     organizationId: number
     seedOrganizationId: number
   }
@@ -43,13 +47,14 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
   }
 
   beforeAll(async () => {
-    const [client, deletion, exporter, preferences, schema, sessions] = await Promise.all([
+    const [client, deletion, exporter, preferences, schema, sessions, user] = await Promise.all([
       import('@/db/client'),
       import('@/actions/account/deletion'),
       import('@/actions/account/export'),
       import('@/actions/account/preferences'),
       import('@/db/schema'),
       import('@/actions/account/sessions'),
+      import('@/actions/user'),
     ])
     const seed = await client.db.query.organizations.findFirst({
       columns: { id: true },
@@ -65,6 +70,7 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
       schema,
       seedOrganizationId: seed.id,
       sessions,
+      user,
     }
     await cleanup()
 
@@ -171,6 +177,24 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
       where: eq(schema.certificates.userId, ids.subject),
     })
     expect(rows.filter(({ isDefault }) => isDefault).map(({ id }) => id)).toEqual([second!.id])
+  })
+
+  it('expires the user cache at once so the caller reads its own settings', async () => {
+    authUser.current = { id: ids.subject }
+    const { preferences, user } = context
+    vi.mocked(updateTag).mockClear()
+    vi.mocked(revalidateTag).mockClear()
+
+    await preferences.updateNotificationPreferences({ learning: true })
+    await preferences.updatePrivacy({ publicProfile: false })
+    await user.updateProfile({ city: 'Milan' })
+
+    expect(vi.mocked(updateTag).mock.calls).toEqual([
+      [userTag(ids.subject)],
+      [userTag(ids.subject)],
+      [userTag(ids.subject)],
+    ])
+    expect(revalidateTag).not.toHaveBeenCalled()
   })
 
   it('refuses to feature a certificate of another user', async () => {

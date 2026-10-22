@@ -16,8 +16,9 @@ Brief description of what this PR does and why.
 
 ## Checklist
 
-- [ ] `pnpm run check` passes locally (types + lint + format + unused exports)
+- [ ] `pnpm run check` passes locally (types, lint, format, unused code, translations)
+- [ ] `pnpm run test` passes locally
 - [ ] No new warnings or errors introduced
-- [ ] Translation keys added/updated in all three `messages/` files (if applicable)
-- [ ] `AGENTS.md` updated if architecture or conventions changed
+- [ ] Translation keys added or updated in all three `messages/` files (if applicable)
+- [ ] `README.md`, `AGENTS.md`, and the specs in `.agents/specs/` updated if routes, commands, env vars, or structure changed
 - [ ] Linked to a related issue (if applicable)

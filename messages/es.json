@@ -571,6 +571,11 @@
         "invalidUrl": "La URL proporcionada no es válida",
         "preview": "Vista previa",
         "upload": "Subir",
+        "uploadInvalidSize": "Estos archivos tienen un tamaño no válido: {files}",
+        "uploadInvalidType": "Estos tipos de archivo no son compatibles: {files}",
+        "uploadTooFew": "Sube al menos {count, plural, one {# archivo} other {# archivos}}.",
+        "uploadTooLarge": "Estos archivos superan {maxFileSize}: {files}",
+        "uploadTooMany": "Puedes subir como máximo {count, plural, one {# archivo} other {# archivos}}.",
         "url": "URL",
         "video": "Vídeo"
       },
@@ -840,7 +845,7 @@
     "invalidSlugFormat": "Formato no válido. Solo se permiten letras minúsculas, números y guiones.",
     "sortBy-update": "Última actualización",
     "lessonCount": "Paso {count} de {total}",
-    "lessonType": "{type, select, descriptive {Lectura} questions {Cuestionario} skill_evaluation {Autoevaluación} subskill_evaluations {Autoevaluación} other {Paso}}",
+    "lessonType": "{type, select, reading {Lectura} questions {Cuestionario} assessment {Evaluación final} evaluations {Autoevaluación} other {Paso}}",
     "lessons": "{count, plural, =1 {lección} other {lecciones}}",
     "loading": "Cargando…",
     "sortBy-name": "Nombre",
@@ -882,7 +887,7 @@
     "savingChange": "Guardando cambios",
     "selectSkillGroup": "Selecciona un grupo de habilidades",
     "settings": "Configuración",
-    "skillEvaluationTitle": "Evaluación de habilidades blandas",
+    "skillEvaluationTitle": "Evaluación final",
     "sortBy-skillGroup": "Grupo",
     "skillGroup": "Grupo",
     "skillGroupDescription": "Área de habilidades a la que pertenece este curso.",
@@ -926,12 +931,12 @@
     "courseDescriptionPlaceholder": "Escribe una descripción en {lang}",
     "updateDescription": "Actualizar descripción",
     "addActivityQuestion": "Pregunta",
-    "addActivityEvaluation": "Evaluación",
+    "addActivityEvaluation": "Autoevaluación",
     "addActivity": "Añadir actividad",
-    "addActivityAssessment": "Autoevaluación",
+    "addActivityAssessment": "Evaluación final",
     "activityQuestion": "Pregunta",
-    "activityEvaluation": "Evaluación",
-    "activityAssessment": "Autoevaluación",
+    "activityEvaluation": "Autoevaluación",
+    "activityAssessment": "Evaluación final",
     "activityDescriptionPlaceholder": "Escribe una descripción en {lang}",
     "activityOptions": "Opciones",
     "activityOptionPlaceholder": "Escribe una opción en {lang}",
@@ -1132,7 +1137,7 @@
       "healthClear": "Todos los cursos están completos y traducidos.",
       "issue": {
         "empty": "Sin lecciones",
-        "noAssessment": "Sin evaluación",
+        "noAssessment": "Sin evaluación final",
         "noGroup": "Sin grupo de habilidades"
       },
       "missing": "Falta {language}",
@@ -1286,7 +1291,7 @@
       },
       "step3": {
         "title": "Obtén la validación",
-        "description": "Un tutor de tu organización revisa tus evaluaciones y los detalles de la actividad, y luego aprueba o solicita cambios."
+        "description": "Un tutor de tu organización revisa tus niveles y los detalles de la actividad, y luego aprueba o solicita cambios."
       },
       "step4": {
         "title": "Comparte una credencial verificable",
@@ -1335,10 +1340,10 @@
           },
           "step2": {
             "title": "Completa los cursos de habilidades",
-            "description": "Avanza por los cursos de habilidades y sus lecciones. Cada uno termina con una breve evaluación que puntúa la habilidad de 1 a 5."
+            "description": "Avanza por los cursos de habilidades y sus lecciones. Cada uno termina con una evaluación final que puntúa la habilidad de 1 a 5."
           },
           "step3": {
-            "title": "Evalúa tus habilidades",
+            "title": "Autoevalúa tus habilidades",
             "description": "Responde con sinceridad a las preguntas de autoevaluación. Tus puntuaciones conforman el perfil de competencias en el que se basa tu certificado."
           },
           "step4": {
@@ -1349,7 +1354,7 @@
         "faqs": {
           "q1": {
             "question": "¿Cuándo puedo solicitar mi certificado?",
-            "answer": "Cuando completes al menos 3 cursos de habilidades con una puntuación media de evaluación de 3 sobre 5 o superior. El botón se desbloquea en cuanto cumples los requisitos."
+            "answer": "Cuando completes al menos 3 cursos de habilidades con una autoevaluación media de 3 sobre 5 o superior. El botón se desbloquea en cuanto cumples los requisitos."
           },
           "q2": {
             "question": "¿Qué es una autoevaluación?",
@@ -1401,7 +1406,7 @@
           },
           "q2": {
             "question": "¿Qué tipos de cursos puedo hacer?",
-            "answer": "Los cursos introductorios explican cómo funciona GloRe y los cursos de estudiante se adaptan a tu trayectoria. Ambos te permiten explorar las habilidades blandas sin una evaluación."
+            "answer": "Los cursos introductorios explican cómo funciona GloRe y los cursos de estudiante se adaptan a tu trayectoria. Ambos te permiten explorar las habilidades blandas sin una evaluación final."
           },
           "q3": {
             "question": "¿Cómo me uno a una organización?",
@@ -1427,11 +1432,11 @@
           },
           "step2": {
             "title": "Abre la revisión",
-            "description": "Al abrir el formulario de revisión, el certificado pasa a \"En revisión\". Comprueba los detalles de la actividad y las habilidades con sus evaluaciones."
+            "description": "Al abrir el formulario de revisión, el certificado pasa a \"En revisión\". Comprueba los detalles de la actividad y las habilidades con sus niveles."
           },
           "step3": {
             "title": "Ajusta si es necesario",
-            "description": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, así como las evaluaciones de las habilidades, para que el certificado refleje lo que realmente ocurrió."
+            "description": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, así como los niveles de las habilidades, para que el certificado refleje lo que realmente ocurrió."
           },
           "step4": {
             "title": "Aprueba o solicita cambios",
@@ -1445,7 +1450,7 @@
           },
           "q2": {
             "question": "¿Qué puedo cambiar durante una revisión?",
-            "answer": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, además de las habilidades y sus evaluaciones, antes de aprobar."
+            "answer": "Puedes editar las fechas, la duración, la ubicación y la descripción de la actividad, además de las habilidades y sus niveles, antes de aprobar."
           },
           "q3": {
             "question": "¿Qué hace la aprobación?",
@@ -1567,7 +1572,7 @@
       "description": "El certificado convierte tu voluntariado en una credencial verificable.",
       "eligibility": {
         "title": "Requisitos",
-        "description": "Completa al menos 3 cursos de habilidades con una puntuación media de evaluación de 3 de 5 o superior para desbloquear la solicitud de certificado."
+        "description": "Completa al menos 3 cursos de habilidades con una autoevaluación media de 3 sobre 5 o superior para desbloquear la solicitud de certificado."
       },
       "lifecycle": {
         "title": "Ciclo de revisión",
@@ -1611,7 +1616,7 @@
   },
   "Certificates": {
     "backTo": "Volver a todos los certificados",
-    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus perfiles de redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado después de completar al menos 3 cursos con una evaluación final de 3 sobre 5 como mínimo.",
+    "description": "Los certificados de GloRe son un reconocimiento oficial de tu experiencia de voluntariado y de las habilidades blandas adquiridas. Los emite GloRe y puedes compartirlos en tus perfiles de redes sociales o añadirlos a tu CV. Puedes solicitar tu certificado después de completar al menos 3 cursos con una autoevaluación media de 3 sobre 5 como mínimo.",
     "download": "Descargar certificado",
     "notFound": "Certificado no encontrado",
     "notFoundMessage": "El certificado que buscas no existe o se ha movido",
@@ -1812,7 +1817,7 @@
       "personalTitle": "Datos personales",
       "sectionComment": "Nota para la persona voluntaria",
       "sectionCommentPlaceholder": "Opcional. Explica qué corregir en esta sección.",
-      "evaluationTitle": "Evaluación",
+      "evaluationTitle": "Puntuaciones",
       "evaluationDescription": "Puntúa a la persona voluntaria de 1 a 5 en cada criterio.",
       "blindNote": "Las puntuaciones son privadas. La persona voluntaria nunca las ve.",
       "scoreEngagement": "Implicación",
@@ -2620,7 +2625,7 @@
       "resendInvite": "Reenviar invitación",
       "resendSuccess": "¡Invitación reenviada a {email}!",
       "makeRole": "Convertir en {role}",
-      "roleUpdateSuccess": "{name} ahora es {role}.",
+      "roleUpdateSuccess": "{name} ahora es {role, select, admin {admin} other {editor}}.",
       "you": "Tú",
       "statMembers": "Total de miembros",
       "statAdmins": "Admins",

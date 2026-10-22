@@ -580,6 +580,11 @@
         "invalidUrl": "L'URL fornito non è valido",
         "preview": "Anteprima",
         "upload": "Carica",
+        "uploadInvalidSize": "Questi file hanno una dimensione non valida: {files}",
+        "uploadInvalidType": "Questi tipi di file non sono supportati: {files}",
+        "uploadTooFew": "Carica almeno {count, plural, one {# file} other {# file}}.",
+        "uploadTooLarge": "Questi file superano {maxFileSize}: {files}",
+        "uploadTooMany": "Puoi caricare al massimo {count, plural, one {# file} other {# file}}.",
         "url": "URL",
         "video": "Video"
       },
@@ -839,7 +844,7 @@
     "invalidSlugFormat": "Formato non valido. Sono consentite solo lettere minuscole, numeri e trattini.",
     "sortBy-update": "Ultimo aggiornamento",
     "lessonCount": "Passaggio {count} di {total}",
-    "lessonType": "{type, select, descriptive {Lettura} questions {Quiz} skill_evaluation {Autovalutazione} subskill_evaluations {Autovalutazione} other {Passaggio}}",
+    "lessonType": "{type, select, reading {Lettura} questions {Quiz} assessment {Valutazione finale} evaluations {Autovalutazione} other {Passaggio}}",
     "lessons": "{count, plural, =1 {lezione} other {lezioni}}",
     "loading": "Caricamento…",
     "sortBy-name": "Nome",
@@ -881,7 +886,7 @@
     "savingChange": "Salvataggio in corso",
     "selectSkillGroup": "Seleziona un gruppo di competenze",
     "settings": "Impostazioni",
-    "skillEvaluationTitle": "Valutazione della soft skill",
+    "skillEvaluationTitle": "Valutazione finale",
     "sortBy-skillGroup": "Gruppo",
     "skillGroup": "Gruppo",
     "skillGroupDescription": "Area di competenza a cui appartiene questo corso.",
@@ -925,11 +930,11 @@
     "courseDescriptionPlaceholder": "Inserisci una descrizione in {lang}",
     "updateDescription": "Aggiorna descrizione",
     "addActivityQuestion": "Domanda",
-    "addActivityEvaluation": "Valutazione",
+    "addActivityEvaluation": "Autovalutazione",
     "addActivity": "Aggiungi attività",
     "addActivityAssessment": "Valutazione finale",
     "activityQuestion": "Domanda",
-    "activityEvaluation": "Valutazione",
+    "activityEvaluation": "Autovalutazione",
     "activityAssessment": "Valutazione finale",
     "activityDescriptionPlaceholder": "Inserisci una descrizione in {lang}",
     "activityOptions": "Opzioni",
@@ -1286,7 +1291,7 @@
       },
       "step3": {
         "title": "Ottieni la convalida",
-        "description": "Un tutor della tua organizzazione esamina le tue valutazioni e i dettagli dell'attività, poi approva o chiede modifiche."
+        "description": "Un tutor della tua organizzazione esamina i tuoi livelli e i dettagli dell'attività, poi approva o chiede modifiche."
       },
       "step4": {
         "title": "Condividi una credenziale verificabile",
@@ -1335,10 +1340,10 @@
           },
           "step2": {
             "title": "Completa i corsi sulle competenze",
-            "description": "Affronta i corsi sulle competenze e le relative lezioni. Ognuno si conclude con una breve valutazione che assegna alla competenza un punteggio da 1 a 5."
+            "description": "Affronta i corsi sulle competenze e le relative lezioni. Ognuno si conclude con una valutazione finale che assegna alla competenza un punteggio da 1 a 5."
           },
           "step3": {
-            "title": "Valuta le tue competenze",
+            "title": "Autovaluta le tue competenze",
             "description": "Rispondi con sincerità alle domande di autovalutazione. I tuoi punteggi costruiscono il profilo di competenze su cui si basa il tuo certificato."
           },
           "step4": {
@@ -1349,7 +1354,7 @@
         "faqs": {
           "q1": {
             "question": "Quando posso richiedere il mio certificato?",
-            "answer": "Dopo aver completato almeno 3 corsi sulle competenze con una valutazione media di 3 su 5 o superiore. Il pulsante si sblocca una volta raggiunti i requisiti."
+            "answer": "Dopo aver completato almeno 3 corsi sulle competenze con un'autovalutazione media di 3 su 5 o superiore. Il pulsante si sblocca una volta raggiunti i requisiti."
           },
           "q2": {
             "question": "Che cos'è un'autovalutazione?",
@@ -1401,7 +1406,7 @@
           },
           "q2": {
             "question": "Che tipi di corsi posso seguire?",
-            "answer": "I corsi introduttivi spiegano come funziona GloRe, mentre i corsi per studenti sono pensati per il tuo percorso. Entrambi ti permettono di esplorare le soft skill senza una valutazione."
+            "answer": "I corsi introduttivi spiegano come funziona GloRe, mentre i corsi per studenti sono pensati per il tuo percorso. Entrambi ti permettono di esplorare le soft skill senza una valutazione finale."
           },
           "q3": {
             "question": "Come faccio a unirmi a un'organizzazione?",
@@ -1427,11 +1432,11 @@
           },
           "step2": {
             "title": "Apri la revisione",
-            "description": "Quando apri il modulo di revisione, il certificato passa a \"In revisione\". Controlla i dettagli dell'attività e le competenze con le relative valutazioni."
+            "description": "Quando apri il modulo di revisione, il certificato passa a \"In revisione\". Controlla i dettagli dell'attività e le competenze con i relativi livelli."
           },
           "step3": {
             "title": "Correggi se necessario",
-            "description": "Puoi modificare le date, la durata, il luogo e la descrizione dell'attività, oltre alle valutazioni delle competenze, in modo che il certificato rifletta ciò che è realmente accaduto."
+            "description": "Puoi modificare le date, la durata, il luogo e la descrizione dell'attività, oltre ai livelli delle competenze, in modo che il certificato rifletta ciò che è realmente accaduto."
           },
           "step4": {
             "title": "Approva o richiedi modifiche",
@@ -1445,7 +1450,7 @@
           },
           "q2": {
             "question": "Cosa posso modificare durante una revisione?",
-            "answer": "Puoi modificare le date, la durata, il luogo e la descrizione dell'attività, oltre alle competenze e alle relative valutazioni, prima di approvare."
+            "answer": "Puoi modificare le date, la durata, il luogo e la descrizione dell'attività, oltre alle competenze e ai relativi livelli, prima di approvare."
           },
           "q3": {
             "question": "Cosa comporta l'approvazione?",
@@ -1567,7 +1572,7 @@
       "description": "Il certificato trasforma il tuo volontariato in una credenziale verificabile.",
       "eligibility": {
         "title": "Requisiti",
-        "description": "Completa almeno 3 corsi sulle competenze con una valutazione media di 3 su 5 o superiore per sbloccare la richiesta del certificato."
+        "description": "Completa almeno 3 corsi sulle competenze con un'autovalutazione media di 3 su 5 o superiore per sbloccare la richiesta del certificato."
       },
       "lifecycle": {
         "title": "Ciclo di revisione",
@@ -1611,7 +1616,7 @@
   },
   "Certificates": {
     "backTo": "Torna a tutti i certificati",
-    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skill acquisite. Sono emessi da GloRe e puoi condividerli sui tuoi profili social o aggiungerli al tuo CV. Puoi richiedere un certificato dopo aver completato almeno 3 corsi con una valutazione finale di almeno 3 su 5.",
+    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skill acquisite. Sono emessi da GloRe e puoi condividerli sui tuoi profili social o aggiungerli al tuo CV. Puoi richiedere un certificato dopo aver completato almeno 3 corsi con un'autovalutazione media di almeno 3 su 5.",
     "download": "Scarica il certificato",
     "notFound": "Certificato non trovato",
     "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
@@ -1812,7 +1817,7 @@
       "personalTitle": "Dati personali",
       "sectionComment": "Nota per il volontario",
       "sectionCommentPlaceholder": "Facoltativo. Spiega cosa correggere in questa sezione.",
-      "evaluationTitle": "Valutazione",
+      "evaluationTitle": "Punteggi",
       "evaluationDescription": "Valuta il volontario da 1 a 5 per ogni criterio.",
       "blindNote": "I punteggi sono privati. Il volontario non li vede mai.",
       "scoreEngagement": "Coinvolgimento",
@@ -2620,7 +2625,7 @@
       "resendInvite": "Reinvia invito",
       "resendSuccess": "Invito reinviato a {email}!",
       "makeRole": "Rendi {role}",
-      "roleUpdateSuccess": "{name} ora è {role}.",
+      "roleUpdateSuccess": "{name} ora è {role, select, admin {admin} other {editor}}.",
       "you": "Tu",
       "statMembers": "Membri totali",
       "statAdmins": "Admin",

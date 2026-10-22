@@ -122,7 +122,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
       return
     }
 
-    toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role: t(`role_${role}`).toLowerCase() }))
+    toast.success(t('roleUpdateSuccess', { name: getDisplayName(user), role }))
     refreshTeam()
   }
 

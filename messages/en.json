@@ -590,6 +590,11 @@
         "invalidUrl": "The URL provided is not valid",
         "preview": "Preview",
         "upload": "Upload",
+        "uploadInvalidSize": "These files have an invalid size: {files}",
+        "uploadInvalidType": "These file types are not supported: {files}",
+        "uploadTooFew": "Upload at least {count, plural, one {# file} other {# files}}.",
+        "uploadTooLarge": "These files are larger than {maxFileSize}: {files}",
+        "uploadTooMany": "You can upload at most {count, plural, one {# file} other {# files}}.",
         "url": "URL",
         "video": "Video"
       },
@@ -840,7 +845,7 @@
     "invalidSlugFormat": "Invalid slug format. Only lowercase letters, numbers, and hyphens are allowed.",
     "sortBy-update": "Last updated",
     "lessonCount": "Step {count} of {total}",
-    "lessonType": "{type, select, descriptive {Reading} questions {Quiz} skill_evaluation {Self-assessment} subskill_evaluations {Self-assessment} other {Step}}",
+    "lessonType": "{type, select, reading {Reading} questions {Quiz} assessment {Final assessment} evaluations {Self-assessment} other {Step}}",
     "lessons": "{count, plural, =1 {lesson} other {lessons}}",
     "loading": "Loading…",
     "sortBy-name": "Name",
@@ -882,7 +887,7 @@
     "savingChange": "Saving changes",
     "selectSkillGroup": "Select a skill group",
     "settings": "Settings",
-    "skillEvaluationTitle": "Soft skill evaluation",
+    "skillEvaluationTitle": "Final assessment",
     "sortBy-skillGroup": "Group",
     "skillGroup": "Group",
     "skillGroupDescription": "Skill area this course belongs to.",
@@ -926,12 +931,12 @@
     "courseDescriptionPlaceholder": "Enter a description in {lang}",
     "updateDescription": "Update description",
     "addActivityQuestion": "Question",
-    "addActivityEvaluation": "Evaluation",
+    "addActivityEvaluation": "Self-assessment",
     "addActivity": "Add activity",
-    "addActivityAssessment": "Assessment",
+    "addActivityAssessment": "Final assessment",
     "activityQuestion": "Question",
-    "activityEvaluation": "Evaluation",
-    "activityAssessment": "Assessment",
+    "activityEvaluation": "Self-assessment",
+    "activityAssessment": "Final assessment",
     "activityDescriptionPlaceholder": "Enter a description in {lang}",
     "activityOptions": "Options",
     "activityOptionPlaceholder": "Enter an option in {lang}",
@@ -1132,7 +1137,7 @@
       "healthClear": "Every course is complete and translated.",
       "issue": {
         "empty": "No lessons",
-        "noAssessment": "No assessment",
+        "noAssessment": "No final assessment",
         "noGroup": "No skill group"
       },
       "missing": "Missing {language}",
@@ -1286,7 +1291,7 @@
       },
       "step3": {
         "title": "Get validated",
-        "description": "A tutor from your organization reviews your evaluations and the activity details, then approves or asks for changes."
+        "description": "A tutor from your organization reviews your levels and the activity details, then approves or asks for changes."
       },
       "step4": {
         "title": "Share a verifiable credential",
@@ -1327,7 +1332,7 @@
     "roles": {
       "volunteer": {
         "label": "Volunteer",
-        "intro": "As a volunteer you learn soft skills, evaluate yourself, and earn a certificate validated by a tutor.",
+        "intro": "As a volunteer you learn soft skills, assess yourself, and earn a certificate validated by a tutor.",
         "steps": {
           "step1": {
             "title": "Join your organization",
@@ -1335,11 +1340,11 @@
           },
           "step2": {
             "title": "Complete skill courses",
-            "description": "Work through skill courses and their lessons. Each one ends with a short assessment that rates the skill from 1 to 5."
+            "description": "Work through skill courses and their lessons. Each one ends with a final assessment that rates the skill from 1 to 5."
           },
           "step3": {
-            "title": "Evaluate your skills",
-            "description": "Answer the self-evaluation prompts honestly. Your ratings build the competence profile your certificate is based on."
+            "title": "Self-assess your skills",
+            "description": "Answer the self-assessment prompts honestly. Your ratings build the competence profile your certificate is based on."
           },
           "step4": {
             "title": "Request your certificate",
@@ -1349,10 +1354,10 @@
         "faqs": {
           "q1": {
             "question": "When can I request my certificate?",
-            "answer": "After you complete at least 3 skill courses with an average assessment rating of 3 out of 5 or higher. The button unlocks once you qualify."
+            "answer": "After you complete at least 3 skill courses with an average self-assessment of 3 out of 5 or higher. The button unlocks once you qualify."
           },
           "q2": {
-            "question": "What is a self-evaluation?",
+            "question": "What is a self-assessment?",
             "answer": "After a skill course you rate your own level on the skills it covers. These ratings form your competence profile and are confirmed by a tutor during review."
           },
           "q3": {
@@ -1401,7 +1406,7 @@
           },
           "q2": {
             "question": "What kinds of courses can I take?",
-            "answer": "Introductory courses explain how GloRe works, and learner courses are tailored to your path. Both let you explore soft skills without an assessment."
+            "answer": "Introductory courses explain how GloRe works, and learner courses are tailored to your path. Both let you explore soft skills without a final assessment."
           },
           "q3": {
             "question": "How do I join an organization?",
@@ -1427,11 +1432,11 @@
           },
           "step2": {
             "title": "Open the review",
-            "description": "Opening the review form moves the certificate to \"In review\". Check the activity details and the skills with their evaluations."
+            "description": "Opening the review form moves the certificate to \"In review\". Check the activity details and the skills with their levels."
           },
           "step3": {
             "title": "Adjust if needed",
-            "description": "You can edit the activity dates, duration, location, description, and the skill evaluations so the certificate reflects what really happened."
+            "description": "You can edit the activity dates, duration, location, description, and the skill levels so the certificate reflects what really happened."
           },
           "step4": {
             "title": "Approve or request changes",
@@ -1445,7 +1450,7 @@
           },
           "q2": {
             "question": "What can I change during a review?",
-            "answer": "You can edit the activity dates, duration, location, and description, plus the skills and their evaluations, before you approve."
+            "answer": "You can edit the activity dates, duration, location, and description, plus the skills and their levels, before you approve."
           },
           "q3": {
             "question": "What does approving do?",
@@ -1523,7 +1528,7 @@
           },
           "step2": {
             "title": "Structure lessons",
-            "description": "Add lessons with rich text, questions, and self-evaluation prompts. Skill courses end with a final assessment."
+            "description": "Add lessons with rich text, questions, and self-assessment prompts. Skill courses end with a final assessment."
           },
           "step3": {
             "title": "Publish when ready",
@@ -1567,7 +1572,7 @@
       "description": "The certificate turns your volunteering into a verifiable credential.",
       "eligibility": {
         "title": "Eligibility",
-        "description": "Complete at least 3 skill courses with an average assessment rating of 3 out of 5 or higher to unlock the certificate request."
+        "description": "Complete at least 3 skill courses with an average self-assessment of 3 out of 5 or higher to unlock the certificate request."
       },
       "lifecycle": {
         "title": "Review lifecycle",
@@ -1588,7 +1593,7 @@
         },
         "onboarding": {
           "title": "Onboarding",
-          "description": "On your first login you complete a short profile (name, birthday, phone, language) before reaching the dashboard."
+          "description": "On your first login you complete a short profile (name, date of birth, phone, language) before reaching the dashboard."
         },
         "settings": {
           "title": "Profile and account",
@@ -1611,7 +1616,7 @@
   },
   "Certificates": {
     "backTo": "Back to all certificates",
-    "description": "GloRe certificates are an official recognition of your volunteering experience and acquired soft skills. They are issued by GloRe and can be shared on your social media profiles or added to your CV. You can request your certificate after completing at least 3 courses with a final evaluation of at least 3 out of 5.",
+    "description": "GloRe certificates are an official recognition of your volunteering experience and acquired soft skills. They are issued by GloRe and can be shared on your social media profiles or added to your CV. You can request your certificate after completing at least 3 courses with an average self-assessment of at least 3 out of 5.",
     "download": "Download certificate",
     "notFound": "Certificate not found",
     "notFoundMessage": "The certificate you are looking for does not exist or has been moved",
@@ -1812,7 +1817,7 @@
       "personalTitle": "Personal data",
       "sectionComment": "Note for the volunteer",
       "sectionCommentPlaceholder": "Optional. Explain what to fix in this section.",
-      "evaluationTitle": "Evaluation",
+      "evaluationTitle": "Scores",
       "evaluationDescription": "Score the volunteer from 1 to 5 on each criterion.",
       "blindNote": "Scores are private. The volunteer never sees them.",
       "scoreEngagement": "Engagement",
@@ -2360,7 +2365,7 @@
     "speaksMany": "Speaks {first}, {second} and {count, plural, =1 {# other language} other {# other languages}}",
     "bio": "Bio",
     "bioPlaceholder": "Tell us about yourself",
-    "birthday": "Birthday",
+    "birthday": "Date of birth",
     "cancel": "Cancel",
     "changePassword": "Change password",
     "city": "City",
@@ -2421,7 +2426,7 @@
     "removeAvatar": "Remove",
     "personalInfoDescription": "Your name, bio, and other personal details.",
     "personalDetails": "Personal details",
-    "personalDetailsDescription": "Birthday, sex, pronouns, and contact information.",
+    "personalDetailsDescription": "Date of birth, sex, pronouns, and contact information.",
     "locationDescription": "Your city and country of residence.",
     "spokenLanguages": "Spoken languages",
     "spokenLanguagesDescription": "Select the languages you speak.",
@@ -2620,7 +2625,7 @@
       "resendInvite": "Resend invitation",
       "resendSuccess": "Invitation resent to {email}!",
       "makeRole": "Make {role}",
-      "roleUpdateSuccess": "{name} is now {role}.",
+      "roleUpdateSuccess": "{name} is now {role, select, admin {an admin} other {an editor}}.",
       "you": "You",
       "statMembers": "Total members",
       "statAdmins": "Admins",
@@ -2960,9 +2965,9 @@
     "lastNameLabel": "Last name",
     "lastNamePlaceholder": "Enter your last name",
     "lastNameRequired": "Last name is required.",
-    "birthdayLabel": "Birthday",
-    "birthdayPlaceholder": "Select your birthday",
-    "birthdayRequired": "Birthday is required.",
+    "birthdayLabel": "Date of birth",
+    "birthdayPlaceholder": "Select your date of birth",
+    "birthdayRequired": "Date of birth is required.",
     "birthPlaceLabel": "Place of birth",
     "birthPlacePlaceholder": "City, country",
     "birthPlaceRequired": "Place of birth is required.",

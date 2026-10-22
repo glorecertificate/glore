@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 
 import { PlaceholderPlugin, UploadErrorCode } from '@platejs/media/react'
+import { useTranslations } from 'next-intl'
 import { usePluginOption } from 'platejs/react'
 import { toast } from 'sonner'
 
@@ -13,6 +14,7 @@ export const MediaUploadToast = () => {
 }
 
 const useUploadErrorToast = () => {
+  const t = useTranslations('Components.RichTextEditor.media')
   const uploadError = usePluginOption(PlaceholderPlugin, 'error')
 
   useEffect(() => {
@@ -24,32 +26,32 @@ const useUploadErrorToast = () => {
 
     switch (code) {
       case UploadErrorCode.INVALID_FILE_SIZE: {
-        toast.error(`The size of files ${data.files.map(f => f.name).join(', ')} is invalid`)
+        toast.error(t('uploadInvalidSize', { files: data.files.map(f => f.name).join(', ') }))
 
         break
       }
       case UploadErrorCode.INVALID_FILE_TYPE: {
-        toast.error(`The type of files ${data.files.map(f => f.name).join(', ')} is invalid`)
+        toast.error(t('uploadInvalidType', { files: data.files.map(f => f.name).join(', ') }))
 
         break
       }
       case UploadErrorCode.TOO_LARGE: {
-        toast.error(`The size of files ${data.files.map(f => f.name).join(', ')} is too large than ${data.maxFileSize}`)
-
-        break
-      }
-      case UploadErrorCode.TOO_LESS_FILES: {
-        toast.error(`The mini um number of files is ${data.minFileCount} for ${data.fileType}`)
-
-        break
-      }
-      case UploadErrorCode.TOO_MANY_FILES: {
         toast.error(
-          `The maximum number of files is ${data.maxFileCount} ${data.fileType ? `for ${data.fileType}` : ''}`
+          t('uploadTooLarge', { files: data.files.map(f => f.name).join(', '), maxFileSize: data.maxFileSize })
         )
 
         break
       }
+      case UploadErrorCode.TOO_LESS_FILES: {
+        toast.error(t('uploadTooFew', { count: data.minFileCount }))
+
+        break
+      }
+      case UploadErrorCode.TOO_MANY_FILES: {
+        toast.error(t('uploadTooMany', { count: data.maxFileCount }))
+
+        break
+      }
     }
-  }, [uploadError])
+  }, [t, uploadError])
 }

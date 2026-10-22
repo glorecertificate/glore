@@ -826,7 +826,8 @@
       "files": ["src/db/helpers.ts", "src/db/mutations/**"],
       "rules": {
         "react-doctor/async-await-in-loop": "off",
-        "react-doctor/async-parallel": "off"
+        "react-doctor/async-parallel": "off",
+        "react-doctor/server-sequential-independent-await": "off"
       }
     }
   ]

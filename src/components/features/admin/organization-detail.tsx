@@ -28,7 +28,7 @@ import {
   createAdminOrganizationAvatarUploadUrl,
   deleteAdminOrganization,
   getAdminOrganization,
-  inviteAdminOrganizationMember,
+  inviteAdminOrganizationMembers,
   removeAdminOrganizationAvatar,
   removeAdminOrganizationMember,
   updateAdminOrganization,
@@ -248,29 +248,6 @@ const OrganizationMembersTab = ({
     setSortDir('asc')
   }
 
-  const handleInvite = async (values: {
-    email: string
-    firstName: string
-    lastName: string
-    locale: string
-    role: OrganizationMembershipRole
-  }) => {
-    const { data, error } = await inviteAdminOrganizationMember(organizationId, values)
-
-    if (error || !data) {
-      toast.error(error?.message ?? t('inviteError'))
-      return
-    }
-
-    toast.success(t('inviteSuccess', { email: data.email }))
-
-    if (!data.emailSent) {
-      toast.warning(t('inviteEmailFailed'))
-    }
-
-    onRefresh()
-  }
-
   const handleRoleChange = async (membershipId: number, role: OrganizationMembershipRole) => {
     setActiveMembershipId(membershipId)
 
@@ -481,8 +458,9 @@ const OrganizationMembersTab = ({
       <InviteMemberDialog
         allowedRoles={ORG_ROLES}
         defaultLocale={locale}
-        onInvite={handleInvite}
+        onInvite={input => inviteAdminOrganizationMembers(organizationId, input)}
         onOpenChange={setInviteOpen}
+        onSent={onRefresh}
         open={inviteOpen}
       />
 

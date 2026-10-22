@@ -7,6 +7,8 @@ export const ONBOARDING_ROOT = '/onboarding'
 export const ONBOARDING_ERROR_ROOT = '/onboarding/error'
 export const ACCEPT_INVITATION_ROOT = '/api/auth/accept-invitation'
 export const REGISTER_ROOT = '/register'
+export const INVITE_ROOT = '/invite'
+export const JOIN_LINK_ROOT = '/join'
 export const SETTINGS_ROOT = '/settings'
 export const DASHBOARD_ROOTS = [
   '/about',

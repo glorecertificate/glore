@@ -13,7 +13,8 @@ src/
 │   ├── courses/        # helpers.ts (server-only: fetchCourses, listSessionCourses), management.ts,
 │   │                   #   progress.ts, queries.ts
 │   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts
-│   ├── organizations/  # helpers.ts, members.ts, queries.ts, requests.ts, settings.ts
+│   ├── organizations/  # helpers.ts, invitations.ts, invite-core.ts, invitee.ts, join-links.ts, members.ts,
+│   │                   #   previews.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
@@ -27,7 +28,7 @@ src/
 │   ├── error.tsx       # Global error boundary (client)
 │   ├── not-found.tsx   # Global 404 (server)
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
-│   ├── (auth)/         # Unauthenticated: login, onboarding, register
+│   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout): about, admin, certificates,
 │   │                   #   courses, dashboard, docs, help, organization, settings
 │   ├── [username]/     # Public certificate page (page, opengraph-image, not-found)
@@ -52,7 +53,7 @@ src/
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, certificate,
 │   │                   #   course, doc, lesson, organization (flattens organization_profiles), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, course.ts, organization.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, course.ts, invitation.ts, organization.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY

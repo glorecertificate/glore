@@ -13,8 +13,15 @@ import {
 import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { parseOrganization } from '@/db/queries/organization'
-import { certificates, memberships, organizationJoinRequests, organizations } from '@/db/schema'
+import { parseOrganization, parseOrganizationInvitation, parseOrganizationInviteLink } from '@/db/queries/organization'
+import {
+  certificates,
+  memberships,
+  organizationInvitations,
+  organizationInviteLinks,
+  organizationJoinRequests,
+  organizations,
+} from '@/db/schema'
 
 export type { OrganizationPanelData } from '@/actions/organizations/helpers'
 
@@ -28,48 +35,69 @@ export const getOrganizationPanel = async () => {
 
     const isManager = role === 'admin' || role === 'representative'
 
-    const [organizationRecord, membershipRecords, joinRequestRecords, pendingCertificates, approvedCertificates] =
-      await Promise.all([
-        db.query.organizations.findFirst({
-          with: {
-            profile: true,
-          },
-          where: eq(organizations.id, organization.id),
-        }),
-        db.query.memberships.findMany({
-          where: eq(memberships.organizationId, organization.id),
-          with: {
-            user: { columns: memberUserColumns },
-          },
-          orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
-          limit: 500,
-        }),
-        isManager &&
-          db.query.organizationJoinRequests.findMany({
-            where: and(
-              eq(organizationJoinRequests.organizationId, organization.id),
-              eq(organizationJoinRequests.status, 'pending')
-            ),
-            with: {
-              reviewer: { columns: reviewerColumns },
-            },
-            orderBy: (records, { desc }) => [desc(records.createdAt)],
-            limit: 200,
-          }),
-        db
-          .select({ total: count() })
-          .from(certificates)
-          .where(
-            and(
-              eq(certificates.organizationId, organization.id),
-              inArray(certificates.status, [...PENDING_CERTIFICATE_STATUSES])
-            )
+    const [
+      organizationRecord,
+      membershipRecords,
+      joinRequestRecords,
+      invitationRecords,
+      inviteLinkRecords,
+      pendingCertificates,
+      approvedCertificates,
+    ] = await Promise.all([
+      db.query.organizations.findFirst({
+        with: {
+          profile: true,
+        },
+        where: eq(organizations.id, organization.id),
+      }),
+      db.query.memberships.findMany({
+        where: eq(memberships.organizationId, organization.id),
+        with: {
+          user: { columns: memberUserColumns },
+        },
+        orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
+        limit: 500,
+      }),
+      isManager &&
+        db.query.organizationJoinRequests.findMany({
+          where: and(
+            eq(organizationJoinRequests.organizationId, organization.id),
+            eq(organizationJoinRequests.status, 'pending')
           ),
-        db
-          .select({ total: count() })
-          .from(certificates)
-          .where(and(eq(certificates.organizationId, organization.id), eq(certificates.status, 'approved'))),
-      ])
+          with: {
+            reviewer: { columns: reviewerColumns },
+          },
+          orderBy: (records, { desc }) => [desc(records.createdAt)],
+          limit: 200,
+        }),
+      isManager &&
+        db.query.organizationInvitations.findMany({
+          where: eq(organizationInvitations.organizationId, organization.id),
+          with: { invitedBy: { columns: reviewerColumns } },
+          orderBy: (records, { desc }) => [desc(records.createdAt)],
+          limit: 200,
+        }),
+      isManager &&
+        db.query.organizationInviteLinks.findMany({
+          where: eq(organizationInviteLinks.organizationId, organization.id),
+          with: { createdBy: { columns: reviewerColumns } },
+          orderBy: (records, { desc }) => [desc(records.createdAt)],
+          limit: 50,
+        }),
+      db
+        .select({ total: count() })
+        .from(certificates)
+        .where(
+          and(
+            eq(certificates.organizationId, organization.id),
+            inArray(certificates.status, [...PENDING_CERTIFICATE_STATUSES])
+          )
+        ),
+      db
+        .select({ total: count() })
+        .from(certificates)
+        .where(and(eq(certificates.organizationId, organization.id), eq(certificates.status, 'approved'))),
+    ])
 
     if (!organizationRecord) {
       throw new Error('Organization not found')
@@ -101,15 +129,21 @@ export const getOrganizationPanel = async () => {
       }
     )
 
+    const invitations = (invitationRecords || []).map(record => parseOrganizationInvitation(record))
+    const inviteLinks = (inviteLinkRecords || []).map(record => parseOrganizationInviteLink(record))
+
     return {
       approvedCertificatesCount: approvedCertificates[0]?.total ?? 0,
       currentUserId: user.id,
+      inviteLinks,
+      invitations,
       isOrgAdmin: role === 'admin',
       isRepresentative: role === 'representative',
       joinRequests: parsedOrganization.joinRequests,
       members: parsedOrganization.memberships,
       organization: { ...parsedOrganization, role },
       pendingCertificatesCount: pendingCertificates[0]?.total ?? 0,
+      pendingInvitationsCount: invitations.filter(({ state }) => state === 'pending').length,
       pendingJoinRequestsCount: parsedOrganization.joinRequests.length,
       stats: {
         ...stats,

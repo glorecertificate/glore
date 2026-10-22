@@ -144,7 +144,7 @@ react-hook-form with `@hookform/resolvers` and zod. Disable the submit button wi
 
 ## Email templates
 
-`src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite`, `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`, `organization/registration-request` (new organization registration, sent to platform admins).
+`src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite` (organization invitation link carrying the `proof` query), `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`, `organization/registration-request` (new organization registration, sent to platform admins).
 
 ## Events and notifications
 

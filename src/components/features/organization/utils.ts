@@ -35,3 +35,18 @@ export const formatRoleLabel = (
   role: OrganizationMembershipRole,
   t: ReturnType<typeof useTranslations<'Organization'>>
 ) => t(`role_${role}`)
+
+export const maskEmail = (email: string) => {
+  const [local = '', domain] = email.split('@')
+  if (!domain) return email
+  return `${local.slice(0, 1)}${'*'.repeat(Math.min(Math.max(local.length - 1, 2), 6))}@${domain}`
+}
+
+export const parseEmails = (text: string) => [
+  ...new Set(
+    text.split(/[\s,;]+/u).flatMap(item => {
+      const email = item.replaceAll(/^[<"']+|[>"']+$/gu, '').toLowerCase()
+      return email ? [email] : []
+    })
+  ),
+]

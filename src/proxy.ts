@@ -3,7 +3,16 @@ import 'server-only'
 import { type NextProxy, type NextRequest, NextResponse, type ProxyConfig } from 'next/server'
 
 import { auth } from '@/lib/auth'
-import { APP_ROOT, AUTH_ROOT, DASHBOARD_ROOTS, JOIN_ROOT, ONBOARDING_ROOT, REGISTER_ROOT } from '@/lib/constants'
+import {
+  APP_ROOT,
+  AUTH_ROOT,
+  DASHBOARD_ROOTS,
+  INVITE_ROOT,
+  JOIN_LINK_ROOT,
+  JOIN_ROOT,
+  ONBOARDING_ROOT,
+  REGISTER_ROOT,
+} from '@/lib/constants'
 import { prefixCookieName } from '@/lib/cookies'
 
 export const config: ProxyConfig = {
@@ -16,6 +25,8 @@ const isPublicPath = (pathname: string) =>
   pathname === AUTH_ROOT ||
   pathname === REGISTER_ROOT ||
   pathname.startsWith(JOIN_ROOT) ||
+  pathname.startsWith(`${INVITE_ROOT}/`) ||
+  pathname.startsWith(`${JOIN_LINK_ROOT}/`) ||
   (!DASHBOARD_ROOTS.some(root => pathname.startsWith(root)) && /^\/[a-zA-Z0-9.]+$/u.test(pathname))
 
 const expireSession = (request: Request) => {

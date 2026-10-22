@@ -9,185 +9,80 @@ import { revalidateTag } from 'next/cache'
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
+import { notify } from '@/actions/notifications/notify'
 import {
   assertOrganizationManager,
   canReviewRequestRole,
-  createInvitationUrl,
   expireUserAccess,
   getOrganizationContext,
-  reviewerColumns,
-  sendJoinRequestDecisionEmail,
   sendRegistrationRequestEmails,
 } from '@/actions/organizations/helpers'
+import { guarded } from '@/actions/organizations/invite-core'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { approveJoinRequest, invitationError, rejectJoinRequest } from '@/db/mutations/invitation'
 import { createOrganization } from '@/db/mutations/organization'
-import { parseOrganizationJoinRequest } from '@/db/queries/organization'
-import { memberships, organizationJoinRequests, organizations, users } from '@/db/schema'
-import { auth } from '@/lib/auth'
+import { organizationJoinRequests, organizations } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 import { fullName } from '@/lib/utils'
+import config from '~/config/app.json'
 
 const REGISTRATION_RATE_LIMIT_WINDOW = 60 * 60 * 1000
 
-export const approveOrganizationJoinRequest = async (requestId: number) => {
-  const { organization, role: managerRole, user } = await getOrganizationContext()
+const requireReviewer = async (requestId: number) => {
+  const { organization, role, user } = await getOrganizationContext()
+  if (!(organization?.id && role)) throw invitationError('FORBIDDEN')
+  assertOrganizationManager(role)
 
-  return await safeQuery(async () => {
-    if (!organization?.id) {
-      throw new Error('No active organization found')
+  const request = await db.query.organizationJoinRequests.findFirst({
+    columns: { id: true, role: true },
+    where: and(
+      eq(organizationJoinRequests.id, requestId),
+      eq(organizationJoinRequests.organizationId, organization.id)
+    ),
+  })
+  if (!request) throw invitationError('NOT_FOUND')
+  if (!canReviewRequestRole(role, request.role)) throw invitationError('FORBIDDEN')
+
+  return { organizationId: organization.id, reviewerId: user.id }
+}
+
+export const approveOrganizationJoinRequest = async (requestId: number) =>
+  await guarded(async () => {
+    const { organizationId, reviewerId } = await requireReviewer(requestId)
+    const result = await transaction(tx =>
+      approveJoinRequest(tx, { expiryDays: config.invitationExpiryDays, organizationId, requestId, reviewerId })
+    )
+
+    if (result.kind === 'member') {
+      await notify(result.joinedEvent)
+      await notify(result.decidedEvent)
+      expireUserAccess([result.joinedEvent.data.userId])
+      revalidateTag(CacheTag.Organizations, 'max')
+      return { kind: result.kind }
     }
 
-    assertOrganizationManager(managerRole)
+    await notify(result.decidedEvent)
+    return { kind: result.kind }
+  })
 
-    const request = await db.query.organizationJoinRequests.findFirst({
-      where: and(
-        eq(organizationJoinRequests.id, requestId),
-        eq(organizationJoinRequests.organizationId, organization.id),
-        eq(organizationJoinRequests.status, 'pending')
-      ),
-      with: {
-        reviewer: { columns: reviewerColumns },
-      },
-    })
-
-    if (!request) {
-      throw new Error('Join request not found')
-    }
-
-    if (!canReviewRequestRole(managerRole, request.role)) {
-      throw new Error('You cannot approve this request')
-    }
-
-    const existingUser = await db.query.users.findFirst({
-      columns: { email: true, id: true, onboardedAt: true },
-      where: eq(users.email, request.email),
-    })
-
-    const invitedUser =
-      existingUser ??
-      (
-        await auth.api.signUpEmail({
-          body: {
-            email: request.email,
-            firstName: request.firstName,
-            lastName: request.lastName ?? undefined,
-            locale: request.locale ?? DEFAULT_LOCALE,
-            name: fullName(request),
-            password: randomBytes(32).toString('hex'),
-          },
-        })
-      )?.user
-
-    if (!invitedUser?.id) {
-      throw new Error('Failed to create member account')
-    }
-
-    const existingMembership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.organizationId, organization.id), eq(memberships.userId, invitedUser.id)),
-    })
-
-    if (!existingMembership) {
-      await db
-        .insert(memberships)
-        .values({
-          organizationId: organization.id,
-          role: request.role,
-          userId: invitedUser.id,
-        })
-        .onConflictDoNothing()
-    }
-    expireUserAccess([invitedUser.id])
-
-    await db
-      .update(organizationJoinRequests)
-      .set({
-        acceptedAt: new Date().toISOString(),
-        reviewedAt: new Date().toISOString(),
-        reviewedBy: user.id,
-        status: 'accepted',
+export const rejectOrganizationJoinRequest = async (requestId: number, reviewerComment?: string) =>
+  await guarded(async () => {
+    const { organizationId, reviewerId } = await requireReviewer(requestId)
+    const { event } = await transaction(tx =>
+      rejectJoinRequest(tx, {
+        comment: reviewerComment?.trim().slice(0, 500) || null,
+        organizationId,
+        requestId,
+        reviewerId,
       })
-      .where(eq(organizationJoinRequests.id, request.id))
-
-    const invitationUrl = existingUser?.onboardedAt
-      ? undefined
-      : await createInvitationUrl({
-          email: request.email,
-          firstName: request.firstName,
-          invitedBy: user.id,
-          lastName: request.lastName,
-          locale: request.locale,
-          role: request.role,
-          userId: invitedUser.id,
-        })
-
-    await sendJoinRequestDecisionEmail({
-      email: request.email,
-      organizationName: organization.name,
-      status: 'accepted',
-      url: invitationUrl,
-    })
-
-    return parseOrganizationJoinRequest({ ...request, status: 'accepted' })
+    )
+    await notify(event)
+    return { kind: 'rejected' as const }
   })
-}
-
-export const rejectOrganizationJoinRequest = async (requestId: number, reviewerComment?: string) => {
-  const { organization, role: managerRole, user } = await getOrganizationContext()
-
-  return await safeQuery(async () => {
-    if (!organization?.id) {
-      throw new Error('No active organization found')
-    }
-
-    assertOrganizationManager(managerRole)
-
-    const request = await db.query.organizationJoinRequests.findFirst({
-      where: and(
-        eq(organizationJoinRequests.id, requestId),
-        eq(organizationJoinRequests.organizationId, organization.id),
-        eq(organizationJoinRequests.status, 'pending')
-      ),
-      with: {
-        reviewer: { columns: reviewerColumns },
-      },
-    })
-
-    if (!request) {
-      throw new Error('Join request not found')
-    }
-
-    if (!canReviewRequestRole(managerRole, request.role)) {
-      throw new Error('You cannot reject this request')
-    }
-
-    const nextComment = reviewerComment?.trim() || null
-
-    await Promise.all([
-      db
-        .update(organizationJoinRequests)
-        .set({
-          rejectedAt: new Date().toISOString(),
-          reviewedAt: new Date().toISOString(),
-          reviewedBy: user.id,
-          reviewerComment: nextComment,
-          status: 'rejected',
-        })
-        .where(eq(organizationJoinRequests.id, request.id)),
-      sendJoinRequestDecisionEmail({
-        email: request.email,
-        organizationName: organization.name,
-        reviewerComment: nextComment,
-        status: 'rejected',
-      }),
-    ])
-
-    return parseOrganizationJoinRequest({ ...request, reviewerComment: nextComment, status: 'rejected' })
-  })
-}
 
 const optionalText = (max: number) =>
   z

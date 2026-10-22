@@ -8,21 +8,32 @@ import { cacheTag, revalidateTag } from 'next/cache'
 
 import { and, count, eq } from 'drizzle-orm'
 
+import { notify } from '@/actions/notifications/notify'
 import {
-  createInvitationUrl,
   expireUserAccess,
   getDescriptionRecord,
   getOrganizationAdminsCount,
   listOrganizationMemberIds,
   memberUserColumns,
   revalidateOrganizationMembers,
-  sendOrganizationAccessEmail,
 } from '@/actions/organizations/helpers'
+import {
+  type InviteInput,
+  dedupeEmails,
+  failure,
+  guarded,
+  inviteSchema,
+  sendInvitations,
+} from '@/actions/organizations/invite-core'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { invitationError } from '@/db/mutations/invitation'
 import {
+  approveOrganizationApplication,
   createOrganization as createOrganizationMutation,
+  createOrganizationWithAdminInvitation,
+  removeMembership,
   updateOrganization as updateOrganizationMutation,
 } from '@/db/mutations/organization'
 import {
@@ -31,20 +42,11 @@ import {
   parseOrganization,
   parseOrganizationMember,
 } from '@/db/queries/organization'
-import {
-  certificates,
-  memberships,
-  organizationJoinRequests,
-  organizationProfiles,
-  organizations,
-  users,
-} from '@/db/schema'
-import { auth } from '@/lib/auth'
+import { certificates, memberships, organizationJoinRequests, organizationProfiles, organizations } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
-import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
-import { fullName } from '@/lib/utils'
+import config from '~/config/app.json'
 
 const loadOrganizations = () =>
   safeQuery(async () => {
@@ -119,116 +121,17 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
   if (!currentUser.isAdmin) return { error: 'Only admins can approve organizations' }
 
   const result = await safeQuery(async () => {
-    const org = await db.query.organizations.findFirst({
-      where: eq(organizations.id, organizationId),
-    })
-
-    if (!org) {
-      throw new Error('Organization not found')
-    }
-
-    if (org.approvedAt) {
-      throw new Error('Organization is already approved')
-    }
-
-    const request = await db.query.organizationJoinRequests.findFirst({
-      where: and(
-        eq(organizationJoinRequests.organizationId, organizationId),
-        eq(organizationJoinRequests.role, 'admin'),
-        eq(organizationJoinRequests.status, 'pending')
-      ),
-    })
-
-    if (!request) {
-      throw new Error('Registration request not found')
-    }
-
-    await db
-      .update(organizations)
-      .set({ approvedAt: new Date().toISOString() })
-      .where(eq(organizations.id, organizationId))
-
-    const existingUser = await db.query.users.findFirst({
-      columns: { email: true, id: true, onboardedAt: true },
-      where: eq(users.email, request.email),
-    })
-
-    const orgAdmin =
-      existingUser ??
-      (
-        await auth.api.signUpEmail({
-          body: {
-            email: request.email,
-            firstName: request.firstName,
-            lastName: request.lastName ?? undefined,
-            locale: request.locale ?? DEFAULT_LOCALE,
-            name: fullName(request),
-            password: randomBytes(16).toString('hex'),
-          },
-        })
-      )?.user
-
-    if (!orgAdmin?.id) {
-      throw new Error('Failed to create admin account')
-    }
-
-    const existingMembership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.organizationId, organizationId), eq(memberships.userId, orgAdmin.id)),
-    })
-
-    if (!existingMembership) {
-      await db
-        .insert(memberships)
-        .values({
-          organizationId,
-          role: 'admin',
-          userId: orgAdmin.id,
-        })
-        .onConflictDoNothing()
-    }
-    expireUserAccess([orgAdmin.id])
-
-    const nextComment = reviewerComment?.trim() || null
-
-    await db
-      .update(organizationJoinRequests)
-      .set({
-        acceptedAt: new Date().toISOString(),
-        reviewedAt: new Date().toISOString(),
-        reviewedBy: currentUser.id,
-        reviewerComment: nextComment,
-        status: 'accepted',
+    const { event } = await transaction(tx =>
+      approveOrganizationApplication(tx, {
+        comment: reviewerComment?.trim() || null,
+        expiryDays: config.invitationExpiryDays,
+        organizationId,
+        reviewerId: currentUser.id,
       })
-      .where(eq(organizationJoinRequests.id, request.id))
+    )
+    await notify(event)
 
-    const invitationUrl = existingUser?.onboardedAt
-      ? undefined
-      : await createInvitationUrl({
-          email: request.email,
-          firstName: request.firstName,
-          invitedBy: currentUser.id,
-          lastName: request.lastName,
-          locale: request.locale,
-          role: request.role,
-          userId: orgAdmin.id,
-        })
-
-    await sendMail({
-      to: request.email,
-      locale: request.locale ?? undefined,
-      template: {
-        name: 'organization/join-request',
-        props: {
-          organizationName: org.name,
-          status: 'accepted',
-          comment: nextComment,
-          url: invitationUrl,
-          userName: request.firstName,
-        },
-      },
-    }).catch(() => null)
-
-    return { organizationId, organizationName: org.name }
+    return { organizationId, organizationName: event.data.organizationName }
   })
 
   if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
@@ -296,9 +199,6 @@ export const inviteOrganization = async ({
   city,
   country,
   email: orgEmail,
-  firstName,
-  lastName,
-  locale,
   name,
   registrantEmail,
   url,
@@ -306,9 +206,6 @@ export const inviteOrganization = async ({
   city: string
   country: string
   email: string
-  firstName: string
-  lastName?: string
-  locale?: string
   name: string
   registrantEmail: string
   url?: string
@@ -316,7 +213,7 @@ export const inviteOrganization = async ({
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can invite organizations' }
 
-  return await safeQuery(async () => {
+  const result = await safeQuery(async () => {
     const handle = name
       .toLowerCase()
       .trim()
@@ -328,101 +225,33 @@ export const inviteOrganization = async ({
       where: eq(organizations.handle, handle),
     })
 
-    const finalHandle = existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle
-
-    const now = new Date().toISOString()
-
-    const [org] = await db
-      .insert(organizations)
-      .values({
-        approvedAt: now,
-        city: city.trim(),
-        email: orgEmail.trim().toLowerCase(),
-        handle: finalHandle,
-        name: name.trim(),
-      })
-      .returning({ id: organizations.id, name: organizations.name })
-
-    if (!org) {
-      throw new Error('Failed to create organization')
-    }
-
-    await db.insert(organizationProfiles).values({
-      country: country.trim(),
-      organizationId: org.id,
-      url: url?.trim() || null,
-    })
-
-    const existingUser = await db.query.users.findFirst({
-      columns: { email: true, id: true, onboardedAt: true },
-      where: eq(users.email, registrantEmail.trim().toLowerCase()),
-    })
-
-    const orgAdmin =
-      existingUser ??
-      (
-        await auth.api.signUpEmail({
-          body: {
-            email: registrantEmail.trim().toLowerCase(),
-            firstName: firstName.trim(),
-            lastName: lastName?.trim() ?? undefined,
-            locale: locale ?? DEFAULT_LOCALE,
-            name: fullName({ firstName, lastName }),
-            password: randomBytes(16).toString('hex'),
-          },
-        })
-      )?.user
-
-    if (!orgAdmin?.id) {
-      throw new Error('Failed to create admin account')
-    }
-
-    const existingMembership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.organizationId, org.id), eq(memberships.userId, orgAdmin.id)),
-    })
-
-    if (!existingMembership) {
-      await db
-        .insert(memberships)
-        .values({
-          organizationId: org.id,
-          role: 'admin',
-          userId: orgAdmin.id,
-        })
-        .onConflictDoNothing()
-    }
-    expireUserAccess([orgAdmin.id])
-
-    const invitationUrl = existingUser?.onboardedAt
-      ? undefined
-      : await createInvitationUrl({
-          email: registrantEmail.trim().toLowerCase(),
-          firstName: firstName.trim(),
-          invitedBy: currentUser.id,
-          lastName: lastName?.trim() || null,
-          locale,
-          role: 'admin',
-          userId: orgAdmin.id,
-        })
-
-    const inviterFullName = fullName(currentUser) || 'GloRe Admin'
-    await sendMail({
-      to: registrantEmail.trim().toLowerCase(),
-      template: {
-        name: 'organization/member-added',
-        props: {
-          organizationName: org.name,
-          inviterName: inviterFullName,
-          role: 'admin',
-          url: invitationUrl,
-          userName: firstName,
+    const { event, organization } = await transaction(tx =>
+      createOrganizationWithAdminInvitation(tx, {
+        admin: {
+          email: registrantEmail,
+          expiryDays: config.invitationExpiryDays,
+          invitedById: currentUser.id,
+          locale: currentUser.locale,
         },
-      },
-      locale: locale ?? undefined,
-    }).catch(() => null)
+        organization: {
+          approvedAt: new Date().toISOString(),
+          city: city.trim(),
+          country: country.trim(),
+          email: orgEmail.trim().toLowerCase(),
+          handle: existing ? `${handle}-${randomBytes(3).toString('hex')}` : handle,
+          name: name.trim(),
+          url: url?.trim() || null,
+        },
+      })
+    )
+    await notify(event)
 
-    return { organizationId: org.id, organizationName: org.name }
+    return { organizationId: organization.id, organizationName: organization.name }
   })
+
+  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+
+  return result
 }
 
 export const createOrganization = async ({
@@ -639,104 +468,25 @@ export const removeAdminOrganizationAvatar = async (organizationId: number) => {
   return result
 }
 
-export const inviteAdminOrganizationMember = async (
-  organizationId: number,
-  {
-    email,
-    firstName,
-    lastName,
-    locale,
-    role,
-  }: {
-    email: string
-    firstName: string
-    lastName: string
-    locale: string
-    role: OrganizationMembershipRole
-  }
-) => {
+export const inviteAdminOrganizationMembers = async (organizationId: number, input: InviteInput) => {
   const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Forbidden' } }
+  if (!currentUser.isAdmin) return failure('FORBIDDEN')
 
-  const result = await safeQuery(async () => {
+  const result = await guarded(async () => {
+    const parsed = inviteSchema.safeParse(input)
+    if (!parsed.success) throw invitationError('INVALID')
+
     const org = await db.query.organizations.findFirst({
-      columns: { id: true, name: true },
+      columns: { id: true },
       where: eq(organizations.id, organizationId),
     })
+    if (!org) throw invitationError('NOT_FOUND')
 
-    if (!org) {
-      throw new Error('Organization not found')
-    }
+    const { emails, locale, message, role } = parsed.data
+    const unique = dedupeEmails(emails)
+    if (unique.length > config.maxBulkInvites) throw invitationError('INVALID')
 
-    if (role === 'admin') {
-      const adminCount = await getOrganizationAdminsCount(organizationId)
-      if (adminCount > 0) {
-        throw new Error('An organization admin already exists. Invite as representative instead.')
-      }
-    }
-
-    const normalizedEmail = email.trim().toLowerCase()
-    const normalizedFirstName = firstName.trim()
-    const normalizedLastName = lastName.trim()
-
-    const existingUser = await db.query.users.findFirst({
-      columns: { email: true, firstName: true, id: true, lastName: true, onboardedAt: true },
-      where: eq(users.email, normalizedEmail),
-    })
-
-    const invitee =
-      existingUser ??
-      (
-        await auth.api.signUpEmail({
-          body: {
-            email: normalizedEmail,
-            firstName: normalizedFirstName,
-            lastName: normalizedLastName || undefined,
-            locale,
-            name: fullName({ firstName: normalizedFirstName, lastName: normalizedLastName }),
-            password: randomBytes(32).toString('hex'),
-          },
-        })
-      )?.user
-
-    if (!invitee?.id) {
-      throw new Error('Failed to create member account')
-    }
-
-    const existingMembership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.organizationId, organizationId), eq(memberships.userId, invitee.id)),
-    })
-
-    if (existingMembership) {
-      throw new Error('This user is already a member of the organization')
-    }
-
-    await db.insert(memberships).values({ organizationId, role, userId: invitee.id }).onConflictDoNothing()
-    expireUserAccess([invitee.id])
-
-    const inviterName = fullName(currentUser) || currentUser.email
-
-    const invitationUrl = existingUser?.onboardedAt
-      ? undefined
-      : await createInvitationUrl({
-          email: normalizedEmail,
-          firstName: normalizedFirstName,
-          invitedBy: currentUser.id,
-          lastName: normalizedLastName || null,
-          locale,
-          role,
-          userId: invitee.id,
-        })
-
-    const emailSent = await sendOrganizationAccessEmail({
-      email: normalizedEmail,
-      inviterName,
-      organizationName: org.name,
-      role,
-      url: invitationUrl,
-    })
-
-    return { email: normalizedEmail, emailSent, userId: invitee.id }
+    return await sendInvitations({ actorId: currentUser.id, emails: unique, locale, message, organizationId, role })
   })
 
   if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
@@ -807,7 +557,10 @@ export const removeAdminOrganizationMember = async (organizationId: number, memb
       }
     }
 
-    await db.delete(memberships).where(eq(memberships.id, membership.id))
+    const { events } = await transaction(tx =>
+      removeMembership(tx, { actorId: currentUser.id, membershipId: membership.id, organizationId })
+    )
+    await Promise.all(events.map(event => notify(event)))
     expireUserAccess([membership.userId])
 
     return { id: membership.id, userId: membership.userId }

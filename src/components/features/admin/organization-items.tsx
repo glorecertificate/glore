@@ -287,8 +287,6 @@ export const OrgInviteDialog = ({
     city: string
     country: string
     url?: string
-    firstName: string
-    lastName?: string
     registrantEmail: string
   }) => Promise<void>
 }) => {
@@ -298,8 +296,6 @@ export const OrgInviteDialog = ({
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   const [url, setUrl] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
   const [registrantEmail, setRegistrantEmail] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -312,13 +308,11 @@ export const OrgInviteDialog = ({
     setCity('')
     setCountry('')
     setUrl('')
-    setFirstName('')
-    setLastName('')
     setRegistrantEmail('')
   }
 
   const handleSubmit = async () => {
-    if (!(name.trim() && email.trim() && city.trim() && country && firstName.trim() && registrantEmail.trim())) {
+    if (!(name.trim() && email.trim() && city.trim() && country && registrantEmail.trim())) {
       toast.error(t('inviteErrorMissingFields'))
       return
     }
@@ -331,8 +325,6 @@ export const OrgInviteDialog = ({
         city: city.trim(),
         country,
         url: url.trim() || undefined,
-        firstName: firstName.trim(),
-        lastName: lastName.trim() || undefined,
         registrantEmail: registrantEmail.trim(),
       })
       resetForm()
@@ -407,26 +399,6 @@ export const OrgInviteDialog = ({
           </div>
           <p className="mt-2 text-sm font-medium text-muted-foreground">{t('inviteRepSection')}</p>
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-first-name">{t('inviteFirstName')}</Label>
-              <Input
-                disabled={loading}
-                id="invite-first-name"
-                onChange={e => setFirstName(e.target.value)}
-                placeholder={t('inviteFirstNamePlaceholder')}
-                value={firstName}
-              />
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <Label htmlFor="invite-last-name">{t('inviteLastName')}</Label>
-              <Input
-                disabled={loading}
-                id="invite-last-name"
-                onChange={e => setLastName(e.target.value)}
-                placeholder={t('inviteLastNamePlaceholder')}
-                value={lastName}
-              />
-            </div>
             <div className="col-span-2 flex flex-col gap-y-2">
               <Label htmlFor="invite-registrant-email">{t('inviteRepEmail')}</Label>
               <Input

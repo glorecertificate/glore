@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { approveOrganizationJoinRequest, rejectOrganizationJoinRequest } from '@/actions/organizations/requests'
+import { useInvitationError } from '@/components/features/organization/use-invitation-error'
 import { useI18n } from '@/components/providers/i18n'
 import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Badge } from '@/components/ui/badge'
@@ -94,6 +95,8 @@ interface OrganizationJoinRequestsProps {
 export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: OrganizationJoinRequestsProps) => {
   const { locale } = useI18n()
   const t = useTranslations('Organization')
+  const tInvitations = useTranslations('Invitations')
+  const errorMessage = useInvitationError()
 
   const [activeRequestId, setActiveRequestId] = useState<number | null>(null)
   const [rejectRequestId, setRejectRequestId] = useState<number | null>(null)
@@ -103,16 +106,16 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
   const handleApproveRequest = async (requestId: number) => {
     setActiveRequestId(requestId)
 
-    const { error } = await approveOrganizationJoinRequest(requestId)
+    const { data, error } = await approveOrganizationJoinRequest(requestId)
 
     setActiveRequestId(null)
 
-    if (error) {
-      toast.error(error.message)
+    if (error || !data) {
+      toast.error(errorMessage(error?.code))
       return
     }
 
-    toast.success(t('joinRequestApproved'))
+    toast.success(data.kind === 'member' ? t('joinRequestApproved') : tInvitations('requestApprovedInvited'))
     onRefresh()
   }
 
@@ -128,7 +131,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
     setActiveRequestId(null)
 
     if (error) {
-      toast.error(error.message)
+      toast.error(errorMessage(error.code))
       return
     }
 
@@ -169,6 +172,9 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
                         </div>
                         <p className="text-sm text-muted-foreground">{request.email}</p>
                         {request.message && <p className="text-sm whitespace-pre-wrap">{request.message}</p>}
+                        {!request.userId && (
+                          <p className="text-xs text-muted-foreground">{tInvitations('requestInviteHint')}</p>
+                        )}
                         <p className="text-xs text-muted-foreground">
                           {t('requestedOn', { date: dateFormatter.format(new Date(request.createdAt)) })}
                         </p>

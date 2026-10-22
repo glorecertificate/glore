@@ -4,7 +4,7 @@
 
 Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond root) and `(dashboard)` for authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`; the `dashboard/` and `courses/` layouts add `CoursesProvider`.
 
-**Public:** `/login`, `/register` (submits org details and creates a `pending` org join request), `/[username]` (public certificate page), `/offline` (PWA fallback).
+**Public:** `/login`, `/register` (submits org details and creates a `pending` org join request), `/invite/[token]`, `/join/[token]` (token pages, see `app.md`), `/[username]` (public certificate page), `/offline` (PWA fallback).
 
 **Authenticated, pre-onboarding:** `/onboarding`, `/onboarding/error`.
 
@@ -19,7 +19,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 | `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                                     |
 | `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; approve, reject (soft, keeps the org record), create (no rep), invite (with rep)    |
 | `/admin/organizations/[id]` | `isAdmin`   | `?tab=`: members table (search/sort/role filter, role change, remove, invite), settings (profile, avatar, delete org) |
-| `/organization`             | org manager | Organization panel                                                                                                    |
+| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, settings                                                            |
 | `/certificates`             | non-editor  | List; `/certificates/new` and `/certificates/[id]` share the same gate                                                |
 
 `/` permanently redirects to `/dashboard` (`next.config.ts`).
@@ -53,7 +53,7 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 
 **Cookies:** Better Auth manages session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls. All app cookies use the `gl` prefix, Better Auth via `advanced.cookiePrefix`.
 
-**`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team and org invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
+**`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
 
 **Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation), `nextCookies()` (Next.js cookie integration), and the local `team-invitations` plugin, which exposes `acceptInvitation`. Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
@@ -98,7 +98,7 @@ Production runs the **neon-http** driver, which has **no interactive transaction
 
 - `transaction(fn)` runs `fn(tx)` atomically. Dev (`pg`) uses the pooled `node-postgres` transaction; prod reuses a lazily-initialized, module-scoped **neon-serverless** WebSocket pool (`max: 3`, shared across invocations in a warm instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.16.0` via `.node-version` with an `engines.node: ">=22"` floor).
 - Multi-statement logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units. The action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
-- **Inside a transaction, statements MUST run sequentially**, one `await` at a time. They share one connection, so `Promise.all` on a `tx` corrupts the session. `.oxlintrc.json` turns off `react-doctor/async-parallel` and `async-await-in-loop` for `src/db/mutations/**` and `src/db/helpers.ts`; batch writes inside one transaction use `mapSequential` from `@/db/helpers`. Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`, and `submitCertificateRequest` takes a transaction-scoped advisory lock to keep one open certificate request per user and organization.
+- **Inside a transaction, statements MUST run sequentially**, one `await` at a time. They share one connection, so `Promise.all` on a `tx` corrupts the session. `.oxlintrc.json` turns off `react-doctor/async-parallel`, `async-await-in-loop`, and `server-sequential-independent-await` for `src/db/mutations/**` and `src/db/helpers.ts`; batch writes inside one transaction use `mapSequential` from `@/db/helpers`. Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`, and `submitCertificateRequest` takes a transaction-scoped advisory lock to keep one open certificate request per user and organization.
 - Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction: compute inputs first, then open a short transaction for the DB writes only.
 
 **Tenancy:** authorization and tenant scoping stay at the action boundary (verify ownership or org membership before calling the mutation); mutations operate on already-authorized ids.

@@ -158,8 +158,6 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     city: string
     country: string
     url?: string
-    firstName: string
-    lastName?: string
     registrantEmail: string
   }) => {
     const { error } = await inviteOrganization(data)

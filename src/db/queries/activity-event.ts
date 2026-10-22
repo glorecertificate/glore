@@ -42,15 +42,22 @@ interface EventPayloads {
   }
   'invitation.sent': {
     email: string
+    expiresAt: string
     invitationId: number
     inviterId: string | null
+    inviterName: string | null
     locale: string | null
+    message: string | null
     organizationName: string
     role: Role
     url: string
     userId: string | null
   }
   'invitation.accepted': { invitationId: number; inviterId: string | null; userId: string }
+  'invitation.declined': { invitationId: number; inviterId: string | null; userId: string | null }
+  'invitation.revoked': { invitationId: number; userId: string | null }
+  'invite_link.created': { inviteLinkId: number; requiresApproval: boolean; role: Role }
+  'invite_link.revoked': { inviteLinkId: number }
   'invitation.expiring': {
     email: string
     invitationId: number
@@ -71,6 +78,7 @@ interface EventPayloads {
     url: string | null
     userId: string | null
   }
+  'member.joined': { role: Role; userId: string; via: 'link' | 'request' }
   'member.role_changed': { previousRole: Role; role: Role; userId: string }
   'member.removed': { userId: string }
   'member.left': { userId: string }
@@ -84,7 +92,15 @@ interface EventPayloads {
 
 export type EventType = keyof EventPayloads
 
-type SubjectType = 'account' | 'certificate' | 'course' | 'invitation' | 'join_request' | 'organization' | 'user'
+type SubjectType =
+  | 'account'
+  | 'certificate'
+  | 'course'
+  | 'invitation'
+  | 'invite_link'
+  | 'join_request'
+  | 'organization'
+  | 'user'
 
 export interface AppEvent<K extends EventType = EventType> {
   type: K
@@ -93,11 +109,12 @@ export interface AppEvent<K extends EventType = EventType> {
   data: EventPayloads[K]
 }
 
-const PRIVATE_KEYS = new Set(['applicantEmail', 'documentUrl', 'email', 'firstName', 'invitationUrl', 'url'])
+const PRIVATE_KEYS = new Set(['applicantEmail', 'documentUrl', 'email', 'firstName', 'invitationUrl', 'message', 'url'])
 
 export const eventSubject = (event: AppEvent): { type: SubjectType; id: string } => {
   if ('certificateId' in event.data) return { type: 'certificate', id: String(event.data.certificateId) }
   if ('invitationId' in event.data) return { type: 'invitation', id: String(event.data.invitationId) }
+  if ('inviteLinkId' in event.data) return { type: 'invite_link', id: String(event.data.inviteLinkId) }
   if ('joinRequestId' in event.data) return { type: 'join_request', id: String(event.data.joinRequestId) }
   if ('courseId' in event.data) return { type: 'course', id: String(event.data.courseId) }
   if (event.type === 'organization.application_received' || event.type === 'organization.application_decided') {

@@ -8,7 +8,7 @@ import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const ORGANIZATION_TAB_PARAM = 'tab'
-const ORGANIZATION_TABS = ['overview', 'members', 'joinRequests', 'settings'] as const
+const ORGANIZATION_TABS = ['overview', 'members', 'invitations', 'requests', 'settings'] as const
 const DEFAULT_ORGANIZATION_TAB = 'overview'
 
 const organizationTabParser = parseAsStringEnum([...ORGANIZATION_TABS]).withDefault(DEFAULT_ORGANIZATION_TAB)
@@ -37,17 +37,26 @@ export const OrganizationTabs = (props: React.ComponentProps<typeof Tabs>) => {
 }
 
 export const OrganizationTabsList = ({
+  invitationCount,
   isOrgAdmin,
   joinRequestCount,
   ...props
-}: React.ComponentProps<typeof TabsList> & { isOrgAdmin: boolean; joinRequestCount: number }) => {
+}: React.ComponentProps<typeof TabsList> & {
+  invitationCount: number
+  isOrgAdmin: boolean
+  joinRequestCount: number
+}) => {
   const t = useTranslations('Organization')
+  const tInvitations = useTranslations('Invitations')
 
   return (
     <TabsList className="max-w-full overflow-x-auto" {...props}>
       <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
       <TabsTrigger value="members">{t('members')}</TabsTrigger>
-      <TabsTrigger count={joinRequestCount} value="joinRequests">
+      <TabsTrigger count={invitationCount} value="invitations">
+        {tInvitations('tab')}
+      </TabsTrigger>
+      <TabsTrigger count={joinRequestCount} value="requests">
         {t('joinRequests')}
       </TabsTrigger>
       {isOrgAdmin && <TabsTrigger value="settings">{t('settings')}</TabsTrigger>}

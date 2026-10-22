@@ -2,6 +2,8 @@ import { type InferSelectModel } from 'drizzle-orm'
 
 import {
   type memberships,
+  type organizationInvitations,
+  type organizationInviteLinks,
   type organizationJoinRequests,
   type organizationProfiles,
   type organizations,
@@ -22,8 +24,40 @@ type MemberUserRow = Pick<
   'avatarUrl' | 'createdAt' | 'email' | 'firstName' | 'id' | 'lastName' | 'onboardedAt' | 'username'
 >
 type ReviewerRow = Pick<InferSelectModel<typeof users>, 'email' | 'firstName' | 'id' | 'lastName'>
+type InvitationRow = InferSelectModel<typeof organizationInvitations>
+type InviteLinkRow = InferSelectModel<typeof organizationInviteLinks>
 
 export type OrganizationMembershipRole = EnumType<'role'>
+
+export const INVITATION_ERROR_CODES = [
+  'ACCEPTED',
+  'ACCOUNT_EXISTS',
+  'ALREADY_INVITED',
+  'ALREADY_MEMBER',
+  'ALREADY_REQUESTED',
+  'AUTH_ERROR',
+  'DECLINED',
+  'EXPIRED',
+  'FORBIDDEN',
+  'INVALID',
+  'LINK_EXHAUSTED',
+  'LINK_EXPIRED',
+  'LINK_REVOKED',
+  'MISMATCH',
+  'NOT_FOUND',
+  'PROOF_REQUIRED',
+  'RATE_LIMITED',
+  'REQUEST_DECIDED',
+  'REVOKED',
+  'ROLE_TAKEN',
+  'TOO_SOON',
+] as const
+
+export type InvitationErrorCode = (typeof INVITATION_ERROR_CODES)[number]
+export type InvitationState = 'accepted' | 'declined' | 'expired' | 'pending' | 'revoked'
+export type InviteLinkState = 'active' | 'exhausted' | 'expired' | 'revoked'
+export type OrganizationInvitation = ReturnType<typeof parseOrganizationInvitation>
+export type OrganizationInviteLink = ReturnType<typeof parseOrganizationInviteLink>
 
 export type Organization = ReturnType<typeof parseOrganization>
 export type OrganizationMember = ReturnType<typeof parseOrganizationMember>
@@ -80,7 +114,62 @@ export const parseOrganizationMember = (membership: MembershipRow & { user: Memb
   isVolunteer: membership.role === 'volunteer',
 })
 
-export const parseOrganizationJoinRequest = (request: JoinRequestRow & { reviewer?: ReviewerRow | null }) => ({
+const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
+
+export const canInviteRole = (managerRole: OrganizationMembershipRole, targetRole: OrganizationMembershipRole) =>
+  managerRole === 'admin' || REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
+
+export const canManageInvitation = (
+  managerRole: OrganizationMembershipRole,
+  invitation: { invitedById: string | null; role: OrganizationMembershipRole },
+  userId: string
+) => canInviteRole(managerRole, invitation.role) || invitation.invitedById === userId
+
+export const timestampMillis = (value: string) => {
+  const iso = value.replace(' ', 'T')
+  return Date.parse(/(?:Z|[+-]\d{2}(?::?\d{2})?)$/u.test(iso) ? iso : `${iso}Z`)
+}
+
+export const invitationState = (
+  invitation: Pick<InvitationRow, 'acceptedAt' | 'declinedAt' | 'expiresAt' | 'revokedAt'>,
+  now = Date.now()
+): InvitationState => {
+  if (invitation.acceptedAt) return 'accepted'
+  if (invitation.declinedAt) return 'declined'
+  if (invitation.revokedAt) return 'revoked'
+  if (timestampMillis(invitation.expiresAt) <= now) return 'expired'
+  return 'pending'
+}
+
+export const inviteLinkState = (
+  link: Pick<InviteLinkRow, 'expiresAt' | 'maxUses' | 'revokedAt' | 'uses'>,
+  now = Date.now()
+): InviteLinkState => {
+  if (link.revokedAt) return 'revoked'
+  if (link.expiresAt && timestampMillis(link.expiresAt) <= now) return 'expired'
+  if (link.maxUses !== null && link.uses >= link.maxUses) return 'exhausted'
+  return 'active'
+}
+
+export const parseOrganizationInvitation = (
+  { invitedBy, token: _token, ...invitation }: InvitationRow & { invitedBy?: ReviewerRow | null },
+  now = Date.now()
+) => ({
+  ...invitation,
+  inviterName: invitedBy ? fullName(invitedBy) || invitedBy.email : null,
+  state: invitationState(invitation, now),
+})
+
+export const parseOrganizationInviteLink = (
+  { createdBy, token: _token, ...link }: InviteLinkRow & { createdBy?: ReviewerRow | null },
+  now = Date.now()
+) => ({
+  ...link,
+  creatorName: createdBy ? fullName(createdBy) || createdBy.email : null,
+  state: inviteLinkState(link, now),
+})
+
+const parseOrganizationJoinRequest = (request: JoinRequestRow & { reviewer?: ReviewerRow | null }) => ({
   ...request,
   fullName: fullName(request),
   isAccepted: request.status === 'accepted',

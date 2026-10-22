@@ -6,11 +6,8 @@ import { Trash2Icon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import {
-  inviteOrganizationMember,
-  removeOrganizationMember,
-  updateOrganizationMemberRole,
-} from '@/actions/organizations/members'
+import { inviteOrganizationMembers } from '@/actions/organizations/invitations'
+import { removeOrganizationMember, updateOrganizationMemberRole } from '@/actions/organizations/members'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useI18n } from '@/components/providers/i18n'
 import {
@@ -61,29 +58,6 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
     }
 
     return REPRESENTATIVE_INVITE_ROLES.some(item => item === role)
-  }
-
-  const handleInvite = async (values: {
-    email: string
-    firstName: string
-    lastName: string
-    locale: string
-    role: OrganizationMembershipRole
-  }) => {
-    const { data, error } = await inviteOrganizationMember(values)
-
-    if (error || !data) {
-      toast.error(error?.message ?? t('inviteError'))
-      return
-    }
-
-    toast.success(t('inviteSuccess', { email: data.email }))
-
-    if (!data.emailSent) {
-      toast.warning(t('inviteEmailFailed'))
-    }
-
-    onRefresh()
   }
 
   const handleRoleChange = async (membershipId: number, role: OrganizationMembershipRole) => {
@@ -226,8 +200,9 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
       <InviteMemberDialog
         allowedRoles={availableInviteRoles}
         defaultLocale={locale}
-        onInvite={handleInvite}
+        onInvite={inviteOrganizationMembers}
         onOpenChange={setInviteOpen}
+        onSent={onRefresh}
         open={inviteOpen}
       />
 

@@ -36,7 +36,11 @@ const OrganizationContent = async () => {
         title={<PageTitle namespace="Organization" name="title" />}
         className="py-8"
         breadcrumb={
-          <OrganizationTabsList isOrgAdmin={data.isOrgAdmin} joinRequestCount={data.pendingJoinRequestsCount} />
+          <OrganizationTabsList
+            invitationCount={data.pendingInvitationsCount}
+            isOrgAdmin={data.isOrgAdmin}
+            joinRequestCount={data.pendingJoinRequestsCount}
+          />
         }
       >
         <OrganizationPanel initialData={data} />

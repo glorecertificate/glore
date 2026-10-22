@@ -192,6 +192,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
     email: {
       category: 'mandatory',
       to: event => [{ email: event.data.email, locale: event.data.locale, name: null }],
+      template: event => ({ name: 'auth/invite', props: { url: event.data.url } }),
     },
     url: event => new URL(event.data.url).pathname,
   },
@@ -199,6 +200,13 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
     inApp: event => (event.data.inviterId ? [event.data.inviterId] : []),
     url: () => '/organization?tab=members',
   },
+  'invitation.declined': {
+    inApp: event => (event.data.inviterId ? [event.data.inviterId] : []),
+    url: () => '/organization?tab=invitations',
+  },
+  'invitation.revoked': {},
+  'invite_link.created': {},
+  'invite_link.revoked': {},
   'invitation.expiring': {
     email: {
       category: 'reminders',
@@ -230,6 +238,10 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
       }),
     },
     url: () => '/dashboard',
+  },
+  'member.joined': {
+    inApp: managers,
+    url: () => '/organization?tab=members',
   },
   'member.role_changed': {
     inApp: event => [event.data.userId],

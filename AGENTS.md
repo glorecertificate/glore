@@ -83,6 +83,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 12. The React Compiler runs in builds, so never add manual `useMemo`/`useCallback`.
 13. Never revert the dev-performance flags listed in `reference.md`, "Dev environment and performance".
 14. Certificate state changes go through `certificateAction` and `commitTransition` in `@/actions/certificates/helpers` (guard, transaction, `recordEvent`, then `notify`); approval alone renders the PDF and uploads to R2 after its transaction and reverts it on failure.
+15. Invitations never create memberships; accepting does (`db/mutations/invitation.ts`). Never `signUpEmail` or insert a membership for an invitee.
 
 ## Verification
 

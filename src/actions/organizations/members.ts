@@ -2,133 +2,23 @@
 
 import 'server-only'
 
-import { randomBytes } from 'node:crypto'
-
 import { and, eq } from 'drizzle-orm'
 
+import { notify } from '@/actions/notifications/notify'
 import {
   assertOrganizationAdmin,
   assertOrganizationManager,
-  canInviteRole,
   canManageMemberRole,
-  createInvitationUrl,
   expireUserAccess,
   getOrganizationAdminsCount,
   getOrganizationContext,
   memberUserColumns,
-  sendOrganizationAccessEmail,
 } from '@/actions/organizations/helpers'
-import { db } from '@/db/client'
+import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { removeMembership } from '@/db/mutations/organization'
 import { type OrganizationMembershipRole, parseOrganizationMember } from '@/db/queries/organization'
-import { memberships, users } from '@/db/schema'
-import { auth } from '@/lib/auth'
-import { fullName } from '@/lib/utils'
-
-export const inviteOrganizationMember = async ({
-  email,
-  firstName,
-  lastName,
-  locale,
-  role,
-}: {
-  email: string
-  firstName: string
-  lastName: string
-  locale: string
-  role: OrganizationMembershipRole
-}) => {
-  const { organization, role: managerRole, user } = await getOrganizationContext()
-
-  return await safeQuery(async () => {
-    if (!organization?.id) {
-      throw new Error('No active organization found')
-    }
-
-    assertOrganizationManager(managerRole)
-
-    if (!canInviteRole(managerRole, role)) {
-      throw new Error('You cannot invite users with this role')
-    }
-
-    if (role === 'admin') {
-      const adminCount = await getOrganizationAdminsCount(organization.id)
-      if (adminCount > 0) {
-        throw new Error('An organization admin already exists. Invite as representative instead.')
-      }
-    }
-
-    const normalizedEmail = email.trim().toLowerCase()
-    const normalizedFirstName = firstName.trim()
-    const normalizedLastName = lastName.trim()
-
-    const existingUser = await db.query.users.findFirst({
-      columns: { email: true, firstName: true, id: true, lastName: true, onboardedAt: true },
-      where: eq(users.email, normalizedEmail),
-    })
-
-    const invitee =
-      existingUser ??
-      (
-        await auth.api.signUpEmail({
-          body: {
-            email: normalizedEmail,
-            firstName: normalizedFirstName,
-            lastName: normalizedLastName || undefined,
-            locale,
-            name: fullName({ firstName: normalizedFirstName, lastName: normalizedLastName }),
-            password: randomBytes(32).toString('hex'),
-          },
-        })
-      )?.user
-
-    if (!invitee?.id) {
-      throw new Error('Failed to create member account')
-    }
-
-    const existingMembership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.organizationId, organization.id), eq(memberships.userId, invitee.id)),
-    })
-
-    if (existingMembership) {
-      throw new Error('This user is already a member of the organization')
-    }
-
-    await db
-      .insert(memberships)
-      .values({
-        organizationId: organization.id,
-        role,
-        userId: invitee.id,
-      })
-      .onConflictDoNothing()
-    expireUserAccess([invitee.id])
-
-    const inviterName = fullName(user) || user.email
-
-    const invitationUrl = existingUser?.onboardedAt
-      ? undefined
-      : await createInvitationUrl({
-          email: normalizedEmail,
-          firstName: normalizedFirstName,
-          invitedBy: user.id,
-          lastName: normalizedLastName || null,
-          locale,
-          role,
-          userId: invitee.id,
-        })
-
-    const emailSent = await sendOrganizationAccessEmail({
-      email: normalizedEmail,
-      inviterName,
-      organizationName: organization.name,
-      role,
-      url: invitationUrl,
-    })
-
-    return { email: normalizedEmail, emailSent, userId: invitee.id }
-  })
-}
+import { memberships } from '@/db/schema'
 
 export const updateOrganizationMemberRole = async (membershipId: number, role: OrganizationMembershipRole) => {
   const { organization, role: managerRole, user } = await getOrganizationContext()
@@ -215,7 +105,10 @@ export const removeOrganizationMember = async (membershipId: number) => {
       }
     }
 
-    await db.delete(memberships).where(eq(memberships.id, membership.id))
+    const { events } = await transaction(tx =>
+      removeMembership(tx, { actorId: user.id, membershipId: membership.id, organizationId: organization.id })
+    )
+    await Promise.all(events.map(event => notify(event)))
     expireUserAccess([membership.userId])
 
     return { id: membership.id, userId: membership.userId }

@@ -1,7 +1,5 @@
 import 'server-only'
 
-import { randomBytes } from 'node:crypto'
-
 import { revalidateTag, updateTag } from 'next/cache'
 import { cache } from 'react'
 
@@ -14,13 +12,14 @@ import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import {
   type Organization,
+  type OrganizationInvitation,
+  type OrganizationInviteLink,
   type OrganizationJoinRequest,
   type OrganizationMember,
   type OrganizationMembershipRole,
 } from '@/db/queries/organization'
-import { memberships, teamInvitations, users } from '@/db/schema'
+import { memberships, users } from '@/db/schema'
 import { CacheTag, userTag } from '@/lib/cache'
-import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 
@@ -83,12 +82,15 @@ export const reviewerColumns = {
 export interface OrganizationPanelData {
   approvedCertificatesCount: number
   currentUserId: string
+  inviteLinks: OrganizationInviteLink[]
+  invitations: OrganizationInvitation[]
   isOrgAdmin: boolean
   isRepresentative: boolean
   joinRequests: OrganizationJoinRequest[]
   members: OrganizationMember[]
   organization: Organization & { role: OrganizationMembershipRole | null }
   pendingCertificatesCount: number
+  pendingInvitationsCount: number
   pendingJoinRequestsCount: number
   stats: {
     adminCount: number
@@ -133,22 +135,8 @@ export const canManageMemberRole = (
   return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
 }
 
-export const canInviteRole = (managerRole: OrganizationMembershipRole, targetRole: OrganizationMembershipRole) => {
-  if (managerRole === 'admin') {
-    return MANAGEABLE_MEMBER_ROLES.includes(targetRole)
-  }
-  return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
-}
-
-export const canReviewRequestRole = (
-  managerRole: OrganizationMembershipRole,
-  targetRole: OrganizationMembershipRole
-) => {
-  if (managerRole === 'admin') {
-    return REQUESTABLE_ROLES.includes(targetRole)
-  }
-  return REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
-}
+export const canReviewRequestRole = (managerRole: OrganizationMembershipRole, targetRole: OrganizationMembershipRole) =>
+  MANAGER_ROLES.includes(managerRole) && REQUESTABLE_ROLES.includes(targetRole)
 
 export const getOrganizationAdminsCount = async (organizationId: number) => {
   const [result] = await db
@@ -164,69 +152,6 @@ export const getFreshCurrentUser = (userId: string) => findUser(userId, { cache:
 export const getDescriptionRecord = (description: string, locale?: string, previous?: IntlRecord | null) => {
   const key = LOCALES.includes(locale as Locale) ? (locale as Locale) : DEFAULT_LOCALE
   return { ...(previous ?? {}), [key]: description } as IntlRecord
-}
-
-export const createInvitationUrl = async ({
-  email,
-  firstName,
-  invitedBy,
-  lastName,
-  locale,
-  role,
-  userId,
-}: {
-  email: string
-  firstName: string
-  invitedBy: string
-  role: string
-  userId: string
-  lastName?: string | null
-  locale?: string | null
-}) => {
-  const token = randomBytes(16).toString('hex')
-
-  await db.insert(teamInvitations).values({
-    email,
-    expiresAt: new Date(Date.now() + INVITATION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString(),
-    firstName,
-    invitedBy,
-    lastName: lastName ?? null,
-    locale: locale ?? null,
-    role,
-    token,
-    userId,
-  })
-
-  return `${process.env.APP_URL}${JOIN_ROOT}?token=${token}`
-}
-
-export const sendOrganizationAccessEmail = async ({
-  email,
-  inviterName,
-  organizationName,
-  role,
-  url,
-}: {
-  email: string
-  inviterName: string
-  organizationName: string
-  role: OrganizationMembershipRole
-  url?: string
-}) => {
-  const roleLabel = role.replace('_', ' ')
-
-  try {
-    await sendMail({
-      to: email,
-      template: {
-        name: 'organization/member-added',
-        props: { organizationName, inviterName, role: roleLabel, url },
-      },
-    })
-    return true
-  } catch {
-    return false
-  }
 }
 
 export const sendRegistrationRequestEmails = async ({
@@ -283,26 +208,4 @@ export const sendRegistrationRequestEmails = async ({
       }
     })
   )
-}
-
-export const sendJoinRequestDecisionEmail = async ({
-  email,
-  organizationName,
-  reviewerComment,
-  status,
-  url,
-}: {
-  email: string
-  organizationName: string
-  reviewerComment?: string | null
-  status: 'accepted' | 'rejected'
-  url?: string
-}) => {
-  await sendMail({
-    to: email,
-    template: {
-      name: 'organization/join-request',
-      props: { organizationName, status, comment: reviewerComment, url },
-    },
-  }).catch(() => null)
 }

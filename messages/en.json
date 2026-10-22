@@ -786,7 +786,7 @@
     "logoutConfirmMessage": "You'll be logged out of GloRe and will need to log in again to access your content.",
     "logoutConfirmTitle": "End your session?",
     "logoutFailed": "There was an error logging out, please try again",
-    "logoutLoading": "Logging you out...",
+    "logoutLoading": "Logging out...",
     "organization": "Organization",
     "organizations": "Organizations",
     "pendingRequests": "{count, plural, =1 {# pending request} other {# pending requests}}",

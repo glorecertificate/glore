@@ -788,7 +788,7 @@
     "logoutConfirmMessage": "Verrai disconnesso da GloRe e dovrai accedere nuovamente per visualizzare i tuoi contenuti.",
     "logoutConfirmTitle": "Terminare la sessione?",
     "logoutFailed": "Si è verificato un errore durante la disconnessione, riprova",
-    "logoutLoading": "Disconnessione in corso...",
+    "logoutLoading": "Disconnessione...",
     "organization": "Organizzazione",
     "organizations": "Organizzazioni",
     "pendingRequests": "{count, plural, =1 {# richiesta in sospeso} other {# richieste in sospeso}}",

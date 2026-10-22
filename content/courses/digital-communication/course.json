@@ -1,0 +1,41 @@
+{
+  "slug": "digital-communication",
+  "type": "skill",
+  "skillGroup": "communication-skills",
+  "icon": "laptop",
+  "title": {
+    "en": "Digital communication",
+    "es": "Comunicación digital",
+    "it": "Comunicazione digitale"
+  },
+  "description": {
+    "en": "Choose the right tool for each message, write so that people understand you on a screen, and learn new apps without fear.",
+    "es": "Elige la herramienta adecuada para cada mensaje, escribe de forma que te entiendan en una pantalla y aprende aplicaciones nuevas sin miedo.",
+    "it": "Scegli lo strumento giusto per ogni messaggio, scrivi in modo che ti capiscano su uno schermo e impara nuove app senza paura."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Choose the right channel for a message, such as chat, email, call or video",
+      "Write short digital messages that are clear and polite",
+      "Run or join an online meeting with confidence",
+      "Share files and information safely",
+      "Try new digital tools and learn how they work"
+    ],
+    "es": [
+      "Elegir el canal adecuado para cada mensaje, como chat, correo, llamada o videollamada",
+      "Escribir mensajes digitales breves, claros y educados",
+      "Dirigir una reunión en línea o participar en ella con seguridad",
+      "Compartir archivos e información de forma segura",
+      "Probar herramientas digitales nuevas y aprender cómo funcionan"
+    ],
+    "it": [
+      "Scegliere il canale giusto per un messaggio, come chat, email, chiamata o videochiamata",
+      "Scrivere messaggi digitali brevi, chiari e cortesi",
+      "Condurre una riunione online o partecipare con sicurezza",
+      "Condividere file e informazioni in modo sicuro",
+      "Provare nuovi strumenti digitali e imparare come funzionano"
+    ]
+  },
+  "sortOrder": 4
+}

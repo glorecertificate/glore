@@ -1,0 +1,41 @@
+{
+  "slug": "networking-and-public-relations",
+  "type": "skill",
+  "skillGroup": "social-skills",
+  "icon": "network",
+  "title": {
+    "en": "Networking and public relations",
+    "es": "Networking y relaciones públicas",
+    "it": "Networking e relazioni pubbliche"
+  },
+  "description": {
+    "en": "Meet people and organisations outside your own group, stay in touch, and turn first contacts into relationships that help everyone.",
+    "es": "Conoce a personas y organizaciones ajenas a tu grupo, mantén el contacto y convierte los primeros encuentros en relaciones que ayudan a todos.",
+    "it": "Conosci persone e organizzazioni esterne al tuo gruppo, mantieni i contatti e trasforma i primi incontri in relazioni utili a tutti."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Introduce yourself and your organisation in a short, memorable way",
+      "Start conversations with people and institutions outside your group",
+      "Offer something useful before you ask for help",
+      "Follow up after a first meeting",
+      "Keep contacts active over time"
+    ],
+    "es": [
+      "Presentarte a ti y a tu organización de forma breve y memorable",
+      "Iniciar conversaciones con personas e instituciones ajenas a tu grupo",
+      "Ofrecer algo útil antes de pedir ayuda",
+      "Hacer seguimiento después de un primer encuentro",
+      "Mantener activos los contactos a lo largo del tiempo"
+    ],
+    "it": [
+      "Presentare te stesso e la tua organizzazione in modo breve e memorabile",
+      "Avviare conversazioni con persone e istituzioni esterne al tuo gruppo",
+      "Offrire qualcosa di utile prima di chiedere aiuto",
+      "Dare seguito a un primo incontro",
+      "Mantenere vivi i contatti nel tempo"
+    ]
+  },
+  "sortOrder": 5
+}

@@ -1,0 +1,41 @@
+{
+  "slug": "public-speaking",
+  "type": "skill",
+  "skillGroup": "communication-skills",
+  "icon": "presentation",
+  "title": {
+    "en": "Public speaking",
+    "es": "Hablar en público",
+    "it": "Parlare in pubblico"
+  },
+  "description": {
+    "en": "Get your message across when people are watching, whether you know them or not, and feel more at ease while you do it.",
+    "es": "Haz llegar tu mensaje cuando la gente te mira, la conozcas o no, y siéntete más cómodo mientras lo haces.",
+    "it": "Fai arrivare il tuo messaggio quando le persone ti guardano, che tu le conosca o no, e senti più a tuo agio mentre lo fai."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Prepare a short talk with one clear main message",
+      "Adapt your words and examples to your audience",
+      "Use voice, pace and body language to support what you say",
+      "Manage nerves before and during a talk",
+      "Handle questions from the audience calmly"
+    ],
+    "es": [
+      "Preparar una charla corta con un mensaje principal claro",
+      "Adaptar tus palabras y ejemplos al público",
+      "Usar la voz, el ritmo y el lenguaje corporal para apoyar lo que dices",
+      "Gestionar los nervios antes y durante una charla",
+      "Responder con calma a las preguntas del público"
+    ],
+    "it": [
+      "Preparare un breve intervento con un messaggio principale chiaro",
+      "Adattare parole ed esempi al pubblico",
+      "Usare voce, ritmo e linguaggio del corpo a sostegno di ciò che dici",
+      "Gestire il nervosismo prima e durante un intervento",
+      "Rispondere con calma alle domande del pubblico"
+    ]
+  },
+  "sortOrder": 3
+}

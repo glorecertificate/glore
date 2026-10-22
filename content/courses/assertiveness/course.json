@@ -1,0 +1,41 @@
+{
+  "slug": "assertiveness",
+  "type": "skill",
+  "skillGroup": "communication-skills",
+  "icon": "megaphone",
+  "title": {
+    "en": "Assertiveness",
+    "es": "Asertividad",
+    "it": "Assertività"
+  },
+  "description": {
+    "en": "Say what you think and need in a calm, respectful way, and stay open to what other people think and suggest.",
+    "es": "Di lo que piensas y necesitas con calma y respeto, y mantente abierto a lo que piensan y proponen los demás.",
+    "it": "Di' ciò che pensi e di cui hai bisogno con calma e rispetto, e resta aperto a ciò che pensano e propongono gli altri."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Tell the difference between passive, aggressive and assertive replies",
+      "Express your opinion and needs clearly and respectfully",
+      "Say no to a request without damaging the relationship",
+      "Listen to a different opinion before you answer",
+      "Accept criticism and advice and decide what to do with them"
+    ],
+    "es": [
+      "Distinguir entre respuestas pasivas, agresivas y asertivas",
+      "Expresar tu opinión y tus necesidades con claridad y respeto",
+      "Decir que no a una petición sin dañar la relación",
+      "Escuchar una opinión distinta antes de responder",
+      "Aceptar críticas y consejos y decidir qué hacer con ellos"
+    ],
+    "it": [
+      "Distinguere tra risposte passive, aggressive e assertive",
+      "Esprimere la tua opinione e i tuoi bisogni con chiarezza e rispetto",
+      "Dire di no a una richiesta senza rovinare la relazione",
+      "Ascoltare un'opinione diversa prima di rispondere",
+      "Accettare critiche e consigli e decidere cosa farne"
+    ]
+  },
+  "sortOrder": 2
+}

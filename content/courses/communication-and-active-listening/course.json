@@ -1,0 +1,41 @@
+{
+  "slug": "communication-and-active-listening",
+  "type": "skill",
+  "skillGroup": "communication-skills",
+  "icon": "ear",
+  "title": {
+    "en": "Communication and active listening",
+    "es": "Comunicación y escucha activa",
+    "it": "Comunicazione e ascolto attivo"
+  },
+  "description": {
+    "en": "Learn to hear what people say and what they leave unsaid, ask better questions, and give and receive feedback without friction.",
+    "es": "Aprende a oír lo que la gente dice y lo que deja sin decir, a hacer mejores preguntas y a dar y recibir comentarios sin fricciones.",
+    "it": "Impara a cogliere ciò che le persone dicono e ciò che non dicono, a fare domande migliori e a dare e ricevere feedback senza attriti."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice verbal and non-verbal messages in a conversation",
+      "Ask open questions that clarify a situation",
+      "Answer questions clearly and honestly",
+      "Give feedback that helps the other person improve",
+      "Receive feedback without getting defensive"
+    ],
+    "es": [
+      "Percibir los mensajes verbales y no verbales de una conversación",
+      "Hacer preguntas abiertas que aclaren una situación",
+      "Responder a las preguntas con claridad y honestidad",
+      "Dar comentarios que ayuden a la otra persona a mejorar",
+      "Recibir comentarios sin ponerte a la defensiva"
+    ],
+    "it": [
+      "Cogliere i messaggi verbali e non verbali in una conversazione",
+      "Fare domande aperte che chiariscono una situazione",
+      "Rispondere alle domande con chiarezza e onestà",
+      "Dare un feedback che aiuti l'altra persona a migliorare",
+      "Ricevere un feedback senza metterti sulla difensiva"
+    ]
+  },
+  "sortOrder": 1
+}

@@ -125,7 +125,7 @@
     --popover-foreground: oklch(41.677% 0.04526 258.349);
     --input: oklch(0.91 0.008 256);
     --border: oklch(0.92 0.006 256);
-    --ring: oklch(0.68 0.12 224);
+    --ring: oklch(0.58 0.12 224);
     --primary: oklch(0.56 0.11 228);
     --primary-foreground: oklch(1 0 0);
     --secondary: oklch(0.24 0.03 256);
@@ -188,7 +188,7 @@
     --header-accent: oklch(0.955 0.007 256);
     --header-accent-foreground: oklch(0.2 0.02 256);
     --header-border: oklch(0.92 0.006 256);
-    --header-ring: oklch(0.68 0.12 224);
+    --header-ring: oklch(0.58 0.12 224);
     --editor-highlight: oklch(0.88 0.14 95);
     --shadow-ink: oklch(0.25 0.04 256);
     --shadow-a1: 4%;
@@ -266,7 +266,7 @@
   }
 
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring dark:outline-ring/50;
   }
   body {
     @apply overflow-x-hidden bg-background text-foreground;

@@ -161,6 +161,7 @@ const CourseSidebarItem = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <InlineInput
+                      aria-label={t('renameLesson')}
                       className="peer -ml-1 max-w-[calc(100%-12px)] cursor-text focus:max-w-full"
                       maxLength={MAX_LESSON_TITLE_LENGTH}
                       onChange={onTitleChange}
@@ -177,6 +178,7 @@ const CourseSidebarItem = ({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
+                        aria-label={t('removeLesson')}
                         className="absolute -top-2 -right-1 rounded-full p-px opacity-0 group-hover:opacity-100 peer-focus:opacity-0 hover:border-destructive-accent hover:bg-destructive/75 hover:text-destructive-foreground"
                         onClick={e => {
                           e.stopPropagation()
@@ -254,7 +256,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
     <div {...props}>
       {isStudent && (
         <div className="flex items-center gap-2 py-2 pr-2 pl-3">
-          <Progress className="h-1.5" color={progressColor} value={course.progress} />
+          <Progress aria-label={t('completed')} className="h-1.5" color={progressColor} value={course.progress} />
           <span className="shrink-0 text-xs text-muted-foreground">
             {course.progress}
             {'%'}
@@ -298,7 +300,10 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
                       >
                         <AnimatedListItem exitOnly>
                           {user.canEdit && (
-                            <SortableItemHandle className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50">
+                            <SortableItemHandle
+                              aria-label={t('reorderLesson')}
+                              className="absolute top-4 -left-6 z-10 cursor-grab text-muted-foreground opacity-0 transition-opacity group-hover/sortable:opacity-100 dark:text-muted-foreground/50"
+                            >
                               <GripVerticalIcon className="size-4" />
                             </SortableItemHandle>
                           )}
@@ -357,7 +362,7 @@ export const CourseSidebar = (props: React.ComponentProps<'div'>) => {
           <div className="flex h-16 items-center pl-3">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
+                <Button aria-label={t('addLesson')} className="z-1 size-6 rounded-full" onClick={() => addLesson()}>
                   <PlusIcon className="size-4" />
                 </Button>
               </TooltipTrigger>

@@ -15,6 +15,7 @@ export const Progress = ({
   <ProgressPrimitive.Root
     className={cn(progressVariants({ className, color }), className)}
     data-slot="progress"
+    value={value}
     {...props}
   >
     <ProgressPrimitive.Indicator

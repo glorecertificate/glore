@@ -88,7 +88,7 @@ export const HelpContent = () => {
           <BadgeCheckIcon className="size-3.5" />
           {roleContent.label}
         </span>
-        <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h1>
+        <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
         <p className="max-w-xl text-[15px] leading-relaxed text-balance text-muted-foreground">{roleContent.intro}</p>
       </section>
 

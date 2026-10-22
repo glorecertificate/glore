@@ -185,7 +185,7 @@ export const MemberDashboard = ({
         )}
       </section>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         <DashboardSection action={{ href: '/courses', label: t('viewCourses') }} title={t('continue.title')}>
           {courses.continuing.length === 0 ? (
             <Card>

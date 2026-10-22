@@ -111,7 +111,7 @@ export const ManagerDashboard = ({
         />
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[0.9fr_1.1fr]">
         <OrganizationPipeline pipeline={pipeline} />
 
         <Card>

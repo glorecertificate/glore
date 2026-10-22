@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useScroll } from '@/hooks/use-scroll'
 import { cn } from '@/lib/utils'
 import settings from '~/config/app.json'
+import metadata from '~/config/metadata.json'
 
 export const HeaderTrigger = ({ className, ...props }: React.ComponentProps<typeof SidebarTrigger>) => {
   const { action } = useSidebar()
@@ -61,7 +62,7 @@ export const HeaderBreadcrumb = ({
                 {title}
               </Link>
             ) : (
-              <span className="text-[15px] text-foreground">{title}</span>
+              <h1 className="font-sans text-[15px] font-medium tracking-normal text-foreground">{title}</h1>
             ))}
           {description && (
             <Tooltip>
@@ -86,6 +87,7 @@ export const HeaderLogo = <T,>({ className, href, ...props }: LinkProps<T>) => {
 
   return (
     <Link
+      aria-label={metadata.name}
       className={cn(href === pathname && !searchParams.toString() && 'pointer-events-none', className)}
       href={href}
       {...props}

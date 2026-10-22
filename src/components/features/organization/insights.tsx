@@ -155,36 +155,38 @@ const InsightsContent = ({ onRetry, organizationId }: { onRetry: () => void; org
               </p>
             )}
             {rating.ready && (
-              <dl className="space-y-4 text-sm">
-                {(
-                  [
-                    ['insightsRatingExperience', rating.experience],
-                    ['insightsRatingSupport', rating.support],
-                    ['insightsRatingCertification', rating.certificationSupport],
-                  ] as const
-                ).map(([key, value]) => (
-                  <div className="space-y-1.5" key={key}>
-                    <div className="flex items-center justify-between gap-3">
-                      <dt>{t(key)}</dt>
-                      <dd className="font-medium tabular-nums">
-                        {value === null
-                          ? t('insightsRatingNone')
-                          : t('insightsRatingValue', { value: number(value, { maximumFractionDigits: 1 }) })}
-                      </dd>
-                    </div>
-                    {value !== null && <Progress aria-label={t(key)} color="brand" value={(value / 5) * 100} />}
-                  </div>
-                ))}
-                <div className="flex items-center justify-between gap-3">
-                  <dt>{t('insightsRatingRecommend')}</dt>
-                  <dd className="font-medium tabular-nums">
-                    {rating.recommendRate === null
-                      ? t('insightsRatingNone')
-                      : number(rating.recommendRate, { maximumFractionDigits: 0, style: 'percent' })}
-                  </dd>
-                </div>
+              <div className="space-y-4 text-sm">
+                <ul className="space-y-4">
+                  {(
+                    [
+                      ['insightsRatingExperience', rating.experience],
+                      ['insightsRatingSupport', rating.support],
+                      ['insightsRatingCertification', rating.certificationSupport],
+                    ] as const
+                  ).map(([key, value]) => (
+                    <li className="space-y-1.5" key={key}>
+                      <div className="flex items-center justify-between gap-3">
+                        <span>{t(key)}</span>
+                        <span className="font-medium tabular-nums">
+                          {value === null
+                            ? t('insightsRatingNone')
+                            : t('insightsRatingValue', { value: number(value, { maximumFractionDigits: 1 }) })}
+                        </span>
+                      </div>
+                      {value !== null && <Progress aria-label={t(key)} color="brand" value={(value / 5) * 100} />}
+                    </li>
+                  ))}
+                  <li className="flex items-center justify-between gap-3">
+                    <span>{t('insightsRatingRecommend')}</span>
+                    <span className="font-medium tabular-nums">
+                      {rating.recommendRate === null
+                        ? t('insightsRatingNone')
+                        : number(rating.recommendRate, { maximumFractionDigits: 0, style: 'percent' })}
+                    </span>
+                  </li>
+                </ul>
                 <p className="text-xs text-muted-foreground">{t('insightsRatingCount', { count: rating.count })}</p>
-              </dl>
+              </div>
             )}
           </CardContent>
         </Card>

@@ -62,7 +62,7 @@ export const CertificateDetail = ({
             )}
           </div>
           <div className="min-w-0 space-y-1">
-            <h2 className="text-xl font-semibold">{certificate.organization.name}</h2>
+            <h1 className="text-xl font-semibold">{certificate.organization.name}</h1>
             {!isOwner && certificate.user && (
               <p className="text-sm text-muted-foreground">{fullName(certificate.user)}</p>
             )}

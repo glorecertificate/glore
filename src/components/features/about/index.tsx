@@ -87,7 +87,7 @@ export const AboutContent = async () => {
             <SparklesIcon className="size-3.5" />
             {content.intro.tagline}
           </span>
-          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h1>
+          <h2 className="text-3xl font-semibold tracking-tight text-balance sm:text-[34px]">{content.title}</h2>
           <p className="max-w-2xl text-base leading-relaxed text-pretty text-muted-foreground">{content.intro.body}</p>
         </div>
       </section>

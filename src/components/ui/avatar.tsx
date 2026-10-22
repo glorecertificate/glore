@@ -14,6 +14,7 @@ export const Avatar = ({ className, ...props }: React.ComponentProps<typeof Avat
 
 export const AvatarImage = ({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) => (
   <AvatarPrimitive.Image
+    alt=""
     className={cn('aspect-square size-full overflow-hidden', className)}
     data-slot="avatar-image"
     {...props}

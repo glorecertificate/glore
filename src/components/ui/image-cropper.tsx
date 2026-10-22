@@ -97,7 +97,7 @@ export const ImageCropper = ({
         <>
           <div className="w-fit">
             {trigger}
-            <input {...getInputProps()} />
+            <input {...getInputProps({ 'aria-label': t('uploadAvatar') })} />
           </div>
           {cropDialog}
         </>
@@ -108,7 +108,7 @@ export const ImageCropper = ({
       <>
         <div {...getRootProps()} className={cn('w-fit', !disabled && 'cursor-pointer')}>
           {trigger}
-          <input {...getInputProps()} />
+          <input {...getInputProps({ 'aria-label': t('uploadAvatar') })} />
         </div>
         {cropDialog}
       </>
@@ -132,7 +132,7 @@ export const ImageCropper = ({
           >
             <CameraIcon className="size-6 text-white opacity-0 transition-opacity group-hover:opacity-100" />
           </div>
-          <input {...getInputProps()} />
+          <input {...getInputProps({ 'aria-label': t('uploadAvatar') })} />
         </div>
 
         <div className="flex flex-col gap-2">

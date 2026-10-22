@@ -1,6 +1,7 @@
 import { Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
 
+import { formatActivityDate } from '@/components/features/certificates/rules'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -28,8 +29,8 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
   ])
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
-  const start = dateFormatter.format(new Date(certificate.activityStartDate))
-  const end = dateFormatter.format(new Date(certificate.activityEndDate))
+  const start = formatActivityDate(certificate.activityStartDate, dateFormatter) ?? '-'
+  const end = formatActivityDate(certificate.activityEndDate, dateFormatter) ?? '-'
   const issuedAt = certificate.issuedAt ? dateFormatter.format(new Date(certificate.issuedAt)) : null
 
   const certLocale = certificate.language as Locale

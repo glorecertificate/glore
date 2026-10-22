@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl'
 
 import { type CertificateReviewNotes, type HolderCourseResult, type ReviewHolder } from '@/actions/certificates/queries'
-import { meetsActivityRule } from '@/components/features/certificates/rules'
+import { formatActivityPeriod, meetsActivityRule } from '@/components/features/certificates/rules'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Banner } from '@/components/ui/banner'
@@ -96,7 +96,7 @@ export const RequestPanel = ({
           <dl className="flex flex-col gap-2">
             <Row
               label={t('period')}
-              value={`${format(certificate.activityStartDate)} - ${format(certificate.activityEndDate)}`}
+              value={formatActivityPeriod(certificate, date, ({ end, start }) => `${start} - ${end}`)}
             />
             <Row label={t('hours')} value={certificate.activityDuration} />
             <Row label={t('location')} value={certificate.activityLocation} />

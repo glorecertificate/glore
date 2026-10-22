@@ -44,7 +44,7 @@ export const DashboardHero = ({
       </div>
       <div className="relative z-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
         <div className="flex flex-col gap-1.5">
-          <h1 className="text-2xl font-semibold tracking-tight">{t('greeting', { name })}</h1>
+          <h2 className="text-2xl font-semibold tracking-tight">{t('greeting', { name })}</h2>
           <p className="text-[15px] text-muted-foreground">
             {subtitle}
             {organization && (

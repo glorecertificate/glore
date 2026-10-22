@@ -53,7 +53,7 @@ const geistMono = Geist_Mono({
 })
 
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
-  const locale = await getLocaleCookie()
+  const locale = (await getLocaleCookie()) ?? DEFAULT_LOCALE
   const messages = await getMessages({ locale })
   const { About: _about, Email: _email, Metadata: _metadata, ...clientMessages } = messages
 

@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import { CertificatePreview } from '@/components/features/certificates/certificate-preview'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
+import { formatActivityPeriod } from '@/components/features/certificates/rules'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Card, CardFooter } from '@/components/ui/card'
@@ -18,10 +19,7 @@ export const CertificateCard = ({ certificate }: { certificate: Certificate }) =
   const { locale } = useI18n()
 
   const formatter = new Intl.DateTimeFormat(locale, { month: 'short', year: 'numeric' })
-  const period = tDetail('periodValue', {
-    end: formatter.format(new Date(certificate.activityEndDate)),
-    start: formatter.format(new Date(certificate.activityStartDate)),
-  })
+  const period = formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values))
   const note = certificate.isChangesRequested ? certificate.reviewerComment : null
   const canEdit = certificate.isDraft || certificate.isChangesRequested
 

@@ -7,6 +7,8 @@ import { type VariantProps, cva } from 'class-variance-authority'
 import { AnimatePresence, m } from 'motion/react'
 
 import { MotionFeatures } from '@/components/ui/motion-features'
+import { useComposedRefs } from '@/hooks/use-composed-refs'
+import { scrollEdgesMask, useScrollEdges } from '@/hooks/use-scroll-edges'
 import { cn } from '@/lib/utils'
 
 const MotionList = m.create(TabsPrimitive.List)
@@ -35,15 +37,39 @@ export const Tabs = ({
 
 export const TabsList = ({
   className,
+  ref: forwardedRef,
+  style,
   ...props
 }: Omit<
   React.ComponentProps<typeof TabsPrimitive.List>,
   'onAnimationStart' | 'onDragStart' | 'onDragEnd' | 'onDrag'
 >) => {
   const animated = use(TabsContext)
-  const classNames = cn('inline-flex h-9 w-fit items-center justify-center rounded-lg bg-muted/55 p-0.5', className)
-  if (!animated) return <TabsPrimitive.List className={classNames} data-slot="tabs-list" {...props} />
-  return <MotionList className={classNames} data-slot="tabs-list" layout transition={TABS_TRANSITION} {...props} />
+  const { end, ref, scrollable, start } = useScrollEdges<HTMLDivElement>()
+  const composedRef = useComposedRefs(forwardedRef, ref)
+  const maskImage = scrollEdgesMask({ end, start })
+  const classNames = cn(
+    'inline-flex h-9 w-fit max-w-full scrollbar-none items-center justify-center rounded-lg bg-muted/55 p-0.5',
+    scrollable && 'justify-start overflow-x-auto',
+    className
+  )
+  const listStyle = { ...style, maskImage, WebkitMaskImage: maskImage }
+  if (!animated) {
+    return (
+      <TabsPrimitive.List className={classNames} data-slot="tabs-list" ref={composedRef} style={listStyle} {...props} />
+    )
+  }
+  return (
+    <MotionList
+      className={classNames}
+      data-slot="tabs-list"
+      layout
+      ref={composedRef}
+      style={listStyle}
+      transition={TABS_TRANSITION}
+      {...props}
+    />
+  )
 }
 
 export const TabsContent = ({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Content>) => (
@@ -112,7 +138,7 @@ export const TabsTrigger = ({
 
   if (!animated) {
     return (
-      <TabsPrimitive.Trigger className={triggerClassName} data-slot="tabs-trigger" {...props}>
+      <TabsPrimitive.Trigger aria-controls={undefined} className={triggerClassName} data-slot="tabs-trigger" {...props}>
         {showCount ? (
           <span className="flex items-center gap-1.5">
             {children}
@@ -126,7 +152,14 @@ export const TabsTrigger = ({
   }
 
   return (
-    <MotionTrigger className={triggerClassName} data-slot="tabs-trigger" layout transition={TABS_TRANSITION} {...props}>
+    <MotionTrigger
+      aria-controls={undefined}
+      className={triggerClassName}
+      data-slot="tabs-trigger"
+      layout
+      transition={TABS_TRANSITION}
+      {...props}
+    >
       <m.span className="flex items-center gap-1.5" layout transition={TABS_TRANSITION}>
         {children}
         <AnimatePresence initial={false} mode="popLayout">

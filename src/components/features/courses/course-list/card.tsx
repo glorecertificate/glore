@@ -400,7 +400,7 @@ export const CourseListCard = ({
                 {t('completed').toLowerCase()}
               </span>
             </div>
-            <Progress className="h-1.5" value={course.progress} />
+            <Progress aria-label={t('completed')} className="h-1.5" value={course.progress} />
           </div>
         )}
         {user.canEdit ? (

@@ -11,6 +11,22 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 
+const MOBILE_TABLE = 'max-sm:block'
+
+const MOBILE_HEAD = 'max-sm:sr-only'
+
+const MOBILE_BODY = 'max-sm:block'
+
+const MOBILE_ROW = 'max-sm:grid max-sm:grid-cols-2 max-sm:gap-x-4 max-sm:gap-y-2 max-sm:p-3'
+
+const MOBILE_CELL = [
+  'max-sm:block max-sm:min-w-0 max-sm:p-0 max-sm:whitespace-normal',
+  'max-sm:before:mb-0.5 max-sm:before:block max-sm:before:text-xs max-sm:before:text-muted-foreground max-sm:before:content-[attr(data-label)]',
+  'max-sm:first:col-span-2 max-sm:first:before:hidden',
+]
+
+const MOBILE_ACTIONS = 'max-sm:col-span-2 max-sm:text-left'
+
 export interface DataTableColumn<T> {
   cell: (row: T) => React.ReactNode
   className?: string
@@ -101,8 +117,8 @@ export const DataTable = <T,>({
         </span>
       </div>
       <div className="overflow-hidden rounded-lg border">
-        <Table aria-label={label}>
-          <TableHeader>
+        <Table aria-label={label} className={MOBILE_TABLE}>
+          <TableHeader className={MOBILE_HEAD}>
             <TableRow>
               {columns.map(item => (
                 <TableHead
@@ -144,12 +160,12 @@ export const DataTable = <T,>({
               )}
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody className={MOBILE_BODY}>
             {loading ? (
               Array.from({ length: Math.min(limit, 5) }, (_, row) => (
-                <TableRow key={row}>
+                <TableRow className={MOBILE_ROW} key={row}>
                   {Array.from({ length: columnCount }, (_cell, cell) => (
-                    <TableCell key={cell}>
+                    <TableCell className={cn(MOBILE_CELL)} key={cell}>
                       <Skeleton className="h-5 w-full min-w-16" />
                     </TableCell>
                   ))}
@@ -157,18 +173,20 @@ export const DataTable = <T,>({
               ))
             ) : visible.length > 0 ? (
               visible.map(row => (
-                <TableRow key={getRowId(row)}>
+                <TableRow className={MOBILE_ROW} key={getRowId(row)}>
                   {columns.map(item => (
-                    <TableCell className={item.className} key={item.id}>
+                    <TableCell className={cn(MOBILE_CELL, item.className)} data-label={item.header} key={item.id}>
                       {item.cell(row)}
                     </TableCell>
                   ))}
-                  {rowActions && <TableCell className="text-right">{rowActions(row)}</TableCell>}
+                  {rowActions && (
+                    <TableCell className={cn(MOBILE_CELL, 'text-right', MOBILE_ACTIONS)}>{rowActions(row)}</TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={columnCount}>
+              <TableRow className="max-sm:block">
+                <TableCell className="max-sm:block" colSpan={columnCount}>
                   <Empty>
                     <EmptyHeader>
                       <EmptyTitle>{emptyTitle}</EmptyTitle>

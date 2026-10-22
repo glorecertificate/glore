@@ -189,7 +189,6 @@ export const StepperTrigger = ({
   const { step, isDisabled } = useStepItem()
   const selected = activeStep === step
   const id = `stepper-tab-${step}`
-  const panelId = `stepper-panel-${step}`
 
   const buttonRef = useRef<HTMLDivElement>(null)
 
@@ -258,9 +257,8 @@ export const StepperTrigger = ({
 
   return (
     <div
-      aria-controls={panelId}
+      aria-current={selected ? 'step' : undefined}
       aria-disabled={isDisabled}
-      aria-selected={selected}
       className={cn(
         'inline-flex cursor-pointer items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-60',
         className
@@ -272,7 +270,7 @@ export const StepperTrigger = ({
       onClick={setStep}
       onKeyDown={handleKeyDown}
       ref={buttonRef}
-      role="tab"
+      role="group"
       tabIndex={typeof tabIndex === 'number' ? tabIndex : selected ? 0 : -1}
       {...props}
     >

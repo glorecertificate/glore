@@ -3,6 +3,7 @@
 import { CalendarIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { formatActivityPeriod } from '@/components/features/certificates/rules'
 import { useI18n } from '@/components/providers/i18n'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LevelDots } from '@/components/ui/level-dots'
@@ -21,10 +22,7 @@ export const CertificateSummary = ({ certificate }: { certificate: Certificate }
       icon: CalendarIcon,
       key: 'period',
       label: t('period'),
-      value: tDetail('periodValue', {
-        end: formatter.format(new Date(certificate.activityEndDate)),
-        start: formatter.format(new Date(certificate.activityStartDate)),
-      }),
+      value: formatActivityPeriod(certificate, formatter, values => tDetail('periodValue', values)),
     },
     {
       icon: TimerIcon,

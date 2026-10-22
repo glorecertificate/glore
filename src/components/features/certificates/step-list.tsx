@@ -48,7 +48,7 @@ export const StepList = ({
         <div className="min-w-0 pr-2">
           <p
             className={cn(
-              'truncate text-xs font-medium sm:text-sm',
+              'text-xs leading-tight font-medium wrap-break-word sm:text-sm',
               item.state === 'upcoming' ? 'text-muted-foreground' : 'text-foreground'
             )}
           >

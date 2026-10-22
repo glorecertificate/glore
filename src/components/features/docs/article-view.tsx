@@ -83,7 +83,7 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
       )}
       <Separator />
       {content ? (
-        <Markdown className="prose text-foreground">{content}</Markdown>
+        <Markdown className="text-foreground">{content}</Markdown>
       ) : (
         <p className="text-muted-foreground">{t('article.noContent')}</p>
       )}

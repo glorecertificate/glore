@@ -99,12 +99,14 @@ export const AdminEmails = ({ html, subject, template, templates }: AdminEmailsP
       ) : (
         <>
           <p className="text-sm font-medium">{t('subject', { subject })}</p>
-          <iframe
-            className="h-[75vh] w-full rounded-xl border bg-card"
-            sandbox=""
-            srcDoc={html}
-            title={t('frameTitle', { template })}
-          />
+          <div className="overflow-x-auto rounded-xl border bg-card">
+            <iframe
+              className="h-[75vh] w-full min-w-160"
+              sandbox=""
+              srcDoc={html}
+              title={t('frameTitle', { template })}
+            />
+          </div>
         </>
       )}
     </div>

@@ -205,7 +205,7 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
           </DropdownMenu>
 
           <Select onValueChange={v => setFilterRole(v as TeamRole | 'all')} value={filterRole}>
-            <SelectTrigger className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm">
+            <SelectTrigger aria-label={t('filterRoleLabel')} className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm">
               <FilterIcon className="size-3.5" />
               <SelectValue />
             </SelectTrigger>
@@ -217,7 +217,10 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
           </Select>
 
           <Select onValueChange={v => setFilterStatus(v as TeamStatus | 'all')} value={filterStatus}>
-            <SelectTrigger className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm">
+            <SelectTrigger
+              aria-label={t('filterStatusLabel')}
+              className="h-8 w-auto gap-1.5 border-dashed px-3 text-sm"
+            >
               <FilterIcon className="size-3.5" />
               <SelectValue />
             </SelectTrigger>

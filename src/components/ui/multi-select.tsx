@@ -128,7 +128,7 @@ export const MultiSelectTrigger = ({
   /** @default 'start' */
   position?: 'start' | 'end'
 }) => {
-  const { disabled: rootDisabled, open, setOpen, value } = useMultiSelect()
+  const { disabled: rootDisabled, label, open, setOpen, value } = useMultiSelect()
   const disabled = rootDisabled || triggerDisabled
 
   const openDropdown = (e: React.MouseEvent) => {
@@ -173,6 +173,7 @@ export const MultiSelectTrigger = ({
             e.stopPropagation()
             setOpen(!open)
           }}
+          aria-label={label}
           role="button"
           tabIndex={0}
         >

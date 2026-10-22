@@ -162,7 +162,7 @@ export const CourseHeader = () => {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <DialogTrigger asChild>
-                      <Button size="xs" variant="outline">
+                      <Button aria-label={t('settings')} size="xs" variant="outline">
                         <SettingsIcon className="size-4" />
                       </Button>
                     </DialogTrigger>
@@ -297,7 +297,12 @@ export const CourseHeader = () => {
                 {course.progress}
                 {'%'}
               </span>
-              <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
+              <Progress
+                aria-label={t('completed')}
+                className="md:max-w-sm"
+                color={progressColor}
+                value={course.progress}
+              />
             </>
           )}
         </>
@@ -389,7 +394,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
             {course.progress}
             {'%'}
           </span>
-          <Progress className="md:max-w-sm" color={progressColor} value={course.progress} />
+          <Progress aria-label={t('completed')} className="md:max-w-sm" color={progressColor} value={course.progress} />
         </div>
       )}
     </div>

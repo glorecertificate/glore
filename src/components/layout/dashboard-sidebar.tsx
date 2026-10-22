@@ -173,6 +173,7 @@ const DashboardSidebarItem = ({
 
 const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }: DashboardSidebarItemProps) => {
   const { activePath } = useSidebar()
+  const t = useTranslations('Layout')
   const [open, setOpen] = useState(() => activePath.startsWith(route))
 
   return (
@@ -190,6 +191,7 @@ const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }
         </CollapsibleTrigger>
         <CollapsibleTrigger asChild>
           <SidebarMenuAction
+            aria-label={t('toggleSection', { name: label })}
             className="cursor-pointer data-[state=open]:rotate-90"
             onClick={() => setOpen(prev => !prev)}
           >

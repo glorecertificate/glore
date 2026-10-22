@@ -292,7 +292,7 @@ export const AuthFlow = ({
   return (
     <MotionFeatures>
       <AuthHeader contentRef={ref} onLogoClick={() => setView('login')} view={view} />
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden">
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden">
         <div className="w-full max-w-md">
           <m.div
             animate={{ height: height ?? 'auto' }}
@@ -301,7 +301,7 @@ export const AuthFlow = ({
             transition={animate ? { duration: 0.32, ease: EASE_IN_OUT } : { duration: 0 }}
           >
             <div className="flex min-h-164 flex-col gap-8" ref={ref}>
-              <Globe className="mx-auto size-80" transitionDuration={600} {...globeOptions} />
+              <Globe className="mx-auto size-48 sm:size-80" transitionDuration={600} {...globeOptions} />
               <AnimatePresence initial={false} mode="wait">
                 <AuthStep
                   animate="visible"
@@ -332,7 +332,7 @@ export const AuthFlow = ({
             </div>
           </m.div>
         </div>
-      </div>
+      </main>
     </MotionFeatures>
   )
 }

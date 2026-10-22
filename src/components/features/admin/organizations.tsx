@@ -226,7 +226,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
 
           {countryOptions.length > 0 && (
             <Select onValueChange={setCountry} value={country}>
-              <SelectTrigger className="h-8 w-auto gap-1.5 border-dashed text-sm">
+              <SelectTrigger aria-label={t('filterCountry')} className="h-8 w-auto gap-1.5 border-dashed text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

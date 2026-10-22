@@ -144,7 +144,7 @@ export const ReviewWorkspace = ({
     <div className="flex flex-col gap-6 py-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="space-y-1">
-          <h2 className="text-lg font-semibold">{fullName(holder)}</h2>
+          <h1 className="text-lg font-semibold">{fullName(holder)}</h1>
           <p className="text-sm text-muted-foreground">{certificate.organization.name}</p>
         </div>
         {certificate.isSubmitted && (

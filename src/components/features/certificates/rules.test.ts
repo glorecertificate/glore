@@ -5,6 +5,8 @@ import {
   ageTone,
   chooseTutor,
   daysBetween,
+  formatActivityDate,
+  formatActivityPeriod,
   generateCertificateCode,
   journeySteps,
   linkedInProfileUrl,
@@ -186,6 +188,38 @@ describe('pdfDate', () => {
   it('formats ISO dates like the PDF', () => {
     expect(pdfDate('2026-01-10')).toBe('10.01.2026')
     expect(pdfDate(null)).toBeNull()
+  })
+})
+
+describe('formatActivityDate', () => {
+  const formatter = new Intl.DateTimeFormat('en', { dateStyle: 'long', timeZone: 'UTC' })
+
+  it('formats stored ISO dates', () => {
+    expect(formatActivityDate('2026-01-10', formatter)).toBe('January 10, 2026')
+  })
+
+  it('returns null for unset or malformed dates', () => {
+    expect(formatActivityDate('', formatter)).toBeNull()
+    expect(formatActivityDate(null, formatter)).toBeNull()
+    expect(formatActivityDate(undefined, formatter)).toBeNull()
+    expect(formatActivityDate('not-a-date', formatter)).toBeNull()
+  })
+})
+
+describe('formatActivityPeriod', () => {
+  const formatter = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'UTC' })
+  const template = ({ end, start }: { end: string; start: string }) => `${start} to ${end}`
+
+  it('renders the period when both dates are set', () => {
+    const certificate = { activityEndDate: '2026-06-30', activityStartDate: '2026-01-10' }
+    expect(formatActivityPeriod(certificate, formatter, template)).toBe('Jan 10, 2026 to Jun 30, 2026')
+  })
+
+  it('renders a placeholder for a draft without dates', () => {
+    expect(formatActivityPeriod({ activityEndDate: '', activityStartDate: '' }, formatter, template)).toBe('-')
+    expect(formatActivityPeriod({ activityEndDate: '2026-06-30', activityStartDate: '' }, formatter, template)).toBe(
+      '-'
+    )
   })
 })
 

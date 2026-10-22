@@ -43,12 +43,12 @@ export const DashboardChecklist = ({
                 className={cn('size-5 shrink-0', done ? 'text-success-text' : 'text-muted-foreground')}
                 name={done ? 'circle-check' : 'circle'}
               />
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 basis-40">
                 <p className={cn('text-sm font-medium', done && 'text-muted-foreground line-through')}>{label}</p>
                 <p className="text-sm text-muted-foreground">{description}</p>
               </div>
               {!done && href && (
-                <Button asChild size="sm" variant="outline">
+                <Button asChild className="max-sm:ml-8" size="sm" variant="outline">
                   <Link href={href}>{action}</Link>
                 </Button>
               )}

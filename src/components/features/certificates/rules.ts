@@ -145,6 +145,19 @@ export const mergeCertificateValues = (stored: StoredCertificate, edit: Certific
   tasks: edit.tasks ?? stored.tasks,
 })
 
+export const formatActivityDate = (iso: string | null | undefined, formatter: Intl.DateTimeFormat) =>
+  iso && DATE_PARTS.test(iso) ? formatter.format(new Date(iso)) : null
+
+export const formatActivityPeriod = (
+  { activityEndDate, activityStartDate }: { activityEndDate: string; activityStartDate: string },
+  formatter: Intl.DateTimeFormat,
+  template: (values: { end: string; start: string }) => string
+) => {
+  const end = formatActivityDate(activityEndDate, formatter)
+  const start = formatActivityDate(activityStartDate, formatter)
+  return start && end ? template({ end, start }) : '-'
+}
+
 export const pdfDate = (iso?: string | null) => (iso ? iso.split('-').reverse().join('.') : null)
 
 const JOURNEY_STAGES = ['draft', 'submitted', 'review', 'issued'] as const

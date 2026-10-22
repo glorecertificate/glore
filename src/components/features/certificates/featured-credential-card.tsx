@@ -5,6 +5,7 @@ import { useId } from 'react'
 import { AwardIcon, BadgeCheckIcon, CalendarIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
+import { formatActivityPeriod } from '@/components/features/certificates/rules'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/ui/logo'
@@ -21,15 +22,14 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
   const sealId = useId()
 
   const formatter = new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'short' })
-  const start = formatter.format(new Date(certificate.activityStartDate))
-  const end = formatter.format(new Date(certificate.activityEndDate))
+  const period = formatActivityPeriod(certificate, formatter, ({ end, start }) => `${start} – ${end}`)
 
   const recipientName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
   const sealText = `${t('sealTitle')} · ${t('sealSubtitle')}`
 
   const meta = [
-    { key: 'period', icon: CalendarIcon, label: t('period'), value: `${start} – ${end}` },
+    { key: 'period', icon: CalendarIcon, label: t('period'), value: period },
     { key: 'location', icon: MapPinIcon, label: t('location'), value: certificate.activityLocation },
     { key: 'hours', icon: TimerIcon, label: t('hours'), value: `${certificate.activityDuration}h` },
   ]

@@ -18,7 +18,7 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
   const content = await loadLegalDocument(document, locale)
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-6 py-10 md:py-16">
+    <main className="mx-auto w-full max-w-3xl px-6 py-10 md:py-16">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <Link aria-label={t('home')} href="/">
           <Logo className="w-28" />
@@ -63,7 +63,7 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
       <footer className="mt-16 border-t pt-6">
         <LegalLinks />
       </footer>
-    </article>
+    </main>
   )
 }
 

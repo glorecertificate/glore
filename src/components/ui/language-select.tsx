@@ -63,7 +63,11 @@ export const LanguageSelect = ({
 
   return (
     <Select onValueChange={onValueChange} value={activeItemValue}>
-      <SelectTrigger className={cn('gap-1', isPending && 'pointer-events-none', className)} {...props}>
+      <SelectTrigger
+        aria-label={t('switchLanguage')}
+        className={cn('gap-1', isPending && 'pointer-events-none', className)}
+        {...props}
+      >
         <span className="relative">
           <div className="flex items-center gap-1.5" title={t('switchLanguage')}>
             {activeItem.status && (

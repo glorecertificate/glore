@@ -114,12 +114,14 @@ export const CourseBreadcrumb = () => {
       <BreadcrumbSeparator />
 
       <BreadcrumbItem className="grow gap-3 pr-6">
+        <h1 className="sr-only">{title}</h1>
         {canEdit ? (
           <>
             {course.icon && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <IconPicker
+                    aria-label={t('updateIcon')}
                     className={cn('size-4 shrink-0 [&>svg]:size-4.5!', courseIconVariants({ type: course.type }))}
                     defaultValue={(course.icon ?? undefined) as IconName | undefined}
                     onValueChange={async icon => {
@@ -139,6 +141,7 @@ export const CourseBreadcrumb = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <InlineInput
+                  aria-label={t('renameCourse')}
                   autoWidth
                   className={cn(
                     'mb-0.5 px-1 py-0.5 text-[14.5px] text-foreground/90 hover:text-foreground focus:text-foreground',
@@ -180,14 +183,18 @@ export const CourseBreadcrumb = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <PopoverTrigger asChild>
-                <InfoIcon
+                <button
+                  aria-label={t('updateDescription')}
                   className={cn(
-                    '-ml-1 size-3.5',
+                    '-ml-1 rounded-sm',
                     languageStatus.hasDescriptionUpdates
                       ? 'text-warning-text hover:text-warning-text/80 data-[state=open]:text-warning-text/80'
                       : 'text-muted-foreground/80 hover:text-foreground data-[state=open]:text-foreground'
                   )}
-                />
+                  type="button"
+                >
+                  <InfoIcon className="size-3.5" />
+                </button>
               </PopoverTrigger>
             </TooltipTrigger>
             <TooltipContent side="bottom" sideOffset={10} size="sm">

@@ -58,7 +58,16 @@
     ["stroke=['\"]([^Z'\"]*)"]
   ],
   "tailwindCSS.experimental.configFile": "./src/app/globals.css",
-  "tailwindCSS.files.exclude": ["**/*.md"],
+  "tailwindCSS.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/.next/**",
+    "**/.claude/**",
+    "**/.vercel/**",
+    "**/drizzle/**",
+    "**/content/**",
+    "**/*.md"
+  ],
   "tailwindCSS.includeLanguages": {
     "svg": "html"
   }

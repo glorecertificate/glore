@@ -11,7 +11,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 const DashboardLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const [user, { get }, pending] = await Promise.all([getCurrentUser(), cookies(), getPendingCounts()])
   const org = get('org')
-  const organizationId = org ? user.organizations.find(({ id }) => id === org)?.id : user.organizations[0]?.id
+  const organizationId = user.organizations.find(({ id }) => id === org)?.id ?? user.organizations[0]?.id
   const sidebarOpen = get('sidebarOpen')
   const sidebarWidth = get('sidebarWidth')
 

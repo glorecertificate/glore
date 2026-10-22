@@ -1,0 +1,41 @@
+{
+  "slug": "socio-cultural-awareness",
+  "type": "skill",
+  "skillGroup": "social-skills",
+  "icon": "globe",
+  "title": {
+    "en": "Socio-cultural and multicultural awareness",
+    "es": "Conciencia sociocultural y multicultural",
+    "it": "Consapevolezza socioculturale e multiculturale"
+  },
+  "description": {
+    "en": "Notice how culture and background shape what people expect and need, handle differences with respect, and help everyone feel part of the group.",
+    "es": "Fíjate en cómo la cultura y el entorno influyen en lo que las personas esperan y necesitan, afronta las diferencias con respeto y ayuda a que todo el mundo se sienta parte del grupo.",
+    "it": "Nota come la cultura e il contesto influenzano ciò che le persone si aspettano e di cui hanno bisogno, affronta le differenze con rispetto e aiuta tutti a sentirsi parte del gruppo."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice how your own background shapes what feels normal to you",
+      "Ask about customs and needs instead of guessing from stereotypes",
+      "Adapt how you work and communicate when people have different norms",
+      "Include people who are new or on the margins of a group",
+      "Take people's rights, needs and opinions into account when you plan an activity"
+    ],
+    "es": [
+      "Notar cómo tu propio entorno marca lo que te parece normal",
+      "Preguntar por costumbres y necesidades en lugar de suponer a partir de estereotipos",
+      "Adaptar tu forma de trabajar y comunicarte cuando las personas tienen normas distintas",
+      "Incluir a quienes son nuevos o están al margen de un grupo",
+      "Tener en cuenta los derechos, las necesidades y las opiniones de las personas al planificar una actividad"
+    ],
+    "it": [
+      "Accorgerti di come il tuo contesto influenza ciò che ti sembra normale",
+      "Chiedere di usanze e bisogni invece di indovinare dagli stereotipi",
+      "Adattare il tuo modo di lavorare e comunicare quando le persone hanno norme diverse",
+      "Includere chi è nuovo o ai margini di un gruppo",
+      "Tenere conto di diritti, bisogni e opinioni delle persone quando pianifichi un'attività"
+    ]
+  },
+  "sortOrder": 1
+}

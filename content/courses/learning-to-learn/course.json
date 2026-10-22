@@ -1,0 +1,41 @@
+{
+  "slug": "learning-to-learn",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "graduation-cap",
+  "title": {
+    "en": "Learning to learn",
+    "es": "Aprender a aprender",
+    "it": "Imparare a imparare"
+  },
+  "description": {
+    "en": "Find out how you learn best, decide what you want to learn, and turn it into a plan you can follow and adjust.",
+    "es": "Descubre cómo aprendes mejor, decide qué quieres aprender y conviértelo en un plan que puedas seguir y ajustar.",
+    "it": "Scopri come impari meglio, decidi cosa vuoi imparare e trasformalo in un piano che puoi seguire e correggere."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Recognise the ways of learning that work best for you",
+      "Set a clear learning aim that matters to you",
+      "Break an aim into small steps with dates",
+      "Follow a learning plan and adjust it when it stops working",
+      "Ask for help and feedback from people who know more than you"
+    ],
+    "es": [
+      "Reconocer las formas de aprender que mejor te funcionan",
+      "Fijarte un objetivo de aprendizaje claro que te importe",
+      "Dividir un objetivo en pasos pequeños con fechas",
+      "Seguir un plan de aprendizaje y ajustarlo cuando deje de funcionar",
+      "Pedir ayuda y opinión a personas que saben más que tú"
+    ],
+    "it": [
+      "Riconoscere i modi di imparare che funzionano meglio per te",
+      "Fissare un obiettivo di apprendimento chiaro che ti stia a cuore",
+      "Dividere un obiettivo in piccoli passi con delle scadenze",
+      "Seguire un piano di apprendimento e correggerlo quando smette di funzionare",
+      "Chiedere aiuto e un parere a chi ne sa più di te"
+    ]
+  },
+  "sortOrder": 7
+}

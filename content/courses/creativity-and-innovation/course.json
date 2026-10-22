@@ -1,0 +1,41 @@
+{
+  "slug": "creativity-and-innovation",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "lightbulb",
+  "title": {
+    "en": "Creativity and innovation",
+    "es": "Creatividad e innovación",
+    "it": "Creatività e innovazione"
+  },
+  "description": {
+    "en": "Come up with new ways to solve everyday problems, look at them from an unusual angle, and test small improvements to how things are done.",
+    "es": "Encuentra formas nuevas de resolver problemas del día a día, míralos desde un ángulo distinto y prueba pequeñas mejoras en cómo se hacen las cosas.",
+    "it": "Trova modi nuovi per risolvere i problemi di ogni giorno, guardali da un'angolazione diversa e prova piccoli miglioramenti al modo in cui si fanno le cose."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Come up with several possible solutions before choosing one",
+      "Look at a problem from an unusual angle by changing a rule or an assumption",
+      "Spot what could work better in a routine your group already follows",
+      "Try a new idea on a small scale before you commit to it",
+      "Build on other people's ideas instead of discarding them"
+    ],
+    "es": [
+      "Plantear varias soluciones posibles antes de elegir una",
+      "Mirar un problema desde un ángulo distinto cambiando una norma o una suposición",
+      "Detectar qué podría funcionar mejor en una rutina que tu grupo ya sigue",
+      "Probar una idea nueva a pequeña escala antes de comprometerte con ella",
+      "Desarrollar las ideas de otras personas en lugar de descartarlas"
+    ],
+    "it": [
+      "Proporre più soluzioni possibili prima di sceglierne una",
+      "Guardare un problema da un'angolazione diversa cambiando una regola o un presupposto",
+      "Individuare che cosa potrebbe funzionare meglio in una routine che il tuo gruppo segue già",
+      "Provare un'idea nuova in piccolo prima di impegnarti",
+      "Sviluppare le idee degli altri invece di scartarle"
+    ]
+  },
+  "sortOrder": 6
+}

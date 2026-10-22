@@ -1,0 +1,41 @@
+{
+  "slug": "confidence-in-oneself-and-others",
+  "type": "skill",
+  "skillGroup": "personal-skills",
+  "icon": "key-round",
+  "title": {
+    "en": "Confidence in oneself and others",
+    "es": "Confianza en uno mismo y en los demás",
+    "it": "Fiducia in sé stessi e negli altri"
+  },
+  "description": {
+    "en": "Trust what you can do, give other people room to show what they can do, and build relationships where trust grows over time.",
+    "es": "Confía en lo que sabes hacer, da espacio a los demás para mostrar lo que saben hacer y construye relaciones en las que la confianza crece con el tiempo.",
+    "it": "Fidati di ciò che sai fare, lascia agli altri lo spazio di mostrare ciò che sanno fare e costruisci relazioni in cui la fiducia cresce nel tempo."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Name what you do well and use it when a task feels hard",
+      "Take on a challenge you are not sure you can manage and learn from the result",
+      "Trust other people with real responsibility and let them do it their way",
+      "Keep your promises so that others can rely on you",
+      "Speak honestly about mistakes and rebuild trust after they happen"
+    ],
+    "es": [
+      "Nombrar lo que haces bien y apoyarte en ello cuando una tarea cuesta",
+      "Aceptar un reto que no sabes si podrás manejar y aprender del resultado",
+      "Confiar a otras personas una responsabilidad real y dejar que la hagan a su manera",
+      "Cumplir lo que prometes para que los demás puedan contar contigo",
+      "Hablar con sinceridad de los errores y recuperar la confianza cuando ocurren"
+    ],
+    "it": [
+      "Riconoscere ciò che fai bene e appoggiarti a questo quando un compito è difficile",
+      "Accettare una sfida di cui non sei sicuro e imparare dal risultato",
+      "Affidare agli altri una responsabilità vera e lasciare che la svolgano a modo loro",
+      "Mantenere le promesse perché gli altri possano contare su di te",
+      "Parlare con sincerità degli errori e ricostruire la fiducia quando accadono"
+    ]
+  },
+  "sortOrder": 8
+}

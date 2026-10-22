@@ -1,0 +1,41 @@
+{
+  "slug": "flexibility",
+  "type": "skill",
+  "skillGroup": "social-skills",
+  "icon": "shuffle",
+  "title": {
+    "en": "Flexibility",
+    "es": "Flexibilidad",
+    "it": "Flessibilità"
+  },
+  "description": {
+    "en": "Stay steady when plans change, read what a new situation needs from you, and adjust without losing sight of your goal.",
+    "es": "Mantén la calma cuando los planes cambian, interpreta lo que te pide una situación nueva y ajústate sin perder de vista tu objetivo.",
+    "it": "Mantieni la calma quando i piani cambiano, capisci cosa ti chiede una situazione nuova e adattati senza perdere di vista il tuo obiettivo."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Stay calm and think clearly when a plan changes at short notice",
+      "Work out what a new place or group expects before you act",
+      "Change your approach when the first one is not working",
+      "Keep the goal in sight while you change the way you reach it",
+      "Help others through a change instead of resisting it"
+    ],
+    "es": [
+      "Mantener la calma y pensar con claridad cuando un plan cambia con poco aviso",
+      "Averiguar qué se espera en un lugar o grupo nuevo antes de actuar",
+      "Cambiar de enfoque cuando el primero no funciona",
+      "No perder de vista el objetivo mientras cambias la forma de alcanzarlo",
+      "Ayudar a los demás a atravesar un cambio en lugar de resistirte a él"
+    ],
+    "it": [
+      "Restare calmo e pensare con lucidità quando un piano cambia con poco preavviso",
+      "Capire cosa ci si aspetta in un posto o in un gruppo nuovo prima di agire",
+      "Cambiare approccio quando il primo non funziona",
+      "Tenere d'occhio l'obiettivo mentre cambi il modo di raggiungerlo",
+      "Aiutare gli altri ad attraversare un cambiamento invece di opporti"
+    ]
+  },
+  "sortOrder": 2
+}

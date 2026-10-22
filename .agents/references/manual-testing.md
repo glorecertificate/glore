@@ -6,12 +6,17 @@ They describe the target behavior in `.agents/plans/v1-release/`, so a step pass
 
 ## Setup
 
-1. Local: run `pnpm run db:up`, `pnpm run mail:up`, `pnpm run content:import --target local`, `pnpm run db:seed:demo --target local`, and `pnpm run dev`. The seed needs `TEST_EMAIL` in `.env.local` and the course catalog in the database, so import content first; importing after seeding can delete progress rows when a lesson changed.
+1. Local: run `pnpm run db:up`, `pnpm run mail:up`, `pnpm run content:import --target local`, `pnpm run db:seed:demo --target local`, and `pnpm run dev`.
+   - The seed needs `TEST_EMAIL` in `.env.local` and the course catalog in the database, so import content first.
+   - Importing after seeding can delete progress rows when a lesson changed.
 2. Open `https://glore.localhost`; local email lands in Mailpit at `http://localhost:8025`.
-3. Re-run `pnpm run db:seed:demo --target local` at any time: it resets everything it owns (demo accounts, both approved organizations and the applicant, their invitations, links, requests, certificates, events, notifications, and the learning progress of demo accounts) to the state below. Accounts created by creation flows (`new-*`) stay; their memberships in the demo organizations are removed.
+3. Re-run `pnpm run db:seed:demo --target local` at any time to reset everything it owns to the state below.
+   - It owns the demo accounts, both approved organizations and the applicant, their invitations, links, requests, certificates, events, notifications, and the learning progress of demo accounts.
+   - Accounts created by creation flows (`new-*`) stay, and their memberships in the demo organizations are removed.
 4. Staging: open the Vercel preview of the `staging` branch; email reaches the real `TEST_EMAIL` inbox.
 5. Staging needs preview env vars scoped to git branch `staging`: `DATABASE_URL` (Neon `staging`) and `APP_URL` (the preview URL).
-6. Seed staging with its `DATABASE_URL` and `TEST_EMAIL` in front of `pnpm run content:import --target staging` and then `pnpm run db:seed:demo --target staging`; the demo script refuses any database whose comment is not `glore:staging`. Both are user-approved steps.
+6. Seed staging with its `DATABASE_URL` and `TEST_EMAIL` in front of `pnpm run content:import --target staging` and then `pnpm run db:seed:demo --target staging`.
+   - The demo script refuses any database whose comment is not `glore:staging`. Both are user-approved steps.
 7. Dates in the seed are relative to the run (for example "9 days ago"), so re-seed before a test day if you need ages, invitation expiry, or unread notifications to match this page.
 
 ## Accounts
@@ -54,11 +59,19 @@ Background accounts give the organization a history. They log in like any other 
 | `red-01`, `red-02`, `red-03` | Red          | Approved, revoked, and `submitted` certificates.                                                                                              |
 | none (no account)            | Ponte        | One approved certificate whose holder deleted their account (public verification still shows it valid).                                       |
 
-Addresses without accounts, used by pending items: `invited-volunteer` and `invited-tutor` (pending invitations in Ponte, sent 2 and 4 days ago, so "Resend" works), `red-invited` (pending invitation in Red), `join-request` (pending request through the invite link), and `rejected-request` (a past rejected request). Open a pending invitation with its "Copy link" action, which issues a fresh proof.
+Addresses without accounts, used by pending items:
+
+- `invited-volunteer` and `invited-tutor`: pending invitations in Ponte, sent 2 and 4 days ago, so "Resend" works.
+- `red-invited`: pending invitation in Red.
+- `join-request`: pending request through the invite link.
+- `rejected-request`: a past rejected request.
+- Open a pending invitation with its "Copy link" action, which issues a fresh proof.
 
 Unseeded keys for creation flows: `new-volunteer`, `new-learner`, `new-tutor`, `new-org`.
 
-Ponte also shows ratings (14 certificates rated) for the insights aggregate, activity events in every feed category, and read and unread notifications. Red has three ratings, which is the minimum for its aggregate to show.
+Ponte also shows ratings (14 certificates rated) for the insights aggregate, activity events in every feed category, and read and unread notifications.
+
+Red has three ratings, which is the minimum for its aggregate to show.
 
 ### Certificate codes
 
@@ -78,7 +91,9 @@ Codes are derived from the certificate handle, so they are the same on every dat
 
 Other requests also carry codes from submission; `pnpm run db:seed:demo` prints all of them.
 
-Approved certificates are seeded with a snapshot but no stored PDF: the download link renders the PDF on demand from the snapshot. To exercise the stored PDF and the R2 upload, approve the resubmitted request of `volunteer-changes` as `tutor` (Tutor flow, step 4).
+Approved certificates are seeded with a snapshot but no stored PDF: the download link renders the PDF on demand from the snapshot.
+
+To exercise the stored PDF and the R2 upload, approve the resubmitted request of `volunteer-changes` as `tutor` (Tutor flow, step 4).
 
 ## Public and authentication
 
@@ -86,7 +101,9 @@ Approved certificates are seeded with a snapshot but no stored PDF: the download
 2. Log in as `volunteer` with the email, log out, then log in with the username shown in Settings.
 3. Use "Forgot password" for `learner`, open the email, set a new password, and log in with it.
 4. Open `/verify`, paste the `volunteer` code (`B1JA-7MDX-CS44`, printed on its PDF): the page shows "Valid", the holder, the organization, skills, and levels.
-5. Verify the revoked Red code (`B8YR-MG6F-WY26`): the page shows "Revoked on" with the date and no reason. Then verify `ANGN-EWXR-GZB9`: the page shows it valid with the holder's name and a note that the holder no longer has an account. As the Ponte owner, `/organization?tab=certificates` lists it as "No longer on GloRe" with View and Revoke.
+5. Verify the revoked Red code (`B8YR-MG6F-WY26`): the page shows "Revoked on" with the date and no reason.
+   - Then verify `ANGN-EWXR-GZB9`: the page shows it valid with the holder's name and a note that the holder no longer has an account.
+   - As the Ponte owner, `/organization?tab=certificates` lists it as "No longer on GloRe" with View and Revoke.
 6. Open `/demo.volunteer` (public) and `/demo.volunteer.progress` (private): the first shows the featured certificate, the second shows the not-found page.
 7. Open `/privacy` and `/terms` signed out.
 
@@ -123,7 +140,9 @@ Approved certificates are seeded with a snapshot but no stored PDF: the download
 3. Invitations: resend one, revoke another, and confirm the revoked link shows an error page.
 4. Create an invite link for learners with approval, open it as `new-learner`, then approve the request in Requests.
 5. Change `rep`'s role to tutor and back; remove a test member; read the emails each person received.
-6. The Members table, the org switcher, and the command palette label `owner` as Owner. Switch to `es` and `it`: Administrador/a and Amministratore. In `/admin/team` and `/admin/users`, the platform role stays Admin in all three languages.
+6. The Members table, the org switcher, and the command palette label `owner` as Owner.
+   - Switch to `es` and `it`: Administrador/a and Amministratore.
+   - In `/admin/team` and `/admin/users`, the platform role stays Admin in all three languages.
 
 ## Org owner settings and certificates (`owner`)
 

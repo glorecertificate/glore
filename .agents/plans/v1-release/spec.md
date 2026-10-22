@@ -2,9 +2,9 @@
 
 Goals, decisions, and acceptance for the first production release.
 
-Companion files: `plan.md` (architecture, protocol), `tasks.md` (checklist, status, log), `pdf.md` (certificate PDF).
+Companion files: `plan.md` (architecture, protocol), `tasks.md` (checklist, status, follow-ups), `log.md` (history), `pdf.md` (certificate PDF).
 
-Read all four before working on v1, and keep `tasks.md` current as you go.
+Read `spec.md`, `plan.md`, `tasks.md`, and `pdf.md` before working on v1, and keep `tasks.md` current as you go.
 
 ## Goal
 

@@ -1,20 +1,36 @@
 # Code style reference
 
-Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt) and `.oxlintrc.json` (oxlint), both standalone and both auto-discovered, so no invocation passes `-c`.
+Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt) and `.oxlintrc.json` (oxlint), both standalone JSON and both auto-discovered, so no invocation passes `-c`.
+
+## Config traps
+
+- Keep both configs as JSON: oxlint and oxfmt auto-discover only the JSON names, and a `.ts` config silently falls back to built-in defaults without an explicit `-c`.
+- Never pin an oxc binary path in `.vscode/settings.json`. Its only config pin is `oxc.configPath` (`workflow.md`, "Editor lint and save chain").
+- Never reintroduce `vite-plus`: its `oxlint` bin collided with the direct `oxlint` dependency and silently dropped every editor rule.
+- When the CLI lints but the editor shows nothing, read Output > Oxc (Lint) and check the `Using server binary at:` line, then run "Oxc: Restart Server".
+- When CLI lint is slow, suspect the JS plugins (`jsPlugins`, mostly `oxlint-tailwindcss`) first. tsgolint adds under a second.
+- `typescript/consistent-type-imports` is not type-aware and misses a type-only import used only in a `satisfies` clause. Add the inline `type` qualifier by hand.
 
 ## Formatter (oxfmt)
 
-`singleQuote: true` (double in CSS via a `**/*.css` override), `semi: false`, `es5` trailing commas, `arrowParens: 'avoid'`, `sortPackageJson: false`. `sortTailwindcss` recognizes `clsx`, `cn`, and `cva`.
-
-Ignored by the formatter: `*.d.ts`, `drizzle/**`, `.agents/skills/**`, `.claude/skills/**`. `AGENTS.md`, `.agents/specs/`, and `.claude/settings.json` are formatted and checked.
+- `singleQuote: true` (double in CSS through a `**/*.css` override), `semi: false`, `es5` trailing commas, `arrowParens: 'avoid'`, `sortPackageJson: false`.
+- `sortTailwindcss` recognizes `clsx`, `cn`, and `cva`.
+- The formatter ignores `*.d.ts`, `drizzle/**`, `.agents/skills/**`, and `.claude/skills/**`.
+- `AGENTS.md`, `.agents/specs/`, and `.claude/settings.json` are formatted and checked.
 
 ## Git hooks
 
-Hooks are defined in `lefthook.yml` and installed by `scripts/prepare.mts` (`lefthook install --reset-hooks-path`) on install. Jobs call `node_modules/.bin` binaries directly, because `pnpm exec` adds a dependency check to every call. `pre-commit` formats, lint-fixes, and reformats staged files (oxfmt, oxlint, oxfmt), then restages them; lefthook hides the unstaged hunks of partially staged files while it runs, so staging a single hunk still commits. `commit-msg` runs commitlint. `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, plus oxlint and `oxfmt --check` on pushed files only. CI's `pnpm run check` stays the full gate, catching type-aware lint errors that a pushed change causes in files the push did not touch.
+- Hooks are defined in `lefthook.yml` and installed by `scripts/prepare.mts` (`lefthook install --reset-hooks-path`) on install.
+- Jobs call `node_modules/.bin` binaries directly, because `pnpm exec` adds a dependency check to every call.
+- `pre-commit` formats, lint-fixes, and reformats staged files (oxfmt, oxlint, oxfmt), then restages them.
+- Lefthook hides the unstaged hunks of partially staged files while it runs, so staging a single hunk still commits.
+- `commit-msg` runs commitlint.
+- `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, plus oxlint and `oxfmt --check` on pushed files only.
+- CI's `pnpm run check` stays the full gate. It catches type-aware lint errors that a pushed change causes in files the push did not touch.
 
 ## Import order (oxfmt `sortImports`)
 
-Groups separated by blank lines (`newlinesBetween: true`):
+Groups are separated by blank lines (`newlinesBetween: true`):
 
 ```
 :BUILTIN:                       # Node built-ins
@@ -30,21 +46,24 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 :RELATIVE:                      # index / sibling (parent imports blocked)
 ```
 
-`internalPattern` covers `~/` and `@/`. Side-effect and style imports sort first.
-
-**Type imports are inline only** (`import { type Foo }`, never `import type { Foo }`), enforced by `import/consistent-type-specifier-style: prefer-inline` and `typescript/consistent-type-imports` with `fixStyle: inline-type-imports`.
+- `internalPattern` covers `~/` and `@/`. Side-effect and style imports sort first.
+- Type imports are inline only (`import { type Foo }`, never `import type { Foo }`).
+- `import/consistent-type-specifier-style: prefer-inline` and `typescript/consistent-type-imports` with `fixStyle: inline-type-imports` enforce this.
 
 ## Restricted imports
 
-`eslint/no-restricted-imports`. Blocked everywhere: `cookies` from `next/headers` (use `@/actions/cookies`), `cnfast` (use `@/lib/utils`, which re-exports `cn`), and parent imports `../**` (use `@/` or `~/`).
-
-A scoped override for the shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`) also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**`, keeping those layers domain-free. oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns; `src/lib/utils.ts` carries a further override dropping the `cnfast` restriction, since it is the re-export source.
-
-Enforced elsewhere or by review: `next/navigation` not `next/router`, `cn` from `@/lib/utils` not `@udecode/cn`, and the named `z` import from `zod`.
+- `eslint/no-restricted-imports` blocks everywhere: `cookies` from `next/headers` (use `@/actions/cookies`).
+- It also blocks `cnfast` (use `@/lib/utils`, which re-exports `cn`) and parent imports `../**` (use `@/` or `~/`).
+- A scoped override for the shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`) also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**`.
+- That override keeps those layers domain-free.
+- oxlint overrides REPLACE the base rule for matched files, so the override restates the base patterns.
+- `src/lib/utils.ts` carries a further override that drops the `cnfast` restriction, since it is the re-export source.
+- Enforced elsewhere or by review: `next/navigation` not `next/router`, `cn` from `@/lib/utils` not `@udecode/cn`, and the named `z` import from `zod`.
 
 ## Key lint rules (oxlint)
 
-Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all `error`; `nursery` and `restriction` are `allow`. `denyWarnings: true`, so warnings fail CLI runs.
+- Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all `error`. `nursery` and `restriction` are `allow`.
+- `denyWarnings: true`, so warnings fail CLI runs.
 
 | Rule                                     | Setting                                        |
 | ---------------------------------------- | ---------------------------------------------- |
@@ -65,16 +84,39 @@ Categories `correctness`, `pedantic`, `perf`, `style`, and `suspicious` are all 
 
 ## Plugins and type-aware mode
 
-Loaded plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`. JS plugins (`jsPlugins` entries, which knip resolves natively as an oxlint config, so they need no `ignoreDependencies` entry): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
-
-All 380 `react-doctor` rules are listed explicitly (352 `error`, 28 `off`) because oxlint runs a JS-plugin rule only when it is named in `rules`: there is no wildcard or category shorthand, and an unlisted rule is simply disabled. A `react-doctor` upgrade therefore does NOT pick up new rules on its own. Regenerate the block and diff it against the config with:
+- Loaded plugins: `import`, `jsdoc`, `jsx-a11y`, `nextjs`, `node`, `promise`, `react`, `react-perf`.
+- JS plugins (`jsPlugins` entries): `react-compiler` (`eslint-plugin-react-hooks`), `react-doctor` (`oxlint-plugin-react-doctor`), `tailwindcss` (`oxlint-tailwindcss`).
+- Knip resolves `jsPlugins` natively as an oxlint config, so they need no `ignoreDependencies` entry.
+- All 380 `react-doctor` rules are listed explicitly (352 `error`, 28 `off`).
+- oxlint runs a JS-plugin rule only when `rules` names it. There is no wildcard or category shorthand, and an unlisted rule is disabled.
+- A `react-doctor` upgrade therefore does NOT pick up new rules on its own. Regenerate the block and diff it against the config:
 
 ```sh
 node -e "import('oxlint-plugin-react-doctor').then(m => console.log(Object.keys((m.default ?? m).rules).join('\n')))"
 ```
 
-**Tailwind rules (`oxlint-tailwindcss`):** `settings.tailwindcss.entryPoint` is `src/app/globals.css`. Almost every rule is `error`, covering the canonical/sorting/shorthand set (`enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`), the correctness set (`no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`), plus `no-hardcoded-colors` and `prefer-theme-tokens`. `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`. Only `no-arbitrary-value` and `no-contradicting-variants` are `off`; `src/emails/**` also turns off `no-hardcoded-colors`. oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt, lint, fmt), so class order comes out of the formatter.
+### Tailwind rules (`oxlint-tailwindcss`)
 
-`typeAware: true`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include `no-floating-promises` and `no-misused-promises`. The editor LSP has `typeAware` off for speed, explained under "Dev environment and performance" in `reference.md`. `typeCheck: false`: oxlint does not type-check, `tsc` does via `pnpm run check:types`.
+- `settings.tailwindcss.entryPoint` is `src/app/globals.css`.
+- Almost every rule is `error`.
+- The canonical, sorting, and shorthand set: `enforce-canonical`, `enforce-sort-order`, `enforce-shorthand`, `enforce-physical`, `consistent-variant-order`, `no-duplicate-classes`, `no-unnecessary-whitespace`.
+- The correctness set: `no-conflicting-classes`, `no-deprecated-classes`, `no-unknown-classes`. Also on: `no-hardcoded-colors` and `prefer-theme-tokens`.
+- `no-unknown-classes` carries `allowlist: ['font-heading', 'markdown', 'prose']` and `ignorePrefixes: ['slate-', 'ignore-click-outside/', 'prose-']`.
+- Only `no-arbitrary-value` and `no-contradicting-variants` are `off`. `src/emails/**` also turns off `no-hardcoded-colors`.
+- oxfmt's `sortTailwindcss` still writes last in the `pre-commit` hook (fmt, lint, fmt), so class order comes out of the formatter.
 
-**Per-path overrides:** `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules; `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`; `*.config.ts` allows template curlies in strings; `src/components/**` and `src/emails/**` turn off the hydration-time rule; `src/emails/**` allows hardcoded colors; `src/db/helpers.ts` and `src/db/mutations/**` relax the react-doctor async rules; `src/lib/utils.ts` may import `cnfast`.
+### Type-aware mode
+
+- `typeAware: true`, so CLI runs (`pnpm run check:lint`, pre-commit, pre-push, CI) include `no-floating-promises` and `no-misused-promises`.
+- The editor LSP has `typeAware` off for speed (`workflow.md`, "Editor lint and save chain").
+- `typeCheck: false`: oxlint does not type-check, `tsc` does through `pnpm run check:types`.
+
+### Per-path overrides
+
+- `src/components/ui/**` relaxes several jsx-a11y, react-compiler, and react-doctor rules.
+- `src/hooks/**` relaxes `set-state-in-effect` and `no-initialize-state`.
+- `*.config.ts` allows template curlies in strings.
+- `src/components/**` and `src/emails/**` turn off the hydration-time rule.
+- `src/emails/**` allows hardcoded colors.
+- `src/db/helpers.ts` and `src/db/mutations/**` relax the react-doctor async rules.
+- `src/lib/utils.ts` may import `cnfast`.

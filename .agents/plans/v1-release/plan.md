@@ -130,7 +130,7 @@ Never revive variants or a preview widget.
 
 ### Reading order
 
-1. This folder (`spec.md`, `plan.md`, `tasks.md`, and `pdf.md` for PDF work).
+1. This folder (`spec.md`, `plan.md`, `tasks.md`, and `pdf.md` for PDF work; `log.md` only for history).
 2. `AGENTS.md`, then the spec for the area in `.agents/specs/`.
 3. `vercel-react-best-practices` for any React code, then the area skill (`shadcn`, `neon-drizzle`, `react-email`, `agent-browser`).
 
@@ -170,7 +170,7 @@ The user runs the orchestrator session at `xhigh`. The orchestrator passes `effo
 
 ## Plan upkeep
 
-- Update `tasks.md` in the same commit as the work: status, commit hash, "Next up", and a log line.
+- Update `tasks.md` in the same commit as the work: status, commit hash, "Next up", and a line in `log.md`.
 - Record a changed decision in its row in `spec.md` as "Changed on date: ..." and log it.
 - Keep these files complete enough that a fresh agent can resume from them alone; link code paths instead of copying code.
 - Delete this folder once v1 ships, after moving durable facts into `.agents/specs/`.

@@ -1,77 +1,72 @@
 # Technical reference: runtime and data
 
-## Routing
-
-Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond root) and `(dashboard)` for authenticated pages with the sidebar, wrapped in `SidebarProvider > SessionProvider`; the `dashboard/` and `courses/` layouts add `CoursesProvider`.
-
-**Public:** `/login`, `/register` (organization application, see `organizations.md`), `/invite/[token]`, `/join/[token]` (token pages, see `organizations.md`), `/verify` and `/verify/[code]` (certificate verification), `/[username]` (opt-in public profile), `/privacy`, `/terms`, `/quality-charter` (Markdown from `content/legal/<doc>.<locale>.md`, `en` fallback notice; `LEGAL_ROOTS` feeds the proxy and the reserved usernames), `/offline` (PWA fallback).
-
-**Authenticated, pre-onboarding:** `/onboarding`, `/onboarding/error`.
-
-**Authenticated, dashboard layout, no extra gate:** `/dashboard`, `/about`, `/courses`, `/courses/[slug]` (overview for members, editor for editors), `/courses/[slug]/learn` (player; `?lesson=`, `?lang=`; the server grades answers and never sends `isCorrect`), `/courses/[slug]/complete` (completion summary, rating via `rateCourse`, next step), `/courses/skills` (editors only: skill group CRUD and course assignment; `skills` is a reserved course slug), `/docs` plus `/docs/intro`, `/docs/faq`, `/docs/tutorials`, `/docs/articles/[slug]`, `/help`, `/notifications` (inbox with status and topic filters), `/settings`.
-
-**Authenticated, dashboard layout, extra gate:**
-
-| Route                       | Gate        | Notes                                                                                                                                                               |
-| --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/admin`                    | `isAdmin`   | Overview, the panel landing (`admin.md`)                                                                                                                            |
-| `/admin/team`               | `isAdmin`   | Team management (`admin.md`)                                                                                                                                        |
-| `/admin/users`              | `isAdmin`   | User moderation and view as user (`admin.md`)                                                                                                                       |
-| `/admin/certificates`       | `isAdmin`   | Certificate lookup and revocation (`admin.md`)                                                                                                                      |
-| `/admin/audit`              | `isAdmin`   | Audit log (`admin.md`)                                                                                                                                              |
-| `/emails`                   | `canEdit`   | Email previews (`?template=`, `?lang=`, `?category=`), outside the admin layout; `loadEmailPreview` checks `isAdmin` or `canEdit` itself                            |
-| `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; application sheet, approve (invites), reject (soft), create, invite                                                               |
-| `/admin/organizations/[id]` | `isAdmin`   | `?tab=` application, members, invitations, certificates, activity, settings (shared with `/organization`)                                                           |
-| `/organization`             | org manager | `?tab=` overview, members, invitations, requests, certificates, insights, activity, settings                                                                        |
-| `/certificates`             | non-editor  | List (tutors: queue tabs; org owners and representatives: pipeline); `/certificates/new`, `/certificates/[id]`, and `/certificates/[id]/review` share the same gate |
-
-`/` permanently redirects to `/dashboard` (`next.config.ts`).
-
-### API routes
-
-| Path                            | Method   | Description                                                |
-| ------------------------------- | -------- | ---------------------------------------------------------- |
-| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all; `/api/auth/admin/*` answers 404     |
-| `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
-| `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
-| `/api/v1/join`                  | GET      | Team invitation join endpoint                              |
-| `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)             |
-| `/api/v1/session`               | GET      | Clears cookies of a stale session, then login              |
-| `/api/v1/upload`                | POST     | R2 file upload (editors, rate limited)                     |
-| `/api/v1/certificates/[id]/pdf` | GET      | Certificate PDF on demand (holder, reviewer, org managers) |
-| `/api/v1/health`                | GET      | Health check (returns `{ status: 'ok' }`)                  |
-| `/api/v1/mail-preferences`      | POST     | One-click unsubscribe from a mail category (signed token)  |
-| `/api/v1/cron/daily`            | GET      | Daily maintenance (Vercel Cron, `CRON_SECRET`)             |
+Authentication, data fetching, cache, errors, env vars, storage, and daily maintenance. Routes and the proxy: `routes.md`. Dev environment flags: `workflow.md`.
 
 ## Authentication
 
-Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter. The `auth` instance is exported from `src/lib/auth.ts`, server-only, used in server components, server actions, and the proxy. It imports tables only from individual schema files (never the schema barrel), because `proxy.ts` calls `auth.api.getSession` on every request.
+- Better Auth stores users, sessions, and accounts in Neon through the Drizzle adapter.
+- The `auth` instance lives in `src/lib/auth.ts`, server-only, and serves server components, server actions, and the proxy.
+- Import tables there only from `@/db/schema/<table>`, never the schema barrel, because `proxy.ts` calls `auth.api.getSession` on every request.
+- Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
-**Request lifecycle** in `proxy.ts` (NextProxy), which intercepts all non-static requests:
+### Cookies
 
-1. `auth.api.getSession()` validates the session from signed HTTP-only cookies.
-2. Unauthenticated or banned > redirect to `/login` (`?expired=true` when a session cookie was present).
-3. Authenticated but `onboardedAt` is null > redirect to `/onboarding`.
-4. Onboarded and hitting `/onboarding` > redirect to `/dashboard`.
-5. Authenticated and hitting `/login` > redirect to `/dashboard`.
+- Better Auth keeps session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls.
+- All app cookies use the `gl` prefix, and Better Auth uses it through `advanced.cookiePrefix`.
 
-**Cookies:** Better Auth manages session tokens in signed HTTP-only cookies, cached for 5 minutes to cut API calls. All app cookies use the `gl` prefix, Better Auth via `advanced.cookiePrefix`.
+### Sign-up guard
 
-**`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
+- `emailAndPassword.autoSignIn` is `false` and MUST stay `false`.
+- Every `signUpEmail` call creates an account for someone else (team invites), never for the actor.
+- With auto sign-in on, the invitee's session cookie would be written onto the inviter's response.
+- Self-registration does not use `signUpEmail`: it creates a `pending` join request, so `signInEmail` login is unaffected.
 
-**Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation, impersonation; its endpoints stay closed over HTTP), the local `impersonationGuard()` plugin (`lib/impersonation-guard.ts`, `admin.md`), `nextCookies()` (Next.js cookie integration), and the local `team-invitations` plugin, which exposes `acceptInvitation`. Catch-all route: `src/app/api/auth/[...all]/route.ts`.
+### Plugins
 
-**Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. A daily Vercel Cron (`vercel.json`) calls `/api/v1/cron/daily`, which answers 401 unless `isAuthorizedCron` (`src/lib/cron.ts`) accepts it (production and the bearer token equals `CRON_SECRET`), then runs `runDailyMaintenance` (`src/actions/maintenance/`), each step isolated so one failure does not stop the rest. Reminders: `certificate.review_reminder` to the assigned tutor and `certificate.review_escalated` at the `reviewReminderDays` marks of `config/app.json` (escalation also for unassigned), `invitation.expiring` once per send after `invitationReminderDay` (token-only link); idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock. Pruning: `rate_limits` idle 24h, expired `sessions` and `verifications`, invitations expired or revoked or declined for `invitationRetentionDays` (accepted ones stay), R2 avatars and certificate PDFs older than 24h that no row references (a revoked certificate keeps its PDF because its row stays); deleting a user, organization, or avatar removes the object at once. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
+- `username()`: username and display username.
+- `admin()`: admin role management, user creation, and impersonation. Its endpoints stay closed over HTTP.
+- `impersonationGuard()`: local plugin in `lib/impersonation-guard.ts` (`admin.md`).
+- `nextCookies()`: Next.js cookie integration.
+- `team-invitations`: local plugin that exposes `acceptInvitation`.
 
-**Stale sessions:** when the cookie cache outlives the user row, `getCurrentUser` redirects to `/api/v1/session`, which re-reads the session without the cache and clears auth cookies only when it is invalid, so a forged link cannot sign out a live user. `deleteAccount` signs out and expires `userTag` itself.
+### Hardening
+
+- `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`.
+- Rate limits share the `rate_limits` table: Better Auth through `rateLimit.storage: 'database'`, app keys through `src/lib/rate-limit.ts`.
+- `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once.
+- `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
+- Login and password reset answer unknown users exactly like wrong passwords and real resets.
+- Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address through `emailVerification.sendVerificationEmail`.
+
+### Stale sessions
+
+- When the cookie cache outlives the user row, `getCurrentUser` redirects to `/api/v1/session`.
+- That route re-reads the session without the cache and clears auth cookies only when the session is invalid, so a forged link cannot sign out a live user.
+- `deleteAccount` signs out and expires `userTag` itself.
+
+## Daily maintenance
+
+- A daily Vercel Cron (`vercel.json`) calls `/api/v1/cron/daily`.
+- The route answers 401 unless `isAuthorizedCron` (`src/lib/cron.ts`) accepts the request: production and a bearer token equal to `CRON_SECRET`.
+- It then runs `runDailyMaintenance` (`src/actions/maintenance/`), with each step isolated so one failure does not stop the rest.
+- Reminders: `certificate.review_reminder` goes to the assigned tutor at the `reviewReminderDays` marks of `config/app.json`.
+- `certificate.review_escalated` goes out at the same marks, also for unassigned requests.
+- `invitation.expiring` goes out once per send after `invitationReminderDay`, with a token-only link.
+- Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock.
+- Pruning removes `rate_limits` idle for 24h and expired `sessions` and `verifications`.
+- Pruning removes invitations expired, revoked, or declined for `invitationRetentionDays`. Accepted ones stay.
+- Pruning removes R2 avatars and certificate PDFs older than 24h that no row references. A revoked certificate keeps its PDF because its row stays.
+- Deleting a user, organization, or avatar removes the object at once.
 
 ## Data fetching
 
 ### Query pattern
 
-Per table in `src/db/queries/<table>.ts`: an `interface` extending `InferSelectModel<typeof table>` with the relations it loads, a pure `parse<Table>` adding computed fields (e.g. `canEdit: Boolean(data.isAdmin || data.isEditor)`), and the row type as `ReturnType<typeof parse<Table>>`. Parsers must not import `@/db/client`.
-
-Factor the real `db.query` into one private executor and reuse it from both the cached and the `{ cache: false }` branch, never copy-pasting the query body:
+- Per table, `src/db/queries/<table>.ts` holds an `interface` extending `InferSelectModel<typeof table>` with the relations it loads.
+- It also holds a pure `parse<Table>` that adds computed fields (for example `canEdit: Boolean(data.isAdmin || data.isEditor)`).
+- The row type is `ReturnType<typeof parse<Table>>`.
+- Parsers MUST NOT import `@/db/client`.
+- Factor the real `db.query` into one private executor and reuse it from the cached branch and the `{ cache: false }` branch, never copy the query body.
 
 ```typescript
 const queryUserById = async (id: string) => {
@@ -94,70 +89,100 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 }
 ```
 
+### Database drivers
+
+- `src/db/client.ts` picks the driver by URL host: `localhost` or `127.0.0.1` uses `node-postgres` with `pg.Pool`, anything else uses `neon-http`.
+- The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost` and `@127.0.0.1`.
+- Local Postgres runs on port 5433 through `.env.local` (gitignored, avoids a host Postgres on 5432). Provision it with `pnpm run db:up`, then `pnpm run db migrate`.
+- Both drivers share the read and single-statement API, so the `db` cast is safe.
+
 ### Transactions and the mutation layer
 
-Single-statement writes go straight through `db` inside the server action, with no mutation file: `safeParse` with the drizzle-zod schema, `db.insert/update(...).returning()`, `revalidateTag(...)`, return `{ data, error }` (see `createDocArticle` in `src/actions/docs.ts`).
+- A single-statement write goes straight through `db` inside the server action, with no mutation file.
+- It runs `safeParse` with the drizzle-zod schema, `db.insert/update(...).returning()`, `revalidateTag(...)`, and returns `{ data, error }` (see `createDocArticle` in `src/actions/docs.ts`).
 
-Production runs the **neon-http** driver, which has **no interactive transactions**, so any write spanning more than one statement uses `transaction()` from `@/db/client`:
+### Transactions
 
-- `transaction(fn)` runs `fn(tx)` atomically. Dev (`pg`) uses the pooled `node-postgres` transaction; prod reuses a lazily-initialized, module-scoped **neon-serverless** WebSocket pool (`max: 3`, shared across invocations in a warm instance). Requires a global `WebSocket` (Node 22+; the repo pins `24.16.0` via `.node-version` with an `engines.node: ">=22"` floor).
-- Multi-statement logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units. The action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
-- **Inside a transaction, statements MUST run sequentially**, one `await` at a time. They share one connection, so `Promise.all` on a `tx` corrupts the session. `.oxlintrc.json` turns off `react-doctor/async-parallel`, `async-await-in-loop`, and `server-sequential-independent-await` for `src/db/mutations/**` and `src/db/helpers.ts`; batch writes inside one transaction use `mapSequential` from `@/db/helpers`. Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`, and `submitCertificateRequest` takes a transaction-scoped advisory lock to keep one open certificate request per user and organization.
-- Keep slow side effects (PDF generation, email, R2 uploads) **outside** the transaction: compute inputs first, then open a short transaction for the DB writes only.
+- Production runs the neon-http driver, which has no interactive transactions, so any write spanning more than one statement uses `transaction()` from `@/db/client`.
+- `transaction(fn)` runs `fn(tx)` atomically.
+- Dev (`pg`) uses the pooled `node-postgres` transaction.
+- Production reuses a lazily initialized, module-scoped neon-serverless WebSocket pool (`max: 3`, shared across invocations in a warm instance).
+- The pool needs a global `WebSocket` (Node 22+). The repo pins `24.16.0` in `.node-version` with an `engines.node: ">=22"` floor.
 
-**Tenancy:** authorization and tenant scoping stay at the action boundary (verify ownership or org membership before calling the mutation); mutations operate on already-authorized ids.
+### Mutation units
+
+- Multi-statement logic lives in `src/db/mutations/<domain>.ts` as composable `(tx: Transaction, ...args) => ...` units.
+- The action wraps the call: `await transaction(tx => deleteUser(tx, id))`.
+- Inside a transaction, statements MUST run sequentially, one `await` at a time, because they share one connection and `Promise.all` on a `tx` corrupts the session.
+- `.oxlintrc.json` turns off `react-doctor/async-parallel`, `async-await-in-loop`, and `server-sequential-independent-await` for `src/db/mutations/**` and `src/db/helpers.ts`.
+- Batch writes inside one transaction use `mapSequential` from `@/db/helpers`.
+- Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`.
+- `submitCertificateRequest` takes a transaction-scoped advisory lock to keep one open certificate request per user and organization.
+- Keep slow side effects (PDF generation, email, R2 uploads) outside the transaction: compute inputs first, then open a short transaction for the DB writes only.
+- Authorization and tenant scoping stay at the action boundary: verify ownership or org membership before calling the mutation, which operates on already-authorized ids.
 
 ### Cache strategy
 
-Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`) in `src/lib/cache.ts`; read it for the current set and owners.
-
-- `'use cache'` (with `cacheLife('max')` for long-lived data) goes on the inner fetch function, never the exported one; the exported one takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
-- In a server action whose caller must see its own write, use `updateTag(tag)`; elsewhere use `revalidateTag(tag, 'max')`. `updateTag` throws outside server actions.
-- Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions); progress writes expire `progressUserTag(userId)`.
+- Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`) in `src/lib/cache.ts`. Read it for the current set and owners.
+- Put `'use cache'` (with `cacheLife('max')` for long-lived data) on the inner fetch function, never on the exported one.
+- The exported function takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
+- In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.
+- Elsewhere use `revalidateTag(tag, 'max')`.
+- Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions).
+- Progress writes expire `progressUserTag(userId)`.
 - Never mutate during render: enrollment is an explicit Start click calling `startCourse`, never a page effect.
 
 ## Error handling
 
-- `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`; `queryError()` normalizes unknown errors into that `{ code, message }` shape.
-- Server actions return `{ data, error }` or `{ error }`, and callers must check.
-- **Mutations that fail throw; queries that fail return error objects.**
-- Global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, refresh. Global 404 `src/app/not-found.tsx` (server) checks auth to pick the right link.
-- Layout guards: the admin layout calls `notFound()` if `!user.isAdmin`, the certificates layout if `user.canEdit`.
-- User feedback is `sonner`: `toast.success()`, `toast.error()`.
+- `safeQuery()` wraps a query in try/catch and returns `{ data, error: null }` or `{ data: null, error: { code, message } }`.
+- `queryError()` normalizes unknown errors into that `{ code, message }` shape.
+- Server actions return `{ data, error }` or `{ error }`, and callers MUST check.
+- Mutations that fail throw. Queries that fail return error objects.
+- The global boundary `src/app/error.tsx` (client) logs and offers go back, back to home, and refresh.
+- The global 404 `src/app/not-found.tsx` (server) checks auth to pick the right link.
+- The admin layout calls `notFound()` when `!user.isAdmin`, and the certificates layout when `user.canEdit`.
+- User feedback uses `sonner`: `toast.success()` and `toast.error()`.
 
 ## Environment variables
 
-> **MANDATORY:** every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`. `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
+- Every environment variable the Next.js app uses MUST be declared in the Zod schema in `next.config.ts`.
+- `GITHUB_TOKEN` and `VERCEL_TOKEN` are the only exclusions, since external CLI tools read them and the app never does.
+- Read `envSchema` in `next.config.ts` for the current set and validators.
+- `MAIL_TRANSPORT` (ignored in production) replaces SMTP in dev: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>`.
+- `TEST_EMAIL` is read only by scripts (`db:seed:demo`), so it stays out of the schema.
 
-Read `envSchema` in `next.config.ts` for the current set and validators. `MAIL_TRANSPORT` (ignored in production) replaces SMTP in dev: `mailpit` delivers to the `pnpm run mail:up` inbox (`localhost:1025`), `log` only logs `[mail] <template> to <recipient>`. `TEST_EMAIL` is read only by scripts (`db:seed:demo`), so it stays out of the schema. `next.config.ts` must load with no env at all (`pnpm install` runs `next typegen` with `SKIP_ENV_VALIDATION`), so never dereference an env var there without a fallback.
+### Validation and files
 
-**Validation:** the schema is a module-scope constant in `next.config.ts`. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`) unless `SKIP_ENV_VALIDATION` is set; `scripts/typegen.mts` sets it when calling `next typegen`, so a fresh clone with no secrets can still run `pnpm install`.
+- `next.config.ts` must load with no env at all, because `pnpm install` runs `next typegen` with `SKIP_ENV_VALIDATION`. Never dereference an env var there without a fallback.
+- The schema is a module-scope constant. `schema.parse(process.env)` runs whenever the config loads (`next dev` start, `next build`, `next start`) unless `SKIP_ENV_VALIDATION` is set.
+- `scripts/typegen.mts` sets `SKIP_ENV_VALIDATION` when it calls `next typegen`, so a fresh clone with no secrets can still run `pnpm install`.
+- `@next/env` picks env files by phase, not by `NODE_ENV`.
+- `next dev` reads `.env.development.local`, `.env.local`, `.env.development`, `.env`. Every other command reads the `.env.production*` variants plus `.env.local` and `.env`.
+- Put machine-local values in `.env.local`, the only file both sets share: a required variable only in `.env.development.local` fails `next build` validation.
+- The last definition in a file wins, and no file overrides a variable already in `process.env` (as on Vercel).
+- Define `APP_URL` once in `.env.local`: a duplicate or stale value sends redirects away from localhost, and Better Auth rejects the `Origin` of the driven host.
+- The schema MUST NOT move into `src/` or be imported from a `src/` file.
+- Next watches the module-dependency graph of `next.config.ts` and restarts the dev server whenever a watched file changes, so a `src/` import makes every `src/**` edit a full restart (cold 5 to 10s recompiles).
+- Keep the schema inline. `zod` is its only allowed import.
 
-**File loading:** `@next/env` picks env files by phase, not by `NODE_ENV`. `next dev` reads `.env.development.local`, `.env.local`, `.env.development`, `.env`; every other command reads the `.env.production*` variants plus `.env.local` and `.env`. Machine-local values therefore belong in `.env.local`, the only file both sets share: a required variable only in `.env.development.local` fails `next build` validation, whatever `NODE_ENV` says. The last definition in a file wins, and no file overrides a variable already in `process.env` (as on Vercel).
+## Storage (R2)
 
-> **MANDATORY:** the schema must NOT move into `src/` or be imported from a `src/` file. Next watches the module-dependency graph of `next.config.ts` and restarts the dev server whenever a watched file changes, so importing from `src/` makes every `src/**` edit trigger a full restart (cold 5-10s recompiles). Keep the schema inline; `zod` is its only allowed import.
+- `src/lib/storage.ts` holds the R2 helpers (`r2Put`, `r2Delete`, `r2List`, `r2PresignAvatar`, `r2PresignSignature`, `r2VerifyAvatar`).
+- Avatars upload directly to R2 through a presigned PUT, which avoids the Server Action 1MB and Vercel 4.5MB body limits.
+- The flow: `create*AvatarUploadUrl(contentType)` (the server picks the key and presigns), then the client `fetch(url, { method: 'PUT' })`, then `confirm*Avatar(key)` persists `avatarUrl`.
+- A direct browser PUT requires bucket CORS that allows PUT from the app origin (`https://glore.localhost` in dev, the production domain).
+- The R2 API token is object-scoped: it can PUT, GET, and DELETE objects but gets 403 on bucket-admin calls such as `PutBucketCors`. Set CORS in the Cloudflare dashboard or with an admin token.
+- The avatar cap comes from `maxAvatarSize` in `config/app.json` and is enforced on the selected file in the `ImageCropper` dropzone.
 
 ## Static data
 
-`config/*.json` holds feature settings (`app.json`: `minSkills`, `minRating`, `maxAvatarSize`), locales (`i18n.json`), icon-picker metadata (`icons.json`), app metadata (`metadata.json`), and breakpoints (`theme.json`).
-
-## Dev environment and performance
-
-Non-obvious settings that keep dev HMR and CI builds fast. They back the dev-performance gotcha in `AGENTS.md` and MUST NOT be reverted in refactors.
-
-**React Compiler:** `reactCompiler` is `phase !== PHASE_DEVELOPMENT_SERVER`, on for builds and off in dev, because Babel kills Turbopack HMR.
-
-**Dev memory:** the `dev` script loads `scripts/dev-preload.mts` and caps the heap at 4 GB. The preload disables React's dev-only async debug hook, which retained about 0.8 MB per request; its test fails when an upgrade stops matching it. `turbopackFileSystemCacheForDev`, `turbopackGc`, and `turbopackMemoryEviction: 'auto'` hold Turbopack near 1.5 GB on Next 16.4.
-
-**Editor lint:** CLI runs (`pnpm run check:lint`, git hooks, CI) use `.oxlintrc.json` with `typeAware: true` for `no-floating-promises` and `no-misused-promises`. `.vscode/settings.json` sets `oxc.typeAware: false` and `oxc.configPath` to `oxlint.editor.config.mts`, which drops the React Compiler rules except `rules-of-hooks` and `exhaustive-deps` (110 of 185 ms per keystroke). `knip.deferSession: true` keeps the knip extension idle. Change one side only by deliberately changing the other.
-
-**Editor save chain:** `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. `source.format.oxc` was dropped because `editor.formatOnSave` already runs oxfmt; `source.removeUnusedImports` was dropped because it calls the TypeScript language server on every save.
-
-**Dual DB driver:** `src/db/client.ts` picks by URL host: `localhost` or `127.0.0.1` uses `node-postgres` + `pg.Pool`, anything else uses `neon-http`. The `DATABASE_URL` validator accepts `sslmode=require` (Neon) or `@localhost`/`@127.0.0.1`. Local Postgres runs on **port 5433** via `.env.local` (gitignored, avoids a host Postgres on 5432); provision with `pnpm run db:up` then `pnpm run db migrate`. Both drivers share the read and single-statement API (the `db` cast is safe); multi-statement writes use `transaction()`.
-
-**Prebuilt CI deploys:** `vercel.json` pins functions to `fra1`, next to Neon (`eu-central-1`), and sets `git.deploymentEnabled.main: false`; `.github/workflows/deploy.yml` runs `vercel pull`, `build`, and `deploy --prebuilt` on the 4-core runner with a warm `.next/cache`, so Vercel only uploads. `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are non-secret workflow `env` IDs. Two flags MUST NOT be reverted: `typescript.ignoreBuildErrors: true` (`Check` already runs `tsc`; the in-build check cost 30-45s) and `experimental.turbopackFileSystemCacheForBuild: true` (lets the restored cache speed up compile).
+- `config/app.json`: feature settings (`minSkills`, `minRating`, `maxAvatarSize`, and the rest).
+- `config/i18n.json`: locales.
+- `config/icons.json`: icon-picker metadata.
+- `config/metadata.json`: app metadata.
+- `config/theme.json`: breakpoints.
 
 ## Framework docs
 
-- Grep `node_modules/next/dist/docs/` for Next.js APIs; it always matches the installed version.
+- Grep `node_modules/next/dist/docs/` for Next.js APIs. It always matches the installed version.
 - For context7, use the pinned id `/vercel/next.js/v<installed version>`: `cacheComponents` and `NextProxy` are v16-only, so a v15 answer is wrong.

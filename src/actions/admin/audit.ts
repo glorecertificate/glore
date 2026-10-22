@@ -127,7 +127,7 @@ export const listAdminAudit = async (input: AdminAuditQuery) =>
       .leftJoin(actor, eq(actor.id, activityEvents.actorId))
       .leftJoin(target, eq(target.id, targetUserId))
       .where(where)
-      .orderBy(desc(activityEvents.id))
+      .orderBy(desc(activityEvents.createdAt), desc(activityEvents.id))
       .limit(ADMIN_AUDIT_PAGE_SIZE)
       .offset((page - 1) * ADMIN_AUDIT_PAGE_SIZE)
 

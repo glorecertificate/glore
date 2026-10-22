@@ -120,14 +120,6 @@ describe.skipIf(!isLocalDatabase)('admin audit log', () => {
     certificateId = certificate.id
 
     const { holder, other } = fixture.ids
-    ids.old = await insertEvent({
-      action: 'account.suspended',
-      actor: 'admin',
-      createdAt: '2020-03-04T10:00:00.000Z',
-      metadata: { expiresAt: null, reason: 'Old spam reports', userId: other },
-      subjectId: other,
-      subjectType: 'account',
-    })
     ids.suspended = await insertEvent({
       action: 'account.suspended',
       actor: 'admin',
@@ -196,6 +188,14 @@ describe.skipIf(!isLocalDatabase)('admin audit log', () => {
       organizationId,
       subjectId: String(certificateId),
       subjectType: 'certificate',
+    })
+    ids.old = await insertEvent({
+      action: 'account.suspended',
+      actor: 'admin',
+      createdAt: '2020-03-04T10:00:00.000Z',
+      metadata: { expiresAt: null, reason: 'Old spam reports', userId: other },
+      subjectId: other,
+      subjectType: 'account',
     })
   }, 60_000)
 

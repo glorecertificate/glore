@@ -3,7 +3,16 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import { CheckIcon, ChevronRightIcon, MailIcon, MapPinIcon, MoreHorizontalIcon, UsersIcon, XIcon } from 'lucide-react'
+import {
+  CheckIcon,
+  ChevronRightIcon,
+  FileTextIcon,
+  MailIcon,
+  MapPinIcon,
+  MoreHorizontalIcon,
+  UsersIcon,
+  XIcon,
+} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -41,12 +50,14 @@ import { type MessageKey } from '@/lib/i18n'
 export const OrgRow = ({
   onApprove,
   onReject,
+  onView,
   org,
   query,
 }: {
   org: AdminOrganization
   onApprove: (org: AdminOrganization) => void
   onReject: (org: AdminOrganization) => void
+  onView: (org: AdminOrganization) => void
   query?: string
 }) => {
   const { locale } = useI18n()
@@ -106,7 +117,7 @@ export const OrgRow = ({
       </div>
       <div className="relative z-10 flex shrink-0 items-center gap-2">
         <span className="hidden text-xs text-muted-foreground sm:block">{createdAt}</span>
-        {org.isPending && (
+        {(org.isPending || org.registrationRequest) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button aria-label={t('actions')} size="icon" variant="ghost">
@@ -114,14 +125,24 @@ export const OrgRow = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" onCloseAutoFocus={e => e.preventDefault()}>
-              <DropdownMenuItem className="text-[13px]" onClick={() => onApprove(org)}>
-                <CheckIcon className="size-3" />
-                {t('approve')}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="text-[13px]" onClick={() => onReject(org)} variant="destructive">
-                <XIcon className="size-3" />
-                {t('reject')}
-              </DropdownMenuItem>
+              {org.registrationRequest && (
+                <DropdownMenuItem className="text-[13px]" onClick={() => onView(org)}>
+                  <FileTextIcon className="size-3" />
+                  {t('app_view')}
+                </DropdownMenuItem>
+              )}
+              {org.isPending && (
+                <DropdownMenuItem className="text-[13px]" onClick={() => onApprove(org)}>
+                  <CheckIcon className="size-3" />
+                  {t('approve')}
+                </DropdownMenuItem>
+              )}
+              {org.isPending && (
+                <DropdownMenuItem className="text-[13px]" onClick={() => onReject(org)} variant="destructive">
+                  <XIcon className="size-3" />
+                  {t('reject')}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         )}

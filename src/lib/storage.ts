@@ -7,7 +7,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-import { AVATAR_CONTENT_TYPES } from '@/lib/constants'
+import { AVATAR_CONTENT_TYPES, SIGNATURE_CONTENT_TYPES } from '@/lib/constants'
 import { checkRateLimit } from '@/lib/rate-limit'
 import app from '~/config/app.json'
 
@@ -24,8 +24,8 @@ const r2Url = (key: string) => `${process.env.R2_PUBLIC_URL}/${key}`
 
 const AVATAR_MAX_BYTES = app.maxAvatarSize * 1024
 
-export const r2PresignAvatar = async (prefix: string, contentType: string, size: number) => {
-  if (!AVATAR_CONTENT_TYPES.includes(contentType)) throw new Error('Invalid image type')
+const presignImage = (contentTypes: string[]) => async (prefix: string, contentType: string, size: number) => {
+  if (!contentTypes.includes(contentType)) throw new Error('Invalid image type')
   if (!Number.isInteger(size) || size <= 0 || size > AVATAR_MAX_BYTES) throw new Error('Invalid image size')
   if ((await checkRateLimit(`avatar:${prefix}`, 20, 60 * 60 * 1000)).limited) throw new Error('Too many uploads')
 
@@ -44,9 +44,13 @@ export const r2PresignAvatar = async (prefix: string, contentType: string, size:
   return { key, url }
 }
 
-export const r2VerifyAvatar = async (key: string) => {
+export const r2PresignAvatar = presignImage(AVATAR_CONTENT_TYPES)
+
+export const r2PresignSignature = presignImage(SIGNATURE_CONTENT_TYPES)
+
+export const r2VerifyAvatar = async (key: string, contentTypes = AVATAR_CONTENT_TYPES) => {
   const head = await s3.send(new HeadObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: key }))
-  const valid = (head.ContentLength ?? 0) <= AVATAR_MAX_BYTES && AVATAR_CONTENT_TYPES.includes(head.ContentType ?? '')
+  const valid = (head.ContentLength ?? 0) <= AVATAR_MAX_BYTES && contentTypes.includes(head.ContentType ?? '')
   if (valid) return r2Url(key)
 
   await r2Delete(key)

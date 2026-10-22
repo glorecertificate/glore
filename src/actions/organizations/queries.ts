@@ -2,8 +2,9 @@
 
 import 'server-only'
 
-import { and, count, eq, inArray } from 'drizzle-orm'
+import { and, count, eq } from 'drizzle-orm'
 
+import { listOrganizationActivity } from '@/actions/organizations/activity-core'
 import {
   PENDING_CERTIFICATE_STATUSES,
   getOrganizationContext,
@@ -14,6 +15,7 @@ import { getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseOrganization, parseOrganizationInvitation, parseOrganizationInviteLink } from '@/db/queries/organization'
+import { buildChecklist, toPipeline } from '@/db/queries/organization-insights'
 import {
   certificates,
   memberships,
@@ -41,8 +43,8 @@ export const getOrganizationPanel = async () => {
       joinRequestRecords,
       invitationRecords,
       inviteLinkRecords,
-      pendingCertificates,
-      approvedCertificates,
+      pipelineRows,
+      activity,
     ] = await Promise.all([
       db.query.organizations.findFirst({
         with: {
@@ -85,18 +87,11 @@ export const getOrganizationPanel = async () => {
           limit: 50,
         }),
       db
-        .select({ total: count() })
+        .select({ status: certificates.status, total: count() })
         .from(certificates)
-        .where(
-          and(
-            eq(certificates.organizationId, organization.id),
-            inArray(certificates.status, [...PENDING_CERTIFICATE_STATUSES])
-          )
-        ),
-      db
-        .select({ total: count() })
-        .from(certificates)
-        .where(and(eq(certificates.organizationId, organization.id), eq(certificates.status, 'approved'))),
+        .where(eq(certificates.organizationId, organization.id))
+        .groupBy(certificates.status),
+      listOrganizationActivity(organization.id),
     ])
 
     if (!organizationRecord) {
@@ -130,10 +125,22 @@ export const getOrganizationPanel = async () => {
     )
 
     const invitations = (invitationRecords || []).map(record => parseOrganizationInvitation(record))
+    const pipeline = toPipeline(pipelineRows)
+    const pendingCertificatesCount = PENDING_CERTIFICATE_STATUSES.reduce((total, status) => total + pipeline[status], 0)
+    const checklist = buildChecklist({
+      certificateCount: Object.values(pipeline).reduce((total, value) => total + value, 0),
+      invitedRoles: invitations.flatMap(invitation => (invitation.state === 'pending' ? [invitation.role] : [])),
+      legalName: organizationRecord.profile?.legalName ?? null,
+      legalRepresentative: organizationRecord.profile?.legalRepresentative ?? null,
+      memberRoles: parsedOrganization.memberships.map(member => member.role),
+      registryId: organizationRecord.profile?.registryId ?? null,
+    })
     const inviteLinks = (inviteLinkRecords || []).map(record => parseOrganizationInviteLink(record))
 
     return {
-      approvedCertificatesCount: approvedCertificates[0]?.total ?? 0,
+      activity,
+      approvedCertificatesCount: pipeline.approved,
+      checklist,
       currentUserId: user.id,
       inviteLinks,
       invitations,
@@ -142,9 +149,10 @@ export const getOrganizationPanel = async () => {
       joinRequests: parsedOrganization.joinRequests,
       members: parsedOrganization.memberships,
       organization: { ...parsedOrganization, role },
-      pendingCertificatesCount: pendingCertificates[0]?.total ?? 0,
+      pendingCertificatesCount,
       pendingInvitationsCount: invitations.filter(({ state }) => state === 'pending').length,
       pendingJoinRequestsCount: parsedOrganization.joinRequests.length,
+      pipeline,
       stats: {
         ...stats,
         memberCount: parsedOrganization.memberships.length,

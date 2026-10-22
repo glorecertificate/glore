@@ -8,7 +8,18 @@ import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const ORGANIZATION_TAB_PARAM = 'tab'
-const ORGANIZATION_TABS = ['overview', 'members', 'invitations', 'requests', 'settings'] as const
+const ORGANIZATION_TABS = [
+  'overview',
+  'members',
+  'invitations',
+  'requests',
+  'certificates',
+  'insights',
+  'activity',
+  'settings',
+] as const
+
+export type OrganizationTab = (typeof ORGANIZATION_TABS)[number]
 const DEFAULT_ORGANIZATION_TAB = 'overview'
 
 const organizationTabParser = parseAsStringEnum([...ORGANIZATION_TABS]).withDefault(DEFAULT_ORGANIZATION_TAB)
@@ -59,6 +70,9 @@ export const OrganizationTabsList = ({
       <TabsTrigger count={joinRequestCount} value="requests">
         {t('joinRequests')}
       </TabsTrigger>
+      <TabsTrigger value="certificates">{t('certificates')}</TabsTrigger>
+      <TabsTrigger value="insights">{t('insights')}</TabsTrigger>
+      <TabsTrigger value="activity">{t('activity')}</TabsTrigger>
       {isOrgAdmin && <TabsTrigger value="settings">{t('settings')}</TabsTrigger>}
     </TabsList>
   )

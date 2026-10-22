@@ -41,6 +41,7 @@ export const INVITATION_EXPIRY_DAYS = 7
 
 /* Storage */
 export const AVATAR_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+export const SIGNATURE_CONTENT_TYPES = ['image/png', 'image/jpeg']
 
 /* Validation */
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u

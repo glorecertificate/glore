@@ -6,46 +6,30 @@ import { randomBytes } from 'node:crypto'
 
 import { cacheTag, revalidateTag } from 'next/cache'
 
-import { and, count, eq } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 
 import { notify } from '@/actions/notifications/notify'
-import {
-  expireUserAccess,
-  getDescriptionRecord,
-  getOrganizationAdminsCount,
-  listOrganizationMemberIds,
-  memberUserColumns,
-  revalidateOrganizationMembers,
-} from '@/actions/organizations/helpers'
-import {
-  type InviteInput,
-  dedupeEmails,
-  failure,
-  guarded,
-  inviteSchema,
-  sendInvitations,
-} from '@/actions/organizations/invite-core'
+import { listOrganizationActivity } from '@/actions/organizations/activity-core'
+import { memberUserColumns, reviewerColumns } from '@/actions/organizations/helpers'
 import { getCurrentUser } from '@/actions/user'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { invitationError } from '@/db/mutations/invitation'
 import {
   approveOrganizationApplication,
   createOrganization as createOrganizationMutation,
   createOrganizationWithAdminInvitation,
-  removeMembership,
-  updateOrganization as updateOrganizationMutation,
+  rejectOrganizationApplication,
 } from '@/db/mutations/organization'
+import { parseAdminOrganization, parseOrganization, parseOrganizationInvitation } from '@/db/queries/organization'
+import { toPipeline } from '@/db/queries/organization-insights'
 import {
-  type OrganizationMembershipRole,
-  parseAdminOrganization,
-  parseOrganization,
-  parseOrganizationMember,
-} from '@/db/queries/organization'
-import { certificates, memberships, organizationJoinRequests, organizationProfiles, organizations } from '@/db/schema'
+  certificates,
+  memberships,
+  organizationInvitations,
+  organizationJoinRequests,
+  organizations,
+} from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
-import { sendMail } from '@/lib/email'
-import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
 import config from '~/config/app.json'
 
 const loadOrganizations = () =>
@@ -144,50 +128,16 @@ export const rejectOrganization = async (organizationId: number, reviewerComment
   if (!currentUser.isAdmin) return { error: 'Only admins can reject organizations' }
 
   const result = await safeQuery(async () => {
-    const org = await db.query.organizations.findFirst({
-      where: eq(organizations.id, organizationId),
-    })
-
-    if (!org) {
-      throw new Error('Organization not found')
-    }
-
-    const request = await db.query.organizationJoinRequests.findFirst({
-      where: and(
-        eq(organizationJoinRequests.organizationId, organizationId),
-        eq(organizationJoinRequests.role, 'admin'),
-        eq(organizationJoinRequests.status, 'pending')
-      ),
-    })
-
-    if (!request) {
-      throw new Error('Registration request not found')
-    }
-
-    const nextComment = reviewerComment?.trim() || null
-    const now = new Date().toISOString()
-
-    await db
-      .update(organizationJoinRequests)
-      .set({
-        rejectedAt: now,
-        reviewedAt: now,
-        reviewedBy: currentUser.id,
-        reviewerComment: nextComment,
-        status: 'rejected',
+    const { event } = await transaction(tx =>
+      rejectOrganizationApplication(tx, {
+        comment: reviewerComment?.trim() || null,
+        organizationId,
+        reviewerId: currentUser.id,
       })
-      .where(eq(organizationJoinRequests.id, request.id))
+    )
+    await notify(event)
 
-    await sendMail({
-      to: request.email,
-      locale: request.locale ?? undefined,
-      template: {
-        name: 'organization/join-request',
-        props: { organizationName: org.name, status: 'rejected', comment: nextComment, userName: request.firstName },
-      },
-    }).catch(() => null)
-
-    return { organizationId, organizationName: org.name }
+    return { organizationId, organizationName: event.data.organizationName }
   })
 
   if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
@@ -307,7 +257,7 @@ export const getAdminOrganization = async (organizationId: number) => {
   if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }
 
   return await safeQuery(async () => {
-    const [record, membershipRecords] = await Promise.all([
+    const [record, membershipRecords, invitationRecords, pipelineRows, activity] = await Promise.all([
       db.query.organizations.findFirst({
         with: { joinRequests: true, profile: true },
         where: eq(organizations.id, organizationId),
@@ -318,6 +268,18 @@ export const getAdminOrganization = async (organizationId: number) => {
         orderBy: (records, { asc }) => [asc(records.role), asc(records.createdAt)],
         limit: 500,
       }),
+      db.query.organizationInvitations.findMany({
+        where: eq(organizationInvitations.organizationId, organizationId),
+        with: { invitedBy: { columns: reviewerColumns } },
+        orderBy: (records, { desc: orderDesc }) => [orderDesc(records.createdAt)],
+        limit: 200,
+      }),
+      db
+        .select({ status: certificates.status, total: count() })
+        .from(certificates)
+        .where(eq(certificates.organizationId, organizationId))
+        .groupBy(certificates.status),
+      listOrganizationActivity(organizationId),
     ])
 
     if (!record) {
@@ -326,289 +288,10 @@ export const getAdminOrganization = async (organizationId: number) => {
 
     return {
       ...parseOrganization({ ...record, memberships: membershipRecords }),
+      activity,
       currentUserId: currentUser.id,
+      invitations: invitationRecords.map(invitation => parseOrganizationInvitation(invitation)),
+      pipeline: toPipeline(pipelineRows),
     }
   })
-}
-
-export const updateAdminOrganization = async (
-  organizationId: number,
-  {
-    address,
-    city,
-    country,
-    description,
-    email: orgEmail,
-    name,
-    phone,
-    postcode,
-    region,
-    url,
-  }: {
-    address: string
-    city: string
-    country: string
-    description: string
-    email: string
-    name: string
-    phone: string
-    postcode: string
-    region: string
-    url: string
-  }
-) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Only admins can update organizations' }
-
-  const result = await safeQuery(async () => {
-    const current = await db.query.organizations.findFirst({
-      with: { profile: { columns: { description: true } } },
-      where: eq(organizations.id, organizationId),
-    })
-
-    if (!current) {
-      throw new Error('Organization not found')
-    }
-
-    await transaction(tx =>
-      updateOrganizationMutation(tx, organizationId, {
-        address: address.trim() || null,
-        city: city.trim(),
-        country: country.trim() || null,
-        description: getDescriptionRecord(
-          description.trim(),
-          currentUser.locale ?? undefined,
-          current.profile?.description ?? null
-        ),
-        email: orgEmail.trim().toLowerCase(),
-        name: name.trim(),
-        phone: phone.trim() || null,
-        postcode: postcode.trim() || null,
-        region: region.trim() || null,
-        url: url.trim() || null,
-      })
-    )
-
-    return { organizationId }
-  })
-
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
-
-  return result
-}
-
-export const createAdminOrganizationAvatarUploadUrl = async (
-  organizationId: number,
-  contentType: string,
-  size: number
-) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Forbidden' }
-
-  try {
-    return { data: await r2PresignAvatar(`organizations/${organizationId}`, contentType, size) }
-  } catch {
-    return { error: 'Invalid image' }
-  }
-}
-
-export const confirmAdminOrganizationAvatar = async (organizationId: number, key: string) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Forbidden' }
-  if (!key.startsWith(`organizations/${organizationId}-`)) return { error: 'Invalid key' }
-
-  const result = await safeQuery(async () => {
-    const avatarUrl = await r2VerifyAvatar(key)
-    const current = await db.query.organizationProfiles.findFirst({
-      columns: { avatarUrl: true },
-      where: eq(organizationProfiles.organizationId, organizationId),
-    })
-
-    await db
-      .insert(organizationProfiles)
-      .values({ avatarUrl, organizationId })
-      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl } })
-
-    if (current?.avatarUrl) {
-      await r2DeleteQuietly(current.avatarUrl)
-    }
-
-    return { avatarUrl }
-  })
-
-  if (!result.error) await revalidateOrganizationMembers(organizationId)
-
-  return result
-}
-
-export const removeAdminOrganizationAvatar = async (organizationId: number) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { error: 'Forbidden' }
-
-  const result = await safeQuery(async () => {
-    const current = await db.query.organizationProfiles.findFirst({
-      columns: { avatarUrl: true },
-      where: eq(organizationProfiles.organizationId, organizationId),
-    })
-
-    await db
-      .insert(organizationProfiles)
-      .values({ avatarUrl: null, organizationId })
-      .onConflictDoUpdate({ target: organizationProfiles.organizationId, set: { avatarUrl: null } })
-
-    if (current?.avatarUrl) {
-      await r2DeleteQuietly(current.avatarUrl)
-    }
-
-    return { avatarUrl: null }
-  })
-
-  if (!result.error) await revalidateOrganizationMembers(organizationId)
-
-  return result
-}
-
-export const inviteAdminOrganizationMembers = async (organizationId: number, input: InviteInput) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return failure('FORBIDDEN')
-
-  const result = await guarded(async () => {
-    const parsed = inviteSchema.safeParse(input)
-    if (!parsed.success) throw invitationError('INVALID')
-
-    const org = await db.query.organizations.findFirst({
-      columns: { id: true },
-      where: eq(organizations.id, organizationId),
-    })
-    if (!org) throw invitationError('NOT_FOUND')
-
-    const { emails, locale, message, role } = parsed.data
-    const unique = dedupeEmails(emails)
-    if (unique.length > config.maxBulkInvites) throw invitationError('INVALID')
-
-    return await sendInvitations({ actorId: currentUser.id, emails: unique, locale, message, organizationId, role })
-  })
-
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
-
-  return result
-}
-
-export const updateAdminOrganizationMemberRole = async (
-  organizationId: number,
-  membershipId: number,
-  role: OrganizationMembershipRole
-) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Forbidden' } }
-
-  const result = await safeQuery(async () => {
-    const membership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.id, membershipId), eq(memberships.organizationId, organizationId)),
-      with: { user: { columns: memberUserColumns } },
-    })
-
-    if (!membership) {
-      throw new Error('Member not found')
-    }
-
-    if (membership.role === 'admin' && role !== 'admin') {
-      const adminCount = await getOrganizationAdminsCount(organizationId)
-      if (adminCount <= 1) {
-        throw new Error('At least one organization admin is required')
-      }
-    }
-
-    if (role === 'admin' && membership.role !== 'admin') {
-      const adminCount = await getOrganizationAdminsCount(organizationId)
-      if (adminCount > 0) {
-        throw new Error('An organization admin already exists. Only one admin is allowed per organization.')
-      }
-    }
-
-    await db.update(memberships).set({ role }).where(eq(memberships.id, membership.id))
-    expireUserAccess([membership.userId])
-
-    return parseOrganizationMember({ ...membership, role })
-  })
-
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
-
-  return result
-}
-
-export const removeAdminOrganizationMember = async (organizationId: number, membershipId: number) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Forbidden' } }
-
-  const result = await safeQuery(async () => {
-    const membership = await db.query.memberships.findFirst({
-      where: and(eq(memberships.id, membershipId), eq(memberships.organizationId, organizationId)),
-    })
-
-    if (!membership) {
-      throw new Error('Member not found')
-    }
-
-    if (membership.role === 'admin') {
-      const adminCount = await getOrganizationAdminsCount(organizationId)
-      if (adminCount <= 1) {
-        throw new Error('At least one organization admin is required')
-      }
-    }
-
-    const { events } = await transaction(tx =>
-      removeMembership(tx, { actorId: currentUser.id, membershipId: membership.id, organizationId })
-    )
-    await Promise.all(events.map(event => notify(event)))
-    expireUserAccess([membership.userId])
-
-    return { id: membership.id, userId: membership.userId }
-  })
-
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
-
-  return result
-}
-
-export const deleteAdminOrganization = async (organizationId: number) => {
-  const currentUser = await getCurrentUser()
-  if (!currentUser.isAdmin) return { data: null, error: { code: 'UNAUTHORIZED', message: 'Forbidden' } }
-
-  const result = await safeQuery(async () => {
-    const org = await db.query.organizations.findFirst({
-      columns: { id: true },
-      where: eq(organizations.id, organizationId),
-    })
-
-    if (!org) {
-      throw new Error('Organization not found')
-    }
-
-    const [certificateCount] = await db
-      .select({ total: count() })
-      .from(certificates)
-      .where(eq(certificates.organizationId, organizationId))
-
-    if ((certificateCount?.total ?? 0) > 0) {
-      throw new Error('Organizations with certificates cannot be deleted')
-    }
-
-    const [memberIds, profile] = await Promise.all([
-      listOrganizationMemberIds(organizationId),
-      db.query.organizationProfiles.findFirst({
-        columns: { avatarUrl: true },
-        where: eq(organizationProfiles.organizationId, organizationId),
-      }),
-    ])
-    await db.delete(organizations).where(eq(organizations.id, organizationId))
-    expireUserAccess(memberIds)
-    if (profile?.avatarUrl) await r2DeleteQuietly(profile.avatarUrl)
-
-    return { organizationId }
-  })
-
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
-
-  return result
 }

@@ -34,6 +34,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type AdminOrganization } from '@/db/queries/organization'
 import { type MessageKey } from '@/lib/i18n'
 
+import { ApplicationSheet } from './application-sheet'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'
 
 type OrgFilter = 'all' | 'pending' | 'active' | 'rejected'
@@ -52,6 +53,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [approveTarget, setApproveTarget] = useState<AdminOrganization | null>(null)
   const [rejectTarget, setRejectTarget] = useState<AdminOrganization | null>(null)
+  const [viewTarget, setViewTarget] = useState<AdminOrganization | null>(null)
   const [inviteOpen, setInviteOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
 
@@ -299,7 +301,13 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
             <AnimatedList>
               {displayOrgs.map(org => (
                 <AnimatedListItem key={org.id} variant="row">
-                  <OrgRow onApprove={setApproveTarget} onReject={setRejectTarget} org={org} query={search} />
+                  <OrgRow
+                    onApprove={setApproveTarget}
+                    onReject={setRejectTarget}
+                    onView={setViewTarget}
+                    org={org}
+                    query={search}
+                  />
                 </AnimatedListItem>
               ))}
             </AnimatedList>
@@ -307,6 +315,18 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
         )}
       </div>
 
+      <ApplicationSheet
+        onApprove={org => {
+          setViewTarget(null)
+          setApproveTarget(org)
+        }}
+        onOpenChange={open => !open && setViewTarget(null)}
+        onReject={org => {
+          setViewTarget(null)
+          setRejectTarget(org)
+        }}
+        org={viewTarget}
+      />
       <ApproveDialog
         onConfirm={handleApprove}
         onOpenChange={open => !open && setApproveTarget(null)}

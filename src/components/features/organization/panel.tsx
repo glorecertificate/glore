@@ -8,8 +8,12 @@ import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useSession } from '@/components/providers/session'
 import { type User } from '@/db/queries/user'
 
+import { OrganizationCertificatesSlot } from './certificates-slot'
 import { OrganizationOverview } from './overview'
 import { useOrganizationTab } from './tabs'
+
+const OrganizationActivity = dynamic(async () => (await import('./activity')).OrganizationActivity)
+const OrganizationInsightsPanel = dynamic(async () => (await import('./insights')).OrganizationInsightsPanel)
 
 const OrganizationInvitations = dynamic(async () => (await import('./invitations')).OrganizationInvitations)
 const OrganizationJoinRequests = dynamic(async () => (await import('./join-requests')).OrganizationJoinRequests)
@@ -18,8 +22,8 @@ const OrganizationSettings = dynamic(async () => (await import('./settings')).Or
 
 export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPanelData }) => {
   const { refresh: routerRefresh } = useRouter()
-  const { setOrganization, setUser } = useSession()
-  const { tab } = useOrganizationTab()
+  const { organization, setOrganization, setUser } = useSession()
+  const { setTab, tab } = useOrganizationTab()
 
   const data = initialData
 
@@ -31,7 +35,8 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
 
   const syncUser = (nextUser: User) => {
     setUser(nextUser)
-    const nextOrganization = nextUser.organizations[0]
+    const nextOrganization =
+      nextUser.organizations.find(({ id }) => id === organization?.id) ?? nextUser.organizations[0]
 
     if (nextOrganization?.id) {
       setOrganization(nextOrganization.id)
@@ -45,6 +50,8 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
         isOrgAdmin={data.isOrgAdmin}
         members={data.members}
         onRefresh={refresh}
+        onSyncUser={syncUser}
+        organizationName={data.organization.name}
       />
     )
   }
@@ -65,9 +72,29 @@ export const OrganizationPanel = ({ initialData }: { initialData: OrganizationPa
     return <OrganizationJoinRequests joinRequests={data.joinRequests} onRefresh={refresh} />
   }
 
-  if (currentTab === 'settings' && data.isOrgAdmin) {
-    return <OrganizationSettings onRefresh={refresh} onSyncUser={syncUser} organization={data.organization} />
+  if (currentTab === 'certificates') {
+    return <OrganizationCertificatesSlot pipeline={data.pipeline} />
   }
 
-  return <OrganizationOverview data={data} />
+  if (currentTab === 'insights') {
+    return <OrganizationInsightsPanel />
+  }
+
+  if (currentTab === 'activity') {
+    return <OrganizationActivity initial={data.activity} />
+  }
+
+  if (currentTab === 'settings' && data.isOrgAdmin) {
+    return (
+      <OrganizationSettings
+        key={data.organization.updatedAt}
+        members={data.members}
+        onRefresh={refresh}
+        onSyncUser={syncUser}
+        organization={data.organization}
+      />
+    )
+  }
+
+  return <OrganizationOverview data={data} onNavigate={setTab} />
 }

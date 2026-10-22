@@ -14,8 +14,8 @@ src/
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
 │   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
 │   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts
-│   ├── organizations/  # helpers.ts, invitations.ts, invite-core.ts, invitee.ts, join-links.ts, members.ts,
-│   │                   #   previews.ts, queries.ts, requests.ts, settings.ts
+│   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
+│   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
@@ -52,7 +52,7 @@ src/
 │   │                   #   courses, docs, enums, helpers, index, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, certificate,
-│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, organization (flattens organization_profiles), user
+│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
 │                       #   activity-event.ts, certificate.ts, course.ts, invitation.ts, learning.ts, organization.ts, skill-group.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team

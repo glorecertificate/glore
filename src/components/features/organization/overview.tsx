@@ -16,15 +16,31 @@ import { useTranslations } from 'next-intl'
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useI18n } from '@/components/providers/i18n'
 import { AvatarStack } from '@/components/ui/avatar-stack'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatCard } from '@/components/ui/stat-card'
 
-export const OrganizationOverview = ({ data }: { data: OrganizationPanelData }) => {
+import { ActivityList } from './activity-list'
+import { OrganizationChecklist } from './checklist'
+import { OrganizationPipeline } from './pipeline'
+import { type OrganizationTab } from './tabs'
+
+const PREVIEW_ACTIVITY_COUNT = 5
+
+export const OrganizationOverview = ({
+  data,
+  onNavigate,
+}: {
+  data: OrganizationPanelData
+  onNavigate: (tab: OrganizationTab) => void
+}) => {
   const { localize } = useI18n()
   const t = useTranslations('Organization')
 
   return (
     <div className="space-y-6">
+      <OrganizationChecklist canEditSettings={data.isOrgAdmin} checklist={data.checklist} onNavigate={onNavigate} />
+
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatCard label={t('memberCount')} value={data.stats.memberCount}>
           {t('memberBreakdown', {
@@ -159,6 +175,26 @@ export const OrganizationOverview = ({ data }: { data: OrganizationPanelData }) 
               </div>
               <span className="font-medium">{data.stats.pendingMemberCount}</span>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 xl:grid-cols-[0.95fr_1.35fr]">
+        <OrganizationPipeline pipeline={data.pipeline} />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t('activityTitle')}</CardTitle>
+            <CardDescription>{t('activityRecent')}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {data.activity.items.length === 0 && <p className="text-sm text-muted-foreground">{t('activityEmpty')}</p>}
+            {data.activity.items.length > 0 && (
+              <ActivityList items={data.activity.items.slice(0, PREVIEW_ACTIVITY_COUNT)} label={t('activityTitle')} />
+            )}
+            <Button onClick={() => onNavigate('activity')} size="sm" type="button" variant="outline">
+              {t('activityViewAll')}
+            </Button>
           </CardContent>
         </Card>
       </div>

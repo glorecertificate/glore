@@ -6,7 +6,7 @@ import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { notify } from '@/actions/notifications/notify'
-import { assertOrganizationManager, getOrganizationContext } from '@/actions/organizations/helpers'
+import { assertOrganizationManager, getOrganizationAccess } from '@/actions/organizations/helpers'
 import {
   type InviteInput,
   dedupeEmails,
@@ -29,11 +29,10 @@ import { canInviteRole, canManageInvitation } from '@/db/queries/organization'
 import { organizationInvitations } from '@/db/schema'
 import config from '~/config/app.json'
 
-const requireManager = async () => {
-  const { organization, role, user } = await getOrganizationContext()
-  if (!(organization?.id && role)) throw invitationError('FORBIDDEN')
+const requireManager = async (organizationId?: number) => {
+  const { organizationId: id, role, user } = await getOrganizationAccess(organizationId)
   assertOrganizationManager(role)
-  return { managerRole: role, organizationId: organization.id, user }
+  return { managerRole: role, organizationId: id, user }
 }
 
 const findManagedInvitation = async (invitationId: number, organizationId: number) => {
@@ -48,9 +47,9 @@ const findManagedInvitation = async (invitationId: number, organizationId: numbe
   return invitation
 }
 
-export const inviteOrganizationMembers = async (input: InviteInput) =>
+export const inviteOrganizationMembers = async (input: InviteInput, scopeId?: number) =>
   await guarded(async () => {
-    const { managerRole, organizationId, user } = await requireManager()
+    const { managerRole, organizationId, user } = await requireManager(scopeId)
     const parsed = inviteSchema.safeParse(input)
     if (!parsed.success) throw invitationError('INVALID')
     const { emails, locale, message, role } = parsed.data
@@ -60,9 +59,9 @@ export const inviteOrganizationMembers = async (input: InviteInput) =>
     return await sendInvitations({ actorId: user.id, emails: unique, locale, message, organizationId, role })
   })
 
-export const resendOrganizationInvitation = async (invitationId: number) =>
+export const resendOrganizationInvitation = async (invitationId: number, scopeId?: number) =>
   await guarded(async () => {
-    const { managerRole, organizationId, user } = await requireManager()
+    const { managerRole, organizationId, user } = await requireManager(scopeId)
     const invitation = await findManagedInvitation(invitationId, organizationId)
     if (!canManageInvitation(managerRole, invitation, user.id)) throw invitationError('FORBIDDEN')
 
@@ -78,9 +77,9 @@ export const resendOrganizationInvitation = async (invitationId: number) =>
     return { id: invitationId }
   })
 
-export const revokeOrganizationInvitation = async (invitationId: number) =>
+export const revokeOrganizationInvitation = async (invitationId: number, scopeId?: number) =>
   await guarded(async () => {
-    const { managerRole, organizationId, user } = await requireManager()
+    const { managerRole, organizationId, user } = await requireManager(scopeId)
     const invitation = await findManagedInvitation(invitationId, organizationId)
     if (!canManageInvitation(managerRole, invitation, user.id)) throw invitationError('FORBIDDEN')
 
@@ -89,9 +88,9 @@ export const revokeOrganizationInvitation = async (invitationId: number) =>
     return { id: invitationId }
   })
 
-export const copyOrganizationInvitationLink = async (invitationId: number) =>
+export const copyOrganizationInvitationLink = async (invitationId: number, scopeId?: number) =>
   await guarded(async () => {
-    const { managerRole, organizationId, user } = await requireManager()
+    const { managerRole, organizationId, user } = await requireManager(scopeId)
     return { url: await readInvitationUrl({ invitationId, managerRole, organizationId, userId: user.id }) }
   })
 

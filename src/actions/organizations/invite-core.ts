@@ -16,6 +16,7 @@ import {
   isInvitationError,
   normalizeEmail,
 } from '@/db/mutations/invitation'
+import { isMemberError } from '@/db/mutations/organization'
 import {
   type InvitationErrorCode,
   type OrganizationMembershipRole,
@@ -49,7 +50,7 @@ export interface InvitationRowResult {
 }
 
 const actionError = (error: unknown) => {
-  if (isInvitationError(error)) return { code: error.code, message: error.message }
+  if (isInvitationError(error) || isMemberError(error)) return { code: error.code, message: error.message }
   return queryError(error)
 }
 

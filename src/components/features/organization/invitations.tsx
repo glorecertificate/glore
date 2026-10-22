@@ -51,10 +51,11 @@ const STATE_BADGES = {
 
 interface OrganizationInvitationsProps {
   currentUserId: string
-  inviteLinks: OrganizationPanelData['inviteLinks']
   invitations: OrganizationPanelData['invitations']
   isOrgAdmin: boolean
   onRefresh: () => void
+  inviteLinks?: OrganizationPanelData['inviteLinks']
+  organizationId?: number
 }
 
 export const OrganizationInvitations = ({
@@ -63,6 +64,7 @@ export const OrganizationInvitations = ({
   invitations,
   isOrgAdmin,
   onRefresh,
+  organizationId,
 }: OrganizationInvitationsProps) => {
   const { locale } = useI18n()
   const t = useTranslations('Invitations')
@@ -84,7 +86,7 @@ export const OrganizationInvitations = ({
 
   const handleResend = async (invitation: Invitation) => {
     setActiveId(invitation.id)
-    const { error } = await resendOrganizationInvitation(invitation.id)
+    const { error } = await resendOrganizationInvitation(invitation.id, organizationId)
     setActiveId(null)
 
     if (error) {
@@ -100,7 +102,7 @@ export const OrganizationInvitations = ({
     if (!revokeTarget) return
 
     setActiveId(revokeTarget.id)
-    const { error } = await revokeOrganizationInvitation(revokeTarget.id)
+    const { error } = await revokeOrganizationInvitation(revokeTarget.id, organizationId)
     setActiveId(null)
 
     if (error) {
@@ -196,7 +198,10 @@ export const OrganizationInvitations = ({
               isOpen(invitation) && canManage(invitation) ? (
                 <div className="flex items-center justify-end gap-2">
                   {invitation.state === 'pending' && (
-                    <CopyLinkButton label={t('copyLink')} load={() => copyOrganizationInvitationLink(invitation.id)} />
+                    <CopyLinkButton
+                      label={t('copyLink')}
+                      load={() => copyOrganizationInvitationLink(invitation.id, organizationId)}
+                    />
                   )}
                   <Button
                     disabled={activeId === invitation.id}
@@ -221,13 +226,13 @@ export const OrganizationInvitations = ({
           />
         </div>
 
-        <InviteLinks links={inviteLinks} onRefresh={onRefresh} />
+        {inviteLinks && <InviteLinks links={inviteLinks} onRefresh={onRefresh} />}
       </div>
 
       <InviteMemberDialog
         allowedRoles={allowedRoles}
         defaultLocale={locale}
-        onInvite={inviteOrganizationMembers}
+        onInvite={input => inviteOrganizationMembers(input, organizationId)}
         onOpenChange={setInviteOpen}
         onSent={onRefresh}
         open={inviteOpen}

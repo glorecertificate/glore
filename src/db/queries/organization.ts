@@ -10,6 +10,7 @@ import {
   type users,
 } from '@/db/schema'
 import { type EnumType } from '@/db/types'
+import { type IntlRecord } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
 
 type OrganizationRow = InferSelectModel<typeof organizations>
@@ -54,6 +55,21 @@ export const INVITATION_ERROR_CODES = [
 ] as const
 
 export type InvitationErrorCode = (typeof INVITATION_ERROR_CODES)[number]
+
+export const MEMBER_ERROR_CODES = [
+  'CONFIRMATION',
+  'FORBIDDEN',
+  'HAS_CERTIFICATES',
+  'INVALID',
+  'LAST_OWNER',
+  'NOT_ELIGIBLE',
+  'NOT_FOUND',
+  'OWNER_ROLE',
+  'RATE_LIMITED',
+  'SELF',
+] as const
+
+export type MemberErrorCode = (typeof MEMBER_ERROR_CODES)[number]
 export type InvitationState = 'accepted' | 'declined' | 'expired' | 'pending' | 'revoked'
 export type InviteLinkState = 'active' | 'exhausted' | 'expired' | 'revoked'
 export type OrganizationInvitation = ReturnType<typeof parseOrganizationInvitation>
@@ -103,7 +119,7 @@ export const parseOrganization = (
   memberships: organization.memberships.map(parseOrganizationMember),
 })
 
-export const parseOrganizationMember = (membership: MembershipRow & { user: MemberUserRow }) => ({
+const parseOrganizationMember = (membership: MembershipRow & { user: MemberUserRow }) => ({
   ...membership,
   fullName: fullName(membership.user),
   isAdmin: membership.role === 'admin',
@@ -116,6 +132,11 @@ export const parseOrganizationMember = (membership: MembershipRow & { user: Memb
 
 const REPRESENTATIVE_MANAGED_ROLES: OrganizationMembershipRole[] = ['learner', 'tutor', 'volunteer']
 
+const MANAGEABLE_ROLES: OrganizationMembershipRole[] = ['admin', 'learner', 'representative', 'tutor', 'volunteer']
+
+export const canManageMemberRole = (managerRole: OrganizationMembershipRole, targetRole: OrganizationMembershipRole) =>
+  (managerRole === 'admin' ? MANAGEABLE_ROLES : REPRESENTATIVE_MANAGED_ROLES).includes(targetRole)
+
 export const canInviteRole = (managerRole: OrganizationMembershipRole, targetRole: OrganizationMembershipRole) =>
   managerRole === 'admin' || REPRESENTATIVE_MANAGED_ROLES.includes(targetRole)
 
@@ -124,6 +145,13 @@ export const canManageInvitation = (
   invitation: { invitedById: string | null; role: OrganizationMembershipRole },
   userId: string
 ) => canInviteRole(managerRole, invitation.role) || invitation.invitedById === userId
+
+export const mergeDescription = (current: Partial<IntlRecord> | null, patch: Partial<IntlRecord>) => {
+  const merged = Object.fromEntries(
+    Object.entries({ ...current, ...patch }).filter(([, value]) => typeof value === 'string' && value.trim())
+  )
+  return Object.keys(merged).length > 0 ? (merged as IntlRecord) : null
+}
 
 export const timestampMillis = (value: string) => {
   const iso = value.replace(' ', 'T')

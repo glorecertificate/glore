@@ -53,7 +53,8 @@ const COURSE_ROOTS = [
   { dir: 'examples', example: true },
 ]
 
-const visible = (dir: string) => readdirSync(dir, { withFileTypes: true }).filter(entry => !entry.name.startsWith('.'))
+export const visible = (dir: string) =>
+  readdirSync(dir, { withFileTypes: true }).filter(entry => !entry.name.startsWith('.'))
 
 const formatIssuePath = (path: PropertyKey[]) =>
   path.reduce<string>(
@@ -84,9 +85,9 @@ const scanDashes = (file: string, raw: string): Problem[] =>
       DASH_REGEX.test(line) ? [{ file, message: `line ${index + 1}: em and en dashes are not allowed` }] : []
     )
 
-const readText = (path: string) => readFileSync(path, 'utf8').replace(/^﻿/u, '').replaceAll('\r\n', '\n')
+export const readText = (path: string) => readFileSync(path, 'utf8').replace(/^﻿/u, '').replaceAll('\r\n', '\n')
 
-const parseJsonFile = <T extends ZodType>(root: string, path: string, schema: T) => {
+export const parseJsonFile = <T extends ZodType>(root: string, path: string, schema: T) => {
   const file = relative(root, path)
   if (!existsSync(path)) return { data: null, problems: [{ file, message: 'missing file' }] }
   const raw = readText(path)
@@ -99,12 +100,16 @@ const parseJsonFile = <T extends ZodType>(root: string, path: string, schema: T)
   }
 }
 
-export const parseLessonFile = (file: string, raw: string) => {
+export const parseMarkdownFile = <T extends ZodType>(file: string, raw: string, schema: T) => {
   const text = raw.replace(/^﻿/u, '').replaceAll('\r\n', '\n')
   const problems = scanDashes(file, text)
   const match = FRONT_MATTER_REGEX.exec(text)
   if (!match) {
-    return { lesson: null, problems: [...problems, { file, message: 'missing front matter (--- block at the top)' }] }
+    return {
+      body: '',
+      data: null,
+      problems: [...problems, { file, message: 'missing front matter (--- block at the top)' }],
+    }
   }
 
   let data: unknown
@@ -112,17 +117,22 @@ export const parseLessonFile = (file: string, raw: string) => {
     data = parse(match[1])
   } catch (e) {
     const message = (e as Error).message.split('\n')[0]
-    return { lesson: null, problems: [...problems, { file, message: `invalid YAML front matter: ${message}` }] }
+    return { body: '', data: null, problems: [...problems, { file, message: `invalid YAML front matter: ${message}` }] }
   }
 
-  const parsed = parseWith(file, lessonFrontMatterSchema, data)
-  if (!parsed.data) return { lesson: null, problems: [...problems, ...parsed.problems] }
+  const parsed = parseWith(file, schema, data)
+  return { body: (match[2] ?? '').trim(), data: parsed.data, problems: [...problems, ...parsed.problems] }
+}
 
-  const { assessment, evaluations, questions, title } = parsed.data
+export const parseLessonFile = (file: string, raw: string) => {
+  const { body, data, problems } = parseMarkdownFile(file, raw, lessonFrontMatterSchema)
+  if (!data) return { lesson: null, problems }
+
+  const { assessment, evaluations, questions, title } = data
   const lesson: LessonFile = {
     path: file,
     title,
-    body: (match[2] ?? '').trim(),
+    body,
     questions: (questions ?? []).map(({ explanation, options, question }) => ({
       explanation,
       options: options.map(option => ({ correct: option.correct ?? false, text: option.text })),
@@ -131,7 +141,7 @@ export const parseLessonFile = (file: string, raw: string) => {
     evaluations: evaluations ?? [],
     assessment: assessment ?? null,
   }
-  return { lesson, problems: [...problems, ...parsed.problems] }
+  return { lesson, problems }
 }
 
 const loadLessons = (root: string, courseDir: string) => {

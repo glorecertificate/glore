@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "intro",
+    "sortOrder": 1,
+    "title": { "en": "Introduction", "es": "Introducción", "it": "Introduzione" },
+    "description": {
+      "en": "Start here: what GloRe is, how a certificate comes about, and who does what.",
+      "es": "Empieza aquí: qué es GloRe, cómo se consigue un certificado y quién hace qué.",
+      "it": "Parti da qui: cos'è GloRe, come si ottiene un certificato e chi fa cosa."
+    }
+  },
+  {
+    "slug": "tutorials",
+    "sortOrder": 2,
+    "title": { "en": "Tutorials", "es": "Tutoriales", "it": "Tutorial" },
+    "description": {
+      "en": "Step-by-step guides for each role, following the screens you see in the app.",
+      "es": "Guías paso a paso para cada rol, siguiendo las pantallas que ves en la aplicación.",
+      "it": "Guide passo dopo passo per ogni ruolo, seguendo le schermate che vedi nell'app."
+    }
+  },
+  {
+    "slug": "faq",
+    "sortOrder": 3,
+    "title": { "en": "Frequently asked questions", "es": "Preguntas frecuentes", "it": "Domande frequenti" },
+    "description": {
+      "en": "Short answers about cost, rules, privacy, and where to get help.",
+      "es": "Respuestas breves sobre el coste, las reglas, la privacidad y dónde pedir ayuda.",
+      "it": "Risposte brevi su costi, regole, privacy e dove trovare aiuto."
+    }
+  }
+]

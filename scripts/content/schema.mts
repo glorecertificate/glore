@@ -61,3 +61,31 @@ export const lessonFrontMatterSchema = z.strictObject({
   evaluations: z.array(text).optional(),
   assessment: text.optional(),
 })
+
+const DOC_TITLE_MAX = 200
+const DOC_EXCERPT_MAX = 1000
+const DOC_CATEGORY_DESCRIPTION_MAX = 1000
+const DOC_SLUG_MAX = 100
+
+const docSlug = slug.max(DOC_SLUG_MAX, `must have at most ${DOC_SLUG_MAX} characters`)
+
+export const docCategoriesSchema = z
+  .array(
+    z.strictObject({
+      slug: docSlug,
+      sortOrder,
+      title: localized(text.max(DOC_TITLE_MAX)),
+      description: localized(text.max(DOC_CATEGORY_DESCRIPTION_MAX)),
+    })
+  )
+  .min(1)
+
+export const docSchema = z.strictObject({
+  slug: docSlug,
+  sortOrder,
+})
+
+export const docFrontMatterSchema = z.strictObject({
+  title: text.max(DOC_TITLE_MAX),
+  excerpt: text.max(DOC_EXCERPT_MAX),
+})

@@ -1,8 +1,8 @@
 # Content
 
-Course and skill group content for GloRe, written as files and imported into the database.
+Course, skill group, and documentation content for GloRe, written as files and imported into the database.
 
-Authors write Markdown and JSON only. The importer converts Markdown to the Plate values the course editor stores, so imported lessons render and edit like hand-made ones.
+Authors write Markdown and JSON only. The importer converts lesson Markdown to the Plate values the course editor stores, so imported lessons render and edit like hand-made ones. Docs are stored as the Markdown strings the docs editor uses.
 
 ## Layout
 
@@ -13,6 +13,12 @@ content/
     course.json
     lessons/<n>.<locale>.md      one file per lesson and locale (en, es, it)
   examples/<slug>/               format examples, same layout, never imported by default
+  docs/
+    categories.json              the doc categories (intro, tutorials, faq)
+    <category>/<slug>/           one directory per doc article
+      doc.json
+      <locale>.md                en.md, es.md, it.md
+  legal/                         temporary privacy, terms, and charter texts, not imported by this script
 ```
 
 The directory name is the course slug. Lesson numbers start at 1 and have no gaps. A lesson needs all three locale files.
@@ -126,6 +132,63 @@ assessment: Overall, how would you rate your level in this skill?
 Ask the learner to think about a real example before they rate themselves.
 ```
 
+## Docs
+
+The documentation lives under `/docs` and holds three categories, whose slugs are fixed by the app routes: `intro` (`/docs/intro`), `tutorials` (`/docs/tutorials`), and `faq` (`/docs/faq`). Each doc is an article at `/docs/articles/<slug>`.
+
+### `docs/categories.json`
+
+An array of categories. Every key is required, and `title` and `description` need all three locales.
+
+```json
+{
+  "slug": "faq",
+  "sortOrder": 3,
+  "title": { "en": "Frequently asked questions", "es": "...", "it": "..." },
+  "description": { "en": "...", "es": "...", "it": "..." }
+}
+```
+
+### `docs/<category>/<slug>/doc.json`
+
+| Key         | Rule                                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------------- |
+| `slug`      | Kebab-case, at most 100 characters, equal to the directory name. Unique across all categories. |
+| `sortOrder` | Positive integer, unique inside the category. The list shows articles in this order.           |
+
+The parent directory is the category and must be listed in `categories.json`. Unknown keys are errors.
+
+### `<locale>.md`
+
+A YAML front matter block with `title` (up to 200 characters) and `excerpt` (up to 1,000 characters; the card shows two lines), then the article body in Markdown. All three locale files are required and the body must not be empty.
+
+```md
+---
+title: How long does a review take?
+excerpt: It depends on your organization. Your tutor sees the request as soon as you send it.
+---
+
+Body in Markdown, one paragraph per line.
+```
+
+Rules on top of the lesson rules (no hard wraps, quoting, no em or en dashes):
+
+- The docs page renders plain Markdown, so tables and strikethrough are errors. Headings `##` to `####`, **bold**, _italic_, bullet and numbered lists, quotes, rules, and links work.
+- Links may be `http`, `https`, `mailto`, or an app path that starts with `/`, such as `/courses` or `/docs/articles/<slug>`. A `/docs/articles/<slug>` link must point to a doc that exists.
+- The three locales have the same structure: the same headings, lists, quotes, and paragraphs in the same order. Translate, do not restructure.
+- Slugs are global, so name them for what they answer: `faq-cost`, `tutorial-tutor`, `what-is-glore`.
+
+### What `content:check` and `content:import` do for docs
+
+`content:check` validates docs together with courses and prints the doc counts. It rejects missing locale files, unknown categories, duplicate slugs, `sortOrder` collisions, bad front matter, unsupported Markdown, broken `/docs/articles/` links, and translations whose structure differs from `en.md`.
+
+`content:import` upserts categories and articles by slug in the same transaction as the courses, with the same `--target` guard, `--drafts`, and `--dry-run` flags. `--remove` and `--examples` do not touch docs.
+
+- Without `--drafts` (local and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything.
+- The docs tables have no order column, and the app lists by `created_at`. The importer therefore sets `created_at` from `sortOrder` (a fixed date plus one minute per step), so the order is the same on every environment. Articles an editor adds in the app sort after the imported ones.
+- Re-running reports every row as unchanged. A changed article gets a new `updated_at`.
+- Docs that disappear from `content/` are not deleted; delete them in the docs UI.
+
 ## Validate
 
 ```sh
@@ -143,6 +206,7 @@ Checks every file without touching a database and prints every problem with its 
 - translations whose questions, options, correct option, evaluations, or assessment differ from the English file
 - Markdown that converts to anything the editor does not support, and empty bodies
 - em and en dashes, duplicate slugs, and colliding `sortOrder` values
+- invalid docs (see "Docs")
 
 ## Import
 

@@ -1,4 +1,5 @@
 import { LOCALES, type Locale } from './config.mts'
+import { loadDocs, validateDocs } from './docs.mts'
 import {
   type LessonFile,
   type LoadedContent,
@@ -217,12 +218,13 @@ const validateCatalog = (content: LoadedContent) => {
 
 export const checkContent = (root?: string) => {
   const { content, problems } = loadContent(root)
-  const all = [...problems, ...validateCatalog(content)]
+  const loadedDocs = loadDocs(root)
+  const all = [...problems, ...validateCatalog(content), ...loadedDocs.problems, ...validateDocs(loadedDocs.docs)]
   const unique = all.filter(
     (problem, index) =>
       all.findIndex(other => other.file === problem.file && other.message === problem.message) === index
   )
-  return { content, problems: unique.toSorted((a, b) => a.file.localeCompare(b.file)) }
+  return { content, docs: loadedDocs.docs, problems: unique.toSorted((a, b) => a.file.localeCompare(b.file)) }
 }
 
 export const formatProblems = (problems: Problem[]) =>

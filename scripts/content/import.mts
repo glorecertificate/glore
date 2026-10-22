@@ -3,7 +3,9 @@
 import { Pool } from 'pg'
 
 import { buildCatalog } from './catalog.mts'
-import { ENTITIES, type SyncStats, createStats, removeCourse, syncCatalog } from './sync.mts'
+import { buildDocCatalog } from './docs.mts'
+import { DOC_ENTITIES, type DocStats, createDocStats, syncDocs } from './sync-docs.mts'
+import { type Counter, ENTITIES, type SyncStats, createStats, removeCourse, syncCatalog } from './sync.mts'
 import { USAGE, guardTarget, parseImportArgs } from './target.mts'
 import { checkContent, formatProblems } from './validate.mts'
 
@@ -12,13 +14,12 @@ const fail = (message: string): never => {
   process.exit(1)
 }
 
-const report = (stats: SyncStats) => {
-  for (const entity of ENTITIES) {
-    const { created, deleted, unchanged, updated } = stats[entity]
-    console.info(
-      `${entity.padEnd(12)} created ${created}, updated ${updated}, unchanged ${unchanged}, deleted ${deleted}`
-    )
-  }
+const line = (entity: string, { created, deleted, unchanged, updated }: Counter) =>
+  `${entity.padEnd(14)} created ${created}, updated ${updated}, unchanged ${unchanged}, deleted ${deleted}`
+
+const report = (stats: SyncStats, docStats: DocStats) => {
+  for (const entity of ENTITIES) console.info(line(entity, stats[entity]))
+  for (const entity of DOC_ENTITIES) console.info(line(entity, docStats[entity]))
   console.info(`Learner progress rows removed: ${stats.progressRowsRemoved}`)
 }
 
@@ -32,7 +33,7 @@ const importContent = async () => {
   if (guard.drafts && !options.drafts) console.info('Production target: importing as drafts.')
 
   const removing = options.remove.length > 0
-  const { content, problems } = checkContent()
+  const { content, docs, problems } = checkContent()
   if (!removing && problems.length > 0) {
     return fail(`${formatProblems(problems)}\n\nFix ${problems.length} problem(s) before importing.`)
   }
@@ -40,6 +41,7 @@ const importContent = async () => {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL })
   const client = await pool.connect()
   let stats = createStats()
+  let docStats = createDocStats()
 
   try {
     await client.query('begin')
@@ -50,6 +52,7 @@ const importContent = async () => {
     }
     if (!removing) {
       stats = await syncCatalog(client, buildCatalog(content), { drafts: guard.drafts, examples: options.examples })
+      docStats = await syncDocs(client, buildDocCatalog(docs), { drafts: guard.drafts })
     }
     await client.query(options.dryRun ? 'rollback' : 'commit')
   } catch (e) {
@@ -65,7 +68,7 @@ const importContent = async () => {
       ? 'Dry run: nothing was written.'
       : `${removing ? 'Removed courses from' : 'Imported into'} ${options.target}.`
   )
-  report(stats)
+  report(stats, docStats)
 }
 
 if (import.meta.main) await importContent()

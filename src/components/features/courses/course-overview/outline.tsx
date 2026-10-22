@@ -25,7 +25,7 @@ export const CourseOutline = ({
                 aria-hidden
                 className={cn(
                   'flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium',
-                  lesson.status === 'completed' && 'bg-success/10 text-success',
+                  lesson.status === 'completed' && 'bg-success/10 text-success-text',
                   lesson.status === 'current' && 'bg-primary text-primary-foreground',
                   lesson.status === 'upcoming' && 'bg-muted text-muted-foreground'
                 )}

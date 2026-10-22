@@ -13,8 +13,8 @@ test.describe('anonymous visitor', () => {
 
   test('links the legal pages from the login screen', async ({ page }) => {
     await page.goto('/login')
-    await expect(page.getByRole('link', { name: 'Privacy Policy' })).toBeVisible()
-    await page.getByRole('link', { name: 'Terms of Service' }).click()
+    await expect(page.getByRole('link', { name: 'Privacy policy' })).toBeVisible()
+    await page.getByRole('link', { name: 'Terms of use' }).click()
     await expect(page).toHaveURL(/\/terms$/u)
     await expect(page.getByTestId('legal-title')).toBeVisible()
   })

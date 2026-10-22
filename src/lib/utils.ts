@@ -40,12 +40,6 @@ export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFor
 export const fullName = ({ firstName, lastName }: { firstName?: string | null; lastName?: string | null }) =>
   [firstName?.trim(), lastName?.trim()].filter(Boolean).join(' ')
 
-export const titleize = (input: string) =>
-  input
-    .split(' ')
-    .map(word => (word.length > 3 ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word.toLowerCase()))
-    .join(' ')
-
 export const camelize = <T extends string>(input: T) =>
   input.split(CAMEL_CASE_REGEX).reduce<string>((acc, word) => {
     if (!word) return acc

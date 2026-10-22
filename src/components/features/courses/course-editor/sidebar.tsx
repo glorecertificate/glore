@@ -200,7 +200,7 @@ const CourseSidebarItem = ({
             ) : (
               title
             )}
-            {user.isLearner && isCompleted && <span className="ml-1 text-xs text-success">{' ✔︎'}</span>}
+            {user.isLearner && isCompleted && <span className="ml-1 text-xs text-success-text">{' ✔︎'}</span>}
           </StepperTitle>
           <StepperDescription>{t('lessonType', { type: lesson.type })}</StepperDescription>
         </div>

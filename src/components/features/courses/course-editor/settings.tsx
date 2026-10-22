@@ -204,7 +204,7 @@ export const CourseSettings = ({
                   {field.value && (
                     <Button
                       aria-label={t('removeIcon')}
-                      className="size-7 text-muted-foreground transition-colors hover:text-destructive"
+                      className="size-7 text-muted-foreground transition-colors hover:text-destructive-text"
                       size="icon"
                       type="button"
                       variant="ghost"
@@ -332,7 +332,7 @@ export const CourseSettings = ({
                       {slugStatus === 'checking' ? (
                         <LoaderCircleIcon className="animate-spin text-muted-foreground" />
                       ) : slugStatus === 'available' ? (
-                        <CheckCircle2Icon className="text-success" />
+                        <CheckCircle2Icon className="text-success-text" />
                       ) : (
                         <Link2Icon className="cursor-default" />
                       )}

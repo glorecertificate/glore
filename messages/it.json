@@ -19,7 +19,7 @@
     "endDate": "Data di fine",
     "errorMessage": "Per favore riprova o <contactUs>contattaci</contactUs> se il problema persiste",
     "uploadFailed": "Caricamento non riuscito. Riprova.",
-    "errorTitle": "Ooops! Qualcosa è andato storto",
+    "errorTitle": "Ops! Qualcosa è andato storto",
     "hours": "Ore",
     "notFound": "Pagina non trovata",
     "notFoundMessage": "La pagina che stai cercando non esiste o è stata spostata",
@@ -29,7 +29,7 @@
     "preview": "Anteprima",
     "refreshPage": "Ricarica pagina",
     "remove": "Rimuovi",
-    "searchItems": "Cerca...",
+    "searchItems": "Cerca…",
     "selectAll": "Seleziona tutto",
     "share": "Condividere",
     "showOnMaps": "Mostra su Google Maps",
@@ -42,7 +42,7 @@
     "underReview": "In revisione",
     "verified": "Verificato",
     "item": "Articolo",
-    "comingSoonPage": "Questa pagina è attualmente in costruzione, torna presto per aggiornamenti! \n🏗️",
+    "comingSoonPage": "Questa pagina è attualmente in costruzione, torna presto per aggiornamenti! 🏗️",
     "skillLevels": {
       "absent": "Assente",
       "basic": "Base",
@@ -56,7 +56,7 @@
     "courses": "Corsi",
     "members": "Membri",
     "noResults": "Nessun risultato trovato.",
-    "placeholder": "Cerca pagine, corsi, documentazione, certificati e membri...",
+    "placeholder": "Cerca pagine, corsi, documentazione, certificati e membri…",
     "trigger": "Cerca",
     "pages": "Pagine",
     "settings": "Impostazioni",
@@ -66,7 +66,7 @@
     "docs": "Documentazione",
     "organizations": "Cambia organizzazione",
     "current": "Attuale",
-    "searching": "Ricerca in corso...",
+    "searching": "Ricerca in corso…",
     "failed": "Non è stato possibile completare la ricerca. Riprova.",
     "requestCertificate": "Richiedi un certificato",
     "inviteMembers": "Invita membri",
@@ -349,7 +349,7 @@
         "travel": "Viaggi",
         "weather": "Meteo"
       },
-      "searchIcons": "Cerca un'icona...",
+      "searchIcons": "Cerca un'icona…",
       "updateIcon": "Aggiorna icona",
       "noIconsFound": "Nessuna icona trovata",
       "allIcons": "Tutte le icone"
@@ -404,7 +404,7 @@
         "pickDate": "Scegli una data",
         "redo": "Ripeti",
         "remove": "Rimuovi",
-        "reply": "Rispondi...",
+        "reply": "Rispondi…",
         "save": "Salva",
         "stop": "Ferma",
         "subscript": "Subscript",
@@ -421,7 +421,7 @@
         "continueWriting": "Continua a scrivere",
         "continueWritingPrompt": "Continua a scrivere DOPO [Block] SOLO UNA FRASE. NON RIPETERE IL TESTO PRECEDENTE.",
         "discard": "Scarta",
-        "editing": "Modificando...",
+        "editing": "Modificando…",
         "emojify": "Trasforma in emoji",
         "emojifyPrompt": "Trasforma in emoji",
         "esc": "Esc",
@@ -446,10 +446,10 @@
         "stop": "Interrompi",
         "summarize": "Riassumi",
         "summarizePrompt": "Riassumi",
-        "thinking": "Pensando...",
+        "thinking": "Pensando…",
         "translate": "Traduci",
         "tryAgain": "Riprova",
-        "writing": "Scrivendo..."
+        "writing": "Scrivendo…"
       },
       "blocks": {
         "ai": "AI",
@@ -650,16 +650,16 @@
         "video": "Video"
       },
       "messages": {
-        "editing": "Modificando...",
+        "editing": "Modificando…",
         "invalidFormat": "Formato non valido",
         "invalidUrl": "Inserisci un URL valido",
-        "loading": "Caricamento...",
+        "loading": "Caricamento…",
         "noLanguageFound": "Nessuna lingua trovata.",
-        "processing": "Elaborazione...",
-        "thinking": "Pensando...",
+        "processing": "Elaborazione…",
+        "thinking": "Pensando…",
         "uploadError": "Caricamento fallito",
         "uploadSuccess": "Caricamento completato",
-        "writing": "Scrivendo..."
+        "writing": "Scrivendo…"
       },
       "mode": {
         "editing": "Editing",
@@ -667,16 +667,16 @@
         "viewing": "Anteprima"
       },
       "placeholders": {
-        "askAI": "Chiedi qualcosa all'AI...",
-        "askAIEdit": "Chiedi di modificare...",
-        "block": "Digita qualcosa...",
-        "content": "Inizia a scrivere, premi spazio per l'assistenza AI o '/' per tutti i comandi...",
-        "editor": "Inizia a scrivere una nuova lezione...",
+        "askAI": "Chiedi qualcosa all'AI…",
+        "askAIEdit": "Chiedi di modificare…",
+        "block": "Digita qualcosa…",
+        "content": "Inizia a scrivere, premi spazio per l'assistenza AI o '/' per tutti i comandi…",
+        "editor": "Inizia a scrivere una nuova lezione…",
         "editorReadonly": "Nessun contenuto da visualizzare",
         "linkText": "Inserisci testo del link",
         "linkUrl": "Inserisci URL",
         "searchEmoji": "Cerca emoji",
-        "searchLanguage": "Lingua di ricerca ...",
+        "searchLanguage": "Lingua di ricerca …",
         "searchMention": "Cerca persone"
       },
       "settings": {
@@ -715,7 +715,7 @@
       "show": "Mostra password"
     },
     "PhoneInput": {
-      "search": "Cerca paese...",
+      "search": "Cerca paese…",
       "noResults": "Nessun paese trovato",
       "selectPrefix": "Seleziona il prefisso del paese"
     },
@@ -729,7 +729,7 @@
     },
     "CountrySelect": {
       "noCountryFound": "Nessun paese trovato",
-      "searchCountry": "Cerca paese...",
+      "searchCountry": "Cerca paese…",
       "countryPlaceholder": "Seleziona il tuo paese"
     },
     "DatePicker": {
@@ -758,11 +758,8 @@
     }
   },
   "Layout": {
-    "backToHome": "Go to the homepage",
     "backToPrevious": "Go back",
-    "errorMessage": "An unexpected error occurred. Try again or contact us if the problem persists.",
     "refreshPage": "Refresh page",
-    "errorTitle": "Something went wrong",
     "about": "Informazioni su GloRe",
     "admin": "Admin",
     "adminOrganizations": "Organizzazioni",
@@ -798,7 +795,7 @@
     "noOrganization": "Non hai ancora un'organizzazione"
   },
   "Auth": {
-    "backToLogin": "Vai al login",
+    "backToLogin": "Torna al login",
     "close": "Chiudi",
     "emailSentMessage": "Controlla la tua mail <email></email> per reimpostare la password. Se non vedi nuove email, controlla la cartella spam o riprova.",
     "emailSentMetaTitle": "Controlla la tua email",
@@ -846,7 +843,7 @@
     "signupMessage": "Non hai un account? Scopri <link>come iscriverti</link>",
     "skipAndLogin": "Salta e vai al login",
     "submit": "Invia",
-    "submitting": "Inviando...",
+    "submitting": "Inviando…",
     "userLabel": "Email o username",
     "userRequired": "Inserire un'email o un nome utente valido",
     "userTooShort": "Il nome utente è troppo breve",
@@ -878,9 +875,9 @@
     "completedTitleAll": "Congratulazioni, hai completato tutti i corsi!",
     "completedVerifiedSkills": "Hai verificato le seguenti soft skills:",
     "completion": "Completamento",
-    "confirmArchiveMessage": "L'archiviazione di questo corso annullerà la pubblicazione e le attuali iscrizioni. \nIl corso non sarà più visibile nell'elenco dei corsi attivi, ma potrai sempre accedervi e ripubblicarlo in futuro.",
+    "confirmArchiveMessage": "Archiviare questo corso lo rimuoverà dall'elenco dei corsi attivi. Troverai il corso nella sezione degli archiviati, dove potrai ripristinarlo in seguito se necessario.",
     "confirmArchiveTitle": "Sei sicuro di voler archiviare questo corso?",
-    "confirmDeleteMessage": "L'eliminazione di questo corso è permanente e non può essere annullata. \nTutti i dati associati andranno persi.",
+    "confirmDeleteMessage": "L'eliminazione di questo corso è permanente e non può essere annullata. Tutti i dati associati andranno persi.",
     "confirmDeleteTitle": "Sei sicuro di voler eliminare questo corso?",
     "confirmUnarchiveMessage": "L'annullamento dell'archiviazione di questo corso lo renderà nuovamente visibile nell'elenco dei corsi attivi.",
     "confirmUnarchiveTitle": "Annullare l'archiviazione di questo corso?",
@@ -903,7 +900,7 @@
     "courseSlug": "URL",
     "courseSlugDescription": "Indirizzo web del corso, deve essere univoco e descrittivo.",
     "courseSlugPlaceholder": "slug-del-corso",
-    "courseSlugTaken": "Questo slug URL è già in uso. \nPer favore scegline un altro.",
+    "courseSlugTaken": "Questo slug URL è già in uso. Per favore, scegline un altro.",
     "courseSlugTooShort": "Lo slug deve essere lungo almeno {min} caratteri",
     "courseTitle": "Titolo",
     "courseTitlePlaceholder": "Nuovo corso",
@@ -934,7 +931,7 @@
     "date": "Data",
     "defaultTitle": "Corso senza titolo",
     "description": "I corsi di apprendimento sono corsi online che ti aiutano a sviluppare soft skills e ottenere certificati riconosciuti a livello internazionale. Dopo aver completato almeno 3 corsi, potrai richiedere un certificato di competenza.",
-    "descriptionAdmin": "Come amministratore della piattaforma, puoi creare e pubblicare nuovi corsi, modificare quelli esistenti e archiviare che non sono più pertinenti.",
+    "descriptionAdmin": "Come amministratore della piattaforma, puoi creare e pubblicare nuovi corsi, modificare quelli esistenti e archiviare quelli che non sono più pertinenti.",
     "descriptionEditor": "Come editor, puoi creare, modificare e tradurre i corsi della piattaforma.",
     "draft": "Draft",
     "draftIn": "Draft in",
@@ -966,7 +963,7 @@
     "icon": "Icona",
     "iconDescription": "Icona che rappresenta la competenza o l'argomento del corso.",
     "iconPlaceholder": "Scegli un'icona",
-    "iconSearchPlaceholder": "Cerca un'icona...",
+    "iconSearchPlaceholder": "Cerca un'icona…",
     "iconUpdateSuccess": "Icona aggiornata con successo",
     "inProgress": "In corso",
     "info": "Informazioni",
@@ -974,19 +971,19 @@
     "infoSettingsDescription": "Informazioni che devono essere tradotte e localizzate",
     "infoTitle": "Gestisci le informazioni sul corso in {lang}",
     "information": "Informazioni",
-    "invalidSlugFormat": "Formato non valido. \nSono consentiti solo lettere minuscole, numeri e trattini.",
+    "invalidSlugFormat": "Formato non valido. Sono consentiti solo lettere minuscole, numeri e trattini.",
     "sortBy-update": "Aggiornamento",
     "lessonCount": "Step {count} di {total}",
     "lessonType": "{type, select, descriptive {Lettura} questions {Domande} skill_evaluation {Autovalutazione} subskill_evaluations {Autovalutazione} other {Step}}",
     "lessons": "{count, plural, =1 {lezione} other {lezioni}}",
-    "loading": "Caricamento...",
+    "loading": "Caricamento…",
     "localeNotPublished": "Non pubblicato in",
     "localePublished": "Pubblicato in",
     "sortBy-name": "Nome",
     "newCourse": "Crea un nuovo corso",
-    "newCourseDescription": "Inserisci le informazioni di base per creare un nuovo corso. \nPuoi aggiungere contenuti e traduzioni in un secondo momento.",
+    "newCourseDescription": "Inserisci le informazioni di base per creare un nuovo corso. Puoi aggiungere contenuti e traduzioni in un secondo momento.",
     "newLesson": "Nuova lezione",
-    "next": "Prossimo",
+    "next": "Successivo",
     "noCoursesCompleted": "Nessun corso completato",
     "noCoursesFound": "Nessun corso trovato",
     "noDescription": "Nessuna descrizione disponibile.",
@@ -1010,7 +1007,7 @@
     "sortBy-progress": "Progresso",
     "publicationStatus": "{type, select, active {Attivo} draft {Draft} archived {Archiviato} other {}}",
     "publishCourseMessage": "Il corso diventerà visibile e accessibile a tutti gli utenti della piattaforma.",
-    "publishIn": "Pubblica in...",
+    "publishIn": "Pubblica in…",
     "publishInLanguage": "Pubblicare corso in {lang}?",
     "publishSwitchDraft": "Bozza",
     "publishSwitchHidden": "Non ancora visibile",
@@ -1031,7 +1028,7 @@
     "resetIcon": "Reimposta icona",
     "reviewCourse": "Rivedi corso",
     "reviewMode": "Modalità Revisione",
-    "reviewModeMessage": "In modalità revisione puoi rivedere tutti i passaggi del corso, \nma i risultati non sono modificabili",
+    "reviewModeMessage": "In modalità revisione puoi rivedere tutti i passaggi del corso, ma i risultati non sono modificabili",
     "save": "Salva",
     "saveChanges": "Salva modifiche",
     "saveError": "Si è verificato un errore durante il salvataggio del corso, per favore riprova",
@@ -1098,9 +1095,9 @@
     "delete": "Elimina",
     "followLink": "Segui il link",
     "resetAllFilters": "Reimposta i filtri",
-    "searchPlaceholder": "Cerca corsi...",
-    "courseType-learner": "Learner",
-    "courseTypeDescription-learner": "Un corso per learner è progettato per acquisire conoscenze specifiche senza il contesto delle soft skills.",
+    "searchPlaceholder": "Cerca corsi…",
+    "courseType-learner": "Studente",
+    "courseTypeDescription-learner": "Un corso per studenti è progettato per acquisire conoscenze specifiche senza il contesto delle soft skill.",
     "selectAllGroups": "Seleziona tutti",
     "selectSkillGroupToSave": "Seleziona un gruppo di competenze per salvare questo corso.",
     "courseDescriptionPlaceholder": "Inserisci una descrizione in {lang}",
@@ -1354,13 +1351,13 @@
       "excerpt": "Riassunto",
       "excerptPlaceholder": "Breve descrizione dell'articolo",
       "content": "Contenuto",
-      "contentPlaceholder": "Scrivi il contenuto dell'articolo qui...",
+      "contentPlaceholder": "Scrivi il contenuto dell'articolo qui…",
       "markdownSupported": "La formattazione Markdown è supportata.",
       "published": "Pubblicato",
       "cancel": "Annulla",
       "save": "Salva modifiche",
       "create": "Crea articolo",
-      "saving": "Salvataggio...",
+      "saving": "Salvataggio…",
       "updated": "Articolo aggiornato con successo.",
       "created": "Articolo creato con successo.",
       "error": "Impossibile salvare l'articolo.",
@@ -1472,7 +1469,7 @@
       },
       "step4": {
         "title": "Condividi una credenziale verificabile",
-        "description": "GloRe rilascia un PDF firmato e una pagina pubblica con un codice QR, così chiunque può confermare che il certificato è autentico."
+        "description": "GloRe rilascia un PDF con il firmatario dell'organizzazione e una pagina pubblica con un codice QR, così chiunque può confermare che il certificato è autentico."
       }
     },
     "trust": {
@@ -1513,7 +1510,7 @@
         "steps": {
           "step1": {
             "title": "Entra nella tua organizzazione",
-            "description": "Registrati e chiedi di unirti a un'organizzazione partner di GloRe. Una volta che un amministratore ti approva, i tuoi corsi compaiono nella dashboard."
+            "description": "Accetta l'invito della tua organizzazione o apri il link d'invito che condivide. Se il link richiede approvazione, l'organizzazione conferma prima la tua richiesta. Poi i tuoi corsi compaiono nella dashboard."
           },
           "step2": {
             "title": "Completa i corsi sulle competenze",
@@ -1543,7 +1540,7 @@
           },
           "q4": {
             "question": "Come faccio a unirmi a un'organizzazione?",
-            "answer": "Crea un account e chiedi di unirti a un'organizzazione partner durante la registrazione. Un amministratore approva la tua iscrizione e ti assegna un ruolo prima che tu possa iniziare."
+            "answer": "Entri tramite la tua organizzazione. Un referente della tua organizzazione ti invita via email o condivide un link d'invito, e alcuni link richiedono la sua approvazione prima di farti entrare. Se la tua organizzazione non è ancora su GloRe, chi la rappresenta può candidarla."
           },
           "q5": {
             "question": "Appartengo a più di un'organizzazione. Come faccio a passare da una all'altra?",
@@ -1561,7 +1558,7 @@
         "steps": {
           "step1": {
             "title": "Entra nella tua organizzazione",
-            "description": "Registrati e chiedi di unirti a un'organizzazione partner di GloRe. Un amministratore approva la tua iscrizione e imposta il tuo ruolo."
+            "description": "Accetta l'invito della tua organizzazione o apri il link d'invito che condivide. Se il link richiede approvazione, l'organizzazione conferma prima la tua richiesta."
           },
           "step2": {
             "title": "Esplora i corsi",
@@ -1587,7 +1584,7 @@
           },
           "q3": {
             "question": "Come faccio a unirmi a un'organizzazione?",
-            "answer": "Crea un account e chiedi di unirti a un'organizzazione partner durante la registrazione. Un amministratore approva la tua iscrizione e ti assegna un ruolo prima che tu possa iniziare."
+            "answer": "Entri tramite la tua organizzazione. Un referente della tua organizzazione ti invita via email o condivide un link d'invito, e alcuni link richiedono la sua approvazione prima di farti entrare. Se la tua organizzazione non è ancora su GloRe, chi la rappresenta può candidarla."
           },
           "q4": {
             "question": "Appartengo a più di un'organizzazione. Come faccio a passare da una all'altra?",
@@ -1617,7 +1614,7 @@
           },
           "step4": {
             "title": "Approva o richiedi modifiche",
-            "description": "Approva per generare il PDF firmato, oppure richiedi modifiche con un commento. Il volontario può modificare e inviarti di nuovo il certificato."
+            "description": "Approva per generare il PDF, oppure richiedi modifiche con un commento. Il volontario può modificare e inviarti di nuovo il certificato."
           }
         },
         "faqs": {
@@ -1631,11 +1628,11 @@
           },
           "q3": {
             "question": "Cosa comporta l'approvazione?",
-            "answer": "Genera il PDF firmato, registra la data di emissione e rende il certificato immodificabile e verificabile pubblicamente. Il primo certificato approvato diventa quello predefinito del volontario."
+            "answer": "Genera il PDF, registra la data di emissione e rende il certificato immodificabile e verificabile pubblicamente. Il primo certificato approvato diventa quello predefinito del volontario."
           },
           "q4": {
             "question": "Come faccio a unirmi a un'organizzazione?",
-            "answer": "Crea un account e chiedi di unirti a un'organizzazione partner durante la registrazione. Un amministratore approva la tua iscrizione e ti assegna un ruolo prima che tu possa iniziare."
+            "answer": "Entri tramite la tua organizzazione. Un referente della tua organizzazione ti invita via email o condivide un link d'invito, e alcuni link richiedono la sua approvazione prima di farti entrare. Se la tua organizzazione non è ancora su GloRe, chi la rappresenta può candidarla."
           },
           "q5": {
             "question": "Appartengo a più di un'organizzazione. Come faccio a passare da una all'altra?",
@@ -1653,7 +1650,7 @@
         "steps": {
           "step1": {
             "title": "Esamina le richieste di adesione",
-            "description": "Nuove persone si registrano e chiedono di unirsi alla tua organizzazione. Approvale dalla pagina dell'organizzazione e assegna a ciascuna un ruolo."
+            "description": "Chi apre il tuo link d'invito può aver bisogno della tua approvazione. Esamina ogni richiesta dalla pagina dell'organizzazione e decidi se farla entrare."
           },
           "step2": {
             "title": "Gestisci membri e ruoli",
@@ -1683,7 +1680,7 @@
           },
           "q4": {
             "question": "Come faccio a unirmi a un'organizzazione?",
-            "answer": "Crea un account e chiedi di unirti a un'organizzazione partner durante la registrazione. Un amministratore approva la tua iscrizione e ti assegna un ruolo prima che tu possa iniziare."
+            "answer": "Entri tramite la tua organizzazione. Un referente della tua organizzazione ti invita via email o condivide un link d'invito, e alcuni link richiedono la sua approvazione prima di farti entrare. Se la tua organizzazione non è ancora su GloRe, chi la rappresenta può candidarla."
           },
           "q5": {
             "question": "Appartengo a più di un'organizzazione. Come faccio a passare da una all'altra?",
@@ -1731,7 +1728,7 @@
           },
           "q4": {
             "question": "Come faccio a unirmi a un'organizzazione?",
-            "answer": "Crea un account e chiedi di unirti a un'organizzazione partner durante la registrazione. Un amministratore approva la tua iscrizione e ti assegna un ruolo prima che tu possa iniziare."
+            "answer": "Entri tramite la tua organizzazione. Un referente della tua organizzazione ti invita via email o condivide un link d'invito, e alcuni link richiedono la sua approvazione prima di farti entrare. Se la tua organizzazione non è ancora su GloRe, chi la rappresenta può candidarla."
           },
           "q5": {
             "question": "Appartengo a più di un'organizzazione. Come faccio a passare da una all'altra?",
@@ -1757,7 +1754,7 @@
       },
       "verification": {
         "title": "Verifica",
-        "description": "Ogni certificato approvato ha una pagina pubblica e un codice QR che vi rimanda, così un datore di lavoro può confermare che è autentico. Il PDF è firmato dal tutor che ha effettuato la revisione."
+        "description": "Ogni certificato approvato ha una pagina pubblica e un codice QR che vi rimanda, così un datore di lavoro può confermare che è autentico. Il PDF riporta come firmatario il rappresentante legale dell'organizzazione."
       }
     },
     "features": {
@@ -1798,23 +1795,23 @@
     "certificateDescription": "Descrizione dell'esperienza",
     "certificateMessagePost": "ha svolto un’attività di volontariato presso {org} durante la quale il volontario ha dimostrato impegno, spirito di collaborazione e capacità relazionali, acquisendo significative competenze trasversali.",
     "certificateMessagePre": "Si certifica che",
-    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skills acquisite. I certificati emessi da GloRe possono essere condivisi sui tuoi profili di social media o aggiunti al tuo CV. È possibile richiedere un certificato dopo aver completato almeno 3 corsi con una valutazione finale di almeno 3 su 5.",
+    "description": "I certificati GloRe sono un riconoscimento ufficiale della tua esperienza di volontariato e delle soft skills acquisite. I certificati emessi da GloRe possono essere condivisi sui tuoi profili di social media o aggiunti al tuo CV. Puoi richiedere un certificato dopo aver completato almeno 3 corsi con una valutazione finale di almeno 3 su 5.",
     "approvedBanner": "Il tuo certificato è stato approvato! Scaricalo o condividilo con il mondo.",
     "copyLink": "Copia link",
     "download": "Scarica il certificato",
     "previewPdf": "Anteprima PDF",
     "goToCourses": "Vai ai corsi",
     "shareLinkCopied": "Link copiato!",
-    "invalidCoursesMessage": "Hai valutato alcune delle tue abilità meno di {rating}. \nÈ necessario un voto più alto per richiedere un certificato.",
+    "invalidCoursesMessage": "Hai valutato alcune delle tue abilità con meno di {rating} stelle. Ti serve un voto più alto per richiedere un certificato. Torna alla sezione dei corsi per completare nuovi corsi e ottenere valutazioni più alte.",
     "invalidCoursesTitle": "Al momento non puoi richiedere un certificato",
     "issuedOn": "Rilasciato il",
-    "missingCoursesMessage": "Richiediamo di completare almeno {count} corsi di apprendimento per richiedere una certificazione. \nTorna alla sezione di apprendimento per completare più corsi.",
+    "missingCoursesMessage": "Devi completare almeno {count} corsi di apprendimento per richiedere una certificazione. Torna alla sezione di apprendimento per completare altri corsi.",
     "missingCoursesTitle": "È necessario completare più corsi per richiedere un certificato",
     "notFound": "Certificato non trovato",
     "notFoundMessage": "Il certificato che stai cercando non esiste o è stato spostato",
     "requestCertificate": "Certificato di richiesta",
     "requestCertificateMessage": "Crea il tuo certificato e attendi che un membro della tua organizzazione lo approvi.",
-    "requestCertificateTitle": "Ora puoi richiedere il tuo certificato glore!",
+    "requestCertificateTitle": "Ora puoi richiedere il tuo certificato GloRe!",
     "reviewedBy": "Recensione da",
     "noAssignedCertificatesTitle": "Nessun certificato assegnato",
     "noAssignedCertificatesMessage": "Non hai ancora nessun certificato assegnato da revisionare.",
@@ -1827,17 +1824,17 @@
     "reviewApprove": "Approva",
     "reviewApproveSuccess": "Certificato approvato con successo",
     "reviewComment": "Feedback",
-    "reviewCommentPlaceholder": "Descrivi le modifiche necessarie...",
+    "reviewCommentPlaceholder": "Descrivi le modifiche necessarie…",
     "reviewError": "Revisione del certificato fallita. Riprova.",
     "reviewerCommentLabel": "Modifiche richieste",
     "reviewRequestChanges": "Richiedi modifiche",
     "reviewRequestChangesSuccess": "Modifiche richieste con successo",
-    "reviewSubmitting": "Invio in corso...",
+    "reviewSubmitting": "Invio in corso…",
     "reviewTitle": "Revisiona certificato",
     "resubmitButton": "Modifica e reinvia",
     "resubmitDescription": "Aggiorna i dettagli e reinvia per la revisione.",
     "resubmitError": "Impossibile reinviare il certificato. Riprova.",
-    "resubmitSubmitting": "Reinvio in corso...",
+    "resubmitSubmitting": "Reinvio in corso…",
     "resubmitSuccess": "Certificato reinviato con successo",
     "resubmitTitle": "Modifica il tuo certificato",
     "statusApproved": "Approvato",
@@ -1850,7 +1847,7 @@
     "statusWithdrawn": "Ritirato",
     "title": "Il tuo certificato",
     "activityDescription": "Descrizione dell'attività",
-    "activityDescriptionPlaceholder": "Descrivi la tua esperienza di volontariato...",
+    "activityDescriptionPlaceholder": "Descrivi la tua esperienza di volontariato…",
     "activityDuration": "Durata (ore)",
     "activityEndDate": "Data di fine",
     "activityLocation": "Luogo dell'attività",
@@ -1864,7 +1861,7 @@
     "submitCertificate": "Invia certificato",
     "submitError": "Invio del certificato fallito. Riprova.",
     "submitSuccess": "Certificato inviato con successo! Il tuo tutor lo esaminerà a breve.",
-    "submitting": "Invio in corso...",
+    "submitting": "Invio in corso…",
     "unknownVolunteer": "Volontario sconosciuto",
     "deletedUser": "Utente eliminato",
     "updatedOn": "Ultimo aggiornamento",
@@ -1904,7 +1901,7 @@
     "unassignedCertificatesTitle": "Disponibili da prendere in carico",
     "unassignedCertificatesMessage": "Questi certificati non hanno ancora un revisore assegnato.",
     "saveDraft": "Salva bozza",
-    "savingDraft": "Salvataggio...",
+    "savingDraft": "Salvataggio…",
     "draftSuccess": "Certificato salvato come bozza.",
     "draftError": "Errore nel salvataggio della bozza.",
     "timeline": "Cronologia della richiesta",
@@ -1972,7 +1969,7 @@
       "changesRequested": "Il tuo tutor ha chiesto modifiche",
       "back": "Indietro",
       "next": "Continua",
-      "saving": "Salvataggio...",
+      "saving": "Salvataggio…",
       "saved": "Bozza salvata",
       "saveError": "Impossibile salvare la bozza",
       "discard": "Elimina bozza",
@@ -1983,7 +1980,7 @@
       "cancel": "Annulla",
       "submit": "Invia richiesta",
       "resubmit": "Reinvia",
-      "submitting": "Invio...",
+      "submitting": "Invio…",
       "submitted": "Richiesta inviata. Il tuo tutor la esaminerà presto.",
       "resubmitted": "Richiesta reinviata per la revisione.",
       "continueDraft": "Continua a modificare",
@@ -2325,7 +2322,7 @@
     "emailPlaceholder": "mario.rossi@email.com",
     "role": "Ruolo",
     "cancel": "Annulla",
-    "deleting": "Eliminazione in corso...",
+    "deleting": "Eliminazione in corso…",
     "you": "Tu",
     "statusPending": "Configurazione in sospeso",
     "statusJoined": "Attivo",
@@ -2333,7 +2330,7 @@
     "removeMember": "Rimuovi membro",
     "removeMemberTitle": "Rimuovi membro",
     "removeMemberDescription": "Questo rimuove l'utente dall'organizzazione ma mantiene il suo account.",
-    "removing": "Rimozione...",
+    "removing": "Rimozione…",
     "memberRoleUpdated": "Ruolo aggiornato",
     "memberRemoved": "Membro rimosso",
     "joinRequestsTitle": "Richieste di accesso",
@@ -2346,7 +2343,7 @@
     "rejectRequestDescription": "Puoi spiegare facoltativamente perché questa richiesta viene rifiutata.",
     "optionalMessage": "Messaggio facoltativo",
     "optionalMessagePlaceholder": "Aggiungi un breve messaggio per il richiedente",
-    "rejecting": "Rifiuto in corso...",
+    "rejecting": "Rifiuto in corso…",
     "joinRequestApproved": "Richiesta approvata",
     "joinRequestRejected": "Richiesta rifiutata",
     "requestedOn": "Richiesta del {date}",
@@ -2379,7 +2376,7 @@
     "deleteOrganizationDescription": "Questo eliminerà definitivamente l'organizzazione e tutte le membership collegate.",
     "deleteOrganizationHelp": "Se vuoi solo fare pulizia tra i membri, considera di rimuovere i membri indesiderati invece di eliminare l'intera organizzazione.",
     "deleteOrganization": "Elimina organizzazione",
-    "saving": "Salvataggio in corso...",
+    "saving": "Salvataggio in corso…",
     "saveChanges": "Salva modifiche",
     "settingsUpdated": "Organizzazione aggiornata con successo",
     "settingsUpdateError": "Impossibile aggiornare le impostazioni dell'organizzazione.",
@@ -2389,7 +2386,6 @@
     "avatarRemoved": "Avatar dell'organizzazione rimosso",
     "deleteOrganizationError": "Impossibile eliminare l'organizzazione.",
     "organizationDeleted": "Organizzazione eliminata",
-    "overviewDescription": "Una vista rapida dell'identità, dei contatti e dell'attività della tua organizzazione.",
     "memberCount": "Membri",
     "memberBreakdown": "{admins, plural, one {# admin} other {# admin}}, {representatives, plural, one {# rappresentante} other {# rappresentanti}}, {tutors, plural, one {# tutor} other {# tutor}}, {volunteers, plural, one {# volontario} other {# volontari}}, {learners, plural, one {# studente} other {# studenti}}",
     "pendingJoinRequests": "Richieste in sospeso",
@@ -2399,7 +2395,6 @@
     "approvedCertificates": "Certificati approvati",
     "approvedCertificatesDescription": "Certificati già emessi",
     "location": "Posizione",
-    "activitySnapshot": "Attività live",
     "teamSnapshot": "Panoramica del team",
     "admins": "Admin",
     "representatives": "Rappresentanti",
@@ -2426,7 +2421,7 @@
     "leftOrganization": "Hai lasciato l'organizzazione",
     "leaveTitle": "Lascia l'organizzazione",
     "leaveDescription": "Perderai l'accesso a {name}. I tuoi certificati restano tuoi.",
-    "leaving": "Uscita in corso...",
+    "leaving": "Uscita in corso…",
     "leaveOrganization": "Lascia l'organizzazione",
     "removeMemberNamed": "{name} perde l'accesso all'organizzazione. Account e certificati restano.",
     "close": "Chiudi",
@@ -2465,7 +2460,7 @@
     "transferTarget": "Nuovo titolare",
     "transferTargetPlaceholder": "Scegli un rappresentante",
     "transferConfirmLabel": "Scrivi {name} per confermare",
-    "transferring": "Trasferimento in corso...",
+    "transferring": "Trasferimento in corso…",
     "ownershipTransferred": "Proprietà trasferita",
     "memberError_CONFIRMATION": "Il nome che hai scritto non corrisponde.",
     "memberError_FORBIDDEN": "Non hai il permesso di farlo.",
@@ -2509,7 +2504,7 @@
     "activityRecent": "Le ultime novità nella tua organizzazione.",
     "activityEmpty": "Non è ancora successo nulla. Qui compariranno inviti, adesioni e passaggi dei certificati.",
     "activityError": "Impossibile caricare altra attività.",
-    "activityLoading": "Caricamento...",
+    "activityLoading": "Caricamento…",
     "activityLoadMore": "Carica altro",
     "activityViewAll": "Vedi tutta l'attività",
     "activityUnknownPerson": "qualcuno",
@@ -2685,14 +2680,14 @@
     "accountUpdateError": "Errore nell'aggiornamento dell'account",
     "emailChangeRequested": "Controlla {email} e apri il link per confermare il nuovo indirizzo.",
     "usernameDescription": "Puoi accedere con il nome utente al posto dell'email. È anche l'indirizzo del tuo profilo pubblico, quindi cambiarlo rompe i vecchi link.",
-    "searchCountry": "Cerca paese...",
+    "searchCountry": "Cerca paese…",
     "noCountryFound": "Nessun paese trovato.",
     "selectDate": "Seleziona data",
     "reset": "Ripristina",
     "avatarUploadError": "Impossibile caricare l'avatar, riprova",
     "avatarUploaded": "Avatar aggiornato con successo",
     "dangerZone": "Zona pericolosa",
-    "dangerZoneDescription": "Una volta eliminato il tuo account, non si può tornare indietro. Assicurati di essere sicuro.",
+    "dangerZoneDescription": "L'eliminazione del tuo account è definitiva. Procedi solo se non ti serve più.",
     "deleteAccount": "Elimina account",
     "deleteAccountTitle": "Elimina il tuo account",
     "deleteAccountDescription": "Rimuovi in modo permanente il tuo account, le tue bozze e richieste aperte e i tuoi progressi di apprendimento. I certificati emessi vengono conservati in forma anonima.",
@@ -2700,8 +2695,8 @@
     "deleteAccountConfirmDescription": "Questo elimina in modo permanente il tuo account, il profilo, le bozze, le richieste aperte e i progressi. I certificati già emessi restano nei registri della tua organizzazione senza il tuo nome e i tuoi dati, il loro PDF viene eliminato e risultano non più validi. Ti mandiamo un'email di conferma e non si può annullare. Esporta prima i tuoi dati se vuoi una copia.",
     "deleteAccountBlockedAdmin": "Sei l'unico amministratore di un'organizzazione. Trasferisci la titolarità prima di eliminare il tuo account.",
     "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
-    "deleting": "Eliminazione in corso...",
-    "searchLanguage": "Cerca lingua...",
+    "deleting": "Eliminazione in corso…",
+    "searchLanguage": "Cerca lingua…",
     "noLanguageFound": "Nessuna lingua trovata.",
     "noLanguagesSelected": "Nessuna lingua selezionata.",
     "languagesSelected": "{count, plural, =1 {# lingua selezionata} other {# lingue selezionate}}",
@@ -2807,7 +2802,7 @@
     "contactEmail": "Email del contatto",
     "contactEmailPlaceholder": "contatto@tuaorg.org",
     "motivation": "Motivazione",
-    "motivationPlaceholder": "Raccontaci della tua organizzazione, dei volontari con cui lavori e perché vuoi unirti a GloRe...",
+    "motivationPlaceholder": "Raccontaci della tua organizzazione, dei volontari con cui lavori e perché vuoi unirti a GloRe…",
     "motivationHelp": "Almeno {min} caratteri.",
     "reviewEmpty": "Non indicato",
     "edit": "Modifica",
@@ -2817,12 +2812,12 @@
     "back": "Indietro",
     "next": "Continua",
     "submit": "Invia candidatura",
-    "submitting": "Invio in corso...",
+    "submitting": "Invio in corso…",
     "submitError": "Qualcosa è andato storto. Riprova.",
     "rateLimited": "Troppe candidature. Riprova più tardi.",
     "alreadyHaveAccount": "Hai già un account?",
     "login": "Accedi",
-    "goToLogin": "Vai all'accesso",
+    "goToLogin": "Vai al login",
     "successTitle": "Candidatura ricevuta",
     "successMessage": "Grazie. Abbiamo inviato una conferma a {email}. Il nostro team esamina ogni candidatura e ti scriverà con la decisione.",
     "error_required": "Questo campo è obbligatorio.",
@@ -2878,7 +2873,7 @@
       "you": "Tu",
       "statMembers": "Membri totali",
       "statAdmins": "Amministratori",
-      "statEditors": "Editors",
+      "statEditors": "Editor",
       "statPending": "In sospeso",
       "members": "Membri"
     },
@@ -2892,7 +2887,7 @@
       "approveError": "Impossibile approvare l'organizzazione. Riprova.",
       "approveSuccess": "{name} è stata approvata.",
       "approveTitle": "Approva organizzazione",
-      "approving": "Approvazione in corso...",
+      "approving": "Approvazione in corso…",
       "cancel": "Annulla",
       "clearFilters": "Rimuovi filtri",
       "colJoined": "Iscritto",
@@ -2907,7 +2902,7 @@
       "createSubmit": "Crea organizzazione",
       "createSuccess": "{name} è stata creata.",
       "createTitle": "Crea organizzazione",
-      "creating": "Creazione...",
+      "creating": "Creazione…",
       "emptyFilteredMessage": "Prova a modificare la ricerca o i filtri.",
       "emptyFilteredTitle": "Nessuna corrispondenza",
       "emptyMessage": "Crea una nuova organizzazione o invitane una per iniziare.",
@@ -2938,17 +2933,17 @@
       "inviteSubmit": "Invia invito",
       "inviteSuccess": "{name} è stata aggiunta e il rappresentante è stato notificato.",
       "inviteTitle": "Invita organizzazione",
-      "inviting": "Invito in corso...",
+      "inviting": "Invito in corso…",
       "memberCount": "{count, plural, =0 {Nessun membro} one {# membro} other {# membri}}",
       "membersDescription": "Gestisci chi fa parte di questa organizzazione e cosa può fare.",
       "memberSearchPlaceholder": "Cerca membri",
       "noMembersFiltered": "Nessun membro corrisponde alla ricerca.",
       "optional": "opzionale",
       "reject": "Rifiuta",
-      "rejectCommentPlaceholder": "Spiega perché la registrazione non è stata approvata...",
+      "rejectCommentPlaceholder": "Spiega perché la registrazione non è stata approvata…",
       "rejectDescription": "Rifiutare la richiesta di registrazione di {name}? Il rappresentante riceverà una notifica via email e l'organizzazione risulterà rifiutata.",
       "rejectError": "Impossibile rifiutare l'organizzazione. Riprova.",
-      "rejecting": "Rifiuto in corso...",
+      "rejecting": "Rifiuto in corso…",
       "rejectSuccess": "{name} è stata rifiutata.",
       "rejectTitle": "Rifiuta organizzazione",
       "resultsCount": "{count, plural, =0 {Nessuna organizzazione} one {# organizzazione} other {# organizzazioni}}",
@@ -3046,20 +3041,20 @@
       "duration_custom": "Fino a una data",
       "banEndsOn": "La sospensione termina il",
       "confirmBan": "Sospendi utente",
-      "banning": "Sospensione in corso...",
+      "banning": "Sospensione in corso…",
       "banSuccess": "{name} è stato sospeso.",
       "unban": "Riabilita utente",
       "unbanTitle": "Riabilita {name}",
       "unbanDescription": "{name} può accedere di nuovo subito. La sospensione resta nel registro di audit.",
       "confirmUnban": "Riabilita utente",
-      "unbanning": "Riabilitazione in corso...",
+      "unbanning": "Riabilitazione in corso…",
       "unbanSuccess": "{name} può accedere di nuovo.",
       "impersonate": "Visualizza come utente",
       "impersonateTitle": "Visualizza come {name}",
       "impersonateDescription": "Vedi la piattaforma come questo utente per {minutes} minuti. Inizio e fine vengono registrati con il tuo motivo. Password, email, sessioni ed eliminazione dell'account restano bloccate.",
       "impersonateReasonPlaceholder": "Quale richiesta di supporto o bug stai verificando?",
       "confirmImpersonate": "Inizia a visualizzare",
-      "impersonating": "Avvio in corso...",
+      "impersonating": "Avvio in corso…",
       "cancel": "Annulla"
     },
     "impersonation": {
@@ -3068,7 +3063,7 @@
       "reason": "Motivo: {reason}",
       "remaining": "Restano {time}",
       "stop": "Interrompi",
-      "stopping": "Interruzione in corso...",
+      "stopping": "Interruzione in corso…",
       "stopError": "Impossibile interrompere la sessione di visualizzazione. Riprova."
     },
     "errors": {
@@ -3254,7 +3249,7 @@
     "back": "Indietro",
     "next": "Continua",
     "submit": "Concludi",
-    "submitting": "Configurazione in corso...",
+    "submitting": "Configurazione in corso…",
     "error": "Qualcosa è andato storto. Riprova.",
     "alreadyOnboarded": "Il tuo profilo è già completo.",
     "welcomeTitle": "Benvenuto a bordo, {name}!",
@@ -3280,7 +3275,7 @@
     },
     "auth/recovery": {
       "button": "Reimposta la tua password",
-      "buttonInstruction": "Fare clic sul pulsante qui sotto per reimpostarlo:",
+      "buttonInstruction": "Clicca sul pulsante qui sotto per reimpostarla:",
       "footer": "Hai ricevuto questa email perché hai richiesto la reimpostazione della password per il tuo account GloRe. \nSe non l'hai richiesto, ignora questa email o <emailLink>faccelo sapere</emailLink>.",
       "instructions": "Questo link per reimpostare la password è valido per la prossima ora.",
       "intro": "Recentemente hai richiesto di reimpostare la password per il tuo account.",
@@ -3386,7 +3381,7 @@
       "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italia",
       "app": "GloRe",
       "contactUs": "Contattaci",
-      "copyright": "© {year} Associazione Joint. \nTutti i diritti riservati.",
+      "copyright": "© {year} Associazione Joint. Tutti i diritti riservati.",
       "greeting": "Ciao,",
       "greetingUser": "Ciao {user},",
       "homepage": "Home page",
@@ -3567,9 +3562,9 @@
     "declineTitle": "Rifiutare questo invito?",
     "declineDescription": "{organization} saprà che hai rifiutato. Potrà inviarti un nuovo invito in seguito.",
     "cancel": "Annulla",
-    "declining": "Rifiuto in corso...",
+    "declining": "Rifiuto in corso…",
     "goToDashboard": "Vai alla dashboard",
-    "goToLogin": "Vai all'accesso",
+    "goToLogin": "Vai al login",
     "status_invalid_title": "Invito non trovato",
     "status_invalid_description": "Questo link non è valido. Controlla di aver copiato l'indirizzo completo o chiedi un nuovo invito.",
     "status_expired_title": "Questo link è scaduto",
@@ -3613,7 +3608,7 @@
     "requestedTitle": "Richiesta inviata",
     "requestedDescription": "Il team di {organization} la esaminerà. Ti avviseremo via email della decisione.",
     "goToDashboard": "Vai alla dashboard",
-    "goToLogin": "Vai all'accesso"
+    "goToLogin": "Vai al login"
   },
   "Invitations": {
     "tab": "Inviti",
@@ -3644,7 +3639,7 @@
     "resend": "Reinvia",
     "revoke": "Revoca",
     "cancel": "Annulla",
-    "revoking": "Revoca in corso...",
+    "revoking": "Revoca in corso…",
     "resent": "Invito reinviato a {email}",
     "revoked": "Invito a {email} revocato",
     "revokeTitle": "Revocare questo invito?",
@@ -3757,7 +3752,7 @@
       },
       "status": {
         "completed": "Completata",
-        "current": "Prossima",
+        "current": "Successiva",
         "upcoming": "Da iniziare"
       },
       "activity": {
@@ -4057,7 +4052,7 @@
   },
   "Legal": {
     "privacy": "Informativa sulla privacy",
-    "terms": "Termini di servizio",
+    "terms": "Termini di utilizzo",
     "qualityCharter": "Carta della qualità",
     "navigation": "Documenti legali",
     "home": "Vai a GloRe",

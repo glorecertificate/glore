@@ -19,8 +19,8 @@ const courseTypeVariants = cva('rounded-xl border text-stroke', {
   variants: {
     type: {
       intro: 'bg-accent text-muted-foreground',
-      learner: 'border-brand-accent/40 bg-brand/10 text-brand-accent',
-      skill: 'border-brand-tertiary/25 bg-brand-tertiary/10 text-brand-tertiary',
+      learner: 'border-brand-accent/40 bg-brand/10 text-brand-text',
+      skill: 'border-brand-tertiary/25 bg-brand-tertiary/10 text-brand-tertiary-text',
     },
   },
 })
@@ -54,7 +54,7 @@ export const courseIconVariants = cva('', {
     type: {
       intro: 'text-muted-foreground',
       learner: 'text-brand-text',
-      skill: 'text-brand-tertiary',
+      skill: 'text-brand-tertiary-text',
     },
   },
 })

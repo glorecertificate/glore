@@ -40,7 +40,7 @@ export const ArticleCard = ({ article, className }: ArticleCardProps) => {
         {(excerpt || updatedAt) && (
           <CardContent className="flex flex-col gap-2">
             {excerpt && <p className="line-clamp-2 text-sm text-muted-foreground">{excerpt}</p>}
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <CalendarIcon className="size-3 shrink-0" />
               <span>{t('lastUpdated', { date: updatedAt })}</span>
             </div>

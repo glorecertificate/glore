@@ -368,7 +368,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                 <div className="flex flex-col">
                   <span className={cn(isCurrentLesson(index) && 'font-semibold')}>
                     {lesson.title && localizeRecord(lesson.title, language)}{' '}
-                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success">{'✔︎'}</span>}
+                    {isCompletedLesson(index) && <span className="ml-1 text-xs text-success-text">{'✔︎'}</span>}
                   </span>
                   <span className="text-xs text-muted-foreground">{lessonType(lesson)}</span>
                 </div>

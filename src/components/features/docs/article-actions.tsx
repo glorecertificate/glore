@@ -46,7 +46,7 @@ export const ArticleActions = ({ article, categories }: { article: DocArticle; c
       </Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button aria-label={t('editor.delete')} className="text-destructive" size="sm" variant="outline">
+          <Button aria-label={t('editor.delete')} className="text-destructive-text" size="sm" variant="outline">
             <Trash2Icon className="size-3.5" />
           </Button>
         </AlertDialogTrigger>

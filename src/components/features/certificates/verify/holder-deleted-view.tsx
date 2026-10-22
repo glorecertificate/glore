@@ -10,7 +10,7 @@ export const HolderDeletedView = async ({ code }: { code: string }) => {
   return (
     <>
       <div className="space-y-4 text-center">
-        <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive" variant="outline">
+        <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive-text" variant="outline">
           <ShieldAlertIcon className="size-3.5" />
           {t('holderDeleted')}
         </Badge>

@@ -17,6 +17,7 @@ const PAPER = {
   '--foreground': '#304f71',
   '--ink': '#315070',
   '--leaf': '#7fbf73',
+  '--leaf-text': '#3f7f36',
   '--mist': '#f0f0f0',
 } as React.CSSProperties
 
@@ -128,7 +129,7 @@ export const CertificateThumbnail = ({
             <ul className="flex min-w-0 flex-col gap-[3.4cqw]">
               {skills.slice(0, 4).map(skill => (
                 <li className="flex flex-col gap-[0.8cqw]" key={skill.name}>
-                  <p className="truncate text-[2.5cqw] font-black text-(--leaf) uppercase">{skill.name}</p>
+                  <p className="truncate text-[2.5cqw] font-black text-(--leaf-text) uppercase">{skill.name}</p>
                   <Dots level={skill.level} />
                 </li>
               ))}

@@ -17,13 +17,14 @@ export const ActivityList = ({ items, label }: { items: ActivityItem[]; label: s
     const unnamed = `${base}_unnamed` as MessageKey<'Organization'>
     const key = !item.target && t.has(unnamed) ? unnamed : base
     const person = t('activityUnknownPerson')
-    return t(t.has(key) ? key : 'activity_unknown', {
+    const message = t(t.has(key) ? key : 'activity_unknown', {
       actor: item.actor ?? person,
       previousRole: item.previousRole ? t(`role_${item.previousRole}`) : '',
       role: item.role ? t(`role_${item.role}`) : '',
       target: item.target ?? person,
       tutor: item.tutor ?? person,
     })
+    return message.charAt(0).toLocaleUpperCase() + message.slice(1)
   }
 
   return (

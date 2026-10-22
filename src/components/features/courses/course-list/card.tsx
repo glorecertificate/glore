@@ -222,7 +222,7 @@ export const CourseListCard = ({
         )}
       </CardHeader>
       <CardContent className="mb-0.5">
-        <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground/50')}>
+        <p className={cn('text-sm', description ? 'text-muted-foreground' : 'text-muted-foreground italic')}>
           {description ?? t('noDescription')}
         </p>
       </CardContent>

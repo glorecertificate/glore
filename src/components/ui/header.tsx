@@ -55,7 +55,7 @@ export const HeaderBreadcrumb = ({
           {title &&
             (backHref ? (
               <Link
-                className="text-[15px] text-muted-foreground/80 hover:text-foreground dark:text-foreground/80"
+                className="text-[15px] text-muted-foreground hover:text-foreground dark:text-foreground/80"
                 href={backHref}
               >
                 {title}

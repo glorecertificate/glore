@@ -49,7 +49,7 @@ export const SessionsList = () => {
   return (
     <SettingsSection description={t('sessionsDescription')} title={t('sessions')}>
       {!data && <Skeleton className="h-16 w-full" />}
-      {data?.error && <p className="text-sm text-destructive">{t('sessionsError')}</p>}
+      {data?.error && <p className="text-sm text-destructive-text">{t('sessionsError')}</p>}
       {sessions.length > 0 && (
         <ul className="divide-y rounded-lg border px-4" data-testid="sessions-list">
           {sessions.map(session => (

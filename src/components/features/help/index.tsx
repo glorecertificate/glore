@@ -58,8 +58,8 @@ const STEP_ICONS: Record<HelpRole, [LucideIcon, LucideIcon, LucideIcon, LucideIc
 
 const CERTIFICATE_FACETS = [
   { icon: BadgeCheckIcon, key: 'eligibility', chip: 'bg-brand/10 text-brand-text' },
-  { icon: RefreshCwIcon, key: 'lifecycle', chip: 'bg-info/10 text-info' },
-  { icon: ScrollTextIcon, key: 'verification', chip: 'bg-brand-tertiary/10 text-brand-tertiary' },
+  { icon: RefreshCwIcon, key: 'lifecycle', chip: 'bg-info/10 text-info-text' },
+  { icon: ScrollTextIcon, key: 'verification', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
 ] as const
 
 const FEATURE_ICONS: Record<string, LucideIcon> = {
@@ -107,7 +107,7 @@ export const HelpContent = () => {
                   <span className={cn('flex size-10 shrink-0 items-center justify-center rounded-xl', STEP_ACCENTS[i])}>
                     <Icon className="size-5" />
                   </span>
-                  <span className="text-xs font-semibold text-muted-foreground/60 tabular-nums">{`0${i + 1}`}</span>
+                  <span className="text-xs font-semibold text-muted-foreground tabular-nums">{`0${i + 1}`}</span>
                 </div>
                 <div className="flex flex-col gap-1 pt-0.5">
                   <p className="text-sm font-semibold">{step.title}</p>

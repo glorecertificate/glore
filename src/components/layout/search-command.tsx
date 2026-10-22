@@ -11,6 +11,7 @@ import { listCourses } from '@/actions/courses/queries'
 import { MIN_QUERY_LENGTH } from '@/actions/shell/scope'
 import { type WorkspaceSearchResult, searchWorkspace } from '@/actions/shell/search'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
+import { formatRoleLabel } from '@/components/features/organization/utils'
 import { LucideIcon } from '@/components/icons/lucide'
 import {
   type NavigationGroup,
@@ -35,7 +36,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { type Course } from '@/db/queries/course'
 import { useDebounce } from '@/hooks/use-debounce'
 import { APP_ROOT } from '@/lib/constants'
-import { titleize } from '@/lib/utils'
 
 const IDLE_GROUPS: NavigationGroup[] = ['pages', 'actions', 'admin']
 const GROUPS: NavigationGroup[] = ['pages', 'actions', 'settings', 'organization', 'admin']
@@ -47,6 +47,7 @@ interface RemoteResults extends WorkspaceSearchResult {
 
 export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentProps<typeof Dialog>) => {
   const t = useTranslations('Search')
+  const tOrganization = useTranslations('Organization')
   const { push } = useRouter()
   const { localize } = useI18n()
   const { organization: active, setOrganization, user } = useSession()
@@ -175,7 +176,7 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
           <CommandList>
             {!hasResults && searching && !pendingRemote && <CommandEmpty>{t('noResults')}</CommandEmpty>}
             {pendingRemote && <p className="px-4 py-3 text-sm text-muted-foreground">{t('searching')}</p>}
-            {remoteResults?.failed && <p className="px-4 py-3 text-sm text-destructive">{t('failed')}</p>}
+            {remoteResults?.failed && <p className="px-4 py-3 text-sm text-destructive-text">{t('failed')}</p>}
 
             {groups.map(({ entries, group }) =>
               entries.length > 0 ? (
@@ -200,7 +201,9 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
                   >
                     <LucideIcon name="building-2" />
                     <span>{organization.name}</span>
-                    <CommandShortcut>{organization.id === active?.id ? t('current') : titleize(role)}</CommandShortcut>
+                    <CommandShortcut>
+                      {organization.id === active?.id ? t('current') : formatRoleLabel(role, tOrganization)}
+                    </CommandShortcut>
                   </CommandItem>
                 ))}
               </CommandGroup>

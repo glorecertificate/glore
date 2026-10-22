@@ -40,7 +40,7 @@ export const DashboardChecklist = ({
           {entries.map(({ action, description, done, href, key, title: label }) => (
             <li className="flex flex-wrap items-center gap-3 py-3 first:pt-0 last:pb-0" key={key}>
               <LucideIcon
-                className={cn('size-5 shrink-0', done ? 'text-success' : 'text-muted-foreground')}
+                className={cn('size-5 shrink-0', done ? 'text-success-text' : 'text-muted-foreground')}
                 name={done ? 'circle-check' : 'circle'}
               />
               <div className="min-w-0 flex-1">

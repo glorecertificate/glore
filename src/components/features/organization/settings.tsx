@@ -421,7 +421,7 @@ export const OrganizationSettings = ({
         {!platform && (
           <Card className="border-destructive/20 bg-destructive/5">
             <CardHeader>
-              <CardTitle className="text-base text-destructive">{t('transferTitle')}</CardTitle>
+              <CardTitle className="text-base text-destructive-text">{t('transferTitle')}</CardTitle>
               <CardDescription>{t('transferHelp')}</CardDescription>
             </CardHeader>
             <CardContent>
@@ -433,7 +433,7 @@ export const OrganizationSettings = ({
         )}
         <Card className="border-destructive/20 bg-destructive/5">
           <CardHeader>
-            <CardTitle className="text-base text-destructive">{t('deleteOrganizationTitle')}</CardTitle>
+            <CardTitle className="text-base text-destructive-text">{t('deleteOrganizationTitle')}</CardTitle>
             <CardDescription>{t('deleteOrganizationHelp')}</CardDescription>
           </CardHeader>
           <CardContent>

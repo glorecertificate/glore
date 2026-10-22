@@ -8,8 +8,8 @@ import { cn } from '@/lib/utils'
 
 const TONE_CLASSES = {
   due: 'bg-warning/15 text-warning-text',
-  fresh: 'bg-success/15 text-success',
-  overdue: 'bg-destructive/15 text-destructive',
+  fresh: 'bg-success/15 text-success-text',
+  overdue: 'bg-destructive/15 text-destructive-text',
 } as const satisfies Record<AgeTone, string>
 
 export const AgeBadge = ({ className, days, tone }: { className?: string; days: number; tone: AgeTone }) => {

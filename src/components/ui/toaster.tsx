@@ -39,7 +39,7 @@ export const Toaster = ({
           cancelButton: 'bg-muted text-muted-foreground',
           closeButton: 'group-data-[type=info]/toast:border-info/20! group-data-[type=info]/toast:hover:bg-info/10!',
           description: 'text-muted-foreground text-base',
-          icon: 'group-data-[type=info]/toast:text-info! mt-0.5 group-data-[type=success]/toast:text-success! group-data-[type=error]/toast:text-destructive!',
+          icon: 'group-data-[type=info]/toast:text-info-text! mt-0.5 group-data-[type=success]/toast:text-success-text! group-data-[type=error]/toast:text-destructive-text!',
           title: 'font-normal!',
           toast: cn('group/toast w-max! items-start! bg-background text-foreground shadow-md!', className),
           ...toastOptions?.classNames,

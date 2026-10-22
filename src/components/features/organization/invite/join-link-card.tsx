@@ -86,7 +86,7 @@ export const JoinLinkCard = ({ email, organization, requiresApproval, role, sign
     return (
       <div className="flex flex-col items-center gap-6 text-center">
         <div className="flex size-16 items-center justify-center rounded-full bg-success/10">
-          <LucideIcon className="size-8 text-success" name={outcome === 'sent' ? 'mail-check' : 'circle-check'} />
+          <LucideIcon className="size-8 text-success-text" name={outcome === 'sent' ? 'mail-check' : 'circle-check'} />
         </div>
         <div className="space-y-2">
           <h1 className="text-2xl font-semibold tracking-tight">{t(`${outcome}Title`)}</h1>

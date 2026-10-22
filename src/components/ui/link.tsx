@@ -18,13 +18,13 @@ const linkVariants = cva('cursor-pointer no-underline transition-colors', {
   },
   variants: {
     variant: {
-      destructive: 'text-destructive hover:text-destructive',
+      destructive: 'text-destructive-text hover:text-destructive-text',
       link: 'text-link',
       muted: 'text-muted-foreground hover:text-foreground/90',
       primary: 'text-brand-text hover:text-brand-text/80',
       secondary: 'text-brand-secondary-text hover:text-brand-secondary-text/80',
-      success: 'text-success hover:text-success',
-      tertiary: 'text-brand-tertiary hover:text-brand-tertiary-accent',
+      success: 'text-success-text hover:text-success-text',
+      tertiary: 'text-brand-tertiary-text hover:text-brand-tertiary-text/80',
       transparent: 'text-transparent hover:text-foreground',
       underlined: 'underline-offset-2 hover:underline',
     },

@@ -79,7 +79,7 @@ export const EligibilityPanel = ({
                 {requirement.met === null ? (
                   <InfoIcon className="mt-0.5 size-5 shrink-0 text-brand-text" />
                 ) : requirement.met ? (
-                  <CircleCheckIcon className="mt-0.5 size-5 shrink-0 text-success" />
+                  <CircleCheckIcon className="mt-0.5 size-5 shrink-0 text-success-text" />
                 ) : (
                   <CircleDashedIcon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
                 )}

@@ -68,7 +68,7 @@ export const LessonQuiz = ({
                       value={String(option.id)}
                     />
                     <span className="grow">{option.text}</span>
-                    {right && <LucideIcon className="size-4 shrink-0 text-success" name="circle-check" />}
+                    {right && <LucideIcon className="size-4 shrink-0 text-success-text" name="circle-check" />}
                   </Label>
                 )
               })}

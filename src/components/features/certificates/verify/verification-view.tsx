@@ -53,12 +53,12 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
 
       <div className="space-y-4 text-center">
         {revoked ? (
-          <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive" variant="outline">
+          <Badge className="gap-1.5 border-destructive/30 bg-destructive/5 text-destructive-text" variant="outline">
             <ShieldAlertIcon className="size-3.5" />
             {t('revoked')}
           </Badge>
         ) : (
-          <Badge className="gap-1.5 border-success/30 bg-success/5 text-success" variant="outline">
+          <Badge className="gap-1.5 border-success/30 bg-success/5 text-success-text" variant="outline">
             <CircleCheckIcon className="size-3.5" />
             {t('valid')}
           </Badge>
@@ -80,7 +80,7 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
           </p>
         </div>
         {revoked ? (
-          <p className="mx-auto max-w-prose text-sm text-destructive">
+          <p className="mx-auto max-w-prose text-sm text-destructive-text">
             {verification.revokedAt
               ? t('revokedOn', { date: dateFormatter.format(new Date(verification.revokedAt)) })
               : t('revokedMessage')}

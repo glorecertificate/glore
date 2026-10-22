@@ -32,8 +32,8 @@ const SECTIONS = [
   {
     icon: CompassIcon,
     key: 'vision',
-    accent: 'text-info',
-    chip: 'bg-info/10 text-info',
+    accent: 'text-info-text',
+    chip: 'bg-info/10 text-info-text',
     ring: 'border-info/20 bg-info/[0.03]',
   },
   {
@@ -46,8 +46,8 @@ const SECTIONS = [
   {
     icon: NetworkIcon,
     key: 'network',
-    accent: 'text-brand-tertiary',
-    chip: 'bg-brand-tertiary/10 text-brand-tertiary',
+    accent: 'text-brand-tertiary-text',
+    chip: 'bg-brand-tertiary/10 text-brand-tertiary-text',
     ring: 'border-brand-tertiary/20 bg-brand-tertiary/[0.03]',
   },
 ] as const
@@ -65,8 +65,8 @@ const SKILL_KEYS = [
 
 const TRUST_ITEMS = [
   { icon: UserCheckIcon, key: 'validation', chip: 'bg-brand/10 text-brand-text' },
-  { icon: LockIcon, key: 'immutable', chip: 'bg-info/10 text-info' },
-  { icon: QrCodeIcon, key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary' },
+  { icon: LockIcon, key: 'immutable', chip: 'bg-info/10 text-info-text' },
+  { icon: QrCodeIcon, key: 'verifiable', chip: 'bg-brand-tertiary/10 text-brand-tertiary-text' },
 ] as const
 
 export const AboutContent = async () => {

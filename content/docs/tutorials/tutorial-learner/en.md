@@ -7,7 +7,7 @@ As a learner you explore soft skills and volunteering at your own pace. You do n
 
 ## Find your courses
 
-1. Sign in. Your dashboard shows the courses you can continue.
+1. Log in. Your dashboard shows the courses you can continue.
 2. Open Courses in the sidebar. You see the introductory courses and the learner courses. Skill courses do not appear for learners.
 3. Open a course to see its length and what you will learn. Select Start course.
 

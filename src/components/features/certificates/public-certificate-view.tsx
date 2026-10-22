@@ -53,7 +53,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
       <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
         <div className="space-y-4 text-center">
-          <Badge className="gap-1.5 border-success/30 bg-success/5 text-success" variant="outline">
+          <Badge className="gap-1.5 border-success/30 bg-success/5 text-success-text" variant="outline">
             <LucideIcon name="circle-check" className="size-3.5" />
             {t('publicVerified')}
           </Badge>

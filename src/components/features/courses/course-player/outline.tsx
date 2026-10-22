@@ -27,7 +27,7 @@ export const PlayerOutline = ({
               aria-hidden
               className={cn(
                 'flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-medium',
-                lesson.status === 'completed' && 'bg-success/10 text-success',
+                lesson.status === 'completed' && 'bg-success/10 text-success-text',
                 lesson.status !== 'completed' && current && 'bg-primary text-primary-foreground',
                 lesson.status !== 'completed' && !current && 'bg-muted text-muted-foreground'
               )}

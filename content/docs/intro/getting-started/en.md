@@ -7,7 +7,7 @@ excerpt: 'Accept your invitation, finish your profile, and find your way around 
 
 Ask your organization to invite you. You will receive an email with a link that works for 7 days. Open it and create your account.
 
-Your organization may also share an invite link. Open it, and depending on how it was set up you either join straight away or send a request that someone in the organization approves. If you already have an account, sign in first.
+Your organization may also share an invite link. Open it, and depending on how it was set up you either join straight away or send a request that someone in the organization approves. If you already have an account, log in first.
 
 ## Finish your profile
 

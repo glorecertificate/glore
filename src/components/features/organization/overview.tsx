@@ -81,7 +81,6 @@ export const OrganizationOverview = ({
       <div className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr]">
         <Card>
           <CardHeader>
-            <CardDescription>{t('overviewDescription')}</CardDescription>
             <CardTitle className="flex items-center gap-2 text-xl">
               <Building2Icon className="size-5" />
               {data.organization.name}
@@ -129,7 +128,6 @@ export const OrganizationOverview = ({
 
         <Card>
           <CardHeader>
-            <CardDescription>{t('activitySnapshot')}</CardDescription>
             <CardTitle>{t('teamSnapshot')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">

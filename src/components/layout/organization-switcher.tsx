@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl'
 
 import { listMyPendingInvitations } from '@/actions/shell/invitations'
 import { LeaveOrganizationDialog } from '@/components/features/organization/leave-organization-dialog'
+import { formatRoleLabel } from '@/components/features/organization/utils'
 import { LucideIcon } from '@/components/icons/lucide'
 import { showsOrganizationSwitcher } from '@/components/layout/navigation'
 import { useSession } from '@/components/providers/session'
@@ -27,7 +28,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/c
 import { type User } from '@/db/queries/user'
 import { usePoll } from '@/hooks/use-poll'
 import { APP_ROOT, REGISTER_ROOT } from '@/lib/constants'
-import { cn, titleize } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 const INVITATIONS_POLL_INTERVAL = 120_000
 
@@ -41,6 +42,7 @@ export const OrganizationSwitcher = () => {
   const { push } = useRouter()
   const { isMobile, open, setActivePath, setOpenMobile } = useSidebar()
   const t = useTranslations('Layout')
+  const tOrganization = useTranslations('Organization')
   const { organization, setOrganization, setUser, user } = useSession()
   const [leaveOpen, setLeaveOpen] = useState(false)
   const { data: invitations, refresh } = usePoll(readInvitations, {
@@ -105,7 +107,7 @@ export const OrganizationSwitcher = () => {
                 <span className="truncate font-semibold">{organization?.name ?? t('noOrganization')}</span>
                 {organization && (
                   <span className="truncate text-xs font-normal text-muted-foreground">
-                    {titleize(organization.role)}
+                    {formatRoleLabel(organization.role, tOrganization)}
                   </span>
                 )}
               </div>
@@ -147,7 +149,9 @@ export const OrganizationSwitcher = () => {
                           <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-success" />
                         )}
                       </span>
-                      <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>
+                      <span className="truncate text-xs font-normal text-muted-foreground">
+                        {formatRoleLabel(role, tOrganization)}
+                      </span>
                     </div>
                   </DropdownMenuItem>
                 ))}
@@ -169,7 +173,7 @@ export const OrganizationSwitcher = () => {
                         <div className="grid flex-1 text-left text-sm leading-tight">
                           <span className="truncate font-semibold">{organizationName}</span>
                           <span className="truncate text-xs font-normal text-muted-foreground">
-                            {t('invitedAs', { role: titleize(role) })}
+                            {t('invitedAs', { role: formatRoleLabel(role, tOrganization) })}
                           </span>
                         </div>
                       </Link>

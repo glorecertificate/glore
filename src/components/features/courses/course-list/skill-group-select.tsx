@@ -48,7 +48,7 @@ export const CourseListGroupSelect = ({ ...props }: React.ComponentProps<typeof 
         <Button className="text-[13.5px] font-medium" variant="outline">
           <span className="flex flex-1 items-center gap-1.25">
             {t('skillGroup')}
-            <span className="text-xs leading-[normal] text-muted-foreground/70">
+            <span className="text-xs leading-[normal] text-muted-foreground">
               {activeSkillGroups.length}
               {'/'}
               {skillGroups.length}

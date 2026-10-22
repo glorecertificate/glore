@@ -50,7 +50,7 @@ const ActivityItem = ({
         type="button"
         variant="ghost"
       >
-        <TrashIcon className="size-4 text-destructive" />
+        <TrashIcon className="size-4 text-destructive-text" />
       </Button>
     </div>
   )
@@ -108,7 +108,7 @@ const QuestionItem = ({
           type="button"
           variant="ghost"
         >
-          <TrashIcon className="size-4 text-destructive" />
+          <TrashIcon className="size-4 text-destructive-text" />
         </Button>
       </div>
 
@@ -144,7 +144,7 @@ const QuestionItem = ({
                 type="button"
                 variant="ghost"
               >
-                <TrashIcon className="size-3.5 text-destructive" />
+                <TrashIcon className="size-3.5 text-destructive-text" />
               </Button>
             </AnimatedListItem>
           ))}

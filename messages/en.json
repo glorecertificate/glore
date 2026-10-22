@@ -19,7 +19,7 @@
     "endDate": "End date",
     "errorMessage": "Please try again or <contactUs>contact us</contactUs> if the problem persists",
     "uploadFailed": "Upload failed. Please try again.",
-    "errorTitle": "Ooops! Something went wrong",
+    "errorTitle": "Oops! Something went wrong",
     "hours": "Hours",
     "item": "Item",
     "notFound": "Not found",
@@ -30,7 +30,7 @@
     "preview": "Preview",
     "refreshPage": "Refresh page",
     "remove": "Remove",
-    "searchItems": "Search...",
+    "searchItems": "Search…",
     "selectAll": "Select all",
     "share": "Share",
     "showOnMaps": "Show on Google Maps",
@@ -56,7 +56,7 @@
     "courses": "Courses",
     "members": "Members",
     "noResults": "No results found.",
-    "placeholder": "Search pages, courses, docs, certificates and members...",
+    "placeholder": "Search pages, courses, docs, certificates and members…",
     "trigger": "Search",
     "pages": "Pages",
     "settings": "Settings",
@@ -66,7 +66,7 @@
     "docs": "Documentation",
     "organizations": "Switch organization",
     "current": "Current",
-    "searching": "Searching...",
+    "searching": "Searching…",
     "failed": "The search could not finish. Try again.",
     "requestCertificate": "Request a certificate",
     "inviteMembers": "Invite members",
@@ -305,7 +305,7 @@
   "Components": {
     "CountrySelect": {
       "noCountryFound": "No country found",
-      "searchCountry": "Search country...",
+      "searchCountry": "Search country…",
       "countryPlaceholder": "Select your country"
     },
     "DatePicker": {
@@ -357,7 +357,7 @@
         "travel": "Travel",
         "weather": "Weather"
       },
-      "searchIcons": "Search for an icon...",
+      "searchIcons": "Search for an icon…",
       "updateIcon": "Update icon",
       "noIconsFound": "No icons found",
       "allIcons": "All icons"
@@ -375,7 +375,7 @@
       "hide": "Hide password"
     },
     "PhoneInput": {
-      "search": "Search country...",
+      "search": "Search country…",
       "noResults": "No country found",
       "selectPrefix": "Select country prefix"
     },
@@ -413,7 +413,7 @@
         "pickDate": "Pick a date",
         "redo": "Redo",
         "remove": "Remove",
-        "reply": "Reply...",
+        "reply": "Reply…",
         "save": "Save",
         "stop": "Stop",
         "subscript": "Subscript",
@@ -430,7 +430,7 @@
         "continueWriting": "Continue writing",
         "continueWritingPrompt": "Continue writing AFTER [Block] ONLY ONE SENTENCE. DONT REPEAT THE TEXT.",
         "discard": "Discard",
-        "editing": "Editing...",
+        "editing": "Editing…",
         "emojify": "Emojify",
         "emojifyPrompt": "Emojify",
         "esc": "Esc",
@@ -455,10 +455,10 @@
         "stop": "Stop",
         "summarize": "Summarize",
         "summarizePrompt": "Summarize",
-        "thinking": "Thinking...",
+        "thinking": "Thinking…",
         "translate": "Translate",
         "tryAgain": "Try again",
-        "writing": "Writing..."
+        "writing": "Writing…"
       },
       "blocks": {
         "ai": "AI",
@@ -659,16 +659,16 @@
         "video": "Video"
       },
       "messages": {
-        "editing": "Editing...",
+        "editing": "Editing…",
         "invalidFormat": "Invalid format",
         "invalidUrl": "Please enter a valid URL",
-        "loading": "Loading...",
+        "loading": "Loading…",
         "noLanguageFound": "No language found.",
-        "processing": "Processing...",
-        "thinking": "Thinking...",
+        "processing": "Processing…",
+        "thinking": "Thinking…",
         "uploadError": "Upload failed",
         "uploadSuccess": "Upload successful",
-        "writing": "Writing..."
+        "writing": "Writing…"
       },
       "mode": {
         "editing": "Editing",
@@ -676,16 +676,16 @@
         "viewing": "Preview"
       },
       "placeholders": {
-        "askAI": "Ask AI anything...",
-        "askAIEdit": "Ask AI to modify...",
-        "block": "Start writing, press space for AI assistance or '/' for commands...",
-        "content": "Start typing...",
-        "editor": "Start writing a new lesson...",
+        "askAI": "Ask AI anything…",
+        "askAIEdit": "Ask AI to modify…",
+        "block": "Start writing, press space for AI assistance or '/' for commands…",
+        "content": "Start typing…",
+        "editor": "Start writing a new lesson…",
         "editorReadonly": "No content to visualize.",
         "linkText": "Enter link text",
         "linkUrl": "Enter URL",
         "searchEmoji": "Search emoji",
-        "searchLanguage": "Search language...",
+        "searchLanguage": "Search language…",
         "searchMention": "Search people"
       },
       "settings": {
@@ -776,7 +776,7 @@
     "logout": "Log out",
     "logoutCancel": "Stay connected",
     "logoutConfirm": "Terminate session",
-    "logoutConfirmMessage": "You'll be logged out of GloRe and will need to sign in again to access your content.",
+    "logoutConfirmMessage": "You'll be logged out of GloRe and will need to log in again to access your content.",
     "logoutConfirmTitle": "End your session?",
     "logoutFailed": "There was an error logging out, please try again",
     "logoutLoading": "Logging you out...",
@@ -784,9 +784,6 @@
     "organizations": "Organizations",
     "pendingRequests": "{count, plural, =1 {# pending request} other {# pending requests}}",
     "settings": "Settings",
-    "errorTitle": "Something went wrong",
-    "errorMessage": "An unexpected error occurred. Try again or contact us if the problem persists.",
-    "backToHome": "Go to the homepage",
     "backToPrevious": "Go back",
     "refreshPage": "Refresh page",
     "notifications": "Notifications",
@@ -816,8 +813,8 @@
     "invalidTokenMetaTitle": "Invalid link",
     "invalidTokenTitle": "Invalid or expired link",
     "loggingIn": "Logging in",
-    "login": "Login",
-    "loginMessage": "Enter an email or username to login to your account",
+    "login": "Log in",
+    "loginMessage": "Enter an email or username to log in to your account",
     "loginMetaTitle": "Join the GloRe Network",
     "loginTitle": "Join the GloRe Network",
     "networkError": "A network error occurred, please try again or contact us",
@@ -842,16 +839,16 @@
     "resendTimer": "Send another email in {seconds}s",
     "signupDialogMessage": "<p>Individual users can sign up to GloRe only with an invitation from their organization.</p><p>If your organization is part of the GloRe network and you want to get access as a volunteer, tutor or coordinator, ask a representative to send you an invitation.</p><p>If your organization is not yet registered on GloRe, you can submit a registration request below.</p><p>For more information, please <link>visit our website</link>.</p>",
     "signupDialogRegister": "Register your organization",
-    "signupDialogTitle": "Access the GloRe Network ",
+    "signupDialogTitle": "Access the GloRe Network",
     "signupMessage": "Don't have an account? See <link>how to sign up</link>",
     "skipAndLogin": "Skip and go to login",
     "submit": "Submit",
-    "submitting": "Submitting...",
+    "submitting": "Submitting…",
     "userLabel": "Email or username",
     "userRequired": "Insert a valid email or username",
     "userTooShort": "Username is too short",
     "userInvalid": "Invalid email or username",
-    "sessionExpired": "Your session has expired, please sign in again"
+    "sessionExpired": "Your session has expired, please log in again"
   },
   "Courses": {
     "active": "Active",
@@ -967,7 +964,7 @@
     "icon": "Icon",
     "iconDescription": "Icon representing the course skill or topic.",
     "iconPlaceholder": "Choose an icon",
-    "iconSearchPlaceholder": "Search for an icon...",
+    "iconSearchPlaceholder": "Search for an icon…",
     "iconUpdateSuccess": "Icon updated successfully",
     "inProgress": "In progress",
     "info": "Information",
@@ -980,7 +977,7 @@
     "lessonCount": "Step {count} of {total}",
     "lessonType": "{type, select, descriptive {Reading} questions {Quiz} skill_evaluation {Self-assessment} subskill_evaluations {Self-assessment} other {Step}}",
     "lessons": "{count, plural, =1 {lesson} other {lessons}}",
-    "loading": "Loading...",
+    "loading": "Loading…",
     "localeNotPublished": "Not published in",
     "localePublished": "Published in",
     "sortBy-name": "Name",
@@ -1011,7 +1008,7 @@
     "sortBy-progress": "Progress",
     "publicationStatus": "{type, select, active {Active} draft {Draft} archived {Archived} other {}}",
     "publishCourseMessage": "The course will become visible and accessible to all users on the platform.",
-    "publishIn": "Publish in...",
+    "publishIn": "Publish in…",
     "publishInLanguage": "Publish course in {lang}?",
     "publishSwitchDraft": "Draft",
     "publishSwitchHidden": "Not yet visible",
@@ -1099,7 +1096,7 @@
     "delete": "Delete",
     "followLink": "Follow link",
     "resetAllFilters": "Reset all filters",
-    "searchPlaceholder": "Search courses...",
+    "searchPlaceholder": "Search courses…",
     "courseType-learner": "Learner",
     "courseTypeDescription-learner": "A learner course is designed to acquire specific knowledge without the context of soft skills.",
     "selectAllGroups": "Select all",
@@ -1354,13 +1351,13 @@
       "excerpt": "Excerpt",
       "excerptPlaceholder": "Brief description of the article",
       "content": "Content",
-      "contentPlaceholder": "Write your article content here...",
+      "contentPlaceholder": "Write your article content here…",
       "markdownSupported": "Markdown formatting is supported.",
       "published": "Published",
       "cancel": "Cancel",
       "save": "Save changes",
       "create": "Create article",
-      "saving": "Saving...",
+      "saving": "Saving…",
       "updated": "Article updated successfully.",
       "created": "Article created successfully.",
       "error": "Failed to save article.",
@@ -1441,7 +1438,7 @@
         "empathy": "Empathy",
         "organization": "Organization & time management",
         "creativity": "Creativity & innovation",
-        "teamwork": "Teamwork",
+        "teamwork": "Team work",
         "leadership": "Leadership"
       }
     },
@@ -1472,7 +1469,7 @@
       },
       "step4": {
         "title": "Share a verifiable credential",
-        "description": "GloRe issues a signed PDF and a public page with a QR code, so anyone can confirm the certificate is genuine."
+        "description": "GloRe issues a PDF with the organization's signatory and a public page with a QR code, so anyone can confirm the certificate is genuine."
       }
     },
     "trust": {
@@ -1513,7 +1510,7 @@
         "steps": {
           "step1": {
             "title": "Join your organization",
-            "description": "Register and request to join a GloRe partner organization. Once an admin approves you, your courses appear on the dashboard."
+            "description": "Accept the invitation from your organization, or open the invite link it shares. If the link needs approval, the organization confirms your request first. Then your courses appear on the dashboard."
           },
           "step2": {
             "title": "Complete skill courses",
@@ -1543,7 +1540,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1561,7 +1558,7 @@
         "steps": {
           "step1": {
             "title": "Join your organization",
-            "description": "Register and request to join a GloRe partner organization. An admin approves your membership and sets your role."
+            "description": "Accept the invitation from your organization, or open the invite link it shares. If the link needs approval, the organization confirms your request first."
           },
           "step2": {
             "title": "Explore the courses",
@@ -1587,7 +1584,7 @@
           },
           "q3": {
             "question": "How do I join an organization?",
-            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q4": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1617,7 +1614,7 @@
           },
           "step4": {
             "title": "Approve or request changes",
-            "description": "Approve to generate the signed PDF, or request changes with a comment. The volunteer can edit and resubmit to you."
+            "description": "Approve to generate the PDF, or request changes with a comment. The volunteer can edit and resubmit to you."
           }
         },
         "faqs": {
@@ -1631,11 +1628,11 @@
           },
           "q3": {
             "question": "What does approving do?",
-            "answer": "It generates the signed PDF, records the issue date, and makes the certificate immutable and publicly verifiable. The first approved certificate becomes the volunteer default."
+            "answer": "It generates the PDF, records the issue date, and makes the certificate immutable and publicly verifiable. The first approved certificate becomes the volunteer default."
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1653,7 +1650,7 @@
         "steps": {
           "step1": {
             "title": "Review join requests",
-            "description": "New people register and request to join your organization. Approve them from the organization page and assign each one a role."
+            "description": "People who open your invite link may need your approval. Review each request on the organization page and decide whether to let them in."
           },
           "step2": {
             "title": "Manage members and roles",
@@ -1683,7 +1680,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1731,7 +1728,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "Create an account and request to join a partner organization during registration. An administrator approves your membership and assigns you a role before you can start."
+            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1757,7 +1754,7 @@
       },
       "verification": {
         "title": "Verification",
-        "description": "Each approved certificate has a public page and a QR code that links to it, so an employer can confirm it is genuine. The PDF is signed by the reviewing tutor."
+        "description": "Each approved certificate has a public page and a QR code that links to it, so an employer can confirm it is genuine. The PDF names the legal representative of the organization as signatory."
       }
     },
     "features": {
@@ -1805,7 +1802,7 @@
     "previewPdf": "Preview PDF",
     "goToCourses": "Go to courses",
     "shareLinkCopied": "Link copied!",
-    "invalidCoursesMessage": "You've rated some of your skills less than {rating} starts. You need a higher grade to request a certificate. Go back to the courses section to complete new courses and get higher ratings. ",
+    "invalidCoursesMessage": "You've rated some of your skills below {rating} stars. You need a higher grade to request a certificate. Go back to the courses section to complete new courses and get higher ratings.",
     "invalidCoursesTitle": "You can't request a certificate at the moment",
     "issuedOn": "Issued on",
     "missingCoursesMessage": "We require you to complete at least {count} learning courses to request a certification. Go back to the learning section to complete more courses.",
@@ -1827,17 +1824,17 @@
     "reviewApprove": "Approve",
     "reviewApproveSuccess": "Certificate approved successfully",
     "reviewComment": "Feedback",
-    "reviewCommentPlaceholder": "Describe what changes are needed...",
+    "reviewCommentPlaceholder": "Describe what changes are needed…",
     "reviewError": "Failed to review certificate. Please try again.",
     "reviewerCommentLabel": "Changes requested",
     "reviewRequestChanges": "Request changes",
     "reviewRequestChangesSuccess": "Changes requested successfully",
-    "reviewSubmitting": "Submitting...",
+    "reviewSubmitting": "Submitting…",
     "reviewTitle": "Review certificate",
     "resubmitButton": "Edit & Resubmit",
     "resubmitDescription": "Update the details and resubmit for review.",
     "resubmitError": "Failed to resubmit certificate. Please try again.",
-    "resubmitSubmitting": "Resubmitting...",
+    "resubmitSubmitting": "Resubmitting…",
     "resubmitSuccess": "Certificate resubmitted successfully",
     "resubmitTitle": "Edit your certificate",
     "statusApproved": "Approved",
@@ -1850,7 +1847,7 @@
     "statusWithdrawn": "Withdrawn",
     "title": "Your certificate",
     "activityDescription": "Activity description",
-    "activityDescriptionPlaceholder": "Describe your volunteering experience...",
+    "activityDescriptionPlaceholder": "Describe your volunteering experience…",
     "activityDuration": "Duration (hours)",
     "activityEndDate": "End date",
     "activityLocation": "Activity location",
@@ -1864,7 +1861,7 @@
     "submitCertificate": "Submit certificate",
     "submitError": "Failed to submit certificate. Please try again.",
     "submitSuccess": "Certificate submitted successfully! Your tutor will review it shortly.",
-    "submitting": "Submitting...",
+    "submitting": "Submitting…",
     "unknownVolunteer": "Unknown volunteer",
     "deletedUser": "Deleted user",
     "updatedOn": "Last updated",
@@ -1887,7 +1884,7 @@
     "publicJoinTitle": "Earn your own certificate",
     "publicJoinDescription": "Join the GloRe Network, complete volunteering courses, and get officially certified.",
     "publicJoinButton": "Join GloRe",
-    "publicAccessApp": "Already a member? Sign in",
+    "publicAccessApp": "Already a member? Log in",
     "publicOgDescription": "{name} has been officially certified for their volunteering activity at {org} by GloRe Certificate.",
     "assignTutor": "Assign tutor",
     "assignTutorError": "Failed to assign tutor. Please try again.",
@@ -1904,7 +1901,7 @@
     "unassignedCertificatesTitle": "Available to claim",
     "unassignedCertificatesMessage": "These certificates have no assigned reviewer yet.",
     "saveDraft": "Save draft",
-    "savingDraft": "Saving...",
+    "savingDraft": "Saving…",
     "draftSuccess": "Certificate saved as draft.",
     "draftError": "Failed to save draft.",
     "timeline": "Request history",
@@ -1972,7 +1969,7 @@
       "changesRequested": "Your tutor asked for changes",
       "back": "Back",
       "next": "Continue",
-      "saving": "Saving...",
+      "saving": "Saving…",
       "saved": "Draft saved",
       "saveError": "Could not save the draft",
       "discard": "Discard draft",
@@ -1983,7 +1980,7 @@
       "cancel": "Cancel",
       "submit": "Submit request",
       "resubmit": "Resubmit",
-      "submitting": "Submitting...",
+      "submitting": "Submitting…",
       "submitted": "Request submitted. Your tutor will review it soon.",
       "resubmitted": "Request resubmitted for review.",
       "continueDraft": "Continue editing",
@@ -2325,7 +2322,7 @@
     "emailPlaceholder": "john.doe@email.com",
     "role": "Role",
     "cancel": "Cancel",
-    "deleting": "Deleting...",
+    "deleting": "Deleting…",
     "you": "You",
     "statusPending": "Pending setup",
     "statusJoined": "Active",
@@ -2333,7 +2330,7 @@
     "removeMember": "Remove member",
     "removeMemberTitle": "Remove member",
     "removeMemberDescription": "This removes the user from the organization but keeps their account.",
-    "removing": "Removing...",
+    "removing": "Removing…",
     "memberRoleUpdated": "Member role updated",
     "memberRemoved": "Member removed",
     "joinRequestsTitle": "Join requests",
@@ -2346,7 +2343,7 @@
     "rejectRequestDescription": "You can optionally explain why this request is being rejected.",
     "optionalMessage": "Optional message",
     "optionalMessagePlaceholder": "Add a short message for the applicant",
-    "rejecting": "Rejecting...",
+    "rejecting": "Rejecting…",
     "joinRequestApproved": "Join request approved",
     "joinRequestRejected": "Join request rejected",
     "requestedOn": "Requested on {date}",
@@ -2379,7 +2376,7 @@
     "deleteOrganizationDescription": "This will permanently delete the organization and all memberships connected to it.",
     "deleteOrganizationHelp": "You can only delete organizations that do not yet have certificates.",
     "deleteOrganization": "Delete organization",
-    "saving": "Saving...",
+    "saving": "Saving…",
     "saveChanges": "Save changes",
     "settingsUpdated": "Organization updated successfully",
     "settingsUpdateError": "Failed to update organization settings.",
@@ -2389,7 +2386,6 @@
     "avatarRemoved": "Organization avatar removed",
     "deleteOrganizationError": "Failed to delete organization.",
     "organizationDeleted": "Organization deleted",
-    "overviewDescription": "A quick view of your organization's identity, contact info, and activity.",
     "memberCount": "Members",
     "memberBreakdown": "{admins, plural, one {# admin} other {# admins}}, {representatives, plural, one {# representative} other {# representatives}}, {tutors, plural, one {# tutor} other {# tutors}}, {volunteers, plural, one {# volunteer} other {# volunteers}}, {learners, plural, one {# learner} other {# learners}}",
     "pendingJoinRequests": "Pending join requests",
@@ -2399,7 +2395,6 @@
     "approvedCertificates": "Approved certificates",
     "approvedCertificatesDescription": "Certificates already issued",
     "location": "Location",
-    "activitySnapshot": "Live activity",
     "teamSnapshot": "Team snapshot",
     "admins": "Admins",
     "representatives": "Representatives",
@@ -2426,7 +2421,7 @@
     "leftOrganization": "You left the organization",
     "leaveTitle": "Leave organization",
     "leaveDescription": "You will lose access to {name}. Your own certificates stay yours.",
-    "leaving": "Leaving...",
+    "leaving": "Leaving…",
     "leaveOrganization": "Leave organization",
     "removeMemberNamed": "{name} loses access to the organization. Their account and certificates stay.",
     "close": "Close",
@@ -2465,7 +2460,7 @@
     "transferTarget": "New owner",
     "transferTargetPlaceholder": "Choose a representative",
     "transferConfirmLabel": "Type {name} to confirm",
-    "transferring": "Transferring...",
+    "transferring": "Transferring…",
     "ownershipTransferred": "Ownership transferred",
     "memberError_CONFIRMATION": "The name you typed does not match.",
     "memberError_FORBIDDEN": "You do not have permission to do this.",
@@ -2509,7 +2504,7 @@
     "activityRecent": "The latest changes in your organization.",
     "activityEmpty": "Nothing has happened yet. Invitations, joins, and certificate steps appear here.",
     "activityError": "More activity could not be loaded.",
-    "activityLoading": "Loading...",
+    "activityLoading": "Loading…",
     "activityLoadMore": "Load more",
     "activityViewAll": "View all activity",
     "activityUnknownPerson": "someone",
@@ -2684,8 +2679,8 @@
     "accountUpdated": "Account updated successfully",
     "accountUpdateError": "Failed to update account",
     "emailChangeRequested": "Check {email} and open the link to confirm your new address.",
-    "usernameDescription": "You can sign in with it instead of your email. It is also your public profile address, so changing it breaks old links.",
-    "searchCountry": "Search country...",
+    "usernameDescription": "You can log in with it instead of your email. It is also your public profile address, so changing it breaks old links.",
+    "searchCountry": "Search country…",
     "noCountryFound": "No country found.",
     "selectDate": "Select date",
     "reset": "Reset",
@@ -2700,8 +2695,8 @@
     "deleteAccountConfirmDescription": "This permanently deletes your account, profile, drafts, open requests, and progress. Certificates already issued stay in your organization's records without your name or details, their PDF is deleted, and they show as no longer valid. We email you a confirmation, and this cannot be undone. Export your data first if you want a copy.",
     "deleteAccountBlockedAdmin": "You are the only administrator of an organization. Transfer ownership before you delete your account.",
     "deleteAccountError": "Failed to delete account. Please try again.",
-    "deleting": "Deleting...",
-    "searchLanguage": "Search language...",
+    "deleting": "Deleting…",
+    "searchLanguage": "Search language…",
     "noLanguageFound": "No language found.",
     "noLanguagesSelected": "No languages selected yet.",
     "languagesSelected": "{count, plural, =1 {# language selected} other {# languages selected}}",
@@ -2715,17 +2710,17 @@
     "usernameReserved": "This username is reserved. Choose another one.",
     "emailDescription": "We email a confirmation link to the new address, and the change applies once you open it.",
     "sessions": "Active sessions",
-    "sessionsDescription": "Devices signed in to your account. Sign out of any you do not recognize.",
+    "sessionsDescription": "Devices logged in to your account. Log out of any you do not recognize.",
     "sessionsError": "Could not load your sessions.",
     "sessionDevice": "{browser} on {system}",
     "sessionUnknown": "Unknown device",
     "sessionCurrent": "This device",
     "sessionActive": "Active {time}",
-    "sessionRevoke": "Sign out",
-    "sessionRevoked": "Session signed out",
-    "sessionsRevoked": "Signed out of all other devices",
-    "sessionRevokeError": "Could not sign out the session. Please try again.",
-    "sessionsRevokeOthers": "Sign out of all other devices",
+    "sessionRevoke": "Log out",
+    "sessionRevoked": "Session logged out",
+    "sessionsRevoked": "Logged out of all other devices",
+    "sessionRevokeError": "Could not log out the session. Please try again.",
+    "sessionsRevokeOthers": "Log out of all other devices",
     "publicProfile": "Public profile",
     "publicProfileDescription": "Decide whether people can find your certificates through your profile address.",
     "publicProfileLabel": "Make my profile public",
@@ -2807,7 +2802,7 @@
     "contactEmail": "Contact email",
     "contactEmailPlaceholder": "contact@yourorg.org",
     "motivation": "Motivation",
-    "motivationPlaceholder": "Tell us about your organization, the volunteers you work with, and why you want to join GloRe...",
+    "motivationPlaceholder": "Tell us about your organization, the volunteers you work with, and why you want to join GloRe…",
     "motivationHelp": "At least {min} characters.",
     "reviewEmpty": "Not provided",
     "edit": "Edit",
@@ -2817,11 +2812,11 @@
     "back": "Back",
     "next": "Continue",
     "submit": "Send application",
-    "submitting": "Sending...",
+    "submitting": "Sending…",
     "submitError": "Something went wrong. Please try again.",
     "rateLimited": "Too many applications. Try again later.",
     "alreadyHaveAccount": "Already have an account?",
-    "login": "Sign in",
+    "login": "Log in",
     "goToLogin": "Go to login",
     "successTitle": "Application received",
     "successMessage": "Thank you. We sent a confirmation to {email}. Our team reviews every application and writes to you with the decision.",
@@ -2892,7 +2887,7 @@
       "approveError": "Failed to approve the organization. Please try again.",
       "approveSuccess": "{name} has been approved.",
       "approveTitle": "Approve organization",
-      "approving": "Approving...",
+      "approving": "Approving…",
       "cancel": "Cancel",
       "clearFilters": "Clear filters",
       "colJoined": "Joined",
@@ -2907,7 +2902,7 @@
       "createSubmit": "Create organization",
       "createSuccess": "{name} has been created.",
       "createTitle": "Create organization",
-      "creating": "Creating...",
+      "creating": "Creating…",
       "emptyFilteredMessage": "Try adjusting your search or filters.",
       "emptyFilteredTitle": "No matching organizations",
       "emptyMessage": "Create a new organization or invite one to get started.",
@@ -2938,17 +2933,17 @@
       "inviteSubmit": "Send invitation",
       "inviteSuccess": "{name} has been added and the representative has been notified.",
       "inviteTitle": "Invite organization",
-      "inviting": "Inviting...",
+      "inviting": "Inviting…",
       "memberCount": "{count, plural, =0 {No members} one {# member} other {# members}}",
       "membersDescription": "Manage who belongs to this organization and what they can do.",
       "memberSearchPlaceholder": "Search members",
       "noMembersFiltered": "No members match your search.",
       "optional": "optional",
       "reject": "Reject",
-      "rejectCommentPlaceholder": "Please explain why the registration was not approved...",
+      "rejectCommentPlaceholder": "Please explain why the registration was not approved…",
       "rejectDescription": "Reject the registration request for {name}? The representative will be notified by email and the organization will be listed as rejected.",
       "rejectError": "Failed to reject the organization. Please try again.",
-      "rejecting": "Rejecting...",
+      "rejecting": "Rejecting…",
       "rejectSuccess": "{name} has been rejected.",
       "rejectTitle": "Reject organization",
       "resultsCount": "{count, plural, =0 {No organizations} one {# organization} other {# organizations}}",
@@ -3034,7 +3029,7 @@
       "roleUpdateSuccess": "{name} is now {role}.",
       "ban": "Ban user",
       "banTitle": "Ban {name}",
-      "banDescription": "{name} is signed out right away and cannot sign in until the ban ends or you lift it. Platform admins cannot be banned.",
+      "banDescription": "{name} is logged out right away and cannot log in until the ban ends or you lift it. Platform admins cannot be banned.",
       "reasonLabel": "Reason",
       "reasonHint": "Required, {min} to {max} characters. It is saved in the audit log.",
       "banReasonPlaceholder": "Why is this account being banned?",
@@ -3046,20 +3041,20 @@
       "duration_custom": "Until a date",
       "banEndsOn": "Ban ends on",
       "confirmBan": "Ban user",
-      "banning": "Banning...",
+      "banning": "Banning…",
       "banSuccess": "{name} is banned.",
       "unban": "Unban user",
       "unbanTitle": "Unban {name}",
-      "unbanDescription": "{name} can sign in again right away. The ban stays in the audit log.",
+      "unbanDescription": "{name} can log in again right away. The ban stays in the audit log.",
       "confirmUnban": "Unban user",
-      "unbanning": "Unbanning...",
-      "unbanSuccess": "{name} can sign in again.",
+      "unbanning": "Unbanning…",
+      "unbanSuccess": "{name} can log in again.",
       "impersonate": "View as user",
       "impersonateTitle": "View as {name}",
       "impersonateDescription": "You see the platform as this user for {minutes} minutes. The start and the stop are logged with your reason. Passwords, emails, sessions, and account deletion stay locked.",
       "impersonateReasonPlaceholder": "Which support request or bug are you looking into?",
       "confirmImpersonate": "Start viewing",
-      "impersonating": "Starting...",
+      "impersonating": "Starting…",
       "cancel": "Cancel"
     },
     "impersonation": {
@@ -3068,7 +3063,7 @@
       "reason": "Reason: {reason}",
       "remaining": "{time} left",
       "stop": "Stop viewing",
-      "stopping": "Stopping...",
+      "stopping": "Stopping…",
       "stopError": "Could not stop the viewing session. Try again."
     },
     "errors": {
@@ -3088,7 +3083,7 @@
       "SELF": "You cannot do this to your own account.",
       "TARGET_BANNED": "Banned users cannot be viewed as.",
       "TARGET_IS_ADMIN": "Platform admins cannot be banned. Remove the admin role first.",
-      "UNAUTHORIZED": "Your session ended. Sign in again.",
+      "UNAUTHORIZED": "Your session ended. Log in again.",
       "UNKNOWN": "Something went wrong. Try again.",
       "USER_NOT_FOUND": "This user no longer exists.",
       "EMAIL_TAKEN": "An account with this email already exists.",
@@ -3250,17 +3245,17 @@
     "step_contact_title": "How can we reach you?",
     "step_contact_description": "Choose your language and, if you like, add a phone number.",
     "step_password_title": "Secure your account",
-    "step_password_description": "Create the password you will use to sign in.",
+    "step_password_description": "Create the password you will use to log in.",
     "back": "Back",
     "next": "Continue",
     "submit": "Finish",
-    "submitting": "Setting up...",
+    "submitting": "Setting up…",
     "error": "Something went wrong. Please try again.",
     "alreadyOnboarded": "Your profile is already complete.",
     "welcomeTitle": "Welcome aboard, {name}!",
     "welcomeDescription": "Your profile is ready. We also sent you a welcome email.",
     "usernameLabel": "Your username",
-    "usernameDescription": "Sign in with your email or this username. You can change it in your settings.",
+    "usernameDescription": "Log in with your email or this username. You can change it in your settings.",
     "next_compass": "Open your skill compass",
     "next_catalog": "Browse the courses",
     "next_queue": "Open the review queue",
@@ -3354,7 +3349,7 @@
       "subjectChanges": "Changes requested on your GloRe certificate"
     },
     "organization/join-request": {
-      "button": "Sign in to GloRe",
+      "button": "Log in to GloRe",
       "buttonSetup": "Set up your account",
       "detailsAccepted": "You can now access the organization on the GloRe platform.",
       "detailsAcceptedNew": "Use the button below to set up your account and start using the platform.",
@@ -3446,10 +3441,10 @@
       "preview_rejected": "Your registration of {organizationName} on GloRe was declined.",
       "intro_approved": "Good news: the registration of {organizationName} has been approved.",
       "intro_rejected": "We reviewed the registration of {organizationName} and could not approve it.",
-      "details_approved": "Sign in to invite your members and start issuing certificates.",
+      "details_approved": "Log in to invite your members and start issuing certificates.",
       "details_approved_new": "Use the button below to create your account and set up your organization.",
       "detailsComment": "Message from the reviewer: {comment}",
-      "button": "Sign in to GloRe",
+      "button": "Log in to GloRe",
       "buttonSetup": "Set up your account",
       "expiry": "This link is valid for the next {days, plural, one {day} other {# days}}.",
       "footer": "You're receiving this email because you registered an organization on GloRe."
@@ -3517,7 +3512,7 @@
       "subject": "Welcome to GloRe",
       "preview": "Your GloRe account is ready.",
       "intro": "Welcome to GloRe! Your account is ready. This is your username:",
-      "details": "You can sign in with your email address or with your username.",
+      "details": "You can log in with your email address or with your username.",
       "button": "Open GloRe",
       "footer": "You receive this email because you created a GloRe account."
     },
@@ -3554,22 +3549,22 @@
     "decline": "Decline",
     "accepted": "Welcome to {organization}",
     "declined": "Invitation declined",
-    "signInDescription": "Sign in with the account for {email} to accept this invitation.",
+    "signInDescription": "Log in with the account for {email} to accept this invitation.",
     "password": "Password",
-    "signIn": "Sign in and continue",
+    "signIn": "Log in and continue",
     "forgotPassword": "Forgot your password?",
     "createDescription": "We will create your account for {email}. You will set up your profile in the next step.",
     "createAccount": "Create account and accept",
     "mismatchTitle": "This invitation is for a different account",
-    "mismatchDescription": "You are signed in as {current}, but the invitation was sent to {email}. Sign out and open the link again to continue.",
-    "signOut": "Sign out",
+    "mismatchDescription": "You are logged in as {current}, but the invitation was sent to {email}. Log out and open the link again to continue.",
+    "signOut": "Log out",
     "expires": "This invitation expires on {date}.",
     "declineTitle": "Decline this invitation?",
     "declineDescription": "{organization} will be told that you declined. They can send you a new invitation later.",
     "cancel": "Cancel",
-    "declining": "Declining...",
+    "declining": "Declining…",
     "goToDashboard": "Go to dashboard",
-    "goToLogin": "Go to sign in",
+    "goToLogin": "Go to login",
     "status_invalid_title": "Invitation not found",
     "status_invalid_description": "This link is not valid. Check that you copied the whole address or ask for a new invitation.",
     "status_expired_title": "This link has expired",
@@ -3577,7 +3572,7 @@
     "status_revoked_title": "This link is no longer active",
     "status_revoked_description": "{organization} cancelled it. Contact them if you think this is a mistake.",
     "status_accepted_title": "Invitation already accepted",
-    "status_accepted_description": "This invitation to {organization} has already been used. Sign in to open your dashboard.",
+    "status_accepted_description": "This invitation to {organization} has already been used. Log in to open your dashboard.",
     "status_declined_title": "Invitation declined",
     "status_declined_description": "This invitation was declined. Ask {organization} for a new one if you changed your mind.",
     "status_exhausted_title": "This link has reached its limit",
@@ -3592,7 +3587,7 @@
     "title": "Join {organization}",
     "description": "Join as {role} to take part in the programs of this organization.",
     "descriptionApproval": "Request access as {role}. Someone from the organization will review your request.",
-    "signedInAs": "Signed in as {email}",
+    "signedInAs": "Logged in as {email}",
     "join": "Join organization",
     "requestAccess": "Request access",
     "joined": "You joined {organization}",
@@ -3607,13 +3602,13 @@
     "guestNoteApproval": "Your request goes to the organization. If they approve it, we will send a link to your email.",
     "continue": "Continue",
     "haveAccount": "Already have an account?",
-    "signIn": "Sign in",
+    "signIn": "Log in",
     "sentTitle": "Check your inbox",
     "sentDescription": "If the link is valid, we sent the next steps to your email. Open the message to join {organization}.",
     "requestedTitle": "Request sent",
     "requestedDescription": "The team at {organization} will review it. We will email you their decision.",
     "goToDashboard": "Go to dashboard",
-    "goToLogin": "Go to sign in"
+    "goToLogin": "Go to login"
   },
   "Invitations": {
     "tab": "Invitations",
@@ -3644,7 +3639,7 @@
     "resend": "Resend",
     "revoke": "Revoke",
     "cancel": "Cancel",
-    "revoking": "Revoking...",
+    "revoking": "Revoking…",
     "resent": "Invitation sent again to {email}",
     "revoked": "Invitation to {email} revoked",
     "revokeTitle": "Revoke this invitation?",
@@ -3705,9 +3700,9 @@
     "row_role_taken": "Role already taken",
     "row_failed": "Failed",
     "requestApprovedInvited": "Request approved. An invitation was sent to the applicant.",
-    "requestInviteHint": "This request was not made from a signed-in account. Approving it sends an invitation by email.",
+    "requestInviteHint": "This request was not made from a logged-in account. Approving it sends an invitation by email.",
     "error_ACCEPTED": "This invitation was already accepted.",
-    "error_ACCOUNT_EXISTS": "An account with this email already exists. Sign in to accept the invitation.",
+    "error_ACCOUNT_EXISTS": "An account with this email already exists. Log in to accept the invitation.",
     "error_ALREADY_INVITED": "This person already has a pending invitation.",
     "error_ALREADY_MEMBER": "This person is already a member.",
     "error_ALREADY_REQUESTED": "You already have a pending request for this organization.",
@@ -4056,8 +4051,8 @@
     }
   },
   "Legal": {
-    "privacy": "Privacy Policy",
-    "terms": "Terms of Service",
+    "privacy": "Privacy policy",
+    "terms": "Terms of use",
     "qualityCharter": "Quality Charter",
     "navigation": "Legal documents",
     "home": "Go to GloRe",

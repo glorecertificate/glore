@@ -95,7 +95,7 @@ const AnalyticsContent = ({
             <CardHeader className="p-3 pb-1.5">
               <div className="flex items-center justify-between">
                 <CardDescription className="text-xs font-medium">{label}</CardDescription>
-                <Icon className="size-3 text-muted-foreground/60" />
+                <Icon className="size-3 text-muted-foreground" />
               </div>
             </CardHeader>
             <CardContent className="px-3 pt-0 pb-3">
@@ -111,7 +111,7 @@ const AnalyticsContent = ({
           <div className="flex flex-col divide-y rounded-lg border">
             {data.lessonStats.map((lesson, idx) => (
               <div className="flex items-center gap-3 px-3 py-2.5" key={lesson.id}>
-                <span className="w-4 shrink-0 text-xs text-muted-foreground/60 tabular-nums">{idx + 1}</span>
+                <span className="w-4 shrink-0 text-xs text-muted-foreground tabular-nums">{idx + 1}</span>
                 <span className="min-w-0 flex-1 truncate text-sm">
                   {lesson.title ? localize(lesson.title) : tEditor('analyticsLessonFallback', { number: idx + 1 })}
                 </span>

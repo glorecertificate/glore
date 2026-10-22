@@ -112,7 +112,7 @@ export const ApplicationForm = () => {
   if (submittedEmail) {
     return (
       <div className="flex flex-col items-center gap-6 rounded-lg border p-8 text-center">
-        <LucideIcon className="size-12 text-success" name="circle-check" />
+        <LucideIcon className="size-12 text-success-text" name="circle-check" />
         <div className="space-y-2">
           <h2 className="text-xl font-semibold">{t('successTitle')}</h2>
           <p className="text-sm text-muted-foreground">{t('successMessage', { email: submittedEmail })}</p>

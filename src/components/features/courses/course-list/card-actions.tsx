@@ -150,7 +150,7 @@ export const CourseCardActions = ({
             <AlertDialog onOpenChange={setDeleteDialogOpen} open={deleteDialogOpen}>
               <AlertDialogTrigger asChild>
                 <Button size="icon" title={t('delete')} variant="outline">
-                  <Trash2Icon className="text-destructive" />
+                  <Trash2Icon className="text-destructive-text" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>

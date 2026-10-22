@@ -37,7 +37,7 @@ const SkillsError = () => {
   if (!code) return null
 
   return (
-    <p className="text-sm text-destructive" role="alert">
+    <p className="text-sm text-destructive-text" role="alert">
       {t(code as never)}
     </p>
   )

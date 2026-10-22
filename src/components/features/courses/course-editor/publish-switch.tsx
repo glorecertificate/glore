@@ -45,7 +45,7 @@ export const PublishSwitch = ({
       {/* <span
         className={cn(
           'flex size-9 shrink-0 items-center justify-center rounded-full transition-colors duration-300 motion-reduce:transition-none',
-          published ? 'bg-success/15 text-success' : 'bg-muted text-muted-foreground'
+          published ? 'bg-success/15 text-success-text' : 'bg-muted text-muted-foreground'
         )}
       >
         <svg

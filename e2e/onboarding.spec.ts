@@ -45,7 +45,7 @@ test('takes an invited volunteer from the invitation to the dashboard', async ({
   await page.getByRole('gridcell', { name: '15' }).first().click()
   await page.getByLabel('Place of birth').fill('London, United Kingdom')
   await page.getByRole('combobox', { name: 'Nationality' }).click()
-  await page.getByPlaceholder('Search country...').fill('United Kingdom')
+  await page.getByPlaceholder('Search country…').fill('United Kingdom')
   await page.getByRole('option', { name: '🇬🇧 United Kingdom' }).click()
   await page.getByRole('button', { name: 'Continue' }).click()
 

@@ -82,8 +82,8 @@ test.describe('settings', () => {
     const before = await rows.count()
     expect(before).toBeGreaterThanOrEqual(2)
 
-    await rows.getByRole('button', { name: 'Sign out' }).first().click()
-    await expect(page.getByText('Session signed out')).toBeVisible()
+    await rows.getByRole('button', { name: 'Log out' }).first().click()
+    await expect(page.getByText('Session logged out')).toBeVisible()
     await expect(rows).toHaveCount(before - 1)
 
     await other.close()

@@ -68,11 +68,11 @@ export const DropdownMenuItem = <T extends React.ElementType = typeof DropdownMe
   <Component
     className={cn(
       'relative flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none',
-      'data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:pl-8 data-[variant=destructive]:text-destructive',
-      "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!",
+      'data-disabled:pointer-events-none data-disabled:opacity-50 data-inset:pl-8 data-[variant=destructive]:text-destructive-text',
+      "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive-text!",
       variant !== 'flat' && [
         'cursor-pointer focus:bg-accent/50 focus:text-accent-foreground',
-        'focus:data-[variant=destructive]:bg-destructive/5 focus:data-[variant=destructive]:text-destructive focus:dark:data-[variant=destructive]:bg-destructive/20',
+        'focus:data-[variant=destructive]:bg-destructive/5 focus:data-[variant=destructive]:text-destructive-text focus:dark:data-[variant=destructive]:bg-destructive/20',
       ],
       active && 'bg-accent shadow-xs hover:bg-accent! dark:shadow-sm',
       className
@@ -182,7 +182,7 @@ export const DropdownMenuSubTrigger = ({
 }) => (
   <DropdownMenuPrimitive.SubTrigger
     className={cn(
-      `flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-inset:pl-8 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive!`,
+      `flex cursor-default items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-inset:pl-8 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-muted-foreground data-[variant=destructive]:*:[svg]:text-destructive-text!`,
       className
     )}
     data-inset={inset}

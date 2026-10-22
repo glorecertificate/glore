@@ -82,7 +82,7 @@ export const FormLabel = ({ className, ...props }: React.ComponentProps<typeof L
 
   return (
     <Label
-      className={cn('data-[error=true]:text-destructive', className)}
+      className={cn('data-[error=true]:text-destructive-text', className)}
       data-error={Boolean(error)}
       data-slot="form-label"
       htmlFor={formItemId}
@@ -128,7 +128,7 @@ export const FormMessage = ({ className, ...props }: React.ComponentProps<'p'>) 
 
   return (
     <p
-      className={cn('text-sm leading-[normal] text-destructive', className)}
+      className={cn('text-sm leading-[normal] text-destructive-text', className)}
       data-slot="form-message"
       id={formMessageId}
       {...props}

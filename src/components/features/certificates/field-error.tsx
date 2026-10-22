@@ -15,7 +15,7 @@ export const FieldError = ({ className, ...props }: React.ComponentProps<'p'>) =
 
   return (
     <p
-      className={cn('text-sm leading-[normal] text-destructive', className)}
+      className={cn('text-sm leading-[normal] text-destructive-text', className)}
       data-slot="form-message"
       id={formMessageId}
       {...props}

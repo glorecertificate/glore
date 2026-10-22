@@ -113,7 +113,7 @@ export const CourseCompleteView = ({
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">{t('summaryTitle')}</h2>
         <p className="flex items-center gap-2 text-sm text-muted-foreground">
-          <LucideIcon className="size-4 text-success" name="circle-check" />
+          <LucideIcon className="size-4 text-success-text" name="circle-check" />
           {t('lessonsDone', { count: overview.progress.completed })}
         </p>
         {skills.length > 0 && (

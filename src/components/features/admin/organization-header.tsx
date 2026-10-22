@@ -44,9 +44,7 @@ export const OrganizationHeader = ({ organization }: { organization: Organizatio
         <div className="min-w-0 flex-1 space-y-1.5">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl font-semibold tracking-tight">{organization.name}</h1>
-            <Badge className="capitalize" variant={statusVariant}>
-              {t(statusLabel)}
-            </Badge>
+            <Badge variant={statusVariant}>{t(statusLabel)}</Badge>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-muted-foreground">
             {location && (

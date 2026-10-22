@@ -43,7 +43,7 @@ export type TeamStatus = 'joined' | 'pending'
 const STAT_ACCENTS = {
   brand: 'border-brand/20 bg-brand/10 text-brand-text',
   warning: 'border-warning/25 bg-warning/15 text-warning-text',
-  success: 'border-success/25 bg-success/10 text-success',
+  success: 'border-success/25 bg-success/10 text-success-text',
 } as const
 
 export const TeamStatCard = ({
@@ -122,7 +122,7 @@ export const TeamMemberRow = ({
               </Badge>
             )}
             {status === 'pending' && (
-              <Badge className="px-1.5 capitalize" size="sm" variant="warning">
+              <Badge className="px-1.5" size="sm" variant="warning">
                 {t('status_pending')}
               </Badge>
             )}
@@ -131,7 +131,7 @@ export const TeamMemberRow = ({
         </div>
       </div>
       <div className="flex items-center gap-2 sm:gap-2.5">
-        <Badge className={cn('gap-1 border capitalize')} variant="ghost">
+        <Badge className={cn('gap-1 border')} variant="ghost">
           {role === 'admin' ? <ShieldUserIcon className="size-3" /> : <PencilIcon className="size-3" />}
           {t(`role_${role}`)}
         </Badge>

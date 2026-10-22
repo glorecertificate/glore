@@ -143,7 +143,7 @@ export const ImageCropper = ({
 
           {value && onRemove ? (
             <Button
-              className="w-fit text-destructive hover:bg-destructive/10 hover:text-destructive"
+              className="w-fit text-destructive-text hover:bg-destructive/10 hover:text-destructive-text"
               disabled={disabled}
               onClick={onRemove}
               size="sm"

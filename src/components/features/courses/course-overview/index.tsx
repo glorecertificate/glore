@@ -128,7 +128,7 @@ export const CourseOverviewView = ({
           <ul className="grid gap-2 sm:grid-cols-2">
             {outcomes.map(outcome => (
               <li className="flex items-start gap-2 text-sm" key={outcome}>
-                <LucideIcon className="mt-0.5 size-4 shrink-0 text-success" name="circle-check" />
+                <LucideIcon className="mt-0.5 size-4 shrink-0 text-success-text" name="circle-check" />
                 {outcome}
               </li>
             ))}

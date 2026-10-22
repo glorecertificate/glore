@@ -17,6 +17,7 @@ vi.mock('@/actions/notifications/notify', () => ({ notify }))
 vi.mock('@/lib/storage', () => ({ r2DeleteQuietly: removeObject }))
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
 vi.mock('next/headers', () => ({ headers: () => Promise.resolve(new Headers()) }))
+vi.mock('next/server', () => ({ connection: () => Promise.resolve() }))
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
 

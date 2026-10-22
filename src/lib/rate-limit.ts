@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { headers } from 'next/headers'
+import { connection } from 'next/server'
 
 import { lt, sql } from 'drizzle-orm'
 
@@ -8,6 +9,7 @@ import { db } from '@/db/client'
 import { rateLimits } from '@/db/schema/rate-limits'
 
 export const checkRateLimit = async (key: string, max: number, windowMs: number) => {
+  await connection()
   const now = Date.now()
   const expired = sql`${rateLimits.lastRequest} <= ${now - windowMs}`
 

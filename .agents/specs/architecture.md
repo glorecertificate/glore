@@ -61,6 +61,7 @@ src/
 │   ├── constants.ts    # Route roots, regex validators
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail)
+│   ├── http.ts         # Size-limited body reads, closed Better Auth paths
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)

@@ -17,6 +17,19 @@ test.describe('anonymous', () => {
   })
 })
 
+test.describe('platform admin over HTTP', () => {
+  test.use({ storageState: authFile('admin') })
+
+  test('cannot reach the Better Auth admin endpoints', async ({ request }) => {
+    const responses = await Promise.all([
+      request.get('/api/auth/admin/list-users'),
+      request.post('/api/auth/admin/set-role', { data: { role: 'admin', userId: 'none' } }),
+      request.post('/api/auth//admin/ban-user', { data: { userId: 'none' } }),
+    ])
+    expect(responses.map(response => response.status())).toEqual([404, 404, 404])
+  })
+})
+
 test.describe('platform admin', () => {
   test.use({ storageState: authFile('admin') })
 

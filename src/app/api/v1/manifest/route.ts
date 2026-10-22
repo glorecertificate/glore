@@ -1,16 +1,16 @@
 import { type MetadataRoute } from 'next'
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { type Locale } from 'next-intl'
 import { getTranslations } from 'next-intl/server'
 
-import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
 export const GET = async (request: NextRequest) => {
   const url = new URL(request.url)
-  const locale = (url.searchParams.get('/locale') ?? DEFAULT_LOCALE) as Locale
+  const requested = url.searchParams.get('locale')
+  const locale = LOCALES.find(item => item === requested) ?? DEFAULT_LOCALE
   const t = await getTranslations({ locale, namespace: 'Metadata' })
 
   const manifest: MetadataRoute.Manifest = {

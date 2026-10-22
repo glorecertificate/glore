@@ -28,7 +28,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 | Path                            | Method   | Description                                                |
 | ------------------------------- | -------- | ---------------------------------------------------------- |
-| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all handler                              |
+| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all; `/api/auth/admin/*` answers 404     |
 | `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
 | `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
 | `/api/v1/join`                  | GET      | Team invitation join endpoint                              |

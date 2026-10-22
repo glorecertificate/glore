@@ -6,7 +6,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W0.
-- Next up: W0.7. W0.6 waits on Neon `staging` (branch limit, see log).
+- Next up: W1 lanes. W0.6 waits on Neon `staging` (branch limit, see log).
 - Branch: local `release/v1` from `main` at `8384bd1e`, created in W0.1. Work after the PDF demo continues on `release/v1-next` in `.claude/worktrees/v1`, against the local database `glore_v1`; `release/v1` fast-forwards to it after the demo.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -22,8 +22,8 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 | W0.4 | [x] fde38ee1                 | `config/app.json` adds `maxSkills` 4, `minActivityHours` 100, `minActivityMonths` 3, `invitationExpiryDays` 7, `reviewReminderDays` [3, 7], `maxBulkInvites` 50. `SKILL_LEVELS` constant with i18n names. `fullName()` util that never prints `null`.                                                                | Keys in all three catalogs.                                            |
 | W0.5 | [x] b8d3e625                 | UI kit in `src/components/ui/`: `ArrowsMotif`, `LevelDots`, `Timeline`, shadcn `table` plus `DataTable` (sort, filters slot, pagination, row actions, empty and loading), `StatCard` with `NumberTicker`, `Chart` (lazy), `CopyButton`, `QrCode`, `SegmentedControl`, `Banner`, `AvatarStack`, `--brand-quaternary`. | AA contrast checked; screenshot of each.                               |
 | W0.6 | [~] orchestrator, 2026-10-22 | `SEED_PASSWORD` becomes `Password1!`; e2e `AUTH_ROLES` adds tutor, representative, learner, editor. Scaffold `scripts/seed-demo.mts` (`db:seed:demo`) with accounts, `TEST_EMAIL` derivation, and the staging guard. Create Neon `staging` and migrate it.                                                           | `db:seed` and e2e still pass; `staging` branch exists and is migrated. |
-| W0.7 | [ ]                          | Close `/api/auth/admin/*` over HTTP. Move `react-email` to dependencies. Drop `react-spring` if unused. Upload route checks size before reading the body. Fix the manifest locale param.                                                                                                                             | e2e asserts the admin endpoints answer 404.                            |
-| W0.8 | [x]                          | `reference.md` documents `TEST_EMAIL` (scripts only, excluded from the env schema). `.env.example` already lists it (user).                                                                                                                                                                                          | Docs match code.                                                       |
+| W0.7 | [x]                          | Close `/api/auth/admin/*` over HTTP. Move `react-email` to dependencies. Drop `react-spring` if unused. Upload route checks size before reading the body. Fix the manifest locale param.                                                                                                                             | e2e asserts the admin endpoints answer 404.                            |
+| W0.8 | [x] 3f700472                 | `reference.md` documents `TEST_EMAIL` (scripts only, excluded from the env schema). `.env.example` already lists it (user).                                                                                                                                                                                          | Docs match code.                                                       |
 
 ## W1 feature lanes (parallel worktrees)
 
@@ -157,3 +157,4 @@ Each row runs in the browser as the demo account from `manual-testing.md` and ha
 - 2026-10-22, W0.6: `db:seed:demo --target <local|staging>` with the manual-testing accounts on `TEST_EMAIL` plus-addresses; staging needs the database setting `glore.environment = 'staging'`. `AUTH_ROLES` covers all seven seed roles; e2e not rerun while the demo server is reserved.
 - 2026-10-22, W0.6 blocked: Neon refused `staging` with "branches limit exceeded". Freeing a slot means deleting a branch (archived Vercel previews are candidates); asked the user.
 - 2026-10-22, W0.8: `TEST_EMAIL` documented in `reference.md`; seed docs moved to `workflow.md` "Seeds" for the budget.
+- 2026-10-22, W0.7: `/api/auth/admin/*` answers 404 over HTTP (server `auth.api` calls unaffected); upload and AI JSON bodies stream with a size cap; manifest reads `?locale=`; `react-email` is a dependency; `react-spring` stays (used by `globe.tsx`). The e2e 404 spec waits for the dev server after the demo.

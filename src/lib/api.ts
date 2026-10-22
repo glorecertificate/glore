@@ -3,6 +3,7 @@ import 'server-only'
 import { type NextRequest, NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
+import { readLimitedBody } from '@/lib/http'
 import { checkRateLimit } from '@/lib/rate-limit'
 
 const MAX_JSON_BODY_LENGTH = 256 * 1024
@@ -22,10 +23,10 @@ export const authorizeEditorRequest = async (request: NextRequest, scope: string
 }
 
 export const readJsonBody = async (request: NextRequest): Promise<unknown> => {
-  const text = await request.text()
-  if (text.length > MAX_JSON_BODY_LENGTH) return null
+  const { bytes } = await readLimitedBody(request.body, MAX_JSON_BODY_LENGTH)
+  if (!bytes) return null
   try {
-    return JSON.parse(text)
+    return JSON.parse(new TextDecoder().decode(bytes))
   } catch {
     return null
   }

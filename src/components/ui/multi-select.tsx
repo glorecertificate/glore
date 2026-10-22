@@ -189,10 +189,11 @@ export const MultiSelectBadge = ({
     if (disabled) {
       return
     }
-    if (!(label || rootLabel)) {
+    const name = label || rootLabel
+    if (!name) {
       return t('removeItem')
     }
-    return `${t('remove')} ${label ?? rootLabel}`
+    return t('removeNamed', { name })
   })()
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {

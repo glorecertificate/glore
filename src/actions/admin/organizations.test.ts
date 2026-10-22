@@ -104,4 +104,11 @@ describe.skipIf(!isLocalDatabase)('admin organization decisions', () => {
     expect(result.error).toBeFalsy()
     expect(updateTag).toHaveBeenCalledWith(CacheTag.Organizations)
   })
+
+  it('reads the organization name for the page title', async () => {
+    const id = await submit('title')
+
+    expect(await context.actions.getAdminOrganizationName(id)).toBe(`Decision title ${suffix}`)
+    expect(await context.actions.getAdminOrganizationName(2_000_000_000)).toBeNull()
+  })
 })

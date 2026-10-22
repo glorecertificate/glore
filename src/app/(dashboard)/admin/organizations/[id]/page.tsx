@@ -1,13 +1,21 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { getAdminOrganization } from '@/actions/admin/organizations'
+import { getAdminOrganization, getAdminOrganizationName } from '@/actions/admin/organizations'
 import { AdminOrganizationDetail } from '@/components/features/admin/organization-detail'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { PageTitle } from '@/components/layout/page-title'
 import { BreadcrumbItem, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { HeaderBreadcrumb } from '@/components/ui/header'
+
+export const generateMetadata = async ({ params }: PageProps<'/admin/organizations/[id]'>) => {
+  const organizationId = Number((await params).id)
+  if (!organizationId || Number.isNaN(organizationId)) return
+  const name = await getAdminOrganizationName(organizationId)
+  if (!name) return
+  return { title: name }
+}
 
 const AdminOrganizationContent = async ({ params }: { params: PageProps<'/admin/organizations/[id]'>['params'] }) => {
   const { id } = await params

@@ -23,6 +23,9 @@ export const selectSort = (current: DataTableSort | null, id: string): DataTable
 export const flipSort = (current: DataTableSort | null): DataTableSort | null =>
   current ? { descending: !current.descending, id: current.id } : null
 
+export const sortActionKey = (current: DataTableSort | null) =>
+  current && !current.descending ? 'sortDescending' : 'sortAscending'
+
 export const sortableColumns = <C extends { sortValue?: unknown }>(columns: C[]) =>
   columns.filter(column => column.sortValue)
 

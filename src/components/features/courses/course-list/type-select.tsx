@@ -95,7 +95,7 @@ export const CourseListTypeSelect = (
           <MultiSelectBadge
             className={cn('py-0.75 text-xs', courseTypeVariants({ type: value }))}
             key={value}
-            label={t('courseType').toLowerCase()}
+            label={label}
             value={value}
             variant="ghost"
           >

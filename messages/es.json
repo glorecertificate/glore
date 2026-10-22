@@ -356,8 +356,8 @@
     },
     "MultiSelect": {
       "item": "Artículo",
-      "remove": "Quitas",
       "removeItem": "Quitar elemento",
+      "removeNamed": "Quitar {name}",
       "seeAllSelected": "Ver todos los elementos seleccionados",
       "selectAtLeastOne": "Debes seleccionar al menos un {item}"
     },
@@ -756,8 +756,8 @@
       "previous": "Anterior",
       "next": "Siguiente",
       "sortBy": "Ordenar por",
-      "sortAscending": "Orden ascendente",
-      "sortDescending": "Orden descendente"
+      "sortAscending": "Ordenar de forma ascendente",
+      "sortDescending": "Ordenar de forma descendente"
     },
     "Chart": {
       "empty": "Todavía no hay datos",

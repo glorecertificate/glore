@@ -365,8 +365,8 @@
     },
     "MultiSelect": {
       "item": "Elemento",
-      "remove": "Rimuovi",
       "removeItem": "Rimuovi elemento",
+      "removeNamed": "Rimuovi {name}",
       "seeAllSelected": "Vedi tutti gli elementi selezionati",
       "selectAtLeastOne": "È necessario selezionare almeno un {item}"
     },
@@ -756,8 +756,8 @@
       "previous": "Precedente",
       "next": "Successiva",
       "sortBy": "Ordina per",
-      "sortAscending": "Ordine crescente",
-      "sortDescending": "Ordine decrescente"
+      "sortAscending": "Ordina in ordine crescente",
+      "sortDescending": "Ordina in ordine decrescente"
     },
     "Chart": {
       "empty": "Non ci sono ancora dati",

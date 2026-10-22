@@ -253,6 +253,16 @@ export const createOrganization = async ({
   return result
 }
 
+export const getAdminOrganizationName = async (organizationId: number) => {
+  const currentUser = await getCurrentUser()
+  if (!currentUser.isAdmin) return null
+
+  const { data } = await safeQuery(() =>
+    db.query.organizations.findFirst({ columns: { name: true }, where: eq(organizations.id, organizationId) })
+  )
+  return data?.name ?? null
+}
+
 export const getAdminOrganization = async (organizationId: number) => {
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { data: null, error: 'Forbidden' }

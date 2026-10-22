@@ -11,6 +11,7 @@ import {
   type DataTableSortValue,
   flipSort,
   selectSort,
+  sortActionKey,
   sortRows,
   sortableColumns,
   toggleSort,
@@ -138,7 +139,7 @@ export const DataTable = <T,>({
             </SelectContent>
           </Select>
           <Button
-            aria-label={sort?.descending ? t('sortDescending') : t('sortAscending')}
+            aria-label={t(sortActionKey(sort))}
             disabled={!sort}
             onClick={onFlipSort}
             size="icon"

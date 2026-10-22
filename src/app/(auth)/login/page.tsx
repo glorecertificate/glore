@@ -5,6 +5,7 @@ import { createSearchParamsCache } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
 import { AuthFlow } from '@/components/features/auth/auth-flow'
+import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
 import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
@@ -14,8 +15,8 @@ import { appTitle } from '@/lib/metadata'
 const { parse } = createSearchParamsCache(authParsers)
 
 export const generateMetadata = async ({ searchParams }: PageProps<'/login'>) => {
-  const [{ token }, t] = await Promise.all([parse(searchParams), getTranslations('Auth')])
-  return { title: { absolute: appTitle(t(token ? 'passwordResetTitle' : 'loginTitle')) } }
+  const [params, t] = await Promise.all([parse(searchParams), getTranslations('Auth')])
+  return { title: { absolute: appTitle(t(authMetaTitleKey(defaultAuthView(params)))) } }
 }
 
 const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'>['searchParams'] }) => {

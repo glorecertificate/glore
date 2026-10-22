@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 
 import { EmailProviderActions } from '@/components/features/auth/email-provider-actions'
 import { LoginForm } from '@/components/features/auth/login-form'
+import { authMetaTitleKey, defaultAuthView } from '@/components/features/auth/meta'
 import { authParsers } from '@/components/features/auth/params'
 import { PasswordRequestForm } from '@/components/features/auth/password-request-form'
 import { PasswordResetForm } from '@/components/features/auth/password-reset-form'
@@ -245,8 +246,7 @@ export const AuthFlow = ({
 }) => {
   const t = useTranslations('Auth')
 
-  const defaultView = params.error === 'INVALID_TOKEN' ? 'invalid_token' : params.token ? 'password_reset' : 'login'
-  const [view, setView] = useState(defaultView as Enum<AuthView>)
+  const [view, setView] = useState<Enum<AuthView>>(() => defaultAuthView(params))
   const [username, setUsername] = useState(defaultUsername)
   const [, setParams] = useQueryStates(authParsers, { history: 'replace' })
 
@@ -259,10 +259,7 @@ export const AuthFlow = ({
   const key = camelize(view)
   const title = view ? t(`${key}Title`) : null
 
-  useMetadata({
-    title: t(`${key}MetaTitle`),
-    suffix: view === 'login' ? false : undefined,
-  })
+  useMetadata({ title: t(authMetaTitleKey(view)) })
 
   useLayoutEffect(() => {
     const expired = params.expired

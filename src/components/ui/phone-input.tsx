@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useMessages, useTranslations } from 'next-intl'
@@ -25,6 +25,7 @@ export const PhoneInput = ({ defaultCountry = 'it', disabled, onChange, value, .
   const tCountries = useTranslations('Intl.Countries')
   const messages = useMessages()
 
+  const contentId = useId()
   const [open, setOpen] = useState(false)
   const [country, setCountry] = useState(() => splitPhoneNumber(value).country ?? defaultCountry)
 
@@ -52,7 +53,7 @@ export const PhoneInput = ({ defaultCountry = 'it', disabled, onChange, value, .
         <Popover onOpenChange={setOpen} open={open}>
           <PopoverTrigger asChild>
             <InputGroupButton
-              aria-controls="#"
+              aria-controls={contentId}
               aria-expanded={open}
               aria-label={t('selectPrefix')}
               className="gap-1 font-normal"
@@ -64,7 +65,7 @@ export const PhoneInput = ({ defaultCountry = 'it', disabled, onChange, value, .
               <ChevronsUpDownIcon className="size-3 shrink-0 opacity-50" />
             </InputGroupButton>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-72 p-0">
+          <PopoverContent align="start" className="w-72 p-0" id={contentId}>
             <Command>
               <CommandInput placeholder={t('search')} />
               <CommandList>

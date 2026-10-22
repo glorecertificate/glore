@@ -4,6 +4,7 @@ import {
   type DataTableSort,
   flipSort,
   selectSort,
+  sortActionKey,
   sortRows,
   sortableColumns,
   toggleSort,
@@ -63,6 +64,14 @@ describe('flipSort', () => {
   it('flips the direction and ignores an empty sort', () => {
     expect(flipSort(null)).toBeNull()
     expect(flipSort({ descending: false, id: 'name' })).toEqual({ descending: true, id: 'name' })
+  })
+})
+
+describe('sortActionKey', () => {
+  it('names the direction the toggle switches to', () => {
+    expect(sortActionKey({ descending: false, id: 'name' })).toBe('sortDescending')
+    expect(sortActionKey({ descending: true, id: 'name' })).toBe('sortAscending')
+    expect(sortActionKey(null)).toBe('sortAscending')
   })
 })
 

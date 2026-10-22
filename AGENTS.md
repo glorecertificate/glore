@@ -27,7 +27,9 @@ Load only the spec you need from `.agents/specs/`:
 - `patterns.md`: components, types, hooks, utils, theming, i18n, forms, emails.
 - `workflow.md`: commands, skills, MCP, committing, email verification, docs sync.
 
-Plans live in tracked `.agents/plan/`, one file per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
+Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
+
+References live in `.agents/references/`: the certificate PDF template and the per-role manual testing flows.
 
 ## Commands and commits
 

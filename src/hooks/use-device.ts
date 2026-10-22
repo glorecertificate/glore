@@ -13,7 +13,7 @@ export const useDevice = (breakpoint = theme.mobileBreakpoint) => {
     return window.innerWidth < breakpoint ? 'mobile' : 'desktop'
   }
 
-  const [type, setType] = useState<'mobile' | 'desktop' | undefined>(detectType)
+  const [type, setType] = useState<'mobile' | 'desktop'>()
   const [isTouch, setIsTouch] = useState(false)
 
   const handleResize = useRef(() => {

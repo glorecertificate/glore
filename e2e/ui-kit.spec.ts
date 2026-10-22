@@ -12,13 +12,11 @@ test('keeps the sortable roster inside a mobile viewport', async ({ page }) => {
   await page.goto('/organization?tab=members')
   const table = page.getByRole('table', { name: 'Members', exact: true })
   await expect(table).toBeVisible()
-  await page.waitForFunction(() => {
-    const button = document.querySelector('[data-slot=data-table] thead button')
-    return button instanceof HTMLButtonElement && typeof button.onclick === 'function'
-  })
   const header = table.getByRole('columnheader', { name: 'Email', exact: true })
-  await header.getByRole('button').click()
-  await expect(header).toHaveAttribute('aria-sort', 'ascending')
+  await expect(async () => {
+    await header.getByRole('button').click()
+    await expect(header).toHaveAttribute('aria-sort', 'ascending', { timeout: 1000 })
+  }).toPass()
   await header.getByRole('button').click()
   await expect(header).toHaveAttribute('aria-sort', 'descending')
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
@@ -39,7 +37,7 @@ test.describe('public certificate UI', () => {
     pool = new Pool({ connectionString })
     await pool.query(
       'insert into users (id, email, username, name, first_name, last_name) values ($1, $2, $3, $4, $5, $6)',
-      [id, `${id}@seed.glore.test`, username, 'UI Verification', 'UI', 'Verification']
+      [id, `${id}@glore.test`, username, 'UI Verification', 'UI', 'Verification']
     )
     const { rows: courses } = await pool.query<{ id: number }>(
       'insert into courses (slug, type, title) values ($1, $2, $3) returning id',

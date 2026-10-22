@@ -152,10 +152,8 @@ const CourseSidebarItem = ({
             <span className="absolute -top-0.5 -right-0.5 z-10 block size-2.5 rounded-full border-2 border-background bg-warning" />
           )}
         </div>
-        <div
-          className={cn('mt-0.5 flex min-w-0 flex-1 flex-col gap-1 text-left opacity-85', isCurrent && 'opacity-100')}
-        >
-          <StepperTitle>
+        <div className="mt-0.5 flex min-w-0 flex-1 flex-col gap-1 text-left">
+          <StepperTitle className={cn(!isCurrent && 'opacity-85')}>
             {user.canEdit ? (
               <div className="relative">
                 <Tooltip>

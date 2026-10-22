@@ -118,14 +118,7 @@ export const Stepper = ({
 
   return (
     <StepperContext.Provider value={contextValue}>
-      <div
-        aria-orientation={orientation}
-        className={cn('w-full', className)}
-        data-orientation={orientation}
-        data-slot="stepper"
-        role="tablist"
-        {...props}
-      >
+      <div className={cn('w-full', className)} data-orientation={orientation} data-slot="stepper" {...props}>
         {children}
       </div>
     </StepperContext.Provider>
@@ -260,7 +253,7 @@ export const StepperTrigger = ({
       aria-current={selected ? 'step' : undefined}
       aria-disabled={isDisabled}
       className={cn(
-        'inline-flex cursor-pointer items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-disabled:pointer-events-none aria-disabled:opacity-60',
+        'inline-flex cursor-pointer items-center gap-3 rounded-full outline-none focus-visible:z-10 focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring aria-disabled:pointer-events-none aria-disabled:opacity-60 focus-visible:dark:ring-ring/50',
         className
       )}
       data-loading={isLoading}
@@ -326,18 +319,18 @@ export const StepperSeparator = ({ className, ...props }: React.ComponentProps<'
   )
 }
 
-export const StepperTitle = ({ children, className, ...props }: React.ComponentProps<'h3'>) => {
+export const StepperTitle = ({ children, className, ...props }: React.ComponentProps<'div'>) => {
   const { state } = useStepItem()
 
   return (
-    <h3
+    <div
       className={cn('text-sm leading-none font-medium', className)}
       data-slot="stepper-title"
       data-state={state}
       {...props}
     >
       {children}
-    </h3>
+    </div>
   )
 }
 
@@ -356,11 +349,11 @@ export const StepperDescription = ({ children, className, ...props }: React.Comp
   )
 }
 
-export const StepperNav = ({ children, className, ...props }: React.ComponentProps<'nav'>) => {
+export const StepperNav = ({ children, className, ...props }: React.ComponentProps<'div'>) => {
   const { activeStep, orientation } = useStepper()
 
   return (
-    <nav
+    <div
       className={cn(
         'group/stepper-nav inline-flex data-[orientation=horizontal]:w-full data-[orientation=horizontal]:flex-row data-[orientation=vertical]:flex-col',
         className
@@ -371,7 +364,7 @@ export const StepperNav = ({ children, className, ...props }: React.ComponentPro
       {...props}
     >
       {children}
-    </nav>
+    </div>
   )
 }
 

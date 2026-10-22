@@ -34,7 +34,10 @@ export const StatLink = ({
 }: React.ComponentProps<typeof StatCard> & {
   href: Route
 }) => (
-  <Link className="block rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50" href={href}>
+  <Link
+    className="block rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:dark:ring-ring/50"
+    href={href}
+  >
     <StatCard className={cn('h-full transition-colors hover:bg-accent/40', className)} {...props} />
   </Link>
 )

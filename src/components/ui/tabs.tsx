@@ -101,21 +101,18 @@ const tabsTriggerVariants = cva(
   }
 )
 
-const tabsTriggerBadgeVariants = cva(
-  'font-medium text-muted-foreground/50 text-stroke-0 group-data-[state=active]/tabs-trigger:text-muted-foreground',
-  {
-    defaultVariants: {
-      size: 'md',
+const tabsTriggerBadgeVariants = cva('font-medium text-muted-foreground text-stroke-0', {
+  defaultVariants: {
+    size: 'md',
+  },
+  variants: {
+    size: {
+      sm: 'text-[11.5px]',
+      md: 'text-xs',
+      lg: 'text-[13px]',
     },
-    variants: {
-      size: {
-        sm: 'text-[11.5px]',
-        md: 'text-xs',
-        lg: 'text-[13px]',
-      },
-    },
-  }
-)
+  },
+})
 
 export const TabsTrigger = ({
   children,

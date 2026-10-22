@@ -77,7 +77,7 @@ const AuthHeader = ({
       <div title={view === 'login' ? undefined : t('goToLogin')}>
         <Logo
           className={cn(
-            'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
+            'w-24 rounded-md px-2 focus:outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:dark:ring-ring/50',
             view === 'login' ? 'pointer-events-none' : 'cursor-pointer'
           )}
           onClick={onLogoClick}

@@ -22,6 +22,8 @@ export interface ButtonProps
   spinner?: string
 }
 
+const BORDERLESS_FOCUS = 'focus-visible:ring-ring! focus-visible:dark:ring-ring/50!'
+
 export const buttonVariants = cva(
   [
     "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,scale] duration-150 ease-out outline-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
@@ -53,9 +55,9 @@ export const buttonVariants = cva(
           'bg-brand-tertiary text-brand-tertiary-foreground hover:not-disabled:bg-brand-tertiary-accent focus-visible:not-disabled:ring-brand-tertiary/20 focus-visible:dark:not-disabled:ring-brand-tertiary/40',
         outline:
           'border border-input bg-background text-foreground hover:not-disabled:bg-accent/60 dark:bg-input/30 hover:dark:not-disabled:bg-input/50',
-        ghost: 'text-foreground hover:not-disabled:bg-accent/80 hover:dark:not-disabled:bg-accent/50',
-        link: 'hover:underline hover:underline-offset-2',
-        transparent: 'bg-transparent text-current',
+        ghost: `${BORDERLESS_FOCUS} text-foreground hover:not-disabled:bg-accent/80 hover:dark:not-disabled:bg-accent/50`,
+        link: `${BORDERLESS_FOCUS} hover:underline hover:underline-offset-2`,
+        transparent: `${BORDERLESS_FOCUS} bg-transparent text-current`,
       },
       size: {
         xs: 'h-7 px-2 text-xs',

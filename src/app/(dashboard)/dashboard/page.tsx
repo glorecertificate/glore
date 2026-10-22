@@ -1,3 +1,4 @@
+import { loadDashboard } from '@/actions/dashboard/load'
 import { DashboardContent } from '@/components/features/dashboard'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
@@ -8,9 +9,11 @@ export const generateMetadata = generateIntlMetadata({
   title: 'dashboard',
 })
 
+const DashboardData = async () => <DashboardContent data={await loadDashboard()} />
+
 const DashboardPageContent = () => (
   <DashboardPage title={<PageTitle namespace="Layout" name="dashboard" />}>
-    <DashboardContent />
+    <DashboardData />
   </DashboardPage>
 )
 

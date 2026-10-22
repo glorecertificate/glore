@@ -14,6 +14,8 @@ src/
 │   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses, listSessionCourses), compass.ts, data.ts (server-only: learner reads),
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
 │   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
+│   ├── dashboard/      # Read-only, server-only (no 'use server', so per-user cached reads are safe): core.ts (pure types and builders, Vitest),
+│   │                   #   load.ts (loadDashboard: role dispatch), member.ts, tutor.ts, manager.ts, editor.ts (cached, tag Courses)
 │   ├── notifications/  # catalog.ts, notify.ts, plan.ts, recipients.ts (server-only); inbox.ts ('use server': list, count, mark read)
 │   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
 │   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts

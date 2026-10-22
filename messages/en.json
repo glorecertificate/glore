@@ -1129,65 +1129,211 @@
     "moreActions": "More actions"
   },
   "Dashboard": {
-    "allCourses": "All courses",
-    "avgPersonalRating": "Avg rating",
-    "avgPlatformRating": "Avg platform rating",
-    "avgRating": "Avg rating",
-    "certificateAlmost": "Almost there",
-    "certificateHelperPending": "Complete {remaining, plural, one {# more course} other {# more courses}} to unlock your certificate.",
-    "certificateHelperReady": "You have completed the courses required for your certificate.",
-    "certificateReady": "Ready to request!",
-    "certificateTitle": "Your certificate",
-    "completedCourses": "Completed",
-    "completionRate": "Completion",
-    "completions": "Completions",
-    "continue": "Continue",
-    "continueLearning": "Continue learning",
-    "course": "Course",
-    "courseAnalytics": "Course analytics",
-    "courseType-intro": "Intro",
-    "courseType-learner": "Learner",
-    "courseType-skill": "Skill",
-    "coursesByType": "Courses by type",
-    "currentCourses": "Currently learning",
-    "engagementOverTime": "Engagement over time",
-    "enrolled": "Enrolled",
-    "enrolledCourses": "Enrolled",
-    "enrollments": "Enrollments",
-    "greetingAfternoon": "Good afternoon, {name}!",
-    "greetingEvening": "Good evening, {name}!",
-    "greetingMorning": "Good morning, {name}!",
-    "inProgressCourses": "In progress",
-    "introductoryCourses": "Introductory",
-    "learnerCourses": "Learner",
-    "lessonProgress": "Lesson {current} of {total}",
-    "moreCourses": "more",
-    "newCourse": "New course",
-    "noCoursesMessage": "No courses available yet.",
-    "noCurrentCourses": "Nothing in progress right now.",
-    "noRatingsYet": "No ratings yet",
-    "popularCourses": "Popular courses",
-    "progress": "Progress",
-    "publishedCourses": "Published courses",
-    "rating": "Rating",
+    "greeting": "Welcome back, {name}",
+    "subtitle": {
+      "editor": "Content health and learner engagement",
+      "manager": "Your organization at a glance",
+      "tutor": "Your review queue and workload",
+      "volunteer": "Your path to a GloRe certificate",
+      "learner": "Keep learning at your own pace"
+    },
+    "viewAll": "View all",
+    "viewRequest": "View request",
+    "viewCourses": "All courses",
     "requestCertificate": "Request certificate",
     "resumeLearning": "Resume learning",
-    "skillCourses": "Skill",
-    "subtitleAdmin": "Platform overview",
-    "subtitleEditor": "Manage content and courses",
-    "subtitleLearner": "Continue your learning journey",
-    "subtitleOrgAdmin": "Manage your organization",
-    "subtitleRepresentative": "Your organization at a glance",
-    "subtitleTutor": "Manage your courses and reviews",
-    "subtitleVolunteer": "Continue your certification journey",
-    "totalCompletions": "Total completions",
-    "totalEnrollments": "Total enrollments",
-    "totalLessons": "Total lessons",
-    "trendPeriod1Month": "in the last month",
-    "trendPeriod3Months": "in the last 3 months",
-    "trendPeriod6Months": "in the last 6 months",
-    "yourProgress": "Your progress",
-    "enrollmentsByCourse": "Enrollments by course"
+    "browseCourses": "Browse courses",
+    "checklist": {
+      "title": "Getting started",
+      "progress": "{completed} of {total} steps done",
+      "volunteer": {
+        "compass": {
+          "title": "Set your skill compass",
+          "description": "Pick up to 3 strengths and 5 goals so we can recommend the right courses.",
+          "action": "Open compass"
+        },
+        "start": {
+          "title": "Start your first course",
+          "description": "Introductory courses explain how GloRe works.",
+          "action": "Find a course"
+        },
+        "skills": {
+          "title": "Complete your skill courses",
+          "description": "Finish at least three skill courses and rate yourself honestly.",
+          "action": "Go to courses"
+        },
+        "request": {
+          "title": "Request your certificate",
+          "description": "Describe your volunteering experience and send it to a tutor.",
+          "action": "Open requests"
+        }
+      },
+      "learner": {
+        "start": {
+          "title": "Start your first course",
+          "description": "Pick any course that interests you.",
+          "action": "Find a course"
+        },
+        "intro": {
+          "title": "Finish an introductory course",
+          "description": "Introductory courses explain how GloRe works.",
+          "action": "Go to courses"
+        },
+        "learner": {
+          "title": "Finish a learner course",
+          "description": "Learner courses build the skills you will use as a volunteer.",
+          "action": "Go to courses"
+        }
+      }
+    },
+    "journey": {
+      "title": "Your certificate journey",
+      "learn": "Learn",
+      "learnDescription": "Complete the skill courses",
+      "request": "Request",
+      "requestDescription": "Send your experience",
+      "review": "Review",
+      "reviewDescription": "A tutor checks your request",
+      "issued": "Certificate",
+      "issuedDescription": "Download and share it"
+    },
+    "certificate": {
+      "issued": "Your certificate is issued and can be verified online.",
+      "view": "View certificate",
+      "changes": "Your tutor asked for changes. Update the request and send it again.",
+      "waiting": "A tutor is working on your request. We will notify you when it is decided.",
+      "continueDraft": "Continue draft",
+      "readyTitle": "You can request your certificate",
+      "readyMessage": "You completed the skill courses. Add your volunteering experience to send the request."
+    },
+    "stats": {
+      "enrolled": "Enrolled",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "available": "Available courses",
+      "skills": "Skill courses done",
+      "skillsRequired": "{count} needed for a certificate"
+    },
+    "continue": {
+      "title": "Continue learning",
+      "emptyTitle": "Nothing in progress",
+      "emptyDescription": "Start a course and it will show up here.",
+      "percent": "{percent}%"
+    },
+    "recommended": {
+      "title": "Recommended for you",
+      "emptyTitle": "No recommendations yet",
+      "emptyDescription": "You have started every available course. New ones will appear here.",
+      "goal": "Matches your goals",
+      "type": {
+        "intro": "Introductory course",
+        "skill": "Skill course",
+        "learner": "Learner course"
+      }
+    },
+    "updates": {
+      "title": "Latest updates",
+      "empty": "No updates yet. Certificate decisions and course news show up here."
+    },
+    "tutor": {
+      "openQueue": "Open review queue",
+      "openPool": "Open the pool",
+      "review": "Review",
+      "claim": "Claim",
+      "noReviewTime": "No data",
+      "reviewDays": "{days} days",
+      "reviewHours": "{hours} h",
+      "reviewTime": "Average review time",
+      "reviewSample": "{count, plural, one {Based on # review in the last 90 days} other {Based on # reviews in the last 90 days}}",
+      "reviewTimeEmpty": "Decide your first request to see it.",
+      "oldestTitle": "Oldest request waiting",
+      "oldestAssigned": "{holder} has waited the longest for your review.",
+      "oldestPool": "{holder} has waited the longest in the pool. Claim it to start.",
+      "unknownVolunteer": "A volunteer",
+      "assigned": "Assigned to you",
+      "assignedDescription": "Waiting for your review",
+      "pool": "Unassigned pool",
+      "poolDescription": "Anyone on the team can claim these",
+      "waitingVolunteer": "Waiting for volunteers",
+      "waitingVolunteerDescription": "Changes requested",
+      "queueTitle": "Oldest requests",
+      "queueEmptyTitle": "Nothing is waiting",
+      "queueEmptyDescription": "New requests from your organization appear here as soon as volunteers submit them.",
+      "volunteer": "Volunteer",
+      "source": "Queue",
+      "sourceAssigned": "Assigned",
+      "sourcePool": "Pool",
+      "waiting": "Waiting"
+    },
+    "manager": {
+      "openOrganization": "Open organization",
+      "waitingTitle": "{count, plural, one {# request needs a tutor} other {# requests need a tutor}}",
+      "waitingDescription": "Assign them to a tutor, or tutors can claim them from the pool.",
+      "assign": "Assign",
+      "members": "Members",
+      "invitations": "Pending invitations",
+      "invitationsDescription": "{links, plural, one {# active invite link} other {# active invite links}}",
+      "requests": "Join requests",
+      "requestsDescription": "Waiting for approval",
+      "inReview": "In review",
+      "inReviewDescription": "Open certificate requests",
+      "issued": "Certificates issued",
+      "issuedDescription": "Approved by your tutors",
+      "activity": "Recent activity"
+    },
+    "editor": {
+      "openCourses": "Open courses",
+      "pendingTitle": "{count, plural, one {# item needs your decision} other {# items need your decision}}",
+      "pendingDescription": "{organizations} organization applications and {team} team invitations not accepted yet.",
+      "reviewPending": "Review",
+      "courses": "Courses",
+      "coursesDescription": "Not archived",
+      "published": "Fully published",
+      "publishedDescription": "{partial} partial, {draft} drafts",
+      "completion": "Completion rate",
+      "completionDescription": "Completed over started",
+      "rating": "Average course rating",
+      "ratingsDescription": "{count, plural, one {# rating out of 5} other {# ratings out of 5}}",
+      "ratingsEmpty": "No ratings yet",
+      "engagementTitle": "Learning activity",
+      "engagementDescription": "{count} course enrollments in total",
+      "started": "Started",
+      "completed": "Completed",
+      "engagementEmpty": "No course activity in the last 6 months.",
+      "topTitle": "Most followed courses",
+      "topDescription": "Enrollments and completions",
+      "enrollments": "Enrollments",
+      "completions": "Completions",
+      "topEmpty": "No one has enrolled yet.",
+      "translationsTitle": "Translation gaps",
+      "translationsDescription": "Courses fully available in each language",
+      "translationsCount": "{complete} of {total} courses",
+      "healthTitle": "Content health",
+      "healthDescription": "Courses that need attention first",
+      "healthClear": "Every course is complete and translated.",
+      "issue": {
+        "empty": "No lessons",
+        "noAssessment": "No assessment",
+        "noGroup": "No skill group"
+      },
+      "missing": "Missing {language}",
+      "statesTitle": "Publication status",
+      "state": {
+        "published": "Published",
+        "publishedDescription": "In every language",
+        "partial": "Partial",
+        "partialDescription": "Some languages missing",
+        "draft": "Drafts",
+        "draftDescription": "Not visible to learners",
+        "archived": "Archived",
+        "archivedDescription": "Hidden from the catalog"
+      }
+    },
+    "none": {
+      "title": "Welcome, {name}",
+      "description": "You are not part of an organization yet. Ask your organization for an invitation to start learning and requesting certificates.",
+      "help": "Read the help guide"
+    }
   },
   "Docs": {
     "title": "Documentation",

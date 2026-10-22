@@ -1129,65 +1129,211 @@
     "moreActions": "Más acciones"
   },
   "Dashboard": {
-    "allCourses": "Todos los cursos",
-    "avgPersonalRating": "Calificación media",
-    "avgPlatformRating": "Calificación media",
-    "avgRating": "Calificación media",
-    "certificateAlmost": "Ya casi",
-    "certificateHelperPending": "Completa {remaining, plural, one {# curso más} other {# cursos más}} para desbloquear tu certificado.",
-    "certificateHelperReady": "Has completado los cursos necesarios para tu certificado.",
-    "certificateReady": "¡Listo para solicitar!",
-    "certificateTitle": "Tu certificado",
-    "completedCourses": "Completados",
-    "completionRate": "Finalización",
-    "completions": "Finalizaciones",
-    "continue": "Continuar",
-    "continueLearning": "Continuar aprendiendo",
-    "course": "Curso",
-    "courseAnalytics": "Análisis de cursos",
-    "courseType-intro": "Intro",
-    "courseType-learner": "Aprendizaje",
-    "courseType-skill": "Habilidad",
-    "coursesByType": "Cursos por tipo",
-    "currentCourses": "Aprendiendo ahora",
-    "engagementOverTime": "Participación en el tiempo",
-    "enrolled": "Inscripciones",
-    "enrolledCourses": "Inscripciones",
-    "enrollments": "Inscripciones",
-    "greetingAfternoon": "¡Buenas tardes, {name}!",
-    "greetingEvening": "¡Buenas noches, {name}!",
-    "greetingMorning": "¡Buenos días, {name}!",
-    "inProgressCourses": "En progreso",
-    "introductoryCourses": "Introductorios",
-    "learnerCourses": "Aprendizaje",
-    "lessonProgress": "Lección {current} de {total}",
-    "moreCourses": "más",
-    "newCourse": "Nuevo curso",
-    "noCoursesMessage": "Aún no hay cursos disponibles.",
-    "noCurrentCourses": "Nada en progreso por ahora.",
-    "noRatingsYet": "Sin calificaciones aún",
-    "popularCourses": "Cursos populares",
-    "progress": "Progreso",
-    "publishedCourses": "Cursos publicados",
-    "rating": "Valoración",
+    "greeting": "Te damos la bienvenida, {name}",
+    "subtitle": {
+      "editor": "Salud del contenido y participación",
+      "manager": "Tu organización de un vistazo",
+      "tutor": "Tu cola de revisión y tu carga de trabajo",
+      "volunteer": "Tu camino hacia el certificado GloRe",
+      "learner": "Sigue aprendiendo a tu ritmo"
+    },
+    "viewAll": "Ver todo",
+    "viewRequest": "Ver solicitud",
+    "viewCourses": "Todos los cursos",
     "requestCertificate": "Solicitar certificado",
-    "resumeLearning": "Reanudar aprendizaje",
-    "skillCourses": "Habilidades",
-    "subtitleAdmin": "Resumen de la plataforma",
-    "subtitleEditor": "Gestiona contenido y cursos",
-    "subtitleLearner": "Continúa tu camino de aprendizaje",
-    "subtitleOrgAdmin": "Administra tu organización",
-    "subtitleRepresentative": "Tu organización de un vistazo",
-    "subtitleTutor": "Gestiona tus cursos y revisiones",
-    "subtitleVolunteer": "Continúa tu camino de certificación",
-    "totalCompletions": "Completaciones totales",
-    "totalEnrollments": "Inscripciones totales",
-    "totalLessons": "Lecciones totales",
-    "trendPeriod1Month": "en el último mes",
-    "trendPeriod3Months": "en los últimos 3 meses",
-    "trendPeriod6Months": "en los últimos 6 meses",
-    "yourProgress": "Tu progreso",
-    "enrollmentsByCourse": "Inscripciones por curso"
+    "resumeLearning": "Seguir aprendiendo",
+    "browseCourses": "Explorar cursos",
+    "checklist": {
+      "title": "Primeros pasos",
+      "progress": "{completed} de {total} pasos completados",
+      "volunteer": {
+        "compass": {
+          "title": "Configura tu brújula de habilidades",
+          "description": "Elige hasta 3 fortalezas y 5 objetivos para que te recomendemos los cursos adecuados.",
+          "action": "Abrir brújula"
+        },
+        "start": {
+          "title": "Empieza tu primer curso",
+          "description": "Los cursos introductorios explican cómo funciona GloRe.",
+          "action": "Buscar un curso"
+        },
+        "skills": {
+          "title": "Completa tus cursos de habilidades",
+          "description": "Termina al menos tres cursos de habilidades y valórate con sinceridad.",
+          "action": "Ir a los cursos"
+        },
+        "request": {
+          "title": "Solicita tu certificado",
+          "description": "Describe tu experiencia de voluntariado y envíala a un tutor.",
+          "action": "Abrir solicitudes"
+        }
+      },
+      "learner": {
+        "start": {
+          "title": "Empieza tu primer curso",
+          "description": "Elige el curso que más te interese.",
+          "action": "Buscar un curso"
+        },
+        "intro": {
+          "title": "Termina un curso introductorio",
+          "description": "Los cursos introductorios explican cómo funciona GloRe.",
+          "action": "Ir a los cursos"
+        },
+        "learner": {
+          "title": "Termina un curso para estudiantes",
+          "description": "Los cursos para estudiantes desarrollan las habilidades que usarás como voluntario.",
+          "action": "Ir a los cursos"
+        }
+      }
+    },
+    "journey": {
+      "title": "Tu camino al certificado",
+      "learn": "Aprende",
+      "learnDescription": "Completa los cursos de habilidades",
+      "request": "Solicita",
+      "requestDescription": "Envía tu experiencia",
+      "review": "Revisión",
+      "reviewDescription": "Un tutor revisa tu solicitud",
+      "issued": "Certificado",
+      "issuedDescription": "Descárgalo y compártelo"
+    },
+    "certificate": {
+      "issued": "Tu certificado está emitido y se puede verificar en línea.",
+      "view": "Ver certificado",
+      "changes": "Tu tutor ha pedido cambios. Actualiza la solicitud y vuelve a enviarla.",
+      "waiting": "Un tutor está trabajando en tu solicitud. Te avisaremos cuando haya una decisión.",
+      "continueDraft": "Continuar borrador",
+      "readyTitle": "Ya puedes solicitar tu certificado",
+      "readyMessage": "Completaste los cursos de habilidades. Añade tu experiencia de voluntariado para enviar la solicitud."
+    },
+    "stats": {
+      "enrolled": "Inscritos",
+      "inProgress": "En curso",
+      "completed": "Completados",
+      "available": "Cursos disponibles",
+      "skills": "Cursos de habilidades hechos",
+      "skillsRequired": "Se necesitan {count} para el certificado"
+    },
+    "continue": {
+      "title": "Sigue aprendiendo",
+      "emptyTitle": "Nada en curso",
+      "emptyDescription": "Empieza un curso y aparecerá aquí.",
+      "percent": "{percent} %"
+    },
+    "recommended": {
+      "title": "Recomendado para ti",
+      "emptyTitle": "Aún no hay recomendaciones",
+      "emptyDescription": "Has empezado todos los cursos disponibles. Los nuevos aparecerán aquí.",
+      "goal": "Encaja con tus objetivos",
+      "type": {
+        "intro": "Curso introductorio",
+        "skill": "Curso de habilidades",
+        "learner": "Curso para estudiantes"
+      }
+    },
+    "updates": {
+      "title": "Últimas novedades",
+      "empty": "Aún no hay novedades. Aquí verás las decisiones sobre certificados y las noticias de los cursos."
+    },
+    "tutor": {
+      "openQueue": "Abrir cola de revisión",
+      "openPool": "Abrir la bolsa",
+      "review": "Revisar",
+      "claim": "Reclamar",
+      "noReviewTime": "Sin datos",
+      "reviewDays": "{days} días",
+      "reviewHours": "{hours} h",
+      "reviewTime": "Tiempo medio de revisión",
+      "reviewSample": "{count, plural, one {Según # revisión de los últimos 90 días} other {Según # revisiones de los últimos 90 días}}",
+      "reviewTimeEmpty": "Resuelve tu primera solicitud para verlo.",
+      "oldestTitle": "Solicitud más antigua en espera",
+      "oldestAssigned": "{holder} lleva más tiempo esperando tu revisión.",
+      "oldestPool": "{holder} lleva más tiempo esperando en la bolsa. Reclámala para empezar.",
+      "unknownVolunteer": "Un voluntario",
+      "assigned": "Asignadas a ti",
+      "assignedDescription": "Esperan tu revisión",
+      "pool": "Bolsa sin asignar",
+      "poolDescription": "Cualquiera del equipo puede reclamarlas",
+      "waitingVolunteer": "Esperando a voluntarios",
+      "waitingVolunteerDescription": "Cambios solicitados",
+      "queueTitle": "Solicitudes más antiguas",
+      "queueEmptyTitle": "No hay nada en espera",
+      "queueEmptyDescription": "Las solicitudes nuevas de tu organización aparecen aquí en cuanto los voluntarios las envían.",
+      "volunteer": "Voluntario",
+      "source": "Cola",
+      "sourceAssigned": "Asignada",
+      "sourcePool": "Bolsa",
+      "waiting": "Espera"
+    },
+    "manager": {
+      "openOrganization": "Abrir organización",
+      "waitingTitle": "{count, plural, one {# solicitud necesita un tutor} other {# solicitudes necesitan un tutor}}",
+      "waitingDescription": "Asígnalas a un tutor, o los tutores pueden reclamarlas desde la bolsa.",
+      "assign": "Asignar",
+      "members": "Miembros",
+      "invitations": "Invitaciones pendientes",
+      "invitationsDescription": "{links, plural, one {# enlace de invitación activo} other {# enlaces de invitación activos}}",
+      "requests": "Solicitudes de ingreso",
+      "requestsDescription": "Esperan aprobación",
+      "inReview": "En revisión",
+      "inReviewDescription": "Solicitudes de certificado abiertas",
+      "issued": "Certificados emitidos",
+      "issuedDescription": "Aprobados por tus tutores",
+      "activity": "Actividad reciente"
+    },
+    "editor": {
+      "openCourses": "Abrir cursos",
+      "pendingTitle": "{count, plural, one {# elemento necesita tu decisión} other {# elementos necesitan tu decisión}}",
+      "pendingDescription": "{organizations} solicitudes de organización y {team} invitaciones de equipo sin aceptar.",
+      "reviewPending": "Revisar",
+      "courses": "Cursos",
+      "coursesDescription": "Sin archivar",
+      "published": "Publicados del todo",
+      "publishedDescription": "{partial} parciales, {draft} borradores",
+      "completion": "Tasa de finalización",
+      "completionDescription": "Completados sobre iniciados",
+      "rating": "Valoración media de los cursos",
+      "ratingsDescription": "{count, plural, one {# valoración sobre 5} other {# valoraciones sobre 5}}",
+      "ratingsEmpty": "Aún sin valoraciones",
+      "engagementTitle": "Actividad de aprendizaje",
+      "engagementDescription": "{count} inscripciones a cursos en total",
+      "started": "Iniciados",
+      "completed": "Completados",
+      "engagementEmpty": "No hay actividad en los cursos en los últimos 6 meses.",
+      "topTitle": "Cursos más seguidos",
+      "topDescription": "Inscripciones y finalizaciones",
+      "enrollments": "Inscripciones",
+      "completions": "Finalizaciones",
+      "topEmpty": "Todavía no se ha inscrito nadie.",
+      "translationsTitle": "Traducciones pendientes",
+      "translationsDescription": "Cursos disponibles por completo en cada idioma",
+      "translationsCount": "{complete} de {total} cursos",
+      "healthTitle": "Salud del contenido",
+      "healthDescription": "Cursos que necesitan atención primero",
+      "healthClear": "Todos los cursos están completos y traducidos.",
+      "issue": {
+        "empty": "Sin lecciones",
+        "noAssessment": "Sin evaluación",
+        "noGroup": "Sin grupo de habilidades"
+      },
+      "missing": "Falta {language}",
+      "statesTitle": "Estado de publicación",
+      "state": {
+        "published": "Publicados",
+        "publishedDescription": "En todos los idiomas",
+        "partial": "Parciales",
+        "partialDescription": "Faltan algunos idiomas",
+        "draft": "Borradores",
+        "draftDescription": "No visibles para los alumnos",
+        "archived": "Archivados",
+        "archivedDescription": "Ocultos del catálogo"
+      }
+    },
+    "none": {
+      "title": "Te damos la bienvenida, {name}",
+      "description": "Todavía no formas parte de ninguna organización. Pide una invitación a tu organización para empezar a aprender y solicitar certificados.",
+      "help": "Leer la guía de ayuda"
+    }
   },
   "Docs": {
     "title": "Documentación",

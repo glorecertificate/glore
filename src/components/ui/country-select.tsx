@@ -21,6 +21,7 @@ export const countryCodeToFlag = (code: string) =>
 export const CountrySelect = ({
   onChange,
   value,
+  ...props
 }: React.ComponentProps<typeof Button> & {
   onChange: (value: string) => void
   value?: string
@@ -44,6 +45,7 @@ export const CountrySelect = ({
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
+          {...props}
           className={cn('w-full justify-between font-normal', !value && 'text-muted-foreground')}
           role="combobox"
           aria-controls="#"

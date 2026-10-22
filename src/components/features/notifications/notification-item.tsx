@@ -5,6 +5,7 @@ import { type Route } from 'next'
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { markNotificationRead } from '@/actions/notifications/inbox'
+import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { useNotificationText } from '@/components/features/notifications/use-notification-text'
 import { notificationIcon } from '@/components/features/notifications/utils'
 import { LucideIcon } from '@/components/icons/lucide'
@@ -36,6 +37,7 @@ export const NotificationItem = ({
     onNavigate?.()
     if (notification.read) return
     await markNotificationRead(notification.id)
+    announceNotificationsChanged()
     onRead?.(notification.id)
   }
 

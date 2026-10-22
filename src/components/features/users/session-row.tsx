@@ -1,12 +1,11 @@
 'use client'
 
-import { useFormatter, useTranslations } from 'next-intl'
+import { useFormatter, useNow, useTranslations } from 'next-intl'
 
 import { type SessionSummary } from '@/actions/account/sessions'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { timestampMillis } from '@/db/queries/organization'
 import { describeUserAgent } from '@/lib/user-agent'
 
 export const SessionRow = ({
@@ -20,6 +19,7 @@ export const SessionRow = ({
 }) => {
   const t = useTranslations('Users')
   const format = useFormatter()
+  const now = useNow({ updateInterval: 60_000 })
   const { browser, system } = describeUserAgent(session.userAgent)
   const mobile = system === 'iOS' || system === 'Android'
   const device =
@@ -34,7 +34,7 @@ export const SessionRow = ({
           {session.current && <Badge variant="muted">{t('sessionCurrent')}</Badge>}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {t('sessionActive', { time: format.relativeTime(timestampMillis(session.updatedAt)) })}
+          {t('sessionActive', { time: format.relativeTime(new Date(session.updatedAt), now) })}
           {session.ipAddress ? ` · ${session.ipAddress}` : ''}
         </p>
       </div>

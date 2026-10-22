@@ -34,7 +34,7 @@ export const UserSettingsTabsList = ({ children, ...props }: React.ComponentProp
   const t = useTranslations('Users')
 
   return (
-    <TabsList className="max-w-full justify-start overflow-x-auto" {...props}>
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" {...props}>
       {SETTINGS_TABS.map(tab => (
         <TabsTrigger key={tab} value={tab}>
           {t(tab)}

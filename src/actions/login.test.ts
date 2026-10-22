@@ -6,7 +6,9 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 const signInEmail = vi.hoisted(() =>
-  vi.fn((_options: { body: { email: string; password: string } }) => Promise.resolve({ user: { id: 'x' } }))
+  vi.fn((_options: { body: { email: string; password: string }; headers?: Headers }) =>
+    Promise.resolve({ user: { id: 'x' } })
+  )
 )
 
 vi.mock('@/lib/auth', () => ({ auth: { api: { signInEmail } } }))
@@ -14,7 +16,9 @@ vi.mock('@/lib/rate-limit', () => ({
   clientAddress: () => Promise.resolve('127.0.0.1'),
   isRateLimited: () => Promise.resolve(false),
 }))
-vi.mock('next/headers', () => ({ headers: () => Promise.resolve(new Headers()) }))
+vi.mock('next/headers', () => ({
+  headers: () => Promise.resolve(new Headers({ 'user-agent': 'Mozilla/5.0 Chrome/130.0 Safari/537.36' })),
+}))
 vi.mock('next/navigation', () => ({
   redirect: (url: string) => {
     throw new Error(`REDIRECT:${url}`)
@@ -70,6 +74,13 @@ describe.skipIf(!isLocalDatabase)('login by email or username', () => {
       context.actions.login({ password: 'Password1!', username: ` ${username.toUpperCase()} ` })
     ).rejects.toThrow('REDIRECT:/dashboard')
     expect(signInEmail.mock.calls[0]?.[0].body.email).toBe(email)
+  })
+
+  it('forwards the request headers so the session records the device', async () => {
+    await expect(context.actions.login({ password: 'Password1!', username: email })).rejects.toThrow(
+      'REDIRECT:/dashboard'
+    )
+    expect(signInEmail.mock.calls[0]?.[0].headers?.get('user-agent')).toContain('Chrome')
   })
 
   it('answers an unknown user like a wrong password', async () => {

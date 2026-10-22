@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
+import en from '~/messages/en.json'
+import es from '~/messages/es.json'
+import it_ from '~/messages/it.json'
+
 import {
   RATING_MIN_COUNT,
+  activityInvitationIds,
   activityMessageKey,
   activityUserIds,
   buildChecklist,
@@ -169,6 +174,72 @@ describe('activity items', () => {
   it('does not name a user that no longer exists', () => {
     const [approved] = toActivityItems(records, new Map())
     expect(approved).toMatchObject({ actor: null, target: null })
+  })
+
+  it('names invitees from the invitation row only when no user is attached', () => {
+    const invites = [
+      {
+        action: 'invitation.sent',
+        actorId: 'owner',
+        createdAt: '',
+        id: 5,
+        metadata: { invitationId: 7, role: 'tutor' },
+      },
+      {
+        action: 'invitation.declined',
+        actorId: null,
+        createdAt: '',
+        id: 4,
+        metadata: { invitationId: 8, userId: null },
+      },
+      {
+        action: 'invitation.accepted',
+        actorId: null,
+        createdAt: '',
+        id: 3,
+        metadata: { invitationId: 9, userId: 'holder' },
+      },
+      { action: 'invitation.revoked', actorId: 'owner', createdAt: '', id: 2, metadata: { invitationId: 10 } },
+    ]
+    const names = new Map([['holder', 'Ada Holder']])
+    const emails = new Map([
+      [7, 'guest@example.org'],
+      [9, 'ada@example.org'],
+    ])
+
+    expect(activityInvitationIds(invites)).toEqual([7, 8, 9, 10])
+    expect(toActivityItems(invites, names, emails).map(({ target }) => target)).toEqual([
+      'guest@example.org',
+      null,
+      'Ada Holder',
+      null,
+    ])
+  })
+
+  it('references the user of course and learning events', () => {
+    const events = [
+      { action: 'course.completed', actorId: null, createdAt: '', id: 2, metadata: { courseId: 1, userId: 'holder' } },
+      { action: 'learning.eligible', actorId: null, createdAt: '', id: 1, metadata: { userId: 'holder' } },
+    ]
+    expect(activityUserIds(events)).toEqual(['holder'])
+    expect(toActivityItems(events, new Map([['holder', 'Ada Holder']])).map(({ target }) => target)).toEqual([
+      'Ada Holder',
+      'Ada Holder',
+    ])
+  })
+
+  it('has activity copy in every locale for every event an organization can record', async () => {
+    const { EVENT_DEFINITIONS } = await import('@/actions/notifications/catalog')
+    const platformOnly = ['account.', 'impersonation.', 'team.']
+    const types = Object.keys(EVENT_DEFINITIONS).filter(type => !platformOnly.some(prefix => type.startsWith(prefix)))
+
+    expect(types.length).toBeGreaterThan(25)
+    for (const [locale, messages] of Object.entries({ en, es, it: it_ })) {
+      const organization = messages.Organization as Record<string, string>
+      for (const type of types) {
+        expect(organization[activityMessageKey(type)], `${locale}: ${type}`).toBeTruthy()
+      }
+    }
   })
 
   it('turns an action into a message key', () => {

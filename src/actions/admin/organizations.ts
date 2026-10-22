@@ -4,7 +4,7 @@ import 'server-only'
 
 import { randomBytes } from 'node:crypto'
 
-import { cacheTag, revalidateTag } from 'next/cache'
+import { cacheTag, updateTag } from 'next/cache'
 
 import { count, eq } from 'drizzle-orm'
 
@@ -118,7 +118,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
     return { organizationId, organizationName: event.data.organizationName }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) updateTag(CacheTag.Organizations)
 
   return result
 }
@@ -140,7 +140,7 @@ export const rejectOrganization = async (organizationId: number, reviewerComment
     return { organizationId, organizationName: event.data.organizationName }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) updateTag(CacheTag.Organizations)
 
   return result
 }
@@ -199,7 +199,7 @@ export const inviteOrganization = async ({
     return { organizationId: organization.id, organizationName: organization.name }
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) updateTag(CacheTag.Organizations)
 
   return result
 }
@@ -247,7 +247,7 @@ export const createOrganization = async ({
     )
   })
 
-  if (!result.error) revalidateTag(CacheTag.Organizations, 'max')
+  if (!result.error) updateTag(CacheTag.Organizations)
 
   return result
 }

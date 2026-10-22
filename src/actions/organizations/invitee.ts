@@ -5,6 +5,7 @@ import 'server-only'
 import { randomBytes } from 'node:crypto'
 
 import { revalidateTag } from 'next/cache'
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import { eq } from 'drizzle-orm'
@@ -78,7 +79,7 @@ export const acceptOrganizationInvitationAsNewAccount = async ({ proof, token }:
     const accepted = await transaction(async tx =>
       acceptInvitationWithNewAccount(tx, { passwordHash: await hasher.hash(password), proof, token })
     )
-    await auth.api.signInEmail({ body: { email: accepted.email, password } })
+    await auth.api.signInEmail({ body: { email: accepted.email, password }, headers: await headers() })
     await settleMembership({
       event: accepted.event,
       organizationId: accepted.organization.id,
@@ -141,7 +142,7 @@ export const signInToAcceptInvitation = async ({ password, token }: { password: 
   return await guarded(async () => {
     assertPending(invitation)
     try {
-      await auth.api.signInEmail({ body: { email, password } })
+      await auth.api.signInEmail({ body: { email, password }, headers: await headers() })
     } catch {
       throw invitationError('AUTH_ERROR')
     }

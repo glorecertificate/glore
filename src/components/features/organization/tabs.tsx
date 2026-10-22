@@ -61,7 +61,7 @@ export const OrganizationTabsList = ({
   const tInvitations = useTranslations('Invitations')
 
   return (
-    <TabsList className="max-w-full overflow-x-auto" {...props}>
+    <TabsList className="max-w-full min-w-0 justify-start overflow-x-auto" {...props}>
       <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
       <TabsTrigger value="members">{t('members')}</TabsTrigger>
       <TabsTrigger count={invitationCount} value="invitations">

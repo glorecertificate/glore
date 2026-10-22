@@ -4,7 +4,7 @@ import 'server-only'
 
 import { headers } from 'next/headers'
 
-import { and, desc, eq, gt, ne } from 'drizzle-orm'
+import { and, desc, eq, gt, ne, sql } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
@@ -14,6 +14,9 @@ import { auth } from '@/lib/auth'
 import { isRateLimited } from '@/lib/rate-limit'
 
 const HOUR = 60 * 60 * 1000
+const SESSION_LIMIT = 20
+
+const storedAt = (value: string) => new Date(value.replace(' ', 'T')).toISOString()
 
 export interface SessionSummary {
   createdAt: string
@@ -36,21 +39,31 @@ export const listSessions = async () => {
   if (!user) return { data: null, error: unauthenticated() }
 
   try {
-    const [rows, current] = await Promise.all([
-      db
-        .select({
-          createdAt: sessions.createdAt,
-          id: sessions.id,
-          ipAddress: sessions.ipAddress,
-          updatedAt: sessions.updatedAt,
-          userAgent: sessions.userAgent,
-        })
-        .from(sessions)
-        .where(and(eq(sessions.userId, user.id), gt(sessions.expiresAt, new Date().toISOString())))
-        .orderBy(desc(sessions.updatedAt)),
+    const columns = {
+      createdAt: sessions.createdAt,
+      id: sessions.id,
+      ipAddress: sessions.ipAddress,
+      updatedAt: sessions.updatedAt,
+      userAgent: sessions.userAgent,
+    }
+    const active = and(eq(sessions.userId, user.id), gt(sessions.expiresAt, sql<string>`${new Date()}`))
+    const [recent, current] = await Promise.all([
+      db.select(columns).from(sessions).where(active).orderBy(desc(sessions.updatedAt)).limit(SESSION_LIMIT),
       currentSessionId(),
     ])
-    const data: SessionSummary[] = rows.map(row => ({ ...row, current: row.id === current }))
+    const pinned =
+      current && !recent.some(row => row.id === current)
+        ? await db
+            .select(columns)
+            .from(sessions)
+            .where(and(active, eq(sessions.id, current)))
+        : []
+    const data: SessionSummary[] = [...pinned, ...recent].map(row => ({
+      ...row,
+      createdAt: storedAt(row.createdAt),
+      current: row.id === current,
+      updatedAt: storedAt(row.updatedAt),
+    }))
     return { data, error: null }
   } catch (error) {
     return { data: null, error: queryError(error) }

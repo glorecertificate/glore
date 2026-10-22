@@ -21,6 +21,7 @@ import CertificateDecisionEmail from '@/emails/certificate/decision'
 import CertificateReminderEmail from '@/emails/certificate/reminder'
 import CertificateReviewEmail from '@/emails/certificate/review'
 import LearningEligibleEmail from '@/emails/learning/eligible'
+import OrganizationApplicationDecisionEmail from '@/emails/organization/application-decision'
 import OrganizationInvitationEmail from '@/emails/organization/invitation'
 import OrganizationJoinRequestEmail from '@/emails/organization/join-request'
 import OrganizationJoinRequestReceivedEmail from '@/emails/organization/join-request-received'
@@ -65,6 +66,9 @@ const TEMPLATES = {
     status === 'approved' ? t('subjectApproved') : t('subjectChanges')
   ),
   'learning/eligible': define(LearningEligibleEmail, t => t('subject')),
+  'organization/application-decision': define(OrganizationApplicationDecisionEmail, (t, { organizationName, status }) =>
+    t(`subject_${status}`, { organizationName })
+  ),
   'organization/invitation': define(OrganizationInvitationEmail, (t, { kind, organizationName }) =>
     t(kind === 'reminder' ? 'subjectReminder' : 'subject', { organizationName })
   ),

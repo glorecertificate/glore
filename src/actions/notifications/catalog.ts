@@ -18,6 +18,7 @@ interface EventDefinition<K extends EventType> {
     template?: (event: AppEvent<K>, mail: PlannedMail, link: string | null) => EmailTemplate | Promise<EmailTemplate>
   }
   notifyActor?: boolean
+  variant?: (event: AppEvent<K>, userId: string) => string
   url?: (event: AppEvent<K>) => string | null
 }
 
@@ -243,11 +244,11 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
       category: 'mandatory',
       to: event => [{ email: event.data.applicantEmail, locale: event.data.locale, name: event.data.applicantName }],
       template: (event, mail) => ({
-        name: 'organization/join-request',
+        name: 'organization/application-decision',
         props: {
           comment: event.data.comment,
           organizationName: event.data.organizationName,
-          status: event.data.approved ? 'accepted' : 'rejected',
+          status: event.data.approved ? 'approved' : 'rejected',
           url: event.data.invitationUrl ?? undefined,
           userName: mail.name ?? undefined,
         },
@@ -399,6 +400,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
     },
     notifyActor: true,
     url: () => '/organization',
+    variant: (event, userId) => (userId === event.data.newOwnerId ? 'gained' : 'left'),
   },
   'team.invited': {
     inApp: event => [event.data.userId],

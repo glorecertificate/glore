@@ -55,6 +55,9 @@ const text = (value: unknown) => (typeof value === 'string' ? value : '')
 export const messageVariant = (type: string, data: Record<string, unknown>) => {
   if (type === 'join_request.decided') return data.accepted === true ? 'accepted' : 'rejected'
   if (type === 'team.role_changed') return data.role ? 'set' : 'removed'
+  if (type === 'organization.ownership_transferred' && (data.variant === 'gained' || data.variant === 'left')) {
+    return data.variant
+  }
   return null
 }
 

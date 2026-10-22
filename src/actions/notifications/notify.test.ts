@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, gt, inArray, max } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, seedEmail } from '~/scripts/seed-data'
@@ -172,6 +172,29 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
     expect(rows.map(({ userId }) => userId).toSorted()).toEqual([ids.owner, ids.representative].toSorted())
     expect(rows.every(({ url }) => url === '/certificates/-1')).toBe(true)
     expect(rows.every(({ data }) => !('email' in data))).toBe(true)
+  })
+
+  it('gives the previous and the new owner their own ownership copy', async () => {
+    const { client, ids, notify, organizationId, schema } = context
+    const [before] = await client.db.select({ id: max(schema.notifications.id) }).from(schema.notifications)
+    await notify.notify({
+      actorId: ids.owner,
+      data: { newOwnerId: ids.representative, previousOwnerId: ids.owner },
+      organizationId,
+      type: 'organization.ownership_transferred',
+    })
+    const where = and(
+      inArray(schema.notifications.userId, [ids.owner, ids.representative]),
+      eq(schema.notifications.type, 'organization.ownership_transferred'),
+      gt(schema.notifications.id, before?.id ?? 0)
+    )
+    const rows = await client.db.query.notifications.findMany({ where })
+    await client.db.delete(schema.notifications).where(where)
+
+    const variants = Object.fromEntries(
+      rows.map(({ data, userId }) => [userId, (data as { variant?: string }).variant])
+    )
+    expect(variants).toEqual({ [ids.owner]: 'left', [ids.representative]: 'gained' })
   })
 
   it('records sent mail on the in-app row', async () => {

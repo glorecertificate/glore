@@ -147,4 +147,44 @@ describe.skipIf(!isLocalDatabase)('organization insights and activity', () => {
     expect(second.items[0]).toMatchObject({ action: 'member.joined', role: 'volunteer', target: 'holder' })
     expect(second.nextCursor).toBeNull()
   })
+
+  it('names invitees from the invitation row and stays neutral once it is gone', async () => {
+    access.role = 'admin'
+    const { client, schema } = context
+    const { listOrganizationActivity } = await import('@/actions/organizations/activity-core')
+    const [invitation] = await client.db
+      .insert(schema.organizationInvitations)
+      .values({
+        email: `guest-${suffix}@invite.test`,
+        expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
+        organizationId: access.organizationId,
+        role: 'volunteer',
+        token: `activity-${suffix}`,
+      })
+      .returning({ id: schema.organizationInvitations.id })
+    if (!invitation) throw new Error('Failed to create the invitation')
+    const event = (action: string, invitationId: number) => ({
+      action,
+      actorId: ids.owner,
+      metadata: { invitationId, role: 'volunteer', userId: null },
+      organizationId: access.organizationId,
+      subjectId: String(invitationId),
+      subjectType: 'invitation' as const,
+    })
+    await client.db
+      .insert(schema.activityEvents)
+      .values([event('invitation.sent', invitation.id), event('invitation.declined', -invitation.id)])
+
+    const { items } = await listOrganizationActivity(access.organizationId, { limit: 2 })
+    await client.db.delete(schema.organizationInvitations).where(eq(schema.organizationInvitations.id, invitation.id))
+    const { items: afterwards } = await listOrganizationActivity(access.organizationId, { limit: 2 })
+    await client.db.delete(schema.activityEvents).where(eq(schema.activityEvents.organizationId, access.organizationId))
+
+    expect(items.find(({ action }) => action === 'invitation.sent')).toMatchObject({
+      actor: 'owner',
+      target: `guest-${suffix}@invite.test`,
+    })
+    expect(items.find(({ action }) => action === 'invitation.declined')?.target).toBeNull()
+    expect(afterwards.find(({ action }) => action === 'invitation.sent')?.target).toBeNull()
+  })
 })

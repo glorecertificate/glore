@@ -23,14 +23,16 @@ test.describe('course editor', () => {
     await dialog.getByRole('button', { name: 'Create course' }).click()
     await expect(page).toHaveURL(new RegExp(`/courses/${slug}`, 'u'))
 
-    const title = page.locator('input[value="New Course"]').first()
+    const title = page.locator('textarea').first()
+    await expect(title).toHaveValue('New Course')
     await title.fill('E2E course')
     await title.blur()
     await page.getByRole('button', { name: 'Save' }).click()
     await expect(page.getByText('Course saved successfully')).toBeVisible()
 
     await page.getByRole('tab', { name: /Spanish/u }).click()
-    const spanishTitle = page.locator('input[value="Nuevo Curso"]').first()
+    const spanishTitle = page.locator('textarea').first()
+    await expect(spanishTitle).toHaveValue('Nuevo Curso')
     await spanishTitle.fill('Curso E2E')
     await spanishTitle.blur()
     await page.getByRole('button', { name: 'Save' }).click()

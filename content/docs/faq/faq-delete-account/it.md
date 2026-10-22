@@ -1,12 +1,12 @@
 ---
 title: 'Come elimino il mio account?'
-excerpt: 'Apri Impostazioni, poi Account, e scegli Elimina account. I titolari richiedono un passaggio in più.'
+excerpt: 'Apri Impostazioni, poi I tuoi dati, e scegli Elimina account. I titolari richiedono un passaggio in più.'
 ---
 
-Apri Impostazioni, vai su Account e scegli Elimina account. Questo elimina per sempre il tuo account, il tuo profilo e i tuoi progressi.
+Apri Impostazioni, vai su I tuoi dati e scegli Elimina account. Questo elimina per sempre il tuo account, il tuo profilo, le tue bozze, le richieste aperte e i tuoi progressi.
 
-Se sei l'unico titolare di un'organizzazione, trasferisci prima la titolarità a un altro membro, oppure elimina l'organizzazione.
+L'unica cosa che blocca l'eliminazione è essere l'unico titolare di un'organizzazione. In quel caso apri le Impostazioni della tua organizzazione e, in Zona pericolosa, trasferisci la titolarità a un rappresentante, oppure elimina l'organizzazione. Poi torna a eliminare il tuo account.
 
-Se hai già dei certificati emessi, restano nei registri della tua organizzazione senza il tuo nome e i tuoi dati. Il loro PDF viene eliminato e risultano non più validi.
+I certificati già emessi restano nei registri della tua organizzazione, ma senza il tuo nome e i tuoi dati personali. Il loro PDF viene eliminato e la loro pagina di verifica indica che il titolare ha eliminato il proprio account.
 
 L'[informativa sulla privacy](/privacy) spiega i tuoi diritti sui tuoi dati.

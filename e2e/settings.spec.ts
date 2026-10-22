@@ -15,8 +15,10 @@ test.describe('settings', () => {
     const toggle = page.getByRole('switch', { name: 'Make my profile public' })
     await expect(toggle).not.toBeChecked()
 
-    await toggle.click()
-    await expect(page.getByText('Privacy settings saved')).toBeVisible()
+    await expect(async () => {
+      await toggle.check()
+      await expect(page.getByText('Privacy settings saved')).toBeVisible({ timeout: 3000 })
+    }).toPass()
     await page.reload()
     await expect(page.getByRole('switch', { name: 'Make my profile public' })).toBeChecked()
 
@@ -29,8 +31,10 @@ test.describe('settings', () => {
     const reminders = page.getByRole('switch', { name: 'Reminders' })
     await expect(reminders).toBeChecked()
 
-    await reminders.click()
-    await expect(page.getByText('Notification settings saved')).toBeVisible()
+    await expect(async () => {
+      await reminders.uncheck()
+      await expect(page.getByText('Notification settings saved')).toBeVisible({ timeout: 3000 })
+    }).toPass()
     await page.reload()
     await expect(page.getByRole('switch', { name: 'Reminders' })).not.toBeChecked()
 

@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl'
 import { useQueryState } from 'nuqs'
 
 import { listNotifications, markAllNotificationsRead } from '@/actions/notifications/inbox'
+import { announceNotificationsChanged } from '@/components/features/notifications/events'
 import { NotificationList } from '@/components/features/notifications/notification-list'
 import {
   NOTIFICATION_FILTERS,
@@ -45,6 +46,7 @@ export const NotificationsContent = () => {
 
   const markAll = async () => {
     await markAllNotificationsRead()
+    announceNotificationsChanged()
     refresh()
   }
 

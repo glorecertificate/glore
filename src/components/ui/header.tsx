@@ -86,7 +86,7 @@ export const HeaderLogo = <T,>({ className, href, ...props }: LinkProps<T>) => {
 
   return (
     <Link
-      className={cn(href === pathname && !searchParams.toString() && 'pointer-events-none')}
+      className={cn(href === pathname && !searchParams.toString() && 'pointer-events-none', className)}
       href={href}
       {...props}
     />

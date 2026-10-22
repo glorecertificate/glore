@@ -29,7 +29,7 @@ test.describe('notifications', () => {
   test('marks a notification read when it opens and keeps the state on the inbox page', async ({ page }) => {
     await page.goto('/notifications')
     await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible()
-    await expect(page.getByText('Unread')).toHaveCount(2)
+    await expect(page.getByRole('listitem').getByText('Unread', { exact: true })).toHaveCount(2)
 
     await page.getByRole('link', { name: /Course completed/u }).click()
     await expect(page).toHaveURL(/\/courses/u)

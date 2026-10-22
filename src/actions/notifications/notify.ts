@@ -47,11 +47,15 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
 
   const url = definition.url?.(event) ?? null
   const data = eventMetadata(event)
+  const variantOf = (userId: string) => {
+    const variant = definition.variant?.(event, userId)
+    return variant ? { ...data, variant } : data
+  }
   const rows =
     plan.inAppIds.length > 0
       ? await db
           .insert(notifications)
-          .values(plan.inAppIds.map(userId => ({ data, type: event.type, url, userId })))
+          .values(plan.inAppIds.map(userId => ({ data: variantOf(userId), type: event.type, url, userId })))
           .returning({ id: notifications.id, userId: notifications.userId })
       : []
 

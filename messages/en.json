@@ -2391,7 +2391,7 @@
     "organizationDeleted": "Organization deleted",
     "overviewDescription": "A quick view of your organization's identity, contact info, and activity.",
     "memberCount": "Members",
-    "memberBreakdown": "{admins} admins, {representatives} representatives, {tutors} tutors, {volunteers} volunteers, {learners} learners",
+    "memberBreakdown": "{admins, plural, one {# admin} other {# admins}}, {representatives, plural, one {# representative} other {# representatives}}, {tutors, plural, one {# tutor} other {# tutors}}, {volunteers, plural, one {# volunteer} other {# volunteers}}, {learners, plural, one {# learner} other {# learners}}",
     "pendingJoinRequests": "Pending join requests",
     "pendingJoinRequestsDescription": "Requests waiting for review",
     "pendingCertificates": "Pending certificates",
@@ -2526,11 +2526,16 @@
     "activity_certificate_withdrawn": "{target} withdrew a certificate request",
     "activity_certificate_review_reminder": "Reminder sent to {tutor} about the request of {target}",
     "activity_certificate_review_escalated": "The review of the request of {target} was escalated",
-    "activity_invitation_sent": "{actor} invited someone as {role}",
+    "activity_invitation_sent": "{actor} invited {target} as {role}",
+    "activity_invitation_sent_unnamed": "{actor} sent an invitation as {role}",
     "activity_invitation_accepted": "{target} accepted an invitation",
+    "activity_invitation_accepted_unnamed": "An invitation was accepted",
     "activity_invitation_declined": "{target} declined an invitation",
-    "activity_invitation_revoked": "{actor} revoked an invitation",
-    "activity_invitation_expiring": "An invitation is about to expire",
+    "activity_invitation_declined_unnamed": "An invitation was declined",
+    "activity_invitation_revoked": "{actor} revoked the invitation of {target}",
+    "activity_invitation_revoked_unnamed": "{actor} revoked an invitation",
+    "activity_invitation_expiring": "The invitation of {target} is about to expire",
+    "activity_invitation_expiring_unnamed": "An invitation is about to expire",
     "activity_invite_link_created": "{actor} created an invite link for {role}",
     "activity_invite_link_revoked": "{actor} revoked an invite link",
     "activity_join_request_created": "{target} asked to join",
@@ -2539,6 +2544,8 @@
     "activity_member_role_changed": "{actor} changed the role of {target} from {previousRole} to {role}",
     "activity_member_removed": "{actor} removed {target}",
     "activity_member_left": "{target} left the organization",
+    "activity_course_completed": "{target} completed a course",
+    "activity_learning_eligible": "{target} can now request a certificate",
     "activity_organization_ownership_transferred": "{actor} transferred the ownership to {target}",
     "activity_organization_application_received": "The application was received",
     "activity_organization_application_decided": "The application was reviewed",
@@ -2749,8 +2756,8 @@
     "exportLimited": "You exported your data too many times. Try again later.",
     "deleteAccountConfirmLabel": "Type {email} to confirm",
     "deleteAccountTransferTitle": "Transfer ownership first",
-    "deleteAccountTransferDescription": "You are the only administrator of {organizations}. Make another member an administrator before you delete your account.",
-    "deleteAccountTransferLink": "Open the members of your organization"
+    "deleteAccountTransferDescription": "You are the only administrator of {organizations}. Transfer the ownership to a representative in the organization settings, under Danger zone, before you delete your account.",
+    "deleteAccountTransferLink": "Open the organization settings"
   },
   "Register": {
     "metaTitle": "Apply to join GloRe",
@@ -3432,6 +3439,21 @@
       "button": "Start my certificate",
       "footer": "You receive this email because you are learning on GloRe."
     },
+    "organization/application-decision": {
+      "subject_approved": "Your organization {organizationName} was approved",
+      "subject_rejected": "Your registration of {organizationName} was declined",
+      "preview_approved": "{organizationName} is approved and ready to be set up on GloRe.",
+      "preview_rejected": "Your registration of {organizationName} on GloRe was declined.",
+      "intro_approved": "Good news: the registration of {organizationName} has been approved.",
+      "intro_rejected": "We reviewed the registration of {organizationName} and could not approve it.",
+      "details_approved": "Sign in to invite your members and start issuing certificates.",
+      "details_approved_new": "Use the button below to create your account and set up your organization.",
+      "detailsComment": "Message from the reviewer: {comment}",
+      "button": "Sign in to GloRe",
+      "buttonSetup": "Set up your account",
+      "expiry": "This link is valid for the next {days, plural, one {day} other {# days}}.",
+      "footer": "You're receiving this email because you registered an organization on GloRe."
+    },
     "organization/invitation": {
       "subject": "You're invited to join {organizationName} on GloRe",
       "subjectReminder": "Your invitation to {organizationName} expires soon",
@@ -3462,20 +3484,20 @@
       "subject_removed": "You were removed from {organizationName}",
       "subject_ownership_gained": "You are now the owner of {organizationName}",
       "subject_ownership_left": "You handed over {organizationName}",
-      "preview_role_changed": "Your role in {organizationName} on GloRe is now {role}.",
-      "preview_removed": "You are no longer a member of {organizationName} on GloRe.",
-      "preview_ownership_gained": "Ownership of {organizationName} on GloRe was transferred to you.",
-      "preview_ownership_left": "Ownership of {organizationName} on GloRe was transferred to another member.",
-      "intro_role_changed": "Your role in {organizationName} on GloRe is now {role}.",
-      "intro_removed": "You were removed from {organizationName} on GloRe.",
-      "intro_ownership_gained": "Ownership of {organizationName} on GloRe was transferred to you.",
-      "intro_ownership_left": "Ownership of {organizationName} on GloRe was transferred to another member.",
+      "preview_role_changed": "Your role in {organizationName} is now {role}.",
+      "preview_removed": "You are no longer a member of {organizationName}.",
+      "preview_ownership_gained": "Ownership of {organizationName} was transferred to you.",
+      "preview_ownership_left": "Ownership of {organizationName} was transferred to another member.",
+      "intro_role_changed": "Your role in {organizationName} is now {role}.",
+      "intro_removed": "You were removed from {organizationName}.",
+      "intro_ownership_gained": "Ownership of {organizationName} was transferred to you.",
+      "intro_ownership_left": "Ownership of {organizationName} was transferred to another member.",
       "details_role_changed": "Your role decides what you can see and do in the organization.",
       "details_removed": "Your account and any certificates you earned stay yours. If you think this is a mistake, ask the organization to invite you again.",
       "details_ownership_gained": "As the owner you manage members, invitations, and the organization settings.",
       "details_ownership_left": "You are no longer the owner. You keep access to your account.",
       "button": "Open GloRe",
-      "footer": "You receive this email because your membership in {organizationName} on GloRe changed."
+      "footer": "You receive this email because your membership in {organizationName} changed."
     },
     "team/role-changed": {
       "subject_set": "Your role in the GloRe team changed",
@@ -4010,6 +4032,14 @@
       "organization_ownership_transferred": {
         "title": "Organization ownership changed",
         "body": "Ownership was handed over to a new owner."
+      },
+      "organization_ownership_transferred_gained": {
+        "title": "You are now the organization owner",
+        "body": "The ownership was handed over to you. You now manage its settings and members."
+      },
+      "organization_ownership_transferred_left": {
+        "title": "You handed over the organization",
+        "body": "You are now a representative. The new owner has full control."
       },
       "team_invited": {
         "title": "You are invited to the GloRe team",

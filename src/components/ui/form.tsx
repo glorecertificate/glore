@@ -72,7 +72,7 @@ export const FormItem = ({ className, ...props }: React.ComponentProps<'div'>) =
   const id = useId()
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div className={cn('grid gap-2', className)} data-slot="form-item" {...props} />
+      <div className={cn('grid content-start gap-2', className)} data-slot="form-item" {...props} />
     </FormItemContext.Provider>
   )
 }

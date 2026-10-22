@@ -71,7 +71,7 @@ export const DeleteAccount = () => {
                     organizations: blockers.map(({ name }) => name).join(', '),
                   })}
                 </p>
-                <Link className="underline underline-offset-4" href="/organization?tab=members">
+                <Link className="underline underline-offset-4" href="/organization?tab=settings">
                   {t('deleteAccountTransferLink')}
                 </Link>
               </div>

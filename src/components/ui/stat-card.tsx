@@ -1,8 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { NumberTicker } from '@/components/ui/number-ticker'
+import { cn } from '@/lib/utils'
 
 export const StatCard = ({
   children,
+  className,
   description,
   format,
   label,
@@ -14,7 +16,7 @@ export const StatCard = ({
   label: string
   value: number
 }) => (
-  <Card data-slot="stat-card" {...props}>
+  <Card className={cn('justify-between', className)} data-slot="stat-card" {...props}>
     <CardHeader>
       <CardDescription>{label}</CardDescription>
       <CardTitle className="text-3xl">

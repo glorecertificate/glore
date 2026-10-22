@@ -158,4 +158,46 @@ describe('renderEmail', () => {
     expect(optional.html).toContain('/settings?tab=notifications')
     expect(english.html).not.toContain('/settings?tab=notifications')
   })
+
+  it('words an organization approval as a registration, not a join request', async () => {
+    const { renderEmail } = await import('@/lib/email')
+    const approved = await renderEmail({
+      locale: 'en',
+      template: {
+        name: 'organization/application-decision',
+        props: { organizationName: 'Acme', status: 'approved', url: 'https://glore.test/join?token=x' },
+      },
+    })
+    const rejected = await renderEmail({
+      locale: 'en',
+      template: { name: 'organization/application-decision', props: { organizationName: 'Acme', status: 'rejected' } },
+    })
+
+    expect(approved.subject).toBe('Your organization Acme was approved')
+    expect(approved.subject).not.toMatch(/join/iu)
+    expect(approved.html).toContain('Set up your account')
+    expect(rejected.subject).toBe('Your registration of Acme was declined')
+  })
+
+  it('links the password change contact button to support, not the login page', async () => {
+    const { previewTemplate, renderEmail } = await import('@/lib/email')
+    const { html } = await renderEmail({ locale: 'en', template: previewTemplate('account/password-changed') })
+
+    expect(html).toContain('href="mailto:info@glorecertificate.net"')
+    expect(html).not.toContain('glore.test/login')
+  })
+
+  it('does not repeat the product name in membership copy', async () => {
+    const { renderEmail } = await import('@/lib/email')
+    const { text } = await renderEmail({
+      locale: 'en',
+      template: {
+        name: 'organization/membership',
+        props: { kind: 'role_changed', organizationName: 'Acme', role: 'tutor', url: 'https://glore.test' },
+      },
+    })
+
+    expect(text).toContain('Your role in Acme is now')
+    expect(text).not.toContain('on GloRe')
+  })
 })

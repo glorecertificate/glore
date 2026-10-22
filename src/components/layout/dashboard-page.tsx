@@ -7,6 +7,7 @@ import { Header, HeaderBreadcrumb, HeaderLogo, HeaderTrigger } from '@/component
 import { Logo } from '@/components/ui/logo'
 import { Main } from '@/components/ui/main'
 import { APP_ROOT } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 export const DashboardPage = ({
   backHref,
@@ -33,11 +34,11 @@ export const DashboardPage = ({
     <Provider>
       {header ?? (
         <Header className="flex items-center justify-between">
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex min-w-0 flex-1 items-center gap-2.5">
             <HeaderTrigger />
             {breadcrumb ?? <HeaderBreadcrumb description={description} title={title} backHref={backHref} />}
           </div>
-          <HeaderLogo href={APP_ROOT}>
+          <HeaderLogo className={cn(breadcrumb && 'max-sm:hidden')} href={APP_ROOT}>
             <Logo className="mr-1 w-18 transition-[width,height]" />
           </HeaderLogo>
         </Header>

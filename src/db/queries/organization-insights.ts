@@ -169,11 +169,18 @@ const roleOf = (value: unknown) => ROLES.find(role => role === value) ?? null
 const activityTargetId = ({ action, metadata }: Pick<ActivityRecord, 'action' | 'metadata'>) => {
   if (action.startsWith('certificate.')) return stringOf(metadata.holderId)
   if (action === 'organization.ownership_transferred') return stringOf(metadata.newOwnerId)
-  if (action.startsWith('member.') || action === 'invitation.accepted' || action === 'invitation.declined') {
+  if (['course.', 'invitation.', 'learning.', 'member.'].some(prefix => action.startsWith(prefix))) {
     return stringOf(metadata.userId)
   }
   return null
 }
+
+const activityInvitationId = ({ action, metadata }: Pick<ActivityRecord, 'action' | 'metadata'>) =>
+  action.startsWith('invitation.') && typeof metadata.invitationId === 'number' ? metadata.invitationId : null
+
+export const activityInvitationIds = (records: ActivityRecord[]) => [
+  ...new Set(records.flatMap(record => activityInvitationId(record) ?? [])),
+]
 
 const activityTutorId = ({ action, metadata }: Pick<ActivityRecord, 'action' | 'metadata'>) =>
   action.startsWith('certificate.') ? (stringOf(metadata.tutorId) ?? stringOf(metadata.previousTutorId)) : null
@@ -188,9 +195,14 @@ export const activityUserIds = (records: ActivityRecord[]) => {
   return [...ids]
 }
 
-export const toActivityItems = (records: ActivityRecord[], names: Map<string, string>): ActivityItem[] =>
+export const toActivityItems = (
+  records: ActivityRecord[],
+  names: Map<string, string>,
+  invitees = new Map<number, string>()
+): ActivityItem[] =>
   records.map(record => {
     const targetId = activityTargetId(record)
+    const invitationId = activityInvitationId(record)
     const tutorId = activityTutorId(record)
     return {
       action: record.action,
@@ -199,7 +211,10 @@ export const toActivityItems = (records: ActivityRecord[], names: Map<string, st
       id: record.id,
       previousRole: roleOf(record.metadata.previousRole),
       role: roleOf(record.metadata.role),
-      target: (targetId && names.get(targetId)) || stringOf(record.metadata.name),
+      target:
+        (targetId && names.get(targetId)) ||
+        (invitationId !== null && invitees.get(invitationId)) ||
+        stringOf(record.metadata.name),
       tutor: (tutorId && names.get(tutorId)) || null,
     }
   })

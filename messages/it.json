@@ -2373,7 +2373,7 @@
     "country": "Paese",
     "region": "Regione",
     "regionPlaceholder": "Lombardia",
-    "dangerZone": "Danger Zone",
+    "dangerZone": "Zona pericolosa",
     "dangerDescription": "Eliminare un'organizzazione è irreversibile, procedi con cautela.",
     "deleteOrganizationTitle": "Elimina organizzazione",
     "deleteOrganizationDescription": "Questo eliminerà definitivamente l'organizzazione e tutte le membership collegate.",
@@ -2391,7 +2391,7 @@
     "organizationDeleted": "Organizzazione eliminata",
     "overviewDescription": "Una vista rapida dell'identità, dei contatti e dell'attività della tua organizzazione.",
     "memberCount": "Membri",
-    "memberBreakdown": "{admins} admin, {representatives} rappresentanti, {tutors} tutor, {volunteers} volontari, {learners} studenti",
+    "memberBreakdown": "{admins, plural, one {# admin} other {# admin}}, {representatives, plural, one {# rappresentante} other {# rappresentanti}}, {tutors, plural, one {# tutor} other {# tutor}}, {volunteers, plural, one {# volontario} other {# volontari}}, {learners, plural, one {# studente} other {# studenti}}",
     "pendingJoinRequests": "Richieste in sospeso",
     "pendingJoinRequestsDescription": "Richieste in attesa di revisione",
     "pendingCertificates": "Certificati in sospeso",
@@ -2526,11 +2526,16 @@
     "activity_certificate_withdrawn": "{target} ha ritirato una richiesta di certificato",
     "activity_certificate_review_reminder": "Promemoria inviato a {tutor} per la richiesta di {target}",
     "activity_certificate_review_escalated": "La revisione della richiesta di {target} è stata sollecitata",
-    "activity_invitation_sent": "{actor} ha invitato qualcuno come {role}",
+    "activity_invitation_sent": "{actor} ha invitato {target} come {role}",
+    "activity_invitation_sent_unnamed": "{actor} ha inviato un invito come {role}",
     "activity_invitation_accepted": "{target} ha accettato un invito",
+    "activity_invitation_accepted_unnamed": "Un invito è stato accettato",
     "activity_invitation_declined": "{target} ha rifiutato un invito",
-    "activity_invitation_revoked": "{actor} ha revocato un invito",
-    "activity_invitation_expiring": "Un invito sta per scadere",
+    "activity_invitation_declined_unnamed": "Un invito è stato rifiutato",
+    "activity_invitation_revoked": "{actor} ha revocato l'invito di {target}",
+    "activity_invitation_revoked_unnamed": "{actor} ha revocato un invito",
+    "activity_invitation_expiring": "L'invito di {target} sta per scadere",
+    "activity_invitation_expiring_unnamed": "Un invito sta per scadere",
     "activity_invite_link_created": "{actor} ha creato un link di invito per {role}",
     "activity_invite_link_revoked": "{actor} ha revocato un link di invito",
     "activity_join_request_created": "{target} ha chiesto di unirsi",
@@ -2539,6 +2544,8 @@
     "activity_member_role_changed": "{actor} ha cambiato il ruolo di {target} da {previousRole} a {role}",
     "activity_member_removed": "{actor} ha rimosso {target}",
     "activity_member_left": "{target} ha lasciato l'organizzazione",
+    "activity_course_completed": "{target} ha completato un corso",
+    "activity_learning_eligible": "{target} può ora richiedere un certificato",
     "activity_organization_ownership_transferred": "{actor} ha trasferito la proprietà a {target}",
     "activity_organization_application_received": "La candidatura è stata ricevuta",
     "activity_organization_application_decided": "La candidatura è stata esaminata",
@@ -2749,8 +2756,8 @@
     "exportLimited": "Hai esportato i tuoi dati troppe volte. Riprova più tardi.",
     "deleteAccountConfirmLabel": "Digita {email} per confermare",
     "deleteAccountTransferTitle": "Trasferisci prima la titolarità",
-    "deleteAccountTransferDescription": "Sei l'unico amministratore di {organizations}. Rendi amministratore un altro membro prima di eliminare il tuo account.",
-    "deleteAccountTransferLink": "Apri i membri della tua organizzazione"
+    "deleteAccountTransferDescription": "Sei l'unico amministratore di {organizations}. Trasferisci la proprietà a un rappresentante dalle impostazioni dell'organizzazione, in Zona pericolosa, prima di eliminare il tuo account.",
+    "deleteAccountTransferLink": "Apri le impostazioni dell'organizzazione"
   },
   "Register": {
     "metaTitle": "Candidati a GloRe",
@@ -3432,6 +3439,21 @@
       "button": "Inizia il mio certificato",
       "footer": "Ricevi questa email perché stai imparando su GloRe."
     },
+    "organization/application-decision": {
+      "subject_approved": "La tua organizzazione {organizationName} è stata approvata",
+      "subject_rejected": "La registrazione di {organizationName} è stata rifiutata",
+      "preview_approved": "{organizationName} è approvata e pronta per essere configurata su GloRe.",
+      "preview_rejected": "La registrazione di {organizationName} su GloRe è stata rifiutata.",
+      "intro_approved": "Buone notizie: la registrazione di {organizationName} è stata approvata.",
+      "intro_rejected": "Abbiamo esaminato la registrazione di {organizationName} e non abbiamo potuto approvarla.",
+      "details_approved": "Accedi per invitare i tuoi membri e iniziare a emettere certificati.",
+      "details_approved_new": "Usa il pulsante qui sotto per creare il tuo account e configurare la tua organizzazione.",
+      "detailsComment": "Messaggio del revisore: {comment}",
+      "button": "Accedi a GloRe",
+      "buttonSetup": "Configura il tuo account",
+      "expiry": "Questo link è valido per {days, plural, one {il prossimo giorno} other {i prossimi # giorni}}.",
+      "footer": "Ricevi questa email perché hai registrato un'organizzazione su GloRe."
+    },
     "organization/invitation": {
       "subject": "Sei invitato a unirti a {organizationName} su GloRe",
       "subjectReminder": "Il tuo invito a {organizationName} sta per scadere",
@@ -3462,20 +3484,20 @@
       "subject_removed": "Sei stato rimosso da {organizationName}",
       "subject_ownership_gained": "Ora sei titolare di {organizationName}",
       "subject_ownership_left": "Hai ceduto la titolarità di {organizationName}",
-      "preview_role_changed": "Il tuo ruolo in {organizationName} su GloRe ora è {role}.",
-      "preview_removed": "Non fai più parte di {organizationName} su GloRe.",
-      "preview_ownership_gained": "La titolarità di {organizationName} su GloRe è passata a te.",
-      "preview_ownership_left": "La titolarità di {organizationName} su GloRe è passata a un altro membro.",
-      "intro_role_changed": "Il tuo ruolo in {organizationName} su GloRe ora è {role}.",
-      "intro_removed": "Sei stato rimosso da {organizationName} su GloRe.",
-      "intro_ownership_gained": "La titolarità di {organizationName} su GloRe è passata a te.",
-      "intro_ownership_left": "La titolarità di {organizationName} su GloRe è passata a un altro membro.",
+      "preview_role_changed": "Il tuo ruolo in {organizationName} ora è {role}.",
+      "preview_removed": "Non fai più parte di {organizationName}.",
+      "preview_ownership_gained": "La titolarità di {organizationName} è passata a te.",
+      "preview_ownership_left": "La titolarità di {organizationName} è passata a un altro membro.",
+      "intro_role_changed": "Il tuo ruolo in {organizationName} ora è {role}.",
+      "intro_removed": "Sei stato rimosso da {organizationName}.",
+      "intro_ownership_gained": "La titolarità di {organizationName} è passata a te.",
+      "intro_ownership_left": "La titolarità di {organizationName} è passata a un altro membro.",
       "details_role_changed": "Il tuo ruolo decide cosa puoi vedere e fare nell'organizzazione.",
       "details_removed": "Il tuo account e i certificati che hai ottenuto restano tuoi. Se pensi sia un errore, chiedi all'organizzazione di invitarti di nuovo.",
       "details_ownership_gained": "Come titolare gestisci membri, inviti e impostazioni dell'organizzazione.",
       "details_ownership_left": "Non sei più il titolare. Mantieni l'accesso al tuo account.",
       "button": "Apri GloRe",
-      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} su GloRe è cambiata."
+      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} è cambiata."
     },
     "team/role-changed": {
       "subject_set": "Il tuo ruolo nel team GloRe è cambiato",
@@ -4010,6 +4032,14 @@
       "organization_ownership_transferred": {
         "title": "La titolarità dell'organizzazione è cambiata",
         "body": "La titolarità è passata a un'altra persona."
+      },
+      "organization_ownership_transferred_gained": {
+        "title": "Ora sei il titolare dell'organizzazione",
+        "body": "La titolarità è stata trasferita a te. Ora gestisci le sue impostazioni e i suoi membri."
+      },
+      "organization_ownership_transferred_left": {
+        "title": "Hai trasferito l'organizzazione",
+        "body": "Ora sei rappresentante. Il nuovo titolare ha il controllo completo."
       },
       "team_invited": {
         "title": "Sei invitato nel team GloRe",

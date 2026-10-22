@@ -135,7 +135,7 @@ export const CourseListCard = ({
   return (
     <Card
       className={cn(
-        'min-h-80 transition-[border-color,box-shadow] duration-200 hover:border-brand/30 hover:shadow-sm',
+        'min-h-80 justify-between transition-[border-color,box-shadow] duration-200 hover:border-brand/30 hover:shadow-sm',
         className
       )}
       {...props}

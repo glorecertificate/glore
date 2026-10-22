@@ -13,7 +13,9 @@ export const ActivityList = ({ items, label }: { items: ActivityItem[]; label: s
   const t = useTranslations('Organization')
 
   const describe = (item: ActivityItem) => {
-    const key = activityMessageKey(item.action) as MessageKey<'Organization'>
+    const base = activityMessageKey(item.action) as MessageKey<'Organization'>
+    const unnamed = `${base}_unnamed` as MessageKey<'Organization'>
+    const key = !item.target && t.has(unnamed) ? unnamed : base
     const person = t('activityUnknownPerson')
     return t(t.has(key) ? key : 'activity_unknown', {
       actor: item.actor ?? person,

@@ -42,6 +42,9 @@ describe('message helpers', () => {
     expect(messageVariant('join_request.decided', { accepted: false })).toBe('rejected')
     expect(messageVariant('team.role_changed', { role: null })).toBe('removed')
     expect(messageVariant('team.role_changed', { role: 'editor' })).toBe('set')
+    expect(messageVariant('organization.ownership_transferred', { variant: 'gained' })).toBe('gained')
+    expect(messageVariant('organization.ownership_transferred', { variant: 'left' })).toBe('left')
+    expect(messageVariant('organization.ownership_transferred', {})).toBeNull()
     expect(messageVariant('certificate.approved', {})).toBeNull()
   })
 
@@ -75,6 +78,7 @@ describe('notification catalog coverage', () => {
     const { EVENT_DEFINITIONS } = await import('@/actions/notifications/catalog')
     const variants: Record<string, string[]> = {
       'join_request.decided': ['accepted', 'rejected'],
+      'organization.ownership_transferred': ['gained', 'left'],
       'team.role_changed': ['set', 'removed'],
     }
     const keys = Object.entries(EVENT_DEFINITIONS).flatMap(([type, definition]) => {

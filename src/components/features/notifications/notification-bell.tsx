@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
 import { countUnreadNotifications } from '@/actions/notifications/inbox'
+import { NOTIFICATIONS_CHANGED } from '@/components/features/notifications/events'
 import { NotificationPopover } from '@/components/features/notifications/notification-popover'
 import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
@@ -25,6 +26,13 @@ export const NotificationBell = ({ children, className, ...props }: React.Compon
   const [open, setOpen] = useState(false)
   const { data, refresh } = usePoll(readUnread, { interval: 60_000 })
   const unread = data ?? 0
+
+  const onChanged = useEffectEvent(refresh)
+
+  useEffect(() => {
+    window.addEventListener(NOTIFICATIONS_CHANGED, onChanged)
+    return () => window.removeEventListener(NOTIFICATIONS_CHANGED, onChanged)
+  }, [])
 
   return (
     <Popover onOpenChange={setOpen} open={open}>

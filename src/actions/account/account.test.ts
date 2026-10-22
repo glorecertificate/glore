@@ -200,6 +200,42 @@ describe.skipIf(!isLocalDatabase)('account settings actions', () => {
     expect(left.map(({ id }) => id).toSorted()).toEqual([`s2-${suffix}`, `s3-${suffix}`])
   })
 
+  it('lists at most 20 unexpired sessions, newest first, with the time Better Auth wrote', async () => {
+    authUser.current = { id: ids.admin }
+    const { client, schema, sessions } = context
+    const written = (date: Date) => date as unknown as string
+    const later = written(new Date(Date.now() + 86_400_000))
+    const expired = written(new Date(Date.now() - 60_000))
+    await client.db.insert(schema.sessions).values([
+      ...Array.from({ length: 25 }, (_, index) => {
+        const time = written(new Date(Date.now() - index * 60_000))
+        return {
+          createdAt: time,
+          expiresAt: later,
+          id: `bulk-${index}-${suffix}`,
+          token: `bulk-${index}-${suffix}`,
+          updatedAt: time,
+          userId: ids.admin,
+        }
+      }),
+      {
+        createdAt: expired,
+        expiresAt: expired,
+        id: `old-${suffix}`,
+        token: `old-${suffix}`,
+        updatedAt: expired,
+        userId: ids.admin,
+      },
+    ])
+    const listed = await sessions.listSessions()
+    expect(listed.data).toHaveLength(20)
+    expect(listed.data?.[0]?.id).toBe(`bulk-0-${suffix}`)
+    expect(listed.data?.map(({ id }) => id)).not.toContain(`old-${suffix}`)
+    expect(Math.abs(Date.parse(listed.data![0]!.updatedAt) - Date.now())).toBeLessThan(5000)
+    const times = listed.data!.map(({ updatedAt }) => updatedAt)
+    expect(times).toEqual(times.toSorted().toReversed())
+  })
+
   it('exports the account data without credentials', async () => {
     const { exporter } = context
     authUser.current = { id: ids.subject }

@@ -55,7 +55,7 @@ export const login = async ({ password, username }: { password: string; username
   if (!email) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
 
   try {
-    const result = await auth.api.signInEmail({ body: { email, password } })
+    const result = await auth.api.signInEmail({ body: { email, password }, headers: await headers() })
     if (!result?.user) return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }
   } catch {
     return { error: { code: 'AUTH_ERROR', message: 'Login failed' } }

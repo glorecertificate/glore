@@ -6,25 +6,26 @@ import { useTranslations } from 'next-intl'
 import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Link } from '@/components/ui/link'
 import { type DocArticle } from '@/db/queries/doc'
+import { pickLocale } from '@/db/queries/learning'
 import { cn } from '@/lib/utils'
 
 interface ArticleCardProps {
   article: DocArticle
-  onClick: () => void
   className?: string
 }
 
-export const ArticleCard = ({ article, className, onClick }: ArticleCardProps) => {
+export const ArticleCard = ({ article, className }: ArticleCardProps) => {
   const t = useTranslations('Docs')
-  const { locale, localize } = useI18n()
+  const { locale } = useI18n()
 
-  const title = localize(article.title)
-  const excerpt = article.excerpt ? localize(article.excerpt) : null
+  const title = pickLocale(article.title, locale) ?? article.slug
+  const excerpt = pickLocale(article.excerpt, locale)
   const updatedAt = new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(article.updatedAt))
 
   return (
-    <button className={cn('w-full cursor-pointer text-left', className)} type="button" onClick={onClick}>
+    <Link className={cn('block w-full text-left', className)} href={`/docs/articles/${article.slug}`}>
       <Card className="h-full transition-shadow hover:shadow-sm">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
@@ -46,6 +47,6 @@ export const ArticleCard = ({ article, className, onClick }: ArticleCardProps) =
           </CardContent>
         )}
       </Card>
-    </button>
+    </Link>
   )
 }

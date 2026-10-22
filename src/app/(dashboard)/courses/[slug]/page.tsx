@@ -1,95 +1,46 @@
-import { notFound, redirect } from 'next/navigation'
-import { Suspense, ViewTransition } from 'react'
+import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { getLocale } from 'next-intl/server'
-import { createSearchParamsCache, parseAsInteger, parseAsStringEnum } from 'nuqs/server'
+import { createSearchParamsCache, parseAsStringEnum } from 'nuqs/server'
 
-import { getCookie } from '@/actions/cookies'
-import { getCourse } from '@/actions/courses/queries'
-import { getCurrentUser } from '@/actions/user'
-import { CourseEditor } from '@/components/features/courses/course-editor'
-import { CourseBreadcrumb } from '@/components/features/courses/course-editor/breadcrumb'
-import { CourseProvider } from '@/components/features/courses/course-editor/context'
+import { getSkillProgress } from '@/actions/courses/data'
+import { getLearningContext, loadCourseOverview } from '@/actions/courses/learner'
 import { COURSE_PARAMS } from '@/components/features/courses/course-editor/params'
-import { CourseEnrollment } from '@/components/features/courses/course-enrollment'
+import { CourseEditorView } from '@/components/features/courses/course-editor/view'
+import { CourseOverviewView } from '@/components/features/courses/course-overview'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
-import { PageTitle } from '@/components/layout/page-title'
-import { LOCALES, localizeRecord } from '@/lib/i18n'
+import { LOCALES } from '@/lib/i18n'
 
-const { parse } = createSearchParamsCache({
-  [COURSE_PARAMS.LANGUAGE]: parseAsStringEnum(LOCALES),
-  [COURSE_PARAMS.STEP]: parseAsInteger.withDefault(1),
-})
+const { parse } = createSearchParamsCache({ [COURSE_PARAMS.LANGUAGE]: parseAsStringEnum(LOCALES) })
 
-const resolvePageData = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
-  const { slug } = await params
-
-  const { data: course, error } = await getCourse(slug)
-  if (error) return notFound()
-
-  const resolvedSearchParams = await searchParams
-  const { [COURSE_PARAMS.LANGUAGE]: languageParam, [COURSE_PARAMS.STEP]: stepParam } = await parse(resolvedSearchParams)
-  const language = languageParam ?? (await getLocale())
-
-  const [user, orgId] = await Promise.all([getCurrentUser(), getCookie('org')])
-  const orgRole = user.organizations.find(({ id }) => id === orgId)?.role ?? null
-  const isViewer = !user.canEdit && (orgRole === 'admin' || orgRole === 'representative' || orgRole === 'tutor')
-
-  let step = stepParam
-  if (!user.canEdit && !isViewer) {
-    const max = course.lessons.findIndex(lesson => !lesson.completed)
-    if (max !== -1 && step - 1 > max) step = max + 1
-  }
-  step = step > 0 && step <= course.lessons.length ? step : 1
-
-  if (stepParam !== step) {
-    const pageParams = new URLSearchParams()
-
-    for (const [key, value] of Object.entries(resolvedSearchParams)) {
-      if (Array.isArray(value)) {
-        for (const v of value) {
-          pageParams.append(key, v)
-        }
-        continue
-      }
-      if (value) pageParams.set(key, value)
-    }
-
-    pageParams.set(COURSE_PARAMS.STEP, step.toString())
-    redirect(`/courses/${slug}?${pageParams.toString()}`)
-  }
-
-  return { course, isViewer, language, step, user }
+export const generateMetadata = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
+  const [{ slug }, { [COURSE_PARAMS.LANGUAGE]: requested }, locale] = await Promise.all([
+    params,
+    parse(searchParams),
+    getLocale(),
+  ])
+  const data = await loadCourseOverview(slug, requested, locale)
+  if (!data) return
+  return { description: data.overview.description ?? undefined, title: data.overview.title }
 }
 
-export const generateMetadata = async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, language, user } = await resolvePageData(props)
-  if (!(course && user)) return
+const CoursePageContent = async ({ params, searchParams }: PageProps<'/courses/[slug]'>) => {
+  const [{ slug }, { user }] = await Promise.all([params, getLearningContext()])
+  if (user.canEdit) return <CourseEditorView basePath={`/courses/${slug}`} searchParams={searchParams} slug={slug} />
 
-  return {
-    description: course.description ? localizeRecord(course.description, language) : undefined,
-    title: localizeRecord(course.title, language),
-  }
-}
+  const [{ [COURSE_PARAMS.LANGUAGE]: requested }, locale] = await Promise.all([parse(searchParams), getLocale()])
+  const data = await loadCourseOverview(slug, requested, locale)
+  if (!data) return notFound()
 
-const CoursePageContent = async (props: PageProps<'/courses/[slug]'>) => {
-  const { course, isViewer, language, step, user } = await resolvePageData(props)
-  const shouldEnroll = !(course.enrolled || user.canEdit || isViewer)
+  const isSkillLearner = data.access === 'learner' && data.overview.type === 'skill'
+  const completedSkills = isSkillLearner ? (await getSkillProgress(user.id)).completedCourseIds.length : null
 
   return (
-    <CourseProvider value={{ course, language, step }}>
-      {shouldEnroll && <CourseEnrollment courseId={course.id} language={language} />}
-      <DashboardPage
-        title={<PageTitle namespace="Courses" name="courses" />}
-        backHref="/courses"
-        breadcrumb={<CourseBreadcrumb />}
-      >
-        <ViewTransition default="none" enter={{ 'course-created': 'grid-enter', default: 'none' }}>
-          <CourseEditor />
-        </ViewTransition>
-      </DashboardPage>
-    </CourseProvider>
+    <DashboardPage backHref="/courses" title={data.overview.title}>
+      <CourseOverviewView access={data.access} completedSkills={completedSkills} overview={data.overview} />
+    </DashboardPage>
   )
 }
 

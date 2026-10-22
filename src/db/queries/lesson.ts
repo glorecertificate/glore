@@ -37,7 +37,7 @@ export type Lesson = ReturnType<typeof parseLesson>
 export type LessonType = 'questions' | 'evaluations' | 'assessment' | 'reading'
 export type Assessment = Exclude<Lesson['assessment'], undefined>
 export type Evaluation = Lesson['evaluations'][number]
-export type Question = Lesson['questions'][number]
+type Question = Lesson['questions'][number]
 export type QuestionOption = Question['options'][number]
 
 export const parseLesson = (lesson: Partial<LessonWithRelations>) => {

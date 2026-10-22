@@ -2,7 +2,17 @@
 
 import { useEffect, useRef } from 'react'
 
-import { ArchiveIcon, BookOpenIcon, Edit3Icon, LanguagesIcon, LinkIcon, UserPenIcon, UsersIcon } from 'lucide-react'
+import {
+  ArchiveIcon,
+  BookOpenIcon,
+  ClockIcon,
+  Edit3Icon,
+  LanguagesIcon,
+  LinkIcon,
+  StarIcon,
+  UserPenIcon,
+  UsersIcon,
+} from 'lucide-react'
 import { type Locale, useFormatter, useNow, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -11,6 +21,8 @@ import { resolveCourseLanguage, useCourseLanguages } from '@/components/features
 import { CourseCardActions } from '@/components/features/courses/course-list/card-actions'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { useCourseListSearch, useCourseListTab } from '@/components/features/courses/course-list/use-params'
+import { CourseDuration } from '@/components/features/courses/course-overview/duration'
+import { skillGroupTone, skillGroupToneVariants } from '@/components/features/courses/skill-group'
 import { UserCard } from '@/components/features/users/user-card'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
@@ -41,6 +53,7 @@ export const CourseListCard = ({
 }) => {
   const { locale, localeItems } = useI18n()
   const t = useTranslations('Courses')
+  const tCatalog = useTranslations('Learning.catalog')
   const { relativeTime } = useFormatter()
   const now = useNow({ updateInterval: 60_000 })
   const { tab } = useCourseListTab()
@@ -176,8 +189,10 @@ export const CourseListCard = ({
               {course.icon && (
                 <LucideIcon
                   className={cn(
-                    'size-8 shrink-0 rounded-full',
-                    courseIconVariants({ background: true, type: course.type })
+                    'size-8 shrink-0 rounded-full p-1.5',
+                    course.skillGroup
+                      ? skillGroupToneVariants({ surface: 'soft', tone: skillGroupTone(course.skillGroup.slug) })
+                      : courseIconVariants({ background: true, type: course.type })
                   )}
                   name={course.icon as IconName}
                 />
@@ -193,7 +208,14 @@ export const CourseListCard = ({
             </div>
             {course.skillGroup && (
               <div className="flex items-center gap-1">
-                <Badge variant="outline">{localizeRecord(course.skillGroup.name, language)}</Badge>
+                <Badge
+                  className={skillGroupToneVariants({
+                    surface: 'soft',
+                    tone: skillGroupTone(course.skillGroup.slug),
+                  })}
+                >
+                  {localizeRecord(course.skillGroup.name, language)}
+                </Badge>
               </div>
             )}
           </div>
@@ -238,6 +260,28 @@ export const CourseListCard = ({
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+          {!user.canEdit && (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-normal text-muted-foreground">
+              {course.durationMinutes ? (
+                <span className="flex items-center gap-1.5">
+                  <ClockIcon className="size-3.5" />
+                  <CourseDuration minutes={course.durationMinutes} />
+                </span>
+              ) : null}
+              {course.rating.average !== null && (
+                <span className="flex items-center gap-1.5">
+                  <StarIcon className="size-3.5" />
+                  {tCatalog('rating', { count: course.rating.count, rating: course.rating.average })}
+                </span>
+              )}
+              {(course.languages ?? []).length > 0 && (
+                <span className="flex items-center gap-1.5">
+                  <LanguagesIcon className="size-3.5" />
+                  {(course.languages ?? []).join(' ').toUpperCase()}
+                </span>
+              )}
             </div>
           )}
           <div

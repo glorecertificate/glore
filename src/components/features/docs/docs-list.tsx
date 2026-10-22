@@ -7,11 +7,10 @@ import { useTranslations } from 'next-intl'
 
 import { DocsSection } from '@/components/features/docs/docs-section'
 import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
-import { useI18n } from '@/components/providers/i18n'
+import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
 import { type DocCategory } from '@/db/queries/doc'
-import { type IntlRecord } from '@/lib/i18n'
 
 interface DocsListProps {
   categories: DocCategory[]
@@ -23,30 +22,17 @@ export const DocsList = ({ canEdit, categories }: DocsListProps) => {
 
   const tCommon = useTranslations('Common')
   const tSearch = useTranslations('Search')
-  const { localize } = useI18n()
 
-  const filteredCategories = (() => {
-    const normalizedQuery = query.trim().toLowerCase()
-    if (!normalizedQuery) return categories
+  const docs = useDocsSearch(categories)
+  const matches = query.trim() ? new Set(docs.search(query, 500).map(({ articleId }) => articleId)) : null
 
-    return categories.reduce<DocCategory[]>((result, category) => {
-      const categoryTitle = localize(category.title as IntlRecord).toLowerCase()
-      if (categoryTitle.includes(normalizedQuery)) {
-        result.push(category)
+  const filteredCategories = matches
+    ? categories.reduce<DocCategory[]>((result, category) => {
+        const articles = category.articles.filter(article => matches.has(article.id))
+        if (articles.length > 0) result.push({ ...category, articles })
         return result
-      }
-
-      const articles = category.articles.filter(article => {
-        const articleTitle = localize(article.title).toLowerCase()
-        const articleExcerpt = article.excerpt ? localize(article.excerpt).toLowerCase() : ''
-        return articleTitle.includes(normalizedQuery) || articleExcerpt.includes(normalizedQuery)
-      })
-
-      if (articles.length === 0) return result
-      result.push({ ...category, articles })
-      return result
-    }, [])
-  })()
+      }, [])
+    : categories
 
   return (
     <>

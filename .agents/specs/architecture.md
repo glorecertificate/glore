@@ -10,8 +10,9 @@ src/
 │   ├── admin/          # helpers.ts, organizations.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, revoke),
 │   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
-│   ├── courses/        # helpers.ts (server-only: fetchCourses, listSessionCourses), management.ts,
-│   │                   #   progress.ts, queries.ts
+│   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses, listSessionCourses), compass.ts, data.ts (server-only: learner reads),
+│   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
+│   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
 │   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts
 │   ├── organizations/  # helpers.ts, invitations.ts, invite-core.ts, invitee.ts, join-links.ts, members.ts,
 │   │                   #   previews.ts, queries.ts, requests.ts, settings.ts
@@ -51,9 +52,9 @@ src/
 │   │                   #   courses, docs, enums, helpers, index, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, certificate,
-│   │                   #   course, doc, lesson, organization (flattens organization_profiles), user
+│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, organization (flattens organization_profiles), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, course.ts, invitation.ts, organization.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, course.ts, invitation.ts, learning.ts, organization.ts, skill-group.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
@@ -82,6 +83,7 @@ src/
 - Feature components group by domain under `features/<domain>/` and drop the domain prefix from the filename: `features/courses/course-editor/view.tsx`, not `course-editor-view.tsx`. Sub-features nest in sub-folders.
 - A slice with a single aggregate root view names it `index.tsx` with a named export, and the route imports the slice folder rather than a deeper file (`import { HelpContent } from '@/components/features/help'`). Used by `about/`, `dashboard/`, `help/`, `onboarding/`, `courses/course-list/`, `courses/course-editor/`. Slices with several peer entry points consumed by different routes (`certificates/`, `admin/`, `docs/`, `users/`, `organization/`) keep descriptively named files and no forced `index.tsx`.
 - `db/queries/<table>.ts` exports `parse*` functions and MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles through parser chains.
+- `features/docs/use-docs-search.ts` is the docs search hook (`load`, `search`, results carry `href`) for the command palette.
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`). `db/schema/<table>.ts` holds Drizzle table definitions.
 
 ## Layer boundaries (lint-enforced)

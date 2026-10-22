@@ -7,11 +7,10 @@ import { useTranslations } from 'next-intl'
 
 import { ArticleCard } from '@/components/features/docs/article-card'
 import { ArticleEditor } from '@/components/features/docs/article-editor'
-import { ArticleSheet } from '@/components/features/docs/article-sheet'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { type DocArticle, type DocCategory } from '@/db/queries/doc'
+import { type DocCategory } from '@/db/queries/doc'
 import { type IntlRecord } from '@/lib/i18n'
 
 interface DocsSectionProps {
@@ -24,16 +23,9 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
   const t = useTranslations('Docs')
   const { localize } = useI18n()
 
-  const [selectedArticle, setSelectedArticle] = useState<DocArticle | null>(null)
-  const [sheetOpen, setSheetOpen] = useState(false)
   const [editorOpen, setEditorOpen] = useState(false)
 
   const title = localize(category.title as IntlRecord)
-
-  const handleSelectArticle = (article: DocArticle) => {
-    setSelectedArticle(article)
-    setSheetOpen(true)
-  }
 
   return (
     <section className="space-y-4">
@@ -67,18 +59,10 @@ export const DocsSection = ({ allCategories, canEdit, category }: DocsSectionPro
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {category.articles.map(article => (
-            <ArticleCard key={article.id} article={article} onClick={() => handleSelectArticle(article)} />
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
       )}
-
-      <ArticleSheet
-        article={selectedArticle}
-        canEdit={canEdit}
-        categories={allCategories}
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-      />
 
       {canEdit && (
         <ArticleEditor

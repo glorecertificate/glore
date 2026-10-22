@@ -19,6 +19,7 @@ import {
   deleteQuestions as deleteQuestionRecords,
 } from '@/db/mutations/course'
 import { type Course, parseCourse } from '@/db/queries/course'
+import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
 import { assessments, courses, evaluations, lessons, questionOptions, questions } from '@/db/schema'
 import { type TableInsert, type TableUpdate } from '@/db/types'
@@ -41,6 +42,12 @@ const resolveCourseUpdate = async (
   if (course.archivedAt) return { ...course, archivedById: authUserId, languages: [], sortOrder: null }
   return { ...course, archivedById: null, sortOrder: await nextActiveSortOrder() }
 }
+
+const sanitizeDetails = <T extends TableUpdate<'courses'>>(values: T): T => ({
+  ...values,
+  ...('durationMinutes' in values ? { durationMinutes: sanitizeDuration(values.durationMinutes) } : {}),
+  ...('outcomes' in values ? { outcomes: sanitizeOutcomes(values.outcomes) } : {}),
+})
 
 const revalidateCourseSlugs = (slugs: string[]) => {
   for (const slug of new Set(slugs)) updateTag(courseTag(slug))
@@ -117,6 +124,7 @@ const slugsByAssessmentIds = async (assessmentIds: number[]) => {
 }
 
 export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
+  if (isReservedSlug(slug)) return false
   await requireEditor()
 
   const existing = await db.query.courses.findFirst({
@@ -128,14 +136,12 @@ export const checkSlugAvailable = async (slug: string, excludeId?: number) => {
 }
 
 export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creatorId'>) => {
+  if (isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
   const [authUser, sortOrder] = await Promise.all([requireEditor(), nextActiveSortOrder()])
 
-  const values = omit(course as TableInsert<'courses'> & { id?: number }, [
-    'archivedAt',
-    'archivedById',
-    'creatorId',
-    'id',
-  ])
+  const values = sanitizeDetails(
+    omit(course as TableInsert<'courses'> & { id?: number }, ['archivedAt', 'archivedById', 'creatorId', 'id'])
+  )
   const { created, lesson } = await transaction(async tx => {
     const [createdCourse] = await tx
       .insert(courses)
@@ -177,11 +183,14 @@ export const createCourse = async (course: Omit<TableInsert<'courses'>, 'creator
 }
 
 export const updateCourse = async (id: number, course: TableUpdate<'courses'>) => {
+  if (course.slug && isReservedSlug(course.slug)) return { error: { code: 'CONFLICT', message: 'Slug is reserved' } }
   const authUser = await requireEditor()
 
   const values = await resolveCourseUpdate(
     authUser.id,
-    omit(course as TableUpdate<'courses'> & { id?: number }, ['archivedById', 'createdAt', 'creatorId', 'id'])
+    sanitizeDetails(
+      omit(course as TableUpdate<'courses'> & { id?: number }, ['archivedById', 'createdAt', 'creatorId', 'id'])
+    )
   )
 
   await db.update(courses).set(values).where(eq(courses.id, id))

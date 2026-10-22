@@ -3,18 +3,18 @@ import 'server-only'
 import { cacheTag } from 'next/cache'
 import { cache } from 'react'
 
-import { eq } from 'drizzle-orm'
+import { avg, count, eq } from 'drizzle-orm'
 
 import { getSessionUser } from '@/actions/session'
 import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
 import { parseCourse } from '@/db/queries/course'
 import { publicUserColumns, userWith } from '@/db/queries/user'
-import { userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
+import { courseRatings, userAnswers, userAssessments, userCourses, userEvaluations, userLessons } from '@/db/schema'
 import { CacheTag, progressUserTag } from '@/lib/cache'
 
 const courseWith = {
-  skillGroup: { columns: { id: true, name: true } },
+  skillGroup: { columns: { id: true, name: true, slug: true } },
   creator: { columns: publicUserColumns, with: userWith },
   archivedBy: { columns: publicUserColumns, with: userWith },
   lessons: {
@@ -46,16 +46,33 @@ const courseWith = {
   userCourses: { columns: { id: true } },
 } as const
 
-export const buildCourseWith = (userId?: string) => {
-  if (!userId) return courseWith
+export const buildCourseWith = (userId?: string, { catalog = false }: { catalog?: boolean } = {}) => {
+  const lessonColumns = catalog ? { columns: { content: false } } : {}
+  const optionColumns = catalog ? { columns: { isCorrect: false } } : {}
+  if (!userId) {
+    return {
+      ...courseWith,
+      lessons: {
+        ...lessonColumns,
+        with: {
+          ...courseWith.lessons.with,
+          questions: { with: { options: { ...optionColumns, with: { userAnswers: { columns: { id: true } } } } } },
+        },
+      },
+    } as unknown as typeof courseWith
+  }
   return {
     ...courseWith,
     lessons: {
+      ...lessonColumns,
       with: {
         ...courseWith.lessons.with,
         questions: {
           with: {
-            options: { with: { userAnswers: { where: eq(userAnswers.userId, userId), columns: { id: true } } } },
+            options: {
+              ...optionColumns,
+              with: { userAnswers: { where: eq(userAnswers.userId, userId), columns: { id: true } } },
+            },
           },
         },
         evaluations: {
@@ -71,22 +88,41 @@ export const buildCourseWith = (userId?: string) => {
   } as unknown as typeof courseWith
 }
 
+const fetchRatingSummaries = async () => {
+  const rows = await db
+    .select({ average: avg(courseRatings.rating), count: count(), courseId: courseRatings.courseId })
+    .from(courseRatings)
+    .groupBy(courseRatings.courseId)
+  return new Map(
+    rows.map(({ average, count: total, courseId }) => [
+      courseId,
+      { average: average === null ? null : Math.round(Number(average) * 10) / 10, count: total },
+    ])
+  )
+}
+
+export const queryCatalog = async (userId?: string) => {
+  const [rows, ratings] = await Promise.all([
+    db.query.courses.findMany({ with: buildCourseWith(userId, { catalog: true }) }),
+    fetchRatingSummaries(),
+  ])
+  return rows.map(course =>
+    parseCourse({
+      ...course,
+      lessons: course.lessons.map(lesson => ({
+        ...lesson,
+        assessment: lesson.assessments[0] ?? null,
+      })),
+      rating: ratings.get(course.id),
+    })
+  )
+}
+
 export const fetchCourses = cache(async (userId?: string) => {
   'use cache'
   cacheTag(CacheTag.Courses, ...(userId ? [progressUserTag(userId)] : []))
 
-  return await safeQuery(async () => {
-    const result = await db.query.courses.findMany({ with: buildCourseWith(userId), limit: 200 })
-    return result.map(course =>
-      parseCourse({
-        ...course,
-        lessons: course.lessons.map(lesson => ({
-          ...lesson,
-          assessment: lesson.assessments[0] ?? null,
-        })),
-      })
-    )
-  })
+  return await safeQuery(() => queryCatalog(userId))
 })
 
 export const listSessionCourses = async () => {

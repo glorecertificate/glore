@@ -48,7 +48,11 @@ export const CourseDialog = ({
   return (
     <Dialog onOpenChange={onOpenChange} {...props}>
       {children}
-      <DialogContent onCloseAutoFocus={e => e.preventDefault()} className="gap-6 p-8" size="lg">
+      <DialogContent
+        onCloseAutoFocus={e => e.preventDefault()}
+        className="max-h-[90svh] gap-6 overflow-y-auto p-8"
+        size="lg"
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Icon className="size-5" />

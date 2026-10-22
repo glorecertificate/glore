@@ -3,6 +3,7 @@
 import { GripVerticalIcon } from 'lucide-react'
 import { useReducedMotion } from 'motion/react'
 import { type Locale, useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 
 import { reorderCourses } from '@/actions/courses/management'
 import { useCourses } from '@/components/features/courses/context'
@@ -25,10 +26,12 @@ interface CourseListSortableGridProps {
 
 export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListSortableGridProps) => {
   const t = useTranslations('Courses')
-  const { setCourses } = useCourses()
+  const tEditor = useTranslations('Learning.editor')
+  const { courses: allCourses, setCourses } = useCourses()
   const reducedMotion = useReducedMotion()
 
-  const sortCourses = (orderedCourses: Course[]) => {
+  const sortCourses = async (orderedCourses: Course[]) => {
+    const snapshot = allCourses
     const next = new Map(orderedCourses.map((course, index) => [course.id, index + 1]))
 
     setCourses(prev => {
@@ -45,7 +48,12 @@ export const CourseListSortableGrid = ({ activeLanguages, courses }: CourseListS
       const untouched = prev.filter(course => !next.has(course.id))
       return [...reordered, ...untouched]
     })
-    reorderCourses(orderedCourses)
+    try {
+      await reorderCourses(orderedCourses)
+    } catch {
+      setCourses(snapshot)
+      toast.error(tEditor('reorderFailed'))
+    }
   }
 
   return (

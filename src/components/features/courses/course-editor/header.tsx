@@ -11,6 +11,7 @@ import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { PublishSwitch } from '@/components/features/courses/course-editor/publish-switch'
+import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
 import {
@@ -27,13 +28,15 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DialogTrigger } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Link } from '@/components/ui/link'
 import { Progress } from '@/components/ui/progress'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { computeTranslationCoverage } from '@/db/queries/course-editing'
 import { type Lesson } from '@/db/queries/lesson'
 import { useScroll } from '@/hooks/use-scroll'
 import { type IntlRecord, localizeRecord } from '@/lib/i18n'
-import { cn } from '@/lib/utils'
+import { cn, isTempId } from '@/lib/utils'
 
 export const CourseHeader = () => {
   const { replace } = useRouter()
@@ -41,6 +44,7 @@ export const CourseHeader = () => {
   const { localeItems } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Courses')
+  const tEditor = useTranslations('Learning.editor')
   const { user } = useSession()
   const { course, language, languageStatus, status, step, saveCourse } = useCourse()
   const [incompleteAlertOpen, setIncompleteAlertOpen] = useState(false)
@@ -56,6 +60,12 @@ export const CourseHeader = () => {
   }
 
   const progressColor = course.progress === 100 ? 'success' : 'default'
+  const coverage = computeTranslationCoverage(course)
+  const previewLesson = course.lessons[step - 1]
+  const previewHref =
+    previewLesson && !isTempId(previewLesson.id)
+      ? (`/courses/${course.slug}/learn?lang=${language}&lesson=${previewLesson.id}` as const)
+      : (`/courses/${course.slug}/learn?lang=${language}` as const)
 
   const incompleteLessons = course.lessons.reduce<number[]>((acc, lesson, i) => {
     const title = lesson.title?.[language]
@@ -157,6 +167,18 @@ export const CourseHeader = () => {
                   </TooltipContent>
                 </Tooltip>
               </CourseDialog>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button aria-label={tEditor('previewAsLearner')} asChild size="xs" variant="outline">
+                    <Link href={previewHref}>
+                      <LucideIcon className="size-4" name="eye" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-72 text-center" sideOffset={6}>
+                  {tEditor('previewHint')}
+                </TooltipContent>
+              </Tooltip>
               <CourseAnalyticsSheet />
             </div>
             <TabsList className="h-8 w-full sm:w-fit">
@@ -183,6 +205,16 @@ export const CourseHeader = () => {
                       </span>
                       <span className="flex items-center justify-between">
                         {label} {icon}
+                      </span>
+                      <span
+                        className="ml-1.5 text-[10px] text-muted-foreground tabular-nums"
+                        title={tEditor('coverage', {
+                          done: coverage[value].done,
+                          language: label,
+                          total: coverage[value].total,
+                        })}
+                      >
+                        {`${coverage[value].percent}%`}
                       </span>
                     </span>
                   </TabsTrigger>

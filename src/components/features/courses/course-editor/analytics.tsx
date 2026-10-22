@@ -5,16 +5,17 @@ import { useState } from 'react'
 import { BarChart2Icon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-import { type CourseAnalyticsStats, getCourseAnalytics } from '@/actions/courses/progress'
+import { getCourseAnalytics } from '@/actions/courses/analytics'
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { useI18n } from '@/components/providers/i18n'
+import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { cn } from '@/lib/utils'
+import { type CourseAnalyticsStats } from '@/db/queries/course-editing'
 
 const AnalyticsSkeleton = () => (
   <div className="flex flex-col gap-6 p-6">
@@ -48,36 +49,29 @@ const AnalyticsContent = ({
   data: CourseAnalyticsStats
 }) => {
   const t = useTranslations('Courses')
+  const tEditor = useTranslations('Learning.editor')
   const { localize } = useI18n()
 
   const isSkill = course.type === 'skill'
+  const empty = '-'
 
   const statCards = [
+    { icon: UsersIcon, key: 'enrollments', label: t('analyticsEnrollments'), value: data.enrollmentCount },
+    { icon: TrendingUpIcon, key: 'completions', label: t('analyticsCompletions'), value: data.completionCount },
+    { icon: BarChart2Icon, key: 'rate', label: t('analyticsCompletionRate'), value: `${data.completionRate}%` },
     {
-      icon: UsersIcon,
-      key: 'enrollments',
-      label: t('analyticsEnrollments'),
-      value: data.enrollmentCount,
-    },
-    {
-      icon: TrendingUpIcon,
-      key: 'completions',
-      label: t('analyticsCompletions'),
-      value: data.completionCount,
-    },
-    {
-      icon: BarChart2Icon,
-      key: 'rate',
-      label: t('analyticsCompletionRate'),
-      value: `${data.completionRate}%`,
+      icon: StarIcon,
+      key: 'rating',
+      label: t('analyticsAvgRating'),
+      value: data.avgRating === null ? empty : `${data.avgRating} / 5`,
     },
     ...(isSkill
       ? [
           {
             icon: StarIcon,
-            key: 'rating',
-            label: t('analyticsAvgRating'),
-            value: data.avgRating === null ? '—' : `★ ${data.avgRating}`,
+            key: 'selfAssessment',
+            label: tEditor('analyticsSelfAssessment'),
+            value: data.avgSelfAssessment === null ? empty : `${data.avgSelfAssessment} / 5`,
           },
         ]
       : []),
@@ -95,7 +89,7 @@ const AnalyticsContent = ({
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div className={cn('grid gap-3', isSkill ? 'grid-cols-2' : 'grid-cols-3')}>
+      <div className="grid grid-cols-2 gap-3">
         {statCards.map(({ icon: Icon, key, label, value }) => (
           <Card key={key}>
             <CardHeader className="p-3 pb-1.5">
@@ -119,14 +113,12 @@ const AnalyticsContent = ({
               <div className="flex items-center gap-3 px-3 py-2.5" key={lesson.id}>
                 <span className="w-4 shrink-0 text-xs text-muted-foreground/60 tabular-nums">{idx + 1}</span>
                 <span className="min-w-0 flex-1 truncate text-sm">
-                  {lesson.title ? localize(lesson.title) : `Lesson ${idx + 1}`}
+                  {lesson.title ? localize(lesson.title) : tEditor('analyticsLessonFallback', { number: idx + 1 })}
                 </span>
                 <div className="flex w-28 shrink-0 flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-muted-foreground">{lesson.completionCount}</span>
-                    <span className="text-[11px] font-medium tabular-nums">
-                      {data.enrollmentCount > 0 ? `${lesson.completionRate}%` : '—'}
-                    </span>
+                    <span className="text-[11px] font-medium tabular-nums">{`${lesson.completionRate}%`}</span>
                   </div>
                   <Progress
                     className="h-1"
@@ -140,16 +132,16 @@ const AnalyticsContent = ({
         </div>
       )}
 
-      {isSkill && (
-        <div className="flex flex-col gap-3">
-          <h3 className="text-xs font-medium text-muted-foreground">{t('analyticsRatingDistribution')}</h3>
-          <div className="flex flex-col gap-2 rounded-lg border p-3">
-            {[...data.ratingDistribution].reverse().map(({ count: c, value }) => (
-              <RatingBar count={c} key={value} label={String(value)} max={maxRatingCount} />
-            ))}
-          </div>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-medium text-muted-foreground">
+          {`${t('analyticsRatingDistribution')} (${data.ratingCount})`}
+        </h3>
+        <div className="flex flex-col gap-2 rounded-lg border p-3">
+          {[...data.ratingDistribution].reverse().map(({ count: c, value }) => (
+            <RatingBar count={c} key={value} label={String(value)} max={maxRatingCount} />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -157,25 +149,33 @@ const AnalyticsContent = ({
 export const CourseAnalyticsSheet = () => {
   const { course } = useCourse()
   const t = useTranslations('Courses')
+  const tEditor = useTranslations('Learning.editor')
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [failed, setFailed] = useState(false)
   const [data, setData] = useState<CourseAnalyticsStats | null>(null)
+
+  const load = async () => {
+    setLoading(true)
+    setFailed(false)
+    const result = await getCourseAnalytics(course.id)
+    if (result.data) setData(result.data)
+    if (result.error) setFailed(true)
+    setLoading(false)
+  }
 
   const handleOpen = async () => {
     setOpen(true)
     if (data) return
-    setLoading(true)
-    const result = await getCourseAnalytics(course.id)
-    if ('data' in result && result.data) setData(result.data)
-    setLoading(false)
+    await load()
   }
 
   return (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button onClick={handleOpen} size="xs" variant="outline">
+          <Button aria-label={t('analyticsSheet')} onClick={handleOpen} size="xs" variant="outline">
             <BarChart2Icon className="size-4" />
           </Button>
         </TooltipTrigger>
@@ -192,7 +192,18 @@ export const CourseAnalyticsSheet = () => {
             </SheetTitle>
             <SheetDescription className="text-xs">{t('analyticsSheetDescription')}</SheetDescription>
           </SheetHeader>
-          {loading ? <AnalyticsSkeleton /> : data && <AnalyticsContent course={course} data={data} />}
+          {loading && <AnalyticsSkeleton />}
+          {!loading && failed && (
+            <Banner className="m-6" role="alert" variant="destructive">
+              <div className="flex flex-col gap-3">
+                <p>{tEditor('analyticsError')}</p>
+                <Button className="self-start" onClick={load} size="sm" variant="outline">
+                  {tEditor('analyticsRetry')}
+                </Button>
+              </div>
+            </Banner>
+          )}
+          {!loading && !failed && data && <AnalyticsContent course={course} data={data} />}
         </SheetContent>
       </Sheet>
     </>

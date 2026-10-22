@@ -8,7 +8,7 @@ import { type EnumType } from '@/db/types'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
 
 type CourseRow = InferSelectModel<typeof courses>
-type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name'> | null
+type SkillGroupRow = Pick<InferSelectModel<typeof skillGroups>, 'id' | 'name' | 'slug'> | null
 
 interface CourseWithRelations extends CourseRow {
   skillGroup: SkillGroupRow
@@ -16,6 +16,7 @@ interface CourseWithRelations extends CourseRow {
   archivedBy: PublicUserWithRelations | null
   lessons: LessonWithRelations[]
   userCourses: { id: number }[]
+  rating?: { average: number | null; count: number }
 }
 
 type PublicationStatus = 'archived' | 'draft' | 'partial' | 'published'
@@ -39,7 +40,8 @@ export const parseCourse = (course: CourseWithRelations) => {
   const type = course.type ?? 'intro'
   const languages = (course.languages ?? []) as Locale[]
   const lessons = course.lessons.length > 0 ? course.lessons.map(parseLesson) : []
-  const progress = Math.round((lessons.filter(lesson => lesson.completed).length / lessons.length) * 100)
+  const progress =
+    lessons.length > 0 ? Math.round((lessons.filter(lesson => lesson.completed).length / lessons.length) * 100) : 0
   const creator = course.creator ? parseUser(course.creator) : null
   const archivedBy = course.archivedBy ? parseUser(course.archivedBy) : null
 
@@ -66,6 +68,7 @@ export const parseCourse = (course: CourseWithRelations) => {
     lessons,
     enrolled: course.userCourses.length > 0,
     enrollmentCount: course.userCourses.length,
+    rating: course.rating ?? { average: null, count: 0 },
     progress,
     progressStatus,
     completed: progress === 100,

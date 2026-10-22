@@ -20,16 +20,21 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '@/
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { queryError } from '@/db/helpers'
 import { COURSE_SLUG_MIN_LENGTH, COURSE_TYPES, type Course } from '@/db/queries/course'
+import { COURSE_DURATION_MAX, OUTCOMES_MAX, parseOutcomesText, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { useDebounce } from '@/hooks/use-debounce'
 import { SLUG_REGEX } from '@/lib/constants'
+import { LOCALES } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 const courseSettingsSchema = z.object({
+  durationMinutes: z.number().int().min(1).max(COURSE_DURATION_MAX).nullable(),
   icon: z.string().nullable(),
+  outcomes: z.record(z.enum(LOCALES), z.string()),
   type: z.enum(COURSE_TYPES),
   skillGroupId: z.number().nullable(),
   slug: z.string(),
@@ -57,8 +62,9 @@ export const CourseSettings = ({
 }) => {
   const { skillGroups, createCourse, updateCourse } = useCourses()
 
-  const { localize } = useI18n()
+  const { localeItems, localize } = useI18n()
   const t = useTranslations('Courses')
+  const tEditor = useTranslations('Learning.editor')
 
   const formSchema = courseSettingsSchema.extend({
     slug: courseSettingsSchema.shape.slug
@@ -70,7 +76,12 @@ export const CourseSettings = ({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
     defaultValues: {
+      durationMinutes: course?.durationMinutes ?? null,
       icon: course?.icon ?? null,
+      outcomes: LOCALES.reduce(
+        (outcomes, locale) => ({ ...outcomes, [locale]: (course?.outcomes?.[locale] ?? []).join('\n') }),
+        {} as Record<(typeof LOCALES)[number], string>
+      ),
       type: course?.type ?? 'intro',
       skillGroupId: course?.skillGroup?.id ?? null,
       slug: course?.slug ?? '',
@@ -135,7 +146,16 @@ export const CourseSettings = ({
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
     try {
-      const { data, error } = course ? await updateCourse(course.id, schema) : await createCourse(schema)
+      const payload = {
+        ...schema,
+        outcomes: sanitizeOutcomes(
+          LOCALES.reduce(
+            (outcomes, locale) => ({ ...outcomes, [locale]: parseOutcomesText(schema.outcomes[locale]) }),
+            {}
+          )
+        ),
+      }
+      const { data, error } = course ? await updateCourse(course.id, payload) : await createCourse(payload)
       if (error) {
         if (error.code === 'CONFLICT') {
           form.setError('slug', { message: t('courseSlugTaken') })
@@ -260,6 +280,33 @@ export const CourseSettings = ({
           )}
           <FormField
             control={form.control}
+            name="durationMinutes"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <div className="flex flex-col gap-y-1">
+                  <FormLabel className="text-[15px]">{tEditor('durationLabel')}</FormLabel>
+                  <FormDescription>{tEditor('durationDescription')}</FormDescription>
+                </div>
+                <InputGroup className="w-48">
+                  <InputGroupInput
+                    inputMode="numeric"
+                    max={COURSE_DURATION_MAX}
+                    min={1}
+                    onBlur={field.onBlur}
+                    onChange={event => field.onChange(event.target.value === '' ? null : Number(event.target.value))}
+                    placeholder={tEditor('durationPlaceholder')}
+                    type="number"
+                    value={field.value ?? ''}
+                  />
+                </InputGroup>
+                <FormMessage>
+                  {form.formState.errors.durationMinutes && tEditor('durationInvalid', { max: COURSE_DURATION_MAX })}
+                </FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="slug"
             render={({ field: { onChange, ...field } }) => (
               <FormItem className="space-y-1">
@@ -296,6 +343,33 @@ export const CourseSettings = ({
               </FormItem>
             )}
           />
+          <div className="space-y-1">
+            <div className="flex flex-col gap-y-1">
+              <Label className="text-[15px]">{tEditor('outcomesLabel')}</Label>
+              <FormDescription>{tEditor('outcomesDescription', { max: OUTCOMES_MAX })}</FormDescription>
+            </div>
+            <div className="space-y-3">
+              {localeItems.map(({ label, value }) => (
+                <FormField
+                  control={form.control}
+                  key={value}
+                  name={`outcomes.${value}`}
+                  render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-xs text-muted-foreground">{label}</FormLabel>
+                      <Textarea
+                        className="min-h-20 text-sm"
+                        onBlur={field.onBlur}
+                        onChange={field.onChange}
+                        placeholder={tEditor('outcomesPlaceholder')}
+                        value={field.value}
+                      />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
+          </div>
         </div>
         <Tooltip>
           <TooltipTrigger asChild>

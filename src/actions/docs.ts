@@ -16,6 +16,7 @@ import { docArticles, docCategories } from '@/db/schema'
 import { docArticleInsertSchema, docArticleUpdateSchema, docCategoryInsertSchema } from '@/db/schemas'
 import { type TableInsert, type TableUpdate } from '@/db/types'
 import { CacheTag } from '@/lib/cache'
+import { type IntlRecord } from '@/lib/i18n'
 
 const getArticlesWith = () => ({
   articles: {
@@ -64,6 +65,32 @@ export const findDocCategory = async (slug: string, { includeUnpublished = false
   })
   if (!result) return null
   return parseDocCategory(result)
+}
+
+export const findDocArticle = async (slug: string) => {
+  const withDrafts = isEditorUser(await getAuthUser())
+  const row = await db.query.docArticles.findFirst({
+    where: eq(docArticles.slug, slug),
+    with: { category: true },
+  })
+  if (!row || (!row.published && !withDrafts)) return null
+
+  const { category, ...article } = row
+  const siblings = row.categoryId
+    ? await db.query.docArticles.findMany({
+        columns: { id: true, published: true, slug: true, title: true },
+        orderBy: [asc(docArticles.createdAt)],
+        where: eq(docArticles.categoryId, row.categoryId),
+      })
+    : []
+  return {
+    article: parseDocArticle(article),
+    category,
+    siblings: siblings.reduce<{ slug: string; title: IntlRecord }[]>((list, sibling) => {
+      if (sibling.published || withDrafts) list.push({ slug: sibling.slug, title: sibling.title })
+      return list
+    }, []),
+  }
 }
 
 export const createDocCategory = async (data: TableInsert<'doc_categories'>) => {

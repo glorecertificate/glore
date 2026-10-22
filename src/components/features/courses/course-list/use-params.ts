@@ -166,7 +166,7 @@ export const useCourseList = () => {
         continue
       }
 
-      if (course.publicationStatus !== 'published') continue
+      if (course.publicationStatus === 'draft' || course.publicationStatus === 'archived') continue
       if (user.isLearner && course.type === 'skill') continue
       if (user.isVolunteer && course.type === 'learner') continue
 

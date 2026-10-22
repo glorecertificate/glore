@@ -5,15 +5,10 @@ import { useEffect, useRef } from 'react'
 
 import { type Value } from 'platejs'
 
-import { submitAnswers } from '@/actions/courses/progress'
-import { CourseAssessment } from '@/components/features/courses/course-editor/assessment'
 import { useCourse } from '@/components/features/courses/course-editor/context'
-import { CourseEvaluations } from '@/components/features/courses/course-editor/evaluations'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
-import { CourseQuestions } from '@/components/features/courses/course-editor/questions'
 import { useSession } from '@/components/providers/session'
 import { Skeleton } from '@/components/ui/skeleton'
-import { type Question, type QuestionOption } from '@/db/queries/lesson'
 import { type IntlRecord } from '@/lib/i18n'
 import { cn, debounce } from '@/lib/utils'
 
@@ -135,64 +130,12 @@ const CourseEditor = ({
 }
 
 export const CourseContent = () => {
-  const { contentFlushRef, course, currentLesson, language, setCourse, setLesson, step } = useCourse()
+  const { contentFlushRef, course, currentLesson, language, setLesson, step } = useCourse()
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
   const currentLessonRef = useRef(currentLesson)
   currentLessonRef.current = currentLesson
-
-  const onQuestionAnswer = async (question: Question, option: QuestionOption) => {
-    setCourse(({ lessons, ...rest }) => ({
-      ...rest,
-      lessons: lessons?.map((lesson, i) =>
-        i === step - 1 && lesson.questions
-          ? {
-              ...lesson,
-              questions: lesson.questions.map(q =>
-                q.id === question.id
-                  ? {
-                      ...q,
-                      answered: true,
-                      options: q.options.map(o => ({ ...o, isUserAnswer: o.id === option.id })),
-                    }
-                  : q
-              ),
-            }
-          : lesson
-      ),
-    }))
-    try {
-      await submitAnswers([{ id: option.id }])
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const onEvaluation = (id: number, rating: number) => {
-    setCourse(({ lessons, ...rest }) => ({
-      ...rest,
-      lessons: lessons?.map((lesson, i) =>
-        i === step - 1 && lesson.evaluations
-          ? {
-              ...lesson,
-              evaluations: lesson.evaluations.map(e => (e.id === id ? { ...e, userRating: rating } : e)),
-            }
-          : lesson
-      ),
-    }))
-  }
-
-  const onAssessment = (rating: number) => {
-    setCourse(({ lessons, ...rest }) => ({
-      ...rest,
-      lessons: lessons?.map((lesson, i) =>
-        i === step - 1 && lesson.assessment
-          ? { ...lesson, assessment: { ...lesson.assessment, userRating: rating } }
-          : lesson
-      ),
-    }))
-  }
 
   const onContentChange = (value: Value) => {
     setLesson({
@@ -216,30 +159,6 @@ export const CourseContent = () => {
         version={editorVersion}
       />
       {canEdit && <LessonActivities className="mt-4" />}
-      {!canEdit && currentLesson?.type === 'questions' && currentLesson.questions && (
-        <CourseQuestions
-          className={cn('mt-8 border-t-2 pt-6')}
-          completed={currentLesson.completed}
-          onComplete={onQuestionAnswer}
-          questions={currentLesson.questions}
-        />
-      )}
-      {!canEdit && currentLesson?.type === 'evaluations' && currentLesson.evaluations && (
-        <CourseEvaluations
-          className={cn('mt-8 border-t-2 pt-6')}
-          completed={!!currentLesson.completed}
-          evaluations={currentLesson.evaluations}
-          onEvaluation={onEvaluation}
-        />
-      )}
-      {!canEdit && currentLesson?.type === 'assessment' && currentLesson.assessment && (
-        <CourseAssessment
-          assessment={currentLesson.assessment}
-          className={cn('mt-8 border-t-2 pt-6')}
-          completed={!!currentLesson.completed}
-          onValueChange={onAssessment}
-        />
-      )}
     </>
   )
 }

@@ -8,7 +8,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 **Authenticated, pre-onboarding:** `/onboarding`, `/onboarding/error`.
 
-**Authenticated, dashboard layout, no extra gate:** `/dashboard`, `/about`, `/courses`, `/courses/[slug]` (detail and editor), `/docs` plus `/docs/intro`, `/docs/faq`, `/docs/tutorials`, `/help`, `/settings`.
+**Authenticated, dashboard layout, no extra gate:** `/dashboard`, `/about`, `/courses`, `/courses/[slug]` (overview for members, editor for editors), `/courses/[slug]/learn` (player; `?lesson=`, `?lang=`; the server grades answers and never sends `isCorrect`), `/courses/[slug]/complete` (completion summary, rating via `rateCourse`, next step), `/courses/skills` (editors only: skill group CRUD and course assignment; `skills` is a reserved course slug), `/docs` plus `/docs/intro`, `/docs/faq`, `/docs/tutorials`, `/docs/articles/[slug]`, `/help`, `/settings`.
 
 **Authenticated, dashboard layout, extra gate:**
 
@@ -110,7 +110,7 @@ Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `p
 - `'use cache'` (with `cacheLife('max')` for long-lived data) goes on the inner fetch function, never the exported one; the exported one takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
 - In a server action whose caller must see its own write, use `updateTag(tag)`; elsewhere use `revalidateTag(tag, 'max')`. `updateTag` throws outside server actions.
 - Role and membership writes call `expireUserAccess` (org actions) or `revalidateUserAccess` (admin actions); progress writes expire `progressUserTag(userId)`.
-- Never mutate during render: a page that must record a visit (course enrollment) does it from a client effect calling the action (`CourseEnrollment`).
+- Never mutate during render: enrollment is an explicit Start click calling `startCourse`, never a page effect.
 
 ## Error handling
 

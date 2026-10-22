@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 
 import { CourseListDialog } from '@/components/features/courses/course-list/dialog'
 import { CourseListFilterReset } from '@/components/features/courses/course-list/filter-reset'
+import { CourseListFrameworkLink } from '@/components/features/courses/course-list/framework-link'
 import { CourseListLanguageSelect } from '@/components/features/courses/course-list/language-select'
 import { CourseListGroupSelect } from '@/components/features/courses/course-list/skill-group-select'
 import { CourseListSort } from '@/components/features/courses/course-list/sort'
@@ -27,7 +28,8 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
           <HeaderBreadcrumb description={description} title={t('courses')} />
         </div>
         <div className="flex items-center gap-3">
-          <CourseListDialog />
+          {user.canEdit && <CourseListFrameworkLink />}
+          {user.canEdit && <CourseListDialog />}
           <CourseListTabsList />
         </div>
       </div>

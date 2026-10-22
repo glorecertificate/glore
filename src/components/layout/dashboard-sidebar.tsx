@@ -103,7 +103,7 @@ const DashboardSidebarBadge = ({ count }: { count: number }) => {
   }
 
   return (
-    <Badge className="size-3.75 p-0" size="sm" variant="brand">
+    <Badge className="size-3.5 p-0" size="sm" variant="brand">
       <span aria-hidden>{count}</span>
       <span className="sr-only">{t('pendingRequests', { count })}</span>
     </Badge>
@@ -327,8 +327,8 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               className={cn(
-                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150 hover:bg-accent/50',
-                'data-[state=open]:bg-accent/50 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
+                'group/sidebar-user overflow-visible rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150',
+                'hover:bg-popover/50 data-[state=open]:bg-popover/30 data-[state=open]:text-foreground data-[state=open]:shadow-inner'
               )}
               size="lg"
               variant="outline"

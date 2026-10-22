@@ -49,7 +49,7 @@ export const ThemeSwitchButton = ({
       {...props}
     >
       <div className="relative z-10 flex items-center gap-1.5">
-        <Icon className={cn('size-3.5 transition-none', active && 'text-foreground')} />
+        <Icon className={cn('size-4 transition-none', active && 'text-foreground')} />
         <span className="sr-only">{children}</span>
       </div>
     </Button>

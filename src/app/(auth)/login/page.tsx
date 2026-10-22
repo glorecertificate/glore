@@ -35,7 +35,7 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
 }
 
 const LoginPage = ({ searchParams }: PageProps<'/login'>) => (
-  <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-10">
+  <div className="flex h-full min-h-screen flex-col gap-4 p-6 md:p-8">
     <Suspense fallback={<LoadingFallback size="full" />}>
       <LoginContent searchParams={searchParams} />
     </Suspense>

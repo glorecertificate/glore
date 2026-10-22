@@ -19,6 +19,7 @@ export const DASHBOARD_ROOTS = [
   '/courses',
   '/dashboard',
   '/docs',
+  '/emails',
   '/help',
   '/notifications',
   '/organization',

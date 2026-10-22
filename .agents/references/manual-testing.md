@@ -52,7 +52,7 @@ Background accounts give the organization a history. They log in like any other 
 | `member-11`                  | Ponte        | Learner with one learner course completed.                                                                                                    |
 | `member-12`                  | Ponte        | Volunteer who joined through a request; suspended and reinstated in the audit log.                                                            |
 | `red-01`, `red-02`, `red-03` | Red          | Approved, revoked, and `submitted` certificates.                                                                                              |
-| none (no account)            | Ponte        | One approved certificate whose holder deleted their account (public verification shows "holder deleted").                                     |
+| none (no account)            | Ponte        | One approved certificate whose holder deleted their account (public verification still shows it valid).                                       |
 
 Addresses without accounts, used by pending items: `invited-volunteer` and `invited-tutor` (pending invitations in Ponte, sent 2 and 4 days ago, so "Resend" works), `red-invited` (pending invitation in Red), `join-request` (pending request through the invite link), and `rejected-request` (a past rejected request). Open a pending invitation with its "Copy link" action, which issues a fresh proof.
 
@@ -86,7 +86,7 @@ Approved certificates are seeded with a snapshot but no stored PDF: the download
 2. Log in as `volunteer` with the email, log out, then log in with the username shown in Settings.
 3. Use "Forgot password" for `learner`, open the email, set a new password, and log in with it.
 4. Open `/verify`, paste the `volunteer` code (`B1JA-7MDX-CS44`, printed on its PDF): the page shows "Valid", the holder, the organization, skills, and levels.
-5. Verify the revoked Red code (`B8YR-MG6F-WY26`): the page shows "Revoked on" with the date and no reason. Then verify `ANGN-EWXR-GZB9`: the page says the holder deleted their account.
+5. Verify the revoked Red code (`B8YR-MG6F-WY26`): the page shows "Revoked on" with the date and no reason. Then verify `ANGN-EWXR-GZB9`: the page shows it valid with the holder's name and a note that the holder no longer has an account. As the Ponte owner, `/organization?tab=certificates` lists it as "No longer on GloRe" with View and Revoke.
 6. Open `/demo.volunteer` (public) and `/demo.volunteer.progress` (private): the first shows the featured certificate, the second shows the not-found page.
 7. Open `/privacy` and `/terms` signed out.
 
@@ -123,6 +123,7 @@ Approved certificates are seeded with a snapshot but no stored PDF: the download
 3. Invitations: resend one, revoke another, and confirm the revoked link shows an error page.
 4. Create an invite link for learners with approval, open it as `new-learner`, then approve the request in Requests.
 5. Change `rep`'s role to tutor and back; remove a test member; read the emails each person received.
+6. The Members table, the org switcher, and the command palette label `owner` as Owner. Switch to `es` and `it`: Administrador/a and Amministratore. In `/admin/team` and `/admin/users`, the platform role stays Admin in all three languages.
 
 ## Org owner settings and certificates (`owner`)
 

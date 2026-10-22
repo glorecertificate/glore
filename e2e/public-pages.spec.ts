@@ -25,7 +25,6 @@ test.describe('anonymous visitor', () => {
       expect(response?.ok()).toBe(true)
       await expect(page).toHaveURL(new RegExp(`${path}$`, 'u'))
       await expect(page.getByTestId('legal-title')).toBeVisible()
-      await expect(page.getByTestId('legal-temporary')).toBeVisible()
       await expect(page.getByTestId('legal-body').locator('h2').first()).toBeVisible()
     })
   }

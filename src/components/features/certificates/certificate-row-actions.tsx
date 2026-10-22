@@ -63,16 +63,14 @@ export const CertificateRowActions = ({ certificate, tutors }: { certificate: Ce
           </SelectContent>
         </Select>
       )}
-      {certificate.isApproved && !certificate.isHolderDeleted && (
+      {certificate.isApproved && (
         <Button disabled={pending} icon={ShieldOffIcon} onClick={() => setRevoking(true)} size="sm" variant="ghost">
           {tDetail('revoke')}
         </Button>
       )}
-      {!certificate.isHolderDeleted && (
-        <Button asChild icon={EyeIcon} size="sm" variant="outline">
-          <Link href={`/certificates/${certificate.id}`}>{t('view')}</Link>
-        </Button>
-      )}
+      <Button asChild icon={EyeIcon} size="sm" variant="outline">
+        <Link href={`/certificates/${certificate.id}`}>{t('view')}</Link>
+      </Button>
 
       <ReasonDialog
         busy={pending}

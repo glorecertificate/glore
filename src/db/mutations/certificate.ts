@@ -540,11 +540,13 @@ interface RevokeParams {
 }
 
 export const recordCertificateRevocation = async (tx: Transaction, { id, reason, revokedById }: RevokeParams) => {
-  const row = await transition(tx, {
-    from: ['approved'],
-    id,
-    set: { isDefault: false, revokedAt: now(), revokedById, revokedReason: reason, status: 'revoked' },
-  })
+  const [row] = await tx
+    .update(certificates)
+    .set({ isDefault: false, revokedAt: now(), revokedById, revokedReason: reason, status: 'revoked' })
+    .where(and(eq(certificates.id, id), eq(certificates.status, 'approved')))
+    .returning()
+  if (!row) throw new CertificateError('INVALID_STATE', 'Certificate is not in a state that allows this action')
+  if (!row.userId) return row
 
   const currentDefault = await tx.query.certificates.findFirst({
     columns: { id: true },

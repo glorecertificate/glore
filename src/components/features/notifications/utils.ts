@@ -50,6 +50,8 @@ export const notificationIcon = (category: NotificationCategory | null): IconNam
 
 export const messageKey = (type: string) => type.replaceAll('.', '_')
 
+export const roleGroup = (type: string) => (type.startsWith('team.') ? 'teamRoles' : 'roles')
+
 const text = (value: unknown) => (typeof value === 'string' ? value : '')
 
 export const messageVariant = (type: string, data: Record<string, unknown>) => {

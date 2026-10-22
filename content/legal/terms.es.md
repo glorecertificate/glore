@@ -1,10 +1,9 @@
 ---
 title: 'Términos de uso'
-temporary: true
 updated: '2026-10-22'
 ---
 
-Estos términos describen cómo puedes usar GloRe Certificate. Son un texto temporal y serán sustituidos por los términos definitivos.
+Estos términos describen cómo puedes usar GloRe Certificate.
 
 ## Quiénes somos
 
@@ -21,7 +20,7 @@ Lo que puedes hacer depende de tu rol.
 - Las personas voluntarias hacen cursos, se valoran a sí mismas y piden certificados.
 - Las personas aprendices solo hacen los cursos de introducción y de aprendizaje. No pueden pedir certificados.
 - Las personas tutoras revisan las solicitudes de certificado que se les asignan.
-- Las personas representantes y propietarias gestionan una organización, sus miembros y sus tutores.
+- Las personas representantes y administradoras gestionan una organización, sus miembros y sus tutores.
 - El equipo de GloRe (administración y edición) gestiona la plataforma y los cursos.
 
 ## Uso aceptable

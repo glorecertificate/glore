@@ -1,10 +1,9 @@
 ---
 title: 'Terms of use'
-temporary: true
 updated: '2026-10-22'
 ---
 
-These terms describe how you may use GloRe Certificate. They are a temporary text and will be replaced by the final terms.
+These terms describe how you may use GloRe Certificate.
 
 ## Who we are
 

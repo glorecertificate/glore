@@ -16,7 +16,7 @@ interface EventPayloads {
   'certificate.resubmitted': CertificateRef & { tutorId: string | null }
   'certificate.approved': CertificateRef & { documentUrl: string | null; tutorId: string }
   'certificate.rejected': CertificateRef & { reason: string }
-  'certificate.revoked': CertificateRef & { reason: string }
+  'certificate.revoked': Omit<CertificateRef, 'holderId'> & { holderId: string | null; reason: string }
   'certificate.withdrawn': CertificateRef & { tutorId: string | null }
   'certificate.review_reminder': CertificateRef & { days: number; tutorId: string }
   'certificate.review_escalated': CertificateRef & { days: number; tutorId: string | null }

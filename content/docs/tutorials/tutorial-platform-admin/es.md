@@ -1,9 +1,9 @@
 ---
-title: 'Tutorial para administradores de la plataforma'
+title: 'Tutorial para admins de la plataforma'
 excerpt: 'Revisa organizaciones, gestiona usuarios y equipo, busca certificados y consulta el registro de auditoría.'
 ---
 
-Los administradores de la plataforma cuidan de toda la plataforma. No ves el área de Organización, pero puedes abrir cualquier organización desde las páginas de administración.
+Los admins de la plataforma cuidan de toda la plataforma. No ves el área de Organización, pero puedes abrir cualquier organización desde las páginas de administración.
 
 ## Resumen
 
@@ -21,11 +21,11 @@ Abre Admin en la barra lateral. El resumen muestra organizaciones, miembros, cer
 1. Abre Usuarios y busca o filtra la lista.
 2. Bloquea a un usuario con un motivo y una fecha de fin opcional. Desbloquéalo cuando toque.
 3. Cambia el rol de plataforma de un usuario.
-4. Para ayudar a alguien, suplanta a un usuario que no sea administrador. Debes indicar un motivo, un aviso permanece visible mientras actúas y la sesión termina a los 15 minutos. Deja de suplantar desde el aviso.
+4. Para ayudar a alguien, suplanta a un usuario que no sea admin. Debes indicar un motivo, un aviso permanece visible mientras actúas y la sesión termina a los 15 minutos. Deja de suplantar desde el aviso.
 
 ## Equipo
 
-Abre Equipo para invitar a administradores y editores, reenviar una invitación o cambiar un rol del equipo.
+Abre Equipo para invitar a admins y editores, reenviar una invitación o cambiar un rol del equipo.
 
 ## Certificados
 
@@ -37,4 +37,4 @@ Abre Auditoría para ver las acciones sensibles, con quién las hizo y cuándo, 
 
 ## Contenido
 
-Los administradores también pueden editar cursos y documentación. Para eso, usa el [tutorial para editores](/docs/articles/tutorial-editor).
+Los admins también pueden editar cursos y documentación. Para eso, usa el [tutorial para editores](/docs/articles/tutorial-editor).

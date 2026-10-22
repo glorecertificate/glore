@@ -27,7 +27,7 @@ export type AdminCertificatesQuery = z.input<typeof adminCertificatesQuerySchema
 
 export interface AdminCertificateRow {
   code: string | null
-  holder: { email: string; firstName: string; id: string; lastName: string | null }
+  holder: { email: string | null; firstName: string; id: string | null; lastName: string | null }
   id: number
   issuedAt: string | null
   organization: { id: number; name: string }

@@ -42,7 +42,7 @@ const managers = async (event: { organizationId: number | null }) =>
 
 const fallbackLink = (link: string | null) => link ?? `${process.env.APP_URL}/dashboard`
 
-const certificateUrl = (event: CertificateEvent) => `/certificates/${event.data.certificateId}`
+const certificateUrl = (event: { data: { certificateId: number } }) => `/certificates/${event.data.certificateId}`
 
 const reviewUrl = (event: CertificateEvent) => `/certificates/${event.data.certificateId}/review`
 
@@ -143,7 +143,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
     url: certificateUrl,
   },
   'certificate.revoked': {
-    inApp: event => [event.data.holderId],
+    inApp: event => (event.data.holderId ? [event.data.holderId] : []),
     email: {
       category: 'mandatory',
       to: event => users(event.data.holderId),

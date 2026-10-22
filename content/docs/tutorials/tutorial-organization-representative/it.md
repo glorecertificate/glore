@@ -3,12 +3,12 @@ title: "Tutorial per i rappresentanti di un'organizzazione"
 excerpt: "Invita le persone, approva le richieste di accesso, assegna i tutor e tieni d'occhio i certificati della tua organizzazione."
 ---
 
-Apri Organizzazione nella barra laterale. Le sue schede coprono tutto ciò che gestisci. I ruoli, le impostazioni dell'organizzazione, i trasferimenti di titolarità e l'eliminazione dell'organizzazione restano al titolare.
+Apri Organizzazione nella barra laterale. Le sue schede coprono tutto ciò che gestisci. I ruoli, le impostazioni dell'organizzazione, i trasferimenti di titolarità e l'eliminazione dell'organizzazione restano all'amministratore.
 
 ## Invita le persone
 
 1. Apri la scheda Inviti e premi Invita persone. Puoi invitare anche dalla scheda Membri.
-2. Inserisci un indirizzo email e scegli un ruolo: tutor, volontario o studente. Aggiungi un breve messaggio se vuoi. Non puoi invitare titolari né rappresentanti.
+2. Inserisci un indirizzo email e scegli un ruolo: tutor, volontario o studente. Aggiungi un breve messaggio se vuoi. Non puoi invitare amministratori né rappresentanti.
 3. Per invitare molte persone insieme, incolla fino a 50 indirizzi. L'app mostra il risultato per ciascuno.
 4. Un invito funziona per 7 giorni. Nella scheda Inviti puoi reinviarlo, copiarne il link o revocarlo. Un invito revocato smette di funzionare subito.
 

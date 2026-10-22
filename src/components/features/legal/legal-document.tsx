@@ -37,14 +37,6 @@ const LegalDocumentContent = async ({ document }: { document: LegalDocument }) =
       )}
 
       <div className="mt-6 space-y-3">
-        {content?.temporary && (
-          <Banner data-testid="legal-temporary" variant="warning">
-            <div className="space-y-1">
-              <p className="font-medium">{t('temporaryTitle')}</p>
-              <p>{t('temporaryDescription')}</p>
-            </div>
-          </Banner>
-        )}
         {content && content.locale !== locale && (
           <Banner data-testid="legal-fallback" variant="info">
             {t('fallbackNotice')}

@@ -1,10 +1,9 @@
 ---
 title: 'Quality Charter'
-temporary: true
 updated: '2026-10-22'
 ---
 
-The Quality Charter is what an organization commits to when it joins GloRe. It is a temporary text and will be replaced by the final charter.
+The Quality Charter is what an organization commits to when it joins GloRe.
 
 ## Why a charter
 

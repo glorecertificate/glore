@@ -119,7 +119,8 @@ export const requireCertificateManager = async (
 }
 
 export const requireManagedCertificate = async (authUser: { id: string; role?: string | null }, id: number) => {
-  const cert = await findCertificateRow(id)
+  const cert = await db.query.certificates.findFirst({ where: eq(certificates.id, id) })
+  if (!cert) throw new CertificateError('NOT_FOUND', 'Certificate not found')
   await requireCertificateManager(authUser, cert.organizationId)
   return cert
 }

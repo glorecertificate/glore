@@ -5,4 +5,4 @@ excerpt: 'Sí, por la organización o por el equipo de GloRe, con un motivo. Por
 
 Un certificado no tiene fecha de caducidad. Sigue siendo válido hasta que alguien lo revoca.
 
-El propietario o un representante de la organización, o un administrador de la plataforma de GloRe, puede revocarlo, por ejemplo cuando la información resulta ser incorrecta. Debe escribir un motivo. Después, la página de verificación muestra el certificado como revocado e indica la fecha.
+La persona administradora o un representante de la organización, o un admin de la plataforma de GloRe, puede revocarlo, por ejemplo cuando la información resulta ser incorrecta. Debe escribir un motivo. Después, la página de verificación muestra el certificado como revocado e indica la fecha.

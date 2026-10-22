@@ -1,10 +1,9 @@
 ---
 title: 'Privacy policy'
-temporary: true
 updated: '2026-10-22'
 ---
 
-This text explains how GloRe Certificate handles personal data. It is a temporary text and will be replaced by the final policy.
+This text explains how GloRe Certificate handles personal data.
 
 ## Who is responsible
 
@@ -47,6 +46,8 @@ We use these providers to run the platform:
 
 Organizations you belong to can see the data about you that the platform shows to their members and tutors.
 
+To solve a support request, GloRe staff can view the platform as you see it, and every such access is logged.
+
 ## Transfers outside the European Economic Area
 
 The application servers and the database are configured in the European Union. Some providers listed above may process data outside the European Economic Area. Where this happens we rely on appropriate safeguards, such as the European Commission's standard contractual clauses.
@@ -57,7 +58,7 @@ We use only essential cookies: they keep you signed in, remember your language a
 
 ## How long we keep data
 
-We keep your data while your account is active. Expired, revoked, or declined invitations are deleted after 30 days, and expired sessions and verification links are deleted every day. You can delete your account in your settings. When you delete your account, your profile, drafts, open requests, and progress are deleted. Certificates that were already issued stay in the records of the organization that issued them, but without your name, personal details, activity description, and comments. Their PDF is deleted from our storage and their verification page shows that the certificate is no longer valid because the holder deleted the account.
+We keep your data while your account is active. Expired, revoked, or declined invitations are deleted after 30 days, and expired sessions and verification links are deleted every day. You can delete your account in your settings. When you delete your account, your profile, drafts, open requests, and progress are deleted. Certificates that were already issued are kept, with the details they show and their PDF, so that anyone with the link can keep verifying them. Their verification page may note that the holder no longer has an account. To have an issued certificate revoked, ask the organization that issued it or write to info@glorecertificate.net.
 
 ## Your rights
 

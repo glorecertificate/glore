@@ -8,7 +8,6 @@ import { loadLegalDocument, parseLegalFile } from '@/lib/legal'
 
 const FILE = `---
 title: 'Privacy Policy'
-temporary: true
 updated: '2026-10-22'
 ---
 
@@ -24,16 +23,14 @@ describe('parseLegalFile', () => {
   it('splits the front matter from the body', () => {
     expect(parseLegalFile(FILE)).toEqual({
       body: 'Intro text.\n\n## Section\n\n- one\n- two',
-      temporary: true,
       title: 'Privacy Policy',
       updated: '2026-10-22',
     })
   })
 
-  it('reads an unquoted date and defaults temporary to false', () => {
+  it('reads an unquoted date', () => {
     expect(parseLegalFile('---\ntitle: Terms\nupdated: 2026-10-22\n---\nBody')).toEqual({
       body: 'Body',
-      temporary: false,
       title: 'Terms',
       updated: '2026-10-22',
     })
@@ -41,7 +38,7 @@ describe('parseLegalFile', () => {
 
   it('rejects files without a title or front matter', () => {
     expect(parseLegalFile('Just text')).toBeNull()
-    expect(parseLegalFile('---\ntemporary: true\n---\nBody')).toBeNull()
+    expect(parseLegalFile('---\nupdated: 2026-10-22\n---\nBody')).toBeNull()
   })
 })
 

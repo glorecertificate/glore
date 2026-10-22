@@ -28,4 +28,4 @@ Los tutores revisan las solicitudes de certificado. Eres quien confirma que un c
 
 ## Conviene saber
 
-Los propietarios y los representantes pueden reasignar solicitudes, pero solo los tutores las revisan. Escribe comentarios sobre los que la persona voluntaria pueda actuar. Ve exactamente lo que escribes.
+Las personas administradoras y los representantes pueden reasignar solicitudes, pero solo los tutores las revisan. Escribe comentarios sobre los que la persona voluntaria pueda actuar. Ve exactamente lo que escribes.

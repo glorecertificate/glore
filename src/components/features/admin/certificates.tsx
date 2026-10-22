@@ -106,11 +106,14 @@ export const AdminCertificates = ({
         {
           cell: certificate => (
             <div className="flex min-w-0 flex-col">
-              <span className="truncate font-medium" title={fullName(certificate.holder) || certificate.holder.email}>
+              <span
+                className="truncate font-medium"
+                title={fullName(certificate.holder) || certificate.holder.email || undefined}
+              >
                 {fullName(certificate.holder) || certificate.holder.email}
               </span>
-              <span className="truncate text-xs text-muted-foreground" title={certificate.holder.email}>
-                {certificate.holder.email}
+              <span className="truncate text-xs text-muted-foreground" title={certificate.holder.email ?? undefined}>
+                {certificate.holder.email ?? t('holderDeleted')}
               </span>
             </div>
           ),

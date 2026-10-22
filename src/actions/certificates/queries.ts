@@ -111,14 +111,12 @@ interface Viewer {
 const canViewCertificate = (
   user: Viewer,
   cert: {
-    holderDeletedAt?: string | null
     organizationId: number
     reviewerId: string | null
     status: string
     userId: string | null
   }
 ) => {
-  if (cert.holderDeletedAt) return false
   const role = user.organizations.find(({ id: orgId }) => orgId === cert.organizationId)?.role
   const isOwner = cert.userId === user.id
   if (cert.status === 'draft') return isOwner
@@ -171,7 +169,7 @@ export const findCertificateActivity = async (id: number) => {
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
-      columns: { holderDeletedAt: true, id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
       where: eq(certificates.id, id),
     })
     if (!cert || !canViewCertificate(user, cert)) throw new Error('Certificate not found')
@@ -434,7 +432,7 @@ export const findReviewContext = async (certificateId: number) => {
 
   return await safeQuery(async () => {
     const cert = await db.query.certificates.findFirst({
-      columns: { holderDeletedAt: true, id: true, organizationId: true, reviewerId: true, status: true, userId: true },
+      columns: { id: true, organizationId: true, reviewerId: true, status: true, userId: true },
       where: eq(certificates.id, certificateId),
       with: {
         skills: { columns: { courseId: true } },

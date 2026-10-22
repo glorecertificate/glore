@@ -119,8 +119,7 @@ describe('checkLegal', () => {
     dir = undefined
   })
 
-  const doc = (title: string, body: string, temporary = 'true') =>
-    `---\ntitle: '${title}'\ntemporary: ${temporary}\n---\n\n${body}\n`
+  const doc = (title: string, body: string) => `---\ntitle: '${title}'\n---\n\n${body}\n`
 
   const setup = (files: Record<string, string>) => {
     dir = mkdtempSync(join(tmpdir(), 'glore-legal-'))
@@ -152,14 +151,13 @@ describe('checkLegal', () => {
     ])
   })
 
-  it('requires a title, a boolean temporary flag, and a body', () => {
+  it('requires a title and a body', () => {
     const root = setup({
       'terms.en.md': doc('Terms', 'text'),
-      'terms.es.md': doc('', '', "'yes'"),
+      'terms.es.md': doc('', ''),
     })
     expect(messages(checkLegal(root, ['en', 'es'], 'en'))).toEqual([
       'content/legal/terms.es.md: title is empty',
-      'content/legal/terms.es.md: temporary must be a boolean',
       'content/legal/terms.es.md: the body is empty',
     ])
   })

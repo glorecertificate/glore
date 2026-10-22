@@ -1,16 +1,16 @@
 ---
-title: 'Tutorial para propietarios de organización'
+title: 'Tutorial para administradores/as de organización'
 excerpt: 'Solicita el alta de tu organización, configúrala y gestiona roles, certificados y propiedad.'
 ---
 
-Cada organización tiene exactamente un propietario. Haces todo lo que hace un [representante](/docs/articles/tutorial-organization-representative), además de los pasos siguientes.
+Cada organización tiene exactamente una persona administradora. Haces todo lo que hace un [representante](/docs/articles/tutorial-organization-representative), además de los pasos siguientes.
 
 ## Solicita el alta de tu organización
 
 1. Abre la [página de registro](/register) y rellena la solicitud: el representante legal, el número de registro, la persona de contacto, el sitio web, con cuántos voluntarios trabajáis cada año y vuestra motivación.
 2. Acepta la Carta de calidad.
 3. El equipo de GloRe revisa la solicitud. Cuando se aprueba, recibes una invitación por correo.
-4. Acepta la invitación, completa tu perfil y llegas al dashboard como propietario de la organización.
+4. Acepta la invitación, completa tu perfil y llegas al dashboard como persona administradora de la organización.
 
 ## Configura la organización
 
@@ -31,7 +31,7 @@ Si un certificado resulta ser incorrecto, ábrelo desde la pestaña Certificados
 
 ## Traspasa la propiedad
 
-Abre la pestaña Miembros y transfiere la propiedad a otro miembro. Lo confirmas escribiendo el texto que se te pide, y los dos recibís un correo. Si eres el único propietario, debes hacerlo antes de poder dejar la organización o eliminar tu cuenta.
+Abre la pestaña Miembros y transfiere la propiedad a otro miembro. Lo confirmas escribiendo el texto que se te pide, y los dos recibís un correo. Si eres la única persona administradora, debes hacerlo antes de poder dejar la organización o eliminar tu cuenta.
 
 ## Elimina la organización
 

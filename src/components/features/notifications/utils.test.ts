@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { groupByDay, messageKey, messageValues, messageVariant } from '@/components/features/notifications/utils'
+import {
+  groupByDay,
+  messageKey,
+  messageValues,
+  messageVariant,
+  roleGroup,
+} from '@/components/features/notifications/utils'
 import { notificationCategory, notificationHref } from '@/db/queries/notification'
 import en from '~/messages/en.json'
 import es from '~/messages/es.json'
@@ -46,6 +52,20 @@ describe('message helpers', () => {
     expect(messageVariant('organization.ownership_transferred', { variant: 'left' })).toBe('left')
     expect(messageVariant('organization.ownership_transferred', {})).toBeNull()
     expect(messageVariant('certificate.approved', {})).toBeNull()
+  })
+
+  it('labels team roles apart from organization roles', () => {
+    expect(roleGroup('team.role_changed')).toBe('teamRoles')
+    expect(roleGroup('team.invited')).toBe('teamRoles')
+    expect(roleGroup('member.role_changed')).toBe('roles')
+    expect(roleGroup('invitation.sent')).toBe('roles')
+  })
+
+  it('names the admin role per audience in every locale', () => {
+    const admin = (messages: typeof en) => [messages.Notifications.roles.admin, messages.Notifications.teamRoles.admin]
+    expect(admin(en)).toEqual(['Owner', 'Admin'])
+    expect(admin(es)).toEqual(['Administrador/a', 'Admin'])
+    expect(admin(it_)).toEqual(['Amministratore', 'Admin'])
   })
 
   it('always supplies every message value', () => {

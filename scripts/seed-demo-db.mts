@@ -12,6 +12,7 @@ import {
   type DemoCourseProgress,
   type DemoEvent,
   EDITOR_COURSES,
+  FORMER_HOLDER,
   INVITATION_EXPIRY_DAYS,
   type PlannedCertificate,
   type PlannedNotification,
@@ -361,19 +362,23 @@ export const insertDemoCertificates = async (
     const holder = DEMO_USERS.find(({ key }) => key === certificate.holder)
     const organization = DEMO_ORGANIZATIONS.find(({ key }) => key === certificate.organization)
     const orgId = organizationId(ids, certificate.organization)
-    const issued = certificate.issuedAt !== null && certificate.holderDeletedAt === null
+    const identity = holder
+      ? {
+          birthPlace: holder.profile.birthPlace,
+          birthday: holder.profile.birthday,
+          firstName: holder.firstName,
+          lastName: holder.lastName,
+          nationality: holder.profile.nationality,
+        }
+      : certificate.holderDeletedAt === null
+        ? null
+        : FORMER_HOLDER
     const snapshot =
-      issued && holder && organization
+      certificate.issuedAt !== null && identity && organization
         ? buildSnapshot({
             certificate,
             courses: catalog,
-            holder: {
-              birthPlace: holder.profile.birthPlace,
-              birthday: holder.profile.birthday,
-              firstName: holder.firstName,
-              lastName: holder.lastName,
-              nationality: holder.profile.nationality,
-            },
+            holder: identity,
             organization: {
               id: orgId,
               legalRepresentative: organization.legalRepresentative,

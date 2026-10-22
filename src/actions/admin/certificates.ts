@@ -19,6 +19,9 @@ import { certificates, organizations, users } from '@/db/schema'
 
 type ParsedQuery = ReturnType<typeof adminCertificatesQuerySchema.parse>
 
+const snapshotFirstName = sql<string | null>`${certificates.snapshot}->'holder'->>'firstName'`
+const snapshotLastName = sql<string | null>`${certificates.snapshot}->'holder'->>'lastName'`
+
 const buildFilters = (query: ParsedQuery) => {
   const conditions: (SQL | undefined)[] = [ne(certificates.status, 'draft')]
   if (query.status) conditions.push(eq(certificates.status, query.status))
@@ -37,6 +40,8 @@ const buildFilters = (query: ParsedQuery) => {
         ilike(users.firstName, pattern),
         ilike(users.lastName, pattern),
         ilike(users.email, pattern),
+        ilike(snapshotFirstName, pattern),
+        ilike(snapshotLastName, pattern),
         ilike(organizations.name, pattern)
       )
     )
@@ -54,7 +59,7 @@ export const searchAdminCertificates = async (input: AdminCertificatesQuery) =>
     const [totals] = await db
       .select({ total: count() })
       .from(certificates)
-      .innerJoin(users, eq(users.id, certificates.userId))
+      .leftJoin(users, eq(users.id, certificates.userId))
       .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
       .where(where)
     const total = totals?.total ?? 0
@@ -66,6 +71,8 @@ export const searchAdminCertificates = async (input: AdminCertificatesQuery) =>
         code: certificates.code,
         email: users.email,
         firstName: users.firstName,
+        formerFirstName: snapshotFirstName,
+        formerLastName: snapshotLastName,
         holderId: users.id,
         id: certificates.id,
         issuedAt: certificates.issuedAt,
@@ -77,24 +84,40 @@ export const searchAdminCertificates = async (input: AdminCertificatesQuery) =>
         submittedAt: certificates.submittedAt,
       })
       .from(certificates)
-      .innerJoin(users, eq(users.id, certificates.userId))
+      .leftJoin(users, eq(users.id, certificates.userId))
       .innerJoin(organizations, eq(organizations.id, certificates.organizationId))
       .where(where)
       .orderBy(desc(sql`coalesce(${certificates.submittedAt}, ${certificates.createdAt})`), desc(certificates.id))
       .limit(ADMIN_CERTIFICATES_PAGE_SIZE)
       .offset((page - 1) * ADMIN_CERTIFICATES_PAGE_SIZE)
 
-    const rows = records.flatMap(({ email, firstName, holderId, lastName, organizationId, organizationName, ...row }) =>
-      row.status === 'draft'
-        ? []
-        : [
-            {
-              ...row,
-              holder: { email, firstName, id: holderId, lastName },
-              organization: { id: organizationId, name: organizationName },
-              status: row.status,
-            } satisfies AdminCertificateRow,
-          ]
+    const rows = records.flatMap(
+      ({
+        email,
+        firstName,
+        formerFirstName,
+        formerLastName,
+        holderId,
+        lastName,
+        organizationId,
+        organizationName,
+        ...row
+      }) =>
+        row.status === 'draft'
+          ? []
+          : [
+              {
+                ...row,
+                holder: {
+                  email,
+                  firstName: firstName ?? formerFirstName ?? '',
+                  id: holderId,
+                  lastName: firstName ? lastName : formerLastName,
+                },
+                organization: { id: organizationId, name: organizationName },
+                status: row.status,
+              } satisfies AdminCertificateRow,
+            ]
     )
 
     return toPage(rows, { page, pageSize: ADMIN_CERTIFICATES_PAGE_SIZE, total })

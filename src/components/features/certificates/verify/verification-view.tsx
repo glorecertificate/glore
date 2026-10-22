@@ -90,6 +90,9 @@ export const VerificationView = async ({ verification }: { verification: ActiveV
             {t('validMessage', { date: dateFormatter.format(new Date(verification.issuedAt)) })}
           </p>
         )}
+        {verification.holderDeleted && (
+          <p className="mx-auto max-w-prose text-xs text-muted-foreground">{t('holderLeft')}</p>
+        )}
         {verification.documentUrl && (
           <Button asChild size="sm" variant="brand">
             <a download href={verification.documentUrl} rel="noopener noreferrer" target="_blank">

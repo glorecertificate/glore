@@ -28,4 +28,4 @@ I tutor esaminano le richieste di certificato. Sei tu a confermare che un certif
 
 ## Da sapere
 
-I titolari e i rappresentanti possono riassegnare le richieste, ma solo i tutor le esaminano. Scrivi commenti su cui il volontario possa agire. Vede esattamente ciò che scrivi.
+Gli amministratori e i rappresentanti possono riassegnare le richieste, ma solo i tutor le esaminano. Scrivi commenti su cui il volontario possa agire. Vede esattamente ciò che scrivi.

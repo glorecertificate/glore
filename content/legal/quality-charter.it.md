@@ -1,10 +1,9 @@
 ---
 title: 'Carta della qualità'
-temporary: true
 updated: '2026-10-22'
 ---
 
-La Carta della qualità è ciò a cui un'organizzazione si impegna quando entra in GloRe. È un testo temporaneo e sarà sostituito dalla carta definitiva.
+La Carta della qualità è ciò a cui un'organizzazione si impegna quando entra in GloRe.
 
 ## Perché una carta
 

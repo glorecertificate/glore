@@ -49,6 +49,11 @@ test.describe('organization owner', () => {
     await expect(page).toHaveURL(/\/organization/u)
     await expect(page.getByText('GloRe Seed Organization').first()).toBeVisible()
   })
+
+  test('labels the organization role admin as Owner', async ({ page }) => {
+    await page.goto('/organization?tab=members')
+    await expect(page.getByText('Owner', { exact: true }).first()).toBeVisible()
+  })
 })
 
 test.describe('volunteer', () => {

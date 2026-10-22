@@ -16,6 +16,7 @@ export interface ActiveVerification {
   code: string
   documentUrl: string | null
   holder: { firstName: string; lastName: string | null }
+  holderDeleted: boolean
   issuedAt: string
   language: string
   organization: Pick<CertificateSnapshot['organization'], 'legalRepresentative' | 'logoUrl' | 'name' | 'signatureUrl'>
@@ -24,16 +25,8 @@ export interface ActiveVerification {
   status: 'revoked' | 'valid'
 }
 
-export interface HolderDeletedVerification {
-  code: string
-  status: 'holder_deleted'
-}
-
-export type Verification = ActiveVerification | HolderDeletedVerification
-
 export type VerificationResult =
   | ({ outcome: 'found' } & ActiveVerification)
-  | { code: string; outcome: 'holder_deleted' }
   | { outcome: 'limited' }
   | { outcome: 'unknown' }
 
@@ -42,7 +35,7 @@ const toIntlRecord = (value: unknown): IntlRecord => ({
   ...(value && typeof value === 'object' ? value : {}),
 })
 
-const withholdRevokedDetails = (verification: Verification): Verification => {
+const withholdRevokedDetails = (verification: ActiveVerification): ActiveVerification => {
   if (verification.status !== 'revoked') return verification
   return {
     ...verification,
@@ -53,7 +46,7 @@ const withholdRevokedDetails = (verification: Verification): Verification => {
   }
 }
 
-const findVerification = async (code: string): Promise<Verification | null> => {
+const findVerification = async (code: string): Promise<ActiveVerification | null> => {
   const row = await db.query.certificates.findFirst({
     where: and(eq(certificates.code, code), inArray(certificates.status, [...PUBLIC_STATUSES])),
     with: {
@@ -63,8 +56,6 @@ const findVerification = async (code: string): Promise<Verification | null> => {
     },
   })
   if (!row?.code) return null
-  if (row.holderDeletedAt) return { code: row.code, status: 'holder_deleted' }
-  if (!row.user) return null
 
   const snapshot = row.snapshot
   const status = row.status === 'revoked' ? 'revoked' : 'valid'
@@ -76,6 +67,7 @@ const findVerification = async (code: string): Promise<Verification | null> => {
       code: row.code,
       documentUrl: row.documentUrl,
       holder: { firstName: snapshot.holder.firstName, lastName: snapshot.holder.lastName },
+      holderDeleted: row.holderDeletedAt !== null,
       issuedAt,
       language: snapshot.language,
       organization: {
@@ -95,6 +87,8 @@ const findVerification = async (code: string): Promise<Verification | null> => {
     }
   }
 
+  if (!row.user) return null
+
   return {
     activity: {
       duration: row.activityDuration,
@@ -106,6 +100,7 @@ const findVerification = async (code: string): Promise<Verification | null> => {
     code: row.code,
     documentUrl: row.documentUrl,
     holder: { firstName: row.user.firstName, lastName: row.user.lastName },
+    holderDeleted: row.holderDeletedAt !== null,
     issuedAt,
     language: row.language,
     organization: {
@@ -138,7 +133,6 @@ export const verifyCertificate = cache(async (code: string): Promise<Verificatio
 
   const verification = await findCertificateByCode(code)
   if (!verification) return { outcome: 'unknown' }
-  if (verification.status === 'holder_deleted') return { code: verification.code, outcome: 'holder_deleted' }
   return { outcome: 'found', ...verification }
 })
 

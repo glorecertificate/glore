@@ -52,6 +52,14 @@ interface CertificateSeed {
 
 const skill = (course: string, selfLevel: number, level?: number): DemoSkill => ({ course, selfLevel, level })
 
+export const FORMER_HOLDER = {
+  birthPlace: 'Bologna',
+  birthday: '1999-04-18',
+  firstName: 'Sofia',
+  lastName: 'Ferraresi',
+  nationality: 'IT',
+} as const
+
 const CERTIFICATE_SEEDS: CertificateSeed[] = [
   {
     key: 'volunteer-approved',
@@ -369,7 +377,6 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
   const { language } = experience
   const issued = ['approved', 'revoked'].includes(seed.status)
   const draft = seed.status === 'draft'
-  const anonymous = seed.deleted !== undefined
   const handle = demoHandle(seed.key)
   const submittedAt = draft ? null : ago(now, seed.submitted)
   const endDate = isoDate(ago(now, seed.submitted + 6))
@@ -422,7 +429,7 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
   const ratingComments = RATING_COMMENTS[language]
   const rating = seed.rating
     ? {
-        comment: anonymous || index % 3 === 2 ? null : (ratingComments[index % ratingComments.length] ?? null),
+        comment: index % 3 === 2 ? null : (ratingComments[index % ratingComments.length] ?? null),
         experience: seed.rating[0],
         support: seed.rating[1],
         certification: seed.rating[2],
@@ -437,14 +444,13 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
       course: entry.course,
       selfLevel: entry.selfLevel,
       level: issued ? (entry.level ?? entry.selfLevel) : null,
-      evidence: anonymous ? null : text.evidence[language],
-      statement: issued && !anonymous ? text.statement[language] : null,
+      evidence: text.evidence[language],
+      statement: issued ? text.statement[language] : null,
       sortOrder,
     }
   })
 
-  const revokedReason =
-    seed.status === 'revoked' && !anonymous ? REVIEW_COMMENTS[language === 'es' ? 'revokedEs' : 'revoked'] : null
+  const revokedReason = seed.status === 'revoked' ? REVIEW_COMMENTS[language === 'es' ? 'revokedEs' : 'revoked'] : null
 
   return {
     key: seed.key,
@@ -457,12 +463,12 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
     language,
     experience: seed.experience,
     activity: {
-      description: anonymous ? '' : experience.description,
+      description: experience.description,
       duration: experience.hours,
       endDate: hasPeriod ? endDate : '',
-      location: anonymous ? '' : experience.location,
+      location: experience.location,
       startDate: hasPeriod ? isoDate(shiftMonths(ago(now, seed.submitted + 6), experience.months)) : '',
-      tasks: anonymous ? [] : experience.tasks,
+      tasks: experience.tasks,
     },
     createdAt: ago(now, seed.submitted + (draft ? 0 : 4)),
     submittedAt,
@@ -477,7 +483,7 @@ const planCertificate = (seed: CertificateSeed, index: number, now: Date): Plann
     holderDeletedAt: seed.deleted === undefined ? null : ago(now, seed.deleted),
     isDefault: seed.status === 'approved' && seed.holder !== null,
     skills,
-    reviews: anonymous ? reviews.map(review => ({ ...review, comment: null, sections: {} })) : reviews,
+    reviews,
     rating,
     seed,
   }
@@ -801,15 +807,10 @@ const event = (entry: DemoEvent) => entry
 const certificateEvents = (certificate: PlannedCertificate, now: Date): DemoEvent[] => {
   const { organization, seed } = certificate
   const holder = certificate.holder
-  const anonymous = seed.deleted !== undefined
   const ref = (extra: Record<string, unknown>) =>
-    anonymous
-      ? { certificateId: certificate.key, ...extra }
-      : { certificateId: certificate.key, holderId: holder, ...extra }
-  const strip = (extra: Record<string, unknown>) =>
-    anonymous
-      ? Object.fromEntries(Object.entries(extra).filter(([field]) => !['comment', 'reason'].includes(field)))
-      : extra
+    holder
+      ? { certificateId: certificate.key, holderId: holder, ...extra }
+      : { certificateId: certificate.key, ...extra }
   const events: DemoEvent[] = []
   if (!certificate.submittedAt) return events
 
@@ -944,7 +945,7 @@ const certificateEvents = (certificate: PlannedCertificate, now: Date): DemoEven
     )
   }
 
-  return events.map(entry => ({ ...entry, data: strip(entry.data) }))
+  return events
 }
 
 const joinedAt = (now: Date, user: string) => ago(now, DEMO_USERS.find(({ key }) => key === user)?.joinedDaysAgo ?? 30)

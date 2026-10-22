@@ -1,7 +1,13 @@
 import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { type Fixture, createFixture, deleteMock, isLocalDatabase } from '@/actions/certificates/test-harness'
+import {
+  type Fixture,
+  createFixture,
+  deleteMock,
+  isLocalDatabase,
+  notifyMock,
+} from '@/actions/certificates/test-harness'
 import { generateCertificateCode } from '@/components/features/certificates/rules'
 
 vi.mock('next/cache', async () => (await import('@/actions/certificates/test-harness')).mocks.cache)
@@ -17,7 +23,28 @@ vi.mock('@/lib/storage', async () => (await import('@/actions/certificates/test-
 
 const PDF_URL = 'https://r2.test/certificates/holder.pdf'
 
-describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates anonymized', () => {
+const SNAPSHOT = {
+  activity: {
+    duration: 120,
+    endDate: '2026-06-30',
+    location: 'Milan',
+    startDate: '2026-01-10',
+    tasks: ['Desk'],
+  },
+  holder: {
+    birthPlace: 'Milan',
+    birthday: '2000-01-01',
+    firstName: 'author',
+    lastName: 'Tester',
+    nationality: 'it',
+  },
+  issuedAt: '2026-07-01T10:00:00.000Z',
+  language: 'en',
+  organization: { id: 1, legalRepresentative: 'Rep', logoUrl: null, name: 'Org a', signatureUrl: null },
+  skills: [{ courseId: 1, icon: null, level: 4, name: { en: 'Skill', es: '', it: '' }, statement: 'Led it' }],
+}
+
+describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates valid', () => {
   let fixture: Fixture
   let deletion: typeof import('@/actions/account/deletion')
   let pub: typeof import('@/actions/certificates/public')
@@ -46,28 +73,13 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
         documentUrl: PDF_URL,
         isDefault: true,
         reviewerComment: 'Warm and reliable',
-        snapshot: {
-          activity: {
-            duration: 120,
-            endDate: '2026-06-30',
-            location: 'Milan',
-            startDate: '2026-01-10',
-            tasks: ['Desk'],
-          },
-          holder: {
-            birthPlace: 'Milan',
-            birthday: '2000-01-01',
-            firstName: 'author',
-            lastName: 'Tester',
-            nationality: 'it',
-          },
-          issuedAt: '2026-07-01T10:00:00.000Z',
-          language: 'en',
-          organization: { id: 1, legalRepresentative: 'Rep', logoUrl: null, name: 'Org a', signatureUrl: null },
-          skills: [{ courseId: 1, icon: null, level: 4, name: { en: 'Skill', es: '', it: '' }, statement: 'Led it' }],
-        },
+        snapshot: SNAPSHOT,
       })
       .where(eq(fixture.schema.certificates.id, cert.id))
+    await fixture.db
+      .update(fixture.schema.organizationRatings)
+      .set({ comment: 'Supportive team' })
+      .where(eq(fixture.schema.organizationRatings.certificateId, cert.id))
     await fixture.db.insert(fixture.schema.certificateReviews).values({
       certificateId: cert.id,
       comment: 'Great work, Tester',
@@ -109,7 +121,7 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
       .values({
         birthPlace: 'Milan',
         birthday: '2000-01-01',
-        email: `author-${fixture.ids.author}@anonymize.test`,
+        email: `author-${fixture.ids.author}@issued.test`,
         firstName: 'author',
         id: fixture.ids.author,
         lastName: 'Tester',
@@ -125,7 +137,7 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
     await fixture.cleanup()
   })
 
-  it('detaches and scrubs an approved certificate, keeping the aggregate data', async () => {
+  it('detaches an issued certificate and keeps every original detail', async () => {
     const { cert } = await issueCertificate()
     const revoked = await fixture.insertCertificate({ code: generateCertificateCode(), status: 'revoked' })
     await fixture.db
@@ -134,42 +146,49 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
       .where(eq(fixture.schema.certificates.id, revoked.id))
     const draft = await fixture.insertCertificate({ status: 'draft' })
     const open = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'submitted' })
+    const before = await fixture.reload(cert.id)
 
     expect((await eraseAuthor()).deleted).toBe(true)
 
     const after = await fixture.reload(cert.id)
     expect(after).toMatchObject({
-      activityDescription: '',
+      activityDescription: 'Helped at the community centre every week',
       activityDuration: 120,
       activityEndDate: '2026-06-30',
-      activityLocation: '',
+      activityLocation: 'Milan',
       activityStartDate: '2026-01-10',
-      documentUrl: null,
+      documentUrl: PDF_URL,
       isDefault: false,
       organizationId: fixture.organizationId,
-      reviewerComment: null,
+      reviewerComment: 'Warm and reliable',
       reviewerId: fixture.ids.tutorA,
-      snapshot: null,
       status: 'approved',
-      tasks: [],
+      tasks: ['Welcomed new volunteers', 'Organized weekly activities'],
       userId: null,
     })
+    expect(after.snapshot).toEqual(before.snapshot)
+    expect(after.snapshot?.holder).toMatchObject({ firstName: 'author', lastName: 'Tester' })
     expect(after.holderDeletedAt).toBeTruthy()
     expect(after.skills).toHaveLength(3)
     for (const skill of after.skills) {
-      expect(skill).toMatchObject({ evidence: null, selfLevel: 4, statement: null })
+      expect(skill).toMatchObject({ evidence: 'Led the weekly welcome desk', selfLevel: 4 })
+      expect(skill.statement).toMatch(/^Statement \d$/u)
     }
-    expect(after.reviews[0]).toMatchObject({ comment: null, scoreEngagement: 4, sectionComments: {} })
+    expect(after.reviews[0]).toMatchObject({
+      comment: 'Great work, Tester',
+      scoreEngagement: 4,
+      sectionComments: { tasks: 'Mentions the volunteer by name' },
+    })
     const [rating] = await fixture.db
       .select()
       .from(fixture.schema.organizationRatings)
       .where(eq(fixture.schema.organizationRatings.certificateId, cert.id))
-    expect(rating).toMatchObject({ comment: null, experience: 4 })
+    expect(rating).toMatchObject({ comment: 'Supportive team', experience: 4 })
     const events = await fixture.eventsFor(cert.id)
-    expect(JSON.stringify(events.map(({ metadata }) => metadata))).not.toContain('surname')
+    expect(JSON.stringify(events.map(({ metadata }) => metadata))).toContain('Add your surname')
 
     expect(await fixture.reload(revoked.id)).toMatchObject({
-      revokedReason: null,
+      revokedReason: 'Named the volunteer',
       status: 'revoked',
       userId: null,
     })
@@ -182,31 +201,63 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
     expect(remaining.map(({ id }) => id)).not.toContain(open.id)
   })
 
-  it('deletes the PDF from storage', async () => {
+  it('keeps the certificate PDF in storage', async () => {
     await issueCertificate()
     await fixture.insertCertificate({ code: generateCertificateCode(), status: 'approved' })
 
     await eraseAuthor()
 
-    expect(deleteMock).toHaveBeenCalledWith(PDF_URL)
-    expect(deleteMock).toHaveBeenCalledTimes(1)
+    expect(deleteMock).not.toHaveBeenCalled()
   })
 
-  it('answers the public lookup with the no longer valid state and nothing else', async () => {
+  it('verifies as valid with the original data and a neutral note', async () => {
     const { cert, code } = await issueCertificate()
     const revoked = await fixture.insertCertificate({ code: generateCertificateCode(), status: 'revoked' })
+    await fixture.db
+      .update(fixture.schema.certificates)
+      .set({ revokedAt: new Date().toISOString(), snapshot: SNAPSHOT })
+      .where(eq(fixture.schema.certificates.id, revoked.id))
 
     await eraseAuthor()
 
     const result = await pub.verifyCertificate(code)
-    expect(result).toEqual({ code, outcome: 'holder_deleted' })
-    expect(await pub.findCertificateByCode(code)).toEqual({ code, status: 'holder_deleted' })
-    expect(JSON.stringify(result)).not.toMatch(/Tester|author|Org a|r2\.test/u)
-    expect(await pub.verifyCertificate(revoked.code!)).toEqual({ code: revoked.code, outcome: 'holder_deleted' })
+    expect(result).toMatchObject({
+      code,
+      documentUrl: PDF_URL,
+      holder: { firstName: 'author', lastName: 'Tester' },
+      holderDeleted: true,
+      organization: { name: 'Org a' },
+      outcome: 'found',
+      status: 'valid',
+    })
+    expect(result).toMatchObject({
+      activity: { duration: 120, location: 'Milan', tasks: ['Desk'] },
+      skills: [{ level: 4, statement: 'Led it' }],
+    })
+    expect(await pub.verifyCertificate(revoked.code!)).toMatchObject({
+      holderDeleted: true,
+      outcome: 'found',
+      status: 'revoked',
+    })
     expect(await pub.findLegacyCertificateCode('anyone', cert.handle)).toBe(code)
   })
 
-  it('keeps the certificate in the organization list with no holder', async () => {
+  it('does not flag certificates whose holder is still on the platform', async () => {
+    const { code } = await issueCertificate()
+
+    expect(await pub.findCertificateByCode(code)).toMatchObject({ holderDeleted: false })
+  })
+
+  it('still renders the PDF from the stored snapshot', async () => {
+    const { cert } = await issueCertificate()
+
+    await eraseAuthor()
+
+    const pdf = await (await import('@/actions/certificates/pdf')).certificatePdf(cert.id)
+    expect(pdf?.buffer.subarray(0, 4).toString()).toBe('%PDF')
+  })
+
+  it('lists the certificate for managers under the holder name from the snapshot', async () => {
     const { cert } = await issueCertificate()
     await fixture.insertCertificate({ status: 'approved', user: 'otherAuthor' })
 
@@ -215,11 +266,17 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
     fixture.as('manager')
     const { data } = await queries.listOrganizationCertificates(fixture.organizationId, { cache: false })
     const listed = data?.find(({ id }) => id === cert.id)
-    expect(listed).toMatchObject({ isApproved: true, isHolderDeleted: true, user: null, userId: null })
+    expect(listed).toMatchObject({
+      holder: { firstName: 'author', lastName: 'Tester' },
+      isApproved: true,
+      isHolderDeleted: true,
+      user: null,
+      userId: null,
+    })
     expect(data?.filter(({ isApproved }) => isApproved)).toHaveLength(2)
   })
 
-  it('never offers an anonymized certificate to tutors, viewers, or the lifecycle actions', async () => {
+  it('keeps orphaned certificates out of the tutor queue and the review flow', async () => {
     const { cert } = await issueCertificate()
 
     await eraseAuthor()
@@ -227,14 +284,55 @@ describe.skipIf(!isLocalDatabase)('account deletion keeps issued certificates an
     fixture.as('tutorA')
     const queue = await queries.listTutorCertificates({ cache: false })
     expect((queue.data ?? []).map(({ id }) => id)).not.toContain(cert.id)
+    expect((await queries.findReviewContext(cert.id)).error).not.toBeNull()
+    expect((await queries.findCertificate(cert.id)).data?.id).toBe(cert.id)
+    expect((await review.claimCertificateReview(cert.id)).error?.code).toBe('NOT_FOUND')
+
+    fixture.as('outsider')
     expect((await queries.findCertificate(cert.id)).error).not.toBeNull()
     expect((await queries.findCertificateActivity(cert.id)).error).not.toBeNull()
-    expect((await queries.findReviewContext(cert.id)).error).not.toBeNull()
 
     fixture.as('manager')
-    expect((await queries.findCertificate(cert.id)).error).not.toBeNull()
-    expect((await review.revokeCertificate(cert.id, { reason: 'Because of a long reason' })).error?.code).toBe(
-      'NOT_FOUND'
+    expect((await queries.findCertificate(cert.id)).data).toMatchObject({ isHolderDeleted: true, userId: null })
+    expect((await queries.findCertificateActivity(cert.id)).error).toBeNull()
+  })
+
+  it('lets managers and platform admins revoke it with no holder to notify', async () => {
+    const { cert, code } = await issueCertificate()
+    const second = await fixture.insertCertificate({ code: generateCertificateCode(), status: 'approved' })
+
+    await eraseAuthor()
+    notifyMock.mockClear()
+
+    fixture.as('manager')
+    const revoked = await review.revokeCertificate(cert.id, { reason: 'Details were wrong, verified with the holder' })
+    expect(revoked.error).toBeNull()
+    expect(await fixture.reload(cert.id)).toMatchObject({
+      revokedById: fixture.ids.manager,
+      status: 'revoked',
+      userId: null,
+    })
+    expect(notifyMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ certificateId: cert.id, holderId: null }),
+        type: 'certificate.revoked',
+      })
+    )
+    expect(await pub.verifyCertificate(code)).toMatchObject({
+      holderDeleted: true,
+      outcome: 'found',
+      status: 'revoked',
+    })
+
+    fixture.as('platformAdmin')
+    expect((await review.revokeCertificate(second.id, { reason: 'Requested by the former holder' })).error).toBeNull()
+    expect((await review.revokeCertificate(second.id, { reason: 'Requested by the former holder' })).error?.code).toBe(
+      'INVALID_STATE'
+    )
+
+    fixture.as('tutorA')
+    expect((await review.revokeCertificate(cert.id, { reason: 'Tutors cannot revoke certificates' })).error?.code).toBe(
+      'FORBIDDEN'
     )
   })
 

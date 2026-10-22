@@ -63,8 +63,8 @@ export const CertificateDetail = ({
           </div>
           <div className="min-w-0 space-y-1">
             <h1 className="text-xl font-semibold">{certificate.organization.name}</h1>
-            {!isOwner && certificate.user && (
-              <p className="text-sm text-muted-foreground">{fullName(certificate.user)}</p>
+            {!isOwner && certificate.holder && (
+              <p className="text-sm text-muted-foreground">{fullName(certificate.holder)}</p>
             )}
             <div className="flex flex-wrap items-center gap-2">
               <CertificateStatusBadge status={certificate.status} />

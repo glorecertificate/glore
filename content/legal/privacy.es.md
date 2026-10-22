@@ -1,10 +1,9 @@
 ---
 title: 'Política de privacidad'
-temporary: true
 updated: '2026-10-22'
 ---
 
-Este texto explica cómo trata GloRe Certificate los datos personales. Es un texto temporal y será sustituido por la política definitiva.
+Este texto explica cómo trata GloRe Certificate los datos personales.
 
 ## Quién es el responsable
 
@@ -47,6 +46,8 @@ Usamos estos proveedores para hacer funcionar la plataforma:
 
 Las organizaciones a las que perteneces pueden ver los datos sobre ti que la plataforma muestra a sus miembros y tutores.
 
+Para resolver una solicitud de soporte, el personal de GloRe puede ver la plataforma tal como la ves tú, y cada acceso de este tipo queda registrado.
+
 ## Transferencias fuera del Espacio Económico Europeo
 
 Los servidores de la aplicación y la base de datos están configurados en la Unión Europea. Algunos de los proveedores indicados pueden tratar datos fuera del Espacio Económico Europeo. Cuando ocurre, nos apoyamos en garantías adecuadas, como las cláusulas contractuales tipo de la Comisión Europea.
@@ -57,7 +58,7 @@ Solo usamos cookies esenciales: te mantienen con la sesión iniciada, recuerdan 
 
 ## Cuánto tiempo guardamos los datos
 
-Conservamos tus datos mientras tu cuenta esté activa. Las invitaciones caducadas, revocadas o rechazadas se eliminan a los 30 días, y las sesiones y los enlaces de verificación caducados se eliminan cada día. Puedes eliminar tu cuenta en los ajustes. Cuando eliminas tu cuenta, se eliminan tu perfil, tus borradores, tus solicitudes abiertas y tu progreso. Los certificados que ya se habían emitido permanecen en los registros de la organización que los emitió, pero sin tu nombre, tus datos personales, la descripción de la actividad ni los comentarios. Su PDF se elimina de nuestro almacenamiento y su página de verificación indica que el certificado ya no es válido porque la persona titular eliminó la cuenta.
+Conservamos tus datos mientras tu cuenta esté activa. Las invitaciones caducadas, revocadas o rechazadas se eliminan a los 30 días, y las sesiones y los enlaces de verificación caducados se eliminan cada día. Puedes eliminar tu cuenta en los ajustes. Cuando eliminas tu cuenta, se eliminan tu perfil, tus borradores, tus solicitudes abiertas y tu progreso. Los certificados que ya se habían emitido se conservan, con los datos que muestran y su PDF, para que cualquier persona con el enlace pueda seguir verificándolos. Su página de verificación puede indicar que la persona titular ya no tiene una cuenta. Para que se revoque un certificado emitido, pídelo a la organización que lo emitió o escribe a info@glorecertificate.net.
 
 ## Tus derechos
 

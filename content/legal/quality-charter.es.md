@@ -1,10 +1,9 @@
 ---
 title: 'Carta de calidad'
-temporary: true
 updated: '2026-10-22'
 ---
 
-La Carta de calidad es lo que una organización se compromete a cumplir cuando se une a GloRe. Es un texto temporal y será sustituido por la carta definitiva.
+La Carta de calidad es lo que una organización se compromete a cumplir cuando se une a GloRe.
 
 ## Por qué una carta
 

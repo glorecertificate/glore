@@ -42,7 +42,7 @@ const STATUS_LABEL_KEYS = {
 
 const PIPELINE = ['submitted', 'in_review', 'changes_requested', 'approved'] as const
 
-const holderName = (certificate: Certificate) => (certificate.user ? fullName(certificate.user) : '')
+const holderName = (certificate: Certificate) => (certificate.holder ? fullName(certificate.holder) : '')
 
 export const OrganizationCertificates = ({
   certificates,
@@ -98,11 +98,7 @@ export const OrganizationCertificates = ({
           {
             cell: certificate => (
               <div className="flex flex-col gap-0.5">
-                <span className="font-medium">
-                  {certificate.isHolderDeleted
-                    ? tCertificates('deletedUser')
-                    : holderName(certificate) || tCertificates('unknownVolunteer')}
-                </span>
+                <span className="font-medium">{holderName(certificate) || tCertificates('unknownVolunteer')}</span>
                 <span className="text-xs text-muted-foreground">
                   {certificate.isHolderDeleted ? t('holderDeleted') : certificate.user?.email}
                 </span>

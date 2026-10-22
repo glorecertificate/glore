@@ -51,6 +51,12 @@ Re-verify any claim against the code before acting on it.
 | U9  | The activity rule is 3 months or 100 hours.                                                                                                                                                                      |
 | U10 | The Erasmus+ emblem stays on every certificate for now.                                                                                                                                                          |
 | U11 | v1 ships temporary privacy, terms, and Quality Charter texts; the GloRe team supplies the final texts later.                                                                                                     |
+| U12 | Changed on 2026-10-22 (D24, U11): legal pages drop the "Temporary text" banner, the `temporary` front matter flag, and the "temporary text" intro sentence before launch.                                        |
+| U13 | Organization role `admin` reads Owner (en), Administrador/a (es), Amministratore (it); platform admins read Admin in all three languages. Only labels change, the stored value `admin` stays.                    |
+| U14 | Changed on 2026-10-22 (c7a1c65b): issued certificates stay valid and keep every original detail after the holder deletes the account. The verify page may note that the holder left; managers can still revoke.  |
+| U15 | Spanish login title and meta title read "Únete a la red GloRe", matching the other es copy; "Únete a el GloRe Network" was ungrammatical.                                                                        |
+| U16 | Invitation copy never names a role as the sender: "someone from your organization", "alguien de tu organización", "qualcuno della tua organizzazione". Owner wording stays for owner-only actions.               |
+| U17 | The privacy policy says that, to solve support requests, GloRe staff can view the platform as the user and that every such access is logged. Reviewed in en, es, and it.                                         |
 
 ## Skill framework (U8)
 

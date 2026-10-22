@@ -3,12 +3,12 @@ title: 'Tutorial para representantes de organización'
 excerpt: 'Invita a personas, aprueba solicitudes de acceso, asigna tutores y sigue los certificados de tu organización.'
 ---
 
-Abre Organización en la barra lateral. Sus pestañas cubren todo lo que gestionas. Los roles, los ajustes de la organización, las transferencias de propiedad y la eliminación de la organización corresponden al propietario.
+Abre Organización en la barra lateral. Sus pestañas cubren todo lo que gestionas. Los roles, los ajustes de la organización, las transferencias de propiedad y la eliminación de la organización corresponden a la persona administradora.
 
 ## Invita a personas
 
 1. Abre la pestaña Invitaciones y pulsa Invitar personas. También puedes invitar desde la pestaña Miembros.
-2. Introduce un correo y elige un rol: tutor, voluntario o estudiante. Añade un mensaje breve si quieres. No puedes invitar a propietarios ni a representantes.
+2. Introduce un correo y elige un rol: tutor, voluntario o estudiante. Añade un mensaje breve si quieres. No puedes invitar a administradores/as ni a representantes.
 3. Para invitar a mucha gente a la vez, pega hasta 50 direcciones. La aplicación te muestra el resultado de cada una.
 4. Una invitación funciona durante 7 días. En la pestaña Invitaciones puedes reenviarla, copiar su enlace o revocarla. Una invitación revocada deja de funcionar al instante.
 

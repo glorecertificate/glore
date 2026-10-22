@@ -4,15 +4,12 @@ import { and, eq, inArray, isNull, sql } from 'drizzle-orm'
 
 import { type Transaction, db } from '@/db/client'
 import {
-  activityEvents,
-  certificateReviews,
   certificateSkills,
   certificates,
   contributions,
   courses,
   memberships,
   organizationJoinRequests,
-  organizationRatings,
   regions,
   teamInvitations,
   userAnswers,
@@ -25,55 +22,27 @@ import {
 
 const ISSUED_CERTIFICATE_STATUSES = ['approved', 'revoked'] as const
 
-const HOLDER_EVENT_KEYS = sql`array['comment', 'documentUrl', 'holderId', 'reason']`
-
-const anonymizeIssuedCertificates = async (tx: Transaction, userId: string) => {
+const detachIssuedCertificates = async (tx: Transaction, userId: string) => {
   const issued = await tx
-    .select({
-      documentUrl: certificates.documentUrl,
-      id: certificates.id,
-      organizationId: certificates.organizationId,
-      reviewerId: certificates.reviewerId,
-    })
+    .select({ id: certificates.id, organizationId: certificates.organizationId, reviewerId: certificates.reviewerId })
     .from(certificates)
     .where(and(eq(certificates.userId, userId), inArray(certificates.status, [...ISSUED_CERTIFICATE_STATUSES])))
-  const ids = issued.map(({ id }) => id)
-  if (ids.length === 0) return issued
+  if (issued.length === 0) return issued
 
   await tx
     .update(certificates)
-    .set({
-      activityDescription: '',
-      activityLocation: '',
-      documentUrl: null,
-      holderDeletedAt: new Date().toISOString(),
-      isDefault: false,
-      rejectedReason: null,
-      reviewerComment: null,
-      revokedReason: null,
-      snapshot: null,
-      tasks: [],
-      userId: null,
-    })
-    .where(inArray(certificates.id, ids))
-  await tx
-    .update(certificateSkills)
-    .set({ evidence: null, statement: null })
-    .where(inArray(certificateSkills.certificateId, ids))
-  await tx
-    .update(certificateReviews)
-    .set({ comment: null, sectionComments: {} })
-    .where(inArray(certificateReviews.certificateId, ids))
-  await tx.update(organizationRatings).set({ comment: null }).where(inArray(organizationRatings.certificateId, ids))
-  await tx
-    .update(activityEvents)
-    .set({ metadata: sql`${activityEvents.metadata} - ${HOLDER_EVENT_KEYS}` })
-    .where(and(eq(activityEvents.subjectType, 'certificate'), inArray(activityEvents.subjectId, ids.map(String))))
+    .set({ holderDeletedAt: new Date().toISOString(), isDefault: false, userId: null })
+    .where(
+      inArray(
+        certificates.id,
+        issued.map(({ id }) => id)
+      )
+    )
   return issued
 }
 
 export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }: { reassignTo?: string } = {}) => {
-  const anonymized = await anonymizeIssuedCertificates(tx, userId)
+  const detached = await detachIssuedCertificates(tx, userId)
   const remaining = tx.select({ id: certificates.id }).from(certificates).where(eq(certificates.userId, userId))
 
   await tx.delete(certificateSkills).where(inArray(certificateSkills.certificateId, remaining))
@@ -100,7 +69,7 @@ export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }
   await tx.delete(teamInvitations).where(eq(teamInvitations.userId, userId))
   await tx.delete(memberships).where(eq(memberships.userId, userId))
   const [deleted] = await tx.delete(users).where(eq(users.id, userId)).returning({ avatarUrl: users.avatarUrl })
-  return deleted && { ...deleted, anonymized }
+  return deleted && { ...deleted, detached }
 }
 
 export const mergeNotificationPreferences = async (

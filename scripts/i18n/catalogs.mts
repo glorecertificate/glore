@@ -234,9 +234,8 @@ export const checkLegal = (dir: string, locales: string[], source: string) => {
         problems.push({ file, message: 'front matter is not valid YAML' })
         continue
       }
-      const { temporary, title } = (meta ?? {}) as Record<string, unknown>
+      const { title } = (meta ?? {}) as Record<string, unknown>
       if (typeof title !== 'string' || title.trim() === '') problems.push({ file, message: 'title is empty' })
-      if (typeof temporary !== 'boolean') problems.push({ file, message: 'temporary must be a boolean' })
       if ((match[2] ?? '').trim() === '') problems.push({ file, message: 'the body is empty' })
       shapes.set(locale, headingShape(match[2] ?? ''))
     }

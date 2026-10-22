@@ -32,7 +32,11 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
   let actions: typeof import('@/actions/admin/certificates')
   const tag = randomUUID().slice(0, 8)
   const organizationIds: number[] = []
-  const codes = { approved: generateCertificateCode(), revoked: generateCertificateCode() }
+  const codes = {
+    approved: generateCertificateCode(),
+    orphan: generateCertificateCode(),
+    revoked: generateCertificateCode(),
+  }
   let orgA = 0
   let orgB = 0
 
@@ -83,6 +87,50 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
     return row.id
   }
 
+  const insertOrphanedCertificate = async (organizationId: number) => {
+    const [row] = await fixture.client.db
+      .insert(fixture.schema.certificates)
+      .values({
+        activityDescription: 'Helped at the community centre every week',
+        activityDuration: 120,
+        activityEndDate: '2026-06-30',
+        activityLocation: 'Milan',
+        activityStartDate: '2026-01-10',
+        code: codes.orphan,
+        handle: `certs-lane-${tag}-${randomUUID().slice(0, 8)}`,
+        holderDeletedAt: new Date().toISOString(),
+        language: 'en',
+        organizationId,
+        snapshot: {
+          activity: {
+            duration: 120,
+            endDate: '2026-06-30',
+            location: 'Milan',
+            startDate: '2026-01-10',
+            tasks: ['Desk'],
+          },
+          holder: { birthPlace: null, birthday: null, firstName: 'Vesna', lastName: 'Orphaned', nationality: null },
+          issuedAt: '2026-07-01T10:00:00.000Z',
+          language: 'en',
+          organization: {
+            id: organizationId,
+            legalRepresentative: null,
+            logoUrl: null,
+            name: 'Quokka',
+            signatureUrl: null,
+          },
+          skills: [],
+        },
+        status: 'approved',
+        submittedAt: new Date().toISOString(),
+        tasks: ['Desk'],
+        userId: null,
+      })
+      .returning({ id: fixture.schema.certificates.id })
+    if (!row) throw new Error('Failed to insert certificate')
+    return row.id
+  }
+
   const search = async (input: Parameters<typeof actions.searchAdminCertificates>[0]) => {
     as('admin')
     const result = await actions.searchAdminCertificates(input)
@@ -98,6 +146,7 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
   let submittedId = 0
   let draftId = 0
   let otherOrgId = 0
+  let orphanId = 0
 
   beforeAll(async () => {
     fixture = await createAdminFixture(KEYS, { admins: ['admin'] })
@@ -130,6 +179,7 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
     })
     draftId = await insertCertificate({ key: 'holder', organizationId: orgA, status: 'draft', submittedAt: null })
     otherOrgId = orgB
+    orphanId = await insertOrphanedCertificate(await insertOrganization('c', `Quokka ${randomUUID().slice(0, 8)}`))
   }, 60_000)
 
   afterAll(async () => {
@@ -188,6 +238,18 @@ describe.skipIf(!isLocalDatabase)('admin certificate lookup', () => {
   it('finds a certificate by a lower-case code without dashes', async () => {
     const page = await search({ page: 1, q: codes.revoked.replaceAll('-', '').toLowerCase() })
     expect(page.rows.map(({ id }) => id)).toEqual([revokedId])
+  })
+
+  it('finds a certificate whose holder left by its code and by the name it carries', async () => {
+    const byCode = await search({ page: 1, q: codes.orphan })
+    expect(byCode.rows.map(({ id }) => id)).toEqual([orphanId])
+    expect(byCode.rows[0]).toMatchObject({
+      holder: { email: null, firstName: 'Vesna', id: null, lastName: 'Orphaned' },
+      status: 'approved',
+    })
+
+    const byName = await search({ page: 1, q: 'vesna orphaned' })
+    expect(byName.rows.map(({ id }) => id)).toEqual([orphanId])
   })
 
   it('finds certificates by holder email', async () => {

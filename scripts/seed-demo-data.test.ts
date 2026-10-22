@@ -222,8 +222,9 @@ describe('demo certificates', () => {
     const deleted = certificates.filter(({ holderDeletedAt }) => holderDeletedAt)
     expect(deleted).toHaveLength(1)
     expect(deleted[0]).toMatchObject({ holder: null, status: 'approved' })
-    expect(deleted[0]?.activity.tasks).toEqual([])
-    expect(deleted[0]?.skills.every(({ evidence, statement }) => !(evidence || statement))).toBe(true)
+    expect(deleted[0]?.activity.tasks.length).toBeGreaterThan(0)
+    expect(deleted[0]?.activity.description).not.toBe('')
+    expect(deleted[0]?.skills.every(({ evidence, statement }) => evidence && statement)).toBe(true)
   })
 
   it('have unique handles and valid unique codes', () => {
@@ -509,13 +510,11 @@ describe('demo events', () => {
     }
   })
 
-  it('leave no trace of the holder on the deleted certificate', () => {
+  it('keep the history of the deleted certificate without a holder id', () => {
     const subject = plan.certificates.find(item => item.holderDeletedAt)?.key
     const own = events.filter(entry => entry.data.certificateId === subject)
     expect(own.length).toBeGreaterThan(0)
-    for (const entry of own) {
-      for (const field of ['holderId', 'comment', 'reason']) expect(entry.data).not.toHaveProperty(field)
-    }
+    for (const entry of own) expect(entry.data).not.toHaveProperty('holderId')
   })
 
   it('cover the life of an organization', () => {

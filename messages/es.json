@@ -61,7 +61,7 @@
     "pages": "Páginas",
     "settings": "Ajustes",
     "organization": "Organización",
-    "admin": "Administración",
+    "admin": "Admin",
     "actions": "Acciones rápidas",
     "docs": "Documentación",
     "organizations": "Cambiar de organización",
@@ -820,8 +820,8 @@
     "loggingIn": "Iniciando sesión",
     "login": "Iniciar sesión",
     "loginMessage": "Introduce tu email o nombre de usuario para iniciar sesión",
-    "loginMetaTitle": "Únete a el GloRe Network",
-    "loginTitle": "Únete a el GloRe Network",
+    "loginMetaTitle": "Únete a la red GloRe",
+    "loginTitle": "Únete a la red GloRe",
     "networkError": "Ocurrió un error de conexión, inténtalo de nuevo o contáctanos",
     "tooManyAttempts": "Demasiados intentos. Espera unos minutos y vuelve a intentarlo.",
     "newPasswordRequired": "Introduce tu nueva contraseña",
@@ -842,7 +842,7 @@
     "passwordUpdatedTitle": "Tu contraseña ha sido actualizada",
     "resendEmail": "Enviar otro correo",
     "resendTimer": "Enviar otro correo en {seconds}s",
-    "signupDialogMessage": "<p>Los usuarios individuales solo pueden registrarse en GloRe con una invitación de su organización.</p><p>Si tu organización es parte de la red GloRe y deseas obtener acceso como voluntario, tutor o coordinador, pide a un representante que te envíe una invitación.</p><p>Si tu organización aún no está registrada en GloRe, puedes enviar una solicitud de registro a continuación.</p><p>Para más información, visita <link>nuestro sitio web</link>.</p>",
+    "signupDialogMessage": "<p>Los usuarios individuales solo pueden registrarse en GloRe con una invitación de su organización.</p><p>Si tu organización es parte de la red GloRe y deseas obtener acceso como voluntario, tutor o coordinador, pide a alguien de tu organización que te envíe una invitación.</p><p>Si tu organización aún no está registrada en GloRe, puedes enviar una solicitud de registro a continuación.</p><p>Para más información, visita <link>nuestro sitio web</link>.</p>",
     "signupDialogRegister": "Registra tu organización",
     "signupDialogTitle": "Regístrate en GloRe",
     "signupMessage": "¿No tienes una cuenta? Descubre <link>cómo inscribirte</link>",
@@ -936,7 +936,7 @@
     "date": "Fecha",
     "defaultTitle": "Curso sin título",
     "description": "Los cursos de aprendizaje son cursos en línea que te ayudarán a adquirir nuevas habilidades y conocimientos.",
-    "descriptionAdmin": "Como administrador, puedes gestionar los cursos disponibles en la plataforma. Puedes crear y publicar cursos nuevos, editar los existentes y archivar los que ya no sean relevantes.",
+    "descriptionAdmin": "Como admin, puedes gestionar los cursos disponibles en la plataforma. Puedes crear y publicar cursos nuevos, editar los existentes y archivar los que ya no sean relevantes.",
     "descriptionEditor": "Como editor, puedes crear, editar y traducir cursos en toda la plataforma.",
     "draft": "Draft",
     "draftIn": "Draft en",
@@ -1546,7 +1546,7 @@
           },
           "q4": {
             "question": "¿Cómo me uno a una organización?",
-            "answer": "Entras a través de tu organización. Una persona responsable de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
+            "answer": "Entras a través de tu organización. Alguien de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
@@ -1590,7 +1590,7 @@
           },
           "q3": {
             "question": "¿Cómo me uno a una organización?",
-            "answer": "Entras a través de tu organización. Una persona responsable de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
+            "answer": "Entras a través de tu organización. Alguien de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
           },
           "q4": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
@@ -1638,7 +1638,7 @@
           },
           "q4": {
             "question": "¿Cómo me uno a una organización?",
-            "answer": "Entras a través de tu organización. Una persona responsable de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
+            "answer": "Entras a través de tu organización. Alguien de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
@@ -1651,8 +1651,8 @@
         }
       },
       "manager": {
-        "label": "Administrador de la organización",
-        "intro": "Como propietario o representante gestionas a tus miembros, apruebas las solicitudes de ingreso y mantienes las revisiones en marcha.",
+        "label": "Administrador/a o representante",
+        "intro": "Como administrador/a o representante gestionas a tus miembros, apruebas las solicitudes de ingreso y mantienes las revisiones en marcha.",
         "steps": {
           "step1": {
             "title": "Revisa las solicitudes de ingreso",
@@ -1674,7 +1674,7 @@
         "faqs": {
           "q1": {
             "question": "¿Quién puede revisar los certificados?",
-            "answer": "Solo los tutores revisan. Como propietario o representante puedes asignar o reasignar revisiones, pero no puedes aprobar ni solicitar cambios por tu cuenta."
+            "answer": "Solo los tutores revisan. Como administrador/a o representante puedes asignar o reasignar revisiones, pero no puedes aprobar ni solicitar cambios por tu cuenta."
           },
           "q2": {
             "question": "¿Cómo añado un tutor?",
@@ -1682,11 +1682,11 @@
           },
           "q3": {
             "question": "¿Puedo eliminar mi organización?",
-            "answer": "Solo el propietario puede eliminar una organización, y solo cuando no tiene certificados. Los representantes tienen todos los demás derechos de gestión."
+            "answer": "Solo la persona administradora puede eliminar una organización, y solo cuando no tiene certificados. Los representantes tienen todos los demás derechos de gestión."
           },
           "q4": {
             "question": "¿Cómo me uno a una organización?",
-            "answer": "Entras a través de tu organización. Una persona responsable de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
+            "answer": "Entras a través de tu organización. Alguien de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
@@ -1700,7 +1700,7 @@
       },
       "team": {
         "label": "Equipo",
-        "intro": "Como miembro del equipo creas cursos y, como administrador, gestionas organizaciones y usuarios en toda la plataforma.",
+        "intro": "Como miembro del equipo creas cursos y, como admin, gestionas organizaciones y usuarios en toda la plataforma.",
         "steps": {
           "step1": {
             "title": "Crea cursos",
@@ -1716,7 +1716,7 @@
           },
           "step4": {
             "title": "Gestiona la plataforma",
-            "description": "Los administradores aprueban organizaciones, moderan usuarios e invitan a miembros del equipo desde el panel de administración. Los editores se centran en el contenido de los cursos."
+            "description": "Los admins aprueban organizaciones, moderan usuarios e invitan a miembros del equipo desde el panel de administración. Los editores se centran en el contenido de los cursos."
           }
         },
         "faqs": {
@@ -1726,7 +1726,7 @@
           },
           "q2": {
             "question": "¿Quién puede editar cursos?",
-            "answer": "Los administradores y los editores editan los cursos. Todos los demás los ven en modo de visualización. Solo los administradores acceden al panel de administración de organizaciones y usuarios."
+            "answer": "Los admins y los editores editan los cursos. Todos los demás los ven en modo de visualización. Solo los admins acceden al panel de administración de organizaciones y usuarios."
           },
           "q3": {
             "question": "¿Qué es el asistente de IA?",
@@ -1734,7 +1734,7 @@
           },
           "q4": {
             "question": "¿Cómo me uno a una organización?",
-            "answer": "Entras a través de tu organización. Una persona responsable de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
+            "answer": "Entras a través de tu organización. Alguien de tu organización te invita por correo o comparte un enlace de invitación, y algunos enlaces necesitan su aprobación antes de que puedas entrar. Si tu organización aún no está en GloRe, quien la represente puede solicitar su registro."
           },
           "q5": {
             "question": "Pertenezco a más de una organización. ¿Cómo cambio entre ellas?",
@@ -1869,7 +1869,6 @@
     "submitSuccess": "¡Certificado enviado correctamente! Tu tutor lo revisará en breve.",
     "submitting": "Enviando…",
     "unknownVolunteer": "Voluntario desconocido",
-    "deletedUser": "Usuario eliminado",
     "updatedOn": "Última actualización",
     "volunteerName": "Voluntario",
     "publicNotFound": "Certificado no encontrado",
@@ -2253,9 +2252,7 @@
       "validMessage": "Emitido el {date} y verificado por GloRe.",
       "revokedOn": "Este certificado fue revocado el {date} y ya no es válido.",
       "revokedMessage": "Este certificado fue revocado y ya no es válido.",
-      "holderDeleted": "Ya no es válido",
-      "holderDeletedTitle": "Certificado ya no válido",
-      "holderDeletedMessage": "La persona titular de este certificado eliminó su cuenta, por lo que el certificado ya no es válido. Sus datos y su PDF se eliminaron.",
+      "holderLeft": "La persona titular ya no tiene una cuenta de GloRe. Esto no afecta al certificado.",
       "downloadPdf": "Descargar PDF",
       "period": "Periodo",
       "periodValue": "Del {start} al {end}",
@@ -2276,7 +2273,7 @@
       "unassignedCount": "{count, plural, one {# sin revisor} other {# sin revisor}}",
       "closedCount": "{count} cerrados sin emitir",
       "volunteer": "Persona voluntaria",
-      "holderDeleted": "Cuenta eliminada, ya no válido",
+      "holderDeleted": "Ya no está en GloRe",
       "status": "Estado",
       "reviewer": "Revisor",
       "waiting": "Espera",
@@ -2393,7 +2390,7 @@
     "deleteOrganizationError": "No se pudo eliminar la organización.",
     "organizationDeleted": "Organización eliminada",
     "memberCount": "Miembros",
-    "memberBreakdown": "{admins, plural, one {# administrador} other {# administradores}}, {representatives, plural, one {# representante} other {# representantes}}, {tutors, plural, one {# tutor} other {# tutores}}, {volunteers, plural, one {# voluntario} other {# voluntarios}}, {learners, plural, one {# estudiante} other {# estudiantes}}",
+    "memberBreakdown": "{admins, plural, one {# administrador/a} other {# administradores/as}}, {representatives, plural, one {# representante} other {# representantes}}, {tutors, plural, one {# tutor} other {# tutores}}, {volunteers, plural, one {# voluntario} other {# voluntarios}}, {learners, plural, one {# estudiante} other {# estudiantes}}",
     "pendingJoinRequests": "Solicitudes pendientes",
     "pendingJoinRequestsDescription": "Solicitudes en espera de revisión",
     "pendingCertificates": "Certificados pendientes",
@@ -2402,13 +2399,13 @@
     "approvedCertificatesDescription": "Certificados ya emitidos",
     "location": "Ubicación",
     "teamSnapshot": "Resumen del equipo",
-    "admins": "Administradores",
+    "admins": "Administradores/as",
     "representatives": "Representantes",
     "tutors": "Tutores",
     "volunteers": "Voluntarios",
     "learners": "Estudiantes",
     "pendingAccounts": "Cuentas pendientes",
-    "role_admin": "Administrador",
+    "role_admin": "Administrador/a",
     "role_learner": "Estudiante",
     "role_representative": "Representante",
     "role_tutor": "Tutor",
@@ -2461,9 +2458,9 @@
     "transferTitle": "Transferir la propiedad",
     "transferHelp": "Entrega la organización a otro representante. Tú pasas a ser representante.",
     "transferOwnership": "Transferir la propiedad",
-    "transferDescription": "La nueva persona propietaria tiene el control total, incluido el borrado. Las dos recibiréis un correo.",
-    "transferNoCandidates": "Solo pueden ser propietarios los representantes que han terminado su configuración. Cambia antes el rol de un miembro a representante.",
-    "transferTarget": "Nuevo propietario",
+    "transferDescription": "La nueva persona administradora tiene el control total, incluido el borrado. Las dos recibiréis un correo.",
+    "transferNoCandidates": "Solo pueden ser administradoras las personas representantes que han terminado su configuración. Cambia antes el rol de un miembro a representante.",
+    "transferTarget": "Nueva persona administradora",
     "transferTargetPlaceholder": "Elige un representante",
     "transferConfirmLabel": "Escribe {name} para confirmar",
     "transferring": "Transfiriendo…",
@@ -2471,10 +2468,10 @@
     "memberError_CONFIRMATION": "El nombre que has escrito no coincide.",
     "memberError_FORBIDDEN": "No tienes permiso para hacer esto.",
     "memberError_INVALID": "Estos valores no son válidos.",
-    "memberError_LAST_OWNER": "Una organización necesita un propietario. Transfiere antes la propiedad.",
-    "memberError_NOT_ELIGIBLE": "Este miembro todavía no puede ser propietario.",
+    "memberError_LAST_OWNER": "Una organización necesita una persona administradora. Transfiere antes la propiedad.",
+    "memberError_NOT_ELIGIBLE": "Este miembro todavía no puede ser la persona administradora.",
     "memberError_NOT_FOUND": "Este miembro ya no existe.",
-    "memberError_OWNER_ROLE": "El rol de propietario solo cambia mediante una transferencia de propiedad.",
+    "memberError_OWNER_ROLE": "El rol de administrador/a solo cambia mediante una transferencia de propiedad.",
     "memberError_RATE_LIMITED": "Demasiados intentos. Inténtalo más tarde.",
     "memberError_SELF": "No puedes hacer esto con tu propia pertenencia.",
     "memberError_generic": "Algo ha salido mal. Inténtalo de nuevo.",
@@ -2696,9 +2693,9 @@
     "dangerZoneDescription": "Una vez que elimines tu cuenta, no hay vuelta atrás. Por favor, asegúrate.",
     "deleteAccount": "Eliminar cuenta",
     "deleteAccountTitle": "Eliminar tu cuenta",
-    "deleteAccountDescription": "Elimina de forma permanente tu cuenta, tus borradores y solicitudes abiertas, y tu progreso de aprendizaje. Los certificados emitidos se conservan de forma anónima.",
+    "deleteAccountDescription": "Elimina de forma permanente tu cuenta, tus borradores y solicitudes abiertas, y tu progreso de aprendizaje. Los certificados emitidos se conservan y siguen siendo válidos.",
     "deleteAccountConfirmTitle": "¿Eliminar tu cuenta?",
-    "deleteAccountConfirmDescription": "Esto elimina de forma permanente tu cuenta, tu perfil, tus borradores, tus solicitudes abiertas y tu progreso. Los certificados ya emitidos permanecen en los registros de tu organización sin tu nombre ni tus datos, su PDF se elimina y figuran como ya no válidos. Te enviaremos un correo de confirmación y no se puede deshacer. Exporta tus datos antes si quieres una copia.",
+    "deleteAccountConfirmDescription": "Esto elimina de forma permanente tu cuenta, tu perfil, tus borradores, tus solicitudes abiertas y tu progreso. Los certificados ya emitidos se conservan con sus datos y su PDF, y siguen siendo válidos para quien los verifique. Te enviaremos un correo de confirmación y no se puede deshacer. Exporta tus datos antes si quieres una copia.",
     "deleteAccountBlockedAdmin": "Eres la única persona administradora de una organización. Transfiere la titularidad antes de eliminar tu cuenta.",
     "deleteAccountError": "No se pudo eliminar la cuenta. Inténtalo de nuevo.",
     "deleting": "Eliminando…",
@@ -2770,7 +2767,7 @@
     "title_organization": "Cuéntanos sobre tu organización",
     "description_organization": "Estos datos identifican a tu organización en los certificados.",
     "title_representative": "¿Quién representa a la organización?",
-    "description_representative": "El representante legal firma los certificados y será el primer administrador.",
+    "description_representative": "El representante legal firma los certificados y será la primera persona administradora.",
     "title_motivation": "¿Por qué quieres unirte?",
     "description_motivation": "Ayúdanos a entender el voluntariado que ofreces y qué esperas de GloRe.",
     "title_charter": "Revisa y acepta la carta",
@@ -2863,7 +2860,7 @@
       "noMembers": "No se encontraron miembros del equipo.",
       "removeMember": "Eliminar miembro",
       "roleLabel": "Rol",
-      "role_admin": "Administrador",
+      "role_admin": "Admin",
       "role_editor": "Editor",
       "sendInvite": "Enviar invitación",
       "sort_date": "Fecha de ingreso",
@@ -2872,7 +2869,7 @@
       "status_joined": "Activo",
       "status_pending": "Pendiente",
       "tryAdjustingFilters": "Intenta ajustar los filtros.",
-      "teamAdmin": "Administrador de GloRe",
+      "teamAdmin": "Admin de GloRe",
       "languageLabel": "Idioma",
       "resendInvite": "Reenviar invitación",
       "resendSuccess": "¡Invitación reenviada a {email}!",
@@ -2880,7 +2877,7 @@
       "roleUpdateSuccess": "{name} ahora es {role}.",
       "you": "Tú",
       "statMembers": "Total de miembros",
-      "statAdmins": "Administradores",
+      "statAdmins": "Admins",
       "statEditors": "Editores",
       "statPending": "Pendientes",
       "members": "Miembros"
@@ -3037,7 +3034,7 @@
       "roleUpdateSuccess": "{name} ahora es {role}.",
       "ban": "Banear usuario",
       "banTitle": "Banear a {name}",
-      "banDescription": "{name} se desconecta de inmediato y no podrá iniciar sesión hasta que termine el baneo o lo levantes. Los administradores de la plataforma no se pueden banear.",
+      "banDescription": "{name} se desconecta de inmediato y no podrá iniciar sesión hasta que termine el baneo o lo levantes. Los admins de la plataforma no se pueden banear.",
       "reasonLabel": "Motivo",
       "reasonHint": "Obligatorio, de {min} a {max} caracteres. Se guarda en el registro de auditoría.",
       "banReasonPlaceholder": "¿Por qué se banea esta cuenta?",
@@ -3076,11 +3073,11 @@
     },
     "errors": {
       "ALREADY_IMPERSONATING": "Detén primero la sesión de visualización actual.",
-      "CANNOT_IMPERSONATE_ADMINS": "No se puede ver como un administrador de la plataforma.",
+      "CANNOT_IMPERSONATE_ADMINS": "No se puede ver como un admin de la plataforma.",
       "CANNOT_IMPERSONATE_SELF": "No puedes ver como tú mismo.",
-      "FORBIDDEN": "Solo los administradores de la plataforma pueden hacer esto.",
+      "FORBIDDEN": "Solo los admins de la plataforma pueden hacer esto.",
       "INVALID_INPUT": "Revisa los valores e inténtalo de nuevo.",
-      "LAST_ADMIN": "La plataforma necesita al menos un administrador.",
+      "LAST_ADMIN": "La plataforma necesita al menos un admin.",
       "NOT_ALLOWED_WHILE_IMPERSONATING": "Esta acción está bloqueada mientras ves como otro usuario.",
       "NOT_BANNED": "Este usuario no está baneado.",
       "NOT_FOUND": "Este elemento ya no existe.",
@@ -3116,6 +3113,7 @@
         "status": "Estado"
       },
       "codeNone": "Sin emitir",
+      "holderDeleted": "Ya no está en GloRe",
       "noResults": "No se encontraron certificados",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
       "noCertificates": "Todavía no hay certificados",
@@ -3161,8 +3159,8 @@
         "impersonation_started": "{actor} empezó a ver la plataforma como <link>{target}</link>",
         "impersonation_stopped": "{actor} dejó de ver la plataforma como <link>{target}</link>",
         "organization_application_decided": "{actor} {approved, select, yes {aprobó} other {rechazó}} la solicitud de <link>{target}</link>",
-        "team_invited": "{actor} invitó a <link>{target}</link> al equipo como {role, select, admin {administrador} editor {editor} other {miembro}}",
-        "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {administrador} editor {editor} other {usuario}}"
+        "team_invited": "{actor} invitó a <link>{target}</link> al equipo como {role, select, admin {admin} editor {editor} other {miembro}}",
+        "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {admin} editor {editor} other {usuario}}"
       },
       "noResults": "No se encontraron eventos",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",
@@ -3213,7 +3211,7 @@
   },
   "Join": {
     "errorTitle": "Invitación expirada",
-    "errorDescription": "Este enlace de invitación ya no es válido. Contacta al administrador en {email} para recibir una nueva invitación.",
+    "errorDescription": "Este enlace de invitación ya no es válido. Pide a alguien de tu organización que te envíe una nueva invitación o escríbenos a {email}.",
     "backToLogin": "Volver al inicio de sesión"
   },
   "Onboarding": {
@@ -3300,7 +3298,7 @@
       "intro": "{invitee} te ha invitado a unirte a GloRe como {role}.",
       "manualLink": "Si el botón anterior no funciona, abre el siguiente enlace en tu navegador:",
       "preview": "Has sido invitado a unirte al equipo GloRe. Completa tu perfil para comenzar a colaborar en la plataforma.",
-      "role_admin": "administrador",
+      "role_admin": "admin",
       "role_editor": "editor",
       "subject": "Has sido invitado a unirte al equipo GloRe"
     },
@@ -3378,7 +3376,7 @@
     "organization/registration-request": {
       "button": "Revisar la solicitud",
       "details": "Enviada por {registrantName} ({registrantEmail}).",
-      "footer": "Recibes este correo porque eres administrador de la plataforma GloRe.",
+      "footer": "Recibes este correo porque eres admin de la plataforma GloRe.",
       "intro": "{organizationName} ha enviado una solicitud para unirse a la red GloRe.",
       "location": "Con sede en {location}.",
       "message": "Mensaje del solicitante: {message}",
@@ -3401,7 +3399,7 @@
       "topic_learning": "aprendizaje",
       "topic_organization": "organización",
       "topic_reminders": "recordatorios",
-      "role_admin": "Administrador",
+      "role_admin": "Administrador/a",
       "role_learner": "Estudiante",
       "role_representative": "Representante",
       "role_tutor": "Tutor",
@@ -3485,7 +3483,7 @@
     "organization/membership": {
       "subject_role_changed": "Tu rol en {organizationName} ha cambiado",
       "subject_removed": "Te quitaron de {organizationName}",
-      "subject_ownership_gained": "Ahora eres titular de {organizationName}",
+      "subject_ownership_gained": "Ahora eres la persona administradora de {organizationName}",
       "subject_ownership_left": "Cediste la titularidad de {organizationName}",
       "preview_role_changed": "Tu rol en {organizationName} es ahora {role}.",
       "preview_removed": "Ya no eres miembro de {organizationName}.",
@@ -3497,8 +3495,8 @@
       "intro_ownership_left": "La titularidad de {organizationName} pasó a otro miembro.",
       "details_role_changed": "Tu rol decide lo que puedes ver y hacer en la organización.",
       "details_removed": "Tu cuenta y los certificados que obtuviste siguen siendo tuyos. Si crees que es un error, pide a la organización que te invite de nuevo.",
-      "details_ownership_gained": "Como titular gestionas los miembros, las invitaciones y los ajustes de la organización.",
-      "details_ownership_left": "Ya no eres titular. Sigues teniendo acceso a tu cuenta.",
+      "details_ownership_gained": "Como persona administradora gestionas los miembros, las invitaciones y los ajustes de la organización.",
+      "details_ownership_left": "Ya no eres la persona administradora. Sigues teniendo acceso a tu cuenta.",
       "button": "Abrir GloRe",
       "footer": "Recibes este correo porque cambió tu pertenencia a {organizationName}."
     },
@@ -3511,7 +3509,7 @@
       "intro_removed": "Ya no tienes un rol en el equipo de GloRe.",
       "details_set": "Tu rol decide qué herramientas de administración puedes usar.",
       "details_removed": "Tu cuenta sigue activa como cuenta normal.",
-      "role_admin": "Administrador",
+      "role_admin": "Admin",
       "role_editor": "Editor",
       "button": "Abrir GloRe",
       "footer": "Recibes este correo porque cambió tu rol en el equipo de GloRe."
@@ -3533,7 +3531,7 @@
       "intro_deleted": "Tu cuenta de GloRe fue eliminada, como pediste.",
       "details_suspended": "La suspensión no tiene fecha de fin. Escríbenos si crees que es un error.",
       "details_suspended_until": "La suspensión termina el {expiresAt, date, long}. Escríbenos si crees que es un error.",
-      "details_deleted": "Se eliminaron tu perfil, tu progreso, tus borradores y tus solicitudes abiertas. Los certificados emitidos se anonimizaron y ya no son válidos, así que sus enlaces de verificación ya no muestran tus datos.",
+      "details_deleted": "Se eliminaron tu perfil, tu progreso, tus borradores y tus solicitudes abiertas. Los certificados emitidos se conservaron y siguen siendo válidos, así que sus enlaces de verificación siguen funcionando.",
       "reasonLabel": "Motivo",
       "footer": "Recibes este correo por un cambio en tu cuenta de GloRe."
     }
@@ -3928,12 +3926,15 @@
     "category_account": "Cuenta",
     "fallbackTitle": "Tienes una novedad",
     "roles": {
-      "admin": "Administrador",
-      "editor": "Editor",
+      "admin": "Administrador/a",
       "learner": "Estudiante",
       "representative": "Representante",
       "tutor": "Tutor",
       "volunteer": "Voluntario"
+    },
+    "teamRoles": {
+      "admin": "Admin",
+      "editor": "Editor"
     },
     "events": {
       "certificate_submitted": {
@@ -4037,12 +4038,12 @@
         "body": "La titularidad pasó a otra persona."
       },
       "organization_ownership_transferred_gained": {
-        "title": "Ahora eres la persona titular de la organización",
+        "title": "Ahora eres la persona administradora de la organización",
         "body": "Te traspasaron la titularidad. Ahora gestionas sus ajustes y sus miembros."
       },
       "organization_ownership_transferred_left": {
         "title": "Traspasaste la organización",
-        "body": "Ahora eres representante. La nueva persona titular tiene el control total."
+        "body": "Ahora eres representante. La nueva persona administradora tiene el control total."
       },
       "team_invited": {
         "title": "Te invitan al equipo de GloRe",
@@ -4065,8 +4066,6 @@
     "navigation": "Documentos legales",
     "home": "Ir a GloRe",
     "updated": "Última actualización: {date}",
-    "temporaryTitle": "Texto provisional",
-    "temporaryDescription": "Este documento es provisional y se sustituirá por la versión definitiva.",
     "fallbackNotice": "Este documento aún no está disponible en tu idioma. Estás leyendo la versión en inglés.",
     "unavailable": "Este documento todavía no está disponible."
   },

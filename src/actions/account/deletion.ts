@@ -40,12 +40,11 @@ export const soleAdminOrganizations = async (userId: string) => {
 
 export const releaseUserFiles = async (deleted: Awaited<ReturnType<typeof deleteUser>>) => {
   if (!deleted) return
-  const files = [deleted.avatarUrl, ...deleted.anonymized.map(({ documentUrl }) => documentUrl)]
-  await Promise.all(files.flatMap(file => (file ? [r2DeleteQuietly(file)] : [])))
-  for (const organizationId of new Set(deleted.anonymized.map(item => item.organizationId))) {
+  if (deleted.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
+  for (const organizationId of new Set(deleted.detached.map(item => item.organizationId))) {
     updateTag(certificatesOrgTag(organizationId))
   }
-  for (const reviewerId of new Set(deleted.anonymized.map(item => item.reviewerId))) {
+  for (const reviewerId of new Set(deleted.detached.map(item => item.reviewerId))) {
     if (reviewerId) updateTag(certificatesTutorTag(reviewerId))
   }
 }

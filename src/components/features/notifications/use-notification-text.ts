@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 
-import { messageKey, messageValues, messageVariant } from '@/components/features/notifications/utils'
+import { messageKey, messageValues, messageVariant, roleGroup } from '@/components/features/notifications/utils'
 import { type Notification } from '@/db/queries/notification'
 
 type Translate = (key: string, values?: Record<string, number | string>) => string
@@ -13,7 +13,8 @@ export const useNotificationText = () => {
     const variant = messageVariant(type, data)
     const base = `events.${messageKey(type)}${variant ? `_${variant}` : ''}`
     const values = messageValues(data)
-    const role = t.has(`roles.${values.role}` as never) ? translate(`roles.${values.role}`) : values.role
+    const roleKey = `${roleGroup(type)}.${values.role}`
+    const role = t.has(roleKey as never) ? translate(roleKey) : values.role
     const params = { ...values, role }
     const hasMessage = t.has(`${base}.title` as never)
 

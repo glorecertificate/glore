@@ -16,8 +16,11 @@ const pdfSourceWith = {
   user: { columns: { birthPlace: true, birthday: true, firstName: true, lastName: true, nationality: true } },
 } as const
 
+const findCertificateWithSource = async (id: number) =>
+  await db.query.certificates.findFirst({ where: eq(certificates.id, id), with: pdfSourceWith })
+
 export const findCertificatePdfSource = async (id: number) => {
-  const cert = await db.query.certificates.findFirst({ where: eq(certificates.id, id), with: pdfSourceWith })
+  const cert = await findCertificateWithSource(id)
   if (!cert?.user) return null
   return { ...cert, user: cert.user }
 }
@@ -92,8 +95,10 @@ export const renderCertificatePdf = async (snapshot: CertificateSnapshot, code: 
 }
 
 export const certificatePdf = async (id: number) => {
-  const cert = await findCertificatePdfSource(id)
+  const cert = await findCertificateWithSource(id)
   if (!cert) return null
-  const snapshot = cert.snapshot ?? certificateSnapshot(cert, cert.issuedAt ?? '')
+  const snapshot =
+    cert.snapshot ?? (cert.user ? certificateSnapshot({ ...cert, user: cert.user }, cert.issuedAt ?? '') : null)
+  if (!snapshot) return null
   return { buffer: await renderCertificatePdf(snapshot, cert.code), handle: cert.handle }
 }

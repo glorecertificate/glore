@@ -842,7 +842,7 @@
     "passwordUpdatedTitle": "Your password has been updated",
     "resendEmail": "Send another email",
     "resendTimer": "Send another email in {seconds}s",
-    "signupDialogMessage": "<p>Individual users can sign up to GloRe only with an invitation from their organization.</p><p>If your organization is part of the GloRe network and you want to get access as a volunteer, tutor or coordinator, ask a representative to send you an invitation.</p><p>If your organization is not yet registered on GloRe, you can submit a registration request below.</p><p>For more information, please <link>visit our website</link>.</p>",
+    "signupDialogMessage": "<p>Individual users can sign up to GloRe only with an invitation from their organization.</p><p>If your organization is part of the GloRe network and you want to get access as a volunteer, tutor or coordinator, ask someone from your organization to send you an invitation.</p><p>If your organization is not yet registered on GloRe, you can submit a registration request below.</p><p>For more information, please <link>visit our website</link>.</p>",
     "signupDialogRegister": "Register your organization",
     "signupDialogTitle": "Access the GloRe Network",
     "signupMessage": "Don't have an account? See <link>how to sign up</link>",
@@ -1546,7 +1546,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
+            "answer": "You join through your organization. Someone from your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1590,7 +1590,7 @@
           },
           "q3": {
             "question": "How do I join an organization?",
-            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
+            "answer": "You join through your organization. Someone from your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q4": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1638,7 +1638,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
+            "answer": "You join through your organization. Someone from your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1651,7 +1651,7 @@
         }
       },
       "manager": {
-        "label": "Organization admin",
+        "label": "Owner or representative",
         "intro": "As an owner or representative you manage your members, approve join requests, and keep reviews moving.",
         "steps": {
           "step1": {
@@ -1686,7 +1686,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
+            "answer": "You join through your organization. Someone from your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1734,7 +1734,7 @@
           },
           "q4": {
             "question": "How do I join an organization?",
-            "answer": "You join through your organization. A manager of your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
+            "answer": "You join through your organization. Someone from your organization invites you by email or shares an invite link, and some links need the organization's approval before you get in. If your organization is not on GloRe yet, a representative can apply to register it."
           },
           "q5": {
             "question": "I belong to more than one organization. How do I switch?",
@@ -1869,7 +1869,6 @@
     "submitSuccess": "Certificate submitted successfully! Your tutor will review it shortly.",
     "submitting": "Submitting…",
     "unknownVolunteer": "Unknown volunteer",
-    "deletedUser": "Deleted user",
     "updatedOn": "Last updated",
     "volunteerName": "Volunteer",
     "publicNotFound": "Certificate not found",
@@ -2253,9 +2252,7 @@
       "validMessage": "Issued on {date} and verified by GloRe.",
       "revokedOn": "This certificate was revoked on {date} and is no longer valid.",
       "revokedMessage": "This certificate was revoked and is no longer valid.",
-      "holderDeleted": "No longer valid",
-      "holderDeletedTitle": "Certificate no longer valid",
-      "holderDeletedMessage": "The holder of this certificate deleted their account, so the certificate is no longer valid. Its details and PDF were removed.",
+      "holderLeft": "The holder no longer has a GloRe account. This does not change the certificate.",
       "downloadPdf": "Download PDF",
       "period": "Period",
       "periodValue": "{start} to {end}",
@@ -2276,7 +2273,7 @@
       "unassignedCount": "{count, plural, one {# without a reviewer} other {# without a reviewer}}",
       "closedCount": "{count} closed without issuing",
       "volunteer": "Volunteer",
-      "holderDeleted": "Account deleted, no longer valid",
+      "holderDeleted": "No longer on GloRe",
       "status": "Status",
       "reviewer": "Reviewer",
       "waiting": "Waiting",
@@ -2393,7 +2390,7 @@
     "deleteOrganizationError": "Failed to delete organization.",
     "organizationDeleted": "Organization deleted",
     "memberCount": "Members",
-    "memberBreakdown": "{admins, plural, one {# admin} other {# admins}}, {representatives, plural, one {# representative} other {# representatives}}, {tutors, plural, one {# tutor} other {# tutors}}, {volunteers, plural, one {# volunteer} other {# volunteers}}, {learners, plural, one {# learner} other {# learners}}",
+    "memberBreakdown": "{admins, plural, one {# owner} other {# owners}}, {representatives, plural, one {# representative} other {# representatives}}, {tutors, plural, one {# tutor} other {# tutors}}, {volunteers, plural, one {# volunteer} other {# volunteers}}, {learners, plural, one {# learner} other {# learners}}",
     "pendingJoinRequests": "Pending join requests",
     "pendingJoinRequestsDescription": "Requests waiting for review",
     "pendingCertificates": "Pending certificates",
@@ -2402,13 +2399,13 @@
     "approvedCertificatesDescription": "Certificates already issued",
     "location": "Location",
     "teamSnapshot": "Team snapshot",
-    "admins": "Admins",
+    "admins": "Owners",
     "representatives": "Representatives",
     "tutors": "Tutors",
     "volunteers": "Volunteers",
     "learners": "Learners",
     "pendingAccounts": "Pending accounts",
-    "role_admin": "Admin",
+    "role_admin": "Owner",
     "role_learner": "Learner",
     "role_representative": "Representative",
     "role_tutor": "Tutor",
@@ -2696,10 +2693,10 @@
     "dangerZoneDescription": "Once you delete your account, there is no going back. Please be certain.",
     "deleteAccount": "Delete account",
     "deleteAccountTitle": "Delete your account",
-    "deleteAccountDescription": "Permanently remove your account, your drafts and open requests, and your learning progress. Issued certificates are kept anonymized.",
+    "deleteAccountDescription": "Permanently remove your account, your drafts and open requests, and your learning progress. Issued certificates are kept and stay valid.",
     "deleteAccountConfirmTitle": "Delete your account?",
-    "deleteAccountConfirmDescription": "This permanently deletes your account, profile, drafts, open requests, and progress. Certificates already issued stay in your organization's records without your name or details, their PDF is deleted, and they show as no longer valid. We email you a confirmation, and this cannot be undone. Export your data first if you want a copy.",
-    "deleteAccountBlockedAdmin": "You are the only administrator of an organization. Transfer ownership before you delete your account.",
+    "deleteAccountConfirmDescription": "This permanently deletes your account, profile, drafts, open requests, and progress. Certificates already issued are kept with their details and PDF, and stay valid for anyone who verifies them. We email you a confirmation, and this cannot be undone. Export your data first if you want a copy.",
+    "deleteAccountBlockedAdmin": "You are the only owner of an organization. Transfer ownership before you delete your account.",
     "deleteAccountError": "Failed to delete account. Please try again.",
     "deleting": "Deleting…",
     "searchLanguage": "Search language…",
@@ -2757,7 +2754,7 @@
     "exportLimited": "You exported your data too many times. Try again later.",
     "deleteAccountConfirmLabel": "Type {email} to confirm",
     "deleteAccountTransferTitle": "Transfer ownership first",
-    "deleteAccountTransferDescription": "You are the only administrator of {organizations}. Transfer the ownership to a representative in the organization settings, under Danger zone, before you delete your account.",
+    "deleteAccountTransferDescription": "You are the only owner of {organizations}. Transfer the ownership to a representative in the organization settings, under Danger zone, before you delete your account.",
     "deleteAccountTransferLink": "Open the organization settings"
   },
   "Register": {
@@ -2770,7 +2767,7 @@
     "title_organization": "Tell us about your organization",
     "description_organization": "These details identify your organization on certificates.",
     "title_representative": "Who represents the organization?",
-    "description_representative": "The legal representative signs certificates and becomes the first administrator.",
+    "description_representative": "The legal representative signs certificates and becomes the first owner.",
     "title_motivation": "Why do you want to join?",
     "description_motivation": "Help us understand the volunteering you offer and what you expect from GloRe.",
     "title_charter": "Review and accept the charter",
@@ -3116,6 +3113,7 @@
         "status": "Status"
       },
       "codeNone": "Not issued",
+      "holderDeleted": "No longer on GloRe",
       "noResults": "No certificates found",
       "noResultsDescription": "Try a different search or clear the filters.",
       "noCertificates": "No certificates yet",
@@ -3213,7 +3211,7 @@
   },
   "Join": {
     "errorTitle": "Invitation expired",
-    "errorDescription": "This invitation link is no longer valid. Please contact the administrator at {email} to receive a new invitation.",
+    "errorDescription": "This invitation link is no longer valid. Please ask someone from your organization to send you a new invitation, or contact us at {email}.",
     "backToLogin": "Back to login"
   },
   "Onboarding": {
@@ -3401,7 +3399,7 @@
       "topic_learning": "learning",
       "topic_organization": "organization",
       "topic_reminders": "reminder",
-      "role_admin": "Admin",
+      "role_admin": "Owner",
       "role_learner": "Learner",
       "role_representative": "Representative",
       "role_tutor": "Tutor",
@@ -3533,7 +3531,7 @@
       "intro_deleted": "Your GloRe account was deleted, as you asked.",
       "details_suspended": "The suspension has no end date. Contact us if you think this is a mistake.",
       "details_suspended_until": "The suspension ends on {expiresAt, date, long}. Contact us if you think this is a mistake.",
-      "details_deleted": "Your profile, progress, drafts, and open requests were deleted. Issued certificates were anonymized and are no longer valid, so their verification links no longer show your details.",
+      "details_deleted": "Your profile, progress, drafts, and open requests were deleted. Issued certificates were kept and stay valid, so their verification links still work.",
       "reasonLabel": "Reason",
       "footer": "You receive this email because of a change to your GloRe account."
     }
@@ -3928,12 +3926,15 @@
     "category_account": "Account",
     "fallbackTitle": "You have a new update",
     "roles": {
-      "admin": "Admin",
-      "editor": "Editor",
+      "admin": "Owner",
       "learner": "Learner",
       "representative": "Representative",
       "tutor": "Tutor",
       "volunteer": "Volunteer"
+    },
+    "teamRoles": {
+      "admin": "Admin",
+      "editor": "Editor"
     },
     "events": {
       "certificate_submitted": {
@@ -4065,8 +4066,6 @@
     "navigation": "Legal documents",
     "home": "Go to GloRe",
     "updated": "Last updated {date}",
-    "temporaryTitle": "Temporary text",
-    "temporaryDescription": "This document is a placeholder and will be replaced by the final version.",
     "fallbackNotice": "This document is not available in your language yet. You are reading the English version.",
     "unavailable": "This document is not available yet."
   },

@@ -1,10 +1,9 @@
 ---
 title: 'Informativa sulla privacy'
-temporary: true
 updated: '2026-10-22'
 ---
 
-Questo testo spiega come GloRe Certificate tratta i dati personali. È un testo temporaneo e sarà sostituito dall'informativa definitiva.
+Questo testo spiega come GloRe Certificate tratta i dati personali.
 
 ## Chi è responsabile
 
@@ -47,6 +46,8 @@ Usiamo questi fornitori per far funzionare la piattaforma:
 
 Le organizzazioni a cui appartieni possono vedere i dati su di te che la piattaforma mostra ai loro membri e tutor.
 
+Per risolvere una richiesta di assistenza, il personale di GloRe può visualizzare la piattaforma come la vedi tu, e ogni accesso di questo tipo viene registrato.
+
 ## Trasferimenti fuori dallo Spazio economico europeo
 
 I server dell'applicazione e il database sono configurati nell'Unione europea. Alcuni fornitori indicati possono trattare dati fuori dallo Spazio economico europeo. In questi casi ci affidiamo a garanzie adeguate, come le clausole contrattuali tipo della Commissione europea.
@@ -57,7 +58,7 @@ Usiamo solo cookie essenziali: ti mantengono connesso, ricordano la tua lingua e
 
 ## Per quanto tempo conserviamo i dati
 
-Conserviamo i tuoi dati finché il tuo account è attivo. Gli inviti scaduti, revocati o rifiutati vengono eliminati dopo 30 giorni, e le sessioni e i link di verifica scaduti vengono eliminati ogni giorno. Puoi eliminare il tuo account dalle impostazioni. Quando elimini il tuo account, vengono eliminati il tuo profilo, le bozze, le richieste aperte e i progressi. I certificati già emessi restano nei registri dell'organizzazione che li ha rilasciati, ma senza il tuo nome, i tuoi dati personali, la descrizione dell'attività e i commenti. Il loro PDF viene eliminato dal nostro archivio e la loro pagina di verifica indica che il certificato non è più valido perché il titolare ha eliminato l'account.
+Conserviamo i tuoi dati finché il tuo account è attivo. Gli inviti scaduti, revocati o rifiutati vengono eliminati dopo 30 giorni, e le sessioni e i link di verifica scaduti vengono eliminati ogni giorno. Puoi eliminare il tuo account dalle impostazioni. Quando elimini il tuo account, vengono eliminati il tuo profilo, le bozze, le richieste aperte e i progressi. I certificati già emessi vengono conservati, con i dati che mostrano e il loro PDF, in modo che chiunque abbia il link possa continuare a verificarli. La loro pagina di verifica può indicare che il titolare non ha più un account. Per far revocare un certificato emesso, rivolgiti all'organizzazione che lo ha rilasciato o scrivi a info@glorecertificate.net.
 
 ## I tuoi diritti
 

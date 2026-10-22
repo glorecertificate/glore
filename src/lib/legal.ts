@@ -16,7 +16,6 @@ export type LegalDocument = (typeof LEGAL_DOCUMENTS)[number]
 interface LegalContent {
   body: string
   locale: Locale
-  temporary: boolean
   title: string
   updated: string | null
 }
@@ -24,7 +23,6 @@ interface LegalContent {
 const FRONT_MATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/u
 
 const frontMatterSchema = z.object({
-  temporary: z.boolean().default(false),
   title: z.string().min(1),
   updated: z.union([z.string(), z.date()]).nullable().optional(),
 })
@@ -38,9 +36,9 @@ export const parseLegalFile = (source: string) => {
   const parsed = frontMatterSchema.safeParse(parse(match[1] ?? ''))
   if (!parsed.success) return null
 
-  const { temporary, title, updated } = parsed.data
+  const { title, updated } = parsed.data
   const date = updated instanceof Date ? updated.toISOString().slice(0, 10) : (updated ?? null)
-  return { body: (match[2] ?? '').trim(), temporary, title, updated: date }
+  return { body: (match[2] ?? '').trim(), title, updated: date }
 }
 
 const readLegalFile = async (root: string, document: LegalDocument, locale: Locale) => {

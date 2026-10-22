@@ -5,4 +5,4 @@ excerpt: "Sì, dall'organizzazione o dal team di GloRe, con una motivazione. Per
 
 Un certificato non ha data di scadenza. Resta valido finché qualcuno non lo revoca.
 
-Il titolare o un rappresentante dell'organizzazione, o un amministratore della piattaforma GloRe, può revocarlo, per esempio quando le informazioni risultano sbagliate. Deve scrivere una motivazione. Dopo, la pagina di verifica mostra il certificato come revocato e indica la data.
+L'amministratore o un rappresentante dell'organizzazione, o un admin della piattaforma GloRe, può revocarlo, per esempio quando le informazioni risultano sbagliate. Deve scrivere una motivazione. Dopo, la pagina di verifica mostra il certificato come revocato e indica la data.

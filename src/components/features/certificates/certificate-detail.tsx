@@ -68,6 +68,7 @@ export const CertificateDetail = ({
             )}
             <div className="flex flex-wrap items-center gap-2">
               <CertificateStatusBadge status={certificate.status} />
+              {certificate.isHolderDeleted && <Badge variant="outline">{t('org.holderDeleted')}</Badge>}
               {certificate.isApproved && certificate.isDefault && (
                 <Badge className="gap-1" variant="outline">
                   <StarIcon className="size-3" />

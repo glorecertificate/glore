@@ -153,7 +153,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - `/verify/<code>` renders a detached certificate like any other from its `snapshot` (no snapshot and no user means unknown).
 - It adds a neutral "no longer has a GloRe account" note from `ActiveVerification.holderDeleted`. The legacy `?v=` link still redirects there.
 - `parseCertificate` exposes `holder` (the user, else the snapshot name) and `isHolderDeleted`.
-- `OrganizationCertificates` shows that name with "No longer on GloRe" and keeps the view and revoke actions.
+- `OrganizationCertificates` shows that name with "No longer on GloRe" and keeps the view and revoke actions. `CertificateDetail` shows the same label as a header badge.
 - Organization managers, platform admins, and the former reviewer can open the detail page and the PDF (`canViewCertificate`). `certificatePdf` renders from the snapshot.
 - The tutor queue and global search skip it. The review context and lifecycle actions refuse it (`findCertificateRow` and `transition` need a holder).
 - Managers and platform admins can still revoke an approved one (`requireManagedCertificate`, `recordCertificateRevocation`). No holder is notified, because `certificate.revoked` carries `holderId: null`.

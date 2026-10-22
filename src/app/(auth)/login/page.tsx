@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
 
+import { getTranslations } from 'next-intl/server'
 import { createSearchParamsCache } from 'nuqs/server'
 
 import { cookies } from '@/actions/cookies'
@@ -8,13 +9,13 @@ import { authParsers } from '@/components/features/auth/params'
 import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
-import { intlMetadata } from '@/lib/metadata'
+import { appTitle } from '@/lib/metadata'
 
 const { parse } = createSearchParamsCache(authParsers)
 
 export const generateMetadata = async ({ searchParams }: PageProps<'/login'>) => {
-  const { token } = await parse(searchParams)
-  return intlMetadata({ namespace: 'Auth', title: `${token ? 'passwordReset' : 'login'}Title` })
+  const [{ token }, t] = await Promise.all([parse(searchParams), getTranslations('Auth')])
+  return { title: { absolute: appTitle(t(token ? 'passwordResetTitle' : 'loginTitle')) } }
 }
 
 const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'>['searchParams'] }) => {

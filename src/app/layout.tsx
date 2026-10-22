@@ -18,7 +18,7 @@ import { SearchParamsProvider } from '@/components/providers/search-params'
 import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
-import { APP_NAME, APP_SEPARATOR, metadata } from '@/lib/metadata'
+import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
 import { cn, publicFile } from '@/lib/utils'
 
 export const generateMetadata = async () => {
@@ -30,7 +30,7 @@ export const generateMetadata = async () => {
     keywords: t('keywords'),
     title: {
       default: APP_NAME,
-      template: `%s ${APP_SEPARATOR} ${APP_NAME}`,
+      template: appTitle('%s'),
     },
   }
 }

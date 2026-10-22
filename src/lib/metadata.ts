@@ -9,6 +9,8 @@ const APP_URL = process.env.APP_URL as HttpUrl
 export const APP_NAME = config.name
 export const APP_SEPARATOR = config.separator
 
+export const appTitle = (title?: string) => (title ? `${title} ${APP_SEPARATOR} ${APP_NAME}` : APP_NAME)
+
 export const WEBSITE_URL = config.website as HttpUrl
 export const MANIFEST_URL = '/api/v1/manifest' satisfies Route
 

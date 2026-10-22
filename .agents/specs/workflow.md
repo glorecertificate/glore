@@ -21,7 +21,7 @@ Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
 | `pnpm run db:up`        | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
 | `pnpm run db:reset`     | Wipe and recreate the local Postgres volume                                      |
 | `pnpm run db:seed`      | Upsert one test user per role into the local DB (refuses non-local URLs)         |
-| `pnpm run db:seed:demo` | Demo accounts on `TEST_EMAIL` plus-addresses (`--target local` or `staging`)     |
+| `pnpm run db:seed:demo` | Full demo dataset on `TEST_EMAIL` plus-addresses (`--target local` or `staging`) |
 | `pnpm run mail:up`      | Local Mailpit inbox: SMTP on 1025, UI and API at `http://localhost:8025`         |
 | `pnpm run email`        | Preview email templates at `https://email.glore.localhost`                       |
 | `pnpm run skills`       | Reinstall agent skills from `skills-lock.json`                                   |
@@ -29,7 +29,8 @@ Exceptions: `pnpm install`, and the README's bare shorthand for human readers.
 ## Seeds
 
 - `pnpm run db:seed` (`scripts/seed.mts`) upserts the org `glore-seed` and one user per role at `<role>@seed.glore.test`: `admin` (platform admin), `editor`, `owner` (org admin), `representative`, `tutor`, `volunteer`, `learner`, plus `holder` (a volunteer for demo certificates, which tests that wipe `volunteer` leave alone) and `recovery` (password reset spec). The shared password and roles live in `scripts/seed-data.ts`. It runs in one transaction, is idempotent, and exits non-zero unless `DATABASE_URL` points to localhost.
-- `pnpm run db:seed:demo --target <local|staging>` (`scripts/seed-demo.mts`) upserts the demo organizations and the accounts of `.agents/references/manual-testing.md` at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`. Data lives in `scripts/seed-demo-data.ts`; shared upserts in `scripts/seed-db.mts`.
+- `pnpm run db:seed:demo --target <local|staging>` (`scripts/seed-demo.mts`) builds the full demo dataset of `.agents/references/manual-testing.md` at `<local>+glore-<key>@<domain>` of `TEST_EMAIL`, with usernames `demo.<key>`: three organizations (two approved in Italy and Spain, one pending applicant), 28 accounts, 18 certificates in every status plus a deleted holder, learning progress, ratings, invitations, an invite link, join requests, activity events, and read and unread notifications. Run `pnpm run content:import --target <target>` first: the seed reads the course catalog and stops before writing if it is missing.
+- It is idempotent and resets what it owns in one transaction: it upserts organizations and accounts, then deletes and rebuilds the certificates, invitations, links, requests, events, notifications, and progress of the demo organizations and accounts. Dates are relative to the run, and approved certificates carry a snapshot but no stored PDF (the download renders from the snapshot). Data and planning live in `scripts/seed-demo-data.ts` (organizations, accounts), `seed-demo-story.ts` (certificates, progress, flows, events, notifications; pure and unit tested), and `seed-demo-copy.ts` (localized text); SQL in `seed-demo-db.mts`; shared upserts in `scripts/seed-db.mts`.
 - Guard: `local` needs a localhost `DATABASE_URL`; `staging` needs a remote one whose database comment is `glore:staging` (`COMMENT ON DATABASE`, set on the Neon `staging` branch only, since Neon forbids custom database settings). Production never has the setting, so it is never seeded.
 
 ## Translations

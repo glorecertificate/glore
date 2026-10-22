@@ -66,7 +66,7 @@ pnpm db:down    # stop and remove the container (volume preserved)
 pnpm db:logs    # tail Postgres logs
 pnpm db:reset   # drop the data volume and restart with an empty database
 pnpm db:seed    # upsert the seeded organization and one user per role
-pnpm db:seed:demo --target local  # demo accounts on TEST_EMAIL plus-addresses
+pnpm db:seed:demo --target local  # full demo dataset on TEST_EMAIL plus-addresses (run content:import first)
 ```
 
 **Schema:**

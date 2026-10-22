@@ -4,9 +4,8 @@ import { hashPassword } from 'better-auth/crypto'
 import { Pool } from 'pg'
 
 import { SEED_PASSWORD } from './seed-data.ts'
-import { setMembership, upsertOrganization, upsertUser } from './seed-db.mts'
+import { upsertUser } from './seed-db.mts'
 import {
-  DEMO_ORGANIZATIONS,
   DEMO_USAGE,
   DEMO_USERS,
   STAGING_COMMENT,
@@ -15,6 +14,20 @@ import {
   guardDemoTarget,
   parseDemoArgs,
 } from './seed-demo-data.ts'
+import {
+  type DemoIds,
+  insertDemoCertificates,
+  insertDemoEvents,
+  insertDemoFlows,
+  insertDemoProgress,
+  loadCatalog,
+  syncDemoMemberships,
+  updateDemoProfiles,
+  upsertDemoOrganizations,
+  upsertEditorCourses,
+  wipeDemoScope,
+} from './seed-demo-db.mts'
+import { SKILL_COMPASS, planDemo } from './seed-demo-story.ts'
 
 const fail = (message: string) => {
   console.error(message)
@@ -31,7 +44,8 @@ const seedDemo = async () => {
 
   const pool = new Pool({ connectionString })
   const client = await pool.connect()
-  const now = new Date().toISOString()
+  const now = new Date()
+  const plan = planDemo(now)
 
   try {
     const { rows } = await client.query<{ value: string | null }>(
@@ -42,28 +56,44 @@ const seedDemo = async () => {
     }
 
     const passwordHash = await hashPassword(SEED_PASSWORD)
+    const iso = now.toISOString()
     await client.query('begin')
+    const context = { client, now, testEmail }
 
-    const organizationIds = new Map<string, number>()
-    for (const organization of DEMO_ORGANIZATIONS) {
-      const id = await upsertOrganization(
-        client,
-        { ...organization, email: demoEmail(testEmail, `org-${organization.key}`) },
-        now
-      )
-      organizationIds.set(organization.key, id)
-    }
-
+    const slugs = [
+      ...new Set([
+        ...plan.progress.map(({ course }) => course),
+        ...plan.certificates.flatMap(({ skills }) => skills.map(({ course }) => course)),
+        ...Object.values(SKILL_COMPASS).flatMap(({ goals, strengths }) => [...goals, ...strengths]),
+      ]),
+    ]
+    const catalog = await loadCatalog(context, slugs)
+    await client.query('delete from rate_limits')
+    const organizations = await upsertDemoOrganizations(context)
+    const users = new Map<string, string>()
     for (const user of DEMO_USERS) {
-      const userId = await upsertUser(client, {
+      const id = await upsertUser(client, {
         user: { ...user, email: demoEmail(testEmail, user.key), username: demoUsername(user.key) },
         passwordHash,
-        now,
+        now: iso,
       })
-      for (const [key, organizationId] of organizationIds) {
-        await setMembership(client, { userId, organizationId, role: user.memberships[key], now })
-      }
+      users.set(user.key, id)
     }
+    const ids: DemoIds = { organizations, users }
+
+    await updateDemoProfiles(context, ids)
+    await syncDemoMemberships(context, ids)
+    await wipeDemoScope(context, ids)
+    await upsertEditorCourses(context, ids)
+
+    const flows = await insertDemoFlows(context, ids)
+    const certificates = await insertDemoCertificates(context, ids, { catalog, certificates: plan.certificates })
+    await insertDemoProgress(context, ids, { catalog, progress: plan.progress })
+    await insertDemoEvents(context, ids, {
+      events: plan.events,
+      notifications: plan.notifications,
+      refs: { certificates, courses: catalog, flows },
+    })
 
     await client.query('commit')
   } catch (e) {
@@ -79,6 +109,13 @@ const seedDemo = async () => {
     console.info(`${demoEmail(testEmail, key)}  ${platformRole ?? (isEditor ? 'editor' : roles.join(', '))}`)
   }
   console.info(`Password for every demo account: ${SEED_PASSWORD}`)
+  console.info('Certificate codes:')
+  for (const { code, holder, key, status } of plan.certificates) {
+    if (code) console.info(`${code}  ${status}  ${holder ?? 'deleted holder'}  (${key})`)
+  }
+  console.info(
+    `Seeded ${plan.certificates.length} certificates, ${plan.events.length} events, ${plan.notifications.length} notifications.`
+  )
 }
 
 if (import.meta.main) await seedDemo()

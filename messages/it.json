@@ -762,6 +762,9 @@
     "Chart": {
       "empty": "Non ci sono ancora dati",
       "label": "Categoria"
+    },
+    "Dialog": {
+      "close": "Chiudi"
     }
   },
   "Layout": {
@@ -847,7 +850,7 @@
     "resendTimer": "Invia un'altra email tra {seconds}s",
     "signupDialogMessage": "<p>Gli utenti individuali possono registrarsi a GloRe solo con un invito dalla propria organizzazione.</p><p>Se la tua organizzazione fa parte della rete GloRe e desideri accedere come volontario, tutor o coordinatore, chiedi a qualcuno della tua organizzazione di mandarti un invito.</p><p>Se la tua organizzazione non è ancora registrata su GloRe, puoi inviare una richiesta di registrazione qui sotto.</p><p>Per ulteriori informazioni, visita il <link>nostro sito web</link>.</p>",
     "signupDialogRegister": "Registra la tua organizzazione",
-    "signupDialogTitle": "Accedi al network di GloRe",
+    "signupDialogTitle": "Registrati su GloRe",
     "signupMessage": "Non hai un account? Scopri <link>come iscriverti</link>",
     "skipAndLogin": "Salta e vai al login",
     "submit": "Invia",

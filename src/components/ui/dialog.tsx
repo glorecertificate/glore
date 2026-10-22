@@ -3,6 +3,7 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { type VariantProps, cva } from 'class-variance-authority'
 import { XIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
 
@@ -55,6 +56,7 @@ export const DialogContent = ({
     overlay?: number
     showClose?: boolean
   }) => {
+  const t = useTranslations('Components.Dialog')
   const content = (
     <>
       {overlay && <DialogOverlay opacity={overlay} />}
@@ -68,7 +70,7 @@ export const DialogContent = ({
         {showClose && (
           <DialogClose className="absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">
             <XIcon />
-            <span className="sr-only">{'Close'}</span>
+            <span className="sr-only">{t('close')}</span>
           </DialogClose>
         )}
       </DialogPrimitive.Content>

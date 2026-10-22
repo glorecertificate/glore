@@ -762,6 +762,9 @@
     "Chart": {
       "empty": "No data yet",
       "label": "Category"
+    },
+    "Dialog": {
+      "close": "Close"
     }
   },
   "Layout": {

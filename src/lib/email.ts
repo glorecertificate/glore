@@ -20,7 +20,6 @@ import CertificateAssignedEmail from '@/emails/certificate/assigned'
 import CertificateDecisionEmail from '@/emails/certificate/decision'
 import CertificateReminderEmail from '@/emails/certificate/reminder'
 import CertificateReviewEmail from '@/emails/certificate/review'
-import { type EmailCategory, EmailContext } from '@/emails/context'
 import LearningEligibleEmail from '@/emails/learning/eligible'
 import OrganizationInvitationEmail from '@/emails/organization/invitation'
 import OrganizationJoinRequestEmail from '@/emails/organization/join-request'
@@ -29,7 +28,7 @@ import OrganizationMembershipEmail from '@/emails/organization/membership'
 import OrganizationRegistrationRequestEmail from '@/emails/organization/registration-request'
 import TeamInviteEmail from '@/emails/team/invite'
 import TeamRoleChangedEmail from '@/emails/team/role-changed'
-import { type EmailBaseProps, type EmailTranslator, emailTranslator } from '@/emails/translate'
+import { type EmailBaseProps, type EmailCategory, type EmailTranslator, emailTranslator } from '@/emails/translate'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
@@ -117,10 +116,10 @@ const buildEmail = ({ category, locale, messages, template }: BuildOptions) => {
   const { component, subject } = TEMPLATES[template.name] as unknown as TemplateDefinition<
     EmailBaseProps & Record<string, unknown>
   >
-  const props = { ...template.props, locale, messages: messages as AbstractIntlMessages }
+  const props = { ...template.props, category, locale, messages: messages as AbstractIntlMessages }
 
   return {
-    element: createElement(EmailContext.Provider, { value: { category } }, createElement(component, props)),
+    element: createElement(component, props),
     subject: subject(emailTranslator(`Email.${template.name}`, props), props),
   }
 }

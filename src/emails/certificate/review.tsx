@@ -2,22 +2,22 @@ import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-i
 import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
+import { type EmailBaseProps } from '@/emails/translate'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
 
-interface CertificateReviewEmailProps {
+interface CertificateReviewEmailProps extends EmailBaseProps {
   status: 'approved' | 'changes_requested'
   comment?: string
   documentUrl?: string
   url?: string
   userName?: string
-  locale?: string
-  messages?: AbstractIntlMessages
 }
 
 const CertificateReviewEmail = ({
+  category,
   status,
   comment,
   documentUrl,
@@ -42,6 +42,7 @@ const CertificateReviewEmail = ({
 
   return (
     <EmailLayout
+      category={category}
       footer={footer}
       locale={locale}
       messages={messages}

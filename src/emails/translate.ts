@@ -8,7 +8,10 @@ export type EmailTranslator = ((key: string, values?: EmailValues) => string) & 
   has: (key: string) => boolean
 }
 
+export type EmailCategory = 'learning' | 'mandatory' | 'organization' | 'reminders'
+
 export interface EmailBaseProps {
+  category?: EmailCategory | null
   locale?: string
   messages?: AbstractIntlMessages
 }

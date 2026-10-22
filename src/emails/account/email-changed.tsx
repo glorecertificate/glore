@@ -2,20 +2,20 @@ import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-i
 import { Link, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
+import { type EmailBaseProps } from '@/emails/translate'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
 
-interface AccountEmailChangedEmailProps {
+interface AccountEmailChangedEmailProps extends EmailBaseProps {
   oldEmail: string
   newEmail: string
   userName?: string
-  locale?: string
-  messages?: AbstractIntlMessages
 }
 
 const AccountEmailChangedEmail = ({
+  category,
   oldEmail,
   newEmail,
   userName,
@@ -42,7 +42,7 @@ const AccountEmailChangedEmail = ({
   )
 
   return (
-    <EmailLayout footer={footer} locale={locale} messages={messages} preview={t('preview')}>
+    <EmailLayout category={category} footer={footer} locale={locale} messages={messages} preview={t('preview')}>
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>

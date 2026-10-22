@@ -2,12 +2,13 @@ import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-i
 import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
+import { type EmailBaseProps } from '@/emails/translate'
 import { type MessageKey } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
 
-interface OrganizationRegistrationRequestEmailProps {
+interface OrganizationRegistrationRequestEmailProps extends EmailBaseProps {
   city: string
   organizationId: number
   organizationName: string
@@ -16,11 +17,10 @@ interface OrganizationRegistrationRequestEmailProps {
   country?: string | null
   message?: string | null
   userName?: string
-  locale?: string
-  messages?: AbstractIntlMessages
 }
 
 const OrganizationRegistrationRequestEmail = ({
+  category,
   city,
   organizationId,
   organizationName,
@@ -54,7 +54,13 @@ const OrganizationRegistrationRequestEmail = ({
   const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
 
   return (
-    <EmailLayout footer={footer} locale={locale} messages={messages} preview={t('preview', { organizationName })}>
+    <EmailLayout
+      category={category}
+      footer={footer}
+      locale={locale}
+      messages={messages}
+      preview={t('preview', { organizationName })}
+    >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>

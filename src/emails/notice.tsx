@@ -28,6 +28,7 @@ const quoteStyle: React.CSSProperties = {
 
 export const Notice = ({
   action,
+  category,
   children,
   details = NO_DETAILS,
   footer,
@@ -43,6 +44,7 @@ export const Notice = ({
 
   return (
     <EmailLayout
+      category={category}
       footer={
         <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
           {footer}{' '}

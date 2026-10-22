@@ -1,10 +1,9 @@
-import { type ReactNode, use } from 'react'
+import { type ReactNode } from 'react'
 
 import { type AbstractIntlMessages } from 'next-intl'
 import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from 'react-email'
 
-import { EmailContext } from '@/emails/context'
-import { emailTranslator } from '@/emails/translate'
+import { type EmailCategory, emailTranslator } from '@/emails/translate'
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -24,6 +23,7 @@ const headerStyle: React.CSSProperties = {
 }
 
 interface EmailLayoutProps {
+  category?: EmailCategory | null
   children: ReactNode
   footer?: ReactNode
   locale?: string
@@ -31,9 +31,15 @@ interface EmailLayoutProps {
   preview: string
 }
 
-export const EmailLayout = ({ children, footer, locale = 'en', messages, preview }: EmailLayoutProps) => {
+export const EmailLayout = ({
+  category = null,
+  children,
+  footer,
+  locale = 'en',
+  messages,
+  preview,
+}: EmailLayoutProps) => {
   const common = emailTranslator('Email.common', { locale, messages })
-  const { category } = use(EmailContext)
   const isOptional = category !== null && category !== 'mandatory'
   const preferencesUrl = `${process.env.APP_URL}/settings?tab=notifications`
 

@@ -17,7 +17,7 @@ GloRe is a project developed by [Associazione Joint](https://associazionejoint.o
 
 This project is a multi-language Next.js 16 application written in TypeScript, using a Postgres database (Neon) with Drizzle and Better Auth, Cloudflare R2 for file storage, Tailwind CSS and shadcn/ui for styling, and other tools for services like email and translations.
 
-Shared UI components live in `src/components/ui/`. The release kit includes accessible data tables, statistics, timelines, skill levels, clipboard and QR controls, segmented controls, avatar stacks, and the certificate arrow motif. Charts load Recharts on demand and include a data table for screen readers. Component conventions are in [the UI reference](.agents/specs/ui.md#release-ui-kit).
+Shared UI components live in `src/components/ui/`; the kit and its conventions are described in [the UI reference](.agents/specs/ui.md#release-ui-kit).
 
 ### Prerequisites
 
@@ -150,5 +150,7 @@ The project uses the MCP servers configured in [`.mcp.json`](.mcp.json) and diff
 Use the `pnpm run skills` command to install the skills locally and run them with Claude or any other compatible agent.
 
 ## License
+
+Released under the [MIT License](LICENSE).
 
 Copyright © 2025-present Associazione Joint <info@associazionejoint.org>

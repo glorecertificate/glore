@@ -27,7 +27,9 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 - qa1 browser check not covered: the "Get started" card (the seed checklist is complete) and the pending badge after an approval.
 - `/admin/organizations` lists 4 pending fixtures that the overview counts as 0 and whose detail pages 404. The G1 reseed clears them.
 - The Italian account-deletion prompt is served stale from dev server memory. A dev restart fixes it, not a code change.
-- A private `/<username>` calls `notFound()` but streams inside `Suspense`, so the status stays 200. A real 404 needs a `proxy` check. Decision pending.
+- Decision: a private `/<username>` keeps status 200, because `notFound()` runs inside `Suspense` after streaming starts.
+  - Next.js injects `noindex` there. A real 404 would need a database read in `proxy` on every request.
+- Deferred after v1: split the mixed `Courses` and root `Certificates` namespaces by feature, and load locale catalogs per namespace so a client locale switch skips the server-only namespaces.
 - `scripts/content/validate.test.ts` and `lib/email.test.ts` can time out when several worktrees run Vitest against the same clone.
 
 ### Content and legal

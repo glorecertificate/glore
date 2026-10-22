@@ -10,7 +10,7 @@ export interface SeedUser {
 
 export const LOCAL_DATABASE_REGEX = /@(localhost|127\.0\.0\.1)(:|\/)/u
 
-export const SEED_PASSWORD = 'Glore-Seed-2026'
+export const SEED_PASSWORD = 'Password1!'
 const SEED_DOMAIN = 'seed.glore.test'
 export const SEED_ORG_HANDLE = 'glore-seed'
 
@@ -21,6 +21,7 @@ export const SEED_USERS: SeedUser[] = [
   { key: 'representative', firstName: 'Rafael', membership: 'representative' },
   { key: 'tutor', firstName: 'Tomas', membership: 'tutor' },
   { key: 'volunteer', firstName: 'Valentina', membership: 'volunteer' },
+  { key: 'holder', firstName: 'Giulia', membership: 'volunteer' },
   { key: 'learner', firstName: 'Leo', membership: 'learner' },
   { key: 'recovery', firstName: 'Rita', membership: 'learner' },
 ]

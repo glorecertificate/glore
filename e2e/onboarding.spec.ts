@@ -4,7 +4,7 @@ import { createSeedInvitation, deleteUserByEmail } from './db'
 import { hydrated } from './helpers'
 import { clearMail, isMailpitUp, latestMailText, mailLinkPath } from './mail'
 
-const email = `onboarding-${Date.now()}@seed.glore.test`
+const email = `onboarding-${Date.now()}@onboarding.glore.test`
 const password = `Onboard-${Date.now()}!a`
 const lastName = `Lovelace${Date.now()}`
 

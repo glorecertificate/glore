@@ -1,7 +1,9 @@
 import { type Page, expect, test } from '@playwright/test'
 
+import { seedEmail } from '~/scripts/seed-data'
+
 import { createLoginUser, listSubjectEvents, removeLoginUsers } from './db'
-import { authFile, login } from './helpers'
+import { authFile, loginWithEmail } from './helpers'
 
 const created: string[] = []
 
@@ -65,7 +67,7 @@ test.describe('platform admin', () => {
     await row.getByRole('button', { name: /Actions/u }).click()
     await page.getByRole('menuitem', { name: 'Unban user' }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Unban user' }).click()
-    await expect(page.getByText(/can sign in again\./u)).toBeVisible()
+    await expect(page.getByText(/can log in again\./u)).toBeVisible()
     await expect(row.getByText('Active', { exact: true })).toBeVisible()
 
     const returning = await browser.newPage({
@@ -73,7 +75,7 @@ test.describe('platform admin', () => {
       ignoreHTTPSErrors: true,
       storageState: { cookies: [], origins: [] },
     })
-    await login(returning, target.email.split('@')[0] ?? '')
+    await loginWithEmail(returning, target.email)
     await returning.close()
   })
 
@@ -128,8 +130,9 @@ test.describe('platform admin', () => {
     await expect(page.getByRole('menuitem', { name: 'Ban user' })).toBeHidden()
     await page.keyboard.press('Escape')
 
-    await page.getByPlaceholder('Search by name, email, or username').fill('admin@seed.glore.test')
-    const own = page.getByRole('row').filter({ hasText: 'admin@seed.glore.test' })
+    const adminEmail = seedEmail('admin')
+    await page.getByPlaceholder('Search by name, email, or username').fill(adminEmail)
+    const own = page.getByRole('row').filter({ hasText: adminEmail })
     await expect(own).toBeVisible()
     await expect(own.getByRole('button', { name: /Actions/u })).toBeHidden()
   })

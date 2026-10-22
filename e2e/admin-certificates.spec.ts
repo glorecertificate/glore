@@ -48,7 +48,10 @@ test.describe('admin certificate lookup', () => {
       .click()
     await expect(page).toHaveURL(/org=\d+/u)
     await expect(page.getByText('Approved', { exact: true }).first()).toBeVisible()
-    await expect(page.getByRole('row').filter({ hasText: CODE })).toBeVisible()
+    await page.getByRole('searchbox', { name: 'Search by name, email or code' }).fill(CODE)
+    const scoped = page.getByRole('row').filter({ hasText: VOLUNTEER })
+    await expect(scoped).toHaveCount(1)
+    await expect(scoped.getByText('Approved', { exact: true })).toBeVisible()
   })
 
   test('revokes an approved certificate with a required reason', async ({ page }) => {

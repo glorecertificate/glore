@@ -51,6 +51,10 @@ test('takes an application from the register form to onboarding', async ({ brows
   })
   await adminPage.goto('/admin/organizations')
   const row = adminPage.getByRole('link', { name: organizationName }).locator('..')
+  await expect(async () => {
+    await adminPage.reload()
+    await expect(row).toBeVisible({ timeout: 2000 })
+  }).toPass()
   await row.getByRole('button', { name: 'Actions' }).click()
   await adminPage.getByRole('menuitem', { name: 'View application' }).click()
   const sheet = adminPage.getByRole('dialog')

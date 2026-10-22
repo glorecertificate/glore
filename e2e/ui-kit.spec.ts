@@ -7,8 +7,24 @@ import { authFile } from './helpers'
 
 test.use({ storageState: authFile('owner') })
 
-test('keeps the sortable roster inside a mobile viewport', async ({ page }) => {
+test('keeps the roster inside a mobile viewport with its actions reachable', async ({ page }) => {
   await page.setViewportSize({ height: 844, width: 390 })
+  await page.goto('/organization?tab=members')
+  const table = page.getByRole('table', { name: 'Members', exact: true })
+  await expect(table).toBeVisible()
+  const actions = table.getByRole('button', { name: /^Actions for /u })
+  await expect(actions.first()).toBeVisible()
+  for (const action of await actions.all()) {
+    const box = await action.boundingBox()
+    expect(box?.x).toBeGreaterThanOrEqual(0)
+    expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(390)
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  const container = table.locator('..')
+  expect(await container.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
+})
+
+test('sorts the roster by a column header', async ({ page }) => {
   await page.goto('/organization?tab=members')
   const table = page.getByRole('table', { name: 'Members', exact: true })
   await expect(table).toBeVisible()
@@ -19,9 +35,6 @@ test('keeps the sortable roster inside a mobile viewport', async ({ page }) => {
   }).toPass()
   await header.getByRole('button').click()
   await expect(header).toHaveAttribute('aria-sort', 'descending')
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
-  const container = table.locator('..')
-  expect(await container.evaluate(element => element.scrollWidth > element.clientWidth)).toBe(true)
 })
 
 test.describe('public certificate UI', () => {
@@ -36,7 +49,7 @@ test.describe('public certificate UI', () => {
   test.beforeAll(async () => {
     pool = new Pool({ connectionString })
     await pool.query(
-      'insert into users (id, email, username, name, first_name, last_name) values ($1, $2, $3, $4, $5, $6)',
+      'insert into users (id, email, username, name, first_name, last_name, public_profile) values ($1, $2, $3, $4, $5, $6, true)',
       [id, `${id}@glore.test`, username, 'UI Verification', 'UI', 'Verification']
     )
     const { rows: courses } = await pool.query<{ id: number }>(
@@ -44,8 +57,8 @@ test.describe('public certificate UI', () => {
       [handle, 'skill', { en: 'UI verification', es: 'Verificación visual', it: 'Verifica visiva' }]
     )
     const { rows: certificates } = await pool.query<{ id: number }>(
-      `insert into certificates (handle, user_id, organization_id, language, activity_start_date, activity_end_date, activity_duration, activity_location, activity_description, status, issued_at)
-       select $1, $2, id, 'en', '2026-01-01', '2026-04-01', 120, 'Milan', 'Local UI verification fixture', 'approved', now()
+      `insert into certificates (handle, user_id, organization_id, language, activity_start_date, activity_end_date, activity_duration, activity_location, activity_description, status, issued_at, is_default)
+       select $1, $2, id, 'en', '2026-01-01', '2026-04-01', 120, 'Milan', 'Local UI verification fixture', 'approved', now(), true
        from organizations where handle = $3 returning id`,
       [handle, id, SEED_ORG_HANDLE]
     )
@@ -68,7 +81,7 @@ test.describe('public certificate UI', () => {
   })
 
   test('renders levels and a QR code across the server boundary', async ({ page }) => {
-    const response = await page.goto(`/${username}?v=${handle}`)
+    const response = await page.goto(`/${username}`)
     expect(response?.ok()).toBe(true)
     await expect(page.locator('[data-slot=level-dots]')).toContainText('Good')
     await expect(page.locator('[data-slot=qr-code] img')).toBeVisible()

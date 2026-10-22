@@ -1,0 +1,41 @@
+{
+  "slug": "team-work",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "handshake",
+  "title": {
+    "en": "Team work",
+    "es": "Trabajo en equipo",
+    "it": "Lavoro di squadra"
+  },
+  "description": {
+    "en": "Do your part reliably, listen and speak up in a group, and help the team reach a goal that none of you could reach alone.",
+    "es": "Cumple tu parte con fiabilidad, escucha y habla en grupo, y ayuda al equipo a lograr una meta que nadie conseguiría solo.",
+    "it": "Fai la tua parte con affidabilità, ascolta e parla in gruppo, e aiuta la squadra a raggiungere un obiettivo che nessuno raggiungerebbe da solo."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Deliver your part of a shared task on time and as agreed",
+      "Listen to teammates and share your ideas so the group can decide",
+      "Offer help and ask for it when a task is too much for one person",
+      "Support a group decision even when it was not your first choice",
+      "Recognise the contribution of other people when the team succeeds"
+    ],
+    "es": [
+      "Entregar tu parte de una tarea compartida a tiempo y como se acordó",
+      "Escuchar a tus compañeros y compartir tus ideas para que el grupo pueda decidir",
+      "Ofrecer ayuda y pedirla cuando una tarea es demasiado para una sola persona",
+      "Apoyar una decisión del grupo aunque no fuera tu primera opción",
+      "Reconocer la aportación de los demás cuando el equipo tiene éxito"
+    ],
+    "it": [
+      "Consegnare la tua parte di un compito condiviso in tempo e come concordato",
+      "Ascoltare i compagni e condividere le tue idee perché il gruppo possa decidere",
+      "Offrire aiuto e chiederlo quando un compito è troppo per una sola persona",
+      "Sostenere una decisione del gruppo anche quando non era la tua prima scelta",
+      "Riconoscere il contributo degli altri quando la squadra ha successo"
+    ]
+  },
+  "sortOrder": 2
+}

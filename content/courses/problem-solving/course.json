@@ -1,0 +1,41 @@
+{
+  "slug": "problem-solving",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "puzzle",
+  "title": {
+    "en": "Problem solving",
+    "es": "Resolución de problemas",
+    "it": "Risoluzione dei problemi"
+  },
+  "description": {
+    "en": "Understand a challenge before you act, come up with several options, and pick a solution that fits your time, people and resources.",
+    "es": "Entiende un reto antes de actuar, piensa varias opciones y elige una solución que encaje con tu tiempo, tus personas y tus recursos.",
+    "it": "Capisci una sfida prima di agire, pensa a più opzioni e scegli una soluzione adatta al tuo tempo, alle persone e alle risorse che hai."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Describe a problem clearly before you look for a solution",
+      "Come up with several options, including ones that use what you already have",
+      "Ask other people for ideas and build on them",
+      "Compare options by time, cost and effort, and choose one",
+      "Test a solution, check the result and adjust it when it does not work"
+    ],
+    "es": [
+      "Describir un problema con claridad antes de buscar una solución",
+      "Pensar varias opciones, incluidas algunas que aprovechen lo que ya tienes",
+      "Pedir ideas a otras personas y construir a partir de ellas",
+      "Comparar opciones por tiempo, coste y esfuerzo, y elegir una",
+      "Probar una solución, comprobar el resultado y ajustarla cuando no funciona"
+    ],
+    "it": [
+      "Descrivere un problema con chiarezza prima di cercare una soluzione",
+      "Pensare a più opzioni, comprese alcune che usano ciò che hai già",
+      "Chiedere idee ad altre persone e svilupparle",
+      "Confrontare le opzioni per tempo, costo e impegno, e sceglierne una",
+      "Provare una soluzione, controllare il risultato e correggerla quando non funziona"
+    ]
+  },
+  "sortOrder": 5
+}

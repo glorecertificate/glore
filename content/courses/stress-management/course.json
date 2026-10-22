@@ -1,0 +1,41 @@
+{
+  "slug": "stress-management",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "waves",
+  "title": {
+    "en": "Stress management",
+    "es": "Gestión del estrés",
+    "it": "Gestione dello stress"
+  },
+  "description": {
+    "en": "Notice the signs of stress early, calm yourself before you react, and use simple habits and support to get through demanding moments.",
+    "es": "Detecta pronto las señales del estrés, cálmate antes de reaccionar y usa hábitos sencillos y apoyo para superar los momentos exigentes.",
+    "it": "Riconosci presto i segnali dello stress, calmati prima di reagire e usa abitudini semplici e il sostegno degli altri per superare i momenti impegnativi."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice the signs of stress in your body, thoughts and behaviour",
+      "Pause and calm yourself before you react in a tense moment",
+      "Choose a simple way of coping that works for you, such as planning, a break or movement",
+      "Ask a colleague or coordinator for support when the pressure is too much",
+      "Recover after a demanding day and know when to look for professional help"
+    ],
+    "es": [
+      "Detectar las señales del estrés en tu cuerpo, tus pensamientos y tu comportamiento",
+      "Hacer una pausa y calmarte antes de reaccionar en un momento de tensión",
+      "Elegir una forma sencilla de afrontarlo que te funcione, como planificar, descansar o moverte",
+      "Pedir apoyo a un compañero o a la coordinación cuando la presión es demasiada",
+      "Recuperarte tras un día exigente y saber cuándo buscar ayuda profesional"
+    ],
+    "it": [
+      "Riconoscere i segnali dello stress nel corpo, nei pensieri e nel comportamento",
+      "Fermarti e calmarti prima di reagire in un momento di tensione",
+      "Scegliere un modo semplice di affrontarlo che funzioni per te, come pianificare, fare una pausa o muoverti",
+      "Chiedere sostegno a un collega o a chi coordina quando la pressione è troppa",
+      "Recuperare dopo una giornata impegnativa e sapere quando cercare aiuto professionale"
+    ]
+  },
+  "sortOrder": 4
+}

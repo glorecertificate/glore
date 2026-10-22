@@ -1,0 +1,41 @@
+{
+  "slug": "organization-and-time-management",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "calendar-check",
+  "title": {
+    "en": "Organization and time management",
+    "es": "Organización y gestión del tiempo",
+    "it": "Organizzazione e gestione del tempo"
+  },
+  "description": {
+    "en": "Decide what comes first, plan the steps with real dates, and share the work fairly so that a project finishes on time with the people and means you have.",
+    "es": "Decide qué va primero, planifica los pasos con fechas reales y reparte el trabajo de forma justa para que un proyecto termine a tiempo con las personas y los medios que tienes.",
+    "it": "Decidi cosa viene prima, pianifica i passaggi con date reali e dividi il lavoro in modo equo, così che un progetto finisca in tempo con le persone e i mezzi che hai."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Rank tasks by deadline and by what depends on them",
+      "Break a goal into steps with dates and some spare time",
+      "Check the people, money and time you have before you commit",
+      "Warn others early when a deadline is at risk",
+      "Share tasks fairly by asking what each person can give"
+    ],
+    "es": [
+      "Ordenar las tareas según su plazo y según lo que depende de ellas",
+      "Dividir un objetivo en pasos con fechas y algo de margen",
+      "Comprobar las personas, el dinero y el tiempo de los que dispones antes de comprometerte",
+      "Avisar con tiempo cuando un plazo está en riesgo",
+      "Repartir las tareas de forma justa preguntando qué puede aportar cada persona"
+    ],
+    "it": [
+      "Mettere in ordine i compiti in base alla scadenza e a ciò che ne dipende",
+      "Suddividere un obiettivo in passaggi con date e un po' di margine",
+      "Verificare le persone, i soldi e il tempo che hai prima di impegnarti",
+      "Avvisare gli altri per tempo quando una scadenza è a rischio",
+      "Dividere i compiti in modo equo chiedendo cosa può dare ciascuna persona"
+    ]
+  },
+  "sortOrder": 1
+}

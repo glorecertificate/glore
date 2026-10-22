@@ -1,0 +1,41 @@
+{
+  "slug": "autonomy",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "compass",
+  "title": {
+    "en": "Autonomy",
+    "es": "Autonomía",
+    "it": "Autonomia"
+  },
+  "description": {
+    "en": "Take a task from start to finish on your own, find out what needs doing next, and know when a decision is worth a quick question.",
+    "es": "Lleva una tarea de principio a fin por tu cuenta, descubre qué hay que hacer a continuación y reconoce cuándo una decisión merece una consulta rápida.",
+    "it": "Porta avanti un compito dall'inizio alla fine da solo o da sola, scopri cosa c'è da fare dopo e riconosci quando una decisione merita una domanda veloce."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Start and finish a task without waiting to be told each step",
+      "Find out what needs doing next from the goals you were given",
+      "Look for answers yourself before you ask for help",
+      "Recognise which decisions are yours and which need a quick check",
+      "Report your progress so others do not need to follow up"
+    ],
+    "es": [
+      "Empezar y terminar una tarea sin esperar a que te digan cada paso",
+      "Descubrir qué hay que hacer a continuación a partir de los objetivos que te dieron",
+      "Buscar respuestas por tu cuenta antes de pedir ayuda",
+      "Reconocer qué decisiones son tuyas y cuáles necesitan una consulta rápida",
+      "Informar de tu avance para que nadie tenga que reclamártelo"
+    ],
+    "it": [
+      "Iniziare e finire un compito senza aspettare che ti dicano ogni passaggio",
+      "Capire cosa c'è da fare dopo a partire dagli obiettivi che ti sono stati dati",
+      "Cercare le risposte da solo o da sola prima di chiedere aiuto",
+      "Riconoscere quali decisioni sono tue e quali richiedono una verifica rapida",
+      "Riferire i tuoi progressi così che nessuno debba chiederteli"
+    ]
+  },
+  "sortOrder": 3
+}

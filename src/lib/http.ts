@@ -1,4 +1,4 @@
-const CLOSED_AUTH_PREFIXES = ['/api/auth/admin', '/api/auth/impersonation']
+const CLOSED_AUTH_PREFIXES = ['/api/auth/admin']
 
 export const readLimitedBody = async (body: ReadableStream<Uint8Array> | null, maxBytes: number) => {
   const chunks: Uint8Array[] = []

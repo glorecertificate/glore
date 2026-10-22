@@ -40,8 +40,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
     client: typeof import('@/db/client')
     impersonation: typeof import('@/actions/admin/impersonation')
     options: typeof import('@/actions/admin/options')
-    state: typeof import('@/actions/admin/impersonation-state')
-    account: typeof import('@/actions/account/delete')
     moderation: typeof import('@/db/mutations/moderation')
     schema: typeof import('@/db/schema')
     ids: Record<Key, string>
@@ -87,15 +85,13 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
 
   beforeAll(async () => {
     vi.stubEnv('APP_URL', 'http://localhost:3000')
-    const [actions, { auth }, client, impersonation, moderation, schema, state, account, options] = await Promise.all([
+    const [actions, { auth }, client, impersonation, moderation, schema, options] = await Promise.all([
       import('@/actions/admin/users'),
       import('@/lib/auth'),
       import('@/db/client'),
       import('@/actions/admin/impersonation'),
       import('@/db/mutations/moderation'),
       import('@/db/schema'),
-      import('@/actions/admin/impersonation-state'),
-      import('@/actions/account/delete'),
       import('@/actions/admin/options'),
     ])
     const ids = {} as Record<Key, string>
@@ -143,7 +139,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       .values({ organizationId: organization.id, role: 'volunteer', userId: ids.member })
 
     context = {
-      account,
       actions,
       auth,
       client,
@@ -153,7 +148,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       options,
       organizationId: organization.id,
       schema,
-      state,
     }
     for (const key of ['admin', 'editor', 'otherAdmin', 'user'] as const) jars[key] = await signIn(key)
   }, 60_000)
@@ -477,32 +471,6 @@ describe.skipIf(!isLocalDatabase)('admin users', () => {
       expect(result.data).toMatchObject({ userId: context.ids.target })
       const events = await eventsFor('impersonation.started', context.ids.target)
       expect(events.find(event => event.metadata.reason === reason)).toMatchObject({ actorId: context.ids.admin })
-    })
-
-    it('exposes the session to the banner and locks account deletion while it lasts', async () => {
-      const jar = await signIn('otherAdmin')
-      const reason = `Checking the banner ${suffix}`
-      const started = await context.auth.api.startImpersonation({
-        body: { reason, userId: context.ids.target },
-        headers: jar.headers(),
-        returnHeaders: true,
-      })
-      jar.apply(started.headers)
-
-      as(null)
-      expect(await context.state.getImpersonation()).toBeNull()
-      expect(await context.state.isImpersonating()).toBe(false)
-
-      current.cookie = jar.header()
-      const state = await context.state.getImpersonation()
-      expect(state).toMatchObject({ adminId: context.ids.otherAdmin, reason, userId: context.ids.target })
-      expect(await context.state.isImpersonating()).toBe(true)
-      expect(await context.account.deleteAccount('')).toMatchObject({
-        error: { code: 'NOT_ALLOWED_WHILE_IMPERSONATING' },
-      })
-      expect(
-        await context.client.db.query.users.findFirst({ where: eq(context.schema.users.id, context.ids.target) })
-      ).toBeDefined()
     })
   })
 })

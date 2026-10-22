@@ -29,19 +29,19 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 ### API routes
 
-| Path                            | Method   | Description                                                                           |
-| ------------------------------- | -------- | ------------------------------------------------------------------------------------- |
-| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all; `/api/auth/admin/*` and `/api/auth/impersonation/*` answer 404 |
-| `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                                                    |
-| `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                                                    |
-| `/api/v1/join`                  | GET      | Team invitation join endpoint                                                         |
-| `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)                                        |
-| `/api/v1/session`               | GET      | Clears cookies of a stale session, then login                                         |
-| `/api/v1/upload`                | POST     | R2 file upload (editors, rate limited)                                                |
-| `/api/v1/certificates/[id]/pdf` | GET      | Certificate PDF on demand (holder, reviewer, org managers)                            |
-| `/api/v1/health`                | GET      | Health check (returns `{ status: 'ok' }`)                                             |
-| `/api/v1/mail-preferences`      | POST     | One-click unsubscribe from a mail category (signed token)                             |
-| `/api/v1/cron/daily`            | GET      | Daily maintenance (Vercel Cron, `CRON_SECRET`)                                        |
+| Path                            | Method   | Description                                                |
+| ------------------------------- | -------- | ---------------------------------------------------------- |
+| `/api/auth/[...all]`            | GET/POST | Better Auth catch-all; `/api/auth/admin/*` answers 404     |
+| `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
+| `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
+| `/api/v1/join`                  | GET      | Team invitation join endpoint                              |
+| `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)             |
+| `/api/v1/session`               | GET      | Clears cookies of a stale session, then login              |
+| `/api/v1/upload`                | POST     | R2 file upload (editors, rate limited)                     |
+| `/api/v1/certificates/[id]/pdf` | GET      | Certificate PDF on demand (holder, reviewer, org managers) |
+| `/api/v1/health`                | GET      | Health check (returns `{ status: 'ok' }`)                  |
+| `/api/v1/mail-preferences`      | POST     | One-click unsubscribe from a mail category (signed token)  |
+| `/api/v1/cron/daily`            | GET      | Daily maintenance (Vercel Cron, `CRON_SECRET`)             |
 
 ## Authentication
 
@@ -59,7 +59,7 @@ Better Auth stores users, sessions, and accounts in Neon via the Drizzle adapter
 
 **`emailAndPassword.autoSignIn` is `false` and MUST stay false.** Every `signUpEmail` call creates an account for someone else (team invites), never the actor; with auto sign-in on, the invitee's session cookie would be written onto the inviter's response. Self-registration does not use `signUpEmail` (it creates a `pending` join request), so `signInEmail` login is unaffected.
 
-**Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation; its endpoints stay closed over HTTP), the local `impersonation()` plugin (`lib/impersonation.ts`, `admin.md`), `nextCookies()` (Next.js cookie integration), and the local `team-invitations` plugin, which exposes `acceptInvitation`. Catch-all route: `src/app/api/auth/[...all]/route.ts`.
+**Plugins:** `username()` (username and display username), `admin()` (admin role management, user creation, impersonation; its endpoints stay closed over HTTP), the local `impersonationGuard()` plugin (`lib/impersonation-guard.ts`, `admin.md`), `nextCookies()` (Next.js cookie integration), and the local `team-invitations` plugin, which exposes `acceptInvitation`. Catch-all route: `src/app/api/auth/[...all]/route.ts`.
 
 **Hardening:** `disabledPaths` closes `/sign-up/email` and `/update-user` over HTTP, so accounts only come from invites through `auth.api`. Rate limits share the `rate_limits` table: Better Auth via `rateLimit.storage: 'database'`, app keys via `src/lib/rate-limit.ts`. `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once. `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`). Login and password reset answer unknown users exactly like wrong passwords and real resets. A daily Vercel Cron (`vercel.json`) calls `/api/v1/cron/daily`, which answers 401 unless `isAuthorizedCron` (`src/lib/cron.ts`) accepts it (production and the bearer token equals `CRON_SECRET`), then runs `runDailyMaintenance` (`src/actions/maintenance/`), each step isolated so one failure does not stop the rest. Reminders: `certificate.review_reminder` to the assigned tutor and `certificate.review_escalated` at the `reviewReminderDays` marks of `config/app.json` (escalation also for unassigned), `invitation.expiring` once per send after `invitationReminderDay` (token-only link); idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock. Pruning: `rate_limits` idle 24h, expired `sessions` and `verifications`, invitations expired or revoked or declined for `invitationRetentionDays` (accepted ones stay), R2 avatars and certificate PDFs older than 24h that no row references (a revoked certificate keeps its PDF because its row stays); deleting a user, organization, or avatar removes the object at once. Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address via `emailVerification.sendVerificationEmail`.
 

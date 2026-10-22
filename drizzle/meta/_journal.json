@@ -169,6 +169,13 @@
       "when": 1792682222418,
       "tag": "0023_anonymize_deleted_holders",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1792700284653,
+      "tag": "0024_impersonated_by",
+      "breakpoints": true
     }
   ]
 }

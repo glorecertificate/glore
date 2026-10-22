@@ -15,6 +15,10 @@ export const sessions = pgTable(
     userId: text()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    impersonatedBy: text().references(() => users.id, { onDelete: 'cascade' }),
   },
-  table => [index('sessions_user_id_idx').on(table.userId)]
+  table => [
+    index('sessions_user_id_idx').on(table.userId),
+    index('sessions_impersonated_by_idx').on(table.impersonatedBy),
+  ]
 )

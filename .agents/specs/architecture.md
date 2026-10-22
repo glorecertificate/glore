@@ -59,7 +59,7 @@ src/
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, certificate,
 │   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, course.ts, invitation.ts, learning.ts, organization.ts, skill-group.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, organization.ts, skill-group.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
@@ -70,6 +70,7 @@ src/
 │   ├── cookies.ts      # Cookie type definitions, prefix helpers
 │   ├── email.ts        # Nodemailer SMTP transport (sendMail)
 │   ├── http.ts         # Size-limited body reads, closed Better Auth paths
+│   ├── impersonation-guard.ts # Better Auth plugin: blocks security changes while impersonating, drops the admin cookie on sign out
 │   ├── i18n.ts         # i18n config, Locale/Messages types, localizeRecord()
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)

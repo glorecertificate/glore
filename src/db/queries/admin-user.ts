@@ -66,7 +66,7 @@ export const platformRoleOf = (user: { isEditor: boolean; role: string | null })
   return user.isEditor ? 'editor' : 'user'
 }
 
-export const adminReasonSchema = z.string().trim().min(MIN_ADMIN_REASON_LENGTH).max(MAX_ADMIN_REASON_LENGTH)
+const adminReasonSchema = z.string().trim().min(MIN_ADMIN_REASON_LENGTH).max(MAX_ADMIN_REASON_LENGTH)
 
 export const banInputSchema = z.object({
   expiresAt: z.iso

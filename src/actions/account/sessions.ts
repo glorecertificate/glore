@@ -6,6 +6,7 @@ import { headers } from 'next/headers'
 
 import { and, desc, eq, gt, ne, sql } from 'drizzle-orm'
 
+import { isImpersonating } from '@/actions/admin/impersonation-state'
 import { getAuthUser } from '@/actions/auth'
 import { db } from '@/db/client'
 import { queryError } from '@/db/helpers'
@@ -28,6 +29,8 @@ export interface SessionSummary {
 }
 
 const unauthenticated = () => ({ code: 'UNAUTHORIZED', message: 'Not authenticated' })
+
+const impersonated = () => ({ code: 'NOT_ALLOWED_WHILE_IMPERSONATING', message: 'Not allowed while impersonating' })
 
 const currentSessionId = async () => {
   const session = await auth.api.getSession({ headers: await headers(), query: { disableCookieCache: true } })
@@ -73,6 +76,7 @@ export const listSessions = async () => {
 export const revokeSession = async (id: string) => {
   const user = await getAuthUser()
   if (!user) return { data: null, error: unauthenticated() }
+  if (await isImpersonating()) return { data: null, error: impersonated() }
   if (await isRateLimited(`sessions:${user.id}`, 30, HOUR)) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
   }
@@ -96,6 +100,7 @@ export const revokeSession = async (id: string) => {
 export const revokeOtherSessions = async () => {
   const user = await getAuthUser()
   if (!user) return { data: null, error: unauthenticated() }
+  if (await isImpersonating()) return { data: null, error: impersonated() }
   if (await isRateLimited(`sessions:${user.id}`, 30, HOUR)) {
     return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
   }

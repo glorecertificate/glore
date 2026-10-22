@@ -10,6 +10,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Button } from '@/components/ui/button'
 
 const RETURN_ROOT = '/admin/users'
+const AUTO_STOP_LEAD_MS = 3000
 
 const returnToAdmin = async () => {
   await stopImpersonation()
@@ -52,7 +53,7 @@ export const ImpersonationNotice = ({
     const tick = () => {
       const left = target - Date.now()
       setRemaining(left)
-      if (left > 0) return
+      if (left > AUTO_STOP_LEAD_MS) return
       clearInterval(interval)
       void returnToAdmin()
     }

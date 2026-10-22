@@ -18,7 +18,8 @@ import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
-import { impersonation } from '@/lib/impersonation'
+import { impersonationGuard } from '@/lib/impersonation-guard'
+import appConfig from '~/config/app.json'
 import metadata from '~/config/metadata.json'
 
 const teamInvitationsPlugin = () => ({
@@ -181,9 +182,11 @@ export const auth = betterAuth({
     admin({
       defaultRole: 'user',
       adminRoles: ['admin'],
+      allowImpersonatingAdmins: false,
+      impersonationSessionDuration: appConfig.impersonationMinutes * 60,
     }),
     teamInvitationsPlugin(),
-    impersonation(),
+    impersonationGuard(),
     nextCookies(),
   ],
 })

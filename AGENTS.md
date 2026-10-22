@@ -88,7 +88,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 14. Certificate state changes go through `certificateAction` and `commitTransition` in `@/actions/certificates/helpers` (guard, transaction, `recordEvent`, then `notify`); approval alone renders the PDF and uploads to R2 after its transaction and reverts it on failure.
 15. Invitations never create memberships; accepting does (`db/mutations/invitation.ts`). Never `signUpEmail` or insert a membership for an invitee.
 16. Role changes, removals, leaving, and ownership transfers live in `db/mutations/organization.ts` (`memberError` codes). Org actions take an optional `organizationId` that `getOrganizationAccess` accepts only for platform admins and members of that org.
-17. Impersonation is a local plugin; call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin`.
+17. Stock admin plugin impersonation; call admin `auth.api.*` only from `actions/admin/*` after `requireAdmin`.
 
 ## Verification
 

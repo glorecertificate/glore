@@ -8,7 +8,7 @@ import { parseAsStringEnum, useQueryState } from 'nuqs'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const SETTINGS_TAB_PARAM = 'tab'
-const SETTINGS_TABS = ['profile', 'account'] as const
+const SETTINGS_TABS = ['profile', 'account', 'privacy', 'notifications', 'security', 'data'] as const
 const DEFAULT_SETTINGS_TAB = 'profile'
 
 const settingsTabParser = parseAsStringEnum([...SETTINGS_TABS]).withDefault(DEFAULT_SETTINGS_TAB)
@@ -34,7 +34,7 @@ export const UserSettingsTabsList = ({ children, ...props }: React.ComponentProp
   const t = useTranslations('Users')
 
   return (
-    <TabsList {...props}>
+    <TabsList className="max-w-full justify-start overflow-x-auto" {...props}>
       {SETTINGS_TABS.map(tab => (
         <TabsTrigger key={tab} value={tab}>
           {t(tab)}

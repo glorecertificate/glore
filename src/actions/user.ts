@@ -2,29 +2,32 @@
 
 import 'server-only'
 
-import { cacheTag, revalidateTag, updateTag } from 'next/cache'
+import { cacheTag, revalidateTag } from 'next/cache'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
 
-import { and, eq, inArray, ne } from 'drizzle-orm'
+import { and, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { getAuthUser } from '@/actions/auth'
 import { getCookie } from '@/actions/cookies'
-import { db, transaction } from '@/db/client'
+import { db } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
-import { deleteUser } from '@/db/mutations/user'
 import { parseUser, userWith } from '@/db/queries/user'
-import { certificates, memberships, users } from '@/db/schema'
+import { users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
-import { r2DeleteQuietly } from '@/lib/storage'
+import { isReservedUsername } from '@/lib/username'
 
 const USER_NOT_FOUND = 'User not found'
+
+const isUniqueViolation = (error: unknown) =>
+  (error instanceof Error && 'code' in error && error.code === '23505') ||
+  (error instanceof Error && error.cause instanceof Error && 'code' in error.cause && error.cause.code === '23505')
 
 const queryUserById = async (id: string) => {
   const user = await db.query.users.findFirst({
@@ -115,6 +118,7 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
   const { email, ...fields } = parsed.data
 
   if (fields.username && fields.username !== currentUser.username) {
+    if (isReservedUsername(fields.username)) throw new Error('USERNAME_RESERVED')
     const taken = await db.query.users.findFirst({
       columns: { id: true },
       where: and(eq(users.username, fields.username), ne(users.id, currentUser.id)),
@@ -140,7 +144,12 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
   }
 
   if (Object.keys(fields).length > 0) {
-    await db.update(users).set(fields).where(eq(users.id, currentUser.id))
+    try {
+      await db.update(users).set(fields).where(eq(users.id, currentUser.id))
+    } catch (error) {
+      if (fields.username && isUniqueViolation(error)) throw new Error('USERNAME_TAKEN', { cause: error })
+      throw error
+    }
     revalidateTag(userTag(currentUser.id), 'max')
   }
 
@@ -151,42 +160,4 @@ export const getActiveOrgId = async () => {
   const [user, stored] = await Promise.all([getCurrentUser(), getCookie('org')])
   const match = user.organizations.find(({ id }) => id === stored)
   return (match ?? user.organizations[0])?.id ?? null
-}
-
-export const deleteAccount = async () => {
-  const user = await getCurrentUser()
-
-  const adminMemberships = await db
-    .select({ organizationId: memberships.organizationId })
-    .from(memberships)
-    .where(and(eq(memberships.userId, user.id), eq(memberships.role, 'admin')))
-
-  if (adminMemberships.length > 0) {
-    const adminOrgIds = adminMemberships.map(m => m.organizationId)
-    const orgsWithOtherAdmin = await db
-      .selectDistinct({ organizationId: memberships.organizationId })
-      .from(memberships)
-      .where(
-        and(
-          inArray(memberships.organizationId, adminOrgIds),
-          eq(memberships.role, 'admin'),
-          ne(memberships.userId, user.id)
-        )
-      )
-    const covered = new Set(orgsWithOtherAdmin.map(m => m.organizationId))
-    if (adminOrgIds.some(orgId => !covered.has(orgId))) throw new Error('SOLE_ORG_ADMIN')
-  }
-
-  const cert = await db.query.certificates.findFirst({
-    where: eq(certificates.userId, user.id),
-    columns: { id: true },
-  })
-  if (cert) throw new Error('HAS_CERTIFICATES')
-
-  const deleted = await transaction(tx => deleteUser(tx, user.id))
-  await auth.api.signOut({ headers: await headers() })
-  if (deleted?.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
-  updateTag(userTag(user.id))
-
-  redirect(AUTH_ROOT)
 }

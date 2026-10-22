@@ -74,6 +74,7 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
   })
 
   beforeEach(() => {
+    vi.stubEnv('BETTER_AUTH_SECRET', 'd'.repeat(43).concat('='))
     sendMail.mockClear()
   })
 
@@ -159,6 +160,15 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
     })
 
     expect(result.inApp).toBe(2)
+    expect(sendMail).toHaveBeenCalledTimes(1)
+    expect(sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        category: 'reminders',
+        template: expect.objectContaining({ name: 'certificate/reminder' }),
+        to: seedEmail('owner'),
+        unsubscribeUrl: expect.stringContaining('/api/v1/mail-preferences?token='),
+      })
+    )
     expect(rows.map(({ userId }) => userId).toSorted()).toEqual([ids.owner, ids.representative].toSorted())
     expect(rows.every(({ url }) => url === '/certificates/-1')).toBe(true)
     expect(rows.every(({ data }) => !('email' in data))).toBe(true)

@@ -11,6 +11,7 @@ import { type AppEvent, type EventType, eventMetadata } from '@/db/queries/activ
 import { notifications, users } from '@/db/schema'
 import { notificationsUserTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
+import { unsubscribeUrl } from '@/lib/unsubscribe'
 
 const userIdsOf = (recipients: Recipient[]) =>
   recipients.flatMap(recipient => ('userId' in recipient ? [recipient.userId] : []))
@@ -55,12 +56,21 @@ const deliver = async <K extends EventType>(event: AppEvent<K>) => {
       : []
 
   const template = definition.email?.template
+  const category = definition.email?.category ?? null
+  const link = url ? `${process.env.APP_URL}${url}` : null
   if (plan.mails.length > 0 && !template) console.info(`[notify] ${event.type}: no email template yet`)
   const results = await Promise.all(
     plan.mails.map(async mail => {
       if (!template) return { sent: false, userId: mail.userId }
       try {
-        await sendMail({ locale: mail.locale, template: template(event, mail), to: mail.email })
+        await sendMail({
+          category,
+          locale: mail.locale,
+          template: await template(event, mail, link),
+          to: mail.email,
+          unsubscribeUrl:
+            category && category !== 'mandatory' && mail.userId ? unsubscribeUrl(mail.userId, category) : undefined,
+        })
         return { sent: true, userId: mail.userId }
       } catch (error) {
         console.error(`[notify] ${event.type}: email failed`, error)

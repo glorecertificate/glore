@@ -1,49 +1,37 @@
-import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
-import { Button, Section, Text } from 'react-email'
+import { Notice } from '@/emails/notice'
+import { type EmailBaseProps, emailTranslator } from '@/emails/translate'
+import metadata from '~/config/metadata.json'
 
-import { EmailLayout } from '@/emails/layout'
-import defaultMessages from '~/messages/en.json'
-
-type Messages = typeof defaultMessages
-
-interface CertificateAssignedEmailProps {
-  locale?: string
-  messages?: AbstractIntlMessages
+interface CertificateAssignedEmailProps extends EmailBaseProps {
+  kind?: 'assigned' | 'resubmitted' | 'submitted'
+  url?: string
+  userName?: string
 }
 
 const CertificateAssignedEmail = ({
-  locale = 'en',
-  messages = defaultMessages as AbstractIntlMessages,
+  kind = 'assigned',
+  url = `${process.env.APP_URL}/certificates`,
+  userName,
+  ...base
 }: CertificateAssignedEmailProps) => {
-  const t = createTranslator({
-    locale: locale as Locale,
-    messages: messages as unknown as Messages,
-    namespace: 'Email.certificate/assigned',
-  })
-  const common = createTranslator({
-    locale: locale as Locale,
-    messages: messages as unknown as Messages,
-    namespace: 'Email.common',
-  })
-
-  const footer = <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('footer')}</Text>
+  const t = emailTranslator('Email.certificate/assigned', base)
 
   return (
-    <EmailLayout footer={footer} locale={locale} messages={messages} preview={t('preview')}>
-      <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">{common('greeting')}</Text>
-      <Text className="text-[14px] leading-6 text-[#0a0a0a]">{t('intro')}</Text>
-      <Section className="my-6 text-center">
-        <Button
-          className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={`${process.env.APP_URL}/certificates`}
-        >
-          {t('button')}
-        </Button>
-      </Section>
-    </EmailLayout>
+    <Notice
+      {...base}
+      action={{ href: url, label: t('button') }}
+      footer={t('footer')}
+      intro={t(`intro_${kind}`)}
+      preview={t(`preview_${kind}`)}
+      userName={userName}
+    />
   )
 }
 
-CertificateAssignedEmail.PreviewProps = {} satisfies CertificateAssignedEmailProps
+CertificateAssignedEmail.PreviewProps = {
+  kind: 'assigned',
+  url: `${metadata.url}/certificates/1/review`,
+  userName: 'Alex',
+} satisfies CertificateAssignedEmailProps
 
 export default CertificateAssignedEmail

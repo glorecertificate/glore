@@ -26,6 +26,7 @@ import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
+import { NotificationBell } from '@/components/features/notifications/notification-bell'
 import { DashboardIcon } from '@/components/icons/dashboard'
 import { useSession } from '@/components/providers/session'
 import {
@@ -66,6 +67,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarRail,
+  sidebarMenuButtonVariants,
   useSidebar,
 } from '@/components/ui/sidebar'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
@@ -567,6 +569,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
 
 const DashboardSidebarSearch = () => {
   const t = useTranslations('Search')
+  const tLayout = useTranslations('Layout')
   const [open, setOpen] = useState(false)
   const [activated, setActivated] = useState(false)
 
@@ -607,6 +610,11 @@ const DashboardSidebarSearch = () => {
                 </kbd>
               </span>
             </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <NotificationBell className={cn(sidebarMenuButtonVariants(), 'justify-start font-normal')}>
+              <span>{tLayout('notifications')}</span>
+            </NotificationBell>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarGroup>

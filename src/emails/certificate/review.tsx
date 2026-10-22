@@ -11,6 +11,7 @@ interface CertificateReviewEmailProps {
   status: 'approved' | 'changes_requested'
   comment?: string
   documentUrl?: string
+  url?: string
   userName?: string
   locale?: string
   messages?: AbstractIntlMessages
@@ -20,6 +21,7 @@ const CertificateReviewEmail = ({
   status,
   comment,
   documentUrl,
+  url = `${process.env.APP_URL}/certificates`,
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
@@ -71,7 +73,7 @@ const CertificateReviewEmail = ({
             <Section className="my-6 text-center">
               <Button
                 className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-                href={`${process.env.APP_URL}/certificates`}
+                href={url}
               >
                 {t('buttonApproved')}
               </Button>
@@ -86,7 +88,7 @@ const CertificateReviewEmail = ({
           <Section className="my-6 text-center">
             <Button
               className="rounded-lg bg-[#ef4444] px-6 py-3 text-[14px] font-semibold text-white no-underline"
-              href={`${process.env.APP_URL}/certificates`}
+              href={url}
             >
               {t('buttonChanges')}
             </Button>

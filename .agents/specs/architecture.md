@@ -7,20 +7,21 @@ Source tree and structural conventions. Provider hierarchy and component authori
 ```
 src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
+│   ├── account/        # delete.ts, export.ts, preferences.ts, sessions.ts ('use server'); deletion.ts (server-only core)
 │   ├── admin/          # helpers.ts, organizations.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke),
 │   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
 │   ├── courses/        # helpers.ts (server-only: queryCatalog is slim, no lesson content or isCorrect; fetchCourses, listSessionCourses), compass.ts, data.ts (server-only: learner reads),
 │   │                   #   learner.ts (server-only: learning context, overview), learning.ts (server-only: grading, finish lesson),
 │   │                   #   analytics.ts, management.ts, skill-groups.ts (framework CRUD), progress.ts (startCourse, answerQuestion, completeLesson), queries.ts
-│   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts
+│   ├── notifications/  # catalog.ts, notify.ts, plan.ts, recipients.ts (server-only); inbox.ts ('use server': list, count, mark read)
 │   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
 │   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
 │   ├── guards.ts       # requireEditor and other action guards
-│   ├── onboarding.ts   # Complete onboarding flow
+│   ├── onboarding.ts   # Complete onboarding: password, profile, username, welcome event
 │   ├── session.ts      # getSessionUser: render-only private-cached session (server-only, no 'use server')
 │   ├── storage.ts      # Avatar upload/remove via Cloudflare R2
 │   └── user.ts         # User CRUD, getCurrentUser (cached)
@@ -31,13 +32,13 @@ src/
 │   ├── globals.css     # Tailwind imports, theme tokens, animations
 │   ├── (auth)/         # Unauthenticated: invite/[token], join/[token], login, onboarding, register
 │   ├── (dashboard)/    # Authenticated (sidebar layout): about, admin, certificates,
-│   │                   #   courses, dashboard, docs, help, organization, settings
+│   │                   #   courses, dashboard, docs, help, notifications, organization, settings
 │   ├── [username]/     # Public certificate page (page, opengraph-image, not-found)
 │   ├── api/            # API routes (auth catch-all + v1/)
 │   └── offline/        # Offline fallback page
 ├── components/
 │   ├── features/       # Domain components by feature: admin, auth, certificates, courses,
-│   │                   #   about, dashboard, docs, help, onboarding, organization, users
+│   │                   #   about, dashboard, docs, help, notifications, onboarding, organization, users
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, page-title, search-command
@@ -106,3 +107,13 @@ Cross-feature imports are NOT yet blocked and a few exist (`admin -> organizatio
 - Render paths read the session through `getSessionUser()` (`src/actions/session.ts`, private cache with the 5 minute stale time of the Better Auth cookie cache), which keeps `CoursesProvider` in the shell. Actions and guards keep the uncached `getAuthUser()`.
 - Keep cached render helpers in server-only modules. Every export of a `'use server'` file is a client-callable action, so a cached fetch that takes a `userId` there would serve any user's data.
 - A page that must navigate instantly reads URL state on the client (nuqs) instead of awaiting `searchParams`. The saved course-list filters (`gl_courseListParams`) redirect in `src/proxy.ts` for document requests and through `history.replaceState` in `useCourseListParams` on client navigation.
+
+## Events, notifications, and email
+
+- Every state transition writes one `activity_events` row with `recordEvent(tx, event)` (`src/db/mutations/activity-event.ts`) inside its transaction. After the commit, the action calls `notify(event)` (`src/actions/notifications/notify.ts`), which never throws.
+- Event types and payloads live in `src/db/queries/activity-event.ts`. `src/actions/notifications/catalog.ts` holds recipients, mail category, template factory (may be async, receives the absolute deep link), and deep link per type.
+- `notify` writes in-app `notifications` rows, skips the actor unless the type sets `notifyActor`, and mails only when the type has a template. Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`; `mandatory` mail always goes.
+- The bell, popover, and `/notifications` render each row from `type` and `data` with `Notifications.events.<type with dots as underscores>` copy in all catalogs; a new in-app event needs that copy, and a Vitest test enforces it.
+- `sendMail` (`src/lib/email.ts`) takes `template`, `category`, and `unsubscribeUrl`. `EmailLayout` reads the category from `EmailContext` to print the reason and the preference link. Optional mail carries `List-Unsubscribe` headers: the POST at `/api/v1/mail-preferences` turns that category off for the user named in a signed token (`src/lib/unsubscribe.ts`), and a GET opens `/settings?tab=notifications`.
+- Templates: `account/{email-changed,password-changed,status,welcome}`, `auth/{invite (invitation email proof), recovery, verify-email}`, `certificate/{assigned,decision,reminder,review}`, `learning/eligible`, `organization/{invitation (invite and reminder),join-request,join-request-received,membership,registration-request}`, `team/{invite,role-changed}`. Each has `PreviewProps` for `pnpm run email` and `Email.<name>` copy in all catalogs. `Notice` (`src/emails/notice.tsx`) is the shared body; `public/email/header.png` is the logo and motif header.
+- Copy states real expiries: recovery and verify links last 1 hour (Better Auth defaults), invitations and team invites use `invitationExpiryDays` and `INVITATION_EXPIRY_DAYS`.

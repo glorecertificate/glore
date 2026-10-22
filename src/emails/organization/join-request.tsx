@@ -2,6 +2,7 @@ import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-i
 import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
+import config from '~/config/app.json'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
@@ -78,7 +79,11 @@ const OrganizationJoinRequestEmail = ({
               {url ? t('buttonSetup') : t('button')}
             </Button>
           </Section>
-          {url && <Text className="text-[12px] leading-5 text-[#71717a]">{t('expiry')}</Text>}
+          {url && (
+            <Text className="text-[12px] leading-5 text-[#71717a]">
+              {t('expiry', { days: config.invitationExpiryDays })}
+            </Text>
+          )}
         </>
       )}
     </EmailLayout>

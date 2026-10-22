@@ -6,25 +6,45 @@ import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { and, eq, like, ne } from 'drizzle-orm'
-import { type Locale } from 'next-intl'
 import { z } from 'zod'
 
 import { getAuthUser, refreshAuthSession } from '@/actions/auth'
-import { db } from '@/db/client'
-import { users } from '@/db/schema'
+import { notify } from '@/actions/notifications/notify'
+import { db, transaction } from '@/db/client'
+import { recordEvent } from '@/db/mutations/activity-event'
+import { completeOnboardingProfile } from '@/db/mutations/user'
+import { type AppEvent } from '@/db/queries/activity-event'
+import { onboardingNextStep } from '@/db/queries/onboarding'
+import { memberships, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { CacheTag, userTag } from '@/lib/cache'
 import { AUTH_ROOT, PASSWORD_REGEX } from '@/lib/constants'
 import { LOCALES } from '@/lib/i18n'
+import { pickUsername, usernameBase } from '@/lib/username'
+import { fullName } from '@/lib/utils'
+
+const isoDate = z.iso.date().refine(value => value <= new Date().toISOString().slice(0, 10) && value >= '1900-01-01')
 
 const onboardingSchema = z.object({
-  birthday: z.union([z.iso.date(), z.literal('')]),
+  birthPlace: z.string().trim().min(1).max(100),
+  birthday: isoDate,
   firstName: z.string().trim().min(1).max(100),
-  lastName: z.string().trim().max(100),
+  lastName: z.string().trim().min(1).max(100),
   locale: z.enum(LOCALES).optional(),
+  nationality: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z]{2}$/u)
+    .toLowerCase(),
   password: z.string().min(8).max(128).regex(PASSWORD_REGEX),
   phone: z.string().trim().max(40),
 })
+
+export type OnboardingValues = z.input<typeof onboardingSchema>
+
+export type OnboardingError = 'ALREADY_ONBOARDED' | 'FAILED' | 'INVALID'
+
+const failure = (code: OnboardingError) => ({ data: null, error: { code } })
 
 const setCredentialPassword = async (userId: string, value: string) => {
   const { internalAdapter, password } = await auth.$context
@@ -43,76 +63,70 @@ const setCredentialPassword = async (userId: string, value: string) => {
 
 const escapeLike = (value: string) => value.replace(/[\\%_]/gu, match => `\\${match}`)
 
-const uniqueUsername = async (base: string, userId: string) => {
-  const taken = new Set(
-    (
-      await db.query.users.findMany({
-        where: and(like(users.username, `${escapeLike(base)}%`), ne(users.id, userId)),
-        columns: { username: true },
-      })
-    ).map(row => row.username)
-  )
-
-  if (!taken.has(base)) return base
-
-  let suffix = 2
-  while (taken.has(`${base}${suffix}`)) suffix += 1
-  return `${base}${suffix}`
+const availableUsername = async (base: string, userId: string) => {
+  const rows = await db.query.users.findMany({
+    columns: { username: true },
+    where: and(like(users.username, `${escapeLike(base)}%`), ne(users.id, userId)),
+  })
+  return pickUsername(base, new Set(rows.flatMap(({ username }) => (username ? [username] : []))))
 }
 
-export const completeOnboarding = async (values: {
-  firstName: string
-  lastName: string
-  birthday: string
-  phone: string
-  password: string
-  locale?: string
-}) => {
+export const completeOnboarding = async (values: OnboardingValues) => {
   const authUser = await getAuthUser()
   if (!authUser) redirect(AUTH_ROOT)
 
   const parsed = onboardingSchema.safeParse(values)
-  if (!parsed.success) return { error: 'Invalid onboarding data' }
+  if (!parsed.success) return failure('INVALID')
 
   const current = await db.query.users.findFirst({
     columns: { onboardedAt: true },
     where: eq(users.id, authUser.id),
   })
   if (!current) redirect(AUTH_ROOT)
-  if (current.onboardedAt) return { error: 'Already onboarded' }
+  if (current.onboardedAt) return failure('ALREADY_ONBOARDED')
 
-  const { birthday, firstName, lastName, locale, password, phone } = parsed.data
+  const { birthPlace, birthday, firstName, lastName, locale, nationality, password, phone } = parsed.data
 
   try {
     await setCredentialPassword(authUser.id, password)
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Failed to set password' }
-  }
+    const username = await availableUsername(usernameBase(firstName, lastName), authUser.id)
+    const event = {
+      actorId: authUser.id,
+      data: { userId: authUser.id },
+      organizationId: null,
+      type: 'account.welcome',
+    } satisfies AppEvent<'account.welcome'>
 
-  const usernameParts: string[] = []
-  for (const part of [firstName, lastName]) {
-    if (part) usernameParts.push(part.toLowerCase().replace(/\s+/gu, ''))
-  }
-  const baseUsername = usernameParts.join('.')
-  const username = baseUsername ? await uniqueUsername(baseUsername, authUser.id) : null
-
-  await db
-    .update(users)
-    .set({
-      firstName,
-      lastName: lastName || null,
-      username,
-      birthday: birthday || null,
-      phone: phone || null,
-      locale: (locale as Locale | undefined) ?? null,
-      onboardedAt: new Date().toISOString(),
+    const completed = await transaction(async tx => {
+      const row = await completeOnboardingProfile(tx, authUser.id, {
+        birthPlace,
+        birthday,
+        firstName,
+        lastName,
+        locale: locale ?? null,
+        name: fullName({ firstName, lastName }),
+        nationality,
+        phone: phone || null,
+        username,
+      })
+      if (!row) return false
+      await recordEvent(tx, event)
+      return true
     })
-    .where(eq(users.id, authUser.id))
+    if (!completed) return failure('ALREADY_ONBOARDED')
 
-  await refreshAuthSession()
+    await refreshAuthSession()
+    revalidateTag(userTag(authUser.id), 'max')
+    revalidateTag(CacheTag.TeamMembers, 'max')
+    await notify(event)
 
-  revalidateTag(userTag(authUser.id), 'max')
-  revalidateTag(CacheTag.TeamMembers, 'max')
-
-  return { error: null }
+    const roles = await db.query.memberships.findMany({
+      columns: { role: true },
+      where: eq(memberships.userId, authUser.id),
+    })
+    return { data: { nextStep: onboardingNextStep(roles.map(({ role }) => role)), username }, error: null }
+  } catch (error) {
+    console.error('Failed to complete onboarding:', error)
+    return failure('FAILED')
+  }
 }

@@ -776,7 +776,8 @@
     "organization": "Organizzazione",
     "organizations": "Organizzazioni",
     "pendingRequests": "{count, plural, =1 {# richiesta in sospeso} other {# richieste in sospeso}}",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "notifications": "Notifiche"
   },
   "Auth": {
     "backToLogin": "Vai al login",
@@ -2506,7 +2507,7 @@
     "accountUpdated": "Account aggiornato con successo",
     "accountUpdateError": "Errore nell'aggiornamento dell'account",
     "emailChangeRequested": "Controlla {email} e apri il link per confermare il nuovo indirizzo.",
-    "usernameDescription": "Generato automaticamente dal tuo nome.",
+    "usernameDescription": "Puoi accedere con il nome utente al posto dell'email. È anche l'indirizzo del tuo profilo pubblico, quindi cambiarlo rompe i vecchi link.",
     "searchCountry": "Cerca paese...",
     "noCountryFound": "Nessun paese trovato.",
     "selectDate": "Seleziona data",
@@ -2517,11 +2518,10 @@
     "dangerZoneDescription": "Una volta eliminato il tuo account, non si può tornare indietro. Assicurati di essere sicuro.",
     "deleteAccount": "Elimina account",
     "deleteAccountTitle": "Elimina il tuo account",
-    "deleteAccountDescription": "Rimuovi definitivamente il tuo account e tutti i dati associati dalla piattaforma.",
+    "deleteAccountDescription": "Rimuovi in modo permanente dalla piattaforma il tuo account, i tuoi certificati e i tuoi progressi di apprendimento.",
     "deleteAccountConfirmTitle": "Eliminare il tuo account?",
-    "deleteAccountConfirmDescription": "Questo eliminerà definitivamente il tuo account, profilo e tutti i dati di progresso. Questa azione non può essere annullata.",
-    "deleteAccountBlockedAdmin": "Non puoi eliminare il tuo account mentre sei l'unico amministratore di un'organizzazione. Trasferisci la proprietà o elimina prima l'organizzazione.",
-    "deleteAccountBlockedCerts": "Non puoi eliminare il tuo account mentre hai dei certificati. Contatta l'amministratore della tua organizzazione.",
+    "deleteAccountConfirmDescription": "Questo elimina in modo permanente il tuo account, il profilo, i certificati e i progressi. I certificati emessi non saranno più verificabili. Ti mandiamo un'email di conferma e non si può annullare. Esporta prima i tuoi dati se vuoi una copia.",
+    "deleteAccountBlockedAdmin": "Sei l'unico amministratore di un'organizzazione. Trasferisci la titolarità prima di eliminare il tuo account.",
     "deleteAccountError": "Impossibile eliminare l'account. Riprova.",
     "deleting": "Eliminazione in corso...",
     "searchLanguage": "Cerca lingua...",
@@ -2530,7 +2530,57 @@
     "languagesSelected": "{count, plural, =1 {# lingua selezionata} other {# lingue selezionate}}",
     "removeLanguage": "Rimuovi {language}",
     "removeAvatarTitle": "Rimuovere la foto?",
-    "removeAvatarDescription": "Questa rimuoverà la foto del tuo profilo. Puoi caricarne una nuova in qualsiasi momento."
+    "removeAvatarDescription": "Questa rimuoverà la foto del tuo profilo. Puoi caricarne una nuova in qualsiasi momento.",
+    "privacy": "Privacy",
+    "notifications": "Notifiche",
+    "data": "I tuoi dati",
+    "usernameFormat": "Usa solo lettere, numeri e punti singoli.",
+    "usernameReserved": "Questo nome utente è riservato. Scegline un altro.",
+    "emailDescription": "Inviamo un link di conferma al nuovo indirizzo e la modifica si applica quando lo apri.",
+    "sessions": "Sessioni attive",
+    "sessionsDescription": "Dispositivi con l'accesso al tuo account. Esci da quelli che non riconosci.",
+    "sessionsError": "Impossibile caricare le tue sessioni.",
+    "sessionDevice": "{browser} su {system}",
+    "sessionUnknown": "Dispositivo sconosciuto",
+    "sessionCurrent": "Questo dispositivo",
+    "sessionActive": "Attiva {time}",
+    "sessionRevoke": "Esci",
+    "sessionRevoked": "Sessione chiusa",
+    "sessionsRevoked": "Sei uscito da tutti gli altri dispositivi",
+    "sessionRevokeError": "Impossibile chiudere la sessione. Riprova.",
+    "sessionsRevokeOthers": "Esci da tutti gli altri dispositivi",
+    "publicProfile": "Profilo pubblico",
+    "publicProfileDescription": "Decidi se gli altri possono trovare i tuoi certificati tramite l'indirizzo del tuo profilo.",
+    "publicProfileLabel": "Rendi pubblico il mio profilo",
+    "publicProfileOn": "Chiunque abbia il link del tuo profilo può vedere il tuo certificato in evidenza.",
+    "publicProfileOff": "Il tuo profilo è privato. I certificati restano verificabili con il loro codice e il loro link.",
+    "privacyError": "Impossibile salvare le impostazioni di privacy. Riprova.",
+    "privacySaved": "Impostazioni di privacy salvate",
+    "featuredCertificate": "Certificato in evidenza",
+    "featuredCertificateDescription": "Il certificato mostrato per primo sul tuo profilo pubblico.",
+    "featuredCertificateEmpty": "Non hai ancora un certificato approvato.",
+    "featuredCertificateIssued": "Emesso il {date}",
+    "notificationsEmail": "Notifiche via email",
+    "notificationsDescription": "Scegli quali email facoltative ricevere. Le notifiche nell'app restano sempre attive.",
+    "notificationsCategory_learning": "Avanzamento dell'apprendimento",
+    "notificationsCategory_learning_description": "Un avviso quando puoi richiedere il tuo certificato.",
+    "notificationsCategory_organization": "Novità dell'organizzazione",
+    "notificationsCategory_organization_description": "Nuove richieste di adesione nelle organizzazioni che gestisci.",
+    "notificationsCategory_reminders": "Promemoria",
+    "notificationsCategory_reminders_description": "Revisioni in sospeso e inviti in scadenza.",
+    "notificationsMandatory": "La sicurezza dell'account, gli inviti e le decisioni sui certificati vengono sempre inviati via email.",
+    "notificationsSaved": "Impostazioni delle notifiche salvate",
+    "notificationsError": "Impossibile salvare le impostazioni delle notifiche. Riprova.",
+    "export": "Esporta i tuoi dati",
+    "exportDescription": "Scarica un file JSON con il tuo profilo, le tue appartenenze, i tuoi certificati, i progressi di apprendimento e le notifiche.",
+    "exportButton": "Scarica i miei dati",
+    "exportReady": "L'esportazione dei tuoi dati è pronta",
+    "exportError": "Impossibile esportare i tuoi dati. Riprova.",
+    "exportLimited": "Hai esportato i tuoi dati troppe volte. Riprova più tardi.",
+    "deleteAccountConfirmLabel": "Digita {email} per confermare",
+    "deleteAccountTransferTitle": "Trasferisci prima la titolarità",
+    "deleteAccountTransferDescription": "Sei l'unico amministratore di {organizations}. Rendi amministratore un altro membro prima di eliminare il tuo account.",
+    "deleteAccountTransferLink": "Apri i membri della tua organizzazione"
   },
   "Register": {
     "metaTitle": "Candidati a GloRe",
@@ -2811,48 +2861,74 @@
   },
   "Onboarding": {
     "title": "Completa il tuo profilo",
-    "description": "Inserisci i tuoi dati per iniziare con GloRe.",
     "emailLabel": "Email",
     "firstNameLabel": "Nome",
     "firstNamePlaceholder": "Inserisci il tuo nome",
+    "firstNameRequired": "Il nome è obbligatorio.",
     "lastNameLabel": "Cognome",
     "lastNamePlaceholder": "Inserisci il tuo cognome",
+    "lastNameRequired": "Il cognome è obbligatorio.",
     "birthdayLabel": "Data di nascita",
     "birthdayPlaceholder": "Seleziona la tua data di nascita",
     "birthdayRequired": "La data di nascita è obbligatoria.",
-    "phoneLabel": "Telefono",
+    "birthPlaceLabel": "Luogo di nascita",
+    "birthPlacePlaceholder": "Città, paese",
+    "birthPlaceRequired": "Il luogo di nascita è obbligatorio.",
+    "nationalityLabel": "Nazionalità",
+    "nationalityRequired": "La nazionalità è obbligatoria.",
+    "certificateNote": "Questi dati compaiono sul tuo certificato.",
+    "phoneLabel": "Telefono (facoltativo)",
     "phonePlaceholder": "Inserisci il tuo numero di telefono",
-    "phoneRequired": "Il numero di telefono è obbligatorio.",
+    "phoneDescription": "Solo la tua organizzazione può vederlo.",
     "preferredLanguageLabel": "Lingua preferita",
-    "preferredLanguageDescription": "La lingua della piattaforma.",
+    "preferredLanguageDescription": "La lingua della piattaforma e delle nostre email.",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Crea una password",
     "confirmPasswordLabel": "Conferma password",
     "confirmPasswordPlaceholder": "Conferma la tua password",
-    "passwordMismatch": "Le password non corrispondono.",
-    "passwordRequirements": "Almeno 8 caratteri, con maiuscole, minuscole, numero e carattere speciale.",
-    "submit": "Inizia",
-    "submitting": "Configurazione...",
-    "successTitle": "Ti diamo il benvenuto, {name}!",
-    "successDescription": "Il tuo profilo è pronto. Iniziamo a sviluppare le tue competenze.",
-    "error": "Qualcosa è andato storto. Riprova."
+    "passwordMismatch": "Le password non coincidono.",
+    "passwordRequirements": "Almeno 8 caratteri, con maiuscola, minuscola, numero e carattere speciale.",
+    "progress": "Passo {current} di {total}",
+    "step_name_title": "Come ti chiami?",
+    "step_name_description": "È così che ti conosceranno i tutor e la tua organizzazione.",
+    "step_about_title": "Qualcosa su di te",
+    "step_about_description": "Ci servono questi dati per emettere il tuo certificato.",
+    "step_contact_title": "Come possiamo contattarti?",
+    "step_contact_description": "Scegli la lingua e, se vuoi, aggiungi un numero di telefono.",
+    "step_password_title": "Proteggi il tuo account",
+    "step_password_description": "Crea la password che userai per accedere.",
+    "back": "Indietro",
+    "next": "Continua",
+    "submit": "Concludi",
+    "submitting": "Configurazione in corso...",
+    "error": "Qualcosa è andato storto. Riprova.",
+    "alreadyOnboarded": "Il tuo profilo è già completo.",
+    "welcomeTitle": "Benvenuto a bordo, {name}!",
+    "welcomeDescription": "Il tuo profilo è pronto. Ti abbiamo mandato anche un'email di benvenuto.",
+    "usernameLabel": "Il tuo nome utente",
+    "usernameDescription": "Accedi con la tua email o con questo nome utente. Puoi cambiarlo nelle impostazioni.",
+    "next_compass": "Apri la tua bussola delle competenze",
+    "next_catalog": "Sfoglia i corsi",
+    "next_queue": "Apri la coda di revisione",
+    "next_organization": "Configura la tua organizzazione",
+    "goToDashboard": "Vai alla dashboard"
   },
   "Email": {
     "auth/invite": {
-      "button": "Accetta l'invito",
-      "buttonInstruction": "Clicca il pulsante qui sotto per accettarlo e creare il tuo account:",
-      "footer": "Ricevi questa email perché qualcuno ti ha invitato a unirti a GloRe. Se non ti aspettavi questo invito, ignora pure questa email o <emailLink>contattaci</emailLink>.",
-      "instructions": "Questo link di invito è valido per i prossimi 7 giorni.",
-      "intro": "Sei stato invitato a unirti a GloRe.",
-      "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente link nel tuo browser:",
-      "preview": "Sei stato invitato a unirti a GloRe. Accetta l'invito per creare il tuo account e iniziare a usare la piattaforma.",
-      "subject": "Sei stato invitato a unirti a GloRe"
+      "subject": "Conferma la tua email per continuare con l'invito",
+      "preview": "Conferma il tuo indirizzo email per continuare con l'invito a GloRe.",
+      "intro": "Conferma il tuo indirizzo email per continuare con l'invito a GloRe.",
+      "buttonInstruction": "Clicca sul pulsante qui sotto per continuare e creare il tuo account:",
+      "button": "Continua con il mio invito",
+      "manualLink": "Se il pulsante qui sopra non funziona, apri questo link nel browser:",
+      "instructions": "Questo link funziona finché il tuo invito non scade.",
+      "footer": "Ricevi questa email perché hai chiesto di continuare con un invito a GloRe. Se non sei stato tu, puoi ignorarla o <emailLink>avvisarci</emailLink>."
     },
     "auth/recovery": {
       "button": "Reimposta la tua password",
       "buttonInstruction": "Fare clic sul pulsante qui sotto per reimpostarlo:",
       "footer": "Hai ricevuto questa email perché hai richiesto la reimpostazione della password per il tuo account GloRe. \nSe non l'hai richiesto, ignora questa email o <emailLink>faccelo sapere</emailLink>.",
-      "instructions": "Questo collegamento per la reimpostazione della password è valido per le prossime 24 ore.",
+      "instructions": "Questo link per reimpostare la password è valido per la prossima ora.",
       "intro": "Recentemente hai richiesto di reimpostare la password per il tuo account.",
       "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente collegamento nel tuo browser:",
       "preview": "Di recente hai richiesto di reimpostare la password per il tuo account GloRe. \nPer completare questo processo, segui il collegamento sicuro fornito in questa email per creare una nuova password e riottenere l'accesso al tuo account.",
@@ -2862,7 +2938,7 @@
       "button": "Unisciti al team",
       "buttonInstruction": "Clicca il pulsante qui sotto per completare il tuo profilo e iniziare:",
       "description": "Come membro del team, potrai gestire i corsi, revisionare i contenuti e contribuire all'esperienza formativa sulla piattaforma.",
-      "expiry": "Questo link di invito è valido per i prossimi 7 giorni.",
+      "expiry": "Questo link di invito è valido per {days, plural, one {il prossimo giorno} other {i prossimi # giorni}}.",
       "footer": "Ricevi questa email perché {invitee} ti ha invitato a unirti al team GloRe. Se non ti aspettavi questo invito, ignora pure questa email o <emailLink>contattaci</emailLink>.",
       "intro": "{invitee} ti ha invitato a unirti a GloRe come {role}.",
       "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente link nel tuo browser:",
@@ -2890,18 +2966,24 @@
       "button": "Verifica indirizzo email",
       "buttonInstruction": "Clicca il pulsante qui sotto per verificare il tuo nuovo indirizzo email:",
       "footer": "Ricevi questa email perché è stata fatta una richiesta di modifica dell'email del tuo account GloRe. Se non hai effettuato questa richiesta, ignora questa email o <emailLink>contattaci</emailLink>.",
-      "instructions": "Questo link di verifica è valido per le prossime 24 ore.",
+      "instructions": "Questo link di verifica è valido per la prossima ora.",
       "intro": "È stata effettuata una richiesta di modifica dell'indirizzo email del tuo account.",
       "manualLink": "Se il pulsante qui sopra non funziona, apri il seguente link nel tuo browser:",
       "preview": "È stata effettuata una richiesta di modifica dell'email del tuo account GloRe. Clicca il link per verificare il tuo nuovo indirizzo.",
       "subject": "Verifica il tuo nuovo indirizzo email"
     },
     "certificate/assigned": {
-      "button": "Rivedi il certificato",
-      "footer": "Ricevi questa email perché sei un revisore sulla piattaforma GloRe.",
-      "intro": "Un nuovo certificato è stato inviato e assegnato a te per la revisione.",
-      "preview": "Un nuovo certificato GloRe è stato inviato e assegnato a te per la revisione.",
-      "subject": "Un nuovo certificato è in attesa della tua revisione"
+      "subject_submitted": "C'è una nuova richiesta di certificato da rivedere",
+      "subject_assigned": "Ti è stato assegnato un certificato da rivedere",
+      "subject_resubmitted": "Un certificato è stato inviato di nuovo in revisione",
+      "preview_submitted": "Una persona volontaria della tua organizzazione ha inviato una richiesta di certificato.",
+      "preview_assigned": "Ti è stata assegnata una richiesta di certificato GloRe da rivedere.",
+      "preview_resubmitted": "Una persona volontaria ha rimandato in revisione un certificato GloRe.",
+      "intro_submitted": "Una persona volontaria della tua organizzazione ha inviato una richiesta di certificato. Puoi prenderla in carico e iniziare la revisione.",
+      "intro_assigned": "Ti è stata assegnata una richiesta di certificato da rivedere.",
+      "intro_resubmitted": "La persona volontaria ha fatto le modifiche che avevi chiesto e ha inviato di nuovo il certificato in revisione.",
+      "button": "Apri la revisione",
+      "footer": "Ricevi questa email perché sei tutor su GloRe."
     },
     "certificate/review": {
       "buttonApproved": "Visualizza il tuo certificato",
@@ -2924,7 +3006,7 @@
       "detailsAcceptedNew": "Usa il pulsante qui sotto per configurare il tuo account e iniziare a usare la piattaforma.",
       "detailsComment": "Messaggio del revisore: {comment}",
       "detailsPending": "Il nostro team esaminerà la tua richiesta e ti notificherà via email non appena sarà presa una decisione.",
-      "expiry": "Questo link è valido per i prossimi 7 giorni.",
+      "expiry": "Questo link è valido per {days, plural, one {il prossimo giorno} other {i prossimi # giorni}}.",
       "footer": "Ricevi questa email perché hai inviato una richiesta di adesione a un'organizzazione su GloRe.",
       "introAccepted": "La tua richiesta di unirti a {organizationName} è stata approvata.",
       "introPending": "Abbiamo ricevuto la tua richiesta di registrazione per {organizationName}.",
@@ -2935,17 +3017,6 @@
       "subjectAccepted": "La tua richiesta di unirti a {organizationName} è stata approvata",
       "subjectPending": "Richiesta di registrazione ricevuta per {organizationName}",
       "subjectRejected": "La tua richiesta di unirti a {organizationName} è stata rifiutata"
-    },
-    "organization/member-added": {
-      "button": "Accedi a GloRe",
-      "buttonNewUser": "Crea il tuo account",
-      "detailsExisting": "Puoi accedere alla piattaforma GloRe con il tuo account esistente.",
-      "detailsNew": "Usa il pulsante qui sotto per configurare il tuo account e iniziare a usare la piattaforma.",
-      "expiry": "Questo link è valido per i prossimi 7 giorni.",
-      "footer": "Ricevi questa email perché sei stato aggiunto a un'organizzazione su GloRe.",
-      "intro": "{inviterName} ti ha aggiunto a {organizationName} come {role}.",
-      "preview": "Sei stato aggiunto a {organizationName} sulla piattaforma GloRe.",
-      "subject": "Sei stato aggiunto a {organizationName} su GloRe"
     },
     "organization/registration-request": {
       "button": "Esamina la richiesta",
@@ -2966,7 +3037,133 @@
       "greetingUser": "Ciao {user},",
       "homepage": "Home page",
       "outro": "Grazie,",
-      "signature": "Il team GloRe"
+      "signature": "Il team GloRe",
+      "reasonMandatory": "Questa è un'email di servizio sul tuo account GloRe, quindi arriva qualunque siano le tue impostazioni email.",
+      "reasonOptional": "Ricevi questa email perché hai attivato le email su {topic} nel tuo account.",
+      "managePreferences": "Cambia le preferenze email",
+      "topic_learning": "apprendimento",
+      "topic_organization": "organizzazione",
+      "topic_reminders": "promemoria",
+      "role_admin": "Admin",
+      "role_learner": "Studente",
+      "role_representative": "Rappresentante",
+      "role_tutor": "Tutor",
+      "role_volunteer": "Volontario"
+    },
+    "certificate/decision": {
+      "subject_rejected": "La tua richiesta di certificato è stata rifiutata",
+      "subject_revoked": "Il tuo certificato è stato revocato",
+      "preview_rejected": "Il tuo tutor ha rifiutato la tua richiesta di certificato GloRe.",
+      "preview_revoked": "Il tuo certificato GloRe è stato revocato.",
+      "intro_rejected": "Il tuo tutor ha rifiutato la tua richiesta di certificato.",
+      "intro_revoked": "Il tuo certificato è stato revocato.",
+      "details_rejected": "Il motivo è qui sotto. Dopo averlo risolto, puoi inviare una nuova richiesta.",
+      "details_revoked": "Resta nel tuo portafoglio segnato come revocato, e la sua pagina di verifica ora mostra la revoca.",
+      "reasonLabel": "Motivo",
+      "button": "Vedi i dettagli",
+      "footer": "Ricevi questa email perché hai richiesto un certificato su GloRe."
+    },
+    "certificate/reminder": {
+      "subject_reminder": "Un certificato aspetta la tua revisione da {days, plural, one {# giorno} other {# giorni}}",
+      "subject_escalated": "Una revisione di certificato è in ritardo",
+      "preview_reminder": "Una richiesta di certificato aspetta ancora la tua revisione.",
+      "preview_escalated": "Una richiesta di certificato della tua organizzazione aspetta una revisione da {days, plural, one {# giorno} other {# giorni}}.",
+      "intro_reminder": "Una richiesta di certificato assegnata a te aspetta da {days, plural, one {# giorno} other {# giorni}}.",
+      "intro_escalated": "Una richiesta di certificato della tua organizzazione è senza revisione da {days, plural, one {# giorno} other {# giorni}}.",
+      "details_reminder": "Rivedila presto, oppure chiedi alla tua organizzazione di riassegnarla se non puoi.",
+      "details_escalated": "Puoi riassegnarla a un altro tutor o sentire il tutor assegnato.",
+      "button_reminder": "Apri la revisione",
+      "button_escalated": "Apri il certificato",
+      "footer_reminder": "Ricevi questa email perché rivedi certificati su GloRe.",
+      "footer_escalated": "Ricevi questa email perché gestisci un'organizzazione su GloRe."
+    },
+    "learning/eligible": {
+      "subject": "Ora puoi richiedere il tuo certificato GloRe",
+      "preview": "Hai completato abbastanza corsi di competenze per richiedere il certificato.",
+      "intro": "Hai completato abbastanza corsi di competenze per richiedere il tuo certificato GloRe.",
+      "details": "Aggiungi la tua esperienza di volontariato, scegli le competenze e invia la richiesta a un tutor.",
+      "button": "Inizia il mio certificato",
+      "footer": "Ricevi questa email perché stai imparando su GloRe."
+    },
+    "organization/invitation": {
+      "subject": "Sei invitato a unirti a {organizationName} su GloRe",
+      "subjectReminder": "Il tuo invito a {organizationName} sta per scadere",
+      "preview": "{organizationName} ti ha invitato su GloRe. Accetta prima che scada.",
+      "previewReminder": "Il tuo invito a {organizationName} ti sta ancora aspettando.",
+      "intro": "Sei invitato a unirti a {organizationName} su GloRe come {role}.",
+      "introInviter": "{inviter} ti ha invitato a unirti a {organizationName} su GloRe come {role}.",
+      "introReminder": "Il tuo invito a unirti a {organizationName} su GloRe come {role} è ancora aperto.",
+      "about": "GloRe è la piattaforma in cui i volontari ottengono certificati per le soft skill sviluppate con il volontariato.",
+      "messageLabel": "Messaggio di {inviter}",
+      "messageAnonymous": "Messaggio dell'organizzazione",
+      "expiry": "Questo invito è valido fino al {expiresAt, date, long}.",
+      "expiryReminder": "Scade il {expiresAt, date, long}, quindi rispondi entro quella data.",
+      "button": "Vedi l'invito",
+      "manualLink": "Se il pulsante non funziona, apri questo link nel browser:",
+      "footer": "Ricevi questa email perché qualcuno ti ha invitato a unirti a un'organizzazione su GloRe. Se non te l'aspettavi, puoi ignorarla o scriverci."
+    },
+    "organization/join-request-received": {
+      "subject": "{requesterName} ha chiesto di unirsi a {organizationName}",
+      "preview": "{requesterName} aspetta la tua risposta.",
+      "intro": "{requesterName} ha chiesto di unirsi a {organizationName} su GloRe.",
+      "details": "Controlla la richiesta per approvarla o rifiutarla.",
+      "button": "Controlla la richiesta",
+      "footer": "Ricevi questa email perché gestisci {organizationName} su GloRe."
+    },
+    "organization/membership": {
+      "subject_role_changed": "Il tuo ruolo in {organizationName} è cambiato",
+      "subject_removed": "Sei stato rimosso da {organizationName}",
+      "subject_ownership_gained": "Ora sei titolare di {organizationName}",
+      "subject_ownership_left": "Hai ceduto la titolarità di {organizationName}",
+      "preview_role_changed": "Il tuo ruolo in {organizationName} su GloRe ora è {role}.",
+      "preview_removed": "Non fai più parte di {organizationName} su GloRe.",
+      "preview_ownership_gained": "La titolarità di {organizationName} su GloRe è passata a te.",
+      "preview_ownership_left": "La titolarità di {organizationName} su GloRe è passata a un altro membro.",
+      "intro_role_changed": "Il tuo ruolo in {organizationName} su GloRe ora è {role}.",
+      "intro_removed": "Sei stato rimosso da {organizationName} su GloRe.",
+      "intro_ownership_gained": "La titolarità di {organizationName} su GloRe è passata a te.",
+      "intro_ownership_left": "La titolarità di {organizationName} su GloRe è passata a un altro membro.",
+      "details_role_changed": "Il tuo ruolo decide cosa puoi vedere e fare nell'organizzazione.",
+      "details_removed": "Il tuo account e i certificati che hai ottenuto restano tuoi. Se pensi sia un errore, chiedi all'organizzazione di invitarti di nuovo.",
+      "details_ownership_gained": "Come titolare gestisci membri, inviti e impostazioni dell'organizzazione.",
+      "details_ownership_left": "Non sei più il titolare. Mantieni l'accesso al tuo account.",
+      "button": "Apri GloRe",
+      "footer": "Ricevi questa email perché la tua appartenenza a {organizationName} su GloRe è cambiata."
+    },
+    "team/role-changed": {
+      "subject_set": "Il tuo ruolo nel team GloRe è cambiato",
+      "subject_removed": "Il tuo accesso al team GloRe è stato rimosso",
+      "preview_set": "Il tuo ruolo nel team GloRe ora è {role}.",
+      "preview_removed": "Non hai più un ruolo nel team GloRe.",
+      "intro_set": "Il tuo ruolo nel team GloRe ora è {role}.",
+      "intro_removed": "Non hai più un ruolo nel team GloRe.",
+      "details_set": "Il tuo ruolo decide quali strumenti di amministrazione puoi usare.",
+      "details_removed": "Il tuo account resta attivo come account normale.",
+      "role_admin": "Amministratore",
+      "role_editor": "Editor",
+      "button": "Apri GloRe",
+      "footer": "Ricevi questa email perché il tuo ruolo nel team GloRe è cambiato."
+    },
+    "account/welcome": {
+      "subject": "Benvenuto su GloRe",
+      "preview": "Il tuo account GloRe è pronto.",
+      "intro": "Benvenuto su GloRe! Il tuo account è pronto. Questo è il tuo nome utente:",
+      "details": "Puoi accedere con la tua email o con il tuo nome utente.",
+      "button": "Apri GloRe",
+      "footer": "Ricevi questa email perché hai creato un account GloRe."
+    },
+    "account/status": {
+      "subject_suspended": "Il tuo account GloRe è stato sospeso",
+      "subject_deleted": "Il tuo account GloRe è stato eliminato",
+      "preview_suspended": "Il tuo account GloRe è stato sospeso.",
+      "preview_deleted": "Il tuo account GloRe è stato eliminato.",
+      "intro_suspended": "Il tuo account GloRe è stato sospeso.",
+      "intro_deleted": "Il tuo account GloRe è stato eliminato, come avevi chiesto.",
+      "details_suspended": "La sospensione non ha una data di fine. Scrivici se pensi sia un errore.",
+      "details_suspended_until": "La sospensione termina il {expiresAt, date, long}. Scrivici se pensi sia un errore.",
+      "details_deleted": "Il tuo profilo, i tuoi progressi e i tuoi certificati sono stati eliminati, quindi i link di verifica dei certificati non funzionano più.",
+      "reasonLabel": "Motivo",
+      "footer": "Ricevi questa email per una modifica al tuo account GloRe."
     }
   },
   "PWA": {
@@ -2976,7 +3173,8 @@
     "installDismiss": "Non ora",
     "offlineTitle": "Sei offline",
     "offlineDescription": "Connettiti a internet per continuare a usare GloRe.",
-    "offlineRetry": "Riprova"
+    "offlineRetry": "Riprova",
+    "installIosHint": "Tocca il pulsante Condividi, poi scegli Aggiungi alla schermata Home."
   },
   "Invite": {
     "metaTitle": "Invito",
@@ -3332,5 +3530,164 @@
         "saveError": "Non è stato possibile salvare la bussola. Riprova."
       }
     }
+  },
+  "Notifications": {
+    "title": "Notifiche",
+    "bell": "Notifiche",
+    "bellUnread": "{count, plural, one {Notifiche, # da leggere} other {Notifiche, # da leggere}}",
+    "markAllRead": "Segna tutto come letto",
+    "viewAll": "Vedi tutte le notifiche",
+    "today": "Oggi",
+    "yesterday": "Ieri",
+    "unread": "Da leggere",
+    "emptyTitle": "Sei in pari",
+    "emptyDescription": "Qui troverai gli aggiornamenti su certificati, corsi e organizzazioni.",
+    "emptyUnreadTitle": "Nessuna notifica da leggere",
+    "emptyUnreadDescription": "Tutto quello che c'è in questa vista è già stato letto.",
+    "loadMore": "Mostra altro",
+    "filterStatus": "Filtra per stato",
+    "filterCategory": "Filtra per argomento",
+    "filter_all": "Tutte",
+    "filter_unread": "Da leggere",
+    "category_all": "Tutti gli argomenti",
+    "category_certificates": "Certificati",
+    "category_learning": "Apprendimento",
+    "category_organization": "Organizzazione",
+    "category_account": "Account",
+    "fallbackTitle": "Hai un nuovo aggiornamento",
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "learner": "Studente",
+      "representative": "Rappresentante",
+      "tutor": "Tutor",
+      "volunteer": "Volontario"
+    },
+    "events": {
+      "certificate_submitted": {
+        "title": "Un certificato è stato inviato in revisione",
+        "body": "Aprilo per iniziare la revisione."
+      },
+      "certificate_assigned": {
+        "title": "Ti è stato assegnato un certificato",
+        "body": "Aprilo per iniziare la revisione."
+      },
+      "certificate_claimed": {
+        "title": "Un tutor ha preso in carico la tua richiesta",
+        "body": "La tua richiesta è ora in revisione."
+      },
+      "certificate_unassigned": {
+        "title": "Un certificato cerca un tutor",
+        "body": "Il tutor precedente ha lasciato questa richiesta."
+      },
+      "certificate_changes_requested": {
+        "title": "Il tuo tutor ha chiesto modifiche",
+        "body": "Aggiorna il certificato e invialo di nuovo."
+      },
+      "certificate_resubmitted": {
+        "title": "Un certificato è stato inviato di nuovo in revisione",
+        "body": "La persona volontaria ha fatto le modifiche richieste."
+      },
+      "certificate_approved": {
+        "title": "Un certificato è stato approvato",
+        "body": "Il certificato è pronto da scaricare."
+      },
+      "certificate_rejected": {
+        "title": "Una richiesta di certificato è stata rifiutata",
+        "body": "Aprila per leggere il motivo."
+      },
+      "certificate_revoked": {
+        "title": "Un certificato è stato revocato",
+        "body": "Aprilo per leggere il motivo."
+      },
+      "certificate_withdrawn": {
+        "title": "Una richiesta di certificato è stata ritirata",
+        "body": "La persona volontaria ha ritirato la richiesta."
+      },
+      "certificate_review_reminder": {
+        "title": "Hai una revisione in attesa",
+        "body": "Questa richiesta aspetta da {days} giorni."
+      },
+      "certificate_review_escalated": {
+        "title": "Una revisione di certificato è in ritardo",
+        "body": "Nessuno ha rivisto questa richiesta in {days} giorni."
+      },
+      "learning_eligible": {
+        "title": "Puoi richiedere il tuo certificato",
+        "body": "Hai completato le competenze necessarie per iniziare."
+      },
+      "course_completed": {
+        "title": "Corso completato",
+        "body": "Ottimo lavoro. Scegli il prossimo corso o guarda il tuo certificato."
+      },
+      "organization_application_received": {
+        "title": "Nuova candidatura di un'organizzazione",
+        "body": "{organizationName} vuole unirsi a GloRe."
+      },
+      "invitation_sent": {
+        "title": "Sei invitato in {organizationName}",
+        "body": "Apri l'invito per rispondere. Il tuo ruolo sarebbe {role}."
+      },
+      "invitation_accepted": {
+        "title": "Un invito è stato accettato",
+        "body": "Una nuova persona è entrata nella tua organizzazione."
+      },
+      "invitation_declined": {
+        "title": "Un invito è stato rifiutato",
+        "body": "Guarda la scheda degli inviti per i dettagli."
+      },
+      "join_request_created": {
+        "title": "Nuova richiesta di adesione",
+        "body": "{name} ha chiesto di unirsi a {organizationName}."
+      },
+      "join_request_decided_accepted": {
+        "title": "La tua richiesta è stata approvata",
+        "body": "Ora fai parte di {organizationName}."
+      },
+      "join_request_decided_rejected": {
+        "title": "La tua richiesta è stata rifiutata",
+        "body": "{organizationName} non ha accettato la tua richiesta."
+      },
+      "member_joined": {
+        "title": "È entrato un nuovo membro",
+        "body": "Apri l'elenco dei membri per vedere chi è."
+      },
+      "member_role_changed": {
+        "title": "Il tuo ruolo è cambiato",
+        "body": "Il tuo nuovo ruolo è {role}."
+      },
+      "member_left": {
+        "title": "Un membro ha lasciato l'organizzazione",
+        "body": "Apri l'elenco dei membri per i dettagli."
+      },
+      "organization_ownership_transferred": {
+        "title": "La titolarità dell'organizzazione è cambiata",
+        "body": "La titolarità è passata a un'altra persona."
+      },
+      "team_invited": {
+        "title": "Sei invitato nel team GloRe",
+        "body": "Il tuo ruolo sarebbe {role}."
+      },
+      "team_role_changed_set": {
+        "title": "Il tuo ruolo nel team è cambiato",
+        "body": "Il tuo nuovo ruolo è {role}."
+      },
+      "team_role_changed_removed": {
+        "title": "Il tuo accesso al team è stato rimosso",
+        "body": "Non hai più un ruolo nel team."
+      }
+    }
+  },
+  "Legal": {
+    "privacy": "Informativa sulla privacy",
+    "terms": "Termini di servizio",
+    "qualityCharter": "Carta della qualità",
+    "navigation": "Documenti legali",
+    "home": "Vai a GloRe",
+    "updated": "Ultimo aggiornamento: {date}",
+    "temporaryTitle": "Testo provvisorio",
+    "temporaryDescription": "Questo documento è provvisorio e sarà sostituito dalla versione definitiva.",
+    "fallbackNotice": "Questo documento non è ancora disponibile nella tua lingua. Stai leggendo la versione inglese.",
+    "unavailable": "Questo documento non è ancora disponibile."
   }
 }

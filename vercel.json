@@ -12,7 +12,7 @@
   },
   "crons": [
     {
-      "path": "/api/v1/cron/cleanup",
+      "path": "/api/v1/cron/daily",
       "schedule": "0 3 * * *"
     }
   ]

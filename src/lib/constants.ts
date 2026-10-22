@@ -11,6 +11,7 @@ export const INVITE_ROOT = '/invite'
 export const JOIN_LINK_ROOT = '/join'
 export const SETTINGS_ROOT = '/settings'
 export const VERIFY_ROOT = '/verify'
+export const LEGAL_ROOTS = ['/privacy', '/quality-charter', '/terms'] as const
 export const DASHBOARD_ROOTS = [
   '/about',
   '/admin',
@@ -19,6 +20,7 @@ export const DASHBOARD_ROOTS = [
   '/dashboard',
   '/docs',
   '/help',
+  '/notifications',
   '/organization',
   '/register',
   '/settings',

@@ -47,7 +47,7 @@ export const LoginForm = ({
     username: z
       .string()
       .nonempty(t('userRequired'))
-      .min(5, {
+      .min(3, {
         message: t('userTooShort'),
       })
       .refine(isValidUsername, {

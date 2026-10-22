@@ -1,6 +1,6 @@
 import { Pool } from 'pg'
 
-import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
+import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE } from '~/scripts/seed-data'
 
 export const clearRateLimits = async () => {
   const connectionString = process.env.DATABASE_URL
@@ -115,4 +115,28 @@ export const setPublicProfile = async ({
   } finally {
     await pool.end()
   }
+}
+
+export const createSeedInvitation = async (email: string, role: string) => {
+  const connectionString = process.env.DATABASE_URL
+  if (!(connectionString && LOCAL_DATABASE_REGEX.test(connectionString))) throw new Error('Local database required')
+  const pool = new Pool({ connectionString })
+  const token = `e2e${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
+  await pool.query('delete from organization_invitations where lower(email) = lower($1)', [email])
+  await pool.query(
+    `insert into organization_invitations (organization_id, email, role, token, expires_at, last_sent_at)
+     select id, $1, $2::role, $3, now() + interval '7 days', now() from organizations where handle = $4`,
+    [email, role, token, SEED_ORG_HANDLE]
+  )
+  await pool.end()
+  return token
+}
+
+export const deleteUserByEmail = async (email: string) => {
+  const connectionString = process.env.DATABASE_URL
+  if (!(connectionString && LOCAL_DATABASE_REGEX.test(connectionString))) return
+  const pool = new Pool({ connectionString })
+  await pool.query('delete from organization_invitations where lower(email) = lower($1)', [email])
+  await pool.query('delete from users where lower(email) = lower($1)', [email])
+  await pool.end()
 }

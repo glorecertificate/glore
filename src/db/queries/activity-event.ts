@@ -60,9 +60,11 @@ interface EventPayloads {
   'invite_link.revoked': { inviteLinkId: number }
   'invitation.expiring': {
     email: string
+    expiresAt: string
     invitationId: number
     locale: string | null
     organizationName: string
+    role: Role
     url: string
     userId: string | null
   }

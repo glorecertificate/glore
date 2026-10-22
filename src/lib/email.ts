@@ -1,9 +1,9 @@
 import 'server-only'
 
-import { createElement } from 'react'
+import { type ComponentProps, type ComponentType, createElement } from 'react'
 
 import { eq } from 'drizzle-orm'
-import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
+import { type AbstractIntlMessages } from 'next-intl'
 import { createTransport } from 'nodemailer'
 import { render } from 'react-email'
 
@@ -11,62 +11,88 @@ import { db } from '@/db/client'
 import { users } from '@/db/schema/users'
 import AccountEmailChangedEmail from '@/emails/account/email-changed'
 import AccountPasswordChangedEmail from '@/emails/account/password-changed'
+import AccountStatusEmail from '@/emails/account/status'
+import AccountWelcomeEmail from '@/emails/account/welcome'
 import AuthInviteEmail from '@/emails/auth/invite'
 import AuthRecoveryEmail from '@/emails/auth/recovery'
 import AuthVerifyEmailEmail from '@/emails/auth/verify-email'
 import CertificateAssignedEmail from '@/emails/certificate/assigned'
+import CertificateDecisionEmail from '@/emails/certificate/decision'
+import CertificateReminderEmail from '@/emails/certificate/reminder'
 import CertificateReviewEmail from '@/emails/certificate/review'
+import { type EmailCategory, EmailContext } from '@/emails/context'
+import LearningEligibleEmail from '@/emails/learning/eligible'
+import OrganizationInvitationEmail from '@/emails/organization/invitation'
 import OrganizationJoinRequestEmail from '@/emails/organization/join-request'
-import OrganizationMemberAddedEmail from '@/emails/organization/member-added'
+import OrganizationJoinRequestReceivedEmail from '@/emails/organization/join-request-received'
+import OrganizationMembershipEmail from '@/emails/organization/membership'
 import OrganizationRegistrationRequestEmail from '@/emails/organization/registration-request'
 import TeamInviteEmail from '@/emails/team/invite'
+import TeamRoleChangedEmail from '@/emails/team/role-changed'
+import { type EmailBaseProps, type EmailTranslator, emailTranslator } from '@/emails/translate'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
 
-interface TemplatePropsMap {
-  'account/email-changed': { oldEmail: string; newEmail: string; userName?: string }
-  'account/password-changed': { userName?: string }
-  'auth/invite': { url: string; userName?: string }
-  'auth/recovery': { url: string; userName?: string }
-  'auth/verify-email': { url: string; userName?: string }
-  'certificate/assigned': Record<string, never>
-  'certificate/review': {
-    status: 'approved' | 'changes_requested'
-    comment?: string
-    documentUrl?: string
-    userName?: string
-  }
-  'organization/join-request': {
-    organizationName: string
-    status: 'accepted' | 'pending' | 'rejected'
-    comment?: string | null
-    url?: string
-    userName?: string
-  }
-  'organization/member-added': {
-    organizationName: string
-    inviterName: string
-    role: string
-    url?: string
-    userName?: string
-  }
-  'organization/registration-request': {
-    city: string
-    organizationId: number
-    organizationName: string
-    registrantEmail: string
-    registrantName: string
-    country?: string | null
-    message?: string | null
-    userName?: string
-  }
-  'team/invite': { url: string; inviteeName: string; role: 'admin' | 'editor'; userName?: string }
+interface TemplateDefinition<P extends EmailBaseProps> {
+  component: ComponentType<P>
+  subject: (t: EmailTranslator, props: P) => string
 }
 
-type TemplateName = keyof TemplatePropsMap
-export type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplatePropsMap[K] } }[TemplateName]
+const define = <P extends EmailBaseProps>(
+  component: ComponentType<P>,
+  subject: (t: EmailTranslator, props: P) => string
+): TemplateDefinition<P> => ({ component, subject })
+
+const JOIN_REQUEST_SUBJECTS = {
+  accepted: 'subjectAccepted',
+  pending: 'subjectPending',
+  rejected: 'subjectRejected',
+} as const
+
+const TEMPLATES = {
+  'account/email-changed': define(AccountEmailChangedEmail, t => t('subject')),
+  'account/password-changed': define(AccountPasswordChangedEmail, t => t('subject')),
+  'account/status': define(AccountStatusEmail, (t, { kind }) => t(`subject_${kind}`)),
+  'account/welcome': define(AccountWelcomeEmail, t => t('subject')),
+  'auth/invite': define(AuthInviteEmail, t => t('subject')),
+  'auth/recovery': define(AuthRecoveryEmail, t => t('subject')),
+  'auth/verify-email': define(AuthVerifyEmailEmail, t => t('subject')),
+  'certificate/assigned': define(CertificateAssignedEmail, (t, { kind = 'assigned' }) => t(`subject_${kind}`)),
+  'certificate/decision': define(CertificateDecisionEmail, (t, { kind }) => t(`subject_${kind}`)),
+  'certificate/reminder': define(CertificateReminderEmail, (t, { days, kind }) => t(`subject_${kind}`, { days })),
+  'certificate/review': define(CertificateReviewEmail, (t, { status }) =>
+    status === 'approved' ? t('subjectApproved') : t('subjectChanges')
+  ),
+  'learning/eligible': define(LearningEligibleEmail, t => t('subject')),
+  'organization/invitation': define(OrganizationInvitationEmail, (t, { kind, organizationName }) =>
+    t(kind === 'reminder' ? 'subjectReminder' : 'subject', { organizationName })
+  ),
+  'organization/join-request': define(OrganizationJoinRequestEmail, (t, { organizationName, status }) =>
+    t(JOIN_REQUEST_SUBJECTS[status], { organizationName })
+  ),
+  'organization/join-request-received': define(
+    OrganizationJoinRequestReceivedEmail,
+    (t, { organizationName, requesterName }) => t('subject', { organizationName, requesterName })
+  ),
+  'organization/membership': define(OrganizationMembershipEmail, (t, { kind, organizationName }) =>
+    t(`subject_${kind}`, { organizationName })
+  ),
+  'organization/registration-request': define(OrganizationRegistrationRequestEmail, (t, { organizationName }) =>
+    t('subject', { organizationName })
+  ),
+  'team/invite': define(TeamInviteEmail, t => t('subject')),
+  'team/role-changed': define(TeamRoleChangedEmail, (t, { role }) => t(role ? 'subject_set' : 'subject_removed')),
+}
+
+type Templates = typeof TEMPLATES
+
+type TemplateName = keyof Templates
+
+type TemplateProps<K extends TemplateName> = Omit<ComponentProps<Templates[K]['component']>, keyof EmailBaseProps>
+
+export type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplateProps<K> } }[TemplateName]
 
 const messagesFor = async (locale: string) => {
   if (locale === 'it') {
@@ -80,91 +106,22 @@ const messagesFor = async (locale: string) => {
   return defaultMessages as Messages
 }
 
-const buildEmail = (template: EmailTemplate, messages: Messages, locale: Locale) => {
-  const m = messages as AbstractIntlMessages
+interface BuildOptions {
+  category: EmailCategory | null
+  locale: string
+  messages: Messages
+  template: EmailTemplate
+}
 
-  switch (template.name) {
-    case 'account/email-changed': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.account/email-changed' })
-      return {
-        subject: t('subject'),
-        element: createElement(AccountEmailChangedEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'account/password-changed': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.account/password-changed' })
-      return {
-        subject: t('subject'),
-        element: createElement(AccountPasswordChangedEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'auth/invite': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.auth/invite' })
-      return {
-        subject: t('subject'),
-        element: createElement(AuthInviteEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'auth/recovery': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.auth/recovery' })
-      return {
-        subject: t('subject'),
-        element: createElement(AuthRecoveryEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'auth/verify-email': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.auth/verify-email' })
-      return {
-        subject: t('subject'),
-        element: createElement(AuthVerifyEmailEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'certificate/assigned': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.certificate/assigned' })
-      return { subject: t('subject'), element: createElement(CertificateAssignedEmail, { locale, messages: m }) }
-    }
-    case 'certificate/review': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.certificate/review' })
-      const subject = template.props.status === 'approved' ? t('subjectApproved') : t('subjectChanges')
-      return { subject, element: createElement(CertificateReviewEmail, { ...template.props, locale, messages: m }) }
-    }
-    case 'organization/join-request': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.organization/join-request' })
-      const { organizationName, status } = template.props
-      const subject =
-        status === 'pending'
-          ? t('subjectPending', { organizationName })
-          : status === 'accepted'
-            ? t('subjectAccepted', { organizationName })
-            : t('subjectRejected', { organizationName })
-      return {
-        subject,
-        element: createElement(OrganizationJoinRequestEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'organization/member-added': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.organization/member-added' })
-      const subject = t('subject', { organizationName: template.props.organizationName })
-      return {
-        subject,
-        element: createElement(OrganizationMemberAddedEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'organization/registration-request': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.organization/registration-request' })
-      const subject = t('subject', { organizationName: template.props.organizationName })
-      return {
-        subject,
-        element: createElement(OrganizationRegistrationRequestEmail, { ...template.props, locale, messages: m }),
-      }
-    }
-    case 'team/invite': {
-      const t = createTranslator({ locale, messages, namespace: 'Email.team/invite' })
-      return {
-        subject: t('subject'),
-        element: createElement(TeamInviteEmail, { ...template.props, locale, messages: m }),
-      }
-    }
+const buildEmail = ({ category, locale, messages, template }: BuildOptions) => {
+  const { component, subject } = TEMPLATES[template.name] as unknown as TemplateDefinition<
+    EmailBaseProps & Record<string, unknown>
+  >
+  const props = { ...template.props, locale, messages: messages as AbstractIntlMessages }
+
+  return {
+    element: createElement(EmailContext.Provider, { value: { category } }, createElement(component, props)),
+    subject: subject(emailTranslator(`Email.${template.name}`, props), props),
   }
 }
 
@@ -196,18 +153,24 @@ const recipientLocale = async (to: string | string[]) => {
   return recipient?.locale ?? DEFAULT_LOCALE
 }
 
-export const sendMail = async ({
-  to,
-  template,
-  locale: requestedLocale,
-}: {
+interface SendMailOptions {
   to: string | string[]
   template: EmailTemplate
+  category?: EmailCategory | null
   locale?: string
-}) => {
+  unsubscribeUrl?: string
+}
+
+export const sendMail = async ({
+  category = null,
+  locale: requestedLocale,
+  template,
+  to,
+  unsubscribeUrl,
+}: SendMailOptions) => {
   const locale = requestedLocale ?? (await recipientLocale(to))
   const messages = await messagesFor(locale)
-  const { subject, element } = buildEmail(template, messages, locale as Locale)
+  const { subject, element } = buildEmail({ category, locale, messages, template })
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
   const recipients = Array.isArray(to) ? to.join(', ') : to
   await transporter.sendMail({
@@ -216,6 +179,9 @@ export const sendMail = async ({
     subject,
     html,
     text,
+    headers: unsubscribeUrl
+      ? { 'List-Unsubscribe': `<${unsubscribeUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' }
+      : undefined,
   })
   if (mailTransport !== 'smtp') console.info(`[mail] ${template.name} to ${recipients}: ${subject}`)
 }

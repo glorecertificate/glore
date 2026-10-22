@@ -776,7 +776,8 @@
     "errorMessage": "An unexpected error occurred. Try again or contact us if the problem persists.",
     "backToHome": "Go to the homepage",
     "backToPrevious": "Go back",
-    "refreshPage": "Refresh page"
+    "refreshPage": "Refresh page",
+    "notifications": "Notifications"
   },
   "Auth": {
     "backToLogin": "Go to login",
@@ -2506,7 +2507,7 @@
     "accountUpdated": "Account updated successfully",
     "accountUpdateError": "Failed to update account",
     "emailChangeRequested": "Check {email} and open the link to confirm your new address.",
-    "usernameDescription": "Auto-generated from your name.",
+    "usernameDescription": "You can sign in with it instead of your email. It is also your public profile address, so changing it breaks old links.",
     "searchCountry": "Search country...",
     "noCountryFound": "No country found.",
     "selectDate": "Select date",
@@ -2517,11 +2518,10 @@
     "dangerZoneDescription": "Once you delete your account, there is no going back. Please be certain.",
     "deleteAccount": "Delete account",
     "deleteAccountTitle": "Delete your account",
-    "deleteAccountDescription": "Permanently remove your account and all associated data from the platform.",
+    "deleteAccountDescription": "Permanently remove your account, your certificates, and your learning progress from the platform.",
     "deleteAccountConfirmTitle": "Delete your account?",
-    "deleteAccountConfirmDescription": "This will permanently delete your account, profile, and all progress data. This action cannot be undone.",
-    "deleteAccountBlockedAdmin": "You cannot delete your account while you are the sole administrator of an organization. Transfer ownership or delete the organization first.",
-    "deleteAccountBlockedCerts": "You cannot delete your account while you have certificates. Contact your organization administrator.",
+    "deleteAccountConfirmDescription": "This permanently deletes your account, profile, certificates, and progress. Issued certificates stop being verifiable. We email you a confirmation, and this cannot be undone. Export your data first if you want a copy.",
+    "deleteAccountBlockedAdmin": "You are the only administrator of an organization. Transfer ownership before you delete your account.",
     "deleteAccountError": "Failed to delete account. Please try again.",
     "deleting": "Deleting...",
     "searchLanguage": "Search language...",
@@ -2530,7 +2530,57 @@
     "languagesSelected": "{count, plural, =1 {# language selected} other {# languages selected}}",
     "removeLanguage": "Remove {language}",
     "removeAvatarTitle": "Remove photo?",
-    "removeAvatarDescription": "This removes your profile photo. You can upload a new one any time."
+    "removeAvatarDescription": "This removes your profile photo. You can upload a new one any time.",
+    "privacy": "Privacy",
+    "notifications": "Notifications",
+    "data": "Your data",
+    "usernameFormat": "Use only letters, numbers, and single dots.",
+    "usernameReserved": "This username is reserved. Choose another one.",
+    "emailDescription": "We email a confirmation link to the new address, and the change applies once you open it.",
+    "sessions": "Active sessions",
+    "sessionsDescription": "Devices signed in to your account. Sign out of any you do not recognize.",
+    "sessionsError": "Could not load your sessions.",
+    "sessionDevice": "{browser} on {system}",
+    "sessionUnknown": "Unknown device",
+    "sessionCurrent": "This device",
+    "sessionActive": "Active {time}",
+    "sessionRevoke": "Sign out",
+    "sessionRevoked": "Session signed out",
+    "sessionsRevoked": "Signed out of all other devices",
+    "sessionRevokeError": "Could not sign out the session. Please try again.",
+    "sessionsRevokeOthers": "Sign out of all other devices",
+    "publicProfile": "Public profile",
+    "publicProfileDescription": "Decide whether people can find your certificates through your profile address.",
+    "publicProfileLabel": "Make my profile public",
+    "publicProfileOn": "Anyone with your profile link can see your featured certificate.",
+    "publicProfileOff": "Your profile is private. Certificates stay verifiable through their own code and link.",
+    "privacyError": "Could not save your privacy settings. Please try again.",
+    "privacySaved": "Privacy settings saved",
+    "featuredCertificate": "Featured certificate",
+    "featuredCertificateDescription": "The certificate shown first on your public profile.",
+    "featuredCertificateEmpty": "You do not have an approved certificate yet.",
+    "featuredCertificateIssued": "Issued on {date}",
+    "notificationsEmail": "Email notifications",
+    "notificationsDescription": "Choose which optional emails you receive. In-app notifications always stay on.",
+    "notificationsCategory_learning": "Learning progress",
+    "notificationsCategory_learning_description": "A note when you can request your certificate.",
+    "notificationsCategory_organization": "Organization updates",
+    "notificationsCategory_organization_description": "New join requests for the organizations you manage.",
+    "notificationsCategory_reminders": "Reminders",
+    "notificationsCategory_reminders_description": "Pending reviews and invitations about to expire.",
+    "notificationsMandatory": "Account security, invitations, and certificate decisions are always emailed.",
+    "notificationsSaved": "Notification settings saved",
+    "notificationsError": "Could not save your notification settings. Please try again.",
+    "export": "Export your data",
+    "exportDescription": "Download a JSON file with your profile, memberships, certificates, learning progress, and notifications.",
+    "exportButton": "Download my data",
+    "exportReady": "Your data export is ready",
+    "exportError": "Could not export your data. Please try again.",
+    "exportLimited": "You exported your data too many times. Try again later.",
+    "deleteAccountConfirmLabel": "Type {email} to confirm",
+    "deleteAccountTransferTitle": "Transfer ownership first",
+    "deleteAccountTransferDescription": "You are the only administrator of {organizations}. Make another member an administrator before you delete your account.",
+    "deleteAccountTransferLink": "Open the members of your organization"
   },
   "Register": {
     "metaTitle": "Apply to join GloRe",
@@ -2811,48 +2861,74 @@
   },
   "Onboarding": {
     "title": "Complete your profile",
-    "description": "Fill in your details to get started with GloRe.",
     "emailLabel": "Email",
     "firstNameLabel": "First name",
     "firstNamePlaceholder": "Enter your first name",
+    "firstNameRequired": "First name is required.",
     "lastNameLabel": "Last name",
     "lastNamePlaceholder": "Enter your last name",
+    "lastNameRequired": "Last name is required.",
     "birthdayLabel": "Birthday",
     "birthdayPlaceholder": "Select your birthday",
     "birthdayRequired": "Birthday is required.",
-    "phoneLabel": "Phone",
+    "birthPlaceLabel": "Place of birth",
+    "birthPlacePlaceholder": "City, country",
+    "birthPlaceRequired": "Place of birth is required.",
+    "nationalityLabel": "Nationality",
+    "nationalityRequired": "Nationality is required.",
+    "certificateNote": "These details appear on your certificate.",
+    "phoneLabel": "Phone (optional)",
     "phonePlaceholder": "Enter your phone number",
-    "phoneRequired": "Phone number is required.",
+    "phoneDescription": "Only your organization can see it.",
     "preferredLanguageLabel": "Preferred language",
-    "preferredLanguageDescription": "The platform language.",
+    "preferredLanguageDescription": "The platform language and the language of our emails.",
     "passwordLabel": "Password",
     "passwordPlaceholder": "Create a password",
     "confirmPasswordLabel": "Confirm password",
     "confirmPasswordPlaceholder": "Confirm your password",
     "passwordMismatch": "Passwords do not match.",
     "passwordRequirements": "At least 8 characters, with uppercase, lowercase, number, and special character.",
-    "submit": "Get started",
+    "progress": "Step {current} of {total}",
+    "step_name_title": "What's your name?",
+    "step_name_description": "This is how tutors and your organization will know you.",
+    "step_about_title": "A little about you",
+    "step_about_description": "We need these details to issue your certificate.",
+    "step_contact_title": "How can we reach you?",
+    "step_contact_description": "Choose your language and, if you like, add a phone number.",
+    "step_password_title": "Secure your account",
+    "step_password_description": "Create the password you will use to sign in.",
+    "back": "Back",
+    "next": "Continue",
+    "submit": "Finish",
     "submitting": "Setting up...",
-    "successTitle": "Welcome aboard, {name}!",
-    "successDescription": "Your profile is ready. Let's start building your skills.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "alreadyOnboarded": "Your profile is already complete.",
+    "welcomeTitle": "Welcome aboard, {name}!",
+    "welcomeDescription": "Your profile is ready. We also sent you a welcome email.",
+    "usernameLabel": "Your username",
+    "usernameDescription": "Sign in with your email or this username. You can change it in your settings.",
+    "next_compass": "Open your skill compass",
+    "next_catalog": "Browse the courses",
+    "next_queue": "Open the review queue",
+    "next_organization": "Set up your organization",
+    "goToDashboard": "Go to the dashboard"
   },
   "Email": {
     "auth/invite": {
-      "button": "Accept your invitation",
-      "buttonInstruction": "Click the button below to accept and set up your account:",
-      "footer": "You're receiving this email because someone invited you to join GloRe. If you weren't expecting this invitation, you can safely ignore this email or <emailLink>let us know</emailLink>.",
-      "instructions": "This invitation link is valid for the next 7 days.",
-      "intro": "You've been invited to join GloRe.",
+      "subject": "Confirm your email to continue with your invitation",
+      "preview": "Confirm your email address to continue with your GloRe invitation.",
+      "intro": "Confirm your email address to continue with your invitation to GloRe.",
+      "buttonInstruction": "Click the button below to continue and create your account:",
+      "button": "Continue with my invitation",
       "manualLink": "If the button above does not work, open the following link in your browser:",
-      "preview": "You've been invited to join GloRe. Accept the invitation to create your account and start using the platform.",
-      "subject": "You're invited to join GloRe"
+      "instructions": "This link works until your invitation expires.",
+      "footer": "You're receiving this email because you asked to continue with a GloRe invitation. If it wasn't you, you can ignore this email or <emailLink>let us know</emailLink>."
     },
     "auth/recovery": {
       "button": "Reset your password",
       "buttonInstruction": "Click the button below to reset it:",
       "footer": "You're receiving this email because you requested a password reset for your GloRe account. If you didn't request it, please ignore this email or <emailLink>let us know</emailLink>.",
-      "instructions": "This password reset link is valid for the next 24 hours.",
+      "instructions": "This password reset link is valid for the next hour.",
       "intro": "You recently requested to reset your password for your account.",
       "manualLink": "If the button above does not work, open the following link in your browser:",
       "preview": "You recently requested to reset your password for your GloRe account. To complete this process, please follow the secure link provided in this email to create a new password and regain access to your account.",
@@ -2862,7 +2938,7 @@
       "button": "Join the team",
       "buttonInstruction": "Click the button below to complete your profile and get started:",
       "description": "As part of the team, you'll be able to manage courses, review content, and help shape the learning experience on the platform.",
-      "expiry": "This invitation link is valid for the next 7 days.",
+      "expiry": "This invitation link is valid for the next {days, plural, one {day} other {# days}}.",
       "footer": "You're receiving this email because {invitee} invited you to join the GloRe team. If you weren't expecting this invitation, you can safely ignore this email or <emailLink>let us know</emailLink>.",
       "intro": "{invitee} has invited you to join GloRe as {role}.",
       "manualLink": "If the button above does not work, open the following link in your browser:",
@@ -2890,18 +2966,24 @@
       "button": "Verify email address",
       "buttonInstruction": "Click the button below to verify your new email address:",
       "footer": "You're receiving this email because a request was made to change the email address for your GloRe account. If you didn't request this, please ignore this email or <emailLink>let us know</emailLink>.",
-      "instructions": "This verification link is valid for the next 24 hours.",
+      "instructions": "This verification link is valid for the next hour.",
       "intro": "A request was made to change the email address on your account.",
       "manualLink": "If the button above does not work, open the following link in your browser:",
       "preview": "A request was made to change your GloRe account email. Click the link to verify your new address.",
       "subject": "Verify your new email address"
     },
     "certificate/assigned": {
-      "button": "Review certificate",
-      "footer": "You're receiving this email because you are a reviewer on the GloRe platform.",
-      "intro": "A new certificate has been submitted and assigned to you for review.",
-      "preview": "A new GloRe certificate has been submitted and assigned to you for review.",
-      "subject": "A new certificate is waiting for your review"
+      "subject_submitted": "A new certificate request is waiting for review",
+      "subject_assigned": "A certificate was assigned to you for review",
+      "subject_resubmitted": "A certificate was sent again for review",
+      "preview_submitted": "A volunteer in your organization submitted a certificate request.",
+      "preview_assigned": "A GloRe certificate request was assigned to you for review.",
+      "preview_resubmitted": "A volunteer sent a GloRe certificate back for review.",
+      "intro_submitted": "A volunteer in your organization submitted a certificate request. You can pick it up and start the review.",
+      "intro_assigned": "A certificate request was assigned to you for review.",
+      "intro_resubmitted": "A volunteer made the changes you asked for and sent the certificate again for review.",
+      "button": "Open the review",
+      "footer": "You receive this email because you are a tutor on GloRe."
     },
     "certificate/review": {
       "buttonApproved": "View your certificate",
@@ -2924,7 +3006,7 @@
       "detailsAcceptedNew": "Use the button below to set up your account and start using the platform.",
       "detailsComment": "Message from the reviewer: {comment}",
       "detailsPending": "Our team will review your request and notify you by email once a decision has been made.",
-      "expiry": "This link is valid for the next 7 days.",
+      "expiry": "This link is valid for the next {days, plural, one {day} other {# days}}.",
       "footer": "You're receiving this email because you submitted a request to join an organization on GloRe.",
       "introAccepted": "Your request to join {organizationName} has been approved.",
       "introPending": "We have received your registration request for {organizationName}.",
@@ -2935,17 +3017,6 @@
       "subjectAccepted": "Your request to join {organizationName} was approved",
       "subjectPending": "Registration request received for {organizationName}",
       "subjectRejected": "Your request to join {organizationName} was declined"
-    },
-    "organization/member-added": {
-      "button": "Sign in to GloRe",
-      "buttonNewUser": "Create your account",
-      "detailsExisting": "You can access the GloRe platform using your existing account.",
-      "detailsNew": "Use the button below to set up your account and start using the platform.",
-      "expiry": "This link is valid for the next 7 days.",
-      "footer": "You're receiving this email because you were added to an organization on GloRe.",
-      "intro": "{inviterName} has added you to {organizationName} as {role}.",
-      "preview": "You have been added to {organizationName} on the GloRe platform.",
-      "subject": "You've been added to {organizationName} on GloRe"
     },
     "organization/registration-request": {
       "button": "Review the request",
@@ -2966,7 +3037,133 @@
       "greetingUser": "Hello {user},",
       "homepage": "Homepage",
       "outro": "Thanks,",
-      "signature": "The GloRe Team"
+      "signature": "The GloRe Team",
+      "reasonMandatory": "This is a service email about your GloRe account, so it is sent whatever your email settings.",
+      "reasonOptional": "You receive this email because {topic} emails are turned on for your account.",
+      "managePreferences": "Change your email preferences",
+      "topic_learning": "learning",
+      "topic_organization": "organization",
+      "topic_reminders": "reminder",
+      "role_admin": "Admin",
+      "role_learner": "Learner",
+      "role_representative": "Representative",
+      "role_tutor": "Tutor",
+      "role_volunteer": "Volunteer"
+    },
+    "certificate/decision": {
+      "subject_rejected": "Your certificate request was rejected",
+      "subject_revoked": "Your certificate was revoked",
+      "preview_rejected": "Your tutor rejected your GloRe certificate request.",
+      "preview_revoked": "Your GloRe certificate was revoked.",
+      "intro_rejected": "Your tutor rejected your certificate request.",
+      "intro_revoked": "Your certificate was revoked.",
+      "details_rejected": "The reason is below. After you address it, you can send a new request.",
+      "details_revoked": "It stays in your wallet marked as revoked, and its verification page now shows the revocation.",
+      "reasonLabel": "Reason",
+      "button": "View details",
+      "footer": "You receive this email because you requested a certificate on GloRe."
+    },
+    "certificate/reminder": {
+      "subject_reminder": "A certificate has waited {days, plural, one {# day} other {# days}} for your review",
+      "subject_escalated": "A certificate review is overdue",
+      "preview_reminder": "A certificate request is still waiting for your review.",
+      "preview_escalated": "A certificate request in your organization has waited {days, plural, one {# day} other {# days}} for a review.",
+      "intro_reminder": "A certificate request assigned to you has been waiting for {days, plural, one {# day} other {# days}}.",
+      "intro_escalated": "A certificate request in your organization has waited {days, plural, one {# day} other {# days}} without a review.",
+      "details_reminder": "Please review it soon, or ask your organization to reassign it if you cannot.",
+      "details_escalated": "You can reassign it to another tutor or follow up with the assigned tutor.",
+      "button_reminder": "Open the review",
+      "button_escalated": "Open the certificate",
+      "footer_reminder": "You receive this email because you review certificates on GloRe.",
+      "footer_escalated": "You receive this email because you manage an organization on GloRe."
+    },
+    "learning/eligible": {
+      "subject": "You can now request your GloRe certificate",
+      "preview": "You completed enough skill courses to request your certificate.",
+      "intro": "You completed enough skill courses to request your GloRe certificate.",
+      "details": "Add your volunteering experience, choose your skills, and send the request to a tutor.",
+      "button": "Start my certificate",
+      "footer": "You receive this email because you are learning on GloRe."
+    },
+    "organization/invitation": {
+      "subject": "You're invited to join {organizationName} on GloRe",
+      "subjectReminder": "Your invitation to {organizationName} expires soon",
+      "preview": "{organizationName} invited you to GloRe. Accept before the invitation expires.",
+      "previewReminder": "Your invitation to {organizationName} is still waiting for you.",
+      "intro": "You are invited to join {organizationName} on GloRe as {role}.",
+      "introInviter": "{inviter} invited you to join {organizationName} on GloRe as {role}.",
+      "introReminder": "Your invitation to join {organizationName} on GloRe as {role} is still open.",
+      "about": "GloRe is the platform where volunteers earn certificates for the soft skills they build through volunteering.",
+      "messageLabel": "Message from {inviter}",
+      "messageAnonymous": "Message from the organization",
+      "expiry": "This invitation is valid until {expiresAt, date, long}.",
+      "expiryReminder": "It expires on {expiresAt, date, long}, so please answer before then.",
+      "button": "View the invitation",
+      "manualLink": "If the button does not work, open this link in your browser:",
+      "footer": "You receive this email because someone invited you to join an organization on GloRe. If you were not expecting it, you can ignore it or contact us."
+    },
+    "organization/join-request-received": {
+      "subject": "{requesterName} asked to join {organizationName}",
+      "preview": "{requesterName} is waiting for your answer.",
+      "intro": "{requesterName} asked to join {organizationName} on GloRe.",
+      "details": "Review the request to approve or decline it.",
+      "button": "Review the request",
+      "footer": "You receive this email because you manage {organizationName} on GloRe."
+    },
+    "organization/membership": {
+      "subject_role_changed": "Your role in {organizationName} changed",
+      "subject_removed": "You were removed from {organizationName}",
+      "subject_ownership_gained": "You are now the owner of {organizationName}",
+      "subject_ownership_left": "You handed over {organizationName}",
+      "preview_role_changed": "Your role in {organizationName} on GloRe is now {role}.",
+      "preview_removed": "You are no longer a member of {organizationName} on GloRe.",
+      "preview_ownership_gained": "Ownership of {organizationName} on GloRe was transferred to you.",
+      "preview_ownership_left": "Ownership of {organizationName} on GloRe was transferred to another member.",
+      "intro_role_changed": "Your role in {organizationName} on GloRe is now {role}.",
+      "intro_removed": "You were removed from {organizationName} on GloRe.",
+      "intro_ownership_gained": "Ownership of {organizationName} on GloRe was transferred to you.",
+      "intro_ownership_left": "Ownership of {organizationName} on GloRe was transferred to another member.",
+      "details_role_changed": "Your role decides what you can see and do in the organization.",
+      "details_removed": "Your account and any certificates you earned stay yours. If you think this is a mistake, ask the organization to invite you again.",
+      "details_ownership_gained": "As the owner you manage members, invitations, and the organization settings.",
+      "details_ownership_left": "You are no longer the owner. You keep access to your account.",
+      "button": "Open GloRe",
+      "footer": "You receive this email because your membership in {organizationName} on GloRe changed."
+    },
+    "team/role-changed": {
+      "subject_set": "Your role in the GloRe team changed",
+      "subject_removed": "Your access to the GloRe team was removed",
+      "preview_set": "Your role in the GloRe team is now {role}.",
+      "preview_removed": "You no longer have a role in the GloRe team.",
+      "intro_set": "Your role in the GloRe team is now {role}.",
+      "intro_removed": "You no longer have a role in the GloRe team.",
+      "details_set": "Your role decides which admin tools you can use.",
+      "details_removed": "Your account stays active as a regular account.",
+      "role_admin": "Administrator",
+      "role_editor": "Editor",
+      "button": "Open GloRe",
+      "footer": "You receive this email because your GloRe team role changed."
+    },
+    "account/welcome": {
+      "subject": "Welcome to GloRe",
+      "preview": "Your GloRe account is ready.",
+      "intro": "Welcome to GloRe! Your account is ready. This is your username:",
+      "details": "You can sign in with your email address or with your username.",
+      "button": "Open GloRe",
+      "footer": "You receive this email because you created a GloRe account."
+    },
+    "account/status": {
+      "subject_suspended": "Your GloRe account was suspended",
+      "subject_deleted": "Your GloRe account was deleted",
+      "preview_suspended": "Your GloRe account was suspended.",
+      "preview_deleted": "Your GloRe account was deleted.",
+      "intro_suspended": "Your GloRe account was suspended.",
+      "intro_deleted": "Your GloRe account was deleted, as you asked.",
+      "details_suspended": "The suspension has no end date. Contact us if you think this is a mistake.",
+      "details_suspended_until": "The suspension ends on {expiresAt, date, long}. Contact us if you think this is a mistake.",
+      "details_deleted": "Your profile, progress, and certificates were deleted, so certificate verification links no longer work.",
+      "reasonLabel": "Reason",
+      "footer": "You receive this email because of a change to your GloRe account."
     }
   },
   "PWA": {
@@ -2976,7 +3173,8 @@
     "installDismiss": "Not now",
     "offlineTitle": "You are offline",
     "offlineDescription": "Connect to the internet to continue using GloRe.",
-    "offlineRetry": "Retry"
+    "offlineRetry": "Retry",
+    "installIosHint": "Tap the Share button, then choose Add to Home Screen."
   },
   "Invite": {
     "metaTitle": "Invitation",
@@ -3332,5 +3530,164 @@
         "saveError": "The compass could not be saved. Please try again."
       }
     }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "bell": "Notifications",
+    "bellUnread": "{count, plural, one {Notifications, # unread} other {Notifications, # unread}}",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all notifications",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "unread": "Unread",
+    "emptyTitle": "You are all caught up",
+    "emptyDescription": "New updates about your certificates, courses, and organizations will show up here.",
+    "emptyUnreadTitle": "No unread notifications",
+    "emptyUnreadDescription": "Everything in this view has been read.",
+    "loadMore": "Show more",
+    "filterStatus": "Filter by status",
+    "filterCategory": "Filter by topic",
+    "filter_all": "All",
+    "filter_unread": "Unread",
+    "category_all": "All topics",
+    "category_certificates": "Certificates",
+    "category_learning": "Learning",
+    "category_organization": "Organization",
+    "category_account": "Account",
+    "fallbackTitle": "You have a new update",
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "learner": "Learner",
+      "representative": "Representative",
+      "tutor": "Tutor",
+      "volunteer": "Volunteer"
+    },
+    "events": {
+      "certificate_submitted": {
+        "title": "A certificate was submitted for review",
+        "body": "Open it to start the review."
+      },
+      "certificate_assigned": {
+        "title": "A certificate was assigned to you",
+        "body": "Open it to start the review."
+      },
+      "certificate_claimed": {
+        "title": "A tutor took your certificate request",
+        "body": "Your request is now under review."
+      },
+      "certificate_unassigned": {
+        "title": "A certificate is waiting for a tutor",
+        "body": "The previous tutor stepped away from this request."
+      },
+      "certificate_changes_requested": {
+        "title": "Your tutor asked for changes",
+        "body": "Update your certificate and send it again."
+      },
+      "certificate_resubmitted": {
+        "title": "A certificate was sent again for review",
+        "body": "The volunteer made the requested changes."
+      },
+      "certificate_approved": {
+        "title": "A certificate was approved",
+        "body": "The certificate is ready to download."
+      },
+      "certificate_rejected": {
+        "title": "A certificate request was rejected",
+        "body": "Open it to read the reason."
+      },
+      "certificate_revoked": {
+        "title": "A certificate was revoked",
+        "body": "Open it to read the reason."
+      },
+      "certificate_withdrawn": {
+        "title": "A certificate request was withdrawn",
+        "body": "The volunteer took the request back."
+      },
+      "certificate_review_reminder": {
+        "title": "A review is waiting for you",
+        "body": "This request has been waiting for {days} days."
+      },
+      "certificate_review_escalated": {
+        "title": "A certificate review is overdue",
+        "body": "Nobody reviewed this request in {days} days."
+      },
+      "learning_eligible": {
+        "title": "You can request your certificate",
+        "body": "You completed enough skills to start."
+      },
+      "course_completed": {
+        "title": "Course completed",
+        "body": "Well done. Pick your next course or check your certificate."
+      },
+      "organization_application_received": {
+        "title": "New organization application",
+        "body": "{organizationName} wants to join GloRe."
+      },
+      "invitation_sent": {
+        "title": "You are invited to {organizationName}",
+        "body": "Open the invitation to answer. Your role would be {role}."
+      },
+      "invitation_accepted": {
+        "title": "An invitation was accepted",
+        "body": "A new member joined your organization."
+      },
+      "invitation_declined": {
+        "title": "An invitation was declined",
+        "body": "Check the invitations tab for details."
+      },
+      "join_request_created": {
+        "title": "New request to join",
+        "body": "{name} asked to join {organizationName}."
+      },
+      "join_request_decided_accepted": {
+        "title": "Your request was approved",
+        "body": "You are now a member of {organizationName}."
+      },
+      "join_request_decided_rejected": {
+        "title": "Your request was declined",
+        "body": "{organizationName} did not accept your request."
+      },
+      "member_joined": {
+        "title": "A new member joined",
+        "body": "Open the member list to see who is new."
+      },
+      "member_role_changed": {
+        "title": "Your role changed",
+        "body": "Your new role is {role}."
+      },
+      "member_left": {
+        "title": "A member left the organization",
+        "body": "Open the member list for details."
+      },
+      "organization_ownership_transferred": {
+        "title": "Organization ownership changed",
+        "body": "Ownership was handed over to a new owner."
+      },
+      "team_invited": {
+        "title": "You are invited to the GloRe team",
+        "body": "Your role would be {role}."
+      },
+      "team_role_changed_set": {
+        "title": "Your team role changed",
+        "body": "Your new role is {role}."
+      },
+      "team_role_changed_removed": {
+        "title": "Your team access was removed",
+        "body": "You no longer have a team role."
+      }
+    }
+  },
+  "Legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "qualityCharter": "Quality Charter",
+    "navigation": "Legal documents",
+    "home": "Go to GloRe",
+    "updated": "Last updated {date}",
+    "temporaryTitle": "Temporary text",
+    "temporaryDescription": "This document is a placeholder and will be replaced by the final version.",
+    "fallbackNotice": "This document is not available in your language yet. You are reading the English version.",
+    "unavailable": "This document is not available yet."
   }
 }

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { desc, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 
@@ -11,7 +11,7 @@ import { OnboardingForm } from '@/components/features/onboarding'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
-import { teamInvitations } from '@/db/schema'
+import { users } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { generateIntlMetadata } from '@/lib/metadata'
@@ -25,13 +25,12 @@ const OnboardingContent = async () => {
   const user = await getAuthUser()
   if (!user?.email) redirect(AUTH_ROOT)
 
-  const invitation = await db.query.teamInvitations.findFirst({
-    where: eq(teamInvitations.userId, user.id),
+  const profile = await db.query.users.findFirst({
     columns: { firstName: true, lastName: true, locale: true },
-    orderBy: desc(teamInvitations.createdAt),
+    where: eq(users.id, user.id),
   })
 
-  const locale = (invitation?.locale as Locale) ?? (await getLocaleCookie()) ?? DEFAULT_LOCALE
+  const locale = (profile?.locale as Locale | null) ?? (await getLocaleCookie()) ?? DEFAULT_LOCALE
   const messages = await getMessages({ locale })
 
   return (
@@ -40,8 +39,8 @@ const OnboardingContent = async () => {
         <I18nProvider locale={locale} messages={messages}>
           <OnboardingForm
             email={user.email}
-            firstName={invitation?.firstName ?? ''}
-            lastName={invitation?.lastName ?? ''}
+            firstName={profile?.firstName ?? ''}
+            lastName={profile?.lastName ?? ''}
             locale={locale}
           />
         </I18nProvider>

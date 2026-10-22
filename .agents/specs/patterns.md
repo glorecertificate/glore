@@ -112,7 +112,7 @@ A TS `enum` is used ONLY for `CacheTag` in `src/lib/cache.ts`. Every other enum 
 
 Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `titleize`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce` (default 500ms, with `.cancel()` and `.flush()`), `throttle`, `sleep`, and the `tempId()` / `isTempId()` pair for client-created records. Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder (never `Date.now()`, which overflows `int4`) and `isTempId()` decides insert vs. update.
 
-`src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-file-upload` (presigned R2 PUT flow), `use-metadata`, `use-mounted`, `use-navigation-guard` (blocks navigation on unsaved changes), `use-pwa`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
+`src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-file-upload` (presigned R2 PUT flow), `use-metadata`, `use-mounted`, `use-navigation-guard` (blocks navigation on unsaved changes), `use-poll` (visible-tab polling with `refresh`), `use-pwa` (captures `beforeinstallprompt` at module scope so late mounts still see it), `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
 
 `useCookies` writes script-visible cookies (no `HttpOnly`, URI-encoded values). A server `setCookie` for a cookie the client also writes passes `{ httpOnly: false }`, because a script cannot overwrite an `HttpOnly` cookie.
 
@@ -142,14 +142,6 @@ Top-level namespaces match feature domains: `Auth`, `Courses`, `Certificates`, `
 
 react-hook-form with `@hookform/resolvers` and zod. Disable the submit button with `defaultFormDisabled(form)`, call the server action from `onSubmit`, and surface the result with sonner (`toast.success` / `toast.error`).
 
-## Email templates
+## Email templates and notifications
 
-`src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite` (organization invitation link carrying the `proof` query), `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`, `organization/registration-request` (new organization registration, sent to platform admins).
-
-## Events and notifications
-
-- Every state transition writes one `activity_events` row with `recordEvent(tx, event)` (`src/db/mutations/activity-event.ts`) inside its transaction.
-- After the commit, the action calls `notify(event)` (`src/actions/notifications/notify.ts`), which never throws.
-- Event types and payloads live in `src/db/queries/activity-event.ts`; recipients, mail category, template, and deep link per type live in `src/actions/notifications/catalog.ts`.
-- `notify` writes in-app `notifications` rows, skips the actor unless the type sets `notifyActor`, and mails only when the type has a template.
-- Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`; `mandatory` mail always goes.
+Templates live in `src/emails/<group>/<name>.tsx` (React Email), registered in `TEMPLATES` in `src/lib/email.ts`; events, `notify`, and the catalog are in `architecture.md` "Events, notifications, and email".

@@ -1,12 +1,35 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 type DisplayMode = ReturnType<typeof getDisplayMode>
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
+}
+
+let deferredPrompt: BeforeInstallPromptEvent | null = null
+const listeners = new Set<() => void>()
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener)
+  return () => {
+    listeners.delete(listener)
+  }
+}
+
+const publish = (next: BeforeInstallPromptEvent | null) => {
+  deferredPrompt = next
+  for (const listener of listeners) listener()
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault()
+    publish(event as BeforeInstallPromptEvent)
+  })
+  window.addEventListener('appinstalled', () => publish(null))
 }
 
 const getDisplayMode = () => {
@@ -27,8 +50,13 @@ const registerServiceWorker = async () => {
 }
 
 export const usePWA = () => {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const prompt = useSyncExternalStore(
+    subscribe,
+    () => deferredPrompt,
+    () => null
+  )
   const [installed, setInstalled] = useState(false)
+  const [ios, setIos] = useState(false)
   const displayModeRef = useRef<DisplayMode>(undefined)
 
   const promptInstall = async () => {
@@ -37,27 +65,22 @@ export const usePWA = () => {
     const { outcome } = await prompt.userChoice
     if (outcome !== 'accepted') return
     setInstalled(true)
-    setPrompt(null)
-  }
-
-  const beforeInstall = (e: Event) => {
-    e.preventDefault()
-    setPrompt(e as BeforeInstallPromptEvent)
+    publish(null)
   }
 
   useEffect(() => {
     const displayMode = getDisplayMode()
     displayModeRef.current = displayMode
     void registerServiceWorker()
-    window.addEventListener('beforeinstallprompt', beforeInstall)
     setInstalled(displayMode === 'standalone' || ('standalone' in navigator && navigator.standalone === true))
-    return () => window.removeEventListener('beforeinstallprompt', beforeInstall)
+    setIos(/iPad|iPhone|iPod/u.test(navigator.userAgent))
   }, [])
 
   return {
     canInstall: Boolean(prompt) && !installed,
     displayMode: displayModeRef.current as DisplayMode,
     installed,
+    ios,
     promptInstall,
   }
 }

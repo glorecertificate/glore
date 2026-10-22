@@ -5,6 +5,7 @@ import { createSearchParamsCache } from 'nuqs/server'
 import { cookies } from '@/actions/cookies'
 import { AuthFlow } from '@/components/features/auth/auth-flow'
 import { authParsers } from '@/components/features/auth/params'
+import { LegalLinks } from '@/components/features/legal/legal-links'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { intlMetadata } from '@/lib/metadata'
@@ -23,7 +24,8 @@ const LoginContent = async ({ searchParams }: { searchParams: PageProps<'/login'
   return (
     <>
       <AuthFlow params={params} username={username} />
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-4">
+        <LegalLinks />
         <ThemeSwitch className="text-sm" defaultTheme={theme} tooltip={{ showArrow: false, side: 'top' }} />
       </div>
     </>

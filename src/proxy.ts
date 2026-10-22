@@ -10,6 +10,7 @@ import {
   INVITE_ROOT,
   JOIN_LINK_ROOT,
   JOIN_ROOT,
+  LEGAL_ROOTS,
   ONBOARDING_ROOT,
   REGISTER_ROOT,
   VERIFY_ROOT,
@@ -25,6 +26,7 @@ export const config: ProxyConfig = {
 const isPublicPath = (pathname: string) =>
   pathname === AUTH_ROOT ||
   pathname === REGISTER_ROOT ||
+  (LEGAL_ROOTS as readonly string[]).includes(pathname) ||
   pathname.startsWith(JOIN_ROOT) ||
   pathname.startsWith(`${INVITE_ROOT}/`) ||
   pathname.startsWith(`${JOIN_LINK_ROOT}/`) ||

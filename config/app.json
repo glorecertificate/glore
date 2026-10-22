@@ -5,6 +5,8 @@
   "minActivityHours": 100,
   "minActivityMonths": 3,
   "invitationExpiryDays": 7,
+  "invitationReminderDay": 5,
+  "invitationRetentionDays": 30,
   "reviewReminderDays": [3, 7],
   "maxBulkInvites": 50,
   "maxAvatarSize": 2048,

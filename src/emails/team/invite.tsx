@@ -2,6 +2,7 @@ import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-i
 import { Button, Hr, Link, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
+import { INVITATION_EXPIRY_DAYS } from '@/lib/constants'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
 
@@ -66,7 +67,7 @@ const TeamInviteEmail = ({
         {url}
       </Link>
       <Hr className="mx-0 my-6 border-[#e4e4e7]" />
-      <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('expiry')}</Text>
+      <Text className="m-0 text-[12px] leading-5 text-[#71717a]">{t('expiry', { days: INVITATION_EXPIRY_DAYS })}</Text>
     </EmailLayout>
   )
 }

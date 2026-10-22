@@ -11,6 +11,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { PwaInstallPrompt } from '@/components/layout/pwa-install-prompt'
 import { I18nProvider } from '@/components/providers/i18n'
 import { MotionProvider } from '@/components/providers/motion'
 import { SearchParamsProvider } from '@/components/providers/search-params'
@@ -77,6 +78,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
               <MotionProvider>
                 {children}
                 <Toaster />
+                <PwaInstallPrompt />
               </MotionProvider>
             </ThemeProvider>
           </I18nProvider>

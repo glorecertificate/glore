@@ -1,8 +1,8 @@
 import 'server-only'
 
-import { eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm'
 
-import { type Transaction } from '@/db/client'
+import { type Transaction, db } from '@/db/client'
 import {
   certificateSkills,
   certificates,
@@ -48,4 +48,37 @@ export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }
   await tx.delete(memberships).where(eq(memberships.userId, userId))
   const [deleted] = await tx.delete(users).where(eq(users.id, userId)).returning({ avatarUrl: users.avatarUrl })
   return deleted
+}
+
+export const mergeNotificationPreferences = async (
+  userId: string,
+  patch: Partial<Record<'learning' | 'organization' | 'reminders', boolean>>
+) => {
+  await db
+    .update(users)
+    .set({ notificationPreferences: sql`${users.notificationPreferences} || ${JSON.stringify(patch)}::jsonb` })
+    .where(eq(users.id, userId))
+}
+
+export const completeOnboardingProfile = async (
+  tx: Transaction,
+  userId: string,
+  values: {
+    birthPlace: string
+    birthday: string
+    firstName: string
+    lastName: string
+    locale: string | null
+    name: string
+    nationality: string
+    phone: string | null
+    username: string
+  }
+) => {
+  const [row] = await tx
+    .update(users)
+    .set({ ...values, onboardedAt: new Date().toISOString() })
+    .where(and(eq(users.id, userId), isNull(users.onboardedAt)))
+    .returning({ id: users.id })
+  return row ?? null
 }

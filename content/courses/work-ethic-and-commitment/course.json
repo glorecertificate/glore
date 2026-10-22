@@ -1,0 +1,41 @@
+{
+  "slug": "work-ethic-and-commitment",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "medal",
+  "title": {
+    "en": "Work ethic and commitment",
+    "es": "Ética de trabajo y compromiso",
+    "it": "Etica del lavoro e impegno"
+  },
+  "description": {
+    "en": "Put in steady, honest effort, do the work well when nobody is checking, and keep your promises or say early when you cannot.",
+    "es": "Dedica un esfuerzo constante y honesto, haz bien el trabajo cuando nadie te controla y cumple lo prometido o avisa pronto cuando no puedas.",
+    "it": "Impegnati in modo costante e onesto, fai bene il lavoro anche quando nessuno controlla e mantieni le promesse, o avvisa presto quando non puoi."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Keep up steady effort on a task, including the dull parts",
+      "Do work to the same standard whether or not anyone is watching",
+      "Keep a commitment, or tell people early when you cannot",
+      "Say yes only to what you can do well",
+      "Carry on with a task until it is properly finished"
+    ],
+    "es": [
+      "Mantener un esfuerzo constante en una tarea, también en las partes aburridas",
+      "Hacer el trabajo con el mismo nivel te estén mirando o no",
+      "Cumplir un compromiso o avisar pronto cuando no puedas",
+      "Decir que sí solo a lo que puedes hacer bien",
+      "Seguir con una tarea hasta terminarla como es debido"
+    ],
+    "it": [
+      "Mantenere un impegno costante su un compito, anche nelle parti noiose",
+      "Fare il lavoro con lo stesso livello che qualcuno guardi o no",
+      "Mantenere un impegno o avvisare presto quando non puoi",
+      "Dire di sì solo a ciò che puoi fare bene",
+      "Portare avanti un compito finché non è finito come si deve"
+    ]
+  },
+  "sortOrder": 8
+}

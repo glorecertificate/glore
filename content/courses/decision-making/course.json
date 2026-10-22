@@ -1,0 +1,41 @@
+{
+  "slug": "decision-making",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "signpost",
+  "title": {
+    "en": "Decision making",
+    "es": "Toma de decisiones",
+    "it": "Capacità decisionale"
+  },
+  "description": {
+    "en": "Compare your options, choose in time with the information you have, and stand behind the result, even when you cannot be sure.",
+    "es": "Compara tus opciones, elige a tiempo con la información que tienes y responde del resultado, aunque no puedas estar seguro.",
+    "it": "Confronta le tue opzioni, scegli in tempo con le informazioni che hai e rispondi del risultato, anche quando non puoi essere sicuro."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "List the options you have and what each one costs or brings",
+      "Decide which information you need and when you have enough",
+      "Choose in time instead of waiting for certainty",
+      "Involve the people affected by a decision when it makes sense",
+      "Take responsibility for a choice and learn from how it turned out"
+    ],
+    "es": [
+      "Enumerar las opciones que tienes y lo que cuesta o aporta cada una",
+      "Decidir qué información necesitas y cuándo ya tienes suficiente",
+      "Elegir a tiempo en lugar de esperar a tener certeza",
+      "Contar con las personas afectadas por una decisión cuando tiene sentido",
+      "Asumir la responsabilidad de una elección y aprender de cómo salió"
+    ],
+    "it": [
+      "Elencare le opzioni che hai e ciò che ognuna costa o porta",
+      "Stabilire quali informazioni ti servono e quando ne hai abbastanza",
+      "Scegliere in tempo invece di aspettare la certezza",
+      "Coinvolgere le persone toccate da una decisione quando ha senso",
+      "Assumerti la responsabilità di una scelta e imparare da come è andata"
+    ]
+  },
+  "sortOrder": 6
+}

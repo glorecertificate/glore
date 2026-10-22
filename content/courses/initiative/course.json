@@ -1,0 +1,41 @@
+{
+  "slug": "initiative",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "rocket",
+  "title": {
+    "en": "Initiative",
+    "es": "Iniciativa",
+    "it": "Iniziativa"
+  },
+  "description": {
+    "en": "Notice what needs doing, start it without waiting to be asked, and know when to check in with others first.",
+    "es": "Date cuenta de lo que hay que hacer, empieza sin esperar a que te lo pidan y sabe cuándo consultarlo antes con los demás.",
+    "it": "Accorgiti di ciò che c'è da fare, comincia senza aspettare che te lo chiedano e sappi quando confrontarti prima con gli altri."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice a need or an improvement that nobody has asked you to handle",
+      "Turn an idea into a small first step you can take today",
+      "Check with the right people before you act when others are affected",
+      "Keep going after the first step and follow your idea through",
+      "Learn from an idea that did not work and try a smaller version"
+    ],
+    "es": [
+      "Detectar una necesidad o una mejora que nadie te ha pedido atender",
+      "Convertir una idea en un primer paso pequeño que puedas dar hoy",
+      "Consultar con las personas adecuadas antes de actuar cuando hay otros afectados",
+      "Seguir adelante después del primer paso y llevar tu idea hasta el final",
+      "Aprender de una idea que no funcionó e intentar una versión más pequeña"
+    ],
+    "it": [
+      "Accorgerti di un bisogno o di un miglioramento di cui nessuno ti ha chiesto di occuparti",
+      "Trasformare un'idea in un primo passo piccolo che puoi fare oggi",
+      "Confrontarti con le persone giuste prima di agire quando altri sono coinvolti",
+      "Andare avanti dopo il primo passo e portare a termine la tua idea",
+      "Imparare da un'idea che non ha funzionato e provare una versione più piccola"
+    ]
+  },
+  "sortOrder": 7
+}

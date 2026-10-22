@@ -1,0 +1,41 @@
+{
+  "slug": "conflict-management",
+  "type": "skill",
+  "skillGroup": "social-skills",
+  "icon": "heart-handshake",
+  "title": {
+    "en": "Conflict management",
+    "es": "Gestión de conflictos",
+    "it": "Gestione dei conflitti"
+  },
+  "description": {
+    "en": "Stay calm when you disagree, find out what each person needs, and talk until you reach a solution that works for everyone.",
+    "es": "Mantén la calma cuando no estás de acuerdo, averigua qué necesita cada persona y habla hasta llegar a una solución que funcione para todas.",
+    "it": "Mantieni la calma quando non sei d'accordo, scopri di cosa ha bisogno ciascuno e parla fino a trovare una soluzione che vada bene a tutti."
+  },
+  "durationMinutes": 40,
+  "outcomes": {
+    "en": [
+      "Notice your own emotions in a disagreement and calm down before you answer",
+      "Tell apart what people say they want from what they need",
+      "Talk about a problem without blaming the person",
+      "Look for a solution that works for everyone involved",
+      "Recognise when a conflict needs the coordinator or another responsible person"
+    ],
+    "es": [
+      "Notar tus emociones en un desacuerdo y calmarte antes de responder",
+      "Distinguir lo que las personas dicen que quieren de lo que necesitan",
+      "Hablar de un problema sin culpar a la persona",
+      "Buscar una solución que funcione para todas las personas implicadas",
+      "Reconocer cuándo un conflicto necesita a la coordinación u otra persona responsable"
+    ],
+    "it": [
+      "Accorgerti delle tue emozioni in un disaccordo e calmarti prima di rispondere",
+      "Distinguere ciò che le persone dicono di volere da ciò di cui hanno bisogno",
+      "Parlare di un problema senza accusare la persona",
+      "Cercare una soluzione che vada bene a tutte le persone coinvolte",
+      "Riconoscere quando un conflitto richiede il coordinatore o un'altra persona responsabile"
+    ]
+  },
+  "sortOrder": 3
+}

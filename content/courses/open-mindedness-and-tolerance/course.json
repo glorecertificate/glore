@@ -1,0 +1,41 @@
+{
+  "slug": "open-mindedness-and-tolerance",
+  "type": "skill",
+  "skillGroup": "social-skills",
+  "icon": "door-open",
+  "title": {
+    "en": "Open-mindedness and tolerance",
+    "es": "Apertura de mente y tolerancia",
+    "it": "Apertura mentale e tolleranza"
+  },
+  "description": {
+    "en": "Stay curious about ideas and ways of living that are new to you, and treat different opinions and practices with fairness and respect.",
+    "es": "Mantén la curiosidad por ideas y formas de vivir que son nuevas para ti, y trata las opiniones y prácticas distintas con justicia y respeto.",
+    "it": "Resta curioso verso idee e modi di vivere che per te sono nuovi, e tratta opinioni e pratiche diverse con equità e rispetto."
+  },
+  "durationMinutes": 35,
+  "outcomes": {
+    "en": [
+      "Notice your first reaction to something unfamiliar and pause before you judge",
+      "Ask respectful questions to understand another person's idea or practice",
+      "Listen to an opinion you disagree with and understand the reasons behind it",
+      "Test your assumptions about groups of people against the person in front of you",
+      "Tell the difference between tolerating a difference and accepting harm to others"
+    ],
+    "es": [
+      "Notar tu primera reacción ante algo desconocido y hacer una pausa antes de juzgar",
+      "Hacer preguntas respetuosas para entender la idea o la práctica de otra persona",
+      "Escuchar una opinión con la que no estás de acuerdo y entender sus razones",
+      "Contrastar tus suposiciones sobre grupos de personas con la persona que tienes delante",
+      "Distinguir entre tolerar una diferencia y aceptar que se haga daño a otras personas"
+    ],
+    "it": [
+      "Accorgerti della tua prima reazione davanti a qualcosa di sconosciuto e fermarti prima di giudicare",
+      "Fare domande rispettose per capire l'idea o la pratica di un'altra persona",
+      "Ascoltare un'opinione con cui non sei d'accordo e capirne le ragioni",
+      "Mettere alla prova le tue supposizioni su gruppi di persone con la persona che hai davanti",
+      "Distinguere tra tollerare una differenza e accettare che si faccia del male ad altri"
+    ]
+  },
+  "sortOrder": 4
+}

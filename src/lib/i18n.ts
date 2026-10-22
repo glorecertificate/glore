@@ -44,6 +44,14 @@ export const LOCALE_ITEMS = Object.entries(locales).map(([locale, item]) => ({ .
 export const TITLEIZED_LOCALES = titleizedLocales as Locale[]
 export const INTL_PLACEHOLDER = LOCALES.reduce((record, locale) => ({ ...record, [locale]: '' }), {} as IntlRecord<''>)
 
+export const clientMessages = ({
+  About: _about,
+  Email: _email,
+  Legal: _legal,
+  Metadata: _metadata,
+  ...messages
+}: Messages) => messages as Messages
+
 export const localizeRecord = <T>(record: IntlRecord<T>, locale: Locale, fallback?: Locale) => {
   if (!record || typeof record !== 'object') return ''
   if (locale in record) return record[locale] as string

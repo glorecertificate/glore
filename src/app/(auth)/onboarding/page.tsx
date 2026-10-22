@@ -13,7 +13,7 @@ import { I18nProvider } from '@/components/providers/i18n'
 import { db } from '@/db/client'
 import { users } from '@/db/schema'
 import { AUTH_ROOT } from '@/lib/constants'
-import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -36,7 +36,7 @@ const OnboardingContent = async () => {
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="mx-auto w-full max-w-2xl space-y-8">
-        <I18nProvider locale={locale} messages={messages}>
+        <I18nProvider locale={locale} messages={clientMessages(messages)}>
           <OnboardingForm
             email={user.email}
             firstName={profile?.firstName ?? ''}

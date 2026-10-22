@@ -123,7 +123,7 @@ describe('generateCertificatePdf', () => {
   })
 
   it('localizes labels and falls back to English', async () => {
-    expect((await certificatePdfLabels('it')).title).toBe('Certificato di soft skills')
+    expect((await certificatePdfLabels('it')).title).toBe('Certificato di soft skill')
     expect((await certificatePdfLabels('fr')).title).toBe('Soft skills certificate')
     expect((await certificatePdfLabels('es')).levels).toHaveLength(5)
   })

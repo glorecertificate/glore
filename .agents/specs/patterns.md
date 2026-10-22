@@ -135,9 +135,11 @@ Check these before writing a new helper. `src/lib/utils.ts` exports `cn`, `hexTo
 
 ## Internationalization
 
-Config lives in `src/lib/i18n.ts`, sourced from `config/i18n.json`; the next-intl request config is `src/i18n.ts`. The locale lives in the `NEXT_LOCALE` cookie with no path prefix. Copy is sentence case, never CSS `capitalize`. Use "Log in" and "Log out" (es "Iniciar sesión" and "Cerrar sesión", it "Accedi" and "Esci"), the `…` character instead of three dots, and informal "tu" in es and it. Show roles through `formatRoleLabel`, never by titleizing the raw value.
-
-Top-level namespaces match feature domains: `Auth`, `Courses`, `Certificates`, `Admin`, `Layout`, `Common`, `Metadata`. `Components.<Name>` is reserved for generic primitives in `src/components/ui/`, `Intl.Countries.*` and `Intl.Languages.*` carry i18n data, and `Email.*` covers email templates.
+- Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config `src/i18n.ts`, locale the `NEXT_LOCALE` cookie with no path prefix.
+- Pass messages to `I18nProvider` through `clientMessages()`, which drops the server-only `About`, `Email`, `Legal`, and `Metadata`.
+- Copy is sentence case (never CSS `capitalize`) with `…`, US English in en, Peninsular informal "tú" in es, informal "tu" in it.
+- Use "Log in" and "Log out" (es "Iniciar sesión", "Cerrar sesión"; it "Accedi", "Esci"); show roles through `formatRoleLabel`.
+- Namespaces match feature domains; `Components.<Name>` is for `src/components/ui/`, `Intl.*` for country and language data, `Email.*` for templates.
 
 ## Forms
 

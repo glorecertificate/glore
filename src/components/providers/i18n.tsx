@@ -5,7 +5,14 @@ import { createContext, use, useState } from 'react'
 import { type Locale, type Messages, NextIntlClientProvider } from 'next-intl'
 
 import { setLocaleCookie } from '@/actions/cookies'
-import { DEFAULT_LOCALE, type IntlRecord, LOCALE_ITEMS, TITLEIZED_LOCALES, localizeRecord } from '@/lib/i18n'
+import {
+  DEFAULT_LOCALE,
+  type IntlRecord,
+  LOCALE_ITEMS,
+  TITLEIZED_LOCALES,
+  clientMessages,
+  localizeRecord,
+} from '@/lib/i18n'
 
 interface I18nContextValue {
   locale?: Locale
@@ -30,7 +37,7 @@ const useI18nContext = (value: I18nContextValue) => {
   const setLocale = async (locale: Locale) => {
     if (!messageStore[locale]) {
       const messagesModule = await import(`~/messages/${locale}`)
-      setMessageStore(prev => ({ ...prev, [locale]: messagesModule.default }))
+      setMessageStore(prev => ({ ...prev, [locale]: clientMessages(messagesModule.default) }))
     }
     setLocaleState(locale)
     await setLocaleCookie(locale)

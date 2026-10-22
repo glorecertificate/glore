@@ -6,7 +6,6 @@ import { Suspense } from 'react'
 
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { type Messages } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { getLocaleCookie } from '@/actions/cookies'
@@ -17,7 +16,7 @@ import { MotionProvider } from '@/components/providers/motion'
 import { SearchParamsProvider } from '@/components/providers/search-params'
 import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
-import { DEFAULT_LOCALE } from '@/lib/i18n'
+import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
 import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
 import { cn, publicFile } from '@/lib/utils'
 
@@ -55,7 +54,6 @@ const geistMono = Geist_Mono({
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
   const locale = (await getLocaleCookie()) ?? DEFAULT_LOCALE
   const messages = await getMessages({ locale })
-  const { About: _about, Email: _email, Metadata: _metadata, ...clientMessages } = messages
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -73,7 +71,7 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
     >
       <body suppressHydrationWarning>
         <SearchParamsProvider>
-          <I18nProvider locale={locale} messages={clientMessages as Messages}>
+          <I18nProvider locale={locale} messages={clientMessages(messages)}>
             <ThemeProvider>
               <MotionProvider>
                 {children}

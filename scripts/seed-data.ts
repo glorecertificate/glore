@@ -11,7 +11,7 @@ export interface SeedUser {
 export const LOCAL_DATABASE_REGEX = /@(localhost|127\.0\.0\.1)(:|\/)/u
 
 export const SEED_PASSWORD = 'Password1!'
-const SEED_DOMAIN = 'seed.glore.test'
+const SEED_DOMAIN = 'glore.test'
 export const SEED_ORG_HANDLE = 'glore-seed'
 
 export const SEED_USERS: SeedUser[] = [

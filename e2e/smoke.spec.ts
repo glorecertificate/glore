@@ -11,7 +11,7 @@ test.describe('anonymous', () => {
 
   test('cannot self-register through the auth API', async ({ request }) => {
     const response = await request.post('/api/auth/sign-up/email', {
-      data: { email: 'intruder@seed.glore.test', firstName: 'Intruder', name: 'Intruder', password: 'Intruder-2026!' },
+      data: { email: 'intruder@glore.test', firstName: 'Intruder', name: 'Intruder', password: 'Intruder-2026!' },
     })
     expect(response.status()).toBe(404)
   })

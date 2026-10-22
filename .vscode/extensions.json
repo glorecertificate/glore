@@ -3,7 +3,6 @@
     "bradlc.vscode-tailwindcss",
     "lokalise.i18n-ally",
     "oxc.oxc-vscode",
-    "TypeScriptTeam.native-preview",
-    "webpro.vscode-knip"
+    "TypeScriptTeam.native-preview"
   ]
 }

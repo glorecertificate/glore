@@ -19,6 +19,7 @@ export const useNavigationLabels = () => {
     'admin-certificates': tAdmin('certificates.title'),
     'admin-emails': tEmails('title'),
     'admin-organizations': tLayout('adminOrganizations'),
+    'admin-overview': tAdmin('overview.title'),
     'admin-team': tLayout('adminTeam'),
     'admin-users': tLayout('adminUsers'),
     certificates: tLayout('certificates'),

@@ -16,6 +16,7 @@ export type NavigationId =
   | 'admin-certificates'
   | 'admin-emails'
   | 'admin-organizations'
+  | 'admin-overview'
   | 'admin-team'
   | 'admin-users'
   | 'about'
@@ -184,6 +185,13 @@ const NAVIGATION: NavigationEntry[] = [
     icon: 'settings',
     id: 'organization-settings',
     visible: isOwner,
+  },
+  {
+    group: 'admin',
+    href: '/admin',
+    icon: 'chart-no-axes-combined',
+    id: 'admin-overview',
+    visible: isAdmin,
   },
   { group: 'admin', href: '/admin/team', icon: 'shield-user', id: 'admin-team', visible: isAdmin },
   { group: 'admin', href: '/admin/organizations', icon: 'building-2', id: 'admin-organizations', visible: isAdmin },

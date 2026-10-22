@@ -14,7 +14,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 
 | Route                       | Gate        | Notes                                                                                                                                                               |
 | --------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                                                                                 |
+| `/admin`                    | `isAdmin`   | Overview, the panel landing (`admin.md`)                                                                                                                            |
 | `/admin/team`               | `isAdmin`   | Team management (`admin.md`)                                                                                                                                        |
 | `/admin/users`              | `isAdmin`   | User moderation and view as user (`admin.md`)                                                                                                                       |
 | `/admin/certificates`       | `isAdmin`   | Certificate lookup and revocation (`admin.md`)                                                                                                                      |

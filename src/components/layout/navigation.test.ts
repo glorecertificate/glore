@@ -52,6 +52,7 @@ describe('sidebar per role', () => {
 describe('palette entries', () => {
   it('lists admin pages for platform admins and email previews for editors', () => {
     expect(ids(viewer({ canEdit: true, isAdmin: true, role: null }), 'admin')).toEqual([
+      'admin-overview',
       'admin-team',
       'admin-organizations',
       'admin-users',

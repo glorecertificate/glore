@@ -66,11 +66,6 @@ const nextConfig: TypedNextConfig = {
       destination: '/dashboard',
       permanent: true,
     },
-    {
-      source: '/admin',
-      destination: '/admin/team',
-      permanent: true,
-    },
   ],
   headers: () => [
     {

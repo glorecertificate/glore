@@ -41,6 +41,9 @@ export const AUTH_VIEWS = [
 /* Invitations */
 export const INVITATION_EXPIRY_DAYS = 7
 
+/* Auth */
+export const AUTH_LINK_EXPIRY_SECONDS = 60 * 60
+
 /* Storage */
 export const AVATAR_CONTENT_TYPES = ['image/png', 'image/jpeg', 'image/webp']
 export const SIGNATURE_CONTENT_TYPES = ['image/png', 'image/jpeg']

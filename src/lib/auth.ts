@@ -16,7 +16,7 @@ import { sessions } from '@/db/schema/sessions'
 import { teamInvitations } from '@/db/schema/teams'
 import { users } from '@/db/schema/users'
 import { verifications } from '@/db/schema/verifications'
-import { APP_ROOT, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
+import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import metadata from '~/config/metadata.json'
 
@@ -90,6 +90,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
+    resetPasswordTokenExpiresIn: AUTH_LINK_EXPIRY_SECONDS,
     async sendResetPassword({ user, url }) {
       await sendMail({
         to: user.email,
@@ -126,6 +127,7 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
+    expiresIn: AUTH_LINK_EXPIRY_SECONDS,
     async sendVerificationEmail({ user, url }) {
       await sendMail({
         to: user.email,

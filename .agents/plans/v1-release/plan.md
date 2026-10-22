@@ -104,7 +104,7 @@ Every event writes an `activity_events` row through `recordEvent`, then `notify`
 | `account.welcome`                      | none                          | user (M), shows the username                   |
 | `account.suspended`, `account.deleted` | none                          | user (M)                                       |
 
-Existing auth mails keep their triggers: `auth/recovery` (1-hour link) and `auth/verify-email` (24-hour link).
+Existing auth mails keep their triggers: `auth/recovery` and `auth/verify-email` (both 1-hour links, `AUTH_LINK_EXPIRY_SECONDS`).
 
 `account/email-changed` and `account/password-changed` stay as they are. Every copy states the real link expiry.
 

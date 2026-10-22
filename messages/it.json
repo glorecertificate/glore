@@ -417,7 +417,7 @@
         "askAI": "Chiedi all'AI",
         "changeToCasual": "Rendi informale",
         "changeToFormal": "Rendi formale",
-        "continueEmptyWritingPrompt": "[Document]{editor}[/Document] Inizia a scrivere un nuovo paragrafo DOPO [Document] SOLO UNA FRASE",
+        "continueEmptyWritingPrompt": "Inizia a scrivere un nuovo paragrafo DOPO l'ultimo. SOLO UNA FRASE",
         "continueWriting": "Continua a scrivere",
         "continueWritingPrompt": "Continua a scrivere DOPO [Block] SOLO UNA FRASE. NON RIPETERE IL TESTO PRECEDENTE.",
         "discard": "Scarta",

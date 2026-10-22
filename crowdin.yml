@@ -1,0 +1,18 @@
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+base_path: .
+preserve_hierarchy: true
+
+commit_message: 'chore: sync translations from crowdin'
+append_commit_message: false
+pull_request_title: 'chore: sync translations from crowdin'
+
+files:
+  - source: /messages/en.json
+    translation: /messages/%two_letters_code%.json
+    type: json
+  - source: /content/legal/*.en.md
+    translation: /content/legal/%file_name%.%two_letters_code%.%file_extension%
+    translation_replace:
+      .en: ''
+    type: md

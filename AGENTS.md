@@ -27,7 +27,7 @@ Load only the spec you need from `.agents/specs/`:
 - `organizations.md`: invitations, members, ownership, settings, insights, applications.
 - `reference.md`: routes, auth, queries, transactions, cache, env vars, dev performance.
 - `patterns.md`: components, types, hooks, utils, theming, i18n, forms, emails.
-- `workflow.md`: commands, seeds, committing, skills, MCP, email verification, docs sync, testing, browser verification.
+- `workflow.md`: commands, seeds, translations, committing, skills, MCP, email verification, docs sync, testing, browser verification.
 
 Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 
@@ -36,7 +36,7 @@ References live in `.agents/references/`: the certificate PDF template and the p
 ## Commands and commits
 
 - Always run `pnpm run <script>`, never bare `pnpm <script>`; `pnpm install` is the exception. Full table: `workflow.md`.
-- Gate: `pnpm run check` (tsc, oxlint, oxfmt, knip). Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
+- Gate: `pnpm run check` (tsc, oxlint, oxfmt, knip, translations). Tests: `pnpm run test` (Vitest), `pnpm run test:e2e` (Playwright, needs `pnpm run db:seed` once).
 - Commit only when the current prompt asks. `pnpm run check` MUST exit 0 first, and one logical task is one commit.
 - Commit headers are Conventional Commits, lower-case subject, max 100 characters, scopes only `release`, `deps`, `deps-dev`, `security`.
 

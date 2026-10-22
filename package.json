@@ -22,6 +22,7 @@
     "check:lint": "oxlint",
     "check:format": "oxfmt --check",
     "check:knip": "knip",
+    "check:i18n": "node scripts/i18n/check.mts",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "dotenv -e .env.local -e .env -- playwright test",

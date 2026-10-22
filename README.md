@@ -130,6 +130,10 @@ To open a pull request:
 3. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
 4. Make sure all CI checks pass and wait for a maintainer to review your PR
 
+### Translations
+
+`en` is the source language. UI messages (`messages/en.json`) and legal texts (`content/legal/*.en.md`) are translated into Spanish and Italian through [Crowdin](https://crowdin.com), configured in [`crowdin.yml`](crowdin.yml). Crowdin opens pull requests from `l10n_*` branches; review them like code and squash merge once `pnpm run check` passes. `pnpm run check:i18n` verifies that every locale has the same keys, ICU placeholders, and tags as `en`.
+
 ## AI and agents
 
 All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.

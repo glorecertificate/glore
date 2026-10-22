@@ -408,7 +408,7 @@
         "askAI": "Preguntar a la IA",
         "changeToCasual": "Hacer casual",
         "changeToFormal": "Hacer formal",
-        "continueEmptyWritingPrompt": "[Document]{editor}[/Document]Comience a escribir un nuevo párrafo DESPUÈS DE Document SOLO UNA ORACIÓN",
+        "continueEmptyWritingPrompt": "Empieza a escribir un nuevo párrafo DESPUÉS del último. SOLO UNA FRASE",
         "continueWriting": "Continuar escribiendo",
         "continueWritingPrompt": "Continúe escribiendo DESPUÉS DE [Block] SOLO UNA ORACIÓN. BI REPITA EL TEXTO.",
         "discard": "Desechar",

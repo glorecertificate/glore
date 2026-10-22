@@ -47,36 +47,38 @@ export const Chart = ({ className, data, label, series, variant = 'area', ...pro
           <p className="flex h-full items-center justify-center text-sm text-muted-foreground">{t('empty')}</p>
         )}
       </div>
-      <table className="sr-only">
-        <caption>{label}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t('label')}</th>
-            {series.map(item => (
-              <th key={item.key} scope="col">
-                {item.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 && (
+      <div className="sr-only">
+        <table>
+          <caption>{label}</caption>
+          <thead>
             <tr>
-              <td colSpan={series.length + 1}>{t('empty')}</td>
-            </tr>
-          )}
-          {data.map(row => (
-            <tr key={row.id}>
-              <th scope="row">{row.label}</th>
+              <th scope="col">{t('label')}</th>
               {series.map(item => (
-                <td key={item.key}>
-                  {typeof row[item.key] === 'number' ? number(Number(row[item.key])) : row[item.key]}
-                </td>
+                <th key={item.key} scope="col">
+                  {item.label}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.length === 0 && (
+              <tr>
+                <td colSpan={series.length + 1}>{t('empty')}</td>
+              </tr>
+            )}
+            {data.map(row => (
+              <tr key={row.id}>
+                <th scope="row">{row.label}</th>
+                {series.map(item => (
+                  <td key={item.key}>
+                    {typeof row[item.key] === 'number' ? number(Number(row[item.key])) : row[item.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

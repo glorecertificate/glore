@@ -1728,7 +1728,11 @@
     "draftError": "Error al guardar el borrador.",
     "timeline": "Historial de la solicitud",
     "requestCreated": "Solicitud creada",
-    "filterStatus": "Filtrar certificados por estado"
+    "filterStatus": "Filtrar certificados por estado",
+    "nationality": "Nacionalidad",
+    "birthPlace": "Lugar de nacimiento",
+    "activityTooShort": "Tu voluntariado debe durar al menos {hours} horas o {months} meses para poder certificarse.",
+    "personalDataMissing": "Añade tu nacionalidad y tu lugar de nacimiento para solicitar un certificado."
   },
   "CertificatePdf": {
     "title": "Certificado de soft skills",

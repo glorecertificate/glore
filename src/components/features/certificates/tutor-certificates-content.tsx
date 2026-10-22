@@ -7,7 +7,7 @@ import { ClipboardCheckIcon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { selfAssignCertificate } from '@/actions/certificates/management'
+import { selfAssignCertificate } from '@/actions/certificates/assignment'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'

@@ -11,6 +11,7 @@ interface EventPayloads {
   'certificate.submitted': CertificateRef & { tutorId: string | null }
   'certificate.assigned': CertificateRef & { previousTutorId: string | null; tutorId: string }
   'certificate.claimed': CertificateRef & { tutorId: string }
+  'certificate.unassigned': CertificateRef & { previousTutorId: string }
   'certificate.changes_requested': CertificateRef & { comment: string | null; tutorId: string }
   'certificate.resubmitted': CertificateRef & { tutorId: string | null }
   'certificate.approved': CertificateRef & { documentUrl: string | null; tutorId: string }

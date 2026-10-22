@@ -1,23 +1,28 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { type Locale, useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { createCertificate } from '@/actions/certificates/management'
+import { saveCertificateDraft, submitCertificate } from '@/actions/certificates/requests'
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
 import { CertificatePreview } from '@/components/features/certificates/preview'
 import {
+  type CertificateEditValues,
   type CertificateFormValues,
+  type DraftCertificateValues,
+  MAX_CERTIFICATE_TASKS,
+  MAX_TASK_LENGTH,
   certificateFormSchema,
   draftCertificateSchema,
 } from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { CountrySelect } from '@/components/ui/country-select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -27,6 +32,28 @@ import { Textarea } from '@/components/ui/textarea'
 import { type Course } from '@/db/queries/course'
 import { type User } from '@/db/queries/user'
 import { SKILL_LEVELS } from '@/lib/constants'
+import appConfig from '~/config/app.json'
+
+const tasksFromDescription = (description: string) =>
+  description
+    .split('\n')
+    .flatMap(line => {
+      const task = line.trim().slice(0, MAX_TASK_LENGTH)
+      return task ? [task] : []
+    })
+    .slice(0, MAX_CERTIFICATE_TASKS)
+
+const toEditValues = (data: CertificateFormValues | DraftCertificateValues): CertificateEditValues => ({
+  activityDescription: data.activityDescription,
+  activityDuration: data.activityDuration,
+  activityEndDate: data.activityEndDate,
+  activityLocation: data.activityLocation,
+  activityStartDate: data.activityStartDate,
+  language: data.language,
+  rating: data.organizationRating ? { experience: data.organizationRating } : undefined,
+  skills: data.skillCourseIds.map(courseId => ({ courseId })),
+  tasks: tasksFromDescription(data.activityDescription),
+})
 
 interface CertificateFormProps {
   user: User
@@ -42,6 +69,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
   const { push } = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
+  const draftId = useRef<number>(undefined)
 
   const form = useForm<CertificateFormValues>({
     resolver: zodResolver(certificateFormSchema) as never,
@@ -54,6 +82,8 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
       organizationRating: 0 as number,
       language: 'en',
       skillCourseIds: [],
+      nationality: user.nationality ?? '',
+      birthPlace: user.birthPlace ?? '',
     },
   })
 
@@ -68,13 +98,33 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
     return [title]
   })
 
+  const saveDraft = async (data: CertificateFormValues | DraftCertificateValues) => {
+    const result = await saveCertificateDraft({ id: draftId.current, values: toEditValues(data) })
+    if (result.data) draftId.current = result.data.id
+    return result
+  }
+
+  const errorMessage = (code: string) => {
+    if (code === 'ACTIVITY_TOO_SHORT') {
+      return t('activityTooShort', { hours: appConfig.minActivityHours, months: appConfig.minActivityMonths })
+    }
+    if (code === 'PERSONAL_DATA_MISSING') return t('personalDataMissing')
+    return t('submitError')
+  }
+
   const onSubmit = async (data: CertificateFormValues) => {
     setIsSubmitting(true)
-    const result = await createCertificate(data)
+    const saved = await saveDraft(data)
+    const result = saved.data
+      ? await submitCertificate(saved.data.id, {
+          birthPlace: data.birthPlace || undefined,
+          nationality: data.nationality || undefined,
+        })
+      : saved
     setIsSubmitting(false)
 
     if (result.error) {
-      toast.error(t('submitError'))
+      toast.error(errorMessage(result.error.code))
       return
     }
 
@@ -92,7 +142,7 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
     }
 
     setIsSavingDraft(true)
-    const result = await createCertificate(parsed.data, { draft: true })
+    const result = await saveDraft(parsed.data)
     setIsSavingDraft(false)
 
     if (result.error) {
@@ -251,6 +301,38 @@ export const CertificateForm = ({ user, orgName, orgLogoUrl, completedSkillCours
                 </FormItem>
               )}
             />
+
+            {/* Personal data */}
+            {!user.nationality && (
+              <FormField
+                control={form.control}
+                name="nationality"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('nationality')}</FormLabel>
+                    <FormControl>
+                      <CountrySelect onChange={field.onChange} value={field.value} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {!user.birthPlace && (
+              <FormField
+                control={form.control}
+                name="birthPlace"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('birthPlace')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             {/* Rating */}
             <FormField

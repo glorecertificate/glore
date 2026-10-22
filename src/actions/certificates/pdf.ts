@@ -7,13 +7,6 @@ import { db } from '@/db/client'
 import { type CertificateSnapshot, certificates } from '@/db/schema'
 import { DEFAULT_LOCALE, type IntlRecord, LOCALES, localizeRecord } from '@/lib/i18n'
 
-const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ'
-
-export const generateCertificateCode = () => {
-  const chars = [...crypto.getRandomValues(new Uint8Array(12))].map(byte => CROCKFORD[byte % 32])
-  return [chars.slice(0, 4), chars.slice(4, 8), chars.slice(8)].map(group => group.join('')).join('-')
-}
-
 const pdfSourceWith = {
   organization: {
     columns: { id: true, name: true },

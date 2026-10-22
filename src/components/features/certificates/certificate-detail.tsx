@@ -18,7 +18,8 @@ import {
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
-import { assignCertificateTutor, claimCertificateReview } from '@/actions/certificates/management'
+import { assignCertificateTutor, unassignCertificate } from '@/actions/certificates/assignment'
+import { claimCertificateReview } from '@/actions/certificates/review'
 import { CertificateShare } from '@/components/features/certificates/certificate-share'
 import { CertificateStatusBadge } from '@/components/features/certificates/certificate-status-badge'
 import { FeaturedCredentialCard } from '@/components/features/certificates/featured-credential-card'
@@ -63,12 +64,14 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
   const canReview = isTutorReviewer && (certificate.isSubmitted || certificate.isInReview)
   const isOwner = certificate.userId === user.id
   const canResubmit = isOwner && certificate.isChangesRequested
-  const canAssignTutor = Array.isArray(tutors) && !certificate.isApproved
-  const canReleaseSelf = isTutorReviewer && !certificate.isApproved && !canAssignTutor
+  const canAssignTutor = Array.isArray(tutors) && certificate.isOpen
+  const canReleaseSelf = isTutorReviewer && certificate.isOpen && !canAssignTutor
 
   const handleAssignTutor = (value: string) => {
     startTransition(async () => {
-      const { error } = await assignCertificateTutor(certificate.id, value || null)
+      const { error } = await (value
+        ? assignCertificateTutor(certificate.id, value)
+        : unassignCertificate(certificate.id))
       if (error) {
         toast.error(t('assignTutorError'))
         return
@@ -80,7 +83,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
 
   const handleReleaseSelf = () => {
     startTransition(async () => {
-      const { error } = await assignCertificateTutor(certificate.id, null)
+      const { error } = await unassignCertificate(certificate.id)
       if (error) {
         toast.error(t('assignTutorError'))
         return

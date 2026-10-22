@@ -1728,7 +1728,11 @@
     "draftError": "Failed to save draft.",
     "timeline": "Request history",
     "requestCreated": "Request created",
-    "filterStatus": "Filter certificates by status"
+    "filterStatus": "Filter certificates by status",
+    "nationality": "Nationality",
+    "birthPlace": "Place of birth",
+    "activityTooShort": "Your volunteering must last at least {hours} hours or {months} months to be certified.",
+    "personalDataMissing": "Add your nationality and place of birth to request a certificate."
   },
   "CertificatePdf": {
     "title": "Soft skills certificate",

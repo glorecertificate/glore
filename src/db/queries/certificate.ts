@@ -21,6 +21,12 @@ type CertificateUserRow = Pick<InferSelectModel<typeof users>, 'id' | 'firstName
 
 export type CertificateStatus = EnumType<'certificate_status'>
 
+export const OPEN_CERTIFICATE_STATUSES = [
+  'submitted',
+  'in_review',
+  'changes_requested',
+] as const satisfies CertificateStatus[]
+
 interface CertificateWithRelations extends CertificateRow {
   organization: OrganizationRow
   skills: CertificateSkillRow[]
@@ -48,5 +54,5 @@ export const parseCertificate = (cert: CertificateWithRelations) => ({
   isWithdrawn: cert.status === 'withdrawn',
   isRevoked: cert.status === 'revoked',
   isPending: cert.status === 'submitted' || cert.status === 'in_review',
-  isOpen: cert.status === 'submitted' || cert.status === 'in_review' || cert.status === 'changes_requested',
+  isOpen: (OPEN_CERTIFICATE_STATUSES as readonly CertificateStatus[]).includes(cert.status),
 })

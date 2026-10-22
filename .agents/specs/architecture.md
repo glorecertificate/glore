@@ -8,7 +8,8 @@ Source tree and structural conventions. Provider hierarchy and component authori
 src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
 │   ├── admin/          # helpers.ts, organizations.ts, pending.ts, team.ts, users.ts
-│   ├── certificates/   # helpers.ts (server-only, no 'use server'), management.ts, pdf.ts (server-only: snapshot, code, render), queries.ts
+│   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, revoke),
+│   │                   #   helpers.ts (server-only: guards, certificateAction, commitTransition), pdf.ts (server-only), queries.ts
 │   ├── courses/        # helpers.ts (server-only: fetchCourses, listSessionCourses), management.ts,
 │   │                   #   progress.ts, queries.ts
 │   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts

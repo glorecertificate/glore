@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { reviewCertificate } from '@/actions/certificates/management'
+import { approveCertificate, requestCertificateChanges } from '@/actions/certificates/review'
 import { type ReviewCertificateValues, reviewCertificateSchema } from '@/components/features/certificates/schemas'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -53,7 +53,17 @@ export const ReviewForm = ({ certificate, onOpenChange, open }: ReviewFormProps)
   const isSubmitting = form.formState.isSubmitting
 
   const onSubmit = async (values: ReviewCertificateValues) => {
-    const { error } = await reviewCertificate(certificate.id, values)
+    const { error } =
+      values.action === 'approve'
+        ? await approveCertificate(certificate.id, {
+            activityDescription: values.activityDescription,
+            activityDuration: values.activityDuration,
+            activityEndDate: values.activityEndDate,
+            activityLocation: values.activityLocation,
+            activityStartDate: values.activityStartDate,
+            skills: values.skillCourseIds?.map(courseId => ({ courseId })),
+          })
+        : await requestCertificateChanges(certificate.id, { comment: values.comment })
     if (error) {
       toast.error(t('reviewError'))
       return

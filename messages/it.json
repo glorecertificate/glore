@@ -1728,7 +1728,11 @@
     "draftError": "Errore nel salvataggio della bozza.",
     "timeline": "Cronologia della richiesta",
     "requestCreated": "Richiesta creata",
-    "filterStatus": "Filtra i certificati per stato"
+    "filterStatus": "Filtra i certificati per stato",
+    "nationality": "Nazionalità",
+    "birthPlace": "Luogo di nascita",
+    "activityTooShort": "Il tuo volontariato deve durare almeno {hours} ore o {months} mesi per essere certificato.",
+    "personalDataMissing": "Aggiungi la tua nazionalità e il tuo luogo di nascita per richiedere un certificato."
   },
   "CertificatePdf": {
     "title": "Certificato di soft skills",

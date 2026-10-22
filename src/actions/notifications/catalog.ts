@@ -61,6 +61,10 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
     inApp: event => [event.data.holderId],
     url: certificateUrl,
   },
+  'certificate.unassigned': {
+    inApp: async event => [event.data.previousTutorId, ...(await tutorOrPool(event))],
+    url: certificateUrl,
+  },
   'certificate.changes_requested': {
     inApp: event => [event.data.holderId],
     email: {

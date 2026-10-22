@@ -11,6 +11,7 @@ src/
 │   ├── certificates/   # helpers.ts (server-only, no 'use server'), management.ts, queries.ts
 │   ├── courses/        # helpers.ts (server-only: fetchCourses, listSessionCourses), management.ts,
 │   │                   #   progress.ts, queries.ts
+│   ├── notifications/  # Server-only (no 'use server'): catalog.ts, notify.ts, plan.ts, recipients.ts
 │   ├── organizations/  # helpers.ts, members.ts, queries.ts, requests.ts, settings.ts
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
@@ -47,10 +48,10 @@ src/
 │   ├── schema/         # Per-table Drizzle definitions: accounts, activity-events, assessments, certificates,
 │   │                   #   courses, docs, enums, helpers, index, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
-│   ├── queries/        # parse* per table (pure, NO @/db/client import): certificate,
+│   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, certificate,
 │   │                   #   course, doc, lesson, organization (flattens organization_profiles), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   certificate.ts, course.ts, organization.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, course.ts, organization.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY

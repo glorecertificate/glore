@@ -66,7 +66,7 @@ interface TemplatePropsMap {
 }
 
 type TemplateName = keyof TemplatePropsMap
-type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplatePropsMap[K] } }[TemplateName]
+export type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplatePropsMap[K] } }[TemplateName]
 
 const messagesFor = async (locale: string) => {
   if (locale === 'it') {

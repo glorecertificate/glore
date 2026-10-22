@@ -9,6 +9,7 @@ import { and, asc, count, eq, inArray, isNull, ne } from 'drizzle-orm'
 import { getAuthUser } from '@/actions/auth'
 import { certificateWithUsers } from '@/actions/certificates/helpers'
 import { getCertificateEligibility } from '@/actions/certificates/queries'
+import { notify } from '@/actions/notifications/notify'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { generateCertificatePdf } from '@/components/features/certificates/generate-pdf'
 import {
@@ -23,10 +24,10 @@ import {
 } from '@/components/features/certificates/schemas'
 import { db, transaction } from '@/db/client'
 import { safeQuery } from '@/db/helpers'
+import { recordEvent } from '@/db/mutations/activity-event'
 import { applyCertificateReview, createCertificateWithSkills } from '@/db/mutations/certificate'
-import { certificates, memberships, users } from '@/db/schema'
+import { certificates, memberships } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
-import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
@@ -150,8 +151,27 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
       activityDescription,
     }
 
-    const updated = await transaction(tx =>
-      applyCertificateReview(tx, {
+    const reviewEvent = isApprove
+      ? ({
+          type: 'certificate.approved',
+          actorId: authUser.id,
+          organizationId: cert.organizationId,
+          data: { certificateId: id, documentUrl: documentUrl ?? null, holderId: cert.userId, tutorId: authUser.id },
+        } as const)
+      : ({
+          type: 'certificate.changes_requested',
+          actorId: authUser.id,
+          organizationId: cert.organizationId,
+          data: {
+            certificateId: id,
+            comment: 'comment' in values ? (values.comment ?? null) : null,
+            holderId: cert.userId,
+            tutorId: authUser.id,
+          },
+        } as const)
+
+    const updated = await transaction(async tx => {
+      const reviewed = await applyCertificateReview(tx, {
         id,
         expectedUpdatedAt: cert.updatedAt,
         userId: cert.userId,
@@ -165,22 +185,11 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
         skillCourseIds: values.skillCourseIds && [...new Set(values.skillCourseIds)],
         setDefaultIfNone: isApprove,
       })
-    )
+      await recordEvent(tx, reviewEvent)
+      return reviewed
+    })
 
-    if (cert.user?.email) {
-      await sendMail({
-        to: cert.user.email,
-        template: {
-          name: 'certificate/review',
-          props: {
-            status: isApprove ? 'approved' : 'changes_requested',
-            comment: 'comment' in values ? values.comment : undefined,
-            documentUrl,
-            userName: cert.user.firstName ?? undefined,
-          },
-        },
-      }).catch(() => null)
-    }
+    await notify(reviewEvent)
 
     revalidateTag(certificatesTutorTag(authUser.id), 'max')
     revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
@@ -251,8 +260,16 @@ export const createCertificate = async (
       }
     }
 
-    const newCert = await transaction(tx =>
-      createCertificateWithSkills(
+    const submittedEvent = (certificateId: number) =>
+      ({
+        type: 'certificate.submitted',
+        actorId: authUser.id,
+        organizationId: orgId,
+        data: { certificateId, holderId: authUser.id, tutorId: reviewerId },
+      }) as const
+
+    const newCert = await transaction(async tx => {
+      const created = await createCertificateWithSkills(
         tx,
         {
           handle,
@@ -269,17 +286,11 @@ export const createCertificate = async (
         },
         { organizationRating: values.organizationRating, skillCourseIds }
       )
-    )
+      if (!draft) await recordEvent(tx, submittedEvent(created.id))
+      return created
+    })
 
-    if (!draft && reviewerId) {
-      const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))
-      if (reviewer?.email) {
-        await sendMail({
-          to: reviewer.email,
-          template: { name: 'certificate/assigned', props: {} },
-        }).catch(() => null)
-      }
-    }
+    if (!draft) await notify(submittedEvent(newCert.id))
 
     revalidateTag(certificatesUserTag(authUser.id), 'max')
     revalidateTag(certificatesOrgTag(orgId), 'max')
@@ -290,6 +301,19 @@ export const createCertificate = async (
     return newCert
   })
 }
+
+const resubmittedEvent = (certificate: {
+  id: number
+  organizationId: number
+  reviewerId: string | null
+  userId: string
+}) =>
+  ({
+    type: 'certificate.resubmitted',
+    actorId: certificate.userId,
+    organizationId: certificate.organizationId,
+    data: { certificateId: certificate.id, holderId: certificate.userId, tutorId: certificate.reviewerId },
+  }) as const
 
 export const resubmitCertificate = async (id: number, input: ResubmitCertificateValues) => {
   const authUser = await getAuthUser()
@@ -305,22 +329,32 @@ export const resubmitCertificate = async (id: number, input: ResubmitCertificate
   }
 
   return await safeQuery(async () => {
-    const [updated] = await db
-      .update(certificates)
-      .set({
-        status: 'submitted',
-        reviewerComment: null,
-        activityStartDate: values.activityStartDate,
-        activityEndDate: values.activityEndDate,
-        activityDuration: values.activityDuration,
-        activityLocation: values.activityLocation,
-        activityDescription: values.activityDescription,
-      })
-      .where(
-        and(eq(certificates.id, id), eq(certificates.userId, authUser.id), eq(certificates.status, 'changes_requested'))
-      )
-      .returning()
-    if (!updated) throw new Error('Certificate not found or cannot be resubmitted')
+    const updated = await transaction(async tx => {
+      const [resubmitted] = await tx
+        .update(certificates)
+        .set({
+          status: 'submitted',
+          reviewerComment: null,
+          activityStartDate: values.activityStartDate,
+          activityEndDate: values.activityEndDate,
+          activityDuration: values.activityDuration,
+          activityLocation: values.activityLocation,
+          activityDescription: values.activityDescription,
+        })
+        .where(
+          and(
+            eq(certificates.id, id),
+            eq(certificates.userId, authUser.id),
+            eq(certificates.status, 'changes_requested')
+          )
+        )
+        .returning()
+      if (!resubmitted) throw new Error('Certificate not found or cannot be resubmitted')
+      await recordEvent(tx, resubmittedEvent(resubmitted))
+      return resubmitted
+    })
+
+    await notify(resubmittedEvent(updated))
 
     revalidateTag(certificatesUserTag(authUser.id), 'max')
     if (updated.reviewerId) {
@@ -362,17 +396,26 @@ export const assignCertificateTutor = async (certId: number, reviewerId: string 
       throw new Error('Selected user is not a tutor in this organization')
     }
 
-    const [updated] = await db.update(certificates).set({ reviewerId }).where(eq(certificates.id, certId)).returning()
+    const assignedEvent = reviewerId
+      ? ({
+          type: 'certificate.assigned',
+          actorId: authUser.id,
+          organizationId: cert.organizationId,
+          data: { certificateId: certId, holderId: cert.userId, previousTutorId: cert.reviewerId, tutorId: reviewerId },
+        } as const)
+      : null
 
-    if (reviewerId) {
-      const [reviewer] = await db.select({ email: users.email }).from(users).where(eq(users.id, reviewerId))
-      if (reviewer?.email) {
-        await sendMail({
-          to: reviewer.email,
-          template: { name: 'certificate/assigned', props: {} },
-        }).catch(() => null)
-      }
-    }
+    const updated = await transaction(async tx => {
+      const [assigned] = await tx
+        .update(certificates)
+        .set({ reviewerId })
+        .where(eq(certificates.id, certId))
+        .returning()
+      if (assignedEvent) await recordEvent(tx, assignedEvent)
+      return assigned
+    })
+
+    if (assignedEvent) await notify(assignedEvent)
 
     revalidateTag(certificatesOrgTag(cert.organizationId), 'max')
     if (cert.reviewerId) {
@@ -402,12 +445,25 @@ export const selfAssignCertificate = async (certId: number) => {
 
     if (!(await isOrgTutor(authUser.id, cert.organizationId))) throw new Error('Not a tutor in this organization')
 
-    const [updated] = await db
-      .update(certificates)
-      .set({ reviewerId: authUser.id })
-      .where(and(eq(certificates.id, certId), isNull(certificates.reviewerId), eq(certificates.status, 'submitted')))
-      .returning()
-    if (!updated) throw new Error('Certificate was already claimed by another tutor')
+    const claimedEvent = {
+      type: 'certificate.claimed',
+      actorId: authUser.id,
+      organizationId: cert.organizationId,
+      data: { certificateId: certId, holderId: cert.userId, tutorId: authUser.id },
+    } as const
+
+    const updated = await transaction(async tx => {
+      const [claimed] = await tx
+        .update(certificates)
+        .set({ reviewerId: authUser.id })
+        .where(and(eq(certificates.id, certId), isNull(certificates.reviewerId), eq(certificates.status, 'submitted')))
+        .returning()
+      if (!claimed) throw new Error('Certificate was already claimed by another tutor')
+      await recordEvent(tx, claimedEvent)
+      return claimed
+    })
+
+    await notify(claimedEvent)
 
     revalidateTag(certificatesTutorTag(authUser.id), 'max')
     revalidateTag(certificatesOrgTag(cert.organizationId), 'max')

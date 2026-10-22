@@ -131,3 +131,11 @@ react-hook-form with `@hookform/resolvers` and zod. Disable the submit button wi
 ## Email templates
 
 `src/emails/` (React Email), sent over SMTP through Nodemailer. Templates and their triggers: `auth/recovery` (password reset), `auth/invite`, `auth/verify-email`, `team/invite`, `account/password-changed`, `account/email-changed`, `certificate/assigned`, `certificate/review` (review update), `organization/join-request`, `organization/member-added`, `organization/registration-request` (new organization registration, sent to platform admins).
+
+## Events and notifications
+
+- Every state transition writes one `activity_events` row with `recordEvent(tx, event)` (`src/db/mutations/activity-event.ts`) inside its transaction.
+- After the commit, the action calls `notify(event)` (`src/actions/notifications/notify.ts`), which never throws.
+- Event types and payloads live in `src/db/queries/activity-event.ts`; recipients, mail category, template, and deep link per type live in `src/actions/notifications/catalog.ts`.
+- `notify` writes in-app `notifications` rows, skips the actor unless the type sets `notifyActor`, and mails only when the type has a template.
+- Optional categories (`learning`, `organization`, `reminders`) honor `users.notification_preferences`; `mandatory` mail always goes.

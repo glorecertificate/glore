@@ -369,7 +369,7 @@ export const AIMenu = () => {
                 }
                 if (isHotkey('enter')(e) && !e.shiftKey && !value) {
                   e.preventDefault()
-                  void api.aiChat.submit('')
+                  void api.aiChat.submit(input)
                 }
               }}
               onValueChange={setInput}
@@ -490,7 +490,7 @@ export const AILoadingBar = () => {
   return (
     <div
       className={cn(
-        'absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-sm text-muted-foreground shadow-md transition-all duration-300'
+        'sticky bottom-4 z-10 mx-auto flex w-fit items-center gap-3 rounded-md border border-border bg-muted px-3 py-1.5 text-sm text-muted-foreground shadow-md transition-all duration-300'
       )}
     >
       <span className="size-4 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent" />

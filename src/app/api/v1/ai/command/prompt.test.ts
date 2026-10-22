@@ -56,3 +56,16 @@ describe('buildCommandPrompt', () => {
     expect(prompt).toMatch(/<instruction>\s*Make it formal\s*<\/instruction>/u)
   })
 })
+
+describe('buildCommandPrompt cursor block', () => {
+  it('marks the cursor block and defines the marker without leaking a placeholder', () => {
+    const prompt = buildCommandPrompt({
+      ctx: ctx({ anchor: { offset: 3, path: [0, 0] }, focus: { offset: 3, path: [0, 0] } }),
+      messages: [user('Continue writing right after the marked block.')],
+    })
+    expect(prompt).toContain('<Block>Volunteering builds teamwork.</Block>')
+    expect(prompt).toContain('Never output the <Block> tags')
+    expect(prompt).not.toContain('[Block]')
+    expect(prompt).toContain('Second paragraph here.')
+  })
+})

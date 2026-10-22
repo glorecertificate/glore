@@ -429,7 +429,7 @@
         "changeToFormal": "Make formal",
         "continueEmptyWritingPrompt": "Start writing a new paragraph AFTER the last one. ONLY ONE SENTENCE",
         "continueWriting": "Continue writing",
-        "continueWritingPrompt": "Continue writing AFTER [Block] ONLY ONE SENTENCE. DONT REPEAT THE TEXT.",
+        "continueWritingPrompt": "Continue writing right after the marked block. ONLY ONE SENTENCE. DO NOT REPEAT THE TEXT.",
         "discard": "Discard",
         "editing": "Editing…",
         "emojify": "Emojify",

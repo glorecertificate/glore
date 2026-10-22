@@ -1,10 +1,12 @@
 import { getMarkdown, replacePlaceholders } from '@platejs/ai'
-import { RangeApi, type TRange, type Value, createSlateEditor } from 'platejs'
+import { type Point, RangeApi, type TRange, type Value, createSlateEditor } from 'platejs'
 
 import { BaseEditorKit } from '@/components/ui/rich-text-editor/plugins/editor-base'
 
 const SELECTION_START = '<Selection>'
 const SELECTION_END = '</Selection>'
+const BLOCK_START = '<Block>'
+const BLOCK_END = '</Block>'
 const MAX_CONTEXT_LENGTH = 24_000
 
 export interface CommandMessage {
@@ -35,15 +37,34 @@ const textOf = (message: CommandMessage) => {
   return text.trim()
 }
 
-const withSelectionMarkers = (editor: ReturnType<typeof createSlateEditor>) => {
-  const [start, end] = RangeApi.edges(editor.selection!)
+const withMarkers = (
+  editor: ReturnType<typeof createSlateEditor>,
+  {
+    edges: [start, end],
+    tags: [open, close],
+    type,
+  }: { edges: [Point, Point]; tags: [string, string]; type: 'block' | 'editor' }
+) => {
   editor.tf.withoutNormalizing(() => {
-    editor.tf.insertText(SELECTION_END, { at: end })
-    editor.tf.insertText(SELECTION_START, { at: start })
+    editor.tf.insertText(close, { at: end })
+    editor.tf.insertText(open, { at: start })
   })
-  return getMarkdown(editor, { type: 'block' })
-    .replace(`\\${SELECTION_START}`, SELECTION_START)
-    .replace(`\\${SELECTION_END}`, SELECTION_END)
+  return getMarkdown(editor, { type }).replace(`\\${open}`, open).replace(`\\${close}`, close)
+}
+
+const withSelectionMarkers = (editor: ReturnType<typeof createSlateEditor>) =>
+  withMarkers(editor, {
+    edges: RangeApi.edges(editor.selection!),
+    tags: [SELECTION_START, SELECTION_END],
+    type: 'block',
+  })
+
+const withBlockMarkers = (editor: ReturnType<typeof createSlateEditor>) => {
+  const block = editor.api.block({ highest: true })
+  if (!block) return getMarkdown(editor, { type: 'editor' })
+  const edges = editor.api.edges(block[1])
+  if (!edges) return getMarkdown(editor, { type: 'editor' })
+  return withMarkers(editor, { edges, tags: [BLOCK_START, BLOCK_END], type: 'editor' })
 }
 
 const truncate = (markdown: string) =>
@@ -54,8 +75,7 @@ const MULTI_BLOCK_TASK =
 
 const SELECTION_TASK = `The <context> marks the editable text with ${SELECTION_START} tags. Output only the replacement for the text between the tags, so it fits the surrounding sentence. Never output the tags. If the instruction is a question, answer it briefly instead.`
 
-const CURSOR_TASK =
-  'The <context> holds the note the user is writing. Follow the instruction and output only the new content to insert, without repeating existing text. If the instruction is a question, answer it briefly.'
+const CURSOR_TASK = `The <context> holds the note the user is writing. The text between ${BLOCK_START} tags is the block where the cursor is, and the new content goes right after it. Follow the instruction and output only the new content to insert, without repeating existing text. Never output the ${BLOCK_START} tags. If the instruction is a question, answer it briefly.`
 
 const formatHistory = (messages: CommandMessage[]) => {
   const lines: string[] = []
@@ -67,7 +87,8 @@ const formatHistory = (messages: CommandMessage[]) => {
 }
 
 const getTaskAndContext = (editor: ReturnType<typeof createSlateEditor>): [string, string] => {
-  if (!editor.selection || editor.api.isCollapsed()) return [CURSOR_TASK, getMarkdown(editor, { type: 'editor' })]
+  if (!editor.selection) return [CURSOR_TASK, getMarkdown(editor, { type: 'editor' })]
+  if (editor.api.isCollapsed()) return [CURSOR_TASK, withBlockMarkers(editor)]
   const isMultiBlock = editor.api.blocks({ mode: 'lowest' }).length > 1
   if (isMultiBlock) return [MULTI_BLOCK_TASK, getMarkdown(editor, { type: 'block' })]
   return [SELECTION_TASK, withSelectionMarkers(editor)]

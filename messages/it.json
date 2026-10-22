@@ -419,7 +419,7 @@
         "changeToFormal": "Rendi formale",
         "continueEmptyWritingPrompt": "Inizia a scrivere un nuovo paragrafo DOPO l'ultimo. SOLO UNA FRASE",
         "continueWriting": "Continua a scrivere",
-        "continueWritingPrompt": "Continua a scrivere DOPO [Block] SOLO UNA FRASE. NON RIPETERE IL TESTO PRECEDENTE.",
+        "continueWritingPrompt": "Continua a scrivere subito dopo il blocco indicato. SOLO UNA FRASE. NON RIPETERE IL TESTO PRECEDENTE.",
         "discard": "Scarta",
         "editing": "Modificando…",
         "emojify": "Trasforma in emoji",

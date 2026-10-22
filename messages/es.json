@@ -410,7 +410,7 @@
         "changeToFormal": "Hacer formal",
         "continueEmptyWritingPrompt": "Empieza a escribir un nuevo párrafo DESPUÉS del último. SOLO UNA FRASE",
         "continueWriting": "Continuar escribiendo",
-        "continueWritingPrompt": "Continúe escribiendo DESPUÉS DE [Block] SOLO UNA ORACIÓN. BI REPITA EL TEXTO.",
+        "continueWritingPrompt": "Continúa escribiendo justo después del bloque indicado. SOLO UNA ORACIÓN. NO REPITAS EL TEXTO.",
         "discard": "Desechar",
         "editing": "Editando…",
         "emojify": "Convertir en emoji",

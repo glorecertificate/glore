@@ -10,6 +10,8 @@ Stack: Next.js 16 (App Router, RSC, Cached Components), React 19, Neon Postgres,
 
 Libraries to use, not guess: Better Auth, Cloudflare R2, Plate.js, next-intl, react-hook-form + zod, nuqs, React Email + Nodemailer, AI SDK with Gemini, motion, @dnd-kit, shadcn/ui (new-york).
 
+Tooling: oxlint + oxfmt, lefthook, portless.
+
 This file governs agents here, and `CLAUDE.md` only imports it. Machine-wide user rules outrank it, and an explicit user instruction outranks both.
 
 Budget: this file stays under 2,000 estimated tokens and each spec under 4,500. Over budget means moving detail into a spec, never dropping a fact.
@@ -28,7 +30,7 @@ Load only the spec you need from `.agents/specs/`:
 - `patterns.md`: components, types, hooks, utils, i18n, forms.
 - `ui.md`: release UI kit, theming, motion.
 - `code.md`: formatter, imports, lint rules, git hooks.
-- `workflow.md`: commands, seeds, translations, commits, skills, worktrees, testing, dev performance.
+- `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
 
 Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 
@@ -77,7 +79,7 @@ Apply these on the first pass in every file, legacy included. Lint detail: `code
 3. `db/queries/<table>.ts` parsers MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles.
 4. A cached query wraps the DB call in an inner `'use cache'` + `cacheTag` function, and the outer takes `{ cache: boolean }`.
 5. Multi-statement writes use `transaction(fn)` from `@/db/client` with `(tx, ...args)` units in `src/db/mutations/`, and statements inside run sequentially.
-6. Client-created course-tree records use negative `tempId()` ids, never `Date.now()`. Resolve the real parent id before any DB write.
+6. Client-created course-tree records use negative `tempId()` ids, never `Date.now()`. Never send a placeholder id or foreign key to the DB; resolve the real parent id first.
 7. Read `IntlRecord` fields with `localize(record)` from `useI18n()`.
 
 ## Gotchas: runtime and domain

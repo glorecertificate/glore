@@ -94,6 +94,7 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
 - B4 [~] lane-b2, 2026-10-22, browser pending, 91b80945: overview with first-run checklist, insights tab, activity tab. Accept: browser run with demo data.
 - B5 [~] lane-b2, 2026-10-22, browser pending, 49730187: `/register` application (D12), `/admin/organizations` queue and detail. Accept: e2e from application to onboarding.
 - B6 [~] 3164658a, lane-b6, 2026-10-22, browser pending: `/admin/users`, `/admin/team`, `/admin/certificates`, `/admin/audit`, overview data. Accept: e2e for ban, impersonation, audit.
+  - The `admin-users`, `admin-certificates`, and `admin-audit` `.spec.ts` files are written but not run.
 
 ### Lane C: learning
 
@@ -108,6 +109,7 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
 
 - D1 [~] lane-d, 2026-10-22, browser pending, a87c2cfa: notification bell and `/notifications`. Accept: e2e for read state.
 - D2 [~] lane-d, 2026-10-22, Mailpit pass pending, 556d7148: email layout refresh and one template per catalog event. Accept: every template opened in Mailpit.
+  - Also: subjects in all catalogs, localized role labels, and `pnpm run email` fixtures.
 - D3 [x] 7d89d63a: daily cron with reminders, escalations, and pruning. Unit tests with a fixed clock.
 - D4 [~] lane-d, 2026-10-22, browser and e2e pending, 6334653c: onboarding stepper and welcome. Accept: e2e from invitation to dashboard.
 - D5 [~] lane-d, 2026-10-22, browser and e2e pending, 7a2175f9: settings tabs. Accept: e2e for privacy, export, sessions.
@@ -116,9 +118,20 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
 ### Lane E: content
 
 - E1 [x] 3198bcca: content format and importer (`content:import`, `content:check`, `--drafts`, `--target local, staging, production` with the host guard). Import is idempotent.
+  - Format: `content/skill-groups.json`, `content/courses/<slug>/course.json`, and `lessons/<n>.<locale>.md`.
+  - The importer upserts groups and courses by slug, converts Markdown with `@platejs/markdown`, and sets `languages`.
 - E2 [~] 9e8c19ef, GloRe review of names and O5 definitions pending: the 25 skill courses in en, es, it. Accept: reviewed for tone, with the 3 drafted definitions listed for GloRe review (O5).
+  - Work in batches of about 5 courses per agent session.
+  - Lessons: Activation (volunteering scenario), Understanding (definition, components, examples).
+  - Then In practice (situations plus 4 to 6 quiz questions with explanations), and Self-assessment (4 evaluations plus the final assessment).
 - E3 [~] 981fb449, imported and browser check pending: 2 intro courses and 4 learner courses in three locales.
+  - Intro: Welcome to GloRe; Soft skills and volunteering.
+  - Learner: Volunteering abroad with ESC and Erasmus+; Intercultural learning; Volunteer wellbeing and safety; Planning a community project.
+
+### Lane E: docs and legal
+
 - E4 [~] lane-e4, 2026-10-22, browser pending, 5f5c5ee4 and 21597c68: docs in three locales (33 docs: Intro 4, Tutorials 7, FAQ 22). Accept: imported and rendered.
+  - FAQ topics: cost, soft skills, activity rule, skills per certificate, certifying again, changed levels, non-member orgs.
 - E5 [~] d3c58d95, placeholders await GloRe (U11): temporary privacy, terms, and Quality Charter in three locales (the H1 decision removed their temporary banners). Accept: rendered by D6 and the B5 charter step.
 
 Content rules: plain, warm language for young adults, examples from volunteering, no invented statistics or citations.
@@ -128,6 +141,8 @@ Content rules: plain, warm language for young adults, examples from volunteering
 - F1 [~] lane-f1, 2026-10-22, browser pending, 05e86544: role dashboards on real data. Accept: browser run per role.
 - F2 [~] lane-f2, 2026-10-22, browser pending, 4f45f1fa: shell (sidebar per role, bell, org switcher, command palette). Accept: browser run per role.
 - F3 [~] lane-f3a/f3b/h2, 2026-10-22, browser pending, h2 514f40ba, 5927e36a, 45dfa4f6, a57aaade, dc78b017: visual and copy pass. Accept: screenshots reviewed.
+  - Scope: UI direction, hardcoded strings from the inventory, dark mode, 390px layouts, and focus states.
+  - Reviews: `web-design-guidelines` on every page, and `humanizer` on long copy.
 - F4 [~] d830e29a, lane-f4, 2026-10-22, browser pending: `/admin` overview (D17 charts). Accept: browser run (merged and checked as admin at 1280px, 390px, and dark mode in 71fcff56).
 
 ## W3 verification and release readiness

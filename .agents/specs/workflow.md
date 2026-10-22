@@ -204,6 +204,7 @@ Non-obvious settings keep dev HMR and CI builds fast. They back the dev-performa
 - `knip.deferSession: true` keeps the knip extension idle.
 - Change one side of the editor and CLI lint pair only by deliberately changing the other.
 - `editor.codeActionsOnSave` runs ONLY `source.fixAll.oxc`. Never re-add `source.organizeImports` or `source.removeUnusedImports`.
+- `source.format.oxc` was removed because `editor.formatOnSave` already runs oxfmt, and `source.removeUnusedImports` calls the TypeScript language server on every save.
 - Those TypeScript actions re-print imports with semicolons and collapse oxfmt's groups, which causes a visible flash on save, and `editor.formatOnSave` already runs oxfmt.
 - `js/ts.format.semicolons: "remove"` stays, because auto-import and quick fixes print imports outside oxfmt.
 - Duplicate imports no longer merge on save. `import/no-duplicates` has no autofix and `pnpm run check` still blocks them.

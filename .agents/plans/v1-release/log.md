@@ -124,7 +124,7 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 - Wallet with `CertificatePreview`, `FeaturedCredentialCard`, and `EligibilityPanel`.
 - Detail page built from `CertificateJourney`, `CertificateFeedback`, `CertificateTimeline`, `CertificateSummary`, `CertificateActions`, and `CertificateShare`.
 - One-time confetti.
-- New `featureCertificate` action, `recordFeaturedCertificate` mutation, `VERIFY_ROOT` constant.
+- New `featureCertificate` action, `recordFeaturedCertificate` mutation, `journeySteps` and `linkedInProfileUrl` rules, and `VERIFY_ROOT` constant.
 - Tests 240 of 240.
 
 ### A6
@@ -138,8 +138,10 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### A7
 
-- `OrganizationCertificates` (pipeline `StatCard`s, search, status and reviewer filters, reassign, revoke, view) plus `listOrganizationCertificates(orgId)`.
-- Mounted on `/certificates` for org admins and representatives.
+- `OrganizationCertificates` (pipeline `StatCard`s, search, status and reviewer filters, `DataTable`) plus `listOrganizationCertificates(orgId)` for managers and platform admins.
+- Row actions are reassign through `assignCertificateTutor` and `unassignCertificate`, revoke, and view.
+- Props are `certificates` and `tutors` (from `listOrgTutors`), and the filters are local state so it embeds in any tab.
+- Mounted on `/certificates` for org admins and representatives, and Lane B embeds it in the organization tab and `/admin/certificates`.
 - The tutor queue and pipeline follow the active organization's role.
 - Tests 259 of 259.
 
@@ -237,8 +239,11 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### C2
 
-- Player with server-side grading (`answerQuestion`, `completeLesson`), no `isCorrect` in the payload (Vitest proves it), retries with explanations,
-  - Evaluation and assessment gating (rating plus 40 to 1,000 char reflection), viewer mode writes nothing, `course.completed` and first-time `learning.eligible` events.
+- Player with server-side grading (`answerQuestion`, `completeLesson`), no `isCorrect` in the payload (Vitest proves it).
+- Retries come with explanations.
+- Evaluation and assessment gate completion (rating plus 40 to 1,000 char reflection).
+- Viewer mode writes nothing.
+- `course.completed` and first-time `learning.eligible` events are recorded.
 
 ### C3
 
@@ -251,11 +256,15 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### C5
 
-- Slim catalog (`queryCatalog`: no lesson `content` or `isCorrect` in SQL, no 200-course cap), NaN progress fixed, learner cards, skill compass (`saveSkillCompass`) with recommendations.
+- Slim catalog (`queryCatalog`: no lesson `content` or `isCorrect` in SQL, no 200-course cap, rating summary from one grouped query).
+- `getCourse` is slim for non-editors, and partial courses are visible to learners.
+- NaN progress fixed, learner cards, and skill compass (`saveSkillCompass`) with recommendations.
 
 ### C6
 
-- Docs category empty state, articles at `/docs/articles/[slug]`, and `useDocsSearch` for the palette.
+- Docs category pages show an empty state when the category is missing.
+- Articles open at `/docs/articles/[slug]` with a reading layout, a language fallback banner, previous and next links, and editor actions.
+- `useDocsSearch` is ready for the palette.
 
 ### Orchestrator
 
@@ -300,8 +309,9 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### D6
 
-- Login accepts usernames from 3 characters, `ArrowsMotif` in the auth layout, `PwaInstallPrompt`,
-  - Public legal pages rendered by `react-markdown` and `remark-gfm` from `content/legal/<doc>.<locale>.md`, `LEGAL_ROOTS` in the proxy.
+- Login accepts usernames from 3 characters, the auth layout draws `ArrowsMotif`, and the root layout holds `PwaInstallPrompt`.
+- Public legal pages are rendered by `react-markdown` and `remark-gfm` from `content/legal/<doc>.<locale>.md` (`en` fallback).
+- `LEGAL_ROOTS` is set in the proxy, and `./content/legal/**` is in `outputFileTracingIncludes`.
 - `e2e/public-pages.spec.ts` written, not run.
 
 ### Orchestrator
@@ -325,7 +335,8 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### Lane i18n
 
-- `crowdin.yml` maps `messages/en.json` and `content/legal/*.en.md` to es and it (`config lint` passes; verify the legal naming with the first Crowdin sync).
+- `crowdin.yml` maps `messages/en.json` and `content/legal/*.en.md` to es and it (`config lint` passes).
+- The legal naming relies on `translation_replace` dropping `.en`; verify it with the first Crowdin sync.
 - `pnpm run check:i18n` found a real bug: `Components.RichTextEditor.ai.continueEmptyWritingPrompt` carried an unbound `{editor}` argument in es and it (fixed).
 
 ### Lane i18n email previews
@@ -357,14 +368,16 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### Lane fix, docs and verification
 
-- `/docs` with no categories renders an empty state.
+- `/docs` with no categories renders an empty state, with the category manager for editors and admins and reader copy (`Docs.noCategoriesDescriptionReader`) for everyone else.
 - The revoke mail was not reproducible (the check ran before D2's `certificate/decision` template; a Vitest through `notify` proves it).
 - A revoked `/verify/<code>` shows only the badge, holder, organization, revocation date, code, and issue date, and the PDF route answers 410.
+- `findCertificateByCode` withholds the PDF link, tasks, skills, and signatory (Vitest), and the view hides the detail cards and QR.
 
 ### Lane fix, layout
 
-- Course list tabs scroll inside their container, the mobile editor toolbar shows below `md` for editors, the lesson sidebar keeps its 18rem width,
-  - The "Written by" line hides without contributors, and `pickCourseTitle` replaces the raw slug in the compass and framework.
+- Course list tabs scroll inside their container, the mobile editor toolbar shows below `md` for editors, and the lesson sidebar keeps its 18rem width.
+- The "Written by" line hides without contributors, and `pickCourseTitle` replaces the raw slug in the compass and framework.
+- `competenze-sociali` has a null title in the local data, so it now reads "Competenze sociali".
 
 ### Lane fix, test order
 
@@ -378,13 +391,21 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 ### qa1
 
 - `Card` dropped `h-full` and `justify-between`.
-- Sessions record the user agent and address, and `listSessions` lists at most 20 unexpired sessions.
-- The deletion prompt points at organization Settings, Danger zone.
+- Sessions record the user agent and address (4f6fcb48, committed with the cards fix by mistake), and `listSessions` lists at most 20 unexpired sessions.
+- `listSessions` compares expiry with a `Date` parameter and parses server-local ISO times, which caused "Active in 2 hours" under a non-UTC TZ.
+- The deletion prompt points at organization Settings, Danger zone (`/organization?tab=settings`), and `faq-delete-account` (en, es, it) names Settings, Your data and the real blocker (sole owner).
+- Organization `dangerZone` in Italian reads "Zona pericolosa".
+
+### qa1 notifications and e2e
+
 - The ownership notification has per-recipient `variant`s.
 - New `organization/application-decision` template.
 - Every organization event type has activity copy (Vitest).
 - `announceNotificationsChanged` refreshes the bell at once.
 - Admin organization actions use `updateTag`.
+- E2e drift (e08de60d), not run:
+  - The notifications unread count is scoped to list items, and the onboarding birthday button has a new name.
+  - Settings toggles retry with `check()` until the toast shows, and the course editor title is a textarea.
 
 ### Orchestrator, qa1
 
@@ -421,17 +442,19 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### F3 batch D (f3b)
 
-- Help join steps and FAQ describe invitations and invite links, the PDF signatory is the organization's legal representative, "Log in" and "Log out" replace mixed wording,
-  - `…` replaces three dots, es uses informal tu, status badges and roles are localized.
+- Help join steps and FAQ describe invitations and invite links.
+- The PDF signatory is the organization's legal representative, and "Log in" and "Log out" replace mixed wording.
+- `…` replaces three dots, es uses informal tu, and status badges and roles are localized.
 
 ### F3 B1 (f3a)
 
-- A draft saved with empty activity dates crashed the volunteer `/certificates` list.
+- A draft saved with empty activity dates crashed the volunteer `/certificates` list (`RangeError: Invalid time value`).
 - Added `formatActivityDate` and `formatActivityPeriod` in `certificates/rules.ts` so an unset date renders `-`.
 
 ### F3 batch A (f3a)
 
 - Accessibility pass (`<html lang>` fallback, zoomable viewport, header title as the page `h1`, named controls, `Progress` forwards `value`, light `--ring` darkened to 4.1:1).
+- Tab triggers never point at missing panels, lesson stepper rows are not `role="tab"`, and `<main>` wraps the login, register, and legal pages.
 
 ### F3 batch C (f3a)
 
@@ -456,7 +479,8 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 ### H1 decision 1
 
-- Removed the legal temporary banners.
+- Removed the legal temporary banners: no `temporary` front matter, `temporaryTitle` or `temporaryDescription` keys, or "temporary text" intro sentence in the nine `content/legal/*` files.
+- `checkLegal`, `parseLegalFile` and their tests follow.
 - Legal text is read from files, so `content:import` is not needed for it.
 
 ### H1 decision 2
@@ -486,6 +510,7 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 - `admin()` runs with `allowImpersonatingAdmins: false`.
 - `sessions.impersonated_by` (migration `0024_impersonated_by.sql`, cascade) marks the session.
 - The proxy deletes an expired impersonation session on the next request, so `ImpersonationNotice` auto stops 3 seconds before the expiry.
+- `/api/auth/impersonation` is no longer a closed prefix (no such endpoint), and `/api/auth/admin/*` stays closed.
 - Production needs migration 0024.
 - Details live in `admin.md`.
 
@@ -493,14 +518,17 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 - Editor AI restored on the Gemini free tier.
 - Root causes: `ai-menu.tsx` never registered the `useChat` helpers on `AIChatPlugin`, `chatOptions.api` is gone in `@ai-sdk/react` 3 (now `DefaultChatTransport`), and `gemini-2.0-flash` was retired.
-- New `src/lib/ai.ts` with the `aiModels` chain.
+- New `src/lib/ai.ts` with the `aiModels` chain, `GEMINI_MODEL` first, per-request fallback before the first text, and `thinkingLevel: low`.
+- The command route builds its prompt from `ctx` (`prompt.ts`), and the copilot route returns `{ text }`.
+- Both routes answer 503 `ai_not_configured` without a key.
 - Follow-up: a model under high demand queued for about 98 s, so a model with no first token within `aiFirstTokenMs` (8000) is aborted and the next one runs.
 - The command route's copied `smoothStream` dropped the text delta `id`, which AI SDK 6 rejects, so it keeps the id.
 
 ### H5
 
 - `/login` keeps the ` · GloRe Certificate` suffix after hydration (`defaultAuthView`, `authMetaTitleKey`).
-- `/admin/organizations/<id>` title is the organization name.
+- `/admin/organizations/<id>` title is the organization name through `getAdminOrganizationName` (Vitest).
+- Server and client share `defaultAuthView` and `authMetaTitleKey` (`*MetaTitle`), so `/login?token=x` stays "Reset password" before and after hydration.
 - Settings section headings are `h2`.
 - `PhoneInput` pairs `aria-controls` with a `useId` popover id.
 - `MultiSelectBadge` titles use `Components.MultiSelect.removeNamed`.
@@ -510,4 +538,7 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 
 - Every PDF template text baseline lands within 0.6 pt in en (was up to 4.6 pt high).
 - Root cause: template tops are PyMuPDF line boxes while react-pdf sets the first baseline at top plus the Roboto hhea ascent, so `placed(top, size)` in `document.tsx` converts every template top.
+- The level line is one run with a real space ("level: good", "nivel: bueno", "livello: buono").
+- The oracle still flags "to" at dx +10 because the template line holds four leading spaces, and its glyph is 0.1 pt off.
+- `generate-pdf.test.ts` pins the baselines from the rendered content stream.
 - Notes in `pdf.md` "Text placement".

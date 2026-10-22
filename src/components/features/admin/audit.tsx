@@ -128,18 +128,24 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
         },
         {
           cell: row => <span className="text-sm">{describe(row)}</span>,
+          className: 'max-w-96 min-w-48 whitespace-normal max-sm:max-w-none',
           header: t('columns.event'),
           id: 'event',
         },
         {
-          cell: row => (row.organization ? row.organization.name : null),
-          className: 'max-w-48 truncate',
+          cell: row =>
+            row.organization ? (
+              <span className="block truncate" title={row.organization.name}>
+                {row.organization.name}
+              </span>
+            ) : null,
+          className: 'max-w-40 max-sm:max-w-none',
           header: t('columns.organization'),
           id: 'organization',
         },
         {
           cell: describeDetail,
-          className: 'max-w-72',
+          className: 'max-w-64 whitespace-normal max-sm:max-w-none',
           header: t('columns.details'),
           id: 'details',
         },

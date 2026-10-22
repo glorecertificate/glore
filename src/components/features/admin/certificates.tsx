@@ -106,10 +106,15 @@ export const AdminCertificates = ({
         {
           cell: certificate => (
             <div className="flex min-w-0 flex-col">
-              <span className="truncate font-medium">{fullName(certificate.holder) || certificate.holder.email}</span>
-              <span className="truncate text-xs text-muted-foreground">{certificate.holder.email}</span>
+              <span className="truncate font-medium" title={fullName(certificate.holder) || certificate.holder.email}>
+                {fullName(certificate.holder) || certificate.holder.email}
+              </span>
+              <span className="truncate text-xs text-muted-foreground" title={certificate.holder.email}>
+                {certificate.holder.email}
+              </span>
             </div>
           ),
+          className: 'max-w-48 max-sm:max-w-none',
           header: t('columns.holder'),
           id: 'holder',
         },
@@ -123,7 +128,7 @@ export const AdminCertificates = ({
               {certificate.organization.name}
             </Link>
           ),
-          className: 'max-w-56 truncate',
+          className: 'max-w-40 whitespace-normal max-sm:max-w-none',
           header: t('columns.organization'),
           id: 'organization',
         },

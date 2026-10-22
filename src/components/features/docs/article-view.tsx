@@ -88,10 +88,10 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
         <p className="text-muted-foreground">{t('article.noContent')}</p>
       )}
       {(previous || next) && (
-        <nav aria-label={t('article.navigation')} className="grid gap-3 border-t pt-6 sm:grid-cols-2">
+        <nav aria-label={t('article.navigation')} className="grid grid-cols-1 gap-3 border-t pt-6 sm:grid-cols-2">
           {previous ? (
             <Link
-              className="flex items-center gap-2 rounded-lg border p-3 text-sm transition-colors hover:bg-muted/50"
+              className="flex min-w-0 items-center gap-2 rounded-lg border p-3 text-sm transition-colors hover:bg-muted/50"
               href={`/docs/articles/${previous.slug}`}
             >
               <ArrowLeftIcon className="size-4 shrink-0" />
@@ -105,7 +105,7 @@ export const ArticleView = async ({ slug }: { slug: string }) => {
           )}
           {next && (
             <Link
-              className="flex items-center justify-end gap-2 rounded-lg border p-3 text-right text-sm transition-colors hover:bg-muted/50"
+              className="flex min-w-0 items-center justify-end gap-2 rounded-lg border p-3 text-right text-sm transition-colors hover:bg-muted/50"
               href={`/docs/articles/${next.slug}`}
             >
               <span className="flex min-w-0 flex-col">

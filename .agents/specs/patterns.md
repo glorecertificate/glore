@@ -69,6 +69,20 @@ React Compiler auto-memoizes derived values, callbacks, and components in produc
 - **`next/dynamic` without `loading` adds no Suspense boundary** while `ssr` is on, so it suspends to the nearest parent and can show a page skeleton. Wrap it in a local `<Suspense>` or pass `loading`. Use `ssr: false` for client-only widgets and inside `notFound()` renders, where an SSR dynamic import caused React error #419.
 - **Motion:** render `m.*` components inside `MotionFeatures` (`src/components/ui/motion-features.tsx`, a scoped `LazyMotion` with synchronous `domMax`), never `motion.*`. Never add a root `LazyMotion` (11KB on routes without animation) or load features asynchronously (their activation lands in one long task after hydration).
 
+## Release UI kit
+
+Shared primitives live in `src/components/ui/`. They accept root props and localized labels; feature components own domain data and permission checks.
+
+- `ArrowsMotif` uses vector paths extracted from the certificate template. It is decorative and hidden from assistive technology.
+- `LevelDots` takes a level from 1 to 5 and a localized level label. `Timeline` and `TimelineItem` compose dated entries, with ISO `dateTime` values and separately localized display times.
+- `DataTable` takes rows, stable row IDs, columns with optional sort accessors, a filters slot, and a row-actions slot. It sorts and paginates the supplied rows locally, announces counts, and provides loading and empty states. Server pagination belongs to the consuming feature.
+- `StatCard` composes `NumberTicker`; formatting follows next-intl, and the ticker respects reduced motion. `Banner` supplies semantic status variants. `SegmentedControl` and `SegmentedControlItem` use Radix radio semantics and keyboard navigation.
+- `CopyButton` handles clipboard failures and ignores stale completions after its value changes. `QrCode` imports the QR encoder on demand and provides loading and error states. `AvatarStack` lives in `avatar-stack.tsx`, requires stable avatar IDs and labels, and always renders a fallback.
+- `Chart` loads `chart-renderer.tsx` through `next/dynamic` with a local skeleton. Only the renderer imports Recharts; its targeted lint override accounts for this boundary. Charts use semantic chart tokens, localize values, disable chart animation, and include an accessible data table. Mount charts only on analytics surfaces with real data.
+- Personal skills use the AA-checked `brand-quaternary` teal tokens; chart colors use text variants to preserve contrast in both themes.
+
+The organization roster uses `DataTable`; its overview uses `StatCard` and `AvatarStack`. Certificate views consume the sharing, timeline, and level primitives. These are foundation integrations; the later feature lanes still own their release flows.
+
 ## Type system
 
 `strict`, `noImplicitAny`, `noUnusedLocals`, `noUnusedParameters` all true; `target` and `module` `esnext`, `moduleResolution: bundler`, `jsx: react-jsx`. Production builds use `tsconfig.build.json`, which excludes dev types.

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Trash2Icon, UserPlusIcon, UsersIcon } from 'lucide-react'
+import { Trash2Icon, UserPlusIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
@@ -23,12 +23,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { AnimatedList, AnimatedListItem } from '@/components/ui/animated-list'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { DataTable } from '@/components/ui/data-table'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type OrganizationMembershipRole } from '@/db/queries/organization'
 
@@ -137,102 +135,92 @@ export const OrganizationMembers = ({ currentUserId, isOrgAdmin, members, onRefr
           </Button>
         </div>
 
-        <div className="space-y-3">
-          {members.length === 0 ? (
-            <Empty className="border">
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <UsersIcon />
-                </EmptyMedia>
-                <EmptyTitle>{t('noMembers')}</EmptyTitle>
-                <EmptyDescription>{t('noMembersDescription')}</EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button onClick={() => setInviteOpen(true)} size="sm" variant="brand">
-                  <UserPlusIcon className="size-3.5" />
-                  {t('inviteMember')}
+        <DataTable
+          columns={[
+            {
+              cell: member => (
+                <div className="flex items-center gap-3">
+                  <Avatar className="size-9 rounded-full">
+                    {member.user.avatarUrl && <AvatarImage alt="" src={member.user.avatarUrl} />}
+                    <AvatarFallback className="rounded-full">
+                      {(member.fullName || member.user.email).slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-medium">{getDisplayName(member.user)}</span>
+                    {member.user.id === currentUserId && (
+                      <Badge className="w-fit" size="sm" variant="outline">
+                        {t('you')}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              ),
+              header: t('members'),
+              id: 'name',
+              sortValue: member => getDisplayName(member.user),
+            },
+            {
+              cell: member => member.user.email,
+              header: t('email'),
+              id: 'email',
+              sortValue: member => member.user.email,
+            },
+            {
+              cell: member => (
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="ghost">{formatRoleLabel(member.role, t)}</Badge>
+                  <Badge variant="ghost">{member.isPending ? t('statusPending') : t('statusJoined')}</Badge>
+                </div>
+              ),
+              header: t('role'),
+              id: 'role',
+              sortValue: member => formatRoleLabel(member.role, t),
+            },
+          ]}
+          emptyDescription={t('noMembersDescription')}
+          emptyTitle={t('noMembers')}
+          getRowId={member => member.id}
+          label={t('membersTitle')}
+          rowActions={member => (
+            <div className="flex items-center justify-end gap-2">
+              {isOrgAdmin && member.user.id !== currentUserId ? (
+                <Select
+                  disabled={activeMembershipId === member.id}
+                  onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
+                  value={member.role}
+                >
+                  <SelectTrigger aria-label={t('role')} className="w-44">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MANAGEABLE_MEMBER_ROLES.map(role => (
+                      <SelectItem key={role} value={role}>
+                        {t(`role_${role}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <span className="text-xs text-muted-foreground">
+                  {t('memberSince', { date: dateFormatter.format(new Date(member.createdAt)) })}
+                </span>
+              )}
+              {canDeleteMembership(member.role, member.user.id) && (
+                <Button
+                  disabled={activeMembershipId === member.id}
+                  onClick={() => setDeleteMembershipId(member.id)}
+                  size="sm"
+                  variant="outline"
+                >
+                  <Trash2Icon className="size-3.5" />
+                  {t('removeMember')}
                 </Button>
-              </EmptyContent>
-            </Empty>
-          ) : (
-            <AnimatedList>
-              {members.map(member => (
-                <AnimatedListItem key={member.id} variant="row">
-                  <Card>
-                    <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="size-11 rounded-full">
-                          {member.user.avatarUrl && (
-                            <AvatarImage alt={member.fullName || member.user.email} src={member.user.avatarUrl} />
-                          )}
-                          <AvatarFallback className="rounded-full text-sm font-medium">
-                            {member.fullName
-                              .split(' ')
-                              .flatMap(name => (name ? [name.charAt(0).toUpperCase()] : []))
-                              .slice(0, 2)
-                              .join('') || member.user.email.slice(0, 2).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="space-y-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-sm font-medium">{getDisplayName(member.user)}</p>
-                            {member.user.id === currentUserId && (
-                              <Badge size="sm" variant="outline">
-                                {t('you')}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground">{member.user.email}</p>
-                          <div className="flex flex-wrap gap-2 pt-1">
-                            <Badge variant="ghost">{formatRoleLabel(member.role, t)}</Badge>
-                            <Badge variant="ghost">{member.isPending ? t('statusPending') : t('statusJoined')}</Badge>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-3 sm:min-w-56 sm:items-end">
-                        {isOrgAdmin && member.user.id !== currentUserId ? (
-                          <Select
-                            disabled={activeMembershipId === member.id}
-                            onValueChange={value => handleRoleChange(member.id, value as OrganizationMembershipRole)}
-                            value={member.role}
-                          >
-                            <SelectTrigger className="w-full sm:w-48">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {MANAGEABLE_MEMBER_ROLES.map(role => (
-                                <SelectItem key={role} value={role}>
-                                  {t(`role_${role}`)}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <p className="text-xs text-muted-foreground">
-                            {t('memberSince', { date: dateFormatter.format(new Date(member.createdAt)) })}
-                          </p>
-                        )}
-
-                        {canDeleteMembership(member.role, member.user.id) && (
-                          <Button
-                            disabled={activeMembershipId === member.id}
-                            onClick={() => setDeleteMembershipId(member.id)}
-                            size="sm"
-                            variant="outline"
-                          >
-                            <Trash2Icon className="size-3.5" />
-                            {t('removeMember')}
-                          </Button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </AnimatedListItem>
-              ))}
-            </AnimatedList>
+              )}
+            </div>
           )}
-        </div>
+          rows={members}
+        />
       </div>
 
       <InviteMemberDialog

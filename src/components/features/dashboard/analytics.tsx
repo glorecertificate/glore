@@ -1,19 +1,17 @@
 'use client'
 
 import { BookOpenIcon, StarIcon, TrendingUpIcon, UsersIcon } from 'lucide-react'
-import { useFormatter, useNow, useTranslations } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 import { useCourses } from '@/components/features/courses/context'
 import { courseIconVariants } from '@/components/features/courses/course-list/type-select'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
-import { AreaChart } from '@/components/ui/area-chart'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Chart } from '@/components/ui/chart'
 import { Progress } from '@/components/ui/progress'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
-
-const MONTH_WEIGHTS = [0.04, 0.05, 0.06, 0.06, 0.07, 0.08, 0.08, 0.09, 0.1, 0.11, 0.12, 0.14]
 
 const computeCourseStats = (course: ReturnType<typeof useCourses>['courses'][number]) => {
   const enrollment = course.enrollmentCount
@@ -38,11 +36,9 @@ const computeCourseStats = (course: ReturnType<typeof useCourses>['courses'][num
 export const CourseAnalytics = () => {
   const { courses } = useCourses()
   const { localize } = useI18n()
-  const { dateTime } = useFormatter()
-  const now = useNow()
   const t = useTranslations('Dashboard')
 
-  const publishedCourses = courses.filter(c => c.publicationStatus === 'published')
+  const publishedCourses = courses.filter(c => c.publicationStatus === 'published' || c.publicationStatus === 'partial')
 
   const rankedCourses = publishedCourses
     .map(course => ({ course, stats: computeCourseStats(course) }))
@@ -95,12 +91,6 @@ export const CourseAnalytics = () => {
     },
   ]
 
-  const months = MONTH_WEIGHTS.map((_, index) =>
-    dateTime(new Date(now.getFullYear(), now.getMonth() - (MONTH_WEIGHTS.length - 1 - index), 1), { month: 'short' })
-  )
-  const monthlyEnrollments = MONTH_WEIGHTS.map(weight => Math.round(globalStats.totalEnrollments * weight))
-  const monthlyCompletions = MONTH_WEIGHTS.map(weight => Math.round(globalStats.completedCount * weight))
-
   if (publishedCourses.length === 0) return null
 
   return (
@@ -126,31 +116,21 @@ export const CourseAnalytics = () => {
 
       {/* Engagement */}
       <Card className="justify-start gap-4 p-5">
-        <div className="flex items-center justify-between gap-4">
-          <CardTitle className="text-sm font-medium">{t('engagementOverTime')}</CardTitle>
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <span className="size-2.5 rounded-full bg-brand" />
-              {t('enrollments')}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="size-2.5 rounded-full bg-success" />
-              {t('completions')}
-            </span>
-          </div>
-        </div>
-        <AreaChart
-          height={180}
-          series={[
-            { className: 'text-success', data: monthlyCompletions },
-            { className: 'text-brand-text', data: monthlyEnrollments },
-          ]}
-        />
-        <div className="flex justify-between text-[10px] text-muted-foreground/70">
-          {months.map(month => (
-            <span key={month}>{month}</span>
-          ))}
-        </div>
+        <CardHeader>
+          <CardTitle className="text-sm font-medium">{t('enrollmentsByCourse')}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Chart
+            data={rankedCourses.map(({ course, stats }) => ({
+              id: course.id,
+              label: localize(course.title),
+              enrollment: stats.enrollment,
+            }))}
+            label={t('enrollmentsByCourse')}
+            series={[{ key: 'enrollment', label: t('enrollments') }]}
+            variant="bar"
+          />
+        </CardContent>
       </Card>
 
       {/* Popular courses */}

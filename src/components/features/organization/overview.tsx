@@ -15,7 +15,9 @@ import { useTranslations } from 'next-intl'
 
 import { type OrganizationPanelData } from '@/actions/organizations/queries'
 import { useI18n } from '@/components/providers/i18n'
+import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { StatCard } from '@/components/ui/stat-card'
 
 export const OrganizationOverview = ({ data }: { data: OrganizationPanelData }) => {
   const { localize } = useI18n()
@@ -24,54 +26,40 @@ export const OrganizationOverview = ({ data }: { data: OrganizationPanelData }) 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>{t('memberCount')}</CardDescription>
-            <CardTitle className="text-2xl">{data.stats.memberCount}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground">
-            {t('memberBreakdown', {
-              admins: data.stats.adminCount,
-              learners: data.stats.learnerCount,
-              representatives: data.stats.representativeCount,
-              tutors: data.stats.tutorCount,
-              volunteers: data.stats.volunteerCount,
-            })}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardDescription>{t('pendingJoinRequests')}</CardDescription>
-            <CardTitle className="text-2xl">{data.pendingJoinRequestsCount}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
+        <StatCard label={t('memberCount')} value={data.stats.memberCount}>
+          {t('memberBreakdown', {
+            admins: data.stats.adminCount,
+            learners: data.stats.learnerCount,
+            representatives: data.stats.representativeCount,
+            tutors: data.stats.tutorCount,
+            volunteers: data.stats.volunteerCount,
+          })}
+          <AvatarStack
+            avatars={data.members.slice(0, 5).map(member => ({
+              id: member.user.id,
+              placeholder: member.fullName || member.user.email,
+              url: member.user.avatarUrl,
+            }))}
+          />
+        </StatCard>
+        <StatCard label={t('pendingJoinRequests')} value={data.pendingJoinRequestsCount}>
+          <span className="flex items-center gap-2">
             <MailIcon className="size-4" />
             {t('pendingJoinRequestsDescription')}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardDescription>{t('pendingCertificates')}</CardDescription>
-            <CardTitle className="text-2xl">{data.pendingCertificatesCount}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
+          </span>
+        </StatCard>
+        <StatCard label={t('pendingCertificates')} value={data.pendingCertificatesCount}>
+          <span className="flex items-center gap-2">
             <FileClockIcon className="size-4" />
             {t('pendingCertificatesDescription')}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardDescription>{t('approvedCertificates')}</CardDescription>
-            <CardTitle className="text-2xl">{data.approvedCertificatesCount}</CardTitle>
-          </CardHeader>
-          <CardContent className="flex items-center gap-2 text-sm text-muted-foreground">
+          </span>
+        </StatCard>
+        <StatCard label={t('approvedCertificates')} value={data.approvedCertificatesCount}>
+          <span className="flex items-center gap-2">
             <BadgeCheckIcon className="size-4" />
             {t('approvedCertificatesDescription')}
-          </CardContent>
-        </Card>
+          </span>
+        </StatCard>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr]">

@@ -292,7 +292,7 @@ export const AuthFlow = ({
   return (
     <MotionFeatures>
       <AuthHeader contentRef={ref} onLogoClick={() => setView('login')} view={view} />
-      <div className="flex flex-1 items-center justify-center">
+      <div className="relative flex flex-1 items-center justify-center overflow-hidden">
         <div className="w-full max-w-md">
           <m.div
             animate={{ height: height ?? 'auto' }}

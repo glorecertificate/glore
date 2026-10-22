@@ -15,7 +15,6 @@ import {
   HelpCircleIcon,
   InfoIcon,
   LogOutIcon,
-  MessageCircleQuestionIcon,
   PaletteIcon,
   PencilIcon,
   PlusIcon,
@@ -110,7 +109,7 @@ const DashboardSidebarBadge = ({ count }: { count: number }) => {
   }
 
   return (
-    <Badge className="size-4.25 rounded-full p-0" size="sm" variant="brand">
+    <Badge className="size-3.75 p-0" size="sm" variant="brand">
       <span aria-hidden>{count}</span>
       <span className="sr-only">{t('pendingRequests', { count })}</span>
     </Badge>
@@ -150,9 +149,10 @@ const DashboardSidebarItem = ({
         active={isActive}
         asChild
         className={cn(
+          'select-none',
           subItem
-            ? 'border-l-2 border-transparent py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:rounded-l-none data-active:border-brand data-active:font-medium data-active:text-sidebar-foreground'
-            : 'py-3 font-medium data-active:bg-brand/10 data-active:shadow-[inset_3px_0_0_var(--color-brand)] hover:data-active:bg-brand/12',
+            ? 'border-transparent px-2.75 py-1.5 text-[13px] text-sidebar-foreground/60 hover:text-sidebar-foreground data-active:text-sidebar-foreground data-active:text-stroke'
+            : 'px-2.25 py-3 font-medium data-active:bg-brand/10 hover:data-active:bg-brand/12',
           isActivePath && 'pointer-events-none',
           badge > 0 && 'relative',
           className
@@ -322,11 +322,11 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
         )}
         <DashboardSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
         {!user.canEdit && <DashboardSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
-        <DashboardSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
+        {/* <DashboardSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
           <DashboardSidebarItem label={t('docsIntro')} route="/docs/intro" subItem />
           <DashboardSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <DashboardSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
-        </DashboardSidebarCollapsible>
+        </DashboardSidebarCollapsible> */}
         {user.isAdmin && (
           <DashboardSidebarCollapsible
             badge={pending.organizations + pending.team}

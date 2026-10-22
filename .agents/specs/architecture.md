@@ -39,7 +39,7 @@ src/
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, page-title, search-command
 │   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, theme
-│   └── ui/             # shadcn/ui primitives + custom UI (incl. vendored rich-text-editor/)
+│   └── ui/             # shadcn/ui + release kit (patterns.md); vendored rich-text-editor/
 ├── db/
 │   ├── client.ts       # Dual-driver Drizzle client + transaction() + Transaction type
 │   ├── helpers.ts      # safeQuery(), queryError()

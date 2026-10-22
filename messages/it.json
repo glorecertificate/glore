@@ -721,6 +721,27 @@
     },
     "DatePicker": {
       "selectDate": "Seleziona data"
+    },
+    "CopyButton": {
+      "copy": "Copia",
+      "copied": "Copiato",
+      "error": "Impossibile copiare. Riprova o copia il testo manualmente."
+    },
+    "QrCode": {
+      "loading": "Caricamento del codice QR",
+      "error": "Impossibile creare il codice QR. Usa il link."
+    },
+    "DataTable": {
+      "count": "{count, plural, one {# risultato} other {# risultati}}",
+      "actions": "Azioni della riga",
+      "loading": "Caricamento dei risultati",
+      "page": "Pagina {page} di {total}",
+      "previous": "Precedente",
+      "next": "Successiva"
+    },
+    "Chart": {
+      "empty": "Non ci sono ancora dati",
+      "label": "Categoria"
     }
   },
   "Layout": {
@@ -1146,7 +1167,8 @@
     "trendPeriod1Month": "nell'ultimo mese",
     "trendPeriod3Months": "negli ultimi 3 mesi",
     "trendPeriod6Months": "negli ultimi 6 mesi",
-    "yourProgress": "Il tuo progresso"
+    "yourProgress": "Il tuo progresso",
+    "enrollmentsByCourse": "Iscrizioni per corso"
   },
   "Docs": {
     "title": "Documentazione",
@@ -1702,7 +1724,10 @@
     "saveDraft": "Salva bozza",
     "savingDraft": "Salvataggio...",
     "draftSuccess": "Certificato salvato come bozza.",
-    "draftError": "Errore nel salvataggio della bozza."
+    "draftError": "Errore nel salvataggio della bozza.",
+    "timeline": "Cronologia della richiesta",
+    "requestCreated": "Richiesta creata",
+    "filterStatus": "Filtra i certificati per stato"
   },
   "Organization": {
     "title": "Organizzazione",

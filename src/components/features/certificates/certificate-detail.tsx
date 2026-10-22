@@ -26,9 +26,12 @@ import { ResubmitForm } from '@/components/features/certificates/resubmit/resubm
 import { ReviewForm } from '@/components/features/certificates/review/review-form'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
+import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Timeline } from '@/components/ui/timeline'
+import { TimelineItem } from '@/components/ui/timeline-item'
 import { type Certificate } from '@/db/queries/certificate'
 import { fullName } from '@/lib/utils'
 
@@ -169,13 +172,13 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
         </div>
 
         {certificate.isApproved && isOwner && (
-          <div className="flex flex-col gap-3 rounded-lg border border-success/30 bg-success/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <Banner className="flex-col sm:flex-row sm:items-center sm:justify-between" variant="success">
             <div className="flex items-center gap-2 text-sm font-medium text-success">
               <PartyPopperIcon className="size-4 shrink-0" />
               {t('approvedBanner')}
             </div>
             <CertificateShare certificate={certificate} />
-          </div>
+          </Banner>
         )}
 
         {!certificate.isApproved && (
@@ -239,6 +242,31 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
             </Card>
           </div>
         )}
+
+        <Timeline aria-label={t('timeline')}>
+          <TimelineItem
+            dateTime={new Date(certificate.createdAt).toISOString()}
+            time={dateFormatter.format(new Date(certificate.createdAt))}
+          >
+            {t('requestCreated')}
+          </TimelineItem>
+          {certificate.submittedAt && (
+            <TimelineItem
+              dateTime={new Date(certificate.submittedAt).toISOString()}
+              time={dateFormatter.format(new Date(certificate.submittedAt))}
+            >
+              {t('statusSubmitted')}
+            </TimelineItem>
+          )}
+          {certificate.issuedAt && (
+            <TimelineItem
+              dateTime={new Date(certificate.issuedAt).toISOString()}
+              time={dateFormatter.format(new Date(certificate.issuedAt))}
+            >
+              {t('statusApproved')}
+            </TimelineItem>
+          )}
+        </Timeline>
 
         <Card>
           <CardHeader>

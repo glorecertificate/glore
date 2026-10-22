@@ -376,7 +376,7 @@ export const SidebarRail = ({
 export const SidebarInset = ({ className, ...props }: React.ComponentProps<'div'>) => (
   <div
     className={cn(
-      'relative flex min-h-svh flex-1 flex-col bg-background',
+      'relative flex min-h-svh min-w-0 flex-1 flex-col bg-background',
       'peer-data-[variant=inset]:min-h-[calc(100svh-(--spacing(4)))] md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
       className
     )}
@@ -625,7 +625,7 @@ export const SidebarMenuSkeleton = ({
 export const SidebarMenuSub = ({ className, ...props }: React.ComponentProps<'ul'>) => (
   <ul
     className={cn(
-      'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5',
+      'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-2',
       'group-data-[collapsible=icon]:hidden',
       className
     )}

@@ -251,7 +251,9 @@ export const MultiSelectBadge = ({
             ]
           )}
         >
-          <XIcon className={cn('size-2', !disabled && 'group-hover/multi-select-badge:stroke-white')} />
+          <XIcon
+            className={cn('size-2 stroke-foreground', !disabled && 'group-hover/multi-select-badge:stroke-white')}
+          />
         </span>
       </span>
     </Badge>

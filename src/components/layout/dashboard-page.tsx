@@ -33,7 +33,7 @@ export const DashboardPage = ({
     <Provider>
       {header ?? (
         <Header className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
             <HeaderTrigger />
             {breadcrumb ?? <HeaderBreadcrumb description={description} title={title} backHref={backHref} />}
           </div>

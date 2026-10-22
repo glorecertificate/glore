@@ -48,6 +48,7 @@ References live in `.agents/references/`: the certificate PDF template and the p
 
 - Dependencies flow shared > features > app. `ui/`, `icons/`, `hooks/`, `lib/` are domain-free and lint-blocked from `@/components/features/**`, `@/app/**`, `@/actions/**`.
 - `ui/rich-text-editor/` is a vendored Plate.js block: never refactor its internals, since a registry re-pull overwrites them.
+- Reuse the release UI kit in `ui/` before adding primitives; APIs and chart loading rules are in `patterns.md`, "Release UI kit".
 - i18n: locales `en` (default), `es`, `it`. Add or remove a key in all three `messages/{locale}.json` catalogs in the same change.
 
 ## Conventions

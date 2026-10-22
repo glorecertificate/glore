@@ -117,6 +117,7 @@ Build on the shipped system: logo palette tokens, Geist and Bricolage Grotesque,
 Never revive variants or a preview widget.
 
 - Arrow motif: the certificate's faded arrows become a domain-free `ArrowsMotif` SVG for hero cards, auth pages, empty states, and certificate cards.
+- `knip.json` lists `arrows-motif.tsx` in `ignoreFiles` until a lane renders `ArrowsMotif`; the first consumer removes the entry.
 - Skill group colors: Work `brand-tertiary`, Social `brand-secondary`, Communication `brand`, Personal a new AA-checked `--brand-quaternary` teal.
 - `LevelDots`: the certificate's five dots and level word, reused wherever a skill level appears.
 - Certificate thumbnail: an HTML miniature of the PDF layout for cards, the wizard preview, and the verify page.

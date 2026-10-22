@@ -1,15 +1,13 @@
 'use client'
 
-import { useState } from 'react'
-
-import { CheckIcon, CopyIcon, ShareIcon } from 'lucide-react'
+import { ShareIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { toast } from 'sonner'
 
 import { FacebookIcon } from '@/components/icons/facebook'
 import { LinkedinIcon } from '@/components/icons/linkedin'
 import { useSession } from '@/components/providers/session'
 import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 import { type Certificate } from '@/db/queries/certificate'
 import { cn } from '@/lib/utils'
 import config from '~/config/metadata.json'
@@ -23,7 +21,6 @@ export const CertificateShare = ({ certificate, className }: CertificateSharePro
   const t = useTranslations('Certificates')
   const tCommon = useTranslations('Common')
   const { user } = useSession()
-  const [copied, setCopied] = useState(false)
 
   const username = user.username
   const publicUrl = username ? `${config.url}/${username}?v=${certificate.handle}` : null
@@ -33,14 +30,6 @@ export const CertificateShare = ({ certificate, className }: CertificateSharePro
     : null
 
   const facebookUrl = publicUrl ? `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(publicUrl)}` : null
-
-  const copyLink = async () => {
-    if (!publicUrl) return
-    await navigator.clipboard.writeText(publicUrl)
-    setCopied(true)
-    toast.success(t('shareLinkCopied'))
-    setTimeout(() => setCopied(false), 2000)
-  }
 
   if (!publicUrl) return null
 
@@ -66,9 +55,7 @@ export const CertificateShare = ({ certificate, className }: CertificateSharePro
           </a>
         </Button>
       )}
-      <Button icon={copied ? CheckIcon : CopyIcon} onClick={() => void copyLink()} size="sm" variant="outline">
-        {copied ? t('shareLinkCopied') : t('copyLink')}
-      </Button>
+      <CopyButton copiedLabel={t('shareLinkCopied')} label={t('copyLink')} size="sm" value={publicUrl} />
     </div>
   )
 }

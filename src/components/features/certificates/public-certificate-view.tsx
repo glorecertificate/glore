@@ -1,16 +1,16 @@
-import { CalendarIcon, CheckCircle2Icon, DownloadIcon, GlobeIcon, MapPinIcon, TimerIcon } from 'lucide-react'
 import { Locale } from 'next-intl'
 import { getLocale, getTranslations } from 'next-intl/server'
-import * as qrcode from 'qrcode'
 
+import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Image } from '@/components/ui/image'
+import { LevelDots } from '@/components/ui/level-dots'
 import { Logo } from '@/components/ui/logo'
+import { QrCode } from '@/components/ui/qr-code'
 import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
-import { AUTH_ROOT } from '@/lib/constants'
+import { AUTH_ROOT, SKILL_LEVELS } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
 import appConfig from '~/config/metadata.json'
@@ -21,8 +21,11 @@ interface PublicCertificateViewProps {
 }
 
 export const PublicCertificateView = async ({ certificate, username }: PublicCertificateViewProps) => {
-  const t = await getTranslations('Certificates')
-  const locale = (await getLocale()) as Locale
+  const [t, tCommon, locale] = await Promise.all([
+    getTranslations('Certificates'),
+    getTranslations('Common'),
+    getLocale(),
+  ])
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
   const start = dateFormatter.format(new Date(certificate.activityStartDate))
@@ -34,7 +37,6 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
   const volunteerName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
   const verificationUrl = `${appConfig.url}/${username}?v=${certificate.handle}`
-  const qrDataUrl = await qrcode.toDataURL(verificationUrl, { margin: 2, scale: 4 })
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,7 +52,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
       <main className="mx-auto max-w-3xl space-y-8 px-6 py-10">
         <div className="space-y-4 text-center">
           <Badge className="gap-1.5 border-success/30 bg-success/5 text-success" variant="outline">
-            <CheckCircle2Icon className="size-3.5" />
+            <LucideIcon name="circle-check" className="size-3.5" />
             {t('publicVerified')}
           </Badge>
           <div className="space-y-1.5">
@@ -58,8 +60,9 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <p className="text-lg text-muted-foreground">{certificate.organization.name}</p>
           </div>
           {certificate.documentUrl && (
-            <Button asChild icon={DownloadIcon} size="sm" variant="brand">
+            <Button asChild size="sm" variant="brand">
               <a download href={certificate.documentUrl} rel="noopener noreferrer" target="_blank">
+                <LucideIcon name="download" />
                 {t('download')}
               </a>
             </Button>
@@ -70,7 +73,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CalendarIcon className="size-4 shrink-0" />
+                <LucideIcon name="calendar" className="size-4 shrink-0" />
                 {t('activityStartDate')} {'– '}
                 {t('activityEndDate')}
               </CardTitle>
@@ -86,7 +89,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <TimerIcon className="size-4 shrink-0" />
+                <LucideIcon name="timer" className="size-4 shrink-0" />
                 {t('activityDuration')}
               </CardTitle>
             </CardHeader>
@@ -101,7 +104,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-                <MapPinIcon className="size-4 shrink-0" />
+                <LucideIcon name="map-pin" className="size-4 shrink-0" />
                 {t('activityLocation')}
               </CardTitle>
             </CardHeader>
@@ -117,10 +120,16 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <CardContent>
               <ul className="space-y-1">
                 {certificate.skills.map(s => (
-                  <li className="text-sm" key={s.id}>
+                  <li className="flex flex-col gap-1 text-sm" key={s.id}>
                     {s.course.title
                       ? localizeRecord(s.course.title as IntlRecord, certLocale, DEFAULT_LOCALE)
                       : s.course.slug}
+                    {s.level !== null && s.level >= 1 && s.level <= 5 && (
+                      <LevelDots
+                        label={tCommon(`skillLevels.${SKILL_LEVELS[s.level - 1]}`)}
+                        level={s.level as 1 | 2 | 3 | 4 | 5}
+                      />
+                    )}
                   </li>
                 ))}
               </ul>
@@ -145,7 +154,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
         )}
 
         <div className="flex flex-col items-center gap-2">
-          <Image className="size-28 rounded-lg border" height={112} src={qrDataUrl} unoptimized width={112} />
+          <QrCode label={t('publicScanToVerify')} size={112} value={verificationUrl} />
           <p className="text-xs text-muted-foreground">{t('publicScanToVerify')}</p>
         </div>
 
@@ -157,8 +166,9 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
             <p className="text-sm text-muted-foreground">{t('publicJoinDescription')}</p>
           </div>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button asChild icon={GlobeIcon}>
+            <Button asChild>
               <a href={appConfig.website} rel="noopener noreferrer" target="_blank">
+                <LucideIcon name="globe" />
                 {t('publicJoinButton')}
               </a>
             </Button>

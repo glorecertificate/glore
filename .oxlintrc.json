@@ -714,6 +714,10 @@
   },
   "overrides": [
     {
+      "files": ["src/components/ui/chart-renderer.tsx"],
+      "rules": { "react-doctor/prefer-dynamic-import": "off" }
+    },
+    {
       "files": ["*.config.ts"],
       "rules": {
         "eslint/no-template-curly-in-string": "off",

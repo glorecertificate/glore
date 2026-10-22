@@ -7,9 +7,12 @@ import { type CertificateEligibility } from '@/actions/certificates/queries'
 import { CertificateCard } from '@/components/features/certificates/certificate-card'
 import { CERT_LIST_STATUS_VALUES, type CertListStatus } from '@/components/features/certificates/params'
 import { useCertListSort, useCertListStatus } from '@/components/features/certificates/use-params'
+import { Banner } from '@/components/ui/banner'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
+import { SegmentedControl } from '@/components/ui/segmented-control'
+import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
 
@@ -69,7 +72,7 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
   return (
     <div className="flex flex-col gap-8 py-6">
       {eligible && (
-        <div className="flex items-start justify-between gap-4 rounded-xl border border-brand/30 bg-brand/5 p-5">
+        <Banner className="flex-wrap items-center justify-between" variant="info">
           <div className="space-y-1">
             <p className="font-semibold text-brand-text">{t('requestCertificateTitle')}</p>
             <p className="text-sm text-muted-foreground">{t('requestCertificateMessage')}</p>
@@ -77,26 +80,23 @@ export const CertificatesContent = ({ certificates, eligibility }: CertificatesC
           <Button asChild icon={PlusIcon} size="sm" variant="brand">
             <Link href="/certificates/new">{t('requestCertificate')}</Link>
           </Button>
-        </div>
+        </Banner>
       )}
 
       {hasCertificates && (
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-1.5">
-            <Button size="sm" variant={status ? 'ghost' : 'brand'} onClick={() => setStatus(null)}>
-              {t('filterAll')}
-            </Button>
+          <SegmentedControl
+            aria-label={t('filterStatus')}
+            onValueChange={value => setStatus(value === 'all' ? null : (value as CertListStatus))}
+            value={status ?? 'all'}
+          >
+            <SegmentedControlItem value="all">{t('filterAll')}</SegmentedControlItem>
             {CERT_LIST_STATUS_VALUES.map(s => (
-              <Button
-                key={s}
-                size="sm"
-                variant={status === s ? 'brand' : 'ghost'}
-                onClick={() => setStatus(status === s ? null : s)}
-              >
+              <SegmentedControlItem key={s} value={s}>
                 {t(STATUS_LABEL_KEYS[s] as Parameters<typeof t>[0])}
-              </Button>
+              </SegmentedControlItem>
             ))}
-          </div>
+          </SegmentedControl>
           <Select onValueChange={val => setSort(val as 'newest' | 'oldest')} value={sort}>
             <SelectTrigger className="h-8 w-auto gap-1.5 px-3 text-xs">
               <SelectValue />

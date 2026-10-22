@@ -721,6 +721,27 @@
       "remove": "Remove",
       "saveAvatar": "Save avatar",
       "uploadAvatar": "Upload avatar"
+    },
+    "CopyButton": {
+      "copy": "Copy",
+      "copied": "Copied",
+      "error": "Could not copy. Try again or copy the text manually."
+    },
+    "QrCode": {
+      "loading": "Loading QR code",
+      "error": "Could not create the QR code. Use the link instead."
+    },
+    "DataTable": {
+      "count": "{count, plural, one {# result} other {# results}}",
+      "actions": "Row actions",
+      "loading": "Loading results",
+      "page": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "Chart": {
+      "empty": "No data yet",
+      "label": "Category"
     }
   },
   "Layout": {
@@ -1146,7 +1167,8 @@
     "trendPeriod1Month": "in the last month",
     "trendPeriod3Months": "in the last 3 months",
     "trendPeriod6Months": "in the last 6 months",
-    "yourProgress": "Your progress"
+    "yourProgress": "Your progress",
+    "enrollmentsByCourse": "Enrollments by course"
   },
   "Docs": {
     "title": "Documentation",
@@ -1702,7 +1724,10 @@
     "saveDraft": "Save draft",
     "savingDraft": "Saving...",
     "draftSuccess": "Certificate saved as draft.",
-    "draftError": "Failed to save draft."
+    "draftError": "Failed to save draft.",
+    "timeline": "Request history",
+    "requestCreated": "Request created",
+    "filterStatus": "Filter certificates by status"
   },
   "Organization": {
     "title": "Organization",

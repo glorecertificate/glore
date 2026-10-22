@@ -20,12 +20,13 @@ Budget: keep this file under 2,000 estimated tokens and each spec under 4,500. O
 
 Load only the spec you need from `.agents/specs/`:
 
-- `app.md`: product requirements, roles, features, certificate lifecycle, domain rules.
+- `app.md`: product requirements, roles, features, invitations, domain rules.
+- `certificates.md`: certificate lifecycle, screens, PDF, public verification.
 - `architecture.md`: `src/` tree, adding files, naming, layer boundaries, server vs client.
 - `code.md`: formatter, import order, restricted imports, lint rules, git hooks.
-- `reference.md`: routes, auth, queries, transactions, cache, env vars, dev performance, testing.
+- `reference.md`: routes, auth, queries, transactions, cache, env vars, dev performance.
 - `patterns.md`: components, types, hooks, utils, theming, i18n, forms, emails.
-- `workflow.md`: commands, skills, MCP, committing, email verification, docs sync.
+- `workflow.md`: commands, seeds, committing, skills, MCP, email verification, docs sync, testing, browser verification.
 
 Plans live in tracked `.agents/plans/`, one file or folder per effort. Read the matching plan before resuming planned work, write new plans there, and delete a plan once it ships.
 

@@ -157,15 +157,3 @@ Non-obvious settings that keep dev HMR and CI builds fast. They back the dev-per
 
 - Grep `node_modules/next/dist/docs/` for Next.js APIs; it always matches the installed version.
 - For context7, use the pinned id `/vercel/next.js/v<installed version>`: `cacheComponents` and `NextProxy` are v16-only, so a v15 answer is wrong.
-
-## Browser verification
-
-- Drive the running dev server at `https://glore.localhost` with the machine-wide `agent-browser` skill; never start a second app stack or preview server.
-- Reuse Playwright auth state (`--state .playwright/.auth/<role>.json --ignore-https-errors`) to act as a seeded user.
-- Close each named session in the turn that finishes with it; an orphan holds about 900MB of Chrome.
-- `APP_URL` must match the driven host, since `allowedDevOrigins` and Better Auth `baseURL` derive from it.
-
-## Testing
-
-- `pnpm run test` runs Vitest in the Node environment over `src/**/*.test.ts` and `scripts/**/*.test.ts`. `vitest.config.ts` resolves tsconfig paths and aliases `server-only` to an empty module, so server actions import cleanly; mock `@/actions/auth` and `next/cache` per test. It loads `.env` and `.env.local`, so DB-backed tests (for example `src/db/mutations/certificate.test.ts`) run against the local DB and skip themselves when `DATABASE_URL` is not local; the certificate suites build their own org and users with `src/actions/certificates/test-harness.ts`.
-- `pnpm run test:e2e` runs Playwright (`e2e/`) against the dev server at `E2E_BASE_URL` (default `https://glore.localhost`). The `setup` project logs in every `AUTH_ROLES` seed user and stores their state in `.playwright/.auth/`; specs pick one with `test.use({ storageState: authFile(role) })`. Better Auth limits sign-ins, so add a role to `AUTH_ROLES` instead of logging in inside specs. `e2e/mail.ts` reads Mailpit (`MAILPIT_URL`), and `recovery.spec.ts` resets the `recovery` seed user's password through the emailed link (`db:seed` restores it). Setup clears local `rate_limits` first. `e2e.yml` starts Postgres and Mailpit services, migrates, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000. Workflows: `ci.yml` (push) runs `check.yml` (`check` and `test`) and `e2e.yml`, then preview `deploy.yml` after both pass; `release.yml` deploys production after `check.yml` only.

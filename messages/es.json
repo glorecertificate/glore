@@ -56,8 +56,21 @@
     "courses": "Cursos",
     "members": "Miembros",
     "noResults": "No se encontraron resultados.",
-    "placeholder": "Buscar cursos, certificados y miembros...",
-    "trigger": "Buscar"
+    "placeholder": "Busca páginas, cursos, documentación, certificados y miembros...",
+    "trigger": "Buscar",
+    "pages": "Páginas",
+    "settings": "Ajustes",
+    "organization": "Organización",
+    "admin": "Administración",
+    "actions": "Acciones rápidas",
+    "docs": "Documentación",
+    "organizations": "Cambiar de organización",
+    "current": "Actual",
+    "searching": "Buscando...",
+    "failed": "No se pudo completar la búsqueda. Inténtalo de nuevo.",
+    "requestCertificate": "Solicitar un certificado",
+    "inviteMembers": "Invitar miembros",
+    "skillsFramework": "Marco de competencias"
   },
   "Intl": {
     "Countries": {
@@ -751,7 +764,6 @@
     "refreshPage": "Refresh page",
     "errorTitle": "Something went wrong",
     "about": "Acerca de GloRe",
-    "addOrganization": "Agregar organización",
     "admin": "Admin",
     "adminOrganizations": "Organizaciones",
     "adminTeam": "Equipo",
@@ -777,7 +789,13 @@
     "organizations": "Organizaciones",
     "pendingRequests": "{count, plural, =1 {# solicitud pendiente} other {# solicitudes pendientes}}",
     "settings": "Ajustes",
-    "notifications": "Notificaciones"
+    "notifications": "Notificaciones",
+    "registerOrganization": "Registrar una organización",
+    "leaveOrganizationItem": "Salir de {name}",
+    "pendingInvitations": "Invitaciones pendientes",
+    "pendingInvitationsCount": "{count, plural, =1 {# invitación pendiente} other {# invitaciones pendientes}}",
+    "invitedAs": "Invitación como {role}",
+    "noOrganization": "Todavía no tienes organización"
   },
   "Auth": {
     "backToLogin": "Volver a iniciar sesión",

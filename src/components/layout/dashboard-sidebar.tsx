@@ -2,32 +2,24 @@
 
 import { Route } from 'next'
 import dynamic from 'next/dynamic'
-import { redirect, usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { redirect, usePathname, useSearchParams } from 'next/navigation'
 import { Fragment, Suspense, useEffect, useState } from 'react'
 
-import {
-  AwardIcon,
-  BookOpenIcon,
-  Building2Icon,
-  ChevronRightIcon,
-  ChevronsUpDownIcon,
-  CogIcon,
-  HelpCircleIcon,
-  InfoIcon,
-  LogOutIcon,
-  PaletteIcon,
-  PencilIcon,
-  PlusIcon,
-  SearchIcon,
-  SettingsIcon,
-  ShieldUserIcon,
-} from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { logout } from '@/actions/auth'
 import { NotificationBell } from '@/components/features/notifications/notification-bell'
 import { DashboardIcon } from '@/components/icons/dashboard'
+import { LucideIcon } from '@/components/icons/lucide'
+import {
+  type NavigationViewer,
+  entriesFor,
+  showsOrganizationSwitcher,
+  sidebarEntriesFor,
+} from '@/components/layout/navigation'
+import { OrganizationSwitcher } from '@/components/layout/organization-switcher'
+import { useNavigationLabels } from '@/components/layout/use-navigation-labels'
 import { useSession } from '@/components/providers/session'
 import {
   AlertDialog,
@@ -48,7 +40,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
@@ -74,8 +65,9 @@ import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type UserOrganization } from '@/db/queries/user'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
-import { type Icon } from '@/lib/types'
-import { cn, sleep, titleize } from '@/lib/utils'
+import { type IconName } from '@/lib/types'
+import { cn, sleep } from '@/lib/utils'
+import settings from '~/config/app.json'
 
 const loadSearchCommand = async () => (await import('@/components/layout/search-command')).SearchCommand
 
@@ -92,7 +84,7 @@ interface PendingCounts {
 
 interface DashboardSidebarItemProps extends React.ComponentProps<typeof SidebarMenuButton> {
   badge?: number
-  icon?: Icon
+  icon?: IconName
   label: string
   route: Route
   subItem?: boolean
@@ -122,7 +114,7 @@ const DashboardSidebarItem = ({
   asChild = false,
   badge = 0,
   className,
-  icon: Icon,
+  icon,
   label,
   onClick,
   route,
@@ -165,8 +157,11 @@ const DashboardSidebarItem = ({
         <Link href={route}>
           {route === APP_ROOT ? (
             <DashboardIcon className="size-4" colored />
-          ) : Icon ? (
-            <Icon className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-brand-text')} />
+          ) : icon ? (
+            <LucideIcon
+              className={cn('text-muted-foreground/80 transition-colors', isActive && 'text-brand-text')}
+              name={icon}
+            />
           ) : null}
           {label}
           {badge > 0 && <DashboardSidebarBadge count={badge} />}
@@ -198,7 +193,7 @@ const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }
             className="cursor-pointer data-[state=open]:rotate-90"
             onClick={() => setOpen(prev => !prev)}
           >
-            <ChevronRightIcon className="text-foreground/64" />
+            <LucideIcon className="text-foreground/64" name="chevron-right" />
           </SidebarMenuAction>
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -209,141 +204,40 @@ const DashboardSidebarCollapsible = ({ badge = 0, children, icon, label, route }
   )
 }
 
-const DashboardSidebarOrgs = ({ organization }: { organization: UserOrganization }) => {
-  const { push } = useRouter()
-  const { isMobile, open, setActivePath } = useSidebar()
-  const t = useTranslations('Layout')
-
-  const { setOrganization, user } = useSession()
-
-  const membership = user.memberships.find(m => m.organization.id === organization.id)
-
-  const selectOrganization = (id: number) => {
-    setActivePath(APP_ROOT)
-    setOrganization(id)
-    push(APP_ROOT)
-  }
-
-  return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              className="overflow-hidden rounded-lg border bg-popover py-7 shadow-2xs transition-all duration-150 hover:bg-accent/50 data-[state=open]:bg-accent/50 data-[state=open]:text-foreground data-[state=open]:shadow-inner"
-              size="lg"
-              tooltip={organization.name}
-              variant="outline"
-            >
-              <Avatar
-                className={cn(
-                  'flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-transparent bg-muted transition-all duration-150',
-                  !organization.avatarUrl && 'border-border'
-                )}
-              >
-                {organization.avatarUrl ? (
-                  <AvatarImage alt={organization.name} src={organization.avatarUrl} />
-                ) : (
-                  <span className="text-xs text-muted-foreground">{organization.name.slice(0, 2).toUpperCase()}</span>
-                )}
-              </Avatar>
-              <div className={cn('grid flex-1 text-left leading-tight', !open && 'hidden')}>
-                <span className="truncate font-semibold">{organization.name}</span>
-                {membership?.role && (
-                  <span className="truncate text-xs font-normal text-muted-foreground">
-                    {titleize(membership.role)}
-                  </span>
-                )}
-              </div>
-              <Button
-                asChild
-                className={cn(
-                  'ml-auto flex size-6 items-center justify-center border border-transparent transition-none hover:border-border',
-                  !open && 'hidden'
-                )}
-                variant="ghost"
-              >
-                <span>
-                  <ChevronsUpDownIcon className="size-4 stroke-foreground/64" />
-                </span>
-              </Button>
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="start"
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">{t('organizations')}</DropdownMenuLabel>
-            {user.memberships.map(({ organization: { id, name, profile }, role }) => {
-              const avatarUrl = profile?.avatarUrl ?? null
-
-              return (
-                <DropdownMenuItem className="gap-2 p-2" key={id} onClick={() => selectOrganization(id)}>
-                  <Avatar className="aspect-square size-10 rounded-lg border">
-                    {avatarUrl && <AvatarImage alt={name} src={avatarUrl} />}
-                    <AvatarFallback className="text-muted-foreground">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="flex items-center truncate font-semibold">
-                      {name}
-                      {id === organization.id && (
-                        <span className="mt-[1.5px] ml-1.5 inline-block size-1.75 rounded-full bg-success" />
-                      )}
-                    </span>
-                    <span className="truncate text-xs font-normal text-muted-foreground">{titleize(role)}</span>
-                  </div>
-                </DropdownMenuItem>
-              )
-            })}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <PlusIcon className="size-4" />
-              </div>
-              <div className="font-normal text-muted-foreground">{t('addOrganization')}</div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
-  )
-}
-
 const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
   const { user } = useSession()
+  const labels = useNavigationLabels()
   const t = useTranslations('Layout')
+  const viewer: NavigationViewer = { canEdit: user.canEdit, isAdmin: user.isAdmin, role: user.role }
+  const adminEntries = entriesFor(viewer, 'admin')
 
   return (
     <SidebarGroup>
       <SidebarMenu className="mt-4 gap-3">
-        <DashboardSidebarItem label={t('dashboard')} route="/dashboard" />
-        {(user.isOrgAdmin || user.isRepresentative) && !user.isAdmin && (
-          <DashboardSidebarItem icon={Building2Icon} label={t('organization')} route={'/organization' as Route} />
-        )}
-        <DashboardSidebarItem icon={BookOpenIcon} label={t('courses')} route="/courses" />
-        {!user.canEdit && <DashboardSidebarItem icon={AwardIcon} label={t('certificates')} route="/certificates" />}
-        {/* <DashboardSidebarCollapsible icon={MessageCircleQuestionIcon} label={t('docs')} route="/docs">
+        {sidebarEntriesFor(viewer).map(({ href, icon, id }) => (
+          <DashboardSidebarItem icon={icon} key={id} label={labels[id]} route={href} />
+        ))}
+        {/* <DashboardSidebarCollapsible icon="message-circle-question" label={t('docs')} route="/docs">
           <DashboardSidebarItem label={t('docsIntro')} route="/docs/intro" subItem />
           <DashboardSidebarItem label={t('docsTutorials')} route="/docs/tutorials" subItem />
           <DashboardSidebarItem label={t('docsFaq')} route="/docs/faq" subItem />
         </DashboardSidebarCollapsible> */}
-        {user.isAdmin && (
+        {adminEntries.length > 0 && (
           <DashboardSidebarCollapsible
             badge={pending.organizations + pending.team}
-            icon={CogIcon}
+            icon="cog"
             label={t('admin')}
             route="/admin"
           >
-            <DashboardSidebarItem badge={pending.team} label={t('adminTeam')} route="/admin/team" subItem />
-            <DashboardSidebarItem
-              badge={pending.organizations}
-              label={t('adminOrganizations')}
-              route="/admin/organizations"
-              subItem
-            />
-            <DashboardSidebarItem label={t('adminUsers')} route={'/admin/users' as Route} subItem />
+            {adminEntries.map(({ href, id }) => (
+              <DashboardSidebarItem
+                badge={id === 'admin-team' ? pending.team : id === 'admin-organizations' ? pending.organizations : 0}
+                key={id}
+                label={labels[id]}
+                route={href}
+                subItem
+              />
+            ))}
           </DashboardSidebarCollapsible>
         )}
       </SidebarMenu>
@@ -354,11 +248,11 @@ const DashboardSidebarMain = ({ pending }: { pending: PendingCounts }) => {
 const DashboardSidebarUserItem = ({
   children,
   href,
-  icon: Icon,
+  icon,
   onClick,
 }: React.PropsWithChildren<{
   href: Route
-  icon: Icon
+  icon: IconName
   onClick: () => void
 }>) => {
   const pathname = usePathname()
@@ -373,7 +267,7 @@ const DashboardSidebarUserItem = ({
             href === pathname && searchParams.size === 0 && 'pointer-events-none'
           )}
         >
-          <Icon />
+          <LucideIcon name={icon} />
           {children}
         </DropdownMenuItem>
       </Link>
@@ -466,7 +360,9 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                         className="group-aria-expanded/sidebar-user:pointer-events-none!"
                         pointerEvents="auto"
                       >
-                        <ShieldUserIcon className="size-3" />
+                        <span>
+                          <LucideIcon className="size-3" name="shield-user" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent sideOffset={6} size="sm">
                         <span className="text-xs">{t('adminUser')}</span>
@@ -480,7 +376,9 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                         className="group-aria-expanded/sidebar-user:pointer-events-none!"
                         pointerEvents="auto"
                       >
-                        <PencilIcon className="size-3" />
+                        <span>
+                          <LucideIcon className="size-3" name="pencil" />
+                        </span>
                       </TooltipTrigger>
                       <TooltipContent sideOffset={6} size="sm">
                         <span className="text-xs">{t('editorUser')}</span>
@@ -499,7 +397,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
                 variant="ghost"
               >
                 <span>
-                  <ChevronsUpDownIcon className="size-4 stroke-foreground/64" />
+                  <LucideIcon className="size-4 stroke-foreground/64" name="chevrons-up-down" />
                 </span>
               </Button>
             </SidebarMenuButton>
@@ -511,12 +409,12 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DashboardSidebarUserItem href="/settings" icon={SettingsIcon} onClick={onLinkClick}>
+              <DashboardSidebarUserItem href="/settings" icon="settings" onClick={onLinkClick}>
                 {t('settings')}
               </DashboardSidebarUserItem>
               <DropdownMenuItem as="div" className="justify-between" variant="flat">
                 <span className="flex items-center gap-2">
-                  <PaletteIcon />
+                  <LucideIcon name="palette" />
                   {tCommon('theme')}
                 </span>
                 <ThemeSwitch />
@@ -524,10 +422,10 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DashboardSidebarUserItem href="/help" icon={HelpCircleIcon} onClick={onLinkClick}>
+              <DashboardSidebarUserItem href="/help" icon="circle-help" onClick={onLinkClick}>
                 {t('help')}
               </DashboardSidebarUserItem>
-              <DashboardSidebarUserItem href="/about" icon={InfoIcon} onClick={onLinkClick}>
+              <DashboardSidebarUserItem href="/about" icon="info" onClick={onLinkClick}>
                 {t('about')}
               </DashboardSidebarUserItem>
             </DropdownMenuGroup>
@@ -536,7 +434,7 @@ const DashboardSidebarUser = ({ organization }: { organization: UserOrganization
               <AlertDialog onOpenChange={setLogoutDialogOpen} open={logoutDialogOpen}>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem onSelect={e => e.preventDefault()} variant="destructive">
-                    <LogOutIcon />
+                    <LucideIcon name="log-out" />
                     {t('logout')}
                   </DropdownMenuItem>
                 </AlertDialogTrigger>
@@ -580,7 +478,7 @@ const DashboardSidebarSearch = () => {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === settings.searchShortcut) {
         e.preventDefault()
         setActivated(true)
         setOpen(prev => !prev)
@@ -601,12 +499,12 @@ const DashboardSidebarSearch = () => {
               onPointerEnter={preloadSearchCommand}
               tooltip={t('trigger')}
             >
-              <SearchIcon />
+              <LucideIcon name="search" />
               <span className="flex flex-1 items-center justify-between">
                 {t('trigger')}
                 <kbd className="flex items-center gap-0.5 font-mono text-[13px] text-muted-foreground/70">
                   <span className="text-[15px]">{'⌘'}</span>
-                  <span>{'K'}</span>
+                  <span>{settings.searchShortcut.toUpperCase()}</span>
                 </kbd>
               </span>
             </SidebarMenuButton>
@@ -624,11 +522,15 @@ const DashboardSidebarSearch = () => {
 }
 
 export const DashboardSidebar = ({ pending }: { pending: PendingCounts }) => {
-  const { organization } = useSession()
+  const { organization, user } = useSession()
 
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>{organization && <DashboardSidebarOrgs organization={organization} />}</SidebarHeader>
+      {showsOrganizationSwitcher(user) && (
+        <SidebarHeader>
+          <OrganizationSwitcher />
+        </SidebarHeader>
+      )}
       <SidebarContent>
         <DashboardSidebarSearch />
         <DashboardSidebarMain pending={pending} />

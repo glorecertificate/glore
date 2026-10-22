@@ -11,5 +11,6 @@
   "maxBulkInvites": 50,
   "maxAvatarSize": 2048,
   "mapsUrl": "https://maps.google.com/search",
+  "searchShortcut": "k",
   "sidebarShortcut": "\\"
 }

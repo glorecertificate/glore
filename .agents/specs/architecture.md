@@ -17,6 +17,7 @@ src/
 │   ├── notifications/  # catalog.ts, notify.ts, plan.ts, recipients.ts (server-only); inbox.ts ('use server': list, count, mark read)
 │   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
 │   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts
+│   ├── shell/          # search.ts (palette lookups: certificates, members), scope.ts (pure per-role scopes), invitations.ts (viewer's pending invitations)
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
 │   ├── docs.ts         # Doc category + article CRUD, cached queries
@@ -41,7 +42,8 @@ src/
 │   │                   #   about, dashboard, docs, help, notifications, onboarding, organization, users
 │   ├── icons/          # Custom SVG icon components + Lucide lazy wrapper (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
-│   │                   #   loading-fallback, offline-fallback, page-title, search-command
+│   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title,
+│   │                   #   search-command (palette), navigation (pure per-role entries), use-navigation-labels
 │   ├── providers/      # Flat single-file providers: i18n, motion, search-params, session, theme
 │   └── ui/             # shadcn/ui + release kit (patterns.md); vendored rich-text-editor/
 ├── db/
@@ -85,6 +87,14 @@ src/
 - A slice with a single aggregate root view names it `index.tsx` with a named export, and the route imports the slice folder rather than a deeper file (`import { HelpContent } from '@/components/features/help'`). Used by `about/`, `dashboard/`, `help/`, `onboarding/`, `courses/course-list/`, `courses/course-editor/`. Slices with several peer entry points consumed by different routes (`certificates/`, `admin/`, `docs/`, `users/`, `organization/`) keep descriptively named files and no forced `index.tsx`.
 - `db/queries/<table>.ts` exports `parse*` functions and MUST stay pure: importing `@/db/client` there leaks `server-only` into client bundles through parser chains.
 - `features/docs/use-docs-search.ts` is the docs search hook (`load`, `search`, results carry `href`) for the command palette.
+
+## Shell: sidebar, switcher, palette
+
+- `components/layout/navigation.ts` is the single role table (pure, tested): each entry has a group (`pages`, `settings`, `organization`, `admin`, `actions`), href, icon, and a `visible(viewer)` rule over `{ canEdit, isAdmin, role }`. The sidebar renders the `sidebar` entries, the palette renders every visible entry, and `use-navigation-labels` maps each id to its translated label.
+- Roles (D25): team members (`canEdit`: platform admins and editors) get Dashboard, Courses, Docs, plus the Admin group for platform admins; no Organization item, no Certificates, no org switcher. Org owners and representatives add Organization; learners have no Certificates.
+- The org switcher (`organization-switcher.tsx`) reuses the existing active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads. It lists memberships, the viewer's pending invitations (`listMyPendingInvitations`, polled every 2 minutes, links to `/invite/[token]`), a link to `/register`, and Leave for non-owners through `LeaveOrganizationDialog` (`leaveOrganization`, gotcha 16).
+- The palette opens with the `searchShortcut` key of `config/app.json` (plus Cmd or Ctrl). Courses and docs filter in the browser (`listCourses`, `useDocsSearch`); certificates and members come from `searchWorkspace` (`actions/shell/search.ts`), which scopes server-side: own certificates for everyone but team members, plus assigned and pooled `submitted` requests for tutors, plus every non-draft certificate of the active organization for owners and representatives; members only for owners and representatives in the active organization; team members get neither. Drafts are visible to their holder only. Queries shorter than 2 characters return nothing.
+- The bell stays in the sidebar's top group under Search, as the second row.
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`). `db/schema/<table>.ts` holds Drizzle table definitions.
 
 ## Layer boundaries (lint-enforced)

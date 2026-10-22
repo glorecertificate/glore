@@ -56,8 +56,21 @@
     "courses": "Courses",
     "members": "Members",
     "noResults": "No results found.",
-    "placeholder": "Search courses, certificates and members...",
-    "trigger": "Search"
+    "placeholder": "Search pages, courses, docs, certificates and members...",
+    "trigger": "Search",
+    "pages": "Pages",
+    "settings": "Settings",
+    "organization": "Organization",
+    "admin": "Admin",
+    "actions": "Quick actions",
+    "docs": "Documentation",
+    "organizations": "Switch organization",
+    "current": "Current",
+    "searching": "Searching...",
+    "failed": "The search could not finish. Try again.",
+    "requestCertificate": "Request a certificate",
+    "inviteMembers": "Invite members",
+    "skillsFramework": "Skills framework"
   },
   "Intl": {
     "Countries": {
@@ -746,7 +759,6 @@
   },
   "Layout": {
     "about": "About GloRe",
-    "addOrganization": "Add organization",
     "admin": "Admin",
     "adminOrganizations": "Organizations",
     "adminTeam": "Team",
@@ -777,7 +789,13 @@
     "backToHome": "Go to the homepage",
     "backToPrevious": "Go back",
     "refreshPage": "Refresh page",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "registerOrganization": "Register an organization",
+    "leaveOrganizationItem": "Leave {name}",
+    "pendingInvitations": "Pending invitations",
+    "pendingInvitationsCount": "{count, plural, =1 {# pending invitation} other {# pending invitations}}",
+    "invitedAs": "Invited as {role}",
+    "noOrganization": "No organization yet"
   },
   "Auth": {
     "backToLogin": "Go to login",

@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "communication-skills",
+    "icon": "messages-square",
+    "sortOrder": 1,
+    "name": {
+      "en": "Communication skills",
+      "es": "Habilidades de comunicación",
+      "it": "Competenze comunicative"
+    },
+    "description": {
+      "en": "Express your ideas clearly, listen with attention, and connect with people in person and online.",
+      "es": "Expresa tus ideas con claridad, escucha con atención y conecta con las personas, en persona y en línea.",
+      "it": "Esprimi le tue idee con chiarezza, ascolta con attenzione e entra in contatto con le persone, di persona e online."
+    }
+  },
+  {
+    "slug": "personal-skills",
+    "icon": "user-round",
+    "sortOrder": 2,
+    "name": {
+      "en": "Personal skills",
+      "es": "Habilidades personales",
+      "it": "Competenze personali"
+    },
+    "description": {
+      "en": "Know yourself, think for yourself, and grow with confidence.",
+      "es": "Conócete, piensa por ti mismo y crece con confianza.",
+      "it": "Conosci te stesso, pensa con la tua testa e cresci con fiducia."
+    }
+  },
+  {
+    "slug": "work-skills",
+    "icon": "briefcase",
+    "sortOrder": 3,
+    "name": {
+      "en": "Work skills",
+      "es": "Habilidades laborales",
+      "it": "Competenze lavorative"
+    },
+    "description": {
+      "en": "Organize your time, work well with others, and get things done.",
+      "es": "Organiza tu tiempo, trabaja bien con los demás y lleva las tareas a buen término.",
+      "it": "Organizza il tuo tempo, lavora bene con gli altri e porta a termine i compiti."
+    }
+  },
+  {
+    "slug": "social-skills",
+    "icon": "users",
+    "sortOrder": 4,
+    "name": {
+      "en": "Social skills",
+      "es": "Habilidades sociales",
+      "it": "Competenze sociali"
+    },
+    "description": {
+      "en": "Understand other cultures, adapt to change, and build respectful relationships.",
+      "es": "Comprende otras culturas, adáptate al cambio y construye relaciones respetuosas.",
+      "it": "Comprendi altre culture, adattati ai cambiamenti e costruisci relazioni rispettose."
+    }
+  }
+]

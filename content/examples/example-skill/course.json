@@ -1,0 +1,23 @@
+{
+  "slug": "example-skill",
+  "type": "skill",
+  "skillGroup": "work-skills",
+  "icon": "book-open",
+  "title": {
+    "en": "Example: course format",
+    "es": "Ejemplo: formato de curso",
+    "it": "Esempio: formato del corso"
+  },
+  "description": {
+    "en": "A tiny skill course that shows the content format. It is never imported without --examples.",
+    "es": "Un curso de habilidad muy breve que muestra el formato del contenido. Nunca se importa sin --examples.",
+    "it": "Un breve corso di competenza che mostra il formato dei contenuti. Non viene mai importato senza --examples."
+  },
+  "durationMinutes": 15,
+  "outcomes": {
+    "en": ["Read a lesson written in Markdown", "Answer a quiz question", "Rate yourself and reflect"],
+    "es": ["Leer una lección escrita en Markdown", "Responder una pregunta de cuestionario", "Valorarte y reflexionar"],
+    "it": ["Leggere una lezione scritta in Markdown", "Rispondere a una domanda del quiz", "Valutarti e riflettere"]
+  },
+  "sortOrder": 1
+}

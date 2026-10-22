@@ -1391,6 +1391,7 @@
     },
     "noCategories": "No documentation categories yet.",
     "noCategoriesDescription": "Create a category to start adding articles.",
+    "noCategoriesDescriptionReader": "The team has not published any documentation yet. Check back soon.",
     "missing": {
       "title": "This section is not available yet",
       "description": "The team has not published anything here yet. Check back soon.",

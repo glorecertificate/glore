@@ -10,11 +10,13 @@ import { cn } from '@/lib/utils'
 export const PublishSwitch = ({
   className,
   disabled,
+  languageCount,
   onToggle,
   published,
   ...props
 }: React.ComponentProps<'label'> & {
   disabled?: boolean
+  languageCount: number
   onToggle: () => void
   published: boolean
 }) => {
@@ -63,7 +65,7 @@ export const PublishSwitch = ({
       <span className="flex flex-1 flex-col gap-0.5 leading-[normal]">
         <span className="text-[13.5px] font-semibold text-foreground">{label}</span>
         <span className="text-[11.5px] text-muted-foreground">
-          {published ? t('publishSwitchVisible', { count: 1 }) : t('publishSwitchHidden')}
+          {published ? t('publishSwitchVisible', { count: languageCount }) : t('publishSwitchHidden')}
         </span>
       </span>
     </label>

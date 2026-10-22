@@ -112,6 +112,50 @@ describe.skipIf(!isLocalDatabase)('public certificate lookups', () => {
       expect(JSON.stringify(result)).not.toContain('Private reason')
     })
 
+    it('withholds the PDF, tasks, skills, and signatory of a revoked certificate', async () => {
+      const code = generateCertificateCode()
+      const cert = await fixture.insertCertificate({ code, status: 'revoked' })
+      await fixture.db
+        .update(fixture.schema.certificates)
+        .set({
+          documentUrl: 'https://files.example.org/certificate.pdf',
+          revokedAt: '2026-04-01T08:00:00.000Z',
+          snapshot: {
+            activity: {
+              duration: 99,
+              endDate: '2026-02-01',
+              location: 'Rome',
+              startDate: '2026-01-01',
+              tasks: ['Desk'],
+            },
+            holder: { birthPlace: null, birthday: null, firstName: 'Ada', lastName: 'Lovelace', nationality: null },
+            issuedAt: '2026-03-01T10:00:00.000Z',
+            language: 'en',
+            organization: {
+              id: 1,
+              legalRepresentative: 'Rep One',
+              logoUrl: null,
+              name: 'Snapshot Org',
+              signatureUrl: 'https://files.example.org/signature.png',
+            },
+            skills: [{ courseId: 1, icon: null, level: 5, name: { en: 'Skill', es: '', it: '' }, statement: 'Led it' }],
+          },
+        })
+        .where(eq(fixture.schema.certificates.id, cert.id))
+
+      const result = await pub.verifyCertificate(code)
+
+      expect(result).toMatchObject({
+        documentUrl: null,
+        holder: { firstName: 'Ada', lastName: 'Lovelace' },
+        organization: { legalRepresentative: null, name: 'Snapshot Org', signatureUrl: null },
+        outcome: 'found',
+        skills: [],
+        status: 'revoked',
+      })
+      expect(result.outcome === 'found' && result.activity.tasks).toEqual([])
+    })
+
     it.each(['draft', 'submitted', 'in_review', 'changes_requested', 'rejected', 'withdrawn'] as const)(
       'does not expose a %s certificate',
       async status => {

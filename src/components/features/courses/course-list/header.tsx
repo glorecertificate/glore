@@ -27,7 +27,7 @@ export const CourseListHeader = ({ className, ...props }: React.ComponentProps<t
           <HeaderTrigger />
           <HeaderBreadcrumb description={description} title={t('courses')} />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 max-sm:min-w-0">
           {user.canEdit && <CourseListFrameworkLink />}
           {user.canEdit && <CourseListDialog />}
           <CourseListTabsList />

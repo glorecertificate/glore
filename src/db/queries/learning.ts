@@ -39,6 +39,12 @@ export const pickLocale = <T extends string>(
   return null
 }
 
+export const pickCourseTitle = (
+  record: Partial<Record<Locale, string>> | null | undefined,
+  language: Locale,
+  slug: string
+) => pickLocale(record, language) ?? `${slug.charAt(0).toUpperCase()}${slug.slice(1).replaceAll('-', ' ')}`
+
 export const pickLocaleList = (record: Partial<Record<Locale, string[]>> | null | undefined, language: Locale) => {
   if (!record) return []
   for (const locale of [language, DEFAULT_LOCALE, ...LOCALES]) {

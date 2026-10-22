@@ -331,27 +331,31 @@ export const CourseListCard = ({
               {t('enrolledStudents', { count: course.enrollmentCount })}
             </div>
           )}
-          <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
-            <Edit3Icon className="size-3.5 text-muted-foreground" />
-            <div className="flex items-center gap-1.5">
-              <span>{t('writtenBy')}</span>
-              <div className="flex -space-x-0.5 hover:space-x-1">
-                {course.contributors.map(contributor => (
-                  <HoverCard closeDelay={50} key={contributor.id} openDelay={300}>
-                    <HoverCardTrigger asChild>
-                      <Avatar className="size-4.75 rounded-full border ring-background transition-all duration-200 ease-in-out">
-                        {contributor.avatarUrl && <AvatarImage className="rounded-full" src={contributor.avatarUrl} />}
-                        <AvatarFallback className="text-[8.5px]">{contributor.initials}</AvatarFallback>
-                      </Avatar>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="bg-popover" side="top">
-                      <UserCard user={contributor} />
-                    </HoverCardContent>
-                  </HoverCard>
-                ))}
+          {course.contributors.length > 0 && (
+            <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
+              <Edit3Icon className="size-3.5 text-muted-foreground" />
+              <div className="flex items-center gap-1.5">
+                <span>{t('writtenBy')}</span>
+                <div className="flex -space-x-0.5 hover:space-x-1">
+                  {course.contributors.map(contributor => (
+                    <HoverCard closeDelay={50} key={contributor.id} openDelay={300}>
+                      <HoverCardTrigger asChild>
+                        <Avatar className="size-4.75 rounded-full border ring-background transition-all duration-200 ease-in-out">
+                          {contributor.avatarUrl && (
+                            <AvatarImage className="rounded-full" src={contributor.avatarUrl} />
+                          )}
+                          <AvatarFallback className="text-[8.5px]">{contributor.initials}</AvatarFallback>
+                        </Avatar>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="bg-popover" side="top">
+                        <UserCard user={contributor} />
+                      </HoverCardContent>
+                    </HoverCard>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
           {tab === 'archived' && course.archivedAt && course.archivedBy && (
             <div className="flex items-center gap-2.5 text-xs font-normal text-muted-foreground select-none">
               <ArchiveIcon className="size-3.5 text-muted-foreground" />

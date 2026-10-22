@@ -8,6 +8,7 @@ import {
   buildCompletionSkills,
   buildLearnerLesson,
   normalizeCourseRating,
+  pickCourseTitle,
   pickRecommendation,
 } from '@/db/queries/learning'
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
@@ -130,6 +131,14 @@ describe('pickRecommendation', () => {
   it('returns null without candidates and falls back to the slug without a title', () => {
     expect(pickRecommendation([], 1, 'en')).toBeNull()
     expect(pickRecommendation([candidate({ slug: 'untitled', title: null })], null, 'en')?.title).toBe('untitled')
+  })
+})
+
+describe('pickCourseTitle', () => {
+  it('falls back to any available locale, then to a readable slug', () => {
+    expect(pickCourseTitle({ it: 'Competenze sociali' }, 'en', 'competenze-sociali')).toBe('Competenze sociali')
+    expect(pickCourseTitle({ en: '', es: ' ', it: 'Ascolto' }, 'es', 'listening')).toBe('Ascolto')
+    expect(pickCourseTitle(null, 'en', 'competenze-sociali')).toBe('Competenze sociali')
   })
 })
 

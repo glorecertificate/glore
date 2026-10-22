@@ -7,8 +7,9 @@ export const GET = async (_request: Request, { params }: { params: Promise<{ id:
   if (!Number.isInteger(id) || id <= 0) return new Response(null, { status: 404 })
   if (!(await getAuthUser())) return new Response(null, { status: 401 })
 
-  const { error } = await findCertificate(id)
-  if (error) return new Response(null, { status: 404 })
+  const { data, error } = await findCertificate(id)
+  if (error || !data) return new Response(null, { status: 404 })
+  if (data.isRevoked) return new Response(null, { status: 410 })
 
   const pdf = await certificatePdf(id)
   if (!pdf) return new Response(null, { status: 404 })

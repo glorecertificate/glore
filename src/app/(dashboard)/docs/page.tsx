@@ -4,9 +4,10 @@ import { getTranslations } from 'next-intl/server'
 import { getAuthUser } from '@/actions/auth'
 import { listDocCategories } from '@/actions/docs'
 import { DocsList } from '@/components/features/docs/docs-list'
+import { CategoryManagerTrigger } from '@/components/features/docs/page-controls'
 import { DashboardPage } from '@/components/layout/dashboard-page'
 import { PageTitle } from '@/components/layout/page-title'
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { generateIntlMetadata } from '@/lib/metadata'
 
 export const generateMetadata = generateIntlMetadata({
@@ -30,8 +31,15 @@ const DocsPageContent = async () => {
           <BookOpenIcon />
         </EmptyMedia>
         <EmptyTitle>{t('noCategories')}</EmptyTitle>
-        <EmptyDescription>{t('noCategoriesDescription')}</EmptyDescription>
+        <EmptyDescription>
+          {canEdit ? t('noCategoriesDescription') : t('noCategoriesDescriptionReader')}
+        </EmptyDescription>
       </EmptyHeader>
+      {canEdit && (
+        <EmptyContent>
+          <CategoryManagerTrigger categories={allCategories} />
+        </EmptyContent>
+      )}
     </Empty>
   ) : (
     <DocsList canEdit={canEdit} categories={allCategories} />

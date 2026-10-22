@@ -8,7 +8,7 @@ import { LucideIcon } from '@/components/icons/lucide'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
-import { pickLocale } from '@/db/queries/learning'
+import { pickCourseTitle, pickLocale } from '@/db/queries/learning'
 import { type IntlRecord } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 import { cn } from '@/lib/utils'
@@ -42,7 +42,7 @@ const CourseRow = ({
   const t = useTranslations('Courses')
   const tFramework = useTranslations('Learning.framework')
   const locale = useLocale() as keyof IntlRecord
-  const title = pickLocale(course.title ?? undefined, locale) ?? course.slug
+  const title = pickCourseTitle(course.title ?? undefined, locale, course.slug)
   const languages = course.languages ?? []
   const status = course.archivedAt ? 'archived' : languages.length === 0 ? 'draft' : 'published'
 

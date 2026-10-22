@@ -13,7 +13,7 @@ import {
   type SkillOption,
   type SkillProgress,
   buildLearnerLesson,
-  pickLocale,
+  pickCourseTitle,
 } from '@/db/queries/learning'
 import {
   activityEvents,
@@ -350,7 +350,7 @@ export const findSkillOptions = async (userId: string, language: Locale): Promis
       skillGroupId: row.skillGroupId,
       slug: row.slug,
       sortOrder: row.sortOrder,
-      title: pickLocale(row.title, language) ?? row.slug,
+      title: pickCourseTitle(row.title, language, row.slug),
     })
     return options
   }, [])

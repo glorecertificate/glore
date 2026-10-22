@@ -1391,6 +1391,7 @@
     },
     "noCategories": "Nessuna categoria di documentazione ancora.",
     "noCategoriesDescription": "Crea una categoria per iniziare ad aggiungere articoli.",
+    "noCategoriesDescriptionReader": "Il team non ha ancora pubblicato documentazione. Torna a controllare presto.",
     "missing": {
       "title": "Questa sezione non è ancora disponibile",
       "description": "Il team non ha ancora pubblicato nulla qui. Torna presto.",

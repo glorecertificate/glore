@@ -26,8 +26,8 @@ export const CourseEditor = () => {
     <Tabs className="pt-2" onValueChange={value => setLanguage(value as Locale)} value={language}>
       <CourseHeader />
       <div className="flex flex-col gap-2 pb-8 md:flex-row">
-        <CourseSidebar className="hidden md:block" style={sidebarStyle} />
-        <div className="flex grow flex-col">
+        <CourseSidebar className="hidden shrink-0 md:block" style={sidebarStyle} />
+        <div className="flex min-w-0 grow flex-col">
           <CourseHeaderMobile className="sticky top-18 md:hidden" />
           <CourseContent />
           {hasFooter && <CourseFooter />}

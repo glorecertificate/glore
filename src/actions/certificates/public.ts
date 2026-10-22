@@ -31,7 +31,18 @@ const toIntlRecord = (value: unknown): IntlRecord => ({
   ...(value && typeof value === 'object' ? value : {}),
 })
 
-export const findCertificateByCode = async (code: string): Promise<Verification | null> => {
+const withholdRevokedDetails = (verification: Verification): Verification => {
+  if (verification.status !== 'revoked') return verification
+  return {
+    ...verification,
+    activity: { ...verification.activity, tasks: [] },
+    documentUrl: null,
+    organization: { ...verification.organization, legalRepresentative: null, signatureUrl: null },
+    skills: [],
+  }
+}
+
+const findVerification = async (code: string): Promise<Verification | null> => {
   const row = await db.query.certificates.findFirst({
     where: and(eq(certificates.code, code), inArray(certificates.status, [...PUBLIC_STATUSES])),
     with: {
@@ -101,6 +112,11 @@ export const findCertificateByCode = async (code: string): Promise<Verification 
       })),
     status,
   }
+}
+
+export const findCertificateByCode = async (code: string) => {
+  const verification = await findVerification(code)
+  return verification && withholdRevokedDetails(verification)
 }
 
 export const verifyCertificate = cache(async (code: string): Promise<VerificationResult> => {

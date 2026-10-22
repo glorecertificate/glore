@@ -206,4 +206,28 @@ describe.skipIf(!isLocalDatabase)('notify', () => {
     )
     expect(row?.emailedAt).not.toBeNull()
   })
+
+  it('mails the holder when a manager revokes a certificate', async () => {
+    const { client, ids, notify, organizationId, schema } = context
+    const result = await notify.notify({
+      actorId: ids.owner,
+      data: { certificateId: -1, holderId: ids.volunteer, reason: 'Issued by mistake' },
+      organizationId,
+      type: 'certificate.revoked',
+    })
+    await client.db
+      .delete(schema.notifications)
+      .where(and(eq(schema.notifications.userId, ids.volunteer), eq(schema.notifications.type, 'certificate.revoked')))
+
+    expect(result).toEqual({ emailed: 1, inApp: 1 })
+    expect(sendMail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        template: expect.objectContaining({
+          name: 'certificate/decision',
+          props: expect.objectContaining({ kind: 'revoked', reason: 'Issued by mistake' }),
+        }),
+        to: seedEmail('volunteer'),
+      })
+    )
+  })
 })

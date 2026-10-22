@@ -74,6 +74,10 @@ export const CourseHeader = () => {
     return acc
   }, [])
 
+  const publishedLanguageCount = localeItems.filter(({ value }) =>
+    value === language ? publishTarget : status[value].published
+  ).length
+
   const saveDisabled = !languageStatus.hasUpdates && publishTarget === languageStatus.published
 
   const validateQuiz = () => {
@@ -136,13 +140,14 @@ export const CourseHeader = () => {
   return (
     <div
       className={cn(
-        'sticky top-36 z-50 hidden w-full items-center justify-between gap-2 bg-background px-1 pt-1 pb-4 md:top-16 md:flex',
+        'z-50 flex w-full flex-wrap items-center justify-between gap-2 bg-background px-1 pt-1 pb-4 md:sticky md:top-16 md:flex-nowrap',
+        !user.canEdit && 'max-md:hidden',
         scrolled && 'border-b'
       )}
     >
       {user.canEdit ? (
         <>
-          <div className="flex items-center gap-2">
+          <div className="flex w-full flex-wrap items-center gap-2 md:w-auto md:flex-nowrap">
             <div className="flex gap-1.5">
               <CourseDialog
                 course={course}
@@ -181,7 +186,7 @@ export const CourseHeader = () => {
               </Tooltip>
               <CourseAnalyticsSheet />
             </div>
-            <TabsList className="h-8 w-full sm:w-fit">
+            <TabsList className="h-8 w-full min-w-0 scrollbar-none justify-start overflow-x-auto sm:w-fit sm:justify-center">
               {localeItems.map(({ label, icon, value }) => {
                 const isPublished = status[value].published
                 return (
@@ -223,17 +228,18 @@ export const CourseHeader = () => {
             </TabsList>
             <PublishSwitch
               disabled={saving}
+              languageCount={publishedLanguageCount}
               onToggle={() => setPublishTarget(!publishTarget)}
               published={publishTarget}
             />
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex w-full items-center gap-3 md:w-auto">
             {saveDisabled ? (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span>
                     <Button
-                      className="transition-none"
+                      className="w-full transition-none md:w-auto"
                       disabled
                       icon={SaveIcon}
                       loading={saving}
@@ -248,7 +254,7 @@ export const CourseHeader = () => {
               </Tooltip>
             ) : (
               <Button
-                className="transition-none"
+                className="w-full transition-none md:w-auto"
                 icon={SaveIcon}
                 loading={saving}
                 onClick={handleSave}

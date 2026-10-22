@@ -47,7 +47,7 @@ const CourseListTabsTrigger = ({
   return (
     <TabsTrigger
       effect="text-stroke"
-      className={cn('rounded-lg', className)}
+      className={cn('rounded-lg max-sm:px-2', className)}
       count={count}
       size="sm"
       value={value}
@@ -66,7 +66,13 @@ export const CourseListTabsList = ({
   const { courseList } = useCourseList()
 
   return (
-    <TabsList className={cn('w-full rounded-lg sm:w-fit', className)} {...props}>
+    <TabsList
+      className={cn(
+        'w-full min-w-0 scrollbar-none justify-start overflow-x-auto rounded-lg sm:w-fit sm:justify-center sm:overflow-visible',
+        className
+      )}
+      {...props}
+    >
       {tabs.map(tab => (
         <CourseListTabsTrigger count={courseList[camelize(tab)].length} key={tab} value={tab} />
       ))}

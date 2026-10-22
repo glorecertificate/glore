@@ -139,7 +139,7 @@ export const createFixture = async () => {
       }))
     )
     .returning({ id: schema.courses.id })
-  const courseIds = courses.map(({ id }) => id)
+  const courseIds = courses.map(({ id }) => id).toSorted((a, b) => a - b)
 
   const as = (key: UserKey | null) => {
     session.authUser = key ? { id: ids[key], role: key === 'platformAdmin' ? 'admin' : 'user' } : null
@@ -207,7 +207,10 @@ export const createFixture = async () => {
   const reload = async (id: number) => {
     const row = await db.query.certificates.findFirst({
       where: eq(schema.certificates.id, id),
-      with: { reviews: true, skills: { orderBy: schema.certificateSkills.sortOrder } },
+      with: {
+        reviews: true,
+        skills: { orderBy: [schema.certificateSkills.sortOrder, schema.certificateSkills.courseId] },
+      },
     })
     if (!row) throw new Error('Certificate disappeared')
     return row

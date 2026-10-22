@@ -99,86 +99,90 @@ export const VerificationView = async ({ verification }: { verification: Verific
         )}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CalendarIcon className="size-4 shrink-0" />
-              {t('period')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">
-              {t('periodValue', {
-                end: dateFormatter.format(new Date(activity.endDate)),
-                start: dateFormatter.format(new Date(activity.startDate)),
-              })}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-              <TimerIcon className="size-4 shrink-0" />
-              {t('hours')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">{t('hoursValue', { hours: activity.duration })}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
-              <MapPinIcon className="size-4 shrink-0" />
-              {t('location')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm">{activity.location}</p>
-          </CardContent>
-        </Card>
-      </div>
+      {!revoked && (
+        <>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <CalendarIcon className="size-4 shrink-0" />
+                  {t('period')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">
+                  {t('periodValue', {
+                    end: dateFormatter.format(new Date(activity.endDate)),
+                    start: dateFormatter.format(new Date(activity.startDate)),
+                  })}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <TimerIcon className="size-4 shrink-0" />
+                  {t('hours')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{t('hoursValue', { hours: activity.duration })}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <MapPinIcon className="size-4 shrink-0" />
+                  {t('location')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm">{activity.location}</p>
+              </CardContent>
+            </Card>
+          </div>
 
-      {activity.tasks.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">{t('tasks')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-disc space-y-1 pl-5 text-sm">
-              {activity.tasks.map(task => (
-                <li key={task}>{task}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+          {activity.tasks.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm text-muted-foreground">{t('tasks')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc space-y-1 pl-5 text-sm">
+                  {activity.tasks.map(task => (
+                    <li key={task}>{task}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="flex flex-col gap-5">
+                {skills.map(skill => {
+                  const name = localizeRecord(skill.name, certificateLocale, DEFAULT_LOCALE)
+                  return (
+                    <li className="flex flex-col gap-1.5" key={name}>
+                      <p className="text-sm font-medium">{name}</p>
+                      {skill.level >= 1 && skill.level <= 5 && (
+                        <LevelDots
+                          label={tCommon(`skillLevels.${SKILL_LEVELS[skill.level - 1]}`)}
+                          level={skill.level as 1 | 2 | 3 | 4 | 5}
+                        />
+                      )}
+                      {skill.statement && <p className="text-sm text-muted-foreground">{skill.statement}</p>}
+                    </li>
+                  )
+                })}
+              </ul>
+            </CardContent>
+          </Card>
+        </>
       )}
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-muted-foreground">{t('skills')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="flex flex-col gap-5">
-            {skills.map(skill => {
-              const name = localizeRecord(skill.name, certificateLocale, DEFAULT_LOCALE)
-              return (
-                <li className="flex flex-col gap-1.5" key={name}>
-                  <p className="text-sm font-medium">{name}</p>
-                  {skill.level >= 1 && skill.level <= 5 && (
-                    <LevelDots
-                      label={tCommon(`skillLevels.${SKILL_LEVELS[skill.level - 1]}`)}
-                      level={skill.level as 1 | 2 | 3 | 4 | 5}
-                    />
-                  )}
-                  {skill.statement && <p className="text-sm text-muted-foreground">{skill.statement}</p>}
-                </li>
-              )
-            })}
-          </ul>
-        </CardContent>
-      </Card>
 
       <Card>
         <CardContent className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
@@ -210,7 +214,7 @@ export const VerificationView = async ({ verification }: { verification: Verific
               </div>
             )}
           </dl>
-          <QrCode label={t('qrLabel')} size={112} value={url} />
+          {!revoked && <QrCode label={t('qrLabel')} size={112} value={url} />}
         </CardContent>
       </Card>
     </>

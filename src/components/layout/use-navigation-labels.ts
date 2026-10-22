@@ -10,9 +10,11 @@ export const useNavigationLabels = () => {
   const tUsers = useTranslations('Users')
   const tOrganization = useTranslations('Organization')
   const tInvitations = useTranslations('Invitations')
+  const tEmails = useTranslations('AdminEmails')
 
   return {
     about: tLayout('about'),
+    'admin-emails': tEmails('title'),
     'admin-organizations': tLayout('adminOrganizations'),
     'admin-team': tLayout('adminTeam'),
     'admin-users': tLayout('adminUsers'),

@@ -6,7 +6,7 @@ import { LoadingFallback } from '@/components/layout/loading-fallback'
 
 const AdminLayoutContent = async ({ children }: React.PropsWithChildren) => {
   const user = await getCurrentUser()
-  if (!user.isAdmin) return notFound()
+  if (!(user.isAdmin || user.canEdit)) return notFound()
   return children
 }
 

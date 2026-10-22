@@ -3854,5 +3854,20 @@
     "temporaryDescription": "Este documento es provisional y se sustituirá por la versión definitiva.",
     "fallbackNotice": "Este documento aún no está disponible en tu idioma. Estás leyendo la versión en inglés.",
     "unavailable": "Este documento todavía no está disponible."
+  },
+  "AdminEmails": {
+    "title": "Vistas previas de correos",
+    "description": "Previsualiza cada correo transaccional tal como se envía, en cada idioma.",
+    "template": "Plantilla",
+    "locale": "Idioma",
+    "category": "Motivo del pie",
+    "category_none": "Sin motivo",
+    "category_mandatory": "Correo del servicio",
+    "category_learning": "Novedades de aprendizaje",
+    "category_organization": "Novedades de la organización",
+    "category_reminders": "Recordatorios",
+    "subject": "Asunto: {subject}",
+    "frameTitle": "Vista previa de {template}",
+    "renderError": "No se pudo generar esta plantilla. Consulta los registros del servidor para ver los detalles."
   }
 }

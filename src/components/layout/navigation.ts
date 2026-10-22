@@ -12,6 +12,7 @@ export interface NavigationViewer {
 export type NavigationGroup = 'actions' | 'admin' | 'organization' | 'pages' | 'settings'
 
 export type NavigationId =
+  | 'admin-emails'
   | 'admin-organizations'
   | 'admin-team'
   | 'admin-users'
@@ -58,6 +59,7 @@ const isManager = ({ canEdit, role }: NavigationViewer) => !canEdit && (role ===
 const isOwner = ({ canEdit, role }: NavigationViewer) => !canEdit && role === 'admin'
 const isVolunteer = ({ canEdit, role }: NavigationViewer) => !canEdit && role === 'volunteer'
 const isAdmin = ({ isAdmin: admin }: NavigationViewer) => admin
+const isTeam = ({ canEdit, isAdmin: admin }: NavigationViewer) => admin || canEdit
 
 const NAVIGATION: NavigationEntry[] = [
   { group: 'pages', href: '/dashboard', icon: 'layout-dashboard', id: 'dashboard', sidebar: true, visible: everyone },
@@ -184,6 +186,7 @@ const NAVIGATION: NavigationEntry[] = [
   { group: 'admin', href: '/admin/team', icon: 'shield-user', id: 'admin-team', visible: isAdmin },
   { group: 'admin', href: '/admin/organizations', icon: 'building-2', id: 'admin-organizations', visible: isAdmin },
   { group: 'admin', href: '/admin/users' as Route, icon: 'users', id: 'admin-users', visible: isAdmin },
+  { group: 'admin', href: '/admin/emails' as Route, icon: 'mail', id: 'admin-emails', visible: isTeam },
   {
     group: 'actions',
     href: '/certificates/new',

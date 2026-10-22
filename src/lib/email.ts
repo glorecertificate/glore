@@ -87,9 +87,11 @@ const TEMPLATES = {
 
 type Templates = typeof TEMPLATES
 
-type TemplateName = keyof Templates
+export type TemplateName = keyof Templates
 
 type TemplateProps<K extends TemplateName> = Omit<ComponentProps<Templates[K]['component']>, keyof EmailBaseProps>
+
+export const EMAIL_TEMPLATE_NAMES = Object.keys(TEMPLATES) as TemplateName[]
 
 export type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplateProps<K> } }[TemplateName]
 
@@ -123,6 +125,25 @@ const buildEmail = ({ category, locale, messages, template }: BuildOptions) => {
     subject: subject(emailTranslator(`Email.${template.name}`, props), props),
   }
 }
+
+interface RenderEmailOptions {
+  category?: EmailCategory | null
+  locale?: string
+  template: EmailTemplate
+}
+
+export const renderEmail = async ({ category = null, locale = DEFAULT_LOCALE, template }: RenderEmailOptions) => {
+  const messages = await messagesFor(locale)
+  const { element, subject } = buildEmail({ category, locale, messages, template })
+  const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
+  return { html, subject, text }
+}
+
+export const previewTemplate = (name: TemplateName) =>
+  ({
+    name,
+    props: (TEMPLATES[name].component as { PreviewProps?: object }).PreviewProps ?? {},
+  }) as EmailTemplate
 
 const transports = {
   log: () => createTransport({ jsonTransport: true }),
@@ -168,9 +189,7 @@ export const sendMail = async ({
   unsubscribeUrl,
 }: SendMailOptions) => {
   const locale = requestedLocale ?? (await recipientLocale(to))
-  const messages = await messagesFor(locale)
-  const { subject, element } = buildEmail({ category, locale, messages, template })
-  const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
+  const { html, subject, text } = await renderEmail({ category, locale, template })
   const recipients = Array.isArray(to) ? to.join(', ') : to
   await transporter.sendMail({
     from: process.env.SMTP_SENDER,

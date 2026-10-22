@@ -17,6 +17,7 @@ Two route groups: `(auth)` for unauthenticated pages (no shared layout beyond ro
 | `/admin`                    | `isAdmin`   | No page: `next.config.ts` permanently redirects to `/admin/team`, the panel landing                                                                                 |
 | `/admin/team`               | `isAdmin`   | Team management                                                                                                                                                     |
 | `/admin/users`              | `isAdmin`   | User moderation: ban/unban, platform role changes                                                                                                                   |
+| `/admin/emails`             | `canEdit`   | Email previews (`?template=`, `?lang=`, `?category=`); the admin layout admits editors, other admin pages check `isAdmin`                                           |
 | `/admin/organizations`      | `isAdmin`   | Tabs all/pending/active/rejected; application sheet, approve (invites), reject (soft), create, invite                                                               |
 | `/admin/organizations/[id]` | `isAdmin`   | `?tab=` application, members, invitations, certificates, activity, settings (shared with `/organization`)                                                           |
 | `/organization`             | org manager | `?tab=` overview, members, invitations, requests, certificates, insights, activity, settings                                                                        |

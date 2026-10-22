@@ -3854,5 +3854,20 @@
     "temporaryDescription": "This document is a placeholder and will be replaced by the final version.",
     "fallbackNotice": "This document is not available in your language yet. You are reading the English version.",
     "unavailable": "This document is not available yet."
+  },
+  "AdminEmails": {
+    "title": "Email previews",
+    "description": "Preview every transactional email as it is sent, in each language.",
+    "template": "Template",
+    "locale": "Language",
+    "category": "Footer reason",
+    "category_none": "No reason",
+    "category_mandatory": "Service email",
+    "category_learning": "Learning updates",
+    "category_organization": "Organization updates",
+    "category_reminders": "Reminders",
+    "subject": "Subject: {subject}",
+    "frameTitle": "Preview of {template}",
+    "renderError": "This template could not be rendered. Check the server logs for details."
   }
 }

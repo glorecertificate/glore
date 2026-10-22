@@ -103,3 +103,59 @@ describe('email templates', () => {
     expect(mandatory.headers).toBeUndefined()
   })
 })
+
+describe('renderEmail', () => {
+  beforeEach(() => {
+    transport.sendMail.mockClear()
+    vi.stubEnv('APP_URL', 'https://glore.test')
+  })
+
+  it('registers one preview template per email file', async () => {
+    const { EMAIL_TEMPLATE_NAMES } = await import('@/lib/email')
+    expect([...EMAIL_TEMPLATE_NAMES].sort()).toEqual(templates.map(({ name }) => name).sort())
+  })
+
+  it('previews every template with its PreviewProps in every locale', async () => {
+    const { EMAIL_TEMPLATE_NAMES, previewTemplate, renderEmail } = await import('@/lib/email')
+
+    for (const name of EMAIL_TEMPLATE_NAMES) {
+      const template = previewTemplate(name)
+      expect(template.props, name).toEqual(templates.find(entry => entry.name === name)?.props)
+      for (const locale of LOCALES) {
+        const { html, subject, text } = await renderEmail({ locale, template })
+        expect(subject, `${locale} ${name}`).toBeTruthy()
+        expect(subject, `${locale} ${name}`).not.toMatch(/Email\.|[{}]/u)
+        expect(html, `${locale} ${name}`).toContain('<html')
+        expect(text, `${locale} ${name}`).toBeTruthy()
+      }
+    }
+  }, 60_000)
+
+  it('renders what sendMail sends', async () => {
+    const { previewTemplate, renderEmail, sendMail } = await import('@/lib/email')
+    const template = previewTemplate('certificate/reminder')
+
+    for (const locale of LOCALES) {
+      transport.sendMail.mockClear()
+      const rendered = await renderEmail({ category: 'reminders', locale, template })
+      await sendMail({ category: 'reminders', locale, template, to: 'person@example.org' })
+      const [message] = transport.sendMail.mock.calls[0] as unknown as [{ html: string; subject: string; text: string }]
+      expect(message).toMatchObject(rendered)
+    }
+  })
+
+  it('localizes the subject and follows the category', async () => {
+    const { previewTemplate, renderEmail } = await import('@/lib/email')
+    const template = previewTemplate('account/welcome')
+    const english = await renderEmail({ locale: 'en', template })
+    const italian = await renderEmail({ locale: 'it', template })
+    const optional = await renderEmail({ category: 'reminders', locale: 'en', template })
+    const mandatory = await renderEmail({ category: 'mandatory', locale: 'en', template })
+
+    expect(italian.subject).not.toBe(english.subject)
+    expect(mandatory.html).toContain('service email')
+    expect(english.html).not.toContain('service email')
+    expect(optional.html).toContain('/settings?tab=notifications')
+    expect(english.html).not.toContain('/settings?tab=notifications')
+  })
+})

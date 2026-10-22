@@ -3854,5 +3854,20 @@
     "temporaryDescription": "Questo documento è provvisorio e sarà sostituito dalla versione definitiva.",
     "fallbackNotice": "Questo documento non è ancora disponibile nella tua lingua. Stai leggendo la versione inglese.",
     "unavailable": "Questo documento non è ancora disponibile."
+  },
+  "AdminEmails": {
+    "title": "Anteprime delle email",
+    "description": "Visualizza ogni email transazionale come viene inviata, in ogni lingua.",
+    "template": "Modello",
+    "locale": "Lingua",
+    "category": "Motivo nel piè di pagina",
+    "category_none": "Nessun motivo",
+    "category_mandatory": "Email di servizio",
+    "category_learning": "Aggiornamenti di apprendimento",
+    "category_organization": "Aggiornamenti dell'organizzazione",
+    "category_reminders": "Promemoria",
+    "subject": "Oggetto: {subject}",
+    "frameTitle": "Anteprima di {template}",
+    "renderError": "Non è stato possibile generare questo modello. Controlla i log del server per i dettagli."
   }
 }

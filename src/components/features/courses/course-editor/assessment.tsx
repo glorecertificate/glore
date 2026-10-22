@@ -6,6 +6,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { Markdown } from '@/components/ui/markdown'
 import { RatingGroup } from '@/components/ui/rating-group'
 import { type Assessment } from '@/db/queries/lesson'
+import { SKILL_LEVELS } from '@/lib/constants'
 
 export const CourseAssessment = ({
   assessment,
@@ -21,6 +22,7 @@ export const CourseAssessment = ({
   title?: string
 }) => {
   const t = useTranslations('Courses')
+  const tCommon = useTranslations('Common')
   const { localize } = useI18n()
 
   const description = assessment.description ? localize(assessment.description) : ''
@@ -48,6 +50,7 @@ export const CourseAssessment = ({
             disabled={completed}
             disabledToast={t('ratingDisabled')}
             id={assessment.id}
+            label={level => tCommon(`skillLevels.${SKILL_LEVELS[level - 1] ?? 'absent'}`)}
             onValueChange={onChange}
             value={rating}
           />

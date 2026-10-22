@@ -2,6 +2,7 @@ import { ImageResponse } from 'next/og'
 import { type CSSProperties } from 'react'
 
 import { findPublicCertificate } from '@/actions/certificates/queries'
+import { fullName } from '@/lib/utils'
 
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -86,7 +87,7 @@ const UserOpengraphImage = async ({ params }: { params: Promise<{ username: stri
   const { data } = await findPublicCertificate(username)
   const { user, organization, skills = [] } = data ?? {}
 
-  const volunteerName = user ? `${user.firstName} ${user.lastName}` : username
+  const volunteerName = user ? fullName(user) : username
   const skillList = skills.slice(0, 4).map(({ course }) => {
     const title = course.title
     return title ? (title.en ?? Object.values(title)[0] ?? course.slug) : course.slug

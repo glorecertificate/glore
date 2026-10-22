@@ -23,6 +23,7 @@ import { safeQuery } from '@/db/helpers'
 import { type OrganizationMembershipRole, parseOrganizationMember } from '@/db/queries/organization'
 import { memberships, users } from '@/db/schema'
 import { auth } from '@/lib/auth'
+import { fullName } from '@/lib/utils'
 
 export const inviteOrganizationMember = async ({
   email,
@@ -75,7 +76,7 @@ export const inviteOrganizationMember = async ({
             firstName: normalizedFirstName,
             lastName: normalizedLastName || undefined,
             locale,
-            name: [normalizedFirstName, normalizedLastName].filter(Boolean).join(' '),
+            name: fullName({ firstName: normalizedFirstName, lastName: normalizedLastName }),
             password: randomBytes(32).toString('hex'),
           },
         })
@@ -103,7 +104,7 @@ export const inviteOrganizationMember = async ({
       .onConflictDoNothing()
     expireUserAccess([invitee.id])
 
-    const inviterName = [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email
+    const inviterName = fullName(user) || user.email
 
     const invitationUrl = existingUser?.onboardedAt
       ? undefined

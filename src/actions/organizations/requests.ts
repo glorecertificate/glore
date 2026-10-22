@@ -29,6 +29,7 @@ import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
+import { fullName } from '@/lib/utils'
 
 const REGISTRATION_RATE_LIMIT_WINDOW = 60 * 60 * 1000
 
@@ -75,7 +76,7 @@ export const approveOrganizationJoinRequest = async (requestId: number) => {
             firstName: request.firstName,
             lastName: request.lastName ?? undefined,
             locale: request.locale ?? DEFAULT_LOCALE,
-            name: [request.firstName, request.lastName].filter(Boolean).join(' '),
+            name: fullName(request),
             password: randomBytes(32).toString('hex'),
           },
         })
@@ -272,7 +273,7 @@ export const requestOrganizationRegistration = async (input: z.input<typeof regi
         organizationId: org.id,
         organizationName: org.name,
         registrantEmail,
-        registrantName: [firstName, lastName].filter(Boolean).join(' '),
+        registrantName: fullName({ firstName, lastName }),
       }),
     ])
 

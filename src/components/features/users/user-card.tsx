@@ -7,7 +7,7 @@ import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type PublicUser } from '@/db/queries/user'
 import { type Any, type HttpUrl } from '@/lib/types'
-import { cn } from '@/lib/utils'
+import { cn, fullName } from '@/lib/utils'
 import app from '~/config/app.json'
 
 const DEFAULT_HIDE: (keyof PublicUser)[] = []
@@ -69,13 +69,13 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
   return (
     <div className="flex items-start gap-3">
       <Avatar className={cn('size-7.5 rounded-full object-cover shadow-sm', !user.avatarUrl && 'border')}>
-        {user.avatarUrl && <AvatarImage alt={`${user.firstName} ${user.lastName}`} src={user.avatarUrl} />}
+        {user.avatarUrl && <AvatarImage alt={fullName(user)} src={user.avatarUrl} />}
         <AvatarFallback className="text-xs font-semibold text-muted-foreground">{user.initials}</AvatarFallback>
       </Avatar>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           <div className="flex items-center gap-1">
-            <h4 className="text-sm leading-none font-semibold">{`${user.firstName} ${user.lastName}`}</h4>
+            <h4 className="text-sm leading-none font-semibold">{fullName(user)}</h4>
             {isVisible('isAdmin') && (
               <Tooltip disableHoverableContent>
                 <TooltipTrigger asChild pointerEvents="auto">

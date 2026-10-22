@@ -1,6 +1,12 @@
 {
   "minSkills": 3,
   "minRating": 3,
+  "maxSkills": 4,
+  "minActivityHours": 100,
+  "minActivityMonths": 3,
+  "invitationExpiryDays": 7,
+  "reviewReminderDays": [3, 7],
+  "maxBulkInvites": 50,
   "maxAvatarSize": 2048,
   "mapsUrl": "https://maps.google.com/search",
   "sidebarShortcut": "\\"

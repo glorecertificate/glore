@@ -42,7 +42,14 @@
     "unarchive": "Unarchive",
     "underReview": "Under review",
     "verified": "Verified",
-    "comingSoonPage": "This page is currently under construction, come back soon for updates! 🏗️"
+    "comingSoonPage": "This page is currently under construction, come back soon for updates! 🏗️",
+    "skillLevels": {
+      "absent": "Absent",
+      "basic": "Basic",
+      "intermediate": "Intermediate",
+      "good": "Good",
+      "advanced": "Advanced"
+    }
   },
   "Search": {
     "certificates": "Certificates",

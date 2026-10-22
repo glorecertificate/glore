@@ -37,6 +37,9 @@ export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFor
 /*
   Strings
 */
+export const fullName = ({ firstName, lastName }: { firstName?: string | null; lastName?: string | null }) =>
+  [firstName?.trim(), lastName?.trim()].filter(Boolean).join(' ')
+
 export const titleize = (input: string) =>
   input
     .split(' ')

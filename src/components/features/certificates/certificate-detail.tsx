@@ -30,6 +30,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { type Certificate } from '@/db/queries/certificate'
+import { fullName } from '@/lib/utils'
 
 interface OrgTutor {
   id: string
@@ -97,7 +98,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
             {certificate.user && (
               <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                 <UserIcon className="size-3.5 shrink-0" />
-                {certificate.user.firstName} {certificate.user.lastName}
+                {fullName(certificate.user)}
               </p>
             )}
           </div>
@@ -139,9 +140,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
               {':'}
             </span>
             <span className="font-medium">
-              {certificate.reviewer
-                ? `${certificate.reviewer.firstName} ${certificate.reviewer.lastName}`
-                : t('reviewerUnassigned')}
+              {certificate.reviewer ? fullName(certificate.reviewer) : t('reviewerUnassigned')}
             </span>
           </div>
           {canAssignTutor &&
@@ -156,7 +155,7 @@ export const CertificateDetail = ({ certificate, tutors }: CertificateDetailProp
                   <SelectItem value="">{t('reviewerUnassigned')}</SelectItem>
                   {tutors!.map(tutor => (
                     <SelectItem key={tutor.id} value={tutor.id}>
-                      {tutor.firstName} {tutor.lastName}
+                      {fullName(tutor)}
                     </SelectItem>
                   ))}
                 </SelectContent>

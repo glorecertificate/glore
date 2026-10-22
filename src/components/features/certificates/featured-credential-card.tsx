@@ -9,6 +9,7 @@ import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Logo } from '@/components/ui/logo'
 import { type Certificate } from '@/db/queries/certificate'
+import { fullName } from '@/lib/utils'
 
 interface FeaturedCredentialCardProps {
   certificate: Certificate
@@ -23,9 +24,7 @@ export const FeaturedCredentialCard = ({ certificate }: FeaturedCredentialCardPr
   const start = formatter.format(new Date(certificate.activityStartDate))
   const end = formatter.format(new Date(certificate.activityEndDate))
 
-  const recipientName = certificate.user
-    ? `${certificate.user.firstName} ${certificate.user.lastName}`
-    : t('unknownVolunteer')
+  const recipientName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
   const sealText = `${t('sealTitle')} · ${t('sealSubtitle')}`
 

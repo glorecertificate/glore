@@ -6,6 +6,7 @@ import { getTranslations } from 'next-intl/server'
 import { findPublicCertificate } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
+import { fullName } from '@/lib/utils'
 import config from '~/config/metadata.json'
 
 export const generateMetadata = async ({ params, searchParams }: PageProps<'/[username]'>) => {
@@ -15,7 +16,7 @@ export const generateMetadata = async ({ params, searchParams }: PageProps<'/[us
 
   if (!cert) return { title: t('publicNotFound') }
 
-  const volunteerName = cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : username
+  const volunteerName = cert.user ? fullName(cert.user) : username
   const description = t('publicOgDescription', { name: volunteerName, org: cert.organization.name })
   const url = resolvedHandle ? `/${username}?v=${resolvedHandle}` : `/${username}`
 

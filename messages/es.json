@@ -42,7 +42,14 @@
     "underReview": "Bajo revisión",
     "verified": "Verificado",
     "item": "Artículo",
-    "comingSoonPage": "Esta página está actualmente en construcción, ¡vuelve pronto para recibir actualizaciones! \n🏗️"
+    "comingSoonPage": "Esta página está actualmente en construcción, ¡vuelve pronto para recibir actualizaciones! \n🏗️",
+    "skillLevels": {
+      "absent": "Ausente",
+      "basic": "Básico",
+      "intermediate": "Intermedio",
+      "good": "Bueno",
+      "advanced": "Avanzado"
+    }
   },
   "Search": {
     "certificates": "Certificados",

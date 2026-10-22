@@ -8,6 +8,7 @@ import {
   type users,
 } from '@/db/schema'
 import { type EnumType } from '@/db/types'
+import { fullName } from '@/lib/utils'
 
 type OrganizationRow = InferSelectModel<typeof organizations>
 type OrganizationProfileRow = InferSelectModel<typeof organizationProfiles>
@@ -70,7 +71,7 @@ export const parseOrganization = (
 
 export const parseOrganizationMember = (membership: MembershipRow & { user: MemberUserRow }) => ({
   ...membership,
-  fullName: [membership.user.firstName, membership.user.lastName].filter(Boolean).join(' '),
+  fullName: fullName(membership.user),
   isAdmin: membership.role === 'admin',
   isLearner: membership.role === 'learner',
   isPending: !membership.user.onboardedAt,
@@ -81,7 +82,7 @@ export const parseOrganizationMember = (membership: MembershipRow & { user: Memb
 
 export const parseOrganizationJoinRequest = (request: JoinRequestRow & { reviewer?: ReviewerRow | null }) => ({
   ...request,
-  fullName: [request.firstName, request.lastName].filter(Boolean).join(' '),
+  fullName: fullName(request),
   isAccepted: request.status === 'accepted',
   isPending: request.status === 'pending',
   isRejected: request.status === 'rejected',
@@ -107,7 +108,7 @@ export const parseAdminOrganization = (
     registrationRequest: org.registrationRequest
       ? {
           ...org.registrationRequest,
-          fullName: [org.registrationRequest.firstName, org.registrationRequest.lastName].filter(Boolean).join(' '),
+          fullName: fullName(org.registrationRequest),
         }
       : null,
   }

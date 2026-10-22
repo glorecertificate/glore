@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
 import { AUTH_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
+import { fullName } from '@/lib/utils'
 import appConfig from '~/config/metadata.json'
 
 interface PublicCertificateViewProps {
@@ -30,9 +31,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
 
   const certLocale = certificate.language as Locale
 
-  const volunteerName = certificate.user
-    ? `${certificate.user.firstName} ${certificate.user.lastName}`
-    : t('unknownVolunteer')
+  const volunteerName = certificate.user ? fullName(certificate.user) : t('unknownVolunteer')
 
   const verificationUrl = `${appConfig.url}/${username}?v=${certificate.handle}`
   const qrDataUrl = await qrcode.toDataURL(verificationUrl, { margin: 2, scale: 4 })

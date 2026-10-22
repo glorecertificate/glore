@@ -31,6 +31,7 @@ import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import { checkRateLimit } from '@/lib/rate-limit'
 import { r2Put } from '@/lib/storage'
+import { fullName } from '@/lib/utils'
 import appConfig from '~/config/app.json'
 
 const RATE_LIMIT_WINDOW = 60 * 60 * 1000
@@ -134,7 +135,7 @@ export const reviewCertificate = async (id: number, input: ReviewCertificateValu
           activityLocation,
           activityDescription,
         },
-        volunteerName: cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : '',
+        volunteerName: cert.user ? fullName(cert.user) : '',
         orgName: cert.organization.name,
         orgLogoUrl: cert.organization.profile?.avatarUrl,
         skillNames,

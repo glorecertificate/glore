@@ -21,6 +21,7 @@ import { CacheTag } from '@/lib/cache'
 import { INVITATION_EXPIRY_DAYS, JOIN_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { r2DeleteQuietly } from '@/lib/storage'
+import { fullName } from '@/lib/utils'
 
 const fetchTeamMembers = async () => {
   'use cache'
@@ -67,7 +68,7 @@ export const inviteTeamMember = async ({
   const currentUser = await getCurrentUser()
   if (!currentUser.isAdmin) return { error: 'Only admins can invite team members' }
 
-  const name = [firstName.trim(), lastName.trim()].filter(Boolean).join(' ')
+  const name = fullName({ firstName, lastName })
 
   const result = await auth.api.signUpEmail({
     body: {
@@ -104,7 +105,7 @@ export const inviteTeamMember = async ({
     expiresAt,
   })
 
-  const displayName = [firstName, lastName].filter(Boolean).join(' ')
+  const displayName = fullName({ firstName, lastName })
   const joinUrl = `${process.env.APP_URL}${JOIN_ROOT}?token=${token}`
 
   try {
@@ -145,7 +146,7 @@ export const resendInvitation = async (userId: string) => {
     .set({ token, expiresAt, updatedAt: new Date().toISOString() })
     .where(eq(teamInvitations.id, existing.id))
 
-  const displayName = [existing.firstName, existing.lastName].filter(Boolean).join(' ')
+  const displayName = fullName(existing)
   const joinUrl = `${process.env.APP_URL}/api/v1/join?token=${token}`
 
   try {

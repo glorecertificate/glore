@@ -44,6 +44,7 @@ import { CacheTag } from '@/lib/cache'
 import { sendMail } from '@/lib/email'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { r2DeleteQuietly, r2PresignAvatar, r2VerifyAvatar } from '@/lib/storage'
+import { fullName } from '@/lib/utils'
 
 const loadOrganizations = () =>
   safeQuery(async () => {
@@ -161,7 +162,7 @@ export const approveOrganization = async (organizationId: number, reviewerCommen
             firstName: request.firstName,
             lastName: request.lastName ?? undefined,
             locale: request.locale ?? DEFAULT_LOCALE,
-            name: [request.firstName, request.lastName].filter(Boolean).join(' '),
+            name: fullName(request),
             password: randomBytes(16).toString('hex'),
           },
         })
@@ -366,7 +367,7 @@ export const inviteOrganization = async ({
             firstName: firstName.trim(),
             lastName: lastName?.trim() ?? undefined,
             locale: locale ?? DEFAULT_LOCALE,
-            name: [firstName, lastName].filter(Boolean).join(' '),
+            name: fullName({ firstName, lastName }),
             password: randomBytes(16).toString('hex'),
           },
         })
@@ -404,7 +405,7 @@ export const inviteOrganization = async ({
           userId: orgAdmin.id,
         })
 
-    const inviterFullName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'GloRe Admin'
+    const inviterFullName = fullName(currentUser) || 'GloRe Admin'
     await sendMail({
       to: registrantEmail.trim().toLowerCase(),
       template: {
@@ -692,7 +693,7 @@ export const inviteAdminOrganizationMember = async (
             firstName: normalizedFirstName,
             lastName: normalizedLastName || undefined,
             locale,
-            name: [normalizedFirstName, normalizedLastName].filter(Boolean).join(' '),
+            name: fullName({ firstName: normalizedFirstName, lastName: normalizedLastName }),
             password: randomBytes(32).toString('hex'),
           },
         })
@@ -713,7 +714,7 @@ export const inviteAdminOrganizationMember = async (
     await db.insert(memberships).values({ organizationId, role, userId: invitee.id }).onConflictDoNothing()
     expireUserAccess([invitee.id])
 
-    const inviterName = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.email
+    const inviterName = fullName(currentUser) || currentUser.email
 
     const invitationUrl = existingUser?.onboardedAt
       ? undefined

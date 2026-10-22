@@ -15,6 +15,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/componen
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Link } from '@/components/ui/link'
 import { type Certificate } from '@/db/queries/certificate'
+import { fullName } from '@/lib/utils'
 
 interface TutorCertificatesContentProps {
   assigned: Certificate[]
@@ -65,7 +66,7 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
                 <Card className="transition-shadow hover:shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-base">
-                      {cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : t('unknownVolunteer')}
+                      {cert.user ? fullName(cert.user) : t('unknownVolunteer')}
                     </CardTitle>
                     <CardAction>
                       <CertificateStatusBadge status={cert.status} />
@@ -98,9 +99,7 @@ export const TutorCertificatesContent = ({ assigned, unassigned }: TutorCertific
             {unassigned.map(cert => (
               <Card key={cert.id}>
                 <CardHeader>
-                  <CardTitle className="text-base">
-                    {cert.user ? `${cert.user.firstName} ${cert.user.lastName}` : t('unknownVolunteer')}
-                  </CardTitle>
+                  <CardTitle className="text-base">{cert.user ? fullName(cert.user) : t('unknownVolunteer')}</CardTitle>
                   <CardAction>
                     <CertificateStatusBadge status={cert.status} />
                   </CardAction>

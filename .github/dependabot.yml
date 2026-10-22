@@ -5,18 +5,30 @@ updates:
     directory: /
     versioning-strategy: increase
     schedule:
-      interval: quarterly
+      interval: monthly
+    cooldown:
+      default-days: 2
+      semver-major-days: 7
+    open-pull-requests-limit: 10
     labels:
-      - build
+      - maintenance
     groups:
       deps:
         applies-to: version-updates
         dependency-type: production
+        update-types:
+          - minor
+          - patch
       deps-dev:
+        applies-to: version-updates
         dependency-type: development
+        update-types:
+          - minor
+          - patch
       security:
         applies-to: security-updates
-        dependency-type: production
+        patterns:
+          - '*'
     commit-message:
       prefix: build
       prefix-development: build
@@ -26,9 +38,11 @@ updates:
       - /
       - /.github/actions/*
     schedule:
-      interval: quarterly
+      interval: monthly
+    cooldown:
+      default-days: 2
     labels:
-      - build
+      - maintenance
     groups:
       actions:
         patterns:

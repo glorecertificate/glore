@@ -22,9 +22,11 @@ import { userTag } from '@/lib/cache'
 import { AUTH_ROOT, SESSION_ROOT, SETTINGS_ROOT, USERNAME_REGEX } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { LOCALES } from '@/lib/i18n'
+import { isRateLimited } from '@/lib/rate-limit'
 import { isReservedUsername } from '@/lib/username'
 
 const USER_NOT_FOUND = 'User not found'
+const HOUR = 60 * 60 * 1000
 
 const isUniqueViolation = (error: unknown) =>
   (error instanceof Error && 'code' in error && error.code === '23505') ||
@@ -126,6 +128,11 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
     if (locked) return { error: locked }
   }
 
+  const pendingEmail = email && email !== currentUser.email ? email : null
+  if (pendingEmail && (await isRateLimited(`email-change:${currentUser.id}`, 3, HOUR))) {
+    return { error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
+  }
+
   if (fields.username && fields.username !== currentUser.username) {
     if (isReservedUsername(fields.username)) throw new Error('USERNAME_RESERVED')
     const taken = await db.query.users.findFirst({
@@ -134,8 +141,6 @@ export const updateAccount = async (values: z.input<typeof accountSchema>) => {
     })
     if (taken) throw new Error('USERNAME_TAKEN')
   }
-
-  const pendingEmail = email && email !== currentUser.email ? email : null
 
   if (pendingEmail) {
     await auth.api.changeEmail({

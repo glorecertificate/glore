@@ -17,6 +17,7 @@
     "errorTitle": "Ops! Qualcosa è andato storto",
     "hours": "Ore",
     "impersonationLocked": "Questa azione è bloccata mentre visualizzi come un altro utente.",
+    "rateLimited": "Troppi tentativi. Riprova più tardi.",
     "notFound": "Pagina non trovata",
     "notFoundMessage": "La pagina che stai cercando non esiste o è stata spostata",
     "open": "Apri",

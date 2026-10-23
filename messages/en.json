@@ -17,6 +17,7 @@
     "errorTitle": "Oops! Something went wrong",
     "hours": "Hours",
     "impersonationLocked": "This action is locked while you view as another user.",
+    "rateLimited": "Too many attempts. Try again later.",
     "item": "Item",
     "notFound": "Not found",
     "notFoundMessage": "The page you are looking for does not exist or has been moved",

@@ -17,6 +17,7 @@
     "errorTitle": "¡Ups! Algo salió mal",
     "hours": "Horas",
     "impersonationLocked": "Esta acción está bloqueada mientras ves como otro usuario.",
+    "rateLimited": "Demasiados intentos. Inténtalo más tarde.",
     "notFound": "No encontrado",
     "notFoundMessage": "La página que buscas no existe o se ha movido",
     "open": "Abrir",

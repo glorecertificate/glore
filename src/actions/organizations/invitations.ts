@@ -27,7 +27,11 @@ import {
 } from '@/db/mutations/invitation'
 import { canInviteRole, canManageInvitation } from '@/db/queries/organization'
 import { organizationInvitations } from '@/db/schema'
+import { isRateLimited } from '@/lib/rate-limit'
 import config from '~/config/app.json'
+
+const HOUR = 60 * 60 * 1000
+const INVITE_BATCHES_PER_HOUR = 10
 
 const requireManager = async (organizationId?: number) => {
   const { organizationId: id, role, user } = await getOrganizationAccess(organizationId)
@@ -56,6 +60,9 @@ export const inviteOrganizationMembers = async (input: InviteInput, scopeId?: nu
     if (!canInviteRole(managerRole, role)) throw invitationError('FORBIDDEN')
     const unique = dedupeEmails(emails)
     if (unique.length > config.maxBulkInvites) throw invitationError('INVALID')
+    if (await isRateLimited(`org-invite:${user.id}`, INVITE_BATCHES_PER_HOUR, HOUR)) {
+      throw invitationError('RATE_LIMITED')
+    }
     return await sendInvitations({ actorId: user.id, emails: unique, locale, message, organizationId, role })
   })
 

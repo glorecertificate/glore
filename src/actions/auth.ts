@@ -18,6 +18,7 @@ import { sendMail } from '@/lib/email'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 
 const AUTH_RATE_LIMIT_WINDOW = 15 * 60 * 1000
+const PASSWORD_CHANGE_RATE_LIMIT_WINDOW = 60 * 60 * 1000
 
 export const getAuthUser = cache(async () => {
   try {
@@ -120,6 +121,10 @@ export const changePassword = async (currentPassword: string, newPassword: strin
 
   const locked = await impersonationLocked()
   if (locked) return { error: locked }
+
+  if (await isRateLimited(`change-password:${session.user.id}`, 10, PASSWORD_CHANGE_RATE_LIMIT_WINDOW)) {
+    return { error: { code: 'RATE_LIMITED', message: 'Too many attempts' } }
+  }
 
   try {
     await auth.api.changePassword({

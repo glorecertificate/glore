@@ -35,6 +35,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - Rate limits share the `rate_limits` table: Better Auth through `rateLimit.storage: 'database'`, app keys through `src/lib/rate-limit.ts`.
 - `rateLimit.customRules` keys are endpoint paths without the `/api/auth` base path (`/request-password-reset`, `/reset-password`, `/change-password`), because Better Auth strips the base path before matching. `src/lib/auth.test.ts` fails when a key stops matching a real endpoint.
 - `emailAndPassword.revokeSessionsOnPasswordReset` is `true`, and `changePassword` passes `revokeOtherSessions: true`, so a password reset or change ends every other session.
+- Actions that send mail for a signed-in user have per-user limits through `isRateLimited`: `org-invite:<id>` (10 batches an hour), `email-change:<id>` (3 an hour), and `change-password:<id>` (10 an hour). They answer `RATE_LIMITED`, and `useActionError` shows `Common.rateLimited`.
 - `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once.
 - `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
 - Login and password reset answer unknown users exactly like wrong passwords and real resets.

@@ -33,7 +33,7 @@ vi.mock('@/lib/email', async importOriginal => ({
 }))
 
 const PASSWORD = 'Password1!'
-const KEYS = ['changer', 'resetter'] as const
+const KEYS = ['changer', 'limited', 'resetter'] as const
 
 describe.skipIf(!isLocalDatabase)('password and session security', () => {
   let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
@@ -83,6 +83,19 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     const after = await sessionIds(fixture.ids.changer)
     expect(after).toHaveLength(1)
     expect(before).not.toContain(after[0])
+  })
+
+  it('limits password changes per user before any hashing or mail', async () => {
+    as(await fixture.signIn('limited'))
+    limiter.limited.add(`change-password:${fixture.ids.limited}`)
+
+    const result = await actions.changePassword(PASSWORD, 'Password4!')
+
+    expect(result).toEqual({ error: { code: 'RATE_LIMITED', message: 'Too many attempts' } })
+    expect(sent).toHaveLength(0)
+    await expect(
+      fixture.auth.api.signInEmail({ body: { email: fixture.emails.limited, password: PASSWORD } })
+    ).resolves.toBeDefined()
   })
 
   it('revokes every session when the password is reset', async () => {

@@ -32,6 +32,7 @@ export const RequestPanel = ({
   results: Record<number, HolderCourseResult>
 }) => {
   const t = useTranslations('Certificates.review')
+  const tDetail = useTranslations('Certificates.detail')
   const tLevels = useTranslations('Common.skillLevels')
   const tCountries = useTranslations('Intl.Countries')
   const { locale, localize } = useI18n()
@@ -97,7 +98,7 @@ export const RequestPanel = ({
           <dl className="flex flex-col gap-2">
             <Row
               label={t('period')}
-              value={formatActivityPeriod(certificate, date, ({ end, start }) => `${start} - ${end}`)}
+              value={formatActivityPeriod(certificate, date, values => tDetail('periodValue', values))}
             />
             <Row label={t('hours')} value={certificate.activityDuration} />
             <Row label={t('location')} value={certificate.activityLocation} />

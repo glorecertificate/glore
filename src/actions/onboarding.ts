@@ -13,7 +13,7 @@ import { getAuthUser, refreshAuthSession } from '@/actions/auth'
 import { notify } from '@/actions/notifications/notify'
 import { db, transaction } from '@/db/client'
 import { recordEvent } from '@/db/mutations/activity-event'
-import { completeOnboardingProfile } from '@/db/mutations/user'
+import { completeOnboardingProfile, setCredentialPassword } from '@/db/mutations/user'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { onboardingNextStep } from '@/db/queries/onboarding'
 import { memberships, users } from '@/db/schema'
@@ -47,21 +47,6 @@ export type OnboardingError = 'ALREADY_ONBOARDED' | 'FAILED' | 'INVALID'
 
 const failure = (code: OnboardingError) => ({ data: null, error: { code } })
 
-const setCredentialPassword = async (userId: string, value: string) => {
-  const { internalAdapter, password } = await auth.$context
-  const passwordHash = await password.hash(value)
-  const credential = (await internalAdapter.findAccounts(userId)).find(
-    account => account.providerId === 'credential' && account.password
-  )
-
-  if (credential) {
-    await internalAdapter.updatePassword(userId, passwordHash)
-    return
-  }
-
-  await internalAdapter.linkAccount({ accountId: userId, providerId: 'credential', password: passwordHash, userId })
-}
-
 const escapeLike = (value: string) => value.replace(/[\\%_]/gu, match => `\\${match}`)
 
 const availableUsername = async (base: string, userId: string) => {
@@ -89,7 +74,7 @@ export const completeOnboarding = async (values: OnboardingValues) => {
   const { birthPlace, birthday, firstName, lastName, locale, nationality, password, phone } = parsed.data
 
   try {
-    await setCredentialPassword(authUser.id, password)
+    const passwordHash = await (await auth.$context).password.hash(password)
     const username = await availableUsername(usernameBase(firstName, lastName), authUser.id)
     const event = {
       actorId: authUser.id,
@@ -111,6 +96,7 @@ export const completeOnboarding = async (values: OnboardingValues) => {
         username,
       })
       if (!row) return false
+      await setCredentialPassword(tx, authUser.id, passwordHash)
       await recordEvent(tx, event)
       return true
     })

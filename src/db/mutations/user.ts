@@ -9,6 +9,7 @@ import { releaseTutorAssignments } from '@/db/mutations/organization'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
 import {
+  accounts,
   certificateSkills,
   certificates,
   contributions,
@@ -141,4 +142,23 @@ export const completeOnboardingProfile = async (
     .where(and(eq(users.id, userId), isNull(users.onboardedAt)))
     .returning({ id: users.id })
   return row ?? null
+}
+
+export const setCredentialPassword = async (tx: Transaction, userId: string, passwordHash: string) => {
+  const nowIso = new Date().toISOString()
+  const [updated] = await tx
+    .update(accounts)
+    .set({ password: passwordHash, updatedAt: nowIso })
+    .where(and(eq(accounts.userId, userId), eq(accounts.providerId, 'credential')))
+    .returning({ id: accounts.id })
+  if (updated) return
+  await tx.insert(accounts).values({
+    accountId: userId,
+    createdAt: nowIso,
+    id: crypto.randomUUID(),
+    password: passwordHash,
+    providerId: 'credential',
+    updatedAt: nowIso,
+    userId,
+  })
 }

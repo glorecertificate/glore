@@ -5,15 +5,15 @@ Handoff for G8. Every step that writes to staging or production is a user step. 
 ## State
 
 - Branch `release/v0.7` holds the release. Nothing is pushed.
-- W4 (`translations.md`) adds migrations and the legal and settings data. Recount the migrations and redo the staging pass after W4 lands.
-- Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0028.
+- W4 (`translations.md`) adds migrations 0029 to 0032. The counts below include them. Redo the staging pass after W4 lands.
+- Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0032.
 - Production has no database comment and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
 
 ## Prepare
 
 1. Review `release/v0.7`, push it, and open a pull request into `main`. Do not merge yet. The branch history is linear; keep it that way.
-2. Optional staging pass: push `release/v0.7` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
+2. Optional staging pass: push `release/v0.7` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 33 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
 3. Back up production: in the Neon console create a branch `pre-v0.7-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
 4. Set the production env vars in Vercel, listed below.
 
@@ -34,7 +34,7 @@ The schema is `envSchema` in `next.config.ts`.
 ## Migrate and deploy
 
 1. Migrate from a local shell, with the production URL in front so it wins over `.env.local`: `DATABASE_URL='<production url>' pnpm run db migrate`.
-2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 29.
+2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 33.
 3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --bootstrap --dry-run`.
 4. Run the same command without `--dry-run`. Production always imports courses as drafts.
 5. Rebase the pull request into `main` (never a merge commit), then run `pnpm run release` on `main` and release `0.7.0`. The `v0.7.0` tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
@@ -44,6 +44,8 @@ Run steps 1 and 5 back to back: 0028 drops the plaintext token column, so team i
 The import refuses production once any course or doc exists, so steps 3 and 4 pass `--bootstrap`. After this release the team edits content in the app, and nobody passes the flag again.
 
 Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 0021 backfill, 0019 drops replaced columns, 0023 anonymizes deleted holders, 0025 dedupes default certificates and adds the audit indexes. 0026 to 0028 replace plaintext invitation tokens with a SHA-256 hash (0027 backfills it in SQL, so the 4 open production team invitation links keep working) and move stored invitation notification links to `/api/v1/invitations/[id]`.
+
+0029 to 0032 only add tables (message overrides, legal, content translations, app settings) and `doc_articles.languages`, which defaults to all three locales. Step 4 seeds the empty legal tables from `content/legal`.
 
 ## Verify
 

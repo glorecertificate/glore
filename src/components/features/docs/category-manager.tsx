@@ -145,7 +145,7 @@ export const CategoryManager = ({ categories, onOpenChange, open }: CategoryMana
           <p className="text-sm font-medium">{t('categories.addNew')}</p>
 
           <div className="space-y-1.5">
-            <Label htmlFor="cat-slug">{'Slug'}</Label>
+            <Label htmlFor="cat-slug">{t('editor.slug')}</Label>
             <Input id="cat-slug" placeholder="category-slug" value={slug} onChange={e => setSlug(e.target.value)} />
           </div>
 

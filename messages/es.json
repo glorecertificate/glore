@@ -343,6 +343,7 @@
     },
     "MultiSelect": {
       "item": "Elemento",
+      "noItems": "No se encontraron elementos.",
       "removeItem": "Quitar elemento",
       "removeNamed": "Quitar {name}",
       "seeAllSelected": "Ver todos los elementos seleccionados",
@@ -816,6 +817,7 @@
     "createCourse": "Crear curso",
     "createdOnBy": "Creado {date} por",
     "creatingCourse": "Creando curso",
+    "noLessons": "Sin lecciones",
     "sortBy-creation": "Fecha de creación",
     "date": "Fecha",
     "description": "GloRe ofrece una amplia gama de cursos para ayudarte a desarrollar tus habilidades blandas y tus conocimientos. Cada curso está diseñado para ser interactivo y atractivo, y te da las herramientas que necesitas para tener éxito en tu vida personal y profesional. Tras completar al menos 3 cursos, podrás solicitar un certificado de finalización.",

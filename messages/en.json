@@ -352,6 +352,7 @@
     },
     "MultiSelect": {
       "item": "Item",
+      "noItems": "No items found.",
       "removeItem": "Remove item",
       "removeNamed": "Remove {name}",
       "seeAllSelected": "See all selected items",
@@ -816,6 +817,7 @@
     "createCourse": "Create course",
     "createdOnBy": "Created {date} by",
     "creatingCourse": "Creating course",
+    "noLessons": "No lessons",
     "sortBy-creation": "Creation date",
     "date": "Date",
     "description": "GloRe offers a wide range of learning courses to help you develop your soft skills and knowledge. Each course is designed to be interactive and engaging, providing you with the tools you need to succeed in your personal and professional life. After completing at least 3 courses, you will be able to request a certificate of completion.",

@@ -336,6 +336,7 @@ export const MultiSelectContent = ({
   selectAllLabel?: string
 }) => {
   const t = useTranslations('Common')
+  const tMultiSelect = useTranslations('Components.MultiSelect')
   const { loading, options, resetOptions, value } = useMultiSelect()
 
   return (
@@ -351,7 +352,7 @@ export const MultiSelectContent = ({
                 ))}
               </div>
             ) : (
-              <div className="py-4 text-center text-sm text-muted-foreground">{'No items found.'}</div>
+              <div className="py-4 text-center text-sm text-muted-foreground">{tMultiSelect('noItems')}</div>
             )}
           </CommandEmpty>
           <CommandGroup>

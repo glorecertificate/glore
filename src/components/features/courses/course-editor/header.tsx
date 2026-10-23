@@ -356,7 +356,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
                   <span className="text-xs text-muted-foreground">{lessonType(currentLesson)}</span>
                 </>
               ) : (
-                <span className="font-medium">{'No lessons'}</span>
+                <span className="font-medium">{t('noLessons')}</span>
               )}
             </div>
             <ChevronDownIcon className="size-4 opacity-50" />
@@ -382,7 +382,7 @@ export const CourseHeaderMobile = ({ className, ...props }: React.ComponentProps
           ) : (
             <DropdownMenuItem className="flex justify-between py-2">
               <div className="flex flex-col">
-                <span>{'Add lesson'}</span>
+                <span>{t('addLesson')}</span>
               </div>
             </DropdownMenuItem>
           )}

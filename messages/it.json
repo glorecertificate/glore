@@ -352,6 +352,7 @@
     },
     "MultiSelect": {
       "item": "Elemento",
+      "noItems": "Nessun elemento trovato.",
       "removeItem": "Rimuovi elemento",
       "removeNamed": "Rimuovi {name}",
       "seeAllSelected": "Vedi tutti gli elementi selezionati",
@@ -816,6 +817,7 @@
     "createCourse": "Crea corso",
     "createdOnBy": "Creato {date} da",
     "creatingCourse": "Creazione del corso",
+    "noLessons": "Nessuna lezione",
     "sortBy-creation": "Data di creazione",
     "date": "Data",
     "description": "GloRe offre un'ampia gamma di corsi per aiutarti a sviluppare le tue soft skill e le tue conoscenze. Ogni corso è pensato per essere interattivo e coinvolgente e ti dà gli strumenti per avere successo nella vita personale e professionale. Dopo aver completato almeno 3 corsi, potrai richiedere un certificato di completamento.",

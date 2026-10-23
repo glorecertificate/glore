@@ -108,10 +108,10 @@ export const CertificateShare = ({
               </a>
             </Button>
           </div>
-          <dl className="grid gap-2 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {fields.map(field => (
               <div
-                className="flex items-center justify-between gap-2 rounded-md bg-muted/40 px-3 py-1.5"
+                className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-muted/40 px-3 py-1.5"
                 key={field.key}
               >
                 <div className="min-w-0">

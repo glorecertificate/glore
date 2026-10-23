@@ -46,7 +46,7 @@ export const UsersFilters = ({
     <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
       <SearchInput
         aria-label={t('searchPlaceholder')}
-        className="h-8 w-full sm:w-72"
+        className="h-8 w-full sm:w-56"
         onValueChange={onSearch}
         placeholder={t('searchPlaceholder')}
         value={search}
@@ -103,7 +103,7 @@ export const UsersFilters = ({
         onValueChange={value => onFilter({ org: value === ALL ? null : Number(value) })}
         value={values.org === null ? ALL : String(values.org)}
       >
-        <SelectTrigger aria-label={t('filters.organization')} className="h-8 w-auto max-w-56 gap-1.5">
+        <SelectTrigger aria-label={t('filters.organization')} className="h-8 w-auto max-w-44 gap-1.5">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -116,7 +116,7 @@ export const UsersFilters = ({
         </SelectContent>
       </Select>
       {active && (
-        <Button onClick={onClear} size="sm" variant="ghost">
+        <Button className="shrink-0" onClick={onClear} size="sm" variant="ghost">
           {t('clearFilters')}
         </Button>
       )}

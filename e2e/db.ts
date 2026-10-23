@@ -194,6 +194,29 @@ export const removeLoginUsers = async (ids: string[]) => {
   }
 }
 
+export const setMessageOverride = async ({ key, locale, value }: { key: string; locale: string; value: string }) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    await pool.query(
+      `insert into message_overrides (locale, key, namespace, value, source_hash, published_at)
+       values ($1, $2, split_part($2, '.', 1), $3, 'e2e', now())
+       on conflict (locale, key) do update set value = excluded.value, draft_value = null`,
+      [locale, key, value]
+    )
+  } finally {
+    await pool.end()
+  }
+}
+
+export const clearMessageOverride = async (key: string) => {
+  const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
+  try {
+    await pool.query('delete from message_overrides where key = $1', [key])
+  } finally {
+    await pool.end()
+  }
+}
+
 export const listSubjectEvents = async (action: string, subjectId: string) => {
   const pool = new Pool({ connectionString: LOCAL_CONNECTION() })
   try {

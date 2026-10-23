@@ -5,6 +5,7 @@ const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025'
 interface MailpitSearch {
   messages: {
     ID: string
+    Subject: string
   }[]
 }
 
@@ -42,6 +43,13 @@ export const latestMailText = async (request: APIRequestContext, to: string) => 
   const response = await request.get(`${MAILPIT_URL}/api/v1/message/${await latestMessageId(request, to)}`)
   const { Text } = (await response.json()) as MailpitMessage
   return Text
+}
+
+export const latestMailSubject = async (request: APIRequestContext, to: string) => {
+  await latestMailText(request, to)
+  const response = await request.get(`${MAILPIT_URL}/api/v1/search`, searchParams(to))
+  const { messages } = (await response.json()) as MailpitSearch
+  return messages[0]?.Subject ?? ''
 }
 
 export const mailLinkPath = (text: string, marker: string) => {

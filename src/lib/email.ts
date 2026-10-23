@@ -31,7 +31,8 @@ import TeamInviteEmail from '@/emails/team/invite'
 import TeamRoleChangedEmail from '@/emails/team/role-changed'
 import { type EmailBaseProps, type EmailCategory, type EmailTranslator, emailTranslator } from '@/emails/translate'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
-import defaultMessages from '~/messages/en.json'
+import { loadMessages } from '@/lib/messages'
+import type defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
 
@@ -99,18 +100,6 @@ export const EMAIL_TEMPLATE_NAMES = Object.keys(TEMPLATES) as TemplateName[]
 
 export type EmailTemplate = { [K in TemplateName]: { name: K; props: TemplateProps<K> } }[TemplateName]
 
-const messagesFor = async (locale: string) => {
-  if (locale === 'it') {
-    const { default: messages } = await import('~/messages/it.json')
-    return messages as unknown as Messages
-  }
-  if (locale === 'es') {
-    const { default: messages } = await import('~/messages/es.json')
-    return messages as unknown as Messages
-  }
-  return defaultMessages as Messages
-}
-
 interface BuildOptions {
   category: EmailCategory | null
   locale: string
@@ -137,7 +126,7 @@ interface RenderEmailOptions {
 }
 
 export const renderEmail = async ({ category = null, locale = DEFAULT_LOCALE, template }: RenderEmailOptions) => {
-  const messages = await messagesFor(locale)
+  const messages = (await loadMessages(locale)) as unknown as Messages
   const { element, subject } = buildEmail({ category, locale, messages, template })
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
   return { html, subject, text }

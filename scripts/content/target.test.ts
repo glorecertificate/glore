@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
-import { type ImportOptions, guardTarget, parseImportArgs } from './target.mts'
+import { type ImportOptions, guardExistingContent, guardTarget, parseImportArgs } from './target.mts'
 
 const LOCAL_URL = 'postgres://glore:glore@localhost:5433/glore'
 const REMOTE_URL = 'postgres://user:secret@ep-example.eu-central-1.aws.neon.tech/neondb'
 
 const options = (overrides: Partial<ImportOptions>): ImportOptions => ({
+  bootstrap: false,
   drafts: false,
   dryRun: false,
   examples: false,
@@ -55,5 +56,20 @@ describe('guardTarget', () => {
   it('refuses examples and removals on production', () => {
     expect(guardTarget(options({ examples: true, target: 'production' }), REMOTE_URL).error).toMatch(/example/u)
     expect(guardTarget(options({ remove: ['a'], target: 'production' }), REMOTE_URL).error).toMatch(/remove/u)
+  })
+})
+
+describe('guardExistingContent', () => {
+  it('locks production once content exists', () => {
+    expect(guardExistingContent(options({ target: 'production' }), 0)).toBeUndefined()
+    expect(guardExistingContent(options({ target: 'production' }), 65)).toMatch(/--bootstrap/u)
+    expect(guardExistingContent(options({ bootstrap: true, target: 'production' }), 65)).toBeUndefined()
+    expect(guardExistingContent(options({ target: 'staging' }), 65)).toBeUndefined()
+  })
+
+  it('accepts --bootstrap only on production', () => {
+    expect(parseImportArgs(['--target', 'production', '--bootstrap']).options?.bootstrap).toBe(true)
+    expect(guardTarget(options({ bootstrap: true, target: 'production' }), REMOTE_URL)).toEqual({ drafts: true })
+    expect(guardTarget(options({ bootstrap: true, target: 'staging' }), REMOTE_URL).error).toMatch(/production/u)
   })
 })

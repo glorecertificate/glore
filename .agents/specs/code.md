@@ -9,6 +9,7 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 - Never reintroduce `vite-plus`: its `oxlint` bin collided with the direct `oxlint` dependency and silently dropped every editor rule.
 - When the CLI lints but the editor shows nothing, read Output > Oxc (Lint) and check the `Using server binary at:` line, then run "Oxc: Restart Server".
 - When CLI lint is slow, suspect the JS plugins (`jsPlugins`, mostly `oxlint-tailwindcss`) first. tsgolint adds under a second.
+- `package.json` sets `"type": "module"`, so a JSON import in Node-run scripts and Playwright specs needs `with { type: 'json' }`.
 - `typescript/consistent-type-imports` is not type-aware and misses a type-only import used only in a `satisfies` clause. Add the inline `type` qualifier by hand.
 
 ## Formatter (oxfmt)
@@ -55,6 +56,7 @@ next / next/**                  # Next.js (same group, custom 'react' pattern)
 
 - `eslint/no-restricted-imports` blocks everywhere: `cookies` from `next/headers` (use `@/actions/cookies`).
 - It also blocks `cnfast` (use `@/lib/utils`, which re-exports `cn`) and parent imports `../**` (use `@/` or `~/`).
+- Node-run scripts import dependency-free `src/lib` files through the `#lib/*` subpath import in `package.json`.
 - It blocks `lucide-react` outside `src/components/icons/**` and the vendored `src/components/ui/rich-text-editor/**`, which a later override exempts (render through `LucideIcon`).
 - A scoped override for the shared layers (`src/components/ui/**`, `src/components/icons/**`, `src/hooks/**`, `src/lib/**`) also blocks `@/components/features/**`, `@/app/**`, and `@/actions/**`.
 - That override keeps those layers domain-free.

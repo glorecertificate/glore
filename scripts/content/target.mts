@@ -8,19 +8,21 @@ type Target = (typeof TARGETS)[number]
 
 export interface ImportOptions {
   target: Target
+  bootstrap: boolean
   drafts: boolean
   examples: boolean
   dryRun: boolean
   remove: string[]
 }
 
-export const USAGE = `Usage: pnpm run content:import --target <local|staging|production> [--drafts] [--examples] [--dry-run] [--remove <slug>]`
+export const USAGE = `Usage: pnpm run content:import --target <local|staging|production> [--bootstrap] [--drafts] [--examples] [--dry-run] [--remove <slug>]`
 
 export const parseImportArgs = (argv: string[]) => {
   try {
     const { values } = parseArgs({
       args: argv,
       options: {
+        bootstrap: { type: 'boolean' },
         'dry-run': { type: 'boolean' },
         drafts: { type: 'boolean' },
         examples: { type: 'boolean' },
@@ -32,6 +34,7 @@ export const parseImportArgs = (argv: string[]) => {
     const target = TARGETS.find(name => name === values.target)
     if (!target) return { drafts: false, error: `--target must be one of ${TARGETS.join(', ')}` }
     const options: ImportOptions = {
+      bootstrap: values.bootstrap ?? false,
       drafts: values.drafts ?? false,
       dryRun: values['dry-run'] ?? false,
       examples: values.examples ?? false,
@@ -64,6 +67,9 @@ export const guardTarget = (options: ImportOptions, databaseUrl: string | undefi
       error: `Refusing to import: --target ${options.target} needs a DATABASE_URL that is not local.`,
     }
   }
+  if (options.bootstrap && options.target !== 'production') {
+    return { drafts: false, error: '--bootstrap applies only to --target production.' }
+  }
   if (options.target === 'production' && options.remove.length > 0) {
     return { drafts: false, error: 'Refusing to remove courses on production.' }
   }
@@ -71,4 +77,9 @@ export const guardTarget = (options: ImportOptions, databaseUrl: string | undefi
     return { drafts: false, error: 'Refusing to import example courses on production.' }
   }
   return { drafts: options.drafts || options.target === 'production' }
+}
+
+export const guardExistingContent = (options: ImportOptions, existing: number) => {
+  if (options.target !== 'production' || options.bootstrap || existing === 0) return
+  return `Refusing to import: production already has ${existing} courses and docs, which the team edits in the app. Pass --bootstrap to overwrite them.`
 }

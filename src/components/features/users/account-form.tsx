@@ -20,12 +20,13 @@ import { type User } from '@/db/queries/user'
 import { useActionError } from '@/hooks/use-action-error'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { USERNAME_REGEX } from '@/lib/constants'
+import { LOCALES } from '@/lib/i18n'
 import { type Any } from '@/lib/types'
 import { isReservedUsername } from '@/lib/username'
 
 const defaults = (source: Pick<User, 'email' | 'locale' | 'username'>) => ({
   email: source.email ?? '',
-  locale: (source.locale ?? '') as '' | 'en' | 'es' | 'it',
+  locale: (source.locale ?? '') as '' | Locale,
   username: source.username ?? '',
 })
 
@@ -37,7 +38,7 @@ export const AccountForm = () => {
 
   const accountSchema = z.object({
     email: z.email(),
-    locale: z.enum(['en', 'es', 'it']).optional().or(z.literal('')),
+    locale: z.enum(LOCALES).optional().or(z.literal('')),
     username: z
       .string()
       .trim()

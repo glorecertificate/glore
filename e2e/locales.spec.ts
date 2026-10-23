@@ -2,9 +2,9 @@ import { readFile } from 'node:fs/promises'
 
 import { type Page, expect, test } from '@playwright/test'
 
-import en from '~/messages/en.json'
-import es from '~/messages/es.json'
-import it from '~/messages/it.json'
+import en from '~/messages/en.json' with { type: 'json' }
+import es from '~/messages/es.json' with { type: 'json' }
+import it from '~/messages/it.json' with { type: 'json' }
 
 import { type AuthRole, authFile } from './helpers'
 

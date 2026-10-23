@@ -216,8 +216,12 @@ Content rules: plain, warm language for young adults, examples from volunteering
 
 Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 to T6. About 19 agent-days.
 
-- T0 [ ]: one `loadMessages(locale)` for all five loaders, `messageSignature` in `src/lib/icu.ts`, `icu-minify` as a direct dependency, locale lists from `LOCALES`, new cache tags, production importer lock.
+- T0 [x]: one `loadMessages(locale)` for the request, client, email, and PDF loaders, `messageSignature` in `src/lib/icu.ts`, locale lists from `LOCALES`, production importer lock.
   - Accept: no behavior change, check and tests green.
+  - Scripts import `messageSignature` as `#lib/icu.ts`, and `package.json` gains `"type": "module"` so node loads `.ts` files without a warning.
+  - `src/emails/translate.ts` keeps the bundled `en` default for React Email previews, which run outside the app.
+  - The cache tags move to T1 and T2, where they are first used, because knip rejects unused enum members.
+  - `icu-minify` moves to T2, after R1 settles the lockfile. `content:import --target production` needs `--bootstrap` once content exists.
 - T1 [ ]: legal tables, seed from `content/legal`, cached reader, admin draft, publish, and history UI, audit events.
   - Accept: legal pages render from the database, published versions are immutable, e2e publishes v2 and the date changes.
 - T1b [ ]: `legal_acceptances`, terms checkbox at registration and onboarding, material re-accept gate in the dashboard layout.

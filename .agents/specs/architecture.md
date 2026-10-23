@@ -80,7 +80,9 @@ src/
 │   ├── http.ts         # Size-limited body reads, closed Better Auth paths
 │   ├── impersonation-guard.ts # Better Auth plugin: blocks security changes while impersonating, drops the admin cookie on sign out
 │   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
+│   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
 │   ├── legal.ts        # Legal document loader (content/legal)
+│   ├── messages.ts     # loadMessages(locale), resolveLocale(): the one catalog loader (server-only)
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers

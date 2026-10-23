@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-export type Locale = 'en' | 'es' | 'it'
+import { type Locale as AppLocale } from 'next-intl'
+
+export type Locale = AppLocale
 
 export type Localized<T = string> = Record<Locale, T>
 

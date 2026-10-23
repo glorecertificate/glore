@@ -1,4 +1,6 @@
-export type DemoLocale = 'en' | 'es' | 'it'
+import { type Locale } from 'next-intl'
+
+export type DemoLocale = Locale
 
 export interface DemoExperience {
   language: DemoLocale

@@ -34,11 +34,13 @@ The schema is `envSchema` in `next.config.ts`.
 
 1. Migrate from a local shell, with the production URL in front so it wins over `.env.local`: `DATABASE_URL='<production url>' pnpm run db migrate`.
 2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 29.
-3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --dry-run`.
+3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --bootstrap --dry-run`.
 4. Run the same command without `--dry-run`. Production always imports courses as drafts.
 5. Rebase the pull request into `main` (never a merge commit), then run `pnpm run release` on `main` and release `0.7.0`. The `v0.7.0` tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
 
 Run steps 1 and 5 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes.
+
+The import refuses production once any course or doc exists, so steps 3 and 4 pass `--bootstrap`. After this release the team edits content in the app, and nobody passes the flag again.
 
 Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 0021 backfill, 0019 drops replaced columns, 0023 anonymizes deleted holders, 0025 dedupes default certificates and adds the audit indexes. 0026 to 0028 replace plaintext invitation tokens with a SHA-256 hash (0027 backfills it in SQL, so the 4 open production team invitation links keep working) and move stored invitation notification links to `/api/v1/invitations/[id]`.
 

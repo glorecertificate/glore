@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { Pool } from 'pg'
+import { Pool, type PoolClient } from 'pg'
 
 import { buildCatalog } from './catalog.mts'
 import { buildDocCatalog } from './docs.mts'
 import { DOC_ENTITIES, type DocStats, createDocStats, syncDocs } from './sync-docs.mts'
 import { type Counter, ENTITIES, type SyncStats, createStats, removeCourse, syncCatalog } from './sync.mts'
-import { USAGE, guardTarget, parseImportArgs } from './target.mts'
+import { USAGE, guardExistingContent, guardTarget, parseImportArgs } from './target.mts'
 import { checkContent, formatProblems } from './validate.mts'
 
 const fail = (message: string): never => {
@@ -21,6 +21,13 @@ const report = (stats: SyncStats, docStats: DocStats) => {
   for (const entity of ENTITIES) console.info(line(entity, stats[entity]))
   for (const entity of DOC_ENTITIES) console.info(line(entity, docStats[entity]))
   console.info(`Learner progress rows removed: ${stats.progressRowsRemoved}`)
+}
+
+const countContent = async (client: PoolClient) => {
+  const { rows } = await client.query<{ count: string }>(
+    'select (select count(*) from courses) + (select count(*) from doc_articles) as count'
+  )
+  return Number(rows[0]?.count ?? 0)
 }
 
 const importContent = async () => {
@@ -45,6 +52,11 @@ const importContent = async () => {
 
   try {
     await client.query('begin')
+    const locked = guardExistingContent(options, await countContent(client))
+    if (locked) {
+      await client.query('rollback')
+      return fail(locked)
+    }
     if (removing) {
       for (const slug of options.remove) {
         console.info(`${(await removeCourse({ client, stats }, slug)) ? 'Removed' : 'Not found'}: ${slug}`)

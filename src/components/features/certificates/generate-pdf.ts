@@ -13,19 +13,15 @@ import {
 import { pdfImage, pdfLabels } from '@/components/features/certificates/pdf-helpers'
 import { iconNodeOf } from '@/components/icons/registry'
 import { SKILL_LEVELS } from '@/lib/constants'
-import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
-
-type Locale = (typeof LOCALES)[number]
+import { loadMessages, resolveLocale } from '@/lib/messages'
 
 type PdfInput = Omit<CertificatePdfData, 'qrPath' | 'qrSize' | 'skills' | 'verifyUrl'> & {
   skills: (Omit<CertificatePdfSkill, 'iconNode'> & { icon: string | null })[]
 }
 
-const toLocale = (language: string) => (LOCALES.includes(language as Locale) ? (language as Locale) : DEFAULT_LOCALE)
-
 export const certificatePdfLabels = async (language: string) => {
-  const locale = toLocale(language)
-  const { default: messages } = await import(`~/messages/${locale}.json`)
+  const locale = resolveLocale(language)
+  const messages = await loadMessages(locale)
   const t = createTranslator({ locale, messages, namespace: 'CertificatePdf' })
   const common = createTranslator({ locale, messages, namespace: 'Common' })
   return pdfLabels(

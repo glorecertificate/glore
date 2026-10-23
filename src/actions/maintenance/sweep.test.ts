@@ -116,4 +116,29 @@ describe.skipIf(!isLocalDatabase)('orphan sweeps', () => {
       expect(storage.deleted).toEqual([unused])
     })
   })
+
+  describe('sweepOrphanCertificatePdfs', () => {
+    it('keeps the PDF of an approved certificate and drops the PDF of a revoked one', async () => {
+      const live = await issue({ documentUrl: url(`certificates/${suffix}-live.pdf`), status: 'approved' })
+      const revoked = await issue({
+        documentUrl: url(`certificates/${suffix}-revoked.pdf`),
+        revokedAt: new Date().toISOString(),
+        status: 'revoked',
+      })
+      const stray = `certificates/${suffix}-stray.pdf`
+      storage.listings['certificates/'] = [
+        { key: `certificates/${live.handle}.pdf`, lastModified: OLD },
+        { key: `certificates/${revoked.handle}.pdf`, lastModified: OLD },
+        { key: `certificates/${suffix}-live.pdf`, lastModified: OLD },
+        { key: `certificates/${suffix}-revoked.pdf`, lastModified: OLD },
+        { key: stray, lastModified: OLD },
+      ]
+
+      await context.prune.sweepOrphanCertificatePdfs(NOW)
+
+      expect(storage.deleted.toSorted()).toEqual(
+        [`certificates/${revoked.handle}.pdf`, `certificates/${suffix}-revoked.pdf`, stray].toSorted()
+      )
+    })
+  })
 })

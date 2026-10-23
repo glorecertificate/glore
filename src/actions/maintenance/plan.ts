@@ -92,11 +92,12 @@ export const planInvitationReminders = <T extends OpenInvitation>({
 
 export const selectOrphanPdfKeys = (
   objects: { key: string; lastModified: Date }[],
-  certificates: { documentUrl: string | null; handle: string }[],
+  certificates: { documentUrl: string | null; handle: string; status: string }[],
   cutoff: Date
 ) => {
   const referenced = new Set<string>()
-  for (const { documentUrl, handle } of certificates) {
+  for (const { documentUrl, handle, status } of certificates) {
+    if (status === 'revoked') continue
     referenced.add(`certificates/${handle}.pdf`)
     const path = documentUrl ? URL.parse(documentUrl)?.pathname.replace(/^\//u, '') : null
     if (path) referenced.add(path)

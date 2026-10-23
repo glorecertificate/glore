@@ -54,7 +54,8 @@ draft -> submitted -> in_review -> approved -> revoked
 - An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
 - Org managers and platform admins revoke an approved certificate with a reason of 10 or more characters.
-- Revocation keeps the PDF in R2, and the latest approved certificate becomes the default.
+- Revocation clears `documentUrl` in its transaction and deletes the PDF object from R2 after the commit (`r2DeleteQuietly`), and the latest approved certificate becomes the default.
+- A failed delete is logged and never undoes the revoke. The orphan sweeper removes the object later, because it treats the PDF of a revoked certificate as unreferenced.
 
 ## Screens
 

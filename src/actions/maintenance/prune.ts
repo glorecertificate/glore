@@ -69,7 +69,9 @@ export const sweepOrphanAvatars = async (now = new Date()) => {
 
 export const sweepOrphanCertificatePdfs = async (now = new Date()) => {
   const [rows, objects] = await Promise.all([
-    db.select({ documentUrl: certificates.documentUrl, handle: certificates.handle }).from(certificates),
+    db
+      .select({ documentUrl: certificates.documentUrl, handle: certificates.handle, status: certificates.status })
+      .from(certificates),
     r2List('certificates/'),
   ])
   const orphans = selectOrphanPdfKeys(objects, rows, new Date(now.getTime() - DAY))

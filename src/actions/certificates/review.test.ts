@@ -676,11 +676,49 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       expect(notifyMock).toHaveBeenCalledTimes(3)
     })
 
-    it('keeps the PDF in storage', async () => {
+    it('deletes the PDF object after the revoke commits and clears the document URL', async () => {
+      const cert = await approved()
+      const documentUrl = `https://r2.test/certificates/${cert.handle}.pdf`
+      await fixture.db
+        .update(fixture.schema.certificates)
+        .set({ documentUrl })
+        .where(eq(fixture.schema.certificates.id, cert.id))
+      const stateAtDelete: unknown[] = []
+      deleteMock.mockImplementationOnce(async () => {
+        stateAtDelete.push(await fixture.reload(cert.id))
+      })
+      fixture.as('manager')
+
+      const { data, error } = await review.revokeCertificate(cert.id, { reason })
+
+      expect(error).toBeNull()
+      expect(data).toMatchObject({ documentUrl: null, status: 'revoked' })
+      expect(deleteMock).toHaveBeenCalledTimes(1)
+      expect(deleteMock).toHaveBeenCalledWith(documentUrl)
+      expect(stateAtDelete).toMatchObject([{ documentUrl: null, status: 'revoked' }])
+      expect(await fixture.reload(cert.id)).toMatchObject({ documentUrl: null, status: 'revoked' })
+    })
+
+    it('revokes a certificate without a stored PDF and deletes nothing', async () => {
       const cert = await approved()
       fixture.as('manager')
+
       expect((await review.revokeCertificate(cert.id, { reason })).error).toBeNull()
       expect(deleteMock).not.toHaveBeenCalled()
+    })
+
+    it('keeps the PDF object when the revoke is refused', async () => {
+      const cert = await approved()
+      const documentUrl = `https://r2.test/certificates/${cert.handle}.pdf`
+      await fixture.db
+        .update(fixture.schema.certificates)
+        .set({ documentUrl })
+        .where(eq(fixture.schema.certificates.id, cert.id))
+      fixture.as('author')
+
+      expect((await review.revokeCertificate(cert.id, { reason })).error?.code).toBe('FORBIDDEN')
+      expect(deleteMock).not.toHaveBeenCalled()
+      expect((await fixture.reload(cert.id)).documentUrl).toBe(documentUrl)
     })
 
     it('denies tutors, volunteers and outsiders', async () => {

@@ -137,9 +137,9 @@ export const revokeCertificate = async (id: number, input: CertificateReasonValu
     const { reason } = parse(certificateReasonSchema, input)
 
     await requireManagedCertificate(authUser, certificateId)
-    const row = await commitTransition(
+    const { certificate, documentUrl } = await commitTransition(
       tx => recordCertificateRevocation(tx, { id: certificateId, reason, revokedById: authUser.id }),
-      revoked =>
+      ({ certificate: revoked }) =>
         buildEvent(
           'certificate.revoked',
           { actorId: authUser.id, organizationId: revoked.organizationId },
@@ -150,8 +150,9 @@ export const revokeCertificate = async (id: number, input: CertificateReasonValu
           }
         )
     )
-    expireCertificateCaches(row, row.reviewerId)
-    return row
+    expireCertificateCaches(certificate, certificate.reviewerId)
+    if (documentUrl) await r2DeleteQuietly(documentUrl)
+    return certificate
   })
 
 type PdfSource = NonNullable<Awaited<ReturnType<typeof findCertificatePdfSource>>>

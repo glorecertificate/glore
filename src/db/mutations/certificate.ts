@@ -540,13 +540,27 @@ interface RevokeParams {
 }
 
 export const recordCertificateRevocation = async (tx: Transaction, { id, reason, revokedById }: RevokeParams) => {
+  const [stored] = await tx
+    .select({ documentUrl: certificates.documentUrl })
+    .from(certificates)
+    .where(and(eq(certificates.id, id), eq(certificates.status, 'approved')))
+    .for('update')
   const [row] = await tx
     .update(certificates)
-    .set({ isDefault: false, revokedAt: now(), revokedById, revokedReason: reason, status: 'revoked' })
+    .set({
+      documentUrl: null,
+      isDefault: false,
+      revokedAt: now(),
+      revokedById,
+      revokedReason: reason,
+      status: 'revoked',
+    })
     .where(and(eq(certificates.id, id), eq(certificates.status, 'approved')))
     .returning()
   if (!row) throw new CertificateError('INVALID_STATE', 'Certificate is not in a state that allows this action')
-  if (!row.userId) return row
+
+  const revoked = { certificate: row, documentUrl: stored?.documentUrl ?? null }
+  if (!row.userId) return revoked
 
   const currentDefault = await tx.query.certificates.findFirst({
     columns: { id: true },
@@ -556,7 +570,7 @@ export const recordCertificateRevocation = async (tx: Transaction, { id, reason,
       eq(certificates.status, 'approved')
     ),
   })
-  if (currentDefault) return row
+  if (currentDefault) return revoked
 
   const next = await tx.query.certificates.findFirst({
     columns: { id: true },
@@ -564,5 +578,5 @@ export const recordCertificateRevocation = async (tx: Transaction, { id, reason,
     where: and(eq(certificates.userId, row.userId), eq(certificates.status, 'approved')),
   })
   if (next) await tx.update(certificates).set({ isDefault: true }).where(eq(certificates.id, next.id))
-  return row
+  return revoked
 }

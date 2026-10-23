@@ -93,22 +93,30 @@ describe('selectOrphanPdfKeys', () => {
   const old = new Date(NOW - 3 * DAY)
   const fresh = new Date(NOW - 1000)
 
-  it('keeps referenced, revoked and fresh files', () => {
+  it('keeps referenced and fresh files and drops the PDF of a revoked certificate', () => {
     const keys = selectOrphanPdfKeys(
       [
         { key: 'certificates/live.pdf', lastModified: old },
         { key: 'certificates/revoked.pdf', lastModified: old },
+        { key: 'certificates/revoked-linked.pdf', lastModified: old },
         { key: 'certificates/stray.pdf', lastModified: old },
         { key: 'certificates/new.pdf', lastModified: fresh },
         { key: 'certificates/linked.pdf', lastModified: old },
+        { key: 'certificates/draft.pdf', lastModified: old },
       ],
       [
-        { documentUrl: 'https://cdn.example.com/certificates/live.pdf', handle: 'live' },
-        { documentUrl: null, handle: 'revoked' },
-        { documentUrl: 'https://cdn.example.com/certificates/linked.pdf', handle: 'other' },
+        { documentUrl: 'https://cdn.example.com/certificates/live.pdf', handle: 'live', status: 'approved' },
+        { documentUrl: null, handle: 'revoked', status: 'revoked' },
+        {
+          documentUrl: 'https://cdn.example.com/certificates/revoked-linked.pdf',
+          handle: 'revoked-other',
+          status: 'revoked',
+        },
+        { documentUrl: 'https://cdn.example.com/certificates/linked.pdf', handle: 'other', status: 'approved' },
+        { documentUrl: null, handle: 'draft', status: 'draft' },
       ],
       cutoff
     )
-    expect(keys).toEqual(['certificates/stray.pdf'])
+    expect(keys).toEqual(['certificates/revoked.pdf', 'certificates/revoked-linked.pdf', 'certificates/stray.pdf'])
   })
 })

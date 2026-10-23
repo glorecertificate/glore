@@ -3529,6 +3529,7 @@
       "noContent": "This lesson has no content yet.",
       "quizTitle": "Check your understanding",
       "quizHint": "{count, plural, one {Answer the question to continue.} other {Answer all # questions to continue.}} After a wrong answer you can read the explanation and try again.",
+      "quizHintOpen": "{count, plural, one {Answer the question to check it.} other {Answer the # questions to check them.}} After a wrong answer you can read the explanation and try again.",
       "check": "Check answer",
       "correct": "Correct",
       "wrong": "Not quite. Read the explanation and try again.",

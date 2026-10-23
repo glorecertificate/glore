@@ -13,10 +13,12 @@ import { cn } from '@/lib/utils'
 
 export const LessonQuiz = ({
   className,
+  gated,
   lesson,
   progress,
   ...props
 }: React.ComponentProps<'section'> & {
+  gated: boolean
   lesson: LearnerLesson
   progress: ReturnType<typeof useLessonProgress>
 }) => {
@@ -29,7 +31,9 @@ export const LessonQuiz = ({
     <section className={cn('flex flex-col gap-6 border-t pt-6', className)} {...props}>
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold">{t('quizTitle')}</h2>
-        <p className="text-sm text-muted-foreground">{t('quizHint', { count: lesson.questions.length })}</p>
+        <p className="text-sm text-muted-foreground">
+          {t(gated ? 'quizHint' : 'quizHintOpen', { count: lesson.questions.length })}
+        </p>
       </div>
       {lesson.questions.map((question, index) => {
         const state = questions[question.id]

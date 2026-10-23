@@ -101,7 +101,7 @@ const PlayerLesson = ({
       ) : (
         <p className="text-sm text-muted-foreground">{t('noContent')}</p>
       )}
-      <LessonQuiz lesson={lesson} progress={progress} />
+      <LessonQuiz gated={!done} lesson={lesson} progress={progress} />
       <LessonSelfAssessment disabled={done} lesson={lesson} progress={progress} />
       <footer className="flex flex-col gap-3 border-t pt-6">
         {!done && hint && <p className="text-sm text-muted-foreground">{hint}</p>}

@@ -3529,6 +3529,7 @@
       "noContent": "Questa lezione non ha ancora contenuti.",
       "quizTitle": "Verifica quello che hai imparato",
       "quizHint": "{count, plural, one {Rispondi alla domanda per continuare.} other {Rispondi a tutte le # domande per continuare.}} Se sbagli, puoi leggere la spiegazione e riprovare.",
+      "quizHintOpen": "{count, plural, one {Rispondi alla domanda per verificarla.} other {Rispondi alle # domande per verificarle.}} Se sbagli, puoi leggere la spiegazione e riprovare.",
       "check": "Controlla la risposta",
       "correct": "Corretto",
       "wrong": "Non proprio. Leggi la spiegazione e riprova.",

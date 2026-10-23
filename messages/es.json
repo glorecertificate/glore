@@ -3529,6 +3529,7 @@
       "noContent": "Esta lección aún no tiene contenido.",
       "quizTitle": "Comprueba lo que has aprendido",
       "quizHint": "{count, plural, one {Responde a la pregunta para continuar.} other {Responde a las # preguntas para continuar.}} Si fallas, puedes leer la explicación e intentarlo de nuevo.",
+      "quizHintOpen": "{count, plural, one {Responde a la pregunta para comprobarla.} other {Responde a las # preguntas para comprobarlas.}} Si fallas, puedes leer la explicación e intentarlo de nuevo.",
       "check": "Comprobar respuesta",
       "correct": "Correcto",
       "wrong": "No del todo. Lee la explicación e inténtalo de nuevo.",

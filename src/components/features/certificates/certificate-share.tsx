@@ -111,16 +111,17 @@ export const CertificateShare = ({
           <dl className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             {fields.map(field => (
               <div
-                className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-muted/40 px-3 py-1.5"
+                className="flex min-w-0 items-center justify-between gap-3 rounded-md bg-muted/40 px-3 py-1.5"
                 key={field.key}
               >
                 <div className="min-w-0">
                   <dt className="text-xs text-muted-foreground">{field.label}</dt>
-                  <dd className="truncate text-sm">{field.value}</dd>
+                  <dd className="text-sm wrap-anywhere">{field.value}</dd>
                 </div>
                 <CopyButton
+                  aria-label={t('copyField', { field: field.label })}
+                  className="shrink-0"
                   copiedLabel={t('linkCopied')}
-                  label={t('copyField', { field: field.label })}
                   size="sm"
                   value={field.value}
                 />

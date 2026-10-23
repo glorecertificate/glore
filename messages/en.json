@@ -2947,6 +2947,7 @@
         "access": "Team and roles",
         "certificates": "Certificates",
         "impersonation": "Impersonation",
+        "messages": "Interface text",
         "moderation": "Moderation",
         "organizations": "Organizations",
         "legal": "Legal",
@@ -2962,6 +2963,8 @@
         "certificate_revoked": "{actor} revoked certificate <link>{target}</link>",
         "impersonation_started": "{actor} started viewing the platform as <link>{target}</link>",
         "impersonation_stopped": "{actor} stopped viewing the platform as <link>{target}</link>",
+        "messages_published": "{actor} published <link>{target}</link>",
+        "messages_reset": "{actor} reset <link>{target}</link> to the default text",
         "organization_application_decided": "{actor} {approved, select, yes {approved} other {rejected}} <link>{target}</link>'s application",
         "team_invited": "{actor} invited <link>{target}</link> to the team as {role, select, admin {an admin} editor {an editor} other {a member}}",
         "team_role_changed": "{actor} changed <link>{target}</link>'s role to {role, select, admin {admin} editor {editor} other {regular user}}",
@@ -3870,6 +3873,10 @@
       "team_role_changed_removed": {
         "title": "Your team access was removed",
         "body": "You no longer have a team role."
+      },
+      "messages_stale": {
+        "title": "Translation edits need attention",
+        "body": "Some edited messages no longer match the app and are ignored. Review them in Translations."
       }
     }
   },
@@ -3975,5 +3982,127 @@
     "subject": "Subject: {subject}",
     "frameTitle": "Preview of {template}",
     "renderError": "This template could not be rendered. Check the server logs for details."
+  },
+  "Translations": {
+    "title": "Translations",
+    "description": "Review and edit the interface text in every language. Drafts stay private until you publish them.",
+    "searchPlaceholder": "Search by key, text, or section",
+    "tableLabel": "Interface messages in every language",
+    "count": "{count, plural, one {# message} other {# messages}}",
+    "clearFilters": "Clear filters",
+    "filters": {
+      "state": "Status",
+      "namespace": "Section",
+      "allNamespaces": "All sections",
+      "option": "{label} ({count})"
+    },
+    "states": {
+      "all": "All messages",
+      "missing": "Missing",
+      "overridden": "Edited",
+      "outdated": "Outdated",
+      "incompatible": "Incompatible",
+      "orphaned": "Removed",
+      "unreviewed": "Drafts"
+    },
+    "columns": {
+      "key": "Key"
+    },
+    "empty": {
+      "title": "No messages found",
+      "description": "Try a different search or clear the filters."
+    },
+    "cell": {
+      "missing": "Missing",
+      "default": "Default: {text}",
+      "draft": "Draft: {text}"
+    },
+    "badges": {
+      "edited": "Edited",
+      "draft": "Draft",
+      "aiDraft": "AI draft",
+      "outdated": "Outdated",
+      "incompatible": "Incompatible",
+      "orphaned": "Removed",
+      "redundant": "Same as default",
+      "protected": "Admins only"
+    },
+    "editor": {
+      "close": "Close",
+      "description": "Edit the text in each language. Save a draft to keep working, and publish to put it live.",
+      "protectedNotice": "Only platform admins can edit this message.",
+      "source": "English source",
+      "textLabel": "Text in {language}",
+      "placeholders": "Keep these placeholders and tags: {list}",
+      "validation": {
+        "valid": "The message is valid.",
+        "empty": "Write some text.",
+        "invalid": "The message has a syntax error. Check the braces, tags, and plural or select branches.",
+        "incompatible": "The placeholders or tags do not match the English text.",
+        "orphaned": "This message no longer exists in the app."
+      },
+      "stale": {
+        "outdated": "The default text changed after this edit. Check that it still fits.",
+        "incompatible": "The placeholders no longer match the English text, so this edit is ignored. Update it or reset it.",
+        "orphaned": "This message no longer exists in the app, so this edit is ignored.",
+        "redundant": "This edit is the same as the default text. You can reset it."
+      },
+      "save": "Save draft",
+      "publish": "Publish",
+      "discard": "Discard draft",
+      "reset": "Reset to default",
+      "delete": "Delete override",
+      "suggest": "Suggest with AI",
+      "suggesting": "Suggesting…",
+      "resetTitle": "Reset to the default text?",
+      "resetDescription": "The {language} text goes back to the default. The history keeps the previous text.",
+      "confirmReset": "Reset",
+      "deleteTitle": "Delete this override?",
+      "deleteDescription": "This message no longer exists in the app. The override and its draft will be removed.",
+      "cancel": "Cancel",
+      "toasts": {
+        "saved": "Draft saved",
+        "published": "Published",
+        "reset": "Reset to the default text",
+        "discarded": "Draft discarded",
+        "suggested": "Draft suggested. Review it before you publish."
+      }
+    },
+    "preview": {
+      "title": "Preview",
+      "unavailable": "The preview is not available for this text.",
+      "sample": "Sample value for {name}"
+    },
+    "history": {
+      "show": "Show history",
+      "title": "History",
+      "empty": "No changes yet.",
+      "unknownPerson": "A removed account",
+      "use": "Use this text",
+      "actions": {
+        "draft": "{name} saved a draft",
+        "publish": "{name} published",
+        "reset": "{name} reset to the default",
+        "discard": "{name} discarded the draft"
+      }
+    },
+    "errors": {
+      "AI_EMPTY": "The AI service returned no text.",
+      "AI_INCOMPATIBLE": "The suggestion changed the placeholders, so it was not saved.",
+      "AI_INVALID": "The suggestion was not valid, so it was not saved.",
+      "AI_NOT_CONFIGURED": "AI suggestions are not set up on this server.",
+      "AI_ORPHANED": "This message no longer exists in the app.",
+      "AI_UNAVAILABLE": "The AI service is not available. Try again in a minute.",
+      "CONFLICT": "The draft changed while you were publishing. Try again.",
+      "FORBIDDEN": "You cannot edit this message.",
+      "INCOMPATIBLE": "The placeholders or tags do not match the English text.",
+      "INVALID": "The message has a syntax error.",
+      "INVALID_INPUT": "Check the values and try again.",
+      "NOT_FOUND": "This edit no longer exists.",
+      "NO_DRAFT": "There is no draft to publish.",
+      "ORPHANED": "This message no longer exists in the app.",
+      "RATE_LIMITED": "Too many suggestions. Try again in a while.",
+      "UNKNOWN": "Something went wrong. Try again."
+    }
   }
 }

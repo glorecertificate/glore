@@ -7,11 +7,9 @@ import {
   flattenMessages,
   hashMessage,
   isPrecompiled,
-  isProtectedKey,
   mergeMessages,
-  namespaceOf,
-  validateOverride,
 } from '@/lib/message-overrides'
+import { isProtectedKey, namespaceOf, validateOverride } from '@/lib/message-validation'
 
 const en = {
   'Common.greeting': 'Hello {name}',

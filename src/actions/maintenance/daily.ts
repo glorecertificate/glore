@@ -7,6 +7,7 @@ import {
   sweepOrphanCertificatePdfs,
 } from '@/actions/maintenance/prune'
 import { sendInvitationReminders, sendReviewReminders } from '@/actions/maintenance/reminders'
+import { notifyStaleOverrides } from '@/actions/maintenance/stale-overrides'
 
 const attempt = async <T>(label: string, run: () => Promise<T>) => {
   try {
@@ -18,14 +19,15 @@ const attempt = async <T>(label: string, run: () => Promise<T>) => {
 }
 
 export const runDailyMaintenance = async (now = new Date()) => {
-  const [reviews, invitations, expired, rateLimits, avatars, pdfs] = await Promise.all([
+  const [reviews, invitations, expired, rateLimits, avatars, pdfs, overrides] = await Promise.all([
     attempt('review reminders', () => sendReviewReminders(now)),
     attempt('invitation reminders', () => sendInvitationReminders(now)),
     attempt('expired records', () => pruneExpiredRecords(now)),
     attempt('rate limits', pruneRateLimitRows),
     attempt('orphan avatars', () => sweepOrphanAvatars(now)),
     attempt('orphan certificate pdfs', () => sweepOrphanCertificatePdfs(now)),
+    attempt('stale message overrides', () => notifyStaleOverrides(now)),
   ])
 
-  return { deleted: { avatars, expired, pdfs, rateLimits }, reminders: { invitations, reviews } }
+  return { deleted: { avatars, expired, pdfs, rateLimits }, overrides, reminders: { invitations, reviews } }
 }

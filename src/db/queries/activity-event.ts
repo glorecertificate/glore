@@ -128,6 +128,7 @@ interface EventPayloads {
   'legal.accepted': { slug: string; userId: string; version: number; versionId: number }
   'messages.published': MessageRef
   'messages.reset': MessageRef
+  'messages.stale': { incompatible: number; orphaned: number }
 }
 
 export type EventType = keyof EventPayloads
@@ -158,6 +159,7 @@ export interface AppEvent<K extends EventType = EventType> {
 const PRIVATE_KEYS = new Set(['applicantEmail', 'documentUrl', 'email', 'firstName', 'invitationUrl', 'message', 'url'])
 
 export const eventSubject = (event: AppEvent): { type: SubjectType; id: string } => {
+  if (event.type === 'messages.stale') return { type: 'message', id: 'stale' }
   if ('key' in event.data) return { type: 'message', id: `${event.data.locale}:${event.data.key}` }
   if ('certificateId' in event.data) return { type: 'certificate', id: String(event.data.certificateId) }
   if ('invitationId' in event.data) return { type: 'invitation', id: String(event.data.invitationId) }

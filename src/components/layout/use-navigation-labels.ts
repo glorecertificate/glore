@@ -13,6 +13,7 @@ export const useNavigationLabels = () => {
   const tEmails = useTranslations('AdminEmails')
   const tAdmin = useTranslations('Admin')
   const tLegal = useTranslations('LegalAdmin')
+  const tTranslations = useTranslations('Translations')
 
   return {
     about: tLayout('about'),
@@ -23,6 +24,7 @@ export const useNavigationLabels = () => {
     'admin-organizations': tLayout('adminOrganizations'),
     'admin-overview': tAdmin('overview.title'),
     'admin-team': tLayout('adminTeam'),
+    'admin-translations': tTranslations('title'),
     'admin-users': tLayout('adminUsers'),
     certificates: tLayout('certificates'),
     courses: tLayout('courses'),

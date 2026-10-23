@@ -51,7 +51,7 @@ describe('sidebar per role', () => {
 })
 
 describe('palette entries', () => {
-  it('lists admin pages for platform admins and email previews and legal texts for editors', () => {
+  it('lists admin pages for platform admins, and translations, email previews, and legal texts for editors', () => {
     expect(ids(viewer({ canEdit: true, isAdmin: true, role: null }), 'admin')).toEqual([
       'admin-overview',
       'admin-team',
@@ -59,10 +59,15 @@ describe('palette entries', () => {
       'admin-users',
       'admin-certificates',
       'admin-audit',
+      'admin-translations',
       'admin-emails',
       'admin-legal',
     ])
-    expect(ids(viewer({ canEdit: true, role: null }), 'admin')).toEqual(['admin-emails', 'admin-legal'])
+    expect(ids(viewer({ canEdit: true, role: null }), 'admin')).toEqual([
+      'admin-translations',
+      'admin-emails',
+      'admin-legal',
+    ])
     expect(ids(viewer({ role: 'admin' }), 'admin')).toEqual([])
   })
 
@@ -97,8 +102,8 @@ describe('adminSectionHref', () => {
     expect(adminSectionHref(viewer({ canEdit: true, isAdmin: true, role: null }))).toBe('/admin')
   })
 
-  it('points editors at the only page they can open', () => {
-    expect(adminSectionHref(viewer({ canEdit: true, role: null }))).toBe('/emails')
+  it('points editors at the first page they can open', () => {
+    expect(adminSectionHref(viewer({ canEdit: true, role: null }))).toBe('/translations')
   })
 
   it('is null without admin entries', () => {

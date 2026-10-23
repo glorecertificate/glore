@@ -29,6 +29,7 @@ export const DASHBOARD_ROOTS = [
   '/organization',
   '/register',
   '/settings',
+  '/translations',
 ]
 
 /* App */

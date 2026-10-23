@@ -470,6 +470,10 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
   'course.locale_published': {},
   'doc.locale_published': {},
   'skill_group.updated': {},
+  'messages.stale': {
+    inApp: platformAdminIds,
+    url: event => `/translations?filter=${event.data.orphaned > 0 ? 'orphaned' : 'incompatible'}`,
+  },
   'account.deleted': {
     email: {
       category: 'mandatory',

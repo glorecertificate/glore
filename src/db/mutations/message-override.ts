@@ -10,7 +10,7 @@ import {
   messageOverrideRevisions,
   messageOverrides,
 } from '@/db/schema/message-overrides'
-import { namespaceOf } from '@/lib/message-overrides'
+import { namespaceOf } from '@/lib/message-validation'
 
 const ERROR_CODES = ['CONFLICT', 'NO_DRAFT', 'NOT_FOUND'] as const
 
@@ -50,14 +50,32 @@ const recordRevision = async (
 
 export const saveMessageDraft = async (
   tx: Transaction,
-  { actorId, baseHash, key, locale, sourceHash, value }: Actor & Hashes & MessageTarget & { value: string }
+  {
+    actorId,
+    baseHash,
+    key,
+    locale,
+    origin = 'human',
+    sourceHash,
+    value,
+  }: Actor & Hashes & MessageTarget & { origin?: 'human' | 'machine'; value: string }
 ) => {
   const [row] = await tx
     .insert(messageOverrides)
-    .values({ baseHash, draftValue: value, key, locale, namespace: namespaceOf(key), sourceHash, updatedById: actorId })
+    .values({
+      baseHash,
+      draftValue: value,
+      key,
+      locale,
+      namespace: namespaceOf(key),
+      origin,
+      sourceHash,
+      updatedById: actorId,
+    })
     .onConflictDoUpdate({
       target: [messageOverrides.locale, messageOverrides.key],
       set: {
+        origin,
         baseHash: sql`case when ${messageOverrides.value} is null then ${baseHash}::text else ${messageOverrides.baseHash} end`,
         draftValue: value,
         sourceHash: sql`case when ${messageOverrides.value} is null then ${sourceHash}::text else ${messageOverrides.sourceHash} end`,

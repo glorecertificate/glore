@@ -2947,6 +2947,7 @@
         "access": "Team e ruoli",
         "certificates": "Certificati",
         "impersonation": "Visualizzazione come utente",
+        "messages": "Testi dell'interfaccia",
         "moderation": "Moderazione",
         "organizations": "Organizzazioni",
         "legal": "Legale",
@@ -2962,6 +2963,8 @@
         "certificate_revoked": "{actor} ha revocato il certificato <link>{target}</link>",
         "impersonation_started": "{actor} ha iniziato a visualizzare la piattaforma come <link>{target}</link>",
         "impersonation_stopped": "{actor} ha smesso di visualizzare la piattaforma come <link>{target}</link>",
+        "messages_published": "{actor} ha pubblicato <link>{target}</link>",
+        "messages_reset": "{actor} ha ripristinato <link>{target}</link> al testo predefinito",
         "organization_application_decided": "{actor} {approved, select, yes {ha approvato} other {ha rifiutato}} la candidatura di <link>{target}</link>",
         "team_invited": "{actor} ha invitato <link>{target}</link> nel team come {role, select, admin {admin} editor {editor} other {membro}}",
         "team_role_changed": "{actor} ha cambiato il ruolo di <link>{target}</link> in {role, select, admin {admin} editor {editor} other {utente}}",
@@ -3870,6 +3873,10 @@
       "team_role_changed_removed": {
         "title": "Il tuo accesso al team è stato rimosso",
         "body": "Non hai più un ruolo nel team."
+      },
+      "messages_stale": {
+        "title": "Alcune modifiche alle traduzioni vanno controllate",
+        "body": "Alcuni messaggi modificati non corrispondono più all'app e vengono ignorati. Controllali in Traduzioni."
       }
     }
   },
@@ -3975,5 +3982,127 @@
     "subject": "Oggetto: {subject}",
     "frameTitle": "Anteprima di {template}",
     "renderError": "Non è stato possibile generare questo modello. Controlla i log del server per i dettagli."
+  },
+  "Translations": {
+    "title": "Traduzioni",
+    "description": "Rivedi e modifica i testi dell'interfaccia in tutte le lingue. Le bozze restano private finché non le pubblichi.",
+    "searchPlaceholder": "Cerca per chiave, testo o sezione",
+    "tableLabel": "Messaggi dell'interfaccia in tutte le lingue",
+    "count": "{count, plural, one {# messaggio} other {# messaggi}}",
+    "clearFilters": "Cancella i filtri",
+    "filters": {
+      "state": "Stato",
+      "namespace": "Sezione",
+      "allNamespaces": "Tutte le sezioni",
+      "option": "{label} ({count})"
+    },
+    "states": {
+      "all": "Tutti i messaggi",
+      "missing": "Mancanti",
+      "overridden": "Modificati",
+      "outdated": "Non aggiornati",
+      "incompatible": "Incompatibili",
+      "orphaned": "Rimossi",
+      "unreviewed": "Bozze"
+    },
+    "columns": {
+      "key": "Chiave"
+    },
+    "empty": {
+      "title": "Nessun messaggio trovato",
+      "description": "Prova con un'altra ricerca o cancella i filtri."
+    },
+    "cell": {
+      "missing": "Manca",
+      "default": "Predefinito: {text}",
+      "draft": "Bozza: {text}"
+    },
+    "badges": {
+      "edited": "Modificato",
+      "draft": "Bozza",
+      "aiDraft": "Bozza IA",
+      "outdated": "Non aggiornato",
+      "incompatible": "Incompatibile",
+      "orphaned": "Rimosso",
+      "redundant": "Uguale al predefinito",
+      "protected": "Solo amministratori"
+    },
+    "editor": {
+      "close": "Chiudi",
+      "description": "Modifica il testo in ogni lingua. Salva una bozza per continuare dopo e pubblica per renderlo attivo.",
+      "protectedNotice": "Solo gli amministratori della piattaforma possono modificare questo messaggio.",
+      "source": "Originale in inglese",
+      "textLabel": "Testo in {language}",
+      "placeholders": "Mantieni questi segnaposto e tag: {list}",
+      "validation": {
+        "valid": "Il messaggio è valido.",
+        "empty": "Scrivi del testo.",
+        "invalid": "Il messaggio ha un errore di sintassi. Controlla le parentesi graffe, i tag e i rami plural o select.",
+        "incompatible": "I segnaposto o i tag non corrispondono al testo inglese.",
+        "orphaned": "Questo messaggio non esiste più nell'app."
+      },
+      "stale": {
+        "outdated": "Il testo predefinito è cambiato dopo questa modifica. Controlla che sia ancora adatta.",
+        "incompatible": "I segnaposto non corrispondono più al testo inglese, quindi questa modifica viene ignorata. Aggiornala o ripristinala.",
+        "orphaned": "Questo messaggio non esiste più nell'app, quindi questa modifica viene ignorata.",
+        "redundant": "Questa modifica è uguale al testo predefinito. Puoi ripristinarla."
+      },
+      "save": "Salva bozza",
+      "publish": "Pubblica",
+      "discard": "Scarta bozza",
+      "reset": "Ripristina predefinito",
+      "delete": "Elimina modifica",
+      "suggest": "Suggerisci con l'IA",
+      "suggesting": "Sto suggerendo…",
+      "resetTitle": "Ripristinare il testo predefinito?",
+      "resetDescription": "Il testo in {language} torna a quello predefinito. La cronologia conserva il testo precedente.",
+      "confirmReset": "Ripristina",
+      "deleteTitle": "Eliminare questa modifica?",
+      "deleteDescription": "Questo messaggio non esiste più nell'app. La modifica e la sua bozza verranno rimosse.",
+      "cancel": "Annulla",
+      "toasts": {
+        "saved": "Bozza salvata",
+        "published": "Pubblicato",
+        "reset": "Testo predefinito ripristinato",
+        "discarded": "Bozza scartata",
+        "suggested": "Bozza suggerita. Controllala prima di pubblicare."
+      }
+    },
+    "preview": {
+      "title": "Anteprima",
+      "unavailable": "L'anteprima non è disponibile per questo testo.",
+      "sample": "Valore di esempio per {name}"
+    },
+    "history": {
+      "show": "Mostra cronologia",
+      "title": "Cronologia",
+      "empty": "Ancora nessuna modifica.",
+      "unknownPerson": "Un account rimosso",
+      "use": "Usa questo testo",
+      "actions": {
+        "draft": "{name} ha salvato una bozza",
+        "publish": "{name} ha pubblicato",
+        "reset": "{name} ha ripristinato il testo predefinito",
+        "discard": "{name} ha scartato la bozza"
+      }
+    },
+    "errors": {
+      "AI_EMPTY": "Il servizio IA non ha restituito alcun testo.",
+      "AI_INCOMPATIBLE": "Il suggerimento ha cambiato i segnaposto, quindi non è stato salvato.",
+      "AI_INVALID": "Il suggerimento non era valido, quindi non è stato salvato.",
+      "AI_NOT_CONFIGURED": "I suggerimenti IA non sono configurati su questo server.",
+      "AI_ORPHANED": "Questo messaggio non esiste più nell'app.",
+      "AI_UNAVAILABLE": "Il servizio IA non è disponibile. Riprova tra un minuto.",
+      "CONFLICT": "La bozza è cambiata mentre pubblicavi. Riprova.",
+      "FORBIDDEN": "Non puoi modificare questo messaggio.",
+      "INCOMPATIBLE": "I segnaposto o i tag non corrispondono al testo inglese.",
+      "INVALID": "Il messaggio ha un errore di sintassi.",
+      "INVALID_INPUT": "Controlla i valori e riprova.",
+      "NOT_FOUND": "Questa modifica non esiste più.",
+      "NO_DRAFT": "Non c'è nessuna bozza da pubblicare.",
+      "ORPHANED": "Questo messaggio non esiste più nell'app.",
+      "RATE_LIMITED": "Troppi suggerimenti. Riprova tra un po'.",
+      "UNKNOWN": "Qualcosa è andato storto. Riprova."
+    }
   }
 }

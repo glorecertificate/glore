@@ -2,7 +2,8 @@ import { and, eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { isLocalDatabase } from '@/actions/certificates/test-harness'
-import { flattenMessages, isProtectedKey } from '@/lib/message-overrides'
+import { flattenMessages } from '@/lib/message-overrides'
+import { isProtectedKey } from '@/lib/message-validation'
 import es from '~/messages/es.json'
 
 const mocks = vi.hoisted(() => ({
@@ -24,13 +25,15 @@ const open = entries.find(([key, value]) => !isProtectedKey(key) && /^[^{}<>']*\
 
 const protectedKey = entries.find(([key]) => key === 'CertificatePdf.title') as [string, string]
 
+const ORPHAN = 'Common.removedByT3Test'
+
 describe.skipIf(!isLocalDatabase)('message override actions', () => {
   let client: typeof import('@/db/client')
   let schema: typeof import('@/db/schema')
   let actions: typeof import('@/actions/messages')
 
   const cleanup = async () => {
-    const keys = [open[0], protectedKey[0]]
+    const keys = [open[0], protectedKey[0], ORPHAN]
     await client.db.delete(schema.messageOverrides).where(inArray(schema.messageOverrides.key, keys))
     await client.db.delete(schema.messageOverrideRevisions).where(inArray(schema.messageOverrideRevisions.key, keys))
     await client.db.delete(schema.activityEvents).where(
@@ -138,6 +141,25 @@ describe.skipIf(!isLocalDatabase)('message override actions', () => {
       data: { value: text },
     })
     expect(mocks.editor).not.toHaveBeenCalled()
+  })
+
+  it('lets only an admin delete an override whose key left the bundle', async () => {
+    await client.db
+      .insert(schema.messageOverrides)
+      .values({ key: ORPHAN, locale: 'es', namespace: 'Common', sourceHash: 'x', value: 'Quitado' })
+    mocks.admin.mockRejectedValue(new Error('FORBIDDEN'))
+    expect(await actions.resetMessage({ key: ORPHAN, locale: 'es' })).toMatchObject({ error: { code: 'FORBIDDEN' } })
+    expect(
+      await client.db.select().from(schema.messageOverrides).where(eq(schema.messageOverrides.key, ORPHAN))
+    ).toHaveLength(1)
+
+    mocks.admin.mockResolvedValue({
+      id: (await client.db.select({ id: schema.users.id }).from(schema.users).limit(1))[0]?.id,
+    })
+    expect(await actions.resetMessage({ key: ORPHAN, locale: 'es' })).toEqual({ data: { key: ORPHAN, locale: 'es' } })
+    expect(
+      await client.db.select().from(schema.messageOverrides).where(eq(schema.messageOverrides.key, ORPHAN))
+    ).toHaveLength(0)
   })
 
   it('blocks a regular key when the editor guard fails', async () => {

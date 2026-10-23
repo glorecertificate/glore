@@ -41,7 +41,7 @@ const record = (overrides: Partial<AuditRecord> & Pick<AuditRecord, 'action'>): 
 describe('audit categories', () => {
   it('lists every audited action once', () => {
     expect(AUDITED_ACTIONS).toHaveLength(new Set(AUDITED_ACTIONS).size)
-    expect(AUDITED_ACTIONS).toHaveLength(14)
+    expect(AUDITED_ACTIONS).toHaveLength(16)
   })
 
   it('maps each action back to its category', () => {
@@ -259,6 +259,25 @@ describe('toAuditRows', () => {
     expect(rows.map(({ target }) => target?.label)).toEqual(['Joint', 'Removed Org'])
     expect(rows[0]?.organization).toEqual({ id: 3, name: 'Joint' })
     expect(rows[1]?.organization).toBeNull()
+  })
+
+  it('names an edited message by its key and locale, with a link to the translations page', () => {
+    const [row] = toAuditRows(
+      [
+        record({
+          action: 'messages.published',
+          metadata: { key: 'Dashboard.greeting', locale: 'es', namespace: 'Dashboard' },
+          subjectId: 'es:Dashboard.greeting',
+        }),
+      ],
+      lookups()
+    )
+    expect(row?.category).toBe('messages')
+    expect(row?.target).toEqual({
+      href: '/translations?q=Dashboard.greeting',
+      kind: 'message',
+      label: 'Dashboard.greeting (es)',
+    })
   })
 
   it('drops actions that are not audited', () => {

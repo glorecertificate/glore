@@ -7,8 +7,7 @@ import { unstable_rethrow } from 'next/navigation'
 
 import { and, eq } from 'drizzle-orm'
 
-import { requireAdmin } from '@/actions/admin/helpers'
-import { requireEditor } from '@/actions/guards'
+import { authorizeAdmin, authorizeMessage, inspectMessage } from '@/actions/message-helpers'
 import { db, transaction } from '@/db/client'
 import {
   discardMessageDraft as discardDraft,
@@ -21,37 +20,12 @@ import { messageDraftSchema, messageTargetSchema, parseMessageOverride } from '@
 import { messageOverrides } from '@/db/schema/message-overrides'
 import { messagesTag } from '@/lib/cache'
 import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
-import { hashMessage, isProtectedKey, validateOverride } from '@/lib/message-overrides'
-import { loadRawMessages, usesPrecompiledMessages } from '@/lib/messages'
+import { loadRawMessages } from '@/lib/messages'
 
 const failure = (code: string) => ({ error: { code, message: code } })
 
-const authorize = async (key: string) => {
-  try {
-    return isProtectedKey(key) ? await requireAdmin() : await requireEditor()
-  } catch {
-    return null
-  }
-}
-
 const expire = (locale: string) => {
   for (const target of locale === DEFAULT_LOCALE ? LOCALES : [locale]) updateTag(messagesTag(target))
-}
-
-const inspect = async (locale: string, key: string, value: string) => {
-  const [en, own, precompiled] = await Promise.all([
-    loadRawMessages(DEFAULT_LOCALE),
-    loadRawMessages(locale),
-    usesPrecompiledMessages(),
-  ])
-  const result = validateOverride({ en, key, precompiled, value })
-  const source = en[key]
-  const base = own[key]
-  return {
-    baseHash: base === undefined ? null : hashMessage(base),
-    result,
-    sourceHash: source === undefined ? '' : hashMessage(source),
-  }
 }
 
 const rejection = (reason: 'incompatible' | 'invalid' | 'orphaned') => failure(reason.toUpperCase())
@@ -75,10 +49,10 @@ export const saveMessageDraft = async (input: { key: string; locale: string; val
   if (!parsed.success) return failure('INVALID_INPUT')
   const { key, locale, value } = parsed.data
 
-  const actor = await authorize(key)
+  const actor = await authorizeMessage(key)
   if (!actor) return failure('FORBIDDEN')
 
-  const { baseHash, result, sourceHash } = await inspect(locale, key, value)
+  const { baseHash, result, sourceHash } = await inspectMessage(locale, key, value)
   if (!result.ok) return rejection(result.reason)
 
   try {
@@ -94,14 +68,14 @@ export const publishMessage = async (input: { key: string; locale: string }) => 
   if (!parsed.success) return failure('INVALID_INPUT')
   const { key, locale } = parsed.data
 
-  const actor = await authorize(key)
+  const actor = await authorizeMessage(key)
   if (!actor) return failure('FORBIDDEN')
 
   const current = await findOverride(locale, key)
   if (!current) return failure('NOT_FOUND')
   if (current.draftValue === null) return failure('NO_DRAFT')
 
-  const { baseHash, result, sourceHash } = await inspect(locale, key, current.draftValue)
+  const { baseHash, result, sourceHash } = await inspectMessage(locale, key, current.draftValue)
   if (!result.ok) return rejection(result.reason)
 
   try {
@@ -127,8 +101,11 @@ export const resetMessage = async (input: { key: string; locale: string }) => {
   if (!parsed.success) return failure('INVALID_INPUT')
   const { key, locale } = parsed.data
 
-  const actor = await authorize(key)
+  const actor = await authorizeMessage(key)
   if (!actor) return failure('FORBIDDEN')
+  if ((await loadRawMessages(DEFAULT_LOCALE))[key] === undefined && !(await authorizeAdmin())) {
+    return failure('FORBIDDEN')
+  }
 
   try {
     const { wasPublished } = await transaction(tx => resetOverride(tx, { actorId: actor.id, key, locale }))
@@ -144,7 +121,7 @@ export const discardMessageDraft = async (input: { key: string; locale: string }
   if (!parsed.success) return failure('INVALID_INPUT')
   const { key, locale } = parsed.data
 
-  const actor = await authorize(key)
+  const actor = await authorizeMessage(key)
   if (!actor) return failure('FORBIDDEN')
 
   try {

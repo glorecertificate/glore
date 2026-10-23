@@ -104,3 +104,36 @@ export const selectOrphanPdfKeys = (
   }
   return objects.flatMap(({ key, lastModified }) => (lastModified < cutoff && !referenced.has(key) ? [key] : []))
 }
+
+export interface StaleOverrideCounts {
+  incompatible: number
+  orphaned: number
+}
+
+export interface FiredStaleNotice {
+  counts: StaleOverrideCounts
+  createdAt: string
+}
+
+const STALE_NOTICE_REPEAT_DAYS = 7
+
+export const staleOverrideCounts = (entries: { stale: string | null }[]): StaleOverrideCounts => ({
+  incompatible: entries.filter(({ stale }) => stale === 'incompatible').length,
+  orphaned: entries.filter(({ stale }) => stale === 'orphaned').length,
+})
+
+export const planStaleOverrideNotice = ({
+  counts,
+  fired,
+  now,
+}: {
+  counts: StaleOverrideCounts
+  fired: FiredStaleNotice | null
+  now: number
+}) => {
+  if (counts.incompatible + counts.orphaned === 0) return null
+  if (!fired) return counts
+  const changed = fired.counts.incompatible !== counts.incompatible || fired.counts.orphaned !== counts.orphaned
+  if (changed || daysSince(fired.createdAt, now) >= STALE_NOTICE_REPEAT_DAYS) return counts
+  return null
+}

@@ -119,6 +119,11 @@ const nextConfig: TypedNextConfig = {
       destination: '/dashboard',
       permanent: true,
     },
+    {
+      source: '/admin/translations',
+      destination: '/translations',
+      permanent: false,
+    },
   ],
   outputFileTracingIncludes: {
     '/**': ['./public/certificate/**', './public/fonts/roboto/**', './content/legal/**', './messages/**'],

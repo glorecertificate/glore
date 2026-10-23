@@ -15,7 +15,6 @@ import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 import {
   type MessageTree,
   type OverrideRow,
-  type RawCatalog,
   acceptOverrides,
   applyOverrides,
   flattenMessages,
@@ -23,6 +22,7 @@ import {
   isPrecompiled,
   mergeMessages,
 } from '@/lib/message-overrides'
+import { type RawCatalog } from '@/lib/message-validation'
 
 export const resolveLocale = (value: string | null | undefined) =>
   LOCALES.includes(value as Locale) ? (value as Locale) : DEFAULT_LOCALE

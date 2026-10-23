@@ -2947,6 +2947,7 @@
         "access": "Equipo y roles",
         "certificates": "Certificados",
         "impersonation": "Sesiones de visualización",
+        "messages": "Textos de la interfaz",
         "moderation": "Moderación",
         "organizations": "Organizaciones",
         "legal": "Legal",
@@ -2962,6 +2963,8 @@
         "certificate_revoked": "{actor} revocó el certificado <link>{target}</link>",
         "impersonation_started": "{actor} empezó a ver la plataforma como <link>{target}</link>",
         "impersonation_stopped": "{actor} dejó de ver la plataforma como <link>{target}</link>",
+        "messages_published": "{actor} publicó <link>{target}</link>",
+        "messages_reset": "{actor} restableció <link>{target}</link> al texto predeterminado",
         "organization_application_decided": "{actor} {approved, select, yes {aprobó} other {rechazó}} la solicitud de <link>{target}</link>",
         "team_invited": "{actor} invitó a <link>{target}</link> al equipo como {role, select, admin {admin} editor {editor} other {miembro}}",
         "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {admin} editor {editor} other {usuario}}",
@@ -3870,6 +3873,10 @@
       "team_role_changed_removed": {
         "title": "Se ha quitado tu acceso al equipo",
         "body": "Ya no tienes un rol en el equipo."
+      },
+      "messages_stale": {
+        "title": "Hay ediciones de traducción que revisar",
+        "body": "Algunos mensajes editados ya no coinciden con la aplicación y se ignoran. Revísalos en Traducciones."
       }
     }
   },
@@ -3975,5 +3982,127 @@
     "subject": "Asunto: {subject}",
     "frameTitle": "Vista previa de {template}",
     "renderError": "No se pudo generar esta plantilla. Consulta los registros del servidor para ver los detalles."
+  },
+  "Translations": {
+    "title": "Traducciones",
+    "description": "Revisa y edita los textos de la interfaz en todos los idiomas. Los borradores no se ven hasta que los publiques.",
+    "searchPlaceholder": "Busca por clave, texto o sección",
+    "tableLabel": "Mensajes de la interfaz en todos los idiomas",
+    "count": "{count, plural, one {# mensaje} other {# mensajes}}",
+    "clearFilters": "Borrar filtros",
+    "filters": {
+      "state": "Estado",
+      "namespace": "Sección",
+      "allNamespaces": "Todas las secciones",
+      "option": "{label} ({count})"
+    },
+    "states": {
+      "all": "Todos los mensajes",
+      "missing": "Faltan",
+      "overridden": "Editados",
+      "outdated": "Desactualizados",
+      "incompatible": "Incompatibles",
+      "orphaned": "Eliminados",
+      "unreviewed": "Borradores"
+    },
+    "columns": {
+      "key": "Clave"
+    },
+    "empty": {
+      "title": "No se han encontrado mensajes",
+      "description": "Prueba con otra búsqueda o borra los filtros."
+    },
+    "cell": {
+      "missing": "Falta",
+      "default": "Predeterminado: {text}",
+      "draft": "Borrador: {text}"
+    },
+    "badges": {
+      "edited": "Editado",
+      "draft": "Borrador",
+      "aiDraft": "Borrador de IA",
+      "outdated": "Desactualizado",
+      "incompatible": "Incompatible",
+      "orphaned": "Eliminado",
+      "redundant": "Igual al predeterminado",
+      "protected": "Solo administradores"
+    },
+    "editor": {
+      "close": "Cerrar",
+      "description": "Edita el texto en cada idioma. Guarda un borrador para seguir trabajando y publica para ponerlo en marcha.",
+      "protectedNotice": "Solo los administradores de la plataforma pueden editar este mensaje.",
+      "source": "Original en inglés",
+      "textLabel": "Texto en {language}",
+      "placeholders": "Conserva estos marcadores y etiquetas: {list}",
+      "validation": {
+        "valid": "El mensaje es válido.",
+        "empty": "Escribe algún texto.",
+        "invalid": "El mensaje tiene un error de sintaxis. Revisa las llaves, las etiquetas y las ramas plural o select.",
+        "incompatible": "Los marcadores o las etiquetas no coinciden con el texto en inglés.",
+        "orphaned": "Este mensaje ya no existe en la aplicación."
+      },
+      "stale": {
+        "outdated": "El texto predeterminado cambió después de esta edición. Comprueba que sigue encajando.",
+        "incompatible": "Los marcadores ya no coinciden con el texto en inglés, así que esta edición se ignora. Actualízala o restablécela.",
+        "orphaned": "Este mensaje ya no existe en la aplicación, así que esta edición se ignora.",
+        "redundant": "Esta edición es igual al texto predeterminado. Puedes restablecerla."
+      },
+      "save": "Guardar borrador",
+      "publish": "Publicar",
+      "discard": "Descartar borrador",
+      "reset": "Restablecer",
+      "delete": "Eliminar edición",
+      "suggest": "Sugerir con IA",
+      "suggesting": "Sugiriendo…",
+      "resetTitle": "¿Restablecer el texto predeterminado?",
+      "resetDescription": "El texto en {language} vuelve al predeterminado. El historial conserva el texto anterior.",
+      "confirmReset": "Restablecer",
+      "deleteTitle": "¿Eliminar esta edición?",
+      "deleteDescription": "Este mensaje ya no existe en la aplicación. Se eliminarán la edición y su borrador.",
+      "cancel": "Cancelar",
+      "toasts": {
+        "saved": "Borrador guardado",
+        "published": "Publicado",
+        "reset": "Texto predeterminado restablecido",
+        "discarded": "Borrador descartado",
+        "suggested": "Borrador sugerido. Revísalo antes de publicar."
+      }
+    },
+    "preview": {
+      "title": "Vista previa",
+      "unavailable": "La vista previa no está disponible para este texto.",
+      "sample": "Valor de ejemplo para {name}"
+    },
+    "history": {
+      "show": "Mostrar historial",
+      "title": "Historial",
+      "empty": "Aún no hay cambios.",
+      "unknownPerson": "Una cuenta eliminada",
+      "use": "Usar este texto",
+      "actions": {
+        "draft": "{name} guardó un borrador",
+        "publish": "{name} publicó",
+        "reset": "{name} restableció el texto predeterminado",
+        "discard": "{name} descartó el borrador"
+      }
+    },
+    "errors": {
+      "AI_EMPTY": "El servicio de IA no devolvió ningún texto.",
+      "AI_INCOMPATIBLE": "La sugerencia cambió los marcadores, así que no se guardó.",
+      "AI_INVALID": "La sugerencia no era válida, así que no se guardó.",
+      "AI_NOT_CONFIGURED": "Las sugerencias de IA no están configuradas en este servidor.",
+      "AI_ORPHANED": "Este mensaje ya no existe en la aplicación.",
+      "AI_UNAVAILABLE": "El servicio de IA no está disponible. Inténtalo de nuevo en un minuto.",
+      "CONFLICT": "El borrador cambió mientras publicabas. Inténtalo de nuevo.",
+      "FORBIDDEN": "No puedes editar este mensaje.",
+      "INCOMPATIBLE": "Los marcadores o las etiquetas no coinciden con el texto en inglés.",
+      "INVALID": "El mensaje tiene un error de sintaxis.",
+      "INVALID_INPUT": "Revisa los valores e inténtalo de nuevo.",
+      "NOT_FOUND": "Esta edición ya no existe.",
+      "NO_DRAFT": "No hay ningún borrador que publicar.",
+      "ORPHANED": "Este mensaje ya no existe en la aplicación.",
+      "RATE_LIMITED": "Demasiadas sugerencias. Inténtalo de nuevo en un rato.",
+      "UNKNOWN": "Algo salió mal. Inténtalo de nuevo."
+    }
   }
 }

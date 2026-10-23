@@ -6,7 +6,9 @@ import {
   type OpenReview,
   planInvitationReminders,
   planReviewActions,
+  planStaleOverrideNotice,
   selectOrphanPdfKeys,
+  staleOverrideCounts,
 } from '@/actions/maintenance/plan'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -118,5 +120,50 @@ describe('selectOrphanPdfKeys', () => {
       cutoff
     )
     expect(keys).toEqual(['certificates/revoked.pdf', 'certificates/revoked-linked.pdf', 'certificates/stray.pdf'])
+  })
+})
+
+describe('staleOverrideCounts', () => {
+  it('counts orphaned and incompatible overrides and ignores the rest', () => {
+    expect(
+      staleOverrideCounts([
+        { stale: 'orphaned' },
+        { stale: 'orphaned' },
+        { stale: 'incompatible' },
+        { stale: 'outdated' },
+        { stale: 'redundant' },
+        { stale: null },
+      ])
+    ).toEqual({ incompatible: 1, orphaned: 2 })
+  })
+})
+
+describe('planStaleOverrideNotice', () => {
+  const counts = { incompatible: 1, orphaned: 2 }
+  const notice = (daysAgo: number, fired = counts) => ({ counts: fired, createdAt: ago(daysAgo) })
+  const run = (current: typeof counts, fired: ReturnType<typeof notice> | null) =>
+    planStaleOverrideNotice({ counts: current, fired, now: NOW })
+
+  it('stays quiet without stale overrides', () => {
+    expect(run({ incompatible: 0, orphaned: 0 }, null)).toBeNull()
+    expect(run({ incompatible: 0, orphaned: 0 }, notice(30))).toBeNull()
+  })
+
+  it('notifies the first time stale overrides exist', () => {
+    expect(run(counts, null)).toEqual(counts)
+  })
+
+  it('does not repeat an unchanged notice within the week', () => {
+    expect(run(counts, notice(1))).toBeNull()
+    expect(run(counts, notice(6))).toBeNull()
+  })
+
+  it('repeats an unchanged notice after a week', () => {
+    expect(run(counts, notice(7))).toEqual(counts)
+  })
+
+  it('notifies again as soon as the counts change', () => {
+    expect(run(counts, notice(0, { incompatible: 1, orphaned: 1 }))).toEqual(counts)
+    expect(run({ incompatible: 2, orphaned: 2 }, notice(0))).toEqual({ incompatible: 2, orphaned: 2 })
   })
 })

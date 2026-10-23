@@ -13,6 +13,7 @@ export const AUDIT_CATEGORIES = [
   'organizations',
   'legal',
   'content',
+  'messages',
 ] as const
 
 export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
@@ -23,6 +24,7 @@ export const AUDIT_ACTIONS = {
   content: ['content.translation_reviewed', 'course.locale_published', 'doc.locale_published', 'skill_group.updated'],
   impersonation: ['impersonation.started', 'impersonation.stopped'],
   legal: ['legal.version_published', 'legal.accepted'],
+  messages: ['messages.published', 'messages.reset'],
   moderation: ['account.suspended', 'account.reinstated'],
   organizations: ['organization.application_decided'],
 } as const satisfies Record<AuditCategory, readonly EventType[]>
@@ -67,7 +69,7 @@ interface AuditPerson {
 
 interface AuditTarget {
   href: string | null
-  kind: 'certificate' | 'content' | 'legal' | 'organization' | 'user'
+  kind: 'certificate' | 'content' | 'legal' | 'message' | 'organization' | 'user'
   label: string
 }
 
@@ -207,6 +209,17 @@ const auditTarget = (record: AuditRecord, lookups: AuditLookups): AuditTarget | 
     const name = (id ? lookups.organizations.get(id) : null) ?? stringOf(metadata.organizationName)
     if (!name) return null
     return { href: id ? `/admin/organizations/${id}` : null, kind: 'organization', label: name }
+  }
+
+  if (action.startsWith('messages.')) {
+    const key = stringOf(metadata.key)
+    if (!key) return null
+    const locale = stringOf(metadata.locale)
+    return {
+      href: `/translations?q=${encodeURIComponent(key)}`,
+      kind: 'message',
+      label: locale ? `${key} (${locale})` : key,
+    }
   }
 
   const userId = stringOf(metadata.userId) ?? stringOf(subjectId)

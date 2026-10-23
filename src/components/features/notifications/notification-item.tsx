@@ -57,7 +57,11 @@ export const NotificationItem = ({
           {title}
         </span>
         {body && <span className="mt-0.5 block text-[13px] text-muted-foreground">{body}</span>}
-        <time className="mt-1 block text-xs text-muted-foreground" dateTime={notification.createdAt}>
+        <time
+          className="mt-1 block text-xs text-muted-foreground"
+          dateTime={notification.createdAt}
+          suppressHydrationWarning
+        >
           {format.relativeTime(new Date(notification.createdAt), now)}
         </time>
       </span>

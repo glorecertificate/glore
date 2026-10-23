@@ -198,7 +198,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
             <TabsTrigger value="rejected">{t('filter_rejected')}</TabsTrigger>
           </TabsList>
         </Tabs>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button className="gap-2" onClick={() => setCreateOpen(true)} size="sm" variant="brand">
             <PlusIcon className="size-4" />
             {t('createOrg')}

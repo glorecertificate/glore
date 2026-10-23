@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react'
 import { useFormatter, useTranslations } from 'next-intl'
 import { debounce, useQueryStates } from 'nuqs'
 
+import { useI18n } from '@/components/providers/i18n'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DataTable } from '@/components/ui/data-table'
@@ -63,6 +64,7 @@ const CATEGORY_VARIANTS = {
 export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
   const t = useTranslations('Admin.audit')
   const { dateTime } = useFormatter()
+  const { localeItems } = useI18n()
   const [pending, startTransition] = useTransition()
   const [params, setParams] = useQueryStates(adminAuditParsers, {
     clearOnDefault: true,
@@ -94,7 +96,9 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
         ) : (
           <span className="font-medium">{chunks}</span>
         ),
-      locale: row.detail.locales.map(locale => locale.toUpperCase()).join(', '),
+      locale: row.detail.locales
+        .map(locale => localeItems.find(({ value }) => value === locale)?.displayLabel ?? locale.toUpperCase())
+        .join(', '),
       published: row.detail.published ? 'yes' : 'no',
       role: row.detail.role ?? 'user',
       target: row.target?.label ?? t('unknownTarget'),

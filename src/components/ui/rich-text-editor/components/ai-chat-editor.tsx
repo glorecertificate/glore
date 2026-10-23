@@ -19,7 +19,7 @@ export const AIChatEditor = ({ content }: { content: string }) => {
     [BaseEditorKit]
   )
 
-  useAIChatEditor(aiEditor, content)
+  const value = useAIChatEditor(aiEditor, content)
 
-  return <StaticEditor editor={aiEditor} variant="aiChat" />
+  return <StaticEditor editor={aiEditor} value={value} variant="aiChat" />
 }

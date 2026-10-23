@@ -129,6 +129,7 @@ src/
 - When a component knows the GloRe domain (binds to the data model, a feature enum, or a feature i18n namespace), it belongs in `features/<domain>/`.
 - Cross-feature imports are not blocked and a few exist (`admin -> organization`, `dashboard -> courses`). Compose siblings in the route.
 - `ui/rich-text-editor/` is the vendored Plate.js editor, installed through the shadcn/Plate registry CLI and domain-free.
+- Its `ai-chat-editor.tsx` passes the value of `useAIChatEditor` to `StaticEditor`, or the React Compiler freezes the AI preview on its first word. Keep it after a re-pull (`course-editor.spec.ts`).
 - It stays in `ui/` so a CLI re-pull keeps working. Treat the whole subtree as one vendored unit and do not refactor its internals, since a re-pull overwrites them.
 - The app touches it only through the `index.tsx` barrel and `provider.tsx`.
 - The AI wiring lives in `use-chat.ts` (`DefaultChatTransport` to `/api/v1/ai/command`, chat registered on `AIChatPlugin` from `plugins/ai.tsx` `useHooks`). Keep it when re-pulling.

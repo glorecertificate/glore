@@ -62,6 +62,53 @@ test.describe('course editor', () => {
   })
 })
 
+test.describe('course editor AI menu', () => {
+  test.use({ storageState: authFile('editor') })
+
+  test('streams the whole suggestion into the preview', async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = window.fetch
+      window.fetch = (input, init) => {
+        const url = input instanceof Request ? input.url : String(input)
+        if (!url.includes('/api/v1/ai/command')) return original(input, init)
+        const words = ['Culture ', 'is ', 'a ', 'lens, ', 'not ', 'a ', 'label.']
+        const events = [
+          { type: 'start' },
+          { id: '0', type: 'text-start' },
+          ...words.map(delta => ({ delta, id: '0', type: 'text-delta' })),
+          { id: '0', type: 'text-end' },
+          { type: 'finish' },
+        ]
+        const encoder = new TextEncoder()
+        const body = new ReadableStream({
+          start: async controller => {
+            for (const event of events) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
+              await new Promise(resolve => setTimeout(resolve, 50))
+            }
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'))
+            controller.close()
+          },
+        })
+        return Promise.resolve(
+          new Response(body, {
+            headers: { 'content-type': 'text/event-stream', 'x-vercel-ai-ui-message-stream': 'v1' },
+          })
+        )
+      }
+    })
+
+    await page.goto('/courses/intercultural-learning')
+    const paragraph = page.locator('[data-slate-editor]').getByText('Culture is not a label', { exact: false })
+    await expect(paragraph).toBeVisible()
+    await paragraph.click({ clickCount: 3 })
+    await page.getByRole('button', { name: 'Ask AI' }).click()
+    await page.getByRole('option', { name: 'Improve writing' }).click()
+    await expect(page.getByText('Culture is a lens, not a label.')).toBeVisible()
+    await page.getByRole('option', { name: 'Discard' }).click()
+  })
+})
+
 test.describe('volunteer', () => {
   test.use({ storageState: authFile('volunteer') })
 

@@ -134,7 +134,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
 - An approved certificate reads `valid`. Every other status is `unknown`.
 - A revoked certificate reads `revoked` with its date and shows only the holder, organization, code, and issue date.
-- A revoked certificate never exposes its reason, PDF link, tasks, skills, signatory, or QR. `/api/v1/certificates/<id>/pdf` answers 410.
+- A revoked certificate never exposes its reason, PDF link, location, dates, duration, tasks, skills, signatory, or QR. `/api/v1/certificates/<id>/pdf` answers 410.
 - The page reads the issued `snapshot`, so later profile edits never change it.
 - `/{username}` is opt-in (`users.publicProfile`, default off) and shows the featured certificate.
 - A private profile renders the not-found page. It streams with status 200 and `noindex`, so it looks like an unknown user.

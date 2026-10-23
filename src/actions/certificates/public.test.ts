@@ -153,7 +153,43 @@ describe.skipIf(!isLocalDatabase)('public certificate lookups', () => {
         skills: [],
         status: 'revoked',
       })
-      expect(result.outcome === 'found' && result.activity.tasks).toEqual([])
+      expect(result.outcome === 'found' && result.activity).toEqual({
+        duration: 0,
+        endDate: '',
+        location: '',
+        startDate: '',
+        tasks: [],
+      })
+    })
+
+    it('withholds the activity of a revoked certificate that has no snapshot', async () => {
+      const code = generateCertificateCode()
+      await fixture.insertCertificate({ code, status: 'revoked' })
+
+      const result = await pub.verifyCertificate(code)
+
+      expect(result).toMatchObject({ documentUrl: null, outcome: 'found', skills: [], status: 'revoked' })
+      expect(result.outcome === 'found' && result.activity).toEqual({
+        duration: 0,
+        endDate: '',
+        location: '',
+        startDate: '',
+        tasks: [],
+      })
+    })
+
+    it('keeps the activity of a valid certificate', async () => {
+      const code = generateCertificateCode()
+      await fixture.insertCertificate({ code, status: 'approved' })
+
+      const result = await pub.verifyCertificate(code)
+
+      expect(result.outcome === 'found' && result.activity).toMatchObject({
+        duration: 120,
+        endDate: '2026-06-30',
+        location: 'Milan',
+        startDate: '2026-01-10',
+      })
     })
 
     it.each(['draft', 'submitted', 'in_review', 'changes_requested', 'rejected', 'withdrawn'] as const)(

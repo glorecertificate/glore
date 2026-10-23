@@ -39,7 +39,7 @@ const withholdRevokedDetails = (verification: ActiveVerification): ActiveVerific
   if (verification.status !== 'revoked') return verification
   return {
     ...verification,
-    activity: { ...verification.activity, tasks: [] },
+    activity: { ...verification.activity, duration: 0, endDate: '', location: '', startDate: '', tasks: [] },
     documentUrl: null,
     organization: { ...verification.organization, legalRepresentative: null, signatureUrl: null },
     skills: [],

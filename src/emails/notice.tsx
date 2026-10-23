@@ -4,7 +4,7 @@ import { Button, Link, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps, emailTranslator } from '@/emails/translate'
-import metadata from '~/config/metadata.json'
+import { DEFAULT_SETTINGS } from '@/lib/app-settings'
 
 interface NoticeProps extends EmailBaseProps {
   action?: { href: string; label: string; tone?: 'brand' | 'danger' }
@@ -38,6 +38,7 @@ export const Notice = ({
   note,
   preview,
   quote,
+  settings = DEFAULT_SETTINGS,
   userName,
 }: NoticeProps) => {
   const common = emailTranslator('Email.common', { locale, messages })
@@ -48,7 +49,7 @@ export const Notice = ({
       footer={
         <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
           {footer}{' '}
-          <Link className="text-[#71717a] underline" href={`mailto:${metadata.email}`}>
+          <Link className="text-[#71717a] underline" href={`mailto:${settings.email}`}>
             {common('contactUs')}
           </Link>
         </Text>
@@ -56,6 +57,7 @@ export const Notice = ({
       locale={locale}
       messages={messages}
       preview={preview}
+      settings={settings}
     >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}

@@ -30,8 +30,10 @@ import OrganizationRegistrationRequestEmail from '@/emails/organization/registra
 import TeamInviteEmail from '@/emails/team/invite'
 import TeamRoleChangedEmail from '@/emails/team/role-changed'
 import { type EmailBaseProps, type EmailCategory, type EmailTranslator, emailTranslator } from '@/emails/translate'
+import { type AppSettings } from '@/lib/app-settings'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
 import { loadMessages } from '@/lib/messages'
+import { loadSettings } from '@/lib/settings'
 import type defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
@@ -104,14 +106,15 @@ interface BuildOptions {
   category: EmailCategory | null
   locale: string
   messages: Messages
+  settings?: AppSettings
   template: EmailTemplate
 }
 
-const buildEmail = ({ category, locale, messages, template }: BuildOptions) => {
+const buildEmail = ({ category, locale, messages, settings, template }: BuildOptions) => {
   const { component, subject } = TEMPLATES[template.name] as unknown as TemplateDefinition<
     EmailBaseProps & Record<string, unknown>
   >
-  const props = { ...template.props, category, locale, messages: messages as AbstractIntlMessages }
+  const props = { ...template.props, category, locale, messages: messages as AbstractIntlMessages, settings }
 
   return {
     element: createElement(component, props),
@@ -126,8 +129,9 @@ interface RenderEmailOptions {
 }
 
 export const renderEmail = async ({ category = null, locale = DEFAULT_LOCALE, template }: RenderEmailOptions) => {
-  const messages = (await loadMessages(locale)) as unknown as Messages
-  const { element, subject } = buildEmail({ category, locale, messages, template })
+  const [loaded, settings] = await Promise.all([loadMessages(locale), loadSettings()])
+  const messages = loaded as unknown as Messages
+  const { element, subject } = buildEmail({ category, locale, messages, settings, template })
   const [html, text] = await Promise.all([render(element), render(element, { plainText: true })])
   return { html, subject, text }
 }

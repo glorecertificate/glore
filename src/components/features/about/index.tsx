@@ -1,6 +1,8 @@
 import { getMessages, getTranslations } from 'next-intl/server'
 
 import { LucideIcon } from '@/components/icons/lucide'
+import { SOCIAL_LABELS, socialLinks } from '@/lib/app-settings'
+import { loadSettings } from '@/lib/settings'
 import { cn } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -59,7 +61,8 @@ const TRUST_ITEMS = [
 
 export const AboutContent = async () => {
   const messages = (await getMessages()) as { About: AboutMessages }
-  const t = await getTranslations('About')
+  const [t, settings] = await Promise.all([getTranslations('About'), loadSettings()])
+  const links = socialLinks(settings)
 
   const content = messages.About
   const { howItWorks } = content
@@ -175,7 +178,7 @@ export const AboutContent = async () => {
                   email: chunks => (
                     <a
                       className="font-medium text-link underline-offset-4 hover:underline"
-                      href={`mailto:${metadata.email}`}
+                      href={`mailto:${settings.email}`}
                     >
                       {chunks}
                     </a>
@@ -185,7 +188,7 @@ export const AboutContent = async () => {
             </div>
             <a
               className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-2xs transition-colors hover:bg-brand-accent"
-              href={metadata.website}
+              href={settings.website}
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -196,6 +199,26 @@ export const AboutContent = async () => {
           <div className="flex items-center gap-2 border-t border-brand/15 pt-4 text-xs text-muted-foreground">
             <LucideIcon name="shield-check" className="size-3.5 shrink-0" />
             {content.contact.coordinator}
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+            <a
+              className="inline-flex items-center gap-1.5 font-medium text-link underline-offset-4 hover:underline"
+              href={`tel:${settings.phone}`}
+            >
+              <LucideIcon name="phone" className="size-3.5 shrink-0" />
+              {settings.phone}
+            </a>
+            {links.map(({ href, platform }) => (
+              <a
+                className="font-medium text-link underline-offset-4 hover:underline"
+                href={href}
+                key={platform}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {SOCIAL_LABELS[platform]}
+              </a>
+            ))}
           </div>
         </div>
       </section>

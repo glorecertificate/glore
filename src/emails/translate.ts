@@ -1,5 +1,6 @@
 import { type AbstractIntlMessages, type Locale, createTranslator } from 'next-intl'
 
+import { type AppSettings } from '@/lib/app-settings'
 import { TIME_ZONE } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
@@ -15,6 +16,7 @@ export interface EmailBaseProps {
   category?: EmailCategory | null
   locale?: string
   messages?: AbstractIntlMessages
+  settings?: AppSettings
 }
 
 export const emailTranslator = (

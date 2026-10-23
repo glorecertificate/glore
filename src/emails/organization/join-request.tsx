@@ -3,6 +3,7 @@ import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
+import { DEFAULT_SETTINGS } from '@/lib/app-settings'
 import config from '~/config/app.json'
 import metadata from '~/config/metadata.json'
 import defaultMessages from '~/messages/en.json'
@@ -26,6 +27,7 @@ const OrganizationJoinRequestEmail = ({
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
+  settings = DEFAULT_SETTINGS,
 }: OrganizationJoinRequestEmailProps) => {
   const t = createTranslator({
     locale: locale as Locale,
@@ -55,7 +57,14 @@ const OrganizationJoinRequestEmail = ({
       : t('introRejected', { organizationName })
 
   return (
-    <EmailLayout category={category} footer={footer} locale={locale} messages={messages} preview={preview}>
+    <EmailLayout
+      category={category}
+      footer={footer}
+      locale={locale}
+      messages={messages}
+      preview={preview}
+      settings={settings}
+    >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>

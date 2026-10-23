@@ -6,9 +6,9 @@ import { useLayoutEffect } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { ErrorIcon } from '@/components/icons/error'
+import { useSettings } from '@/components/providers/settings'
 import { appTitle } from '@/lib/metadata'
 import { cn } from '@/lib/utils'
-import metadata from '~/config/metadata.json'
 
 const NotFoundIcon = dynamic(async () => (await import('@/components/icons/not-found')).NotFoundIcon, {
   loading: () => <div className="mb-8 aspect-659/357 w-80 sm:w-90" />,
@@ -33,6 +33,7 @@ export const ErrorFallback = ({
     type?: 'error' | 'not-found'
   }) => {
   const t = useTranslations('Common')
+  const { email } = useSettings()
 
   const errorTitle = title ?? (type === 'not-found' ? t('notFound') : t('errorTitle'))
   useLayoutEffect(() => {
@@ -52,7 +53,7 @@ export const ErrorFallback = ({
       ? t('notFoundMessage')
       : t.rich('errorMessage', {
           contactUs: content => (
-            <a className="text-brand-text underline" href={`mailto:${metadata.email}`}>
+            <a className="text-brand-text underline" href={`mailto:${email}`}>
               {content}
             </a>
           ),

@@ -14,10 +14,12 @@ import { PwaInstallPrompt } from '@/components/layout/pwa-install-prompt'
 import { I18nProvider } from '@/components/providers/i18n'
 import { MotionProvider } from '@/components/providers/motion'
 import { SearchParamsProvider } from '@/components/providers/search-params'
+import { SettingsProvider } from '@/components/providers/settings'
 import { ThemeProvider } from '@/components/providers/theme'
 import { Toaster } from '@/components/ui/toaster'
 import { DEFAULT_LOCALE, clientMessages } from '@/lib/i18n'
 import { APP_NAME, appTitle, metadata } from '@/lib/metadata'
+import { loadSettings } from '@/lib/settings'
 import { cn, publicFile, serializeJsonLd } from '@/lib/utils'
 
 export const generateMetadata = async () => {
@@ -53,7 +55,7 @@ const geistMono = Geist_Mono({
 
 const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
   const locale = (await getLocaleCookie()) ?? DEFAULT_LOCALE
-  const messages = await getMessages({ locale })
+  const [messages, settings] = await Promise.all([getMessages({ locale }), loadSettings()])
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -72,13 +74,15 @@ const AppLayoutContent = async ({ children }: LayoutProps<'/'>) => {
       <body suppressHydrationWarning>
         <SearchParamsProvider>
           <I18nProvider locale={locale} messages={clientMessages(messages)}>
-            <ThemeProvider>
-              <MotionProvider>
-                {children}
-                <Toaster />
-                <PwaInstallPrompt />
-              </MotionProvider>
-            </ThemeProvider>
+            <SettingsProvider settings={settings}>
+              <ThemeProvider>
+                <MotionProvider>
+                  {children}
+                  <Toaster />
+                  <PwaInstallPrompt />
+                </MotionProvider>
+              </ThemeProvider>
+            </SettingsProvider>
           </I18nProvider>
         </SearchParamsProvider>
         {process.env.NODE_ENV === 'production' && (

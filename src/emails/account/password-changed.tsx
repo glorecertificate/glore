@@ -3,7 +3,7 @@ import { Button, Link, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
-import metadata from '~/config/metadata.json'
+import { DEFAULT_SETTINGS } from '@/lib/app-settings'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
@@ -17,6 +17,7 @@ const AccountPasswordChangedEmail = ({
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
+  settings = DEFAULT_SETTINGS,
 }: AccountPasswordChangedEmailProps) => {
   const t = createTranslator({
     locale: locale as Locale,
@@ -32,13 +33,20 @@ const AccountPasswordChangedEmail = ({
   const footer = (
     <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
       {t.rich('footer', {
-        emailLink: chunks => <Link href={`mailto:${metadata.email}`}>{chunks}</Link>,
+        emailLink: chunks => <Link href={`mailto:${settings.email}`}>{chunks}</Link>,
       })}
     </Text>
   )
 
   return (
-    <EmailLayout category={category} footer={footer} locale={locale} messages={messages} preview={t('preview')}>
+    <EmailLayout
+      category={category}
+      footer={footer}
+      locale={locale}
+      messages={messages}
+      preview={t('preview')}
+      settings={settings}
+    >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
@@ -47,7 +55,7 @@ const AccountPasswordChangedEmail = ({
       <Section className="mt-6 text-center">
         <Button
           className="rounded-lg bg-brand px-6 py-3 text-[14px] font-semibold text-white no-underline"
-          href={`mailto:${metadata.email}`}
+          href={`mailto:${settings.email}`}
         >
           {common('contactUs')}
         </Button>

@@ -4,6 +4,7 @@ import { type AbstractIntlMessages } from 'next-intl'
 import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from 'react-email'
 
 import { type EmailCategory, emailTranslator } from '@/emails/translate'
+import { type AppSettings, DEFAULT_SETTINGS, SOCIAL_LABELS, socialLinks } from '@/lib/app-settings'
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
 
@@ -29,6 +30,7 @@ interface EmailLayoutProps {
   locale?: string
   messages?: AbstractIntlMessages
   preview: string
+  settings?: AppSettings
 }
 
 export const EmailLayout = ({
@@ -38,10 +40,13 @@ export const EmailLayout = ({
   locale = 'en',
   messages,
   preview,
+  settings = DEFAULT_SETTINGS,
 }: EmailLayoutProps) => {
   const common = emailTranslator('Email.common', { locale, messages })
   const isOptional = category !== null && category !== 'mandatory'
   const preferencesUrl = `${process.env.APP_URL}/settings?tab=notifications`
+  const { legalEntity, website } = settings
+  const links = socialLinks(settings)
 
   return (
     <Html dir="ltr" lang={locale}>
@@ -81,13 +86,24 @@ export const EmailLayout = ({
                   </Link>
                 </Text>
               )}
-              <Text className="m-0 text-[12px] leading-5 text-[#a1a1aa]">{common('address')}</Text>
               <Text className="m-0 text-[12px] leading-5 text-[#a1a1aa]">
-                {common('copyright', { year: new Date().getFullYear() })}
+                {common('address', { address: legalEntity.address, name: legalEntity.name })}
               </Text>
-              <Link className="text-[12px] text-[#a1a1aa] underline" href={metadata.website}>
+              <Text className="m-0 text-[12px] leading-5 text-[#a1a1aa]">
+                {common('copyright', { name: legalEntity.name, year: new Date().getFullYear() })}
+              </Text>
+              <Link className="text-[12px] text-[#a1a1aa] underline" href={website}>
                 {common('homepage')}
               </Link>
+              {links.length > 0 && (
+                <Text className="m-0 mt-2 text-[12px] leading-5 text-[#a1a1aa]">
+                  {links.map(({ href, platform }) => (
+                    <Link className="mx-1.5 text-[#a1a1aa] underline" href={href} key={platform}>
+                      {SOCIAL_LABELS[platform]}
+                    </Link>
+                  ))}
+                </Text>
+              )}
             </Section>
           </Container>
         </Body>

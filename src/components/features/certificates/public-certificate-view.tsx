@@ -13,8 +13,8 @@ import { Separator } from '@/components/ui/separator'
 import { type Certificate } from '@/db/queries/certificate'
 import { AUTH_ROOT, SKILL_LEVELS, VERIFY_ROOT } from '@/lib/constants'
 import { DEFAULT_LOCALE, type IntlRecord, localizeRecord } from '@/lib/i18n'
+import { loadSettings } from '@/lib/settings'
 import { fullName } from '@/lib/utils'
-import appConfig from '~/config/metadata.json'
 
 interface PublicCertificateViewProps {
   certificate: Certificate
@@ -22,13 +22,14 @@ interface PublicCertificateViewProps {
 }
 
 export const PublicCertificateView = async ({ certificate, username }: PublicCertificateViewProps) => {
-  const [t, tCommon, tCredential, tDetail, tVerify, locale] = await Promise.all([
+  const [t, tCommon, tCredential, tDetail, tVerify, locale, { website }] = await Promise.all([
     getTranslations('CertificatePublic'),
     getTranslations('Common'),
     getTranslations('CertificateCredential'),
     getTranslations('CertificateDetail'),
     getTranslations('CertificateVerify'),
     getLocale(),
+    loadSettings(),
   ])
 
   const dateFormatter = new Intl.DateTimeFormat(locale, { dateStyle: 'long' })
@@ -169,7 +170,7 @@ export const PublicCertificateView = async ({ certificate, username }: PublicCer
           </div>
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button asChild>
-              <a href={appConfig.website} rel="noopener noreferrer" target="_blank">
+              <a href={website} rel="noopener noreferrer" target="_blank">
                 <LucideIcon name="globe" />
                 {t('publicJoinButton')}
               </a>

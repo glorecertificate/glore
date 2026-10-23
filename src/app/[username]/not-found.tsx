@@ -6,13 +6,14 @@ import { ErrorFallback } from '@/components/layout/error-fallback'
 import { Button } from '@/components/ui/button'
 import { Link } from '@/components/ui/link'
 import { APP_ROOT, AUTH_ROOT } from '@/lib/constants'
-import appConfig from '~/config/metadata.json'
+import { loadSettings } from '@/lib/settings'
 
 const UserNotFound = async () => {
-  const [user, t, tCommon] = await Promise.all([
+  const [user, t, tCommon, { website }] = await Promise.all([
     getAuthUser(),
     getTranslations('CertificatePublic'),
     getTranslations('Common'),
+    loadSettings(),
   ])
 
   return (
@@ -25,7 +26,7 @@ const UserNotFound = async () => {
         ) : (
           <>
             <Button asChild variant="outline">
-              <a href={appConfig.website} rel="noopener noreferrer" target="_blank">
+              <a href={website} rel="noopener noreferrer" target="_blank">
                 {t('publicJoinButton')}
               </a>
             </Button>

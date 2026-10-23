@@ -3229,9 +3229,9 @@
       "subject": "Nueva solicitud de registro de {organizationName}"
     },
     "common": {
-      "address": "Associazione Joint, Via Giovanola 25/c, 20139 Milano (MI), Italia",
+      "address": "{name}, {address}",
       "contactUs": "Contáctanos",
-      "copyright": "© {year} Associazione Joint. Reservados todos los derechos.",
+      "copyright": "© {year} {name}. Reservados todos los derechos.",
       "greeting": "Hola,",
       "greetingUser": "Hola {user},",
       "homepage": "Página de inicio",

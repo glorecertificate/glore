@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { useTranslations } from 'next-intl'
 
+import { useSettings } from '@/components/providers/settings'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -16,11 +17,12 @@ import {
 } from '@/components/ui/dialog'
 import { Link } from '@/components/ui/link'
 import { REGISTER_ROOT } from '@/lib/constants'
-import { WEBSITE_URL } from '@/lib/metadata'
+import { type HttpUrl } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 export const SignupDialog = ({ loading }: { loading: boolean }) => {
   const t = useTranslations('Auth')
+  const { website } = useSettings()
   const [open, setOpen] = useState(false)
 
   useEffect(() => () => setOpen(false), [])
@@ -51,7 +53,7 @@ export const SignupDialog = ({ loading }: { loading: boolean }) => {
         <div className="flex flex-col gap-3">
           {t.rich('signupDialogMessage', {
             link: content => (
-              <Link className="underline" href={WEBSITE_URL}>
+              <Link className="underline" href={website as HttpUrl}>
                 {content}
               </Link>
             ),

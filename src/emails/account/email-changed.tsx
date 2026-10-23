@@ -3,7 +3,7 @@ import { Link, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
-import metadata from '~/config/metadata.json'
+import { DEFAULT_SETTINGS } from '@/lib/app-settings'
 import defaultMessages from '~/messages/en.json'
 
 type Messages = typeof defaultMessages
@@ -21,6 +21,7 @@ const AccountEmailChangedEmail = ({
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
+  settings = DEFAULT_SETTINGS,
 }: AccountEmailChangedEmailProps) => {
   const t = createTranslator({
     locale: locale as Locale,
@@ -36,13 +37,20 @@ const AccountEmailChangedEmail = ({
   const footer = (
     <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
       {t.rich('footer', {
-        emailLink: chunks => <Link href={`mailto:${metadata.email}`}>{chunks}</Link>,
+        emailLink: chunks => <Link href={`mailto:${settings.email}`}>{chunks}</Link>,
       })}
     </Text>
   )
 
   return (
-    <EmailLayout category={category} footer={footer} locale={locale} messages={messages} preview={t('preview')}>
+    <EmailLayout
+      category={category}
+      footer={footer}
+      locale={locale}
+      messages={messages}
+      preview={t('preview')}
+      settings={settings}
+    >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>

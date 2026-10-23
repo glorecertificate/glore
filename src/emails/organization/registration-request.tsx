@@ -3,6 +3,7 @@ import { Button, Section, Text } from 'react-email'
 
 import { EmailLayout } from '@/emails/layout'
 import { type EmailBaseProps } from '@/emails/translate'
+import { DEFAULT_SETTINGS } from '@/lib/app-settings'
 import { type MessageKey } from '@/lib/i18n'
 import defaultMessages from '~/messages/en.json'
 
@@ -31,6 +32,7 @@ const OrganizationRegistrationRequestEmail = ({
   userName,
   locale = 'en',
   messages = defaultMessages as AbstractIntlMessages,
+  settings = DEFAULT_SETTINGS,
 }: OrganizationRegistrationRequestEmailProps) => {
   const t = createTranslator({
     locale: locale as Locale,
@@ -60,6 +62,7 @@ const OrganizationRegistrationRequestEmail = ({
       locale={locale}
       messages={messages}
       preview={t('preview', { organizationName })}
+      settings={settings}
     >
       <Text className="m-0 text-[14px] leading-6 text-[#0a0a0a]">
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}

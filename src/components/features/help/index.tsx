@@ -6,8 +6,8 @@ import { Faq } from '@/components/features/help/faq'
 import { type HelpRole, useHelpRole } from '@/components/features/help/use-help-role'
 import { LucideIcon } from '@/components/icons/lucide'
 import { type IconName } from '@/components/icons/registry'
+import { useSettings } from '@/components/providers/settings'
 import { cn } from '@/lib/utils'
-import metadata from '~/config/metadata.json'
 
 interface TitledText {
   description: string
@@ -48,6 +48,7 @@ export const HelpContent = () => {
   const messages = useMessages() as { Help: HelpMessages }
   const t = useTranslations('Help')
   const role = useHelpRole()
+  const { email, website } = useSettings()
 
   const content = messages.Help
   const roleContent = content.roles[role]
@@ -153,17 +154,14 @@ export const HelpContent = () => {
             <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
               {t.rich('contact.description', {
                 email: chunks => (
-                  <a
-                    className="font-medium text-link underline-offset-4 hover:underline"
-                    href={`mailto:${metadata.email}`}
-                  >
+                  <a className="font-medium text-link underline-offset-4 hover:underline" href={`mailto:${email}`}>
                     {chunks}
                   </a>
                 ),
                 website: chunks => (
                   <a
                     className="font-medium text-link underline-offset-4 hover:underline"
-                    href={metadata.website}
+                    href={website}
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -176,14 +174,14 @@ export const HelpContent = () => {
           <div className="flex shrink-0 flex-col gap-2 sm:items-end">
             <a
               className="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-medium text-brand-foreground shadow-2xs transition-colors hover:bg-brand-accent"
-              href={`mailto:${metadata.email}`}
+              href={`mailto:${email}`}
             >
               <LucideIcon name="mail" className="size-4" />
               {content.contact.emailLabel}
             </a>
             <a
               className="inline-flex items-center gap-1.5 px-1 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              href={metadata.website}
+              href={website}
               rel="noopener noreferrer"
               target="_blank"
             >

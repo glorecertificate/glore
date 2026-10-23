@@ -132,7 +132,7 @@ const Calendar = ({
   }
 
   const calendarFormatters: Partial<Formatters> = {
-    formatMonthDropdown: date => date.toLocaleString('default', { month: 'short' }),
+    formatMonthDropdown: date => date.toLocaleString(locale, { month: 'short' }),
     ...formatters,
   }
 

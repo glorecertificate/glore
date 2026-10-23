@@ -39,8 +39,8 @@ test('takes an invited volunteer from the invitation to the dashboard', async ({
 
   await expect(page.getByRole('heading', { name: 'A little about you' })).toBeVisible()
   await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByText('Birthday is required.')).toBeVisible()
-  await page.getByRole('button', { name: 'Birthday' }).click()
+  await expect(page.getByText('Date of birth is required.')).toBeVisible()
+  await page.getByRole('button', { name: /Date of birth|Select your date of birth/u }).click()
   await page.getByRole('combobox', { name: 'Choose the Year' }).selectOption({ label: '1990' })
   await page.getByRole('gridcell', { name: '15' }).first().click()
   await page.getByLabel('Place of birth').fill('London, United Kingdom')

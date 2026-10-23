@@ -150,7 +150,7 @@ Content rules: plain, warm language for young adults, examples from volunteering
 ## W3 verification and release readiness
 
 - G1 [~] 6853647d, lane-g1, 2026-10-22, browser pending: full demo seed, local and staging, plus catalog import. Accept: `manual-testing.md` steps hold on both. Local browser check passed 6 of 8 flows.
-- G2 [ ]: Playwright specs for every verification matrix row, plus es and it smoke tests. Accept: CI green.
+- G2 [~] lane-g2, 2026-10-23: Playwright specs for every verification matrix row, plus es and it smoke tests. Accept: CI green.
 - G3 [ ]: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
 - G4 [ ]: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
 - G5 [~] c5cd51bd, lane-g5, 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.

@@ -542,3 +542,10 @@ Dated history of the v1 effort. Status, open work, and follow-ups live in `tasks
 - The oracle still flags "to" at dx +10 because the template line holds four leading spaces, and its glyph is 0.1 pt off.
 - `generate-pdf.test.ts` pins the baselines from the rendered content stream.
 - Notes in `pdf.md` "Text placement".
+
+### G2 (2026-10-23)
+
+- Playwright now covers every verification matrix row against the local dev server. New specs in `e2e/`: `certificate-lifecycle` (draft, submit, withdraw, resubmit, start review, request changes, preview and approve, PDF, share, public verify), `tutor-queue` (overdue badge, claim, reject with reason), `eligibility` (blocked wizard, open request, learner has no certificates entry), `learning` (introductory course, quiz retry, rating), `invitations` (single, bulk, resend, revoke, expired, existing account, decline, invite link with approval), `organization-roles` (representative limits, reassign, role change, signatory, revoke, transfer, delete, multi-org leave), `admin-flows`, `locales` (es and it per role, no `MISSING_MESSAGE`), `every-role` (dark, 390px, palette, bell, settings tabs, export).
+- Specs build their own organization and accounts through `e2e/tenant.ts` and remove them afterwards.
+- Fixme: the wizard submits on its last Continue, and a learner can open `/certificates` by URL.
+- Not covered: logo upload, reminders cron, editor lesson and quiz authoring, compass.

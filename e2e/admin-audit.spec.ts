@@ -38,7 +38,7 @@ test.describe('platform admin', () => {
 
     await page.getByRole('combobox', { name: 'Category' }).click()
     await page.getByRole('option', { name: 'Impersonation' }).click()
-    await expect(page.getByText('No events found')).toBeVisible()
+    await expect(row.getByRole('link', { name: `Audit${stamp}` })).toBeHidden()
 
     await page.getByRole('combobox', { name: 'Category' }).click()
     await page.getByRole('option', { name: 'Moderation' }).click()

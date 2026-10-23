@@ -16,18 +16,19 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 - The `Main` ruleset requires that `Vercel` check and `Check / Check`. Admins can bypass it, which this release needs because of the previous point.
 - A `v*` tag runs `release.yml`, which deploys production with `vercel deploy --target=production`. A push to `main` never reaches production.
 - The production build prerenders against the production database, so production must be migrated before the tag.
+- `deploy.yml` builds on the runner from `vercel pull`, which cannot read Secret variables. Every variable the build validates must use the Config type.
 
 ## State
 
-- `release/v0.7` is open as pull request #20 into `main`. Never merge it from GitHub: fast-forward `main` locally, so the signed commits keep their hashes.
-- Neon `staging` has all 33 migrations. Preview `DATABASE_URL` points to it (sensitive, no branch scope) and Preview `APP_URL` is the preview domain.
+- `release/v0.7` is open as pull request #20 into `main`. The repository only allows "Rebase and merge", which recreates the commits with new hashes and without their local signatures.
+- Neon `staging` has all 33 migrations. Preview `DATABASE_URL` points to it (no branch scope) and Preview `APP_URL` is the preview domain.
 - Production lacks migrations 0013 to 0032, has no database comment, and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
 
 ## Preview
 
 1. Wait for `Check / Check` and `E2E` to pass on pull request #20.
-2. Fast-forward `main` to `release/v0.7` and push it, never as a merge commit: `git switch main && git merge --ff-only release/v0.7 && git push origin main`.
+2. Merge pull request #20 with "Rebase and merge" (the failing `Vercel` check needs the admin bypass), then run `git switch main && git pull`.
 3. CI deploys the preview domain once check and e2e pass on `main`.
 4. Import the catalog and seed the demo data per `manual-testing.md`, "Setup", step 6.
 5. Validate the preview with `manual-testing.md`, then run "Verify" below against the preview domain.
@@ -38,7 +39,7 @@ The schema is `envSchema` in `next.config.ts`. Production builds always send mai
 
 - `APP_URL`: the `url` in `config/metadata.json`. Already set. Change both together when the domain moves.
 - `BETTER_AUTH_SECRET`: a fresh value from `openssl rand -base64 32`.
-- `CRON_SECRET`: 16 or more characters. Already set. Without it the daily cron (`/api/v1/cron/daily`, 03:00 UTC) refuses every call.
+- `CRON_SECRET`: 16 or more characters. Set as a Secret: recreate it as Config, or the release build fails `envSchema`. Without it the daily cron (`/api/v1/cron/daily`, 03:00 UTC) refuses every call.
 - `DATABASE_URL`: the Neon `production` connection string with `sslmode=require`. Confirm it targets `production`, not a copy.
 - `GEMINI_API_KEY`. Set `GEMINI_MODEL` only to override the default fallback chain.
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SENDER`, `SMTP_USER`, `SMTP_PASSWORD`.

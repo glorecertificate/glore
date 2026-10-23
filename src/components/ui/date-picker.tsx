@@ -25,11 +25,13 @@ const preloadCalendar = () => {
 
 export const DatePicker = ({
   disabled,
+  onBlur,
   onChange,
   placeholder,
   value,
 }: {
   disabled?: boolean
+  onBlur?: () => void
   onChange?: (value: string) => void
   placeholder?: string
   value?: string
@@ -57,6 +59,11 @@ export const DatePicker = ({
     })
   })()
 
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (!next) onBlur?.()
+  }
+
   const handleSelect = (date: Date | undefined) => {
     if (date) {
       const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -64,11 +71,11 @@ export const DatePicker = ({
     } else {
       onChange?.('')
     }
-    setOpen(false)
+    handleOpenChange(false)
   }
 
   return (
-    <Popover onOpenChange={setOpen} open={open}>
+    <Popover onOpenChange={handleOpenChange} open={open}>
       <FormControl>
         <PopoverTrigger asChild>
           <Button

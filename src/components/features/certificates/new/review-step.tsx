@@ -109,7 +109,7 @@ export const ReviewStep = ({ comment, missing, ...thumbnail }: ReviewStepProps) 
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>{t('birthday')}</FormLabel>
-                    <DatePicker onChange={field.onChange} value={field.value} />
+                    <DatePicker onBlur={field.onBlur} onChange={field.onChange} value={field.value} />
                     <FieldError />
                   </FormItem>
                 )}

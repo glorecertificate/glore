@@ -68,7 +68,7 @@ export const ExperienceFields = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('startDate')}</FormLabel>
-              <DatePicker onChange={field.onChange} value={field.value} />
+              <DatePicker onBlur={field.onBlur} onChange={field.onChange} value={field.value} />
               <FieldError />
             </FormItem>
           )}
@@ -79,7 +79,7 @@ export const ExperienceFields = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>{t('endDate')}</FormLabel>
-              <DatePicker onChange={field.onChange} value={field.value} />
+              <DatePicker onBlur={field.onBlur} onChange={field.onChange} value={field.value} />
               <FieldError />
             </FormItem>
           )}

@@ -240,6 +240,7 @@ export const ProfileForm = () => {
                     <FormLabel>{t('birthday')}</FormLabel>
                     <DatePicker
                       disabled={form.formState.isSubmitting}
+                      onBlur={field.onBlur}
                       onChange={field.onChange}
                       value={field.value ?? ''}
                     />

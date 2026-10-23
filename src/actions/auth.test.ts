@@ -37,7 +37,7 @@ vi.mock('@/lib/email', async importOriginal => ({
 }))
 
 const PASSWORD = 'Password1!'
-const KEYS = ['changer', 'limited', 'resetter', 'wrong'] as const
+const KEYS = ['changer', 'limited', 'notified', 'resetter', 'wrong'] as const
 
 describe.skipIf(!isLocalDatabase)('password and session security', () => {
   let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
@@ -150,6 +150,29 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     const result = await actions.changePassword('Wrong-password1!', 'Password5!')
 
     expect(result).toEqual({ error: { code: 'INVALID_PASSWORD', message: 'Invalid current password' } })
+  })
+
+  it('tells the owner when a reset through the emailed link changes the password', async () => {
+    await actions.resetPassword(fixture.emails.notified)
+    await flush()
+    const url = sent.find(mail => mail.template.name === 'auth/recovery')?.template.props.url
+    const token = url ? new URL(url).pathname.split('/').pop() : undefined
+    sent.length = 0
+
+    const updated = await actions.updatePassword(token ?? '', 'Password6!')
+    expect(updated.error).toBeNull()
+    await flush()
+
+    expect(sent.map(mail => [mail.template.name, mail.to])).toEqual([
+      ['account/password-changed', fixture.emails.notified],
+    ])
+  })
+
+  it('stays silent when the reset is refused', async () => {
+    await actions.updatePassword('not-a-real-token', 'Password6!')
+    await flush()
+
+    expect(sent).toHaveLength(0)
   })
 
   it('revokes every session when the password is reset', async () => {

@@ -34,6 +34,15 @@ const afterResponse = async (task: () => Promise<void>) => {
   }
 }
 
+const sendAfterResponse = (label: string, options: Parameters<typeof sendMail>[0]) =>
+  afterResponse(async () => {
+    try {
+      await sendMail(options)
+    } catch (e) {
+      console.error(`[auth] failed to send ${label}`, e instanceof Error ? e.message : e)
+    }
+  })
+
 const expireUserCache = (user: unknown) => {
   const id = typeof user === 'object' && user !== null && 'id' in user ? user.id : null
   if (typeof id !== 'string') return
@@ -117,21 +126,15 @@ export const auth = betterAuth({
     resetPasswordTokenExpiresIn: AUTH_LINK_EXPIRY_SECONDS,
     revokeSessionsOnPasswordReset: true,
     async sendResetPassword({ user, url }) {
-      await afterResponse(async () => {
-        try {
-          await sendMail({
-            to: user.email,
-            template: {
-              name: 'auth/recovery',
-              props: {
-                url,
-                userName: user.name || undefined,
-              },
-            },
-          })
-        } catch (e) {
-          console.error('[auth] failed to send recovery email', e instanceof Error ? e.message : e)
-        }
+      await sendAfterResponse('recovery email', {
+        to: user.email,
+        template: { name: 'auth/recovery', props: { url, userName: user.name || undefined } },
+      })
+    },
+    async onPasswordReset({ user }) {
+      await sendAfterResponse('password changed email', {
+        to: user.email,
+        template: { name: 'account/password-changed', props: { userName: user.name || undefined } },
       })
     },
   },

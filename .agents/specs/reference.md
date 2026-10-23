@@ -41,6 +41,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - A Better Auth `databaseHooks.user.update.after` hook in `src/lib/auth.ts` expires `userTag(id)` with `revalidateTag(tag, { expire: 0 })`, so changes the library makes itself (the email change link, `setRole`, `banUser`, `unbanUser`) reach `getCurrentUser` at once. `updateTag` would throw in the verify-email route handler.
 - Login and password reset answer unknown users exactly like wrong passwords and real resets, in content and in work: `login` hashes the password for an unknown user, and the recovery mail is sent through `after()` so a real reset does not wait on SMTP.
 - `updatePassword` and `changePassword` map library errors to `INVALID_TOKEN`, `INVALID_PASSWORD`, `INVALID_INPUT`, or `AUTH_ERROR` with fixed messages, never the library text.
+- A reset through the emailed link sends the `account/password-changed` mail from `onPasswordReset`, after the response, like `changePassword` does.
 - Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address through `emailVerification.sendVerificationEmail`.
 
 ### Stale sessions

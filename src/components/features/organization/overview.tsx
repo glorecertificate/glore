@@ -19,6 +19,7 @@ import { AvatarStack } from '@/components/ui/avatar-stack'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { StatCard } from '@/components/ui/stat-card'
+import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
 
 import { ActivityList } from './activity-list'
@@ -37,6 +38,7 @@ export const OrganizationOverview = ({
 }) => {
   const { localize } = useI18n()
   const t = useTranslations('Organization')
+  const translateCountry = useCountryName()
 
   return (
     <div className="space-y-6">
@@ -119,7 +121,14 @@ export const OrganizationOverview = ({
                 </p>
                 <div className="space-y-1 text-sm">
                   <p>{[data.organization.address, data.organization.city].filter(Boolean).join(', ')}</p>
-                  <p>{[data.organization.region, data.organization.country].filter(Boolean).join(', ')}</p>
+                  <p>
+                    {[
+                      data.organization.region,
+                      data.organization.country && translateCountry(data.organization.country),
+                    ]
+                      .filter(Boolean)
+                      .join(', ')}
+                  </p>
                   {data.organization.postcode && <p>{data.organization.postcode}</p>}
                 </div>
               </div>

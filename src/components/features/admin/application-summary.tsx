@@ -3,7 +3,7 @@
 import { useFormatter, useTranslations } from 'next-intl'
 
 import { timestampMillis } from '@/db/queries/organization'
-import { type MessageKey } from '@/lib/i18n'
+import { useCountryName } from '@/hooks/use-country-name'
 
 export interface ApplicationSummaryData {
   charterAcceptedAt: string | null
@@ -47,12 +47,11 @@ export const ApplicationSummary = ({
 }) => {
   const { dateTime, number } = useFormatter()
   const t = useTranslations('Admin.organizations')
-  const tCountries = useTranslations('Intl.Countries')
+  const translateCountry = useCountryName()
   const none = t('app_none')
 
   const formatDate = (value: string) => dateTime(new Date(timestampMillis(value)), { dateStyle: 'medium' })
-  const countryKey = organization.country as MessageKey<'Intl.Countries'> | null
-  const country = countryKey && (tCountries.has(countryKey) ? tCountries(countryKey) : countryKey.toUpperCase())
+  const country = organization.country && translateCountry(organization.country)
 
   const reviewRows: Pair[] = [
     [t('app_motivation'), organization.motivation ?? none],

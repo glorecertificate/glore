@@ -32,7 +32,7 @@ import { SearchInput } from '@/components/ui/search'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { type AdminOrganization } from '@/db/queries/organization'
-import { type MessageKey } from '@/lib/i18n'
+import { useCountryName } from '@/hooks/use-country-name'
 
 import { ApplicationSheet } from './application-sheet'
 import { ApproveDialog, OrgCreateDialog, OrgInviteDialog, OrgRow, RejectDialog } from './organization-items'
@@ -43,7 +43,6 @@ type SortField = 'name' | 'country' | 'members'
 export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganization[] }) => {
   const { locale } = useI18n()
   const t = useTranslations('Admin.organizations')
-  const tCountries = useTranslations('Intl.Countries')
 
   const [orgs, setOrgs] = useState(initialOrgs)
   const [filter, setFilter] = useState<OrgFilter>('all')
@@ -57,15 +56,12 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
   const [inviteOpen, setInviteOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
 
-  const translateCountry = (code: string) => {
-    const key = code as MessageKey<'Intl.Countries'>
-    return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
-  }
+  const translateCountry = useCountryName()
 
   const pendingCount = orgs.filter(o => o.isPending).length
 
   const countryOptions = (() => {
-    const codes = [...new Set(orgs.map(o => o.country).filter((c): c is string => Boolean(c)))]
+    const codes = [...new Set(orgs.map(o => o.country?.toLowerCase()).filter((c): c is string => Boolean(c)))]
     return codes
       .map(code => ({ code, label: translateCountry(code) }))
       .toSorted((a, b) => a.label.localeCompare(b.label, locale))
@@ -79,7 +75,7 @@ export const AdminOrganizations = ({ orgs: initialOrgs }: { orgs: AdminOrganizat
     if (filter === 'pending') list = list.filter(o => o.isPending)
     if (filter === 'active') list = list.filter(o => o.isApproved)
     if (filter === 'rejected') list = list.filter(o => o.isRejected)
-    if (country !== 'all') list = list.filter(o => o.country === country)
+    if (country !== 'all') list = list.filter(o => o.country?.toLowerCase() === country)
 
     const needle = search.trim().toLowerCase()
     if (needle) {

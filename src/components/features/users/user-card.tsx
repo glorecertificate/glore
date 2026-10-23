@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Link } from '@/components/ui/link'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { type PublicUser } from '@/db/queries/user'
+import { useCountryName } from '@/hooks/use-country-name'
 import { type Any, type HttpUrl } from '@/lib/types'
 import { cn, fullName } from '@/lib/utils'
 import app from '~/config/app.json'
@@ -16,15 +17,12 @@ export const UserCard = ({ hide = DEFAULT_HIDE, user }: { hide?: (keyof PublicUs
   const { locale } = useI18n()
   const tCommon = useTranslations('Common')
   const t = useTranslations('Users')
-  const tCountries = useTranslations('Intl.Countries')
   const tLanguages = useTranslations('Intl.Languages')
   const format = useFormatter()
 
-  const resolveCountryLabel = (country: string | null | undefined) => {
-    if (!country) return ''
-    const key = country as Any
-    return tCountries.has?.(key) ? tCountries(key) : country.toUpperCase()
-  }
+  const translateCountry = useCountryName()
+
+  const resolveCountryLabel = (country: string | null | undefined) => (country ? translateCountry(country) : '')
 
   const resolveLanguageLabel = (language: string) => {
     const key = language as Any

@@ -45,7 +45,7 @@ import { Label } from '@/components/ui/label'
 import { SearchHighlight } from '@/components/ui/search'
 import { Textarea } from '@/components/ui/textarea'
 import { type AdminOrganization } from '@/db/queries/organization'
-import { type MessageKey } from '@/lib/i18n'
+import { useCountryName } from '@/hooks/use-country-name'
 
 export const OrgRow = ({
   onApprove,
@@ -62,12 +62,7 @@ export const OrgRow = ({
 }) => {
   const { locale } = useI18n()
   const t = useTranslations('Admin.organizations')
-  const tCountries = useTranslations('Intl.Countries')
-
-  const translateCountry = (code: string) => {
-    const key = code as MessageKey<'Intl.Countries'>
-    return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
-  }
+  const translateCountry = useCountryName()
 
   const country = org.country && `${translateCountry(org.country)} ${countryCodeToFlag(org.country)}`
   const location = [org.city, country].filter(Boolean).join(', ')

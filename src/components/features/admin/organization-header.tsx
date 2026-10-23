@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { countryCodeToFlag } from '@/components/ui/country-select'
 import { type Organization } from '@/db/queries/organization'
-import { type MessageKey } from '@/lib/i18n'
+import { useCountryName } from '@/hooks/use-country-name'
 import { isHttpUrl } from '@/lib/url'
 
 import { OrganizationReviewActions } from './organization-review-actions'
@@ -21,12 +21,7 @@ export const OrganizationHeader = ({
 }) => {
   const { dateTime } = useFormatter()
   const t = useTranslations('Admin.organizations')
-  const tCountries = useTranslations('Intl.Countries')
-
-  const translateCountry = (code: string) => {
-    const key = code as MessageKey<'Intl.Countries'>
-    return tCountries.has(key) ? tCountries(key) : key.toUpperCase()
-  }
+  const translateCountry = useCountryName()
 
   const country =
     organization.country && `${translateCountry(organization.country)} ${countryCodeToFlag(organization.country)}`

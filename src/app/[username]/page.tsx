@@ -3,8 +3,7 @@ import { Suspense } from 'react'
 
 import { getTranslations } from 'next-intl/server'
 
-import { findLegacyCertificateCode } from '@/actions/certificates/public'
-import { findPublicCertificate } from '@/actions/certificates/queries'
+import { findPublicCertificate, lookupLegacyCertificateCode } from '@/actions/certificates/queries'
 import { PublicCertificateView } from '@/components/features/certificates/public-certificate-view'
 import { LoadingFallback } from '@/components/layout/loading-fallback'
 import { VERIFY_ROOT } from '@/lib/constants'
@@ -44,7 +43,7 @@ const UserPageContent = async ({ params, searchParams }: PageProps<'/[username]'
   const legacyHandle = typeof handle === 'string' ? handle : handle?.[0]
 
   if (legacyHandle) {
-    const code = await findLegacyCertificateCode(username, legacyHandle)
+    const code = await lookupLegacyCertificateCode(username, legacyHandle)
     if (!code) notFound()
     permanentRedirect(`${VERIFY_ROOT}/${code}`)
   }

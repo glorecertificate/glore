@@ -7,6 +7,7 @@ vi.mock('next/cache', async () => (await import('@/actions/certificates/test-har
 vi.mock('@/actions/auth', async () => (await import('@/actions/certificates/test-harness')).mocks.auth)
 vi.mock('@/actions/user', async () => (await import('@/actions/certificates/test-harness')).mocks.user)
 vi.mock('@/actions/courses/queries', async () => (await import('@/actions/certificates/test-harness')).mocks.courses)
+vi.mock('@/lib/rate-limit', async () => (await import('@/actions/certificates/test-harness')).mocks.rateLimit)
 
 describe.skipIf(!isLocalDatabase)('certificate queries', () => {
   let fixture: Fixture

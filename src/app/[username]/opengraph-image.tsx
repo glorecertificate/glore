@@ -84,7 +84,8 @@ const footerStyle: CSSProperties = {
 
 const UserOpengraphImage = async ({ params }: { params: Promise<{ username: string }> }) => {
   const { username } = await params
-  const { data } = await findPublicCertificate(username)
+  const { data, error } = await findPublicCertificate(username)
+  if (error?.code === 'RATE_LIMITED') return new Response(null, { headers: { 'retry-after': '60' }, status: 429 })
   const { user, organization, skills = [] } = data ?? {}
 
   const volunteerName = user ? fullName(user) : 'GloRe Certificate'

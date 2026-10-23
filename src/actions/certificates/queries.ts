@@ -9,6 +9,7 @@ import { and, asc, eq, inArray, isNull, ne } from 'drizzle-orm'
 
 import { getAuthUser } from '@/actions/auth'
 import { certificateOwnerWith, certificatePublicWith, certificateWithUsers } from '@/actions/certificates/helpers'
+import { findLegacyCertificateCode, isLookupLimited } from '@/actions/certificates/public'
 import { listCourses } from '@/actions/courses/queries'
 import { getActiveOrgId, getCurrentUser } from '@/actions/user'
 import { db } from '@/db/client'
@@ -25,6 +26,7 @@ import {
   users,
 } from '@/db/schema'
 import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
+import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 import appConfig from '~/config/app.json'
 
 const fetchUserCertificates = cache(async (userId: string) => {
@@ -230,8 +232,16 @@ export const findCertificateActivity = async (id: number) => {
   })
 }
 
-export const findPublicCertificate = async (username: string) =>
-  await safeQuery(async () => {
+const isProfileLimited = cache(async () => await isRateLimited(`profile:${await clientAddress()}`, 60, 60_000))
+
+export const lookupLegacyCertificateCode = async (username: string, handle: string) => {
+  if (await isLookupLimited()) return null
+  return await findLegacyCertificateCode(username, handle)
+}
+
+export const findPublicCertificate = async (username: string) => {
+  if (await isProfileLimited()) return { data: null, error: { code: 'RATE_LIMITED', message: 'Too many requests' } }
+  return await safeQuery(async () => {
     const user = await db.query.users.findFirst({
       columns: { id: true, publicProfile: true },
       where: eq(users.username, username),
@@ -250,6 +260,7 @@ export const findPublicCertificate = async (username: string) =>
 
     return parseCertificate({ ...cert, reviewerComment: null, reviewerId: null })
   })
+}
 
 export interface CertificateEligibility {
   eligible: boolean

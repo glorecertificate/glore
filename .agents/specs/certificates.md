@@ -125,6 +125,7 @@ draft -> submitted -> in_review -> approved -> revoked
 ## PDF
 
 - The PDF is generated on approval and stored at `certificates/{handle}.pdf` in R2, public through `documentUrl`.
+- `/api/v1/certificates/<id>/pdf` re-renders on demand for signed-in users and is limited to 30 requests a minute per IP (`certificate-pdf:<ip>`, answers 429).
 - It follows the A4 template (Roboto, navy and green tokens, vector logo, `DD.MM.YYYY` dates).
 - It holds a QR code and short URL pointing to `/verify/<code>`, plus the signatory block.
 - The template reference and fidelity checks are in `.agents/plans/v1-release/pdf.md`.
@@ -134,6 +135,9 @@ draft -> submitted -> in_review -> approved -> revoked
 - `/verify` takes a code (any case, dashes optional, normalized by `normalizeCertificateCode`) and redirects to `/verify/<code>`.
 - `/verify/<code>` shows the holder's full name, organization and logo, period, hours, location, tasks, skills with levels and statements, issue date, signatory, PDF link, QR, an Open Graph image, and JSON-LD.
 - Both routes are public, `noindex`, and rate limited per IP (60 checks and 30 lookups a minute).
+- The verification image (`verify/[code]/opengraph-image.tsx`) reads through `verifyCertificate`, so it shares the 60 checks a minute and answers 429 with `retry-after` when limited.
+- `findPublicCertificate` (the `/{username}` page, its metadata, and its image) is limited to 60 reads a minute per IP under `profile:<ip>`, deduped per request. The image answers 429 and the page answers not found.
+- `lookupLegacyCertificateCode` applies the 30 lookups a minute limiter to the `?v=` redirect.
 - An approved certificate reads `valid`. Every other status is `unknown`.
 - A revoked certificate reads `revoked` with its date and shows only the holder, organization, code, and issue date.
 - A revoked certificate never exposes its reason, PDF link, location, dates, duration, tasks, skills, signatory, or QR. `/api/v1/certificates/<id>/pdf` answers 410.

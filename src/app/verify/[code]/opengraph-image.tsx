@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 import { type CSSProperties } from 'react'
 
-import { findCertificateByCode } from '@/actions/certificates/public'
+import { verifyCertificate } from '@/actions/certificates/public'
 import { normalizeCertificateCode } from '@/components/features/certificates/rules'
 import { DEFAULT_LOCALE, localizeRecord } from '@/lib/i18n'
 import { fullName } from '@/lib/utils'
@@ -31,7 +31,9 @@ const pillStyle: CSSProperties = {
 const VerifyOpengraphImage = async ({ params }: { params: Promise<{ code: string }> }) => {
   const { code } = await params
   const normalized = normalizeCertificateCode(code)
-  const verification = normalized ? await findCertificateByCode(normalized) : null
+  const result = normalized ? await verifyCertificate(normalized) : null
+  if (result?.outcome === 'limited') return new Response(null, { headers: { 'retry-after': '60' }, status: 429 })
+  const verification = result?.outcome === 'found' ? result : null
   const revoked = verification?.status === 'revoked'
   const name = verification ? fullName(verification.holder) : 'GloRe Certificate'
   const skills = (verification?.skills ?? [])

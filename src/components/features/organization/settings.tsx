@@ -451,7 +451,12 @@ export const OrganizationSettings = ({
         </Card>
       </SettingsSection>
 
-      <DeleteOrganizationDialog onConfirm={handleDelete} onOpenChange={setDeleteOpen} open={deleteOpen} />
+      <DeleteOrganizationDialog
+        onConfirm={handleDelete}
+        onOpenChange={setDeleteOpen}
+        open={deleteOpen}
+        organizationName={organization.name}
+      />
       {!platform && (
         <TransferOwnershipDialog
           candidates={candidates}

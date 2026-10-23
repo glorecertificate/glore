@@ -2231,7 +2231,7 @@
     "transferNoCandidates": "Only representatives who finished their setup can become the owner. Change a member's role to representative first.",
     "transferTarget": "New owner",
     "transferTargetPlaceholder": "Choose a representative",
-    "transferConfirmLabel": "Type {name} to confirm",
+    "confirmNameLabel": "Type {name} to confirm",
     "transferring": "Transferring…",
     "ownershipTransferred": "Ownership transferred",
     "memberError_CONFIRMATION": "The name you typed does not match.",

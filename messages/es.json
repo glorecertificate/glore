@@ -2231,7 +2231,7 @@
     "transferNoCandidates": "Solo las personas representantes que han terminado su configuración pueden pasar a ser administradoras. Cambia antes el rol de un miembro a representante.",
     "transferTarget": "Nueva persona administradora",
     "transferTargetPlaceholder": "Elige un representante",
-    "transferConfirmLabel": "Escribe {name} para confirmar",
+    "confirmNameLabel": "Escribe {name} para confirmar",
     "transferring": "Transfiriendo…",
     "ownershipTransferred": "Propiedad transferida",
     "memberError_CONFIRMATION": "El nombre que has escrito no coincide.",

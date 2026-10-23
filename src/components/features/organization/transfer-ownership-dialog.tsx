@@ -104,7 +104,7 @@ export const TransferOwnershipDialog = ({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="transfer-confirmation">{t('transferConfirmLabel', { name: organizationName })}</Label>
+              <Label htmlFor="transfer-confirmation">{t('confirmNameLabel', { name: organizationName })}</Label>
               <Input
                 autoComplete="off"
                 id="transfer-confirmation"

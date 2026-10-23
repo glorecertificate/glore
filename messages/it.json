@@ -2231,7 +2231,7 @@
     "transferNoCandidates": "Solo i rappresentanti che hanno completato la configurazione possono diventare amministratori. Prima cambia il ruolo di un membro in rappresentante.",
     "transferTarget": "Nuovo amministratore",
     "transferTargetPlaceholder": "Scegli un rappresentante",
-    "transferConfirmLabel": "Scrivi {name} per confermare",
+    "confirmNameLabel": "Scrivi {name} per confermare",
     "transferring": "Trasferimento in corso…",
     "ownershipTransferred": "Proprietà trasferita",
     "memberError_CONFIRMATION": "Il nome che hai scritto non corrisponde.",

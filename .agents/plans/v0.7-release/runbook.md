@@ -11,7 +11,7 @@ Handoff for G8. Every step that writes to staging or production is a user step. 
 
 ## Prepare
 
-1. Review `release/v0.7`, push it, and open a pull request into `main`. Do not merge yet.
+1. Review `release/v0.7`, push it, and open a pull request into `main`. Do not merge yet. The branch history is linear; keep it that way.
 2. Optional staging pass: push `release/v0.7` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
 3. Back up production: in the Neon console create a branch `pre-v0.7-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
 4. Set the production env vars in Vercel, listed below.
@@ -35,7 +35,7 @@ The schema is `envSchema` in `next.config.ts`.
 2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 29.
 3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --dry-run`.
 4. Run the same command without `--dry-run`. Production always imports courses as drafts.
-5. Merge the pull request into `main`, let Vercel deploy, and check that the cron job is listed in the project.
+5. Rebase the pull request into `main` (never a merge commit), then run `pnpm run release` on `main` and release `0.7.0`. The `v0.7.0` tag runs `.github/workflows/release.yml`, which deploys production. Check that the cron job is listed in the Vercel project.
 
 Run steps 1 and 5 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes.
 

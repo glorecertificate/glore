@@ -25,3 +25,25 @@ jobs:
         run: pnpm run check
       - name: Run unit tests
         run: pnpm run test
+
+  history:
+    name: Linear history
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Reject merge commits
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          merges="$(git rev-list --merges "$BASE_SHA..HEAD")"
+          if [ -n "$merges" ]; then
+            echo "Merge commits are not allowed. Rebase the branch: $merges"
+            exit 1
+          fi

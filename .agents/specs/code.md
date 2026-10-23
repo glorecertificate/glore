@@ -25,7 +25,8 @@ Formatter, linter, and import conventions. Configured in `.oxfmtrc.json` (oxfmt)
 - `pre-commit` formats, lint-fixes, and reformats staged files (oxfmt, oxlint, oxfmt), then restages them.
 - Lefthook hides the unstaged hunks of partially staged files while it runs, so staging a single hunk still commits.
 - `commit-msg` runs commitlint.
-- `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, plus oxlint and `oxfmt --check` on pushed files only.
+- `pre-merge-commit` fails every merge that would create a merge commit (`workflow.md`, "Git history").
+- `pre-push` runs in parallel: commitlint over `origin/HEAD..HEAD`, `tsc`, knip, a merge-commit check over the same range, plus oxlint and `oxfmt --check` on pushed files only.
 - CI's `pnpm run check` stays the full gate. It catches type-aware lint errors that a pushed change causes in files the push did not touch.
 
 ## Import order (oxfmt `sortImports`)

@@ -3,6 +3,11 @@ commit-msg:
     - name: commitlint
       run: node_modules/.bin/commitlint --edit {1}
 
+pre-merge-commit:
+  jobs:
+    - name: linear-history
+      run: echo 'Merge commits are not allowed. Rebase instead (workflow.md, "Git history").' >&2 && exit 1
+
 pre-commit:
   jobs:
     - name: fix
@@ -34,3 +39,5 @@ pre-push:
       run: node_modules/.bin/oxfmt --check --no-error-on-unmatched-pattern {push_files}
     - name: knip
       run: node_modules/.bin/knip
+    - name: linear-history
+      run: test -z "$(git rev-list --merges "$(git rev-parse --abbrev-ref origin/HEAD)"..HEAD)" || { echo 'Merge commits are not allowed. Rebase instead.' >&2; exit 1; }

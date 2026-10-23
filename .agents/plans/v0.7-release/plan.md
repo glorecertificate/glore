@@ -136,13 +136,13 @@ Never revive variants or a preview widget.
 
 ### Orchestration
 
-- The orchestrator owns `release/v0.7`, W0, schema batches, merges, and W2 to W3 verification.
+- The orchestrator owns `release/v0.7`, W0, schema batches, lane integration, and W2 to W3 verification.
 - Lane agents run with `isolation: "worktree"` from the latest `release/v0.7`, never nested, at most four writers at once.
 - A lane agent commits one Conventional Commit per finished task, only after `pnpm run check` exits 0 and its tests pass. It never pushes.
 - Lanes touch only the files they own (listed in `tasks.md`).
 - Shared additions are append-only: own `messages/*.json` namespaces, new tags at the end of `src/lib/cache.ts`.
-- Merging: the orchestrator merges each lane into `release/v0.7`, unions `messages/*.json` keys on conflict, then reruns `pnpm run check` and `pnpm run test`.
-- After each merge, the orchestrator checks the lane's flows on the single dev server at `https://glore.localhost`. Worktrees never start a dev server.
+- Integrating: the orchestrator rebases each lane onto `release/v0.7` and fast-forwards it, or squashes it, never with a merge commit. It unions `messages/*.json` keys on conflict, then reruns `pnpm run check` and `pnpm run test`.
+- After each integration, the orchestrator checks the lane's flows on the single dev server at `https://glore.localhost`. Worktrees never start a dev server.
 
 ### Effort (Opus 5.5)
 

@@ -66,7 +66,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - Crowdin's GitHub integration (source and translation files mode) syncs `release/v0.7` and `main`.
 - A source change uploads, translators work in Crowdin, and Crowdin opens a PR from an `l10n_<branch>` branch titled `chore: sync translations from crowdin`.
-- Review that PR like code: `pnpm run check` MUST exit 0, then squash merge.
+- Review that PR like code: `pnpm run check` MUST exit 0, then squash and merge.
 - Never edit a Crowdin PR branch by hand: fix the string in Crowdin and let it re-sync.
 - In feature work, add every new key to all three catalogs with real translations. Crowdin imports them and owns later `es` and `it` edits.
 - Never delete or rename a key in one catalog only.
@@ -88,6 +88,14 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 - Use Conventional Commits with a lower-case subject (commitlint rejects sentence case) and a header of at most 100 characters.
 - Allowed scopes: `release`, `deps`, `deps-dev`, `security`.
 - Hook mechanics (lefthook pre-commit, commit-msg, pre-push): `code.md`.
+
+## Git history
+
+- History is linear. Never create a merge commit: no `git merge` without `--ff-only`, no merging `main` into a branch, no GitHub merge button.
+- Update a branch with `git rebase main`. Integrate it by rebase or fast-forward, or squash it into one commit when its commits do not stand alone.
+- On GitHub, merge pull requests with "Rebase and merge" or "Squash and merge".
+- Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits.
+- To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
 
 ## Dependencies
 
@@ -130,8 +138,8 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ## Worktrees and lanes
 
 - The orchestrator works on a branch (v0.7: `release/v0.7`) in the main checkout. Worktrees are only for spawned lane agents.
-- Merge a finished lane into that branch, then delete its worktree and branch.
-- Before merging lanes, run `git status` in the main checkout, because a lane once leaked a copy of its commit there. Compare unexplained changes with lane commits before restoring them.
+- Rebase a finished lane onto that branch and fast-forward it (`git merge --ff-only`), or squash the lane into one commit. Then delete its worktree and branch.
+- Before integrating lanes, run `git status` in the main checkout, because a lane once leaked a copy of its commit there. Compare unexplained changes with lane commits before restoring them.
 - Commit with explicit paths so stray staged changes never ride along.
 - A lane worktree gets `node_modules` as a symlink to the main checkout. Never run `pnpm install` inside a lane worktree.
 - An install writes through the symlink, rewrites the main links to the worktree path, and breaks the main dev server and `pnpm run` when the worktree is removed.

@@ -133,9 +133,10 @@ The scope is optional and limited to `release`, `deps`, `deps-dev`, and `securit
 To open a pull request:
 
 1. Fork the repository, create a new branch and implement your changes
-2. Run `pnpm run check` and `pnpm run test` locally and make sure they pass (`check` covers types, lint, format, unused code, and translations; the pre-push hook runs the first four)
-3. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
-4. Make sure all CI checks pass and wait for a maintainer to review your PR
+2. Keep the history linear: update your branch with `git rebase main` and never add merge commits (hooks and CI reject them)
+3. Run `pnpm run check` and `pnpm run test` locally and make sure they pass (`check` covers types, lint, format, unused code, and translations; the pre-push hook runs the first four)
+4. [Open a pull request](https://github.com/glorecertificate/glore/compare) using the default template
+5. Make sure all CI checks pass and wait for a maintainer to review your PR
 
 ### Translations
 

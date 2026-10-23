@@ -11,7 +11,7 @@ type Messages = typeof defaultMessages
 
 interface TeamInviteEmailProps extends EmailBaseProps {
   url: string
-  inviteeName: string
+  inviterName: string
   role: 'admin' | 'editor'
   userName?: string
 }
@@ -19,7 +19,7 @@ interface TeamInviteEmailProps extends EmailBaseProps {
 const TeamInviteEmail = ({
   category,
   url,
-  inviteeName,
+  inviterName,
   role,
   userName,
   locale = 'en',
@@ -41,7 +41,7 @@ const TeamInviteEmail = ({
   const footer = (
     <Text className="m-0 text-[12px] leading-5 text-[#71717a]">
       {t.rich('footer', {
-        invitee: inviteeName,
+        inviter: inviterName,
         emailLink: chunks => <Link href={`mailto:${metadata.email}`}>{chunks}</Link>,
       })}
     </Text>
@@ -53,7 +53,7 @@ const TeamInviteEmail = ({
         {userName ? common('greetingUser', { user: userName }) : common('greeting')}
       </Text>
       <Text className="text-[14px] leading-6 text-[#0a0a0a]">
-        {t('intro', { invitee: inviteeName, role: roleLabel })}
+        {t('intro', { inviter: inviterName, role: roleLabel })}
       </Text>
       <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('description')}</Text>
       <Text className="text-[13px] leading-5.5 text-[#71717a]">{t('buttonInstruction')}</Text>
@@ -76,7 +76,7 @@ const TeamInviteEmail = ({
 
 TeamInviteEmail.PreviewProps = {
   url: `${metadata.url}/join?token=preview-token`,
-  inviteeName: 'Alex',
+  inviterName: 'Alex',
   role: 'editor',
   userName: 'Jane',
 } satisfies TeamInviteEmailProps

@@ -6,6 +6,7 @@ import { and, desc, eq, isNull } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
 import { recordEvent } from '@/db/mutations/activity-event'
+import { personName } from '@/db/mutations/invitation'
 import { adminError } from '@/db/mutations/moderation'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { timestampMillis } from '@/db/queries/organization'
@@ -22,7 +23,8 @@ const createToken = () => randomBytes(32).toString('base64url')
 
 const teamInvitationUrl = (token: string) => `${process.env.APP_URL}${JOIN_ROOT}?token=${encodeURIComponent(token)}`
 
-const invitedEvent = (
+const invitedEvent = async (
+  tx: Transaction,
   actorId: string,
   invitation: { email: string; firstName: string; lastName: string | null; role: string; token: string; userId: string }
 ) =>
@@ -30,6 +32,7 @@ const invitedEvent = (
     actorId,
     data: {
       email: invitation.email,
+      inviterName: await personName(tx, actorId),
       name: fullName(invitation),
       role: invitation.role as TeamRole,
       url: teamInvitationUrl(invitation.token),
@@ -79,7 +82,7 @@ export const createTeamInvitation = async (
     .returning()
   if (!invitation) throw new Error('Failed to create the invitation')
 
-  const event = invitedEvent(actorId, invitation)
+  const event = await invitedEvent(tx, actorId, invitation)
   await recordEvent(tx, event)
   return { event, invitation }
 }
@@ -111,7 +114,7 @@ export const refreshTeamInvitation = async (
     .returning()
   if (!invitation) throw adminError('NOT_FOUND')
 
-  const event = invitedEvent(actorId, invitation)
+  const event = await invitedEvent(tx, actorId, invitation)
   await recordEvent(tx, event)
   return { event, invitation }
 }

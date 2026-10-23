@@ -409,7 +409,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
       to: event => users(event.data.userId),
       template: event => ({
         name: 'team/invite',
-        props: { inviteeName: event.data.name, role: event.data.role, url: event.data.url },
+        props: { inviterName: event.data.inviterName ?? 'GloRe', role: event.data.role, url: event.data.url },
       }),
     },
     url: () => '/dashboard',

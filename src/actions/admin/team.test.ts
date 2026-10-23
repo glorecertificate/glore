@@ -147,8 +147,9 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       expect(invitation.token.length).toBeGreaterThanOrEqual(40)
 
       expect(notifyMock).toHaveBeenCalledTimes(1)
-      const event = notifyMock.mock.calls[0]?.[0] as { data: { url: string }; type: string }
+      const event = notifyMock.mock.calls[0]?.[0] as { data: { inviterName: string; url: string }; type: string }
       expect(event.type).toBe('team.invited')
+      expect(event.data.inviterName).toBe('admin')
       expect(event.data.url).toBe(`http://localhost:3000/api/v1/join?token=${encodeURIComponent(invitation.token)}`)
 
       const [row] = await fixture.client.db.query.activityEvents.findMany({
@@ -159,7 +160,7 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       })
       expect(row).toMatchObject({ actorId: fixture.ids.admin })
       expect(JSON.stringify(row?.metadata)).not.toContain(invitation.token)
-      expect(row?.metadata).toEqual({ name: 'first Invitee', role: 'editor', userId })
+      expect(row?.metadata).toEqual({ inviterName: 'admin', name: 'first Invitee', role: 'editor', userId })
     })
 
     it('refuses duplicate emails, bad input, and unknown roles', async () => {

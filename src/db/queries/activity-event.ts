@@ -85,7 +85,14 @@ interface EventPayloads {
   'member.removed': { userId: string }
   'member.left': { userId: string }
   'organization.ownership_transferred': { newOwnerId: string; previousOwnerId: string }
-  'team.invited': { email: string; name: string; role: 'admin' | 'editor'; url: string; userId: string }
+  'team.invited': {
+    email: string
+    inviterName: string | null
+    name: string
+    role: 'admin' | 'editor'
+    url: string
+    userId: string
+  }
   'team.role_changed': { role: 'admin' | 'editor' | null; userId: string }
   'account.welcome': { userId: string }
   'account.suspended': { expiresAt: string | null; reason: string | null; userId: string }

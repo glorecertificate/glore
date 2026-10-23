@@ -142,7 +142,7 @@ const isMember = async (tx: Transaction, organizationId: number, userId: string)
   return Boolean(membership)
 }
 
-const personName = async (tx: Transaction, userId: string | null) => {
+export const personName = async (tx: Transaction, userId: string | null) => {
   if (!userId) return null
   const person = await tx.query.users.findFirst({
     columns: { email: true, firstName: true, lastName: true },

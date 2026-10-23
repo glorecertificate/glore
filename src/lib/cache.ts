@@ -4,6 +4,7 @@ export enum CacheTag {
   Course = 'course',
   Courses = 'courses',
   DocCategories = 'doc-categories',
+  Legal = 'legal',
   Messages = 'messages',
   Notifications = 'notifications',
   Organizations = 'organizations',
@@ -15,6 +16,7 @@ export enum CacheTag {
 }
 
 export const userTag = (id: string) => `${CacheTag.User}-${id}` as const
+export const legalTag = (slug: string) => `${CacheTag.Legal}-${slug}` as const
 export const courseTag = (slug: string) => `${CacheTag.Course}-${slug}` as const
 export const certificatesUserTag = (userId: string) => `${CacheTag.Certificates}-user-${userId}` as const
 export const certificatesTutorTag = (reviewerId: string) => `${CacheTag.Certificates}-tutor-${reviewerId}` as const

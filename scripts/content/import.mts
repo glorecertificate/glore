@@ -4,6 +4,7 @@ import { Pool, type PoolClient } from 'pg'
 
 import { buildCatalog } from './catalog.mts'
 import { buildDocCatalog } from './docs.mts'
+import { seedLegal } from './legal.mts'
 import { DOC_ENTITIES, type DocStats, createDocStats, syncDocs } from './sync-docs.mts'
 import { type Counter, ENTITIES, type SyncStats, createStats, removeCourse, syncCatalog } from './sync.mts'
 import { USAGE, guardExistingContent, guardTarget, parseImportArgs } from './target.mts'
@@ -49,6 +50,7 @@ const importContent = async () => {
   const client = await pool.connect()
   let stats = createStats()
   let docStats = createDocStats()
+  let legalSeeded = false
 
   try {
     await client.query('begin')
@@ -65,6 +67,7 @@ const importContent = async () => {
     if (!removing) {
       stats = await syncCatalog(client, buildCatalog(content), { drafts: guard.drafts, examples: options.examples })
       docStats = await syncDocs(client, buildDocCatalog(docs), { drafts: guard.drafts })
+      legalSeeded = await seedLegal(client, { now: new Date().toISOString() })
     }
     await client.query(options.dryRun ? 'rollback' : 'commit')
   } catch (e) {
@@ -81,6 +84,7 @@ const importContent = async () => {
       : `${removing ? 'Removed courses from' : 'Imported into'} ${options.target}.`
   )
   report(stats, docStats)
+  console.info(legalSeeded ? 'Legal documents seeded from content/legal.' : 'Legal documents left as they are.')
 }
 
 if (import.meta.main) await importContent()

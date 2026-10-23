@@ -5,7 +5,14 @@ import { type AdminPage } from '@/db/queries/admin-user'
 
 export const ADMIN_AUDIT_PAGE_SIZE = 25
 
-export const AUDIT_CATEGORIES = ['moderation', 'access', 'impersonation', 'certificates', 'organizations'] as const
+export const AUDIT_CATEGORIES = [
+  'moderation',
+  'access',
+  'impersonation',
+  'certificates',
+  'organizations',
+  'legal',
+] as const
 
 export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
 
@@ -13,6 +20,7 @@ export const AUDIT_ACTIONS = {
   access: ['team.invited', 'team.role_changed'],
   certificates: ['certificate.revoked'],
   impersonation: ['impersonation.started', 'impersonation.stopped'],
+  legal: ['legal.version_published', 'legal.accepted'],
   moderation: ['account.suspended', 'account.reinstated'],
   organizations: ['organization.application_decided'],
 } as const satisfies Record<AuditCategory, readonly EventType[]>
@@ -57,7 +65,7 @@ interface AuditPerson {
 
 interface AuditTarget {
   href: string | null
-  kind: 'certificate' | 'organization' | 'user'
+  kind: 'certificate' | 'legal' | 'organization' | 'user'
   label: string
 }
 
@@ -157,6 +165,13 @@ const auditTarget = (record: AuditRecord, lookups: AuditLookups): AuditTarget | 
     if (!id) return null
     const code = lookups.certificateCodes.get(id)
     return { href: `/certificates/${id}`, kind: 'certificate', label: code ?? `#${id}` }
+  }
+
+  if (action.startsWith('legal.')) {
+    const slug = stringOf(metadata.slug)
+    const version = numberOf(metadata.version)
+    if (!(slug && version)) return null
+    return { href: `/legal?document=${encodeURIComponent(slug)}`, kind: 'legal', label: `${slug} v${version}` }
   }
 
   if (action.startsWith('organization.')) {

@@ -462,6 +462,8 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
   'account.reinstated': {},
   'impersonation.started': {},
   'impersonation.stopped': {},
+  'legal.version_published': {},
+  'legal.accepted': {},
   'messages.published': {},
   'messages.reset': {},
   'account.deleted': {

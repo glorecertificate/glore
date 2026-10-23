@@ -1,60 +1,98 @@
 import 'server-only'
 
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import { cacheLife, cacheTag } from 'next/cache'
 
+import { eq } from 'drizzle-orm'
 import { type Locale } from 'next-intl'
-import { parse } from 'yaml'
-import { z } from 'zod'
 
+import { db } from '@/db/client'
+import { queryPendingLegal } from '@/db/mutations/legal'
+import { type LegalDocument, type PendingLegal } from '@/db/queries/legal'
+import { legalDocuments, legalTranslations, legalVersions } from '@/db/schema'
+import { legalTag, userTag } from '@/lib/cache'
+import { LEGAL_DOCUMENTS } from '@/lib/constants'
 import { DEFAULT_LOCALE } from '@/lib/i18n'
-
-const LEGAL_DOCUMENTS = ['privacy', 'terms', 'quality-charter'] as const
-
-export type LegalDocument = (typeof LEGAL_DOCUMENTS)[number]
 
 interface LegalContent {
   body: string
+  effectiveAt: string | null
   locale: Locale
+  material: boolean
   title: string
-  updated: string | null
+  version: number
+  versionId: number
 }
 
-const FRONT_MATTER_REGEX = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/u
-
-const frontMatterSchema = z.object({
-  title: z.string().min(1),
-  updated: z.union([z.string(), z.date()]).nullable().optional(),
-})
-
-const legalRoot = () => path.join(process.cwd(), 'content', 'legal')
-
-export const parseLegalFile = (source: string) => {
-  const match = FRONT_MATTER_REGEX.exec(source)
-  if (!match) return null
-
-  const parsed = frontMatterSchema.safeParse(parse(match[1] ?? ''))
-  if (!parsed.success) return null
-
-  const { title, updated } = parsed.data
-  const date = updated instanceof Date ? updated.toISOString().slice(0, 10) : (updated ?? null)
-  return { body: (match[2] ?? '').trim(), title, updated: date }
+interface CurrentLegal {
+  effectiveAt: string | null
+  id: number
+  material: boolean
+  translations: Record<string, { body: string; title: string }>
+  version: number
 }
 
-const readLegalFile = async (root: string, document: LegalDocument, locale: Locale) => {
-  try {
-    return parseLegalFile(await readFile(path.join(root, `${document}.${locale}.md`), 'utf8'))
-  } catch {
-    return null
+const queryCurrentLegal = async (slug: LegalDocument): Promise<CurrentLegal | null> => {
+  const [current] = await db
+    .select({
+      effectiveAt: legalVersions.effectiveAt,
+      id: legalVersions.id,
+      material: legalVersions.material,
+      version: legalVersions.version,
+    })
+    .from(legalDocuments)
+    .innerJoin(legalVersions, eq(legalVersions.id, legalDocuments.currentVersionId))
+    .where(eq(legalDocuments.slug, slug))
+  if (!current) return null
+
+  const rows = await db
+    .select({ body: legalTranslations.body, locale: legalTranslations.locale, title: legalTranslations.title })
+    .from(legalTranslations)
+    .where(eq(legalTranslations.versionId, current.id))
+  return {
+    ...current,
+    translations: Object.fromEntries(rows.map(({ body, locale, title }) => [locale, { body, title }])),
   }
 }
 
-export const loadLegalDocument = async (document: LegalDocument, locale: Locale, root = legalRoot()) => {
-  const candidates = locale === DEFAULT_LOCALE ? [locale] : [locale, DEFAULT_LOCALE]
-  const results = await Promise.all(candidates.map(candidate => readLegalFile(root, document, candidate)))
-  const index = results.findIndex(Boolean)
-  const content = results[index]
-  const resolved = candidates[index]
-  if (!(content && resolved)) return null
-  return { ...content, locale: resolved } satisfies LegalContent
+const fetchCurrentLegal = async (slug: LegalDocument) => {
+  'use cache'
+  cacheTag(legalTag(slug))
+  cacheLife('max')
+
+  return await queryCurrentLegal(slug)
 }
+
+export const loadLegalDocument = async (
+  slug: LegalDocument,
+  locale: Locale,
+  { cache = true }: { cache?: boolean } = {}
+) => {
+  const current = cache ? await fetchCurrentLegal(slug) : await queryCurrentLegal(slug)
+  if (!current) return null
+
+  const candidates = locale === DEFAULT_LOCALE ? [locale] : [locale, DEFAULT_LOCALE]
+  const resolved = candidates.find(candidate => current.translations[candidate])
+  const translation = resolved ? current.translations[resolved] : null
+  if (!(resolved && translation)) return null
+
+  return {
+    body: translation.body,
+    effectiveAt: current.effectiveAt,
+    locale: resolved,
+    material: current.material,
+    title: translation.title,
+    version: current.version,
+    versionId: current.id,
+  } satisfies LegalContent
+}
+
+const fetchPendingLegal = async (userId: string): Promise<PendingLegal | null> => {
+  'use cache'
+  cacheTag(userTag(userId), ...LEGAL_DOCUMENTS.map(legalTag))
+  cacheLife('max')
+
+  return await queryPendingLegal(userId)
+}
+
+export const getPendingLegal = async (userId: string, { cache = true }: { cache?: boolean } = {}) =>
+  cache ? await fetchPendingLegal(userId) : await queryPendingLegal(userId)

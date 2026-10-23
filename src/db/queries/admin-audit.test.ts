@@ -41,7 +41,7 @@ const record = (overrides: Partial<AuditRecord> & Pick<AuditRecord, 'action'>): 
 describe('audit categories', () => {
   it('lists every audited action once', () => {
     expect(AUDITED_ACTIONS).toHaveLength(new Set(AUDITED_ACTIONS).size)
-    expect(AUDITED_ACTIONS).toHaveLength(8)
+    expect(AUDITED_ACTIONS).toHaveLength(10)
   })
 
   it('maps each action back to its category', () => {
@@ -55,6 +55,7 @@ describe('audit categories', () => {
   it('narrows the actions to a category', () => {
     expect(auditActionsOf(null)).toEqual(AUDITED_ACTIONS)
     expect(auditActionsOf('impersonation')).toEqual(['impersonation.started', 'impersonation.stopped'])
+    expect(auditActionsOf('legal')).toEqual(['legal.version_published', 'legal.accepted'])
   })
 })
 
@@ -124,6 +125,31 @@ describe('lookup ids', () => {
 })
 
 describe('toAuditRows', () => {
+  it('links legal events to the version and its document', () => {
+    const [published, accepted] = toAuditRows(
+      [
+        record({
+          action: 'legal.version_published',
+          metadata: { effectiveAt: '2026-11-01', material: true, slug: 'terms', version: 2, versionId: 5 },
+          subjectId: '5',
+        }),
+        record({
+          action: 'legal.accepted',
+          actorId: 'user-1',
+          id: 2,
+          metadata: { slug: 'terms', userId: 'user-1', version: 2, versionId: 5 },
+          subjectId: '5',
+        }),
+      ],
+      lookups()
+    )
+    expect(published).toMatchObject({
+      category: 'legal',
+      target: { href: '/legal?document=terms', kind: 'legal', label: 'terms v2' },
+    })
+    expect(accepted).toMatchObject({ action: 'legal.accepted', category: 'legal' })
+  })
+
   it('resolves the actor and a user target with a searchable link', () => {
     const [row] = toAuditRows(
       [record({ action: 'account.suspended', metadata: { reason: 'Spam', userId: 'user-1' }, subjectId: 'user-1' })],

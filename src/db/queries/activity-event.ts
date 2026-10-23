@@ -36,6 +36,7 @@ interface EventPayloads {
     locale: string | null
     message: string | null
     organizationName: string
+    termsVersionId?: number | null
   }
   'organization.application_decided': {
     applicantEmail: string
@@ -106,6 +107,14 @@ interface EventPayloads {
   'impersonation.started': { expiresAt: string; reason: string; sessionId: string; userId: string }
   'impersonation.stopped': { reason: string; sessionId: string; userId: string }
   'account.deleted': { email: string; firstName: string; locale: string | null; userId: string }
+  'legal.version_published': {
+    effectiveAt: string
+    material: boolean
+    slug: string
+    version: number
+    versionId: number
+  }
+  'legal.accepted': { slug: string; userId: string; version: number; versionId: number }
   'messages.published': MessageRef
   'messages.reset': MessageRef
 }
@@ -119,6 +128,7 @@ type SubjectType =
   | 'invitation'
   | 'invite_link'
   | 'join_request'
+  | 'legal_version'
   | 'message'
   | 'organization'
   | 'user'
@@ -139,6 +149,7 @@ export const eventSubject = (event: AppEvent): { type: SubjectType; id: string }
   if ('inviteLinkId' in event.data) return { type: 'invite_link', id: String(event.data.inviteLinkId) }
   if ('joinRequestId' in event.data) return { type: 'join_request', id: String(event.data.joinRequestId) }
   if ('courseId' in event.data) return { type: 'course', id: String(event.data.courseId) }
+  if ('versionId' in event.data) return { type: 'legal_version', id: String(event.data.versionId) }
   if (event.type === 'organization.application_received' || event.type === 'organization.application_decided') {
     return { type: 'organization', id: String(event.organizationId ?? '') }
   }

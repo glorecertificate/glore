@@ -1,72 +1,76 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
-import path from 'node:path'
+import { randomUUID } from 'node:crypto'
 
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { eq } from 'drizzle-orm'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
-import { loadLegalDocument, parseLegalFile } from '@/lib/legal'
+import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
-const FILE = `---
-title: 'Privacy Policy'
-updated: '2026-10-22'
----
+vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn(), revalidateTag: vi.fn(), updateTag: vi.fn() }))
 
-Intro text.
+const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
 
-## Section
+describe.skipIf(!isLocalDatabase)('loadLegalDocument', () => {
+  const slug = `reader-${randomUUID().slice(0, 8)}`
+  let context: {
+    client: typeof import('@/db/client')
+    lib: typeof import('@/lib/legal')
+    schema: typeof import('@/db/schema')
+  }
+  let versionId = 0
 
-- one
-- two
-`
-
-describe('parseLegalFile', () => {
-  it('splits the front matter from the body', () => {
-    expect(parseLegalFile(FILE)).toEqual({
-      body: 'Intro text.\n\n## Section\n\n- one\n- two',
-      title: 'Privacy Policy',
-      updated: '2026-10-22',
-    })
-  })
-
-  it('reads an unquoted date', () => {
-    expect(parseLegalFile('---\ntitle: Terms\nupdated: 2026-10-22\n---\nBody')).toEqual({
-      body: 'Body',
-      title: 'Terms',
-      updated: '2026-10-22',
-    })
-  })
-
-  it('rejects files without a title or front matter', () => {
-    expect(parseLegalFile('Just text')).toBeNull()
-    expect(parseLegalFile('---\nupdated: 2026-10-22\n---\nBody')).toBeNull()
-  })
-})
-
-describe('loadLegalDocument', () => {
-  let root = ''
+  const load = async (locale: 'en' | 'es' | 'it') =>
+    await context.lib.loadLegalDocument(slug as 'terms', locale, { cache: false })
 
   beforeAll(async () => {
-    root = await mkdtemp(path.join(tmpdir(), 'legal-'))
-    await writeFile(path.join(root, 'privacy.en.md'), FILE)
-    await writeFile(path.join(root, 'privacy.it.md'), FILE.replace('Privacy Policy', 'Informativa'))
-    await writeFile(path.join(root, 'terms.en.md'), FILE.replace('Privacy Policy', 'Terms'))
+    const [client, lib, schema] = await Promise.all([
+      import('@/db/client'),
+      import('@/lib/legal'),
+      import('@/db/schema'),
+    ])
+    context = { client, lib, schema }
+    await client.db.insert(schema.legalDocuments).values({ slug })
+    const [version] = await client.db
+      .insert(schema.legalVersions)
+      .values({ documentSlug: slug, effectiveAt: '2026-10-22', material: true, status: 'published', version: 1 })
+      .returning({ id: schema.legalVersions.id })
+    if (!version) throw new Error('Failed to create the test version')
+    versionId = version.id
+    await client.db.insert(schema.legalTranslations).values([
+      { body: 'English body', locale: 'en', status: 'reviewed', title: 'English title', versionId },
+      { body: 'Corpo italiano', locale: 'it', status: 'reviewed', title: 'Titolo italiano', versionId },
+    ])
+    await client.db
+      .update(schema.legalDocuments)
+      .set({ currentVersionId: versionId })
+      .where(eq(schema.legalDocuments.slug, slug))
   })
 
   afterAll(async () => {
-    await rm(root, { force: true, recursive: true })
+    const { client, schema } = context
+    await client.db
+      .update(schema.legalDocuments)
+      .set({ currentVersionId: null })
+      .where(eq(schema.legalDocuments.slug, slug))
+    await client.db.delete(schema.legalDocuments).where(eq(schema.legalDocuments.slug, slug))
   })
 
-  it('loads the file for the active locale', async () => {
-    const content = await loadLegalDocument('privacy', 'it', root)
-    expect(content).toMatchObject({ locale: 'it', title: 'Informativa' })
+  it('reads the current version in the requested language', async () => {
+    expect(await load('it')).toEqual({
+      body: 'Corpo italiano',
+      effectiveAt: '2026-10-22',
+      locale: 'it',
+      material: true,
+      title: 'Titolo italiano',
+      version: 1,
+      versionId,
+    })
   })
 
-  it('falls back to English when the locale has no file', async () => {
-    const content = await loadLegalDocument('terms', 'es', root)
-    expect(content).toMatchObject({ locale: 'en', title: 'Terms' })
+  it('falls back to English when the language has no text', async () => {
+    expect(await load('es')).toMatchObject({ body: 'English body', locale: 'en', title: 'English title' })
   })
 
-  it('returns null when nothing exists', async () => {
-    expect(await loadLegalDocument('quality-charter', 'en', root)).toBeNull()
+  it('returns null for a document without a current version', async () => {
+    expect(await context.lib.loadLegalDocument(`missing-${slug}` as 'terms', 'en', { cache: false })).toBeNull()
   })
 })

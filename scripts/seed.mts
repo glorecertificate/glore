@@ -3,6 +3,7 @@
 import { hashPassword } from 'better-auth/crypto'
 import { Pool } from 'pg'
 
+import { seedLegal } from './content/legal.mts'
 import { LOCAL_DATABASE_REGEX, SEED_ORG_HANDLE, SEED_PASSWORD, SEED_USERS, seedEmail } from './seed-data.ts'
 import { setMembership, upsertOrganization, upsertUser } from './seed-db.mts'
 
@@ -51,6 +52,7 @@ const seed = async () => {
       await setMembership(client, { userId, organizationId, role: user.membership, now })
     }
 
+    await seedLegal(client, { now })
     await client.query('delete from rate_limits')
     await client.query('commit')
   } catch (e) {

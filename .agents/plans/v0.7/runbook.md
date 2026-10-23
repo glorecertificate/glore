@@ -6,7 +6,7 @@ Handoff for G8. Every step that writes to preview or production is a user step. 
 
 Pull request #20, then `main` (preview), then validation, then a manual release, then the release workflow deploys production.
 
-- Production is `https://glorecertificate.xyz`: Vercel production branch `production`, Neon branch `production` in project `old-base-10661180`.
+- Production is the `url` in `config/metadata.json`, the source of truth for the live domain: Vercel production branch `production`, Neon branch `production` in project `old-base-10661180`.
 - Preview is `https://preview.glorecertificate.xyz`: the Vercel domain of git branch `main`, Neon branch `staging` (comment `glore:staging`).
 
 ## Deploy model
@@ -36,7 +36,7 @@ Pull request #20, then `main` (preview), then validation, then a manual release,
 
 The schema is `envSchema` in `next.config.ts`. Production builds always send mail over SMTP (`src/lib/email.ts`), so `MAIL_TRANSPORT` stays unset.
 
-- `APP_URL`: `https://glorecertificate.xyz`. Already set.
+- `APP_URL`: the `url` in `config/metadata.json`. Already set. Change both together when the domain moves.
 - `BETTER_AUTH_SECRET`: a fresh value from `openssl rand -base64 32`.
 - `CRON_SECRET`: 16 or more characters. Already set. Without it the daily cron (`/api/v1/cron/daily`, 03:00 UTC) refuses every call.
 - `DATABASE_URL`: the Neon `production` connection string with `sslmode=require`. Confirm it targets `production`, not a copy.
@@ -71,7 +71,7 @@ The import refuses production once any course or doc exists, so steps 4 and 5 pa
 
 ## Verify
 
-Run these on the preview domain before the release and on `https://glorecertificate.xyz` after it.
+Run these on the preview domain before the release and on the production domain after it.
 
 1. Log in as an existing user and open the dashboard.
 2. Open a legacy profile link with `?v=<handle>` and a `/verify/<code>` link.

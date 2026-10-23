@@ -7,7 +7,7 @@
 </div>
 <br>
 
-**GloRe** is a multilingual e-learning platform that helps volunteers get their soft skills officially recognized. Visit [elearning.glorecertificate.net](https://elearning.glorecertificate.net) to sign up and get the certificate recognizing your skills.
+**GloRe** is a multilingual e-learning platform that helps volunteers get their soft skills officially recognized. Visit [glorecertificate.xyz](https://glorecertificate.xyz) to sign up and get the certificate recognizing your skills.
 
 ## About
 
@@ -102,7 +102,7 @@ Comment out the `DATABASE_URL` line in `.env.local`. Next.js will then fall thro
 The app is hosted on [Vercel](https://vercel.com):
 
 - The [CI workflow](https://github.com/glorecertificate/glore/actions/workflows/ci.yml) deploys a preview on every push and pull request to `main`, once the checks and e2e tests pass. Vercel's own Git deployments are disabled for `main`
-- The preview of `main` is served at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz), and production at [glorecertificate.xyz](https://glorecertificate.xyz)
+- The preview of `main` is served at [preview.glorecertificate.xyz](https://preview.glorecertificate.xyz), and production at the `url` in `config/metadata.json`
 - The [Release workflow](https://github.com/glorecertificate/glore/actions/workflows/release.yml) deploys to production when a `v*` tag is pushed
 
 The application can also be deployed manually:

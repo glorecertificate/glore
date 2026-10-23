@@ -10,7 +10,7 @@ W4 (translations and team content) has its own design in `translations.md`.
 | ----------- | --------------------------------------- | ---------------------------------------------------- | ---------------------------------------------- |
 | Local       | `https://glore.localhost`               | Docker Postgres on 5433 (`pnpm run db:up`)           | Mailpit (`pnpm run mail:up`, `localhost:8025`) |
 | Preview     | `preview.glorecertificate.xyz` (`main`) | Neon branch `staging` in project `old-base-10661180` | Real SMTP to `TEST_EMAIL` plus-addresses       |
-| Production  | `glorecertificate.xyz`                  | Neon branch `production`                             | Real SMTP                                      |
+| Production  | `url` in `config/metadata.json`         | Neon branch `production`                             | Real SMTP                                      |
 
 - Local mail reaches Mailpit through `MAIL_TRANSPORT=mailpit` in `.env.local`, which the user confirmed on 2026-10-22.
 - W0.1 still proves delivery with `pnpm run test:e2e -- e2e/recovery.spec.ts`; if no mail arrives, stop and ask the user (agents cannot read env files).

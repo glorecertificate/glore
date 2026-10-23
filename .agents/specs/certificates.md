@@ -38,7 +38,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Submit and resubmit auto-assign the org tutor with the fewest open requests, ties to the oldest last assignment (never assigned counts as oldest).
 - Authors and banned users are skipped. An org without tutors leaves the request in the pool.
 - Resubmit keeps the reviewer while still assignable.
-- Org admins, representatives, and platform admins assign, reassign, and unassign. The assigned tutor can release.
+- Org admins, representatives, and platform admins assign, reassign, and unassign. The assigned tutor can release, then returns to `/certificates`. A released `changes_requested` request gets a tutor again on resubmit.
 - An `in_review` request goes back to `submitted` when its tutor changes. `changes_requested` keeps its status.
 - Tutors self-assign unassigned `submitted` requests of their org.
 - The tutor queue is scoped to the active org. Drafts are visible to their owner only.
@@ -53,7 +53,8 @@ draft -> submitted -> in_review -> approved -> revoked
 - Approval commits the status, review row, and event in one transaction, then uploads to R2.
 - An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
-- A holder has at most one default: the partial unique index `certificates_user_id_default_key` enforces it, and approval, featuring, and revocation take the per-holder advisory lock `certificate-default:<userId>` first, so racing writes queue instead of failing.
+- A holder has at most one default, enforced by the partial unique index `certificates_user_id_default_key`.
+- Approval, featuring, and revocation first take the per-holder advisory lock `certificate-default:<userId>`, so racing writes queue instead of failing.
 - Org managers and platform admins revoke an approved certificate with a reason of 10 or more characters.
 - Revocation clears `documentUrl` in its transaction and deletes the PDF object from R2 after the commit (`r2DeleteQuietly`), and the latest approved certificate becomes the default.
 - A failed delete is logged and never undoes the revoke. The orphan sweeper removes the object later, because it treats the PDF of a revoked certificate as unreferenced.
@@ -67,7 +68,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Skills: 3 to 4 completed skill courses. Self-level is prefilled from the course assessment and adjustable, and the reflection is prefilled as evidence.
 - Your organization: anonymous rating, shown to the org only as an aggregate of 3 or more.
 - Review: language from the UI locale, missing personal data inline, live `CertificateThumbnail`.
-- Drafts autosave through `saveCertificateDraft`. `?draft=<id>` resumes a draft.
+- Drafts autosave through `saveCertificateDraft`. `?draft=<id>` resumes a draft on its first incomplete step (`resumeStep`).
 - A `changes_requested` id opens the same wizard in resubmit mode with the tutor's comments.
 - `EligibilityPanel` replaces the wizard when eligibility fails or a request is already open.
 

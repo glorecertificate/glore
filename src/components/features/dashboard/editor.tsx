@@ -27,7 +27,7 @@ export const EditorDashboard = ({
 }) => {
   const t = useTranslations('Dashboard')
   const tIntl = useTranslations('Intl.Languages')
-  const { dateTime, number } = useFormatter()
+  const { dateTime } = useFormatter()
   const { engagement, health, pending, stats, top } = editor
   const hasEngagement = engagement.some(({ completed, started }) => started + completed > 0)
   const pendingTotal = (pending?.organizations ?? 0) + (pending?.team ?? 0)
@@ -92,7 +92,7 @@ export const EditorDashboard = ({
         <Card>
           <CardHeader>
             <CardTitle>{t('editor.engagementTitle')}</CardTitle>
-            <CardDescription>{t('editor.engagementDescription', { count: number(stats.enrollments) })}</CardDescription>
+            <CardDescription>{t('editor.engagementDescription', { count: stats.enrollments })}</CardDescription>
           </CardHeader>
           <CardContent>
             {hasEngagement ? (

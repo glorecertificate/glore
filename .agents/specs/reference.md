@@ -114,7 +114,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - `transaction(fn)` runs `fn(tx)` atomically.
 - Dev (`pg`) uses the pooled `node-postgres` transaction.
 - Production reuses a lazily initialized, module-scoped neon-serverless WebSocket pool (`max: 3`, shared across invocations in a warm instance).
-- The pool needs a global `WebSocket` (Node 22+). The repo pins `24.16.0` in `.node-version` with an `engines.node: ">=22"` floor.
+- The pool needs a global `WebSocket` (Node 22+). The repo pins `24.22.1` in `.node-version` with `engines.node: "24.x"`, matching the Vercel Node.js 24 runtime.
 
 ### Mutation units
 

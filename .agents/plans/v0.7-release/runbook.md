@@ -5,6 +5,7 @@ Handoff for G8. Every step that writes to staging or production is a user step. 
 ## State
 
 - Branch `release/v0.7` holds the release. Nothing is pushed.
+- W4 (`translations.md`) adds migrations and the legal and settings data. Recount the migrations and redo the staging pass after W4 lands.
 - Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0028.
 - Production has no database comment and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).

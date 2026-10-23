@@ -6,7 +6,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W3 (verification and release readiness). W0 to W2 are integrated, and the history is linear (no merge commits).
-- Next up: the G8 handoff in `runbook.md`. Production steps stay with the user.
+- Next up: W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -206,6 +206,27 @@ Content rules: plain, warm language for young adults, examples from volunteering
 - H3 [x] G3 and e2e checked: stock Better Auth impersonation replaces the local plugin (migration 0024, 988a0788). Accept: `/admin/users` view-as, banner, stop.
 - H4 [x] 3a32239c and dffa09c9, checked in the G3 browser pass: editor AI on the free Gemini tier with a model chain and first-token fallback. Accept: browser run of the AI menu in it.
 - H5 [x] G3 and e2e checked: browser-check fixes for titles, headings, `aria-controls`, and chip names (a07bb8de, a07bb8de). Accept: browser run per item.
+
+## W4 translations and team content
+
+Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 to T6. About 19 agent-days.
+
+- T0 [ ]: one `loadMessages(locale)` for all five loaders, `messageSignature` in `src/lib/icu.ts`, `icu-minify` as a direct dependency, locale lists from `LOCALES`, new cache tags, production importer lock.
+  - Accept: no behavior change, check and tests green.
+- T1 [ ]: legal tables, seed from `content/legal`, cached reader, admin draft, publish, and history UI, audit events.
+  - Accept: legal pages render from the database, published versions are immutable, e2e publishes v2 and the date changes.
+- T1b [ ]: `legal_acceptances`, terms checkbox at registration and onboarding, material re-accept gate in the dashboard layout.
+  - Accept: e2e for a material v2.
+- T2 [ ]: override tables, cached loader with compile and signature filter, protected namespaces, publish with `updateTag`, PDF labels frozen in the approval snapshot.
+  - Accept: Vitest for merge and stale states, `@prod` e2e interpolates `{name}`, Mailpit shows an overridden subject.
+- T3 [ ]: `/admin/translations` with filters, ICU validation, preview, reset, history, AI suggest, and the stale override cron notice.
+  - Accept: e2e override, invalid ICU blocked, reset, editors blocked from protected namespaces.
+- T4 [ ]: `content_translations`, per-locale status in the course, doc, and skill group editors, AI translate for Plate content, `doc_articles.languages`, dashboard coverage, audit events.
+  - Accept: e2e translate, review, publish `es`, outdated flag after an `en` edit.
+- T5 [ ]: `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
+  - Accept: a contact email edit reaches the email layout and footer.
+- T6 [ ]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `glore-followups.md`.
+  - Accept: docs match code, `/sync-docs` and `/sync-agents --check` clean.
 
 ## Verification matrix
 

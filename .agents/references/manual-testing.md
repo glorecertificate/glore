@@ -1,6 +1,6 @@
 # Manual testing flows
 
-Step-by-step flows per user type for manual testing of v1.
+Step-by-step flows per user type for manual testing of v0.7.
 
 They describe the target behavior in `.agents/plans/v0.7-release/`, so a step passes only once its task has landed.
 

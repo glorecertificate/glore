@@ -6,7 +6,7 @@ Items the GloRe team owns before or soon after the v0.7 launch. Engineering cann
 
 ### 1. Legal texts
 
-- Review the privacy policy, terms of use, and Quality Charter in en, es, and it (`content/legal/*.md`). They are drafts written for v1.
+- Review the privacy policy, terms of use, and Quality Charter in en, es, and it. After W4 they are edited and published in the app. They are drafts written for v0.7.
 - Confirm the contact person, address, email provider, legal bases, and retention periods.
 - Confirm international transfers, the data protection officer, liability, and governing law.
 - Confirm the time a review may take and the consequences of a charter breach.
@@ -44,5 +44,5 @@ Production imports every course as a draft. GloRe editors review and publish eac
 
 ### 6. Translations
 
-- Name the GloRe owner of the Crowdin project (`crowdin.yml`), who invites translators and approves translation pull requests.
-- Courses and docs are translated in the app editors, not in Crowdin.
+- Name the GloRe editors who review translations in the app (`/admin/translations`, course and doc editors). Crowdin is no longer used (U18).
+- Ask counsel whether only the terms need acceptance and which changes count as material (U20).

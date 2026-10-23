@@ -1,6 +1,8 @@
 # GloRe v0.7 release: plan
 
-Architecture, sequence, and working protocol for v1. Decisions with IDs (U1, D3) live in `spec.md`; the checklist lives in `tasks.md`.
+Architecture, sequence, and working protocol for v0.7. Decisions with IDs (U1, D3) live in `spec.md`; the checklist lives in `tasks.md`.
+
+W4 (translations and team content) has its own design in `translations.md`.
 
 ## Environments
 

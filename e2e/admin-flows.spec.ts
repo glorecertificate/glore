@@ -125,7 +125,7 @@ test('opens the organization detail with the application, members, and invitatio
   const application = await seedDetail('detail')
   await page.goto(`/admin/organizations/${application.id}`)
   await expect(page).toHaveTitle(new RegExp(application.name, 'u'))
-  await expect(page.getByText(`${application.name} SL`)).toBeVisible()
+  await expect(page.getByText(`${application.name} SL`).filter({ visible: true })).toBeVisible()
   await expect(page.getByText('Lucia Alvarez').first()).toBeVisible()
 
   for (const tab of ['Members', 'Invitations', 'Certificates', 'Activity']) {

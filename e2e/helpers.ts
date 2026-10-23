@@ -19,7 +19,9 @@ export const localAuthState = async (role: AuthRole) => {
 
 export const loginWithEmail = async (page: Page, email: string) => {
   await page.goto('/login')
-  await page.locator('input[name="username"]').fill(email)
+  const username = page.locator('input[name="username"]')
+  await hydrated(username)
+  await username.fill(email)
   await page.locator('input[name="password"]').fill(SEED_PASSWORD)
   await page.locator('form button[type="submit"]').click()
   await expect(page).toHaveURL(/\/dashboard/u)

@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { seedEmail } from '~/scripts/seed-data'
 
+import { hydrated } from './helpers'
 import { clearMail, isMailpitUp, latestMailText, mailLinkPath } from './mail'
 
 test('resets a password through the emailed link', async ({ page, request }) => {
@@ -20,7 +21,9 @@ test('resets a password through the emailed link', async ({ page, request }) => 
   await page.locator('form button[type="submit"]').click()
 
   await page.goto(mailLinkPath(await latestMailText(request, email), 'reset-password'))
-  await page.locator('input[name="password"]').fill(password)
+  const newPassword = page.locator('input[name="password"]')
+  await hydrated(newPassword)
+  await newPassword.fill(password)
   await page.locator('form button[type="submit"]').click()
   await expect(page.getByText('Your password has been updated')).toBeVisible()
 

@@ -3002,6 +3002,7 @@
       "entityDescription": "Aparece en el pie de todos los correos.",
       "entityName": "Nombre",
       "entityAddress": "Dirección",
+      "entityCountry": "País",
       "restore": "Restaurar valores predeterminados",
       "save": "Guardar cambios",
       "saving": "Guardando…",
@@ -3229,7 +3230,7 @@
       "subject": "Nueva solicitud de registro de {organizationName}"
     },
     "common": {
-      "address": "{name}, {address}",
+      "address": "{name}, {address}, {country}",
       "contactUs": "Contáctanos",
       "copyright": "© {year} {name}. Reservados todos los derechos.",
       "greeting": "Hola,",

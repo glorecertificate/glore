@@ -8,7 +8,8 @@ import { toast } from 'sonner'
 import { saveSettings } from '@/actions/admin/settings'
 import { SettingsSection } from '@/components/features/organization/settings-section'
 import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { CountrySelect } from '@/components/ui/country-select'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Separator } from '@/components/ui/separator'
 import { useFormDisabled } from '@/hooks/use-form-disabled'
 import {
@@ -107,6 +108,23 @@ export const AdminSettingsForm = ({ settings }: { settings: AppSettings }) => {
           <div className="grid gap-4">
             <SettingsField control={form.control} label={t('entityName')} name="legalEntity.name" />
             <SettingsField control={form.control} label={t('entityAddress')} name="legalEntity.address" />
+            <FormField
+              control={form.control}
+              name="legalEntity.country"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('entityCountry')}</FormLabel>
+                  <FormControl>
+                    <CountrySelect
+                      disabled={form.formState.isSubmitting}
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
         </SettingsSection>
 

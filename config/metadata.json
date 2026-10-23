@@ -18,7 +18,8 @@
   },
   "legalEntity": {
     "name": "Associazione Joint",
-    "address": "Via Giovanola 25/c, 20139 Milano (MI), Italy"
+    "address": "Via Giovanola 25/c, 20139 Milano (MI)",
+    "country": "it"
   },
   "category": "E-Learning",
   "themeColor": "#fefefe",

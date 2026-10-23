@@ -3002,6 +3002,7 @@
       "entityDescription": "Named in the footer of every email.",
       "entityName": "Name",
       "entityAddress": "Address",
+      "entityCountry": "Country",
       "restore": "Restore defaults",
       "save": "Save changes",
       "saving": "Saving…",
@@ -3229,7 +3230,7 @@
       "subject": "New registration request from {organizationName}"
     },
     "common": {
-      "address": "{name}, {address}",
+      "address": "{name}, {address}, {country}",
       "contactUs": "Contact us",
       "copyright": "© {year} {name}. All rights reserved.",
       "greeting": "Hello there,",

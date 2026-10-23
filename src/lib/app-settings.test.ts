@@ -77,7 +77,7 @@ describe('createSettingsSchema', () => {
     const result = createSettingsSchema(messages).safeParse({
       ...DEFAULT_SETTINGS,
       email: 'nope',
-      legalEntity: { address: '', name: 'Joint' },
+      legalEntity: { address: '', country: 'it', name: 'Joint' },
       phone: '0256568779',
       website: 'nope',
     })
@@ -89,9 +89,9 @@ describe('createSettingsSchema', () => {
   it('trims text values', () => {
     const result = createSettingsSchema(messages).parse({
       ...DEFAULT_SETTINGS,
-      legalEntity: { address: '  Via Roma 1  ', name: ' Joint ' },
+      legalEntity: { address: '  Via Roma 1  ', country: ' IT ', name: ' Joint ' },
     })
-    expect(result.legalEntity).toEqual({ address: 'Via Roma 1', name: 'Joint' })
+    expect(result.legalEntity).toEqual({ address: 'Via Roma 1', country: 'it', name: 'Joint' })
   })
 })
 

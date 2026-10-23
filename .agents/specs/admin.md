@@ -83,7 +83,7 @@
 ## Settings
 
 - `/admin/settings` edits `app_settings` (`getSettings`, `saveSettings` in `actions/admin/settings.ts`). `saveSettings` takes `requireAdminWithLimit('settings', 60)`.
-- Keys: `email`, `phone` (international format), `website`, `social` (five optional http links), `legalEntity` (`name`, `address`). Schemas, defaults, and `parseSettings` are pure (`lib/app-settings.ts`).
+- Keys: `email`, `phone` (international format), `website`, `social` (five optional http links), `legalEntity` (`name`, `address`, `country` code). Schemas, defaults, and `parseSettings` are pure (`lib/app-settings.ts`).
 - Each key is validated alone. A missing or invalid stored value falls back to `config/metadata.json`.
 - `saveAppSettings` (`db/mutations/app-settings.ts`) stores only keys that differ from the effective value and records `settings.updated` with the changed keys. The action then calls `updateTag(CacheTag.Settings)`.
 - `loadSettings()` (`lib/settings.ts`) is a plain cached read with a defaults fallback, so emails and cron use it. The root layout feeds `SettingsProvider`, and client code calls `useSettings()`.

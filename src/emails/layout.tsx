@@ -3,10 +3,13 @@ import { type ReactNode } from 'react'
 import { type AbstractIntlMessages } from 'next-intl'
 import { Body, Container, Hr, Html, Img, Link, Preview, Section, Tailwind, Text } from 'react-email'
 
-import { type EmailCategory, emailTranslator } from '@/emails/translate'
+import { type EmailCategory, type EmailTranslator, emailTranslator } from '@/emails/translate'
 import { type AppSettings, DEFAULT_SETTINGS, SOCIAL_LABELS, socialLinks } from '@/lib/app-settings'
 import { publicFile } from '@/lib/utils'
 import metadata from '~/config/metadata.json'
+
+const countryName = (countries: EmailTranslator, code: string) =>
+  countries.has(code) ? countries(code) : code.toUpperCase()
 
 const tailwindConfig = {
   theme: {
@@ -43,6 +46,7 @@ export const EmailLayout = ({
   settings = DEFAULT_SETTINGS,
 }: EmailLayoutProps) => {
   const common = emailTranslator('Email.common', { locale, messages })
+  const countries = emailTranslator('Intl.Countries', { locale, messages })
   const isOptional = category !== null && category !== 'mandatory'
   const preferencesUrl = `${process.env.APP_URL}/settings?tab=notifications`
   const { legalEntity, website } = settings
@@ -87,7 +91,11 @@ export const EmailLayout = ({
                 </Text>
               )}
               <Text className="m-0 text-[12px] leading-5 text-[#a1a1aa]">
-                {common('address', { address: legalEntity.address, name: legalEntity.name })}
+                {common('address', {
+                  address: legalEntity.address,
+                  country: countryName(countries, legalEntity.country),
+                  name: legalEntity.name,
+                })}
               </Text>
               <Text className="m-0 text-[12px] leading-5 text-[#a1a1aa]">
                 {common('copyright', { name: legalEntity.name, year: new Date().getFullYear() })}

@@ -242,7 +242,8 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - Accept: e2e override, invalid ICU blocked, reset, editors blocked from protected namespaces.
 - T4 [x] (lane t4, a5ac6f10, migration 0031): `content_translations`, per-locale status in the course, doc, and skill group editors, AI translate for Plate content, `doc_articles.languages`, dashboard coverage, audit events.
   - Accept: e2e translate, review, publish `es`, outdated flag after an `en` edit.
-- T5 [ ]: `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
+- T5 [x] (lane t5, a62f378b to eaf17f70, migration 0032): `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
+  - The editor is `/admin/settings`. The legal entity has a `country` code, so es and it emails print "Italia". The scripts are `i18n:overrides`, `i18n:pull`, and `i18n:rename`; the first two accept `--target production` because they only read.
   - Accept: a contact email edit reaches the email layout and footer.
 - T6 [x]: remove `crowdin.yml` and the Crowdin docs, update specs, `AGENTS.md`, `README.md`, `manual-testing.md`, and `glore-followups.md`.
   - Docs now describe the in-app model. `/sync-docs` and `/sync-agents --check` run in G8, after T5 lands.

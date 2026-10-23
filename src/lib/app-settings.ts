@@ -27,6 +27,8 @@ export interface SettingsMessages {
 
 const PHONE_REGEX = /^\+[1-9]\d{6,14}$/u
 
+const COUNTRY_REGEX = /^[a-z]{2}$/u
+
 const DEFAULT_MESSAGES: SettingsMessages = {
   email: 'Enter a valid email address',
   phone: 'Enter a phone number with the country code',
@@ -49,7 +51,11 @@ const createSettingSchemas = (messages: SettingsMessages) => {
 
   return {
     email: z.string().trim().toLowerCase().max(254, messages.email).pipe(z.email(messages.email)),
-    legalEntity: z.object({ address: text(240), name: text(120) }),
+    legalEntity: z.object({
+      address: text(240),
+      country: z.string().trim().toLowerCase().regex(COUNTRY_REGEX, messages.required),
+      name: text(120),
+    }),
     phone: z.string().trim().regex(PHONE_REGEX, messages.phone),
     social: z.object({
       facebook: optionalUrl,

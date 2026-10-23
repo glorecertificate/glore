@@ -183,6 +183,10 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
   }
 
   const onSubmit = async (values: WizardValues) => {
+    if (step < STEPS.length - 1) {
+      await advance()
+      return
+    }
     setSubmitting(true)
     const personal = missing.length > 0 ? personalPayload(values, missing) : undefined
 
@@ -323,6 +327,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
               {last ? (
                 <Button
                   icon={CheckIcon}
+                  key="submit"
                   loading={submitting}
                   loadingText={t('submitting')}
                   type="submit"
@@ -334,6 +339,7 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
                 <Button
                   icon={ArrowRightIcon}
                   iconPlacement="right"
+                  key="next"
                   onClick={() => void advance()}
                   type="button"
                   variant="brand"

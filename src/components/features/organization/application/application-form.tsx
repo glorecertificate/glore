@@ -96,6 +96,10 @@ export const ApplicationForm = () => {
   }
 
   const handleSubmit = async () => {
+    if (!isLast) {
+      await handleNext()
+      return
+    }
     setLoading(true)
     const input = form.getValues()
     const { error } = await requestOrganizationRegistration({ ...input, locale: locale as ApplicationInput['locale'] })
@@ -149,11 +153,11 @@ export const ApplicationForm = () => {
             {t('back')}
           </Button>
           {isLast ? (
-            <Button disabled={loading} type="submit">
+            <Button disabled={loading} key="submit" type="submit">
               {loading ? t('submitting') : t('submit')}
             </Button>
           ) : (
-            <Button onClick={handleNext} type="button">
+            <Button key="next" onClick={handleNext} type="button">
               {t('next')}
             </Button>
           )}

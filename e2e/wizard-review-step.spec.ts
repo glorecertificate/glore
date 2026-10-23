@@ -18,7 +18,7 @@ test.afterAll(async () => {
   if (tenant) await removeTenant(tenant)
 })
 
-test.fixme('moving to the review step does not submit the request (app bug: wizard.tsx flips the Continue button to submit mid click)', async () => {
+test('moving to the review step does not submit the request', async () => {
   const { page } = volunteer
   await page.goto('/certificates/new')
   await fillExperience(page)

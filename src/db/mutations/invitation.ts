@@ -24,6 +24,7 @@ import {
   verifications,
 } from '@/db/schema'
 import { INVITE_ROOT, JOIN_LINK_ROOT } from '@/lib/constants'
+import { hashToken, issueToken, openToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -73,7 +74,30 @@ export const inviteLinkUrl = (token: string) => `${process.env.APP_URL}${JOIN_LI
 
 export const normalizeEmail = (email: string) => email.trim().toLowerCase()
 
-const createToken = () => randomBytes(32).toString('base64url')
+export const revealInvitationToken = async (
+  tx: Transaction,
+  invitation: { id: number; tokenCipher: string | null }
+) => {
+  const opened = openToken(invitation.tokenCipher)
+  if (opened) return opened
+  const { token, tokenCipher, tokenHash } = issueToken()
+  await tx
+    .update(organizationInvitations)
+    .set({ tokenCipher, tokenHash })
+    .where(eq(organizationInvitations.id, invitation.id))
+  return token
+}
+
+export const revealInviteLinkToken = async (tx: Transaction, link: { id: number; tokenCipher: string | null }) => {
+  const opened = openToken(link.tokenCipher)
+  if (opened) return opened
+  const { token, tokenCipher, tokenHash } = issueToken()
+  await tx
+    .update(organizationInviteLinks)
+    .set({ tokenCipher, tokenHash })
+    .where(eq(organizationInviteLinks.id, link.id))
+  return token
+}
 
 export const hashProof = (proof: string) => createHash('sha256').update(proof).digest('hex')
 
@@ -187,6 +211,7 @@ export const createInvitation = async (
 
   const now = Date.now()
   const nowIso = new Date(now).toISOString()
+  const { token, tokenCipher, tokenHash } = issueToken()
   const values = {
     expiresAt: isoAfter(expiryDays, now),
     invitedById,
@@ -194,7 +219,8 @@ export const createInvitation = async (
     locale: locale ?? null,
     message: message ?? null,
     role,
-    token: createToken(),
+    tokenCipher,
+    tokenHash,
     userId: account?.id ?? null,
   }
 
@@ -234,13 +260,13 @@ export const createInvitation = async (
       message: invitation.message,
       organizationName: organization.name,
       role: invitation.role,
-      url: invitationUrl(invitation.token, proof),
+      url: invitationUrl(token, proof),
       userId: account?.id ?? null,
     },
   } satisfies AppEvent<'invitation.sent'>
   await recordEvent(tx, event)
 
-  return { event, invitation }
+  return { event, invitation, token }
 }
 
 export const resendInvitation = async (
@@ -268,9 +294,10 @@ export const resendInvitation = async (
     throw invitationError('TOO_SOON')
   }
 
+  const { token, tokenCipher, tokenHash } = issueToken()
   const [invitation] = await tx
     .update(organizationInvitations)
-    .set({ expiresAt: isoAfter(expiryDays, now), lastSentAt: new Date(now).toISOString(), token: createToken() })
+    .set({ expiresAt: isoAfter(expiryDays, now), lastSentAt: new Date(now).toISOString(), tokenCipher, tokenHash })
     .where(and(eq(organizationInvitations.id, current.id), openInvitation))
     .returning()
   if (!invitation) throw invitationError('REVOKED')
@@ -290,13 +317,13 @@ export const resendInvitation = async (
       message: invitation.message,
       organizationName: current.organization.name,
       role: invitation.role,
-      url: invitationUrl(invitation.token, proof),
+      url: invitationUrl(token, proof),
       userId: invitation.userId,
     },
   } satisfies AppEvent<'invitation.sent'>
   await recordEvent(tx, event)
 
-  return { event, invitation }
+  return { event, invitation, token }
 }
 
 export const revokeInvitation = async (
@@ -397,7 +424,7 @@ const claimInvitation = async (
 
 const findByToken = async (tx: Transaction, token: string) => {
   const invitation = await tx.query.organizationInvitations.findFirst({
-    where: eq(organizationInvitations.token, token),
+    where: eq(organizationInvitations.tokenHash, hashToken(token)),
     with: { organization: { columns: { id: true, name: true } } },
   })
   if (!invitation) throw invitationError('NOT_FOUND')
@@ -413,6 +440,19 @@ export const acceptInvitation = async (tx: Transaction, { token, user }: { token
   return { ...accepted, organization: invitation.organization }
 }
 
+export const openRecipientInvitation = async (
+  tx: Transaction,
+  { invitationId, user }: { invitationId: number; user: Recipient }
+) => {
+  const invitation = await tx.query.organizationInvitations.findFirst({
+    where: eq(organizationInvitations.id, invitationId),
+  })
+  if (!invitation) throw invitationError('NOT_FOUND')
+  assertPending(invitation)
+  assertRecipient(invitation, user)
+  return await revealInvitationToken(tx, invitation)
+}
+
 export const renewInvitationProof = async (tx: Transaction, { token }: { token: string }) => {
   const invitation = await findByToken(tx, token)
   assertPending(invitation)
@@ -426,7 +466,7 @@ export const renewInvitationProof = async (tx: Transaction, { token }: { token: 
     email: address,
     invitation,
     locale: invitation.locale,
-    url: invitationUrl(invitation.token, proof),
+    url: invitationUrl(token, proof),
   }
 }
 
@@ -512,6 +552,7 @@ export const createInviteLink = async (
 ) => {
   if (role !== 'volunteer' && role !== 'learner') throw invitationError('INVALID')
 
+  const { token, tokenCipher, tokenHash } = issueToken()
   const [link] = await tx
     .insert(organizationInviteLinks)
     .values({
@@ -521,7 +562,8 @@ export const createInviteLink = async (
       organizationId,
       requiresApproval,
       role,
-      token: createToken(),
+      tokenCipher,
+      tokenHash,
     })
     .returning()
   if (!link) throw new Error('Failed to create invite link')
@@ -534,7 +576,7 @@ export const createInviteLink = async (
   } satisfies AppEvent<'invite_link.created'>
   await recordEvent(tx, event)
 
-  return { event, link }
+  return { event, link, token }
 }
 
 export const revokeInviteLink = async (
@@ -595,7 +637,7 @@ export const joinThroughInviteLink = async (
   { applicant, expiryDays, token }: { applicant: LinkApplicant; expiryDays: number; token: string }
 ) => {
   const link = await tx.query.organizationInviteLinks.findFirst({
-    where: eq(organizationInviteLinks.token, token),
+    where: eq(organizationInviteLinks.tokenHash, hashToken(token)),
     with: { organization: { columns: { approvedAt: true, id: true, name: true } } },
   })
   if (!link?.organization.approvedAt) throw invitationError('NOT_FOUND')

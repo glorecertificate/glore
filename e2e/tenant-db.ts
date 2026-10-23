@@ -20,8 +20,8 @@ export const seedInvitation = async ({
     const expiresAt = new Date(Date.now() + (state === 'expired' ? -DAY_MS : 7 * DAY_MS)).toISOString()
     await pool.query(
       `insert into organization_invitations
-        (organization_id, email, role, token, expires_at, revoked_at, last_sent_at)
-       values ($1, $2, $3::role, $4, $5, $6, now())`,
+        (organization_id, email, role, token_hash, expires_at, revoked_at, last_sent_at)
+       values ($1, $2, $3::role, encode(sha256(convert_to($4, 'UTF8')), 'hex'), $5, $6, now())`,
       [tenant.id, email, role, token, expiresAt, state === 'revoked' ? new Date().toISOString() : null]
     )
     return token
@@ -66,11 +66,18 @@ export const invitationRow = async (tenant: Tenant, email: string) =>
 
 export const invitationToken = async (tenant: Tenant, email: string) =>
   await withDb(async pool => {
-    const result = await pool.query<{ token: string }>(
-      'select token from organization_invitations where organization_id = $1 and lower(email) = lower($2) order by id desc limit 1',
-      [tenant.id, email]
+    const token = `g2${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`
+    const result = await pool.query(
+      `update organization_invitations
+          set token_hash = encode(sha256(convert_to($3, 'UTF8')), 'hex'), token_cipher = null
+        where id = (
+          select id from organization_invitations
+           where organization_id = $1 and lower(email) = lower($2)
+           order by id desc limit 1
+        )`,
+      [tenant.id, email, token]
     )
-    return result.rows[0]?.token ?? ''
+    return result.rowCount ? token : ''
   })
 
 export const certificateStatuses = async (tenant: Tenant) =>

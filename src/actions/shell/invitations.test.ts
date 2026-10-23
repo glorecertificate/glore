@@ -2,6 +2,7 @@ import { eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { type Fixture, createFixture, isLocalDatabase } from '@/actions/certificates/test-harness'
+import { hashToken } from '@/lib/secret-token'
 
 const viewer = vi.hoisted(() => ({ current: null as { email: string; id: string } | null }))
 
@@ -49,9 +50,19 @@ describe.skipIf(!isLocalDatabase)('pending invitations', () => {
     const future = new Date(Date.now() + 86_400_000).toISOString()
     const past = new Date(Date.now() - 86_400_000).toISOString()
     const base = { organizationId: fixture.otherOrganizationId, role: 'volunteer' as const }
-    const tokens = async () => {
+    const pendingIds = async () => {
       const { data } = await invitations.listMyPendingInvitations()
-      return data?.map(({ token }) => token) ?? []
+      return data?.map(({ id }) => id) ?? []
+    }
+    const insert = async (
+      values: Omit<typeof schema.organizationInvitations.$inferInsert, 'tokenHash'>,
+      token: string
+    ) => {
+      const [row] = await db
+        .insert(schema.organizationInvitations)
+        .values({ ...values, tokenHash: hashToken(token) })
+        .returning({ id: schema.organizationInvitations.id })
+      return row!.id
     }
     const clear = async () =>
       await db
@@ -59,19 +70,19 @@ describe.skipIf(!isLocalDatabase)('pending invitations', () => {
         .where(eq(schema.organizationInvitations.organizationId, fixture.otherOrganizationId))
     viewer.current = { email, id: fixture.ids.outsider }
 
-    await db.insert(schema.organizationInvitations).values({ ...base, email, expiresAt: future, token: 'open' })
-    expect(await tokens()).toEqual(['open'])
+    const open = await insert({ ...base, email, expiresAt: future }, 'open')
+    expect(await pendingIds()).toEqual([open])
+    const { data } = await invitations.listMyPendingInvitations()
+    expect(Object.keys(data?.[0] ?? {}).filter(key => key.startsWith('token'))).toEqual([])
     await clear()
 
-    await db
-      .insert(schema.organizationInvitations)
-      .values({ ...base, email: 'x@lane-a.test', expiresAt: future, token: 'foreign' })
-    expect(await tokens()).toEqual([])
+    const foreign = await insert({ ...base, email: 'x@lane-a.test', expiresAt: future }, 'foreign')
+    expect(await pendingIds()).toEqual([])
     await db
       .update(schema.organizationInvitations)
       .set({ userId: fixture.ids.outsider })
-      .where(eq(schema.organizationInvitations.token, 'foreign'))
-    expect(await tokens()).toEqual(['foreign'])
+      .where(eq(schema.organizationInvitations.id, foreign))
+    expect(await pendingIds()).toEqual([foreign])
     await clear()
 
     for (const [token, state] of [
@@ -80,8 +91,8 @@ describe.skipIf(!isLocalDatabase)('pending invitations', () => {
       ['declined', { declinedAt: past, expiresAt: future }],
       ['accepted', { acceptedAt: past, expiresAt: future }],
     ] as const) {
-      await db.insert(schema.organizationInvitations).values({ ...base, ...state, email, token })
-      expect(await tokens()).toEqual([])
+      await insert({ ...base, ...state, email }, token)
+      expect(await pendingIds()).toEqual([])
       await clear()
     }
   })
@@ -94,7 +105,7 @@ describe.skipIf(!isLocalDatabase)('pending invitations', () => {
       expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
       organizationId: fixture.organizationId,
       role: 'volunteer',
-      token: `${fixture.ids.author}-member`,
+      tokenHash: hashToken(`${fixture.ids.author}-member`),
     })
     viewer.current = { email, id: fixture.ids.author }
     const { data } = await invitations.listMyPendingInvitations()

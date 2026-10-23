@@ -57,7 +57,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - It then runs `runDailyMaintenance` (`src/actions/maintenance/`), with each step isolated so one failure does not stop the rest.
 - Reminders: `certificate.review_reminder` goes to the assigned tutor at the `reviewReminderDays` marks of `config/app.json`.
 - `certificate.review_escalated` goes out at the same marks, also for unassigned requests.
-- `invitation.expiring` goes out once per send after `invitationReminderDay`, with a token-only link.
+- `invitation.expiring` goes out once per send after `invitationReminderDay`, with a token-only link rebuilt from the sealed token (`revealInvitationToken`).
 - Idempotency comes from `activity_events`, and the planners in `plan.ts` are pure with an injectable clock.
 - Pruning removes `rate_limits` idle for 24h and expired `sessions` and `verifications`.
 - Pruning removes invitations expired, revoked, or declined for `invitationRetentionDays`. Accepted ones stay.

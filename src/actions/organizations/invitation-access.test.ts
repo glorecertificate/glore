@@ -145,8 +145,8 @@ describe.skipIf(!isLocalDatabase)('invitation link access', () => {
   it('never puts a token or a link in the panel payload', async () => {
     session.role = 'representative'
     session.userId = context.ids.representative
-    const { invitation } = await invite(email('listed'), { role: 'representative' })
-    const { link } = await run(tx =>
+    const { invitation, token } = await invite(email('listed'), { role: 'representative' })
+    const { token: linkToken } = await run(tx =>
       context.invitations.createInviteLink(tx, {
         createdById: context.ids.owner,
         expiryDays: 7,
@@ -162,18 +162,18 @@ describe.skipIf(!isLocalDatabase)('invitation link access', () => {
     expect(error).toBeNull()
     expect(data?.invitations.some(({ id }) => id === invitation.id)).toBe(true)
     const payload = JSON.stringify(data)
-    expect(payload).not.toContain(invitation.token)
-    expect(payload).not.toContain(link.token)
+    expect(payload).not.toContain(token)
+    expect(payload).not.toContain(linkToken)
     expect(payload).not.toContain('/invite/')
     expect(payload).not.toContain('/join/')
   })
 
   it('lets an owner copy the link of any pending invitation', async () => {
-    const { invitation } = await invite(email('owner-copies'), { role: 'representative' })
+    const { invitation, token } = await invite(email('owner-copies'), { role: 'representative' })
 
     const url = await read({ invitationId: invitation.id, managerRole: 'admin', userId: context.ids.owner })
 
-    expect(url.startsWith(`https://glore.localhost/invite/${invitation.token}`)).toBe(true)
+    expect(url.startsWith(`https://glore.localhost/invite/${token}`)).toBe(true)
   })
 
   it('refuses a representative the link of a role they cannot invite', async () => {
@@ -201,18 +201,20 @@ describe.skipIf(!isLocalDatabase)('invitation link access', () => {
   })
 
   it('lets a representative copy links for roles they may invite and their own invitations', async () => {
-    const { invitation: volunteer } = await invite(email('volunteer-role'), { role: 'volunteer' })
-    const { invitation: own } = await invite(email('own-representative'), {
+    const { invitation: volunteer, token: volunteerToken } = await invite(email('volunteer-role'), {
+      role: 'volunteer',
+    })
+    const { invitation: own, token: ownToken } = await invite(email('own-representative'), {
       invitedById: context.ids.representative,
       role: 'representative',
     })
 
     await expect(
       read({ invitationId: volunteer.id, managerRole: 'representative', userId: context.ids.representative })
-    ).resolves.toContain(volunteer.token)
+    ).resolves.toContain(volunteerToken)
     await expect(
       read({ invitationId: own.id, managerRole: 'representative', userId: context.ids.representative })
-    ).resolves.toContain(own.token)
+    ).resolves.toContain(ownToken)
   })
 
   it('refuses an invitation of another organization and one that is no longer pending', async () => {
@@ -244,12 +246,12 @@ describe.skipIf(!isLocalDatabase)('invitation link access', () => {
 
   it('reports a valid proof on the preview only for the emailed link', async () => {
     const previews = await import('@/actions/organizations/previews')
-    const { event, invitation } = await invite(email('preview'))
+    const { event, token } = await invite(email('preview'))
     const proof = new URL(event.data.url).searchParams.get('proof') ?? ''
 
-    expect((await previews.getInvitationPreview(invitation.token))?.proofValid).toBe(false)
-    expect((await previews.getInvitationPreview(invitation.token, 'not-the-proof'))?.proofValid).toBe(false)
-    expect((await previews.getInvitationPreview(invitation.token, proof))?.proofValid).toBe(true)
+    expect((await previews.getInvitationPreview(token))?.proofValid).toBe(false)
+    expect((await previews.getInvitationPreview(token, 'not-the-proof'))?.proofValid).toBe(false)
+    expect((await previews.getInvitationPreview(token, proof))?.proofValid).toBe(true)
   })
 
   it('serves the link of an invite link only while it is active and in the organization', async () => {
@@ -264,12 +266,12 @@ describe.skipIf(!isLocalDatabase)('invitation link access', () => {
           role: 'volunteer',
         })
       )
-    const { link } = await create(context.organizationId)
+    const { link, token } = await create(context.organizationId)
     const { link: foreign } = await create(context.otherOrganizationId)
 
     await expect(
       context.core.readInviteLinkUrl({ inviteLinkId: link.id, organizationId: context.organizationId })
-    ).resolves.toBe(`https://glore.localhost/join/${link.token}`)
+    ).resolves.toBe(`https://glore.localhost/join/${token}`)
     await expect(
       context.core.readInviteLinkUrl({ inviteLinkId: foreign.id, organizationId: context.organizationId })
     ).rejects.toMatchObject({ code: 'NOT_FOUND' })

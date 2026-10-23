@@ -41,6 +41,13 @@ export const NotificationItem = ({
     onRead?.(notification.id)
   }
 
+  const openRouteHandler = async (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    const { href } = event.currentTarget
+    await open()
+    window.location.assign(href)
+  }
+
   const content = (
     <>
       <span
@@ -78,7 +85,11 @@ export const NotificationItem = ({
 
   return (
     <li className={className} {...props}>
-      {notification.href ? (
+      {notification.href?.startsWith('/api/') ? (
+        <a className={itemClass} href={notification.href} onClick={openRouteHandler}>
+          {content}
+        </a>
+      ) : notification.href ? (
         <Link className={itemClass} href={notification.href as Route} onClick={open}>
           {content}
         </Link>

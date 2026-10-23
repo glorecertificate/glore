@@ -5,14 +5,14 @@ Handoff for G8. Every step that writes to staging or production is a user step. 
 ## State
 
 - Branch `release/v1` holds the release. Nothing is pushed.
-- Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0025.
+- Production (`elearning.glorecertificate.net`, Neon branch `production` in project `old-base-10661180`) lacks migrations 0013 to 0028.
 - Production has no database comment and holds 0 certificates.
 - Read-only pre-checks passed: 0017 and 0021 cannot collide (4 distinct skill group slugs, empty docs and join requests, no invitations table).
 
 ## Prepare
 
 1. Review `release/v1`, push it, and open a pull request into `main`. Do not merge yet.
-2. Optional staging pass: push `release/v1` to `staging` and follow `manual-testing.md`, "Setup", steps 4 to 6.
+2. Optional staging pass: push `release/v1` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
 3. Back up production: in the Neon console create a branch `pre-v1-<date>` from `production`, or take a snapshot.
 4. Set the production env vars in Vercel, listed below.
 
@@ -32,12 +32,12 @@ The schema is `envSchema` in `next.config.ts`.
 ## Migrate and deploy
 
 1. Migrate from a local shell, with the production URL in front so it wins over `.env.local`: `DATABASE_URL='<production url>' pnpm run db migrate`.
-2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 26.
+2. Confirm `select count(*) from drizzle.__drizzle_migrations` returns 29.
 3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --dry-run`.
 4. Run the same command without `--dry-run`. Production always imports courses as drafts.
 5. Merge the pull request into `main`, let Vercel deploy, and check that the cron job is listed in the project.
 
-Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 0021 backfill, 0019 drops replaced columns, 0023 anonymizes deleted holders, 0025 dedupes default certificates and adds the audit indexes.
+Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 0021 backfill, 0019 drops replaced columns, 0023 anonymizes deleted holders, 0025 dedupes default certificates and adds the audit indexes. 0026 to 0028 replace plaintext invitation tokens with a SHA-256 hash (0027 backfills it in SQL, so the 4 open production team invitation links keep working) and move stored invitation notification links to `/api/v1/invitations/[id]`.
 
 ## Verify
 

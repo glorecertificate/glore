@@ -23,6 +23,7 @@ import { CacheTag, userTag } from '@/lib/cache'
 import { APP_ROOT, AUTH_LINK_EXPIRY_SECONDS, ONBOARDING_ERROR_ROOT, ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { impersonationGuard } from '@/lib/impersonation-guard'
+import { hashToken } from '@/lib/secret-token'
 import appConfig from '~/config/app.json'
 import metadata from '~/config/metadata.json'
 
@@ -72,7 +73,7 @@ const teamInvitationsPlugin = () => ({
 
         const invitation = await db.query.teamInvitations.findFirst({
           columns: { id: true, userId: true, expiresAt: true, acceptedAt: true },
-          where: eq(teamInvitations.token, token),
+          where: eq(teamInvitations.tokenHash, hashToken(token)),
         })
         if (!invitation) return redirectTo(ONBOARDING_ERROR_ROOT)
         if (invitation.acceptedAt || new Date(invitation.expiresAt) < new Date()) {

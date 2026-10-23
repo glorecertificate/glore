@@ -15,6 +15,8 @@ import {
   inviteLinkUrl,
   isInvitationError,
   normalizeEmail,
+  revealInvitationToken,
+  revealInviteLinkToken,
 } from '@/db/mutations/invitation'
 import { isMemberError } from '@/db/mutations/organization'
 import {
@@ -144,7 +146,7 @@ export const readInvitationUrl = async ({
   if (!invitation) throw invitationError('NOT_FOUND')
   if (!canManageInvitation(managerRole, invitation, userId)) throw invitationError('FORBIDDEN')
   assertPending(invitation)
-  return invitationUrl(invitation.token)
+  return invitationUrl(await transaction(tx => revealInvitationToken(tx, invitation)))
 }
 
 export const readInviteLinkUrl = async ({
@@ -162,5 +164,5 @@ export const readInviteLinkUrl = async ({
   })
   if (!link) throw invitationError('NOT_FOUND')
   assertLinkActive(link)
-  return inviteLinkUrl(link.token)
+  return inviteLinkUrl(await transaction(tx => revealInviteLinkToken(tx, link)))
 }

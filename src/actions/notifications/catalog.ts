@@ -8,6 +8,7 @@ import {
   usernameOf,
 } from '@/actions/notifications/recipients'
 import { type AppEvent, type EventType } from '@/db/queries/activity-event'
+import { OPEN_INVITATION_ROOT } from '@/lib/constants'
 import { type EmailTemplate } from '@/lib/email'
 
 interface EventDefinition<K extends EventType> {
@@ -273,7 +274,7 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
         },
       }),
     },
-    url: event => new URL(event.data.url).pathname,
+    url: event => `${OPEN_INVITATION_ROOT}/${event.data.invitationId}`,
   },
   'invitation.accepted': {
     inApp: event => (event.data.inviterId ? [event.data.inviterId] : []),

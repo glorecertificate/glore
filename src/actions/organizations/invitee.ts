@@ -32,6 +32,7 @@ import { CacheTag } from '@/lib/cache'
 import { ONBOARDING_ROOT } from '@/lib/constants'
 import { sendMail } from '@/lib/email'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
+import { hashToken } from '@/lib/secret-token'
 
 const HOUR = 60 * 60 * 1000
 const SIGN_IN_WINDOW = 15 * 60 * 1000
@@ -127,7 +128,7 @@ export const declineOrganizationInvitation = async (token: string) => {
 export const signInToAcceptInvitation = async ({ password, token }: { password: string; token: string }) => {
   const invitation = await db.query.organizationInvitations.findFirst({
     columns: { acceptedAt: true, declinedAt: true, email: true, expiresAt: true, revokedAt: true },
-    where: eq(organizationInvitations.token, token),
+    where: eq(organizationInvitations.tokenHash, hashToken(token)),
   })
   if (!invitation) return failure('NOT_FOUND')
 

@@ -85,6 +85,7 @@ src/
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers
 │   ├── rate-limit.ts   # Rate limiting helpers
+│   ├── secret-token.ts # Invitation tokens: SHA-256 hash for lookup, AES-GCM seal to rebuild links
 │   ├── storage.ts      # R2 helpers (r2Put, r2Delete, r2List, r2PresignAvatar, ...)
 │   ├── types.ts        # Shared types (Icon, IconProps, Any, Enum, ...)
 │   ├── unsubscribe.ts  # Signed one-click unsubscribe tokens
@@ -121,7 +122,7 @@ src/
 ### Org switcher and palette
 
 - The org switcher (`organization-switcher.tsx`) reuses the active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads.
-- It lists memberships, the viewer's pending invitations (`listMyPendingInvitations`, polled every 2 minutes, links to `/invite/[token]`), and a link to `/register`.
+- It lists memberships, the viewer's pending invitations (`listMyPendingInvitations`, polled every 2 minutes, links to `/api/v1/invitations/[id]`), and a link to `/register`.
 - It offers Leave for non-owners through `LeaveOrganizationDialog` (`leaveOrganization`, gotcha 16).
 - The palette opens with the `searchShortcut` key of `config/app.json` (plus Cmd or Ctrl).
 - Courses and docs filter in the browser (`listCourses`, `useDocsSearch`).

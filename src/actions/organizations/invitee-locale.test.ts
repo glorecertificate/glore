@@ -77,7 +77,7 @@ describe.skipIf(!isLocalDatabase)('signing in to accept an invitation', () => {
         role: 'volunteer',
       })
     )
-    token = created.invitation.token
+    token = created.token
   }, 60_000)
 
   beforeEach(() => {

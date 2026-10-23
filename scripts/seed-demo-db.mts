@@ -240,8 +240,8 @@ export const insertDemoFlows = async ({ client, now, testEmail }: Context, ids: 
     const sentAt = ago(now, invitation.sentDaysAgo)
     const { rows } = await client.query<{ id: number }>(
       `insert into organization_invitations (
-         organization_id, email, role, token, invited_by_id, user_id, locale, message, expires_at, accepted_at, last_sent_at, created_at, updated_at
-       ) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $11, $11) returning id`,
+         organization_id, email, role, token_hash, invited_by_id, user_id, locale, message, expires_at, accepted_at, last_sent_at, created_at, updated_at
+       ) values ($1, $2, $3, encode(sha256(convert_to($4, 'UTF8')), 'hex'), $5, $6, $7, $8, $9, $10, $11, $11, $11) returning id`,
       [
         organizationId(ids, invitation.organization),
         email,
@@ -260,8 +260,8 @@ export const insertDemoFlows = async ({ client, now, testEmail }: Context, ids: 
   }
 
   const { rows: links } = await client.query<{ id: number }>(
-    `insert into organization_invite_links (organization_id, role, token, requires_approval, max_uses, uses, expires_at, created_by_id, created_at, updated_at)
-     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9) returning id`,
+    `insert into organization_invite_links (organization_id, role, token_hash, requires_approval, max_uses, uses, expires_at, created_by_id, created_at, updated_at)
+     values ($1, $2, encode(sha256(convert_to($3, 'UTF8')), 'hex'), $4, $5, $6, $7, $8, $9, $9) returning id`,
     [
       organizationId(ids, DEMO_INVITE_LINK.organization),
       DEMO_INVITE_LINK.role,

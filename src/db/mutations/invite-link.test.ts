@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { and, eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { hashToken, openToken } from '@/lib/secret-token'
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
@@ -126,21 +127,60 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('creates a link for learners and volunteers only, with an unguessable token and an event', async () => {
-    const { event, link } = await createLink({ maxUses: 3 })
+    const { event, link, token } = await createLink({ maxUses: 3 })
 
-    expect(link.token.length).toBeGreaterThanOrEqual(43)
+    expect(token.length).toBeGreaterThanOrEqual(43)
     expect(link.maxUses).toBe(3)
     expect(link.uses).toBe(0)
     expect(event.type).toBe('invite_link.created')
-    expect(context.invitations.inviteLinkUrl(link.token)).toBe(`https://glore.localhost/join/${link.token}`)
+    expect(context.invitations.inviteLinkUrl(token)).toBe(`https://glore.localhost/join/${token}`)
     await expect(createLink({ role: 'admin' })).rejects.toMatchObject({ code: 'INVALID' })
     await expect(createLink({ role: 'representative' })).rejects.toMatchObject({ code: 'INVALID' })
   })
 
-  it('adds a signed-in applicant directly when no approval is needed and counts the use', async () => {
-    const { link } = await createLink()
+  it('stores only the hash and a sealed copy of the token', async () => {
+    const { link, token } = await createLink()
 
-    const outcome = await join(link.token, { email: email('existing'), userId: context.ids.existing })
+    const stored = await context.client.db.query.organizationInviteLinks.findFirst({
+      where: eq(context.schema.organizationInviteLinks.id, link.id),
+    })
+    expect(stored?.tokenHash).toBe(hashToken(token))
+    expect(stored?.tokenCipher).not.toBeNull()
+    expect(stored?.tokenCipher).not.toContain(token)
+    expect(openToken(stored?.tokenCipher ?? null)).toBe(token)
+    expect(Object.values(stored ?? {})).not.toContain(token)
+    expect(Object.values(link)).not.toContain(token)
+  })
+
+  it('returns the sealed token and rotates a legacy link whose seal is missing', async () => {
+    const { link, token } = await createLink()
+    const reveal = (current: { id: number; tokenCipher: string | null }) =>
+      run(tx => context.invitations.revealInviteLinkToken(tx, current))
+
+    expect(await reveal(link)).toBe(token)
+
+    await context.client.db
+      .update(context.schema.organizationInviteLinks)
+      .set({ tokenCipher: null })
+      .where(eq(context.schema.organizationInviteLinks.id, link.id))
+    const rotated = await reveal({ id: link.id, tokenCipher: null })
+
+    expect(rotated).not.toBe(token)
+    const stored = await context.client.db.query.organizationInviteLinks.findFirst({
+      where: eq(context.schema.organizationInviteLinks.id, link.id),
+    })
+    expect(stored?.tokenHash).toBe(hashToken(rotated))
+    expect(openToken(stored?.tokenCipher ?? null)).toBe(rotated)
+    await expect(join(token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
+      code: 'NOT_FOUND',
+    })
+    expect((await join(rotated, { email: email('existing'), userId: context.ids.existing })).kind).toBe('joined')
+  })
+
+  it('adds a signed-in applicant directly when no approval is needed and counts the use', async () => {
+    const { link, token } = await createLink()
+
+    const outcome = await join(token, { email: email('existing'), userId: context.ids.existing })
 
     expect(outcome.kind).toBe('joined')
     expect((await membershipOf(context.ids.existing))?.role).toBe('volunteer')
@@ -151,9 +191,9 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('rejects a signed-in member and counts nothing', async () => {
-    const { link } = await createLink()
+    const { link, token } = await createLink()
 
-    await expect(join(link.token, { email: email('member'), userId: context.ids.member })).rejects.toMatchObject({
+    await expect(join(token, { email: email('member'), userId: context.ids.member })).rejects.toMatchObject({
       code: 'ALREADY_MEMBER',
     })
     const current = await context.client.db.query.organizationInviteLinks.findFirst({
@@ -163,30 +203,30 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('stops accepting people once the maximum number of uses is reached', async () => {
-    const { link } = await createLink({ maxUses: 1 })
+    const { token } = await createLink({ maxUses: 1 })
 
-    await join(link.token, { email: email('existing'), userId: context.ids.existing })
-    await expect(join(link.token, { email: email('second'), userId: context.ids.second })).rejects.toMatchObject({
+    await join(token, { email: email('existing'), userId: context.ids.existing })
+    await expect(join(token, { email: email('second'), userId: context.ids.second })).rejects.toMatchObject({
       code: 'LINK_EXHAUSTED',
     })
     expect(await membershipOf(context.ids.second)).toBeUndefined()
   })
 
   it('rejects an expired link', async () => {
-    const { link } = await createLink()
+    const { link, token } = await createLink()
     await context.client.db
       .update(context.schema.organizationInviteLinks)
       .set({ expiresAt: new Date(Date.now() - 60 * 1000).toISOString() })
       .where(eq(context.schema.organizationInviteLinks.id, link.id))
 
-    await expect(join(link.token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
+    await expect(join(token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
       code: 'LINK_EXPIRED',
     })
     expect(await membershipOf(context.ids.existing)).toBeUndefined()
   })
 
   it('stops a revoked link and refuses to revoke it twice', async () => {
-    const { link } = await createLink()
+    const { link, token } = await createLink()
 
     const { event } = await run(tx =>
       context.invitations.revokeInviteLink(tx, {
@@ -197,7 +237,7 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
     )
 
     expect(event.type).toBe('invite_link.revoked')
-    await expect(join(link.token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
+    await expect(join(token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
       code: 'LINK_REVOKED',
     })
     await expect(
@@ -212,16 +252,16 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('keeps a signed-in applicant pending until a manager approves, then adds the membership', async () => {
-    const { link } = await createLink({ requiresApproval: true })
+    const { token } = await createLink({ requiresApproval: true })
 
-    const outcome = await join(link.token, { email: email('existing'), userId: context.ids.existing })
+    const outcome = await join(token, { email: email('existing'), userId: context.ids.existing })
 
     expect(outcome.kind).toBe('requested')
     expect(await membershipOf(context.ids.existing)).toBeUndefined()
     const [request] = await requestsFor(email('existing'))
     expect(request?.status).toBe('pending')
     expect(request?.userId).toBe(context.ids.existing)
-    await expect(join(link.token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
+    await expect(join(token, { email: email('existing'), userId: context.ids.existing })).rejects.toMatchObject({
       code: 'ALREADY_REQUESTED',
     })
 
@@ -239,9 +279,9 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('turns an anonymous request into an invitation and never links an account with the same email', async () => {
-    const { link } = await createLink({ requiresApproval: true })
+    const { token } = await createLink({ requiresApproval: true })
 
-    const outcome = await join(link.token, { email: email('existing') })
+    const outcome = await join(token, { email: email('existing') })
 
     expect(outcome.kind).toBe('requested')
     const [request] = await requestsFor(email('existing'))
@@ -257,18 +297,22 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
     )
 
     expect(approved.kind).toBe('invitation')
+    let invitationToken = ''
     expect(await membershipOf(context.ids.existing)).toBeUndefined()
     const [invitation] = await invitationsFor(email('existing'))
     expect(invitation?.role).toBe('volunteer')
     expect(invitation?.userId).toBe(context.ids.existing)
     if (approved.kind === 'invitation') {
-      expect(new URL(approved.decidedEvent.data.url ?? '').pathname).toBe(`/invite/${invitation?.token}`)
-      expect(new URL(approved.decidedEvent.data.url ?? '').searchParams.get('proof')).toBeTruthy()
+      const url = new URL(approved.decidedEvent.data.url ?? '')
+      invitationToken = url.pathname.replace('/invite/', '')
+      expect(url.pathname).toBe(`/invite/${invitationToken}`)
+      expect(hashToken(invitationToken)).toBe(invitation?.tokenHash)
+      expect(url.searchParams.get('proof')).toBeTruthy()
     }
 
     await run(tx =>
       context.invitations.acceptInvitation(tx, {
-        token: invitation?.token ?? '',
+        token: invitationToken,
         user: { email: email('existing'), id: context.ids.existing },
       })
     )
@@ -276,22 +320,22 @@ describe.skipIf(!isLocalDatabase)('invite links and join requests', () => {
   })
 
   it('sends a guest on an open link an invitation instead of a membership and hides existing members', async () => {
-    const { link } = await createLink()
+    const { token } = await createLink()
 
-    const outcome = await join(link.token, { email: email('existing') })
+    const outcome = await join(token, { email: email('existing') })
 
     expect(outcome.kind).toBe('invited')
     expect(await membershipOf(context.ids.existing)).toBeUndefined()
     expect(await invitationsFor(email('existing'))).toHaveLength(1)
 
-    expect((await join(link.token, { email: email('existing') })).kind).toBe('noop')
-    expect((await join(link.token, { email: email('member') })).kind).toBe('noop')
+    expect((await join(token, { email: email('existing') })).kind).toBe('noop')
+    expect((await join(token, { email: email('member') })).kind).toBe('noop')
     expect(await invitationsFor(email('member'))).toHaveLength(0)
   })
 
   it('rejects a request without creating a membership or an invitation', async () => {
-    const { link } = await createLink({ requiresApproval: true })
-    await join(link.token, { email: email('existing'), userId: context.ids.existing })
+    const { token } = await createLink({ requiresApproval: true })
+    await join(token, { email: email('existing'), userId: context.ids.existing })
     const [request] = await requestsFor(email('existing'))
 
     await run(tx =>

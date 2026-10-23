@@ -6,6 +6,7 @@ import { db } from '@/db/client'
 import { hashProof, normalizeEmail, proofIdentifier } from '@/db/mutations/invitation'
 import { invitationState, inviteLinkState } from '@/db/queries/organization'
 import { organizationInvitations, organizationInviteLinks, users, verifications } from '@/db/schema'
+import { hashToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
 const isProofValid = async (invitationId: number, proof: string | undefined) => {
@@ -23,7 +24,7 @@ const isProofValid = async (invitationId: number, proof: string | undefined) => 
 
 export const getInvitationPreview = async (token: string, proof?: string) => {
   const invitation = await db.query.organizationInvitations.findFirst({
-    where: eq(organizationInvitations.token, token),
+    where: eq(organizationInvitations.tokenHash, hashToken(token)),
     with: {
       invitedBy: { columns: { email: true, firstName: true, lastName: true } },
       organization: { columns: { id: true, name: true }, with: { profile: { columns: { avatarUrl: true } } } },
@@ -60,7 +61,7 @@ export const getInvitationPreview = async (token: string, proof?: string) => {
 
 export const getInviteLinkPreview = async (token: string) => {
   const link = await db.query.organizationInviteLinks.findFirst({
-    where: eq(organizationInviteLinks.token, token),
+    where: eq(organizationInviteLinks.tokenHash, hashToken(token)),
     with: {
       organization: {
         columns: { approvedAt: true, id: true, name: true },

@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { and, eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { hashToken } from '@/lib/secret-token'
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 vi.mock('@/actions/notifications/notify', () => ({ notify: vi.fn() }))
@@ -81,7 +82,7 @@ describe.skipIf(!isLocalDatabase)('membership removal and admin flows', () => {
       expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
       firstName: 'Legacy',
       role,
-      token: randomUUID(),
+      tokenHash: hashToken(randomUUID()),
       userId,
     })
 
@@ -196,14 +197,14 @@ describe.skipIf(!isLocalDatabase)('membership removal and admin flows', () => {
         context.invitations.joinThroughInviteLink(tx, {
           applicant: { email: email('joiner'), firstName: 'Joiner', userId: context.ids.joiner },
           expiryDays: 7,
-          token: memberLink.link.token,
+          token: memberLink.token,
         })
       )
     ).rejects.toMatchObject({ code: 'LINK_REVOKED' })
     await expect(
       run(tx =>
         context.invitations.acceptInvitation(tx, {
-          token: memberInvite.invitation.token,
+          token: memberInvite.token,
           user: { email: email('invited-by-member'), id: context.ids.plain },
         })
       )
@@ -213,14 +214,14 @@ describe.skipIf(!isLocalDatabase)('membership removal and admin flows', () => {
       context.invitations.joinThroughInviteLink(tx, {
         applicant: { email: email('joiner'), firstName: 'Joiner', userId: context.ids.joiner },
         expiryDays: 7,
-        token: managerLink.link.token,
+        token: managerLink.token,
       })
     )
     expect(outcome.kind).toBe('joined')
     await expect(
       run(tx =>
         context.invitations.acceptInvitation(tx, {
-          token: managerInvite.invitation.token,
+          token: managerInvite.token,
           user: { email: email('invited-by-manager'), id: context.ids.plain },
         })
       )
@@ -231,10 +232,10 @@ describe.skipIf(!isLocalDatabase)('membership removal and admin flows', () => {
     await context.client.db
       .insert(context.schema.memberships)
       .values({ organizationId: context.organizationId, role: 'representative', userId: context.ids.member })
-    const { invitation } = await invite(email('plain'), context.ids.member)
+    const { invitation, token } = await invite(email('plain'), context.ids.member)
     await run(tx =>
       context.invitations.acceptInvitation(tx, {
-        token: invitation.token,
+        token,
         user: { email: email('plain'), id: context.ids.plain },
       })
     )
@@ -320,12 +321,15 @@ describe.skipIf(!isLocalDatabase)('membership removal and admin flows', () => {
       ).toBeUndefined()
       expect(invitation.role).toBe('admin')
       expect(invitation.userId).toBe(context.ids.applicant)
-      expect(new URL(event.data.invitationUrl ?? '').pathname).toBe(`/invite/${invitation.token}`)
-      expect(new URL(event.data.invitationUrl ?? '').searchParams.get('proof')).toBeTruthy()
+      const url = new URL(event.data.invitationUrl ?? '')
+      const token = url.pathname.replace('/invite/', '')
+      expect(url.pathname).toBe(`/invite/${token}`)
+      expect(hashToken(token)).toBe(invitation.tokenHash)
+      expect(url.searchParams.get('proof')).toBeTruthy()
 
       await run(tx =>
         context.invitations.acceptInvitation(tx, {
-          token: invitation.token,
+          token,
           user: { email: email('applicant'), id: context.ids.applicant },
         })
       )

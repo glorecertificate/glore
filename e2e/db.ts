@@ -147,8 +147,8 @@ export const createSeedInvitation = async (email: string, role: string) => {
   const token = `e2e${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`
   await pool.query('delete from organization_invitations where lower(email) = lower($1)', [email])
   await pool.query(
-    `insert into organization_invitations (organization_id, email, role, token, expires_at, last_sent_at)
-     select id, $1, $2::role, $3, now() + interval '7 days', now() from organizations where handle = $4`,
+    `insert into organization_invitations (organization_id, email, role, token_hash, expires_at, last_sent_at)
+     select id, $1, $2::role, encode(sha256(convert_to($3, 'UTF8')), 'hex'), now() + interval '7 days', now() from organizations where handle = $4`,
     [email, role, token, SEED_ORG_HANDLE]
   )
   await pool.end()

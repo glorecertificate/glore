@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
+import { hashToken } from '@/lib/secret-token'
 import { LOCAL_DATABASE_REGEX } from '~/scripts/seed-data'
 
 const access = vi.hoisted(() => ({ organizationId: 0, role: 'admin' as string }))
@@ -159,7 +160,7 @@ describe.skipIf(!isLocalDatabase)('organization insights and activity', () => {
         expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
         organizationId: access.organizationId,
         role: 'volunteer',
-        token: `activity-${suffix}`,
+        tokenHash: hashToken(`activity-${suffix}`),
       })
       .returning({ id: schema.organizationInvitations.id })
     if (!invitation) throw new Error('Failed to create the invitation')

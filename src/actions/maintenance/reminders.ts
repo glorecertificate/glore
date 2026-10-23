@@ -12,7 +12,7 @@ import { notify } from '@/actions/notifications/notify'
 import { db, transaction } from '@/db/client'
 import { mapSequential } from '@/db/helpers'
 import { recordEvent } from '@/db/mutations/activity-event'
-import { invitationUrl } from '@/db/mutations/invitation'
+import { invitationUrl, revealInvitationToken } from '@/db/mutations/invitation'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { activityEvents, certificates, organizationInvitations } from '@/db/schema'
 import config from '~/config/app.json'
@@ -133,6 +133,7 @@ export const sendInvitationReminders = async (now = new Date()) => {
   })
 
   await mapSequential(due, async invitation => {
+    const token = await transaction(tx => revealInvitationToken(tx, invitation))
     await emit({
       actorId: null,
       data: {
@@ -142,7 +143,7 @@ export const sendInvitationReminders = async (now = new Date()) => {
         locale: invitation.locale,
         organizationName: invitation.organization.name,
         role: invitation.role,
-        url: invitationUrl(invitation.token),
+        url: invitationUrl(token),
         userId: invitation.userId,
       },
       organizationId: invitation.organizationId,

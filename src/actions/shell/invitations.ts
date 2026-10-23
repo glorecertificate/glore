@@ -14,7 +14,6 @@ export interface PendingInvitation {
   id: number
   organizationName: string
   role: (typeof memberships.$inferSelect)['role']
-  token: string
 }
 
 export const listMyPendingInvitations = async () => {
@@ -28,7 +27,6 @@ export const listMyPendingInvitations = async () => {
         id: organizationInvitations.id,
         organizationName: organizations.name,
         role: organizationInvitations.role,
-        token: organizationInvitations.token,
       })
       .from(organizationInvitations)
       .innerJoin(organizations, eq(organizations.id, organizationInvitations.organizationId))

@@ -57,6 +57,7 @@ Dashboard layout with an extra gate:
 | `/api/v1/ai/command`            | POST     | AI command (editors, rate limited)                         |
 | `/api/v1/ai/copilot`            | POST     | AI copilot (editors, rate limited)                         |
 | `/api/v1/join`                  | GET      | Team invitation join endpoint                              |
+| `/api/v1/invitations/[id]`      | GET      | Recipient opens a pending invitation (redirects to token)  |
 | `/api/v1/manifest`              | GET      | Dynamic PWA manifest (locale-aware, cached 1h)             |
 | `/api/v1/session`               | GET      | Clears cookies of a stale session, then login              |
 | `/api/v1/upload`                | POST     | R2 file upload (editors, rate limited)                     |

@@ -24,7 +24,7 @@
 
 - `/admin/team` lists admins and editors.
 - `inviteTeamMember` creates the account with a random password (`signUpEmail`; `autoSignIn` stays `false`) and sets the platform role.
-- It then calls `createTeamInvitation` (`db/mutations/team-invitation.ts`): a 32 byte `base64url` token valid for `invitationExpiryDays`, and a `team.invited` event.
+- It then calls `createTeamInvitation` (`db/mutations/team-invitation.ts`): a 32 byte `base64url` token valid for `invitationExpiryDays`, stored only as its SHA-256 `tokenHash`, and a `team.invited` event.
 - `resendInvitation` calls `refreshTeamInvitation`, which locks the latest invitation without `acceptedAt`.
 - It refuses a send within 60 seconds of the last one (`TOO_SOON`, measured on `updated_at`).
 - It replaces the token, so the old link stops working, and replaces the expiry, so expired invitations come back to life. It records `team.invited`.

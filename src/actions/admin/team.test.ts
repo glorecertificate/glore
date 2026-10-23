@@ -3,6 +3,8 @@ import { randomUUID } from 'node:crypto'
 import { and, eq, inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { hashToken } from '@/lib/secret-token'
+
 import { DAY, createAdminFixture, isLocalDatabase } from './test-harness'
 
 const current = vi.hoisted(() => ({ cookie: '', delivered: 1, limited: false }))
@@ -40,12 +42,19 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
     current.limited = false
   }
 
+  const sentToken = () => {
+    const event = notifyMock.mock.calls.at(-1)?.[0] as { data: { url: string } } | undefined
+    const token = event ? new URL(event.data.url).searchParams.get('token') : null
+    if (!token) throw new Error('Invitation link missing')
+    return token
+  }
+
   const invite = async (label: string, role: 'admin' | 'editor' = 'editor') => {
     as('admin')
     const email = `${label}-${fixture.suffix}@team-lane.test`
     const result = await actions.inviteTeamMember({ email, firstName: label, lastName: 'Invitee', locale: 'en', role })
     if (result.data) invitedIds.push(result.data.id)
-    return { email, result }
+    return { email, result, token: sentToken() }
   }
 
   const pendingInvitation = async (userId: string) => {
@@ -131,7 +140,7 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
 
   describe('inviting', () => {
     it('creates the account, a 7 day invitation, an audit event, and sends the email', async () => {
-      const { email, result } = await invite('first')
+      const { email, result, token } = await invite('first')
       expect(result.error).toBeNull()
       expect(result.data).toMatchObject({ email, role: 'editor' })
 
@@ -148,13 +157,15 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       const remaining = Date.parse(`${invitation.expiresAt.replace(' ', 'T')}Z`) - Date.now()
       expect(remaining).toBeGreaterThan(6.9 * DAY)
       expect(remaining).toBeLessThanOrEqual(7 * DAY)
-      expect(invitation.token.length).toBeGreaterThanOrEqual(40)
+      expect(token.length).toBeGreaterThanOrEqual(40)
+      expect(invitation.tokenHash).toBe(hashToken(token))
+      expect(Object.values(invitation)).not.toContain(token)
 
       expect(notifyMock).toHaveBeenCalledTimes(1)
       const event = notifyMock.mock.calls[0]?.[0] as { data: { inviterName: string; url: string }; type: string }
       expect(event.type).toBe('team.invited')
       expect(event.data.inviterName).toBe('admin')
-      expect(event.data.url).toBe(`http://localhost:3000/api/v1/join?token=${encodeURIComponent(invitation.token)}`)
+      expect(event.data.url).toBe(`http://localhost:3000/api/v1/join?token=${encodeURIComponent(token)}`)
 
       const [row] = await fixture.client.db.query.activityEvents.findMany({
         where: and(
@@ -163,7 +174,7 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
         ),
       })
       expect(row).toMatchObject({ actorId: fixture.ids.admin })
-      expect(JSON.stringify(row?.metadata)).not.toContain(invitation.token)
+      expect(JSON.stringify(row?.metadata)).not.toContain(token)
       expect(row?.metadata).toEqual({ inviterName: 'admin', name: 'first Invitee', role: 'editor', userId })
     })
 
@@ -229,14 +240,14 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
 
       const again = await actions.resendInvitation(result.data?.id ?? '')
       expect(again.error?.code).toBe('TOO_SOON')
-      expect(await pendingInvitation(result.data?.id ?? '')).toMatchObject({ token: before.token })
+      expect(await pendingInvitation(result.data?.id ?? '')).toMatchObject({ tokenHash: before.tokenHash })
       expect(notifyMock).not.toHaveBeenCalled()
     })
 
     it('refreshes the token and the expiry, records the event, and mails the new link', async () => {
-      const { result } = await invite('refresh')
+      const { result, token: before } = await invite('refresh')
       const userId = result.data?.id ?? ''
-      const before = await pendingInvitation(userId)
+      const stored = await pendingInvitation(userId)
       await backdate(userId, {
         expiresAt: new Date(Date.now() + DAY).toISOString(),
         updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
@@ -246,17 +257,20 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       const resent = await actions.resendInvitation(userId)
       expect(resent.error).toBeNull()
       const after = await pendingInvitation(userId)
-      expect(after.token).not.toBe(before.token)
-      expect(after.token.length).toBeGreaterThanOrEqual(40)
+      const token = sentToken()
+      expect(token).not.toBe(before)
+      expect(token.length).toBeGreaterThanOrEqual(40)
+      expect(after.tokenHash).toBe(hashToken(token))
+      expect(after.tokenHash).not.toBe(stored.tokenHash)
       const remaining = Date.parse(`${after.expiresAt.replace(' ', 'T')}Z`) - Date.now()
       expect(remaining).toBeGreaterThan(6.9 * DAY)
 
-      expect(JSON.stringify(resent)).not.toContain(after.token)
+      expect(JSON.stringify(resent)).not.toContain(token)
       expect(notifyMock).toHaveBeenCalledTimes(1)
       const event = notifyMock.mock.calls[0]?.[0] as { actorId: string; data: { url: string } }
       expect(event.actorId).toBe(fixture.ids.admin)
-      expect(event.data.url).toContain(encodeURIComponent(after.token))
-      expect(event.data.url).not.toContain(before.token)
+      expect(event.data.url).toContain(encodeURIComponent(token))
+      expect(event.data.url).not.toContain(before)
 
       const events = await fixture.client.db.query.activityEvents.findMany({
         where: and(
@@ -265,13 +279,12 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
         ),
       })
       expect(events).toHaveLength(2)
-      expect(events.every(row => !JSON.stringify(row.metadata).includes(after.token))).toBe(true)
+      expect(events.every(row => !JSON.stringify(row.metadata).includes(token))).toBe(true)
     })
 
     it('revives an expired invitation and blocks the old link', async () => {
-      const { result } = await invite('expired')
+      const { result, token: before } = await invite('expired')
       const userId = result.data?.id ?? ''
-      const before = await pendingInvitation(userId)
       await backdate(userId, {
         expiresAt: new Date(Date.now() - 2 * DAY).toISOString(),
         updatedAt: new Date(Date.now() - 3 * DAY).toISOString(),
@@ -281,7 +294,7 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       const after = await pendingInvitation(userId)
       expect(Date.parse(`${after.expiresAt.replace(' ', 'T')}Z`)).toBeGreaterThan(Date.now() + 6 * DAY)
       const stale = await fixture.client.db.query.teamInvitations.findFirst({
-        where: eq(fixture.schema.teamInvitations.token, before.token),
+        where: eq(fixture.schema.teamInvitations.tokenHash, hashToken(before)),
       })
       expect(stale).toBeUndefined()
     })
@@ -295,7 +308,7 @@ describe.skipIf(!isLocalDatabase)('admin team', () => {
       notifyMock.mockImplementation(() => Promise.resolve({ emailed: 0, inApp: 0 }))
 
       expect((await actions.resendInvitation(userId)).error?.code).toBe('SEND_FAILED')
-      expect((await pendingInvitation(userId)).token).not.toBe(before.token)
+      expect((await pendingInvitation(userId)).tokenHash).not.toBe(before.tokenHash)
     })
 
     it('flags only members whose invitation is still open', async () => {

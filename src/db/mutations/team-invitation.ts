@@ -12,6 +12,7 @@ import { type AppEvent } from '@/db/queries/activity-event'
 import { timestampMillis } from '@/db/queries/organization'
 import { teamInvitations } from '@/db/schema'
 import { JOIN_ROOT } from '@/lib/constants'
+import { hashToken } from '@/lib/secret-token'
 import { fullName } from '@/lib/utils'
 
 const RESEND_COOLDOWN = 60 * 1000
@@ -65,6 +66,7 @@ export const createTeamInvitation = async (
   }
 ) => {
   const now = Date.now()
+  const token = createToken()
   const [invitation] = await tx
     .insert(teamInvitations)
     .values({
@@ -75,16 +77,16 @@ export const createTeamInvitation = async (
       lastName,
       locale,
       role,
-      token: createToken(),
+      tokenHash: hashToken(token),
       updatedAt: new Date(now).toISOString(),
       userId,
     })
     .returning()
   if (!invitation) throw new Error('Failed to create the invitation')
 
-  const event = await invitedEvent(tx, actorId, invitation)
+  const event = await invitedEvent(tx, actorId, { ...invitation, token })
   await recordEvent(tx, event)
-  return { event, invitation }
+  return { event, invitation, token }
 }
 
 export const refreshTeamInvitation = async (
@@ -103,18 +105,19 @@ export const refreshTeamInvitation = async (
   const now = Date.now()
   if (now - timestampMillis(current.updatedAt) < RESEND_COOLDOWN) throw adminError('TOO_SOON')
 
+  const token = createToken()
   const [invitation] = await tx
     .update(teamInvitations)
     .set({
       expiresAt: new Date(now + expiryDays * DAY).toISOString(),
-      token: createToken(),
+      tokenHash: hashToken(token),
       updatedAt: new Date(now).toISOString(),
     })
     .where(eq(teamInvitations.id, current.id))
     .returning()
   if (!invitation) throw adminError('NOT_FOUND')
 
-  const event = await invitedEvent(tx, actorId, invitation)
+  const event = await invitedEvent(tx, actorId, { ...invitation, token })
   await recordEvent(tx, event)
-  return { event, invitation }
+  return { event, invitation, token }
 }

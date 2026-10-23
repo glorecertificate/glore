@@ -1,6 +1,7 @@
 import { inArray } from 'drizzle-orm'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
+import { hashToken } from '@/lib/secret-token'
 import { LOCAL_DATABASE_REGEX, seedEmail } from '~/scripts/seed-data'
 
 const isLocalDatabase = LOCAL_DATABASE_REGEX.test(process.env.DATABASE_URL ?? '')
@@ -10,6 +11,7 @@ const DAY = 24 * 60 * 60 * 1000
 const at = (days: number) => new Date(NOW.getTime() + days * DAY).toISOString()
 
 const TOKENS = ['prune-expired', 'prune-fresh', 'prune-accepted', 'prune-old-revoked']
+const HASHES = TOKENS.map(hashToken)
 const SESSIONS = ['prune-session-old', 'prune-session-live']
 const VERIFICATIONS = ['prune-verification-old', 'prune-verification-live']
 
@@ -23,7 +25,7 @@ describe.skipIf(!isLocalDatabase)('pruneExpiredRecords', () => {
   const cleanup = async () => {
     const { client, schema } = context
     await Promise.all([
-      client.db.delete(schema.organizationInvitations).where(inArray(schema.organizationInvitations.token, TOKENS)),
+      client.db.delete(schema.organizationInvitations).where(inArray(schema.organizationInvitations.tokenHash, HASHES)),
       client.db.delete(schema.sessions).where(inArray(schema.sessions.id, SESSIONS)),
       client.db.delete(schema.verifications).where(inArray(schema.verifications.id, VERIFICATIONS)),
     ])
@@ -54,21 +56,21 @@ describe.skipIf(!isLocalDatabase)('pruneExpiredRecords', () => {
 
     const base = { organizationId: organization.id, role: 'volunteer' as const }
     await client.db.insert(schema.organizationInvitations).values([
-      { ...base, email: 'prune-expired@example.com', expiresAt: at(-60), token: 'prune-expired' },
-      { ...base, email: 'prune-fresh@example.com', expiresAt: at(-5), token: 'prune-fresh' },
+      { ...base, email: 'prune-expired@example.com', expiresAt: at(-60), tokenHash: hashToken('prune-expired') },
+      { ...base, email: 'prune-fresh@example.com', expiresAt: at(-5), tokenHash: hashToken('prune-fresh') },
       {
         ...base,
         acceptedAt: at(-70),
         email: 'prune-accepted@example.com',
         expiresAt: at(-60),
-        token: 'prune-accepted',
+        tokenHash: hashToken('prune-accepted'),
       },
       {
         ...base,
         email: 'prune-old-revoked@example.com',
         expiresAt: at(30),
         revokedAt: at(-40),
-        token: 'prune-old-revoked',
+        tokenHash: hashToken('prune-old-revoked'),
       },
     ])
     await client.db.insert(schema.sessions).values([
@@ -87,8 +89,8 @@ describe.skipIf(!isLocalDatabase)('pruneExpiredRecords', () => {
 
     const [invitations, sessions, verifications] = await Promise.all([
       client.db.query.organizationInvitations.findMany({
-        columns: { token: true },
-        where: inArray(schema.organizationInvitations.token, TOKENS),
+        columns: { tokenHash: true },
+        where: inArray(schema.organizationInvitations.tokenHash, HASHES),
       }),
       client.db.query.sessions.findMany({ columns: { id: true }, where: inArray(schema.sessions.id, SESSIONS) }),
       client.db.query.verifications.findMany({
@@ -96,7 +98,9 @@ describe.skipIf(!isLocalDatabase)('pruneExpiredRecords', () => {
         where: inArray(schema.verifications.id, VERIFICATIONS),
       }),
     ])
-    expect(invitations.map(({ token }) => token).toSorted()).toEqual(['prune-accepted', 'prune-fresh'])
+    expect(invitations.map(({ tokenHash }) => tokenHash).toSorted()).toEqual(
+      ['prune-accepted', 'prune-fresh'].map(hashToken).toSorted()
+    )
     expect(sessions.map(({ id }) => id)).toEqual(['prune-session-live'])
     expect(verifications.map(({ id }) => id)).toEqual(['prune-verification-live'])
   })

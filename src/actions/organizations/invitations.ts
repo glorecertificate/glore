@@ -120,11 +120,11 @@ export const createOrganizationInviteLink = async (input: z.input<typeof inviteL
     const parsed = inviteLinkSchema.safeParse(input)
     if (!parsed.success) throw invitationError('INVALID')
 
-    const { event, link } = await transaction(tx =>
+    const { event, link, token } = await transaction(tx =>
       createInviteLink(tx, { ...parsed.data, createdById: user.id, organizationId })
     )
     await notify(event)
-    return { id: link.id, url: inviteLinkUrl(link.token) }
+    return { id: link.id, url: inviteLinkUrl(token) }
   })
 
 export const revokeOrganizationInviteLink = async (inviteLinkId: number) =>

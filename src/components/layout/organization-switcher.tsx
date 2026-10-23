@@ -1,6 +1,5 @@
 'use client'
 
-import { type Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -27,7 +26,7 @@ import { Link } from '@/components/ui/link'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
 import { type User } from '@/db/queries/user'
 import { usePoll } from '@/hooks/use-poll'
-import { APP_ROOT, REGISTER_ROOT } from '@/lib/constants'
+import { APP_ROOT, OPEN_INVITATION_ROOT, REGISTER_ROOT } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 const INVITATIONS_POLL_INTERVAL = 120_000
@@ -164,9 +163,9 @@ export const OrganizationSwitcher = () => {
                   <DropdownMenuLabel className="text-xs text-muted-foreground">
                     {t('pendingInvitations')}
                   </DropdownMenuLabel>
-                  {pending.map(({ id, organizationName, role, token }) => (
+                  {pending.map(({ id, organizationName, role }) => (
                     <DropdownMenuItem asChild className="gap-2 p-2" key={id}>
-                      <Link href={`/invite/${token}` as Route} onClick={closeMobile}>
+                      <a href={`${OPEN_INVITATION_ROOT}/${id}`} onClick={closeMobile}>
                         <div className="flex size-6 items-center justify-center rounded-md border bg-brand/10">
                           <LucideIcon className="size-4" name="mail" />
                         </div>
@@ -176,7 +175,7 @@ export const OrganizationSwitcher = () => {
                             {t('invitedAs', { role: formatRoleLabel(role, tOrganization) })}
                           </span>
                         </div>
-                      </Link>
+                      </a>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuGroup>

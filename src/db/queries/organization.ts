@@ -180,7 +180,12 @@ export const inviteLinkState = (
 }
 
 export const parseOrganizationInvitation = (
-  { invitedBy, token: _token, ...invitation }: InvitationRow & { invitedBy?: ReviewerRow | null },
+  {
+    invitedBy,
+    tokenCipher: _tokenCipher,
+    tokenHash: _tokenHash,
+    ...invitation
+  }: InvitationRow & { invitedBy?: ReviewerRow | null },
   now = Date.now()
 ) => ({
   ...invitation,
@@ -189,7 +194,12 @@ export const parseOrganizationInvitation = (
 })
 
 export const parseOrganizationInviteLink = (
-  { createdBy, token: _token, ...link }: InviteLinkRow & { createdBy?: ReviewerRow | null },
+  {
+    createdBy,
+    tokenCipher: _tokenCipher,
+    tokenHash: _tokenHash,
+    ...link
+  }: InviteLinkRow & { createdBy?: ReviewerRow | null },
   now = Date.now()
 ) => ({
   ...link,

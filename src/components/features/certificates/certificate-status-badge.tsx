@@ -32,6 +32,8 @@ const STATUS_CONFIG: Record<CertificateStatus, { labelKey: string; className: st
   revoked: { labelKey: 'statusRevoked', className: 'bg-destructive/15 text-destructive-text', icon: BanIcon },
 }
 
+export const certificateStatusLabelKey = (status: CertificateStatus) => STATUS_CONFIG[status].labelKey
+
 interface CertificateStatusBadgeProps {
   status: CertificateStatus
   className?: string

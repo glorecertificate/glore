@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl'
 import { listCourses } from '@/actions/courses/queries'
 import { MIN_QUERY_LENGTH, searchPlaceholderKey } from '@/actions/shell/scope'
 import { type WorkspaceSearchResult, searchWorkspace } from '@/actions/shell/search'
+import { certificateStatusLabelKey } from '@/components/features/certificates/certificate-status-badge'
 import { isListedCourse } from '@/components/features/courses/visibility'
 import { useDocsSearch } from '@/components/features/docs/use-docs-search'
 import { formatRoleLabel } from '@/components/features/organization/utils'
@@ -49,6 +50,7 @@ interface RemoteResults extends WorkspaceSearchResult {
 export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentProps<typeof Dialog>) => {
   const t = useTranslations('Search')
   const tOrganization = useTranslations('Organization')
+  const tCertificates = useTranslations('Certificates')
   const { push } = useRouter()
   const { localize } = useI18n()
   const { organization: active, setOrganization, user } = useSession()
@@ -253,17 +255,23 @@ export const SearchCommand = ({ open, onOpenChange, ...props }: React.ComponentP
               <>
                 <CommandSeparator />
                 <CommandGroup heading={t('certificates')}>
-                  {certificateResults.map(cert => (
-                    <CommandItem
-                      key={cert.id}
-                      onSelect={() => navigate(`/certificates/${cert.id}`)}
-                      value={`certificate-${cert.id}`}
-                    >
-                      <LucideIcon name="file-text" />
-                      <span>{cert.code ?? cert.handle}</span>
-                      <CommandShortcut>{cert.isOwn ? cert.organizationName : cert.holderName}</CommandShortcut>
-                    </CommandItem>
-                  ))}
+                  {certificateResults.map(cert => {
+                    const party = cert.isOwn ? cert.organizationName : cert.holderName
+                    const status = tCertificates(
+                      certificateStatusLabelKey(cert.status) as Parameters<typeof tCertificates>[0]
+                    )
+                    return (
+                      <CommandItem
+                        key={cert.id}
+                        onSelect={() => navigate(`/certificates/${cert.id}`)}
+                        value={`certificate-${cert.id}`}
+                      >
+                        <LucideIcon name="file-text" />
+                        <span>{cert.code ?? party}</span>
+                        <CommandShortcut>{cert.code ? party : status}</CommandShortcut>
+                      </CommandItem>
+                    )
+                  })}
                 </CommandGroup>
               </>
             )}

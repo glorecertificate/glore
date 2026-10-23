@@ -4,6 +4,7 @@
 - Every action behind it calls `requireAdmin()` (`actions/admin/helpers.ts`), which reads a fresh session (cookie cache off) and rejects banned and non-admin users.
 - Writes use `requireAdminWithLimit(action, max)` (per admin per hour).
 - `adminAction()` returns `{ data, error: { code, message } }`. The client maps `code` to `Admin.errors` with `useAdminError`.
+- The organization actions in `actions/admin/organizations.ts` (read, approve, reject, create, invite) follow the same rule, never `isAdmin` from `getCurrentUser`. Writes validate `db/queries/admin-organization.ts` schemas (ids, review comment, create and invite input with an `http` or `https` website) and answer `INVALID_INPUT` on a bad value.
 
 ## Users
 

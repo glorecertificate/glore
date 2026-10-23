@@ -6,7 +6,7 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 
 - State: in progress, the user gave the go on 2026-10-22.
 - Current wave: W3 (verification and release readiness). W0 to W2 are integrated, and the history is linear (no merge commits).
-- Next up: W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
+- Next up: R1 platform upgrade, then W4 translations and team content (`translations.md`, U18 to U21), then the G8 handoff in `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -206,6 +206,11 @@ Content rules: plain, warm language for young adults, examples from volunteering
 - H3 [x] G3 and e2e checked: stock Better Auth impersonation replaces the local plugin (migration 0024, 988a0788). Accept: `/admin/users` view-as, banner, stop.
 - H4 [x] 3a32239c and dffa09c9, checked in the G3 browser pass: editor AI on the free Gemini tier with a model chain and first-token fallback. Accept: browser run of the AI menu in it.
 - H5 [x] G3 and e2e checked: browser-check fixes for titles, headings, `aria-controls`, and chip names (a07bb8de, a07bb8de). Accept: browser run per item.
+
+## W4a platform upgrade
+
+- R1 [ ]: update every dependency (`pnpm update --latest` within pnpm's 24h minimum release age), pnpm (`packageManager`), and Node.js (`.node-version`, `engines`, Vercel runtime) to the latest compatible versions, and fix breaking changes.
+  - Accept: `pnpm run check`, `pnpm run test`, `pnpm run build`, and `pnpm run test:e2e` pass; Vercel supports the Node.js version; majors held back are listed with the reason.
 
 ## W4 translations and team content
 

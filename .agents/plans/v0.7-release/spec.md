@@ -61,6 +61,7 @@ Re-verify any claim against the code before acting on it.
 | U19 | Editors draft and publish UI strings and content translations. Admins own the protected namespaces (certificate PDF, public certificate, legal, metadata, email subjects), legal publishing, and settings.       |
 | U20 | Legal pages are versioned in the database, published versions are immutable, users accept the terms at registration and onboarding, and only a `material` terms version asks again.                              |
 | U21 | The translations and content work (W4) ships inside v0.7, before the G8 handoff.                                                                                                                                 |
+| U22 | Decided on 2026-10-23: v0.7 updates every dependency, pnpm, and Node.js to the latest versions compatible with the stack and Vercel, before W4 (R1).                                                             |
 
 ## Skill framework (U8)
 

@@ -93,7 +93,8 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 
 - History is linear. Never create a merge commit: no `git merge` without `--ff-only`, no merging `main` into a branch, no GitHub merge button.
 - Update a branch with `git rebase main`. Integrate it by rebase or fast-forward, or squash it into one commit when its commits do not stand alone.
-- On GitHub, merge pull requests with "Rebase and merge" or "Squash and merge".
+- On GitHub, merge commits are disabled in the repository settings, so pull requests use "Rebase and merge" or "Squash and merge".
+- Branch protection on `main` deliberately does not require linear history, because the maintainer may force-push `main`. The hooks and CI enforce the rule instead.
 - Lefthook's `pre-merge-commit` and `pre-push` jobs and the CI "Linear history" job reject merge commits.
 - To clean up history that already holds merges, rebuild it on `main` and squash each merged branch whose commits no longer replay cleanly. Never push that rewrite without the user's approval.
 

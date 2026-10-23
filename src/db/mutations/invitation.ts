@@ -80,6 +80,7 @@ export const revealInvitationToken = async (
 ) => {
   const opened = openToken(invitation.tokenCipher)
   if (opened) return opened
+  if (invitation.tokenCipher) console.warn('Invitation token seal could not be opened, issuing a new token')
   const { token, tokenCipher, tokenHash } = issueToken()
   await tx
     .update(organizationInvitations)
@@ -91,6 +92,7 @@ export const revealInvitationToken = async (
 export const revealInviteLinkToken = async (tx: Transaction, link: { id: number; tokenCipher: string | null }) => {
   const opened = openToken(link.tokenCipher)
   if (opened) return opened
+  if (link.tokenCipher) console.warn('Invitation token seal could not be opened, issuing a new token')
   const { token, tokenCipher, tokenHash } = issueToken()
   await tx
     .update(organizationInviteLinks)

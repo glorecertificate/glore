@@ -18,6 +18,7 @@ import { users } from '@/db/schema'
 import { CacheTag } from '@/lib/cache'
 import { LOCALES } from '@/lib/i18n'
 import { clientAddress, isRateLimited } from '@/lib/rate-limit'
+import { hashToken } from '@/lib/secret-token'
 import config from '~/config/app.json'
 
 const HOUR = 60 * 60 * 1000
@@ -79,7 +80,7 @@ export const requestOrganizationAccess = async (input: z.input<typeof guestSchem
   const [byAddress, byEmail, byToken] = await Promise.all([
     isRateLimited(`join-link:ip:${address}`, 5, HOUR),
     isRateLimited(`join-link:email:${email.toLowerCase()}`, 3, HOUR),
-    isRateLimited(`join-link:token:${token.slice(0, 64)}`, 60, HOUR),
+    isRateLimited(`join-link:token:${hashToken(token).slice(0, 32)}`, 60, HOUR),
   ])
   if (byAddress || byEmail || byToken) return failure('RATE_LIMITED')
 

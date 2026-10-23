@@ -121,7 +121,8 @@ export const sendInvitations = async ({
     } catch (error) {
       const code = isInvitationError(error) ? error.code : null
       const status = code && code in ROW_STATUS ? ROW_STATUS[code as keyof typeof ROW_STATUS] : 'failed'
-      if (status === 'failed') console.error('Failed to invite a member', error)
+      const cause = error instanceof Error ? (error.cause ?? error.name) : error
+      if (status === 'failed') console.error('Failed to invite a member', cause)
       return { email, status }
     }
   })

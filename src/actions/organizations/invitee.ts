@@ -68,7 +68,7 @@ export const acceptOrganizationInvitationAsNewAccount = async ({ proof, token }:
   const address = await clientAddress()
   const [byAddress, byToken] = await Promise.all([
     isRateLimited(`invite-account:ip:${address}`, 10, HOUR),
-    isRateLimited(`invite-account:token:${token.slice(0, 64)}`, 10, HOUR),
+    isRateLimited(`invite-account:token:${hashToken(token).slice(0, 32)}`, 10, HOUR),
   ])
   if (byAddress || byToken) return failure('RATE_LIMITED')
 
@@ -97,7 +97,7 @@ export const requestInvitationProof = async (token: string) => {
   const address = await clientAddress()
   const [byAddress, byToken] = await Promise.all([
     isRateLimited(`invite-proof:ip:${address}`, 10, HOUR),
-    isRateLimited(`invite-proof:token:${token.slice(0, 64)}`, 3, HOUR),
+    isRateLimited(`invite-proof:token:${hashToken(token).slice(0, 32)}`, 3, HOUR),
   ])
   if (byAddress || byToken) return failure('RATE_LIMITED')
 

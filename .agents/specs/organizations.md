@@ -9,7 +9,7 @@ Organization domain rules: invitations, members, ownership, settings, insights, 
 - Invitations never create memberships or accounts for an existing person. Accepting one does (`src/db/mutations/invitation.ts`).
 - Never call `signUpEmail` or insert a membership for an invitee outside that mutation.
 - A person who already holds a membership (for example through an invite link sent after the invitation) is upgraded when the invited role outranks the current one (`learner`, `volunteer`, `tutor`, `representative`, `admin`). A lower or equal invited role keeps the current role.
-- Inviting records a token, a role, an optional message, and an expiry of `invitationExpiryDays`, and mails `/invite/[token]?proof=...`.
+- Inviting issues a token and records its hash, a role, an optional message, and an expiry of `invitationExpiryDays`, and mails `/invite/[token]?proof=...`.
 - The row carries `userId` when an account with that email exists, still without a membership.
 - Invitation and invite-link tokens are never stored in plaintext. `tokenHash` (SHA-256) serves lookups.
 - `tokenCipher` (AES-256-GCM, key derived from `BETTER_AUTH_SECRET`, `src/lib/secret-token.ts`) lets copy and reminder links be rebuilt.

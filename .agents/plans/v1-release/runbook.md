@@ -13,7 +13,7 @@ Handoff for G8. Every step that writes to staging or production is a user step. 
 
 1. Review `release/v1`, push it, and open a pull request into `main`. Do not merge yet.
 2. Optional staging pass: push `release/v1` to `staging`, run `DATABASE_URL='<staging url>' pnpm run db migrate` (staging has 23 of 29 migrations), then follow `manual-testing.md`, "Setup", steps 4 to 6.
-3. Back up production: in the Neon console create a branch `pre-v1-<date>` from `production`, or take a snapshot.
+3. Back up production: in the Neon console create a branch `pre-v1-<date>` from `production`, or take a snapshot. The backup keeps the plaintext `team_invitations.token` column, so delete it once the release is stable.
 4. Set the production env vars in Vercel, listed below.
 
 ## Production env vars
@@ -36,6 +36,8 @@ The schema is `envSchema` in `next.config.ts`.
 3. Dry-run the catalog: `DATABASE_URL='<production url>' pnpm run content:import --target production --dry-run`.
 4. Run the same command without `--dry-run`. Production always imports courses as drafts.
 5. Merge the pull request into `main`, let Vercel deploy, and check that the cron job is listed in the project.
+
+Run steps 1 and 5 back to back: 0028 drops the plaintext token column, so team invitation accept and resend fail on the old build until the deploy finishes.
 
 Migration notes: 0015 dedupes rows before 0016 adds unique indexes, 0018 and 0021 backfill, 0019 drops replaced columns, 0023 anonymizes deleted holders, 0025 dedupes default certificates and adds the audit indexes. 0026 to 0028 replace plaintext invitation tokens with a SHA-256 hash (0027 backfills it in SQL, so the 4 open production team invitation links keep working) and move stored invitation notification links to `/api/v1/invitations/[id]`.
 

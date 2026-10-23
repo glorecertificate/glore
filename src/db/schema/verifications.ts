@@ -1,10 +1,14 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { index, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
-export const verifications = pgTable('verifications', {
-  id: text().primaryKey(),
-  identifier: text().notNull(),
-  value: text().notNull(),
-  expiresAt: timestamp({ mode: 'string' }).notNull(),
-  createdAt: timestamp({ mode: 'string' }),
-  updatedAt: timestamp({ mode: 'string' }),
-})
+export const verifications = pgTable(
+  'verifications',
+  {
+    id: text().primaryKey(),
+    identifier: text().notNull(),
+    value: text().notNull(),
+    expiresAt: timestamp({ mode: 'string' }).notNull(),
+    createdAt: timestamp({ mode: 'string' }),
+    updatedAt: timestamp({ mode: 'string' }),
+  },
+  table => [index('verifications_identifier_idx').on(table.identifier)]
+)

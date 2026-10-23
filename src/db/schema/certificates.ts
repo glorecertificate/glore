@@ -104,6 +104,9 @@ export const certificates = pgTable(
     index('certificates_reviewer_id_idx').on(table.reviewerId),
     index('certificates_status_idx').on(table.status),
     uniqueIndex('certificates_handle_key').on(table.handle),
+    uniqueIndex('certificates_user_id_default_key')
+      .on(table.userId)
+      .where(sql`${table.isDefault}`),
   ]
 )
 

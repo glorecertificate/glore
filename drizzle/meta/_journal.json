@@ -176,6 +176,13 @@
       "when": 1792700284653,
       "tag": "0024_impersonated_by",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1792718471757,
+      "tag": "0025_default_certificate_unique",
+      "breakpoints": true
     }
   ]
 }

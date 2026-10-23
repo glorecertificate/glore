@@ -19,6 +19,8 @@ export const activityEvents = pgTable(
   table => [
     index('activity_events_subject_idx').on(table.subjectType, table.subjectId, table.createdAt),
     index('activity_events_organization_id_idx').on(table.organizationId, table.createdAt),
+    index('activity_events_organization_id_id_idx').on(table.organizationId, table.id),
+    index('activity_events_created_at_id_idx').on(table.createdAt, table.id),
     index('activity_events_actor_id_idx').on(table.actorId),
   ]
 )

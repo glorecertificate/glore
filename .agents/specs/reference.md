@@ -119,6 +119,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 - Batch writes inside one transaction use `mapSequential` from `@/db/helpers`.
 - Progress and membership rows have unique indexes, so their inserts use `onConflictDoNothing()`.
 - `submitCertificateRequest` takes a transaction-scoped advisory lock to keep one open certificate request per user and organization.
+- Approving, featuring, and revoking a certificate take the advisory lock `certificate-default:<userId>` before touching any certificate row, so the default flag changes one writer at a time.
 - Keep slow side effects (PDF generation, email, R2 uploads) outside the transaction: compute inputs first, then open a short transaction for the DB writes only.
 - Authorization and tenant scoping stay at the action boundary: verify ownership or org membership before calling the mutation, which operates on already-authorized ids.
 

@@ -59,6 +59,16 @@ const lock = async (tx: Transaction, key: string) => {
 const lockRequests = async (tx: Transaction, userId: string, organizationId: number) =>
   await lock(tx, `certificate:${userId}:${organizationId}`)
 
+const lockDefault = async (tx: Transaction, userId: string) => await lock(tx, `certificate-default:${userId}`)
+
+const lockDefaultOf = async (tx: Transaction, certificateId: number) => {
+  const [row] = await tx
+    .select({ userId: certificates.userId })
+    .from(certificates)
+    .where(eq(certificates.id, certificateId))
+  if (row?.userId) await lockDefault(tx, row.userId)
+}
+
 interface Transition {
   from: readonly CertificateStatus[]
   guard?: SQL
@@ -314,6 +324,7 @@ export const withdrawCertificateRequest = async (tx: Transaction, { id, userId }
   })
 
 export const recordFeaturedCertificate = async (tx: Transaction, { id, userId }: { id: number; userId: string }) => {
+  await lockDefault(tx, userId)
   const row = await tx.query.certificates.findFirst({
     columns: { id: true, organizationId: true, status: true },
     where: and(eq(certificates.id, id), eq(certificates.userId, userId)),
@@ -438,6 +449,7 @@ export const recordCertificateApproval = async (
   tx: Transaction,
   { code, edit, expectedUpdatedAt, id, issuedAt, review, reviewerId, skills, snapshot }: ApproveParams
 ) => {
+  await lockDefaultOf(tx, id)
   const row = await transition(tx, {
     from: ['submitted', 'in_review'],
     guard: and(reviewerGuard(reviewerId), eq(certificates.updatedAt, expectedUpdatedAt)),
@@ -540,6 +552,7 @@ interface RevokeParams {
 }
 
 export const recordCertificateRevocation = async (tx: Transaction, { id, reason, revokedById }: RevokeParams) => {
+  await lockDefaultOf(tx, id)
   const [stored] = await tx
     .select({ documentUrl: certificates.documentUrl })
     .from(certificates)

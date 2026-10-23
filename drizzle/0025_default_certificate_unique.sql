@@ -1,0 +1,5 @@
+CREATE INDEX "activity_events_organization_id_id_idx" ON "activity_events" USING btree ("organization_id","id");--> statement-breakpoint
+CREATE INDEX "activity_events_created_at_id_idx" ON "activity_events" USING btree ("created_at","id");--> statement-breakpoint
+UPDATE "certificates" SET "is_default" = false WHERE "is_default" AND "user_id" IS NOT NULL AND "id" <> (SELECT "kept"."id" FROM "certificates" AS "kept" WHERE "kept"."user_id" = "certificates"."user_id" AND "kept"."is_default" ORDER BY "kept"."issued_at" ASC NULLS LAST, "kept"."id" ASC LIMIT 1);--> statement-breakpoint
+CREATE UNIQUE INDEX "certificates_user_id_default_key" ON "certificates" USING btree ("user_id") WHERE "certificates"."is_default";--> statement-breakpoint
+CREATE INDEX "verifications_identifier_idx" ON "verifications" USING btree ("identifier");

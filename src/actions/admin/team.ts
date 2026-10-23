@@ -9,7 +9,7 @@ import { cacheTag } from 'next/cache'
 import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
 
-import { releaseUserFiles } from '@/actions/account/deletion'
+import { settleDeletedUser } from '@/actions/account/deletion'
 import { adminAction, requireAdminWithLimit, revalidateUserAccess } from '@/actions/admin/helpers'
 import { notify } from '@/actions/notifications/notify'
 import { getCurrentUser } from '@/actions/user'
@@ -153,8 +153,8 @@ export const deleteTeamMember = async (userId: string) =>
     const actor = await requireAdminWithLimit('team-delete', 30)
     if (actor.id === userId) throw adminError('SELF')
 
-    const deleted = await transaction(tx => deleteUser(tx, userId, { reassignTo: actor.id }))
-    await releaseUserFiles(deleted)
+    const deleted = await transaction(tx => deleteUser(tx, userId, { actorId: actor.id, reassignTo: actor.id }))
+    await settleDeletedUser(deleted)
 
     revalidateUserAccess(userId)
     return { id: userId }

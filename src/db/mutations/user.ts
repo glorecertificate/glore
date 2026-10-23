@@ -3,6 +3,11 @@ import 'server-only'
 import { and, eq, inArray, isNull, sql } from 'drizzle-orm'
 
 import { type Transaction, db } from '@/db/client'
+import { mapSequential } from '@/db/helpers'
+import { recordEvent } from '@/db/mutations/activity-event'
+import { releaseTutorAssignments } from '@/db/mutations/organization'
+import { type AppEvent } from '@/db/queries/activity-event'
+import { OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
 import {
   certificateSkills,
   certificates,
@@ -41,8 +46,34 @@ const detachIssuedCertificates = async (tx: Transaction, userId: string) => {
   return issued
 }
 
-export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }: { reassignTo?: string } = {}) => {
+const releaseOpenReviews = async (tx: Transaction, tutorId: string, actorId: string) => {
+  const pools = await tx
+    .selectDistinct({ organizationId: certificates.organizationId })
+    .from(certificates)
+    .where(and(eq(certificates.reviewerId, tutorId), inArray(certificates.status, [...OPEN_CERTIFICATE_STATUSES])))
+  const events: AppEvent[] = []
+  for (const { organizationId } of pools) {
+    events.push(...(await releaseTutorAssignments(tx, { actorId, organizationId, tutorId })))
+  }
+  await mapSequential(events, event => recordEvent(tx, event))
+  return events
+}
+
+export const deleteUser = async (
+  tx: Transaction,
+  userId: string,
+  { actorId = userId, reassignTo }: { actorId?: string; reassignTo?: string } = {}
+) => {
   const detached = await detachIssuedCertificates(tx, userId)
+  const owned = await tx
+    .select({ organizationId: certificates.organizationId, reviewerId: certificates.reviewerId })
+    .from(certificates)
+    .where(eq(certificates.userId, userId))
+  const joined = await tx
+    .select({ organizationId: memberships.organizationId })
+    .from(memberships)
+    .where(eq(memberships.userId, userId))
+  const events = await releaseOpenReviews(tx, userId, actorId)
   const remaining = tx.select({ id: certificates.id }).from(certificates).where(eq(certificates.userId, userId))
 
   await tx.delete(certificateSkills).where(inArray(certificateSkills.certificateId, remaining))
@@ -69,7 +100,14 @@ export const deleteUser = async (tx: Transaction, userId: string, { reassignTo }
   await tx.delete(teamInvitations).where(eq(teamInvitations.userId, userId))
   await tx.delete(memberships).where(eq(memberships.userId, userId))
   const [deleted] = await tx.delete(users).where(eq(users.id, userId)).returning({ avatarUrl: users.avatarUrl })
-  return deleted && { ...deleted, detached }
+  return (
+    deleted && {
+      ...deleted,
+      certificates: [...detached, ...owned].map(({ organizationId, reviewerId }) => ({ organizationId, reviewerId })),
+      events,
+      organizationIds: joined.map(({ organizationId }) => organizationId),
+    }
+  )
 }
 
 export const mergeNotificationPreferences = async (

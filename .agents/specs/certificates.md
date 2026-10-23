@@ -146,7 +146,8 @@ draft -> submitted -> in_review -> approved -> revoked
 - Detaching sets `user_id` to null, sets `holder_deleted_at` (a dedicated marker, so `revoked` keeps meaning an organization decision), and clears `is_default`. Nothing else changes.
 - The row keeps its `snapshot`, description, location, tasks, skills with `evidence` and `statement`, review comments, rating, event metadata, and `documentUrl`.
 - The certificate therefore stays valid, and organization stats and tutor history still count it.
-- `releaseUserFiles` deletes only the avatar and expires the organization and tutor caches.
+- Open reviews of a deleted tutor return to the pool in the same transaction (`in_review` goes back to `submitted`, `certificate.unassigned` is recorded) through `releaseTutorAssignments`.
+- `settleDeletedUser` deletes the avatar, expires the certificate caches of every affected organization and reviewer, the organizations and team caches and the admin overview, then notifies the unassign events.
 
 ### Detached certificate behavior
 

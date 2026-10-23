@@ -4,13 +4,16 @@ import { updateTag } from 'next/cache'
 
 import { and, eq, inArray, ne } from 'drizzle-orm'
 
+import { expireOrganizations, expireTeam } from '@/actions/admin/expire'
+import { expireCertificateCaches } from '@/actions/certificates/helpers'
 import { notify } from '@/actions/notifications/notify'
+import { settleEvents } from '@/actions/organizations/helpers'
 import { db, transaction } from '@/db/client'
 import { recordEvent } from '@/db/mutations/activity-event'
 import { deleteUser } from '@/db/mutations/user'
 import { type AppEvent } from '@/db/queries/activity-event'
 import { memberships, organizations } from '@/db/schema'
-import { certificatesOrgTag, certificatesTutorTag } from '@/lib/cache'
+import { certificatesTutorTag } from '@/lib/cache'
 import { r2DeleteQuietly } from '@/lib/storage'
 
 export const soleAdminOrganizations = async (userId: string) => {
@@ -38,15 +41,22 @@ export const soleAdminOrganizations = async (userId: string) => {
   return owned.filter(({ id }) => !coveredIds.has(id))
 }
 
-export const releaseUserFiles = async (deleted: Awaited<ReturnType<typeof deleteUser>>) => {
+export const settleDeletedUser = async (deleted: Awaited<ReturnType<typeof deleteUser>>) => {
   if (!deleted) return
   if (deleted.avatarUrl) await r2DeleteQuietly(deleted.avatarUrl)
-  for (const organizationId of new Set(deleted.detached.map(item => item.organizationId))) {
-    updateTag(certificatesOrgTag(organizationId))
+  const organizationIds = new Set([
+    ...deleted.certificates.map(item => item.organizationId),
+    ...deleted.organizationIds,
+  ])
+  for (const organizationId of organizationIds) {
+    expireCertificateCaches({ organizationId, userId: null })
   }
-  for (const reviewerId of new Set(deleted.detached.map(item => item.reviewerId))) {
+  for (const reviewerId of new Set(deleted.certificates.map(item => item.reviewerId))) {
     if (reviewerId) updateTag(certificatesTutorTag(reviewerId))
   }
+  expireOrganizations()
+  expireTeam()
+  await settleEvents(deleted.events)
 }
 
 export const eraseAccount = async (user: { email: string; firstName: string; id: string; locale: string | null }) => {
@@ -64,7 +74,7 @@ export const eraseAccount = async (user: { email: string; firstName: string; id:
     await recordEvent(tx, event)
     return await deleteUser(tx, user.id)
   })
-  await releaseUserFiles(deleted)
+  await settleDeletedUser(deleted)
   await notify(event)
 
   return { blockers: [], deleted: true }

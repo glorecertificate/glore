@@ -43,7 +43,7 @@ export const memberError = (code: MemberErrorCode) => Object.assign(new Error(ME
 export const isMemberError = (error: unknown): error is Error & { code: MemberErrorCode } =>
   error instanceof Error && 'code' in error && typeof error.code === 'string' && error.code in MEMBER_ERROR_MESSAGES
 
-const releaseTutorAssignments = async (
+export const releaseTutorAssignments = async (
   tx: Transaction,
   { actorId, organizationId, tutorId }: { actorId: string; organizationId: number; tutorId: string }
 ) => {

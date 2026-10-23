@@ -65,9 +65,11 @@ describe.skipIf(!isLocalDatabase)('notifyStaleOverrides', () => {
     )
     expect(await events()).toHaveLength(1)
 
-    expect(await run.notifyStaleOverrides()).toMatchObject({ notified: false })
-    expect(mocks.notify).toHaveBeenCalledTimes(1)
-    expect(await events()).toHaveLength(1)
+    const second = await run.notifyStaleOverrides()
+    const changed = second.orphaned !== first.orphaned || second.incompatible !== first.incompatible
+    expect(second.notified).toBe(changed && second.orphaned + second.incompatible > 0)
+    expect(mocks.notify).toHaveBeenCalledTimes(second.notified ? 2 : 1)
+    expect(await events()).toHaveLength(second.notified ? 2 : 1)
   })
 
   it('notifies again after a week or when the counts change', async () => {

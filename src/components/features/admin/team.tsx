@@ -107,11 +107,12 @@ export const AdminTeam = ({ users: initialUsers }: { users: User[] }) => {
 
     if (error) {
       toast.error(adminError(error.code))
-      return
+      return false
     }
 
     toast.success(t('inviteSuccess', { email: data.email }))
     refreshTeam()
+    return true
   }
 
   const handleChangeRole = async (user: User, role: TeamRole) => {

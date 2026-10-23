@@ -87,24 +87,27 @@ export const InviteMemberDialog = ({
     if (submitting || emails.length === 0 || tooMany) return
 
     setSubmitting(true)
-    const { data, error } = await onInvite({ emails, locale, message: message.trim() || undefined, role: roleValue })
-    setSubmitting(false)
+    try {
+      const { data, error } = await onInvite({ emails, locale, message: message.trim() || undefined, role: roleValue })
 
-    if (error || !data) {
-      toast.error(errorMessage(error?.code))
-      return
+      if (error || !data) {
+        toast.error(errorMessage(error?.code))
+        return
+      }
+
+      if (data.some(({ status }) => status === 'sent')) onSent()
+
+      const [first] = data
+      if (mode === 'single' && data.length === 1 && first?.status === 'sent') {
+        toast.success(t('sentOne', { email: first.email }))
+        handleOpenChange(false)
+        return
+      }
+
+      setResults(data)
+    } finally {
+      setSubmitting(false)
     }
-
-    if (data.some(({ status }) => status === 'sent')) onSent()
-
-    const [first] = data
-    if (mode === 'single' && data.length === 1 && first?.status === 'sent') {
-      toast.success(t('sentOne', { email: first.email }))
-      handleOpenChange(false)
-      return
-    }
-
-    setResults(data)
   }
 
   return (

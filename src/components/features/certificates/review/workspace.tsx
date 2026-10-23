@@ -90,27 +90,30 @@ export const ReviewWorkspace = ({
     setPreviewUrl(null)
   }
 
+  const run = async <T,>(kind: Busy, task: () => Promise<T>) => {
+    setBusy(kind)
+    try {
+      return await task()
+    } finally {
+      setBusy(null)
+    }
+  }
+
   const claim = async () => {
-    setBusy('claim')
-    const { error } = await claimCertificateReview(certificate.id)
-    setBusy(null)
+    const { error } = await run('claim', () => claimCertificateReview(certificate.id))
     if (error) return toast.error(failure(error.code))
     toast.success(t('claimed'))
     return refresh()
   }
 
   const preview = form.handleSubmit(async values => {
-    setBusy('preview')
-    const { data, error } = await previewCertificatePdf(certificate.id, approvalPayload(values))
-    setBusy(null)
+    const { data, error } = await run('preview', () => previewCertificatePdf(certificate.id, approvalPayload(values)))
     if (error || !data) return toast.error(failure(error?.code ?? ''))
     return setPreviewUrl(decodePdf(data.pdf))
   })
 
   const approve = async () => {
-    setBusy('approve')
-    const { error } = await approveCertificate(certificate.id, approvalPayload(form.getValues()))
-    setBusy(null)
+    const { error } = await run('approve', () => approveCertificate(certificate.id, approvalPayload(form.getValues())))
     if (error) return toast.error(failure(error.code))
     closePreview()
     toast.success(t('approved'))
@@ -123,18 +126,14 @@ export const ReviewWorkspace = ({
       form.setError('comment', { message: 'commentRequired', type: 'custom' })
       return toast.error(t('changesNeedComment'))
     }
-    setBusy('changes')
-    const { error } = await requestCertificateChanges(certificate.id, changesPayload(values))
-    setBusy(null)
+    const { error } = await run('changes', () => requestCertificateChanges(certificate.id, changesPayload(values)))
     if (error) return toast.error(failure(error.code))
     toast.success(t('changesRequested'))
     return push('/certificates')
   }
 
   const reject = async (reason: string) => {
-    setBusy('reject')
-    const { error } = await rejectCertificate(certificate.id, { reason })
-    setBusy(null)
+    const { error } = await run('reject', () => rejectCertificate(certificate.id, { reason }))
     if (error) return toast.error(failure(error.code))
     toast.success(t('rejected'))
     return push('/certificates')

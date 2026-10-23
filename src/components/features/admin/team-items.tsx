@@ -183,7 +183,7 @@ export const TeamInviteDialog = ({
     email: string
     role: TeamRole
     locale: Locale
-  }) => Promise<void>
+  }) => Promise<boolean>
   open: boolean
   onOpenChange: (open: boolean) => void
 }) => {
@@ -211,7 +211,14 @@ export const TeamInviteDialog = ({
 
     try {
       setSubmitting(true)
-      await onInvite({ firstName: firstName.trim(), lastName: lastName.trim(), email: email.trim(), role, locale })
+      const sent = await onInvite({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        role,
+        locale,
+      })
+      if (!sent) return
       resetForm()
       onOpenChange(false)
     } finally {

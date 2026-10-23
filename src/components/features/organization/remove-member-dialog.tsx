@@ -41,17 +41,20 @@ export const RemoveMemberDialog = ({
   const handleRemove = async () => {
     if (!member) return
     setRemoving(true)
-    const { error } = await removeOrganizationMember(member.id, organizationId)
-    setRemoving(false)
+    try {
+      const { error } = await removeOrganizationMember(member.id, organizationId)
 
-    if (error) {
-      toast.error(memberError(error.code))
-      return
+      if (error) {
+        toast.error(memberError(error.code))
+        return
+      }
+
+      toast.success(t('memberRemoved'))
+      onOpenChange(false)
+      onDone()
+    } finally {
+      setRemoving(false)
     }
-
-    toast.success(t('memberRemoved'))
-    onOpenChange(false)
-    onDone()
   }
 
   return (
@@ -69,7 +72,10 @@ export const RemoveMemberDialog = ({
           <AlertDialogAction
             loading={removing}
             loadingText={t('removing')}
-            onClick={handleRemove}
+            onClick={event => {
+              event.preventDefault()
+              void handleRemove()
+            }}
             variant="destructive"
           >
             {t('removeMember')}

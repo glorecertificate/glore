@@ -39,17 +39,20 @@ export const LeaveOrganizationDialog = ({
 
   const handleLeave = async () => {
     setLeaving(true)
-    const { data, error } = await leaveOrganization(organizationId)
-    setLeaving(false)
+    try {
+      const { data, error } = await leaveOrganization(organizationId)
 
-    if (error || !data) {
-      toast.error(memberError(error?.code))
-      return
+      if (error || !data) {
+        toast.error(memberError(error?.code))
+        return
+      }
+
+      toast.success(t('leftOrganization'))
+      onOpenChange(false)
+      onLeft(data.user)
+    } finally {
+      setLeaving(false)
     }
-
-    toast.success(t('leftOrganization'))
-    onOpenChange(false)
-    onLeft(data.user)
   }
 
   return (
@@ -61,7 +64,15 @@ export const LeaveOrganizationDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={leaving}>{t('cancel')}</AlertDialogCancel>
-          <AlertDialogAction loading={leaving} loadingText={t('leaving')} onClick={handleLeave} variant="destructive">
+          <AlertDialogAction
+            loading={leaving}
+            loadingText={t('leaving')}
+            onClick={event => {
+              event.preventDefault()
+              void handleLeave()
+            }}
+            variant="destructive"
+          >
             {t('leaveOrganization')}
           </AlertDialogAction>
         </AlertDialogFooter>

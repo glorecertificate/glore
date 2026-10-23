@@ -153,6 +153,7 @@ export const AlertDialogCancel = ({
       disabled && 'cursor-not-allowed',
       className
     )}
+    disabled={disabled}
     {...props}
   />
 )

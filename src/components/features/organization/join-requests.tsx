@@ -33,7 +33,7 @@ const RejectRequestDialog = ({
   onOpenChange,
   open,
 }: {
-  onConfirm: (comment: string) => Promise<void>
+  onConfirm: (comment: string) => Promise<boolean>
   onOpenChange: (open: boolean) => void
   open: boolean
 }) => {
@@ -44,7 +44,8 @@ const RejectRequestDialog = ({
   const handleConfirm = async () => {
     try {
       setSubmitting(true)
-      await onConfirm(comment)
+      const rejected = await onConfirm(comment)
+      if (!rejected) return
       setComment('')
       onOpenChange(false)
     } finally {
@@ -121,7 +122,7 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
 
   const handleRejectRequest = async (comment: string) => {
     if (!rejectRequestId) {
-      return
+      return false
     }
 
     setActiveRequestId(rejectRequestId)
@@ -132,12 +133,13 @@ export const OrganizationJoinRequests = ({ joinRequests, onRefresh }: Organizati
 
     if (error) {
       toast.error(errorMessage(error.code))
-      return
+      return false
     }
 
     setRejectRequestId(null)
     toast.success(t('joinRequestRejected'))
     onRefresh()
+    return true
   }
 
   return (

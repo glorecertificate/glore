@@ -48,7 +48,10 @@ export const DeleteOrganizationDialog = ({
           <AlertDialogAction
             loading={deleting}
             loadingText={t('deleting')}
-            onClick={handleConfirm}
+            onClick={event => {
+              event.preventDefault()
+              void handleConfirm()
+            }}
             variant="destructive"
           >
             {t('deleteOrganization')}

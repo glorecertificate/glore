@@ -188,28 +188,27 @@ export const CertificateWizard = ({ certificate, holder, notes, organization, sk
       return
     }
     setSubmitting(true)
-    const personal = missing.length > 0 ? personalPayload(values, missing) : undefined
+    try {
+      const personal = missing.length > 0 ? personalPayload(values, missing) : undefined
 
-    if (resubmit && certificate) {
-      const result = await resubmitCertificate(certificate.id, toEditValues(values), personal)
-      setSubmitting(false)
+      if (resubmit && certificate) {
+        const result = await resubmitCertificate(certificate.id, toEditValues(values), personal)
+        if (result.error) return toast.error(submitError(result.error.code))
+        toast.success(t('resubmitted'))
+        return push(`/certificates/${certificate.id}`)
+      }
+
+      latest.current = values
+      await flush()
+      const id = draftId.current
+      if (!id) return toast.error(t('submitErrorsSaveFailed'))
+      const result = await submitCertificate(id, personal)
       if (result.error) return toast.error(submitError(result.error.code))
-      toast.success(t('resubmitted'))
-      return push(`/certificates/${certificate.id}`)
-    }
-
-    latest.current = values
-    await flush()
-    const id = draftId.current
-    if (!id) {
+      toast.success(t('submitted'))
+      return push(`/certificates/${id}`)
+    } finally {
       setSubmitting(false)
-      return toast.error(t('submitErrorsSaveFailed'))
     }
-    const result = await submitCertificate(id, personal)
-    setSubmitting(false)
-    if (result.error) return toast.error(submitError(result.error.code))
-    toast.success(t('submitted'))
-    return push(`/certificates/${id}`)
   }
 
   const discard = async () => {

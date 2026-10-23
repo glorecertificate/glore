@@ -73,8 +73,8 @@ describe.skipIf(!isLocalDatabase)('mail preferences route', () => {
     expect(response.status).toBe(400)
   })
 
-  it('sends a plain GET to the settings page without changing anything', () => {
-    const response = context.route.GET(request('/api/v1/mail-preferences?token=x', 'GET') as never)
+  it('sends a plain GET to the settings page on the app host without changing anything', () => {
+    const response = context.route.GET()
 
     expect(response.headers.get('location')).toBe('https://glore.test/settings?tab=notifications')
   })

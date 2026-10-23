@@ -8,7 +8,7 @@ import { parseUnsubscribeToken } from '@/lib/unsubscribe'
 
 const HOUR = 60 * 60 * 1000
 
-export const GET = (request: NextRequest) => NextResponse.redirect(new URL('/settings?tab=notifications', request.url))
+export const GET = () => NextResponse.redirect(new URL('/settings?tab=notifications', process.env.APP_URL))
 
 export const POST = async (request: NextRequest) => {
   if (await isRateLimited(`unsubscribe:${await clientAddress()}`, 30, HOUR)) {

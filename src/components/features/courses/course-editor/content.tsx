@@ -7,10 +7,11 @@ import { type Value } from 'platejs'
 
 import { useCourse } from '@/components/features/courses/course-editor/context'
 import { LessonActivities } from '@/components/features/courses/course-editor/lesson-activities'
+import { type PendingChange, commitPending } from '@/components/features/courses/course-editor/pending-change'
 import { useSession } from '@/components/providers/session'
 import { Skeleton } from '@/components/ui/skeleton'
 import { type IntlRecord } from '@/lib/i18n'
-import { cn, debounce } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 
 const SKELETON_TOOLBAR_GROUPS = [
   ['undo', 'redo'],
@@ -75,51 +76,32 @@ const CourseEditor = ({
   flushRef: React.RefObject<(() => unknown) | null>
 }) => {
   const onChangeRef = useRef(onChange)
-  const latestValueRef = useRef(initialValue)
-  const appliedRef = useRef(true)
+  const pendingRef = useRef<PendingChange<Value> | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     onChangeRef.current = onChange
   })
 
-  const debouncedOnChange = debounce((value: Value) => {
-    onChangeRef.current(value)
-    appliedRef.current = true
-  }, 500)
-
   useEffect(() => {
-    latestValueRef.current = initialValue
-    appliedRef.current = true
-    return () => {
-      debouncedOnChange.cancel()
-    }
-  }, [debouncedOnChange, initialValue])
-
-  useEffect(() => {
-    flushRef.current = () => {
-      debouncedOnChange.cancel()
-      if (appliedRef.current) return null
-      appliedRef.current = true
-      onChangeRef.current(latestValueRef.current)
-      return latestValueRef.current
-    }
+    flushRef.current = () => commitPending(pendingRef, timerRef)
     return () => {
       flushRef.current = null
     }
-  }, [flushRef, debouncedOnChange])
+  }, [flushRef])
 
   useEffect(
     () => () => {
-      debouncedOnChange.cancel()
+      commitPending(pendingRef, timerRef)
     },
-    [debouncedOnChange]
+    [version]
   )
 
   const setValue = (newValue: { value?: Value }) => {
     const value = newValue.value ?? (newValue as unknown as Value)
-    latestValueRef.current = value
-    appliedRef.current = false
-    debouncedOnChange(value)
+    clearTimeout(timerRef.current)
+    pendingRef.current = { commit: onChangeRef.current, value }
+    timerRef.current = setTimeout(() => commitPending(pendingRef, timerRef), 500)
   }
 
   return (
@@ -134,15 +116,18 @@ export const CourseContent = () => {
   const { user } = useSession()
 
   const canEdit = user.canEdit && !course.archivedAt
-  const currentLessonRef = useRef(currentLesson)
-  currentLessonRef.current = currentLesson
+  const courseStateRef = useRef(course)
+  courseStateRef.current = course
+  const lessonId = currentLesson.id
 
   const onContentChange = (value: Value) => {
+    const lesson = courseStateRef.current.lessons.find(item => item.id === lessonId) ?? currentLesson
     setLesson({
       content: {
-        ...currentLessonRef.current.content,
+        ...lesson.content,
         [language]: value,
       } as IntlRecord,
+      id: lessonId,
     })
   }
 

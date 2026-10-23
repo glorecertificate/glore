@@ -18,6 +18,15 @@ interface LoadedCertificates {
   tutors: OrgTutor[]
 }
 
+const fetchCertificates = async (organizationId: number): Promise<LoadedCertificates | null> => {
+  const [certificates, tutors] = await Promise.all([
+    listOrganizationCertificates(organizationId),
+    listOrgTutors(organizationId),
+  ])
+  if (certificates.data === null || certificates.error || tutors.error) return null
+  return { certificates: certificates.data ?? [], tutors: tutors.data ?? [] }
+}
+
 export const OrganizationCertificatesPanel = ({ organizationId }: { organizationId: number }) => {
   const [attempt, setAttempt] = useState(0)
 
@@ -38,20 +47,21 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
   useEffect(() => {
     let active = true
     const load = async () => {
-      const [certificates, tutors] = await Promise.all([
-        listOrganizationCertificates(organizationId),
-        listOrgTutors(organizationId),
-      ])
+      const next = await fetchCertificates(organizationId)
       if (!active) return
-      const ready = certificates.data !== null && !certificates.error && !tutors.error
-      setFailed(!ready)
-      setLoaded(ready ? { certificates: certificates.data ?? [], tutors: tutors.data ?? [] } : null)
+      setFailed(!next)
+      setLoaded(next)
     }
     load()
     return () => {
       active = false
     }
   }, [organizationId])
+
+  const reload = async () => {
+    const next = await fetchCertificates(organizationId)
+    if (next) setLoaded(next)
+  }
 
   if (failed) {
     return (
@@ -77,5 +87,11 @@ const CertificatesContent = ({ onRetry, organizationId }: { onRetry: () => void;
     )
   }
 
-  return <OrganizationCertificates certificates={loaded.certificates} tutors={loaded.tutors} />
+  return (
+    <OrganizationCertificates
+      certificates={loaded.certificates}
+      onChanged={() => void reload()}
+      tutors={loaded.tutors}
+    />
+  )
 }

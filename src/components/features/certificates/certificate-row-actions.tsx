@@ -19,7 +19,15 @@ import { fullName } from '@/lib/utils'
 
 const UNASSIGNED = 'unassigned'
 
-export const CertificateRowActions = ({ certificate, tutors }: { certificate: Certificate; tutors: OrgTutor[] }) => {
+export const CertificateRowActions = ({
+  certificate,
+  onChanged,
+  tutors,
+}: {
+  certificate: Certificate
+  onChanged?: () => void
+  tutors: OrgTutor[]
+}) => {
   const t = useTranslations('Certificates.org')
   const tDetail = useTranslations('Certificates.detail')
   const { refresh } = useRouter()
@@ -34,6 +42,7 @@ export const CertificateRowActions = ({ certificate, tutors }: { certificate: Ce
           : await assignCertificateTutor(certificate.id, tutorId)
       if (error) return void toast.error(t('reassignError'))
       toast.success(t('reassigned'))
+      onChanged?.()
       return refresh()
     })
 
@@ -43,6 +52,7 @@ export const CertificateRowActions = ({ certificate, tutors }: { certificate: Ce
       setRevoking(false)
       if (error) return void toast.error(tDetail('revokeError'))
       toast.success(tDetail('revoked'))
+      onChanged?.()
       return refresh()
     })
 

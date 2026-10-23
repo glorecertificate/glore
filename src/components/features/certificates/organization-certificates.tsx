@@ -46,9 +46,11 @@ const holderName = (certificate: Certificate) => (certificate.holder ? fullName(
 
 export const OrganizationCertificates = ({
   certificates,
+  onChanged,
   tutors,
 }: {
   certificates: Certificate[]
+  onChanged?: () => void
   tutors: OrgTutor[]
 }) => {
   const t = useTranslations('Certificates.org')
@@ -182,7 +184,9 @@ export const OrganizationCertificates = ({
         }
         getRowId={certificate => certificate.id}
         label={t('title')}
-        rowActions={certificate => <CertificateRowActions certificate={certificate} tutors={tutors} />}
+        rowActions={certificate => (
+          <CertificateRowActions certificate={certificate} onChanged={onChanged} tutors={tutors} />
+        )}
         rows={rows}
       />
     </div>

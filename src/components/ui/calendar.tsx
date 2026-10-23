@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
-import { useLocale } from 'next-intl'
+import { type Locale, useLocale } from 'next-intl'
 import {
   CustomComponents,
   type DayButton,
@@ -15,6 +15,12 @@ import {
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+const calendarLocales = {
+  en: () => Promise.resolve(defaultLocale),
+  es: async () => (await import('react-day-picker/locale/es')).es,
+  it: async () => (await import('react-day-picker/locale/it')).it,
+} satisfies Record<Locale, () => Promise<typeof defaultLocale>>
 
 const Calendar = ({
   buttonVariant = 'ghost',
@@ -34,21 +40,16 @@ const Calendar = ({
   const [calendarLocale, setCalendarLocale] = useState(defaultLocale)
 
   const getCalendarLocale = useEffectEvent(async () => {
-    if (locale === 'en') {
-      return defaultLocale
-    }
-
     try {
-      const { [locale]: localeData } = await import('react-day-picker/locale')
-      setCalendarLocale(localeData)
+      setCalendarLocale(await calendarLocales[locale]())
     } catch {
-      return defaultLocale
+      setCalendarLocale(defaultLocale)
     }
   })
 
   useEffect(() => {
     void getCalendarLocale()
-  }, [])
+  }, [locale])
 
   const calendarClassNames = {
     button_next: cn(

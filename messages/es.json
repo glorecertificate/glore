@@ -961,6 +961,46 @@
     "archiveAction": "Archivar",
     "moreActions": "Más acciones"
   },
+  "ContentTranslation": {
+    "title": "Traducción",
+    "state": {
+      "missing": "Falta",
+      "machine": "Traducción automática",
+      "draft": "Pendiente de revisión",
+      "reviewed": "Revisada",
+      "outdated": "Desactualizada"
+    },
+    "hints": {
+      "missing": "{language} todavía no tiene contenido.",
+      "machine": "La traducción con IA de {language} espera la revisión de una persona.",
+      "draft": "{language} se escribió a mano y nadie la ha revisado todavía.",
+      "reviewed": "Una persona revisó {language} con el texto actual en inglés.",
+      "outdated": "El texto en inglés cambió después de traducir {language}. Vuelve a traducir o revísala."
+    },
+    "counts": "{reviewed} de {total} partes revisadas",
+    "translate": "Traducir con IA",
+    "translating": "Traduciendo {done} de {total}…",
+    "markReviewed": "Marcar como revisada",
+    "saveFirst": "Guarda tus cambios primero.",
+    "translated": "{language} traducida con IA. Revísala antes de publicar.",
+    "reviewed": "{language} marcada como revisada.",
+    "replaceTitle": "¿Reemplazar la traducción existente?",
+    "replaceMessage": "{language} ya tiene contenido. La traducción con IA lo reemplaza por una nueva traducción automática.",
+    "replace": "Reemplazar",
+    "cancel": "Cancelar",
+    "publishLocale": "Publicado en {language}",
+    "localeTitle": "Traducción a {language}",
+    "errors": {
+      "generic": "La traducción falló. Inténtalo de nuevo.",
+      "aiNotConfigured": "La traducción con IA no está configurada en este entorno.",
+      "aiUnavailable": "El servicio de IA no está disponible ahora. Inténtalo de nuevo en un minuto.",
+      "aiInvalid": "La respuesta de la IA no era utilizable. No se guardó nada. Inténtalo de nuevo.",
+      "rateLimited": "Demasiadas traducciones. Inténtalo más tarde.",
+      "forbidden": "No puedes traducir contenido.",
+      "exists": "Este idioma ya tiene contenido.",
+      "empty": "Todavía no hay nada que revisar en este idioma."
+    }
+  },
   "Dashboard": {
     "greeting": "Te damos la bienvenida, {name}",
     "subtitle": {
@@ -1141,6 +1181,7 @@
       "translationsTitle": "Traducciones pendientes",
       "translationsDescription": "Cursos disponibles por completo en cada idioma",
       "translationsCount": "{complete} de {total} cursos",
+      "translationsReviewed": "Partes de todo el contenido: {translated} traducidas, {reviewed} revisadas, {total} en total",
       "healthTitle": "Estado del contenido",
       "healthDescription": "Cursos que requieren atención prioritaria",
       "healthClear": "Todos los cursos están completos y traducidos.",
@@ -2908,7 +2949,8 @@
         "impersonation": "Sesiones de visualización",
         "moderation": "Moderación",
         "organizations": "Organizaciones",
-        "legal": "Legal"
+        "legal": "Legal",
+        "content": "Contenido"
       },
       "detail": {
         "permanent": "Sin fecha de fin",
@@ -2924,7 +2966,11 @@
         "team_invited": "{actor} invitó a <link>{target}</link> al equipo como {role, select, admin {admin} editor {editor} other {miembro}}",
         "team_role_changed": "{actor} cambió el rol de <link>{target}</link> a {role, select, admin {admin} editor {editor} other {usuario}}",
         "legal_accepted": "{actor} aceptó <link>{target}</link>",
-        "legal_version_published": "{actor} publicó <link>{target}</link>"
+        "legal_version_published": "{actor} publicó <link>{target}</link>",
+        "content_translation_reviewed": "{actor} marcó como revisada la traducción ({locale}) de <link>{target}</link>",
+        "course_locale_published": "{actor} {published, select, yes {publicó} other {retiró}} <link>{target}</link> en {locale}",
+        "doc_locale_published": "{actor} {published, select, yes {publicó} other {retiró}} <link>{target}</link> en {locale}",
+        "skill_group_updated": "{actor} actualizó el grupo de habilidades <link>{target}</link> ({locale})"
       },
       "noResults": "No se encontraron eventos",
       "noResultsDescription": "Prueba con otra búsqueda o quita los filtros.",

@@ -238,7 +238,7 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - T3 reads classification from `classifyOverride` in `src/lib/message-overrides.ts` and writes through `src/actions/messages.ts`.
 - T3 [ ]: `/admin/translations` with filters, ICU validation, preview, reset, history, AI suggest, and the stale override cron notice.
   - Accept: e2e override, invalid ICU blocked, reset, editors blocked from protected namespaces.
-- T4 [ ]: `content_translations`, per-locale status in the course, doc, and skill group editors, AI translate for Plate content, `doc_articles.languages`, dashboard coverage, audit events.
+- T4 [x] (hash pending): `content_translations`, per-locale status in the course, doc, and skill group editors, AI translate for Plate content, `doc_articles.languages`, dashboard coverage, audit events.
   - Accept: e2e translate, review, publish `es`, outdated flag after an `en` edit.
 - T5 [ ]: `app_settings` editor, `i18n:overrides` and `i18n:pull` scripts, `rename-key.mts`.
   - Accept: a contact email edit reaches the email layout and footer.

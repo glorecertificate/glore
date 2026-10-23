@@ -22,6 +22,7 @@ src/
 │   ├── notifications/  # catalog.ts, notify.ts, plan.ts, recipients.ts (server-only); inbox.ts ('use server': list, count, mark read)
 │   ├── organizations/  # activity.ts (+ server-only activity-core.ts), helpers.ts, insights.ts, invitations.ts, invite-core.ts,
 │   │                   #   invitee.ts, join-links.ts, members.ts, previews.ts, queries.ts, requests.ts, settings.ts
+│   ├── translations/   # states.ts, ai.ts (translateEntity), coverage.ts, server-only helpers.ts and effects.ts
 │   ├── shell/          # search.ts (palette lookups: certificates, members), scope.ts (pure per-role scopes), invitations.ts (viewer's pending invitations)
 │   ├── auth.ts         # Login, logout, password reset, getAuthUser
 │   ├── cookies.ts      # Typed cookie get/set/delete (wraps next/headers cookies)
@@ -48,7 +49,7 @@ src/
 │   └── verify/         # Public certificate verification (page, [code])
 ├── components/
 │   ├── features/       # Domain components by feature: about, admin, auth, certificates, courses,
-│   │                   #   dashboard, docs, help, legal, notifications, onboarding, organization, users
+│   │                   #   dashboard, docs, help, legal, notifications, onboarding, organization, translations, users
 │   ├── icons/          # Custom SVG icon components, Lucide registry (registry.ts) and LucideIcon (lucide.tsx)
 │   ├── layout/         # dashboard-page, dashboard-sidebar, dynamic-marker, error-fallback,
 │   │                   #   loading-fallback, offline-fallback, organization-switcher, page-title, pwa-install-prompt,
@@ -61,13 +62,13 @@ src/
 │   ├── schemas.ts      # drizzle-zod schemas
 │   ├── types.ts        # Drizzle table type helpers
 │   ├── schema/         # Per-table Drizzle definitions: accounts, activity-events, assessments, certificates,
-│   │                   #   courses, docs, enums, helpers, index, message-overrides, notifications, organizations, progress,
+│   │                   #   content-translations, courses, docs, enums, helpers, index, message-overrides, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, admin-audit, admin-certificate, admin-overview, admin-user, certificate,
-│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, message-override, notification, onboarding,
+│   │                   #   course, content-translation, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, message-override, notification, onboarding,
 │   │                   #   organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, content-translation.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, learning, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
@@ -86,6 +87,7 @@ src/
 │   ├── legal.ts        # Legal reader: loadLegalDocument, getPendingLegal
 │   ├── message-overrides.ts # Override merge, validation, stale states
 │   ├── messages.ts     # loadMessages, resolveLocale: the one catalog loader (server-only)
+│   ├── translate.ts    # Plate and plain text translation: walker, chunks, output validation
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers
@@ -114,28 +116,6 @@ src/
 - `db/mutations/<table>.ts` holds shared server-only write primitives (`import 'server-only'`, never `'use server'`).
 - `db/schema/<table>.ts` holds Drizzle table definitions.
 - `features/docs/use-docs-search.ts` is the docs search hook (`load`, `search`, results carry `href`) for the command palette.
-
-## Shell: sidebar, switcher, palette
-
-- `components/layout/navigation.ts` is the single role table (pure, tested).
-- Each entry has a group (`pages`, `settings`, `organization`, `admin`, `actions`), an href, an icon, and a `visible(viewer)` rule over `{ canEdit, isAdmin, role }`.
-- The sidebar renders the `sidebar` entries, the palette renders every visible entry, and `use-navigation-labels` maps each id to its translated label.
-- Roles (D25): team members (`canEdit`: platform admins and editors) get Dashboard, Courses, and Docs, plus the Admin group for platform admins.
-- Team members get no Organization item, no Certificates, and no org switcher.
-- Org owners and representatives add Organization. Learners have no Certificates.
-
-### Org switcher and palette
-
-- The org switcher (`organization-switcher.tsx`) reuses the active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads.
-- It lists memberships, the viewer's pending invitations (`listMyPendingInvitations`, polled every 2 minutes, links to `/api/v1/invitations/[id]`), and a link to `/register`.
-- It offers Leave for non-owners through `LeaveOrganizationDialog` (`leaveOrganization`, gotcha 16).
-- The palette opens with the `searchShortcut` key of `config/app.json` (plus Cmd or Ctrl).
-- Courses and docs filter in the browser (`listCourses`, `useDocsSearch`).
-- Certificates and members come from `searchWorkspace` (`actions/shell/search.ts`), which scopes server-side.
-- Certificate scope: own certificates for everyone but team members, assigned and pooled `submitted` requests for tutors, and every non-draft certificate of the active organization for owners and representatives.
-- Member scope: owners and representatives in the active organization only.
-- Team members get neither. Drafts are visible to their holder only. Queries shorter than 2 characters return nothing.
-- The bell stays in the sidebar's top group under Search, as the second row.
 
 ## Layer boundaries (lint-enforced)
 

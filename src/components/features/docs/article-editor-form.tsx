@@ -3,10 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useReducer } from 'react'
 
-import { useTranslations } from 'next-intl'
+import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { createDocArticle, updateDocArticle } from '@/actions/docs'
+import { type TranslatedField, TranslationPanel } from '@/components/features/translations/panel'
+import { useContentTranslations } from '@/components/features/translations/use-content-translations'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
 import { DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
@@ -17,7 +19,7 @@ import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { type DocArticle, type DocCategory } from '@/db/queries/doc'
-import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALE_ITEMS } from '@/lib/i18n'
+import { DEFAULT_LOCALE, INTL_PLACEHOLDER, type IntlRecord, LOCALES, LOCALE_ITEMS } from '@/lib/i18n'
 
 interface ArticleEditorFormProps {
   article?: DocArticle
@@ -35,12 +37,16 @@ const slugify = (input: string) =>
     .replace(/-{2,}/gu, '-')
     .replace(/^-|-$/gu, '')
 
+const TRANSLATED_FIELDS = { content: 'contents', excerpt: 'excerpts', title: 'titles' } as const
+
 interface EditorState {
   titles: IntlRecord
   excerpts: IntlRecord
   contents: IntlRecord
   slug: string
   categoryId: number | null
+  dirty: boolean
+  languages: string[]
   published: boolean
   saving: boolean
 }
@@ -50,6 +56,7 @@ type EditorAction =
   | { type: 'INIT_NEW'; defaultCategoryId?: number }
   | { type: 'SET_LOCALE_FIELD'; field: 'contents' | 'excerpts' | 'titles'; locale: string; value: string }
   | { type: 'SET_CATEGORY'; value: number | null }
+  | { type: 'SET_LANGUAGE'; locale: string; value: boolean }
   | { type: 'SET_PUBLISHED'; value: boolean }
   | { type: 'SET_SAVING'; value: boolean }
   | { type: 'SET_SLUG'; value: string }
@@ -62,7 +69,9 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
       contents: { ...(action.article.content as IntlRecord) },
       slug: action.article.slug,
       categoryId: action.article.categoryId,
-      published: action.article.isPublished,
+      dirty: false,
+      languages: [...action.article.languages],
+      published: action.article.published,
       saving: false,
     }
   }
@@ -73,22 +82,29 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
       contents: { ...INTL_PLACEHOLDER },
       slug: '',
       categoryId: action.defaultCategoryId ?? null,
+      dirty: false,
+      languages: [DEFAULT_LOCALE],
       published: false,
       saving: false,
     }
   }
   if (action.type === 'SET_LOCALE_FIELD') {
-    return { ...state, [action.field]: { ...state[action.field], [action.locale]: action.value } }
+    return { ...state, [action.field]: { ...state[action.field], [action.locale]: action.value }, dirty: true }
   }
-  if (action.type === 'SET_CATEGORY') return { ...state, categoryId: action.value }
-  if (action.type === 'SET_PUBLISHED') return { ...state, published: action.value }
+  if (action.type === 'SET_CATEGORY') return { ...state, categoryId: action.value, dirty: true }
+  if (action.type === 'SET_LANGUAGE') {
+    const others = state.languages.filter(locale => locale !== action.locale)
+    return { ...state, dirty: true, languages: action.value ? [...others, action.locale] : others }
+  }
+  if (action.type === 'SET_PUBLISHED') return { ...state, dirty: true, published: action.value }
   if (action.type === 'SET_SAVING') return { ...state, saving: action.value }
-  if (action.type === 'SET_SLUG') return { ...state, slug: action.value }
+  if (action.type === 'SET_SLUG') return { ...state, dirty: true, slug: action.value }
   return state
 }
 
 export const ArticleEditorForm = ({ article, categories, defaultCategoryId, onOpenChange }: ArticleEditorFormProps) => {
   const t = useTranslations('Docs')
+  const tTranslation = useTranslations('ContentTranslation')
   const { localize } = useI18n()
   const { refresh: routerRefresh } = useRouter()
 
@@ -99,7 +115,15 @@ export const ArticleEditorForm = ({ article, categories, defaultCategoryId, onOp
     )
   )
 
-  const { categoryId, contents, excerpts, published, saving, slug, titles } = state
+  const { categoryId, contents, dirty, excerpts, languages, published, saving, slug, titles } = state
+  const translations = useContentTranslations('doc_article', article?.id ?? null)
+
+  const handleTranslated = (locale: Locale, fields: TranslatedField[]) => {
+    for (const { column, value } of fields) {
+      const field = TRANSLATED_FIELDS[column as keyof typeof TRANSLATED_FIELDS]
+      if (field && typeof value === 'string') dispatch({ type: 'SET_LOCALE_FIELD', field, locale, value })
+    }
+  }
 
   const generateSlug = () => dispatch({ type: 'SET_SLUG', value: slugify(titles[DEFAULT_LOCALE] ?? '') })
 
@@ -115,6 +139,7 @@ export const ArticleEditorForm = ({ article, categories, defaultCategoryId, onOp
       content: contents,
       slug,
       categoryId: categoryId ?? undefined,
+      languages: languages.filter((locale): locale is Locale => LOCALES.includes(locale as Locale)),
       published,
     }
     try {
@@ -199,6 +224,28 @@ export const ArticleEditorForm = ({ article, categories, defaultCategoryId, onOp
 
         {LOCALE_ITEMS.map(item => (
           <TabsContent key={item.value} className="grid gap-4 pt-2" value={item.value}>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={languages.includes(item.value)}
+                id={`article-language-${item.value}`}
+                onCheckedChange={value => dispatch({ type: 'SET_LANGUAGE', locale: item.value, value })}
+              />
+              <Label htmlFor={`article-language-${item.value}`}>
+                {tTranslation('publishLocale', { language: item.label })}
+              </Label>
+            </div>
+
+            {article && item.value !== DEFAULT_LOCALE && (
+              <TranslationPanel
+                disabled={dirty}
+                entityId={article.id}
+                entityType="doc_article"
+                locale={item.value}
+                onTranslated={fields => handleTranslated(item.value, fields)}
+                translations={translations}
+              />
+            )}
+
             <div className="space-y-1.5">
               <Label htmlFor={`article-title-${item.value}`}>{t('editor.title')}</Label>
               <Input

@@ -230,7 +230,17 @@ describe('activity items', () => {
 
   it('has activity copy in every locale for every event an organization can record', async () => {
     const { EVENT_DEFINITIONS } = await import('@/actions/notifications/catalog')
-    const platformOnly = ['account.', 'impersonation.', 'legal.', 'messages.', 'team.']
+    const platformOnly = [
+      'account.',
+      'content.',
+      'course.locale_',
+      'doc.',
+      'impersonation.',
+      'legal.',
+      'messages.',
+      'skill_group.',
+      'team.',
+    ]
     const types = Object.keys(EVENT_DEFINITIONS).filter(type => !platformOnly.some(prefix => type.startsWith(prefix)))
 
     expect(types.length).toBeGreaterThan(25)

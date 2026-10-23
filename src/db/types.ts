@@ -3,6 +3,8 @@ import { type InferInsertModel } from 'drizzle-orm'
 import {
   certificateReviewDecisionEnum,
   certificateStatusEnum,
+  contentEntityTypeEnum,
+  contentTranslationStatusEnum,
   courseTypeEnum,
   membershipRoleEnum,
   organizationRequestStatusEnum,
@@ -15,6 +17,7 @@ import {
   type certificateReviews,
   type certificateSkills,
   type certificates,
+  type contentTranslations,
   type contributions,
   type courseRatings,
   type courses,
@@ -52,6 +55,7 @@ interface TableMap {
   certificates: typeof certificates
   certificate_reviews: typeof certificateReviews
   certificate_skills: typeof certificateSkills
+  content_translations: typeof contentTranslations
   contributions: typeof contributions
   course_ratings: typeof courseRatings
   courses: typeof courses
@@ -88,6 +92,8 @@ export type TableUpdate<T extends keyof TableMap> = Partial<InferInsertModel<Tab
 interface Enums {
   certificate_review_decision: (typeof certificateReviewDecisionEnum.enumValues)[number]
   certificate_status: (typeof certificateStatusEnum.enumValues)[number]
+  content_entity_type: (typeof contentEntityTypeEnum.enumValues)[number]
+  content_translation_status: (typeof contentTranslationStatusEnum.enumValues)[number]
   course_type: (typeof courseTypeEnum.enumValues)[number]
   organization_request_status: (typeof organizationRequestStatusEnum.enumValues)[number]
   role: (typeof membershipRoleEnum.enumValues)[number]

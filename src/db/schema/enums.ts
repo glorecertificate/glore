@@ -21,3 +21,11 @@ export const membershipRoleEnum = pgEnum('role', ['admin', 'learner', 'tutor', '
 export const skillCompassKindEnum = pgEnum('skill_compass_kind', ['strength', 'goal'])
 export const legalVersionStatusEnum = pgEnum('legal_version_status', ['draft', 'published', 'superseded'])
 export const legalTranslationStatusEnum = pgEnum('legal_translation_status', ['draft', 'machine', 'reviewed'])
+export const contentEntityTypeEnum = pgEnum('content_entity_type', [
+  'course',
+  'lesson',
+  'doc_article',
+  'doc_category',
+  'skill_group',
+])
+export const contentTranslationStatusEnum = pgEnum('content_translation_status', ['machine', 'draft', 'reviewed'])

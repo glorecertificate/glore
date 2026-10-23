@@ -3,6 +3,7 @@ import 'server-only'
 import { eq, inArray } from 'drizzle-orm'
 
 import { type Transaction } from '@/db/client'
+import { deleteTranslations } from '@/db/mutations/content-translation'
 import {
   assessments,
   certificateSkills,
@@ -46,6 +47,7 @@ export const deleteLessons = async (tx: Transaction, lessonIds: number[]) => {
   await tx.delete(userLessons).where(inArray(userLessons.lessonId, lessonIds))
   await tx.delete(contributions).where(inArray(contributions.lessonId, lessonIds))
   await tx.delete(lessons).where(inArray(lessons.id, lessonIds))
+  await deleteTranslations(tx, 'lesson', lessonIds)
 }
 
 export const deleteCourse = async (tx: Transaction, courseId: number) => {
@@ -58,6 +60,7 @@ export const deleteCourse = async (tx: Transaction, courseId: number) => {
   await tx.delete(userCourses).where(eq(userCourses.courseId, courseId))
   await tx.delete(certificateSkills).where(eq(certificateSkills.courseId, courseId))
   await tx.delete(courses).where(eq(courses.id, courseId))
+  await deleteTranslations(tx, 'course', [courseId])
 }
 
 export const deleteQuestionOptions = async (tx: Transaction, optionIds: number[]) => {

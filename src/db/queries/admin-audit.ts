@@ -12,6 +12,7 @@ export const AUDIT_CATEGORIES = [
   'certificates',
   'organizations',
   'legal',
+  'content',
 ] as const
 
 export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
@@ -19,6 +20,7 @@ export type AuditCategory = (typeof AUDIT_CATEGORIES)[number]
 export const AUDIT_ACTIONS = {
   access: ['team.invited', 'team.role_changed'],
   certificates: ['certificate.revoked'],
+  content: ['content.translation_reviewed', 'course.locale_published', 'doc.locale_published', 'skill_group.updated'],
   impersonation: ['impersonation.started', 'impersonation.stopped'],
   legal: ['legal.version_published', 'legal.accepted'],
   moderation: ['account.suspended', 'account.reinstated'],
@@ -65,7 +67,7 @@ interface AuditPerson {
 
 interface AuditTarget {
   href: string | null
-  kind: 'certificate' | 'legal' | 'organization' | 'user'
+  kind: 'certificate' | 'content' | 'legal' | 'organization' | 'user'
   label: string
 }
 
@@ -73,6 +75,8 @@ export interface AuditDetail {
   approved: boolean | null
   comment: string | null
   expiresAt: string | null
+  locales: string[]
+  published: boolean | null
   reason: string | null
   role: 'admin' | 'editor' | 'user' | null
 }
@@ -118,12 +122,23 @@ const roleOf = (action: string, value: unknown) => {
   return value === 'admin' || value === 'editor' ? value : 'user'
 }
 
+const localesOf = (metadata: Record<string, unknown>) => {
+  const listed = Array.isArray(metadata.locales)
+    ? metadata.locales.filter((item): item is string => typeof item === 'string')
+    : []
+  if (listed.length > 0) return listed
+  const locale = stringOf(metadata.locale)
+  return locale ? [locale] : []
+}
+
 export const auditDetail = (record: Pick<AuditRecord, 'action' | 'metadata'>): AuditDetail => {
   const { action, metadata } = record
   return {
     approved: typeof metadata.approved === 'boolean' ? metadata.approved : null,
     comment: stringOf(metadata.comment),
     expiresAt: stringOf(metadata.expiresAt),
+    locales: localesOf(metadata),
+    published: typeof metadata.published === 'boolean' ? metadata.published : null,
     reason: stringOf(metadata.reason),
     role: roleOf(action, metadata.role),
   }
@@ -157,8 +172,21 @@ export const auditOrganizationIds = (records: Pick<AuditRecord, 'organizationId'
   return [...ids]
 }
 
+const contentHref = (entityType: string | null, slug: string) => {
+  if (entityType === 'course') return `/courses/${slug}`
+  if (entityType === 'doc_article') return `/docs/articles/${slug}`
+  if (entityType === 'skill_group') return '/courses/skills'
+  return null
+}
+
 const auditTarget = (record: AuditRecord, lookups: AuditLookups): AuditTarget | null => {
   const { action, metadata, organizationId, subjectId } = record
+
+  if (auditCategoryOf(action) === 'content') {
+    const slug = stringOf(metadata.slug)
+    if (!slug) return null
+    return { href: contentHref(stringOf(metadata.entityType), slug), kind: 'content', label: slug }
+  }
 
   if (action.startsWith('certificate.')) {
     const id = numberOf(metadata.certificateId, subjectId)

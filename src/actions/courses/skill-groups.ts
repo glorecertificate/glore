@@ -8,12 +8,17 @@ import { asc, count, eq, max } from 'drizzle-orm'
 import { z } from 'zod'
 
 import { requireEditor } from '@/actions/guards'
+import { markEdited } from '@/actions/translations/effects'
 import { db, transaction } from '@/db/client'
+import { mapSequential } from '@/db/helpers'
+import { recordEvent } from '@/db/mutations/activity-event'
+import { deleteTranslations } from '@/db/mutations/content-translation'
 import { renumberSkillGroups } from '@/db/mutations/skill-group'
+import { changedLocales, skillGroupTarget } from '@/db/queries/content-translation'
 import { type SkillGroupInput, skillGroupSchema, slugifyName } from '@/db/queries/course-editing'
 import { courses, skillGroups } from '@/db/schema'
 import { CacheTag, courseTag } from '@/lib/cache'
-import { LOCALES } from '@/lib/i18n'
+import { DEFAULT_LOCALE, LOCALES } from '@/lib/i18n'
 
 const failure = (code: string) => ({ error: { code, message: code } })
 
@@ -43,20 +48,36 @@ const uniqueSlug = async (name: string) => {
 }
 
 export const saveSkillGroup = async (input: SkillGroupInput & { id?: number }) => {
-  if (!(await guard())) return failure('FORBIDDEN')
+  const user = await guard()
+  if (!user) return failure('FORBIDDEN')
   const parsed = skillGroupSchema.safeParse(input)
   if (!parsed.success) return failure('INVALID_INPUT')
   const { description, icon, name } = parsed.data
 
   if (input.id) {
-    const [updated] = await db
-      .update(skillGroups)
-      .set({ description: toDescription(description), icon, name })
-      .where(eq(skillGroups.id, input.id))
-      .returning({ id: skillGroups.id })
-    if (!updated) return failure('NOT_FOUND')
+    const id = input.id
+    const existing = await db.query.skillGroups.findFirst({ where: eq(skillGroups.id, id) })
+    if (!existing) return failure('NOT_FOUND')
+    const nextDescription = toDescription(description)
+    const locales = [
+      ...new Set([...changedLocales(existing.name, name), ...changedLocales(existing.description, nextDescription)]),
+    ]
+    await transaction(async tx => {
+      await tx.update(skillGroups).set({ description: nextDescription, icon, name }).where(eq(skillGroups.id, id))
+      await mapSequential(
+        locales.filter(locale => locale !== DEFAULT_LOCALE),
+        locale => markEdited(tx, [skillGroupTarget({ description: nextDescription, id, name })], locale, user.id)
+      )
+      await recordEvent(tx, {
+        actorId: user.id,
+        data: { entityId: id, entityType: 'skill_group', locales, slug: existing.slug },
+        organizationId: null,
+        type: 'skill_group.updated',
+      })
+    })
     refresh()
-    return { data: updated }
+    updateTag(CacheTag.ContentTranslations)
+    return { data: { id } }
   }
 
   const [last] = await db.select({ value: max(skillGroups.sortOrder) }).from(skillGroups)
@@ -79,7 +100,11 @@ export const deleteSkillGroup = async (id: number) => {
   if (!(await guard())) return failure('FORBIDDEN')
   const [usage] = await db.select({ total: count() }).from(courses).where(eq(courses.skillGroupId, id))
   if (usage && usage.total > 0) return failure('IN_USE')
-  const [deleted] = await db.delete(skillGroups).where(eq(skillGroups.id, id)).returning({ id: skillGroups.id })
+  const deleted = await transaction(async tx => {
+    const [removed] = await tx.delete(skillGroups).where(eq(skillGroups.id, id)).returning({ id: skillGroups.id })
+    await deleteTranslations(tx, 'skill_group', [id])
+    return removed
+  })
   if (!deleted) return failure('NOT_FOUND')
   refresh()
   return { data: deleted }

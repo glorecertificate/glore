@@ -184,7 +184,7 @@ Rules on top of the lesson rules (no hard wraps, quoting, no em or en dashes):
 
 `content:import` upserts categories and articles by slug in the same transaction as the courses, with the same `--target` guard, `--drafts`, and `--dry-run` flags. `--remove` and `--examples` do not touch docs.
 
-- Without `--drafts` (local and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything.
+- Without `--drafts` (local and staging) articles are `published`. With `--drafts` (always on production) new articles are drafts and existing ones keep their `published` state, so an import never unpublishes anything. The same rule applies to `doc_articles.languages`: articles import with all three locales, and drafts import with none.
 - The docs tables have no order column, and the app lists by `created_at`. The importer therefore sets `created_at` from `sortOrder` (a fixed date plus one minute per step), so the order is the same on every environment. Articles an editor adds in the app sort after the imported ones.
 - Re-running reports every row as unchanged. A changed article gets a new `updated_at`.
 - Docs that disappear from `content/` are not deleted; delete them in the docs UI.

@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import { boolean, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { type IntlJsonb, type IntlJsonbNullable } from './helpers'
@@ -28,6 +29,10 @@ export const docArticles = pgTable(
     slug: text().notNull(),
     categoryId: integer().references(() => docCategories.id),
     published: boolean().default(false).notNull(),
+    languages: text()
+      .array()
+      .notNull()
+      .default(sql`'{en,es,it}'::text[]`),
     createdAt: timestamp({ mode: 'string' }).defaultNow().notNull(),
     updatedAt: timestamp({ mode: 'string' })
       .defaultNow()

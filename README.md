@@ -142,6 +142,8 @@ To open a pull request:
 
 `en` is the source language. UI messages (`messages/en.json`) and legal seed texts (`content/legal/*.en.md`) are translated into Spanish and Italian through [Crowdin](https://crowdin.com), configured in [`crowdin.yml`](crowdin.yml). Crowdin opens pull requests from `l10n_*` branches; review them like code and squash merge once `pnpm run check` passes. `pnpm run check:i18n` verifies that every locale has the same keys, ICU placeholders, and tags as `en`.
 
+Course, lesson, doc, and skill group content is translated in the editors, not through Crowdin. Each non-default locale shows a status (missing, machine translated, needs review, reviewed, or outdated when the English text changed), and editors can translate with AI and mark a locale as reviewed. Docs can be published per language.
+
 ## AI and agents
 
 All coding conventions and architecture details are documented in [`AGENTS.md`](AGENTS.md). Every AI agent working on this codebase must read it before starting to work on any task.

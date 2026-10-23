@@ -466,6 +466,10 @@ export const EVENT_DEFINITIONS: { [K in EventType]: EventDefinition<K> } = {
   'legal.accepted': {},
   'messages.published': {},
   'messages.reset': {},
+  'content.translation_reviewed': {},
+  'course.locale_published': {},
+  'doc.locale_published': {},
+  'skill_group.updated': {},
   'account.deleted': {
     email: {
       category: 'mandatory',

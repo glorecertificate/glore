@@ -33,8 +33,8 @@ describe.skipIf(!isLocalDatabase)('syncDocs', () => {
 
   const articles = async () =>
     (
-      await client.query<{ slug: string; published: boolean; title: { en: string } }>(
-        `select a.slug, a.published, a.title from doc_articles a join doc_categories c on c.id = a.category_id
+      await client.query<{ languages: string[]; slug: string; published: boolean; title: { en: string } }>(
+        `select a.slug, a.published, a.languages, a.title from doc_articles a join doc_categories c on c.id = a.category_id
          where c.slug = $1 order by a.created_at, a.id`,
         [DOC_CATEGORY]
       )
@@ -63,8 +63,18 @@ describe.skipIf(!isLocalDatabase)('syncDocs', () => {
     expect(first.docCategories.created).toBe(1)
     expect(first.docArticles.created).toBe(2)
     expect(await articles()).toEqual([
-      { published: true, slug: DOC_SLUGS[0], title: expect.objectContaining({ en: 'Doc English' }) },
-      { published: true, slug: DOC_SLUGS[1], title: expect.objectContaining({ en: 'Doc English' }) },
+      {
+        languages: ['en', 'es', 'it'],
+        published: true,
+        slug: DOC_SLUGS[0],
+        title: expect.objectContaining({ en: 'Doc English' }),
+      },
+      {
+        languages: ['en', 'es', 'it'],
+        published: true,
+        slug: DOC_SLUGS[1],
+        title: expect.objectContaining({ en: 'Doc English' }),
+      },
     ])
     expect(mutated(second)).toBe(false)
     expect(second.docArticles.unchanged).toBe(2)
@@ -103,11 +113,15 @@ describe.skipIf(!isLocalDatabase)('syncDocs', () => {
 
     expect(stats.docArticles.created).toBe(1)
     const found = await articles()
-    expect(found.find(({ slug }) => slug === 'fixture-third')?.published).toBe(false)
-    expect(found.find(({ slug }) => slug === DOC_SLUGS[0])?.published).toBe(true)
+    expect(found.find(({ slug }) => slug === 'fixture-third')).toMatchObject({ languages: [], published: false })
+    expect(found.find(({ slug }) => slug === DOC_SLUGS[0])).toMatchObject({
+      languages: ['en', 'es', 'it'],
+      published: true,
+    })
 
     const published = await sync()
     expect(published.docArticles.updated).toBe(1)
     expect((await articles()).every(({ published: value }) => value)).toBe(true)
+    expect((await articles()).every(({ languages }) => languages.length === 3)).toBe(true)
   })
 })

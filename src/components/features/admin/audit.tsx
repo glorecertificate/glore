@@ -32,11 +32,15 @@ const EVENT_KEYS = {
   'account.reinstated': 'events.account_reinstated',
   'account.suspended': 'events.account_suspended',
   'certificate.revoked': 'events.certificate_revoked',
+  'content.translation_reviewed': 'events.content_translation_reviewed',
+  'course.locale_published': 'events.course_locale_published',
+  'doc.locale_published': 'events.doc_locale_published',
   'impersonation.started': 'events.impersonation_started',
   'impersonation.stopped': 'events.impersonation_stopped',
   'legal.accepted': 'events.legal_accepted',
   'legal.version_published': 'events.legal_version_published',
   'organization.application_decided': 'events.organization_application_decided',
+  'skill_group.updated': 'events.skill_group_updated',
   'team.invited': 'events.team_invited',
   'team.role_changed': 'events.team_role_changed',
 } as const satisfies Record<AuditAction, string>
@@ -44,6 +48,7 @@ const EVENT_KEYS = {
 const CATEGORY_VARIANTS = {
   access: 'info',
   certificates: 'muted',
+  content: 'success',
   impersonation: 'warning',
   legal: 'success',
   moderation: 'destructive',
@@ -84,6 +89,8 @@ export const AdminAudit = ({ page }: { page: AdminAuditPage }) => {
         ) : (
           <span className="font-medium">{chunks}</span>
         ),
+      locale: row.detail.locales.map(locale => locale.toUpperCase()).join(', '),
+      published: row.detail.published ? 'yes' : 'no',
       role: row.detail.role ?? 'user',
       target: row.target?.label ?? t('unknownTarget'),
     })

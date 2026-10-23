@@ -41,7 +41,7 @@ const record = (overrides: Partial<AuditRecord> & Pick<AuditRecord, 'action'>): 
 describe('audit categories', () => {
   it('lists every audited action once', () => {
     expect(AUDITED_ACTIONS).toHaveLength(new Set(AUDITED_ACTIONS).size)
-    expect(AUDITED_ACTIONS).toHaveLength(10)
+    expect(AUDITED_ACTIONS).toHaveLength(14)
   })
 
   it('maps each action back to its category', () => {
@@ -56,6 +56,56 @@ describe('audit categories', () => {
     expect(auditActionsOf(null)).toEqual(AUDITED_ACTIONS)
     expect(auditActionsOf('impersonation')).toEqual(['impersonation.started', 'impersonation.stopped'])
     expect(auditActionsOf('legal')).toEqual(['legal.version_published', 'legal.accepted'])
+  })
+})
+
+describe('content audit rows', () => {
+  it('links a published locale to the course and reads the locale from the metadata', () => {
+    const [row] = toAuditRows(
+      [
+        record({
+          action: 'course.locale_published',
+          metadata: { entityId: 4, entityType: 'course', locale: 'es', published: true, slug: 'teamwork' },
+          subjectId: '4',
+        }),
+      ],
+      lookups()
+    )
+    expect(row).toMatchObject({
+      action: 'course.locale_published',
+      category: 'content',
+      detail: { locales: ['es'], published: true },
+      target: { href: '/courses/teamwork', kind: 'content', label: 'teamwork' },
+    })
+  })
+
+  it('lists every changed locale of a skill group and links the framework', () => {
+    const [row] = toAuditRows(
+      [
+        record({
+          action: 'skill_group.updated',
+          metadata: { entityId: 2, entityType: 'skill_group', locales: ['en', 'it'], slug: 'communication' },
+          subjectId: '2',
+        }),
+      ],
+      lookups()
+    )
+    expect(row?.detail.locales).toEqual(['en', 'it'])
+    expect(row?.target).toEqual({ href: '/courses/skills', kind: 'content', label: 'communication' })
+  })
+
+  it('links reviewed docs to the article', () => {
+    const [row] = toAuditRows(
+      [
+        record({
+          action: 'content.translation_reviewed',
+          metadata: { count: 1, entityId: 9, entityType: 'doc_article', locale: 'it', slug: 'getting-started' },
+          subjectId: '9',
+        }),
+      ],
+      lookups()
+    )
+    expect(row?.target?.href).toBe('/docs/articles/getting-started')
   })
 })
 
@@ -93,7 +143,15 @@ describe('auditDetail', () => {
         action: 'account.suspended',
         metadata: { expiresAt: '2026-11-01T00:00:00.000Z', reason: 'Spam' },
       })
-    ).toEqual({ approved: null, comment: null, expiresAt: '2026-11-01T00:00:00.000Z', reason: 'Spam', role: null })
+    ).toEqual({
+      approved: null,
+      comment: null,
+      expiresAt: '2026-11-01T00:00:00.000Z',
+      locales: [],
+      published: null,
+      reason: 'Spam',
+      role: null,
+    })
     expect(
       auditDetail({ action: 'organization.application_decided', metadata: { approved: false, comment: 'No' } })
     ).toMatchObject({

@@ -17,6 +17,11 @@ export const deleteCourseBySlug = async (slug: string) => {
   const connectionString = process.env.DATABASE_URL
   if (!(connectionString && LOCAL_DATABASE_REGEX.test(connectionString))) return
   const pool = new Pool({ connectionString })
+  await pool.query(
+    `delete from content_translations where (entity_type = 'course' and entity_id in (select id from courses where slug = $1))
+       or (entity_type = 'lesson' and entity_id in (select l.id from lessons l join courses c on c.id = l.course_id where c.slug = $1))`,
+    [slug]
+  )
   await pool.query('delete from lessons where course_id in (select id from courses where slug = $1)', [slug])
   await pool.query('delete from courses where slug = $1', [slug])
   await pool.end()

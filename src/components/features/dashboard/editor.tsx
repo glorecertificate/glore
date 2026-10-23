@@ -28,7 +28,7 @@ export const EditorDashboard = ({
   const t = useTranslations('Dashboard')
   const tIntl = useTranslations('Intl.Languages')
   const { dateTime } = useFormatter()
-  const { engagement, health, pending, stats, top } = editor
+  const { engagement, health, pending, stats, top, translations } = editor
   const hasEngagement = engagement.some(({ completed, started }) => started + completed > 0)
   const pendingTotal = (pending?.organizations ?? 0) + (pending?.team ?? 0)
 
@@ -154,6 +154,7 @@ export const EditorDashboard = ({
             <ul className="flex flex-col gap-4">
               {LOCALES.map(locale => {
                 const complete = health.total - health.gaps[locale]
+                const coverage = translations.find(item => item.locale === locale)
                 return (
                   <li className="flex flex-col gap-1.5" key={locale}>
                     <div className="flex items-center justify-between gap-3 text-sm">
@@ -167,6 +168,15 @@ export const EditorDashboard = ({
                       color={health.gaps[locale] === 0 ? 'success' : 'brand'}
                       value={health.total > 0 ? (complete / health.total) * 100 : 0}
                     />
+                    {coverage && (
+                      <p className="text-xs text-muted-foreground tabular-nums">
+                        {t('editor.translationsReviewed', {
+                          reviewed: coverage.reviewed,
+                          total: coverage.total,
+                          translated: coverage.translated,
+                        })}
+                      </p>
+                    )}
                   </li>
                 )
               })}

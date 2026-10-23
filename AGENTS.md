@@ -28,7 +28,7 @@ Load only the spec you need from `.agents/specs/`:
 - `reference.md`: auth, queries, transactions, cache, env vars, storage, cron.
 - `architecture.md`: `src/` tree, naming, layers, server vs client, events and email.
 - `patterns.md`: components, types, hooks, utils, i18n, forms.
-- `ui.md`: release UI kit, theming, motion.
+- `ui.md`: release UI kit, shell, theming, motion.
 - `code.md`: formatter, imports, lint rules, git hooks.
 - `workflow.md`: commands, seeds, translations, commits, skills, MCP, worktrees, email verification, docs sync, testing, browser verification, dev performance.
 

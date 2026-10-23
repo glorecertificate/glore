@@ -4,6 +4,7 @@ import { type Locale } from 'next-intl'
 
 import { type AgeTone, ageTone, journeySteps } from '@/components/features/certificates/rules'
 import { type Certificate, type CertificateStatus, OPEN_CERTIFICATE_STATUSES } from '@/db/queries/certificate'
+import { type LocaleCoverage } from '@/db/queries/content-translation'
 import { type SkillOption } from '@/db/queries/learning'
 import { type Notification } from '@/db/queries/notification'
 import { timestampMillis } from '@/db/queries/organization'
@@ -509,6 +510,7 @@ export interface EditorSummary {
   pending: { organizations: number; team: number } | null
   stats: EditorStats
   top: TopCourse[]
+  translations: LocaleCoverage[]
 }
 
 export type DashboardData =

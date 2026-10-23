@@ -1,5 +1,6 @@
 import { type PoolClient } from 'pg'
 
+import { LOCALES } from './config.mts'
 import { type DocCatalog } from './docs.mts'
 import { type Counter } from './sync.mts'
 
@@ -82,14 +83,14 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
     const categoryId = categoryIds.get(article.category) as number
     const createdAt = orderedTimestamp(article.sortOrder)
     const { rows } = await client.query(
-      `select id, title, content, excerpt, category_id, published, ${CREATED} as created from doc_articles where slug = $1`,
+      `select id, title, content, excerpt, category_id, published, languages, ${CREATED} as created from doc_articles where slug = $1`,
       [article.slug]
     )
     const [existing] = rows
     if (!existing) {
       await client.query(
-        `insert into doc_articles (slug, title, content, excerpt, category_id, published, created_at)
-         values ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5, $6, $7::timestamp)`,
+        `insert into doc_articles (slug, title, content, excerpt, category_id, published, languages, created_at)
+         values ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5, $6, $7::text[], $8::timestamp)`,
         [
           article.slug,
           json(article.title),
@@ -97,6 +98,7 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
           json(article.excerpt),
           categoryId,
           !drafts,
+          drafts ? [] : LOCALES,
           createdAt,
         ]
       )
@@ -104,12 +106,14 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
       continue
     }
     const published = drafts ? (existing.published as boolean) : true
+    const languages = drafts ? ((existing.languages as string[] | undefined) ?? []) : LOCALES
     if (
       same(existing.title, article.title) &&
       same(existing.content, article.content) &&
       same(existing.excerpt, article.excerpt) &&
       existing.category_id === categoryId &&
       existing.published === published &&
+      same(existing.languages, languages) &&
       existing.created === createdAt
     ) {
       stats.docArticles.unchanged++
@@ -117,8 +121,17 @@ export const syncDocs = async (client: PoolClient, catalog: DocCatalog, { drafts
     }
     await client.query(
       `update doc_articles set title = $2::jsonb, content = $3::jsonb, excerpt = $4::jsonb, category_id = $5,
-         published = $6, created_at = $7::timestamp, updated_at = now() where id = $1`,
-      [existing.id, json(article.title), json(article.content), json(article.excerpt), categoryId, published, createdAt]
+         published = $6, languages = $7::text[], created_at = $8::timestamp, updated_at = now() where id = $1`,
+      [
+        existing.id,
+        json(article.title),
+        json(article.content),
+        json(article.excerpt),
+        categoryId,
+        published,
+        languages,
+        createdAt,
+      ]
     )
     stats.docArticles.updated++
   }

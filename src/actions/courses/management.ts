@@ -10,6 +10,7 @@ import { buildCourseWith } from '@/actions/courses/helpers'
 import { requireEditor } from '@/actions/guards'
 import { db, transaction } from '@/db/client'
 import { mapSequential } from '@/db/helpers'
+import { recordEvent } from '@/db/mutations/activity-event'
 import {
   deleteAssessments as deleteAssessmentRecords,
   deleteCourse as deleteCourseRecord,
@@ -18,6 +19,7 @@ import {
   deleteQuestionOptions as deleteQuestionOptionRecords,
   deleteQuestions as deleteQuestionRecords,
 } from '@/db/mutations/course'
+import { languageChanges } from '@/db/queries/content-translation'
 import { type Course, parseCourse } from '@/db/queries/course'
 import { isReservedSlug, sanitizeDuration, sanitizeOutcomes } from '@/db/queries/course-editing'
 import { DEFAULT_LESSON, parseLesson } from '@/db/queries/lesson'
@@ -193,7 +195,22 @@ export const updateCourse = async (id: number, course: TableUpdate<'courses'>) =
     )
   )
 
-  await db.update(courses).set(values).where(eq(courses.id, id))
+  const previous = values.languages
+    ? await db.query.courses.findFirst({ columns: { languages: true, slug: true }, where: eq(courses.id, id) })
+    : null
+  const changes = languageChanges(previous?.languages, values.languages ?? [])
+
+  await transaction(async tx => {
+    await tx.update(courses).set(values).where(eq(courses.id, id))
+    await mapSequential(changes, ({ locale, published }) =>
+      recordEvent(tx, {
+        actorId: authUser.id,
+        data: { entityId: id, entityType: 'course', locale, published, slug: values.slug ?? previous?.slug ?? '' },
+        organizationId: null,
+        type: 'course.locale_published',
+      })
+    )
+  })
 
   const updated = await db.query.courses.findFirst({
     where: eq(courses.id, id),

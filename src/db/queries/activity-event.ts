@@ -1,3 +1,4 @@
+import { type ContentEntityType } from '@/db/queries/content-translation'
 import { type EnumType } from '@/db/types'
 
 type Role = EnumType<'role'>
@@ -11,6 +12,12 @@ interface MessageRef {
   key: string
   locale: string
   namespace: string
+}
+
+interface ContentRef {
+  entityId: number
+  entityType: ContentEntityType
+  slug: string
 }
 
 interface EventPayloads {
@@ -106,6 +113,10 @@ interface EventPayloads {
   'account.reinstated': { userId: string }
   'impersonation.started': { expiresAt: string; reason: string; sessionId: string; userId: string }
   'impersonation.stopped': { reason: string; sessionId: string; userId: string }
+  'content.translation_reviewed': ContentRef & { count: number; locale: string }
+  'course.locale_published': ContentRef & { locale: string; published: boolean }
+  'doc.locale_published': ContentRef & { locale: string; published: boolean }
+  'skill_group.updated': ContentRef & { locales: string[] }
   'account.deleted': { email: string; firstName: string; locale: string | null; userId: string }
   'legal.version_published': {
     effectiveAt: string
@@ -125,6 +136,10 @@ type SubjectType =
   | 'account'
   | 'certificate'
   | 'course'
+  | 'doc_article'
+  | 'doc_category'
+  | 'lesson'
+  | 'skill_group'
   | 'invitation'
   | 'invite_link'
   | 'join_request'
@@ -148,6 +163,7 @@ export const eventSubject = (event: AppEvent): { type: SubjectType; id: string }
   if ('invitationId' in event.data) return { type: 'invitation', id: String(event.data.invitationId) }
   if ('inviteLinkId' in event.data) return { type: 'invite_link', id: String(event.data.inviteLinkId) }
   if ('joinRequestId' in event.data) return { type: 'join_request', id: String(event.data.joinRequestId) }
+  if ('entityType' in event.data) return { type: event.data.entityType, id: String(event.data.entityId) }
   if ('courseId' in event.data) return { type: 'course', id: String(event.data.courseId) }
   if ('versionId' in event.data) return { type: 'legal_version', id: String(event.data.versionId) }
   if (event.type === 'organization.application_received' || event.type === 'organization.application_decided') {

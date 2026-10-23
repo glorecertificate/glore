@@ -10,6 +10,7 @@ import { CourseDialog } from '@/components/features/courses/course-dialog'
 import { CourseAnalyticsSheet } from '@/components/features/courses/course-editor/analytics'
 import { normalizeContent, useCourse } from '@/components/features/courses/course-editor/context'
 import { PublishSwitch } from '@/components/features/courses/course-editor/publish-switch'
+import { CourseTranslation } from '@/components/features/courses/course-editor/translation'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { useSession } from '@/components/providers/session'
@@ -238,6 +239,7 @@ export const CourseHeader = () => {
               onToggle={() => setPublishTarget(!publishTarget)}
               published={publishTarget}
             />
+            <CourseTranslation />
           </div>
           <div className="flex w-full items-center gap-3 md:w-auto">
             {saveDisabled ? (

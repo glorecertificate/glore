@@ -3,10 +3,12 @@
 import { useRouter } from 'next/navigation'
 import { startTransition, useState } from 'react'
 
-import { useTranslations } from 'next-intl'
+import { type Locale, useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
 import { saveSkillGroup } from '@/actions/courses/skill-groups'
+import { type TranslatedField, TranslationPanel } from '@/components/features/translations/panel'
+import { useContentTranslations } from '@/components/features/translations/use-content-translations'
 import { LucideIcon } from '@/components/icons/lucide'
 import { useI18n } from '@/components/providers/i18n'
 import { Button } from '@/components/ui/button'
@@ -23,7 +25,7 @@ import { IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { type IntlRecord, LOCALES } from '@/lib/i18n'
+import { DEFAULT_LOCALE, type IntlRecord, LOCALES } from '@/lib/i18n'
 import { type IconName } from '@/lib/types'
 
 export interface SkillGroupDraft {
@@ -38,6 +40,7 @@ const emptyRecord = () => LOCALES.reduce((record, locale) => ({ ...record, [loca
 
 export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ group?: SkillGroupDraft }>) => {
   const t = useTranslations('Learning.framework')
+  const tTranslation = useTranslations('ContentTranslation')
   const { localeItems } = useI18n()
   const { refresh } = useRouter()
   const [open, setOpen] = useState(false)
@@ -45,6 +48,20 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
   const [name, setName] = useState<IntlRecord>(group?.name ?? emptyRecord())
   const [description, setDescription] = useState<IntlRecord>(group?.description ?? emptyRecord())
   const [icon, setIcon] = useState<string | null>(group?.icon ?? null)
+
+  const translations = useContentTranslations('skill_group', group?.id ?? null)
+  const dirty =
+    !!group &&
+    (JSON.stringify(name) !== JSON.stringify(group.name) ||
+      JSON.stringify(description) !== JSON.stringify(group.description ?? emptyRecord()))
+
+  const handleTranslated = (locale: Locale, fields: TranslatedField[]) => {
+    for (const { column, value } of fields) {
+      if (typeof value !== 'string') continue
+      if (column === 'name') setName(prev => ({ ...prev, [locale]: value }))
+      if (column === 'description') setDescription(prev => ({ ...prev, [locale]: value }))
+    }
+  }
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -100,6 +117,24 @@ export const SkillGroupDialog = ({ children, group }: React.PropsWithChildren<{ 
                 />
               </div>
             ))}
+            {group &&
+              localeItems.flatMap(({ label, value }) =>
+                value === DEFAULT_LOCALE
+                  ? []
+                  : [
+                      <div className="flex flex-col gap-2 rounded-md border p-3" key={value}>
+                        <p className="text-sm font-medium">{tTranslation('localeTitle', { language: label })}</p>
+                        <TranslationPanel
+                          disabled={dirty}
+                          entityId={group.id}
+                          entityType="skill_group"
+                          locale={value}
+                          onTranslated={fields => handleTranslated(value, fields)}
+                          translations={translations}
+                        />
+                      </div>,
+                    ]
+              )}
             <div className="flex flex-col gap-2">
               <Label>{t('iconLabel')}</Label>
               <IconPicker onValueChange={setIcon} value={(icon ?? undefined) as IconName | undefined}>

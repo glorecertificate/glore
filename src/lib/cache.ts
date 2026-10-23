@@ -1,6 +1,7 @@
 export enum CacheTag {
   AdminUsers = 'admin-users',
   Certificates = 'certificates',
+  ContentTranslations = 'content-translations',
   Course = 'course',
   Courses = 'courses',
   DocCategories = 'doc-categories',

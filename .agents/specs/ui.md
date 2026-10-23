@@ -41,6 +41,28 @@ Release UI kit APIs, color and typography tokens, elevation, and motion. Compone
 - Mount charts only on analytics surfaces with real data.
 - Put the screen-reader table inside an `sr-only` div, never `sr-only` on the `<table>` itself, because a table keeps its content width and scrolls the page sideways at 390px.
 
+## Shell: sidebar, switcher, palette
+
+- `components/layout/navigation.ts` is the single role table (pure, tested).
+- Each entry has a group (`pages`, `settings`, `organization`, `admin`, `actions`), an href, an icon, and a `visible(viewer)` rule over `{ canEdit, isAdmin, role }`.
+- The sidebar renders the `sidebar` entries, the palette renders every visible entry, and `use-navigation-labels` maps each id to its translated label.
+- Roles (D25): team members (`canEdit`: platform admins and editors) get Dashboard, Courses, and Docs, plus the Admin group for platform admins.
+- Team members get no Organization item, no Certificates, and no org switcher.
+- Org owners and representatives add Organization. Learners have no Certificates.
+
+### Org switcher and palette
+
+- The org switcher (`organization-switcher.tsx`) reuses the active-org mechanism: `useSession().setOrganization` writes the `org` cookie that `getActiveOrgId` reads.
+- It lists memberships, the viewer's pending invitations (`listMyPendingInvitations`, polled every 2 minutes, links to `/api/v1/invitations/[id]`), and a link to `/register`.
+- It offers Leave for non-owners through `LeaveOrganizationDialog` (`leaveOrganization`, gotcha 16).
+- The palette opens with the `searchShortcut` key of `config/app.json` (plus Cmd or Ctrl).
+- Courses and docs filter in the browser (`listCourses`, `useDocsSearch`).
+- Certificates and members come from `searchWorkspace` (`actions/shell/search.ts`), which scopes server-side.
+- Certificate scope: own certificates for everyone but team members, assigned and pooled `submitted` requests for tutors, and every non-draft certificate of the active organization for owners and representatives.
+- Member scope: owners and representatives in the active organization only.
+- Team members get neither. Drafts are visible to their holder only. Queries shorter than 2 characters return nothing.
+- The bell stays in the sidebar's top group under Search, as the second row.
+
 ## Color and typography
 
 - Color is OKLCH through CSS custom properties in `src/app/globals.css`, with light and dark blocks.

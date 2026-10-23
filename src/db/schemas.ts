@@ -18,6 +18,7 @@ export const docArticleInsertSchema = createInsertSchema(docArticles, {
   title: intlText(200),
   content: intlText(200_000),
   excerpt: intlText(1000).nullish(),
+  languages: z.array(z.enum(LOCALES)).optional(),
   slug: schema => schema.min(1).max(100),
 }).omit(timestamps)
 
@@ -25,5 +26,6 @@ export const docArticleUpdateSchema = createUpdateSchema(docArticles, {
   title: intlText(200).optional(),
   content: intlText(200_000).optional(),
   excerpt: intlText(1000).nullish(),
+  languages: z.array(z.enum(LOCALES)).optional(),
   slug: schema => schema.min(1).max(100),
 }).omit(timestamps)

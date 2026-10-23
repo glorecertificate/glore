@@ -110,6 +110,21 @@ Three domain facts shape recurring decisions:
 - A missing key answers 503 `ai_not_configured`.
 - The menu shows a translated error with retry.
 
+### Content translation
+
+- `content_translations` has one row per entity (`course`, `lesson`, `doc_article`, `doc_category`, `skill_group`) and non-default locale: status (`machine`, `draft`, `reviewed`), `source_hash`, translator and reviewer.
+- `classifyTranslation` (`db/queries/content-translation.ts`) derives the state. No content is `missing`, content without a row is `draft`, and a `source_hash` that differs from the current English text is `outdated`.
+- A course covers its title, description, and outcomes. Each lesson is its own target (title, content, questions, options, evaluations, assessment descriptions).
+- A manual save in a non-default locale sets `draft` and keeps the old hash, so a stale locale stays `outdated` until review or re-translation.
+- Mark as reviewed stores the current hash and records `content.translation_reviewed`.
+- Editors see the status in the course header popover, the doc article dialog, and the skill group dialog (`features/translations/panel.tsx`). Doc categories have no editor UI.
+- `translateEntity` (`actions/translations/ai.ts`) translates one entity per call, and the client loops over a course and its lessons. Human text needs `overwrite`.
+- AI translation is limited to 150 an hour per editor (`content-translate:<id>`, `RATE_LIMITED`). Every translation write expires `CacheTag.ContentTranslations` (`expireTranslationCaches`).
+- It validates keys, placeholders, link URLs, and length before saving as `machine`. `src/lib/translate.ts` skips code blocks, inline code, and text without letters.
+- `doc_articles.languages` publishes a doc per locale next to the `published` master switch, and unpublished locales are blanked for non-editors.
+- Changing `courses.languages` or `doc_articles.languages` records `course.locale_published` or `doc.locale_published`.
+- The editor dashboard shows reviewed and translated counts per locale (`actions/translations/coverage.ts`).
+
 ### File storage and email
 
 - Cloudflare R2 (`@aws-sdk/client-s3`) stores user avatars, org logos, editor media, and certificate PDFs. Certificate PDFs are public through `documentUrl`.

@@ -961,6 +961,46 @@
     "archiveAction": "Archive",
     "moreActions": "More actions"
   },
+  "ContentTranslation": {
+    "title": "Translation",
+    "state": {
+      "missing": "Missing",
+      "machine": "Machine translated",
+      "draft": "Needs review",
+      "reviewed": "Reviewed",
+      "outdated": "Outdated"
+    },
+    "hints": {
+      "missing": "{language} has no content yet.",
+      "machine": "The AI translation for {language} waits for a person to review it.",
+      "draft": "{language} was written by hand and nobody has reviewed it yet.",
+      "reviewed": "A person reviewed {language} against the current English text.",
+      "outdated": "The English text changed after {language} was translated. Translate again or review it."
+    },
+    "counts": "{reviewed} of {total} parts reviewed",
+    "translate": "Translate with AI",
+    "translating": "Translating {done} of {total}…",
+    "markReviewed": "Mark as reviewed",
+    "saveFirst": "Save your changes first.",
+    "translated": "{language} translated with AI. Review it before you publish.",
+    "reviewed": "{language} marked as reviewed.",
+    "replaceTitle": "Replace the existing translation?",
+    "replaceMessage": "{language} already has content. AI translation replaces it with a new machine translation.",
+    "replace": "Replace",
+    "cancel": "Cancel",
+    "publishLocale": "Published in {language}",
+    "localeTitle": "{language} translation",
+    "errors": {
+      "generic": "The translation failed. Try again.",
+      "aiNotConfigured": "AI translation is not set up in this environment.",
+      "aiUnavailable": "The AI service is not available right now. Try again in a minute.",
+      "aiInvalid": "The AI answer was not usable. Nothing was saved. Try again.",
+      "rateLimited": "Too many translations. Try again later.",
+      "forbidden": "You cannot translate content.",
+      "exists": "This language already has content.",
+      "empty": "There is nothing to review in this language yet."
+    }
+  },
   "Dashboard": {
     "greeting": "Welcome back, {name}",
     "subtitle": {
@@ -1141,6 +1181,7 @@
       "translationsTitle": "Translation gaps",
       "translationsDescription": "Courses fully available in each language",
       "translationsCount": "{complete} of {total} courses",
+      "translationsReviewed": "Parts of all content: {translated} translated, {reviewed} reviewed, {total} in total",
       "healthTitle": "Content health",
       "healthDescription": "Courses that need attention first",
       "healthClear": "Every course is complete and translated.",
@@ -2908,7 +2949,8 @@
         "impersonation": "Impersonation",
         "moderation": "Moderation",
         "organizations": "Organizations",
-        "legal": "Legal"
+        "legal": "Legal",
+        "content": "Content"
       },
       "detail": {
         "permanent": "No end date",
@@ -2924,7 +2966,11 @@
         "team_invited": "{actor} invited <link>{target}</link> to the team as {role, select, admin {an admin} editor {an editor} other {a member}}",
         "team_role_changed": "{actor} changed <link>{target}</link>'s role to {role, select, admin {admin} editor {editor} other {regular user}}",
         "legal_accepted": "{actor} accepted <link>{target}</link>",
-        "legal_version_published": "{actor} published <link>{target}</link>"
+        "legal_version_published": "{actor} published <link>{target}</link>",
+        "content_translation_reviewed": "{actor} marked the {locale} translation of <link>{target}</link> as reviewed",
+        "course_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
+        "doc_locale_published": "{actor} {published, select, yes {published} other {unpublished}} <link>{target}</link> in {locale}",
+        "skill_group_updated": "{actor} updated the skill group <link>{target}</link> ({locale})"
       },
       "noResults": "No events found",
       "noResultsDescription": "Try a different search or clear the filters.",

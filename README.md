@@ -42,7 +42,7 @@ pnpm run dev      # https://glore.localhost
 pnpm run email    # https://email.glore.localhost
 ```
 
-The app validates its environment on start against the schema in [`next.config.ts`](next.config.ts), which lists every variable it reads.
+The app validates its environment on start against the schema in [`next.config.ts`](next.config.ts), which lists every variable the app reads. Only the demo seed reads `TEST_EMAIL`, outside the schema.
 
 ### Local database
 
@@ -146,7 +146,7 @@ Course, lesson, doc, and skill group content is translated in their editors. Eac
 
 Editors and platform admins can override any UI message at `/translations` without a deploy. The page checks ICU syntax and placeholders, previews the result, keeps a history, and suggests `es` and `it` drafts with AI. Nothing goes live until someone publishes it.
 
-Developers keep the catalogs in sync with these edits through three scripts. `--target` is `local`, `staging`, or `production`, and only reads the database.
+Developers keep the catalogs in sync with these edits through three scripts. For `i18n:overrides` and `i18n:pull`, `--target` is `local`, `staging`, or `production`, and the scripts only read the database. `i18n:pull` also takes `--dry-run` and `--include-outdated`. `i18n:rename` edits only the catalogs.
 
 ```sh
 pnpm run i18n:overrides --target staging  # count overrides per locale and stale state

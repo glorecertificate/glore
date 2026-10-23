@@ -17,6 +17,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 | `pnpm run build`          | Production build                                                                 |
 | `pnpm run i18n:overrides` | Count overrides per locale and stale state (`--target <env>`, read-only)         |
 | `pnpm run i18n:pull`      | Fold published overrides into `messages/*.json` (`--target <env>`, `--dry-run`)  |
+| `pnpm run content:check`  | Validate `content/` courses, lessons, and docs without touching a database       |
 | `pnpm run typegen`        | Generate route and public-file types into `types/`                               |
 | `pnpm run db <command>`   | drizzle-kit (`migrate`, `generate`, `studio`, ...)                               |
 | `pnpm run db:up`          | Local Postgres in Docker on port 5433 (used by `next dev`)                       |
@@ -61,7 +62,7 @@ Commands, seeds, translations, committing, skills, worktrees, verification, and 
 ## Translations
 
 - `en` is the source: `messages/en.json` and the legal seed fixtures `content/legal/*.en.md`. Code owns keys, message structure, and default copy.
-- The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`translations.md` in the v0.7 plan).
+- The team edits UI text at `/translations` (database overrides on top of the bundled catalogs), legal texts at `/legal`, and courses, docs, and skill groups in their editors (`admin.md`, `routes.md`).
 - In feature work, add every new key to all three catalogs with real translations. Never delete a key in one catalog only.
 - Rename a key with `pnpm run i18n:rename <old> <new>`, never in one catalog only. It prints SQL for the key's overrides.
 - A key rename or removal can orphan or disable published overrides; the translations page flags them as stale.

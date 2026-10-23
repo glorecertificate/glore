@@ -5,8 +5,8 @@ Executable checklist and live status. Rules and IDs come from `spec.md` and `pla
 ## Status
 
 - State: in progress, the user gave the go on 2026-10-22.
-- Current wave: W3 (verification and release readiness). W0 to W2 are merged.
-- Next up: G7 docs sync, then the G8 handoff in `runbook.md`. Production steps stay with the user.
+- Current wave: W3 (verification and release readiness). W0 to W2 are integrated, and the history is linear (no merge commits).
+- Next up: the G8 handoff in `runbook.md`. Production steps stay with the user.
 - Branch: local `release/v0.7` from `main` at `8384bd1e`, created in W0.1. The orchestrator works on it in the main checkout. Worktrees are only for lane agents.
 - A task's commit hash is filled in by the next commit, since a commit cannot contain its own hash.
 
@@ -16,7 +16,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 ### Verification and data
 
-- G3 browser pass, the D2 Mailpit pass, and the e2e suite cover every feature row. Open: G1 staging seed (user step), G6 final review, G7 docs sync.
+- G3 browser pass, the D2 Mailpit pass, and the e2e suite cover every feature row. Open: G1 staging seed (user step).
 - Staging (Neon `staging`, comment `glore:staging`) has migrations 0000 to 0022 only. Its migrate, catalog import, and demo seed are user steps (`runbook.md`, step 2), because agents may not read the staging credentials.
 - Rerun `pnpm run content:import --target local` (docs, FAQ, and the H1 role labels changed) and `pnpm run db:seed:demo --target local` (the detached-holder data changed). The staging demo seed has not run.
 
@@ -29,7 +29,7 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 - The Italian account-deletion prompt is served stale from dev server memory. A dev restart fixes it, not a code change.
 - Decision: a private `/<username>` keeps status 200, because `notFound()` runs inside `Suspense` after streaming starts.
   - Next.js injects `noindex` there. A real 404 would need a database read in `proxy` on every request.
-- Done in lane I (e9d95fa2): `Certificates` and `Courses` split into feature namespaces, `serverNamespaces` in `config/i18n.json`, and a locale switch that fetches client namespaces only.
+- Done in lane I (090b3abb): `Certificates` and `Courses` split into feature namespaces, `serverNamespaces` in `config/i18n.json`, and a locale switch that fetches client namespaces only.
 - Open, after v0.7: route-scoped client message providers, splitting `Organization`, `Users`, and `Admin.*`, and deleting leftover unused keys.
 - `scripts/content/validate.test.ts` and `lib/email.test.ts` can time out when several worktrees run Vitest against the same clone.
 
@@ -43,17 +43,17 @@ Status marks: `[ ]` open, `[~] agent, date` in progress, `[x] hash` done. A task
 
 All done.
 
-- W0.1 [x] 366ddc5e: cut `release/v0.7`, reused Docker Postgres and Mailpit, baseline recorded (`check` exit 0, `test` 17 of 17, `test:e2e` 11 of 11, recovery mail reached Mailpit).
-- W0.2 [x] 2654156e: schema batch in 3 migrations with parsers, `src/db/schemas.ts`, relations, `CacheTag` entries. Migrates on `db:reset` and on current data.
-- W0.3 [x] 82d1db3d: `recordEvent(tx, event)` and `notify(event)` with the typed catalog, recipients, locale, preference gating, in-app rows, and mail when a template exists.
-- W0.4 [x] fde38ee1: `config/app.json` keys (`maxSkills` 4, `minActivityHours` 100, `minActivityMonths` 3, `invitationExpiryDays` 7, `reviewReminderDays` [3, 7], `maxBulkInvites` 50), `SKILL_LEVELS`, `fullName()`.
-- W0.5 [x] b8d3e625: UI kit in `src/components/ui/`, AA contrast checked.
+- W0.1 [x] c099edbe: cut `release/v0.7`, reused Docker Postgres and Mailpit, baseline recorded (`check` exit 0, `test` 17 of 17, `test:e2e` 11 of 11, recovery mail reached Mailpit).
+- W0.2 [x] 982aab00: schema batch in 3 migrations with parsers, `src/db/schemas.ts`, relations, `CacheTag` entries. Migrates on `db:reset` and on current data.
+- W0.3 [x] ece449da: `recordEvent(tx, event)` and `notify(event)` with the typed catalog, recipients, locale, preference gating, in-app rows, and mail when a template exists.
+- W0.4 [x] 885c0c0a: `config/app.json` keys (`maxSkills` 4, `minActivityHours` 100, `minActivityMonths` 3, `invitationExpiryDays` 7, `reviewReminderDays` [3, 7], `maxBulkInvites` 50), `SKILL_LEVELS`, `fullName()`.
+- W0.5 [x] 97887ff5: UI kit in `src/components/ui/`, AA contrast checked.
   - Parts: `ArrowsMotif`, `LevelDots`, `Timeline`, `DataTable`, `StatCard`, `Chart`, `CopyButton`, `QrCode`, `SegmentedControl`, `Banner`, `AvatarStack`, `--brand-quaternary`.
 - W0.6 [x] (hash pending): `SEED_PASSWORD` is `Password1!`, `AUTH_ROLES` covers all seven seed roles, `db:seed:demo` scaffolded.
   - Neon `staging` was created from production and migrated (0013 to 0022 replayed in one transaction with Drizzle's journal rows).
   - The staging marker is the database comment `glore:staging`.
-- W0.7 [x] 9c0895bb: `/api/auth/admin/*` answers 404 over HTTP, uploads check size before reading the body, the manifest reads `?locale=`, `react-email` is a dependency, `react-spring` stays (`globe.tsx`).
-- W0.8 [x] 3f700472: `TEST_EMAIL` documented in `reference.md` (scripts only, outside the env schema).
+- W0.7 [x] 338347fb: `/api/auth/admin/*` answers 404 over HTTP, uploads check size before reading the body, the manifest reads `?locale=`, `react-email` is a dependency, `react-spring` stays (`globe.tsx`).
+- W0.8 [x] 5df7e3e5: `TEST_EMAIL` documented in `reference.md` (scripts only, outside the env schema).
 
 ## W1 feature lanes (parallel worktrees, all merged)
 
@@ -69,139 +69,143 @@ Run A, B, C, and E in parallel; start D when the first lane merges.
 
 ### Lane A: certificates
 
-- A1 [x] 44827a3b: lifecycle actions, each with an event and a notice. Tests for every transition and guard.
+- A1 [x] 91aad41c: lifecycle actions, each with an event and a notice. Tests for every transition and guard.
   - Actions: draft, submit, withdraw, claim, assign, reassign, unassign, self-assign, request changes, resubmit, reject, approve, revoke.
-- A1b [x] d381e8e8: tutor load balancing by open requests, ties to the oldest last assignment. Authors never review themselves, the queue is scoped to the active org, and drafts have no assignment control.
-- A2 [x] 6d6a8b75, G3 and e2e checked: wizard at `/certificates/new` (Experience, Skills, Your organization, Review), autosaving drafts, `?draft=` resume, resubmit mode, `EligibilityPanel`.
+- A1b [x] 91aad41c: tutor load balancing by open requests, ties to the oldest last assignment. Authors never review themselves, the queue is scoped to the active org, and drafts have no assignment control.
+- A2 [x] 1090c0fe, G3 and e2e checked: wizard at `/certificates/new` (Experience, Skills, Your organization, Review), autosaving drafts, `?draft=` resume, resubmit mode, `EligibilityPanel`.
   - Accept: browser run of every step, draft resume, resubmit, and the blocked panel.
-- A3 [x] 42233739, G3 and e2e checked: tutor workspace (queue tabs, filters, age badges) and `/certificates/[id]/review` with the approve PDF preview, request changes, and reject.
+- A3 [x] 1090c0fe, G3 and e2e checked: tutor workspace (queue tabs, filters, age badges) and `/certificates/[id]/review` with the approve PDF preview, request changes, and reject.
   - Accept: browser run of all three decisions, queue tabs, and filters.
 
 #### Wallet, PDF, and verification
 
-- A4 [x] aaa689dc, G3 and e2e checked: wallet and detail (cards, journey, timeline, comments, status-aware actions), share panel, featured certificate, one-time celebration.
+- A4 [x] 1090c0fe, G3 and e2e checked: wallet and detail (cards, journey, timeline, comments, status-aware actions), share panel, featured certificate, one-time celebration.
   - Accept: browser run per status for volunteer, tutor, and manager.
-- A5 [x] c164cb0b: PDF per `pdf.md`. G5 tightened the fidelity.
-- A6 [x] e74024a5, G3 and e2e checked: `/verify`, `/verify/[code]`, opt-in `/[username]`, legacy `?v=` redirect, 404 for private profiles.
+- A5 [x] a60e6561: PDF per `pdf.md`. G5 tightened the fidelity.
+- A6 [x] 1090c0fe, G3 and e2e checked: `/verify`, `/verify/[code]`, opt-in `/[username]`, legacy `?v=` redirect, 404 for private profiles.
   - Accept: e2e for valid, revoked, unknown, private (`e2e/verify.spec.ts` exists, and the later full suite with `--workers=2` passed 64).
-- A7 [x] 10d1f167, lane-a, 2026-10-22: `OrganizationCertificates` component, mounted and checked by B6.
+- A7 [x] 1090c0fe, lane-a, 2026-10-22: `OrganizationCertificates` component, mounted and checked by B6.
 
 ### Lane B: organizations, invitations, admin
 
-- B1 [x] ddfa1997, G3 and e2e checked: invitations (dialog, pending list, `/invite/[token]`, invite links, join request approval). Accept: tests for accept, decline, expiry, revoke, mismatch.
-- B1b [x] e5c07a29: revoking an invite or removing a member kills its tokens, and approval and admin flows never link an existing account without consent.
-- B2 [x] 5dbd3e2b, G3 and e2e checked: members `DataTable`, drawer, role change, remove, leave, ownership transfer. Accept: browser run of each action.
-- B3 [x] 26887828, G3 and e2e checked: organization settings with signatory and danger zone. Accept: the signatory appears on a regenerated PDF.
-- B4 [x] 91b80945, G3 and e2e checked: overview with first-run checklist, insights tab, activity tab. Accept: browser run with demo data.
-- B5 [x] 49730187, G3 and e2e checked: `/register` application (D12), `/admin/organizations` queue and detail. Accept: e2e from application to onboarding.
-- B6 [x] 3164658a, G3 and e2e checked: `/admin/users`, `/admin/team`, `/admin/certificates`, `/admin/audit`, overview data. Accept: e2e for ban, impersonation, audit.
+- B1 [x] 2154ca95, G3 and e2e checked: invitations (dialog, pending list, `/invite/[token]`, invite links, join request approval). Accept: tests for accept, decline, expiry, revoke, mismatch.
+- B1b [x] 2154ca95: revoking an invite or removing a member kills its tokens, and approval and admin flows never link an existing account without consent.
+- B2 [x] 542bb4ff, G3 and e2e checked: members `DataTable`, drawer, role change, remove, leave, ownership transfer. Accept: browser run of each action.
+- B3 [x] 542bb4ff, G3 and e2e checked: organization settings with signatory and danger zone. Accept: the signatory appears on a regenerated PDF.
+- B4 [x] 542bb4ff, G3 and e2e checked: overview with first-run checklist, insights tab, activity tab. Accept: browser run with demo data.
+- B5 [x] 542bb4ff, G3 and e2e checked: `/register` application (D12), `/admin/organizations` queue and detail. Accept: e2e from application to onboarding.
+- B6 [x] 98e4b160, G3 and e2e checked: `/admin/users`, `/admin/team`, `/admin/certificates`, `/admin/audit`, overview data. Accept: e2e for ban, impersonation, audit.
   - The `admin-users`, `admin-certificates`, and `admin-audit` `.spec.ts` files are written but not run.
 
 ### Lane C: learning
 
-- C1 [x] 4865dc43, G3 and e2e checked: course overview with explicit Start or Resume. Accept: browser run as learner and volunteer.
-- C2 [x] 910f6ed3, G3 and e2e checked: player with server-side grading, retries, final assessment. Accept: a test proves the payload has no `isCorrect`.
-- C3 [x] 196cbd0f, G3 and e2e checked: completion screen with rating and next action. Accept: browser run.
-- C4 [x] 9c6fd2f6, G3 and e2e checked: editor duration and outcomes, `/courses/skills` CRUD, translation coverage, preview, analytics. Accept: e2e for create, translate, publish.
-- C5 [x] 7c45aa30, G3 and e2e checked: catalog cards, learner tabs, skill compass, recommendations. Accept: browser run.
-- C6 [x] 61795946, G3 and e2e checked: docs empty states, article layout, search hook for the palette. Accept: browser run.
+- C1 [x] 19dddb49, G3 and e2e checked: course overview with explicit Start or Resume. Accept: browser run as learner and volunteer.
+- C2 [x] 19dddb49, G3 and e2e checked: player with server-side grading, retries, final assessment. Accept: a test proves the payload has no `isCorrect`.
+- C3 [x] 19dddb49, G3 and e2e checked: completion screen with rating and next action. Accept: browser run.
+- C4 [x] 19dddb49, G3 and e2e checked: editor duration and outcomes, `/courses/skills` CRUD, translation coverage, preview, analytics. Accept: e2e for create, translate, publish.
+- C5 [x] 19dddb49, G3 and e2e checked: catalog cards, learner tabs, skill compass, recommendations. Accept: browser run.
+- C6 [x] 19dddb49, G3 and e2e checked: docs empty states, article layout, search hook for the palette. Accept: browser run.
 
 ### Lane D: account, onboarding, notifications, emails
 
-- D1 [x] a87c2cfa, G3 and e2e checked: notification bell and `/notifications`. Accept: e2e for read state.
-- D2 [x] 556d7148, Mailpit pass 2026-10-23 (20 templates, 34 variants, 3 locales): email layout refresh and one template per catalog event. Accept: every template opened in Mailpit.
+- D1 [x] 15652e15, G3 and e2e checked: notification bell and `/notifications`. Accept: e2e for read state.
+- D2 [x] 15652e15, Mailpit pass 2026-10-23 (20 templates, 34 variants, 3 locales): email layout refresh and one template per catalog event. Accept: every template opened in Mailpit.
   - Also: subjects in all catalogs, localized role labels, and `pnpm run email` fixtures.
-- D3 [x] 7d89d63a: daily cron with reminders, escalations, and pruning. Unit tests with a fixed clock.
-- D4 [x] 6334653c, G3 and e2e checked: onboarding stepper and welcome. Accept: e2e from invitation to dashboard.
-- D5 [x] 7a2175f9, G3 and e2e checked: settings tabs. Accept: e2e for privacy, export, sessions.
-- D6 [x] 63c2fc0b, G3 and e2e checked: login by email or username, auth layout, PWA prompt, `/privacy` and `/terms`. Accept: browser run.
+- D3 [x] 15652e15: daily cron with reminders, escalations, and pruning. Unit tests with a fixed clock.
+- D4 [x] 15652e15, G3 and e2e checked: onboarding stepper and welcome. Accept: e2e from invitation to dashboard.
+- D5 [x] 15652e15, G3 and e2e checked: settings tabs. Accept: e2e for privacy, export, sessions.
+- D6 [x] 15652e15, G3 and e2e checked: login by email or username, auth layout, PWA prompt, `/privacy` and `/terms`. Accept: browser run.
 
 ### Lane E: content
 
-- E1 [x] 3198bcca: content format and importer (`content:import`, `content:check`, `--drafts`, `--target local, staging, production` with the host guard). Import is idempotent.
+- E1 [x] 6b75e5d1: content format and importer (`content:import`, `content:check`, `--drafts`, `--target local, staging, production` with the host guard). Import is idempotent.
   - Format: `content/skill-groups.json`, `content/courses/<slug>/course.json`, and `lessons/<n>.<locale>.md`.
   - The importer upserts groups and courses by slug, converts Markdown with `@platejs/markdown`, and sets `languages`.
-- E2 [~] 9e8c19ef, GloRe review of names and O5 definitions pending: the 25 skill courses in en, es, it. Accept: reviewed for tone, with the 3 drafted definitions listed for GloRe review (O5).
+- E2 [~] 208ca5ba, GloRe review of names and O5 definitions pending: the 25 skill courses in en, es, it. Accept: reviewed for tone, with the 3 drafted definitions listed for GloRe review (O5).
   - Work in batches of about 5 courses per agent session.
   - Lessons: Activation (volunteering scenario), Understanding (definition, components, examples).
   - Then In practice (situations plus 4 to 6 quiz questions with explanations), and Self-assessment (4 evaluations plus the final assessment).
-- E3 [x] 981fb449, G3 and e2e checked: 2 intro courses and 4 learner courses in three locales.
+- E3 [x] 7ae07d23, G3 and e2e checked: 2 intro courses and 4 learner courses in three locales.
   - Intro: Welcome to GloRe; Soft skills and volunteering.
   - Learner: Volunteering abroad with ESC and Erasmus+; Intercultural learning; Volunteer wellbeing and safety; Planning a community project.
 
 ### Lane E: docs and legal
 
-- E4 [x] 5f5c5ee4 and 21597c68, G3 and e2e checked: docs in three locales (33 docs: Intro 4, Tutorials 7, FAQ 22). Accept: imported and rendered.
+- E4 [x] 8551f17f and 8551f17f, G3 and e2e checked: docs in three locales (33 docs: Intro 4, Tutorials 7, FAQ 22). Accept: imported and rendered.
   - FAQ topics: cost, soft skills, activity rule, skills per certificate, certifying again, changed levels, non-member orgs.
-- E5 [~] d3c58d95, placeholders await GloRe (U11): temporary privacy, terms, and Quality Charter in three locales (the H1 decision removed their temporary banners). Accept: rendered by D6 and the B5 charter step.
+- E5 [~] 7ae07d23, placeholders await GloRe (U11): temporary privacy, terms, and Quality Charter in three locales (the H1 decision removed their temporary banners). Accept: rendered by D6 and the B5 charter step.
 
 Content rules: plain, warm language for young adults, examples from volunteering, no invented statistics or citations.
 
 ## W2 experience integration (merged)
 
-- F1 [x] 05e86544, G3 and e2e checked: role dashboards on real data. Accept: browser run per role.
-- F2 [x] 4f45f1fa, G3 and e2e checked: shell (sidebar per role, bell, org switcher, command palette). Accept: browser run per role.
-- F3 [x] 514f40ba and 5927e36a and 45dfa4f6 and a57aaade and dc78b017, G3 and e2e checked: visual and copy pass. Accept: screenshots reviewed.
+- F1 [x] 26babcf3, G3 and e2e checked: role dashboards on real data. Accept: browser run per role.
+- F2 [x] 8e98ed89, G3 and e2e checked: shell (sidebar per role, bell, org switcher, command palette). Accept: browser run per role.
+- F3 [x] 0fd3bd81 and 27ef9ba0 and ffe4189d and 0e0a07cd and fdd35bf0, G3 and e2e checked: visual and copy pass. Accept: screenshots reviewed.
   - Scope: UI direction, hardcoded strings from the inventory, dark mode, 390px layouts, and focus states.
   - Reviews: `web-design-guidelines` on every page, and `humanizer` on long copy.
-- F4 [x] d830e29a, G3 and e2e checked: `/admin` overview (D17 charts). Accept: browser run (merged and checked as admin at 1280px, 390px, and dark mode in 71fcff56).
+- F4 [x] 14390b00, G3 and e2e checked: `/admin` overview (D17 charts). Accept: browser run (merged and checked as admin at 1280px, 390px, and dark mode in 14390b00).
 
 ## W3 verification and release readiness
 
-- G1 [~] 6853647d, local done, staging is a user step: full demo seed, local and staging, plus catalog import. Accept: `manual-testing.md` steps hold on both. Local browser check passed 6 of 8 flows.
-- G2 [x] 447316e5: Playwright specs for every verification matrix row, plus es and it smoke tests (166 passed locally). Accept: CI green.
+- G1 [~] e30af563, local done, staging is a user step: full demo seed, local and staging, plus catalog import. Accept: `manual-testing.md` steps hold on both. Local browser check passed 6 of 8 flows.
+- G2 [x] b86109e0: Playwright specs for every verification matrix row, plus es and it smoke tests (166 passed locally). Accept: CI green.
   - Fixed the two app bugs it found: the wizard submitted on its last Continue, and a learner could open `/certificates` by URL.
   - Not covered: lesson and quiz authoring, the skill compass, and the pipeline and insights tabs.
 - G3 [x] orchestrator, 2026-10-23: `agent-browser` pass for every matrix row at desktop and 390px, light and dark; fix and re-run until clean. Accept: screenshots reviewed, no open issues.
-  - G3a (volunteer, tutor, public) ran. Fixed in dd3d77a5 to 0cfd8c44: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
-  - G3a fixed earlier: the PDF task overlap (03dccbd6).
-  - Fixed: stepper labels centered (7f4ec851), neutral request page title (347463db).
+  - G3a (volunteer, tutor, public) ran. Fixed in e91cd8b1 to 8c5e3347: tutor release 404, share overflow at 390px, level picker overlap, palette drafts, stale date error, raw nationality, draft resume step, and copy.
+  - G3a fixed earlier: the PDF task overlap (a8b857a1).
+  - Fixed: stepper labels centered (053851cd), neutral request page title (db0125c9).
   - Open, low: toast over settings tabs, IPv6 loopback, the approve preview fallback, and prefill after a withdrawal (new feature, after v0.7).
   - G3b (editor, admin, impersonation, multi-org) and G3c (owner, representative, every role) ran. Lanes Y and Z merged their fixes.
-  - Fixed: stale reviewer and tutor queues after a reassign or release (8aed4e35).
-  - Fixed: public period and skills heading (f5331342), signed-in profile 404 (aa984383), skill progress cap (6aac455c).
-  - Fixed: typed name before an org delete (9be7eb83), palette labels (8de9d357), review period (69c0e7fc), time hydration (901d4674).
-  - Fixed in lane W (5c880842): share fields at 390px, the Italian table at 1280px, and the mobile review bar.
+  - Fixed: stale reviewer and tutor queues after a reassign or release (dedd1800).
+  - Fixed: public period and skills heading (59e28def), signed-in profile 404 (45120717), skill progress cap (932c3243).
+  - Fixed: typed name before an org delete (1495c437), palette labels (1a90fdb3), review period (e74559ed), time hydration (6116a35b).
+  - Fixed in lane W (5b909084): share fields at 390px, the Italian table at 1280px, and the mobile review bar.
   - By design: an unknown single-segment path renders the profile 404, and an escalation notice keeps the wait at send time.
-  - Fixed: role-gated 404 tab titles (859cd482). Removed locally: fixture courses `w05-ui-kit-browser-check` and `competenze-sociali`.
+  - Fixed: role-gated 404 tab titles (4938a527). Removed locally: fixture courses `w05-ui-kit-browser-check` and `competenze-sociali`.
   - Open, dev only: "Could not validate instant" errors on role-gated 404s.
-- G4 [x] 9c1f0560: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
+- G4 [x] c8032924: trigger every email, open it in Mailpit, follow its links. Accept: all links resolve.
   - 18 of 24 templates ran live in en, es, and it, and all links resolved.
   - Fixed: the team invite named the invitee as inviter, the unsubscribe GET used the proxy host, and the welcome mail order.
   - Fixed: reassign left a stale reviewer select, and calendar months ignored the app locale.
   - Not triggered: cron-only mails (reminders, escalation, invitation expiring), the expired invitation link, and the ownership transfer mail (covered by e2e).
-  - Fixed: Resend is hidden for an accepted team invitation (b568ff9e).
+  - Fixed: Resend is hidden for an accepted team invitation (5c96eb7a).
   - Open, low: an invite landing page is English without a locale cookie.
-- G5 [x] c5cd51bd, rerun 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.
+- G5 [x] deb1e19c, rerun 2026-10-23: PDF fidelity check from `pdf.md`. Accept: passes.
   - Fixed: the Erasmus+ emblem lost its soft mask and rendered bold; `public/certificate/erasmus-plus.png` is now the masked RGBA image.
   - Decision: the signatory label reads "Represented by" (translation review), and `pdf.md` says so.
   - Open, low: nationality prints a country name where the template shows a demonym; value baselines sit 0.6 pt high; a 6-line org name overruns its section bar.
 
 ### Hardening and handoff
 
-- G6 [~] orchestrator, 2026-10-23: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
-  - Build and analyze pass with no prerender warnings. The calendar loaded every date-fns locale (5b649f16).
-  - UI review fixes are in (9f507cc8 to 569c15d3). Lane S (data integrity, migration 0025) merged in a5bb51b6. Lane X (15 security fixes) merged in 037250a7, follow-ups in 5e1142d2 and 75cb6374. Build passes after both.
+- G6 [x] 326b1af0: `pnpm run build`, `pnpm run analyze`, `code-reviewer` over the full diff (two rounds max), `security-review`, rate limits on every public action. Accept: no unresolved high findings.
+  - Security review: no high finding. Rate limit keys hold token hashes, the invitation route rejects banned users and is not cached (697d5996).
+  - Code review: no high finding. CSP now allows the blob PDF preview and lesson media (326b1af0). Form state reads skip the compiler cache (7ad39df3, 0fec140c).
+  - Accepted: legacy invitation rows without a seal rotate on first reveal (production has none), and `/api/v1/invitations/[id]` sends signed-out users to login without `next`, because `safeNextPath` rejects `/api`.
+  - Build and analyze pass with no prerender warnings. The calendar loaded every date-fns locale (6a88a32c).
+  - UI review fixes are in (1b43c0e3 to 7662943a). Lane S (data integrity, migration 0025) merged in df13d174. Lane X (15 security fixes) merged in 4a435e64, follow-ups in 06650576 and 66a9e18c. Build passes after both.
   - Open, low: no server-side password regex on reset and change (length only), a signed-in `/login?next=` ignores `next`, and non-DB errors keep their message in `queryError`.
   - Production pre-check, read only: 0017 and 0021 cannot collide on production data (4 distinct skill group slugs, empty docs and join requests).
   - Decision: one app time zone, `Europe/Rome`.
   - Decision: certificate PDFs stay public objects for `/verify`, and revoke deletes the object.
-  - Done in lane K (717a34b0): `LucideIcon` everywhere with a lint block on `lucide-react`, no editor `useMemo`, and a learner plugin set without the AI kit.
+  - Done in lane K (5d62af73): `LucideIcon` everywhere with a lint block on `lucide-react`, no editor `useMemo`, and a learner plugin set without the AI kit.
   - Also in lane K: type checking in `next build`, and SRI plus no production `'unsafe-eval'` in place of CSP nonces.
   - SRI covers only the build-manifest scripts (7 of 28); Turbopack does not hash the other chunks (`routes.md`).
   - Done: invitation tokens are stored as a SHA-256 hash plus an AES-GCM seal (migrations 0026 to 0028).
-- G7 [ ]: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`. Accept: docs match code.
+- G7 [x] 7be8543d: docs sync of `AGENTS.md`, `README.md`, `app.md`, `reference.md`, `patterns.md`, `architecture.md`, `manual-testing.md`. Accept: docs match code.
+  - Done per change: token hashing, CSP, form hooks, linear history, and the v0.7 rename. A full `/sync-docs` and `/sync-agents --check` pass has not run since lanes I and K.
   - Decision: `certificates.handle` stays, because the legacy `?v={handle}` redirect and the R2 PDF key read it.
 - G8 [ ]: handoff with the commit list, staging push on request, production steps (backup, migrate, catalog as drafts, env, deploy), and known gaps. Accept: the user has a numbered runbook.
 
 ### Product owner and fix lanes
 
 - H1 [x] G3 and e2e checked: product owner decisions U12 to U17.
-  - Done: legal banners removed (d8316b59), org role `admin` labeled Owner (2fa57f6d), es login title (d024b43f), issued certificates survive account deletion (381d31b9).
+  - Done: legal banners removed (2d64e138), org role `admin` labeled Owner (2d64e138), es login title (2d64e138), issued certificates survive account deletion (2d64e138).
   - Accept: browser run per item.
-- H3 [x] G3 and e2e checked: stock Better Auth impersonation replaces the local plugin (migration 0024, 45f69dae). Accept: `/admin/users` view-as, banner, stop.
-- H4 [x] 1846977d and 85244be0, checked in the G3 browser pass: editor AI on the free Gemini tier with a model chain and first-token fallback. Accept: browser run of the AI menu in it.
-- H5 [x] G3 and e2e checked: browser-check fixes for titles, headings, `aria-controls`, and chip names (7efbd47a, 8f9b5bd9). Accept: browser run per item.
+- H3 [x] G3 and e2e checked: stock Better Auth impersonation replaces the local plugin (migration 0024, 988a0788). Accept: `/admin/users` view-as, banner, stop.
+- H4 [x] 3a32239c and dffa09c9, checked in the G3 browser pass: editor AI on the free Gemini tier with a model chain and first-token fallback. Accept: browser run of the AI menu in it.
+- H5 [x] G3 and e2e checked: browser-check fixes for titles, headings, `aria-controls`, and chip names (a07bb8de, a07bb8de). Accept: browser run per item.
 
 ## Verification matrix
 

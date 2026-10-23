@@ -148,9 +148,9 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 ### Orchestrator
 
 - Lane A part 2 (A2, A3, A4, A6, A7) and E4 merged.
-- Fixes: `useDevice` hydration on narrow screens (e933cd8e) and a client-only `Markdown` imported by a server page (cfb62988).
+- Fixes: `useDevice` hydration on narrow screens (62828f20) and a client-only `Markdown` imported by a server page (3f956f9c).
 - `next build` passes.
-- Specs were split for the budget (aa24bd99).
+- Specs were split for the budget (040fed36).
 
 ## Lane B: organizations and admin
 
@@ -316,7 +316,7 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 
 ### Orchestrator
 
-- Lane D merged (d8612e29).
+- Lane D merged (15652e15).
 - Fix: `EmailContext` called `createContext` in the RSC layer, which broke every route in dev, so the category is now a base prop.
 
 ### E1
@@ -363,7 +363,7 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 
 - `/admin` renders `getAdminOverview()` with four `StatCard`s, two lazy `Chart`s, the pipeline, review time, and shortcuts.
 - The `next.config.ts` redirect is gone.
-- Merged (71fcff56) and checked in the browser as admin at 1280px, 390px, and dark mode.
+- Merged (14390b00) and checked in the browser as admin at 1280px, 390px, and dark mode.
 - Fix: the `Chart` screen-reader table used `sr-only` on a `<table>`, which scrolled `/admin` and `/dashboard` sideways at 390px.
 
 ### Lane fix, docs and verification
@@ -391,7 +391,7 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 ### qa1
 
 - `Card` dropped `h-full` and `justify-between`.
-- Sessions record the user agent and address (4f6fcb48, committed with the cards fix by mistake), and `listSessions` lists at most 20 unexpired sessions.
+- Sessions record the user agent and address (f3f38520, committed with the cards fix by mistake), and `listSessions` lists at most 20 unexpired sessions.
 - `listSessions` compares expiry with a `Date` parameter and parses server-local ISO times, which caused "Active in 2 hours" under a non-UTC TZ.
 - The deletion prompt points at organization Settings, Danger zone (`/organization?tab=settings`), and `faq-delete-account` (en, es, it) names Settings, Your data and the real blocker (sole owner).
 - Organization `dangerZone` in Italian reads "Zona pericolosa".
@@ -403,13 +403,13 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 - Every organization event type has activity copy (Vitest).
 - `announceNotificationsChanged` refreshes the bell at once.
 - Admin organization actions use `updateTag`.
-- E2e drift (e08de60d), not run:
+- E2e drift (f3f38520), not run:
   - The notifications unread count is scoped to list items, and the onboarding birthday button has a new name.
   - Settings toggles retry with `check()` until the toast shows, and the course editor title is a textarea.
 
 ### Orchestrator, qa1
 
-- Merged (70fc6045).
+- Merged (f3f38520).
 - E2e drift was root-caused: the verify fixture code held an `L`, which `normalizeCertificateCode` maps to `1`.
 - The course editor specs need serial mode.
 - Notifications and settings clicked before hydration (`hydrated()` in `e2e/helpers.ts`, `pruneSessions` in `e2e/db.ts`).
@@ -432,7 +432,7 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 - `db:seed:demo --target local` builds the full demo state.
 - It holds 3 organizations, 28 accounts, 18 certificates in every status plus a deleted holder, progress, ratings, invitations, a link, requests, 117 events, and 65 notifications.
 - It ran twice on fresh databases with identical counts.
-- Merged (10a80f9a).
+- Merged (e30af563).
 - Local browser check passed 6 of 8 flows.
 - The volunteer wallet crash was F3 B1.
 
@@ -462,17 +462,17 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 
 ### Orchestrator
 
-- F3 merged (f3b b32f2365, f3a e6c6a103).
+- F3 merged (f3b e037eb1c, f3a cff7e106).
 - E2e drift fixed in specs only.
 - Full suite with `--workers=2`: 64 passed.
 
 ### H2 (F3 gaps)
 
-- Sr-only `h1` from `title` when a breadcrumb replaces the header (514f40ba).
-- Contrast fixes with the full `--ring` in light and a darker `--sidebar-ring` (5927e36a).
-- Overflow fixes in docs nav, `/admin/certificates`, and `/admin/audit` (45dfa4f6).
-- `DataTable` "Sort by" select below `sm` (a57aaade).
-- `actions/admin/expire.ts` fixes stale admin data (dc78b017).
+- Sr-only `h1` from `title` when a breadcrumb replaces the header (0fd3bd81).
+- Contrast fixes with the full `--ring` in light and a darker `--sidebar-ring` (27ef9ba0).
+- Overflow fixes in docs nav, `/admin/certificates`, and `/admin/audit` (ffe4189d).
+- `DataTable` "Sort by" select below `sm` (0e0a07cd).
+- `actions/admin/expire.ts` fixes stale admin data (fdd35bf0).
 - `/login` sets `title.absolute` through `appTitle()`.
 
 ## H lanes
@@ -497,7 +497,7 @@ Dated history of the v0.7 effort. Status, open work, and follow-ups live in `tas
 
 ### H1 decision 3 and U17
 
-- Issued certificates stay valid after the holder deletes the account (reverses c7a1c65b, no schema change).
+- Issued certificates stay valid after the holder deletes the account (reverses eea02591, no schema change).
 - `detachIssuedCertificates` nulls `user_id`, sets `holder_deleted_at`, and clears `is_default`.
 - `/verify/<code>` renders the snapshot with `holderDeleted`.
 - Managers, platform admins, and the reviewer can open the detail page and the PDF.

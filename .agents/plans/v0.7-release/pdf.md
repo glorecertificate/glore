@@ -71,7 +71,7 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 
 Every label above is an i18n key in `messages/{en,es,it}.json` under one certificate PDF namespace, rendered in the certificate language.
 
-The English values match the template text exactly, including "Recognizes". The signatory label reads "Represented by", a grammar fix from the native translation review (80848b16).
+The English values match the template text exactly, including "Recognizes". The signatory label reads "Represented by", a grammar fix from the native translation review (40cb81e6).
 
 ## Asset extraction
 

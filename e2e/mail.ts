@@ -45,13 +45,6 @@ export const latestMailText = async (request: APIRequestContext, to: string) => 
   return Text
 }
 
-export const latestMailSubject = async (request: APIRequestContext, to: string) => {
-  await latestMailText(request, to)
-  const response = await request.get(`${MAILPIT_URL}/api/v1/search`, searchParams(to))
-  const { messages } = (await response.json()) as MailpitSearch
-  return messages[0]?.Subject ?? ''
-}
-
 export const mailLinkPath = (text: string, marker: string) => {
   const link = text.match(new RegExp(`https?://\\S*${marker}\\S*`, 'u'))?.[0]
   if (!link) throw new Error(`No ${marker} link in the email`)

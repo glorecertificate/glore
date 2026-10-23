@@ -231,9 +231,10 @@ Design: `translations.md`. Order: T0, then T1 and T2 in parallel lanes, then T3 
   - Accept: legal pages render from the database, published versions are immutable, e2e publishes v2 and the date changes.
 - T1b [ ]: `legal_acceptances`, terms checkbox at registration and onboarding, material re-accept gate in the dashboard layout.
   - Accept: e2e for a material v2.
-- T2 [x]: override tables, cached loader with compile and signature filter, protected namespaces, publish with `updateTag`, PDF labels frozen in the approval snapshot. Hash pending.
+- T2 [x]: override tables, cached loader with compile and signature filter, protected namespaces, publish with `updateTag`, PDF labels frozen in the approval snapshot (lane t2, dbea0fda to 68a6cf41).
   - Accept: Vitest for merge and stale states, `@prod` e2e interpolates `{name}`, Mailpit shows an overridden subject.
   - `messages.published` and `messages.reset` are recorded but not yet in `AUDIT_ACTIONS`; T3 adds the audit category and copy.
+  - The `@prod` e2e covers the subject through the `/emails` preview, because a direct DB insert skips `updateTag` on a warm server. T3 adds the Mailpit check through a real publish.
   - T3 reads classification from `classifyOverride` in `src/lib/message-overrides.ts` and writes through `src/actions/messages.ts`.
 - T3 [ ]: `/admin/translations` with filters, ICU validation, preview, reset, history, AI suggest, and the stale override cron notice.
   - Accept: e2e override, invalid ICU blocked, reset, editors blocked from protected namespaces.

@@ -1,13 +1,11 @@
 import { type ChildProcess, spawn } from 'node:child_process'
+import { once } from 'node:events'
 import { existsSync } from 'node:fs'
 
 import { expect, test } from '@playwright/test'
 
-import { seedEmail } from '~/scripts/seed-data'
-
 import { clearMessageOverride, setMessageOverride } from './db'
 import { authFile } from './helpers'
-import { clearMail, isMailpitUp, latestMailSubject } from './mail'
 
 const GREETING_KEY = 'Dashboard.greeting'
 
@@ -16,6 +14,13 @@ const SUBJECT_KEY = 'Email.auth/recovery.subject'
 const PORT = Number(process.env.E2E_PROD_PORT ?? 3112)
 
 const BASE_URL = `http://localhost:${PORT}`
+
+const stopServer = async (server: ChildProcess | undefined) => {
+  if (!server || server.exitCode !== null) return
+  const exited = once(server, 'exit')
+  server.kill()
+  await exited
+}
 
 const waitForServer = async (server: ChildProcess) => {
   await expect
@@ -41,6 +46,7 @@ test.describe('published overrides on a production build @prod', () => {
   test.beforeAll(async () => {
     test.skip(!existsSync('.next/BUILD_ID'), 'Run pnpm run build first: message precompilation only happens in builds')
     await setMessageOverride({ key: GREETING_KEY, locale: 'en', value: 'Hi again, {name}!' })
+    await setMessageOverride({ key: SUBJECT_KEY, locale: 'en', value: 'Reset your GloRe password now' })
     server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--port', String(PORT)], {
       env: { ...process.env, NODE_ENV: 'production' },
       stdio: 'ignore',
@@ -49,8 +55,9 @@ test.describe('published overrides on a production build @prod', () => {
   })
 
   test.afterAll(async () => {
-    server?.kill()
+    await stopServer(server)
     await clearMessageOverride(GREETING_KEY)
+    await clearMessageOverride(SUBJECT_KEY)
   })
 
   test('interpolates the placeholders of a compiled override', async ({ browser }) => {
@@ -62,9 +69,17 @@ test.describe('published overrides on a production build @prod', () => {
     await context.close()
   })
 
+  test('renders the overridden email subject', async ({ browser }) => {
+    const context = await browser.newContext({ baseURL: BASE_URL, storageState: authFile('admin') })
+    const page = await context.newPage()
+    await page.goto('/emails?template=auth/recovery')
+    await expect(page.getByText('Subject: Reset your GloRe password now', { exact: true })).toBeVisible()
+    await context.close()
+  })
+
   test('ignores an override that no longer matches the placeholders', async ({ browser }) => {
     await setMessageOverride({ key: GREETING_KEY, locale: 'en', value: 'Hi again!' })
-    server?.kill()
+    await stopServer(server)
     server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--port', String(PORT)], {
       env: { ...process.env, NODE_ENV: 'production' },
       stdio: 'ignore',
@@ -75,26 +90,5 @@ test.describe('published overrides on a production build @prod', () => {
     await page.goto('/dashboard')
     await expect(page.getByRole('heading', { name: 'Welcome back, Valentina' })).toBeVisible()
     await context.close()
-  })
-})
-
-test.describe('published overrides in email', () => {
-  test('sends the overridden subject', async ({ page, request }) => {
-    test.skip(!(await isMailpitUp(request)), 'Mailpit is not running (pnpm run mail:up)')
-    const email = seedEmail('recovery')
-    await setMessageOverride({ key: SUBJECT_KEY, locale: 'en', value: 'Reset your GloRe password now' })
-    try {
-      await clearMail(request, email)
-      await page.goto('/login')
-      await expect(async () => {
-        await page.getByRole('button', { name: 'Forgot your password?' }).click()
-        await expect(page.getByRole('heading', { name: 'Forgot your password?' })).toBeVisible({ timeout: 1000 })
-      }).toPass()
-      await page.locator('input[name="username"]').fill(email)
-      await page.locator('form button[type="submit"]').click()
-      expect(await latestMailSubject(request, email)).toBe('Reset your GloRe password now')
-    } finally {
-      await clearMessageOverride(SUBJECT_KEY)
-    }
   })
 })

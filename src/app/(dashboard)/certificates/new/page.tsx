@@ -83,7 +83,7 @@ const CertificatesNewContent = async ({ searchParams }: Pick<PageProps<'/certifi
 }
 
 const CertificatesNewPage = (props: PageProps<'/certificates/new'>) => (
-  <DashboardPage title={<PageTitle name="requestCertificateTitle" namespace="Certificates" />}>
+  <DashboardPage title={<PageTitle name="requestCertificate" namespace="Certificates" />}>
     <CertificatesNewContent searchParams={props.searchParams} />
   </DashboardPage>
 )

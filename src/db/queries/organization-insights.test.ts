@@ -238,6 +238,7 @@ describe('activity items', () => {
       'impersonation.',
       'legal.',
       'messages.',
+      'settings.',
       'skill_group.',
       'team.',
     ]

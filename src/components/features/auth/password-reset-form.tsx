@@ -64,12 +64,12 @@ export const PasswordResetForm = ({
     const { error } = await updatePassword(resetToken, schema.password.trim())
 
     if (error) {
-      if (error.code === 'same_password') {
-        form.setError('password', { message: t('passwordSameAsOld') })
+      if (error.code === 'INVALID_INPUT') {
+        form.setError('password', { message: t('passwordRequirements') })
         form.setFocus('password')
         return
       }
-      setView('invalid_password_reset')
+      setView(error.code === 'INVALID_TOKEN' ? 'invalid_token' : 'invalid_password_reset')
       setToken(null)
       await logout()
       return

@@ -741,7 +741,6 @@
     "passwordResetMessage": "Enter a new password for your account.",
     "passwordResetMetaTitle": "Reset password",
     "passwordResetTitle": "Reset your password",
-    "passwordSameAsOld": "The new password cannot be the same as the old one",
     "passwordTooShort": "Password is too short",
     "passwordUpdatedAction": "Go to login",
     "passwordUpdatedMessage": "You can now log in to the GloRe Network with your new password.",

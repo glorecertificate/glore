@@ -42,7 +42,7 @@ export const PasswordForm = () => {
       const result = await changePassword(values.currentPassword, values.newPassword)
 
       if (result.error) {
-        if (result.error.message?.includes('Invalid login')) {
+        if (result.error.code === 'INVALID_PASSWORD') {
           form.setError('currentPassword', { message: t('currentPasswordIncorrect') })
           return
         }

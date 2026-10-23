@@ -741,7 +741,6 @@
     "passwordResetMessage": "Inserisci una nuova password per il tuo account.",
     "passwordResetMetaTitle": "Reimposta password",
     "passwordResetTitle": "Reimposta la tua password",
-    "passwordSameAsOld": "La nuova password non può essere uguale a quella vecchia",
     "passwordTooShort": "La password è troppo breve",
     "passwordUpdatedAction": "Vai al login",
     "passwordUpdatedMessage": "Puoi ora accedere a GloRe con la tua nuova password.",

@@ -7,6 +7,7 @@ import { redirect, unstable_rethrow } from 'next/navigation'
 import { connection } from 'next/server'
 import { cache } from 'react'
 
+import { APIError } from 'better-auth/api'
 import { hashPassword } from 'better-auth/crypto'
 import { eq, or } from 'drizzle-orm'
 
@@ -20,6 +21,20 @@ import { clientAddress, isRateLimited } from '@/lib/rate-limit'
 
 const AUTH_RATE_LIMIT_WINDOW = 15 * 60 * 1000
 const PASSWORD_CHANGE_RATE_LIMIT_WINDOW = 60 * 60 * 1000
+
+const PASSWORD_ERRORS = {
+  INVALID_PASSWORD: { code: 'INVALID_PASSWORD', message: 'Invalid current password' },
+  INVALID_TOKEN: { code: 'INVALID_TOKEN', message: 'Invalid or expired link' },
+  PASSWORD_TOO_LONG: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
+  PASSWORD_TOO_SHORT: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
+} as const
+
+const passwordError = (error: unknown) => {
+  const code = error instanceof APIError ? String(error.body?.code ?? '') : ''
+  return code in PASSWORD_ERRORS
+    ? PASSWORD_ERRORS[code as keyof typeof PASSWORD_ERRORS]
+    : { code: 'AUTH_ERROR', message: 'Failed to update password' }
+}
 
 export const getAuthUser = cache(async () => {
   try {
@@ -109,13 +124,7 @@ export const updatePassword = async (token: string, password: string) => {
     })
     return { data: {}, error: null }
   } catch (e) {
-    return {
-      data: null,
-      error: {
-        code: e instanceof Error && 'code' in e ? (e as { code: string }).code : 'AUTH_ERROR',
-        message: e instanceof Error ? e.message : 'Failed to update password',
-      },
-    }
+    return { data: null, error: passwordError(e) }
   }
 }
 
@@ -136,7 +145,7 @@ export const changePassword = async (currentPassword: string, newPassword: strin
       headers: await headers(),
     })
   } catch (e) {
-    return { error: { code: 'AUTH_ERROR', message: e instanceof Error ? e.message : 'Invalid current password' } }
+    return { error: passwordError(e) }
   }
 
   await sendMail({

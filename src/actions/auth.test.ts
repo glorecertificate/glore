@@ -37,7 +37,7 @@ vi.mock('@/lib/email', async importOriginal => ({
 }))
 
 const PASSWORD = 'Password1!'
-const KEYS = ['changer', 'limited', 'resetter'] as const
+const KEYS = ['changer', 'limited', 'resetter', 'wrong'] as const
 
 describe.skipIf(!isLocalDatabase)('password and session security', () => {
   let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
@@ -122,6 +122,34 @@ describe.skipIf(!isLocalDatabase)('password and session security', () => {
     expect(requested.error).toBeNull()
     expect(deferred).toHaveLength(0)
     expect(sent).toHaveLength(0)
+  })
+
+  it('answers a bad reset token with an app code and a fixed message', async () => {
+    const result = await actions.updatePassword('not-a-real-token', 'Password3!')
+
+    expect(result).toEqual({ data: null, error: { code: 'INVALID_TOKEN', message: 'Invalid or expired link' } })
+  })
+
+  it('answers a password the library rejects with an input code', async () => {
+    await actions.resetPassword(fixture.emails.resetter)
+    await flush()
+    const url = sent.find(mail => mail.template.name === 'auth/recovery')?.template.props.url
+    const token = url ? new URL(url).pathname.split('/').pop() : undefined
+
+    const result = await actions.updatePassword(token ?? '', 'short')
+
+    expect(result).toEqual({
+      data: null,
+      error: { code: 'INVALID_INPUT', message: 'Password does not meet the requirements' },
+    })
+  })
+
+  it('answers a wrong current password with its own code and no library text', async () => {
+    as(await fixture.signIn('wrong'))
+
+    const result = await actions.changePassword('Wrong-password1!', 'Password5!')
+
+    expect(result).toEqual({ error: { code: 'INVALID_PASSWORD', message: 'Invalid current password' } })
   })
 
   it('revokes every session when the password is reset', async () => {

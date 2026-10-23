@@ -39,6 +39,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once.
 - `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
 - Login and password reset answer unknown users exactly like wrong passwords and real resets, in content and in work: `login` hashes the password for an unknown user, and the recovery mail is sent through `after()` so a real reset does not wait on SMTP.
+- `updatePassword` and `changePassword` map library errors to `INVALID_TOKEN`, `INVALID_PASSWORD`, `INVALID_INPUT`, or `AUTH_ERROR` with fixed messages, never the library text.
 - Email changes go through `auth.api.changeEmail`, which mails a verification link to the new address through `emailVerification.sendVerificationEmail`.
 
 ### Stale sessions

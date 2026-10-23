@@ -741,7 +741,6 @@
     "passwordResetMessage": "Introduce una nueva contraseña para tu cuenta.",
     "passwordResetMetaTitle": "Restablecer contraseña",
     "passwordResetTitle": "Restablece tu contraseña",
-    "passwordSameAsOld": "La nueva contraseña no puede ser la misma que la anterior.",
     "passwordTooShort": "La contraseña es demasiado corta",
     "passwordUpdatedAction": "Ir al inicio de sesión",
     "passwordUpdatedMessage": "Ahora puedes iniciar sesión con tu nueva contraseña.",

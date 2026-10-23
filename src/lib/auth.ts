@@ -88,7 +88,7 @@ export const auth = betterAuth({
     },
     usePlural: true,
   }),
-  disabledPaths: ['/sign-up/email', '/update-user'],
+  disabledPaths: ['/sign-up/email', '/sign-in/email', '/sign-in/username', '/update-user'],
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
@@ -149,11 +149,9 @@ export const auth = betterAuth({
     max: 100,
     storage: 'database',
     customRules: {
-      '/api/auth/sign-in/email': { window: 60, max: 5 },
-      '/api/auth/sign-up/email': { window: 60, max: 5 },
-      '/api/auth/forget-password': { window: 60, max: 3 },
-      '/api/auth/reset-password': { window: 60, max: 3 },
-      '/api/auth/change-password': { window: 60, max: 5 },
+      '/request-password-reset': { window: 60, max: 3 },
+      '/reset-password': { window: 60, max: 3 },
+      '/change-password': { window: 60, max: 5 },
     },
   },
   session: {

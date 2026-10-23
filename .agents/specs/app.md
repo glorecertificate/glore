@@ -173,6 +173,7 @@ Rules not already stated above or in `certificates.md`:
 6. All user-facing strings go through next-intl. No hardcoded UI text.
 7. App cookies use the `gl_` prefix (`COOKIE_PREFIX` in `src/lib/cookies.ts`). Better Auth uses `gl` through `advanced.cookiePrefix`. The locale cookie `NEXT_LOCALE` has no prefix.
 8. A course becomes `published`, meaning visible to learners, once all its lessons have content.
+9. Non-editors never see draft, archived, or off-track courses. The course list and the command palette share `isListedCourse` (`features/courses/visibility.ts`).
 
 ## Data model
 

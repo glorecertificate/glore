@@ -12,9 +12,9 @@ import { logout, updatePassword } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { PasswordInput } from '@/components/ui/password-input'
+import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { PASSWORD_REGEX } from '@/lib/constants'
 import { AuthView } from '@/lib/types'
-import { defaultFormDisabled } from '@/lib/utils'
 
 export const PasswordResetForm = ({
   resetToken,
@@ -47,7 +47,7 @@ export const PasswordResetForm = ({
     resolver: zodResolver(formSchema),
   })
 
-  const disabled = defaultFormDisabled(form)
+  const disabled = useFormDisabled(form.control)
   const errored = Object.keys(form.formState.errors).length > 0
   const prevErrored = useRef(errored)
 

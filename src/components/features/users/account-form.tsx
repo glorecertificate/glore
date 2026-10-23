@@ -18,10 +18,10 @@ import { LanguageSelect } from '@/components/ui/language-select'
 import { Separator } from '@/components/ui/separator'
 import { type User } from '@/db/queries/user'
 import { useActionError } from '@/hooks/use-action-error'
+import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { USERNAME_REGEX } from '@/lib/constants'
 import { type Any } from '@/lib/types'
 import { isReservedUsername } from '@/lib/username'
-import { defaultFormDisabled } from '@/lib/utils'
 
 const defaults = (source: Pick<User, 'email' | 'locale' | 'username'>) => ({
   email: source.email ?? '',
@@ -53,7 +53,7 @@ export const AccountForm = () => {
     resolver: zodResolver(accountSchema),
   })
 
-  const disabled = defaultFormDisabled(form)
+  const disabled = useFormDisabled(form.control)
 
   const onSubmit = async (values: z.infer<typeof accountSchema>) => {
     const updates: { email?: string; locale?: Locale | null; username?: string } = {}

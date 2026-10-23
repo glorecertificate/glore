@@ -146,7 +146,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 ### Utilities
 
 - Check these before writing a new helper.
-- `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `defaultFormDisabled`, `publicFile`, `serializeJsonLd`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
+- `src/lib/utils.ts` exports `cn`, `hexToRgb`, `isValidUsername`, `publicFile`, `serializeJsonLd`, `camelize`, `keysOf`, `pluck`, `omit`, `debounce`, `throttle`, and `sleep`.
 - `debounce` defaults to 500ms and has `.cancel()` and `.flush()`.
 - `tempId()` and `isTempId()` serve client-created records.
 - Course-tree primary keys are `integer` identity columns, so `tempId()` returns a negative placeholder. Never use `Date.now()`, which overflows `int4`.
@@ -154,7 +154,7 @@ The two layers stay separate because UI shapes diverge from table columns.
 
 ### Hooks
 
-- `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-metadata`, `use-mounted`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
+- `src/hooks/` holds `use-composed-refs`, `use-cookies`, `use-debounce`, `use-device`, `use-form-disabled`, `use-metadata`, `use-mounted`, `use-scroll`, `use-search`, `use-sidebar-resize`, and `use-theme`.
 - `use-action-error`: returns `(error, fallback)`, which resolves the impersonation lock code to `Common.impersonationLocked` and otherwise the fallback message.
 - `use-country-name`: returns `(code)`, which resolves a country code of any case to its `Intl.Countries` name (`countryName` in `lib/country.ts`) and falls back to the upper-cased code.
 - `use-file-upload`: presigned R2 PUT flow.
@@ -190,7 +190,8 @@ The two layers stay separate because UI shapes diverge from table columns.
 ## Forms
 
 - Use react-hook-form with `@hookform/resolvers` and zod.
-- Disable the submit button with `defaultFormDisabled(form)`.
+- Disable the submit button with `useFormDisabled(form.control)`.
+- Never pass `form` to a helper that reads its state in render: the build-only React Compiler memoizes the call and freezes the value.
 - Call the server action from `onSubmit` and surface the result with sonner (`toast.success`, `toast.error`).
 
 ## Email templates and notifications

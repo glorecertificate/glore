@@ -30,8 +30,8 @@ import { SegmentedControlItem } from '@/components/ui/segmented-control-item'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { type User } from '@/db/queries/user'
+import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { type IntlRecord, LOCALES } from '@/lib/i18n'
-import { defaultFormDisabled } from '@/lib/utils'
 
 import { OrganizationAvatarMenu } from './avatar-menu'
 import { DeleteOrganizationDialog } from './delete-organization-dialog'
@@ -167,7 +167,7 @@ export const OrganizationSettings = ({
     onRefresh()
   }
 
-  const disabled = defaultFormDisabled(form)
+  const disabled = useFormDisabled(form.control)
 
   return (
     <>

@@ -13,8 +13,9 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { useCookies } from '@/hooks/use-cookies'
+import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { AuthView } from '@/lib/types'
-import { cn, defaultFormDisabled, isValidUsername } from '@/lib/utils'
+import { cn, isValidUsername } from '@/lib/utils'
 
 export const PasswordRequestForm = ({
   setErrored,
@@ -50,6 +51,7 @@ export const PasswordRequestForm = ({
     },
     resolver: zodResolver(formSchema),
   })
+  const formDisabled = useFormDisabled(form.control)
   form.watch('username')
 
   const onSubmit = async (schema: z.infer<typeof formSchema>) => {
@@ -111,7 +113,7 @@ export const PasswordRequestForm = ({
           </div>
           <Button
             className="w-full [&_svg]:size-4"
-            disabled={!username && defaultFormDisabled(form)}
+            disabled={!username && formDisabled}
             disabledTitle={t('userRequired')}
             loading={form.formState.isSubmitting}
             type="submit"

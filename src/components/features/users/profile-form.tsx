@@ -33,8 +33,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator'
 import { SpokenLanguagesSelect } from '@/components/ui/spoken-languages-select'
 import { Textarea } from '@/components/ui/textarea'
+import { useFormDisabled } from '@/hooks/use-form-disabled'
 import { type Any } from '@/lib/types'
-import { defaultFormDisabled } from '@/lib/utils'
 import i18nConfig from '~/config/i18n.json'
 
 const FIELDS = ['firstName', 'lastName', 'bio', 'phone', 'birthday', 'sex', 'pronouns', 'city', 'country'] as const
@@ -75,6 +75,7 @@ export const ProfileForm = () => {
       country: user.country ?? '',
     },
   })
+  const formDisabled = useFormDisabled(form.control)
 
   const languagesChanged = (() => {
     const original = user.languages ?? []
@@ -82,7 +83,7 @@ export const ProfileForm = () => {
     return languages.some(l => !original.includes(l))
   })()
 
-  const disabled = defaultFormDisabled(form) && !languagesChanged
+  const disabled = formDisabled && !languagesChanged
 
   const handleAvatarUpload = async (file: File) => {
     try {

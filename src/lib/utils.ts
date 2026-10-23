@@ -1,5 +1,3 @@
-import { type FieldValues, type UseFormReturn } from 'react-hook-form'
-
 import { CAMEL_CASE_REGEX, EMAIL_REGEX, USERNAME_REGEX } from '@/lib/constants'
 import { type Any, type AnyFunction, type AnyRecord, type CamelCase, type Rgb } from '@/lib/types'
 
@@ -32,9 +30,6 @@ export const hexToRgb = <T extends AnyRecord>(record: T) =>
   Validation
 */
 export const isValidUsername = (value: string) => EMAIL_REGEX.test(value) || USERNAME_REGEX.test(value)
-
-export const defaultFormDisabled = <T extends FieldValues>({ formState }: UseFormReturn<T>) =>
-  !formState.isDirty || Object.keys(formState.errors).length > 0
 
 /*
   Strings

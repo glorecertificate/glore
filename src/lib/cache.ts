@@ -4,6 +4,7 @@ export enum CacheTag {
   Course = 'course',
   Courses = 'courses',
   DocCategories = 'doc-categories',
+  Messages = 'messages',
   Notifications = 'notifications',
   Organizations = 'organizations',
   Progress = 'progress',
@@ -20,3 +21,4 @@ export const certificatesTutorTag = (reviewerId: string) => `${CacheTag.Certific
 export const certificatesOrgTag = (orgId: number) => `${CacheTag.Certificates}-org-${orgId}` as const
 export const progressUserTag = (userId: string) => `${CacheTag.Progress}-user-${userId}` as const
 export const notificationsUserTag = (userId: string) => `${CacheTag.Notifications}-user-${userId}` as const
+export const messagesTag = (locale: string) => `${CacheTag.Messages}-${locale}` as const

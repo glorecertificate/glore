@@ -373,6 +373,9 @@ importers:
       fuse.js:
         specifier: ^7.5.0
         version: 7.5.0
+      icu-minify:
+        specifier: ^4.14.9
+        version: 4.14.9
       lucide-react:
         specifier: ^1.61.0
         version: 1.61.0(@types/react@19.3.0)(react@19.3.1)

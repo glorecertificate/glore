@@ -7,6 +7,7 @@ Source tree and structural conventions. Provider hierarchy and component authori
 ```
 src/
 ├── actions/            # Server actions ('use server'): mutations + cached queries
+│   ├── messages.ts     # Message override actions: save draft, publish, reset, discard
 │   ├── account/        # delete.ts, export.ts, preferences.ts, sessions.ts ('use server'); deletion.ts (server-only core)
 │   ├── admin/          # audit.ts, certificates.ts, expire.ts, helpers.ts, impersonation.ts, impersonation-state.ts, options.ts, organizations.ts, overview.ts, pending.ts, team.ts, users.ts
 │   ├── certificates/   # requests.ts (drafts, submit, resubmit, withdraw), assignment.ts, review.ts (claim, changes, reject, approve, preview, revoke), public.ts (verification),
@@ -59,13 +60,13 @@ src/
 │   ├── schemas.ts      # drizzle-zod schemas
 │   ├── types.ts        # Drizzle table type helpers
 │   ├── schema/         # Per-table Drizzle definitions: accounts, activity-events, assessments, certificates,
-│   │                   #   courses, docs, enums, helpers, index, notifications, organizations, progress,
+│   │                   #   courses, docs, enums, helpers, index, message-overrides, notifications, organizations, progress,
 │   │                   #   rate-limits, regions, relations, sessions, skill-groups, teams, users, verifications
 │   ├── queries/        # parse* per table (pure, NO @/db/client import): activity-event, admin-audit, admin-certificate, admin-overview, admin-user, certificate,
-│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, notification, onboarding,
+│   │                   #   course, course-editing (details, coverage, analytics), doc, learning (overview, learner lesson DTO), lesson, message-override, notification, onboarding,
 │   │                   #   organization (flattens organization_profiles), organization-application (zod schema), organization-insights (checklist, pipeline, activity parsers), user
 │   └── mutations/      # Server-only write primitives ('server-only', no 'use server'):
-│                       #   activity-event.ts, certificate.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
+│                       #   activity-event.ts, certificate.ts, course.ts, impersonation.ts, invitation.ts, learning.ts, message-override.ts, moderation.ts, organization.ts, skill-group.ts, team-invitation.ts, user.ts
 ├── emails/             # React Email templates: account, auth, certificate, learning, organization, team
 ├── hooks/              # Custom React hooks (use-*)
 ├── lib/                # App-wide shared utilities, constants, and types ONLY
@@ -82,7 +83,8 @@ src/
 │   ├── i18n.ts         # i18n config, Locale/Messages types, clientMessages(), localizeRecord()
 │   ├── icu.ts          # messageSignature(): ICU arguments, tags, and select cases (scripts import it as #lib/icu.ts)
 │   ├── legal.ts        # Legal document loader (content/legal)
-│   ├── messages.ts     # loadMessages(locale), resolveLocale(): the one catalog loader (server-only)
+│   ├── message-overrides.ts # Override merge, validation, stale states, protected keys
+│   ├── messages.ts     # loadMessages(locale), resolveLocale(): the one loader, with cached overrides (server-only)
 │   ├── metadata.ts     # App metadata, viewport, intlMetadata(), appTitle()
 │   ├── motion.ts       # Motion tokens (EASE_OUT, EASE_IN_OUT, SPRING, TRANSITION)
 │   ├── phone.ts        # Phone number helpers

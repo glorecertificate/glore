@@ -7,6 +7,12 @@ interface CertificateRef {
   holderId: string
 }
 
+interface MessageRef {
+  key: string
+  locale: string
+  namespace: string
+}
+
 interface EventPayloads {
   'certificate.submitted': CertificateRef & { tutorId: string | null }
   'certificate.assigned': CertificateRef & { previousTutorId: string | null; tutorId: string }
@@ -100,6 +106,8 @@ interface EventPayloads {
   'impersonation.started': { expiresAt: string; reason: string; sessionId: string; userId: string }
   'impersonation.stopped': { reason: string; sessionId: string; userId: string }
   'account.deleted': { email: string; firstName: string; locale: string | null; userId: string }
+  'messages.published': MessageRef
+  'messages.reset': MessageRef
 }
 
 export type EventType = keyof EventPayloads
@@ -111,6 +119,7 @@ type SubjectType =
   | 'invitation'
   | 'invite_link'
   | 'join_request'
+  | 'message'
   | 'organization'
   | 'user'
 
@@ -124,6 +133,7 @@ export interface AppEvent<K extends EventType = EventType> {
 const PRIVATE_KEYS = new Set(['applicantEmail', 'documentUrl', 'email', 'firstName', 'invitationUrl', 'message', 'url'])
 
 export const eventSubject = (event: AppEvent): { type: SubjectType; id: string } => {
+  if ('key' in event.data) return { type: 'message', id: `${event.data.locale}:${event.data.key}` }
   if ('certificateId' in event.data) return { type: 'certificate', id: String(event.data.certificateId) }
   if ('invitationId' in event.data) return { type: 'invitation', id: String(event.data.invitationId) }
   if ('inviteLinkId' in event.data) return { type: 'invite_link', id: String(event.data.inviteLinkId) }

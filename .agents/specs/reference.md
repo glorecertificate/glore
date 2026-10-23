@@ -131,7 +131,7 @@ export const findUser = async (id: string, { cache = true } = {}) => {
 
 ### Cache strategy
 
-- Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`) in `src/lib/cache.ts`. Read it for the current set and owners.
+- Tags are the `CacheTag` enum plus per-record helpers (`userTag`, `courseTag`, `progressUserTag`, `certificates*Tag`, `messagesTag`) in `src/lib/cache.ts`. Read it for the current set and owners.
 - Put `'use cache'` (with `cacheLife('max')` for long-lived data) on the inner fetch function, never on the exported one.
 - The exported function takes `{ cache: false }` to bypass, and React `cache()` dedupes per request.
 - In a server action whose caller must see its own write, use `updateTag(tag)`. `updateTag` throws outside server actions.

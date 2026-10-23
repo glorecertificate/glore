@@ -174,6 +174,12 @@ The two layers stay separate because UI shapes diverge from table columns.
 - Config is `src/lib/i18n.ts` (from `config/i18n.json`), request config is `src/i18n.ts`, and the locale is the `NEXT_LOCALE` cookie with no path prefix.
 - `login` and `signInToAcceptInvitation` call `applyUserLocale` (`actions/cookies.ts`) so a fresh browser opens in the language stored on the account; an account without a language keeps the cookie as it is.
 - Pass messages to `I18nProvider` through `clientMessages()`, which drops the namespaces listed in `serverNamespaces` (`config/i18n.json`).
+- `loadMessages` layers `en` under the locale, then applies published `message_overrides` rows.
+- An override must pass three checks: the key exists in `en`, its `messageSignature` matches `en`, and `icu-minify/compile` works in builds.
+- Overrides load in an inner `'use cache'` function tagged `messagesTag(locale)`. Publishing calls `updateTag` for it, and an `en` publish for every locale.
+- Raw text for override hashes comes from `messages/*.json` on disk, because builds precompile the bundled catalogs.
+- Protected keys (`PROTECTED_NAMESPACES` and `Email` subjects) need `requireAdmin`, others `requireEditor`.
+- `classifyOverride` returns `orphaned`, `incompatible`, `outdated`, or `redundant`.
 - A client locale switch calls the `getClientMessages` action (`actions/i18n.ts`), which returns the target locale without the server-only namespaces.
 - `pnpm run check:i18n` fails when a server-only namespace is used from a module reachable from a `'use client'` file, or when a namespace used only on the server is missing from the list.
 - Write copy in sentence case (never CSS `capitalize`) with `…`.

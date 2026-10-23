@@ -1,0 +1,104 @@
+import { eq } from 'drizzle-orm'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { createAdminFixture, isLocalDatabase } from '@/actions/admin/test-harness'
+import { type Jar } from '@/lib/test-jar'
+
+const current = vi.hoisted(() => ({ jar: null as null | { headers: () => Headers } }))
+const sent = vi.hoisted(() => [] as { template: { name: string; props: { url?: string } }; to: string }[])
+const limiter = vi.hoisted(() => ({ limited: new Set<string>(), keys: [] as string[] }))
+
+vi.mock('next/headers', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/headers')>()),
+  headers: () => Promise.resolve(current.jar?.headers() ?? new Headers()),
+}))
+vi.mock('next/server', async importOriginal => ({
+  ...(await importOriginal<typeof import('next/server')>()),
+  connection: () => Promise.resolve(),
+}))
+vi.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: () => Promise.resolve({ limited: false, remaining: 1 }),
+  clientAddress: () => Promise.resolve('127.0.0.1'),
+  isRateLimited: (key: string) => {
+    limiter.keys.push(key)
+    return Promise.resolve(limiter.limited.has(key))
+  },
+}))
+vi.mock('@/lib/email', async importOriginal => ({
+  ...(await importOriginal<typeof import('@/lib/email')>()),
+  sendMail: (options: (typeof sent)[number]) => {
+    sent.push(options)
+    return Promise.resolve()
+  },
+}))
+
+const PASSWORD = 'Password1!'
+const KEYS = ['changer', 'resetter'] as const
+
+describe.skipIf(!isLocalDatabase)('password and session security', () => {
+  let fixture: Awaited<ReturnType<typeof createAdminFixture<(typeof KEYS)[number]>>>
+  let actions: typeof import('@/actions/auth')
+
+  const as = (jar: Jar | null) => {
+    current.jar = jar
+  }
+
+  const sessionIds = async (userId: string) =>
+    (
+      await fixture.client.db.query.sessions.findMany({
+        columns: { id: true },
+        where: eq(fixture.schema.sessions.userId, userId),
+      })
+    ).map(row => row.id)
+
+  beforeAll(async () => {
+    vi.stubEnv('APP_URL', 'http://localhost:3000')
+    fixture = await createAdminFixture(KEYS)
+    actions = await import('@/actions/auth')
+  }, 60_000)
+
+  beforeEach(() => {
+    sent.length = 0
+    limiter.limited.clear()
+    limiter.keys.length = 0
+    as(null)
+  })
+
+  afterAll(async () => {
+    as(null)
+    await fixture.cleanup()
+    vi.unstubAllEnvs()
+  })
+
+  it('revokes every other session when the password changes', async () => {
+    const jar = await fixture.signIn('changer')
+    await fixture.signIn('changer')
+    const before = await sessionIds(fixture.ids.changer)
+    expect(before.length).toBeGreaterThanOrEqual(2)
+
+    as(jar)
+    const result = await actions.changePassword(PASSWORD, 'Password2!')
+    expect(result.error).toBeUndefined()
+
+    const after = await sessionIds(fixture.ids.changer)
+    expect(after).toHaveLength(1)
+    expect(before).not.toContain(after[0])
+  })
+
+  it('revokes every session when the password is reset', async () => {
+    await fixture.signIn('resetter')
+    await fixture.signIn('resetter')
+    expect((await sessionIds(fixture.ids.resetter)).length).toBeGreaterThanOrEqual(2)
+
+    const requested = await actions.resetPassword(fixture.emails.resetter)
+    expect(requested.error).toBeNull()
+    const url = sent.find(mail => mail.template.name === 'auth/recovery')?.template.props.url
+    const token = url ? new URL(url).pathname.split('/').pop() : undefined
+    expect(token).toBeTruthy()
+
+    const updated = await actions.updatePassword(token ?? '', 'Password3!')
+    expect(updated.error).toBeNull()
+
+    expect(await sessionIds(fixture.ids.resetter)).toHaveLength(0)
+  })
+})

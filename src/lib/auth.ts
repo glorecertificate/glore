@@ -93,6 +93,7 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     resetPasswordTokenExpiresIn: AUTH_LINK_EXPIRY_SECONDS,
+    revokeSessionsOnPasswordReset: true,
     async sendResetPassword({ user, url }) {
       await sendMail({
         to: user.email,

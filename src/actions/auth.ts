@@ -119,7 +119,7 @@ export const changePassword = async (currentPassword: string, newPassword: strin
 
   try {
     await auth.api.changePassword({
-      body: { currentPassword, newPassword },
+      body: { currentPassword, newPassword, revokeOtherSessions: true },
       headers: await headers(),
     })
   } catch (e) {

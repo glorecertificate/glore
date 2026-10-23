@@ -34,6 +34,7 @@ Authentication, data fetching, cache, errors, env vars, storage, and daily maint
 - `disabledPaths` closes `/sign-up/email`, `/sign-in/email`, `/sign-in/username`, and `/update-user` over HTTP, so accounts only come from invites through `auth.api` and sign-in only goes through the `login` action, which applies the per-identifier limit (`isAuthRateLimited`).
 - Rate limits share the `rate_limits` table: Better Auth through `rateLimit.storage: 'database'`, app keys through `src/lib/rate-limit.ts`.
 - `rateLimit.customRules` keys are endpoint paths without the `/api/auth` base path (`/request-password-reset`, `/reset-password`, `/change-password`), because Better Auth strips the base path before matching. `src/lib/auth.test.ts` fails when a key stops matching a real endpoint.
+- `emailAndPassword.revokeSessionsOnPasswordReset` is `true`, and `changePassword` passes `revokeOtherSessions: true`, so a password reset or change ends every other session.
 - `requireEditor` (`src/actions/guards.ts`) and `authorizeEditorRequest` (`src/lib/api.ts`) read the session with `disableCookieCache`, so bans and demotions apply at once.
 - `getCurrentUser` roles are cached under `userTag`, so every membership write calls `expireUserAccess` (`src/actions/organizations/helpers.ts`).
 - Login and password reset answer unknown users exactly like wrong passwords and real resets.

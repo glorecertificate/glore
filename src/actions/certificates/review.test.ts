@@ -1,3 +1,5 @@
+import { updateTag } from 'next/cache'
+
 import { eq } from 'drizzle-orm'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -10,6 +12,7 @@ import {
   putMock,
 } from '@/actions/certificates/test-harness'
 import { generateCertificateCode } from '@/components/features/certificates/rules'
+import { certificatesOrgTag, certificatesTutorTag, certificatesUserTag } from '@/lib/cache'
 
 vi.mock('next/cache', async () => (await import('@/actions/certificates/test-harness')).mocks.cache)
 vi.mock('@/actions/auth', async () => (await import('@/actions/certificates/test-harness')).mocks.auth)
@@ -554,6 +557,29 @@ describe.skipIf(!isLocalDatabase)('certificate review', () => {
       expect(retried.data?.status).toBe('approved')
       expect((await fixture.reload(cert.id)).skills).toHaveLength(4)
       expect(notifyMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('expires the certificate caches when the PDF cannot be stored and the revert fails too', async () => {
+      const cert = await fixture.insertCertificate({ reviewer: 'tutorA', status: 'in_review' })
+      putMock.mockImplementationOnce(async () => {
+        await fixture.db
+          .update(fixture.schema.certificates)
+          .set({ issuedAt: '2001-01-01 00:00:00' })
+          .where(eq(fixture.schema.certificates.id, cert.id))
+        throw new Error('R2 unavailable')
+      })
+      vi.mocked(updateTag).mockClear()
+      fixture.as('tutorA')
+
+      const failed = await review.approveCertificate(cert.id, {})
+
+      expect(failed.error?.code).toBe('STORAGE_FAILED')
+      expect(failed.error?.message).toContain('could not be undone')
+      expect((await fixture.reload(cert.id)).status).toBe('approved')
+      const tags = vi.mocked(updateTag).mock.calls.map(([tag]) => tag)
+      expect(tags).toContain(certificatesOrgTag(fixture.organizationId))
+      expect(tags).toContain(certificatesUserTag(fixture.ids.author))
+      expect(tags).toContain(certificatesTutorTag(fixture.ids.tutorA))
     })
   })
 

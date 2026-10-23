@@ -293,8 +293,9 @@ export const approveCertificate = async (id: number, input: CertificateApprovalV
       } catch (revertError) {
         console.error('[certificates] approval revert failed', revertError)
         throw new CertificateError('STORAGE_FAILED', 'The PDF could not be stored and the approval could not be undone')
+      } finally {
+        expireCertificateCaches(source, authUser.id)
       }
-      expireCertificateCaches(source, authUser.id)
       throw new CertificateError('STORAGE_FAILED', 'The PDF could not be stored. The approval was undone.')
     }
 

@@ -51,7 +51,7 @@ draft -> submitted -> in_review -> approved -> revoked
 - Reject needs a reason of 10 or more characters and works from any open status.
 - Approval merges the tutor's edits, requires levels 2 to 5 on 3 to 4 skills, rechecks the activity rule, and renders the PDF.
 - Approval commits the status, review row, and event in one transaction, then uploads to R2.
-- An upload failure reverts the whole approval and returns `STORAGE_FAILED`.
+- An upload failure reverts the whole approval and returns `STORAGE_FAILED`. The certificate caches expire even when the revert fails too.
 - The first approved certificate becomes the default on the public profile.
 - Org managers and platform admins revoke an approved certificate with a reason of 10 or more characters.
 - Revocation keeps the PDF in R2, and the latest approved certificate becomes the default.

@@ -44,7 +44,7 @@ export const NotificationBell = ({ children, className, ...props }: React.Compon
           variant="ghost"
           {...props}
         >
-          <span className="relative">
+          <span className={cn('relative', children && 'mr-2')}>
             <LucideIcon className="size-4" name="bell" />
             {unread > 0 && (
               <span

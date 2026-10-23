@@ -50,3 +50,4 @@ Production imports every course as a draft. GloRe editors review and publish eac
 ### 7. CI coverage
 
 - Run an S3-compatible server (MinIO) in `e2e.yml` behind an optional `R2_ENDPOINT` override in `src/lib/storage.ts`, so the PDF approval test in `certificate-lifecycle.spec.ts` stops skipping in CI.
+- Pause the `cobe` globe (`ui/globe.tsx`) when hidden or offscreen and skip it without hardware WebGL (`failIfMajorPerformanceCaveat`). On software WebGL an idle `/login` uses over 8 CPU cores.

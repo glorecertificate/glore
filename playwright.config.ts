@@ -11,6 +11,7 @@ const playwrightConfig = defineConfig({
   use: {
     baseURL: process.env.E2E_BASE_URL ?? 'https://glore.localhost',
     ignoreHTTPSErrors: true,
+    launchOptions: { args: process.env.CI ? ['--disable-webgl', '--disable-3d-apis'] : [] },
     trace: process.env.CI ? 'on-first-retry' : 'retain-on-failure',
   },
   webServer: process.env.CI

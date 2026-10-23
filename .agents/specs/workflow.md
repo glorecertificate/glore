@@ -181,6 +181,7 @@ Email flows (auth, invite, certificate, account) are tested by the agent, never 
 - `ci.yml` (push) runs `check.yml` (`check` and `test`) and `e2e.yml`, then the preview `deploy.yml` after both pass.
 - `e2e.yml` starts Postgres and Mailpit services, migrates, imports the catalog, seeds, runs `next build`, then Playwright's `webServer` runs `next start` on port 3000.
 - CI has dummy R2 credentials, so the PDF approval test in `certificate-lifecycle.spec.ts` skips there and runs only locally against the real bucket.
+- CI launches Chromium with WebGL off: the `cobe` globe on software WebGL takes over 8 cores and starves the runner.
 - `release.yml` deploys production after `check.yml` only.
 
 ## Browser verification

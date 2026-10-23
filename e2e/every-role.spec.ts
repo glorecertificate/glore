@@ -85,7 +85,7 @@ for (const role of AUTH_ROLES) {
         await expect(search).toBeVisible({ timeout: 1500 })
       }).toPass()
       await search.fill('Settings')
-      await page.getByRole('option', { name: 'Settings' }).first().click()
+      await page.getByRole('option', { exact: true, name: 'Settings' }).first().click()
       await expect(page).toHaveURL(/\/settings/u)
 
       await expect(async () => {
@@ -93,7 +93,7 @@ for (const role of AUTH_ROLES) {
         await expect(search).toBeVisible({ timeout: 1500 })
       }).toPass()
       await search.fill(target.name)
-      await page.getByRole('option', { name: target.name }).first().click()
+      await page.getByRole('option', { exact: true, name: target.name }).first().click()
       await expect(page).toHaveURL(target.url)
     })
 

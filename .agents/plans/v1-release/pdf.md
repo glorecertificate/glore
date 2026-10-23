@@ -48,7 +48,7 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 | Tasks heading        | "MAIN TASKS" Roboto Black 13.2 pt at x 46.1, top 499.0.                                                                                          |
 | Tasks intro          | Two lines Regular 10 pt at top 521.6, line height 13: "During the volunteering period I carried out the following activities:".                  |
 | Task bullets         | Green Black "•" plus Regular 10 pt, line height 12, pitch 40 from top 550.6, text within x 46.3 to 205. Up to 4 tasks of 110 chars.              |
-| Signatory            | "Represent by" Regular 10 pt at x 46.1, top 676.8; line x 109.5 to 217.4 at y 687.3. Name above the line; optional signature image above it.     |
+| Signatory            | "Represented by" Regular 10 pt at x 46.1, top 676.8; line x 109.5 to 217.4 at y 687.3. Name above the line; optional signature image above it.   |
 | Date                 | "DATE 01.01.2022" Roboto Black 10 pt at x 46.1, top 708.3.                                                                                       |
 | Verification (U3)    | QR 52 pt square at x 46.1, top 735. To its right: Regular 7.5 pt navy "Verify this certificate" and the short URL, code in Black 8 pt.           |
 
@@ -71,7 +71,7 @@ The template is A4 portrait (595.3 by 841.9 pt) from Adobe Illustrator 26. Coord
 
 Every label above is an i18n key in `messages/{en,es,it}.json` under one certificate PDF namespace, rendered in the certificate language.
 
-The English values match the template text exactly, including "Represent by" and "Recognizes".
+The English values match the template text exactly, including "Recognizes". The signatory label reads "Represented by", a grammar fix from the native translation review (80848b16).
 
 ## Asset extraction
 
